@@ -1,4 +1,6 @@
 /// <reference types="Cypress" />
+Cypress.config('defaultCommandTimeout', 15000)
+
 
 describe('Login Matrix Web', function(){
 
@@ -31,52 +33,68 @@ describe('Login Matrix Web', function(){
 
     });
 
+
     it.only('Client Search Clients', function() {  
-
+        
+        cy.viewport(1920,1080)
         cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/')
-
+        
         cy.get('input[name="main-search-input"]').type('CALOGERO MESSINA').type('{enter}')
-
+        cy.wait(2000)
         cy.get('lib-client-item').first().click()
-        cy.wait(3000) 
+        cy.wait(4000)
         
-        cy.get('div[ngclass="client-name"]').should('contain','CALOGERO MESSINA')
+        // cy.get('[class^="client-name"]').should('contain','CALOGERO MESSINA')
         
+        // cy.get('app-operative-alert-card').contains('Da incassare').click({force: true});
+        // cy.wait(3000)
 
-        // cy.get("app-section-title").should('contain', 'Situazione Cliente')
-
-        cy.get('a[class^="tab-header nx-grid__column-3 ng-star-inserted"]').should(($tab) => {
+        cy.get('app-client-profile-tabs').find('a').should(($tab) => {
             expect($tab).to.contain('SINTESI CLIENTE')
             expect($tab).to.contain('DETTAGLIO ANAGRAFICA')
             expect($tab).to.contain('PORTAFOGLIO')
             expect($tab).to.contain('ARCHIVIO CLIENTE')
-          })
-          
-        //   button div[class="nx-tab-label__content"]
-          cy.get('nx-tab-header').find('.nx-tab-label__content').should(($tab) => {
-            expect($tab).to.contain('Ultra')
-            expect($tab).to.contain('Auto')
-            expect($tab).to.contain('Persona')
-            expect($tab).to.contain('Albergo')
-            expect($tab).to.contain('Casa e Patrimonio')
-            expect($tab).to.contain('Salute')
-            expect($tab).to.length(6)
+            expect($tab).to.length(4)
+
           })
 
+          cy.get('app-client-situation').find('.value-link').click();
+          cy.get('.cdk-global-overlay-wrapper').find('nx-icon').click();
+          cy.get('app-contract-card').find('nx-icon').click({multiple:true})
+         // TODO:
+         // cy.get('app-contract-card').find('.icon-mw-people-connect badge-icon').click({multiple:true})
 
+        //   cy.get('.fast-quote-cart').find('nx-tab-group').should(($tab) => {
+        //     expect($tab).to.contain('Ultra')
+        //     expect($tab).to.contain('Auto')
+        //     expect($tab).to.contain('Persona')
+        //   })
           
-          cy.get('app-client-resume-emissions').find('.card').should(($tab) => {
-            expect($tab).to.contain('Auto')
-            expect($tab).to.contain('Rami vari')
-            expect($tab).to.contain('Vita')
-            expect($tab).to.length(3)
+          cy.get('app-section-title').should(($title) =>{
+            expect($title).to.contain('Situazione cliente')
+            expect($title).to.contain('Fast Quote')
+            expect($title).to.contain('Emissioni')
+            expect($title).to.contain('Contratti in evidenza')
+            expect($title).to.length(4)
           })
+
+          cy.get('.card-container').find('app-kpi-dropdown-card').should(($tabCard) => {
+            expect($tabCard).to.contain('Auto')
+            expect($tabCard).to.contain('Rami vari')
+            expect($tabCard).to.contain('Vita')
+            expect($tabCard).to.length(3)
+
+          })
+
+          cy.get('.card-container').find('app-kpi-dropdown-card').contains('Auto').click()
+          cy.get('.card-container').find('app-kpi-dropdown-card').contains('Rami vari').click()
+          cy.get('.card-container').find('app-kpi-dropdown-card').contains('Vita').click()
+
      })
     
 
      it('burger Menu Clients', function() {
 
-        Cypress.config('defaultCommandTimeout', 10000)
 
         cy.contains('Clients').click({force: true})
         cy.url().should('include', '/clients')
