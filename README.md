@@ -2,7 +2,7 @@
 
 ![Alt Text](https://media.giphy.com/media/W9lzJDwciz6bS/giphy.gif)
 
-By [Andrea Oboe](mailto:andrea.oboe@allianz.it?subject='Matrix Web FE Tests Cypress')
+By [Andrea Oboe](mailto:andrea.oboe@allianz.it)
 
 :bomb: Please remeber, after cloned, to execute in the root dir
 
