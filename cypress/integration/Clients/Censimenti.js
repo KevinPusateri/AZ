@@ -49,7 +49,6 @@ it('Censimento Persona Fisica', () => {
   cy.get('input[name="Ecom_User_ID"]').type('le00038');
   cy.get('input[name="Ecom_Password"]').type('Febbraio2021$');
   cy.get('input[value="Conferma"]').click();
-  //cy.visit('https://matrix.pp.azi.allianz.it/');
   cy.contains('Clients').click();
   cy.contains('Nuovo cliente').click();
   cy.get('.nx-formfield__row > .nx-formfield__flexfield > .nx-formfield__input-container > .nx-formfield__input > #nx-input-1').type('AS')
@@ -116,17 +115,19 @@ it('Censimento Persona Fisica', () => {
   cy.wait(4000);
   getIframeBodyDocumentoPersonale().find('#pupload').click();
 
+
   const fileName = 'doc_testing/CI_Test.pdf';
   cy.fixture(fileName, 'binary')
   .then(Cypress.Blob.binaryStringToBlob)
   .then(fileContent => {
-    getIframeBodyDocumentoPersonale().find('#pdfUpload').attachFile({
+    getIframeBodyDocumentoPersonale().find('#pdfUpload').upload({
       fileContent,
       fileName,
       mimeType: 'application/pdf',
       encoding: 'utf-8',
     });
   });
+  cy.wait(2000);
   getIframeBodyDocumentoPersonale().find('#importMobileDocument').click();
   cy.wait(5000);
   getIframeBodySCU().contains('Conferma').click();

@@ -1,2 +1,2 @@
 cd ..
-./node_modules/.bin/cypress run --browser browsers/Firefox_60.6.3/App/Firefox/firefox.exe --no-exit
+./node_modules/.bin/cypress run --browser browsers/Firefox_60.6.3/App/Firefox/firefox.exe
