@@ -41,13 +41,14 @@ before(function () {
   });
 });
 
-Cypress.config('defaultCommandTimeout', 10000);
 it('Censimento Persona Fisica', () => {
+  Cypress.config('defaultCommandTimeout', 10000);
+  
   cy.viewport(1920,1080);
   cy.visit('https://matrix.pp.azi.allianz.it/');
   cy.get('input[name="Ecom_User_ID"]').type('le00038');
   cy.get('input[name="Ecom_Password"]').type('Febbraio2021$');
-  cy.get('input[type="SUBMIT"]').click();
+  cy.get('input[value="Conferma"]').click();
   //cy.visit('https://matrix.pp.azi.allianz.it/');
   cy.contains('Clients').click();
   cy.contains('Nuovo cliente').click();
