@@ -116,7 +116,7 @@ it('Censimento Persona Fisica', () => {
   cy.wait(4000);
   getIframeBodyDocumentoPersonale().find('#pupload').click();
 
-  const fileName = '../../support/doc_testing/CI_Test.pdf';
+  const fileName = 'doc_testing/CI_Test.pdf';
   cy.fixture(fileName, 'binary')
   .then(Cypress.Blob.binaryStringToBlob)
   .then(fileContent => {
