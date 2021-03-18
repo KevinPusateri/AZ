@@ -1,0 +1,22 @@
+{
+  "name": "matrix-web-fe-tests",
+  "version": "1.0.0",
+  "description": "Cypress Tests for Matrix Web",
+  "main": "index.js",
+  "dependencies": {
+    "cypress": "^6.7.1",
+    "cypress-file-upload": "^5.0.2",
+    "express": "^4.17.1",
+    "faker": "^5.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.developer.allianz.io/az-italy/matrix-web-fe-tests.git"
+  },
+  "author": "Andrea Oboe",
+  "license": "ISC"
+}
