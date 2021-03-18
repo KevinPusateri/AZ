@@ -1,0 +1,5 @@
+library=
+name=NSS Internal PKCS #11 Module
+parameters=configdir='sql:D:\\Users\\eu53258\\Desktop\\FIREFO~1\\Data\\profile' certPrefix='' keyPrefix='' secmod='secmod.db' flags=optimizeSpace updatedir='' updateCertPrefix='' updateKeyPrefix='' updateid='' updateTokenDescription=''  manufacturerID='Mozilla.org' libraryDescription='Servizi crittog. interni PSM' cryptoTokenDescription='Servizi crittografici generici' dbTokenDescription='Dispositivo sicurezza software' cryptoSlotDescription='Servizi crittografici interni di PSM' dbSlotDescription='Chiavi private di PSM' FIPSSlotDescription='Servizi di crittografia, chiave e certificato FIPS 140' FIPSTokenDescription='Disp. sicurezza software (FIPS)' minPS=0
+NSS=Flags=internal,critical trustOrder=75 cipherOrder=100 slotParams=(1={slotFlags=[ECC,RSA,DSA,DH,RC2,RC4,DES,RANDOM,SHA1,MD5,MD2,SSL,TLS,AES,Camellia,SEED,SHA256,SHA512] askpw=any timeout=30})
+
