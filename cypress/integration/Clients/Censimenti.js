@@ -1,36 +1,59 @@
 /// <reference types="cypress" />
 
-const getIframeDocumentSCU = () => {
-  return cy
-  .get('iframe[class="iframe-content ng-star-inserted"]')
-  .its('0.contentDocument').should('exist')
-}
-  
-const getIframeBodySCU = () => {
-  return getIframeDocumentSCU()
-  .its('body').should('not.be.undefined')
-  .then(cy.wrap)
+Cypress.config('defaultCommandTimeout', 10000);
+
+//OK
+const getSCU = () => {
+  cy.get('iframe[class="iframe-content ng-star-inserted"]')
+  .iframe();
+
+  let  iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+  .its('0.contentDocument').should('exist');
+
+  return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-const getIframeBodyFolder = () => {
-  return getIframeBodySCU().find('iframe[class="w-100"]')
-  .its('0.contentDocument').should('exist')
-  .its('body').should('not.be.undefined')
-  .then(cy.wrap)
+//OK
+const getFolder = () => {
+  let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
+
+  let iframeFolder = bodySCU.find('iframe[class="w-100"]')
+  .its('0.contentDocument').should('exist');
+
+  return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-const getIframeBodyIdDocumentScanner = () => {
-  return getIframeBodyFolder().find('iframe[src*="IdDocumentScanner"]')
-  .its('0.contentDocument').should('exist')
-  .its('body').should('not.be.undefined')
-  .then(cy.wrap)
+const getDocumentScanner = () => {
+
+  cy.wait(5000);
+
+  let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
+
+  let bodyFolder = bodySCU.find('iframe[class="w-100"]')
+  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
+
+  let iframeDocumentScanner = bodyFolder.find('iframe[src*="IdDocumentScanner"]')
+  .its('0.contentDocument').should('exist');
+
+  return iframeDocumentScanner.its('body').should('not.be.undefined').then(cy.wrap);
 }
 
-const getIframeBodyDocumentoPersonale = () => {
-  return getIframeBodyIdDocumentScanner().find('#documentoPersonaleFrame')
+const getDocumentoPersonale = () => {
+  let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
+
+  let bodyFolder = bodySCU.find('iframe[class="w-100"]')
+  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
+
+  let iframeDocumentScanner = bodyFolder.find('iframe[src*="IdDocumentScanner"]')
+  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
+
+  let iframeDocumentoPersonale = iframeDocumentScanner.find('#documentoPersonaleFrame')
   .its('0.contentDocument').should('exist')
-  .its('body').should('not.be.undefined')
-  .then(cy.wrap)
+
+  return iframeDocumentoPersonale.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 let nuovoCliente;
@@ -42,96 +65,89 @@ before(function () {
 });
 
 it('Censimento Persona Fisica', () => {
-  Cypress.config('defaultCommandTimeout', 10000);
-  
   cy.viewport(1920,1080);
   cy.visit('https://matrix.pp.azi.allianz.it/');
   cy.get('input[name="Ecom_User_ID"]').type('le00038');
   cy.get('input[name="Ecom_Password"]').type('Febbraio2021$');
   cy.get('input[value="Conferma"]').click();
-  cy.contains('Clients').click();
+  cy.contains('Clients').click({waitForAnimations: false});
   cy.contains('Nuovo cliente').click();
   cy.get('.nx-formfield__row > .nx-formfield__flexfield > .nx-formfield__input-container > .nx-formfield__input > #nx-input-1').type('AS')
   cy.contains('Cerca').click();
   cy.contains('Aggiungi cliente').click();
-  cy.wait(5000);
-  cy.get('iframe[class="iframe-content ng-star-inserted"]');
-  getIframeBodySCU().find('#nome').type(nuovoCliente.nome);
-  getIframeBodySCU().find('#cognome').type(nuovoCliente.cognome);
-  getIframeBodySCU().find('#comune-nascita').type('LONIGO');
-  getIframeBodySCU().find('li:contains("LONIGO")').click();
-  getIframeBodySCU().find('span[aria-owns="sesso_listbox"]').click();
-  getIframeBodySCU().find('li:contains("Maschile")').click();
-  getIframeBodySCU().find('#data-nascita').type('25011985');
-  getIframeBodySCU().find('#calcola-codice-fiscale').click();
-  getIframeBodySCU().find('span[aria-owns="professione_listbox"]').click();
-  getIframeBodySCU().find('li:contains("Architetto")').click();
-  getIframeBodySCU().find('#unita-di-mercato').type('1022');
-  getIframeBodySCU().find('li:contains("1022")').click();
-  getIframeBodySCU().find('button:contains("Avanti")').click();
+
+  getSCU().find('#nome').type(nuovoCliente.nome);
+  getSCU().find('#cognome').type(nuovoCliente.cognome);
+  getSCU().find('#comune-nascita').type('LONIGO');
+  getSCU().find('li:contains("LONIGO")').click();
+  getSCU().find('span[aria-owns="sesso_listbox"]').click();
+  getSCU().find('li:contains("Maschile")').click();
+  getSCU().find('#data-nascita').type('25011985');
+  getSCU().find('#calcola-codice-fiscale').click();
+  getSCU().find('span[aria-owns="professione_listbox"]').click();
+  getSCU().find('li:contains("Architetto")').click();
+  getSCU().find('#unita-di-mercato').type('1022');
+  getSCU().find('li:contains("1022")').click();
+  getSCU().find('button:contains("Avanti")').click();
 
   //Residenza Anagrafica
-  getIframeBodySCU().find('span[aria-owns="toponomastica_listbox"]').click();
-  getIframeBodySCU().find('li:contains("CORTE")').click();
-  getIframeBodySCU().find('#indirizzo-via').type('GARIBALDI');
-  getIframeBodySCU().find('#indirizzo-num').type('1');
-  getIframeBodySCU().find('#residenza-comune').type('LONIGO');
-  getIframeBodySCU().find('#residenza-comune_listbox').click();
-  getIframeBodySCU().find('span[aria-owns="tipo-tel_listbox"]').click();
-  getIframeBodySCU().find('button:contains("Avanti")').click();
+  getSCU().find('span[aria-owns="toponomastica_listbox"]').click();
+  getSCU().find('li:contains("CORTE")').click();
+  getSCU().find('#indirizzo-via').type('GARIBALDI');
+  getSCU().find('#indirizzo-num').type('1');
+  getSCU().find('#residenza-comune').type('LONIGO');
+  getSCU().find('#residenza-comune_listbox').click();
+  getSCU().find('span[aria-owns="tipo-tel_listbox"]').click();
+  getSCU().find('button:contains("Avanti")').click();
 
   //Consensi
-  getIframeBodySCU().find('label[for="invio-documenti-no"]').click();
-  getIframeBodySCU().find('label[for="firma-grafometrica-no"]').click();
-  getIframeBodySCU().find('label[for="consenso-otp-no"]').click();
-  getIframeBodySCU().find('label[for="promo-allianz-no"]').click();
-  getIframeBodySCU().find('label[for="promo-allianz-terzi-no"]').click();
-  getIframeBodySCU().find('label[for="promo-allianz-profilazione-no"]').click();
-  getIframeBodySCU().find('label[for="promo-allianz-indagini-no"]').click();
-  getIframeBodySCU().find('label[for="quest-adeguatezza-vita-no"]').click();
-  getIframeBodySCU().find('button:contains("Avanti")').click();
+  getSCU().find('label[for="invio-documenti-no"]').click();
+  getSCU().find('label[for="firma-grafometrica-no"]').click();
+  getSCU().find('label[for="consenso-otp-no"]').click();
+  getSCU().find('label[for="promo-allianz-no"]').click();
+  getSCU().find('label[for="promo-allianz-terzi-no"]').click();
+  getSCU().find('label[for="promo-allianz-profilazione-no"]').click();
+  getSCU().find('label[for="promo-allianz-indagini-no"]').click();
+  getSCU().find('label[for="quest-adeguatezza-vita-no"]').click();
+  getSCU().find('button:contains("Avanti")').click();
 
   //Documento
-  getIframeBodySCU().find('span[aria-owns="tipo-documento_listbox"]').click();
-  getIframeBodySCU().find('li:contains("CARTA D\'IDENTITA\'")').click();
-  getIframeBodySCU().find('#numero-documento').type('AR66666');
-  getIframeBodySCU().find('#data-emissione').type('01012021');
-  getIframeBodySCU().find('#data-scadenza').type('01012030');
-  getIframeBodySCU().find('#luogo-emissione').type('LONIGO');
-  getIframeBodySCU().find('#luogo-emissione_listbox').click();
-  getIframeBodySCU().find('button:contains("Avanti")').click();
-  cy.wait(6000);
-  getIframeBodySCU().find('button:contains("Conferma")').click();
-  cy.wait(6000);
+  getSCU().find('span[aria-owns="tipo-documento_listbox"]').click();
+  getSCU().find('li:contains("CARTA D\'IDENTITA\'")').click();
+  getSCU().find('#numero-documento').type('AR66666');
+  getSCU().find('#data-emissione').type('01012021');
+  getSCU().find('#data-scadenza').type('01012030');
+  getSCU().find('#luogo-emissione').type('LONIGO');
+  getSCU().find('#luogo-emissione_listbox').click();
+  getSCU().find('button:contains("Avanti")').click();
+  getSCU().find('button:contains("Conferma")').click();
 
   //Folder
-  getIframeBodyFolder().find('span[class="k-icon k-plus"]:visible').click();
-  getIframeBodyFolder().find('span[class="k-icon k-plus"]:first').click();
-  getIframeBodyFolder().find('#UploadDocumentFromPortal').click();
-  cy.wait(4000);
+  getFolder().find('span[class="k-icon k-plus"]:visible').click();
+  getFolder().find('span[class="k-icon k-plus"]:first').click();
+  getFolder().find('#UploadDocumentFromPortal').click();
 
   //Upload documento
-  getIframeBodyIdDocumentScanner().contains('Continua').click();
-  cy.wait(4000);
-  getIframeBodyDocumentoPersonale().find('#pupload').click();
+  getDocumentScanner().find('button:contains("Continua"):visible').click();
+  getDocumentScanner().find('#pupload').click();
 
 
   const fileName = 'doc_testing/CI_Test.pdf';
   cy.fixture(fileName, 'binary')
   .then(Cypress.Blob.binaryStringToBlob)
   .then(fileContent => {
-    getIframeBodyDocumentoPersonale().find('#pdfUpload').upload({
+    getDocumentoPersonale().find('#pdfUpload').upload({
       fileContent,
       fileName,
       mimeType: 'application/pdf',
       encoding: 'utf-8',
     });
   });
+  
   cy.wait(2000);
-  getIframeBodyDocumentoPersonale().find('#importMobileDocument').click();
+  getDocumentoPersonale().find('#importMobileDocument').click();
   cy.wait(5000);
-  getIframeBodySCU().contains('Conferma').click();
+  getSCU().contains('Conferma').click();
   cy.wait(12000);
-  getIframeBodySCU().find('#endWorkflowButton').click();
-  cy.url();
+  getSCU().find('#endWorkflowButton').click();
 });
