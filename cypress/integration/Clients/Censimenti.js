@@ -2,7 +2,7 @@
 
 Cypress.config('defaultCommandTimeout', 10000);
 
-//OK
+
 const getSCU = () => {
   cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .iframe();
@@ -13,7 +13,6 @@ const getSCU = () => {
   return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-//OK
 const getFolder = () => {
   let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
@@ -26,7 +25,7 @@ const getFolder = () => {
 
 const getDocumentScanner = () => {
 
-  cy.wait(5000);
+  cy.wait(6000);
 
   let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
@@ -41,6 +40,9 @@ const getDocumentScanner = () => {
 }
 
 const getDocumentoPersonale = () => {
+
+  cy.wait(8000);
+
   let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
 
@@ -59,6 +61,7 @@ const getDocumentoPersonale = () => {
 let nuovoCliente;
 
 before(function () {
+  cy.clearCookies();
   cy.task('nuovoClientePersonaFisica').then((object) => {
     nuovoCliente = object;
   });
@@ -75,7 +78,6 @@ it('Censimento Persona Fisica', () => {
   cy.get('.nx-formfield__row > .nx-formfield__flexfield > .nx-formfield__input-container > .nx-formfield__input > #nx-input-1').type('AS')
   cy.contains('Cerca').click();
   cy.contains('Aggiungi cliente').click();
-
   getSCU().find('#nome').type(nuovoCliente.nome);
   getSCU().find('#cognome').type(nuovoCliente.cognome);
   getSCU().find('#comune-nascita').type('LONIGO');
@@ -129,18 +131,17 @@ it('Censimento Persona Fisica', () => {
 
   //Upload documento
   getDocumentScanner().find('button:contains("Continua"):visible').click();
-  getDocumentScanner().find('#pupload').click();
+  getDocumentoPersonale().find('#pupload').click();
 
 
-  const fileName = 'doc_testing/CI_Test.pdf';
+  const fileName = 'CI_Test.pdf';
   cy.fixture(fileName, 'binary')
   .then(Cypress.Blob.binaryStringToBlob)
   .then(fileContent => {
-    getDocumentoPersonale().find('#pdfUpload').upload({
+    getDocumentoPersonale().find('#pdfUpload').attachFile({
       fileContent,
-      fileName,
       mimeType: 'application/pdf',
-      encoding: 'utf-8',
+      encoding: 'utf-8'
     });
   });
   
