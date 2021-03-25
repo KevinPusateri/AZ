@@ -13,6 +13,7 @@ const getSCU = () => {
 }
 
 const getFolder = () => {
+  cy.wait(2000);
   let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
 
@@ -24,7 +25,7 @@ const getFolder = () => {
 
 const getDocumentScanner = () => {
 
-  cy.wait(6000);
+  cy.wait(2000);
 
   let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
@@ -40,7 +41,7 @@ const getDocumentScanner = () => {
 
 const getDocumentoPersonale = () => {
 
-  cy.wait(8000);
+  cy.wait(4000);
 
   let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
@@ -71,12 +72,16 @@ before(function () {
   cy.get('input[name="Ecom_User_ID"]').type('TUTF003');
   cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!');
   cy.get('input[value="Conferma"]').click();
+
+  cy.window().then((win) =>  {
+    win.onbeforeunload = null;
+  })
 });
 
 it('Censimento Persona Fisica', () => {
 
   cy.url().should('eq','https://portaleagenzie.pp.azi.allianz.it/matrix/');
-  cy.contains('Clients').click({waitForAnimations: false});
+  cy.contains('Clients').click();
   cy.contains('Nuovo cliente').click();
   cy.get('.nx-formfield__row > .nx-formfield__flexfield > .nx-formfield__input-container > .nx-formfield__input > #nx-input-1').type('AS')
   cy.contains('Cerca').click();
@@ -138,15 +143,7 @@ it('Censimento Persona Fisica', () => {
 
 
   const fileName = 'CI_Test.pdf';
-  cy.fixture(fileName, 'binary')
-  .then(Cypress.Blob.binaryStringToBlob)
-  .then(fileContent => {
-    getDocumentoPersonale().find('#pdfUpload').attachFile({
-      fileContent,
-      mimeType: 'application/pdf',
-      encoding: 'utf-8'
-    });
-  });
+  getDocumentoPersonale().find('#pdfUpload').attachFile(fileName);
   
   cy.wait(2000);
   getDocumentoPersonale().find('#importMobileDocument').click();
@@ -154,4 +151,8 @@ it('Censimento Persona Fisica', () => {
   getSCU().contains('Conferma').click();
   cy.wait(12000);
   getSCU().find('#endWorkflowButton').click();
+  
+  cy.get('lib-header-logo').click();
+  //cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/clients');
+  cy.get('div[class="surname"]:contains("'+nuovoCliente.cognome+'")').should('exist').click();
 });
