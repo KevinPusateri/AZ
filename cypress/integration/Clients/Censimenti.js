@@ -153,6 +153,6 @@ it('Censimento Persona Fisica', () => {
   getSCU().find('#endWorkflowButton').click();
   
   cy.get('lib-header-logo').click();
-  //cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/clients');
+  cy.contains('Cerca').click();
   cy.get('div[class="surname"]:contains("'+nuovoCliente.cognome+'")').should('exist').click();
 });
