@@ -70,9 +70,10 @@ before(function () {
 it('Censimento Persona Fisica', () => {
   cy.viewport(1920,1080);
   cy.visit('https://matrix.pp.azi.allianz.it/');
-  cy.get('input[name="Ecom_User_ID"]').type('le00038');
-  cy.get('input[name="Ecom_Password"]').type('Febbraio2021$');
+  cy.get('input[name="Ecom_User_ID"]').type('TUTF003');
+  cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!');
   cy.get('input[value="Conferma"]').click();
+  cy.url().should('eq','https://portaleagenzie.pp.azi.allianz.it/matrix/');
   cy.contains('Clients').click({waitForAnimations: false});
   cy.contains('Nuovo cliente').click();
   cy.get('.nx-formfield__row > .nx-formfield__flexfield > .nx-formfield__input-container > .nx-formfield__input > #nx-input-1').type('AS')

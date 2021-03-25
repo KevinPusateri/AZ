@@ -1,5 +1,6 @@
 *.tmp
 ~*
+*.swp
 node_modules/
 logs/
 screenshots/
