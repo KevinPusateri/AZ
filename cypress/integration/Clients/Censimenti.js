@@ -2,7 +2,6 @@
 
 Cypress.config('defaultCommandTimeout', 10000);
 
-
 const getSCU = () => {
   cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .iframe();
@@ -61,18 +60,21 @@ const getDocumentoPersonale = () => {
 let nuovoCliente;
 
 before(function () {
-  cy.clearCookies();
   cy.task('nuovoClientePersonaFisica').then((object) => {
     nuovoCliente = object;
   });
-});
 
-it('Censimento Persona Fisica', () => {
   cy.viewport(1920,1080);
+  
   cy.visit('https://matrix.pp.azi.allianz.it/');
+
   cy.get('input[name="Ecom_User_ID"]').type('TUTF003');
   cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!');
   cy.get('input[value="Conferma"]').click();
+});
+
+it('Censimento Persona Fisica', () => {
+
   cy.url().should('eq','https://portaleagenzie.pp.azi.allianz.it/matrix/');
   cy.contains('Clients').click({waitForAnimations: false});
   cy.contains('Nuovo cliente').click();
