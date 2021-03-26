@@ -13,7 +13,7 @@ const getSCU = () => {
 }
 
 const getFolder = () => {
-  cy.wait(2000);
+  cy.wait(6000);
   let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
 
@@ -78,7 +78,7 @@ before(function () {
   })
 });
 
-it('Censimento Persona Fisica', () => {
+it('Censimento Nuovo cliente PF', () => {
 
   cy.url().should('eq','https://portaleagenzie.pp.azi.allianz.it/matrix/');
   cy.contains('Clients').click();
@@ -98,6 +98,7 @@ it('Censimento Persona Fisica', () => {
   getSCU().find('li:contains("Architetto")').click();
   getSCU().find('#unita-di-mercato').type('1022');
   getSCU().find('li:contains("1022")').click();
+  getSCU().find('#pep-no').click({force: true});
   getSCU().find('button:contains("Avanti")').click();
 
   //Residenza Anagrafica
@@ -153,6 +154,13 @@ it('Censimento Persona Fisica', () => {
   getSCU().find('#endWorkflowButton').click();
   
   cy.get('lib-header-logo').click();
-  cy.contains('Cerca').click();
-  cy.get('div[class="surname"]:contains("'+nuovoCliente.cognome+'")').should('exist').click();
+  cy.contains('Clients').click();
+  cy.get('input[name="main-search-input"]').type(nuovoCliente.cognome + " " + nuovoCliente.nome).type('{enter}');
+  cy.get('lib-client-item').first().click();
+  cy.get('nx-icon[aria-label="Open menu"]').click();
+  cy.contains('Cancellazione cliente').click();
+  cy.contains('Cancella cliente').click();
+  cy.contains('Ok').click();
+  cy.get('.user-icon-container').click();
+  cy.contains('Logout').click();
 });
