@@ -13,6 +13,7 @@ const getSCU = () => {
 }
 
 const getFolder = () => {
+  cy.wait(6000);
   let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
 
@@ -24,7 +25,7 @@ const getFolder = () => {
 
 const getDocumentScanner = () => {
 
-  cy.wait(6000);
+  cy.wait(2000);
 
   let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
@@ -40,7 +41,7 @@ const getDocumentScanner = () => {
 
 const getDocumentoPersonale = () => {
 
-  cy.wait(8000);
+  cy.wait(4000);
 
   let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
@@ -71,12 +72,16 @@ before(function () {
   cy.get('input[name="Ecom_User_ID"]').type('TUTF003');
   cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!');
   cy.get('input[value="Conferma"]').click();
+
+  cy.window().then((win) =>  {
+    win.onbeforeunload = null;
+  })
 });
 
-it('Censimento Persona Fisica', () => {
+it('Censimento Nuovo cliente PF', () => {
 
   cy.url().should('eq','https://portaleagenzie.pp.azi.allianz.it/matrix/');
-  cy.contains('Clients').click({waitForAnimations: false});
+  cy.contains('Clients').click();
   cy.contains('Nuovo cliente').click();
   cy.get('.nx-formfield__row > .nx-formfield__flexfield > .nx-formfield__input-container > .nx-formfield__input > #nx-input-1').type('AS')
   cy.contains('Cerca').click();
@@ -93,6 +98,7 @@ it('Censimento Persona Fisica', () => {
   getSCU().find('li:contains("Architetto")').click();
   getSCU().find('#unita-di-mercato').type('1022');
   getSCU().find('li:contains("1022")').click();
+  getSCU().find('#pep-no').click({force: true});
   getSCU().find('button:contains("Avanti")').click();
 
   //Residenza Anagrafica
@@ -138,15 +144,7 @@ it('Censimento Persona Fisica', () => {
 
 
   const fileName = 'CI_Test.pdf';
-  cy.fixture(fileName, 'binary')
-  .then(Cypress.Blob.binaryStringToBlob)
-  .then(fileContent => {
-    getDocumentoPersonale().find('#pdfUpload').attachFile({
-      fileContent,
-      mimeType: 'application/pdf',
-      encoding: 'utf-8'
-    });
-  });
+  getDocumentoPersonale().find('#pdfUpload').attachFile(fileName);
   
   cy.wait(2000);
   getDocumentoPersonale().find('#importMobileDocument').click();
@@ -154,4 +152,106 @@ it('Censimento Persona Fisica', () => {
   getSCU().contains('Conferma').click();
   cy.wait(12000);
   getSCU().find('#endWorkflowButton').click();
+  
+  cy.get('lib-header-logo').click();
+  cy.contains('Clients').click();
+  cy.get('input[name="main-search-input"]').type(nuovoCliente.cognome + " " + nuovoCliente.nome).type('{enter}');
+  cy.get('lib-client-item').first().click();
+  cy.get('nx-icon[aria-label="Open menu"]').click();
+  cy.contains('Cancellazione cliente').click();
+  cy.contains('Cancella cliente').click();
+  cy.contains('Ok').click();
+  cy.get('.user-icon-container').click();
+  cy.contains('Logout').click();
+});
+
+it.only('Censimento Nuovo cliente PG', () => {
+
+  cy.url().should('eq','https://portaleagenzie.pp.azi.allianz.it/matrix/');
+  cy.contains('Clients').click();
+  cy.contains('Nuovo cliente').click();
+  cy.contains('Persona giuridica').click();
+  cy.get('//*[@id="nx-input-2"]').type('AS');
+  cy.contains('Cerca').click();
+  cy.contains('Aggiungi cliente').click();
+
+  /*
+  getSCU().find('#nome').type(nuovoCliente.nome);
+  getSCU().find('#cognome').type(nuovoCliente.cognome);
+  getSCU().find('#comune-nascita').type('LONIGO');
+  getSCU().find('li:contains("LONIGO")').click();
+  getSCU().find('span[aria-owns="sesso_listbox"]').click();
+  getSCU().find('li:contains("Maschile")').click();
+  getSCU().find('#data-nascita').type('25011985');
+  getSCU().find('#calcola-codice-fiscale').click();
+  getSCU().find('span[aria-owns="professione_listbox"]').click();
+  getSCU().find('li:contains("Architetto")').click();
+  getSCU().find('#unita-di-mercato').type('1022');
+  getSCU().find('li:contains("1022")').click();
+  getSCU().find('#pep-no').click({force: true});
+  getSCU().find('button:contains("Avanti")').click();
+
+  //Residenza Anagrafica
+  getSCU().find('span[aria-owns="toponomastica_listbox"]').click();
+  getSCU().find('li:contains("CORTE")').click();
+  getSCU().find('#indirizzo-via').type('GARIBALDI');
+  getSCU().find('#indirizzo-num').type('1');
+  getSCU().find('#residenza-comune').type('LONIGO');
+  getSCU().find('#residenza-comune_listbox').click();
+  getSCU().find('span[aria-owns="tipo-tel_listbox"]').click();
+  getSCU().find('button:contains("Avanti")').click();
+
+  //Consensi
+  getSCU().find('label[for="invio-documenti-no"]').click();
+  getSCU().find('label[for="firma-grafometrica-no"]').click();
+  getSCU().find('label[for="consenso-otp-no"]').click();
+  getSCU().find('label[for="promo-allianz-no"]').click();
+  getSCU().find('label[for="promo-allianz-terzi-no"]').click();
+  getSCU().find('label[for="promo-allianz-profilazione-no"]').click();
+  getSCU().find('label[for="promo-allianz-indagini-no"]').click();
+  getSCU().find('label[for="quest-adeguatezza-vita-no"]').click();
+  getSCU().find('button:contains("Avanti")').click();
+
+  //Documento
+  getSCU().find('span[aria-owns="tipo-documento_listbox"]').click();
+  getSCU().find('li:contains("CARTA D\'IDENTITA\'")').click();
+  getSCU().find('#numero-documento').type('AR66666');
+  getSCU().find('#data-emissione').type('01012021');
+  getSCU().find('#data-scadenza').type('01012030');
+  getSCU().find('#luogo-emissione').type('LONIGO');
+  getSCU().find('#luogo-emissione_listbox').click();
+  getSCU().find('button:contains("Avanti")').click();
+  getSCU().find('button:contains("Conferma")').click();
+
+  //Folder
+  getFolder().find('span[class="k-icon k-plus"]:visible').click();
+  getFolder().find('span[class="k-icon k-plus"]:first').click();
+  getFolder().find('#UploadDocumentFromPortal').click();
+
+  //Upload documento
+  getDocumentScanner().find('button:contains("Continua"):visible').click();
+  getDocumentoPersonale().find('#pupload').click();
+
+
+  const fileName = 'CI_Test.pdf';
+  getDocumentoPersonale().find('#pdfUpload').attachFile(fileName);
+  
+  cy.wait(2000);
+  getDocumentoPersonale().find('#importMobileDocument').click();
+  cy.wait(5000);
+  getSCU().contains('Conferma').click();
+  cy.wait(12000);
+  getSCU().find('#endWorkflowButton').click();
+  
+  cy.get('lib-header-logo').click();
+  cy.contains('Clients').click();
+  cy.get('input[name="main-search-input"]').type(nuovoCliente.cognome + " " + nuovoCliente.nome).type('{enter}');
+  cy.get('lib-client-item').first().click();
+  cy.get('nx-icon[aria-label="Open menu"]').click();
+  cy.contains('Cancellazione cliente').click();
+  cy.contains('Cancella cliente').click();
+  cy.contains('Ok').click();
+  cy.get('.user-icon-container').click();
+  cy.contains('Logout').click();
+  */
 });
