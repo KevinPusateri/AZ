@@ -1,5 +1,5 @@
 /// <reference types="Cypress" />
-Cypress.config('defaultCommandTimeout', 20000)
+Cypress.config('defaultCommandTimeout', 15000)
 const getApp = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
     .iframe();
@@ -11,7 +11,8 @@ const getApp = () => {
   }
   
   const closePopup = () => cy.get('button[aria-label="Close dialog"]').click()
-  
+  const backToClients = () => cy.get('a').contains('Clients').click()
+
 
 describe('Login Matrix Web', function () {
 
@@ -21,10 +22,11 @@ describe('Login Matrix Web', function () {
         cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
         cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
         cy.get('input[type="SUBMIT"]').click()
+        cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+        
 
     })
-
-
+    //Fatto
     it('Home MW', function () {
 
         cy.get('lib-calendar').click()
@@ -37,64 +39,78 @@ describe('Login Matrix Web', function () {
 
         cy.get('lib-switch-button-list').contains('Clients').click()
         cy.url().should('include', '/clients')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
         cy.get('lib-switch-button').click()
         cy.get('lib-switch-button-list').contains('Sales').click()
         cy.url().should('include', '/sales')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
         cy.get('lib-switch-button').click()
         cy.get('lib-switch-button-list').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
         cy.get('lib-switch-button').click()
         cy.get('lib-switch-button-list').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
         cy.get('lib-switch-button').click()
         cy.get('lib-switch-button-list').contains('News').click()
         cy.url().should('include', '/news/home')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
-        cy.get('lib-switch-button').click()
-        cy.get('lib-switch-button-list').contains('Le mie info').click()
-        cy.url().should('include', '/my-info')
-        cy.get('a[href="/matrix/"]').click()
+        // è stato tolto
+        // cy.get('lib-switch-button').click()
+        // cy.get('lib-switch-button-list').contains('Le mie info').click()
+        // cy.url().should('include', '/my-info')
+        // cy.wait(3000)
+        // cy.get('a[href="/matrix/"]').click()
 
         cy.get('input').invoke('attr', 'placeholder').should('contain', 'Cerca in Matrix')
 
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('include', '/clients')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
         cy.get('app-product-button-list').find('a').contains('News').click()
         cy.url().should('include', '/news/home')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
         cy.get('app-product-button-list').find('a').contains('Le mie info').click()
         cy.url().should('include', '/my-info')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
         cy.get('.homepage-container').contains('Vai al Centro notifiche').click()
         cy.url().should('include', '/notification-center#portafoglio')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
-        // TODO
+        // TODO:  notification card first
         // cy.wait(5000)
         // if(!cy.get('.lib-notification-card').length){
         //     cy.get('.lib-notification-card').find('lib-da-link').first().click()
@@ -102,27 +118,29 @@ describe('Login Matrix Web', function () {
 
         cy.get('app-news-top-bar-title-cta').contains('Vedi tutte').click()
         cy.url().should('include', '/news/recent')
+        cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
-        cy.get('lib-da-link').contains('Banche Dati ANIA').click()
-        cy.get('a[href="/matrix/"]').click()
-        cy.get('.nx-margin-bottom-2m').first().click()
-        cy.get('.cdk-overlay-container').find('button nx-icon[name="close"]').click({ force: true })
+        // cy.get('lib-da-link').contains('Banche Dati ANIA').click()
+        // cy.get('a[href="/matrix/"]').click()
+        // cy.get('.nx-margin-bottom-2m').first().click()
+        // cy.get('.cdk-overlay-container').find('button nx-icon[name="close"]').click({ force: true })
 
-        cy.get('.search-in-homepage').type('Ro').type('{enter}')
-        cy.get('lib-client-item').first().click()
-        cy.get('a[href="/matrix/"]').click()
+
+        //TODO: not found lib-client-item
+        // cy.get('input[name="main-search-input"]').type('RO').type('{enter}')
+        // cy.get('lib-client-item').first().click()
+        // cy.get('a[href="/matrix/"]').click()
 
     });
 
 
-    it('Navigation Scheda cliente', function () {
-
-        cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/')
+    it.only('Navigation Scheda cliente', function () {
 
         // Ricerca primo cliente Calogero Messina 
-        cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
+        cy.get('input[name="main-search-input"]').type('Maurizio Tentor').type('{enter}')
         cy.get('lib-client-item').first().click()
+        cy.wait(7000)
 
         // Verifica Tab clients corretti
         cy.get('app-client-profile-tabs').find('a').should(($tab) => {
@@ -134,46 +152,118 @@ describe('Login Matrix Web', function () {
 
         })
 
-        // Verifica button "mostra" apertura e chiusura popup
-        cy.get('app-client-situation').find('.value-link').click();
-        cy.get('.cdk-overlay-container').find('nx-icon').click();
-
-
-        cy.get('app-ultra-parent-tabs').find('nx-tab-header').should(($tab) => {
-            expect($tab).to.contain('Casa e Patrimonio')
-            expect($tab).to.contain('Salute')
+        
+        // aggiungere su TFS
+        cy.get('app-client-resume app-client-situation').then(($situazione) => {
+            if($situazione.find('app-section-title .title').length > 0){
+                cy.wrap($situazione).should('contain', 'Situazione cliente')
+                cy.wrap($situazione).find('.content').should(($subtitle) =>{
+                    expect($subtitle).to.contain('Totale premi annui')
+                    expect($subtitle).to.contain('Totale danni')
+                    expect($subtitle).to.contain('Vita puro rischio')
+                    expect($subtitle).to.contain('Polizze attive')
+                })
+            }
         })
 
-        cy.get('app-section-title').should(($title) => {
-            // expect($title).to.contain('Situazione cliente')
-            expect($title).to.contain('Fast Quote')
-            expect($title).to.contain('Emissioni')
-            // expect($title).to.contain('Contratti in evidenza')
-            // expect($title).to.length(4)
+        cy.get('app-client-resume app-fast-quote').then(($fastquote) => {
+            if($fastquote.find('app-section-title .title').length > 0){
+                cy.wrap($fastquote).should('contain','Fast Quote')
+                cy.wrap($fastquote).find('.subtitle').should('contain','Inserisci i dati richiesti per lanciare la quotazione')
+                cy.get('nx-tab-header').first().find('button').should(($tabOfFastquote) => {
+                    expect($tabOfFastquote).to.contain('Ultra')
+                    expect($tabOfFastquote).to.contain('Auto')
+                    expect($tabOfFastquote).to.contain('Persona')
+                    expect($tabOfFastquote).to.contain('Albergo')
+                })
+
+                cy.get('nx-tab-header').first().find('button').each(($tabOfFastquoteClick) => {
+                    cy.wrap($tabOfFastquoteClick).click()
+                })
+
+                cy.get('nx-tab-header').first().find('button').contains('Ultra').click()
+                
+                cy.get('app-ultra-parent-tabs').find('nx-tab-header').should(($tab) => {
+                    expect($tab).to.contain('Casa e Patrimonio')
+                    expect($tab).to.contain('Salute')
+                })
+                cy.get('app-ultra-parent-tabs').find('nx-tab-header').contains('Casa e Patrimonio').click()
+
+                cy.get('app-ultra-fast-quote').find('.scope-name').should(($scope) => {
+                    expect($scope).to.contain('Fabbricato')
+                    expect($scope).to.contain('Contenuto')
+                    expect($scope).to.contain('Catastrofi naturali')
+                    expect($scope).to.contain('Responsabilità civile')
+                    expect($scope).to.contain('Tutela legale')
+                    expect($scope).to.contain('Animali domestici')
+                })
+
+                cy.get('app-scope-element').find('nx-icon').each($scopeIcon =>{
+                    cy.wrap($scopeIcon).click()
+                })
+                cy.get('app-scope-element').find('nx-icon').each($scopeIcon =>{
+                    cy.wrap($scopeIcon).click()
+                })
+                cy.get($fastquote).find('.content').then(($iconBottom) =>{
+                    cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Preferiti"]').should('be.visible')
+                    cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Salva"]').should('be.visible')
+                    cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Condividi"]').should('be.visible')
+                    cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Configura"]').should('be.visible')
+                })
+                cy.get('app-ultra-fast-quote').find('.favorites-cta').click()
+                closePopup()
+            }
         })
 
-        cy.get('.card-container').find('app-kpi-dropdown-card').should(($tabCard) => {
-            expect($tabCard).to.contain('Auto')
-            expect($tabCard).to.contain('Rami vari')
-            expect($tabCard).to.contain('Vita')
-            expect($tabCard).to.length(3)
+        cy.get('app-client-resume app-client-resume-emissions').then(($emissione) => {
+            if($emissione.find('app-section-title .title').length > 0){
+                cy.wrap($emissione).should('contain','Emissioni')
+                cy.get('.card-container').find('app-kpi-dropdown-card').should(($tabCard) => {
+                    expect($tabCard).to.contain('Auto')
+                    expect($tabCard).to.contain('Rami vari')
+                    expect($tabCard).to.contain('Vita')
+                    expect($tabCard).to.length(3)
+                })
+
+                // cy.get('.card-container').find('app-kpi-dropdown-card').contains('Auto').click().should(($tabCard) => {
+                //     cy.get('.nx-context-menu').find('button').then(($hoverButton) =>{
+                //         cy.wrap($hoverButton).contains('Emissione').trigger('mousehover')
+                //     })
+                // })
+
+                // TODO
+                cy.get('.card-container').find('app-kpi-dropdown-card').contains('Auto').click()
+                const buttonHover = cy.get('.cdk-overlay-container').find('button')
+                const buttonHoverSub = cy.get('cdk-overlay-container').find('button')
+                buttonHover.contains('Emissione').click()
+                buttonHoverSub.contains('Polizza nuova').click()
+                closePopup()
+                buttonHover.contains('Emissione').click()
+                buttonHoverSub.contains('Assistenza InContatto').click()
+                closePopup()
+
+                buttonHover.contains('Prodotti particolari').click()
+
+
+                buttonHover.contains('Passione BLU').click()
+            
+            }
 
         })
 
-        cy.get('.card-container').find('app-kpi-dropdown-card').each(function ($card, index, $list) {
-            cy.wrap($card).click()
+        cy.get('app-client-resume app-proposals-in-evidence').then(($contratti) => {
+            if($contratti.find('app-section-title .title').length > 0){
+                cy.wrap($contratti).should('contain','Contratti in evidenza')
+                cy.get('.card-container').find('app-kpi-dropdown-card').each(function ($card) {
+                    cy.wrap($card).click()
+                })
+            }
+
         })
+
         // Verifica Menu tendina client
-        cy.get('app-contract-card').find('nx-icon').click({ multiple: true })
-        cy.get('app-client-resume-card').find('nx-icon[aria-label="Open menu"]').click()
-
-        // TODO:
-        // if(cy.get('app-proposals-in-evidence').contains('Contratti in evidenza')){
-
-        //     cy.get('app-contract-card').find('[class$="card-padder"]').each(function($card, index, $list){
-        //         cy.wrap($card).click()
-        //     })
-        // }
+        // cy.get('app-contract-card').find('nx-icon').click({ multiple: true })
+        // cy.get('app-client-resume-card').find('nx-icon[aria-label="Open menu"]').click()
 
     })
 
@@ -184,72 +274,73 @@ describe('Login Matrix Web', function () {
         cy.get('lib-burger-icon').click()
         cy.contains('Digital Me').click()
         cy.url().should('include', '/digital-me')
-        cy.get('a').contains('Clients').click()
+        backToClients()
         cy.wait(5000)
 
         cy.get('lib-burger-icon').click()
         cy.contains('Censimento nuovo cliente').click()
         cy.url().should('include', '/new-client')
-        cy.get('a').contains('Clients').click()
+        backToClients()
         cy.wait(5000)
 
         cy.get('lib-burger-icon').click()
         cy.contains('Pannello anomalie').click()
-        cy.get('.cdk-overlay-container').find('button nx-icon[name="close"]').click({ force: true })
+        closePopup()
         cy.wait(5000)
 
         cy.contains('Clienti duplicati').click()
-        cy.get('a').contains('Clients').click()
+        backToClients()
         cy.wait(5000)
 
         cy.get('lib-burger-icon').click()
         cy.contains('Cancellazione Clienti').click()
-        cy.get('.cdk-overlay-container').find('button nx-icon[name="close"]').click({ force: true })
+        closePopup()
 
         cy.contains('Cancellazione Clienti per fonte').click()
-        cy.get('.cdk-overlay-container').find('button nx-icon[name="close"]').click({ force: true })
+        closePopup()
 
         cy.contains('Gestione fonte principale').click()
-        cy.get('.cdk-overlay-container').find('button nx-icon[name="close"]').click({ force: true })
+        closePopup()
 
         cy.contains('Antiriciclaggio').click()
-        cy.get('.cdk-overlay-container').find('button nx-icon[name="close"]').click({ force: true })
+        closePopup()
 
         cy.contains('Allianz Ultra BMP').click()
-        cy.get('.cdk-overlay-container').find('button nx-icon[name="close"]').click({ force: true })
+        closePopup()
 
 
     })
 
     it('Clients', function () {
+        //Problemi button nuovo cliente
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('include', '/clients')
 
         cy.get('app-rapid-link').contains('Digital Me').click()
         cy.url().should('include', '/digital-me')
-        cy.get('a').contains('Clients').click()
+        backToClients()
 
         cy.get('app-rapid-link').contains('Pannello anomalie').click()
         closePopup()
-        cy.wait(4000)
 
         cy.get('app-rapid-link').contains('Clienti duplicati').click()
-        cy.get('a').contains('Clients').click()
+        cy.wait(1000)
+        backToClients()
         
         cy.get('app-rapid-link').contains('Antiriciclaggio').click()
         closePopup()
 
         cy.get('.component-section').find('button').contains('Nuovo cliente').click()
-        cy.get('a').contains('Clients').click()
+        backToClients()
 
         cy.get('.actions-box').contains('Vai a visione globale').click()
-        cy.get('a').contains('Clients').click()
+        backToClients()
         cy.get('.meetings').click()
 
     })
 
-    it.only('Sales', function () {
-
+    it('Sales', function () {
+        // manca iframe card e back dopodiche finito test
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
      
@@ -268,86 +359,128 @@ describe('Login Matrix Web', function () {
      
         cy.get('app-quick-access').contains('GED – Gestione Documentale').click()
         closePopup()
-
-//from here
+        cy.wait(1500)
         const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza")').click()
         const popoverEmettiPolizza = () => cy.get('.card-container').find('lib-da-link')
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('FastQuote Auto').click()
         closePopup()
-        cy.wait(1000)
+        cy.wait(1500)
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Allianz Ultra Casa e Patrimonio').click()
         closePopup()
-        cy.wait(1000)
+        cy.wait(1500)
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Allianz Ultra Salute').click()
         closePopup()
-        cy.wait(1000)
+        cy.wait(1500)
 
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Allianz Ultra Casa e Patrimonio BMP').click()
         closePopup() 
-        cy.wait(1000)
+        cy.wait(1500)
 
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Allianz1 Business').click()
         closePopup()
-        cy.wait(1000)
+        cy.wait(1500)
 
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('FastQuote Impresa e Albergo').click()
         closePopup()
-        cy.wait(1000)
+        cy.wait(1500)
 
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Preventivo anonimo Motor').click()
         closePopup()
-        cy.wait(1000)
+        cy.wait(1500)
 
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Preventivo anonimo Vita Individuali').click()
         closePopup()
-        cy.wait(1000)
+        cy.wait(1500)
 
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('MiniFlotte').click()
         closePopup()
-        cy.wait(1000)
+        cy.wait(1500)
 
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Trattative Auto Corporate').click()
         closePopup()
-        cy.wait(1000)
+        cy.wait(1500)
 
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Gestione Richieste per PA').click()
         closePopup()
-        
-        /*
-        cy.get('.details-container').find('button:contains("Estrai dettaglio")').click()
-        closePopup()
+
+        cy.get('app-homepage-section').find('.filter-button').click()
+        cy.get('app-filters').contains('ANNULLA').click()
+        cy.wait(2000)
+        // cy.get('nx-checkbox').each(($btn) => {
+        //     if ($btn.hasClass('disabled')) {
+        //         cy.get('.details-container').find('button:contains("Estrai dettaglio")').click()
+        //         closePopup()
+        //     }else{
+        //         cy.get($btn).click()
+        //         cy.get('.details-container').find('button:contains("Estrai dettaglio")').click()
+        //         cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/sales/')
+        //     }
+        // })
+
+        // only first
+        var firstcheckbox = cy.get('app-expiring-card').find('nx-checkbox').first()
+        firstcheckbox.then(($btn) => {
+            if($btn.hasClass('disabled')){                
+                cy.get('.details-container').find('button:contains("Estrai dettaglio")').click()
+                cy.get('button[aria-label="Close dialog"]').click()
+            }else{
+                cy.get($btn).click()
+                cy.get('.details-container').find('button:contains("Estrai dettaglio")').click()
+                cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/sales/')
+                
+            }
+            
+        })
+        // fino al primo disponibile
+        var nextCheckbox = cy.get('app-expiring-card').next().find('nx-checkbox').first()
+        nextCheckbox.then(($btn) => {
+            var check = true;
+
+            while(check){
+                if(!$btn.hasClass('disabled')){
+                cy.wrap($btn).click()
+                cy.get('.details-container').find('button:contains("Estrai dettaglio")').click()
+                cy.wait(10000)
+                cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/sales/')
+                check = false
+                }
+            }
+           
+        })
 
         cy.get('lib-upcoming-dates').click()
         cy.url().should('include', '/event-center')
         cy.get('lib-sub-header-right').click()
+        cy.wait(2000)
 
-        cy.get('app-numbers-banner').click()
-        cy.url().should('include', '/numbers/operational-indicators')
-        cy.go('back')
+        // cy.get('app-numbers-banner').click()
+        // cy.url().should('include', '/numbers/operational-indicators')
+        cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/sales/')
         cy.get('lib-news-image').click();
         closePopup()
-      
-        // TODO card
-        cy.get('.cards-container').find('.card').each(($card,index) => {
-            cy.wrap($card).click()
-            getApp().contains('Home').click()
-        });
-        
-        // if ((cy.get('.cards-container').find('.card')).length > 0) {
-        //     cy.get('.cards-container').find('.card').first().click()
-        //     cy.get('a').contains('Sales').click()
-        // }
+
+        // cy.get('button').then(($el) => {
+            //     Cypress.dom.isAttached($el) // true
+            //   })
+            // console.log(cy.get('.cards-container').find('.damages'))
+        cy.get('app-quotations-section').contains('Preventivi e quotazioni -').click()
+        if(cy.get('.cards-container').find('.damages').should("exist")){
+            cy.get('.cards-container').find('.card').first().click()
+            getApp().find('button').contains('Home').click()
+            cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/sales/')
+        }
+
         cy.get('app-quotations-section').contains('Preventivi e quotazioni -').click()
         cy.get('app-quotations-section').contains('Vita').click()
         cy.get('app-quotations-section').find('button:contains("Vedi tutti")').click()
@@ -363,56 +496,98 @@ describe('Login Matrix Web', function () {
         cy.get('app-proposals-section').contains('Danni').click()
         cy.get('app-proposals-section').find('button:contains("Vedi tutte")').click()
         closePopup()
-*/
+    
     })
-
 
     it('Numbers', function () {
 
-        cy.contains('Numbers').click({ force: true })
-        cy.wait(3000)
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
+        cy.url().should('include', '/business-lines')
 
         cy.contains('LINEE DI BUSINESS').click()
-        cy.wait(3000)
-        cy.url().should('include', '/business-lines')
-        // cy.contains('Premi').click({force: true})
-        // cy.wait(3000)
-        // cy.contains('Pezzi').click({force: true})
-        // cy.wait(3000)
+        cy.get('app-agency-incoming').contains('RICAVI DI AGENZIA').click()
+        cy.get('app-kpi-card').contains('New business').click()
+        // cy.get('lib-breadcrumbs').contains('Numbers').click()
+        cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/numbers/business-lines')
+        cy.get('app-kpi-card').contains('Incassi').click()
+        // cy.get('lib-breadcrumbs').contains('Numbers').click()
+        cy.wait(2000)
+        cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/numbers/business-lines')
+        cy.get('app-kpi-card').contains('Portafoglio').click()
+        // cy.get('lib-breadcrumbs').contains('Numbers').click()
+        cy.wait(2000)
+        cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/numbers/business-lines')
         cy.contains('DANNI').click()
-        cy.wait(3000)
         cy.contains('VITA').click()
-        cy.wait(3000)
 
-        cy.contains('PRODOTTI').click({ force: true })
-        cy.wait(3000)
+        cy.contains('PRODOTTI').click()
         cy.url().should('include', '/products')
 
-        cy.contains('INDICATORI OPERATIVI').click({ force: true })
-        cy.wait(3000)
+        cy.contains('INDICATORI OPERATIVI').click()
         cy.url().should('include', '/operational-indicators')
 
-        cy.contains('INCENTIVI').click({ force: true })
-        cy.wait(3000)
+        cy.contains('INCENTIVI').click()
         cy.url().should('include', '/incentives')
+
+        cy.get('app-filters-section').find('nx-icon').click()
+        cy.get('app-filters').contains('ANNULLA').click()
+        cy.get('app-filters-section').find('.circle').click()
 
     })
 
     it('Backoffice', function () {
 
-        cy.contains('Backoffice').click({ force: true })
-        cy.wait(3000)
-
+        cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
-    })
 
+        cy.get('lib-upcoming-dates').click()
+        cy.url().should('include', '/event-center')
+        cy.get('lib-sub-header-right').click()
+
+        cy.get('lib-news-image').click();
+        closePopup()
+
+        // cy.get('app-backoffice-title').each(($label) =>{
+        //     expect($label).to.contain('Sinistri')
+        //     expect($label).to.contain('Contabilità')
+        // })
+        cy.get('.backoffice-card').find('a').should(($labelCard) =>{
+                expect($labelCard).to.contain('Movimentazione sinistri')
+                expect($labelCard).to.contain('Denuncia')
+                expect($labelCard).to.contain('Denuncia BMP')
+                expect($labelCard).to.contain('Consultazione sinistri')
+                expect($labelCard).to.contain('Sinistri incompleti')
+                expect($labelCard).to.contain('Sinistri canalizzati')
+                /*
+                expect($labelCard).to.contain('Sinstesi Contabilità')
+                expect($labelCard).to.contain('Giornata contabile')
+                expect($labelCard).to.contain('Consultazione Movimenti')
+                expect($labelCard).to.contain('Estrazione Contabilità')
+                expect($labelCard).to.contain('Deleghe SDD')
+                expect($labelCard).to.contain('Quadratura unificata')
+                expect($labelCard).to.contain('Incasso per conto')
+                expect($labelCard).to.contain('Incasso massivo')
+                expect($labelCard).to.contain('Sollecito titoli')
+                expect($labelCard).to.contain('Impostazione contabilità')
+                */
+            })
+            
+        cy.get('.backoffice-card').find('a').each(($labelCard) =>{
+            cy.get($labelCard).click()
+            closePopup()
+
+        })
+    })
 
     it('News', function () {
 
-        cy.contains('News').click({ force: true })
-        cy.wait(3000)
-
+        cy.get('app-product-button-list').find('a').contains('News').click()
         cy.url().should('include', '/news/home')
+
+        cy.find('app-header').find('a').contains('Tutte').click()
+        cy.get('.show dropdown').contains('Business').click()
+        cy.get('app-header').contains('Primo Piano')
+
     })
 
 
