@@ -58,12 +58,18 @@ const getDocumentoPersonale = () => {
   return iframeDocumentoPersonale.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-let nuovoCliente;
+let nuovoClientePF;
+let nuovoClientePG;
 
 before(function () {
   cy.task('nuovoClientePersonaFisica').then((object) => {
-    nuovoCliente = object;
+    nuovoClientePF = object;
   });
+
+    cy.task('nuovoClientePersonaGiuridica').then((object) => {
+    nuovoClientePG = object;
+  });
+
 
   cy.viewport(1920,1080);
   
@@ -171,27 +177,24 @@ it.only('Censimento Nuovo cliente PG', () => {
   cy.contains('Clients').click();
   cy.contains('Nuovo cliente').click();
   cy.contains('Persona giuridica').click();
-  cy.get('//*[@id="nx-input-2"]').type('AS');
-  cy.contains('Cerca').click();
+  cy.get('#nx-tab-content-0-1 > div > app-new-client-fiscal-code-box > div > div:nth-child(4) > div > nx-formfield').click().type(nuovoClientePG.partitaIva);
+  cy.get('span:contains("Cerca"):last').click();
   cy.contains('Aggiungi cliente').click();
 
-  /*
-  getSCU().find('#nome').type(nuovoCliente.nome);
-  getSCU().find('#cognome').type(nuovoCliente.cognome);
-  getSCU().find('#comune-nascita').type('LONIGO');
-  getSCU().find('li:contains("LONIGO")').click();
-  getSCU().find('span[aria-owns="sesso_listbox"]').click();
-  getSCU().find('li:contains("Maschile")').click();
-  getSCU().find('#data-nascita').type('25011985');
-  getSCU().find('#calcola-codice-fiscale').click();
-  getSCU().find('span[aria-owns="professione_listbox"]').click();
-  getSCU().find('li:contains("Architetto")').click();
+  getSCU().find('#ragione-sociale').type(nuovoClientePG.ragioneSociale);
+  getSCU().find('span[aria-owns="forma-giuridica_listbox"]').click();
+  getSCU().find('li').contains(/^S.R.L.$/).click();
+  getSCU().find('span[aria-owns="tipologia_listbox"]').click();
+  getSCU().find('li:contains("DITTA")').click();
+  getSCU().find('span[aria-owns="settore-attivita_listbox"]').click();
+  getSCU().find('li:contains("COSTRUZIONI")').click();
+  getSCU().find('#partita-iva').type(nuovoClientePG.partitaIva);
+  getSCU().find('#codice-fiscale-impresa').type(nuovoClientePG.partitaIva);
   getSCU().find('#unita-di-mercato').type('1022');
   getSCU().find('li:contains("1022")').click();
-  getSCU().find('#pep-no').click({force: true});
   getSCU().find('button:contains("Avanti")').click();
 
-  //Residenza Anagrafica
+  //Sede Legale
   getSCU().find('span[aria-owns="toponomastica_listbox"]').click();
   getSCU().find('li:contains("CORTE")').click();
   getSCU().find('#indirizzo-via').type('GARIBALDI');
@@ -200,7 +203,8 @@ it.only('Censimento Nuovo cliente PG', () => {
   getSCU().find('#residenza-comune_listbox').click();
   getSCU().find('span[aria-owns="tipo-tel_listbox"]').click();
   getSCU().find('button:contains("Avanti")').click();
-
+  
+  /*
   //Consensi
   getSCU().find('label[for="invio-documenti-no"]').click();
   getSCU().find('label[for="firma-grafometrica-no"]').click();
