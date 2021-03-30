@@ -11,8 +11,8 @@ const getApp = () => {
   }
   
   const closePopup = () => cy.get('button[aria-label="Close dialog"]').click()
-  const backToClients = () => cy.get('a').contains('Clients').click()
-  const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click()
+  const backToClients = () => cy.get('a').contains('Clients').click().wait(5000)
+  const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
 
 
 describe('Login Matrix Web', function () {
@@ -27,6 +27,28 @@ describe('Login Matrix Web', function () {
         
 
     })
+
+    it('MATRIX_ricerca_Buca_di_ricerca',function(){
+        cy.get('input[name="main-search-input"]').click()
+        cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
+    })
+
+    it.only('MATRIX_ricerca_Buca_di_ricerca-risultati',function(){
+        cy.get('input[name="main-search-input"]').click()
+        cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
+        cy.get('button').contains('Ricerca classica').click()
+        cy.get('nx-modal-container').find('a').contains('Ricerca Cliente').click()
+        canaleFromPopup()
+    })
+
+    it.only('MATRIX_ricerca_Buca_di_ricerca-risultati',function(){
+        cy.get('input[name="main-search-input"]').click()
+        cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
+        cy.get('button').contains('Ricerca classica').click()
+        cy.get('nx-modal-container').find('a').contains('Ricerca Cliente').click()
+        canaleFromPopup()
+    })
+    
     //Fatto
     it('Home MW', function () {
 
@@ -136,7 +158,7 @@ describe('Login Matrix Web', function () {
     });
 
 
-    it.only('Navigation Scheda cliente', function () {
+    it('Navigation Scheda cliente', function () {
 
         // Ricerca primo cliente Calogero Messina 
         cy.get('input[name="main-search-input"]').type('Tentor Maurizio').type('{enter}')
@@ -203,14 +225,55 @@ describe('Login Matrix Web', function () {
                 cy.get('app-scope-element').find('nx-icon').each($scopeIcon =>{
                     cy.wrap($scopeIcon).click()
                 })
+
+                //TFS add
+             /*   cy.get('app-ultra-parent-tabs').find('nx-tab-header').contains('Salute').click().wait(5000)
+
+                cy.get('app-ultra-health-fast-quote').find('.scope-name').should(($scope) => {
+                    expect($scope).to.contain('Spese mediche')
+                    expect($scope).to.contain('Diaria da ricovero')
+                    expect($scope).to.contain('Invalidità permanente da infortunio')
+                    expect($scope).to.contain('Invalidità permanente da malattia')
+                })
+
+                cy.get('app-scope-element').find('nx-icon').each($scopeIcon =>{
+                    cy.wrap($scopeIcon).click()
+                })
+                cy.get('app-scope-element').find('nx-icon').each($scopeIcon =>{
+                    cy.wrap($scopeIcon).click()
+                })*/
+
                 cy.get($fastquote).find('.content').then(($iconBottom) =>{
                     cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Preferiti"]').should('be.visible')
                     cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Salva"]').should('be.visible')
                     cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Condividi"]').should('be.visible')
                     cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Configura"]').should('be.visible')
                 })
+
+                //on excel
                 cy.get('app-ultra-fast-quote').find('.favorites-cta').contains('Vai a Preferiti').click()
                 canaleFromPopup()
+                backToClients()
+
+                cy.get('nx-tab-header').first().find('button').contains('Auto').click()
+                cy.get('app-auto-fast-quote').contains('Targa').should('be.visible')
+                cy.get('app-auto-fast-quote').contains('Garanzie').should('be.visible')
+                cy.get('app-auto-fast-quote').contains('Totale').should('be.visible')
+                cy.get('app-auto-fast-quote').contains('Copertura veicolo').should('be.visible')
+                cy.get('app-auto-fast-quote').contains('Copertura conducente').should('be.visible')
+
+                cy.get('nx-tab-header').first().find('button').contains('Persona').click()
+                cy.get('app-fast-quote').contains('Universo Persona').should('be.visible')
+                cy.get('app-fast-quote').contains('Universo Salute').should('be.visible')
+                cy.get('app-fast-quote').contains('Universo Persona Malattie Gravi').should('be.visible')
+
+                cy.get('nx-tab-header').first().find('button').contains('Albergo').click()
+                cy.get('app-fast-quote').contains('Attività svolta').should('be.visible')
+                cy.get('app-fast-quote').contains('Apertura della struttura').should('be.visible')
+                cy.get('app-fast-quote').contains('Comune di ubicazione').should('be.visible')
+
+
+
             }
         }) 
 
@@ -224,33 +287,31 @@ describe('Login Matrix Web', function () {
                     expect($tabCard).to.length(3)
                 })
                 
-                const buttonAuto = () =>  cy.get('.card-container').find('app-kpi-dropdown-card').contains('Auto').click()
+               const buttonAuto = () =>  cy.get('.card-container').find('app-kpi-dropdown-card',{ timeout: 10000 }).contains('Auto').click()
 
                 buttonAuto()
                 const buttonHover = () => cy.get('.cdk-overlay-container').find('button')
-
+/* 
                 buttonHover().contains('Emissione').click()
                 cy.wait(2000)
                 buttonHover().contains('Polizza nuova').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 backToClients()
                 
-                cy.wait(2000)
                 buttonAuto()
                 cy.wait(2000)
                 buttonHover().contains('Emissione').click()
                 cy.wait(2000)
                 buttonHover().contains('Assistenza InContatto').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 backToClients()
 
-                cy.wait(2000)
                 buttonAuto()
                 cy.wait(2000)
                 buttonHover().contains('Prodotti particolari').click()
                 cy.wait(2000)
                 buttonHover().contains('Assunzione guidata').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 backToClients()
 
                 buttonAuto()
@@ -258,18 +319,16 @@ describe('Login Matrix Web', function () {
                 buttonHover().contains('Prodotti particolari').click()
                 cy.wait(2000)
                 buttonHover().contains('Veicoli d\'epoca').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 backToClients()
 
-                cy.wait(2000)
                 buttonAuto()
                 cy.wait(2000)
                 buttonHover().contains('Prodotti particolari').click()
                 cy.wait(2000)
                 buttonHover().contains('Libri matricola').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 backToClients()
-                cy.wait(2000)
 
                 buttonAuto()
                 cy.wait(2000)
@@ -277,7 +336,7 @@ describe('Login Matrix Web', function () {
                 cy.wait(2000)
                 buttonHover().contains('Kasko e ARD').click()
                 cy.get('.cdk-overlay-pane').find('button').contains('Kasko e ARD al Chilometro').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 getApp().find('button').contains('Annulla').click()
                 backToClients()
 
@@ -287,7 +346,8 @@ describe('Login Matrix Web', function () {
                 cy.wait(2000)
                 buttonHover().contains('Kasko e ARD').click()
                 cy.get('.cdk-overlay-pane').find('button').contains('Kasko e ARD a Giornata').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
+                // getApp().find('button').contains('Annulla').click()
                 getApp().find('button').contains('Annulla').click()
                 backToClients()
 
@@ -297,133 +357,126 @@ describe('Login Matrix Web', function () {
                 cy.wait(2000)
                 buttonHover().contains('Kasko e ARD').click()
                 cy.get('.cdk-overlay-pane').find('button').contains('Kasko e ARD a Veicolo').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 getApp().find('button').contains('Annulla').click()
                 backToClients()
 
-                cy.wait(2000)
                 buttonAuto()
                 cy.wait(2000)
                 buttonHover().contains('Prodotti particolari').click()
                 cy.wait(2000)
                 buttonHover().contains('Polizza aperta').click()
                 cy.get('.cdk-overlay-pane').find('button').contains('Polizza base').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 getApp().find('button').contains('Annulla').click()
                 backToClients()
 
-                cy.wait(2000)
                 buttonAuto()
                 cy.wait(2000)
                 buttonHover().contains('Prodotti particolari').click()
                 cy.wait(2000)
                 buttonHover().contains('Coassicurazione').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 backToClients()
 
-                cy.wait(2000)
                 buttonAuto()
                 cy.wait(2000)
                 buttonHover().contains('Passione BLU').click()
                 cy.wait(2000)
                 buttonHover().contains('Nuova polizza').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 backToClients()
-                cy.wait(2000)
 
                 buttonAuto()
                 cy.wait(2000)
                 buttonHover().contains('Passione BLU').click()
                 cy.wait(2000)
                 buttonHover().contains('Nuova polizza guidata').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 backToClients()
-                cy.wait(2000)
 
                 buttonAuto()
                 cy.wait(2000)
                 buttonHover().contains('Passione BLU').click()
                 cy.wait(2000)
                 buttonHover().contains('Nuova polizza Coassicurazione').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 backToClients()
-                cy.wait(2000)
 
                 const buttonRamivari = () =>  cy.get('.card-container').find('app-kpi-dropdown-card').contains('Rami vari').click()
 
                 buttonRamivari()
                 cy.wait(2000)
                 buttonHover().contains('Allianz Ultra Casa e Patrimonio').click()
-                canaleFromPopup().wait(4000)
-                backToClients()
                 cy.wait(2000)
+                canaleFromPopup()
+                backToClients()
 
                 buttonRamivari()
                 cy.wait(2000)
                 buttonHover().contains('Allianz1 Business').click()
-                canaleFromPopup().wait(4000)
-                backToClients()
                 cy.wait(2000)
+                canaleFromPopup()
+                backToClients()
 
                 buttonRamivari()
                 cy.wait(2000)
                 buttonHover().contains('FastQuote Universo Persona').click()
-                canaleFromPopup().wait(4000)
-                backToClients()
                 cy.wait(2000)
+                canaleFromPopup()
+                backToClients()
                 
                 buttonRamivari()
                 cy.wait(2000)
                 buttonHover().contains('FastQuote Universo Salute').click()
-                canaleFromPopup().wait(4000)
-                backToClients()
                 cy.wait(2000)
+                canaleFromPopup()
+                backToClients()
 
                 buttonRamivari()
                 cy.wait(2000)
                 buttonHover().contains('FastQuote Universo Persona Malattie Gravi').click()
-                canaleFromPopup().wait(4000)
-                backToClients()
                 cy.wait(2000)
+                canaleFromPopup()
+                backToClients()
 
                 buttonRamivari()
                 cy.wait(2000)
                 buttonHover().contains('FastQuote Infortuni Da Circolazione').click()
-                canaleFromPopup().wait(4000)
-                backToClients()
                 cy.wait(2000)
+                canaleFromPopup()
+                backToClients()
 
                 buttonRamivari()
                 cy.wait(2000)
                 buttonHover().contains('FastQuote Impresa Sicura').click()
-                canaleFromPopup().wait(4000)
+                cy.wait(2000)
+                canaleFromPopup()
                 backToClients()
-                cy.wait(2000) 
 
                 buttonRamivari()
                 cy.wait(2000)
                 buttonHover().contains('FastQuote Albergo').click()
-                canaleFromPopup().wait(4000)
+                cy.wait(2000)
+                canaleFromPopup()
                 backToClients()
-                cy.wait(2000)
 
-                cy.wait(2000)
                 buttonRamivari()
                 cy.wait(2000)
                 buttonHover().contains('Emissione').click()
                 cy.wait(2000)
                 buttonHover().contains('Polizza nuova').click()
-                canaleFromPopup().wait(4000)
+                canaleFromPopup()
                 backToClients()
-                
+                */
                 const buttonVita = () =>  cy.get('.card-container').find('app-kpi-dropdown-card').contains('Vita').click()
 
                 buttonVita()
                 cy.wait(2000)
                 buttonHover().contains('Accedi al servizio di consulenza').click()
-                canaleFromPopup().wait(4000)
-                backToClients()
                 cy.wait(2000)
+                canaleFromPopup()
+                backToClients()
             }
 
         })
@@ -438,9 +491,7 @@ describe('Login Matrix Web', function () {
 
         })
 
-        // Verifica Menu tendina client
-        // cy.get('app-contract-card').find('nx-icon').click({ multiple: true })
-        // cy.get('app-client-resume-card').find('nx-icon[aria-label="Open menu"]').click()
+        
 
     })
 
