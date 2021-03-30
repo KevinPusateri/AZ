@@ -13,14 +13,23 @@ const getSCU = () => {
 }
 
 const getFolder = () => {
-  cy.wait(6000);
-  let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
+  //cy.wait(6000);
+  //let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+  //.its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
 
-  let iframeFolder = bodySCU.find('iframe[class="w-100"]')
+  getSCU().find('iframe[class="w-100"]')
+  .iframe();
+
+  let  iframeFolder = getSCU().find('iframe[class="w-100"]')
   .its('0.contentDocument').should('exist');
 
   return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+
+
+  //let iframeFolder = bodySCU.find('iframe[class="w-100"]')
+  //.its('0.contentDocument').should('exist');
+
+ //return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const getDocumentScanner = () => {
@@ -201,14 +210,14 @@ it.only('Censimento Nuovo cliente PG', () => {
   getSCU().find('#indirizzo-num').type('1');
   getSCU().find('#residenza-comune').type('LONIGO');
   getSCU().find('#residenza-comune_listbox').click();
-  getSCU().find('span[aria-owns="tipo-tel_listbox"]').click();
+  //Contatto Email
+  getSCU().find('#email').type(nuovoClientePG.email);
+
   getSCU().find('button:contains("Avanti")').click();
-  
-  /*
+
   //Consensi
   getSCU().find('label[for="invio-documenti-no"]').click();
   getSCU().find('label[for="firma-grafometrica-no"]').click();
-  getSCU().find('label[for="consenso-otp-no"]').click();
   getSCU().find('label[for="promo-allianz-no"]').click();
   getSCU().find('label[for="promo-allianz-terzi-no"]').click();
   getSCU().find('label[for="promo-allianz-profilazione-no"]').click();
@@ -216,22 +225,35 @@ it.only('Censimento Nuovo cliente PG', () => {
   getSCU().find('label[for="quest-adeguatezza-vita-no"]').click();
   getSCU().find('button:contains("Avanti")').click();
 
-  //Documento
-  getSCU().find('span[aria-owns="tipo-documento_listbox"]').click();
-  getSCU().find('li:contains("CARTA D\'IDENTITA\'")').click();
-  getSCU().find('#numero-documento').type('AR66666');
-  getSCU().find('#data-emissione').type('01012021');
-  getSCU().find('#data-scadenza').type('01012030');
-  getSCU().find('#luogo-emissione').type('LONIGO');
-  getSCU().find('#luogo-emissione_listbox').click();
-  getSCU().find('button:contains("Avanti")').click();
+  //Verifica se i dati sono stati normalizzati
+  getSCU().then(($body)=>{
+    if($body.text().includes('normalizzati'))
+      getSCU().find('button:contains("Avanti")').click();
+  });
+
   getSCU().find('button:contains("Conferma")').click();
 
   //Folder
   getFolder().find('span[class="k-icon k-plus"]:visible').click();
   getFolder().find('span[class="k-icon k-plus"]:first').click();
-  getFolder().find('#UploadDocumentFromPortal').click();
 
+  //Autocertificazione con verifica di blocco per insufficienza documenti
+  getFolder().find('#UploadDocument').click();
+  getFolder().find('#win-upload-document_wnd_title').click();
+  getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}');
+  getFolder().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('{downarrow}').type('{downarrow}').type('{enter}');
+  const fileName = 'Autocertificazione_Test.pdf';
+  getFolder().find('#file').attachFile(fileName);
+  getFolder().contains('Upload dei file selezionati').click();
+  getSCU().find('button:contains("Conferma")').click();
+  getSCU().find('button:contains("Inserisci il documento")').click();
+
+  //Visura camerale
+  getFolder().find('#UploadDocument').click();
+  getFolder().find('#win-upload-document_wnd_title').click();
+  getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}');
+  
+  /*
   //Upload documento
   getDocumentScanner().find('button:contains("Continua"):visible').click();
   getDocumentoPersonale().find('#pupload').click();

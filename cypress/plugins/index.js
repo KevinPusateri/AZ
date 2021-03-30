@@ -109,7 +109,7 @@ function generateRandomVatIn()
 
         var vatIN = ("0".concat(firstSixPIConCodiceUfficio)).concat(cifraDiControllo.toString());
     } while(vatIN.length < 11);
-    
+
     return vatIN;
 }
 //#endregion
@@ -129,7 +129,8 @@ module.exports = (on, config) => {
         nuovoClientePersonaGiuridica() {
            user = {
                 ragioneSociale: faker.company.companyName(),
-                partitaIva : generateRandomVatIn()
+                partitaIva : generateRandomVatIn(),
+                email : faker.internet.email()
             };
             return user;
         },
