@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-Cypress.config('defaultCommandTimeout', 10000);
+Cypress.config('defaultCommandTimeout', 30000);
 
 const getSCU = () => {
   cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -226,10 +226,10 @@ it.only('Censimento Nuovo cliente PG', () => {
   getSCU().find('button:contains("Avanti")').click();
 
   //Verifica se i dati sono stati normalizzati
-  getSCU().then(($body)=>{
-    if($body.text().includes('normalizzati'))
-      getSCU().find('button:contains("Avanti")').click();
-  });
+  // getSCU().then(($body)=>{
+  //   if($body.find('li:contains("normalizzati")'))
+  //     getSCU().find('button:contains("Avanti")').click();
+  // });
 
   getSCU().find('button:contains("Conferma")').click();
 
@@ -249,29 +249,22 @@ it.only('Censimento Nuovo cliente PG', () => {
   getSCU().find('button:contains("Inserisci il documento")').click();
 
   //Visura camerale
+  getFolder().find('span[class="k-icon k-plus"]:visible').click();
+  getFolder().find('span[class="k-icon k-plus"]:first').click();
   getFolder().find('#UploadDocument').click();
   getFolder().find('#win-upload-document_wnd_title').click();
   getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}');
+  getFolder().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('Visura').type('{enter}');
+  getFolder().find('#file').attachFile(fileName);
+  getFolder().contains('Upload dei file selezionati').click();
+  getSCU().find('button:contains("Conferma")').click();
   
-  /*
-  //Upload documento
-  getDocumentScanner().find('button:contains("Continua"):visible').click();
-  getDocumentoPersonale().find('#pupload').click();
-
-
-  const fileName = 'CI_Test.pdf';
-  getDocumentoPersonale().find('#pdfUpload').attachFile(fileName);
-  
-  cy.wait(2000);
-  getDocumentoPersonale().find('#importMobileDocument').click();
-  cy.wait(5000);
-  getSCU().contains('Conferma').click();
   cy.wait(12000);
   getSCU().find('#endWorkflowButton').click();
   
   cy.get('lib-header-logo').click();
   cy.contains('Clients').click();
-  cy.get('input[name="main-search-input"]').type(nuovoCliente.cognome + " " + nuovoCliente.nome).type('{enter}');
+  cy.get('input[name="main-search-input"]').type(nuovoClientePG.ragioneSociale).type('{enter}');
   cy.get('lib-client-item').first().click();
   cy.get('nx-icon[aria-label="Open menu"]').click();
   cy.contains('Cancellazione cliente').click();
@@ -279,5 +272,4 @@ it.only('Censimento Nuovo cliente PG', () => {
   cy.contains('Ok').click();
   cy.get('.user-icon-container').click();
   cy.contains('Logout').click();
-  */
 });

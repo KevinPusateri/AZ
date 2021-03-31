@@ -12,7 +12,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cypress:open": "./node_modules/.bin/cypress open"
+    "cypress:open": "./node_modules/.bin/cypress open",
+	"cypress:run:navigations": "./node_modules/.bin/cypress run --spec cypress/integration/Navigation/mw_login.js"
   },
   "repository": {
     "type": "git",
