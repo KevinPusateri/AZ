@@ -15,7 +15,7 @@ const getApp = () => {
   const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
 
 
-describe('Login Matrix Web', function () {
+describe.only('Matrix Web : Navigazioni da Home Page', function () {
 
     beforeEach(() => {
         cy.viewport(1920, 1080)
@@ -27,9 +27,7 @@ describe('Login Matrix Web', function () {
         
 
     })
-
-    //Fatto
-    it.only('Home MW', function () {
+    it('Home MW', function () {
 
         cy.get('lib-calendar').click()
         cy.get('lib-incident').click()
@@ -135,7 +133,9 @@ describe('Login Matrix Web', function () {
         // cy.get('a[href="/matrix/"]').click()
 
     });
+});
 
+describe('Matrix Web : DA FARE', function () {
     it('Navigation Scheda Cliente', function () {
 
         // Ricerca primo cliente Calogero Messina 
