@@ -29,7 +29,7 @@ describe('Login Matrix Web', function () {
     })
 
     //Fatto
-    it.only('Home MW', function () {
+    it('Home MW', function () {
 
         cy.get('lib-calendar').click()
         cy.get('lib-incident').click()
@@ -136,8 +136,7 @@ describe('Login Matrix Web', function () {
 
     });
 
-
-    it('Navigation Scheda cliente', function () {
+    it('Navigation Scheda Cliente', function () {
 
         // Ricerca primo cliente Calogero Messina 
         cy.get('input[name="main-search-input"]').type('Tentor Maurizio').type('{enter}')
@@ -472,7 +471,7 @@ describe('Login Matrix Web', function () {
 
     })
 
-    it('burger Menu Clients', function () {
+    it('Burger Menu Clients', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('include', '/clients')
 
