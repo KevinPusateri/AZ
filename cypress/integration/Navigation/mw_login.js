@@ -28,29 +28,8 @@ describe('Login Matrix Web', function () {
 
     })
 
-    it('MATRIX_ricerca_Buca_di_ricerca',function(){
-        cy.get('input[name="main-search-input"]').click()
-        cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
-    })
-
-    it.only('MATRIX_ricerca_Buca_di_ricerca-risultati',function(){
-        cy.get('input[name="main-search-input"]').click()
-        cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
-        cy.get('button').contains('Ricerca classica').click()
-        cy.get('nx-modal-container').find('a').contains('Ricerca Cliente').click()
-        canaleFromPopup()
-    })
-
-    it.only('MATRIX_ricerca_Buca_di_ricerca-risultati',function(){
-        cy.get('input[name="main-search-input"]').click()
-        cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
-        cy.get('button').contains('Ricerca classica').click()
-        cy.get('nx-modal-container').find('a').contains('Ricerca Cliente').click()
-        canaleFromPopup()
-    })
-    
     //Fatto
-    it('Home MW', function () {
+    it.only('Home MW', function () {
 
         cy.get('lib-calendar').click()
         cy.get('lib-incident').click()
@@ -89,12 +68,11 @@ describe('Login Matrix Web', function () {
         cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
-        // è stato tolto
-        // cy.get('lib-switch-button').click()
-        // cy.get('lib-switch-button-list').contains('Le mie info').click()
-        // cy.url().should('include', '/my-info')
-        // cy.wait(3000)
-        // cy.get('a[href="/matrix/"]').click()
+        cy.get('lib-switch-button').click()
+        cy.get('lib-switch-button-list').contains('Le mie info').click()
+        cy.url().should('include', '/lemieinfo')
+        cy.wait(3000)
+        cy.get('a[href="/matrix/"]').click()
 
         cy.get('input').invoke('attr', 'placeholder').should('contain', 'Cerca in Matrix')
 
@@ -121,15 +99,16 @@ describe('Login Matrix Web', function () {
         cy.get('app-product-button-list').find('a').contains('News').click()
         cy.url().should('include', '/news/home')
         cy.wait(3000)
-        cy.get('a[href="/matrix/"]').click()
+        cy.get('a[href="/matrix/"]').click().wait(5000)
 
-        cy.get('app-product-button-list').find('a').contains('Le mie info').click()
-        cy.url().should('include', '/my-info')
-        cy.wait(3000)
-        cy.get('a[href="/matrix/"]').click()
+        // è stato tolto
+        // cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+        // cy.url().should('include', '/my-info')
+        // cy.wait(3000)
+        // cy.get('a[href="/matrix/"]').click()
 
-        cy.get('.homepage-container').contains('Vai al Centro notifiche').click()
-        cy.url().should('include', '/notification-center#portafoglio')
+        cy.get('app-notification-top-bar').find('a').contains('Vai al Centro notifiche').click()
+        cy.url().should('include', '/notification-center')
         cy.wait(3000)
         cy.get('a[href="/matrix/"]').click()
 
@@ -226,8 +205,7 @@ describe('Login Matrix Web', function () {
                     cy.wrap($scopeIcon).click()
                 })
 
-                //TFS add
-             /*   cy.get('app-ultra-parent-tabs').find('nx-tab-header').contains('Salute').click().wait(5000)
+                cy.get('app-ultra-parent-tabs').find('nx-tab-header').contains('Salute').click().wait(5000)
 
                 cy.get('app-ultra-health-fast-quote').find('.scope-name').should(($scope) => {
                     expect($scope).to.contain('Spese mediche')
@@ -241,7 +219,7 @@ describe('Login Matrix Web', function () {
                 })
                 cy.get('app-scope-element').find('nx-icon').each($scopeIcon =>{
                     cy.wrap($scopeIcon).click()
-                })*/
+                })
 
                 cy.get($fastquote).find('.content').then(($iconBottom) =>{
                     cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Preferiti"]').should('be.visible')
@@ -291,7 +269,7 @@ describe('Login Matrix Web', function () {
 
                 buttonAuto()
                 const buttonHover = () => cy.get('.cdk-overlay-container').find('button')
-/* 
+ 
                 buttonHover().contains('Emissione').click()
                 cy.wait(2000)
                 buttonHover().contains('Polizza nuova').click()
@@ -347,7 +325,6 @@ describe('Login Matrix Web', function () {
                 buttonHover().contains('Kasko e ARD').click()
                 cy.get('.cdk-overlay-pane').find('button').contains('Kasko e ARD a Giornata').click()
                 canaleFromPopup()
-                // getApp().find('button').contains('Annulla').click()
                 getApp().find('button').contains('Annulla').click()
                 backToClients()
 
@@ -468,7 +445,7 @@ describe('Login Matrix Web', function () {
                 buttonHover().contains('Polizza nuova').click()
                 canaleFromPopup()
                 backToClients()
-                */
+                
                 const buttonVita = () =>  cy.get('.card-container').find('app-kpi-dropdown-card').contains('Vita').click()
 
                 buttonVita()
