@@ -15,7 +15,7 @@ const getApp = () => {
   const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
 
 
-describe.only('Matrix Web : Navigazioni da Home Page', function () {
+describe.only('Matrix Web : Navigazioni - ', function () {
 
     beforeEach(() => {
         cy.viewport(1920, 1080)
@@ -27,7 +27,7 @@ describe.only('Matrix Web : Navigazioni da Home Page', function () {
         
 
     })
-    it('Home MW', function () {
+    it('Home Page', function () {
 
         cy.get('lib-calendar').click()
         cy.get('lib-incident').click()
