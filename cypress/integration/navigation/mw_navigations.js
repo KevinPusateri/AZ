@@ -15,7 +15,7 @@ const getApp = () => {
   const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
 
 
-describe.only('Matrix Web : Navigazioni - ', function () {
+describe.only('Navigazioni', function () {
 
     beforeEach(() => {
         cy.viewport(1920, 1080)
