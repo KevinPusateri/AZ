@@ -29,7 +29,7 @@ describe('Login Matrix Web', function () {
     })
 
     //Fatto
-    it('Home MW', function () {
+    it.only('Home MW', function () {
 
         cy.get('lib-calendar').click()
         cy.get('lib-incident').click()
