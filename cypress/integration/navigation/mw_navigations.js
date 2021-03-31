@@ -133,9 +133,6 @@ describe.only('Matrix Web : Navigazioni - ', function () {
         // cy.get('a[href="/matrix/"]').click()
 
     });
-});
-
-describe('Matrix Web : DA FARE', function () {
     it('Navigation Scheda Cliente', function () {
 
         // Ricerca primo cliente Calogero Messina 
@@ -469,7 +466,11 @@ describe('Matrix Web : DA FARE', function () {
 
         
 
-    })
+    });
+});
+
+describe('Matrix Web : DA FARE', function () {
+
 
     it('Burger Menu Clients', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()

@@ -13,7 +13,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "cypress:open": "./node_modules/.bin/cypress open",
-	"cypress:run:navigations": "./node_modules/.bin/cypress.cmd run --spec cypress/integration/navigation/mw_navigations.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni.xml,toConsole=true\""
+	  "cypress:run:navigations": "./node_modules/.bin/cypress.cmd run --spec cypress/integration/navigation/mw_navigations.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni.xml,toConsole=true\""
   },
   "repository": {
     "type": "git",
