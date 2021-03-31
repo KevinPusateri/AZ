@@ -48,9 +48,12 @@ build/Release
 node_modules/*
 !node_modules/cypress
 !node_modules/@cypress
+!node_modules/.bin/
+
 node_modules/.bin/*
 !node_modules/.bin/cypress
 !node_modules/.bin/cypress.cmd
+
 
 jspm_packages/
 
