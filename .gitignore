@@ -1,7 +1,7 @@
 *.tmp
 ~*
 *.swp
-node_modules/
+!node_modules/
 logs/
 screenshots/
 videos/
