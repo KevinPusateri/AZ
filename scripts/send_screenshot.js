@@ -20,7 +20,7 @@ const htmlExportLogMailTo = 'andrea.oboe@allianz.it, kevin.pusateri@allianz.it';
 
 const moment = require('moment');
 const currentDT = moment().format('YYYY-MM-DD_HH.mm.ss');
-const dirLogs = '..\\results';
+const dirLogs = '..//results';
 
 
 const sendFTP = async() => {
