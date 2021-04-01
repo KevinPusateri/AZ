@@ -1,0 +1,124 @@
+/// <reference types="Cypress" />
+
+Cypress.config('defaultCommandTimeout', 15000)
+
+describe('Buca di Ricerca - Risultati Le mie Info', function () {
+
+    beforeEach(() => {
+        cy.viewport(1920, 1080)
+        cy.visit('https://matrix.pp.azi.allianz.it/')
+        cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
+        cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
+        cy.get('input[type="SUBMIT"]').click()
+        cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+    });
+    
+    afterEach(() => {
+        cy.get('.user-icon-container').click();
+        cy.contains('Logout').click();
+    });
+
+
+    it('Verifica Ricerca una parola ',function(){
+        cy.get('input[name="main-search-input"]').click()
+        cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(2000)
+        cy.url().should('include','search/infos/circulars')
+
+        const tabs = ['clients', 'sales', 'le mie info'];
+        cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('le mie info').should('have.class','active')
+        cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').find('a').should('have.length',3)
+           .each(($tab, i) => {
+                expect($tab.text()).to.include(tabs[i]);
+           });
+    
+        const tabsContainer = ['Circolari', 'Company Handbook'];
+        cy.get('[class="lib-tab-info nx-grid"]').find('[href^="/matrix/search/infos"]').should('have.length',2).each(($tab, i) =>{
+            expect($tab.text()).to.include(tabsContainer[i]);
+        })
+        
+        cy.get('[class="lib-tab-info nx-grid"]').contains('Circolari')
+        cy.get('lib-circular-item').each($circular =>{
+            cy.wrap($circular).find('[class="date"]').then($date =>{
+                if($date.text().trim().length > 0){
+                    cy.wrap($date).should('contain',$date.text().trim()) 
+                }else{
+                    assert.fail('Manca data su un elemento della pagina clients')
+                }
+            }) 
+            cy.wrap($circular).find('[class="network"]').then($company =>{
+                if($company.text().trim().length > 0){
+                    cy.wrap($company).should('contain',$company.text().trim()) 
+                }else{
+                    assert.fail('Manca compagnia su un elemento della pagina clients')
+                }
+            }) 
+            cy.wrap($circular).find('[class="info"]').then($info =>{
+                if($info.text().trim().length > 0){
+                    cy.wrap($info).should('contain',$info.text().trim()) 
+                }else{
+                    assert.fail('Manca info a chi sono indirizzate su un elemento della pagina clients')
+                }
+            }) 
+            cy.wrap($circular).find('[class="title"]').then($title =>{
+                if($title.text().trim().length > 0){
+                    cy.wrap($title).should('contain',$title.text().trim()) 
+                }else{
+                    assert.fail('Manca titolo su un elemento della pagina clients')
+                }
+            }) 
+
+        })
+
+         cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
+
+         for(var i = 0; i <10; i++){
+            cy.get('#lib-handbook-container').scrollTo('bottom').wait(1000)
+         }
+         cy.get('lib-handbooks-item').then($hanbooks =>{
+
+            cy.wrap($hanbooks).find('[class="date"]').each($date =>{
+                if($date.text().trim().length > 0){
+                    cy.wrap($date).should('contain',$date.text().trim())
+                }else{
+                    assert.fail('Manca data su un elemento della pagina handbook')
+                }
+            }) 
+            cy.wrap($hanbooks).find('[class="lib-badge handbook"]').contains('handbook').each($badge =>{
+                if($badge.text().trim().length > 0){
+                    cy.wrap($badge).should('contain',$badge.text().trim())
+                }else{
+                    assert.fail('Manca badge su un elemento della handbook')
+                }
+            })
+            cy.wrap($hanbooks).find('[class="title"]').each($title =>{
+                if($title.text().trim().length > 0){
+                    cy.wrap($title).should('contain', $title.text().trim())
+                }else{
+                    assert.fail('Manca titolo su un elemento della su pagina handbook')
+                }
+            }) 
+            cy.wrap($hanbooks).find('[class="text"]').each($text =>{
+                if($text.text().substring(0,5).trim().length > 0){
+                    cy.wrap($text).should('contain', $text.text().trim().substring(0,5))
+                }else{
+                    assert.fail('Manca un\'anteprima del testo su un elemento della pagina handbook')
+                }
+            }) 
+
+         })
+    })
+    
+    it('Verifica Click su Ricerca Cliente',function(){
+        cy.get('input[name="main-search-input"]').click()
+        cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(4000)
+        cy.get('[class="lib-tab-info nx-grid"]').contains('Circolari').click()
+        cy.get('lib-circular-item').find('a').first().click()
+    })
+
+    it('Verifica Modifica filtri',function(){
+        cy.get('input[name="main-search-input"]').click()
+        cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(4000)
+        cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
+        cy.get('lib-handbooks-item').first().click()
+    })
+})
