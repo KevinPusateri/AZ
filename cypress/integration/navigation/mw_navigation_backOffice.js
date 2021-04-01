@@ -6,10 +6,10 @@
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 15000)
-const delayBetweenTests = 2000;
+const delayBetweenTests = 2000
 //#endregion
 
-//#region  Global Variables
+//#region Global Variables
 const closePopup = () => cy.get('button[aria-label="Close dialog"]').click()
 //#endregion
 
