@@ -117,41 +117,10 @@ describe('Matrix Ricerca', function () {
         //#endregion
     })
 
-    it.only('Buca di ricerca - risultati Clients',function(){
+    it('Buca di ricerca - risultati Clients',function(){
         cy.get('input[name="main-search-input"]').click()
-        cy.get('input[name="main-search-input"]').type('AR').type('{enter}').wait(2000)
-        // cy.get('lib-client-item').first().click().wait(5000)
-        // cy.get('app-client-status-badge').then(($lettera) =>{
-        //     var text = $lettera.text().trim()
-        //     switch(text){
-        //         case "P":
-        //             cy.wrap($lettera).find('.status-bubble').should('contain','P')
-        //             break
-        //         case "C":
-        //             cy.wrap($lettera).find('.status-bubble').should('contain','C')
-        //             break
-        //         case "":
-        //             assert.equal(text,"")
-        //             break
-        //     }
-        // })
-
-
-        // //TODO icona PF/PG e agenzia di appartenenza
-        // cy.get('app-client-resume-card').then(($info) =>{
-        //     cy.wrap($info).find('.padder').then(($padder) =>{
-        //         cy.wrap($padder).find('.client-name').then(($name) =>{ cy.wrap($name).should('contain',$name.text())})
-        //         cy.wrap($padder).find('[iconname="location"]').then(($adress) =>{ cy.wrap($adress).should('contain',$adress.text())})
-        //         cy.wrap($padder).find('.client-age').then(($age) =>{ 
-        //             if($age.text().trim() == "")
-        //                 assert.equal($age.text().trim(),"","Persona giuridica")
-        //             else{
-        //                 cy.wrap($age).should('contain',$age.text())
-        //             }
-        //         })
-        //     })
-        // })
-
+        cy.get('input[name="main-search-input"]').type('AR').type('{enter}')
+        cy.url().should('include','search/clients/clients')
         cy.get('lib-client-item').should('have.length',30).each($cliente =>{
             cy.wrap($cliente).find('lib-client-status-badge').then(($lettera) =>{
                  var text = $lettera.text().trim()
@@ -169,31 +138,37 @@ describe('Matrix Ricerca', function () {
             })
             cy.wrap($cliente).find('.info > .name').then(($name) =>{ cy.wrap($name).should('contain',$name.text()) })     
             cy.wrap($cliente).find('.item').first().then(($adress) =>{ cy.wrap($adress).should('contain',$adress.text()) })
-            cy.wrap($cliente).find('.item').next().then(($age) =>{ cy.wrap($age).should('contain',$age.text()) })
             cy.wrap($cliente).find('.item').next().then(($age) =>{ 
-                // cy.wrap($age).should('contain',$age.text()) 
-                console.log($age.text().trim().length)
-                var text = $age.text().trim()
-                    // switch(text){
-                    //     case "p":
-                    //         cy.wrap($age).should('contain',$age.text()) 
-                    //         break
-                    //     case "c":
-                    //         cy.wrap($lettera).find('[ngclass="status-bubble"]').should('contain','c')
-                    //         break
-                    // }
+                if($age.text().trim().length > 5){
+                    cy.wrap($age).should('contain',$age.text().trim())
+                }
             })
-
          })
+
+         cy.get('.icon').find('[name="filter"]').click()
+         cy.get('.filter-group').contains('Potenziale').click()
+         cy.get('.filter-group').find('nx-checkbox').first().click()
+         cy.get('.footer').find('button').contains('applica').click()
+         cy.get('[class="lib-applied-filters-item"]').find('span').should('have.length',6).each($filter =>{
+             cy.wrap($filter).should('contain',$filter.text().trim())
+         })
+
+         cy.get('lib-client-item').first().click()
+         cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class','active')
+
 
     })
 
-    it('Buca di ricerca - risultati Le mie info',function(){
+    it.only('Buca di ricerca - risultati Le mie info',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(2000)
-        cy.get('lib-circular-item').find('a').first().click()
-        cy.get('a[href="/matrix/search/infos/handbooks"]').click()
-        cy.get('lib-handbooks-container').find('a').first().click()
+        cy.url().should('include','search/infos/circulars')
+
+        const tabs = ['clients', 'sales', 'le mie info'];
+        cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').find('a')
+           .each(($tab, i) => {
+                expect($tab.text()).to.include(tabs[i]);
+           });
     })
 
     
