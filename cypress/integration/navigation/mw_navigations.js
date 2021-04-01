@@ -143,6 +143,40 @@ describe('Matrix Web : DA FARE', function () {
         cy.get('lib-client-item').first().click()
         cy.wait(7000)
 
+        // ADD TFS
+        // cy.get('lib-client-item').first().click().wait(5000)
+        // cy.get('app-client-status-badge').then(($lettera) =>{
+        //     var text = $lettera.text().trim()
+        //     switch(text){
+        //         case "P":
+        //             cy.wrap($lettera).find('.status-bubble').should('contain','P')
+        //             break
+        //         case "C":
+        //             cy.wrap($lettera).find('.status-bubble').should('contain','C')
+        //             break
+        //         case "":
+        //             assert.equal(text,"")
+        //             break
+        //     }
+        // })
+
+
+        // //TODO icona PF/PG e agenzia di appartenenza
+        // cy.get('app-client-resume-card').then(($info) =>{
+        //     cy.wrap($info).find('.padder').then(($padder) =>{
+        //         cy.wrap($padder).find('.client-name').then(($name) =>{ cy.wrap($name).should('contain',$name.text())})
+        //         cy.wrap($padder).find('[iconname="location"]').then(($adress) =>{ cy.wrap($adress).should('contain',$adress.text())})
+        //         cy.wrap($padder).find('.client-age').then(($age) =>{ 
+        //             if($age.text().trim() == "")
+        //                 assert.equal($age.text().trim(),"","Persona giuridica")
+        //             else{
+        //                 cy.wrap($age).should('contain',$age.text())
+        //             }
+        //         })
+        //     })
+        // })
+        // END ADD TFS
+
         // Verifica Tab clients corretti
         cy.get('app-client-profile-tabs').find('a').should(($tab) => {
             expect($tab).to.contain('SINTESI CLIENTE')
