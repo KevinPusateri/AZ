@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="2.7560" tests="16" failures="15">
+  <testsuite name="Root Suite" timestamp="2021-04-01T06:54:12" tests="0" file="cypress\integration\navigation\mw_navigations.js" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="Matrix Web : Navigazioni da Home Page - " timestamp="2021-04-01T06:54:12" tests="16" time="2.7560" failures="15">
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Log In" time="2.7560" classname="Log In">
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Top Menu Principali" time="0.0000" classname="Top Menu Principali">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `lib-calendar`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `lib-calendar`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:130:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Top Menu Clients" time="0.0000" classname="Top Menu Clients">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `lib-switch-button-list`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `lib-switch-button-list`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:138:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Top Menu Sales" time="0.0000" classname="Top Menu Sales">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `lib-switch-button`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `lib-switch-button`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:144:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Top Menu Numbers" time="0.0000" classname="Top Menu Numbers">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `lib-switch-button`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `lib-switch-button`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:151:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Top Menu Backoffice" time="0.0000" classname="Top Menu Backoffice">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `lib-switch-button`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `lib-switch-button`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:158:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Top Menu News" time="0.0000" classname="Top Menu News">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `lib-switch-button`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `lib-switch-button`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:165:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Top Menu Le mie info" time="0.0000" classname="Top Menu Le mie info">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `lib-switch-button`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `lib-switch-button`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:172:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Cerca in Matrix" time="0.0000" classname="Cerca in Matrix">
+      <failure message="Timed out retrying after 15000ms: object tested must be an array, a map, an object, a set, a string, or a weakset, but undefined given" type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: object tested must be an array, a map, an object, a set, a string, or a weakset, but undefined given
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:179:51)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Button Clients" time="0.0000" classname="Button Clients">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `app-product-button-list`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `app-product-button-list`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:182:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Button Sales" time="0.0000" classname="Button Sales">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `app-product-button-list`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `app-product-button-list`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:188:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Button Numbers" time="0.0000" classname="Button Numbers">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `app-product-button-list`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `app-product-button-list`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:194:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Button Backoffice" time="0.0000" classname="Button Backoffice">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `app-product-button-list`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `app-product-button-list`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:200:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Button News" time="0.0000" classname="Button News">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `app-product-button-list`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `app-product-button-list`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:206:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Centro notifiche" time="0.0000" classname="Centro notifiche">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `app-notification-top-bar`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `app-notification-top-bar`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:212:8)]]></failure>
+    </testcase>
+    <testcase name="Matrix Web : Navigazioni da Home Page -  Vedi tutte le news" time="0.0000" classname="Vedi tutte le news">
+      <failure message="Timed out retrying after 15000ms: Expected to find element: `app-news-top-bar-title-cta`, but never found it." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 15000ms: Expected to find element: `app-news-top-bar-title-cta`, but never found it.
+    at Context.eval (https://amlogin-pp.allianz.it/__cypress/tests?p=cypress\integration\navigation\mw_navigations.js:218:8)]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>

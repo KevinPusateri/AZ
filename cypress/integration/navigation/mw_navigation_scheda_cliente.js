@@ -17,7 +17,7 @@ const backToClients = () => cy.get('a').contains('Clients').click().wait(5000)
 const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
 
 
-describe.only('Matrix Web : Navigazioni da Scheda Cliente - ', function () {
+describe('Matrix Web : Navigazioni da Scheda Cliente - ', function () {
     it('Log In', function () {
         cy.viewport(1920, 1080)
         cy.visit('https://matrix.pp.azi.allianz.it/')
@@ -26,7 +26,7 @@ describe.only('Matrix Web : Navigazioni da Scheda Cliente - ', function () {
         cy.get('input[type="SUBMIT"]').click()
         cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
     });
-    
+
     it('Navigation Scheda Cliente', function () {
 
         // Ricerca primo cliente Calogero Messina 
