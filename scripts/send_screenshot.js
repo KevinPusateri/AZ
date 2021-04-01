@@ -98,7 +98,7 @@ async function main()
 {
 
 	await zipDirectory(dirLogs, '..//MW_FE_PREPROD.zip');
-	await sendMailHtmlExtra();
+	await sendMail();
 	await sendFTP();
 }
 
