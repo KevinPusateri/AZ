@@ -1,24 +1,30 @@
+/**
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it>
+*/
+
 /// <reference types="Cypress" />
 
+//#region Configuration
 Cypress.config('defaultCommandTimeout', 15000)
+const delayBetweenTests = 2000
+//#endregion
+
+beforeEach(() => {
+    cy.viewport(1920, 1080)
+    cy.visit('https://matrix.pp.azi.allianz.it/')
+    cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
+    cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
+    cy.get('input[type="SUBMIT"]').click()
+    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+})
+
+afterEach(() => {
+    cy.get('.user-icon-container').click()
+    cy.contains('Logout').click()
+    cy.wait(delayBetweenTests)
+})
 
 describe('Buca di Ricerca - Risultati Clients', function () {
-
-    beforeEach(() => {
-        cy.viewport(1920, 1080)
-        cy.visit('https://matrix.pp.azi.allianz.it/')
-        cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
-        cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
-        cy.get('input[type="SUBMIT"]').click()
-        cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
-    });
-    
-    afterEach(() => {
-        cy.get('.user-icon-container').click();
-        cy.contains('Logout').click();
-    });
-
-
     it('Verifica Ricerca Cliente: nome o cognome ',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('AR').type('{enter}')
@@ -58,6 +64,7 @@ describe('Buca di Ricerca - Risultati Clients', function () {
         cy.get('.filter-group').contains('Potenziale').click()
         cy.get('.filter-group').find('nx-checkbox').first().click()
         cy.get('.footer').find('button').contains('applica').click()
+        //TODO Finire modifica
         cy.get('[class="lib-applied-filters-item"]').find('span').should('have.length',6).each($filter =>{
             cy.wrap($filter).should('contain',$filter.text().trim())
         })

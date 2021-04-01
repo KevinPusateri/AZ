@@ -1,23 +1,31 @@
+/**
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it>
+*/
+
 /// <reference types="Cypress" />
 
+//#region Configuration
 Cypress.config('defaultCommandTimeout', 15000)
+const delayBetweenTests = 2000
+//#endregion
+
+beforeEach(() => {
+    cy.viewport(1920, 1080)
+    cy.visit('https://matrix.pp.azi.allianz.it/')
+    cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
+    cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
+    cy.get('input[type="SUBMIT"]').click()
+    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+})
+
+afterEach(() => {
+    cy.get('.user-icon-container').click()
+    cy.contains('Logout').click()
+    cy.wait(delayBetweenTests)
+})
+
 
 describe('Buca di Ricerca', function () {
-
-    beforeEach(() => {
-        cy.viewport(1920, 1080)
-        cy.visit('https://matrix.pp.azi.allianz.it/')
-        cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
-        cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
-        cy.get('input[type="SUBMIT"]').click()
-        cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
-    });
-    
-    afterEach(() => {
-        cy.get('.user-icon-container').click();
-        cy.contains('Logout').click();
-    });
-
 
     it('Verifica Click su Ricerca Classica',function(){
         cy.get('input[name="main-search-input"]').click()
@@ -41,6 +49,7 @@ describe('Buca di Ricerca', function () {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
         
         cy.get('nx-modal-container').find('lib-da-link').contains('Ricerca Cliente').click()
+        //TODO Verificare ch sei arrivato nella vecchia schermata di ricerca
         cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
     })
 
