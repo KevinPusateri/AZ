@@ -79,8 +79,10 @@ let nuovoClientePF;
 let nuovoClientePG;
 //#endregion
 
-beforeEach(() => {
-  cy.viewport(1920, 1080)
+before(() => {
+  cy.task('nuovoClientePersonaFisica').then((object) => {
+    nuovoClientePF = object;
+  });
   cy.visit('https://matrix.pp.azi.allianz.it/')
   cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
   cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
@@ -88,17 +90,13 @@ beforeEach(() => {
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
 
-afterEach(() => {
-  cy.get('.user-icon-container').click()
-  cy.contains('Logout').click()
-  cy.wait(delayBetweenTests)
+beforeEach(() => {
+  cy.viewport(1920, 1080)
+  Cypress.Cookies.preserveOnce('JSESSIONID')
+  Cypress.Cookies.preserveOnce('IPCZQX037b3024be')
 })
 
 describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
-
-  cy.task('nuovoClientePersonaFisica').then((object) => {
-    nuovoClientePF = object;
-  });
 
   it('Verifica apertura maschera di censimento', () => {
     cy.contains('Clients').click();
@@ -193,5 +191,9 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
     cy.contains('Cancellazione cliente').click();
     cy.contains('Cancella cliente').click();
     cy.contains('Ok').click();
+
+    cy.get('.user-icon-container').click()
+    cy.contains('Logout').click()
+    cy.wait(delayBetweenTests)
   })
 })
