@@ -74,13 +74,15 @@ const getDocumentoPersonale = () => {
 
   return iframeDocumentoPersonale.its('body').should('not.be.undefined').then(cy.wrap)
 }
-
-let nuovoClientePF;
-let nuovoClientePG;
 //#endregion
 
-beforeEach(() => {
-  cy.viewport(1920, 1080)
+let nuovoClientePG;
+
+before(() => {
+  cy.task('nuovoClientePersonaGiuridica').then((object) => {
+    nuovoClientePG = object;
+  });
+
   cy.visit('https://matrix.pp.azi.allianz.it/')
   cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
   cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
@@ -88,17 +90,22 @@ beforeEach(() => {
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
 
-afterEach(() => {
+beforeEach(() => {
+  cy.viewport(1920, 1080)
+  Cypress.Cookies.defaults({
+    preserve: (cookie) => {
+      return true;
+    }
+  })
+})
+
+after(() => {
   cy.get('.user-icon-container').click()
   cy.contains('Logout').click()
   cy.wait(delayBetweenTests)
 })
 
 describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
-
-    cy.task('nuovoClientePersonaGiuridica').then((object) => {
-        nuovoClientePG = object;
-    });
 
     it('Verifica apertura maschera di censimento', () => {
         cy.contains('Clients').click();

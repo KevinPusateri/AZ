@@ -5,7 +5,7 @@
 /// <reference types="Cypress" />
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 //#endregion
 
@@ -14,63 +14,38 @@ const getSCU = () => {
   cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .iframe();
 
-  let  iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+  let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist');
 
   return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const getFolder = () => {
-  //cy.wait(6000);
-  //let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-  //.its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
   getSCU().find('iframe[class="w-100"]')
   .iframe();
 
-  let  iframeFolder = getSCU().find('iframe[class="w-100"]')
+  let iframeFolder = getSCU().find('iframe[class="w-100"]')
   .its('0.contentDocument').should('exist');
 
   return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
-
-
-  //let iframeFolder = bodySCU.find('iframe[class="w-100"]')
-  //.its('0.contentDocument').should('exist');
-
- //return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const getDocumentScanner = () => {
+  getFolder().find('iframe[src*="IdDocumentScanner"]')
+  .iframe();
 
-  cy.wait(2000);
-
-  let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
-  let bodyFolder = bodySCU.find('iframe[class="w-100"]')
-  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
-  let iframeDocumentScanner = bodyFolder.find('iframe[src*="IdDocumentScanner"]')
+  let iframeDocumentScanner = getFolder().find('iframe[src*="IdDocumentScanner"]')
   .its('0.contentDocument').should('exist');
 
-  return iframeDocumentScanner.its('body').should('not.be.undefined').then(cy.wrap);
+  return iframeDocumentScanner.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const getDocumentoPersonale = () => {
+  getDocumentScanner().find('#documentoPersonaleFrame')
+  .iframe();
 
-  cy.wait(4000);
-
-  let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
-  let bodyFolder = bodySCU.find('iframe[class="w-100"]')
-  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
-  let iframeDocumentScanner = bodyFolder.find('iframe[src*="IdDocumentScanner"]')
-  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
-  let iframeDocumentoPersonale = iframeDocumentScanner.find('#documentoPersonaleFrame')
-  .its('0.contentDocument').should('exist')
+  let iframeDocumentoPersonale = getDocumentScanner().find('#documentoPersonaleFrame')
+  .its('0.contentDocument').should('exist');
 
   return iframeDocumentoPersonale.its('body').should('not.be.undefined').then(cy.wrap)
 }
@@ -84,6 +59,7 @@ before(() => {
     nuovoClientePF = object;
   });
 
+  cy.clearCookies();
   cy.visit('https://matrix.pp.azi.allianz.it/')
   cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
   cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
@@ -93,16 +69,18 @@ before(() => {
 
 beforeEach(() => {
   cy.viewport(1920, 1080)
-  //amlogin-pp.allianz.it & daintesp.pp.azi.allianz.it
-  Cypress.Cookies.preserveOnce('JSESSIONID')
-  //pp.azi.allianz.it
-  Cypress.Cookies.preserveOnce('IPCZQX037b3024be')
+  Cypress.Cookies.defaults({
+    preserve: (cookie) => {
+      return true;
+    }
+  })
 })
 
 after(() => {
   cy.get('.user-icon-container').click()
   cy.contains('Logout').click()
   cy.wait(delayBetweenTests)
+  cy.clearCookies();
 })
 
 describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
@@ -177,15 +155,41 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
     //Upload documento
     getDocumentScanner().find('button:contains("Continua"):visible').click();
     getDocumentoPersonale().find('#pupload').click();
+
+    cy.intercept({
+      method: 'POST',
+      url: /uploadPdfDocument/
+    }).as('uploadPdfDoc');
+
+    cy.intercept({
+      method: 'POST',
+      url: /previewPdfTemplate/
+    }).as('preview');
+
+    cy.intercept({
+      method: 'POST',
+      url: /uploadMobileDocument/
+    }).as('uploadMobileDoc');
+
     const fileName = 'CI_Test.pdf';
-    getDocumentoPersonale().find('#pdfUpload').attachFile(fileName);
-    cy.wait(2000);
+    
+    cy.fixture(fileName).then(fileContent => {
+      getDocumentoPersonale().find('#pdfUpload').attachFile({ 
+        fileContent, 
+        fileName, 
+        mimeType: 'application/pdf'
+      },{ subjectType: 'input' });
+    });
+
+    cy.wait('@uploadPdfDoc', { requestTimeout: 120000 });
+    cy.wait('@preview', { requestTimeout: 120000 });
+
     getDocumentoPersonale().find('#importMobileDocument').click();
-    cy.wait(5000);
+    cy.wait('@uploadMobileDoc', { requestTimeout: 120000 });
+
     getSCU().contains('Conferma').click();
     //#endregion
   
-    cy.wait(12000);
     getSCU().find('#endWorkflowButton').click();
   })
 
