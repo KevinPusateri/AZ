@@ -60,14 +60,28 @@ describe('Buca di Ricerca - Risultati Clients', function () {
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('AR').type('{enter}')
         cy.url().should('include','search/clients/clients').wait(3000)
+
         cy.get('.icon').find('[name="filter"]').click()
         cy.get('.filter-group').contains('Potenziale').click()
         cy.get('.filter-group').find('nx-checkbox').first().click()
         cy.get('.footer').find('button').contains('applica').click()
+
         //TODO Finire modifica
         cy.get('[class="lib-applied-filters-item"]').find('span').should('have.length',6).each($filter =>{
             cy.wrap($filter).should('contain',$filter.text().trim())
         })
+        const checkFilter = [
+            '1-30018-000 TRIESTE 2000',
+            '73-742-060 TRIESTE DIAZ',
+            'Persona fisica',
+            'Persona giuridica',
+            'Effettivo',
+            'Cessato'
+        ]
+        cy.get('lib-applied-filters-item').find('span').should('have.length',6).each(($filter,i) =>{
+            cy.wrap($filter).should('contain',checkFilter[i])
+        })
+
     })
 
     it('Verifica Click su Ricerca Cliente',function(){
