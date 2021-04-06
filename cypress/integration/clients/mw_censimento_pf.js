@@ -136,7 +136,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
   it('Inserimento contatti : residenza (no cellulare e mail)', () => {
     getSCU().find('span[aria-owns="toponomastica_listbox"]').click();
     getSCU().find('li').contains(/^PIAZZA$/).click();
-    getSCU().find('#indirizzo-via').type('GARIBALDI');
+    getSCU().find('#indirizzo-via').type('GIUSEPPE GARIBALDI');
     getSCU().find('#indirizzo-num').type('1');
     getSCU().find('#residenza-comune').type('LONIGO');
     getSCU().find('#residenza-comune_listbox').click();

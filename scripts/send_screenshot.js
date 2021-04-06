@@ -12,7 +12,7 @@ var FtpDeploy = require('ftp-deploy');
 //#endregion
 
 //#region Clean QA log folder
-rimraf.sync('results');
+rimraf.sync('..//cypress//screenshots//');
 //#endregion
 
 //Edit as you want with path to postman_environment + collection directory of tests
@@ -20,7 +20,7 @@ const htmlExportLogMailTo = 'andrea.oboe@allianz.it, kevin.pusateri@allianz.it';
 
 const moment = require('moment');
 const currentDT = moment().format('YYYY-MM-DD_HH.mm.ss');
-const dirLogs = 'results';
+const dirLogs = '..//cypress//screenshots//';
 
 
 const sendFTP = async() => {
@@ -87,7 +87,7 @@ const sendMail = async() =>{
 		attachments: [
 			{
 				filename: 'MW_FE_PREPROD.zip',
-				path: 'MW_FE_PREPROD.zip'
+				path: dirLogs + '..//MW_FE_PREPROD.zip'
 					
 			}
 		]
@@ -97,7 +97,7 @@ const sendMail = async() =>{
 async function main()
 {
 
-	await zipDirectory(dirLogs, 'MW_FE_PREPROD.zip');
+	await zipDirectory(dirLogs, '..//MW_FE_PREPROD.zip');
 	await sendMail();
 	await sendFTP();
 }

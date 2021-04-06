@@ -128,7 +128,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         //Sede Legale
         getSCU().find('span[aria-owns="toponomastica_listbox"]').click();
         getSCU().find('li').contains(/^PIAZZA$/).click();
-        getSCU().find('#indirizzo-via').type('GARIBALDI');
+        getSCU().find('#indirizzo-via').type('GIUSEPPE GARIBALDI');
         getSCU().find('#indirizzo-num').type('1');
         getSCU().find('#residenza-comune').type('LONIGO');
         getSCU().find('#residenza-comune_listbox').click();
