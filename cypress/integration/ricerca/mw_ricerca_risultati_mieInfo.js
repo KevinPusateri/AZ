@@ -18,11 +18,11 @@ beforeEach(() => {
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
 
-// afterEach(() => {
-//     cy.get('.user-icon-container').click()
-//     cy.contains('Logout').click()
-//     cy.wait(delayBetweenTests)
-// })
+afterEach(() => {
+    cy.get('.user-icon-container').click()
+    cy.contains('Logout').click()
+    cy.wait(delayBetweenTests)
+})
 
 describe('Buca di Ricerca - Risultati Le mie Info', function () {
     
