@@ -11,10 +11,6 @@ const nodemailer = require('..//node_modules//nodemailer');
 var FtpDeploy = require('ftp-deploy');
 //#endregion
 
-//#region Clean QA log folder
-rimraf.sync('..//cypress//screenshots//');
-//#endregion
-
 //Edit as you want with path to postman_environment + collection directory of tests
 const htmlExportLogMailTo = 'andrea.oboe@allianz.it, kevin.pusateri@allianz.it';
 
