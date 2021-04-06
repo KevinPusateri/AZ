@@ -36,12 +36,8 @@ describe('Buca di Ricerca - Risultati', function () {
             'sales',
             'le mie info'
         ]        
-      
-        // TODO
         cy.get('[class^="docs-grid-colored-row tabs-container"]').find('[class^="tab-header"]').each(($tab,i) =>{
-            expect($tab).to.contain('clients')
-            expect($tab).to.contain('sales')
-            expect($tab).to.contain('le mie info')
+            expect($tab.text().trim()).to.include(tabHeader[i]);
         })
 
         cy.get('lib-advice-navigation-section').contains('Suggerimenti di navigazione').should('exist').and('be.visible')
@@ -49,14 +45,12 @@ describe('Buca di Ricerca - Risultati', function () {
         const suggLinks = [
             'Provvigioni',
             'Quattroruote - Calcolo valore Veicolo',
-            Interr
+            'Interrogazioni Centralizzate',
+            'Recupero preventivi e quotazioni',
+            'Monitoraggio Polizze Proposte'
         ]
-        cy.get('lib-advice-navigation-section').find('.position-sidebar>.title').should('have.length',5).should(($suggerimenti) =>{
-            expect($suggerimenti).to.contain('Provvigioni')
-            expect($suggerimenti).to.contain('Quattroruote - Calcolo valore Veicolo')
-            expect($suggerimenti).to.contain('Interrogazioni Centralizzate')
-            expect($suggerimenti).to.contain('Recupero preventivi e quotazioni')
-            expect($suggerimenti).to.contain('Monitoraggio Polizze Proposte')
+        cy.get('lib-advice-navigation-section').find('.position-sidebar>.title').should('have.length',5).each(($suggerimenti,i) =>{
+            expect($suggerimenti.text().trim()).to.include(suggLinks[i]);
         })
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible')
     })

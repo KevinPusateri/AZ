@@ -38,6 +38,15 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
            .each(($tab, i) => {
                 expect($tab.text()).to.include(tabs[i]);
            });
+
+        const suggLinks = [
+            'Incasso per conto',
+            'Incasso massivo'
+        ]
+        cy.get('lib-navigation-item-link').find('.title').should('have.length',2)
+            .each(($suggerimenti,i) =>{
+            expect($suggerimenti.text()).to.include(suggLinks[i]);
+        })
     
         const tabsContainer = ['Circolari', 'Company Handbook'];
         cy.get('[class="lib-tab-info nx-grid"]').find('[href^="/matrix/search/infos"]').should('have.length',2).each(($tab, i) =>{
@@ -104,14 +113,15 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                 }else{
                     assert.fail('Manca titolo su un elemento della su pagina handbook')
                 }
-            }) 
-            cy.wrap($hanbooks).find('[class="text"]').each($text =>{
-                if($text.text().substring(0,5).trim().length > 0){
-                    cy.wrap($text).should('contain', $text.text().trim().substring(0,5))
-                }else{
-                    assert.fail('Manca un\'anteprima del testo su un elemento della pagina handbook')
-                }
-            }) 
+            })
+            // Verifica Testo skippato 
+            // cy.wrap($hanbooks).find('[class="text"]').each($text =>{
+            //     if($text.text().substring(0,5).trim().length > 0){
+            //         cy.wrap($text).should('contain', $text.text().trim().substring(0,5))
+            //     }else{
+            //         assert.fail('Manca un\'anteprima del testo su un elemento della pagina handbook')
+            //     }
+            // }) 
 
          })
     })
@@ -128,6 +138,15 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
            .each(($tab, i) => {
                 expect($tab.text()).to.include(tabs[i]);
            });
+
+        const suggLinks = [
+            'FastQuote Infortuni da circolazione',
+            'FastQuote Impresa e Albergo'
+        ]
+        cy.get('lib-navigation-item-link').find('.title').should('have.length',2)
+            .each(($suggerimenti,i) =>{
+            expect($suggerimenti.text()).to.include(suggLinks[i]);
+        })
     
         const tabsContainer = ['Circolari', 'Company Handbook'];
         cy.get('[class="lib-tab-info nx-grid"]').find('[href^="/matrix/search/infos"]').should('have.length',2).each(($tab, i) =>{
@@ -206,7 +225,6 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
          })
     })
 
-
     //TODO modifica controllo elenco + verifica suggerimeti
     it.only('Verifica Ricerca Proddotto: Ultra',function(){
         cy.get('input[name="main-search-input"]').click()
@@ -218,8 +236,17 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').find('a').should('have.length',3)
            .each(($tab, i) => {
                 expect($tab.text()).to.include(tabs[i]);
-           });
+            });
     
+        const suggLinks = [
+            'Allianz Ultra Casa e Patrimonio',
+            'Allianz Ultra Casa e Patrimonio BMP',
+            'Allianz Ultra Salute'
+        ]
+        cy.get('lib-navigation-item-link').find('.title').should('have.length',3)
+            .each(($suggerimenti,i) =>{
+            expect($suggerimenti.text()).to.include(suggLinks[i]);
+        })
         const tabsContainer = ['Clienti'];
         cy.get('[class="lib-tab-info nx-grid"]').find('[href^="/matrix/search/clients/clients"]').should('have.length',1).each(($tab, i) =>{
             expect($tab.text()).to.include(tabsContainer[i]);
@@ -228,23 +255,23 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         cy.get('[class="lib-tab-info nx-grid"]').contains('Clienti')
         cy.get('lib-client-item').each($client =>{
   
-            cy.wrap($client).find('[class="network"]').then($company =>{
-                if($company.text().trim().length > 0){
-                    cy.wrap($company).should('contain',$company.text().trim()) 
+            cy.wrap($client).find('[class="name"]').then($name =>{
+                if($name.text().trim().length > 0){
+                    cy.wrap($name).should('contain',$name.text().trim()) 
                 }else{
                     assert.fail('Manca compagnia su un elemento della pagina clients')
                 }
             }) 
-            cy.wrap($client).find('[class="info"]').then($info =>{
-                if($info.text().trim().length > 0){
-                    cy.wrap($info).should('contain',$info.text().trim()) 
+            cy.wrap($client).find('[class="lib-agency-container"]').then($agency =>{
+                if($agency.text().trim().length > 0){
+                    cy.wrap($agency).should('contain',$agency.text().trim()) 
                 }else{
                     assert.fail('Manca info a chi sono indirizzate su un elemento della pagina clients')
                 }
             }) 
-            cy.wrap($client).find('[class="title"]').then($title =>{
-                if($title.text().trim().length > 0){
-                    cy.wrap($title).should('contain',$title.text().trim()) 
+            cy.wrap($client).find('[class="title"]').then($item =>{
+                if($item.text().trim().length > 0){
+                    cy.wrap($item).should('contain', $item.text().trim()) 
                 }else{
                     assert.fail('Manca titolo su un elemento della pagina clients')
                 }
