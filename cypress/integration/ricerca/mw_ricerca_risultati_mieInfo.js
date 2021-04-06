@@ -133,7 +133,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
     })
     
     //TODO modifica controllo elenco + verifica suggerimeti
-    it.only('Verifica Ricerca Fastquote',function(){
+    it('Verifica Ricerca Fastquote',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('fastquote').type('{enter}').wait(2000)
         cy.url().should('include','search/infos/circulars')
