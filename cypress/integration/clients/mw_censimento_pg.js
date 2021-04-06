@@ -127,8 +127,8 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
     it('Contatti > inserire la mail e modificare l\'indirizzo della sede legale', () => {
         //Sede Legale
         getSCU().find('span[aria-owns="toponomastica_listbox"]').click();
-        getSCU().find('li:contains("CORTE")').click();
-        getSCU().find('#indirizzo-via').type('GARIBALDI');
+        getSCU().find('li').contains(/^PIAZZA$/).click();
+        getSCU().find('#indirizzo-via').type('GIUSEPPE GARIBALDI');
         getSCU().find('#indirizzo-num').type('1');
         getSCU().find('#residenza-comune').type('LONIGO');
         getSCU().find('#residenza-comune_listbox').click();
@@ -157,7 +157,17 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
     })
 
     it('Da Folder inserire l\'autocertificazione e verificare che l\'inserimento venga bloccato', () => {
-        
+      getFolder().find('span[class="k-icon k-plus"]:visible').click();
+      getFolder().find('span[class="k-icon k-plus"]:first').click();
+      getFolder().find('#UploadDocument').click();
+      getFolder().find('#win-upload-document_wnd_title').click();
+      getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}');
+      getFolder().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('{downarrow}').type('{downarrow}').type('{enter}');
+      const fileName = 'Autocertificazione_Test.pdf';
+      getFolder().find('#file').attachFile(fileName);
+      getFolder().contains('Upload dei file selezionati').click();
+      getSCU().find('button:contains("Conferma")').click();
+      getSCU().find('button:contains("Inserisci il documento")').click();
     })
 
     it('Da Folder inserire la visura camerale e procedere', () => {

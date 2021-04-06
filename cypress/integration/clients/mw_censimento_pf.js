@@ -74,15 +74,16 @@ const getDocumentoPersonale = () => {
 
   return iframeDocumentoPersonale.its('body').should('not.be.undefined').then(cy.wrap)
 }
-
-let nuovoClientePF;
-let nuovoClientePG;
 //#endregion
 
+let nuovoClientePF;
+
 before(() => {
+
   cy.task('nuovoClientePersonaFisica').then((object) => {
     nuovoClientePF = object;
   });
+
   cy.visit('https://matrix.pp.azi.allianz.it/')
   cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
   cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
@@ -92,8 +93,16 @@ before(() => {
 
 beforeEach(() => {
   cy.viewport(1920, 1080)
+  //amlogin-pp.allianz.it & daintesp.pp.azi.allianz.it
   Cypress.Cookies.preserveOnce('JSESSIONID')
+  //pp.azi.allianz.it
   Cypress.Cookies.preserveOnce('IPCZQX037b3024be')
+})
+
+after(() => {
+  cy.get('.user-icon-container').click()
+  cy.contains('Logout').click()
+  cy.wait(delayBetweenTests)
 })
 
 describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
@@ -107,8 +116,9 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
   })
 
   it('Inserimento dati mancanti compreso PEP', () => {
-    getSCU().find('#nome').type(nuovoCliente.nome);
-    getSCU().find('#cognome').type(nuovoCliente.cognome);
+
+    getSCU().find('#nome').type(nuovoClientePF.nome);
+    getSCU().find('#cognome').type(nuovoClientePF.cognome);
     getSCU().find('#comune-nascita').type('LONIGO');
     getSCU().find('li:contains("LONIGO")').click();
     getSCU().find('span[aria-owns="sesso_listbox"]').click();
@@ -125,8 +135,8 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
 
   it('Inserimento contatti : residenza (no cellulare e mail)', () => {
     getSCU().find('span[aria-owns="toponomastica_listbox"]').click();
-    getSCU().find('li:contains("CORTE")').click();
-    getSCU().find('#indirizzo-via').type('GARIBALDI');
+    getSCU().find('li').contains(/^PIAZZA$/).click();
+    getSCU().find('#indirizzo-via').type('GIUSEPPE GARIBALDI');
     getSCU().find('#indirizzo-num').type('1');
     getSCU().find('#residenza-comune').type('LONIGO');
     getSCU().find('#residenza-comune_listbox').click();
@@ -182,7 +192,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
   it('Ricercare il cliente appena censito nella buca di ricerca', () => {
     cy.get('lib-header-logo').click();
     cy.contains('Clients').click();
-    cy.get('input[name="main-search-input"]').type(nuovoCliente.cognome + " " + nuovoCliente.nome).type('{enter}');
+    cy.get('input[name="main-search-input"]').type(nuovoClientePF.cognome + " " + nuovoClientePF.nome).type('{enter}');
     cy.get('lib-client-item').first().click();
   })
 
@@ -191,9 +201,5 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
     cy.contains('Cancellazione cliente').click();
     cy.contains('Cancella cliente').click();
     cy.contains('Ok').click();
-
-    cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
   })
 })

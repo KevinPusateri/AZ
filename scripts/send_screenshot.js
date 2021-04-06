@@ -11,16 +11,12 @@ const nodemailer = require('..//node_modules//nodemailer');
 var FtpDeploy = require('ftp-deploy');
 //#endregion
 
-//#region Clean QA log folder
-rimraf.sync('..//results');
-//#endregion
-
 //Edit as you want with path to postman_environment + collection directory of tests
 const htmlExportLogMailTo = 'andrea.oboe@allianz.it, kevin.pusateri@allianz.it';
 
 const moment = require('moment');
 const currentDT = moment().format('YYYY-MM-DD_HH.mm.ss');
-const dirLogs = '..//results';
+const dirLogs = '..//cypress//screenshots//';
 
 
 const sendFTP = async() => {
@@ -87,7 +83,7 @@ const sendMail = async() =>{
 		attachments: [
 			{
 				filename: 'MW_FE_PREPROD.zip',
-				path: dirLogs + '..//MW_FE_PREPROD.zip'
+				path: '..//MW_FE_PREPROD.zip'
 					
 			}
 		]
