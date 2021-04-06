@@ -44,7 +44,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.get('lib-sub-header-right').click()
     });
 
-    it('Verifica Gestione Documentale', function () {
+    it.only('Verifica Gestione Documentale', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
         cy.get('lib-news-image').click();

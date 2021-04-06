@@ -33,9 +33,14 @@ describe('Buca di Ricerca', function () {
         cy.url().should('include', '/search/clients/clients')
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
 
-        const links = ['Ricerca Cliente', 'Ricerca Polizze proposte',
-             'Ricerca Preventivi','Ricerca Documenti','Ricerca News','Rubrica'];
-        
+        const links = [
+            'Ricerca Cliente',
+            'Ricerca Polizze proposte',
+            'Ricerca Preventivi',
+            'Ricerca Documenti',
+            'Ricerca News',
+            'Rubrica'
+            ];     
         cy.get('nx-modal-container').find('lib-da-link').each(($linkRicerca, i) =>{
             expect($linkRicerca.text().trim()).to.include(links[i]);
         })
@@ -49,8 +54,9 @@ describe('Buca di Ricerca', function () {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
         
         cy.get('nx-modal-container').find('lib-da-link').contains('Ricerca Cliente').click()
-        //TODO Verificare ch sei arrivato nella vecchia schermata di ricerca
         cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
+        cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+
     })
 
 })

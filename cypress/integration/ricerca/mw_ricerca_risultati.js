@@ -31,13 +31,26 @@ describe('Buca di Ricerca - Risultati', function () {
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
         cy.url().should('include', '/search/clients/clients')
-        cy.get('[class^="docs-grid-colored-row tabs-container"]').find('[class^="tab-header"]').should(($tab) =>{
+        const tabHeader = [
+            'clients',
+            'sales',
+            'le mie info'
+        ]        
+      
+        // TODO
+        cy.get('[class^="docs-grid-colored-row tabs-container"]').find('[class^="tab-header"]').each(($tab,i) =>{
             expect($tab).to.contain('clients')
             expect($tab).to.contain('sales')
             expect($tab).to.contain('le mie info')
         })
 
         cy.get('lib-advice-navigation-section').contains('Suggerimenti di navigazione').should('exist').and('be.visible')
+
+        const suggLinks = [
+            'Provvigioni',
+            'Quattroruote - Calcolo valore Veicolo',
+            Interr
+        ]
         cy.get('lib-advice-navigation-section').find('.position-sidebar>.title').should('have.length',5).should(($suggerimenti) =>{
             expect($suggerimenti).to.contain('Provvigioni')
             expect($suggerimenti).to.contain('Quattroruote - Calcolo valore Veicolo')
