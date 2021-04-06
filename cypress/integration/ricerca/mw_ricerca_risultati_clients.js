@@ -56,7 +56,7 @@ describe('Buca di Ricerca - Risultati Clients', function () {
          })
     })
 
-    it.only('Verifica Modifica filtri',function(){
+    it('Verifica Modifica filtri',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('AR').type('{enter}')
         cy.url().should('include','search/clients/clients').wait(3000)

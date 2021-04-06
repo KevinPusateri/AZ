@@ -226,18 +226,10 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
     })
 
     //TODO modifica controllo elenco + verifica suggerimeti
-    it.only('Verifica Ricerca Proddotto: Ultra',function(){
+    it('Verifica Ricerca Proddotto: Ultra',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('ultra').type('{enter}').wait(2000)
         cy.url().should('include','matrix/search/clients/clients')
-
-        const tabs = ['clients', 'sales', 'le mie info'];
-        cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('clients').should('have.class','active')
-        cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').find('a').should('have.length',3)
-           .each(($tab, i) => {
-                expect($tab.text()).to.include(tabs[i]);
-            });
-    
         const suggLinks = [
             'Allianz Ultra Casa e Patrimonio',
             'Allianz Ultra Casa e Patrimonio BMP',
@@ -247,6 +239,16 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
             .each(($suggerimenti,i) =>{
             expect($suggerimenti.text()).to.include(suggLinks[i]);
         })
+        const tabs = ['clients', 'sales', 'le mie info'];
+        cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').find('a').should('have.length',3)
+           .each(($tab, i) => {
+                expect($tab.text()).to.include(tabs[i]);
+            });
+        cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('clients').click()
+        cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('clients').should('have.class','active')
+        
+    
+        
         const tabsContainer = ['Clienti'];
         cy.get('[class="lib-tab-info nx-grid"]').find('[href^="/matrix/search/clients/clients"]').should('have.length',1).each(($tab, i) =>{
             expect($tab.text()).to.include(tabsContainer[i]);
@@ -259,21 +261,21 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                 if($name.text().trim().length > 0){
                     cy.wrap($name).should('contain',$name.text().trim()) 
                 }else{
-                    assert.fail('Manca compagnia su un elemento della pagina clients')
+                    assert.fail('Manca nome su un elemento della pagina clients')
                 }
             }) 
             cy.wrap($client).find('[class="lib-agency-container"]').then($agency =>{
                 if($agency.text().trim().length > 0){
                     cy.wrap($agency).should('contain',$agency.text().trim()) 
                 }else{
-                    assert.fail('Manca info a chi sono indirizzate su un elemento della pagina clients')
+                    assert.fail('Manca agenzia su un elemento della pagina clients')
                 }
             }) 
-            cy.wrap($client).find('[class="title"]').then($item =>{
+            cy.wrap($client).find('[class="item"]').then($item =>{
                 if($item.text().trim().length > 0){
                     cy.wrap($item).should('contain', $item.text().trim()) 
                 }else{
-                    assert.fail('Manca titolo su un elemento della pagina clients')
+                    assert.fail('Manca indirizzo su un elemento della pagina clients')
                 }
             }) 
 
