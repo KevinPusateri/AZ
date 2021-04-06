@@ -83,7 +83,7 @@ const sendMail = async() =>{
 		attachments: [
 			{
 				filename: 'MW_FE_PREPROD.zip',
-				path: dirLogs + '..//MW_FE_PREPROD.zip'
+				path: '..//MW_FE_PREPROD.zip'
 					
 			}
 		]
