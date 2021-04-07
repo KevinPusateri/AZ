@@ -64,6 +64,17 @@ before(() => {
   cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
   cy.get('input[type="SUBMIT"]').click()
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+
+  //Skip this two requests that blocks on homepage
+  cy.intercept(/embed.nocache.js/).as('embededNoCache');
+
+  cy.intercept({
+    method: 'POST',
+    url: /launch-*/
+  }).as('launchStaging');
+
+  cy.wait('@embededNoCache', { timeout: 2000 })
+  cy.wait('@launchStaging', { timeout: 2000 })
 })
 
 beforeEach(() => {
@@ -75,12 +86,12 @@ beforeEach(() => {
   })
 })
 
-after(() => {
-  cy.get('.user-icon-container').click()
-  cy.contains('Logout').click()
-  cy.wait(delayBetweenTests)
-  cy.clearCookies();
-})
+// after(() => {
+//   cy.get('.user-icon-container').click()
+//   cy.contains('Logout').click()
+//   cy.wait(delayBetweenTests)
+//   cy.clearCookies();
+// })
 
 describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
 
@@ -88,8 +99,17 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         cy.contains('Clients').click();
         cy.contains('Nuovo cliente').click();
         cy.contains('Persona giuridica').click();
-        cy.get('#nx-tab-content-0-1 > div > app-new-client-fiscal-code-box > div > div:nth-child(4) > div > nx-formfield').click().type(nuovoClientePG.partitaIva);
+        cy.get('#nx-tab-content-0-1 > div > app-new-client-fiscal-code-box > div > div:nth-child(4) > div > nx-formfield').click().type(nuovoClientePG.partitaIva+"1");
+
+        cy.intercept({
+          method: 'POST',
+          url: /graphql/
+        }).as('graphqlRicerca');
+
         cy.get('span:contains("Cerca"):last').click();
+
+        cy.wait('@graphqlRicerca', { requestTimeout: 20000 });
+        
         cy.contains('Aggiungi cliente').click();
     })
 
@@ -112,13 +132,29 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         //Sede Legale
         getSCU().find('span[aria-owns="toponomastica_listbox"]').click();
         getSCU().find('li').contains(/^PIAZZA$/).click();
-        getSCU().find('#indirizzo-via').type('GIUSEPPE GARIBALDI');
+        getSCU().find('#indirizzo-via').type('GIUSEPPE GARIBALDO');
         getSCU().find('#indirizzo-num').type('1');
         getSCU().find('#residenza-comune').type('LONIGO');
         getSCU().find('#residenza-comune_listbox').click();
         //Contatto Email
         getSCU().find('#email').type(nuovoClientePG.email);
+
+        cy.intercept({
+          method: 'POST',
+          url: /NormalizzaUbicazione/
+        }).as('normalizzaUbicazione');
+
         getSCU().find('button:contains("Avanti")').click();
+
+        cy.wait('@normalizzaUbicazione', { requestTimeout: 10000 });
+
+        //#region Verifica presenza normalizzatore
+        getSCU().find('#Allianz-msg-container').then((container) => {
+            if (container.find('li:contains(normalizzata)').length > 0) {
+              getSCU().find('button:contains("Avanti")').click();
+            }
+        });
+        //#endregion
     })
 
     it('Consensi > tutto no', () => {
@@ -129,7 +165,29 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         getSCU().find('label[for="promo-allianz-profilazione-no"]').click();
         getSCU().find('label[for="promo-allianz-indagini-no"]').click();
         getSCU().find('label[for="quest-adeguatezza-vita-no"]').click();
+
+        cy.intercept({
+          method: 'GET',
+          url: /VerificaPiva*/
+        }).as('verificaPiva');
+
+        cy.intercept({
+          method: 'POST',
+          url: /Post/
+        }).as('post');
+
         getSCU().find('button:contains("Avanti")').click();
+
+        cy.wait('@verificaPiva', { requestTimeout: 10000 });
+        cy.wait('@post', { requestTimeout: 10000 });
+
+        //#region Verifica presenza normalizzatore
+        getSCU().find('#Allianz-msg-container').then((container) => {
+          if (container.find('li:contains(normalizzata)').length > 0) {
+            getSCU().find('button:contains("Avanti")').click();
+          }
+        });
+        //#endregion
 
         getSCU().find('button:contains("Conferma")').click();
     })
@@ -152,13 +210,15 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         getFolder().find('#file').attachFile({ 
           fileContent, 
           fileName, 
-          mimeType: 'application/pdf'
-        },{ subjectType: 'input' });
+          mimeType,
+          name: "Autocertificazione_Test.pdf", 
+          encoding: 'base64' 
+        });
       });
 
       getFolder().contains('Upload dei file selezionati').click();
       cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 });
-      
+
       getSCU().find('button:contains("Conferma")').click();
       getSCU().find('button:contains("Inserisci il documento")').click();
     })
@@ -170,9 +230,24 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         getFolder().find('#win-upload-document_wnd_title').click();
         getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}');
         getFolder().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('Visura').type('{enter}');
-        getFolder().find('#file').attachFile(fileName);
-        getFolder().contains('Upload dei file selezionati').click();
-        getSCU().find('button:contains("Conferma")').click();
+        cy.intercept({
+          method: 'POST',
+          url: /uploadCustomerDocument/
+        }).as('uploadCustomerDoc');
+
+        const fileName = 'Autocertificazione_Test.pdf';
+        cy.fixture(fileName).then(fileContent => {
+          getFolder().find('#file').attachFile({ 
+            fileContent, 
+            fileName, 
+            mimeType: 'application/pdf'
+          },{ subjectType: 'input' });
+        });
+
+      getFolder().contains('Upload dei file selezionati').click();
+      cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 });
+        
+      getSCU().find('button:contains("Conferma")').click();
         
         //#region Generazione documentazione
         cy.intercept({
@@ -185,17 +260,27 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
           url: /GenerazioneStampe/
         }).as('generazioneStampe');
 
+        cy.intercept({
+          method: 'POST',
+          url: /SalvaInContentManager/
+        }).as('salvaInContentManager');
+
         cy.wait('@writeConsensi', { requestTimeout: 60000 });
         cy.wait('@generazioneStampe', { requestTimeout: 60000 });
+        cy.wait('@salvaInContentManager', { requestTimeout: 60000 });
 
         getSCU().find('#endWorkflowButton').click();
         //#endregion
     })
 
     it('Ricercare il cliente appena censito nella buca di ricerca', () => {
-        cy.get('lib-header-logo').click();
-        cy.contains('Clients').click();
-        cy.get('input[name="main-search-input"]').type(nuovoClientePG.ragioneSociale).type('{enter}');
-        cy.get('lib-client-item').first().click();
+      cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix')
+      cy.contains('Clients').click();
+      cy.get('input[name="main-search-input"]').type(nuovoClientePG.partitaIva).type('{enter}');
+      cy.get('lib-client-item').first().click();
+    })
+
+    it('Verificare varie informazioni cliente', () => {
+      cy.get('div[ngClass="client-name"]').should('contain',nuovoClientePG.ragioneSociale)
     })
 })
