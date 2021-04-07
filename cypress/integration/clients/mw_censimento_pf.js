@@ -181,16 +181,31 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
       },{ subjectType: 'input' });
     });
 
-    cy.wait('@uploadPdfDoc', { requestTimeout: 120000 });
-    cy.wait('@preview', { requestTimeout: 120000 });
+    cy.wait('@uploadPdfDoc', { requestTimeout: 30000 });
+    cy.wait('@preview', { requestTimeout: 30000 });
 
     getDocumentoPersonale().find('#importMobileDocument').click();
-    cy.wait('@uploadMobileDoc', { requestTimeout: 120000 });
+    cy.wait('@uploadMobileDoc', { requestTimeout: 30000 });
 
     getSCU().contains('Conferma').click();
     //#endregion
   
+    //#region Generazione documentazione
+    cy.intercept({
+      method: 'POST',
+      url: /WriteConsensi/
+    }).as('writeConsensi');
+
+    cy.intercept({
+      method: 'POST',
+      url: /GenerazioneStampe/
+    }).as('generazioneStampe');
+
+    cy.wait('@writeConsensi', { requestTimeout: 60000 });
+    cy.wait('@generazioneStampe', { requestTimeout: 60000 });
+
     getSCU().find('#endWorkflowButton').click();
+    //#endregion
   })
 
   it('Ricercare il cliente appena censito nella buca di ricerca', () => {

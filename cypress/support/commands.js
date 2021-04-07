@@ -87,3 +87,11 @@ import 'cypress-file-upload';
 
     return Promise.all(loaded).then(resolve);
   }));
+
+  Cypress.Commands.overwrite("clearCookies", () => {
+    cy.getCookies().then(cookies => {
+        for (const cookie of cookies) {
+            cy.clearCookie(cookie.name)
+        }
+    })
+})

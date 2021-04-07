@@ -5,7 +5,7 @@
 /// <reference types="Cypress" />
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 //#endregion
 
@@ -14,63 +14,38 @@ const getSCU = () => {
   cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .iframe();
 
-  let  iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+  let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .its('0.contentDocument').should('exist');
 
   return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const getFolder = () => {
-  //cy.wait(6000);
-  //let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-  //.its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
   getSCU().find('iframe[class="w-100"]')
   .iframe();
 
-  let  iframeFolder = getSCU().find('iframe[class="w-100"]')
+  let iframeFolder = getSCU().find('iframe[class="w-100"]')
   .its('0.contentDocument').should('exist');
 
   return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
-
-
-  //let iframeFolder = bodySCU.find('iframe[class="w-100"]')
-  //.its('0.contentDocument').should('exist');
-
- //return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const getDocumentScanner = () => {
+  getFolder().find('iframe[src*="IdDocumentScanner"]')
+  .iframe();
 
-  cy.wait(2000);
-
-  let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
-  let bodyFolder = bodySCU.find('iframe[class="w-100"]')
-  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
-  let iframeDocumentScanner = bodyFolder.find('iframe[src*="IdDocumentScanner"]')
+  let iframeDocumentScanner = getFolder().find('iframe[src*="IdDocumentScanner"]')
   .its('0.contentDocument').should('exist');
 
-  return iframeDocumentScanner.its('body').should('not.be.undefined').then(cy.wrap);
+  return iframeDocumentScanner.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const getDocumentoPersonale = () => {
+  getDocumentScanner().find('#documentoPersonaleFrame')
+  .iframe();
 
-  cy.wait(4000);
-
-  let bodySCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
-  let bodyFolder = bodySCU.find('iframe[class="w-100"]')
-  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
-  let iframeDocumentScanner = bodyFolder.find('iframe[src*="IdDocumentScanner"]')
-  .its('0.contentDocument').should('exist').its('body').should('not.be.undefined').then(cy.wrap);
-
-  let iframeDocumentoPersonale = iframeDocumentScanner.find('#documentoPersonaleFrame')
-  .its('0.contentDocument').should('exist')
+  let iframeDocumentoPersonale = getDocumentScanner().find('#documentoPersonaleFrame')
+  .its('0.contentDocument').should('exist');
 
   return iframeDocumentoPersonale.its('body').should('not.be.undefined').then(cy.wrap)
 }
@@ -83,6 +58,7 @@ before(() => {
     nuovoClientePG = object;
   });
 
+  cy.clearCookies();
   cy.visit('https://matrix.pp.azi.allianz.it/')
   cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
   cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
@@ -103,6 +79,7 @@ after(() => {
   cy.get('.user-icon-container').click()
   cy.contains('Logout').click()
   cy.wait(delayBetweenTests)
+  cy.clearCookies();
 })
 
 describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
@@ -154,12 +131,6 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         getSCU().find('label[for="quest-adeguatezza-vita-no"]').click();
         getSCU().find('button:contains("Avanti")').click();
 
-            //Verifica se i dati sono stati normalizzati
-    //getSCU().then(($body)=>{
-    //   if($body.find('li:contains("normalizzati")'))
-    //     getSCU().find('button:contains("Avanti")').click();
-    // });
-
         getSCU().find('button:contains("Conferma")').click();
     })
 
@@ -170,9 +141,24 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
       getFolder().find('#win-upload-document_wnd_title').click();
       getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}');
       getFolder().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('{downarrow}').type('{downarrow}').type('{enter}');
+
+      cy.intercept({
+        method: 'POST',
+        url: /uploadCustomerDocument/
+      }).as('uploadCustomerDoc');
+
       const fileName = 'Autocertificazione_Test.pdf';
-      getFolder().find('#file').attachFile(fileName);
+      cy.fixture(fileName).then(fileContent => {
+        getFolder().find('#file').attachFile({ 
+          fileContent, 
+          fileName, 
+          mimeType: 'application/pdf'
+        },{ subjectType: 'input' });
+      });
+
       getFolder().contains('Upload dei file selezionati').click();
+      cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 });
+      
       getSCU().find('button:contains("Conferma")').click();
       getSCU().find('button:contains("Inserisci il documento")').click();
     })
@@ -188,8 +174,22 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         getFolder().contains('Upload dei file selezionati').click();
         getSCU().find('button:contains("Conferma")').click();
         
-        cy.wait(12000);
+        //#region Generazione documentazione
+        cy.intercept({
+          method: 'POST',
+          url: /WriteConsensi/
+        }).as('writeConsensi');
+
+        cy.intercept({
+          method: 'POST',
+          url: /GenerazioneStampe/
+        }).as('generazioneStampe');
+
+        cy.wait('@writeConsensi', { requestTimeout: 60000 });
+        cy.wait('@generazioneStampe', { requestTimeout: 60000 });
+
         getSCU().find('#endWorkflowButton').click();
+        //#endregion
     })
 
     it('Ricercare il cliente appena censito nella buca di ricerca', () => {
