@@ -27,7 +27,7 @@
     "nav_news": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/navigation/mw_navigation_news.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_News.xml,toConsole=true\"",
     "nav_numbers": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/navigation/mw_navigation_numbers.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_Numbers.xml,toConsole=true\"",
     "nav_sales": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/navigation/mw_navigation_sales.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_Sales.xml,toConsole=true\"",
-    "cypress:run:navigations": "npm-run-all -s -c nav_backOffice nav_burgerMenuClients",
+    "cypress:run:navigations": "npm-run-all -s -c nav_backOffice",
     "rc_classica": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_classica.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Classica.xml,toConsole=true\"",
     "rc_ris_clients": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati_clients.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati_Clients.xml,toConsole=true\"",
     "rc_ris_mieInfo": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati_mieInfo.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati_Mie_Info.xml,toConsole=true\"",

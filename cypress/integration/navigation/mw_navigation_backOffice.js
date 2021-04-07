@@ -12,7 +12,6 @@ const delayBetweenTests = 2000
 
 //#region Global Variables
 const closePopup = () => cy.get('button[aria-label="Close dialog"]').click()
-//#endregion
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -43,14 +42,17 @@ let iframeFolder = getIFrame().find('iframe[src="cliente.jsp"]')
 
 return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
+//#endregion
 
 before(() => {
+    cy.clearCookies();
     cy.visit('https://matrix.pp.azi.allianz.it/')
     cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
     cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
+
 beforeEach(() => {
     cy.viewport(1920, 1080)
     // Preserve cookie in every test
@@ -60,9 +62,11 @@ beforeEach(() => {
         }
     })
 })
+
 after(() => {
     cy.get('.user-icon-container').click()
     cy.contains('Logout').click()
+    cy.clearCookies();
 })
 
 describe('Matrix Web : Navigazioni da BackOffice', function () {
