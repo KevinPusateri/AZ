@@ -14,20 +14,15 @@ const delayBetweenTests = 2000
 const closePopup = () => cy.get('button[aria-label="Close dialog"]').click()
 //#endregion
 
-// beforeEach(() => {
-//         cy.viewport(1920, 1080)
-//         cy.visit('https://matrix.pp.azi.allianz.it/')
-//         cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
-//         cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
-//         cy.get('input[type="SUBMIT"]').click()
-//         cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
-// })
-
-// afterEach(() => {
-//         cy.get('.user-icon-container').click()
-//         cy.contains('Logout').click()
-//         cy.wait(delayBetweenTests)
-// })
+const getSCU = () => {
+    cy.get('iframe[class="iframe-content ng-star-inserted"]')
+    .iframe();
+  
+    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+    .its('0.contentDocument').should('exist');
+  
+    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+  }
 
 before(() => {
     cy.visit('https://matrix.pp.azi.allianz.it/')
@@ -48,7 +43,6 @@ beforeEach(() => {
 after(() => {
     cy.get('.user-icon-container').click()
     cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
 })
 
 describe('Matrix Web : Navigazioni da BackOffice', function () {
