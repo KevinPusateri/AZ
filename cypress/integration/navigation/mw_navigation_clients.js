@@ -7,12 +7,20 @@
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 15000)
-const delayBetweenTests = 2000
 //#endregion
 
 //#region Global Variables
 const closePopup = () => cy.get('button[aria-label="Close dialog"]').click()
-const backToClients = () => cy.get('a').contains('Clients').click().wait(2000)
+const backToClients = () => cy.get('a').contains('Clients').click()
+const getIFrame = () => {
+    cy.get('iframe[class="iframe-content ng-star-inserted"]')
+    .iframe();
+  
+    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+    .its('0.contentDocument').should('exist');
+  
+    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+}
 //#endregion
 
 before(() => {
@@ -20,21 +28,20 @@ before(() => {
     cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
     cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
     cy.get('input[type="SUBMIT"]').click()
-    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
-  
 beforeEach(() => {
     cy.viewport(1920, 1080)
-    //amlogin-pp.allianz.it & daintesp.pp.azi.allianz.it
-    Cypress.Cookies.preserveOnce('JSESSIONID')
-    //pp.azi.allianz.it
-    Cypress.Cookies.preserveOnce('IPCZQX037b3024be')
+    // Preserve cookie in every test
+    Cypress.Cookies.defaults({
+        preserve: (cookie) => {
+            return true;
+        }
+    })
 })
-  
 after(() => {
     cy.get('.user-icon-container').click()
     cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
 })
 
 describe('Matrix Web : Navigazioni da Clients', function () {
@@ -52,20 +59,24 @@ describe('Matrix Web : Navigazioni da Clients', function () {
 
     it('Verifica aggancio Pannello anomalie', function () {
         cy.get('app-rapid-link').contains('Pannello anomalie').click()
-        //TODO entrare dopo la disambiguazione nel pannello anomalie
-        closePopup()
+        cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
+        getIFrame().find('span:contains("Persona fisica"):visible')
+        getIFrame().find('span:contains("Persona giuridica"):visible')
+        backToClients()
     });
     
     it('Verifica aggancio Clienti duplicati', function () {
         cy.get('app-rapid-link').contains('Clienti duplicati').click()
-        //TODO verificare che sono entrato nei clienti duplicati
+        getIFrame().find('span:contains("Persona fisica"):visible')
+        getIFrame().find('span:contains("Persona giuridica"):visible')
         backToClients()
     });
 
     it('Verifica aggancio Antiriciclaggio', function () {
         cy.get('app-rapid-link').contains('Antiriciclaggio').click()
-        //TODO verifica dopo la disambiguazione che sono entrato nell'antiriciclaggio
-        closePopup()
+        cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
+        getIFrame().find('#divMain:contains("Servizi antiriciclaggio"):visible')
+        backToClients()
     });
 
     it('Verifica aggancio Nuovo cliente', function () {
@@ -75,14 +86,14 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     });
 
     it('Verifica aggancio Vai a visione globale', function () {
-        cy.get('.actions-box').contains('Vai a visione globale').click()
-        //TODO verifica atterraggio in visione globale
+        cy.get('.actions-box').contains('Vai a visione globale').click().wait(15000)
+        getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
         backToClients()
     });
 
     it('Verifica aggancio Appuntamenti', function () {
         cy.get('.meetings').click()
-        //TODO verifica dopo la disambiguazione che sono entrato nell'antiriciclaggio
-        backToClients()
+        cy.url().should('include', '/clients/event-center')
+        cy.get('lib-sub-header-right').find('nx-icon').click()
     });
 })
