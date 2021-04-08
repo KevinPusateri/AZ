@@ -201,8 +201,14 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
       url: /GenerazioneStampe/
     }).as('generazioneStampe');
 
+    cy.intercept({
+      method: 'POST',
+      url: /SalvaInContentManager/
+    }).as('salvaInContentManager');
+
     cy.wait('@writeConsensi', { requestTimeout: 60000 });
     cy.wait('@generazioneStampe', { requestTimeout: 60000 });
+    cy.wait('@salvaInContentManager', { requestTimeout: 60000 });
 
     getSCU().find('#endWorkflowButton').click();
     //#endregion
