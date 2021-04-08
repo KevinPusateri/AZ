@@ -21,8 +21,8 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     it('Log In', function () {
         cy.viewport(1920, 1080)
         cy.visit('https://matrix.pp.azi.allianz.it/')
-        cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
-        cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
+        cy.get('input[name="Ecom_User_ID"]').type('TUTF008')
+        cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
         cy.get('input[type="SUBMIT"]').click()
         cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
     });

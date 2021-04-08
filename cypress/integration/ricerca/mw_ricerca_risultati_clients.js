@@ -12,8 +12,8 @@ const delayBetweenTests = 2000
 beforeEach(() => {
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
-    cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
+    cy.get('input[name="Ecom_User_ID"]').type('TUTF008')
+    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
@@ -57,29 +57,19 @@ describe('Buca di Ricerca - Risultati Clients', function () {
     })
 
     it('Verifica Modifica filtri',function(){
-        // cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').click().type('AR').type('{enter}')
         cy.url().should('include','search/clients/clients').wait(5000)
-
+        
         cy.get('.icon').find('[name="filter"]').click()
+        cy.get('.filter-group').find('span:contains("Effettivo"):visible')
+        cy.get('.filter-group').find('span:contains("Potenziale"):visible')
+        cy.get('.filter-group').find('span:contains("Cessato"):visible')
+        cy.get('.filter-group').find('span:contains("Persona fisica"):visible')
+        cy.get('.filter-group').find('span:contains("Persona giuridica"):visible')
         cy.get('.filter-group').contains('Potenziale').click()
         cy.get('.filter-group').find('nx-checkbox').first().click()
         cy.get('.footer').find('button').contains('applica').click()
-
-        cy.get('[class="lib-applied-filters-item"]').find('span').should('have.length',6).each($filter =>{
-            cy.wrap($filter).should('contain',$filter.text().trim())
-        })
-        const checkFilter = [
-            '73-742-000 TRIESTE DIAZ',
-            '73-742-060 TRIESTE DIAZ',
-            'Persona fisica',
-            'Persona giuridica',
-            'Effettivo',
-            'Cessato'
-        ]
-        cy.get('lib-applied-filters-item').find('span').should('have.length',6).each(($filter,i) =>{
-             expect($filter.text().trim()).to.include(checkFilter[i]);
-        })
+        cy.get('lib-applied-filters-item').find('span').should('have.length',6).should('be.visible')
 
     })
 

@@ -11,8 +11,6 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region Global Variables
-const closePopup = () => cy.get('button[aria-label="Close dialog"]').click()
-
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
     .iframe();
@@ -50,10 +48,11 @@ before(() => {
   cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
   cy.intercept(/launch-*/,'ignore').as('launchStaging');
     cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
-    cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
+    cy.get('input[name="Ecom_User_ID"]').type('TUTF008')
+    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
+    cy.get('app-product-button-list').find('a').contains('Backoffice').click()
 })
 
 beforeEach(() => {
@@ -75,7 +74,6 @@ after(() => {
 describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     it('Verifica atterraggio su BackOffice', function () {
-        cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
     });
 
@@ -156,6 +154,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Denuncia', function () {
+        cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia')
         cy.get('.backoffice-card').find('a').contains('Denuncia').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         getIFrameDenuncia().find('[class="pageTitle"]:contains("Ricerca cliente"):visible')
@@ -168,6 +167,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Denuncia BMP', function () {
+        cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
         cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         getIFrame().find('h4:contains("Dettaglio cliente"):visible')
@@ -181,6 +181,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Consultazione sinistri', function () {
+        cy.get('app-backoffice-cards-list').first().find('a').should('contain','Consultazione sinistri')
         cy.get('.backoffice-card').find('a').contains('Consultazione sinistri').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         // getIFrame().find('#tab-sinistro:contains("Numero Sinistro"):visible')
@@ -195,7 +196,8 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Sinistri incompleti', function () {
-        cy.get('.backoffice-card').find('a').contains('Sinistri incompleti').click()
+        cy.get('app-backoffice-cards-list').first().find('a').should('contain','Sinitri incompleti')
+        cy.get('.backoffice-card').find('a').contains('Sinitri incompleti').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         getIFrame().find('button:contains("Chiudi")').click()
         getIFrame().find('h2:contains("Sinistri Incompleti"):visible')
@@ -204,6 +206,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Sinistri canalizzati', function () {
+        cy.get('app-backoffice-cards-list').first().find('a').should('contain','Sinistri canalizzati')
         cy.get('.backoffice-card').find('a').contains('Sinistri canalizzati').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         // getIFrame().find('td:contains("Sinistri Canalizzati"):visible')
@@ -213,6 +216,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
     })
     it('Verifica apertura disambiguazione: Sintesi Contabilità', function () {
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Sintesi Contabilità')
         cy.get('.backoffice-card').find('a').contains('Sintesi Contabilità').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         // getIFrame().find('ul > li > span:contains("Sintesi Contabilità"):visible')
@@ -227,6 +231,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Giornata contabile', function () {
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Giornata contabile')
         cy.get('.backoffice-card').find('a').contains('Giornata contabile').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         // getIFrame().find('ul > li > span:contains("Giornale di cassa"):visible')
@@ -244,6 +249,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Consultazione Movimenti', function () {
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Consultazione Movimenti')
         cy.get('.backoffice-card').find('a').contains('Consultazione Movimenti').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         // getIFrame().find('ul > li > span:contains("Consultazione movimenti"):visible')
@@ -259,6 +265,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Estrazione Contabilità', function () {
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Estrazione Contabilità')
         cy.get('.backoffice-card').find('a').contains('Estrazione Contabilità').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         getIFrame().find('h3:contains("ExtraDAS"):visible')
@@ -270,6 +277,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Deleghe SDD', function () {
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Deleghe SDD')
         cy.get('.backoffice-card').find('a').contains('Deleghe SDD').click()
         cy.get('nx-modal-container').find('.agency-row').first().click().wait(7000)
         // getIFrame().find('div:contains("Gestione deleghe SDD"):visible')
@@ -280,6 +288,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Quadratura unificata', function () {
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Quadratura unificata')
         cy.get('.backoffice-card').find('a').contains('Quadratura unificata').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         getIFrame().find('#quadNavigationBar:contains("Q.U.A.D. - home page"):visible')
@@ -292,7 +301,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Incasso per conto', function () {
-
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Incasso per conto')
         cy.get('.backoffice-card').find('a').contains('Incasso per conto').click()
         cy.get('nx-modal-container').find('.agency-row').first().click().wait(8000)
         // getIFrame().find('div[class="testo"]:contains("Ricerca"):visible')
@@ -304,6 +313,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
        
     it('Verifica apertura disambiguazione: Incasso massivo', function () {
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Incasso massivo')
         cy.get('.backoffice-card').find('a').contains('Incasso massivo').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         // getIFrame().find('span:contains("Incasso Massivo"):visible')
@@ -314,6 +324,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Sollecito titoli', function () {
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Sollecito titoli')
         cy.get('.backoffice-card').find('a').contains('Sollecito titoli').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         getIFrame().find('span:contains("Gestione Sollecito Titoli")')
@@ -325,6 +336,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Impostazione contabilità', function () {
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Impostazione contabilità')
         cy.get('.backoffice-card').find('a').contains('Impostazione contabilità').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
         getIFrame().find('ul > li > span:contains("Gestione dispositivi POS"):visible')

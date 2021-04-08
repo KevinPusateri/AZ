@@ -2,27 +2,27 @@
 
 Cypress.config('defaultCommandTimeout', 15000)
 
-const getApp = () => {
+//#region Global Variables
+const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
     .iframe();
   
-    let  iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
     .its('0.contentDocument').should('exist');
   
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-  
-const closePopup = () => cy.get('button[aria-label="Close dialog"]').click()
 const backToClients = () => cy.get('a').contains('Clients').click().wait(5000)
 const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
+//#endregion
 
 
 describe('Matrix Web : Navigazioni da Sales - ', function () {
     it('Log In', function () {
         cy.viewport(1920, 1080)
         cy.visit('https://matrix.pp.azi.allianz.it/')
-        cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
-        cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
+        cy.get('input[name="Ecom_User_ID"]').type('TUTF008')
+        cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
         cy.get('input[type="SUBMIT"]').click()
         cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
     });
@@ -31,13 +31,21 @@ describe('Matrix Web : Navigazioni da Sales - ', function () {
         // manca iframe card e back dopodiche finito test
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
-     
         cy.get('app-quick-access').contains('Sfera').click()
-        closePopup()
-        
+        canaleFromPopup()
+        getIFrame().find('ul > li > span:contains("Quietanzamento"):visible')
+        getIFrame().find('ul > li > span:contains("Visione Globale"):visible')
+        getIFrame().find('ul > li > span:contains("Portafoglio"):visible')
+        getIFrame().find('ul > li > span:contains("Clienti"):visible')
+        getIFrame().find('ul > li > span:contains("Uscite Auto"):visible')
+        getIFrame().find('ul > li > span:contains("Gestore Attività"):visible')
+        getIFrame().find('ul > li > span:contains("Operatività"):visible')
+
+
         cy.get('app-quick-access').contains('Campagne Commerciali').click()
         cy.url().should('include', '/campaign-manager')
         cy.get('a').contains('Sales').click()
+        canaleFromPopup()
 
         cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
         closePopup()

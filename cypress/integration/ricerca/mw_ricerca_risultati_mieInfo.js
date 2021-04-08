@@ -12,8 +12,8 @@ const delayBetweenTests = 2000
 beforeEach(() => {
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
-    cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
+    cy.get('input[name="Ecom_User_ID"]').type('TUTF008')
+    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
@@ -26,7 +26,6 @@ afterEach(() => {
 
 describe('Buca di Ricerca - Risultati Le mie Info', function () {
     
-    //FATTO
     it('Verifica Ricerca Incasso',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(2000)
@@ -132,7 +131,6 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
 
     })
     
-    //TODO modifica controllo elenco + verifica suggerimeti
     it('Verifica Ricerca Fastquote',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('fastquote').type('{enter}').wait(2000)
@@ -234,7 +232,6 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         })
     })
 
-    //FATTO
     it('Verifica Ricerca Prodotto: Ultra',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('ultra').type('{enter}').wait(2000)
