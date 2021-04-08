@@ -60,11 +60,19 @@ before(() => {
   });
 
   cy.clearCookies();
+  
+  //Skip this two requests that blocks on homepage
+  cy.intercept(/embed.nocache.js/,'success').as('embededNoCache');
+  cy.intercept(/launch-*/,'success').as('launchStaging');
+
   cy.visit('https://matrix.pp.azi.allianz.it/')
   cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
   cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
   cy.get('input[type="SUBMIT"]').click()
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+
+  cy.wait('@embededNoCache', { timeout: 500 })
+  cy.wait('@launchStaging', { timeout: 2000 })
 })
 
 beforeEach(() => {
