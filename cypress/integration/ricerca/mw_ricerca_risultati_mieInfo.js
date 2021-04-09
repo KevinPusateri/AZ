@@ -157,10 +157,11 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
            });
 
         const suggLinks = [
+            'FastQuote Auto',
             'FastQuote Infortuni da circolazione',
             'FastQuote Impresa e Albergo'
         ]
-        cy.get('lib-navigation-item-link').find('.title').should('have.length',2)
+        cy.get('lib-navigation-item-link').find('.title').should('have.length',3)
             .each(($suggerimenti,i) =>{
             expect($suggerimenti.text()).to.include(suggLinks[i]);
         })
