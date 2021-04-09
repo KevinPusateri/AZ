@@ -233,12 +233,12 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - ', function () {
         backToClients()
     })
 
-    it('Verifica Card Auto: Emissione - Assistenza InContatto', function () {
+    it.only('Verifica Card Auto: Emissione - Assistenza InContatto', function () {
         buttonAuto()
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
         cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Assistenza InContatto').click()
+        cy.get('.cdk-overlay-container').find('button').contains('Assistenza InContatto').should('have.length.gt', 1).click()
         canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr','value').should('equal','› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr','value').should('equal','› Avanti')

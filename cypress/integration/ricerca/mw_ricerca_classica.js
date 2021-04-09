@@ -66,7 +66,7 @@ describe('Buca di Ricerca', function () {
         cy.get('nx-modal-container').find('button[aria-label="Close dialog"]').click()
     })
 
-    it.only('Verifica Click su Ricerca Cliente',function(){
+    it('Verifica Click su Ricerca Cliente',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
         cy.url().should('include', '/search/clients/clients')

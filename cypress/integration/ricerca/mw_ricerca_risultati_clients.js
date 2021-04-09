@@ -31,11 +31,11 @@ beforeEach(() => {
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
 })
 
-// afterEach(() => {
-//     cy.get('.user-icon-container').click()
-//     cy.contains('Logout').click()
-//     cy.wait(delayBetweenTests)
-// })
+afterEach(() => {
+    cy.get('.user-icon-container').click()
+    cy.contains('Logout').click()
+    cy.wait(delayBetweenTests)
+})
 
 describe('Buca di Ricerca - Risultati Clients', function () {
     it('Verifica Ricerca Cliente: nome o cognome ',function(){
