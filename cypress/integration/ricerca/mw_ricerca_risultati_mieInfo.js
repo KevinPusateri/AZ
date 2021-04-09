@@ -235,7 +235,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
     it('Verifica Ricerca Prodotto: Ultra',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('ultra').type('{enter}').wait(2000)
-        cy.url().should('include','matrix/search/clients/clients')
+        cy.url().should('include','/search/infos/circulars')
         const suggLinks = [
             'Allianz Ultra Casa e Patrimonio',
             'Allianz Ultra Casa e Patrimonio BMP',
