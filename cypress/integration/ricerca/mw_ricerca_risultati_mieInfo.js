@@ -5,7 +5,7 @@
 /// <reference types="Cypress" />
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 15000)
+Cypress.config('defaultCommandTimeout', 30000)
 const delayBetweenTests = 2000
 //#endregion
 

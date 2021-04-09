@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-Cypress.config('defaultCommandTimeout', 15000)
+Cypress.config('defaultCommandTimeout', 30000)
 
 //#region Global Variables
 const getIFrame = () => {
