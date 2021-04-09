@@ -10,12 +10,25 @@ const delayBetweenTests = 2000
 //#endregion
 
 beforeEach(() => {
+    cy.clearCookies();
+    cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
+    cy.intercept(/launch-*/,'ignore').as('launchStaging');
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF008')
+    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
+    Cypress.Cookies.defaults({
+        preserve: (cookie) => {
+            return true;
+        }
+    })
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+    cy.intercept({
+        method: 'POST',
+        url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
+    }).as('pageMatrix');
+    cy.wait('@pageMatrix', { requestTimeout: 20000 });
 })
 
 afterEach(() => {
@@ -30,7 +43,13 @@ describe('Buca di Ricerca', function () {
     it('Verifica Click su Ricerca Classica',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
+        cy.intercept({
+            method: 'POST',
+            url: '/portaleagenzie.pp.azi.allianz.it/matrix/search/clients/clients'
+        }).as('pageMatrix');
+        cy.wait('@pageMatrix', { requestTimeout: 20000 });
         cy.url().should('include', '/search/clients/clients')
+        
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
 
         const links = [
