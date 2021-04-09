@@ -82,7 +82,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     it('Verifica Appuntamenti Futuri', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-offices')
+        cy.url().should('include', '/back-office')
         cy.get('lib-upcoming-dates').click()
         cy.url().should('include', '/event-center')
         cy.get('lib-sub-header-right').click()
