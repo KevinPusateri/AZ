@@ -29,6 +29,12 @@ beforeEach(() => {
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
+    cy.intercept({
+        method: 'POST',
+        url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
+    }).as('pageMatrix');
+    cy.wait('@pageMatrix', { requestTimeout: 20000 });
+    cy.wait('@gqlNotifications')
 })
 
 afterEach(() => {
