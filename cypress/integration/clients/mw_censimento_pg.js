@@ -10,7 +10,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region Global Variables
-const getSCU = () => {
+const getIframe = () => {
   cy.get('iframe[class="iframe-content ng-star-inserted"]')
   .iframe();
 
@@ -21,10 +21,10 @@ const getSCU = () => {
 }
 
 const getFolder = () => {
-  getSCU().find('iframe[class="w-100"]')
+  getIframe().find('iframe[class="w-100"]')
   .iframe();
 
-  let iframeFolder = getSCU().find('iframe[class="w-100"]')
+  let iframeFolder = getIframe().find('iframe[class="w-100"]')
   .its('0.contentDocument').should('exist');
 
   return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
@@ -81,12 +81,12 @@ beforeEach(() => {
   })
 })
 
-after(() => {
-  cy.get('.user-icon-container').click()
-  cy.contains('Logout').click()
-  cy.wait(delayBetweenTests)
-  cy.clearCookies();
-})
+// after(() => {
+//   cy.get('.user-icon-container').click()
+//   cy.contains('Logout').click()
+//   cy.wait(delayBetweenTests)
+//   cy.clearCookies();
+// })
 
 describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
 
@@ -101,57 +101,57 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
     })
 
     it('Inserire i dati mancanti e premere avanti', () => { 
-        getSCU().find('#ragione-sociale').type(nuovoClientePG.ragioneSociale);
-        getSCU().find('span[aria-owns="forma-giuridica_listbox"]').click();
-        getSCU().find('li').contains(/^S.R.L.$/).click();
-        getSCU().find('span[aria-owns="tipologia_listbox"]').click();
-        getSCU().find('li:contains("DITTA")').click();
-        getSCU().find('span[aria-owns="settore-attivita_listbox"]').click();
-        getSCU().find('li:contains("COSTRUZIONI")').click();
-        getSCU().find('#partita-iva').type(nuovoClientePG.partitaIva);
-        getSCU().find('#codice-fiscale-impresa').type(nuovoClientePG.partitaIva);
-        getSCU().find('#unita-di-mercato').type('1022');
-        getSCU().find('li:contains("1022")').click();
-        getSCU().find('button:contains("Avanti")').click();
+        getIframe().find('#ragione-sociale').type(nuovoClientePG.ragioneSociale);
+        getIframe().find('span[aria-owns="forma-giuridica_listbox"]').click();
+        getIframe().find('li').contains(/^S.R.L.$/).click();
+        getIframe().find('span[aria-owns="tipologia_listbox"]').click();
+        getIframe().find('li:contains("DITTA")').click();
+        getIframe().find('span[aria-owns="settore-attivita_listbox"]').click();
+        getIframe().find('li:contains("COSTRUZIONI")').click();
+        getIframe().find('#partita-iva').type(nuovoClientePG.partitaIva);
+        getIframe().find('#codice-fiscale-impresa').type(nuovoClientePG.partitaIva);
+        getIframe().find('#unita-di-mercato').type('1022');
+        getIframe().find('li:contains("1022")').click();
+        getIframe().find('button:contains("Avanti")').click();
     })
 
     it('Contatti > inserire la mail e modificare l\'indirizzo della sede legale', () => {
         //Sede Legale
-        getSCU().find('span[aria-owns="toponomastica_listbox"]').click();
-        getSCU().find('li').contains(/^PIAZZA$/).click();
-        getSCU().find('#indirizzo-via').type('GIUSEPPE GARIBALDO');
-        getSCU().find('#indirizzo-num').type('1');
-        getSCU().find('#residenza-comune').type('LONIGO');
-        getSCU().find('#residenza-comune_listbox').click();
+        getIframe().find('span[aria-owns="toponomastica_listbox"]').click();
+        getIframe().find('li').contains(/^PIAZZA$/).click();
+        getIframe().find('#indirizzo-via').type('GIUSEPPE GARIBALDO');
+        getIframe().find('#indirizzo-num').type('1');
+        getIframe().find('#residenza-comune').type('LONIGO');
+        getIframe().find('#residenza-comune_listbox').click();
         //Contatto Email
-        getSCU().find('#email').type(nuovoClientePG.email);
+        getIframe().find('#email').type(nuovoClientePG.email);
 
         cy.intercept({
           method: 'POST',
           url: /NormalizzaUbicazione/
         }).as('normalizzaUbicazione');
 
-        getSCU().find('button:contains("Avanti")').click();
+        getIframe().find('button:contains("Avanti")').click();
 
         cy.wait('@normalizzaUbicazione', { requestTimeout: 10000 });
 
         //#region Verifica presenza normalizzatore
-        getSCU().find('#Allianz-msg-container').then((container) => {
+        getIframe().find('#Allianz-msg-container').then((container) => {
             if (container.find('li:contains(normalizzata)').length > 0) {
-              getSCU().find('button:contains("Avanti")').click();
+              getIframe().find('button:contains("Avanti")').click();
             }
         });
         //#endregion
     })
 
     it('Consensi > tutto no', () => {
-        getSCU().find('label[for="invio-documenti-no"]').click();
-        getSCU().find('label[for="firma-grafometrica-no"]').click();
-        getSCU().find('label[for="promo-allianz-no"]').click();
-        getSCU().find('label[for="promo-allianz-terzi-no"]').click();
-        getSCU().find('label[for="promo-allianz-profilazione-no"]').click();
-        getSCU().find('label[for="promo-allianz-indagini-no"]').click();
-        getSCU().find('label[for="quest-adeguatezza-vita-no"]').click();
+        getIframe().find('label[for="invio-documenti-no"]').click();
+        getIframe().find('label[for="firma-grafometrica-no"]').click();
+        getIframe().find('label[for="promo-allianz-no"]').click();
+        getIframe().find('label[for="promo-allianz-terzi-no"]').click();
+        getIframe().find('label[for="promo-allianz-profilazione-no"]').click();
+        getIframe().find('label[for="promo-allianz-indagini-no"]').click();
+        getIframe().find('label[for="quest-adeguatezza-vita-no"]').click();
 
         cy.intercept({
           method: 'GET',
@@ -163,20 +163,20 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
           url: /Post/
         }).as('post');
 
-        getSCU().find('button:contains("Avanti")').click();
+        getIframe().find('button:contains("Avanti")').click();
 
         cy.wait('@verificaPiva', { requestTimeout: 10000 });
         cy.wait('@post', { requestTimeout: 10000 });
 
         //#region Verifica presenza normalizzatore
-        getSCU().find('#Allianz-msg-container').then((container) => {
+        getIframe().find('#Allianz-msg-container').then((container) => {
           if (container.find('li:contains(normalizzata)').length > 0) {
-            getSCU().find('button:contains("Avanti")').click();
+            getIframe().find('button:contains("Avanti")').click();
           }
         });
         //#endregion
 
-        getSCU().find('button:contains("Conferma")').click();
+        getIframe().find('button:contains("Conferma")').click();
     })
 
     it('Da Folder inserire l\'autocertificazione e verificare che l\'inserimento venga bloccato', () => {
@@ -204,8 +204,8 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
       getFolder().contains('Upload dei file selezionati').click();
       cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 });
 
-      getSCU().find('button:contains("Conferma")').click();
-      getSCU().find('button:contains("Inserisci il documento")').click();
+      getIframe().find('button:contains("Conferma")').click();
+      getIframe().find('button:contains("Inserisci il documento")').click();
     })
 
     it('Da Folder inserire la visura camerale e procedere', () => {
@@ -232,7 +232,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
       getFolder().contains('Upload dei file selezionati').click();
       cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 });
         
-      getSCU().find('button:contains("Conferma")').click();
+      getIframe().find('button:contains("Conferma")').click();
         
         //#region Generazione documentazione
         cy.intercept({
@@ -254,7 +254,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         cy.wait('@generazioneStampe', { requestTimeout: 60000 });
         cy.wait('@salvaInContentManager', { requestTimeout: 60000 });
 
-        getSCU().find('#endWorkflowButton').click();
+        getIframe().find('#endWorkflowButton').click();
         //#endregion
     })
 
@@ -270,6 +270,35 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
     })
 
     it('Verificare varie informazioni cliente', () => {
-      cy.get('.client-name').should('contain.text',nuovoClientePG.ragioneSociale)
+      cy.get('.client-name').should('contain.text',String(nuovoClientePG.ragioneSociale).toUpperCase().replace(",",""))
+      cy.get('#app-clients > app-root > lib-page-layout > div > div > div > app-client-profile > lib-sub-header-layout > div > div > lib-container > div > div > app-sidebar-left > nx-sidebar > div > div > lib-scrollable-container > div > div > div.scrollable-sidebar-content > div > app-client-resume-card > nx-card > div.padder > div:nth-child(3) > app-link-client-resume > nx-link > a > div').should('contain.text',"PIAZZA GIUSEPPE GARIBALDI, 1 - 36045 - LONIGO (VI)")
+      cy.get('#app-clients > app-root > lib-page-layout > div > div > div > app-client-profile > lib-sub-header-layout > div > div > lib-container > div > div > app-sidebar-left > nx-sidebar > div > div > lib-scrollable-container > div > div > div.scrollable-sidebar-content > div > app-client-resume-card > nx-card > div.padder > div:nth-child(5) > app-link-client-resume > nx-link > a > div').should('contain.text',String(nuovoClientePG.email).toLowerCase())
+
+      cy.contains('DETTAGLIO ANAGRAFICA').click()
+      cy.get('#nx-tab-content-0-0 > app-client-personal-data > div > div > app-legal-client-main-data > div.box > div:nth-child(1) > app-client-data-label:nth-child(1) > div > div.value > div > div').should('contain.text',String(nuovoClientePG.ragioneSociale).toUpperCase().replace(",",""))
+      cy.get('#nx-tab-content-0-0 > app-client-personal-data > div > div > app-legal-client-main-data > div.box > div:nth-child(2) > app-client-data-label:nth-child(1) > div > div.value > div > div').should('contain.text',String(nuovoClientePG.partitaIva))
+      cy.get('#nx-tab-content-0-0 > app-client-personal-data > div > div > app-legal-client-main-data > div.box > div:nth-child(2) > app-client-data-label:nth-child(2) > div > div.value > div > div').should('contain.text',String(nuovoClientePG.partitaIva))
+      cy.get('#nx-tab-content-0-0 > app-client-personal-data > div > div > app-legal-client-main-data > div.box > div:nth-child(1) > app-client-data-label:nth-child(2) > div > div.value > div > div').should('contain.text',"S.R.L.")
+      cy.get('#nx-tab-content-0-0 > app-client-personal-data > div > div > app-legal-client-main-data > div.box > div:nth-child(1) > app-client-data-label:nth-child(3) > div > div.value > div > div').should('contain.text',"DITTA")
+
+      cy.contains('ARCHIVIO CLIENTE').click()
+      cy.contains('Comunicazioni').click()
+      cy.get('.card-title').should('contain.text',"Invio per verifica contatto")
+      cy.contains('Unico').click()
+      cy.get('#nx-tab-content-1-3 > app-client-archive-unique > div > div.actions-box.ng-star-inserted > app-section-title > div').should('contain.text'," 1 Aggiornamento unico")
+      
+      
+    })
+
+    it('Emettere una Plein Air', () => {
+      cy.get('nx-icon[aria-label="Open menu"]').click();
+      cy.contains('PLEINAIR').click();
+
+      getIframe().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
+      getIframe().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
+      getIframe().find('#ButtonQuestOk').click()
+
+      getIframe().find('#TabVarieInserimentoButton').click()
+      
     })
 })
