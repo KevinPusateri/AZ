@@ -7,6 +7,7 @@
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 30000)
+const delayBetweenTests = 2000
 //#endregion
 
 //#region Global Variables

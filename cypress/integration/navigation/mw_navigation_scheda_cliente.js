@@ -18,6 +18,7 @@ const buttonRamivari = () => cy.get('.card-container').find('app-kpi-dropdown-ca
 const buttonVita = () => cy.get('.card-container').find('app-kpi-dropdown-card').contains('Vita').click()
 const backToClients = () => cy.get('a').contains('Clients').click().wait(5000)
 const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
+
 beforeEach(() => {
     cy.clearCookies();
     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');

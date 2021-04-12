@@ -1,6 +1,8 @@
 /// <reference types="Cypress" />
 
 Cypress.config('defaultCommandTimeout', 30000)
+const delayBetweenTests = 2000
+
 
 const getApp = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
