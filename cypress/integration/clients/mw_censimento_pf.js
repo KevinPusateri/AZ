@@ -64,12 +64,19 @@ before(() => {
   //Skip this two requests that blocks on homepage
   cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
   cy.intercept(/launch-*/,'ignore').as('launchStaging');
+  cy.intercept('POST', '/graphql', (req) => {
+    if (req.body.operationName.includes('notifications')) {
+    req.alias = 'gqlNotifications'
+    }
+  })
 
   cy.visit('https://matrix.pp.azi.allianz.it/')
   cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
   cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
   cy.get('input[type="SUBMIT"]').click()
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+
+  cy.wait('@gqlNotifications')
 })
 
 beforeEach(() => {
@@ -81,12 +88,12 @@ beforeEach(() => {
   })
 })
 
-after(() => {
-  cy.get('.user-icon-container').click()
-  cy.contains('Logout').click()
-  cy.wait(delayBetweenTests)
-  cy.clearCookies();
-})
+// after(() => {
+//   cy.get('.user-icon-container').click()
+//   cy.contains('Logout').click()
+//   cy.wait(delayBetweenTests)
+//   cy.clearCookies();
+// })
 
 describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
 

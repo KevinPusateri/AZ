@@ -54,6 +54,7 @@ const getDocumentoPersonale = () => {
 let nuovoClientePG;
 
 before(() => {
+
   cy.task('nuovoClientePersonaGiuridica').then((object) => {
     nuovoClientePG = object;
   });
@@ -61,8 +62,8 @@ before(() => {
   cy.clearCookies();
   
   //Skip this two requests that blocks on homepage
-  cy.intercept(/embed.nocache.js/,'success').as('embededNoCache');
-  cy.intercept(/launch-*/,'success').as('launchStaging');
+  cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
+  cy.intercept(/launch-*/,'ignore').as('launchStaging');
 
   cy.visit('https://matrix.pp.azi.allianz.it/')
   cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
@@ -80,12 +81,12 @@ beforeEach(() => {
   })
 })
 
-// after(() => {
-//   cy.get('.user-icon-container').click()
-//   cy.contains('Logout').click()
-//   cy.wait(delayBetweenTests)
-//   cy.clearCookies();
-// })
+after(() => {
+  cy.get('.user-icon-container').click()
+  cy.contains('Logout').click()
+  cy.wait(delayBetweenTests)
+  cy.clearCookies();
+})
 
 describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
 
@@ -94,17 +95,8 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         cy.contains('Nuovo cliente').click();
         cy.contains('Persona giuridica').click();
         cy.get('#nx-tab-content-0-1 > div > app-new-client-fiscal-code-box > div > div:nth-child(4) > div > nx-formfield').click().type(nuovoClientePG.partitaIva+"1");
-
-        cy.find('span:contains("Cerca")').next().click();
-
-        cy.intercept('POST', '/graphql', (req) => {
-          if (req.body.operationName.includes('search')) {
-            req.alias = 'gqlSearch'
-          }
-        })
         
-        cy.wait('@gqlSearch')
-        
+        cy.get('span:contains("Cerca"):last').click();
         cy.contains('Aggiungi cliente').click();
     })
 
@@ -205,10 +197,8 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         getFolder().find('#file').attachFile({ 
           fileContent, 
           fileName, 
-          mimeType,
-          name: "Autocertificazione_Test.pdf", 
-          encoding: 'base64' 
-        });
+          mimeType: 'application/pdf'
+        },{ subjectType: 'input' });
       });
 
       getFolder().contains('Upload dei file selezionati').click();
@@ -268,7 +258,6 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         //#endregion
     })
 
-
     it('Ricercare il cliente appena censito nella buca di ricerca', () => {
       //Skip this two requests that blocks on homepage
       cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
@@ -281,6 +270,6 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
     })
 
     it('Verificare varie informazioni cliente', () => {
-      cy.get('div[ngClass="client-name"]').should('contain',nuovoClientePG.ragioneSociale)
+      cy.get('.client-name').should('contain.text',nuovoClientePG.ragioneSociale)
     })
 })
