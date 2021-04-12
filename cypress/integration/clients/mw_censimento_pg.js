@@ -268,8 +268,13 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         //#endregion
     })
 
+
     it('Ricercare il cliente appena censito nella buca di ricerca', () => {
-      cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix')
+      //Skip this two requests that blocks on homepage
+      cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
+      cy.intercept(/launch-*/,'ignore').as('launchStaging');
+      cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/')
+
       cy.contains('Clients').click();
       cy.get('input[name="main-search-input"]').type(nuovoClientePG.partitaIva).type('{enter}');
       cy.get('lib-client-item').first().click();

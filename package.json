@@ -33,7 +33,9 @@
     "rc_ris_mieInfo": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati_mieInfo.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati_Mie_Info.xml,toConsole=true\"",
     "rc_risultati": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati.xml,toConsole=true\"",
     "ricerca": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca.xml,toConsole=true\"",
-    "cypress:run:ricerca": "npm-run-all -s -c rc_classica rc_ris_clients rc_ris_mieInfo rc_risultati ricerca"
+    "cypress:run:ricerca": "npm-run-all -s -c rc_classica rc_ris_clients rc_ris_mieInfo rc_risultati ricerca",
+    "censimento_pf": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/clients/mw_censimento_pf.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Censimento_PF.xml,toConsole=true\"",
+    "cypress:run:censimenti": "npm-run-all -s -c censimento_pf"
   },
   "repository": {
     "type": "git",
