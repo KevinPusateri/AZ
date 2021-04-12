@@ -66,8 +66,8 @@ before(() => {
   cy.intercept(/launch-*/,'ignore').as('launchStaging');
 
   cy.visit('https://matrix.pp.azi.allianz.it/')
-  cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
-  cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
+  cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
+  cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
   cy.get('input[type="SUBMIT"]').click()
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
@@ -220,7 +220,12 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
   })
 
   it('Ricercare il cliente appena censito nella buca di ricerca', () => {
-    cy.get('lib-header-logo').click();
+
+    //Skip this two requests that blocks on homepage
+    cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
+    cy.intercept(/launch-*/,'ignore').as('launchStaging');
+
+    cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/')
     cy.contains('Clients').click();
     cy.get('input[name="main-search-input"]').type(nuovoClientePF.cognome + " " + nuovoClientePF.nome).type('{enter}');
     cy.get('lib-client-item').first().click();

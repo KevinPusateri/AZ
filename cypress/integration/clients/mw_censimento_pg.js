@@ -61,12 +61,12 @@ before(() => {
   cy.clearCookies();
   
   //Skip this two requests that blocks on homepage
-  cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
-  cy.intercept(/launch-*/,'ignore').as('launchStaging');
+  cy.intercept(/embed.nocache.js/,'success').as('embededNoCache');
+  cy.intercept(/launch-*/,'success').as('launchStaging');
 
   cy.visit('https://matrix.pp.azi.allianz.it/')
-  cy.get('input[name="Ecom_User_ID"]').type('TUTF002')
-  cy.get('input[name="Ecom_Password"]').type('Pi-bo1r0')
+  cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
+  cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
   cy.get('input[type="SUBMIT"]').click()
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
@@ -95,14 +95,15 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         cy.contains('Persona giuridica').click();
         cy.get('#nx-tab-content-0-1 > div > app-new-client-fiscal-code-box > div > div:nth-child(4) > div > nx-formfield').click().type(nuovoClientePG.partitaIva+"1");
 
-        cy.intercept({
-          method: 'POST',
-          url: /graphql/
-        }).as('graphqlRicerca');
+        cy.find('span:contains("Cerca")').next().click();
 
-        cy.get('span:contains("Cerca"):last').click();
-
-        cy.wait('@graphqlRicerca', { requestTimeout: 20000 });
+        cy.intercept('POST', '/graphql', (req) => {
+          if (req.body.operationName.includes('search')) {
+            req.alias = 'gqlSearch'
+          }
+        })
+        
+        cy.wait('@gqlSearch')
         
         cy.contains('Aggiungi cliente').click();
     })
@@ -267,8 +268,13 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         //#endregion
     })
 
+
     it('Ricercare il cliente appena censito nella buca di ricerca', () => {
-      cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix')
+      //Skip this two requests that blocks on homepage
+      cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
+      cy.intercept(/launch-*/,'ignore').as('launchStaging');
+      cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/')
+
       cy.contains('Clients').click();
       cy.get('input[name="main-search-input"]').type(nuovoClientePG.partitaIva).type('{enter}');
       cy.get('lib-client-item').first().click();
