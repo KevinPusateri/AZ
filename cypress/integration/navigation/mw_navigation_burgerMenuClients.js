@@ -124,7 +124,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.get('a').contains('Clients').click()
     });
 
-    it.only('Verifica aggancio Gestione fonte principale da Burger Menu', function () {
+    it('Verifica aggancio Gestione fonte principale da Burger Menu', function () {
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
         cy.contains('Gestione fonte principale').click()
@@ -134,7 +134,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.get('a').contains('Clients').click()
     });
 
-    it.only('Verifica aggancio Antiriciclaggio da Burger Menu', function () {
+    it('Verifica aggancio Antiriciclaggio da Burger Menu', function () {
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
         cy.contains('Antiriciclaggio').click()
