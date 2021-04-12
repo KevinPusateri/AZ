@@ -72,11 +72,11 @@ afterEach(() => {
     cy.wait(delayBetweenTests)
 })
 
+//TODO: togliere i wait su Deleghe ssd e Incasso per conto e Gestione Documentale
 describe('Matrix Web : Navigazioni da BackOffice', function () {
 
    it('Verifica atterraggio su BackOffice', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        // getIntercept()       
         cy.url().should('include', '/back-office')
     });
 
@@ -171,7 +171,13 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
         cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
         cy.get('nx-modal-container').find('.agency-row').first().click()
-        getIFrame().find('h4:contains("Dettaglio cliente"):visible')
+        cy.intercept('POST', '/graphql', (req) => {
+            if (req.body.operationName.includes('getJsonData')) {
+                req.alias = 'gqlGetJsonData'
+            }
+        })
+        cy.wait('@gqlGetJsonData')
+        getIFrame().find('bb-title:contains("Dettaglio cliente"):visible')
         getIFrame().find('nx-multi-step-item:contains("Dettaglio cliente"):visible')
         getIFrame().find('nx-multi-step-item:contains("Dettaglio sinistro"):visible')
         getIFrame().find('nx-multi-step-item:contains("Dettaglio del danno"):visible')
@@ -268,7 +274,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Deleghe SDD')
         cy.get('.backoffice-card').find('a').contains('Deleghe SDD').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click().wait(7000)
+        cy.get('nx-modal-container').find('.agency-row').first().click().wait(10000)
         getIFrame().find('input[value="Carica"]').invoke('attr','value').should('equal','Carica')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
@@ -288,12 +294,12 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
     })
 
-    it('Verifica apertura disambiguazione: Incasso per conto', function () {
+    it.only('Verifica apertura disambiguazione: Incasso per conto', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Incasso per conto')
         cy.get('.backoffice-card').find('a').contains('Incasso per conto').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click().wait(8000)
+        cy.get('nx-modal-container').find('.agency-row').first().click().wait(10000)
         getIFrame().find('input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')

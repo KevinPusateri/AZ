@@ -75,7 +75,7 @@ describe('Buca di Ricerca - Risultati Clients', function () {
     })
 
     it('Verifica Modifica filtri',function(){
-        cy.get('input[name="main-search-input"]').click().type('AR').type('{enter}')
+        cy.get('input[name="main-search-input"]').click().type('Ar').type('{enter}')
         cy.url().should('include','search/clients/clients').wait(5000)
         
         cy.get('.icon').find('[name="filter"]').click()
@@ -94,7 +94,7 @@ describe('Buca di Ricerca - Risultati Clients', function () {
 
     it('Verifica Click su Ricerca Cliente',function(){
         cy.get('input[name="main-search-input"]').click()
-        cy.get('input[name="main-search-input"]').type('AR').type('{enter}')
+        cy.get('input[name="main-search-input"]').type('Ar').type('{enter}')
         cy.url().should('include','search/clients/clients').wait(5000)
         cy.get('lib-client-item').first().click()
         cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class','active')

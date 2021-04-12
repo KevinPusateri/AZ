@@ -11,8 +11,8 @@ const delayBetweenTests = 2000
 
 beforeEach(() => {
     cy.clearCookies();
-    cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
-    cy.intercept(/launch-*/,'ignore').as('launchStaging');
+    cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
+    cy.intercept(/launch-*/, 'ignore').as('launchStaging');
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
@@ -23,7 +23,7 @@ beforeEach(() => {
             return true;
         }
     })
-    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
@@ -40,16 +40,12 @@ afterEach(() => {
 
 describe('Buca di Ricerca', function () {
 
-    it('Verifica Click su Ricerca Classica',function(){
+    it('Verifica Click su Ricerca Classica', function () {
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
-        cy.intercept({
-            method: 'POST',
-            url: '/search/clients/clients'
-        }).as('pageClientsSearch');
-        cy.wait('@pageClientsSearch', { requestTimeout: 20000 });
         cy.url().should('include', '/search/clients/clients')
-        
+
+        // TODO click not working on firefox and electron 
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
 
         const links = [
@@ -60,21 +56,21 @@ describe('Buca di Ricerca', function () {
             'Ricerca News',
             'Rubrica'
         ]
-        cy.get('nx-modal-container').find('lib-da-link').each(($linkRicerca, i) =>{
+        cy.get('nx-modal-container').find('lib-da-link').each(($linkRicerca, i) => {
             expect($linkRicerca.text().trim()).to.include(links[i]);
         })
         cy.get('nx-modal-container').find('button[aria-label="Close dialog"]').click()
     })
 
-    it('Verifica Click su Ricerca Cliente',function(){
+    it('Verifica Click su Ricerca Cliente', function () {
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
         cy.url().should('include', '/search/clients/clients')
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
-        
+
         cy.get('nx-modal-container').find('lib-da-link').contains('Ricerca Cliente').click()
         cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
-        cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+        cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
 
     })
 
