@@ -45,11 +45,11 @@ beforeEach(() => {
     cy.get('app-product-button-list').find('a').contains('Clients').click()
 })
 
-afterEach(() => {
-    cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
-})
+// afterEach(() => {
+//     cy.get('.user-icon-container').click()
+//     cy.contains('Logout').click()
+//     cy.wait(delayBetweenTests)
+// })
 describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica i link da Burger Menu', function () {

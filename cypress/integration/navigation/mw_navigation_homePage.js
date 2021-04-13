@@ -1,5 +1,6 @@
 /// <reference types="Cypress" />
 
+
 Cypress.config('defaultCommandTimeout', 30000)
 
 
@@ -19,8 +20,6 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
   
-const backToClients = () => cy.get('a').contains('Clients').click().wait(5000)
-const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click()
 //#endregion
 
 
@@ -54,10 +53,9 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-
-    cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
+    // cy.get('.user-icon-container').click()
+    // cy.contains('Logout').click()
+    // cy.wait(delayBetweenTests)
 })
 
 Cypress._.times(1,()=>{
@@ -144,7 +142,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         cy.get('a[href="/matrix/"]').click()
     });
 
-    it.only('Button News', function () {
+    it('Button News', function () {
         cy.get('app-product-button-list').find('a').contains('News').click()
         cy.url().should('include', '/news/home')
         cy.get('a[href="/matrix/"]').click()
@@ -168,22 +166,34 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         cy.get('a[href="/matrix/"]').click()
     });
 
+    it.only('Verifica card Notifica', function () {
+        //TODO non trova i button
+        cy.get('lib-notification-card').first().find('button').click()
+        cy.wait(5000)
+        cy.contains('Disattiva notifiche di questo tipo')
+        // cy.get('.cdk-overlay-container').find('button').contains('Disattiva notifiche di questo tipo').should('be.visible')
+        // cy.get('.cdk-overlay-container').find('button:contains("Segna come da leggere"):visible')
+        // cy.get('lib-notification-list').find('button').each($button =>{
+        //     cy.wrap($button).click()
+        //     cy.wait(3000)
+        //     cy.get('.nx-context-menu__content').find('button:contains("Disattiva notifiche di questo tipo"):visible')
+        //     cy.get('.nx-context-menu__content').find('button:contains("Segna come da leggere"):visible')
+        // })
+        // cy.get('lib-notification-list').then($cardsNotification =>{
+        //     if($cardsNotification.find('lib-notification-card').length > 0){
+        //         cy.wrap($cardsNotification).find('[class^="body"]').first().then($card =>{
+        //             if($card.hasClass('body unread')){
+                        
+        //                 cy.wrap($card).click()
+        //                 cy.get('nx-modal-container').find('[class="notification-da-container ng-star-inserted"]').first().click()
+        //             }else
+        //                 cy.wrap($card).click()
+        //         })
+        //         cy.get('a[href="/matrix/"]').click()
+        //     }
+        // })
+    });
 
-    // farli?
-    // it.only('Verifica card Notifica', function () {
-
-    //     cy.get('lib-notification-list').then( ($cardNotification) =>{
-    //         if($cardNotification.find('lib-notification-card').length > 0){
-    //             cy.wrap($cardNotification).find('lib-notification-card').first().click()
-    //         }
-    //     })
-    // });
-
-    // it.only('Verifica image news', function(){
-    //     cy.get('lib-news-image').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('a:contains("Primo Piano"):visible')
-    //     getIFrame().find('span:contains("Primo comandamento: GED, GED e solo GED"):visible')
-    // })
+   
 });
 })

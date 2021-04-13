@@ -39,18 +39,18 @@ beforeEach(() => {
     cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
 
-afterEach(() => {
-    // cy.get('.user-icon-container').click()
-    // cy.contains('Logout').click()
-    // cy.wait(delayBetweenTests)
-})
+// afterEach(() => {
+//     cy.get('.user-icon-container').click()
+//     cy.contains('Logout').click()
+//     cy.wait(delayBetweenTests)
+// })
 
 
 describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
+    // TODO: non legge getIframe
     it('Le Mie Info', function () {
         cy.contains('Le mie info').click()
-
         cy.url().should('include', '/lemieinfo')
 
         console.log(getIFrame().children())

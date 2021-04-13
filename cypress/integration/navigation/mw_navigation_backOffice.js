@@ -66,11 +66,11 @@ beforeEach(() => {
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
 })
 
-afterEach(() => {
-    cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
-})
+// afterEach(() => {
+//     cy.get('.user-icon-container').click()
+//     cy.contains('Logout').click()
+//     cy.wait(delayBetweenTests)
+// })
 
 //TODO: togliere i wait su Deleghe ssd e Incasso per conto e Gestione Documentale
 describe('Matrix Web : Navigazioni da BackOffice', function () {
