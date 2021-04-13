@@ -42,11 +42,11 @@ beforeEach(() => {
     cy.wait('@gqlNotifications')
 })
 
-afterEach(() => {
-    cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
-})
+// afterEach(() => {
+//     cy.get('.user-icon-container').click()
+//     cy.contains('Logout').click()
+//     cy.wait(delayBetweenTests)
+// })
 
 describe('Buca di Ricerca - Risultati Le mie Info', function () {
     
@@ -403,14 +403,14 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
             })
         })
     })
-    it('Verifica Click su Ricerca Cliente',function(){
+    it('Verifica Click su card di una Circolare',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(4000)
         cy.get('[class="lib-tab-info nx-grid"]').contains('Circolari').click()
         cy.get('lib-circular-item').find('a').first().click()
     })
 
-    it('Verifica Modifica filtri',function(){
+    it('Verifica Click sulla card del Company Handbook',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(4000)
         cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()

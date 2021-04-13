@@ -42,11 +42,11 @@ beforeEach(() => {
     cy.wait('@gqlNotifications')
 })
 
-afterEach(() => {
-    cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
-})
+// afterEach(() => {
+//     cy.get('.user-icon-container').click()
+//     cy.contains('Logout').click()
+//     cy.wait(delayBetweenTests)
+// })
 
 describe('Buca di Ricerca - Risultati Clients', function () {
     it('Verifica Ricerca Cliente: nome o cognome ',function(){
@@ -101,7 +101,6 @@ describe('Buca di Ricerca - Risultati Clients', function () {
         cy.get('lib-applied-filters-item').find('span').should('be.visible')
 
     })
-
 
     it('Verifica Click su Ricerca Cliente',function(){
         cy.get('input[name="main-search-input"]').click()
