@@ -294,7 +294,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
     })
 
-    it.only('Verifica apertura disambiguazione: Incasso per conto', function () {
+    it('Verifica apertura disambiguazione: Incasso per conto', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Incasso per conto')
