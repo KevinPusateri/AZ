@@ -40,22 +40,21 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-    cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
+    // cy.get('.user-icon-container').click()
+    // cy.contains('Logout').click()
+    // cy.wait(delayBetweenTests)
 })
 
 
-describe('Matrix Web : Navigazioni da Le Mie Info - ', function () {
+describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
     it('Le Mie Info', function () {
         cy.contains('Le mie info').click()
-        cy.intercept({
-            method: 'POST',
-            url: '/portaleagenzie.pp.azi.allianz.it/matrix/lemieinfo'
-        }).as('pageMieinfo');
-        cy.wait('@pageMieinfo', { requestTimeout: 20000 });
+
         cy.url().should('include', '/lemieinfo')
-        cy.getIFrame().find('h2:contains("Prova Hospital Scanner Cispide"):visible')
+
+        console.log(getIFrame().children())
+        getIFrame().find('a:contains("» tutti i comunicati"):visible')
+
     })
 });
