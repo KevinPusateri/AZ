@@ -66,7 +66,7 @@ before(() => {
   cy.intercept(/launch-*/,'ignore').as('launchStaging');
   cy.intercept('POST', '/graphql', (req) => {
     if (req.body.operationName.includes('notifications')) {
-    req.alias = 'gqlNotifications'
+      req.alias = 'gqlNotifications'
     }
   })
 
@@ -88,12 +88,12 @@ beforeEach(() => {
   })
 })
 
-// after(() => {
-//   cy.get('.user-icon-container').click()
-//   cy.contains('Logout').click()
-//   cy.wait(delayBetweenTests)
-//   cy.clearCookies();
-// })
+after(() => {
+  cy.get('.user-icon-container').click()
+  cy.contains('Logout').click()
+  cy.wait(delayBetweenTests)
+  cy.clearCookies();
+})
 
 describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
 

@@ -1,7 +1,14 @@
+/**
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it>
+ * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+*/
+
 /// <reference types="Cypress" />
 
+//#region Configuration
 Cypress.config('defaultCommandTimeout', 30000)
 const delayBetweenTests = 2000
+//#endregion
 
 //#region Global Variables
 const getIFrame = () => {
@@ -13,52 +20,74 @@ const getIFrame = () => {
   
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-const backToClients = () => cy.get('a').contains('Clients').click().wait(5000)
-const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
-const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza")').click()
+
+const canaleFromPopup = () => cy.wait(1000).get('nx-modal-container').find('.agency-row').first().click()
+const buttonEmettiPolizza = () => cyget('app-emit-policy-popover').find('button:contains("Emetti polizza")').click()
 const popoverEmettiPolizza = () => cy.get('.card-container').find('lib-da-link')
 //#endregion
 
+//#region beforeEach/after
 beforeEach(() => {
     cy.clearCookies();
     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
+    cy.intercept('POST', '/graphql', (req) => {
+        if (req.body.operationName.includes('notifications')) {
+            req.alias = 'gqlNotifications'
+        }
+    })
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
-    Cypress.Cookies.defaults({
-        preserve: (cookie) => {
-            return true;
-        }
-    })
-    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
+    cy.get('body').then($body => {
+        if ($body.find('lib-access-error').length === 1 ||
+            $body.find('pre:contains("OK(nginx)")').length === 1 ||
+            $body.find('pre:contains("FL(nginx)")').length === 1 ||
+            $body.find('#runningInEndUserLoginEnvironment').length === 1){
+             cy.reload()
+             cy.visit('https://matrix.pp.azi.allianz.it/')
+            }
+        })
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    cy.get('app-product-button-list').find('a').contains('Sales').click()
+    cy.wait('@gqlNotifications')
 })
 
 after(() => {
     cy.get('.user-icon-container').click()
     cy.contains('Logout').click()
     cy.wait(delayBetweenTests)
+    cy.clearCookies();
 })
+//#endregion
 
 describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Sales', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
     })
 
     it('Verifica aggancio Sfera', function () {
-        // manca iframe card e back dopodiche finito test
+
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
+
+        cy.intercept({
+            method: 'POST',
+            url: /GetPreferenzeFamiglieCampi/
+          }).as('sferaGetPreferenzeFamiglieCampi');
+
         cy.get('app-quick-access').contains('Sfera').click()
         canaleFromPopup()
+
+        cy.wait('@sferaGetPreferenzeFamiglieCampi', { requestTimeout: 30000 });
+
         getIFrame().find('ul > li > span:contains("Quietanzamento"):visible')
         getIFrame().find('ul > li > span:contains("Visione Globale"):visible')
         getIFrame().find('ul > li > span:contains("Portafoglio"):visible')
@@ -71,35 +100,75 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Campagne Commerciali', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
+
+        cy.intercept('POST', '/graphql', (req) => {
+            if (req.body.operationName.includes('campaignAgent')) {
+            req.alias = 'gqlCampaignAgent'
+            }
+        })
+
         cy.get('app-quick-access').contains('Campagne Commerciali').click()
+        
+        cy.wait('@gqlCampaignAgent', { requestTimeout: 30000 });
+
         cy.url().should('include', '/campaign-manager')
+        getIFrame().find('a:contains("Campagne di vendita"):visible')
+
         cy.get('a').contains('Sales').click()
     })
 
     it('Verifica aggancio Recupero preventivi e quotazioni', function(){
+
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('include', '/sales')
+
+        cy.intercept({
+            method: 'POST',
+            url: /InizializzaContratti/
+        }).as('inizializzaContratti');
+
         cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
         canaleFromPopup()
-        getIFrame().find('button:contains("Cerca"):visible')
 
+        cy.wait('@inizializzaContratti', { requestTimeout: 30000 });
+
+        getIFrame().find('button:contains("Cerca"):visible')
+        cy.get('a').contains('Sales').click()
     })
         
     it('Verifica aggancio Monitoraggio Polizze Proposte', function(){
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('include', '/sales')
+
+        cy.intercept({
+            method: 'POST',
+            url: /InizializzaContratti/
+        }).as('inizializzaContratti');
+
         cy.get('app-quick-access').contains('Monitoraggio Polizze Proposte').click()
         canaleFromPopup()
-        getIFrame().find('button:contains("Cerca"):visible')
-    })
 
+        cy.wait('@inizializzaContratti', { requestTimeout: 30000 });
 
-    // Unauthorized
-    it('Verifica aggancio GED – Gestione Documentale', function(){
-        cy.get('app-quick-access').contains('GED – Gestione Documentale').click()
-        canaleFromPopup()
         getIFrame().find('button:contains("Cerca"):visible')
+        cy.get('a').contains('Sales').click()
     })
 
     // TODO: continua Fastquote Auto: iframe
-    it('Verifica aggancio Emetti Polizza - FastQuote Auto', function(){
+    it.only('Verifica aggancio Emetti Polizza - FastQuote Auto', function(){
+        cy.intercept('POST', '/graphql', (req) => {
+            if (req.body.operationName.includes('countReceipts')) {
+            req.alias = 'gqlCountReceipts'
+            }
+        })
+
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('include', '/sales')
+
+        cy.wait('@gqlCountReceipts', { requestTimeout: 30000 });
+
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('FastQuote Auto').click()
         canaleFromPopup()
