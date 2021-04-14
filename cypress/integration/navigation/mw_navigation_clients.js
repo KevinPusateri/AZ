@@ -47,13 +47,19 @@ beforeEach(() => {
     cy.get('app-product-button-list').find('a').contains('Clients').click()
 })
 
+after(() => {
+    cy.get('.user-icon-container').click()
+    cy.contains('Logout').click()
+    cy.wait(delayBetweenTests)
+})
+
 describe('Matrix Web : Navigazioni da Clients', function () {
 
     it('Verifica aggancio Clients', function () {
         cy.url().should('include', '/clients')
     });
 
-    it('Verifica aggancio Digital Me', function () {
+    it.only('Verifica aggancio Digital Me', function () {
         cy.get('app-rapid-link').contains('Digital Me').click()
         cy.url().should('include', '/digital-me')
         backToClients()

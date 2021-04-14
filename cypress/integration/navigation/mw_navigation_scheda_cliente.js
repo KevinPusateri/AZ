@@ -49,7 +49,7 @@ beforeEach(() => {
     cy.wait('@pageClient', { requestTimeout: 20000 });
 })
 
-afterEach(() => {
+after(() => {
     cy.get('.user-icon-container').click()
     cy.contains('Logout').click()
     cy.wait(delayBetweenTests)

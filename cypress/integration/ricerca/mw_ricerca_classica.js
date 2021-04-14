@@ -37,11 +37,11 @@ beforeEach(() => {
     cy.wait('@gqlNotifications');
 })
 
-// afterEach(() => {
-//     cy.get('.user-icon-container').click()
-//     cy.contains('Logout').click()
-//     cy.wait(delayBetweenTests)
-// })
+after(() => {
+    cy.get('.user-icon-container').click()
+    cy.contains('Logout').click()
+    cy.wait(delayBetweenTests)
+})
 
 
 describe('Buca di Ricerca', function () {

@@ -39,11 +39,11 @@ beforeEach(() => {
     cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
 
-// afterEach(() => {
-//     cy.get('.user-icon-container').click()
-//     cy.contains('Logout').click()
-//     cy.wait(delayBetweenTests)
-// })
+after(() => {
+    cy.get('.user-icon-container').click()
+    cy.contains('Logout').click()
+    cy.wait(delayBetweenTests)
+})
 
 
 describe('Matrix Web : Navigazioni da Le Mie Info', function () {

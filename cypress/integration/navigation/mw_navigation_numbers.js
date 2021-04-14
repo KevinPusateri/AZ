@@ -3,7 +3,7 @@
 Cypress.config('defaultCommandTimeout', 30000)
 const delayBetweenTests = 2000
 
-const getApp = () => {
+const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
     .iframe();
   
@@ -39,7 +39,7 @@ beforeEach(() => {
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
 })
 
-afterEach(() => {
+after(() => {
     cy.get('.user-icon-container').click()
     cy.contains('Logout').click()
     cy.wait(delayBetweenTests)
@@ -54,6 +54,9 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
 
         cy.contains('LINEE DI BUSINESS').click()
         cy.get('app-agency-incoming').contains('RICAVI DI AGENZIA').click()
+        console.log(getIFrame())
+        getIFrame().find('a:contains("Filtra"):visible')
+        cy.get('a').contains('Numbers').click()
         cy.get('app-kpi-card').contains('New business').click()
         // cy.get('lib-breadcrumbs').contains('Numbers').click()
         cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/numbers/business-lines')

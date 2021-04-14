@@ -41,7 +41,7 @@ beforeEach(() => {
     cy.get('app-product-button-list').find('a').contains('Clients').click()
 })
 
-afterEach(() => {
+after(() => {
     cy.get('.user-icon-container').click()
     cy.contains('Logout').click()
     cy.wait(delayBetweenTests)

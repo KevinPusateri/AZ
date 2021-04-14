@@ -52,10 +52,10 @@ beforeEach(() => {
 
 })
 
-afterEach(() => {
-    // cy.get('.user-icon-container').click()
-    // cy.contains('Logout').click()
-    // cy.wait(delayBetweenTests)
+after(() => {
+    cy.get('.user-icon-container').click()
+    cy.contains('Logout').click()
+    cy.wait(delayBetweenTests)
 })
 
 Cypress._.times(1,()=>{
@@ -170,7 +170,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         //TODO non trova i button
         cy.get('lib-notification-card').first().find('button').click()
         cy.wait(5000)
-        cy.contains('Disattiva notifiche di questo tipo')
+        cy.get('.cdk-overlay-container').find('button').contains('Disattiva notifiche di questo tipo').should('be.visible')
         // cy.get('.cdk-overlay-container').find('button').contains('Disattiva notifiche di questo tipo').should('be.visible')
         // cy.get('.cdk-overlay-container').find('button:contains("Segna come da leggere"):visible')
         // cy.get('lib-notification-list').find('button').each($button =>{

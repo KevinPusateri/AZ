@@ -15,6 +15,8 @@ const getIFrame = () => {
 }
 const backToClients = () => cy.get('a').contains('Clients').click().wait(5000)
 const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
+const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza")').click()
+const popoverEmettiPolizza = () => cy.get('.card-container').find('lib-da-link')
 //#endregion
 
 beforeEach(() => {
@@ -37,19 +39,23 @@ beforeEach(() => {
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
+    cy.get('app-product-button-list').find('a').contains('Sales').click()
 })
 
-afterEach(() => {
+after(() => {
     cy.get('.user-icon-container').click()
     cy.contains('Logout').click()
     cy.wait(delayBetweenTests)
 })
 
-describe('Matrix Web : Navigazioni da Sales - ', function () {
+describe('Matrix Web : Navigazioni da Sales', function () {
 
-    it('Sales', function () {
+    it('Verifica aggancio Sales', function () {
+        cy.url().should('include', '/sales')
+    })
+
+    it('Verifica aggancio Sfera', function () {
         // manca iframe card e back dopodiche finito test
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('app-quick-access').contains('Sfera').click()
         canaleFromPopup()
@@ -60,27 +66,43 @@ describe('Matrix Web : Navigazioni da Sales - ', function () {
         getIFrame().find('ul > li > span:contains("Uscite Auto"):visible')
         getIFrame().find('ul > li > span:contains("Gestore Attività"):visible')
         getIFrame().find('ul > li > span:contains("Operatività"):visible')
+        getIFrame().find('button:contains("Applica filtri"):visible')
+        cy.get('a').contains('Sales').click()
+    })
 
-
+    it('Verifica aggancio Campagne Commerciali', function () {
+        cy.url().should('include', '/sales')
         cy.get('app-quick-access').contains('Campagne Commerciali').click()
         cy.url().should('include', '/campaign-manager')
         cy.get('a').contains('Sales').click()
-        canaleFromPopup()
+    })
 
+    it('Verifica aggancio Recupero preventivi e quotazioni', function(){
         cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
-        closePopup()
+        canaleFromPopup()
+        getIFrame().find('button:contains("Cerca"):visible')
 
+    })
+        
+    it('Verifica aggancio Monitoraggio Polizze Proposte', function(){
         cy.get('app-quick-access').contains('Monitoraggio Polizze Proposte').click()
-        closePopup()
-     
+        canaleFromPopup()
+        getIFrame().find('button:contains("Cerca"):visible')
+    })
+
+
+    // Unauthorized
+    it('Verifica aggancio GED – Gestione Documentale', function(){
         cy.get('app-quick-access').contains('GED – Gestione Documentale').click()
-        closePopup()
-        cy.wait(1500)
-        const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza")').click()
-        const popoverEmettiPolizza = () => cy.get('.card-container').find('lib-da-link')
+        canaleFromPopup()
+        getIFrame().find('button:contains("Cerca"):visible')
+    })
+
+    // TODO: continua Fastquote Auto: iframe
+    it('Verifica aggancio Emetti Polizza - FastQuote Auto', function(){
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('FastQuote Auto').click()
-        closePopup()
+        canaleFromPopup()
         cy.wait(1500)
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Allianz Ultra Casa e Patrimonio').click()
