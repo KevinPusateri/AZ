@@ -50,6 +50,7 @@ after(() => {
 
 describe('Buca di Ricerca - Risultati Le mie Info', function () {
     
+    
     it('Verifica Ricerca Incasso',function(){
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(2000)
@@ -74,8 +75,8 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('le mie info').invoke('text').then($theElement => {
             const count = $theElement.substring(14,$theElement.length-2)
             if(count > 0 ){
-                const tabsContainer = ['Circolari', 'Company Handbook'];
-                cy.get('[class="lib-tab-info nx-grid"]').find('[href^="/matrix/search/infos"]').should('have.length',2).each(($tab, i) =>{
+                const tabsContainer = ['Circolari'];
+                cy.get('[class="lib-tab-info nx-grid"]').find('[href^="/matrix/search/infos"]').should('have.length',1).each(($tab, i) =>{
                     expect($tab.text()).to.include(tabsContainer[i]);
                 })
                 
@@ -111,7 +112,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                     }) 
         
                 })
-        
+        /*
                 cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
         
                 for(var i = 0; i <10; i++){
@@ -149,7 +150,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                     //     }
                     // }) 
         
-                })
+                })*/
             }
         })
 
@@ -180,8 +181,8 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('le mie info').invoke('text').then($theElement => {
             const count = $theElement.substring(14,$theElement.length-2)
             if(count > 0 ){
-                const tabsContainer = ['Circolari', 'Company Handbook'];
-                cy.get('[class="lib-tab-info nx-grid"]').find('[href^="/matrix/search/infos"]').should('have.length',2).each(($tab, i) =>{
+                const tabsContainer = ['Circolari'];
+                cy.get('[class="lib-tab-info nx-grid"]').find('[href^="/matrix/search/infos"]').should('have.length',1).each(($tab, i) =>{
                     expect($tab.text()).to.include(tabsContainer[i]);
                 })
 
@@ -218,7 +219,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                 
                 })
 
-                cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
+               /* cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
                 for(var i = 0; i <10; i++){
                     cy.get('#lib-handbook-container').scrollTo('bottom').wait(1000)
                 }
@@ -252,7 +253,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                             assert.fail('Manca un\'anteprima del testo su un elemento della pagina handbook')
                         }
                     })
-                })
+                })*/
             }
         })
     })
@@ -313,20 +314,12 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                 })
             }
 
-            cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('sales').click().should('have.class','active')
-            cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('sales').invoke('text').then($theElement => {
-                const count = $theElement.substring(8,$theElement.length-2)
-                if(count > 0 ){
-                    
-                }
-            })
-
             cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('le mie info').click().should('have.class','active')
             cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('le mie info').invoke('text').then($theElement => {
                 const count = $theElement.substring(14,$theElement.length-2)
                 if(count > 0 ){
-                    const tabsContainer = ['Circolari', 'Company Handbook'];
-                    cy.get('[class="lib-tab-info nx-grid"]').find('[href^="/matrix/search/infos"]').should('have.length',2).each(($tab, i) =>{
+                    const tabsContainer = ['Circolari'];
+                    cy.get('[class="lib-tab-info nx-grid"]').find('[href^="/matrix/search/infos"]').should('have.length',1).each(($tab, i) =>{
                         expect($tab.text()).to.include(tabsContainer[i]);
                     })
                     
@@ -363,7 +356,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
 
                     })
 
-                    cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
+                 /*   cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
                     for(var i = 0; i <10; i++){
                         cy.get('#lib-handbook-container').scrollTo('bottom').wait(1000)
                     }
@@ -398,7 +391,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                             }
                         }) 
 
-                    })
+                    })*/
                 }
             })
         })
@@ -410,11 +403,11 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         cy.get('lib-circular-item').find('a').first().click()
     })
 
-    it('Verifica Click sulla card del Company Handbook',function(){
-        cy.get('input[name="main-search-input"]').click()
-        cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(4000)
-        cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
-        cy.get('lib-handbooks-item').first().click()
-    })
+    // it('Verifica Click sulla card del Company Handbook',function(){
+    //     cy.get('input[name="main-search-input"]').click()
+    //     cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(4000)
+    //     cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
+    //     cy.get('lib-handbooks-item').first().click()
+    // })
 
 })
