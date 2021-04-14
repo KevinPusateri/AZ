@@ -34,11 +34,6 @@ beforeEach(() => {
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    cy.intercept({
-        method: 'POST',
-        url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
-    }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 20000 });
     cy.wait('@gqlNotifications')
 })
 
@@ -84,28 +79,32 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                 cy.get('lib-circular-item').each($circular =>{
                     cy.wrap($circular).find('[class="date"]').then($date =>{
                         if($date.text().trim().length > 0){
-                            cy.wrap($date).should('contain',$date.text().trim()) 
+                            expect($date.text()).not.to.be.empty
+                            // cy.wrap($date).should('contain',$date.text().trim()) 
                         }else{
                             assert.fail('Manca data su un elemento della pagina circulars')
                         }
                     }) 
                     cy.wrap($circular).find('[class="network"]').then($company =>{
                         if($company.text().trim().length > 0){
-                            cy.wrap($company).should('contain',$company.text().trim()) 
+                            expect($company.text()).not.to.be.empty
+                            // cy.wrap($company).should('contain',$company.text().trim()) 
                         }else{
                             assert.fail('Manca compagnia su un elemento della pagina circulars')
                         }
                     }) 
                     cy.wrap($circular).find('[class="info"]').then($info =>{
                         if($info.text().trim().length > 0){
-                            cy.wrap($info).should('contain',$info.text().trim()) 
+                            expect($info.text()).not.to.be.empty
+                            // cy.wrap($info).should('contain',$info.text().trim()) 
                         }else{
                             assert.fail('Manca info a chi sono indirizzate su un elemento della pagina circulars')
                         }
                     }) 
                     cy.wrap($circular).find('[class="title"]').then($title =>{
                         if($title.text().trim().length > 0){
-                            cy.wrap($title).should('contain',$title.text().trim()) 
+                            expect($title.text()).not.to.be.empty
+                            // cy.wrap($title).should('contain',$title.text().trim()) 
                         }else{
                             assert.fail('Manca titolo su un elemento della pagina circulars')
                         }
@@ -171,9 +170,12 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         const suggLinks = [
             'FastQuote Auto',
             'FastQuote Infortuni da circolazione',
+            'FastQuote Universo Persona',
+            'FastQuote Universo Salute',
+            'FastQuote Universo Persona Malattie Gravi',
             'FastQuote Impresa e Albergo'
         ]
-        cy.get('lib-navigation-item-link').find('.title').should('have.length',3)
+        cy.get('lib-navigation-item-link').find('.title').should('have.length',6)
             .each(($suggerimenti,i) =>{
             expect($suggerimenti.text()).to.include(suggLinks[i]);
         })
@@ -190,28 +192,32 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                 cy.get('lib-circular-item').each($circular =>{
                     cy.wrap($circular).find('[class="date"]').then($date =>{
                         if($date.text().trim().length > 0){
-                            cy.wrap($date).should('contain',$date.text().trim()) 
+                            expect($date.text()).not.to.be.empty
+                            // cy.wrap($date).should('contain',$date.text().trim()) 
                         }else{
                             assert.fail('Manca data su un elemento della pagina clients')
                         }
                     }) 
                     cy.wrap($circular).find('[class="network"]').then($company =>{
                         if($company.text().trim().length > 0){
-                            cy.wrap($company).should('contain',$company.text().trim()) 
+                            expect($company.text()).not.to.be.empty
+                            // cy.wrap($company).should('contain',$company.text().trim()) 
                         }else{
                             assert.fail('Manca compagnia su un elemento della pagina clients')
                         }
                     }) 
                     cy.wrap($circular).find('[class="info"]').then($info =>{
                         if($info.text().trim().length > 0){
-                            cy.wrap($info).should('contain',$info.text().trim()) 
+                            // cy.wrap($info).should('contain',$info.text().trim())
+                            expect($info.text()).not.to.be.empty
                         }else{
                             assert.fail('Manca info a chi sono indirizzate su un elemento della pagina clients')
                         }
                     }) 
                     cy.wrap($circular).find('[class="title"]').then($title =>{
                         if($title.text().trim().length > 0){
-                            cy.wrap($title).should('contain',$title.text().trim()) 
+                            expect($title.text()).not.to.be.empty
+                            // cy.wrap($title).should('contain',$title.text().trim()) 
                         }else{
                             assert.fail('Manca titolo su un elemento della pagina clients')
                         }
@@ -291,21 +297,24 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
           
                     cy.wrap($client).find('[class="name"]').then($name =>{
                         if($name.text().trim().length > 0){
-                            cy.wrap($name).should('contain',$name.text().trim()) 
+                            expect($name.text()).not.to.be.empty
+                            // cy.wrap($name).should('contain',$name.text().trim()) 
                         }else{
                             assert.fail('Manca nome su un elemento della pagina clients')
                         }
                     }) 
                     cy.wrap($client).find('[class="lib-agency-container"]').then($agency =>{
                         if($agency.text().trim().length > 0){
-                            cy.wrap($agency).should('contain',$agency.text().trim()) 
+                            expect($agency.text()).not.to.be.empty
+                            // cy.wrap($agency).should('contain',$agency.text().trim()) 
                         }else{
                             assert.fail('Manca agenzia su un elemento della pagina clients')
                         }
                     }) 
                     cy.wrap($client).find('[class="item"]').then($item =>{
                         if($item.text().trim().length > 0){
-                            cy.wrap($item).should('contain', $item.text().trim()) 
+                            expect($item.text()).not.to.be.empty
+                            // cy.wrap($item).should('contain', $item.text().trim()) 
                         }else{
                             assert.fail('Manca indirizzo su un elemento della pagina clients')
                         }
@@ -327,28 +336,32 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                     cy.get('lib-circular-item').each($circular =>{
                         cy.wrap($circular).find('[class="date"]').then($date =>{
                             if($date.text().trim().length > 0){
-                                cy.wrap($date).should('contain',$date.text().trim()) 
+                                expect($date.text()).not.to.be.empty
+                                // cy.wrap($date).should('contain',$date.text().trim()) 
                             }else{
                                 assert.fail('Manca data su un elemento della pagina clients')
                             }
                         }) 
                         cy.wrap($circular).find('[class="network"]').then($company =>{
                             if($company.text().trim().length > 0){
-                                cy.wrap($company).should('contain',$company.text().trim()) 
+                                expect($company.text()).not.to.be.empty
+                                // cy.wrap($company).should('contain',$company.text().trim()) 
                             }else{
                                 assert.fail('Manca compagnia su un elemento della pagina clients')
                             }
                         }) 
                         cy.wrap($circular).find('[class="info"]').then($info =>{
                             if($info.text().trim().length > 0){
-                                cy.wrap($info).should('contain',$info.text().trim()) 
+                                expect($info.text()).not.to.be.empty
+                                // cy.wrap($info).should('contain',$info.text().trim()) 
                             }else{
                                 assert.fail('Manca info a chi sono indirizzate su un elemento della pagina clients')
                             }
                         }) 
                         cy.wrap($circular).find('[class="title"]').then($title =>{
                             if($title.text().trim().length > 0){
-                                cy.wrap($title).should('contain',$title.text().trim()) 
+                                expect($title.text()).not.to.be.empty
+                                // cy.wrap($title).should('contain',$title.text().trim()) 
                             }else{
                                 assert.fail('Manca titolo su un elemento della pagina clients')
                             }
@@ -396,12 +409,14 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
             })
         })
     })
-    it('Verifica Click su card di una Circolare',function(){
-        cy.get('input[name="main-search-input"]').click()
-        cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(4000)
-        cy.get('[class="lib-tab-info nx-grid"]').contains('Circolari').click()
-        cy.get('lib-circular-item').find('a').first().click()
-    })
+
+    // TODO: Apertura Pagina secondaria da verificare
+    // it.only('Verifica Click su card di una Circolare',function(){
+    //     cy.get('input[name="main-search-input"]').click()
+    //     cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(4000)
+    //     cy.get('[class="lib-tab-info nx-grid"]').contains('Circolari').click()
+    //     cy.get('lib-circular-item').find('a').first().click()
+    // })
 
     // it('Verifica Click sulla card del Company Handbook',function(){
     //     cy.get('input[name="main-search-input"]').click()
