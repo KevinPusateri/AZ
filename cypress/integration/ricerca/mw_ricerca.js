@@ -72,7 +72,7 @@ describe('Matrix Ricerca', function () {
         getSection().find('[class="title"]:contains("Ultimi clienti visualizzati"):visible').should('contain', 'Ultimi clienti visualizzati')
         getSection().find('[class="title"]:contains("Ultime polizze visualizzate"):visible').should('contain', 'Ultime polizze visualizzate')
 
-        getSection().find('lib-da-link').should('exist').and('be.visible').and('have.length', 6)
+        getSection().find('[class="left nx-grid__column-6"]').should('exist').and('be.visible').and('have.length', 9)
         getSection().find('a[href^="/matrix/clients/client/"]').should('have.length', 3).and('exist').and('be.visible').and('have.attr', 'href')
         getSection().find('img').should('have.length', 3).and('exist').and('be.visible').and('have.attr', 'src')
 

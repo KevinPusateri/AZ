@@ -36,15 +36,6 @@ beforeEach(() => {
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
-    cy.get('body').then($body => {
-        if ($body.find('lib-access-error').length === 1 ||
-            $body.find('pre:contains("OK(nginx)")').length === 1 ||
-            $body.find('pre:contains("FL(nginx)")').length === 1 ||
-            $body.find('#runningInEndUserLoginEnvironment').length === 1){
-             cy.reload()
-             cy.visit('https://matrix.pp.azi.allianz.it/')
-            }
-        })
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
@@ -56,9 +47,9 @@ beforeEach(() => {
 })
 
 after(() => {
-    cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
+    // cy.get('.user-icon-container').click()
+    // cy.contains('Logout').click()
+    // cy.wait(delayBetweenTests)
 })
 
 describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
@@ -199,16 +190,20 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //#endregion
 
     //#region Vita
-    //TODO Ricerca non trova
-    // it('Verifica aggancio Allianz1 premorienza', function () {
-    //     cy.url().should('include', '/sales')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Allianz1 premorienza').click()
-    //     cy.get('nx-modal-container').find('.agency-row').first().click()
-    //     getIFrame().find('span:contains("Ricerca"):visible')
-    //     cy.get('a').contains('Sales').click()
-    // })
+    it('Verifica aggancio Allianz1 premorienza', function () {
+        cy.url().should('include', '/sales')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Allianz1 premorienza').click()
+        cy.intercept({
+            method: 'POST',
+            url: /RicercaContrattoQuadro*/
+        }).as('ricercaContrattoQuadro');
+        cy.get('nx-modal-container').find('.agency-row').first().click()
+        cy.wait('@ricercaContrattoQuadro', { requestTimeout: 25000 });
 
+        getIFrame().find('[class="col-sm-3 col-md-offset-1 col-md-2"]:contains("Ricerca"):visible')
+        cy.get('a').contains('Sales').click()
+    })
     it('Verifica aggancio Preventivo Anonimo Vita Individuali', function () {
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
@@ -261,18 +256,21 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('a').contains('Sales').click()
     })
 
-    // //TODO Cerca non trova confronta quello dopo
-    it.only('Verifica aggancio Recupero preventivi e quotazioni', function () {
+    it('Verifica aggancio Recupero preventivi e quotazioni', function () {
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Recupero preventivi e quotazioni').click()
+        cy.intercept({
+            method: 'POST',
+            url: /InizializzaApplicazione/
+          }).as('inizializzaApplicazione');
         cy.get('nx-modal-container').find('.agency-row').first().click()
+        cy.wait('@inizializzaApplicazione', { requestTimeout: 20000 });
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
     })
-
-    //Questo funziona non è errore
-    it.only('Verifica aggancio Documenti da firmare', function () {
+            
+    it('Verifica aggancio Documenti da firmare', function () {
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Documenti da firmare').click()
@@ -281,14 +279,25 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('a').contains('Sales').click()
     })
 
-    // Non sono visibili
+
+    // TODO: Non sono visibili 
     // it('Verifica aggancio Manutenzione portafoglio RV MIDCO', function () {
     //     cy.url().should('include', '/sales')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('Manutenzione portafoglio RV Midco').click()
+    //     cy.intercept({
+    //         method: 'GET',
+    //         url: /IndexDA*/
+    //     }).as('indexDA');
     //     cy.get('nx-modal-container').find('.agency-row').first().click()
-    //     getIFrame().find('input[value="Aggiorna"]').invoke('attr','value').should('equal','Aggiorna')
-    //     getIFrame().find('input[value="Excel"]').invoke('attr','value').should('equal','Excel')
+    //     cy.wait('@indexDA', { requestTimeout: 25000 });
+
+    //     const a = getIFrame().find('form')
+    //     console.log(a)
+
+    //     getIFrame().find('form > input[value="Aggiorna"]')
+    //     // getIFrame().find('input[value="Aggiorna"]').invoke('attr','value').should('equal','Aggiorna')
+    //     // getIFrame().find('input[value="Excel"]').invoke('attr','value').should('equal','Excel')
     //     cy.get('a').contains('Sales').click()
     // })
 
@@ -297,8 +306,17 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //     cy.url().should('include', '/sales')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('Vita Corporate').click()
+    //     // cy.intercept({
+    //     //     method: 'POST',
+    //     //     url: 'https://portaleagenzie.pp.azi.allianz.it/Vita/'
+    //     // }).as('prova');
     //     cy.get('nx-modal-container').find('.agency-row').first().click()
-    //     getIFrame().find('span:contains("Consultazione Collettive e Versamenti"):visible')
+    //     // cy.wait('@prova', { requestTimeout: 25000 });
+
+    //     getIFrame().find('form').within($form =>{
+      
+    //         // cy.get('input[name="email"]').type('john.doe@email.com')
+    //     })
     //     cy.get('a').contains('Sales').click()
     // })
 

@@ -6,16 +6,15 @@ const delayBetweenTests = 2000
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-object"]')
-    .iframe();
-  
-    let  iframeSCU = cy.get('iframe[class="iframe-object"]')
-    .its('0.contentDocument').should('exist');
-  
+        .iframe();
+
+    let iframeSCU = cy.get('iframe[class="iframe-object"]')
+        .its('0.contentDocument').should('exist');
+
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-  
+
 const backToClients = () => cy.get('a').contains('Clients').click().wait(5000)
-const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
 
 beforeEach(() => {
     cy.clearCookies();
@@ -40,9 +39,9 @@ beforeEach(() => {
 })
 
 after(() => {
-    cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
+    // cy.get('.user-icon-container').click()
+    // cy.contains('Logout').click()
+    // cy.wait(delayBetweenTests)
 })
 
 
@@ -50,10 +49,26 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
     // TODO: non legge getIframe
     it('Le Mie Info', function () {
-        cy.contains('Le mie info').click()
-        cy.url().should('include', '/lemieinfo')
+        cy.intercept({
+            method: 'GET',
+            url: /StrilloCircolariController*/
+        }).as('StrilloCircolariController');
+        cy.intercept({
+            method: 'GET',
+            url: /circolariPageNavigator*/
+        }).as('StrilloCircolariNavigator');
+        cy.intercept({
+            method: 'GET',
+            url: /strilloCircolariDAPageNavigator*/
+        }).as('strilloCircolariDAPageNavigator');
 
-        console.log(getIFrame().children())
+        cy.contains('Le mie info').click()
+        cy.wait('@StrilloCircolariController', { requestTimeout: 25000 });
+        // cy.wait('@StrilloCircolariController', { requestTimeout: 20000 });
+
+
+        // cy.wait(10000)
+        cy.url().should('include', '/lemieinfo')
         getIFrame().find('a:contains("» tutti i comunicati"):visible')
 
     })
