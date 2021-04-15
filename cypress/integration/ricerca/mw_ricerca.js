@@ -6,7 +6,7 @@
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 30000)
-const delayBetweenTests = 2000
+const delayBetweenTests = 3000
 //#endregion
 
 const checkBucaRicerca = () => {
@@ -16,7 +16,7 @@ const checkBucaRicerca = () => {
     getSection().find('[class="title"]:contains("Ultimi clienti visualizzati"):visible').should('contain', 'Ultimi clienti visualizzati')
     getSection().find('[class="title"]:contains("Ultime polizze visualizzate"):visible').should('contain', 'Ultime polizze visualizzate')
 
-    getSection().find('lib-da-link').should('exist').and('be.visible').and('have.length', 6)
+    getSection().find('[class="left nx-grid__column-6"]').should('exist').and('be.visible').and('have.length', 9)
     getSection().find('a[href^="/matrix/clients/client/"]').should('have.length', 3).and('exist').and('be.visible').and('have.attr', 'href')
     getSection().find('img').should('have.length', 3).and('exist').and('be.visible').and('have.attr', 'src')
 
@@ -57,32 +57,17 @@ beforeEach(() => {
     cy.wait('@gqlNotifications')
 })
 
-after(() => {
+afterEach(() => {
     cy.get('.user-icon-container').click()
     cy.contains('Logout').click()
     cy.wait(delayBetweenTests)
+    cy.clearCookies();
 })
 
 describe('Matrix Ricerca', function () {
 
     it('Verifica Ricerca Da Switch Page', function () {
-        cy.get('input[name="main-search-input"]').click()
-        const getSection = () => cy.get('lib-shortcut-section-item')
-        getSection().find('[class="title"]:contains("Ultime pagine visitate"):visible').should('contain', 'Ultime pagine visitate')
-        getSection().find('[class="title"]:contains("Ultimi clienti visualizzati"):visible').should('contain', 'Ultimi clienti visualizzati')
-        getSection().find('[class="title"]:contains("Ultime polizze visualizzate"):visible').should('contain', 'Ultime polizze visualizzate')
-
-        getSection().find('[class="left nx-grid__column-6"]').should('exist').and('be.visible').and('have.length', 9)
-        getSection().find('a[href^="/matrix/clients/client/"]').should('have.length', 3).and('exist').and('be.visible').and('have.attr', 'href')
-        getSection().find('img').should('have.length', 3).and('exist').and('be.visible').and('have.attr', 'src')
-
-        getSection().find('[class="right nx-grid__column-6"]').each(($text) => {
-            expect($text.text()).not.to.be.empty
-        })
-        getSection().find('[class="left nx-grid__column-6"]').each(($text) => {
-            expect($text.text()).not.to.be.empty
-        })
-
+        checkBucaRicerca()
     })
 
     it('Verifica Ricerca Da Landing Page', function () {

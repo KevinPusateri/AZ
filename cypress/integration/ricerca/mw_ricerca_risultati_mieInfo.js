@@ -6,7 +6,7 @@
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 30000)
-const delayBetweenTests = 2000
+const delayBetweenTests = 3000
 //#endregion
 
 beforeEach(() => {
@@ -37,10 +37,11 @@ beforeEach(() => {
     cy.wait('@gqlNotifications')
 })
 
-after(() => {
+afterEach(() => {
     cy.get('.user-icon-container').click()
     cy.contains('Logout').click()
     cy.wait(delayBetweenTests)
+    cy.clearCookies();
 })
 
 describe('Buca di Ricerca - Risultati Le mie Info', function () {
@@ -111,6 +112,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                     }) 
         
                 })
+        //#region Company Handbook
         /*
                 cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
         
@@ -150,6 +152,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                     // }) 
         
                 })*/
+                //#endregion Company Handbook
             }
         })
 
@@ -225,6 +228,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                 
                 })
 
+                //#region Company Handbook
                /* cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
                 for(var i = 0; i <10; i++){
                     cy.get('#lib-handbook-container').scrollTo('bottom').wait(1000)
@@ -260,6 +264,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                         }
                     })
                 })*/
+                //#endregion
             }
         })
     })
@@ -369,6 +374,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
 
                     })
 
+                //#region Company Handbook
                  /*   cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
                     for(var i = 0; i <10; i++){
                         cy.get('#lib-handbook-container').scrollTo('bottom').wait(1000)
@@ -405,6 +411,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
                         }) 
 
                     })*/
+                    //#endregion
                 }
             })
         })
