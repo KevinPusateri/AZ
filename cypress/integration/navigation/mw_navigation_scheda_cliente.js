@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 
 Cypress.config('defaultCommandTimeout', 30000)
-const delayBetweenTests = 2000
+const delayBetweenTests = 3000
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -49,10 +49,11 @@ beforeEach(() => {
     cy.wait('@pageClient', { requestTimeout: 20000 });
 })
 
-after(() => {
+afterEach(() => {
     cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
+    cy.wait(1000).contains('Logout').click()
     cy.wait(delayBetweenTests)
+    cy.clearCookies();
 })
 
 describe('Matrix Web : Navigazioni da Scheda Cliente', function () {

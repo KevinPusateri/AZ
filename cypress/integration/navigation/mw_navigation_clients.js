@@ -7,7 +7,7 @@
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 30000)
-const delayBetweenTests = 2000
+const delayBetweenTests = 3000
 //#endregion
 
 //#region Global Variables
@@ -47,10 +47,11 @@ beforeEach(() => {
     cy.get('app-product-button-list').find('a').contains('Clients').click()
 })
 
-after(() => {
+afterEach(() => {
     cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
+    cy.wait(1000).contains('Logout').click()
     cy.wait(delayBetweenTests)
+    cy.clearCookies();
 })
 
 describe('Matrix Web : Navigazioni da Clients', function () {

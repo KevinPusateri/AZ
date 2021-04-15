@@ -46,10 +46,11 @@ beforeEach(() => {
 
 })
 
-after(() => {
-    // cy.get('.user-icon-container').click()
-    // cy.contains('Logout').click()
-    // cy.wait(delayBetweenTests)
+afterEach(() => {
+    cy.get('.user-icon-container').click()
+    cy.wait(1000).contains('Logout').click()
+    cy.wait(delayBetweenTests)
+    cy.clearCookies();
 })
 
 describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {

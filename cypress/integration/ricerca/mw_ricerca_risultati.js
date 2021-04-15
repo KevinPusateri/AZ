@@ -6,7 +6,7 @@
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-const delayBetweenTests = 2000
+const delayBetweenTests = 3000
 //#endregion
 
 beforeEach(() => {
@@ -42,10 +42,11 @@ beforeEach(() => {
     cy.wait('@gqlNotifications')
 })
 
-after(() => {
+afterEach(() => {
     cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
+    cy.wait(1000).contains('Logout').click()
     cy.wait(delayBetweenTests)
+    cy.clearCookies();
 })
 
 

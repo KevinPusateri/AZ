@@ -2,7 +2,7 @@
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 30000)
-const delayBetweenTests = 2000
+const delayBetweenTests = 3000
 //#endregion
 
 //#region Global Variables
@@ -25,12 +25,19 @@ const getIFrameProva = () => {
   
     return iframeSCU.its('wrapper').should('not.be.undefined').then(cy.wrap)
 }
+const canaleFromPopup = () => cy.wait(1000).get('nx-modal-container').find('.agency-row').first().click()
+
 //#endregion
 
 beforeEach(() => {
     cy.clearCookies();
     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
+    cy.intercept('POST', '/graphql', (req) => {
+        if (req.body.operationName.includes('notifications')) {
+          req.alias = 'gqlNotifications'
+        }
+      })
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
@@ -47,18 +54,22 @@ beforeEach(() => {
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    cy.get('app-product-button-list').find('a').contains('Numbers').click()
+    cy.wait('@gqlNotifications')
 })
 
-after(() => {
-    cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
+afterEach(() => {
+    cy.wait(1000).get('.user-icon-container').click()
+    cy.wait(1000).contains('Logout').click()
     cy.wait(delayBetweenTests)
+    
+    cy.clearCookies();
 })
 
 describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     it('Verifica i link da Burger Menu', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
+
         const linksBurger = [
             'Home Numbers',
             'Monitoraggio Fonti',
@@ -90,25 +101,28 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
     })
 
     it('Verifica aggancio Monitoraggio Fonti', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Monitoraggio Fonti').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('a:contains("Filtra")')
         cy.get('a').contains('Numbers').click()
     })
 
     //TODO: verifica
     // it('Verifica aggancio Monitoraggio Carico', function () {
+    // cy.get('app-product-button-list').find('a').contains('Numbers').click()
     //     cy.url().should('include', '/numbers/business-lines')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('Monitoraggio Carico').click()
-    //     cy.get('nx-modal-container').find('.agency-row').first().click()
+    //     canaleFromPopup()
 
     //     cy.get('a').contains('Numbers').click()
     // })
     
     it('Verifica aggancio Monitoraggio Carico per Fonte', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.intercept({
@@ -124,34 +138,39 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     //TODO: connessione non sicura
     // it.only('Verifica aggancio X - Advisor', function () {
+        // cy.get('app-product-button-list').find('a').contains('Numbers').click()
     //     cy.url().should('include', '/numbers/business-lines')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('X - Advisor').click()
-    //     cy.get('nx-modal-container').find('.agency-row').first().click()
+    //     canaleFromPopup()
 
     //     cy.get('a').contains('Numbers').click()
     // })
 
 
     it('Verifica aggancio Incentivazione', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Incentivazione').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('button:contains("Incentivazione: Maturato per Fonte"):visible')
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio Incentivazione Recruiting', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Incentivazione Recruiting').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('[class="menu-padre"]:contains("Report"):visible')
         cy.get('a').contains('Numbers').click()
     })
 
+    // DA RISOLVERE
     it('Verifica aggancio Andamenti Tecnici', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Andamenti Tecnici').click()
@@ -159,15 +178,16 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         //     method: 'GET',
         //     url: /AT/
         // }).as('at');
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('button:contains("Fonti produttive"):visible')
         // cy.wait('@at', { requestTimeout: 25000 });
 
         cy.get('a').contains('Numbers').click()
     })
     
-    //TODO: INIZIARE DA QUI controlla FrameProva method its
-    it.only('Verifica aggancio Estrazioni Avanzate', function () {
+    //TODO: INIZIARE DA QUI
+    it('Verifica aggancio Estrazioni Avanzate', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Estrazioni Avanzate').click()
@@ -175,125 +195,138 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
             method: 'GET',
             url: /pentahoDA/
         }).as('pentahoDA');    
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         cy.wait('@pentahoDA', { requestTimeout: 25000 });
-        getIFrameProva().find('a:visible')
+        getIFrame().find('a:contains("Nuovo Report"):visible')
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio Scarico Dati', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Scarico Dati').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
-
+        canaleFromPopup()
+        getIFrame().find('form:contains("Esporta tracciato")')
         cy.get('a').contains('Numbers').click()
     })
 
-    it('Verifica aggancio Indici Digitali', function () {
+    it.only('Verifica aggancio Indici Digitali', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Indici Digitali').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
-
+        canaleFromPopup()
+        getIFrame().find('#toggleFilters:contains("Apri filtri")')
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio New Business Danni', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('New Business Danni').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
 
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio New Business Ultra', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('New Business Ultra').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
 
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio New Business Vita', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('New Business Vita').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
 
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio New Business Allianz1', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('New Business Allianz1').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
 
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio Monitoraggio PTF Danni', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Monitoraggio PTF Danni').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
 
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio Monitoraggio Riserve Vita', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Monitoraggio Riserve Vita').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
 
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio Retention Motor', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Retention Motor').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
 
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio Retention Rami Vari', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Retention Rami Vari').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
 
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio Monitoraggio Andamento Premi', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Monitoraggio Andamento Premi').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
 
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio Monitoraggio Ricavi d\'Agenzia', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Monitoraggio Ricavi d\'Agenzia').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
 
         cy.get('a').contains('Numbers').click()
     })
 
     it('Verifica aggancio Capitale Vita Scadenza', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Capitale Vita Scadenza').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
 
         cy.get('a').contains('Numbers').click()
     })

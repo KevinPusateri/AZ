@@ -66,10 +66,11 @@ beforeEach(() => {
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
 })
 
-after(() => {
+afterEach(() => {
     cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
+    cy.wait(1000).contains('Logout').click()
     cy.wait(delayBetweenTests)
+    cy.clearCookies();
 })
 
 //TODO: togliere i wait su Deleghe ssd e Incasso per conto e Gestione Documentale

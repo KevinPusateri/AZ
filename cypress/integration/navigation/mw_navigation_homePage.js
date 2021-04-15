@@ -6,7 +6,7 @@ Cypress.config('defaultCommandTimeout', 30000)
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 30000)
-const delayBetweenTests = 2000
+const delayBetweenTests = 3000
 //#endregion
 
 //#region Global Variables
@@ -52,10 +52,11 @@ beforeEach(() => {
 
 })
 
-after(() => {
+afterEach(() => {
     cy.get('.user-icon-container').click()
-    cy.contains('Logout').click()
+    cy.wait(1000).contains('Logout').click()
     cy.wait(delayBetweenTests)
+    cy.clearCookies();
 })
 
 Cypress._.times(1,()=>{
