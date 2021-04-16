@@ -1,4 +1,2 @@
 cd ..
-npm run cypress:run:ricerca_dash &&
-npm run cypress:run:navigations_dash &&
-npm run cypress:run:censimenti_dash
+./node_modules/.bin/npm-run-all  -s -c cypress:run:ricerca_dash cypress:run:navigations_dash cypress:run:censimenti_dash
