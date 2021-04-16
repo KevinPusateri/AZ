@@ -166,24 +166,19 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
     })
 
-    it('Verifica apertura disambiguazione: Denuncia BMP', function () {
+    it.only('Verifica apertura disambiguazione: Denuncia BMP', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
         cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
+        cy.intercept({
+            method: 'GET',
+            url: /fnol*/
+        }).as('fnol');
         cy.get('nx-modal-container').find('.agency-row').first().click()
-        cy.intercept('POST', '/graphql', (req) => {
-            if (req.body.operationName.includes('getJsonData')) {
-                req.alias = 'gqlGetJsonData'
-            }
-        })
-        cy.wait('@gqlGetJsonData')
-        getIFrame().find('bb-title:contains("Dettaglio cliente"):visible')
-        getIFrame().find('nx-multi-step-item:contains("Dettaglio cliente"):visible')
-        getIFrame().find('nx-multi-step-item:contains("Dettaglio sinistro"):visible')
-        getIFrame().find('nx-multi-step-item:contains("Dettaglio del danno"):visible')
-        getIFrame().find('nx-multi-step-item:contains("Sommario"):visible')
-        getIFrame().find('nx-multi-step-item:contains("Conferma"):visible')
+        cy.wait('@fnol', { requestTimeout: 25000 });
+
+        getIFrame().find('fnol-root:contains("Continua"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
     })
