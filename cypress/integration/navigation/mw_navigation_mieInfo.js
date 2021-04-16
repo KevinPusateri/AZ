@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 
 Cypress.config('defaultCommandTimeout', 30000)
-const delayBetweenTests = 2000
+const delayBetweenTests = 3000
 
 
 const getIFrame = () => {
@@ -38,10 +38,11 @@ beforeEach(() => {
     cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
 
-after(() => {
-    // cy.get('.user-icon-container').click()
-    // cy.contains('Logout').click()
-    // cy.wait(delayBetweenTests)
+afterEach(() => {
+    cy.get('.user-icon-container').click()
+    cy.wait(1000).contains('Logout').click()
+    cy.wait(delayBetweenTests)
+    cy.clearCookies();
 })
 
 
