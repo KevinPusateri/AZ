@@ -76,7 +76,7 @@ describe('Buca di Ricerca', function () {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
 
         cy.get('nx-modal-container').find('lib-da-link').contains('Ricerca Cliente').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
+        cy.get('nx-modal-container').find('.agency-row').first().click()
         cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
 
     })
