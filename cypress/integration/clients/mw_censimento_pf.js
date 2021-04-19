@@ -60,14 +60,12 @@ before(() => {
     nuovoClientePF = object;
   });
 
-  let currentAmbiente = 'PREPROD'
-  let currentUtenza = 'TUTF021'
   let currentTestCaseName = 'Matrix.Tests.Matrix_Web_Censimento_PF'
+  let currentEnv = 'PREPROD'
+  let currentUser = 'TUTF021'
 
-  // cy.task('mysqlStart', {testCaseName: currentTestCaseName, ambiente: currentAmbiente, utenza: currentUtenza}).then((insertId) =>{
-  //   console.info("--> Inserted Id for " + currentTestCaseName + " : " + insertId);
-  // });
-  
+  cy.task('mysqlStart', {"testCaseName": currentTestCaseName, "currentEnv": currentEnv, "currentUser": currentUser});
+
   //Skip this two requests that blocks on homepage
   cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
   cy.intercept(/launch-*/,'ignore').as('launchStaging');
@@ -78,7 +76,7 @@ before(() => {
   });
 
   cy.visit('https://matrix.pp.azi.allianz.it/')
-  cy.get('input[name="Ecom_User_ID"]').type(currentUtenza)
+  cy.get('input[name="Ecom_User_ID"]').type(currentUser)
   cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
   cy.get('input[type="SUBMIT"]').click()
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')

@@ -22,18 +22,26 @@ const mysql = require('mysql')
 const moment = require('moment')
 
 //#region Mysql
-function mysqlStart(testCaseName, ambiente, utenza) {
-    const connection = mysql.createConnection()
-    connection.connect()
+function mysqlStart(testCaseName, currentEnv, currentUser, config) {
+
+    const connection = mysql.createConnection(config.env.db)
+    connection.connect((err)=>{
+        if (err) throw err;
+        console.log('%c --> Connected to ' + config.env.db.host, 'color: green; font-weight: bold;');
+    })
 
     let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss');
     let machineName = os.hostname();
     var query = "INSERT INTO TC_Log (TestCaseName, Ambiente, Utenza, DataInizio, DataFine, MachineName, ResultOutcome) " +
-        "VALUES ('"+testCaseName+"','"+ambiente+"','"+utenza+"','"+currentDateTime+"','"+currentDateTime+"','"+machineName+"','Unfinished')";
+        "VALUES ('"+testCaseName+"','"+currentEnv+"','"+currentUser+"','"+currentDateTime+"','"+currentDateTime+"','"+machineName+"','Unfinished')";
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
-            if (error) reject(error)
+            if (error)
+            {
+                console.error(error)
+                reject(error)
+            }
             else {
                 connection.end()
                 return resolve(results)
@@ -163,19 +171,9 @@ module.exports = (on, config) => {
         }
     });
 
-    on("task", {
-        mysqlStart({testCaseName, ambiente, utenza}){
-            con.connect((err) => {
-                if (err) throw err;
-                console.info("--> Connected to PALZMSQDBPRLV01.srv.allianz for Mysql Report Testing...");
-                
-                con.query(sql, function (err, result) {
-                    if (err)
-                        throw err;
-                    else
-                        return result.insertId;
-                });
-            });
-        }
-    });
+    on('task', {
+        mysqlStart({testCaseName,currentEnv,currentUser}) {
+            return mysqlStart(testCaseName, currentEnv, currentUser, config);
+        },
+    })
 };

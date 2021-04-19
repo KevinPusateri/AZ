@@ -2,11 +2,13 @@
 	"chromeWebSecurity": false,
 	"video": false,
 	"projectId": "4ypuc8",
-	"db": {
-		"host": "PALZMSQDBPRLV01.srv.allianz",
-		"port": 5551,
-		"user": "MY_taut_VeeC9",
-		"password": "vC4DwAHxznfGl8XywsoohZkbdmL6cf",
-		"database": "applogs"
+	"env": {
+		"db": {
+			"host": "PALZMSQDBPRLV01.srv.allianz",
+			"port": 5551,
+			"user": "MY_taut_VeeC9",
+			"password": "vC4DwAHxznfGl8XywsoohZkbdmL6cf",
+			"database": "applogs"
+		}
 	}
 }
