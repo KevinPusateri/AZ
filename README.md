@@ -7,5 +7,6 @@ By [Andrea Oboe](mailto:andrea.oboe@allianz.it)
 :bomb: Please remeber, after cloned, to execute in the root dir
 
 ```javascript
-npm --proxy http://it000-surf.zone2.proxy.allianz:8080 i express
+npm config set proxy 'http://it000-surf.zone2.proxy.allianz:8080'
+npm  i express
 ```
