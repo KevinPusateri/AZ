@@ -16,7 +16,32 @@
  * @type {Cypress.PluginConfig}
  */
 // eslint-disable-next-line no-unused-vars
-const faker = require("faker");
+const faker = require('faker')
+const os = require('os')
+const mysql = require('mysql')
+const moment = require('moment')
+
+//#region Mysql
+function mysqlStart(testCaseName, ambiente, utenza) {
+    const connection = mysql.createConnection()
+    connection.connect()
+
+    let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss');
+    let machineName = os.hostname();
+    var query = "INSERT INTO TC_Log (TestCaseName, Ambiente, Utenza, DataInizio, DataFine, MachineName, ResultOutcome) " +
+        "VALUES ('"+testCaseName+"','"+ambiente+"','"+utenza+"','"+currentDateTime+"','"+currentDateTime+"','"+machineName+"','Unfinished')";
+
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error) reject(error)
+            else {
+                connection.end()
+                return resolve(results)
+            }
+        })
+    })
+}
+//#endregion
 
 //#region Generazione Partita Iva Random
 function reverse(n)
@@ -117,12 +142,14 @@ function generateRandomVatIn()
 module.exports = (on, config) => {
     on("task", {
         nuovoClientePersonaFisica() {
-           user = {
+            user = {
                 nome: faker.name.firstName(),
                 cognome: faker.name.lastName()
             };
+            console.info("--> Generate Persona Fisica for test : " + JSON.stringify(user));
+
             return user;
-        },
+        }
     });
 
     on("task", {
@@ -133,6 +160,22 @@ module.exports = (on, config) => {
                 email : faker.internet.email()
             };
             return user;
-        },
+        }
+    });
+
+    on("task", {
+        mysqlStart({testCaseName, ambiente, utenza}){
+            con.connect((err) => {
+                if (err) throw err;
+                console.info("--> Connected to PALZMSQDBPRLV01.srv.allianz for Mysql Report Testing...");
+                
+                con.query(sql, function (err, result) {
+                    if (err)
+                        throw err;
+                    else
+                        return result.insertId;
+                });
+            });
+        }
     });
 };
