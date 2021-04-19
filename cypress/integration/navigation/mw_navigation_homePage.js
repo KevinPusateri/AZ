@@ -77,28 +77,24 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         cy.get('lib-switch-button').click().wait(500)
         cy.get('lib-switch-button-list').contains('Clients').click()
         cy.url().should('include', '/clients')
-        cy.get('a[href="/matrix/"]').click()
     });
 
     it('Top Menu Sales', function () {
         cy.get('lib-switch-button').click().wait(500)
         cy.get('lib-switch-button-list').contains('Sales').click()
         cy.url().should('include', '/sales')
-        cy.get('a[href="/matrix/"]').click()
     });
 
     it('Top Menu Numbers', function () {
         cy.get('lib-switch-button').click().wait(500)
         cy.get('lib-switch-button-list').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
-        cy.get('a[href="/matrix/"]').click()
     });
 
     it('Top Menu Backoffice', function () {
         cy.get('lib-switch-button').click().wait(500)
         cy.get('lib-switch-button-list').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
-        cy.get('a[href="/matrix/"]').click()
     });
 
     // it('Top Menu News', function () {
@@ -112,7 +108,6 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         cy.get('lib-switch-button').click().wait(500)
         cy.get('lib-switch-button-list').contains('Le mie info').click()
         cy.url().should('include', '/lemieinfo')
-        cy.get('a[href="/matrix/"]').click()
     });
 
     it('Cerca in Matrix', function () {
@@ -122,49 +117,41 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     it('Button Clients', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('include', '/clients')
-        cy.get('a[href="/matrix/"]').click()
     });
         
     it('Button Sales', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
-        cy.get('a[href="/matrix/"]').click()
     });
 
     it('Button Numbers', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
-        cy.get('a[href="/matrix/"]').click()
     });
         
     it('Button Backoffice', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
-        cy.get('a[href="/matrix/"]').click()
     });
 
     it('Button News', function () {
         cy.get('app-product-button-list').find('a').contains('News').click()
         cy.url().should('include', '/news/home')
-        cy.get('a[href="/matrix/"]').click()
     });
 
     
     it('Button News', function () {
         cy.get('app-product-button-list').find('a').contains('Le mie info').click()
         cy.url().should('include', '/news/home')
-        cy.get('a[href="/matrix/"]').click()
     });
     it('Centro notifiche', function () {
         cy.get('app-notification-top-bar').find('a').contains('Vai al Centro notifiche').click()
         cy.url().should('include', '/notification-center')
-        cy.get('a[href="/matrix/"]').click()
     });
 
     it('Vedi tutte le news', function () {
         cy.get('app-news-top-bar-title-cta').contains('Vedi tutte').click()
         cy.url().should('include', '/news/recent')
-        cy.get('a[href="/matrix/"]').click()
     });
 
     it.only('Verifica card Notifica', function () {

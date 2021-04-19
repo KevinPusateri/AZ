@@ -20,6 +20,7 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+
 //#endregion
 
 beforeEach(() => {
@@ -47,7 +48,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-    cy.get('.user-icon-container').click()
+    cy.wait(1000).get('.user-icon-container').click()
     cy.wait(1000).contains('Logout').click()
     cy.wait(delayBetweenTests)
     cy.clearCookies();
@@ -282,27 +283,21 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
 
     // TODO: Non sono visibili 
-    // it('Verifica aggancio Manutenzione portafoglio RV MIDCO', function () {
+    // it.only('Verifica aggancio Manutenzione portafoglio RV MIDCO', function () {
     //     cy.url().should('include', '/sales')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('Manutenzione portafoglio RV Midco').click()
     //     cy.intercept({
-    //         method: 'GET',
-    //         url: /IndexDA*/
-    //     }).as('indexDA');
+    //         method: 'POST',
+    //         url: /DirMPTF*/
+    //     }).as('danni');
     //     cy.get('nx-modal-container').find('.agency-row').first().click()
-    //     cy.wait('@indexDA', { requestTimeout: 25000 });
-
-    //     const a = getIFrame().find('form')
-    //     console.log(a)
-
-    //     getIFrame().find('form > input[value="Aggiorna"]')
-    //     // getIFrame().find('input[value="Aggiorna"]').invoke('attr','value').should('equal','Aggiorna')
-    //     // getIFrame().find('input[value="Excel"]').invoke('attr','value').should('equal','Excel')
+    //     cy.wait('@danni', { requestTimeout: 25000 });
+    //     getIFrame().find('form > input[value="Applica Filtri"]').invoke('attr','value').should('equal','Applica Filtri')  
     //     cy.get('a').contains('Sales').click()
     // })
 
-    //Non sono visibili
+    // TODO: Non sono visibili
     // it('Verifica aggancio Vita Corporate', function () {
     //     cy.url().should('include', '/sales')
     //     cy.get('lib-burger-icon').click()
@@ -368,14 +363,19 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     // non vede Ricerca
-    // it('Verifica aggancio Report Cliente T4L', function () {
-    //     cy.url().should('include', '/sales')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Report Cliente T4L').click()
-    //     cy.get('nx-modal-container').find('.agency-row').first().click()
-    //     getIFrame().find('input[value="Ricerca"]').invoke('attr','value').should('equal','Ricerca')
-    //     cy.get('a').contains('Sales').click()
-    // })
+    it.only('Verifica aggancio Report Cliente T4L', function () {
+        cy.url().should('include', '/sales')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Report Cliente T4L').click()
+        cy.intercept({
+            method: 'POST',
+            url: /Vita*/
+        }).as('prova');
+        cy.get('nx-modal-container').find('.agency-row').first().click()
+        cy.wait('@prova', { requestTimeout: 25000 });
+        getIFrame().find('input[value="Ricerca"]').invoke('attr','value').should('equal','Ricerca')
+        cy.get('a').contains('Sales').click()
+    })
 
     it('Verifica aggancio Documenti annullati', function () {
         cy.url().should('include', '/sales')
@@ -415,22 +415,22 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     // Apre un'altra pagina
-    it('Verifica aggancio AllianzGlobalAssistance', function () {
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('AllianzGlobalAssistance').click()
-        cy.get('a').contains('Sales').click()
-    })
+    // it('Verifica aggancio AllianzGlobalAssistance', function () {
+    //     cy.url().should('include', '/sales')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('AllianzGlobalAssistance').click()
+    //     cy.get('a').contains('Sales').click()
+    // })
     
     // Apre new Window
-    it('Verifica aggancio Allianz placement platform', function () {
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('Allianz placement platform').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+    // it('Verifica aggancio Allianz placement platform', function () {
+    //     cy.url().should('include', '/sales')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('Allianz placement platform').click()
+    //     cy.get('nx-modal-container').find('.agency-row').first().click()
 
-        cy.get('a').contains('Sales').click()
-    })
+    //     cy.get('a').contains('Sales').click()
+    // })
 
     it('Verifica aggancio Qualità portafoglio auto', function () {
         cy.url().should('include', '/sales')
@@ -442,15 +442,14 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     // Accesso Negato
-    it('Verifica aggancio App cumulo terremoti', function () {
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('App cumulo terremoti').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+    // it('Verifica aggancio App cumulo terremoti', function () {
+    //     cy.url().should('include', '/sales')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('App cumulo terremoti').click()
+    //     cy.get('nx-modal-container').find('.agency-row').first().click()
 
-        cy.get('a').contains('Sales').click()
-    })
-
+    //     cy.get('a').contains('Sales').click()
+    // })
 
     it('Verifica aggancio Note di contratto', function () {
         cy.url().should('include', '/sales')
@@ -462,14 +461,14 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     // Apre new Window
-    it('Verifica aggancio ACOM Gestione iniziative', function () {
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('ACOM Gestione iniziative').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+    // it('Verifica aggancio ACOM Gestione iniziative', function () {
+    //     cy.url().should('include', '/sales')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('ACOM Gestione iniziative').click()
+    //     cy.get('nx-modal-container').find('.agency-row').first().click()
 
-        cy.get('a').contains('Sales').click()
-    })
+    //     cy.get('a').contains('Sales').click()
+    // })
     //#endregion
 
 

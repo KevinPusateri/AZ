@@ -166,7 +166,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
     })
 
-    it.only('Verifica apertura disambiguazione: Denuncia BMP', function () {
+    it('Verifica apertura disambiguazione: Denuncia BMP', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
@@ -177,7 +177,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         }).as('fnol');
         cy.get('nx-modal-container').find('.agency-row').first().click()
         cy.wait('@fnol', { requestTimeout: 25000 });
-
         getIFrame().find('fnol-root:contains("Continua"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
