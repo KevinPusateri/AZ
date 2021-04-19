@@ -11,8 +11,7 @@
     "faker": "^5.5.2",
     "ftp-deploy": "^2.4.1",
     "nodemailer": "^6.5.0",
-    "rimraf": "^3.0.2",
-    "xmysql": "^0.5.1"
+    "rimraf": "^3.0.2"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5"
