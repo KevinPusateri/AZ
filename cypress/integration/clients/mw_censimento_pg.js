@@ -81,12 +81,12 @@ beforeEach(() => {
   })
 })
 
-// after(() => {
-//   cy.get('.user-icon-container').click()
-//   cy.contains('Logout').click()
-//   cy.wait(delayBetweenTests)
-//   cy.clearCookies();
-// })
+after(() => {
+  cy.get('.user-icon-container').click()
+  cy.contains('Logout').click()
+  cy.wait(delayBetweenTests)
+  cy.clearCookies();
+})
 
 describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
 
