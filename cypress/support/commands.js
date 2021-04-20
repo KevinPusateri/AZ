@@ -106,3 +106,38 @@ Cypress.Commands.add('getIframeBody', (iframeCode) => {
   // https://on.cypress.io/wrap
   .then((body) => cy.wrap(body, { log: false }))
 })
+
+//Login per Matrix Web, riceve in ingresso ambiente, username a password, scegliendo
+//l'URL corretto di conseguenza
+Cypress.Commands.add('loginMatrix', (ambiente, user, password) => {
+  let urlStr = 'url'
+  let urlChk = 'url'
+
+  //Skip this two requests that blocks on homepage
+  cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
+  cy.intercept(/launch-*/,'ignore').as('launchStaging');
+  cy.intercept('POST', '/graphql', (req) => {
+    if (req.body.operationName.includes('notifications')) {
+      req.alias = 'gqlNotifications'
+    }
+  });
+
+  if(ambiente === "test")
+  {
+    urlStr = "https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=0&option=credential&sid=0&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F"
+    urlChk = "/portaleagenzie.te.azi.allianzit/matrix/"
+  }
+  else if(ambiente === "preprod")
+  {
+    urlStr = "https://matrix.pp.azi.allianz.it/"
+    urlChk = "/portaleagenzie.pp.azi.allianz.it/matrix/"
+  }
+
+  cy.visit(urlStr)  
+  cy.get('input[name="Ecom_User_ID"]').type(user)
+  cy.get('input[name="Ecom_Password"]').type(password)
+  cy.get('input[type="SUBMIT"]').click()
+  cy.url().should('include', urlChk)
+
+  cy.wait('@gqlNotifications')
+})

@@ -176,4 +176,10 @@ module.exports = (on, config) => {
             return mysqlStart(testCaseName, currentEnv, currentUser, config);
         },
     })
+    on("task", {
+        mysqlStart({testCaseName, ambiente, utenza}){
+            con.connect((err) => {
+                if (err) throw err;
+                console.info("--> Connected to PALZMSQDBPRLV01.srv.allianz for Mysql Report Testing...");
+                
 };
