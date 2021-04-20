@@ -54,13 +54,18 @@ const getDocumentoPersonale = () => {
 let nuovoClientePF;
 
 before(() => {
+  cy.clearCookies();
 
   cy.task('nuovoClientePersonaFisica').then((object) => {
     nuovoClientePF = object;
   });
 
-  cy.clearCookies();
-  
+  let currentTestCaseName = 'Matrix.Tests.Matrix_Web_Censimento_PF'
+  let currentEnv = 'PREPROD'
+  let currentUser = 'TUTF021'
+
+  cy.task('mysqlStart', {"testCaseName": currentTestCaseName, "currentEnv": currentEnv, "currentUser": currentUser});
+
   //Skip this two requests that blocks on homepage
   cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
   cy.intercept(/launch-*/,'ignore').as('launchStaging');
@@ -68,10 +73,10 @@ before(() => {
     if (req.body.operationName.includes('notifications')) {
       req.alias = 'gqlNotifications'
     }
-  })
+  });
 
   cy.visit('https://matrix.pp.azi.allianz.it/')
-  cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
+  cy.get('input[name="Ecom_User_ID"]').type(currentUser)
   cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
   cy.get('input[type="SUBMIT"]').click()
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')

@@ -16,7 +16,40 @@
  * @type {Cypress.PluginConfig}
  */
 // eslint-disable-next-line no-unused-vars
-const faker = require("faker");
+const faker = require('faker')
+const os = require('os')
+const mysql = require('mysql')
+const moment = require('moment')
+
+//#region Mysql
+function mysqlStart(testCaseName, currentEnv, currentUser, config) {
+
+    const connection = mysql.createConnection(config.env.db)
+    connection.connect((err)=>{
+        if (err) throw err;
+        console.log('%c --> Connected to ' + config.env.db.host, 'color: green; font-weight: bold;');
+    })
+
+    let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss');
+    let machineName = os.hostname();
+    var query = "INSERT INTO TC_Log (TestCaseName, Ambiente, Utenza, DataInizio, DataFine, MachineName, ResultOutcome) " +
+        "VALUES ('"+testCaseName+"','"+currentEnv+"','"+currentUser+"','"+currentDateTime+"','"+currentDateTime+"','"+machineName+"','Unfinished')";
+
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error)
+            {
+                console.error(error)
+                reject(error)
+            }
+            else {
+                connection.end()
+                return resolve(results)
+            }
+        })
+    })
+}
+//#endregion
 
 //#region Generazione Partita Iva Random
 function reverse(n)
@@ -117,12 +150,14 @@ function generateRandomVatIn()
 module.exports = (on, config) => {
     on("task", {
         nuovoClientePersonaFisica() {
-           user = {
+            user = {
                 nome: faker.name.firstName(),
                 cognome: faker.name.lastName()
             };
+            console.info("--> Generate Persona Fisica for test : " + JSON.stringify(user));
+
             return user;
-        },
+        }
     });
 
     on("task", {
@@ -133,6 +168,12 @@ module.exports = (on, config) => {
                 email : faker.internet.email()
             };
             return user;
-        },
+        }
     });
+
+    on('task', {
+        mysqlStart({testCaseName,currentEnv,currentUser}) {
+            return mysqlStart(testCaseName, currentEnv, currentUser, config);
+        },
+    })
 };
