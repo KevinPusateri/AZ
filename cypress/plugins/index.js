@@ -182,4 +182,28 @@ module.exports = (on, config) => {
                 if (err) throw err;
                 console.info("--> Connected to PALZMSQDBPRLV01.srv.allianz for Mysql Report Testing...");
                 
+                con.query(sql, function (err, result) {
+                    if (err)
+                        throw err;
+                    else
+                        return result.insertId;
+                });
+            });
+        }
+    });
+
+    //devono essere valorizzati
+    on("task", {
+        cliente() {
+           user = {
+            Nome: "Piero",
+            Cognome: "Verde",
+            CodiceFiscale: "VRDPRI52A01L483M",
+            Indirizzo_Residenza: "VIA ROMA 4",
+            Comune_Residenza: "UDINE",
+            Provincia_Residenza: "UD"
+            };
+            return user;
+        }
+    });
 };
