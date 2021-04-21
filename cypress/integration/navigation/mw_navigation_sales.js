@@ -32,8 +32,11 @@ beforeEach(() => {
     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
     cy.intercept('POST', '/graphql', (req) => {
-        if (req.body.operationName.includes('notifications')) {
-            req.alias = 'gqlNotifications'
+        // if (req.body.operationName.includes('notifications')) {
+        //     req.alias = 'gqlNotifications'
+        // }
+        if (req.body.operationName.includes('news')) {
+            req.alias = 'gqlNews'
         }
     })
     cy.viewport(1920, 1080)
@@ -52,7 +55,8 @@ beforeEach(() => {
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    cy.wait('@gqlNotifications');
+    // cy.wait('@gqlNotifications');
+    cy.wait('@gqlNews');
 })
 
 afterEach(() => {
@@ -121,11 +125,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.url().should('include', '/sales')
         cy.intercept({
             method: 'POST',
-            url: /InizializzaContratti/
-        }).as('inizializzaContratti');
+            url: '**/Danni/**'
+        }).as('getDanni');
         cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
         canaleFromPopup()
-        cy.wait('@inizializzaContratti', { requestTimeout: 30000 });
+        cy.wait('@getDanni', { requestTimeout: 30000 });
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
     })
@@ -255,16 +259,16 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //     popoverEmettiPolizza().contains('Preventivo anonimo Vita Individuali').click()
     //     cy.intercept({
     //         method: 'POST',
-    //         url: /Vita*/
+    //         url: '**/Vita/**'
     //     }).as('getVitaP');
     //     cy.intercept({
     //         method: 'GET',
-    //         url: /Vita*/
+    //         url: '**/Vita/**'
     //     }).as('getVitaG');
     //     canaleFromPopup()
     //     cy.wait('@getVitaG', { requestTimeout: 30000 });
     //     cy.wait('@getVitaP', { requestTimeout: 30000 });
-    //     getIFrame().find('#AZBuilder1_ctl14_cmdHome').its('attr','value').should('equal','Home')
+    //     getIFrame().find('#AZBuilder1_ctl14_cmdHome').invoke('attr','value').should('equal','Home')
     // })
 
     it('Verifica aggancio Emetti Polizza - MiniFlotte', function(){
@@ -349,9 +353,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         getIFrame().find('app-header:contains("Tutte"):visible')
 
     })
-
-
-    //TODO: Verifica Vita con Danni visible
+    
     it('Verifica aggancio Preventivi e quotazioni - Card Danni', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
@@ -364,18 +366,47 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
         cy.wait('@gqlDamage')
         cy.get('app-paginated-cards').find('button:contains("Danni")').click()
-        if(cy.get('.cards-container').find('.damages').should("exist")){
-            cy.intercept({
-                method: 'POST',
-                url: /Danni*/
-            }).as('getDanni');
-            cy.get('.cards-container').find('.card').first().click()
-            cy.wait('@getDanni', { requestTimeout: 30000 });
-            getIFrame().find('button:contains("Cerca"):visible')
-        }
+        cy.intercept({
+            method: 'POST',
+            url: /Danni*/
+        }).as('getDanni');
+        cy.get('.cards-container').find('.card').first().click()
+        cy.wait('@getDanni', { requestTimeout: 30000 });
+        getIFrame().find('button:contains("Cerca"):visible')
+        
     })
-
-    it.only('Verifica aggancio Preventivi e quotazioni - Card Vita', function(){
+    
+    it('Verifica aggancio Preventivi e quotazioni Danni - button: Vedi Tutti', function(){
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('include', '/sales')
+        cy.intercept('POST', '/graphql', (req) => {
+            if (req.body.operationName.includes('salesContract') &&
+            req.body.variables.filter.tabCallType.includes('DAMAGE')) {
+              req.alias = 'gqlDamage'
+            }
+        })
+        cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
+        cy.wait('@gqlDamage')
+        cy.get('app-paginated-cards').find('button:contains("Danni")').click()
+        cy.get('app-quotations-section').find('button:contains("Vedi tutti")').click()
+        cy.intercept({
+            method: 'POST',
+            url: '**/Danni/**'
+        }).as('getDanni');
+        cy.intercept({
+            method: 'GET',
+            url: '**/Danni/**'
+        }).as('getDanniG');
+        canaleFromPopup()
+        cy.wait('@getDanni', { requestTimeout: 40000 });
+        cy.wait('@getDanniG', { requestTimeout: 40000 });
+        cy.get('#iframe-container').within(() =>{
+            getIFrame().find('form:contains("Cerca"):visible')
+        })
+    })
+    
+    //TODO: Verifica Vita con Vita button Note visible
+    it('Verifica aggancio Preventivi e quotazioni - Card Vita', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.intercept('POST', '/graphql', (req) => {
@@ -393,37 +424,136 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         getIFrame().find('#AZBuilder1_ctl08_cmdNote')
     })
 
-    it('Verifica aggancio Preventivi e quotazioni - button: Vedi Tutti', function(){
+    // TODO
+    // it('Verifica aggancio Preventivi e quotazioni Vita - button: Vedi Tutti', function(){
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('include', '/sales')
+    //     cy.intercept('POST', '/graphql', (req) => {
+    //         if (req.body.operationName.includes('salesContract') &&
+    //         req.body.variables.filter.tabCallType.includes('LIFE')) {
+    //           req.alias = 'gqlLife'
+    //         }
+    //     })
+    //     cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
+    //     cy.wait('@gqlLife')
+    //     cy.get('app-paginated-cards').find('button:contains("Vita")').click()
+    //     cy.get('app-quotations-section').find('button:contains("Vedi tutti")').click()
+    //     cy.intercept({
+    //         method: 'POST',
+    //         url: '**/Danni/**'
+    //     }).as('getDanni');
+    //     cy.intercept({
+    //         method: 'GET',
+    //         url: '**/Danni/**'
+    //     }).as('getDanniG');
+    //     canaleFromPopup()
+    //     cy.wait('@getDanni', { requestTimeout: 40000 });
+    //     cy.wait('@getDanniG', { requestTimeout: 40000 });
+    //     cy.get('#iframe-container').within(() =>{
+    //         getIFrame().find('form:contains("Cerca"):visible')
+    //     })
+    // })
+
+    it('Verifica aggancio Proposte Danni - Card Danni', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
-        cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
-        cy.get('app-quotations-section').find('button:contains("Vedi tutti")').click()
+        cy.intercept('POST', '/graphql', (req) => {
+            if (req.body.operationName.includes('salesContract') &&
+            req.body.variables.filter.tabCallType.includes('DAMAGE')) {
+              req.alias = 'gqlDamage'
+            }
+        })
+        cy.get('app-proposals-section').contains('Proposte').click()
+        cy.wait('@gqlDamage')
+        cy.get('app-paginated-cards').find('button:contains("Danni")').click()
         cy.intercept({
             method: 'POST',
-            url: /Danni*/
+            url: '**/Auto/**'
+        }).as('getAuto');
+        cy.get('.cards-container').find('.card').first().click()
+        cy.wait('@getAuto', { requestTimeout: 30000 });
+        getIFrame().find('a:contains("« Uscita"):visible')
+    })
+
+    
+    it('Verifica aggancio Proposte Danni - button: Vedi Tutte', function(){
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('include', '/sales')
+        cy.intercept('POST', '/graphql', (req) => {
+            if (req.body.operationName.includes('salesContract') &&
+            req.body.variables.filter.tabCallType.includes('DAMAGE')) {
+              req.alias = 'gqlDamage'
+            }
+        })
+        cy.get('app-proposals-section').contains('Proposte').click()
+        cy.wait('@gqlDamage')
+        cy.get('app-paginated-cards').find('button:contains("Danni")').click()
+        cy.get('app-proposals-section').find('button:contains("Vedi tutte")').click()
+        cy.intercept({
+            method: 'POST',
+            url: '**/Danni/**'
         }).as('getDanni');
+        cy.intercept({
+            method: 'GET',
+            url: '**/Danni/**'
+        }).as('getDanniG');
         canaleFromPopup()
         cy.wait('@getDanni', { requestTimeout: 40000 });
-        getIFrame().find('#operazioni button:contains("Cerca"):visible')
+        cy.wait('@getDanniG', { requestTimeout: 40000 });
+        cy.get('#iframe-container').within(() =>{
+            getIFrame().find('form:contains("Cerca"):visible')
+        })
     })
 
-    it('Verifica aggancio News image Primo comandamento', function(){
+    // TODO: stesso problema sopra Frame
+    // it('Verifica aggancio Proposte Vita - Card Vita', function(){
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('include', '/sales')
+    //     cy.intercept('POST', '/graphql', (req) => {
+    //         if (req.body.operationName.includes('salesContract') &&
+    //         req.body.variables.filter.tabCallType.includes('LIFE')) {
+    //           req.alias = 'gqlLife'
+    //         }
+    //     })
+    //     cy.get('app-proposals-section').contains('Proposte').click()
+    //     cy.wait('@gqlLife')
+    //     cy.get('app-paginated-cards').find('button:contains("Vita")').click()
+    //     cy.intercept({
+    //         method: 'POST',
+    //         url: '**/Vita/**'
+    //     }).as('getVita');
+    //     cy.get('.cards-container').find('.card').first().click()
+    //     cy.wait('@getVita', { requestTimeout: 30000 });
+    //     getIFrame().find('#AZBuilder1_ctl08_cmdNote')
+    // })
 
-        cy.get('app-quotations-section').contains('Preventivi e quotazioni -').click()
-        cy.get('app-quotations-section').contains('Vita').click()
-        cy.get('app-quotations-section').find('button:contains("Vedi tutti")').click()
-        closePopup()
-        cy.get('app-quotations-section').contains('Danni').click()
-        cy.get('app-quotations-section').find('button:contains("Vedi tutti")').click()
-        closePopup()
-
-        cy.get('app-proposals-section').contains('Proposte -').click()
-        cy.get('app-proposals-section').contains('Vita').click()
+    it('Verifica aggancio Proposte Vita - button: Vedi Tutti', function(){
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('include', '/sales')
+        cy.intercept('POST', '/graphql', (req) => {
+            if (req.body.operationName.includes('salesContract') &&
+            req.body.variables.filter.tabCallType.includes('LIFE')) {
+              req.alias = 'gqlLife'
+            }
+        })
+        cy.get('app-proposals-section').contains('Proposte').click()
+        cy.wait('@gqlLife')
+        cy.get('app-paginated-cards').find('button:contains("Vita")').click()
         cy.get('app-proposals-section').find('button:contains("Vedi tutte")').click()
-        closePopup()
-        cy.get('app-proposals-section').contains('Danni').click()
-        cy.get('app-proposals-section').find('button:contains("Vedi tutte")').click()
-        closePopup()
-    
+        cy.intercept({
+            method: 'POST',
+            url: '**/Danni/**'
+        }).as('getDanni');
+        cy.intercept({
+            method: 'GET',
+            url: '**/Danni/**'
+        }).as('getDanniG');
+        canaleFromPopup()
+        cy.wait('@getDanni', { requestTimeout: 40000 });
+        cy.wait('@getDanniG', { requestTimeout: 40000 });
+        cy.get('#iframe-container').within(() =>{
+            getIFrame().find('form:contains("Cerca"):visible')
+        })
     })
+
 });
