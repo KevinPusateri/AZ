@@ -294,7 +294,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
 
       getIframe().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
       getIframe().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
-      getIframe().find('#ButtonQuestOk').click().wait(3000)
+      getIframe().find('#ButtonQuestOk').click().wait(6000)
       getIframe().find('#TabVarieInserimentoTipoPagamento > div.left > span > span').click()
       getIframe().find('li').contains("Contanti").click()
       getIframe().find('#FiltroTabVarieInserimentoDescrizione').type("TEST AUTOMATICO")
