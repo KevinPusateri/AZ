@@ -92,10 +92,12 @@ const sendMail = async() =>{
 
 async function main()
 {
-
-	await zipDirectory(dirLogs, '..//MW_FE_PREPROD.zip');
-	await sendMail();
-	await sendFTP();
+	if(fs.existsSync(dirLogs))
+	{
+		await zipDirectory(dirLogs, '..//MW_FE_PREPROD.zip');
+		await sendMail();
+		await sendFTP();
+	}
 }
 
 main();
