@@ -31,9 +31,9 @@ beforeEach(() => {
     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
     cy.intercept('POST', '/graphql', (req) => {
-        if (req.body.operationName.includes('notifications')) {
-            req.alias = 'gqlNotifications'
-        }
+        // if (req.body.operationName.includes('notifications')) {
+        //     req.alias = 'gqlNotifications'
+        // }
         if (req.body.operationName.includes('news')) {
             req.alias = 'gqlNews'
         }
