@@ -12,6 +12,7 @@ const delayBetweenTests = 3000
 
 //#region Global Variables
 const getIFrame = () => {
+
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
     .iframe();
   
@@ -26,19 +27,15 @@ const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button
 const popoverEmettiPolizza = () => cy.get('.card-container').find('lib-da-link')
 //#endregion
 
-//#region beforeEach/after
 beforeEach(() => {
     cy.clearCookies();
     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
     cy.intercept('POST', '/graphql', (req) => {
         if (req.body.operationName.includes('notifications')) {
-          req.alias = 'gqlNotifications'
+            req.alias = 'gqlNotifications'
         }
-        if (req.body.operationName.includes('news')) {
-            req.alias = 'gqlNews'
-        }
-      })
+    })
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
@@ -55,22 +52,15 @@ beforeEach(() => {
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    // cy.wait('@gqlNotifications')
-    cy.wait('@gqlNews')
+    cy.wait('@gqlNotifications');
 })
-afterEach(() => {
-    cy.wait(2000).get('.user-icon-container').click()
-    cy.intercept({
-        method: 'POST',
-        url: /matrix*/
-    }).as('logout');
-    cy.wait(2000).contains('Logout').click()
-    cy.wait('@logout', { requestTimeout: 20000 });
 
+afterEach(() => {
+    cy.get('.user-icon-container').click()
+    cy.wait(1000).contains('Logout').click()
     cy.wait(delayBetweenTests)
     cy.clearCookies();
 })
-//#endregion
 
 describe('Matrix Web : Navigazioni da Sales', function () {
 
@@ -361,7 +351,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
 
-    it.only('Verifica aggancio Preventivi e quotazioni - Card Danni', function(){
+    //TODO: Verifica Vita con Danni visible
+    it('Verifica aggancio Preventivi e quotazioni - Card Danni', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.intercept('POST', '/graphql', (req) => {
@@ -396,17 +387,37 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
         cy.wait('@gqlLife')
         cy.get('app-paginated-cards').find('button:contains("Vita")').click()
+        /*
         cy.intercept({
             method: 'POST',
-            url: /Vita*/
+            url: '**/matrix/sales/**'
+        }).as('getMatrix');
+        cy.intercept({
+            method: 'POST',
+            url: '**/Vita/**'
         }).as('getVita');
+        cy.intercept({
+            method: 'GET',
+            url: '**/Vita/**'
+        }).as('getVitaG');
+        cy.intercept({
+            method: 'GET',
+            url: 'https://portaleagenzie.pp.azi.allianz.it/Vita/SUV/JavaScript/ConnManagerLink.min.js'
+        }).as('Manager');
+        */
         cy.get('.cards-container').find('.card').first().click()
-        cy.wait('@getVita', { requestTimeout: 30000 });
-        getIFrame().find('[class="AZBasicButtonsRow"]').within($check =>{
-            cy.get('[class="AZBasicButtonsLeft"]').find('input[value="Note"]').invoke('attr','value').should('equal','Note')
+        // cy.wait('@getVita', { requestTimeout: 30000 });
+        // cy.wait('@getVitaG', { requestTimeout: 30000 })
+        // cy.wait('@getMatrix', { requestTimeout: 30000 })
+        //cy.wait('@Manager', { requestTimeout: 30000 })
+        getIFrame().find('#AZBuilder1_ctl08_cmdNote')
+        /*
+        cy.get('#iframe-container').within(()=>{
+           getIFrame().find('form')
         })
-    })
+        */
 
+    })
 
     it('Verifica aggancio Preventivi e quotazioni - button: Vedi Tutti', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
