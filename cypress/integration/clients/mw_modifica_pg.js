@@ -100,8 +100,17 @@ describe('Matrix Web : Modifica PG', function () {
 
   it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
     cy.get('input[name="main-search-input"]').click()
-    cy.get('input[name="main-search-input"]').type('RO')
-    //cy.url().should('include', '/search/clients/clients')
+    let randomSearch = String(cy.generateTwoLetters())
+    cy.get('input[name="main-search-input"]').type(randomSearch).type('{enter}')
+    cy.url().should('include', '/search/clients/clients')
+
+    //Rimuoviamo le persone finische
+    cy.get('.icon').find('[name="filter"]').click()
+    cy.get('.filter-group').contains('Persona fisica').click()
+    cy.get('.footer').find('button').contains('applica').click()
+    cy.get('lib-applied-filters-item').find('span').should('be.visible')
+    cy.get('lib-client-item').first().click()
+    cy.contains('DETTAGLIO ANAGRAFICA').click()
   })
  
 })

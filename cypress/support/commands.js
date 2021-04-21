@@ -106,3 +106,13 @@ Cypress.Commands.add('getIframeBody', (iframeCode) => {
   // https://on.cypress.io/wrap
   .then((body) => cy.wrap(body, { log: false }))
 })
+
+Cypress.Commands.add('generateTwoLetters', () => {
+    var result = '';
+    var charactersFirstLetter = 'BCDFGLMNPRSTVZ';
+    result += charactersFirstLetter.charAt(Math.floor(Math.random() * charactersFirstLetter.length));
+    
+    var charactersSecondLetter = 'AEIOU';
+    result += charactersSecondLetter.charAt(Math.floor(Math.random() * charactersSecondLetter.length));
+    return result;
+})
