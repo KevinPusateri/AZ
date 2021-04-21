@@ -67,9 +67,13 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-    cy.wait(2000).get('.user-icon-container').click()
-    cy.wait(2000).contains('Logout').click()
-    cy.wait(delayBetweenTests)
+    cy.get('body').then($body => {
+        if ($body.find('.user-icon-container').length > 0) {   
+            cy.get('.user-icon-container').click();
+            cy.wait(1000).contains('Logout').click()
+            cy.wait(delayBetweenTests)
+        }
+    });
     cy.clearCookies();
 })
 
