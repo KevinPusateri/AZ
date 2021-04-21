@@ -387,36 +387,10 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
         cy.wait('@gqlLife')
         cy.get('app-paginated-cards').find('button:contains("Vita")').click()
-        /*
-        cy.intercept({
-            method: 'POST',
-            url: '**/matrix/sales/**'
-        }).as('getMatrix');
-        cy.intercept({
-            method: 'POST',
-            url: '**/Vita/**'
-        }).as('getVita');
-        cy.intercept({
-            method: 'GET',
-            url: '**/Vita/**'
-        }).as('getVitaG');
-        cy.intercept({
-            method: 'GET',
-            url: 'https://portaleagenzie.pp.azi.allianz.it/Vita/SUV/JavaScript/ConnManagerLink.min.js'
-        }).as('Manager');
-        */
-        cy.get('.cards-container').find('.card').first().click()
-        // cy.wait('@getVita', { requestTimeout: 30000 });
-        // cy.wait('@getVitaG', { requestTimeout: 30000 })
-        // cy.wait('@getMatrix', { requestTimeout: 30000 })
-        //cy.wait('@Manager', { requestTimeout: 30000 })
-        getIFrame().find('#AZBuilder1_ctl08_cmdNote')
-        /*
-        cy.get('#iframe-container').within(()=>{
-           getIFrame().find('form')
-        })
-        */
 
+        cy.get('.cards-container').find('.card').first().click()
+        cy.wait(6000)
+        getIFrame().find('#AZBuilder1_ctl08_cmdNote')
     })
 
     it('Verifica aggancio Preventivi e quotazioni - button: Vedi Tutti', function(){
