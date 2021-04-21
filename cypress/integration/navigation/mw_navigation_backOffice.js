@@ -52,6 +52,9 @@ beforeEach(() => {
         if (req.body.operationName.includes('notifications')) {
           req.alias = 'gqlNotifications'
         }
+        if (req.body.operationName.includes('news')) {
+            req.alias = 'gqlNews'
+        }
       })
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
@@ -69,7 +72,8 @@ beforeEach(() => {
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    cy.wait('@gqlNotifications')
+    // cy.wait('@gqlNotifications')
+    cy.wait('@gqlNews')
 })
 
 afterEach(() => {

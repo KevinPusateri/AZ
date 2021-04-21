@@ -33,6 +33,9 @@ beforeEach(() => {
         if (req.body.operationName.includes('notifications')) {
           req.alias = 'gqlNotifications'
         }
+        if (req.body.operationName.includes('news')) {
+            req.alias = 'gqlNews'
+        }
       })
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
@@ -50,7 +53,9 @@ beforeEach(() => {
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    cy.wait('@gqlNotifications')
+    // cy.wait('@gqlNotifications')
+    cy.wait('@gqlNews')
+
 
 })
 
@@ -104,7 +109,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
         cy.contains('Pannello anomalie').click()
-        canaleFromPopup()
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         cy.get('a').contains('Clients').click()

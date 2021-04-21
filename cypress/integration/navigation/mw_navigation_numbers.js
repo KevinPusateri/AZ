@@ -24,17 +24,26 @@ beforeEach(() => {
     cy.clearCookies();
     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
+    cy.intercept('POST', '/graphql', (req) => {
+        if (req.body.operationName.includes('notifications')) {
+          req.alias = 'gqlNotifications'
+        }
+        if (req.body.operationName.includes('news')) {
+            req.alias = 'gqlNews'
+        }
+      })
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
-
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
+        // cy.wait('@gqlNotifications')
+        cy.wait('@gqlNews')
     cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
 })
 

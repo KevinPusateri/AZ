@@ -31,8 +31,11 @@ beforeEach(() => {
     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
     cy.intercept('POST', '/graphql', (req) => {
-        if (req.body.operationName.includes('notifications')) {
-            req.alias = 'gqlNotifications'
+        // if (req.body.operationName.includes('notifications')) {
+        //     req.alias = 'gqlNotifications'
+        // }
+        if (req.body.operationName.includes('news')) {
+            req.alias = 'gqlNews'
         }
     })
     cy.viewport(1920, 1080)
@@ -45,20 +48,28 @@ beforeEach(() => {
             return true;
         }
     })
-    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    cy.wait('@gqlNotifications')
+    cy.wait('@pageMatrix', { requestTimeout: 30000 }).its('request.url').should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+    // cy.wait('@gqlNotifications')
+    cy.wait('@gqlNews')
+    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
+
+    // cy.get('lib-notification-list').then(($check)=>{
+    //     console.log($check.text().trim())
+    //     if(!$check.find('')text().trim().include('Errore durante operazione')){
+    //         cy.wait('@gqlNotifications')
+    //     }
+    // })
+    
 })
 
 afterEach(() => {
-    cy.wait(1000).get('.user-icon-container').click()
-    cy.wait(1000).contains('Logout').click()
+    cy.wait(2000).get('.user-icon-container').click()
+    cy.wait(2000).contains('Logout').click()
     cy.wait(delayBetweenTests)
-
     cy.clearCookies();
 })
 
@@ -109,6 +120,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     //TODO: verifica
     it('Verifica aggancio Monitoraggio Carico', function () {
+
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
@@ -224,7 +236,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('a').contains('Numbers').click()
     })
 
-    it('Verifica aggancio New Business Ultra', function () {
+    it.only('Verifica aggancio New Business Ultra', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
