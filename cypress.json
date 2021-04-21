@@ -1,6 +1,7 @@
 {
 	"chromeWebSecurity": false,
 	"video": false,
+	"trashAssetsBeforeRuns": false,
 	"projectId": "4ypuc8",
 	"env": {
 		"db": {

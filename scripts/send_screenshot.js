@@ -9,15 +9,12 @@ const archiver = require('..//node_modules//archiver');
 var rimraf = require('..//node_modules//rimraf');
 const nodemailer = require('..//node_modules//nodemailer');
 var FtpDeploy = require('ftp-deploy');
-//#endregion
-
-//Edit as you want with path to postman_environment + collection directory of tests
-const htmlExportLogMailTo = 'andrea.oboe@allianz.it, kevin.pusateri@allianz.it';
-
 const moment = require('moment');
 const currentDT = moment().format('YYYY-MM-DD_HH.mm.ss');
 const dirLogs = '..//cypress//screenshots//';
+//#endregion
 
+const htmlExportLogMailTo = 'andrea.oboe@allianz.it, kevin.pusateri@allianz.it';
 
 const sendFTP = async() => {
 
@@ -94,9 +91,14 @@ async function main()
 {
 	if(fs.existsSync(dirLogs))
 	{
-		await zipDirectory(dirLogs, '..//MW_FE_PREPROD.zip');
-		await sendMail();
-		await sendFTP();
+		fs.readdir(dirLogs,(err, files) =>{
+			if(files.length)
+			{
+				await zipDirectory(dirLogs, '..//MW_FE_PREPROD.zip');
+				await sendMail();
+				await sendFTP();
+			}
+		})
 	}
 }
 
