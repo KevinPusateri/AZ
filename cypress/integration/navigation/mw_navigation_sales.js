@@ -149,9 +149,9 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     //TODO: GED - Gestione Documentale Apre new window
-    it('Verifica aggancio GED - Gestione Documentale', function(){
+    // it('Verifica aggancio GED - Gestione Documentale', function(){
 
-    })
+    // })
 
     it('Verifica aggancio Emetti Polizza - FastQuote Auto', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()

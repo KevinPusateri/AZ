@@ -19,17 +19,17 @@ const getIFrame = () => {
   
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-
-
 //#endregion
 
+//#region Before and After
 beforeEach(() => {
     cy.clearCookies();
-    cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
-    cy.intercept(/launch-*/, 'ignore').as('launchStaging');
+    cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
+    cy.intercept(/launch-*/,'ignore').as('launchStaging');
+
     cy.intercept('POST', '/graphql', (req) => {
-        if (req.body.operationName.includes('notifications')) {
-            req.alias = 'gqlNotifications'
+        if (req.body.operationName.includes('news')) {
+            req.alias = 'gqlNews'
         }
     })
     cy.viewport(1920, 1080)
@@ -37,26 +37,32 @@ beforeEach(() => {
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
+    Cypress.Cookies.defaults({
+        preserve: (cookie) => {
+            return true;
+        }
+    })
+    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    cy.wait('@gqlNotifications')
-    cy.get('app-product-button-list').find('a').contains('Sales').click()
-
+    cy.wait('@gqlNews')
 })
 
 afterEach(() => {
-    cy.wait(1000).get('.user-icon-container').click()
+    cy.get('.user-icon-container').click()
     cy.wait(1000).contains('Logout').click()
     cy.wait(delayBetweenTests)
     cy.clearCookies();
 })
+//#endregion Before and After
 
 describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     it('Verifica i link da Burger Menu', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         const linksBurgerMotor = [
@@ -68,6 +74,9 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
             'Allianz Ultra Salute',
             'Allianz1 Business',
             'FastQuote Infortuni da circolazione',
+            'FastQuote Universo Persona',
+            'FastQuote Universo Salute',
+            'FastQuote Universo Persona Malattie Gravi',
             'FastQuote Impresa e Albergo',
             'Allianz1 premorienza',
             'Preventivo Anonimo Vita Individuali',
@@ -97,7 +106,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
             'Note di contratto',
             'ACOM Gestione iniziative',
         ]
-        cy.get('nx-expansion-panel').find('a').should('have.length',36).each(($checkLinksBurger, i) => {
+        cy.get('nx-expansion-panel').find('a').should('have.length',39).each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurgerMotor[i]);
         })
 
@@ -106,6 +115,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //#region New Business
     //#region Motor
     it('Verifica aggancio FasqtQuote Auto', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('FastQuote Auto').click()
@@ -115,6 +125,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     });
     
     it('Verifica aggancio Preventivo anonimo Motor', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Preventivo anonimo Motor').click()
@@ -125,6 +136,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     });
     
     it('Verifica aggancio MiniFlotte', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('MiniFlotte').click()
@@ -136,6 +148,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     
     //#region  Rami Vari
     it('Verifica aggancio Allianz Ultra Casa e Patrimonio', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Allianz Ultra Casa e Patrimonio').click()
@@ -145,6 +158,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     });
     
     it('Verifica aggancio Allianz Ultra Casa e Patrimonio BMP', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Allianz Ultra Casa e Patrimonio BMP').click()
@@ -154,6 +168,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     });
 
     it('Verifica aggancio Allianz Ultra Salute', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Allianz Ultra Salute').click()
@@ -163,6 +178,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     });
 
     it('Verifica aggancio Allianz1 Business', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Allianz1 Business').click()
@@ -171,7 +187,38 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('a').contains('Sales').click()
     })
 
+    it('Verifica aggancio FastQuote Universo Persona', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('include', '/sales')
+        cy.get('lib-burger-icon').click()
+        cy.contains('FastQuote Universo Persona').click()
+        cy.get('nx-modal-container').find('.agency-row').first().click()
+        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+        cy.get('a').contains('Sales').click()
+    })
+
+    it('Verifica aggancio FastQuote Universo Salute', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('include', '/sales')
+        cy.get('lib-burger-icon').click()
+        cy.contains('FastQuote Universo Salute').click()
+        cy.get('nx-modal-container').find('.agency-row').first().click()
+        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+        cy.get('a').contains('Sales').click()
+    })
+
+    it('Verifica aggancio FastQuote Universo Persona Malattie Gravi', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('include', '/sales')
+        cy.get('lib-burger-icon').click()
+        cy.contains('FastQuote Universo Persona Malattie Gravi').click()
+        cy.get('nx-modal-container').find('.agency-row').first().click()
+        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+        cy.get('a').contains('Sales').click()
+    })
+
     it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('FastQuote Infortuni da circolazione').click()
@@ -181,6 +228,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
     
     it('Verifica aggancio FastQuote Impresa e Albergo', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('FastQuote Impresa e Albergo').click()
@@ -242,6 +290,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     //#region Gestione
     it('Verifica aggancio Sfera', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Sfera').click()
@@ -251,6 +300,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Campagne Commerciali', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Campagne Commerciali').click()
@@ -259,6 +309,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Recupero preventivi e quotazioni', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Recupero preventivi e quotazioni').click()
@@ -273,6 +324,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
             
     it('Verifica aggancio Documenti da firmare', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Documenti da firmare').click()
@@ -283,7 +335,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
 
     // TODO: Non sono visibili 
-    // it.only('Verifica aggancio Manutenzione portafoglio RV MIDCO', function () {
+    // it('Verifica aggancio Manutenzione portafoglio RV MIDCO', function () {
     //     cy.url().should('include', '/sales')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('Manutenzione portafoglio RV Midco').click()
@@ -317,6 +369,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     // })
 
     it('Verifica aggancio Monitoraggio Polizze Proposte', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Monitoraggio Polizze Proposte').click()
@@ -326,6 +379,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
     
     it('Verifica aggancio Certificazione fiscale', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Certificazione fiscale').click()
@@ -335,6 +389,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Manutenzione Portafoglio', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Manutenzione Portafoglio').click()
@@ -344,6 +399,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Cruscotto certificati applicazioni', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Cruscotto certificati applicazioni').click()
@@ -354,6 +410,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     
     it('Verifica aggancio Cruscotto riepiloghi polizze abb.', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Cruscotto riepiloghi polizze abb.').click()
@@ -362,8 +419,9 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('a').contains('Sales').click()
     })
 
-    // non vede Ricerca
-    it.only('Verifica aggancio Report Cliente T4L', function () {
+    // TODO : non vede Ricerca
+    it('Verifica aggancio Report Cliente T4L', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Report Cliente T4L').click()
@@ -378,6 +436,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Documenti annullati', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Documenti annullati').click()
@@ -397,6 +456,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     // })
 
     it('Verifica aggancio Documenti da gestire', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Documenti da gestire').click()
@@ -406,6 +466,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Folder', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Folder').click()
@@ -414,25 +475,26 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('a').contains('Sales').click()
     })
 
-    // Apre un'altra pagina
-    // it('Verifica aggancio AllianzGlobalAssistance', function () {
-    //     cy.url().should('include', '/sales')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('AllianzGlobalAssistance').click()
-    //     cy.get('a').contains('Sales').click()
-    // })
-    
-    // Apre new Window
-    // it('Verifica aggancio Allianz placement platform', function () {
+    it('Verifica aggancio AllianzGlobalAssistance', function () {
+    cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('include', '/sales')
+        cy.get('lib-burger-icon').click()
+        cy.contains('AllianzGlobalAssistance').invoke('removeAttr','target').click()
+        cy.get('#logo-oazis-header')
+        cy.go('back')
+    })
+
+    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo
+    // it('Verifica aggancio Allianz Placement Platform', function () {
+    // cy.get('app-product-button-list').find('a').contains('Sales').click()
     //     cy.url().should('include', '/sales')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('Allianz placement platform').click()
     //     cy.get('nx-modal-container').find('.agency-row').first().click()
-
-    //     cy.get('a').contains('Sales').click()
     // })
 
     it('Verifica aggancio Qualità portafoglio auto', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Qualità portafoglio auto').click()
@@ -452,6 +514,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     // })
 
     it('Verifica aggancio Note di contratto', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Note di contratto').click()
@@ -460,16 +523,14 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('a').contains('Sales').click()
     })
 
-    // Apre new Window
+    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo
     // it('Verifica aggancio ACOM Gestione iniziative', function () {
+    // cy.get('app-product-button-list').find('a').contains('Sales').click()
     //     cy.url().should('include', '/sales')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('ACOM Gestione iniziative').click()
     //     cy.get('nx-modal-container').find('.agency-row').first().click()
 
-    //     cy.get('a').contains('Sales').click()
     // })
     //#endregion
-
-
 })
