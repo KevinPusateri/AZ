@@ -91,17 +91,9 @@ async function main()
 {
 	if(fs.existsSync(dirLogs))
 	{
-		let hasFile = false
-		fs.readdir(dirLogs,(err, files) =>{
-			if(files.length)
-				hasFile = true
-		})
-		if(hasFile)
-		{
-			await zipDirectory(dirLogs, '..//MW_FE_PREPROD.zip');
-			await sendMail();
-			await sendFTP();
-		}
+		await zipDirectory(dirLogs, '..//MW_FE_PREPROD.zip');
+		await sendMail();
+		await sendFTP();
 	}
 }
 
