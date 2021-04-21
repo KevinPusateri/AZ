@@ -100,8 +100,9 @@ describe('Matrix Web : Modifica PG', function () {
 
   it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
     cy.get('input[name="main-search-input"]').click()
-    let randomSearch = String(cy.generateTwoLetters())
-    cy.get('input[name="main-search-input"]').type(randomSearch).type('{enter}')
+    cy.generateTwoLetters().then(randomChars => {
+      cy.get('input[name="main-search-input"]').type(randomChars).type('{enter}')
+    })
     cy.url().should('include', '/search/clients/clients')
 
     //Rimuoviamo le persone finische
