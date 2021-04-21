@@ -23,7 +23,7 @@
   },
   "scripts": {
     "cypress:open": "./node_modules/.bin/cypress open",
-    "cypress:run:navigations": "npm-run-all -s -c nav_backOffice nav_burgerMenuClients nav_mieInfo nav_burgerMenuNumbers nav_burgerMenuSales nav_news nav_numbers nav_sales",
+    "cypress:run:navigations": "npm-run-all -s -c nav_backOffice nav_burgerMenuClients nav_burgerMenuNumbers nav_burgerMenuSales nav_news nav_numbers nav_sales",
     "cypress:run:ricerca": "npm-run-all -s -c rc_classica rc_ris_clients rc_ris_mieInfo rc_risultati ricerca",
     "cypress:run:censimenti": "npm-run-all -s -c censimento_pf censimento_pg",
     "cypress:run:ricerca_dash": "npm-run-all -s -c \"rc_classica -- {@}\" \"rc_ris_clients -- {@}\" \"rc_ris_mieInfo -- {@}\" \"rc_risultati -- {@}\" \"ricerca -- {@}\" -- --record --key %npm_package_config_cypressDashKey%",

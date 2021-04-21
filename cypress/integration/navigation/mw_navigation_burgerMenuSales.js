@@ -241,6 +241,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     //#region Vita
     it('Verifica aggancio Allianz1 premorienza', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Allianz1 premorienza').click()
@@ -255,6 +256,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('a').contains('Sales').click()
     })
     it('Verifica aggancio Preventivo Anonimo Vita Individuali', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Preventivo Anonimo Vita Individuali').click()
@@ -268,6 +270,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     //#region Mid Corporate
     it('Verifica aggancio Trattative Auto corporate', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Trattative Auto corporate').click()
@@ -278,6 +281,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
     
     it('Verifica aggancio Gestione richieste per PA', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Gestione richieste per PA').click()
