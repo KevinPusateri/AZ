@@ -109,6 +109,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
         cy.contains('Pannello anomalie').click()
+        canaleFromPopup()
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         cy.get('a').contains('Clients').click()
