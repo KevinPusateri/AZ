@@ -41,6 +41,12 @@ const getIFrameDenuncia = () => {
     return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+const canaleFromPopup = () => {cy.get('body').then($body => {
+        if ($body.find('nx-modal-container').length > 0) {   
+            cy.get('nx-modal-container').find('.agency-row').first().click()
+        }
+    });
+}
 //#endregion
 
 
@@ -157,7 +163,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
         cy.get('.backoffice-card').find('a').contains('Movimentazione sinistri').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrameMoveSinistri().find('[class="pageTitle"]:contains("Movimentazione Sinistri"):visible')
         getIFrameMoveSinistri().find('h2 strong:contains("Sintesi Movimenti nel periodo"):visible')
         getIFrameMoveSinistri().find('a:contains("Ricerca"):visible')
@@ -170,7 +176,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia')
         cy.get('.backoffice-card').find('a').contains('Denuncia').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrameDenuncia().find('[class="pageTitle"]:contains("Ricerca cliente"):visible')
         getIFrameDenuncia().find('h3:contains("Ricerca per polizza"):visible')
         getIFrameDenuncia().find('h3:contains("Ricerca per targa"):visible')
@@ -189,7 +195,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
             method: 'GET',
             url: /fnol*/
         }).as('fnol');
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         cy.wait('@fnol', { requestTimeout: 60000 });
         getIFrame().find('fnol-root:contains("Continua"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
@@ -201,7 +207,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Consultazione sinistri')
         cy.get('.backoffice-card').find('a').contains('Consultazione sinistri').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
@@ -212,7 +218,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Sinistri incompleti')
         cy.get('.backoffice-card').find('a').contains('Sinistri incompleti').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('button:contains("Chiudi")').click()
         getIFrame().find('h2:contains("Sinistri Incompleti"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
@@ -224,7 +230,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Sinistri canalizzati')
         cy.get('.backoffice-card').find('a').contains('Sinistri canalizzati').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('a:contains("Filtra"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
@@ -234,7 +240,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Sintesi Contabilità')
         cy.get('.backoffice-card').find('a').contains('Sintesi Contabilità').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('span:contains("Situazione finanziaria riepilogativa"):visible').click()
         getIFrame().find('span:contains("Esporta"):visible').click()
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
@@ -246,7 +252,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Giornata contabile')
         cy.get('.backoffice-card').find('a').contains('Giornata contabile').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('span:contains("Calendario"):visible')
         getIFrame().find('button:contains("Chiudi giornata contabile"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
@@ -258,7 +264,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Consultazione Movimenti')
         cy.get('.backoffice-card').find('a').contains('Consultazione Movimenti').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
@@ -269,7 +275,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Estrazione Contabilità')
         cy.get('.backoffice-card').find('a').contains('Estrazione Contabilità').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('h3:contains("ExtraDAS"):visible')
         getIFrame().find('p:contains("Ricerca Estrazioni"):visible')
         getIFrame().find('p:contains("Legenda"):visible')
@@ -283,7 +289,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Deleghe SDD')
         cy.get('.backoffice-card').find('a').contains('Deleghe SDD').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click().wait(10000)
+        canaleFromPopup()
         getIFrame().find('input[value="Carica"]').invoke('attr','value').should('equal','Carica')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
@@ -294,7 +300,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Quadratura unificata')
         cy.get('.backoffice-card').find('a').contains('Quadratura unificata').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('#quadNavigationBar:contains("Q.U.A.D. - home page"):visible')
         getIFrame().find('#quadMenu:contains("Quadratura Unificata"):visible')
         getIFrame().find('#quadMenu:contains("Agenzie Digital"):visible')
@@ -308,7 +314,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Incasso per conto')
         cy.get('.backoffice-card').find('a').contains('Incasso per conto').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click().wait(10000)
+        canaleFromPopup()
         getIFrame().find('input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
@@ -319,7 +325,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Incasso massivo')
         cy.get('.backoffice-card').find('a').contains('Incasso massivo').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('a:contains("Apri filtri"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
@@ -330,7 +336,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Sollecito titoli')
         cy.get('.backoffice-card').find('a').contains('Sollecito titoli').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('span:contains("Gestione Sollecito Titoli")')
         getIFrame().find('#buttonCerca:contains("Cerca"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
@@ -342,7 +348,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Impostazione contabilità')
         cy.get('.backoffice-card').find('a').contains('Impostazione contabilità').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        canaleFromPopup()
         getIFrame().find('ul > li > span:contains("Gestione dispositivi POS"):visible')
         getIFrame().find('ul > li > span:contains("Prenotazione POS"):visible')
         getIFrame().find('ul > li > span:contains("Retrocessioni Provv."):visible')

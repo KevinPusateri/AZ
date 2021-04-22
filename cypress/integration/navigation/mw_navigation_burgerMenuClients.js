@@ -20,8 +20,12 @@ const getIFrame = () => {
   
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-const canaleFromPopup = () => cy.wait(1000).get('nx-modal-container').find('.agency-row').first().click()
-//#endregion
+const canaleFromPopup = () => {cy.get('body').then($body => {
+    if ($body.find('nx-modal-container').length > 0) {   
+        cy.get('nx-modal-container').find('.agency-row').first().click()
+    }
+});
+}//#endregion
 
 
 
@@ -90,11 +94,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         })
     });
 
-    it('Verifica aggancio Censimento nuovo cliente da Burger Menu', function () {
+    it.only('Verifica aggancio Censimento nuovo cliente da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
         cy.contains('Censimento nuovo cliente').click()
+        canaleFromPopup()
         cy.url().should('include', '/new-client')
         cy.get('a').contains('Clients').click()
     });
@@ -104,6 +109,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
         cy.contains('Digital Me').click()
+        canaleFromPopup()
         cy.url().should('include', '/digital-me')
         cy.get('a').contains('Clients').click()
     });
@@ -124,6 +130,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
         cy.contains('Clienti duplicati').click()
+        canaleFromPopup()
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         cy.get('a').contains('Clients').click()

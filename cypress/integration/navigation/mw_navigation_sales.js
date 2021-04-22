@@ -22,7 +22,12 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-const canaleFromPopup = () => cy.wait(1000).get('nx-modal-container').find('.agency-row').first().click()
+const canaleFromPopup = () => {cy.get('body').then($body => {
+    if ($body.find('nx-modal-container').length > 0) {   
+        cy.get('nx-modal-container').find('.agency-row').first().click()
+    }
+});
+}
 const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza")').click()
 const popoverEmettiPolizza = () => cy.get('.card-container').find('lib-da-link')
 //#endregion
@@ -116,7 +121,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('app-quick-access').contains('Campagne Commerciali').click()
         
         cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 });
-
+        canaleFromPopup()
         cy.url().should('include', '/campaign-manager')
         getIFrame().find('a:contains("Campagne di vendita"):visible')
 
@@ -375,6 +380,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: /Danni*/
         }).as('getDanni');
         cy.get('.cards-container').find('.card').first().click()
+        canaleFromPopup()
         cy.wait('@getDanni', { requestTimeout: 60000 });
         getIFrame().find('button:contains("Cerca"):visible')
         
@@ -422,8 +428,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
         cy.wait('@gqlLife')
         cy.get('app-paginated-cards').find('button:contains("Vita")').click()
-
         cy.get('.cards-container').find('.card').first().click()
+        canaleFromPopup()
         cy.wait(6000)
         getIFrame().find('#AZBuilder1_ctl08_cmdNote')
     })
@@ -475,6 +481,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: '**/Auto/**'
         }).as('getAuto');
         cy.get('.cards-container').find('.card').first().click()
+        canaleFromPopup()
         cy.wait('@getAuto', { requestTimeout: 60000 });
         getIFrame().find('a:contains("« Uscita"):visible')
     })
