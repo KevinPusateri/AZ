@@ -6,7 +6,7 @@
 /// <reference types="Cypress" />
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
 //#endregion
 
@@ -113,15 +113,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
         cy.contains('Pannello anomalie').click()
-<<<<<<< Updated upstream
         canaleFromPopup()
-=======
-<<<<<<< HEAD
-        cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
-=======
-        canaleFromPopup()
->>>>>>> dae3ab12c18f08dc87a2ebdc74cf210c743e7da3
->>>>>>> Stashed changes
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         cy.get('a').contains('Clients').click()
