@@ -94,7 +94,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         })
     });
 
-    it.only('Verifica aggancio Censimento nuovo cliente da Burger Menu', function () {
+    it('Verifica aggancio Censimento nuovo cliente da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
