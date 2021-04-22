@@ -120,7 +120,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
     });
 
     //#region Sinistri
-    it.only('Verifica aggancio Movimentazione sinistri', function () {
+    it('Verifica aggancio Movimentazione sinistri', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
         cy.get('lib-burger-icon').click()
