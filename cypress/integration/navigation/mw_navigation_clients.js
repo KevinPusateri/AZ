@@ -6,7 +6,7 @@
 /// <reference types="Cypress" />
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
 //#endregion
 
@@ -95,7 +95,8 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     it('Verifica aggancio Pannello anomalie', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.get('app-rapid-link').contains('Pannello anomalie').click()
-        canaleFromPopup().wait(5000)
+        canaleFromPopup()
+        cy.wait(5000)
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         backToClients()
@@ -113,7 +114,8 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     it('Verifica aggancio Antiriciclaggio', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.get('app-rapid-link').contains('Antiriciclaggio').click()
-        canaleFromPopup().wait(5000)
+        canaleFromPopup()
+        cy.wait(5000)
         getIFrame().find('#divMain:contains("Servizi antiriciclaggio"):visible')
         backToClients()
     });
@@ -128,8 +130,14 @@ describe('Matrix Web : Navigazioni da Clients', function () {
 
     it('Verifica aggancio Vai a visione globale', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.get('.actions-box').contains('Vai a visione globale').click().wait(15000)
+        cy.intercept({
+            method: 'POST',
+            url: /GetDati/,
+          }).as('getDati');
+
+        cy.get('.actions-box').contains('Vai a visione globale').click()
         canaleFromPopup()
+        cy.wait('@getDati', { requestTimeout: 60000 })
         getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
         backToClients()
     });
