@@ -41,7 +41,7 @@ beforeEach(() => {
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
+    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!MERDA')
     cy.get('input[type="SUBMIT"]').click()
     Cypress.Cookies.defaults({
         preserve: (cookie) => {
@@ -58,9 +58,13 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-    cy.get('.user-icon-container').click()
-    cy.wait(1000).contains('Logout').click()
-    cy.wait(delayBetweenTests)
+    cy.get('body').then($body => {
+        if ($body.find('.user-icon-container').length > 0) {   
+            cy.get('.user-icon-container').click();
+            cy.wait(1000).contains('Logout').click()
+            cy.wait(delayBetweenTests)
+        }
+    });
     cy.clearCookies();
 })
 

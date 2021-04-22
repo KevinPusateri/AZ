@@ -60,9 +60,13 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-    cy.get('.user-icon-container').click()
-    cy.wait(1000).contains('Logout').click()
-    cy.wait(delayBetweenTests)
+    cy.get('body').then($body => {
+        if ($body.find('.user-icon-container').length > 0) {   
+            cy.get('.user-icon-container').click();
+            cy.wait(1000).contains('Logout').click()
+            cy.wait(delayBetweenTests)
+        }
+    });
     cy.clearCookies();
 })
 
@@ -149,9 +153,9 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     //TODO: GED - Gestione Documentale Apre new window
-    it('Verifica aggancio GED - Gestione Documentale', function(){
+    // it('Verifica aggancio GED - Gestione Documentale', function(){
 
-    })
+    // })
 
     it('Verifica aggancio Emetti Polizza - FastQuote Auto', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()

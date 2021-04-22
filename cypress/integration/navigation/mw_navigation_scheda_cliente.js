@@ -50,12 +50,15 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-    cy.get('.user-icon-container').click()
-    cy.wait(1000).contains('Logout').click()
-    cy.wait(delayBetweenTests)
+    cy.get('body').then($body => {
+        if ($body.find('.user-icon-container').length > 0) {   
+            cy.get('.user-icon-container').click();
+            cy.wait(1000).contains('Logout').click()
+            cy.wait(delayBetweenTests)
+        }
+    });
     cy.clearCookies();
 })
-
 describe('Matrix Web : Navigazioni da Scheda Cliente', function () {
     it('Navigation Scheda Cliente', function () {
         // Verifica Tab clients corretti
