@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
 
 const getIFrame = () => {
@@ -38,7 +38,7 @@ beforeEach(() => {
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 20000 });
+    cy.wait('@pageMatrix', { requestTimeout: 60000 });
     cy.get('input[name="main-search-input"]').type('Pulini Francesco').type('{enter}')
     cy.get('lib-client-item').first().click()
     cy.intercept({
@@ -46,7 +46,7 @@ beforeEach(() => {
         url: /client-resume/
     }).as('pageClient');
 
-    cy.wait('@pageClient', { requestTimeout: 20000 });
+    cy.wait('@pageClient', { requestTimeout: 60000 });
 })
 
 afterEach(() => {

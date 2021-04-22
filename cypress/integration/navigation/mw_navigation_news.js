@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 
 
@@ -34,7 +34,7 @@ beforeEach(() => {
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 20000 });
+    cy.wait('@pageMatrix', { requestTimeout: 60000 });
 })
 
 afterEach(() => {

@@ -5,7 +5,7 @@
 /// <reference types="Cypress" />
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 //#endregion
 
@@ -326,7 +326,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
             url: /InizializzaApplicazione/
           }).as('inizializzaApplicazione');
         cy.get('nx-modal-container').find('.agency-row').first().click()
-        cy.wait('@inizializzaApplicazione', { requestTimeout: 20000 });
+        cy.wait('@inizializzaApplicazione', { requestTimeout: 60000 });
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
     })
@@ -438,7 +438,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
             url: /Vita*/
         }).as('prova');
         cy.get('nx-modal-container').find('.agency-row').first().click()
-        cy.wait('@prova', { requestTimeout: 25000 });
+        cy.wait('@prova', { requestTimeout: 60000 });
         getIFrame().find('input[value="Ricerca"]').invoke('attr','value').should('equal','Ricerca')
         cy.get('a').contains('Sales').click()
     })

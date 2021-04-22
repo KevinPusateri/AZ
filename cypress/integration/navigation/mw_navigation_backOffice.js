@@ -6,7 +6,7 @@
 /// <reference types="Cypress" />
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 //#endregion
 
@@ -71,7 +71,7 @@ beforeEach(() => {
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 20000 });
+    cy.wait('@pageMatrix', { requestTimeout: 60000 });
     // cy.wait('@gqlNotifications')
     cy.wait('@gqlNews')
 })
@@ -190,7 +190,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
             url: /fnol*/
         }).as('fnol');
         cy.get('nx-modal-container').find('.agency-row').first().click()
-        cy.wait('@fnol', { requestTimeout: 25000 });
+        cy.wait('@fnol', { requestTimeout: 60000 });
         getIFrame().find('fnol-root:contains("Continua"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
