@@ -132,13 +132,9 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
-        cy.intercept({
-            method: 'POST',
-            url: '**/Danni/**'
-        }).as('getDanni');
         cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
         canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 60000 });
+        cy.wait(10000);
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
     })
@@ -430,7 +426,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('app-paginated-cards').find('button:contains("Vita")').click()
         cy.get('.cards-container').find('.card').first().click()
         canaleFromPopup()
-        cy.wait(6000)
+        cy.wait(10000)
         getIFrame().find('#AZBuilder1_ctl08_cmdNote')
     })
 

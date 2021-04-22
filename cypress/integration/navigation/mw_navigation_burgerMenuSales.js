@@ -267,12 +267,13 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         getIFrame().find('[class="col-sm-3 col-md-offset-1 col-md-2"]:contains("Ricerca"):visible')
         cy.get('a').contains('Sales').click()
     })
-    it('Verifica aggancio Preventivo Anonimo Vita Individuali', function () {
+    it.only('Verifica aggancio Preventivo Anonimo Vita Individuali', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
         cy.get('lib-burger-icon').click()
         cy.contains('Preventivo Anonimo Vita Individuali').click()
         canaleFromPopup()
+        cy.wait(10000)
         getIFrame().find('input[value="Home"]').invoke('attr','value').should('equal','Home')
         getIFrame().find('input[value="Indietro"]').invoke('attr','value').should('equal','Indietro')
         getIFrame().find('input[value="Avanti"]').invoke('attr','value').should('equal','Avanti')

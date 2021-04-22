@@ -190,11 +190,13 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
-        cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
+        
         cy.intercept({
             method: 'GET',
             url: /fnol*/
         }).as('fnol');
+
+        cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
         canaleFromPopup()
         cy.wait('@fnol', { requestTimeout: 60000 });
         getIFrame().find('fnol-root:contains("Continua"):visible')
