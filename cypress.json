@@ -1,5 +1,5 @@
 {
-	"chromeWebSecurity": false,
+	"retries": 1,
 	"video": false,
 	"trashAssetsBeforeRuns": false,
 	"projectId": "4ypuc8",

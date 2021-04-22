@@ -63,7 +63,11 @@ beforeEach(() => {
         }
       })
     cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/')
+    cy.visit('https://matrix.pp.azi.allianz.it/',{
+        onBeforeLoad: win =>{
+            win.sessionStorage.clear();
+        }
+    })
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
@@ -221,7 +225,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Sinistri incompleti')
         cy.get('.backoffice-card').find('a').contains('Sinistri incompleti').click()
         canaleFromPopup()
-        getIFrame().find('button:contains("Chiudi")').click()
         getIFrame().find('h2:contains("Sinistri Incompleti"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')

@@ -36,7 +36,11 @@ beforeEach(() => {
             req.alias = 'gqlNews'
         }
     })
-    cy.visit('https://matrix.pp.azi.allianz.it/')
+    cy.visit('https://matrix.pp.azi.allianz.it/',{
+        onBeforeLoad: win =>{
+            win.sessionStorage.clear();
+        }
+    })
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
