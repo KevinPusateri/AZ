@@ -65,7 +65,11 @@ before(() => {
   cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
   cy.intercept(/launch-*/,'ignore').as('launchStaging');
 
-  cy.visit('https://matrix.pp.azi.allianz.it/')
+  cy.visit('https://matrix.pp.azi.allianz.it/',{
+    onBeforeLoad: win =>{
+        win.sessionStorage.clear();
+    }
+  })
   cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
   cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
   cy.get('input[type="SUBMIT"]').click()
@@ -82,9 +86,13 @@ beforeEach(() => {
 })
 
 after(() => {
-  cy.get('.user-icon-container').click()
-  cy.contains('Logout').click()
-  cy.wait(delayBetweenTests)
+  cy.get('body').then($body => {
+      if ($body.find('.user-icon-container').length > 0) {   
+          cy.get('.user-icon-container').click();
+          cy.wait(1000).contains('Logout').click()
+          cy.wait(delayBetweenTests)
+      }
+  });
   cy.clearCookies();
 })
 
@@ -294,7 +302,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
 
       getIframe().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
       getIframe().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
-      getIframe().find('#ButtonQuestOk').click().wait(3000)
+      getIframe().find('#ButtonQuestOk').click().wait(6000)
       getIframe().find('#TabVarieInserimentoTipoPagamento > div.left > span > span').click()
       getIframe().find('li').contains("Contanti").click()
       getIframe().find('#FiltroTabVarieInserimentoDescrizione').type("TEST AUTOMATICO")
@@ -304,7 +312,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         url: /QuestionariWeb/
       }).as('questionariWeb');
 
-      getIframe().find('#TabVarieInserimentoButton').click().wait(5000)
+      getIframe().find('#TabVarieInserimentoButton').click().wait(20000)
 
       cy.wait('@questionariWeb', { requestTimeout: 60000 });
 

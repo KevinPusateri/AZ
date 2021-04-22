@@ -32,8 +32,15 @@ beforeEach(() => {
         if (req.body.operationName.includes('notifications')) {
             req.alias = 'gqlNotifications'
         }
+        if (req.body.operationName.includes('news')) {
+            req.alias = 'gqlNews'
+        }
     })
-    cy.visit('https://matrix.pp.azi.allianz.it/')
+    cy.visit('https://matrix.pp.azi.allianz.it/',{
+        onBeforeLoad: win =>{
+            win.sessionStorage.clear();
+        }
+    })
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
@@ -48,14 +55,19 @@ beforeEach(() => {
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 50000 });
-    cy.wait('@gqlNotifications')
+    // cy.wait('@gqlNotifications')
+    cy.wait('@gqlNews')
 
 })
 
 afterEach(() => {
-    cy.get('.user-icon-container').click()
-    cy.wait(1000).contains('Logout').click()
-    cy.wait(delayBetweenTests)
+    cy.get('body').then($body => {
+        if ($body.find('.user-icon-container').length > 0) {   
+            cy.get('.user-icon-container').click();
+            cy.wait(1000).contains('Logout').click()
+            cy.wait(delayBetweenTests)
+        }
+    });
     cy.clearCookies();
 })
 
@@ -97,12 +109,17 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         cy.url().should('include', '/back-office')
     });
 
-    // it('Top Menu News', function () {
-    //     cy.get('lib-switch-button').click().wait(500)
-    //     cy.get('lib-switch-button-list').contains('News').click()
-    //     cy.url().should('include', '/news/home')
-    //     cy.get('a[href="/matrix/"]').click()
-    // });
+    it('Top Menu News', function () {
+        cy.get('lib-switch-button').click().wait(500)
+        cy.intercept({
+            method: 'GET',
+            url: '**/o2o/**'
+        }).as('getO2o');
+        cy.get('lib-switch-button-list').contains('News').click()
+        cy.wait('@getO2o', { requestTimeout: 40000 });
+        cy.url().should('include', '/news/home')
+        cy.get('a[href="/matrix/"]').click()
+    });
 
     it('Top Menu Le mie info', function () {
         cy.get('lib-switch-button').click().wait(500)
@@ -138,7 +155,6 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         cy.get('app-product-button-list').find('a').contains('News').click()
         cy.url().should('include', '/news/home')
     });
-
     
     it('Button News', function () {
         cy.get('app-product-button-list').find('a').contains('Le mie info').click()
@@ -154,33 +170,40 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         cy.url().should('include', '/news/recent')
     });
 
-    it.only('Verifica card Notifica', function () {
-        //TODO non trova i button
-        cy.get('lib-notification-card').first().find('button').click()
-        cy.wait(5000)
-        cy.get('.cdk-overlay-container').find('button').contains('Disattiva notifiche di questo tipo').should('be.visible')
-        // cy.get('.cdk-overlay-container').find('button').contains('Disattiva notifiche di questo tipo').should('be.visible')
-        // cy.get('.cdk-overlay-container').find('button:contains("Segna come da leggere"):visible')
-        // cy.get('lib-notification-list').find('button').each($button =>{
-        //     cy.wrap($button).click()
-        //     cy.wait(3000)
-        //     cy.get('.nx-context-menu__content').find('button:contains("Disattiva notifiche di questo tipo"):visible')
-        //     cy.get('.nx-context-menu__content').find('button:contains("Segna come da leggere"):visible')
-        // })
-        // cy.get('lib-notification-list').then($cardsNotification =>{
-        //     if($cardsNotification.find('lib-notification-card').length > 0){
-        //         cy.wrap($cardsNotification).find('[class^="body"]').first().then($card =>{
-        //             if($card.hasClass('body unread')){
+    // it('Verifica card Notifica', function () {
+
+    //     cy.wait('@gqlNotifications')
+    //     cy.get('lib-notification-card').first().find('button').click()
+
+    // })
+
+    // it('Verifica cards Notifiche', function () {
+    //     //TODO non trova i button
+    //     cy.get('lib-notification-card').first().find('button').click()
+    //     cy.wait(5000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Disattiva notifiche di questo tipo').should('be.visible')
+    //     // cy.get('.cdk-overlay-container').find('button').contains('Disattiva notifiche di questo tipo').should('be.visible')
+    //     // cy.get('.cdk-overlay-container').find('button:contains("Segna come da leggere"):visible')
+    //     // cy.get('lib-notification-list').find('button').each($button =>{
+    //     //     cy.wrap($button).click()
+    //     //     cy.wait(3000)
+    //     //     cy.get('.nx-context-menu__content').find('button:contains("Disattiva notifiche di questo tipo"):visible')
+    //     //     cy.get('.nx-context-menu__content').find('button:contains("Segna come da leggere"):visible')
+    //     // })
+    //     // cy.get('lib-notification-list').then($cardsNotification =>{
+    //     //     if($cardsNotification.find('lib-notification-card').length > 0){
+    //     //         cy.wrap($cardsNotification).find('[class^="body"]').first().then($card =>{
+    //     //             if($card.hasClass('body unread')){
                         
-        //                 cy.wrap($card).click()
-        //                 cy.get('nx-modal-container').find('[class="notification-da-container ng-star-inserted"]').first().click()
-        //             }else
-        //                 cy.wrap($card).click()
-        //         })
-        //         cy.get('a[href="/matrix/"]').click()
-        //     }
-        // })
-    });
+    //     //                 cy.wrap($card).click()
+    //     //                 cy.get('nx-modal-container').find('[class="notification-da-container ng-star-inserted"]').first().click()
+    //     //             }else
+    //     //                 cy.wrap($card).click()
+    //     //         })
+    //     //         cy.get('a[href="/matrix/"]').click()
+    //     //     }
+    //     // })
+    // });
 
    
 });

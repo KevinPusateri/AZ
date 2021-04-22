@@ -6,7 +6,7 @@
 /// <reference types="Cypress" />
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
 //#endregion
 
@@ -20,8 +20,12 @@ const getIFrame = () => {
   
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-const canaleFromPopup = () => cy.wait(1000).get('nx-modal-container').find('.agency-row').first().click()
-//#endregion
+const canaleFromPopup = () => {cy.get('body').then($body => {
+    if ($body.find('nx-modal-container').length > 0) {   
+        cy.get('nx-modal-container').find('.agency-row').first().click()
+    }
+});
+}//#endregion
 
 
 
@@ -33,9 +37,16 @@ beforeEach(() => {
         if (req.body.operationName.includes('notifications')) {
           req.alias = 'gqlNotifications'
         }
+        if (req.body.operationName.includes('news')) {
+            req.alias = 'gqlNews'
+        }
       })
     cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/')
+    cy.visit('https://matrix.pp.azi.allianz.it/',{
+        onBeforeLoad: win =>{
+            win.sessionStorage.clear();
+        }
+    })
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
@@ -49,16 +60,22 @@ beforeEach(() => {
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    cy.wait('@gqlNotifications')
+    cy.wait('@pageMatrix', { requestTimeout: 60000 });
+    // cy.wait('@gqlNotifications')
+    cy.wait('@gqlNews')
+
 
 })
 
 
 afterEach(() => {
-    cy.get('.user-icon-container').click()
-    cy.wait(1000).contains('Logout').click()
-    cy.wait(delayBetweenTests)
+    cy.get('body').then($body => {
+        if ($body.find('.user-icon-container').length > 0) {   
+            cy.get('.user-icon-container').click();
+            cy.wait(1000).contains('Logout').click()
+            cy.wait(delayBetweenTests)
+        }
+    });
     cy.clearCookies();
 })
 describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
@@ -86,6 +103,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
         cy.contains('Censimento nuovo cliente').click()
+        canaleFromPopup()
         cy.url().should('include', '/new-client')
         cy.get('a').contains('Clients').click()
     });
@@ -95,6 +113,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
         cy.contains('Digital Me').click()
+        canaleFromPopup()
         cy.url().should('include', '/digital-me')
         cy.get('a').contains('Clients').click()
     });
@@ -115,6 +134,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('include', '/clients')
         cy.get('lib-burger-icon').click()
         cy.contains('Clienti duplicati').click()
+        canaleFromPopup()
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         cy.get('a').contains('Clients').click()

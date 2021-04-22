@@ -1,6 +1,7 @@
 /**
  * @author Kevin Pusateri <kevin.pusateri@allianz.it>
-*/
+ * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+ */
 
 /// <reference types="Cypress" />
 
@@ -9,17 +10,23 @@ Cypress.config('defaultCommandTimeout', 30000)
 const delayBetweenTests = 3000
 //#endregion
 
+//#region Before and After
 beforeEach(() => {
     cy.clearCookies();
     cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
     cy.intercept(/launch-*/,'ignore').as('launchStaging');
+
     cy.intercept('POST', '/graphql', (req) => {
-        if (req.body.operationName.includes('notifications')) {
-            req.alias = 'gqlNotifications'
+        if (req.body.operationName.includes('news')) {
+            req.alias = 'gqlNews'
         }
     })
     cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/')
+    cy.visit('https://matrix.pp.azi.allianz.it/',{
+        onBeforeLoad: win =>{
+            win.sessionStorage.clear();
+        }
+    })
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
@@ -34,18 +41,22 @@ beforeEach(() => {
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    cy.wait('@gqlNotifications')
+    cy.wait('@gqlNews')
 })
 
 afterEach(() => {
-    cy.get('.user-icon-container').click()
-    cy.wait(1000).contains('Logout').click()
-    cy.wait(delayBetweenTests)
+    cy.get('body').then($body => {
+        if ($body.find('.user-icon-container').length > 0) {   
+            cy.get('.user-icon-container').click();
+            cy.wait(1000).contains('Logout').click()
+            cy.wait(delayBetweenTests)
+        }
+    });
     cy.clearCookies();
 })
+//#endregion Before and After
 
 describe('Buca di Ricerca - Risultati Le mie Info', function () {
-    
     
     it('Verifica Ricerca Incasso',function(){
         cy.get('input[name="main-search-input"]').click()
@@ -417,19 +428,14 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         })
     })
 
-    // TODO: Apertura Pagina secondaria da verificare
-    // it.only('Verifica Click su card di una Circolare',function(){
-    //     cy.get('input[name="main-search-input"]').click()
-    //     cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(4000)
-    //     cy.get('[class="lib-tab-info nx-grid"]').contains('Circolari').click()
-    //     cy.get('lib-circular-item').find('a').first().click()
-    // })
+    it('Verifica Click su card di una Circolare',function(){
+        cy.get('input[name="main-search-input"]').click()
+        cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(4000)
+        cy.get('[class="lib-tab-info nx-grid"]').contains('Circolari').click()
 
-    // it('Verifica Click sulla card del Company Handbook',function(){
-    //     cy.get('input[name="main-search-input"]').click()
-    //     cy.get('input[name="main-search-input"]').type('incasso').type('{enter}').wait(4000)
-    //     cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
-    //     cy.get('lib-handbooks-item').first().click()
-    // })
+        cy.get('lib-circular-item').find('a').first().invoke('removeAttr','target').click()
+        cy.get('#detailStampaImg')
 
+        cy.go('back')
+    })
 })

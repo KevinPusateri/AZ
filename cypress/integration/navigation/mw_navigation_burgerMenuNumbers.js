@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
 //#endregion
 
@@ -16,12 +16,16 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-const canaleFromPopup = () => cy.wait(1000).get('nx-modal-container').find('.agency-row').first().click()
-
+const canaleFromPopup = () => {cy.get('body').then($body => {
+        if ($body.find('nx-modal-container').length > 0) {   
+            cy.get('nx-modal-container').find('.agency-row').first().click()
+        }
+    });
+}
 const interceptGetAgenziePDF = () => {
     cy.intercept({
         method: 'POST',
-        url: /dacommerciale*/
+        url: '**/dacommerciale/**'
     }).as('getDacommerciale');
 }
 //#endregion
@@ -31,12 +35,19 @@ beforeEach(() => {
     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
     cy.intercept('POST', '/graphql', (req) => {
-        if (req.body.operationName.includes('notifications')) {
-            req.alias = 'gqlNotifications'
+        // if (req.body.operationName.includes('notifications')) {
+        //     req.alias = 'gqlNotifications'
+        // }
+        if (req.body.operationName.includes('news')) {
+            req.alias = 'gqlNews'
         }
     })
     cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/')
+    cy.visit('https://matrix.pp.azi.allianz.it/',{
+        onBeforeLoad: win =>{
+            win.sessionStorage.clear();
+        }
+    })
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
@@ -45,20 +56,25 @@ beforeEach(() => {
             return true;
         }
     })
-    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    cy.wait('@gqlNotifications')
+    cy.wait('@pageMatrix', { requestTimeout: 60000 }).its('request.url').should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+    // cy.wait('@gqlNotifications')
+    cy.wait('@gqlNews')
+    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
+ 
 })
 
 afterEach(() => {
-    cy.wait(1000).get('.user-icon-container').click()
-    cy.wait(1000).contains('Logout').click()
-    cy.wait(delayBetweenTests)
-
+    cy.get('body').then($body => {
+        if ($body.find('.user-icon-container').length > 0) {   
+            cy.get('.user-icon-container').click();
+            cy.wait(1000).contains('Logout').click()
+            cy.wait(delayBetweenTests)
+        }
+    });
     cy.clearCookies();
 })
 
@@ -109,12 +125,14 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     //TODO: verifica
     it('Verifica aggancio Monitoraggio Carico', function () {
+
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Carico').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('#contentPane:contains("Fonti"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -125,7 +143,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Carico per Fonte').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('#contentPane:contains("Applica filtri"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -168,7 +186,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         interceptGetAgenziePDF()
         canaleFromPopup()
         getIFrame().find('button:contains("Fonti produttive"):visible')
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         cy.get('a').contains('Numbers').click()
     })
 
@@ -186,8 +204,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
             url: /pentahoDama*/
         }).as('pentahoDama');
         canaleFromPopup()
-        cy.wait('@pentahoDA', { requestTimeout: 20000 });
-        cy.wait('@pentahoDama', { requestTimeout: 20000 });
+        cy.wait('@pentahoDA', { requestTimeout: 60000 });
+        cy.wait('@pentahoDama', { requestTimeout: 60000 });
         getIFrame().find('a:contains("Nuovo Report"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -219,7 +237,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Danni').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -230,7 +249,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Ultra').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -241,7 +261,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Vita').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -252,7 +273,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Allianz1').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -263,7 +285,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio PTF Danni').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -274,7 +297,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Riserve Vita').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -285,7 +309,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Retention Motor').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -296,7 +321,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Retention Rami Vari').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -307,7 +333,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Andamento Premi').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -318,7 +345,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Ricavi d\'Agenzia').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -329,7 +357,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Capitale Vita Scadenza').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })

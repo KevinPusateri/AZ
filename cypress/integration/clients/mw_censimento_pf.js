@@ -75,7 +75,11 @@ before(() => {
     }
   });
 
-  cy.visit('https://matrix.pp.azi.allianz.it/')
+  cy.visit('https://matrix.pp.azi.allianz.it/',{
+    onBeforeLoad: win =>{
+        win.sessionStorage.clear();
+    }
+  })
   cy.get('input[name="Ecom_User_ID"]').type(currentUser)
   cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
   cy.get('input[type="SUBMIT"]').click()
@@ -94,9 +98,13 @@ beforeEach(() => {
 })
 
 after(() => {
-  cy.get('.user-icon-container').click()
-  cy.contains('Logout').click()
-  cy.wait(delayBetweenTests)
+  cy.get('body').then($body => {
+      if ($body.find('.user-icon-container').length > 0) {   
+          cy.get('.user-icon-container').click();
+          cy.wait(1000).contains('Logout').click()
+          cy.wait(delayBetweenTests)
+      }
+  });
   cy.clearCookies();
 })
 
