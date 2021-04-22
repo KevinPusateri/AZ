@@ -6,7 +6,7 @@
 /// <reference types="Cypress" />
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
 //#endregion
 
@@ -90,7 +90,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('app-quick-access').contains('Sfera').click()
         canaleFromPopup()
 
-        cy.wait('@sferaGetPreferenzeFamiglieCampi', { requestTimeout: 30000 });
+        cy.wait('@sferaGetPreferenzeFamiglieCampi', { requestTimeout: 60000 });
 
         getIFrame().find('ul > li > span:contains("Quietanzamento"):visible')
         getIFrame().find('ul > li > span:contains("Visione Globale"):visible')
@@ -115,7 +115,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
         cy.get('app-quick-access').contains('Campagne Commerciali').click()
         
-        cy.wait('@gqlCampaignAgent', { requestTimeout: 30000 });
+        cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 });
 
         cy.url().should('include', '/campaign-manager')
         getIFrame().find('a:contains("Campagne di vendita"):visible')
@@ -133,7 +133,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         }).as('getDanni');
         cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
         canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 30000 });
+        cy.wait('@getDanni', { requestTimeout: 60000 });
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
     })
@@ -147,7 +147,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         }).as('inizializzaContratti');
         cy.get('app-quick-access').contains('Monitoraggio Polizze Proposte').click()
         canaleFromPopup()
-        cy.wait('@inizializzaContratti', { requestTimeout: 30000 });
+        cy.wait('@inizializzaContratti', { requestTimeout: 60000 });
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
     })
@@ -167,7 +167,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: /FastQuoteAU_AD*/
         }).as('getFastQuoteAu');
         canaleFromPopup()
-        cy.wait('@getFastQuoteAu', { requestTimeout: 30000 });
+        cy.wait('@getFastQuoteAu', { requestTimeout: 60000 });
         getIFrame().find('form ').invoke('attr','value').should('equal','Cerca')
     })
 
@@ -181,7 +181,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: /ultra*/
         }).as('getUltra');
         canaleFromPopup()
-        cy.wait('@getUltra', { requestTimeout: 30000 });
+        cy.wait('@getUltra', { requestTimeout: 60000 });
         getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
     })
 
@@ -195,7 +195,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: /ultra*/
         }).as('getUltra');
         canaleFromPopup()
-        cy.wait('@getUltra', { requestTimeout: 30000 });
+        cy.wait('@getUltra', { requestTimeout: 60000 });
         getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
     })
 
@@ -209,7 +209,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: /ultra2*/
         }).as('getUltra2');
         canaleFromPopup()
-        cy.wait('@getUltra2', { requestTimeout: 30000 });
+        cy.wait('@getUltra2', { requestTimeout: 60000 });
         getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
     })
 
@@ -223,7 +223,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: /Danni*/
         }).as('getDanni');
         canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 30000 });
+        cy.wait('@getDanni', { requestTimeout: 60000 });
         getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
     })
 
@@ -237,7 +237,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: /Auto*/
         }).as('getAuto');
         canaleFromPopup()
-        cy.wait('@getAuto', { requestTimeout: 30000 });
+        cy.wait('@getAuto', { requestTimeout: 60000 });
         getIFrame().find('form input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
     })
 
@@ -251,7 +251,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: /Auto*/
         }).as('getAuto');
         canaleFromPopup()
-        cy.wait('@getAuto', { requestTimeout: 30000 });
+        cy.wait('@getAuto', { requestTimeout: 60000 });
         getIFrame().find('form input[value="› Avanti"]').invoke('attr','value').should('equal','› Avanti')
     })
 
@@ -270,8 +270,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //         url: '**/Vita/**'
     //     }).as('getVitaG');
     //     canaleFromPopup()
-    //     cy.wait('@getVitaG', { requestTimeout: 30000 });
-    //     cy.wait('@getVitaP', { requestTimeout: 30000 });
+    //     cy.wait('@getVitaG', { requestTimeout: 60000 });
+    //     cy.wait('@getVitaP', { requestTimeout: 60000 });
     //     getIFrame().find('#AZBuilder1_ctl14_cmdHome').invoke('attr','value').should('equal','Home')
     // })
 
@@ -285,7 +285,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: /Auto*/
         }).as('getAuto');
         canaleFromPopup()
-        cy.wait('@getAuto', { requestTimeout: 30000 });
+        cy.wait('@getAuto', { requestTimeout: 60000 });
         getIFrame().find('span:contains("Nuova Trattativa"):visible')
     })
 
@@ -299,7 +299,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: /Auto*/
         }).as('getAuto');
         canaleFromPopup()
-        cy.wait('@getAuto', { requestTimeout: 30000 });
+        cy.wait('@getAuto', { requestTimeout: 60000 });
         getIFrame().find('span:contains("Nuova Trattativa"):visible')
     })
 
@@ -375,7 +375,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: /Danni*/
         }).as('getDanni');
         cy.get('.cards-container').find('.card').first().click()
-        cy.wait('@getDanni', { requestTimeout: 30000 });
+        cy.wait('@getDanni', { requestTimeout: 60000 });
         getIFrame().find('button:contains("Cerca"):visible')
         
     })
@@ -475,7 +475,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: '**/Auto/**'
         }).as('getAuto');
         cy.get('.cards-container').find('.card').first().click()
-        cy.wait('@getAuto', { requestTimeout: 30000 });
+        cy.wait('@getAuto', { requestTimeout: 60000 });
         getIFrame().find('a:contains("« Uscita"):visible')
     })
 
@@ -527,7 +527,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //         url: '**/Vita/**'
     //     }).as('getVita');
     //     cy.get('.cards-container').find('.card').first().click()
-    //     cy.wait('@getVita', { requestTimeout: 30000 });
+    //     cy.wait('@getVita', { requestTimeout: 60000 });
     //     getIFrame().find('#AZBuilder1_ctl08_cmdNote')
     // })
 

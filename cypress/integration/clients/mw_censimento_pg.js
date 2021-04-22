@@ -308,7 +308,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         url: /QuestionariWeb/
       }).as('questionariWeb');
 
-      getIframe().find('#TabVarieInserimentoButton').click().wait(5000)
+      getIframe().find('#TabVarieInserimentoButton').click().wait(20000)
 
       cy.wait('@questionariWeb', { requestTimeout: 60000 });
 

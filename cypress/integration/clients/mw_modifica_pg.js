@@ -89,12 +89,16 @@ beforeEach(() => {
   })
 })
 
-// after(() => {
-//   cy.get('.user-icon-container').click()
-//   cy.contains('Logout').click()
-//   cy.wait(delayBetweenTests)
-//   cy.clearCookies();
-// })
+after(() => {
+  cy.get('body').then($body => {
+      if ($body.find('.user-icon-container').length > 0) {   
+          cy.get('.user-icon-container').click();
+          cy.wait(1000).contains('Logout').click()
+          cy.wait(delayBetweenTests)
+      }
+  });
+  cy.clearCookies();
+})
 
 describe('Matrix Web : Modifica PG', function () {
 
@@ -103,15 +107,19 @@ describe('Matrix Web : Modifica PG', function () {
     cy.generateTwoLetters().then(randomChars => {
       cy.get('input[name="main-search-input"]').type(randomChars).type('{enter}')
     })
-    cy.url().should('include', '/search/clients/clients')
+    cy.url().should('include', '/search/clients/clients').wait(3000)
 
-    //Rimuoviamo le persone finische
+    //Rimuoviamo le persone finische dai filtri di ricerca
     cy.get('.icon').find('[name="filter"]').click()
     cy.get('.filter-group').contains('Persona fisica').click()
     cy.get('.footer').find('button').contains('applica').click()
     cy.get('lib-applied-filters-item').find('span').should('be.visible')
     cy.get('lib-client-item').first().click()
     cy.contains('DETTAGLIO ANAGRAFICA').click()
+  })
+
+  it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
+    
   })
  
 })

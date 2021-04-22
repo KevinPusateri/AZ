@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
 //#endregion
 
@@ -52,7 +52,7 @@ beforeEach(() => {
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 30000 }).its('request.url').should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+    cy.wait('@pageMatrix', { requestTimeout: 60000 }).its('request.url').should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
     // cy.wait('@gqlNotifications')
     cy.wait('@gqlNews')
     cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
@@ -123,7 +123,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Carico').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('#contentPane:contains("Fonti"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -134,7 +134,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Carico per Fonte').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('#contentPane:contains("Applica filtri"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -177,7 +177,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         interceptGetAgenziePDF()
         canaleFromPopup()
         getIFrame().find('button:contains("Fonti produttive"):visible')
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         cy.get('a').contains('Numbers').click()
     })
 
@@ -195,8 +195,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
             url: /pentahoDama*/
         }).as('pentahoDama');
         canaleFromPopup()
-        cy.wait('@pentahoDA', { requestTimeout: 20000 });
-        cy.wait('@pentahoDama', { requestTimeout: 20000 });
+        cy.wait('@pentahoDA', { requestTimeout: 60000 });
+        cy.wait('@pentahoDama', { requestTimeout: 60000 });
         getIFrame().find('a:contains("Nuovo Report"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -228,7 +228,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Danni').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -239,7 +239,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Ultra').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -250,7 +250,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Vita').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -261,7 +261,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Allianz1').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -272,7 +272,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio PTF Danni').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -283,7 +283,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Riserve Vita').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -294,7 +294,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Retention Motor').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -305,7 +305,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Retention Rami Vari').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -316,7 +316,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Andamento Premi').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -327,7 +327,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Ricavi d\'Agenzia').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -338,7 +338,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Capitale Vita Scadenza').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })

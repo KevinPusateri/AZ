@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
 
 const getIFrame = () => {
@@ -87,7 +87,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         cy.url().should('include', '/business-lines')
         interceptGetAgenziePDF()
         cy.get('app-agency-incoming').contains('RICAVI DI AGENZIA').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('a:contains("Filtra"):visible')
     })
     
@@ -97,7 +97,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         cy.contains('LINEE DI BUSINESS').click().should('have.class','active')
         interceptGetAgenziePDF()
         cy.get('app-kpi-card').contains('New business').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -108,7 +108,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         cy.contains('LINEE DI BUSINESS').click().should('have.class','active')
         interceptGetAgenziePDF()
         cy.get('app-kpi-card').contains('Incassi').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="ControlloFiltroBottone"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -119,7 +119,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         cy.contains('LINEE DI BUSINESS').click().should('have.class','active')
         interceptGetAgenziePDF()
         cy.get('app-kpi-card').contains('Portafoglio').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="ControlloFiltroBottone"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
     })
@@ -131,7 +131,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         cy.url().should('include', '/products')
         interceptGetAgenziePDF()
         cy.get('lib-card').first().click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="ControlloFiltroBottone"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
         
@@ -145,7 +145,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         cy.url().should('include', '/operational-indicators')
         interceptGetAgenziePDF()
         cy.get('app-digital-indexes').find('lib-card').first().click()
-        cy.wait('@getDacommerciale', { requestTimeout: 20000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('a:contains("Apri filtri"):visible')
         cy.get('a').contains('Numbers').click()
     })
