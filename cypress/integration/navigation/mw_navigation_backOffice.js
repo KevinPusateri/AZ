@@ -81,7 +81,7 @@ beforeEach(() => {
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 60000 });
+    cy.wait('@pageMatrix', { requestTimeout: 30000 });
     // cy.wait('@gqlNotifications')
     cy.wait('@gqlNews')
 })
@@ -202,7 +202,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
 
         cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
         canaleFromPopup()
-        cy.wait('@fnol', { requestTimeout: 60000 });
+        cy.wait('@fnol', { requestTimeout: 30000 });
         getIFrame().find('fnol-root:contains("Continua"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('include', '/back-office')

@@ -77,7 +77,7 @@ beforeEach(() => {
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
     }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 60000 });
+    cy.wait('@pageMatrix', { requestTimeout: 30000 });
     // cy.wait('@gqlNotifications')
     cy.wait('@gqlNews')
 

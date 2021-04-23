@@ -340,7 +340,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         }).as('inizializzaApplicazione');
         cy.contains('Recupero preventivi e quotazioni').click()
           canaleFromPopup()
-          cy.wait('@inizializzaApplicazione', { requestTimeout: 60000 });
+          cy.wait('@inizializzaApplicazione', { requestTimeout: 30000 });
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
     })
@@ -452,7 +452,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         }).as('vita');
         cy.contains('Report Cliente T4L').click()
         canaleFromPopup()
-        cy.wait('@vita', { requestTimeout: 60000 });
+        cy.wait('@vita', { requestTimeout: 30000 });
         getIFrame().find('input[value="Ricerca"]').invoke('attr','value').should('equal','Ricerca')
         cy.get('a').contains('Sales').click()
     })

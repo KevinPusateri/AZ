@@ -137,7 +137,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
 
         cy.get('.actions-box').contains('Vai a visione globale').click()
         canaleFromPopup()
-        cy.wait('@getDati', { requestTimeout: 60000 })
+        cy.wait('@getDati', { requestTimeout: 30000 })
         getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
         backToClients()
     });
