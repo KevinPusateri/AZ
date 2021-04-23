@@ -174,6 +174,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getFastQuoteAu', { requestTimeout: 60000 });
         getIFrame().find('form ').invoke('attr','value').should('equal','Cerca')
+        cy.get('a').contains('Sales').click()
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio', function(){
@@ -188,6 +189,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getUltra', { requestTimeout: 60000 });
         getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
+        cy.get('a').contains('Sales').click()
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Salute', function(){
@@ -202,6 +204,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getUltra', { requestTimeout: 60000 });
         getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
+        cy.get('a').contains('Sales').click()
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function(){
@@ -216,6 +219,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getUltra2', { requestTimeout: 60000 });
         getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
+        cy.get('a').contains('Sales').click()
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz1 Business', function(){
@@ -230,6 +234,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getDanni', { requestTimeout: 60000 });
         getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
+        cy.get('a').contains('Sales').click()
     })
 
     it('Verifica aggancio Emetti Polizza - FastQuote Impresa e Albergo', function(){
@@ -244,6 +249,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getAuto', { requestTimeout: 60000 });
         getIFrame().find('form input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
+        cy.get('a').contains('Sales').click()
     })
 
     it('Verifica aggancio Emetti Polizza - Preventivo anonimo Motor', function(){
@@ -258,6 +264,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getAuto', { requestTimeout: 60000 });
         getIFrame().find('form input[value="› Avanti"]').invoke('attr','value').should('equal','› Avanti')
+        cy.get('a').contains('Sales').click()
     })
 
     // // TODO: non trova Home
@@ -292,6 +299,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getAuto', { requestTimeout: 60000 });
         getIFrame().find('span:contains("Nuova Trattativa"):visible')
+        cy.get('a').contains('Sales').click()
+
     })
 
     it('Verifica aggancio Emetti Polizza - Trattative Auto Corporate', function(){
@@ -306,6 +315,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getAuto', { requestTimeout: 60000 });
         getIFrame().find('span:contains("Nuova Trattativa"):visible')
+        cy.get('a').contains('Sales').click()
+
     })
 
     it('Verifica aggancio Emetti Polizza - Gestione Richieste per PA', function(){
@@ -320,6 +331,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getDanni', { requestTimeout: 40000 });
         getIFrame().find('#main-wrapper input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
+        cy.get('a').contains('Sales').click()
     })
 
     it('Verifica aggancio Estrai dettaglio', function(){
@@ -343,6 +355,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
                 }
             }
         })
+        cy.get('a').contains('Sales').click()
     })
 
     it('Verifica aggancio Appuntamento', function(){
@@ -360,6 +373,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         getIFrame().find('app-header:contains("Primo Piano"):visible')
         getIFrame().find('app-header:contains("Tutte"):visible')
+        cy.get('a').contains('Sales').click()
 
     })
     
@@ -383,7 +397,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getDanni', { requestTimeout: 60000 });
         getIFrame().find('button:contains("Cerca"):visible')
-        
+        cy.get('a').contains('Sales').click()
     })
     
     it('Verifica aggancio Preventivi e quotazioni Danni - button: Vedi Tutti', function(){
@@ -413,6 +427,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('#iframe-container').within(() =>{
             getIFrame().find('form:contains("Cerca"):visible')
         })
+        cy.get('a').contains('Sales').click()
+
     })
     
     //TODO: Verifica Vita con Vita button Note visible
@@ -432,6 +448,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait(10000)
         getIFrame().find('#AZBuilder1_ctl08_cmdNote')
+        cy.get('a').contains('Sales').click()
+
     })
 
     // TODO
@@ -484,6 +502,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@getAuto', { requestTimeout: 60000 });
         getIFrame().find('a:contains("« Uscita"):visible')
+        cy.get('a').contains('Sales').click()
     })
 
     
@@ -514,6 +533,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('#iframe-container').within(() =>{
             getIFrame().find('form:contains("Cerca"):visible')
         })
+        cy.get('a').contains('Sales').click()
+
     })
 
     // TODO: stesso problema sopra Frame
@@ -536,6 +557,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //     cy.get('.cards-container').find('.card').first().click()
     //     cy.wait('@getVita', { requestTimeout: 60000 });
     //     getIFrame().find('#AZBuilder1_ctl08_cmdNote')
+    // cy.get('a').contains('Sales').click()
+
     // })
 
     it('Verifica aggancio Proposte Vita - button: Vedi Tutti', function(){
@@ -565,6 +588,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('#iframe-container').within(() =>{
             getIFrame().find('form:contains("Cerca"):visible')
         })
+        cy.get('a').contains('Sales').click()
     })
 
 });
