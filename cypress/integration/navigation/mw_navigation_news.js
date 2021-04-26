@@ -14,6 +14,7 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
   
+const baseUrl = Cypress.env('baseUrl') 
 
 beforeEach(() => {
     cy.clearCookies();
@@ -33,7 +34,7 @@ beforeEach(() => {
             return true;
         }
     })
-    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
+    cy.url().should('eq',baseUrl)
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
@@ -56,6 +57,7 @@ describe('Matrix Web : Navigazioni da News - ', function () {
     it('News', function () {
         cy.get('app-product-button-list').find('a').contains('News').click()
         cy.url().should('include', '/news/home')
+        cy.url().should('eq', baseUrl + 'news/home')
         getIFrame().find('app-header:contains("Primo Piano"):visible')
         getIFrame().find('app-header:contains("Tutte"):visible')
     })

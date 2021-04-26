@@ -8,6 +8,7 @@
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
+const baseUrl = Cypress.env('baseUrl') 
 //#endregion
 
 //#region Global Variables
@@ -58,7 +59,7 @@ beforeEach(() => {
             return true;
         }
     })
-    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
+    cy.url().should('eq',baseUrl)
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
@@ -83,13 +84,13 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Sales', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio Sfera', function () {
 
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
 
         cy.intercept({
             method: 'POST',
@@ -110,11 +111,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         getIFrame().find('ul > li > span:contains("Operatività"):visible')
         getIFrame().find('button:contains("Applica filtri"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio Campagne Commerciali', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
 
         cy.intercept('POST', '/graphql', (req) => {
             if (req.body.operationName.includes('campaignAgent')) {
@@ -123,29 +125,29 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
 
         cy.get('app-quick-access').contains('Campagne Commerciali').click()
-        
-        cy.wait('@gqlCampaignAgent', { requestTimeout: 30000 });
         canaleFromPopup()
-        cy.url().should('include', '/campaign-manager')
+        cy.wait('@gqlCampaignAgent', { requestTimeout: 30000 });
+        cy.url().should('eq',baseUrl+ 'campaign-manager')
         getIFrame().find('a:contains("Campagne di vendita"):visible')
-
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio Recupero preventivi e quotazioni', function(){
 
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
         canaleFromPopup()
         cy.wait(10000);
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
         
     it('Verifica aggancio Monitoraggio Polizze Proposte', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         cy.intercept({
             method: 'POST',
             url: /InizializzaContratti/
@@ -155,6 +157,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@inizializzaContratti', { requestTimeout: 30000 });
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     //TODO: GED - Gestione Documentale Apre new window
@@ -164,7 +167,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Emetti Polizza - FastQuote Auto', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('FastQuote Auto').click()
         cy.intercept({
@@ -175,11 +178,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getFastQuoteAu', { requestTimeout: 30000 });
         getIFrame().find('form ').invoke('attr','value').should('equal','Cerca')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Allianz Ultra Casa e Patrimonio').click()
         cy.intercept({
@@ -190,11 +194,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getUltra', { requestTimeout: 30000 });
         getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Salute', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Allianz Ultra Salute').click()
         cy.intercept({
@@ -205,11 +210,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getUltra', { requestTimeout: 30000 });
         getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Allianz Ultra Casa e Patrimonio BMP').click()
         cy.intercept({
@@ -220,11 +226,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getUltra2', { requestTimeout: 30000 });
         getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz1 Business', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Allianz1 Business').click()
         cy.intercept({
@@ -235,11 +242,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getDanni', { requestTimeout: 30000 });
         getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio Emetti Polizza - FastQuote Impresa e Albergo', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('FastQuote Impresa e Albergo').click()
         cy.intercept({
@@ -250,11 +258,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getAuto', { requestTimeout: 30000 });
         getIFrame().find('form input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio Emetti Polizza - Preventivo anonimo Motor', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Preventivo anonimo Motor').click()
         cy.intercept({
@@ -265,12 +274,14 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getAuto', { requestTimeout: 30000 });
         getIFrame().find('form input[value="› Avanti"]').invoke('attr','value').should('equal','› Avanti')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
+
     })
 
     // // TODO: non trova Home
     // it('Verifica aggancio Emetti Polizza - Preventivo anonimo Vita Individuali', function(){
     //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('include', '/sales')
+    //     cy.url().should('eq',baseUrl+ 'sales')
     //     buttonEmettiPolizza()
     //     popoverEmettiPolizza().contains('Preventivo anonimo Vita Individuali').click()
     //     cy.intercept({
@@ -289,7 +300,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Emetti Polizza - MiniFlotte', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('MiniFlotte').click()
         cy.intercept({
@@ -300,12 +311,13 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getAuto', { requestTimeout: 30000 });
         getIFrame().find('span:contains("Nuova Trattativa"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
 
     })
 
     it('Verifica aggancio Emetti Polizza - Trattative Auto Corporate', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Trattative Auto Corporate').click()
         cy.intercept({
@@ -316,12 +328,13 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getAuto', { requestTimeout: 30000 });
         getIFrame().find('span:contains("Nuova Trattativa"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
 
     })
 
     it('Verifica aggancio Emetti Polizza - Gestione Richieste per PA', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Gestione Richieste per PA').click()
         cy.intercept({
@@ -332,11 +345,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getDanni', { requestTimeout: 40000 });
         getIFrame().find('#main-wrapper input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio Estrai dettaglio', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         // fino al primo disponibile
         var nextCheckbox = cy.get('app-expiring-card').next().find('nx-checkbox').first()
         nextCheckbox.then(($btn) => {
@@ -356,30 +370,35 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             }
         })
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio Appuntamento', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         cy.get('lib-upcoming-dates').click()
         cy.url().should('include', '/event-center')
+        cy.url().should('eq',baseUrl+ 'sales')
+
         cy.get('lib-sub-header-right').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     it('Verifica aggancio News image Primo comandamento', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         cy.get('lib-news-image').click();
         canaleFromPopup()
         getIFrame().find('app-header:contains("Primo Piano"):visible')
         getIFrame().find('app-header:contains("Tutte"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
 
     })
     
     it('Verifica aggancio Preventivi e quotazioni - Card Danni', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         cy.intercept('POST', '/graphql', (req) => {
             if (req.body.operationName.includes('salesContract') &&
             req.body.variables.filter.tabCallType.includes('DAMAGE')) {
@@ -398,11 +417,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getDanni', { requestTimeout: 30000 });
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
     
     it('Verifica aggancio Preventivi e quotazioni Danni - button: Vedi Tutti', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         cy.intercept('POST', '/graphql', (req) => {
             if (req.body.operationName.includes('salesContract') &&
             req.body.variables.filter.tabCallType.includes('DAMAGE')) {
@@ -428,13 +448,14 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             getIFrame().find('form:contains("Cerca"):visible')
         })
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
 
     })
     
     //TODO: Verifica Vita con Vita button Note visible
     it('Verifica aggancio Preventivi e quotazioni - Card Vita', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         cy.intercept('POST', '/graphql', (req) => {
             if (req.body.operationName.includes('salesContract') &&
             req.body.variables.filter.tabCallType.includes('LIFE')) {
@@ -449,13 +470,14 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait(10000)
         getIFrame().find('#AZBuilder1_ctl08_cmdNote')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
 
     })
 
     // TODO
     // it('Verifica aggancio Preventivi e quotazioni Vita - button: Vedi Tutti', function(){
     //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('include', '/sales')
+    //     cy.url().should('eq',baseUrl+ 'sales')
     //     cy.intercept('POST', '/graphql', (req) => {
     //         if (req.body.operationName.includes('salesContract') &&
     //         req.body.variables.filter.tabCallType.includes('LIFE')) {
@@ -484,7 +506,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Proposte Danni - Card Danni', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         cy.intercept('POST', '/graphql', (req) => {
             if (req.body.operationName.includes('salesContract') &&
             req.body.variables.filter.tabCallType.includes('DAMAGE')) {
@@ -503,12 +525,13 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait('@getAuto', { requestTimeout: 30000 });
         getIFrame().find('a:contains("« Uscita"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     
     it('Verifica aggancio Proposte Danni - button: Vedi Tutte', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         cy.intercept('POST', '/graphql', (req) => {
             if (req.body.operationName.includes('salesContract') &&
             req.body.variables.filter.tabCallType.includes('DAMAGE')) {
@@ -534,13 +557,13 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             getIFrame().find('form:contains("Cerca"):visible')
         })
         cy.get('a').contains('Sales').click()
-
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
     // TODO: stesso problema sopra Frame
     // it('Verifica aggancio Proposte Vita - Card Vita', function(){
     //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('include', '/sales')
+    //     cy.url().should('eq',baseUrl+ 'sales')
     //     cy.intercept('POST', '/graphql', (req) => {
     //         if (req.body.operationName.includes('salesContract') &&
     //         req.body.variables.filter.tabCallType.includes('LIFE')) {
@@ -563,7 +586,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Proposte Vita - button: Vedi Tutti', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales')
         cy.intercept('POST', '/graphql', (req) => {
             if (req.body.operationName.includes('salesContract') &&
             req.body.variables.filter.tabCallType.includes('LIFE')) {
@@ -589,6 +612,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             getIFrame().find('form:contains("Cerca"):visible')
         })
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales')
     })
 
 });

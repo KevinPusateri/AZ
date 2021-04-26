@@ -10,6 +10,7 @@
 			"user": "MY_taut_VeeC9",
 			"password": "vC4DwAHxznfGl8XywsoohZkbdmL6cf",
 			"database": "applogs"
-		}
+		},
+	"baseUrl": "https://portaleagenzie.pp.azi.allianz.it/matrix/"
 	}
 }

@@ -8,6 +8,7 @@
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 30000)
 const delayBetweenTests = 3000
+const baseUrl = Cypress.env('baseUrl') 
 //#endregion
 
 //#region Before and After
@@ -35,7 +36,7 @@ beforeEach(() => {
             return true;
         }
     })
-    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+    cy.url().should('eq',baseUrl)
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
