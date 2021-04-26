@@ -8,6 +8,14 @@
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
+const baseUrl = Cypress.env('baseUrl') 
+const interceptPageClients = () =>{
+    cy.intercept({
+        method: 'POST',
+        url: '**/clients/**' ,
+      }).as('getClients');
+}
+
 //#endregion
 
 //#region Global Variables
@@ -23,7 +31,8 @@ const getIFrame = () => {
 }
 
 const canaleFromPopup = () => {cy.get('body').then($body => {
-    if ($body.find('nx-modal-container').length > 0) {   
+    if ($body.find('nx-modal-container').length > 0) {  
+        cy.wait(3000)
         cy.get('nx-modal-container').find('.agency-row').first().click()
     }
 });
@@ -56,7 +65,7 @@ beforeEach(() => {
             return true;
         }
     })
-    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
+    cy.url().should('eq',baseUrl)
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
@@ -80,56 +89,74 @@ afterEach(() => {
 describe('Matrix Web : Navigazioni da Clients', function () {
 
     it('Verifica aggancio Clients', function () {
+        interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.url().should('include', '/clients')
+        cy.wait('@getClients', { requestTimeout: 30000 })
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Digital Me', function () {
+        interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
         cy.get('app-rapid-link').contains('Digital Me').click()
         canaleFromPopup()
-        cy.url().should('include', '/digital-me')
+        cy.url().should('eq', baseUrl + 'clients/digital-me')
         backToClients()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Pannello anomalie', function () {
+        interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
         cy.get('app-rapid-link').contains('Pannello anomalie').click()
         canaleFromPopup()
-        cy.wait(5000)
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         backToClients()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Clienti duplicati', function () {
+        interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
         cy.get('app-rapid-link').contains('Clienti duplicati').click()
         canaleFromPopup()
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         backToClients()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Antiriciclaggio', function () {
+        interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
         cy.get('app-rapid-link').contains('Antiriciclaggio').click()
         canaleFromPopup()
         cy.wait(5000)
         getIFrame().find('#divMain:contains("Servizi antiriciclaggio"):visible')
         backToClients()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Nuovo cliente', function () {
+        interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
         cy.get('.component-section').find('button').contains('Nuovo cliente').click()
         canaleFromPopup()
-        cy.url().should('include', '/new-client')
+        cy.url().should('eq', baseUrl + 'new-client')
         backToClients()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Vai a visione globale', function () {
+        interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
         cy.intercept({
             method: 'POST',
             url: /GetDati/,
@@ -140,18 +167,24 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         cy.wait('@getDati', { requestTimeout: 30000 })
         getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
         backToClients()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Appuntamenti', function () {
+        interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
         cy.get('.meetings').click()
         canaleFromPopup()
-        cy.url().should('include', '/clients/event-center')
+        cy.url().should('eq', baseUrl + 'clients/event-center')
         cy.get('lib-sub-header-right').find('nx-icon').click()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Richiesta Digital Me', function () {
+        interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
         cy.get('app-dm-requests-card').first().find('button[class^="row-more-icon-button"]').click()
         cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').each(($checkLink) =>{
             expect($checkLink.text()).not.to.be.empty
@@ -164,7 +197,9 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     });
 
     it('Verifica aggancio Richiesta Digital Me - button Vedi tutte', function () {
+        interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
         cy.contains('Vedi tutte').click()
         cy.url().should('include', '/clients/digital-me')
         cy.get('[class="ellipsis-box"]').first().find('button').click()
