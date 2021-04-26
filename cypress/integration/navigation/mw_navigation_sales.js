@@ -453,26 +453,26 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
     
     //TODO: Verifica Vita con Vita button Note visible
-    it('Verifica aggancio Preventivi e quotazioni - Card Vita', function(){
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales')
-        cy.intercept('POST', '/graphql', (req) => {
-            if (req.body.operationName.includes('salesContract') &&
-            req.body.variables.filter.tabCallType.includes('LIFE')) {
-              req.alias = 'gqlLife'
-            }
-        })
-        cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
-        cy.wait('@gqlLife')
-        cy.get('app-paginated-cards').find('button:contains("Vita")').click()
-        cy.get('.cards-container').find('.card').first().click()
-        canaleFromPopup()
-        cy.wait(10000)
-        getIFrame().find('#AZBuilder1_ctl08_cmdNote')
-        cy.get('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales')
+    // it('Verifica aggancio Preventivi e quotazioni - Card Vita', function(){
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales')
+    //     cy.intercept('POST', '/graphql', (req) => {
+    //         if (req.body.operationName.includes('salesContract') &&
+    //         req.body.variables.filter.tabCallType.includes('LIFE')) {
+    //           req.alias = 'gqlLife'
+    //         }
+    //     })
+    //     cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
+    //     cy.wait('@gqlLife')
+    //     cy.get('app-paginated-cards').find('button:contains("Vita")').click()
+    //     cy.get('.cards-container').find('.card').first().click()
+    //     canaleFromPopup()
+    //     cy.wait(10000)
+    //     getIFrame().find('#AZBuilder1_ctl08_cmdNote')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales')
 
-    })
+    // })
 
     // TODO
     // it('Verifica aggancio Preventivi e quotazioni Vita - button: Vedi Tutti', function(){
