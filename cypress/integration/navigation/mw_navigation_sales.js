@@ -473,7 +473,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    // TODO
+    // TODO (togliere wait)
     // it('Verifica aggancio Preventivi e quotazioni Vita - button: Vedi Tutti', function(){
     //     cy.get('app-product-button-list').find('a').contains('Sales').click()
     //     cy.url().should('eq',baseUrl+ 'sales/')
@@ -498,8 +498,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //     canaleFromPopup()
     //     cy.wait('@getDanni', { requestTimeout: 40000 });
     //     cy.wait('@getDanniG', { requestTimeout: 40000 });
-    //     cy.get('#iframe-container').within(() =>{
-    //         getIFrame().find('form:contains("Cerca"):visible')
+    //     cy.wait(10000)
+    //     cy.find('#casella-ricerca:contains("Cerca"):visible')
     //     })
     // })
 
@@ -579,11 +579,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //     cy.get('.cards-container').find('.card').first().click()
     //     cy.wait('@getVita', { requestTimeout: 30000 });
     //     getIFrame().find('#AZBuilder1_ctl08_cmdNote')
-    // cy.get('a').contains('Sales').click()
+//          cy.get('a').contains('Sales').click()
 
     // })
 
-    it('Verifica aggancio Proposte Vita - button: Vedi Tutti', function(){
+    it('Verifica aggancio Proposte Vita - button: Vedi Tutte', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.intercept('POST', '/graphql', (req) => {
@@ -595,7 +595,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('app-proposals-section').contains('Proposte').click()
         cy.wait('@gqlLife')
         cy.get('app-paginated-cards').find('button:contains("Vita")').click()
-        cy.get('app-proposals-section').find('button:contains("Vedi tutte")').click()
         cy.intercept({
             method: 'POST',
             url: '**/Danni/**'
@@ -604,6 +603,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             method: 'GET',
             url: '**/Danni/**'
         }).as('getDanniG');
+        cy.get('app-proposals-section').find('button:contains("Vedi tutte")').click()
         canaleFromPopup()
         cy.wait('@getDanni', { requestTimeout: 40000 });
         cy.wait('@getDanniG', { requestTimeout: 40000 });
