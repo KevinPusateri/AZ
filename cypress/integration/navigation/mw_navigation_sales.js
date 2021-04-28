@@ -453,7 +453,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
     
     //TODO: Togliere wait
-    it.only('Verifica aggancio Preventivi e quotazioni - Card Vita', function(){
+    it('Verifica aggancio Preventivi e quotazioni - Card Vita', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.intercept('POST', '/graphql', (req) => {

@@ -84,195 +84,195 @@ afterEach(() => {
 
 describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
-    // it('Verifica i link da Burger Menu', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     const linksBurgerMotor = [
-    //         'FastQuote Auto',
-    //         'Preventivo anonimo Motor',
-    //         'MiniFlotte',
-    //         'Allianz Ultra Casa e Patrimonio',
-    //         'Allianz Ultra Casa e Patrimonio BMP',
-    //         'Allianz Ultra Salute',
-    //         'Allianz1 Business',
-    //         'FastQuote Infortuni da circolazione',
-    //         'FastQuote Universo Persona',
-    //         'FastQuote Universo Salute',
-    //         'FastQuote Universo Persona Malattie Gravi',
-    //         'FastQuote Impresa e Albergo',
-    //         'Allianz1 premorienza',
-    //         'Preventivo Anonimo Vita Individuali',
-    //         'Trattative Auto corporate',
-    //         'Gestione richieste per PA',
-    //         'Sfera',
-    //         'Campagne Commerciali',
-    //         'Recupero preventivi e quotazioni',
-    //         'Documenti da firmare',
-    //         'Gestione attività in scadenza',
-    //         'Manutenzione portafoglio RV Midco',
-    //         'Vita Corporate',
-    //         'Monitoraggio Polizze Proposte',
-    //         'Certificazione fiscale',
-    //         'Manutenzione Portafoglio Auto',
-    //         'Cruscotto certificati applicazioni',
-    //         'Cruscotto riepiloghi polizze abb.',
-    //         'Report Cliente T4L',
-    //         'Documenti annullati',
-    //         'GED – Gestione Documentale',
-    //         'Documenti da gestire',
-    //         'Folder',
-    //         'AllianzGlobalAssistance',
-    //         'Allianz placement platform',
-    //         'Qualità portafoglio auto',
-    //         'App cumulo terremoti',
-    //         'Note di contratto',
-    //         'ACOM Gestione iniziative',
-    //     ]
-    //     cy.get('nx-expansion-panel').find('a').should('have.length',39).each(($checkLinksBurger, i) => {
-    //         expect($checkLinksBurger.text().trim()).to.include(linksBurgerMotor[i]);
-    //     })
+    it('Verifica i link da Burger Menu', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        const linksBurgerMotor = [
+            'FastQuote Auto',
+            'Preventivo anonimo Motor',
+            'MiniFlotte',
+            'Allianz Ultra Casa e Patrimonio',
+            'Allianz Ultra Casa e Patrimonio BMP',
+            'Allianz Ultra Salute',
+            'Allianz1 Business',
+            'FastQuote Infortuni da circolazione',
+            'FastQuote Universo Persona',
+            'FastQuote Universo Salute',
+            'FastQuote Universo Persona Malattie Gravi',
+            'FastQuote Impresa e Albergo',
+            'Allianz1 premorienza',
+            'Preventivo Anonimo Vita Individuali',
+            'Trattative Auto corporate',
+            'Gestione richieste per PA',
+            'Sfera',
+            'Campagne Commerciali',
+            'Recupero preventivi e quotazioni',
+            'Documenti da firmare',
+            'Gestione attività in scadenza',
+            'Manutenzione portafoglio RV Midco',
+            'Vita Corporate',
+            'Monitoraggio Polizze Proposte',
+            'Certificazione fiscale',
+            'Manutenzione Portafoglio Auto',
+            'Cruscotto certificati applicazioni',
+            'Cruscotto riepiloghi polizze abb.',
+            'Report Cliente T4L',
+            'Documenti annullati',
+            'GED – Gestione Documentale',
+            'Documenti da gestire',
+            'Folder',
+            'AllianzGlobalAssistance',
+            'Allianz placement platform',
+            'Qualità portafoglio auto',
+            'App cumulo terremoti',
+            'Note di contratto',
+            'ACOM Gestione iniziative',
+        ]
+        cy.get('nx-expansion-panel').find('a').should('have.length',39).each(($checkLinksBurger, i) => {
+            expect($checkLinksBurger.text().trim()).to.include(linksBurgerMotor[i]);
+        })
 
-    // });
+    });
 
-    // //#region New Business
-    // //#region Motor
-    // it('Verifica aggancio FasqtQuote Auto', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('FastQuote Auto').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // });
+    //#region New Business
+    //#region Motor
+    it('Verifica aggancio FasqtQuote Auto', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('FastQuote Auto').click()
+        canaleFromPopup()
+        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    });
     
-    // it('Verifica aggancio Preventivo anonimo Motor', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Preventivo anonimo Motor').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('input[value="› Home"]').invoke('attr','value').should('equal','› Home')
-    //     getIFrame().find('input[value="› Avanti"]').invoke('attr','value').should('equal','› Avanti')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // });
+    it('Verifica aggancio Preventivo anonimo Motor', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Preventivo anonimo Motor').click()
+        canaleFromPopup()
+        getIFrame().find('input[value="› Home"]').invoke('attr','value').should('equal','› Home')
+        getIFrame().find('input[value="› Avanti"]').invoke('attr','value').should('equal','› Avanti')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    });
     
-    // it('Verifica aggancio MiniFlotte', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('MiniFlotte').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('span:contains("Nuova Trattativa"):visible')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // });
-    // //#endregion
+    it('Verifica aggancio MiniFlotte', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('MiniFlotte').click()
+        canaleFromPopup()
+        getIFrame().find('span:contains("Nuova Trattativa"):visible')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    });
+    //#endregion
     
-    // //#region  Rami Vari
-    // it('Verifica aggancio Allianz Ultra Casa e Patrimonio', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Allianz Ultra Casa e Patrimonio').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // });
+    //#region  Rami Vari
+    it('Verifica aggancio Allianz Ultra Casa e Patrimonio', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Allianz Ultra Casa e Patrimonio').click()
+        canaleFromPopup()
+        getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    });
     
-    // it('Verifica aggancio Allianz Ultra Casa e Patrimonio BMP', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Allianz Ultra Casa e Patrimonio BMP').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // });
+    it('Verifica aggancio Allianz Ultra Casa e Patrimonio BMP', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Allianz Ultra Casa e Patrimonio BMP').click()
+        canaleFromPopup()
+        getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    });
 
-    // it('Verifica aggancio Allianz Ultra Salute', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Allianz Ultra Salute').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // });
+    it('Verifica aggancio Allianz Ultra Salute', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Allianz Ultra Salute').click()
+        canaleFromPopup()
+        getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    });
 
-    // it('Verifica aggancio Allianz1 Business', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Allianz1 Business').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // })
+    it('Verifica aggancio Allianz1 Business', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Allianz1 Business').click()
+        canaleFromPopup()
+        getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
 
-    // it('Verifica aggancio FastQuote Universo Persona', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('FastQuote Universo Persona').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // })
+    it('Verifica aggancio FastQuote Universo Persona', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('FastQuote Universo Persona').click()
+        canaleFromPopup()
+        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
 
-    // it('Verifica aggancio FastQuote Universo Salute', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('FastQuote Universo Salute').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // })
+    it('Verifica aggancio FastQuote Universo Salute', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('FastQuote Universo Salute').click()
+        canaleFromPopup()
+        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
 
-    // it('Verifica aggancio FastQuote Universo Persona Malattie Gravi', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('FastQuote Universo Persona Malattie Gravi').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // })
+    it('Verifica aggancio FastQuote Universo Persona Malattie Gravi', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('FastQuote Universo Persona Malattie Gravi').click()
+        canaleFromPopup()
+        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
 
-    // it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('FastQuote Infortuni da circolazione').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // })
+    it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('FastQuote Infortuni da circolazione').click()
+        canaleFromPopup()
+        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
     
-    // it('Verifica aggancio FastQuote Impresa e Albergo', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('FastQuote Impresa e Albergo').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
-    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // })
-    // //#endregion
+    it('Verifica aggancio FastQuote Impresa e Albergo', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('FastQuote Impresa e Albergo').click()
+        canaleFromPopup()
+        getIFrame().find('input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
+        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
+    //#endregion
 
     //#region Vita
     //TODO: togliere wait

@@ -200,7 +200,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         cy.url().should('eq', baseUrl + 'clients/')
     });
 
-    it.only('Verifica aggancio Richiesta Digital Me', function () {
+    it('Verifica aggancio Richiesta Digital Me', function () {
         interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.wait('@getClients', { requestTimeout: 30000 })
