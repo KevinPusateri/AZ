@@ -3,6 +3,7 @@
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
+const baseUrl = Cypress.env('baseUrl') 
 //#endregion
 
 //#region Global Variables
@@ -43,7 +44,7 @@ beforeEach(() => {
         }
     })
     cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/',{
+    cy.visit('https://amlogin-pp.allianz.it/nidp/idff/sso?id=203&sid=2&option=credential&sid=2&target=https%3A%2F%2Fportaleagenzie.pp.azi.allianz.it%2Fmatrix%2F',{
         onBeforeLoad: win =>{
             win.sessionStorage.clear();
         }
@@ -82,6 +83,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     it('Verifica i link da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
 
         const linksBurger = [
             'Home Numbers',
@@ -115,19 +117,20 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     it('Verifica aggancio Monitoraggio Fonti', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Monitoraggio Fonti').click()
         canaleFromPopup()
         getIFrame().find('a:contains("Filtra")')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     //TODO: verifica
     it('Verifica aggancio Monitoraggio Carico', function () {
 
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Carico').click()
@@ -135,23 +138,25 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('#contentPane:contains("Fonti"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Monitoraggio Carico per Fonte', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Carico per Fonte').click()
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('#contentPane:contains("Applica filtri"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     //TODO: connessione non sicura Apre una nuova pagina
     // it('Verifica aggancio X - Advisor', function () {
     // cy.get('app-product-button-list').find('a').contains('Numbers').click()
-    //     cy.url().should('include', '/numbers/business-lines')
+    //     cy.url().should('eq', baseUrl + 'numbers/business-lines')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('X - Advisor').click()
     //     canaleFromPopup()
@@ -160,27 +165,29 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     it('Verifica aggancio Incentivazione', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Incentivazione').click()
         canaleFromPopup()
         getIFrame().find('button:contains("Incentivazione: Maturato per Fonte"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Incentivazione Recruiting', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Incentivazione Recruiting').click()
         canaleFromPopup()
         getIFrame().find('[class="menu-padre"]:contains("Report"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Andamenti Tecnici', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Andamenti Tecnici').click()
         interceptGetAgenziePDF()
@@ -188,11 +195,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         getIFrame().find('button:contains("Fonti produttive"):visible')
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Estrazioni Avanzate', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Estrazioni Avanzate').click()
         cy.intercept({
@@ -208,32 +216,35 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@pentahoDama', { requestTimeout: 30000 });
         getIFrame().find('a:contains("Nuovo Report"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Scarico Dati', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Scarico Dati').click()
         canaleFromPopup()
         getIFrame().find('form:contains("Esporta tracciato")')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Indici Digitali', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         cy.contains('Indici Digitali').click()
         canaleFromPopup()
         getIFrame().find('#toggleFilters:contains("Apri filtri")')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     //#region Report
     it('Verifica aggancio New Business Danni', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Danni').click()
@@ -241,11 +252,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio New Business Ultra', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Ultra').click()
@@ -253,11 +265,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio New Business Vita', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Vita').click()
@@ -265,11 +278,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio New Business Allianz1', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('New Business Allianz1').click()
@@ -277,11 +291,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Monitoraggio PTF Danni', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio PTF Danni').click()
@@ -289,11 +304,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Monitoraggio Riserve Vita', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Riserve Vita').click()
@@ -301,11 +317,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Retention Motor', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Retention Motor').click()
@@ -313,11 +330,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Retention Rami Vari', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Retention Rami Vari').click()
@@ -325,11 +343,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Monitoraggio Andamento Premi', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Andamento Premi').click()
@@ -337,11 +356,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Monitoraggio Ricavi d\'Agenzia', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Ricavi d\'Agenzia').click()
@@ -349,11 +369,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Capitale Vita Scadenza', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('include', '/numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Capitale Vita Scadenza').click()
@@ -361,7 +382,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
-
     //#endregion
 })

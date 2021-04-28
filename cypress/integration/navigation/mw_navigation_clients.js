@@ -14,10 +14,26 @@ const interceptPageClients = () =>{
         method: 'POST',
         url: '**/clients/**' ,
       }).as('getClients');
+    
 }
 
 //#endregion
 
+
+// const reloadAndCheckMatrix =() =>{
+//     cy.wait(100)
+//     var url = baseUrl
+//     console.log(url)
+//     cy.get('body').then( $body =>{
+//         if(url === 'https://portaleagenzie.pp.azi.allianz.it/matrix/'){
+//             return
+//         }
+//         console.log('BBBBB')
+//         cy.wait(100)
+//         cy.reload()
+//         reloadAndCheckMatrix()
+//     })
+// }
 //#region Global Variables
 const backToClients = () => cy.get('a').contains('Clients').click()
 const getIFrame = () => {
@@ -30,8 +46,9 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-const canaleFromPopup = () => {cy.get('body').then($body => {
-    if ($body.find('nx-modal-container').length > 0) {  
+const canaleFromPopup = () => {
+    cy.get('body').then($body => {
+        if ($body.find('nx-modal-container').length > 0) {  
         cy.wait(3000)
         cy.get('nx-modal-container').find('.agency-row').first().click()
     }
@@ -51,20 +68,23 @@ beforeEach(() => {
             req.alias = 'gqlNews'
         }
     })
+
     cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/',{
+    cy.visit('https://amlogin-pp.allianz.it/nidp/idff/sso?id=203&sid=2&option=credential&sid=2&target=https%3A%2F%2Fportaleagenzie.pp.azi.allianz.it%2Fmatrix%2F',{
         onBeforeLoad: win =>{
             win.sessionStorage.clear();
         }
     })
+    // reloadAndCheck()
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
-    Cypress.Cookies.defaults({
-        preserve: (cookie) => {
-            return true;
-        }
-    })
+    // reloadAndCheckMatrix()
+    // Cypress.Cookies.defaults({
+    //     preserve: (cookie) => {
+    //         return true;
+    //     }
+    // })
     cy.url().should('eq',baseUrl)
     cy.intercept({
         method: 'POST',
@@ -136,7 +156,6 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         cy.wait('@getClients', { requestTimeout: 30000 })
         cy.get('app-rapid-link').contains('Antiriciclaggio').click()
         canaleFromPopup()
-        cy.wait(5000)
         getIFrame().find('#divMain:contains("Servizi antiriciclaggio"):visible')
         backToClients()
         cy.url().should('eq', baseUrl + 'clients/')
@@ -148,7 +167,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         cy.wait('@getClients', { requestTimeout: 30000 })
         cy.get('.component-section').find('button').contains('Nuovo cliente').click()
         canaleFromPopup()
-        cy.url().should('eq', baseUrl + 'new-client')
+        cy.url().should('eq', baseUrl + 'clients/new-client')
         backToClients()
         cy.url().should('eq', baseUrl + 'clients/')
     });
@@ -181,7 +200,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         cy.url().should('eq', baseUrl + 'clients/')
     });
 
-    it('Verifica aggancio Richiesta Digital Me', function () {
+    it.only('Verifica aggancio Richiesta Digital Me', function () {
         interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.wait('@getClients', { requestTimeout: 30000 })

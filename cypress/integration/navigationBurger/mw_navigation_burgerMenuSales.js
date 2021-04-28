@@ -7,7 +7,9 @@
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
+const baseUrl = Cypress.env('baseUrl') 
 //#endregion
+
 
 //#region Global Variables
 const getIFrame = () => {
@@ -31,6 +33,7 @@ const canaleFromPopup = () => {cy.get('body').then($body => {
 //#region Before and After
 beforeEach(() => {
     cy.clearCookies();
+    cy.clearLocalStorage();
     cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
     cy.intercept(/launch-*/,'ignore').as('launchStaging');
 
@@ -39,8 +42,12 @@ beforeEach(() => {
             req.alias = 'gqlNews'
         }
     })
+    
     cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/',{
+    cy.wait(2000)
+    cy.visit('https://amlogin-pp.allianz.it/nidp/idff/sso?id=203&sid=2&option=credential&sid=2&target=https%3A%2F%2Fportaleagenzie.pp.azi.allianz.it%2Fmatrix%2F',{
+        failOnStatusCode: false, // DA PROVARE
+        responseTimeout: 31000,
         onBeforeLoad: win =>{
             win.sessionStorage.clear();
         }
@@ -48,12 +55,12 @@ beforeEach(() => {
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
-    Cypress.Cookies.defaults({
-        preserve: (cookie) => {
-            return true;
-        }
-    })
-    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+    // cy.get('body').then($body => {
+    //     if ($body.find('pre').length > 0 || $body.find('input[name="Ecom_User_ID"]').length == 0) {   
+    //         cy.reload()
+    //     }
+    // })
+    cy.url().should('eq',baseUrl)
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
@@ -71,209 +78,224 @@ afterEach(() => {
         }
     });
     cy.clearCookies();
+    cy.clearLocalStorage();
 })
 //#endregion Before and After
 
 describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
-    it('Verifica i link da Burger Menu', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        const linksBurgerMotor = [
-            'FastQuote Auto',
-            'Preventivo anonimo Motor',
-            'MiniFlotte',
-            'Allianz Ultra Casa e Patrimonio',
-            'Allianz Ultra Casa e Patrimonio BMP',
-            'Allianz Ultra Salute',
-            'Allianz1 Business',
-            'FastQuote Infortuni da circolazione',
-            'FastQuote Universo Persona',
-            'FastQuote Universo Salute',
-            'FastQuote Universo Persona Malattie Gravi',
-            'FastQuote Impresa e Albergo',
-            'Allianz1 premorienza',
-            'Preventivo Anonimo Vita Individuali',
-            'Trattative Auto corporate',
-            'Gestione richieste per PA',
-            'Sfera',
-            'Campagne Commerciali',
-            'Recupero preventivi e quotazioni',
-            'Documenti da firmare',
-            'Gestione attività in scadenza',
-            'Manutenzione portafoglio RV Midco',
-            'Vita Corporate',
-            'Monitoraggio Polizze Proposte',
-            'Certificazione fiscale',
-            'Manutenzione Portafoglio Auto',
-            'Cruscotto certificati applicazioni',
-            'Cruscotto riepiloghi polizze abb.',
-            'Report Cliente T4L',
-            'Documenti annullati',
-            'GED – Gestione Documentale',
-            'Documenti da gestire',
-            'Folder',
-            'AllianzGlobalAssistance',
-            'Allianz placement platform',
-            'Qualità portafoglio auto',
-            'App cumulo terremoti',
-            'Note di contratto',
-            'ACOM Gestione iniziative',
-        ]
-        cy.get('nx-expansion-panel').find('a').should('have.length',39).each(($checkLinksBurger, i) => {
-            expect($checkLinksBurger.text().trim()).to.include(linksBurgerMotor[i]);
-        })
+    // it('Verifica i link da Burger Menu', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     const linksBurgerMotor = [
+    //         'FastQuote Auto',
+    //         'Preventivo anonimo Motor',
+    //         'MiniFlotte',
+    //         'Allianz Ultra Casa e Patrimonio',
+    //         'Allianz Ultra Casa e Patrimonio BMP',
+    //         'Allianz Ultra Salute',
+    //         'Allianz1 Business',
+    //         'FastQuote Infortuni da circolazione',
+    //         'FastQuote Universo Persona',
+    //         'FastQuote Universo Salute',
+    //         'FastQuote Universo Persona Malattie Gravi',
+    //         'FastQuote Impresa e Albergo',
+    //         'Allianz1 premorienza',
+    //         'Preventivo Anonimo Vita Individuali',
+    //         'Trattative Auto corporate',
+    //         'Gestione richieste per PA',
+    //         'Sfera',
+    //         'Campagne Commerciali',
+    //         'Recupero preventivi e quotazioni',
+    //         'Documenti da firmare',
+    //         'Gestione attività in scadenza',
+    //         'Manutenzione portafoglio RV Midco',
+    //         'Vita Corporate',
+    //         'Monitoraggio Polizze Proposte',
+    //         'Certificazione fiscale',
+    //         'Manutenzione Portafoglio Auto',
+    //         'Cruscotto certificati applicazioni',
+    //         'Cruscotto riepiloghi polizze abb.',
+    //         'Report Cliente T4L',
+    //         'Documenti annullati',
+    //         'GED – Gestione Documentale',
+    //         'Documenti da gestire',
+    //         'Folder',
+    //         'AllianzGlobalAssistance',
+    //         'Allianz placement platform',
+    //         'Qualità portafoglio auto',
+    //         'App cumulo terremoti',
+    //         'Note di contratto',
+    //         'ACOM Gestione iniziative',
+    //     ]
+    //     cy.get('nx-expansion-panel').find('a').should('have.length',39).each(($checkLinksBurger, i) => {
+    //         expect($checkLinksBurger.text().trim()).to.include(linksBurgerMotor[i]);
+    //     })
 
-    });
+    // });
 
-    //#region New Business
-    //#region Motor
-    it('Verifica aggancio FasqtQuote Auto', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('FastQuote Auto').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-        cy.get('a').contains('Sales').click()
-    });
+    // //#region New Business
+    // //#region Motor
+    // it('Verifica aggancio FasqtQuote Auto', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('FastQuote Auto').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // });
     
-    it('Verifica aggancio Preventivo anonimo Motor', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('Preventivo anonimo Motor').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="› Home"]').invoke('attr','value').should('equal','› Home')
-        getIFrame().find('input[value="› Avanti"]').invoke('attr','value').should('equal','› Avanti')
-        cy.get('a').contains('Sales').click()
-    });
+    // it('Verifica aggancio Preventivo anonimo Motor', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('Preventivo anonimo Motor').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Home"]').invoke('attr','value').should('equal','› Home')
+    //     getIFrame().find('input[value="› Avanti"]').invoke('attr','value').should('equal','› Avanti')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // });
     
-    it('Verifica aggancio MiniFlotte', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('MiniFlotte').click()
-        canaleFromPopup()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
-        getIFrame().find('span:contains("Nuova Trattativa"):visible')
-        cy.get('a').contains('Sales').click()
-    });
-    //#endregion
+    // it('Verifica aggancio MiniFlotte', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('MiniFlotte').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('span:contains("Nuova Trattativa"):visible')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // });
+    // //#endregion
     
-    //#region  Rami Vari
-    it('Verifica aggancio Allianz Ultra Casa e Patrimonio', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('Allianz Ultra Casa e Patrimonio').click()
-        canaleFromPopup()
-        getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
-        cy.get('a').contains('Sales').click()
-    });
+    // //#region  Rami Vari
+    // it('Verifica aggancio Allianz Ultra Casa e Patrimonio', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('Allianz Ultra Casa e Patrimonio').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // });
     
-    it('Verifica aggancio Allianz Ultra Casa e Patrimonio BMP', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('Allianz Ultra Casa e Patrimonio BMP').click()
-        canaleFromPopup()
-        getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
-        cy.get('a').contains('Sales').click()
-    });
+    // it('Verifica aggancio Allianz Ultra Casa e Patrimonio BMP', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('Allianz Ultra Casa e Patrimonio BMP').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // });
 
-    it('Verifica aggancio Allianz Ultra Salute', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('Allianz Ultra Salute').click()
-        canaleFromPopup()
-        getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
-        cy.get('a').contains('Sales').click()
-    });
+    // it('Verifica aggancio Allianz Ultra Salute', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('Allianz Ultra Salute').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // });
 
-    it('Verifica aggancio Allianz1 Business', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('Allianz1 Business').click()
-        canaleFromPopup()
-        getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
-        cy.get('a').contains('Sales').click()
-    })
+    // it('Verifica aggancio Allianz1 Business', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('Allianz1 Business').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // })
 
-    it('Verifica aggancio FastQuote Universo Persona', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('FastQuote Universo Persona').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-        cy.get('a').contains('Sales').click()
-    })
+    // it('Verifica aggancio FastQuote Universo Persona', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('FastQuote Universo Persona').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // })
 
-    it('Verifica aggancio FastQuote Universo Salute', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('FastQuote Universo Salute').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-        cy.get('a').contains('Sales').click()
-    })
+    // it('Verifica aggancio FastQuote Universo Salute', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('FastQuote Universo Salute').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // })
 
-    it('Verifica aggancio FastQuote Universo Persona Malattie Gravi', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('FastQuote Universo Persona Malattie Gravi').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-        cy.get('a').contains('Sales').click()
-    })
+    // it('Verifica aggancio FastQuote Universo Persona Malattie Gravi', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('FastQuote Universo Persona Malattie Gravi').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // })
 
-    it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('FastQuote Infortuni da circolazione').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-        cy.get('a').contains('Sales').click()
-    })
+    // it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('FastQuote Infortuni da circolazione').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // })
     
-    it('Verifica aggancio FastQuote Impresa e Albergo', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
-        cy.get('lib-burger-icon').click()
-        cy.contains('FastQuote Impresa e Albergo').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
-        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-        cy.get('a').contains('Sales').click()
-    })
-    //#endregion
+    // it('Verifica aggancio FastQuote Impresa e Albergo', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('FastQuote Impresa e Albergo').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
+    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // })
+    // //#endregion
 
     //#region Vita
+    //TODO: togliere wait
     it('Verifica aggancio Allianz1 premorienza', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.intercept({
             method: 'POST',
-            url: /RicercaContrattoQuadro*/
-        }).as('ricercaContrattoQuadro');
+            url: '**/sales/**'
+        }).as('getSalesPremo');
         cy.contains('Allianz1 premorienza').click()
+        cy.wait(5000)
         canaleFromPopup()
-        cy.wait('@ricercaContrattoQuadro', { requestTimeout: 25000 });
-
-        getIFrame().find('[class="col-sm-3 col-md-offset-1 col-md-2"]:contains("Ricerca"):visible')
+        cy.wait('@getSalesPremo', { requestTimeout: 25000 });
+        cy.wait(5000)
+        getIFrame().find('button[class="btn btn-info btn-block"]:contains("Ricerca"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
-    it.only('Verifica aggancio Preventivo Anonimo Vita Individuali', function () {
+    it('Verifica aggancio Preventivo Anonimo Vita Individuali', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Preventivo Anonimo Vita Individuali').click()
         canaleFromPopup()
@@ -282,29 +304,32 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         getIFrame().find('input[value="Indietro"]').invoke('attr','value').should('equal','Indietro')
         getIFrame().find('input[value="Avanti"]').invoke('attr','value').should('equal','Avanti')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
     //#endregion
 
     //#region Mid Corporate
     it('Verifica aggancio Trattative Auto corporate', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Trattative Auto corporate').click()
         canaleFromPopup()
         getIFrame().find('span:contains("Nuova Trattativa"):visible')
         getIFrame().find('span:contains("Guida"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
     
     it('Verifica aggancio Gestione richieste per PA', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Gestione richieste per PA').click()
         canaleFromPopup()
         getIFrame().find('button:contains("Visualizza"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
     //#endregion
     //#endregion
@@ -312,27 +337,29 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //#region Gestione
     it('Verifica aggancio Sfera', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Sfera').click()
         canaleFromPopup()
         getIFrame().find('button:contains("Applica filtri"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     it('Verifica aggancio Campagne Commerciali', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Campagne Commerciali').click()
         canaleFromPopup()
         cy.url().should('include', '/campaign-manager')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     it('Verifica aggancio Recupero preventivi e quotazioni', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.intercept({
             method: 'POST',
@@ -343,108 +370,117 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
           cy.wait('@inizializzaApplicazione', { requestTimeout: 30000 });
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
             
     it('Verifica aggancio Documenti da firmare', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Documenti da firmare').click()
         canaleFromPopup()
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
 
-    // TODO: Non sono visibili 
-    // it('Verifica aggancio Manutenzione portafoglio RV MIDCO', function () {
-    //     cy.url().should('include', '/sales')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Manutenzione portafoglio RV Midco').click()
-    //     cy.intercept({
-    //         method: 'POST',
-    //         url: /DirMPTF*/
-    //     }).as('danni');
-    // canaleFromPopup()
-    //     cy.wait('@danni', { requestTimeout: 25000 });
-    //     getIFrame().find('form > input[value="Applica Filtri"]').invoke('attr','value').should('equal','Applica Filtri')  
-    //     cy.get('a').contains('Sales').click()
-    // })
+    // TODO: togliere Wait
+    it('Verifica aggancio Manutenzione portafoglio RV MIDCO', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Manutenzione portafoglio RV Midco').click()
+        cy.intercept({
+            method: 'POST',
+            url: /DirMPTF*/
+        }).as('danni');
+        canaleFromPopup()
+        cy.wait('@danni', { requestTimeout: 25000 });
+        cy.wait(15000)
+        getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri[value="Applica Filtri"]').invoke('attr','value').should('equal','Applica Filtri')  
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
 
-    // TODO: Non sono visibili
-    // it('Verifica aggancio Vita Corporate', function () {
-    //     cy.url().should('include', '/sales')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Vita Corporate').click()
-    //     // cy.intercept({
-    //     //     method: 'POST',
-    //     //     url: 'https://portaleagenzie.pp.azi.allianz.it/Vita/'
-    //     // }).as('prova');
-//         canaleFromPopup()
-    //     // cy.wait('@prova', { requestTimeout: 25000 });
-
-    //     getIFrame().find('form').within($form =>{
-      
-    //         // cy.get('input[name="email"]').type('john.doe@email.com')
-    //     })
-    //     cy.get('a').contains('Sales').click()
-    // })
+    // TODO: togliere wait
+    it('Verifica aggancio Vita Corporate', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Vita Corporate').click()
+        cy.intercept({
+            method: 'POST',
+            url: 'https://portaleagenzie.pp.azi.allianz.it/Vita/'
+        }).as('getVita');
+        canaleFromPopup()
+        cy.wait('@getVita', { requestTimeout: 25000 });
+        cy.wait(10000)
+        getIFrame().find('.k-link:contains("Consultazione Collettive e Versamenti"):visible')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
 
     it('Verifica aggancio Monitoraggio Polizze Proposte', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Monitoraggio Polizze Proposte').click()
         canaleFromPopup()
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
     
     it('Verifica aggancio Certificazione fiscale', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Certificazione fiscale').click()
         canaleFromPopup()
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     it('Verifica aggancio Manutenzione Portafoglio', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Manutenzione Portafoglio').click()
         canaleFromPopup()
         getIFrame().find('input[value="Carica Polizze"]').invoke('attr','value').should('equal','Carica Polizze')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     it('Verifica aggancio Cruscotto certificati applicazioni', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Cruscotto certificati applicazioni').click()
         canaleFromPopup()
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     
     it('Verifica aggancio Cruscotto riepiloghi polizze abb.', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Cruscotto riepiloghi polizze abb.').click()
         canaleFromPopup()
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     // TODO : non vede Ricerca
     it('Verifica aggancio Report Cliente T4L', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.intercept({
             method: 'POST',
@@ -455,62 +491,69 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.wait('@vita', { requestTimeout: 30000 });
         getIFrame().find('input[value="Ricerca"]').invoke('attr','value').should('equal','Ricerca')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     it('Verifica aggancio Documenti annullati', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Documenti annullati').click()
         canaleFromPopup()
         getIFrame().find('span:contains("Storico polizze e quietanze distrutte"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    // // Unauthorize! Interrompre cypress
+    // // // Unauthorize! apre nuova pagina ma ha un canale
     // it('Verifica aggancio GED – Gestione Documentale', function () {
-    //     cy.url().should('include', '/sales')
+    //     cy.url().should('eq',baseUrl+ 'sales/')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('GED – Gestione Documentale').click()
     //      canaleFromPopup()
-
+    //      cy.get('body').then($body => {
+    //         $body.find('h1:contains("Unauthorized!"):visible')
+    //     })
     //     cy.get('a').contains('Sales').click()
     // })
 
     it('Verifica aggancio Documenti da gestire', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Documenti da gestire').click()
         canaleFromPopup()
         getIFrame().find('input[value="Ricerca Attività"]').invoke('attr','value').should('equal','Ricerca Attività')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     it('Verifica aggancio Folder', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Folder').click()
         canaleFromPopup()
         getIFrame().find('button:contains("Cerca"):visible')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     it('Verifica aggancio AllianzGlobalAssistance', function () {
     cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('AllianzGlobalAssistance').invoke('removeAttr','target').click()
         canaleFromPopup()
         cy.get('#logo-oazis-header')
         cy.go('back')
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo
     // it('Verifica aggancio Allianz Placement Platform', function () {
     // cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('include', '/sales')
+    //     cy.url().should('eq',baseUrl+ 'sales/')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('Allianz placement platform').click()
     //     cy.get('nx-modal-container').find('.agency-row').first().click()
@@ -518,17 +561,18 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     it('Verifica aggancio Qualità portafoglio auto', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Qualità portafoglio auto').click()
         canaleFromPopup()
         getIFrame().find('input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     // Accesso Negato
     // it('Verifica aggancio App cumulo terremoti', function () {
-    //     cy.url().should('include', '/sales')
+    //     cy.url().should('eq',baseUrl+ 'sales/')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('App cumulo terremoti').click()
     // canaleFromPopup()
@@ -538,18 +582,19 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     it('Verifica aggancio Note di contratto', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('include', '/sales')
+        cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Note di contratto').click()
         canaleFromPopup()
         getIFrame().find('input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
         cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo
     // it('Verifica aggancio ACOM Gestione iniziative', function () {
     // cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('include', '/sales')
+    //     cy.url().should('eq',baseUrl+ 'sales/')
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('ACOM Gestione iniziative').click()
     // canaleFromPopup()

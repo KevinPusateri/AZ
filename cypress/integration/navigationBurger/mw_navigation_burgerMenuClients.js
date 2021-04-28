@@ -8,6 +8,7 @@
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
+const baseUrl = Cypress.env('baseUrl') 
 //#endregion
 
 //#region Global Variables
@@ -27,8 +28,6 @@ const canaleFromPopup = () => {cy.get('body').then($body => {
 });
 }//#endregion
 
-
-
 beforeEach(() => {
     cy.clearCookies();
     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
@@ -42,7 +41,7 @@ beforeEach(() => {
         }
       })
     cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/',{
+    cy.visit('https://amlogin-pp.allianz.it/nidp/idff/sso?id=203&sid=2&option=credential&sid=2&target=https%3A%2F%2Fportaleagenzie.pp.azi.allianz.it%2Fmatrix%2F',{
         onBeforeLoad: win =>{
             win.sessionStorage.clear();
         }
@@ -55,7 +54,7 @@ beforeEach(() => {
             return true;
         }
     })
-    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
+    cy.url().should('eq',baseUrl)
     cy.intercept({
         method: 'POST',
         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
@@ -63,8 +62,6 @@ beforeEach(() => {
     cy.wait('@pageMatrix', { requestTimeout: 30000 });
     // cy.wait('@gqlNotifications')
     cy.wait('@gqlNews')
-
-
 })
 
 
@@ -82,6 +79,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica i link da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.url().should('eq', baseUrl + 'clients/')
+
         const linksBurger = [
             'Home Clients',
             'Censimento nuovo cliente',
@@ -100,87 +99,95 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Censimento nuovo cliente da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.url().should('include', '/clients')
+        cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
         cy.contains('Censimento nuovo cliente').click()
         canaleFromPopup()
-        cy.url().should('include', '/new-client')
+        cy.url().should('eq', baseUrl + 'clients/new-client')
         cy.get('a').contains('Clients').click()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Digital Me da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.url().should('include', '/clients')
+        cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
         cy.contains('Digital Me').click()
         canaleFromPopup()
-        cy.url().should('include', '/digital-me')
+        cy.url().should('eq', baseUrl + 'clients/digital-me')
         cy.get('a').contains('Clients').click()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Pannello anomalie da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.url().should('include', '/clients')
+        cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
         cy.contains('Pannello anomalie').click()
+        cy.wait(3000)
         canaleFromPopup()
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         cy.get('a').contains('Clients').click()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Clienti duplicati da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.url().should('include', '/clients')
+        cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
         cy.contains('Clienti duplicati').click()
         canaleFromPopup()
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         cy.get('a').contains('Clients').click()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Cancellazione Clienti da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.url().should('include', '/clients')
+        cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
         cy.contains('Cancellazione Clienti').click()
         canaleFromPopup()
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         cy.get('a').contains('Clients').click()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Cancellazione Clienti per fonte da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.url().should('include', '/clients')
+        cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
         cy.contains('Cancellazione Clienti per fonte').click().wait(2000)
         canaleFromPopup()
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         cy.get('a').contains('Clients').click()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Gestione fonte principale da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.url().should('include', '/clients')
+        cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
         cy.contains('Gestione fonte principale').click()
         canaleFromPopup()
         getIFrame().find('span:contains("Persona fisica"):visible')
         getIFrame().find('span:contains("Persona giuridica"):visible')
         cy.get('a').contains('Clients').click()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Antiriciclaggio da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.url().should('include', '/clients')
+        cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
         cy.contains('Antiriciclaggio').click()
         canaleFromPopup()
         getIFrame().find('#divMain:contains("Servizi antiriciclaggio"):visible')
         cy.get('a').contains('Clients').click()
-
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 });

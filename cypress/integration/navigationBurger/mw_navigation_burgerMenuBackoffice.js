@@ -2,12 +2,15 @@
  * @author Kevin Pusateri <kevin.pusateri@allianz.it>
  * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
  */
+// TODO: NON INIZIATO
+
 
 /// <reference types="Cypress" />
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
+const baseUrl = Cypress.env('baseUrl') 
 //#endregion
 
 //#region Global Variables
