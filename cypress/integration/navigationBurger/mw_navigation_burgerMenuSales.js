@@ -46,7 +46,7 @@ beforeEach(() => {
     cy.viewport(1920, 1080)
     cy.wait(2000)
     cy.visit('https://amlogin-pp.allianz.it/nidp/idff/sso?id=203&sid=2&option=credential&sid=2&target=https%3A%2F%2Fportaleagenzie.pp.azi.allianz.it%2Fmatrix%2F',{
-        failOnStatusCode: false, // DA PROVARE
+        failOnStatusCode: false, // provato da verificare
         responseTimeout: 31000,
         onBeforeLoad: win =>{
             win.sessionStorage.clear();
@@ -505,7 +505,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    // // // Unauthorize! apre nuova pagina ma ha un canale
+    // // // Unauthorize! apre nuova pagina ma ha un canale e aggiungere excel TFS
     // it('Verifica aggancio GED – Gestione Documentale', function () {
     //     cy.url().should('eq',baseUrl+ 'sales/')
     //     cy.get('lib-burger-icon').click()
@@ -550,7 +550,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo
+    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo e aggiungere su excel
     // it('Verifica aggancio Allianz Placement Platform', function () {
     // cy.get('app-product-button-list').find('a').contains('Sales').click()
     //     cy.url().should('eq',baseUrl+ 'sales/')
@@ -570,7 +570,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    // Accesso Negato
+    // Accesso Negato e su excel
     // it('Verifica aggancio App cumulo terremoti', function () {
     //     cy.url().should('eq',baseUrl+ 'sales/')
     //     cy.get('lib-burger-icon').click()
@@ -591,7 +591,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo
+    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo e excel
     // it('Verifica aggancio ACOM Gestione iniziative', function () {
     // cy.get('app-product-button-list').find('a').contains('Sales').click()
     //     cy.url().should('eq',baseUrl+ 'sales/')

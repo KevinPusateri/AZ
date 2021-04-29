@@ -70,21 +70,15 @@ beforeEach(() => {
     })
 
     cy.viewport(1920, 1080)
-    cy.visit('https://amlogin-pp.allianz.it/nidp/idff/sso?id=203&sid=2&option=credential&sid=2&target=https%3A%2F%2Fportaleagenzie.pp.azi.allianz.it%2Fmatrix%2F',{
+    cy.visit('https://matrix.pp.azi.allianz.it/',{
         onBeforeLoad: win =>{
             win.sessionStorage.clear();
         }
     })
-    // reloadAndCheck()
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
-    // reloadAndCheckMatrix()
-    // Cypress.Cookies.defaults({
-    //     preserve: (cookie) => {
-    //         return true;
-    //     }
-    // })
+
     cy.url().should('eq',baseUrl)
     cy.intercept({
         method: 'POST',
@@ -179,10 +173,10 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         cy.intercept({
             method: 'POST',
             url: /GetDati/,
-          }).as('getDati');
-
+        }).as('getDati');
         cy.get('.actions-box').contains('Vai a visione globale').click()
         canaleFromPopup()
+        cy.wait(10000)
         cy.wait('@getDati', { requestTimeout: 30000 })
         getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
         backToClients()

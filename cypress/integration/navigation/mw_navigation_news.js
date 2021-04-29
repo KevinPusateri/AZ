@@ -52,9 +52,9 @@ afterEach(() => {
     });
     cy.clearCookies();
 })
-describe('Matrix Web : Navigazioni da News - ', function () {
+describe('Matrix Web : Navigazioni da News', function () {
 
-    it('News', function () {
+    it('Verifica aggancio News', function () {
         cy.get('app-product-button-list').find('a').contains('News').click()
         cy.url().should('include', '/news/home')
         cy.url().should('eq', baseUrl + 'news/home')

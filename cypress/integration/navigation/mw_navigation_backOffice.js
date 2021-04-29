@@ -53,7 +53,7 @@ const canaleFromPopup = () => {cy.get('body').then($body => {
 
 
 beforeEach(() => {
-    cy.clearCookies();
+    cy.clearCookies()
     cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
     cy.intercept(/launch-*/,'ignore').as('launchStaging');
     cy.intercept('POST', '/graphql', (req) => {
@@ -65,11 +65,22 @@ beforeEach(() => {
         }
       })
     cy.viewport(1920, 1080)
+    
+    // DA vedere cookie intercept
     cy.visit('https://matrix.pp.azi.allianz.it/',{
         onBeforeLoad: win =>{
-            win.sessionStorage.clear();
-        }
+            win.sessionStorage.clear()
+            win.localStorage.clear()
+        },
+        failOnStatusCode: false, 
+        responseTimeout: 31000,
+        retryOnNetworkFailure: true
     })
+
+    cy.intercept({
+        method: 'POST',
+        url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
+    }).as('pageMatrix');
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
@@ -78,14 +89,12 @@ beforeEach(() => {
             return true;
         }
     })
-    cy.url().should('eq', baseUrl)
-    cy.intercept({
-        method: 'POST',
-        url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
-    }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 30000 });
+    cy.url().should('eq', baseUrl)
     // cy.wait('@gqlNotifications')
     cy.wait('@gqlNews')
+    Cypress.Cookies.preserveOnce('session_id', 'remember_token')
+
 })
 
 afterEach(() => {
@@ -107,7 +116,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('eq', baseUrl + 'back-office')
     });
 
-    it('Verifica Appuntamenti Futuri', function () {
+    it('Verifica atterraggio Appuntamenti Futuri', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-upcoming-dates').click()
@@ -196,15 +205,9 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
-        
-        cy.intercept({
-            method: 'GET',
-            url: /fnol*/
-        }).as('fnol');
-
         cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
         canaleFromPopup()
-        cy.wait('@fnol', { requestTimeout: 30000 });
+        cy.wait(7000)
         getIFrame().find('fnol-root:contains("Continua"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
@@ -242,6 +245,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
     })
+    
     it('Verifica apertura disambiguazione: Sintesi Contabilità', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
@@ -297,6 +301,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Deleghe SDD')
         cy.get('.backoffice-card').find('a').contains('Deleghe SDD').click()
         canaleFromPopup()
+        cy.wait(10000)
         getIFrame().find('input[value="Carica"]').invoke('attr','value').should('equal','Carica')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
@@ -322,6 +327,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Incasso per conto')
         cy.get('.backoffice-card').find('a').contains('Incasso per conto').click()
         canaleFromPopup()
+        cy.wait(10000)
         getIFrame().find('input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
