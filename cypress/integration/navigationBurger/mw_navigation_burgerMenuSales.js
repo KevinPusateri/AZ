@@ -31,45 +31,40 @@ const canaleFromPopup = () => {cy.get('body').then($body => {
 //#endregion
 
 //#region Before and After
-beforeEach(() => {
+before(() => {
     cy.clearCookies();
     cy.clearLocalStorage();
-    cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
-    cy.intercept(/launch-*/,'ignore').as('launchStaging');
-
+  
     cy.intercept('POST', '/graphql', (req) => {
-        if (req.body.operationName.includes('news')) {
-            req.alias = 'gqlNews'
-        }
+    // if (req.body.operationName.includes('notifications')) {
+    //     req.alias = 'gqlNotifications'
+    // }
+    if (req.body.operationName.includes('news')) {
+        req.alias = 'gqlNews'
+    }
     })
-    
     cy.viewport(1920, 1080)
-    cy.wait(2000)
-    cy.visit('https://amlogin-pp.allianz.it/nidp/idff/sso?id=203&sid=2&option=credential&sid=2&target=https%3A%2F%2Fportaleagenzie.pp.azi.allianz.it%2Fmatrix%2F',{
-        failOnStatusCode: false, // provato da verificare
-        responseTimeout: 31000,
-        onBeforeLoad: win =>{
-            win.sessionStorage.clear();
-        }
-    })
+  
+    cy.visit('https://matrix.pp.azi.allianz.it/')
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
-    // cy.get('body').then($body => {
-    //     if ($body.find('pre').length > 0 || $body.find('input[name="Ecom_User_ID"]').length == 0) {   
-    //         cy.reload()
-    //     }
-    // })
-    cy.url().should('eq',baseUrl)
-    cy.intercept({
-        method: 'POST',
-        url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
-    }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 20000 });
+    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+  
     cy.wait('@gqlNews')
-})
-
-afterEach(() => {
+  })
+  
+  beforeEach(() => {
+    cy.viewport(1920, 1080)
+    cy.visit('https://matrix.pp.azi.allianz.it/')
+    Cypress.Cookies.defaults({
+      preserve: (cookie) => {
+        return true;
+      }
+    })
+  })
+  
+  after(() => {
     cy.get('body').then($body => {
         if ($body.find('.user-icon-container').length > 0) {   
             cy.get('.user-icon-container').click();
@@ -78,8 +73,7 @@ afterEach(() => {
         }
     });
     cy.clearCookies();
-    cy.clearLocalStorage();
-})
+  })
 //#endregion Before and After
 
 describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {

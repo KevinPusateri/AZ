@@ -52,52 +52,97 @@ const canaleFromPopup = () => {cy.get('body').then($body => {
 //#endregion
 
 
-beforeEach(() => {
-    cy.clearCookies()
-    cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
-    cy.intercept(/launch-*/,'ignore').as('launchStaging');
-    cy.intercept('POST', '/graphql', (req) => {
-        if (req.body.operationName.includes('notifications')) {
-          req.alias = 'gqlNotifications'
-        }
-        if (req.body.operationName.includes('news')) {
-            req.alias = 'gqlNews'
-        }
-      })
-    cy.viewport(1920, 1080)
-    
-    // DA vedere cookie intercept
-    cy.visit('https://matrix.pp.azi.allianz.it/',{
-        onBeforeLoad: win =>{
-            win.sessionStorage.clear()
-            win.localStorage.clear()
-        },
-        failOnStatusCode: false, 
-        responseTimeout: 31000,
-        retryOnNetworkFailure: true
-    })
+// beforeEach(() => {
+//     cy.clearCookies()
+//     cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
+//     cy.intercept(/launch-*/,'ignore').as('launchStaging');
 
-    cy.intercept({
-        method: 'POST',
-        url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
-    }).as('pageMatrix');
+//     cy.intercept('POST', '/graphql', (req) => {
+//         if (req.body.operationName.includes('notifications')) {
+//           req.alias = 'gqlNotifications'
+//         }
+//         if (req.body.operationName.includes('news')) {
+//             req.alias = 'gqlNews'
+//         }
+//       })
+//     cy.viewport(1920, 1080)
+    
+//     // DA vedere cookie intercept
+//     cy.visit('https://matrix.pp.azi.allianz.it/',{
+//         onBeforeLoad: win =>{
+//             win.sessionStorage.clear()
+//             win.localStorage.clear()
+//         },
+//         failOnStatusCode: false, 
+//         responseTimeout: 31000,
+//         retryOnNetworkFailure: true
+//     })
+
+//     cy.intercept({
+//         method: 'POST',
+//         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
+//     }).as('pageMatrix');
+//     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
+//     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
+//     cy.get('input[type="SUBMIT"]').click()
+//     Cypress.Cookies.defaults({
+//         preserve: (cookie) => {
+//             return true;
+//         }
+//     })
+//     cy.wait('@pageMatrix', { requestTimeout: 30000 });
+//     cy.url().should('eq', baseUrl)
+//     // cy.wait('@gqlNotifications')
+//     cy.wait('@gqlNews')
+//     Cypress.Cookies.preserveOnce('session_id', 'remember_token')
+
+// })
+
+// afterEach(() => {
+//     cy.get('body').then($body => {
+//         if ($body.find('.user-icon-container').length > 0) {   
+//             cy.get('.user-icon-container').click();
+//             cy.wait(1000).contains('Logout').click()
+//             cy.wait(delayBetweenTests)
+//         }
+//     });
+//     cy.clearCookies();
+// })
+
+before(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+  
+    cy.intercept('POST', '/graphql', (req) => {
+    // if (req.body.operationName.includes('notifications')) {
+    //     req.alias = 'gqlNotifications'
+    // }
+    if (req.body.operationName.includes('news')) {
+        req.alias = 'gqlNews'
+    }
+    })
+    cy.viewport(1920, 1080)
+  
+    cy.visit('https://matrix.pp.azi.allianz.it/')
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
-    Cypress.Cookies.defaults({
-        preserve: (cookie) => {
-            return true;
-        }
-    })
-    cy.wait('@pageMatrix', { requestTimeout: 30000 });
-    cy.url().should('eq', baseUrl)
-    // cy.wait('@gqlNotifications')
+    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+  
     cy.wait('@gqlNews')
-    Cypress.Cookies.preserveOnce('session_id', 'remember_token')
-
-})
-
-afterEach(() => {
+  })
+  
+  beforeEach(() => {
+    cy.viewport(1920, 1080)
+    cy.visit('https://matrix.pp.azi.allianz.it/')
+    Cypress.Cookies.defaults({
+      preserve: (cookie) => {
+        return true;
+      }
+    })
+  })
+  
+  after(() => {
     cy.get('body').then($body => {
         if ($body.find('.user-icon-container').length > 0) {   
             cy.get('.user-icon-container').click();
@@ -106,7 +151,7 @@ afterEach(() => {
         }
     });
     cy.clearCookies();
-})
+  })
 
 //TODO: togliere i wait su Deleghe ssd e Incasso per conto e Gestione Documentale
 describe('Matrix Web : Navigazioni da BackOffice', function () {

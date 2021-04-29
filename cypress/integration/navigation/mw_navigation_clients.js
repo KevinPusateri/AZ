@@ -19,21 +19,6 @@ const interceptPageClients = () =>{
 
 //#endregion
 
-
-// const reloadAndCheckMatrix =() =>{
-//     cy.wait(100)
-//     var url = baseUrl
-//     console.log(url)
-//     cy.get('body').then( $body =>{
-//         if(url === 'https://portaleagenzie.pp.azi.allianz.it/matrix/'){
-//             return
-//         }
-//         console.log('BBBBB')
-//         cy.wait(100)
-//         cy.reload()
-//         reloadAndCheckMatrix()
-//     })
-// }
 //#region Global Variables
 const backToClients = () => cy.get('a').contains('Clients').click()
 const getIFrame = () => {
@@ -56,40 +41,84 @@ const canaleFromPopup = () => {
 }
 //#endregion
 
-beforeEach(() => {
-    cy.clearCookies();
-    cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
-    cy.intercept(/launch-*/, 'ignore').as('launchStaging');
-    cy.intercept('POST', '/graphql', (req) => {
-        if (req.body.operationName.includes('notifications')) {
-            req.alias = 'gqlNotifications'
-        }
-        if (req.body.operationName.includes('news')) {
-            req.alias = 'gqlNews'
-        }
-    })
+// beforeEach(() => {
+//     cy.clearCookies();
+//     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
+//     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
+//     cy.intercept('POST', '/graphql', (req) => {
+//         if (req.body.operationName.includes('notifications')) {
+//             req.alias = 'gqlNotifications'
+//         }
+//         if (req.body.operationName.includes('news')) {
+//             req.alias = 'gqlNews'
+//         }
+//     })
 
-    cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/',{
-        onBeforeLoad: win =>{
-            win.sessionStorage.clear();
-        }
+//     cy.viewport(1920, 1080)
+//     cy.visit('https://matrix.pp.azi.allianz.it/',{
+//         onBeforeLoad: win =>{
+//             win.sessionStorage.clear();
+//         }
+//     })
+//     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
+//     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
+//     cy.get('input[type="SUBMIT"]').click()
+
+//     cy.url().should('eq',baseUrl)
+//     cy.intercept({
+//         method: 'POST',
+//         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
+//     }).as('pageMatrix');
+//     cy.wait('@pageMatrix', { requestTimeout: 20000 });
+//     // cy.wait('@gqlNotifications')
+//     cy.wait('@gqlNews')
+// })
+
+// afterEach(() => {
+//     cy.get('body').then($body => {
+//         if ($body.find('.user-icon-container').length > 0) {   
+//             cy.get('.user-icon-container').click();
+//             cy.wait(1000).contains('Logout').click()
+//             cy.wait(delayBetweenTests)
+//         }
+//     });
+//     cy.clearCookies();
+// })
+
+before(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+  
+    cy.intercept('POST', '/graphql', (req) => {
+    // if (req.body.operationName.includes('notifications')) {
+    //     req.alias = 'gqlNotifications'
+    // }
+    if (req.body.operationName.includes('news')) {
+        req.alias = 'gqlNews'
+    }
     })
+    cy.viewport(1920, 1080)
+  
+    cy.visit('https://matrix.pp.azi.allianz.it/')
     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
-
-    cy.url().should('eq',baseUrl)
-    cy.intercept({
-        method: 'POST',
-        url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
-    }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 20000 });
-    // cy.wait('@gqlNotifications')
+    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+  
     cy.wait('@gqlNews')
-})
-
-afterEach(() => {
+  })
+  
+  beforeEach(() => {
+    cy.viewport(1920, 1080)
+    cy.visit('https://matrix.pp.azi.allianz.it/')
+    Cypress.Cookies.defaults({
+      preserve: (cookie) => {
+        return true;
+      }
+    })
+  })
+  
+  after(() => {
     cy.get('body').then($body => {
         if ($body.find('.user-icon-container').length > 0) {   
             cy.get('.user-icon-container').click();
@@ -98,7 +127,7 @@ afterEach(() => {
         }
     });
     cy.clearCookies();
-})
+  })
 
 describe('Matrix Web : Navigazioni da Clients', function () {
 
