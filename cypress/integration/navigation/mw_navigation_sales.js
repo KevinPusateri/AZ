@@ -54,7 +54,7 @@ before(() => {
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
-    cy.wait('@gqlNews')
+    cy.wait(2000).wait('@gqlNews')
   })
   
   beforeEach(() => {
@@ -78,53 +78,6 @@ before(() => {
     cy.clearCookies();
   })
 
-// beforeEach(() => {
-//     cy.clearCookies();
-//     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
-//     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
-//     cy.intercept('POST', '/graphql', (req) => {
-//         // if (req.body.operationName.includes('notifications')) {
-//         //     req.alias = 'gqlNotifications'
-//         // }
-//         if (req.body.operationName.includes('news')) {
-//             req.alias = 'gqlNews'
-//         }
-//     })
-//     cy.viewport(1920, 1080)
-//     cy.visit('https://matrix.pp.azi.allianz.it/',{
-//         onBeforeLoad: win =>{
-//             win.sessionStorage.clear();
-//         }
-//     })
-//     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-//     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
-//     cy.get('input[type="SUBMIT"]').click()
-//     Cypress.Cookies.defaults({
-//         preserve: (cookie) => {
-//             return true;
-//         }
-//     })
-//     cy.url().should('eq',baseUrl)
-//     cy.intercept({
-//         method: 'POST',
-//         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
-//     }).as('pageMatrix');
-//     cy.wait('@pageMatrix', { requestTimeout: 30000 });
-//     // cy.wait('@gqlNotifications');
-//     cy.wait('@gqlNews');
-// })
-
-// afterEach(() => {
-//     cy.get('body').then($body => {
-//         if ($body.find('.user-icon-container').length > 0) {   
-//             cy.get('.user-icon-container').click();
-//             cy.wait(1000).contains('Logout').click()
-//             cy.wait(delayBetweenTests)
-//         }
-//     });
-//     cy.clearCookies();
-// })
-
 describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Sales', function () {
@@ -133,20 +86,15 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Sfera', function () {
-
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
-
         cy.intercept({
             method: 'POST',
             url: /GetPreferenzeFamiglieCampi/
           }).as('sferaGetPreferenzeFamiglieCampi');
-
         cy.get('app-quick-access').contains('Sfera').click()
         canaleFromPopup()
-
         cy.wait('@sferaGetPreferenzeFamiglieCampi', { requestTimeout: 30000 });
-
         getIFrame().find('ul > li > span:contains("Quietanzamento"):visible')
         getIFrame().find('ul > li > span:contains("Visione Globale"):visible')
         getIFrame().find('ul > li > span:contains("Portafoglio"):visible')
@@ -162,13 +110,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica aggancio Campagne Commerciali', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
-
         cy.intercept('POST', '/graphql', (req) => {
             if (req.body.operationName.includes('campaignAgent')) {
             req.alias = 'gqlCampaignAgent'
             }
         })
-
         cy.get('app-quick-access').contains('Campagne Commerciali').click()
         canaleFromPopup()
         cy.wait('@gqlCampaignAgent', { requestTimeout: 30000 });
@@ -179,7 +125,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Recupero preventivi e quotazioni', function(){
-
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
@@ -232,7 +177,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     // })
 
-    it.only('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio', function(){
+    it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         buttonEmettiPolizza()
@@ -249,7 +194,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it.only('Verifica aggancio Emetti Polizza - Allianz Ultra Salute', function(){
+    it('Verifica aggancio Emetti Polizza - Allianz Ultra Salute', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         buttonEmettiPolizza()
@@ -266,7 +211,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it.only('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function(){
+    it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         buttonEmettiPolizza()
@@ -408,8 +353,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         getIFrame().find('span:contains("Nuova Trattativa"):visible')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
-
-    })
+     })
 
     it('Verifica aggancio Emetti Polizza - Gestione Richieste per PA', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
@@ -456,9 +400,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-upcoming-dates').click()
-        cy.url().should('include', '/event-center')
-        cy.url().should('eq',baseUrl+ 'sales/')
-
+        cy.url().should('eq',baseUrl+ 'sales/event-center')
         cy.get('lib-sub-header-right').click()
         cy.url().should('eq',baseUrl+ 'sales/')
     })
@@ -521,8 +463,9 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: '**/Danni/**'
         }).as('getDanniG');
         canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 40000 });
-        cy.wait('@getDanniG', { requestTimeout: 40000 });
+        // cy.wait('@getDanni', { requestTimeout: 40000 });
+        // cy.wait('@getDanniG', { requestTimeout: 40000 });
+        cy.wait(10000)
         cy.get('#iframe-container').within(() =>{
             getIFrame().find('form:contains("Cerca"):visible')
         })
@@ -684,8 +627,9 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         }).as('getDanniG');
         cy.get('app-proposals-section').find('button:contains("Vedi tutte")').click()
         canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 40000 });
-        cy.wait('@getDanniG', { requestTimeout: 40000 });
+        // cy.wait('@getDanni', { requestTimeout: 40000 });
+        // cy.wait('@getDanniG', { requestTimeout: 40000 });
+        cy.wait(10000)
         cy.get('#iframe-container').within(() =>{
             getIFrame().find('form:contains("Cerca"):visible')
         })

@@ -51,7 +51,7 @@ before(() => {
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
-    cy.wait('@gqlNews')
+    cy.wait(2000).wait('@gqlNews')
   })
   
   beforeEach(() => {
@@ -83,9 +83,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         const linksBurgerMotor = [
-            'FastQuote Auto',
-            'Preventivo anonimo Motor',
+            // 'FastQuote Auto',
+            'Preventivo Motor',//NEW
+            // 'Preventivo anonimo Motor',
+            'Flotte e Convenzioni', // NEW
             'MiniFlotte',
+            'Trattative Auto Corporate',
             'Allianz Ultra Casa e Patrimonio',
             'Allianz Ultra Casa e Patrimonio BMP',
             'Allianz Ultra Salute',
@@ -97,7 +100,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
             'FastQuote Impresa e Albergo',
             'Allianz1 premorienza',
             'Preventivo Anonimo Vita Individuali',
-            'Trattative Auto corporate',
+            // QUI STAVA Trattative Auto corporate spostata su motor
+            // 'Trattative Auto corporate',
             'Gestione richieste per PA',
             'Sfera',
             'Campagne Commerciali',
@@ -116,7 +120,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
             'GED – Gestione Documentale',
             'Documenti da gestire',
             'Folder',
-            'AllianzGlobalAssistance',
+            'Allianz Global Assistance',
             'Allianz placement platform',
             'Qualità portafoglio auto',
             'App cumulo terremoti',
@@ -130,30 +134,51 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     });
 
     //#region New Business
+
+    // è stato tolto
     //#region Motor
-    it('Verifica aggancio FasqtQuote Auto', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales/')
-        cy.get('lib-burger-icon').click()
-        cy.contains('FastQuote Auto').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-        cy.get('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales/')
-    });
+    // it('Verifica aggancio FasqtQuote Auto', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('FastQuote Auto').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // });
     
-    it('Verifica aggancio Preventivo anonimo Motor', function () {
+
+    // // NEW non c'è contenuto
+    // it('Verifica aggancio Preventivo Motor', function () {
+
+    // })
+
+    // è stato tolto
+    // it('Verifica aggancio Preventivo anonimo Motor', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('Preventivo anonimo Motor').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Home"]').invoke('attr','value').should('equal','› Home')
+    //     getIFrame().find('input[value="› Avanti"]').invoke('attr','value').should('equal','› Avanti')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // });
+    
+    // NEW
+    it('Verifica aggancio Flotte e Convenzioni', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
-        cy.contains('Preventivo anonimo Motor').click()
+        cy.contains('Flotte e Convenzioni').click()
         canaleFromPopup()
-        getIFrame().find('input[value="› Home"]').invoke('attr','value').should('equal','› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr','value').should('equal','› Avanti')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
     });
-    
+
     it('Verifica aggancio MiniFlotte', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -184,6 +209,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('lib-burger-icon').click()
         cy.contains('Allianz Ultra Casa e Patrimonio BMP').click()
         canaleFromPopup()
+        cy.wait(8000)
         getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -287,6 +313,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
     })
+
     it('Verifica aggancio Preventivo Anonimo Vita Individuali', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -307,7 +334,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
-        cy.contains('Trattative Auto corporate').click()
+        cy.contains('Trattative Auto Corporate').click()
         canaleFromPopup()
         getIFrame().find('span:contains("Nuova Trattativa"):visible')
         getIFrame().find('span:contains("Guida"):visible')
@@ -471,7 +498,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    // TODO : non vede Ricerca
     it('Verifica aggancio Report Cliente T4L', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -482,7 +508,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         }).as('vita');
         cy.contains('Report Cliente T4L').click()
         canaleFromPopup()
-        cy.wait('@vita', { requestTimeout: 30000 });
+        // cy.wait('@vita', { requestTimeout: 30000 });
+        cy.wait(6000)
         getIFrame().find('input[value="Ricerca"]').invoke('attr','value').should('equal','Ricerca')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -533,11 +560,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it('Verifica aggancio AllianzGlobalAssistance', function () {
+    it('Verifica aggancio Allianz Global Assistance', function () {
     cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
-        cy.contains('AllianzGlobalAssistance').invoke('removeAttr','target').click()
+        cy.contains('Allianz Global Assistance').invoke('removeAttr','target').click()
         canaleFromPopup()
         cy.get('#logo-oazis-header')
         cy.go('back')

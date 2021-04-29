@@ -56,7 +56,7 @@ beforeEach(() => {
     }).as('pageMatrix');
     cy.wait('@pageMatrix', { requestTimeout: 50000 });
     // cy.wait('@gqlNotifications')
-    cy.wait('@gqlNews')
+    cy.wait(2000).wait('@gqlNews')
 
 })
 

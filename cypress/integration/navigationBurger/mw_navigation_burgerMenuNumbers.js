@@ -51,7 +51,7 @@ before(() => {
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
-    cy.wait('@gqlNews')
+    cy.wait(2000).wait('@gqlNews')
   })
   
   beforeEach(() => {
@@ -124,7 +124,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     //TODO: verifica
     it('Verifica aggancio Monitoraggio Carico', function () {
-
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
@@ -272,6 +271,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.contains('New Business Vita').click()
         canaleFromPopup()
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
+        cy.wait(5000)
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')

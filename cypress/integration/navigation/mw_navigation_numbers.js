@@ -42,7 +42,7 @@ before(() => {
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
-    cy.wait('@gqlNews')
+    cy.wait(2000).wait('@gqlNews')
   })
   
   beforeEach(() => {
@@ -64,56 +64,13 @@ before(() => {
         }
     });
     cy.clearCookies();
-    cy.wait(5000)
   })
 
-// beforeEach(() => {
-//     cy.clearCookies();
-//     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
-//     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
-//     cy.intercept('POST', '/graphql', (req) => {
-//         if (req.body.operationName.includes('notifications')) {
-//           req.alias = 'gqlNotifications'
-//         }
-//         if (req.body.operationName.includes('news')) {
-//             req.alias = 'gqlNews'
-//         }
-//       })
-//     cy.viewport(1920, 1080)
-//     cy.visit('https://matrix.pp.azi.allianz.it/',{
-//         onBeforeLoad: win =>{
-//             win.sessionStorage.clear();
-//         }
-//     })
-//     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-//     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
-//     cy.get('input[type="SUBMIT"]').click()
-//     cy.url().should('eq',baseUrl)
-//     cy.intercept({
-//         method: 'POST',
-//         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
-//     }).as('pageMatrix');
-//     cy.wait('@pageMatrix', { requestTimeout: 30000 });
-//         // cy.wait('@gqlNotifications')
-//         cy.wait('@gqlNews')
-// })
-
-// afterEach(() => {
-//     cy.get('body').then($body => {
-//         if ($body.find('.user-icon-container').length > 0) {   
-//             cy.get('.user-icon-container').click();
-//             cy.wait(1000).contains('Logout').click()
-//             cy.wait(delayBetweenTests)
-//         }
-//     });
-//     cy.clearCookies();
-// })
 
 describe('Matrix Web : Navigazioni da Numbers - ', function () {
     it('Verifica aggancio Numbers', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
-
     })
     
     it('Verifica Filtro', function () {
@@ -185,34 +142,34 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         cy.get('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.contains('PRODOTTI').click().should('have.class','active')
-        cy.url().should('eq', baseUrl + 'products')
+        cy.url().should('eq', baseUrl + 'numbers/products')
         interceptGetAgenziePDF()
         cy.get('lib-card').first().click()
         cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('[class="ControlloFiltroBottone"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
-        cy.url().should('eq', baseUrl + 'numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/products')
     })
 
-    // Mancherebbe Monitoraggio carico
+    // Mancherebbe test su Monitoraggio carico
     it('Verifica su Indicatori Operativi aggancio Primo indice digitale', function () {
         cy.get('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.contains('INDICATORI OPERATIVI').click().should('have.class','active')
-        cy.url().should('eq', baseUrl + 'operational-indicators')
+        cy.url().should('eq', baseUrl + 'numbers/operational-indicators')
         interceptGetAgenziePDF()
         cy.get('app-digital-indexes').find('lib-card').first().click()
         cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('a:contains("Apri filtri"):visible')
         cy.get('a').contains('Numbers').click()
-        cy.url().should('eq', baseUrl + 'numbers/business-lines')
+        cy.url().should('eq', baseUrl + 'numbers/operational-indicators')
     })
 
     it('Verifica aggancio incentivi', function () {
         cy.get('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.contains('INCENTIVI').click().should('have.class','active')
-        cy.url().should('eq', baseUrl + 'incentives')
+        cy.url().should('eq', baseUrl + 'numbers/incentives')
         cy.get('.empty-list').should('be.visible').and('contain','La sezione sarà disponibile')
     })
 });

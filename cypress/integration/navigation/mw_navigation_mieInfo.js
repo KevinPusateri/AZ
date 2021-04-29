@@ -36,7 +36,7 @@ before(() => {
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
-    cy.wait('@gqlNews')
+    cy.wait(2000).wait('@gqlNews')
   })
   
   beforeEach(() => {

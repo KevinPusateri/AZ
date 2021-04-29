@@ -89,7 +89,6 @@ before(() => {
         }
     });
     cy.clearCookies();
-    cy.wait(5000)
   })
 
 // beforeEach(() => {
@@ -172,7 +171,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
     //#region Sinistri
     it('Verifica aggancio Movimentazione sinistri', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
         cy.contains('Movimentazione sinistri').click()
         cy.intercept({
@@ -187,7 +186,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Denuncia', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -195,7 +194,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Denuncia BMP', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -203,7 +202,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Consultazione sinistri', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -211,7 +210,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Sinistri incompleti', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -219,7 +218,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Sinistri canalizzati', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -228,7 +227,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Sintesi Contabilità', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -236,7 +235,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Giornata contabile', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -244,7 +243,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Consultazione Movimenti', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -252,7 +251,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Estrazione Contabilità', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -260,7 +259,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Deleghe SDD', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -268,7 +267,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Quadratura unificata', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -276,7 +275,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Incasso per conto', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -284,7 +283,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Incasso massivo', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -292,7 +291,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Sollecito titoli', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -300,7 +299,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Impostazione contabilità', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
@@ -308,7 +307,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica aggancio Convenzioni in trattenuta', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('include', '/back-office')
+        cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
 
         cy.get('a').contains('Backoffice').click()
