@@ -64,14 +64,13 @@ describe('Buca di Ricerca', function () {
         cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
         cy.url().should('include', '/search/clients/clients')
 
-        // TODO click not working on firefox and electron 
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
 
         const links = [
             'Ricerca Cliente',
             'Ricerca Polizze proposte',
             'Ricerca Preventivi',
-            'Ricerca Documenti',
+            // 'Ricerca Documenti', deciso di toglierlo
             'Ricerca News',
             'Rubrica'
         ]
