@@ -193,7 +193,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
         cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
         canaleFromPopup()
-        cy.wait(7000)
+        cy.wait(10000)
         getIFrame().find('fnol-root:contains("Continua"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
@@ -353,6 +353,18 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         getIFrame().find('ul > li > span:contains("Retrocessioni Provv."):visible')
         getIFrame().find('ul > li > span:contains("Impostazioni DAS"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
+    });
+
+    // NEW TFS da testare
+    it('Verifica apertura disambiguazione: Convenzioni in trattenuta', function () {
+        cy.get('app-product-button-list').find('a').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Impostazione contabilità')
+        cy.get('.backoffice-card').find('a').contains('Convenzioni in trattenuta').click()
+        canaleFromPopup()
+        getIFrame().find('#navMenu_mn_active:contains("Gestione"):visible')
+        cy.get('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
     });
 

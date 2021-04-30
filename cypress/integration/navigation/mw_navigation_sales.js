@@ -60,11 +60,11 @@ before(() => {
   beforeEach(() => {
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
-    Cypress.Cookies.defaults({
-      preserve: (cookie) => {
-        return true;
-      }
-    })
+    // Cypress.Cookies.defaults({
+    //   preserve: (cookie) => {
+    //     return true;
+    //   }
+    // })
   })
   
   after(() => {

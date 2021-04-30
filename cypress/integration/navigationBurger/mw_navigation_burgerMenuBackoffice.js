@@ -91,54 +91,8 @@ before(() => {
     cy.clearCookies();
   })
 
-// beforeEach(() => {
-//     cy.clearCookies();
-//     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
-//     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
-//     cy.intercept('POST', '/graphql', (req) => {
-//         if (req.body.operationName.includes('notifications')) {
-//           req.alias = 'gqlNotifications'
-//         }
-//         if (req.body.operationName.includes('news')) {
-//             req.alias = 'gqlNews'
-//         }
-//       })
-//     cy.viewport(1920, 1080)
-//     cy.visit('https://matrix.pp.azi.allianz.it/',{
-//         onBeforeLoad: win =>{
-//             win.sessionStorage.clear();
-//         }
-//     })
-//     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-//     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
-//     cy.get('input[type="SUBMIT"]').click()
-//     Cypress.Cookies.defaults({
-//         preserve: (cookie) => {
-//             return true;
-//         }
-//     })
-//     cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
-//     cy.intercept({
-//         method: 'POST',
-//         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
-//     }).as('pageMatrix');
-//     cy.wait('@pageMatrix', { requestTimeout: 30000 });
-//     // cy.wait('@gqlNotifications')
-//     cy.wait('@gqlNews')
 
-// })
-
-
-// afterEach(() => {
-//       cy.get('body').then($body => {
-//         if ($body.find('.user-icon-container').length > 0) {   
-//             cy.get('.user-icon-container').click();
-//             cy.wait(1000).contains('Logout').click()
-//             cy.wait(delayBetweenTests)
-//         }
-//     });
-//     cy.clearCookies();
-// })
+  // AGGIUNGERE SU EXCEL E TFS
 describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica i link da Burger Menu', function () {
@@ -184,134 +138,204 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.get('a').contains('Backoffice').click()
     })
 
+    // da qui  TESTARE
     it('Verifica aggancio Denuncia', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Denuncia').click()
+        canaleFromPopup()
+        getIFrameDenuncia().find('[class="pageTitle"]:contains("Ricerca cliente"):visible')
+        getIFrameDenuncia().find('h3:contains("Ricerca per polizza"):visible')
+        getIFrameDenuncia().find('h3:contains("Ricerca per targa"):visible')
+        getIFrameDenuncia().find('h3:contains("Ricerca per dati anagrafici"):visible')
+        getIFrameDenuncia().find('a:contains("Esegui Ricerca"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Denuncia BMP', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Denuncia BMP').click()
+        canaleFromPopup()
+        cy.wait(10000)
+        getIFrame().find('fnol-root:contains("Continua"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Consultazione sinistri', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Consultazione sinistri').click()
+        canaleFromPopup()
+        getIFrame().find('button:contains("Cerca"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Sinistri incompleti', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Sinistri incompleti').click()
+        canaleFromPopup()
+        getIFrame().find('h2:contains("Sinistri Incompleti"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Sinistri canalizzati', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Sinistri canalizzati').click()
+        canaleFromPopup()
+        getIFrame().find('a:contains("Filtra"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
     //#endregion
 
+    //#region Contabilità
     it('Verifica aggancio Sintesi Contabilità', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Sintesi Contabilità').click()
+        canaleFromPopup()
+        getIFrame().find('span:contains("Situazione finanziaria riepilogativa"):visible').click()
+        getIFrame().find('span:contains("Esporta"):visible').click()
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Giornata contabile', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Giornata contabile').click()
+        canaleFromPopup()
+        getIFrame().find('span:contains("Calendario"):visible')
+        getIFrame().find('button:contains("Chiudi giornata contabile"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Consultazione Movimenti', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Consultazione Movimenti').click()
+        canaleFromPopup()
+        getIFrame().find('button:contains("Cerca"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Estrazione Contabilità', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Estrazione Contabilità').click()
+        canaleFromPopup()
+        getIFrame().find('h3:contains("ExtraDAS"):visible')
+        getIFrame().find('p:contains("Ricerca Estrazioni"):visible')
+        getIFrame().find('p:contains("Legenda"):visible')
+        getIFrame().find('button:contains("Ricerca"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Deleghe SDD', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Deleghe SDD').click()
+        canaleFromPopup()
+        cy.wait(10000)
+        getIFrame().find('input[value="Carica"]').invoke('attr','value').should('equal','Carica')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Quadratura unificata', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Quadratura unificata').click()
+        canaleFromPopup()
+        getIFrame().find('#quadNavigationBar:contains("Q.U.A.D. - home page"):visible')
+        getIFrame().find('#quadMenu:contains("Quadratura Unificata"):visible')
+        getIFrame().find('#quadMenu:contains("Agenzie Digital"):visible')
+        getIFrame().find('#ApriPdfAdesioneQuad:contains("PDF di Adesione"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Incasso per conto', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Incasso per conto').click()
+        canaleFromPopup()
+        cy.wait(10000)
+        getIFrame().find('input[value="Cerca"]').invoke('attr','value').should('equal','Cerca')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Incasso massivo', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Incasso massivo').click()
+        canaleFromPopup()
+        getIFrame().find('a:contains("Apri filtri"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Sollecito titoli', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Sollecito titoli').click()
+        canaleFromPopup()
+        getIFrame().find('span:contains("Gestione Sollecito Titoli")')
+        getIFrame().find('#buttonCerca:contains("Cerca"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
 
     it('Verifica aggancio Impostazione contabilità', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
-        cy.get('a').contains('Backoffice').click()
+        cy.contains('Impostazione contabilità').click()
+        canaleFromPopup()
+        getIFrame().find('ul > li > span:contains("Gestione dispositivi POS"):visible')
+        getIFrame().find('ul > li > span:contains("Prenotazione POS"):visible')
+        getIFrame().find('ul > li > span:contains("Retrocessioni Provv."):visible')
+        getIFrame().find('ul > li > span:contains("Impostazioni DAS"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
+
 
     it('Verifica aggancio Convenzioni in trattenuta', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
-
+        cy.contains('Convenzioni in trattenuta').click()
+        canaleFromPopup()
+        getIFrame().find('#navMenu_mn_active:contains("Gestione"):visible')
         cy.get('a').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
     })
-
+    //#endregion
 
 })
