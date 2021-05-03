@@ -60,11 +60,11 @@ before(() => {
   beforeEach(() => {
     cy.viewport(1920, 1080)
     cy.visit('https://matrix.pp.azi.allianz.it/')
-    // Cypress.Cookies.defaults({
-    //   preserve: (cookie) => {
-    //     return true;
-    //   }
-    // })
+    Cypress.Cookies.defaults({
+      preserve: (cookie) => {
+        return true;
+      }
+    })
   })
   
   after(() => {
@@ -83,6 +83,20 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica aggancio Sales', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
+    })
+
+    // NEW da provare
+    it('Verifica presenza dei collegamenti rapidi',function() {
+        const linksCollegamentiRapidi = [
+            'Sfera',
+            'Campagne Commerciali',
+            'Recupero preventivi e quotazioni',
+            'Monitoraggio Polizze Proposte',
+            'Ged - Gestione Documentale'
+        ]
+        cy.get('app-home-right-section').find('app-rapid-link').should('have.length',4).each(($link, i) => {
+            expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
+        })
     })
 
     it('Verifica aggancio Sfera', function () {
@@ -174,7 +188,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     // TODO: NEW Non funzionante la pagina
     // it('Verifica aggancio Emetti Polizza - Preventivo Motor', function(){
-
+ 
     // })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio', function(){
@@ -303,24 +317,27 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     // })
 
     // // TODO: non trova Home
-    // it('Verifica aggancio Emetti Polizza - Preventivo anonimo Vita Individuali', function(){
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     buttonEmettiPolizza()
-    //     popoverEmettiPolizza().contains('Preventivo anonimo Vita Individuali').click()
-    //     cy.intercept({
-    //         method: 'POST',
-    //         url: '**/Vita/**'
-    //     }).as('getVitaP');
-    //     cy.intercept({
-    //         method: 'GET',
-    //         url: '**/Vita/**'
-    //     }).as('getVitaG');
-    //     canaleFromPopup()
-    //     cy.wait('@getVitaG', { requestTimeout: 30000 });
-    //     cy.wait('@getVitaP', { requestTimeout: 30000 });
-    //     getIFrame().find('#AZBuilder1_ctl14_cmdHome').invoke('attr','value').should('equal','Home')
-    // })
+    it('Verifica aggancio Emetti Polizza - Preventivo anonimo Vita Individuali', function(){
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        buttonEmettiPolizza()
+        popoverEmettiPolizza().contains('Preventivo anonimo Vita Individuali').click()
+        canaleFromPopup()
+        // cy.intercept({
+        //     method: 'POST',
+        //     url: '**/Vita/**'
+        // }).as('getVitaP');
+        // cy.intercept({
+        //     method: 'GET',
+        //     url: '**/Vita/**'
+        // }).as('getVitaG');
+        // cy.wait('@getVitaG', { requestTimeout: 30000 });
+        // cy.wait('@getVitaP', { requestTimeout: 30000 });
+        cy.wait(10000)
+        getIFrame().find('#AZBuilder1_ctl14_cmdHome').invoke('attr','value').should('equal','Home')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
 
     it('Verifica aggancio Emetti Polizza - MiniFlotte', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()

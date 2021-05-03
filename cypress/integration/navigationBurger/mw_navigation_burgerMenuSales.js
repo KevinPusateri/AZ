@@ -308,7 +308,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.wait(5000)
         canaleFromPopup()
         cy.wait('@getSalesPremo', { requestTimeout: 25000 });
-        cy.wait(5000)
+        cy.wait(8000)
         getIFrame().find('button[class="btn btn-info btn-block"]:contains("Ricerca"):visible')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -538,16 +538,16 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //     cy.get('a').contains('Sales').click()
     // })
 
-    it('Verifica aggancio Documenti da gestire', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales/')
-        cy.get('lib-burger-icon').click()
-        cy.contains('Documenti da gestire').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="Ricerca Attività"]').invoke('attr','value').should('equal','Ricerca Attività')
-        cy.get('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales/')
-    })
+    // it('Verifica aggancio Documenti da gestire', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('Documenti da gestire').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="Ricerca Attività"]').invoke('attr','value').should('equal','Ricerca Attività')
+    //     cy.get('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // })
 
     it('Verifica aggancio Folder', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
@@ -560,16 +560,17 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it('Verifica aggancio Allianz Global Assistance', function () {
-    cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales/')
-        cy.get('lib-burger-icon').click()
-        cy.contains('Allianz Global Assistance').invoke('removeAttr','target').click()
-        canaleFromPopup()
-        cy.get('#logo-oazis-header')
-        cy.go('back')
-        cy.url().should('eq',baseUrl+ 'sales/')
-    })
+    // PROVA dal crash
+    // it('Verifica aggancio Allianz Global Assistance', function () {
+    // cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('Allianz Global Assistance').invoke('removeAttr','target').click()
+    //     canaleFromPopup()
+    //     cy.get('#logo-oazis-header')
+    //     cy.go('back')
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo e aggiungere su excel
     // it('Verifica aggancio Allianz Placement Platform', function () {

@@ -41,50 +41,6 @@ const canaleFromPopup = () => {
 }
 //#endregion
 
-// beforeEach(() => {
-//     cy.clearCookies();
-//     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
-//     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
-//     cy.intercept('POST', '/graphql', (req) => {
-//         if (req.body.operationName.includes('notifications')) {
-//             req.alias = 'gqlNotifications'
-//         }
-//         if (req.body.operationName.includes('news')) {
-//             req.alias = 'gqlNews'
-//         }
-//     })
-
-//     cy.viewport(1920, 1080)
-//     cy.visit('https://matrix.pp.azi.allianz.it/',{
-//         onBeforeLoad: win =>{
-//             win.sessionStorage.clear();
-//         }
-//     })
-//     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-//     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
-//     cy.get('input[type="SUBMIT"]').click()
-
-//     cy.url().should('eq',baseUrl)
-//     cy.intercept({
-//         method: 'POST',
-//         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
-//     }).as('pageMatrix');
-//     cy.wait('@pageMatrix', { requestTimeout: 20000 });
-//     // cy.wait('@gqlNotifications')
-//     cy.wait('@gqlNews')
-// })
-
-// afterEach(() => {
-//     cy.get('body').then($body => {
-//         if ($body.find('.user-icon-container').length > 0) {   
-//             cy.get('.user-icon-container').click();
-//             cy.wait(1000).contains('Logout').click()
-//             cy.wait(delayBetweenTests)
-//         }
-//     });
-//     cy.clearCookies();
-// })
-
 before(() => {
     cy.clearCookies();
     cy.clearLocalStorage();
@@ -137,6 +93,19 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         cy.wait('@getClients', { requestTimeout: 30000 })
         cy.url().should('eq', baseUrl + 'clients/')
     });
+
+    // NEW da provare
+    it('Verifica presenza dei collegamenti rapidi',function() {
+        const linksCollegamentiRapidi = [
+            'Digital Me',
+            'Pannello anomalie',
+            'Clienti duplicati',
+            'Antiriciclaggio'
+        ]
+        cy.get('app-home-right-section').find('app-rapid-link').should('have.length',4).each(($link, i) => {
+            expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
+        })
+    })
 
     it('Verifica aggancio Digital Me', function () {
         interceptPageClients()

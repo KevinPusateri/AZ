@@ -24,7 +24,7 @@
   },
   "scripts": {
     "cypress:open": "./node_modules/.bin/cypress open",
-    "cypress:run:navigations": "npm-run-all -s -c nav_backOffice nav_news nav_numbers nav_sales nav_clients",
+    "cypress:run:navigations": "npm-run-all -s -c nav_backOffice nav_news nav_numbers nav_clients nav_sales",
     "cypress:run:ricerca": "npm-run-all -s -c rc_classica rc_ris_clients rc_ris_mieInfo rc_risultati ricerca",
     "cypress:run:burgerMenu": "npm-run-all -s -c nav_burgerMenuClients nav_burgerMenuSales nav_burgerMenuNumbers",
     "cypress:run:ricerca:parallel": "npm-run-all -p -c rc_classica rc_ris_clients rc_ris_mieInfo rc_risultati ricerca",

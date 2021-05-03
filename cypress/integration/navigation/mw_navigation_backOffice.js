@@ -111,6 +111,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('eq', baseUrl + 'back-office')
     });
 
+    // non compare piu
     // it('Verifica Gestione Documentale', function () {
     //     cy.url().should('eq', baseUrl + 'back-office')
     //     cy.get('lib-news-image').click();
