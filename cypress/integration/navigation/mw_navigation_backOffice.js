@@ -360,10 +360,11 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     it('Verifica apertura disambiguazione: Convenzioni in trattenuta', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
-        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Impostazione contabilità')
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Convenzioni in trattenuta')
         cy.get('.backoffice-card').find('a').contains('Convenzioni in trattenuta').click()
         canaleFromPopup()
-        getIFrame().find('#navMenu_mn_active:contains("Gestione"):visible')
+        cy.wait(10000)
+        getIFrame().find('#contentPane:contains("Gestione"):visible')
         cy.get('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
     });
