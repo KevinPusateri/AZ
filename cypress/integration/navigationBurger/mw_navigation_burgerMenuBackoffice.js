@@ -138,7 +138,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.get('a').contains('Backoffice').click()
     })
 
-    // da qui  TESTARE
     it('Verifica aggancio Denuncia', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
