@@ -62,29 +62,143 @@ before(() => {
 
 describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
-    // TODO: La pagina error 503 non legge getIframe
-    // it('Le Mie Info', function () {
-    //     cy.intercept({
-    //         method: 'GET',
-    //         url: /StrilloCircolariController*/
-    //     }).as('StrilloCircolariController');
-    //     cy.intercept({
-    //         method: 'GET',
-    //         url: /circolariPageNavigator*/
-    //     }).as('StrilloCircolariNavigator');
-    //     cy.intercept({
-    //         method: 'GET',
-    //         url: /strilloCircolariDAPageNavigator*/
-    //     }).as('strilloCircolariDAPageNavigator');
+  //#region // NEW DA TESTARE  
+  it('Verifica presenza links Menu', function(){
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+    
+    const linksMenu = [
+      'Primo Piano',
+      'Raccolte',
+      'Contenuti Salvati',
+      'Prodotti',
+      'Iniziative',
+      'Eventi e Sponsorizzazioni',
+      'Sales Academy',
+      'Momento della Verità',
+      'Le release',
+      'Manuali Informatici',
+      'Circolari',
+      'Company Handbook',
+      'Antiriciclaggio',
+      'Risorse per l\'Agenzia',
+      'Operatività',
+      'Risorse per l\'Agente',
+      'Il Mondo Allianz'
+    ]
+    cy.get('app-home-right-section').find('app-rapid-link').should('have.length',4).each(($link, i) => {
+        expect($link.text().trim()).to.include(linksMenu[i]);
+    })
+  })
 
-    //     cy.contains('Le mie info').click()
-    //     cy.wait('@StrilloCircolariController', { requestTimeout: 25000 });
-    //     // cy.wait('@StrilloCircolariController', { requestTimeout: 20000 });
+  it('Verifica aggancio Primo Piano', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+    cy.get('app-menu-voices').contains('Primo Piano').click()
+    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Primo Piano')
+  })
+
+  it('Verifica aggancio Raccolte', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+    cy.get('app-menu-voices').contains('Raccolte').click()
+    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Raccolte')
+  });
+
+  it('Verifica aggancio Prodotti', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+    cy.get('app-menu-voices').contains('Raccolte').click()
+    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Prodotti')
+    const linksProdotti = [
+      'Allianz Ultra',
+      'Allianz1 Business',
+      'Auto e Motori',
+      'Casa',
+      'Infortuni e Salute',
+      'Impresa e Rischi dedicati',
+      'Tutela Legale',
+      'Vita',
+      'Vita Corporate',
+      'Convenzioni Nazionali',
+      'Circolari',
+      'Company Handbook',
+      'Antiriciclaggio',
+      'Risorse per l\'Agenzia',
+      'Operatività',
+      'Risorse per l\'Agente',
+      'Il Mondo Allianz'
+    ]
+    cy.get('app-product-icons').find('app-product-icon').each(($link) =>{
+
+    })
 
 
-    //     // cy.wait(10000)
-    //     cy.url().should('include', '/lemieinfo')
-    //     getIFrame().find('a:contains("» tutti i comunicati"):visible')
+  });
 
-    // })
+  it('Verifica aggancio Iniziative', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Eventi e Sponsorizzazioni', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Sales Academy', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Momento della Verità', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Le release', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Manuali Informatici', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Circolari', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Company Handbook', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Antiriciclaggio', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Risorse per l\'Agenzia', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Operatività', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Risorse per l\'Agente', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
+  it('Verifica aggancio Il Mondo Allianz', function () {
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
+  });
+
 });

@@ -94,8 +94,10 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         cy.url().should('eq', baseUrl + 'clients/')
     });
 
-    // NEW da provare
+    // NEW TFS
     it('Verifica presenza dei collegamenti rapidi',function() {
+        interceptPageClients()
+        cy.get('app-product-button-list').find('a').contains('Clients').click()
         const linksCollegamentiRapidi = [
             'Digital Me',
             'Pannello anomalie',

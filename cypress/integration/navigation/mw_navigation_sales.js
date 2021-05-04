@@ -34,6 +34,14 @@ const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button
 const popoverEmettiPolizza = () => cy.get('.card-container').find('lib-da-link')
 //#endregion
 
+const interceptPageSales = () =>{
+    cy.intercept({
+        method: 'POST',
+        url: '**/sales/**' ,
+      }).as('getSales');
+    
+}
+
 before(() => {
     cy.clearCookies();
     cy.clearLocalStorage();
@@ -85,8 +93,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    // NEW da provare
+    // NEW DA TESTARE!!!!!!
     it('Verifica presenza dei collegamenti rapidi',function() {
+        interceptPageSales()
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
         const linksCollegamentiRapidi = [
             'Sfera',
             'Campagne Commerciali',
@@ -94,7 +105,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             'Monitoraggio Polizze Proposte',
             'Ged - Gestione Documentale'
         ]
-        cy.get('app-home-right-section').find('app-rapid-link').should('have.length',4).each(($link, i) => {
+        cy.get('app-quick-access').find('lib-da-link').should('have.length',4).each(($link, i) => {
             expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
         })
     })
