@@ -135,7 +135,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     //#region New Business
 
-    // è stato tolto
+    // è stato TOLTO
     //#region Motor
     // it('Verifica aggancio FasqtQuote Auto', function () {
     //     cy.get('app-product-button-list').find('a').contains('Sales').click()
@@ -154,7 +154,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     // })
 
-    // è stato tolto
+    // è stato TOLTO
     // it('Verifica aggancio Preventivo anonimo Motor', function () {
     //     cy.get('app-product-button-list').find('a').contains('Sales').click()
     //     cy.url().should('eq',baseUrl+ 'sales/')
@@ -295,7 +295,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //#endregion
 
     //#region Vita
-    //TODO: togliere wait
     it('Verifica aggancio Allianz1 premorienza', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -307,8 +306,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.contains('Allianz1 premorienza').click()
         cy.wait(5000)
         canaleFromPopup()
-        cy.wait('@getSalesPremo', { requestTimeout: 25000 });
-        cy.wait(8000)
+        cy.wait('@getSalesPremo', { requestTimeout: 40000 });
+        cy.wait(10000)
         getIFrame().find('button[class="btn btn-info btn-block"]:contains("Ricerca"):visible')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -404,9 +403,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
     })
-
-
-    // TODO: togliere Wait
+    
     it('Verifica aggancio Manutenzione portafoglio RV MIDCO', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -424,7 +421,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    // TODO: togliere wait
     it('Verifica aggancio Vita Corporate', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -565,7 +561,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         cy.contains('Allianz Global Assistance').invoke('removeAttr','target').click()
-        canaleFromPopup()
         cy.get('#logo-oazis-header')
         cy.go('back')
         cy.url().should('eq',baseUrl+ 'sales/')

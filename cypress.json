@@ -3,6 +3,7 @@
 	"video": false,
 	"trashAssetsBeforeRuns": false,
 	"projectId": "4ypuc8",
+	"numTestsKeptInMemory":20,
 	"env": {
 		"db": {
 			"host": "PALZMSQDBPRLV01.srv.allianz",

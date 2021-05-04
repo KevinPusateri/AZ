@@ -145,6 +145,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.get('lib-burger-icon').click()
         cy.contains('Denuncia').click()
         canaleFromPopup()
+        cy.wait(8000)
         getIFrameDenuncia().find('[class="pageTitle"]:contains("Ricerca cliente"):visible')
         getIFrameDenuncia().find('h3:contains("Ricerca per polizza"):visible')
         getIFrameDenuncia().find('h3:contains("Ricerca per targa"):visible')

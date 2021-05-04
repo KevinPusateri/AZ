@@ -2,7 +2,13 @@
 
 Cypress.config('defaultCommandTimeout', 30000)
 const delayBetweenTests = 3000
-
+const baseUrl = Cypress.env('baseUrl') 
+const interceptPageMieInfo = () =>{
+  cy.intercept({
+      method: 'POST',
+      url: '**/lemieinfo/**' ,
+    }).as('getMieInfo'); 
+}
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-object"]')
@@ -13,8 +19,6 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-
-const backToClients = () => cy.get('a').contains('Clients').click().wait(5000)
 
 before(() => {
     cy.clearCookies();
@@ -31,12 +35,14 @@ before(() => {
     cy.viewport(1920, 1080)
   
     cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
+    cy.get('input[name="Ecom_User_ID"]').type('le00080')
+    cy.get('input[name="Ecom_Password"]').type('Dragonball3')
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
     cy.wait(2000).wait('@gqlNews')
+    interceptPageMieInfo()
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
   })
   
   beforeEach(() => {
@@ -60,13 +66,12 @@ before(() => {
     cy.clearCookies();
   })
 
+//#region // NEW DA TESTARE
 describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
-  //#region // NEW DA TESTARE  
   it('Verifica presenza links Menu', function(){
-    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+    cy.wait('@getMieInfo', { requestTimeout: 30000 })
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    
     const linksMenu = [
       'Primo Piano',
       'Raccolte',
@@ -86,7 +91,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
       'Risorse per l\'Agente',
       'Il Mondo Allianz'
     ]
-    cy.get('app-home-right-section').find('app-rapid-link').should('have.length',4).each(($link, i) => {
+    cy.get('app-menu-voices').find('a').should('have.length',17).each(($link, i) => {
         expect($link.text().trim()).to.include(linksMenu[i]);
     })
   })
@@ -318,7 +323,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
       cy.wrap($element).should('be.visible')
     });
   })
-  
+
   it('Verifica aggancio Antiriciclaggio', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
