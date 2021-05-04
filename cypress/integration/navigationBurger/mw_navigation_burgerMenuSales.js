@@ -471,7 +471,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it('Verifica aggancio Cruscotto certificati applicazioni', function () {
+    it.only('Verifica aggancio Cruscotto certificati applicazioni', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -483,7 +483,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     
-    it('Verifica aggancio Cruscotto riepiloghi polizze abb.', function () {
+    it.only('Verifica aggancio Cruscotto riepiloghi polizze abb.', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -494,7 +494,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it('Verifica aggancio Report Cliente T4L', function () {
+    it.only('Verifica aggancio Report Cliente T4L', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -511,7 +511,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it('Verifica aggancio Documenti annullati', function () {
+    it.only('Verifica aggancio Documenti annullati', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -534,16 +534,17 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //     cy.get('a').contains('Sales').click()
     // })
 
-    // it('Verifica aggancio Documenti da gestire', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Documenti da gestire').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('input[value="Ricerca Attività"]').invoke('attr','value').should('equal','Ricerca Attività')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // })
+    it.only('Verifica aggancio Documenti da gestire', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Documenti da gestire').click()
+        cy.wait(5000)
+        canaleFromPopup()
+        getIFrame().find('input[value="Ricerca Attività"]').invoke('attr','value').should('equal','Ricerca Attività')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
 
     it('Verifica aggancio Folder', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
