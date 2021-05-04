@@ -195,7 +195,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
         canaleFromPopup()
         cy.wait(10000)
-        getIFrame().find('fnol-root:contains("Continua"):visible')
+        getIFrame().find('button:contains("Continua"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
     })
@@ -357,7 +357,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('eq', baseUrl + 'back-office')
     });
 
-    // NEW TFS da testare
+    // NEW TFS 
     it('Verifica apertura disambiguazione: Convenzioni in trattenuta', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')

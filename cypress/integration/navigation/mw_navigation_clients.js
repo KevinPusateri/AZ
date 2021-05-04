@@ -98,6 +98,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     it('Verifica presenza dei collegamenti rapidi',function() {
         interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
         const linksCollegamentiRapidi = [
             'Digital Me',
             'Pannello anomalie',

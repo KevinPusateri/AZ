@@ -93,19 +93,19 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    // NEW DA TESTARE!!!!!!
     it('Verifica presenza dei collegamenti rapidi',function() {
         interceptPageSales()
         cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.wait('@getSales', { requestTimeout: 30000 })
         cy.url().should('eq',baseUrl+ 'sales/')
         const linksCollegamentiRapidi = [
             'Sfera',
             'Campagne Commerciali',
             'Recupero preventivi e quotazioni',
             'Monitoraggio Polizze Proposte',
-            'Ged - Gestione Documentale'
+            'GED – Gestione Documentale'
         ]
-        cy.get('app-quick-access').find('lib-da-link').should('have.length',4).each(($link, i) => {
+        cy.get('app-quick-access').find('[class="link-item ng-star-inserted"]').should('have.length',5).each(($link, i) => {
             expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
         })
     })
@@ -327,7 +327,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //     cy.url().should('eq',baseUrl+ 'sales/')
     // })
 
-    // // TODO: non trova Home
     it('Verifica aggancio Emetti Polizza - Preventivo anonimo Vita Individuali', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -502,7 +501,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     })
     
-    //TODO: Togliere wait
     it('Verifica aggancio Preventivi e quotazioni - Card Vita', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
