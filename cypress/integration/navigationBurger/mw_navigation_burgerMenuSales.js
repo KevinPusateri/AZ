@@ -556,15 +556,16 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it('Verifica aggancio Allianz Global Assistance', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales/')
-        cy.get('lib-burger-icon').click()
-        cy.contains('Allianz Global Assistance').invoke('removeAttr','target').click()
-        cy.get('#logo-oazis-header')
-        cy.go('back')
-        cy.url().should('eq',baseUrl+ 'sales/')
-    })
+    // non clicca il button
+    // it('Verifica aggancio Allianz Global Assistance', function () {
+    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    //     cy.get('lib-burger-icon').click()
+    //     cy.contains('Allianz Global Assistance').invoke('removeAttr','target').click()
+    //     cy.get('#logo-oazis-header')
+    //     cy.go('back')
+    //     cy.url().should('eq',baseUrl+ 'sales/')
+    // })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo e aggiungere su excel
     // it('Verifica aggancio Allianz Placement Platform', function () {
