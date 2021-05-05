@@ -197,8 +197,20 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //     cy.url().should('eq',baseUrl+ 'sales/')
     // })
 
-    it.skip('Verifica aggancio Emetti Polizza - Preventivo Motor', function(){
- 
+    it('Verifica aggancio Emetti Polizza - Preventivo Motor', function(){
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        buttonEmettiPolizza()
+        popoverEmettiPolizza().contains('Preventivo Motor').click()
+        cy.intercept({
+            method: 'POST',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor');
+        canaleFromPopup()
+        cy.wait('@getMotor', { requestTimeout: 50000 });
+        getIFrame().find('button:contains("Calcola"):visible')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio', function(){
@@ -216,7 +228,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
-    })
+})
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Salute', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()

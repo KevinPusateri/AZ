@@ -100,8 +100,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
             'FastQuote Impresa e Albergo',
             'Allianz1 premorienza',
             'Preventivo Anonimo Vita Individuali',
-            // QUI STAVA Trattative Auto corporate spostata su motor
-            // 'Trattative Auto corporate',
             'Gestione richieste per PA',
             'Sfera',
             'Campagne Commerciali',
@@ -150,8 +148,20 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     
 
     // TODO: 
-    it.skip('Verifica aggancio Preventivo Motor', function () {
-
+    it('Verifica aggancio Preventivo Motor', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Preventivo Motor').click()
+        cy.intercept({
+            method: 'POST',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor');
+        canaleFromPopup()
+        cy.wait('@getMotor', { requestTimeout: 50000 });
+        getIFrame().find('button:contains("Calcola"):visible')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
     })
 
     // è stato TOLTO
@@ -168,7 +178,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     // });
     
     // TODO:
-    it.skip('Verifica aggancio Flotte e Convenzioni', function () {
+    it('Verifica aggancio Flotte e Convenzioni', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -189,6 +199,18 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
     });
+
+    it('Verifica aggancio Trattative Auto corporate', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Trattative Auto Corporate').click()
+        canaleFromPopup()
+        getIFrame().find('span:contains("Nuova Trattativa"):visible')
+        getIFrame().find('span:contains("Guida"):visible')
+        cy.get('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
     //#endregion
     
     //#region  Rami Vari
@@ -329,18 +351,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //#endregion
 
     //#region Mid Corporate
-    it('Verifica aggancio Trattative Auto corporate', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales/')
-        cy.get('lib-burger-icon').click()
-        cy.contains('Trattative Auto Corporate').click()
-        canaleFromPopup()
-        getIFrame().find('span:contains("Nuova Trattativa"):visible')
-        getIFrame().find('span:contains("Guida"):visible')
-        cy.get('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales/')
-    })
-    
     it('Verifica aggancio Gestione richieste per PA', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -481,7 +491,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
     })
-
     
     it('Verifica aggancio Cruscotto riepiloghi polizze abb.', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()

@@ -357,7 +357,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('eq', baseUrl + 'back-office')
     });
 
-    // NEW TFS  CARICATO
     it('Verifica apertura disambiguazione: Convenzioni in trattenuta', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
