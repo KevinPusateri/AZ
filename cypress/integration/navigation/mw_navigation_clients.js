@@ -172,12 +172,11 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         cy.wait('@getClients', { requestTimeout: 30000 })
         cy.intercept({
             method: 'POST',
-            url: /GetDati/,
-        }).as('getDati');
+            url: '**/dacommerciale/**',
+        }).as('getDaCommerciale');
         cy.get('.actions-box').contains('Vai a visione globale').click()
         canaleFromPopup()
-        cy.wait(10000)
-        cy.wait('@getDati', { requestTimeout: 30000 })
+        cy.wait('@getDaCommerciale', { requestTimeout: 50000 })
         getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
         backToClients()
         cy.url().should('eq', baseUrl + 'clients/')

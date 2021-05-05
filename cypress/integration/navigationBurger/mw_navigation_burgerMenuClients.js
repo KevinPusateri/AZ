@@ -94,7 +94,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         })
     });
 
-    it('Verifica aggancio Censimento nuovo cliente da Burger Menu', function () {
+    it('Verifica aggancio Censimento nuovo cliente', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
@@ -105,7 +105,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('eq', baseUrl + 'clients/')
     });
 
-    it('Verifica aggancio Digital Me da Burger Menu', function () {
+    it('Verifica aggancio Digital Me', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
@@ -116,7 +116,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('eq', baseUrl + 'clients/')
     });
 
-    it('Verifica aggancio Pannello anomalie da Burger Menu', function () {
+    it('Verifica aggancio Pannello anomalie', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
@@ -129,7 +129,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('eq', baseUrl + 'clients/')
     });
 
-    it('Verifica aggancio Clienti duplicati da Burger Menu', function () {
+    it('Verifica aggancio Clienti duplicati', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
@@ -141,7 +141,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('eq', baseUrl + 'clients/')
     });
 
-    it('Verifica aggancio Cancellazione Clienti da Burger Menu', function () {
+    it('Verifica aggancio Cancellazione Clienti', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
@@ -153,7 +153,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('eq', baseUrl + 'clients/')
     });
 
-    it('Verifica aggancio Cancellazione Clienti per fonte da Burger Menu', function () {
+    it('Verifica aggancio Cancellazione Clienti per fonte', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
@@ -165,7 +165,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('eq', baseUrl + 'clients/')
     });
 
-    it('Verifica aggancio Gestione fonte principale da Burger Menu', function () {
+    it('Verifica aggancio Gestione fonte principale', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()
@@ -177,7 +177,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('eq', baseUrl + 'clients/')
     });
 
-    it('Verifica aggancio Antiriciclaggio da Burger Menu', function () {
+    it('Verifica aggancio Antiriciclaggio', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('eq', baseUrl + 'clients/')
         cy.get('lib-burger-icon').click()

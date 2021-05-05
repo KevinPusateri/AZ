@@ -272,57 +272,57 @@ describe('Matrix Web : Navigazioni da Scheda Cliente', function () {
     // })
 
     
-    it.only('Verifica Card Auto: Emissione - Preventivo Motor', function () {
-        buttonAuto()
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Preventivo Motor').click()
-        cy.intercept({
-            method: 'POST',
-            url: '**/clients/**'
-        }).as('assuntivomotor');
-        canaleFromPopup()
-        cy.wait('@assuntivomotor', { requestTimeout: 60000 });
-        getIFrame().find('button:contains("Calcola"):visible')
-        backToClients()
-    })
+    // it('Verifica Card Auto: Emissione - Preventivo Motor', function () {
+    //     buttonAuto()
+    //     cy.wait(2000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
+    //     cy.wait(2000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Preventivo Motor').click()
+    //     cy.intercept({
+    //         method: 'POST',
+    //         url: '**/assuntivomotor/**'
+    //     }).as('getMotor');
+    //     canaleFromPopup()
+    //     cy.wait('@getMotor', { requestTimeout: 50000 });
+    //     getIFrame().find('button:contains("Calcola"):visible')
+    //     backToClients()
+    // })
 
-    it('Verifica Card Auto: Emissione - Assistenza InContatto', function () {
-        buttonAuto()
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Assistenza InContatto').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
-        getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
-        backToClients()
-    })
+    // it('Verifica Card Auto: Emissione - Flotte e Convenzioni', function () {
+    //     buttonAuto()
+    //     cy.wait(2000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
+    //     cy.wait(2000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Flotte e Convenzioni').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
+    //     getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')        
+    //     backToClients()
+    // })
 
-    it('Verifica Card Auto: Prodotti particolari - Assunzione Guidata', function () {
-        buttonAuto()
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Assunzione guidata').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
-        getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
-        backToClients()
-    })
+    // it('Verifica Card Auto: Prodotti particolari - Assunzione Guidata', function () {
+    //     buttonAuto()
+    //     cy.wait(2000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
+    //     cy.wait(2000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Assunzione guidata').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
+    //     getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+    //     backToClients()
+    // })
 
-    it('Verifica Card Auto: Prodotti particolari - Veicoli d\'epoca durata 10 giorni', function () {
-        buttonAuto()
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Veicoli d\'epoca').click()
-        canaleFromPopup()
-        getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
-        getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
-        backToClients()
-    })
+    // it('Verifica Card Auto: Prodotti particolari - Veicoli d\'epoca durata 10 giorni', function () {
+    //     buttonAuto()
+    //     cy.wait(2000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
+    //     cy.wait(2000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Veicoli d\'epoca').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
+    //     getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+    //     backToClients()
+    // })
 
     it('Verifica Card Auto: Prodotti particolari - Libri matricola', function () {
         buttonAuto()
@@ -331,8 +331,7 @@ describe('Matrix Web : Navigazioni da Scheda Cliente', function () {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Libri matricola').click()
         canaleFromPopup()
-        getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
-        getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        getIFrame().find('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
         backToClients()
     })
 
@@ -462,16 +461,16 @@ describe('Matrix Web : Navigazioni da Scheda Cliente', function () {
     //     backToClients()
     // })
 
-    // //ADD TFS -> mostra in pagina user code not valid
-    // it('Verifica Card Rami Vari: Allianz Ultra Salute', function () {
-    //     buttonRamivari()
-    //     cy.wait(2000)
-    //     cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Salute').click()
-    //     cy.wait(2000)
-    //     canaleFromPopup()
-    //     getIFrame().find('span:contains("Procedi"):visible')
-    //     backToClients()
-    // })
+    
+    it('Verifica Card Rami Vari: Allianz Ultra Salute', function () {
+        buttonRamivari()
+        cy.wait(2000)
+        cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Salute').click()
+        cy.wait(2000)
+        canaleFromPopup()
+        getIFrame().find('span:contains("Procedi"):visible')
+        backToClients()
+    })
 
     it('Verifica Card Rami Vari: Allianz1 Business', function () {
         buttonRamivari()
@@ -529,10 +528,10 @@ describe('Matrix Web : Navigazioni da Scheda Cliente', function () {
         backToClients()
     })
 
-    it('Verifica Card Rami Vari: FastQuote Universo Persona Malattie Gravi', function () {
+    it('Verifica Card Rami Vari: FastQuote Universo Persona Da Circolazione', function () {
         buttonRamivari()
         cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('FastQuote Infortuni Da Circolazione').click()
+        cy.get('.cdk-overlay-container').find('button').contains('FastQuote Universo Persona Da Circolazione').click()
         cy.wait(2000)
         canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
@@ -543,6 +542,7 @@ describe('Matrix Web : Navigazioni da Scheda Cliente', function () {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
         backToClients()
     })
+
 
     it('Verifica Card Rami Vari: FastQuote Impresa Sicura', function () {
         buttonRamivari()

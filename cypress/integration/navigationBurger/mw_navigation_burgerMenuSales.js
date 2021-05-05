@@ -146,8 +146,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //     cy.url().should('eq',baseUrl+ 'sales/')
     // });
     
-
-    // TODO: 
     it('Verifica aggancio Preventivo Motor', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -177,7 +175,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //     cy.url().should('eq',baseUrl+ 'sales/')
     // });
     
-    // TODO:
     it('Verifica aggancio Flotte e Convenzioni', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
