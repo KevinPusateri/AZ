@@ -19,41 +19,92 @@ const buttonVita = () => cy.get('.card-container').find('app-kpi-dropdown-card')
 const backToClients = () => cy.get('a').contains('Clients').click().wait(5000)
 const canaleFromPopup = () => cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
 
-beforeEach(() => {
+// beforeEach(() => {
+//     cy.clearCookies();
+//     cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
+//     cy.intercept(/launch-*/, 'ignore').as('launchStaging');
+//     cy.viewport(1920, 1080)
+//     cy.visit('https://matrix.pp.azi.allianz.it/',{
+//         onBeforeLoad: win =>{
+//             win.sessionStorage.clear();
+//         }
+//     })
+//     cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
+//     cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
+//     cy.get('input[type="SUBMIT"]').click()
+//     Cypress.Cookies.defaults({
+//         preserve: (cookie) => {
+//             return true;
+//         }
+//     })
+//     cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
+//     cy.intercept({
+//         method: 'POST',
+//         url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
+//     }).as('pageMatrix');
+//     cy.wait('@pageMatrix', { requestTimeout: 60000 });
+//     cy.get('input[name="main-search-input"]').type('Pulini Francesco').type('{enter}')
+//     cy.get('lib-client-item').first().click()
+//     cy.intercept({
+//         method: 'POST',
+//         url: /client-resume/
+//     }).as('pageClient');
+
+//     cy.wait('@pageClient', { requestTimeout: 60000 });
+// })
+
+// afterEach(() => {
+//     cy.get('body').then($body => {
+//         if ($body.find('.user-icon-container').length > 0) {   
+//             cy.get('.user-icon-container').click();
+//             cy.wait(1000).contains('Logout').click()
+//             cy.wait(delayBetweenTests)
+//         }
+//     });
+//     cy.clearCookies();
+// })
+
+before(() => {
     cy.clearCookies();
-    cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
-    cy.intercept(/launch-*/, 'ignore').as('launchStaging');
+    cy.clearLocalStorage();
+  
+    cy.intercept('POST', '/graphql', (req) => {
+    // if (req.body.operationName.includes('notifications')) {
+    //     req.alias = 'gqlNotifications'
+    // }
+    if (req.body.operationName.includes('news')) {
+        req.alias = 'gqlNews'
+    }
+    })
     cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/',{
-        onBeforeLoad: win =>{
-            win.sessionStorage.clear();
-        }
-    })
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
+  
+    cy.visit('https://matrix.pp.azi.allianz.it/')
+    cy.get('input[name="Ecom_User_ID"]').type('Le00080')
+    cy.get('input[name="Ecom_Password"]').type('Dragonball3')
     cy.get('input[type="SUBMIT"]').click()
+    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+  
+    cy.wait('@gqlNews')
+  })
+  
+  beforeEach(() => {
+    cy.viewport(1920, 1080)
+    cy.visit('https://matrix.pp.azi.allianz.it/')
     Cypress.Cookies.defaults({
-        preserve: (cookie) => {
-            return true;
-        }
+      preserve: (cookie) => {
+        return true;
+      }
     })
-    cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
-    cy.intercept({
-        method: 'POST',
-        url: '/portaleagenzie.pp.azi.allianz.it/matrix/'
-    }).as('pageMatrix');
-    cy.wait('@pageMatrix', { requestTimeout: 60000 });
     cy.get('input[name="main-search-input"]').type('Pulini Francesco').type('{enter}')
-    cy.get('lib-client-item').first().click()
     cy.intercept({
         method: 'POST',
-        url: /client-resume/
+        url: '**/clients/**'
     }).as('pageClient');
-
+    cy.get('lib-client-item').first().click()
     cy.wait('@pageClient', { requestTimeout: 60000 });
-})
-
-afterEach(() => {
+  })
+  
+  after(() => {
     cy.get('body').then($body => {
         if ($body.find('.user-icon-container').length > 0) {   
             cy.get('.user-icon-container').click();
@@ -62,7 +113,8 @@ afterEach(() => {
         }
     });
     cy.clearCookies();
-})
+  })
+
 describe('Matrix Web : Navigazioni da Scheda Cliente', function () {
     it('Navigation Scheda Cliente', function () {
         // Verifica Tab clients corretti
@@ -203,24 +255,36 @@ describe('Matrix Web : Navigazioni da Scheda Cliente', function () {
                 cy.get('app-kpi-dropdown-card').find('.label').each(($checkScopes, i) => {
                     expect($checkScopes.text().trim()).to.include(tabCard[i]);
                 })
-                // cy.get('.card-container').find('app-kpi-dropdown-card').should(($tabCard) => {
-                //     expect($tabCard).to.contain('Auto')
-                //     expect($tabCard).to.contain('Rami vari')
-                //     expect($tabCard).to.contain('Vita')
-                //     expect($tabCard).to.length(3)
-                // })
             }
         })
     })
 
-    it('Verifica Card Auto: Emissione - Polizza nuova', function () {
+    // TOLTO
+    // it('Verifica Card Auto: Emissione - Polizza nuova', function () {
+    //     buttonAuto()
+    //     cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
+    //     cy.wait(2000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Polizza nuova').click()
+    //     canaleFromPopup()
+    //     getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
+    //     getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+    //     backToClients()
+    // })
+
+    
+    it.only('Verifica Card Auto: Emissione - Preventivo Motor', function () {
         buttonAuto()
+        cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
         cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Polizza nuova').click()
+        cy.get('.cdk-overlay-container').find('button').contains('Preventivo Motor').click()
+        cy.intercept({
+            method: 'POST',
+            url: '**/clients/**'
+        }).as('assuntivomotor');
         canaleFromPopup()
-        getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
-        getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.wait('@assuntivomotor', { requestTimeout: 60000 });
+        getIFrame().find('button:contains("Calcola"):visible')
         backToClients()
     })
 
@@ -389,25 +453,25 @@ describe('Matrix Web : Navigazioni da Scheda Cliente', function () {
     })
 
     // //ADD TFS -> mostra in pagina user code not valid
-    it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio BMP', function () {
-        buttonRamivari()
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio BMP').click()
-        cy.wait(2000)
-        canaleFromPopup()
-        backToClients()
-    })
+    // it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio BMP', function () {
+    //     buttonRamivari()
+    //     cy.wait(2000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio BMP').click()
+    //     cy.wait(2000)
+    //     canaleFromPopup()
+    //     backToClients()
+    // })
 
     // //ADD TFS -> mostra in pagina user code not valid
-    it('Verifica Card Rami Vari: Allianz Ultra Salute', function () {
-        buttonRamivari()
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Salute').click()
-        cy.wait(2000)
-        canaleFromPopup()
-        getIFrame().find('span:contains("Procedi"):visible')
-        backToClients()
-    })
+    // it('Verifica Card Rami Vari: Allianz Ultra Salute', function () {
+    //     buttonRamivari()
+    //     cy.wait(2000)
+    //     cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Salute').click()
+    //     cy.wait(2000)
+    //     canaleFromPopup()
+    //     getIFrame().find('span:contains("Procedi"):visible')
+    //     backToClients()
+    // })
 
     it('Verifica Card Rami Vari: Allianz1 Business', function () {
         buttonRamivari()
@@ -541,7 +605,7 @@ describe('Matrix Web : Navigazioni da Scheda Cliente', function () {
 
 
     // click tab problemi 
-    it.only('Verifica Tab Dettaglio Anagrafica', function () {
+    it.skip('Verifica Tab Dettaglio Anagrafica', function () {
         cy.get('app-client-profile-tabs').find('a').contains('DETTAGLIO ANAGRAFICA').click()
         
         const tabAnagrafica = [

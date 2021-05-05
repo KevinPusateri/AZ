@@ -197,10 +197,9 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //     cy.url().should('eq',baseUrl+ 'sales/')
     // })
 
-    // TODO: NEW Non funzionante la pagina
-    // it('Verifica aggancio Emetti Polizza - Preventivo Motor', function(){
+    it.skip('Verifica aggancio Emetti Polizza - Preventivo Motor', function(){
  
-    // })
+    })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
@@ -285,7 +284,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
     
-    // TODO: NEW
     it('Verifica aggancio Emetti Polizza - Flotte e Convenzioni', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -297,7 +295,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    //TODO: NEW
     it('Verifica aggancio Emetti Polizza - Preventivo anonimo Vita Individuali', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -326,28 +323,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //     cy.get('a').contains('Sales').click()
     //     cy.url().should('eq',baseUrl+ 'sales/')
     // })
-
-    it('Verifica aggancio Emetti Polizza - Preventivo anonimo Vita Individuali', function(){
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales/')
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('Preventivo anonimo Vita Individuali').click()
-        canaleFromPopup()
-        // cy.intercept({
-        //     method: 'POST',
-        //     url: '**/Vita/**'
-        // }).as('getVitaP');
-        // cy.intercept({
-        //     method: 'GET',
-        //     url: '**/Vita/**'
-        // }).as('getVitaG');
-        // cy.wait('@getVitaG', { requestTimeout: 30000 });
-        // cy.wait('@getVitaP', { requestTimeout: 30000 });
-        cy.wait(10000)
-        getIFrame().find('#AZBuilder1_ctl14_cmdHome').invoke('attr','value').should('equal','Home')
-        cy.get('a').contains('Sales').click()
-        cy.url().should('eq',baseUrl+ 'sales/')
-    })
 
     it('Verifica aggancio Emetti Polizza - MiniFlotte', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()

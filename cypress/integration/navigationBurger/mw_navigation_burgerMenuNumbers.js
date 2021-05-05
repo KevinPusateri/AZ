@@ -122,7 +122,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
-    //TODO: verifica
     it('Verifica aggancio Monitoraggio Carico', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')

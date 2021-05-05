@@ -149,10 +149,10 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     // });
     
 
-    // // NEW non c'è contenuto
-    // it('Verifica aggancio Preventivo Motor', function () {
+    // TODO: 
+    it.skip('Verifica aggancio Preventivo Motor', function () {
 
-    // })
+    })
 
     // è stato TOLTO
     // it('Verifica aggancio Preventivo anonimo Motor', function () {
@@ -167,8 +167,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //     cy.url().should('eq',baseUrl+ 'sales/')
     // });
     
-    // NEW
-    it('Verifica aggancio Flotte e Convenzioni', function () {
+    // TODO:
+    it.skip('Verifica aggancio Flotte e Convenzioni', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -471,7 +471,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it.only('Verifica aggancio Cruscotto certificati applicazioni', function () {
+    it('Verifica aggancio Cruscotto certificati applicazioni', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -483,7 +483,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     
-    it.only('Verifica aggancio Cruscotto riepiloghi polizze abb.', function () {
+    it('Verifica aggancio Cruscotto riepiloghi polizze abb.', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -494,7 +494,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it.only('Verifica aggancio Report Cliente T4L', function () {
+    it('Verifica aggancio Report Cliente T4L', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -511,7 +511,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it.only('Verifica aggancio Documenti annullati', function () {
+    it('Verifica aggancio Documenti annullati', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -534,7 +534,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //     cy.get('a').contains('Sales').click()
     // })
 
-    it.only('Verifica aggancio Documenti da gestire', function () {
+    it('Verifica aggancio Documenti da gestire', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -557,16 +557,16 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    // non clicca il button
-    // it('Verifica aggancio Allianz Global Assistance', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Allianz Global Assistance').invoke('removeAttr','target').click()
-    //     cy.get('#logo-oazis-header')
-    //     cy.go('back')
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // })
+    // TODO:non clicca il button
+    it.skip('Verifica aggancio Allianz Global Assistance', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq',baseUrl+ 'sales/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Allianz Global Assistance').invoke('removeAttr','target').click()
+        cy.get('#logo-oazis-header')
+        cy.go('back')
+        cy.url().should('eq',baseUrl+ 'sales/')
+    })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo e aggiungere su excel
     // it('Verifica aggancio Allianz Placement Platform', function () {

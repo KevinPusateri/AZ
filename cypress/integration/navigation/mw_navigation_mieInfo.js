@@ -41,8 +41,7 @@ before(() => {
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
     cy.wait(2000).wait('@gqlNews')
-    interceptPageMieInfo()
-    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+
   })
   
   beforeEach(() => {
@@ -66,10 +65,12 @@ before(() => {
     cy.clearCookies();
   })
 
-//#region // NEW DA TESTARE
+// NEW DA TESTARE
 describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
-  it('Verifica presenza links Menu', function(){
+  it.only('Verifica presenza links Menu', function(){
+    interceptPageMieInfo()
+    cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.wait('@getMieInfo', { requestTimeout: 30000 })
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
     const linksMenu = [
@@ -91,7 +92,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
       'Risorse per l\'Agente',
       'Il Mondo Allianz'
     ]
-    cy.get('app-menu-voices').find('a').should('have.length',17).each(($link, i) => {
+    getIFrame().find('[class="nx-context-menu-item menu--element"]').should('have.length',17).each(($link, i) => {
         expect($link.text().trim()).to.include(linksMenu[i]);
     })
   })
@@ -99,22 +100,22 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Primo Piano', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Primo Piano').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Primo Piano')
+   getIFrame().find('app-menu > a').contains('Primo Piano').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Primo Piano')
   })
 
   it('Verifica aggancio Raccolte', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Raccolte').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Raccolte')
+   getIFrame().find('app-menu > a').contains('Raccolte').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Raccolte')
   });
 
   it('Verifica aggancio Prodotti', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Raccolte').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Prodotti')
+   getIFrame().find('app-menu > a').contains('Raccolte').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Prodotti')
     const linksProdotti = [
       'Allianz Ultra',
       'Allianz1 Business',
@@ -134,7 +135,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
       expect($link.text().trim()).to.include(linksProdotti[i]);
     }).should('have.length',13)
 
-    cy.get('app-menu-voices').find('a').each(($link,i) =>{
+   getIFrame().find('app-menu > a').find('a').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksIniziative[i]);
     })
   });
@@ -142,8 +143,8 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Iniziative', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Iniziative').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Prodotti')
+   getIFrame().find('app-menu > a').contains('Iniziative').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Prodotti')
     const linksIniziative = [
       'Stop&Drive',
       'Proponi LTC',
@@ -163,7 +164,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     cy.get('app-card-container').find('app-card-vertical').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksIniziative[i]);
     })
-    cy.get('app-menu-voices').find('a').each(($link,i) =>{
+   getIFrame().find('app-menu > a').find('a').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksIniziative[i]);
     })
   });
@@ -171,15 +172,15 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Eventi e Sponsorizzazioni', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Eventi e Sponsorizzazioni')
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Eventi e Sponsorizzazioni')
     cy.get('app-page-title').should('contain','Eventi').and('be.visible')
   });
 
   it('Verifica aggancio Sales Academy', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Iniziative').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Sales Academy')
+   getIFrame().find('app-menu > a').contains('Iniziative').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Sales Academy')
     const linksSalesAcademy = [
       'Chi Siamo',
       'Allianz Business School',
@@ -192,7 +193,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     cy.get('app-product-icons').find('app-product-icon').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksSalesAcademy[i]);
     })
-    cy.get('app-menu-voices').find('a').each(($link,i) =>{
+   getIFrame().find('app-menu > a').find('a').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksSalesAcademy[i]);
     })
   });
@@ -200,8 +201,8 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Momento della Verità', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Momento della Verità').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Momento della Verità')
+   getIFrame().find('app-menu > a').contains('Momento della Verità').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Momento della Verità')
     const linksMomentoVerita = [
       'Apertura',
       'Gestione',
@@ -219,8 +220,8 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Le release', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('La release').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','La release')
+   getIFrame().find('app-menu > a').contains('La release').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','La release')
     cy.get('app-accordion').contains('Matrix').click()
     // DA PROVARE
     cy.get('#nx-expansion-panel-header-0').should('have.attr','aria-expanded','true')
@@ -233,8 +234,8 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Manuali Informatici', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('La release').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Manuali Informatici')
+   getIFrame().find('app-menu > a').contains('La release').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Manuali Informatici')
     cy.get('app-accordion').contains('ADAM').click()
     cy.get('#nx-expansion-panel-header-2').should('have.attr','aria-expanded','true')
     cy.get('app-accordion').contains('Allianz1 e Allianz1 Business').click()
@@ -308,16 +309,16 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Circolari', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Circolari').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Circolari')
+   getIFrame().find('app-menu > a').contains('Circolari').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Circolari')
     cy.get('app-page-title').should('contain','Circolari').and('be.visible')
   });
 
   it('Verifica aggancio Company Handbook', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Company Handbook').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Company Handbook')
+   getIFrame().find('app-menu > a').contains('Company Handbook').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Company Handbook')
     cy.get('app-page-title').should('contain','Circolari').and('be.visible')
     cy.get('app-dynamic-list').find('app-dynamic-element').should(($element) =>{
       cy.wrap($element).should('be.visible')
@@ -327,8 +328,8 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Antiriciclaggio', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Antiriciclaggio').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Antiriciclaggio')
+   getIFrame().find('app-menu > a').contains('Antiriciclaggio').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Antiriciclaggio')
     const linksAntiriciclaggio = [
       'Normativa',
       'Moduli, manuali e procedure',
@@ -338,7 +339,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     cy.get('app-product-icons').find('app-product-icon').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksAntiriciclaggio[i]);
     })
-    cy.get('app-menu-voices').find('a').each(($link,i) =>{
+   getIFrame().find('app-menu > a').find('a').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksAntiriciclaggio[i]);
     })
   });
@@ -346,8 +347,8 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Risorse per l\'Agenzia', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Risorse per l\'Agenzia').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Risorse per l\'Agenzia')
+   getIFrame().find('app-menu > a').contains('Risorse per l\'Agenzia').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Risorse per l\'Agenzia')
     const linksRisorseAgenzia = [
       'Reclutamento',
       'Arredare l\'agenzia',
@@ -367,7 +368,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     cy.get('app-product-icons').find('app-product-icon').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksRisorseAgenzia[i]);
     })
-    cy.get('app-menu-voices').find('a').each(($link,i) =>{
+   getIFrame().find('app-menu > a').find('a').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksRisorseAgenzia[i]);
     })
   });
@@ -375,8 +376,8 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Operatività', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Operatività').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Operatività')
+   getIFrame().find('app-menu > a').contains('Operatività').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Operatività')
     cy.get('app-accordion').contains('Cambio sede').click()
     cy.get('#nx-expansion-panel-header-0').should('have.attr','aria-expanded','true')
     cy.get('app-accordion').contains('Codici sblocco rami vari').click()
@@ -402,8 +403,8 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Risorse per l\'Agente', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Risorse per l\'Agente').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Risorse per l\'Agente')
+   getIFrame().find('app-menu > a').contains('Risorse per l\'Agente').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Risorse per l\'Agente')
     const linksRisorseAgente = [
       'Trattamenti provviggionali',
       'Incentivazioni, mission, regolamenti',
@@ -416,7 +417,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     cy.get('app-product-icons').find('app-product-icon').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksRisorseAgente[i]);
     })
-    cy.get('app-menu-voices').find('a').each(($link,i) =>{
+   getIFrame().find('app-menu > a').find('a').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksRisorseAgente[i]);
     })
   });
@@ -424,8 +425,8 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Il Mondo Allianz', function () {
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.url().should('eq', baseUrl + 'lemieinfo?info=1')
-    cy.get('app-menu-voices').contains('Il Mondo Allianz').click()
-    cy.get('app-menu-voices').find('a[class^="menu--link menu--link_active"]').should('contain','Il Mondo Allianz')
+   getIFrame().find('app-menu > a').contains('Il Mondo Allianz').click()
+   getIFrame().find('app-menu > a').find('a[class^="menu--link menu--link_active"]').should('contain','Il Mondo Allianz')
     const linksMondoAllianz = [
       'I codici del Gruppo Allianz SpA',
       'La rassegna stampa',
@@ -435,7 +436,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     cy.get('app-product-icons').find('app-product-icon').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksRisorseAgente[i]);
     })
-    cy.get('app-menu-voices').find('a').each(($link,i) =>{
+   getIFrame().find('app-menu > a').find('a').each(($link,i) =>{
       expect($link.text().trim()).to.include(linksRisorseAgente[i]);
     })
   });
