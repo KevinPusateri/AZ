@@ -1,4 +1,7 @@
 /// <reference types="Cypress" />
+/**
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it>
+ */
 
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000

@@ -207,7 +207,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: '**/assuntivomotor/**'
         }).as('getMotor');
         canaleFromPopup()
-        cy.wait('@getMotor', { requestTimeout: 50000 });
+        cy.wait('@getMotor', { requestTimeout: 60000 });
         getIFrame().find('button:contains("Calcola"):visible')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -228,7 +228,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
-})
+    })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Salute', function(){
         cy.get('app-product-button-list').find('a').contains('Sales').click()

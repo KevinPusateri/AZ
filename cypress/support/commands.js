@@ -116,3 +116,4 @@ Cypress.Commands.add('generateTwoLetters', () => {
     result += charactersSecondLetter.charAt(Math.floor(Math.random() * charactersSecondLetter.length));
     return result;
 })
+

@@ -39,12 +39,16 @@ const getIFrameMoveSinistri = () => {
     return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-const interceptCruscotto = () => {
-    cy.intercept({
-        method: 'POST',
-        url: /dacommerciale*/
-    }).as('getDacommerciale');
+const getIFrameDenuncia = () => {
+    getIFrame().find('iframe[src="cliente.jsp"]')
+    .iframe();
+
+    let iframeFolder = getIFrame().find('iframe[src="cliente.jsp"]')
+    .its('0.contentDocument').should('exist');
+
+    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
+
 //#endregion
 
 before(() => {
@@ -92,10 +96,9 @@ before(() => {
   })
 
 
-  // AGGIUNGERE SU EXCEL E TFS
-describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
+describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
 
-    it('Verifica i link da Burger Menu', function () {
+    it('Verifica link da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         const linksBurger = [
             'Home Backoffice',
@@ -144,7 +147,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.get('lib-burger-icon').click()
         cy.contains('Denuncia').click()
         canaleFromPopup()
-        cy.wait(8000)
         getIFrameDenuncia().find('[class="pageTitle"]:contains("Ricerca cliente"):visible')
         getIFrameDenuncia().find('h3:contains("Ricerca per polizza"):visible')
         getIFrameDenuncia().find('h3:contains("Ricerca per targa"):visible')
@@ -325,14 +327,14 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.url().should('eq', baseUrl + 'back-office')
     })
 
-
     it('Verifica aggancio Convenzioni in trattenuta', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
         cy.contains('Convenzioni in trattenuta').click()
         canaleFromPopup()
-        getIFrame().find('#navMenu_mn_active:contains("Gestione"):visible')
+        cy.wait(10000)
+        getIFrame().find('#contentPane:contains("Gestione"):visible')
         cy.get('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
     })
