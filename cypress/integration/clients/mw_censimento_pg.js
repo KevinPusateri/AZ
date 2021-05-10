@@ -60,20 +60,29 @@ before(() => {
   });
 
   cy.clearCookies();
+  cy.clearLocalStorage();
   
   //Skip this two requests that blocks on homepage
   cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
   cy.intercept(/launch-*/,'ignore').as('launchStaging');
+  cy.intercept('POST', '/graphql', (req) => {
+    if (req.body.operationName.includes('notifications')) {
+      req.alias = 'gqlNotifications'
+    }
+  });
 
   cy.visit('https://matrix.pp.azi.allianz.it/',{
     onBeforeLoad: win =>{
         win.sessionStorage.clear();
     }
   })
+  
   cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
   cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
   cy.get('input[type="SUBMIT"]').click()
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+
+  cy.wait('@gqlNotifications',{'responseTimeout': 60000})
 })
 
 beforeEach(() => {
@@ -108,7 +117,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
         cy.contains('Aggiungi cliente').click();
     })
 
-    it('Inserire i dati mancanti e premere avanti', () => { 
+    it('Inserire i dati mancanti e premere avanti', () => {
         getIframe().find('#ragione-sociale').type(nuovoClientePG.ragioneSociale);
         getIframe().find('span[aria-owns="forma-giuridica_listbox"]').click();
         getIframe().find('li').contains(/^S.R.L.$/).click();
