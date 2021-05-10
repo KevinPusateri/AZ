@@ -51,10 +51,9 @@ const getDocumentoPersonale = () => {
 }
 //#endregion
 
-let nuovoClientePF;
-
 before(() => {
   cy.clearCookies();
+  cy.clearLocalStorage();
 
   let currentTestCaseName = 'Matrix.Tests.Matrix_Web_Modifica_PG'
   let currentEnv = 'PREPROD'
@@ -65,19 +64,12 @@ before(() => {
   //Skip this two requests that blocks on homepage
   cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
   cy.intercept(/launch-*/,'ignore').as('launchStaging');
-  cy.intercept('POST', '/graphql', (req) => {
-    if (req.body.operationName.includes('notifications')) {
-      req.alias = 'gqlNotifications'
-    }
-  });
 
   cy.visit('https://matrix.pp.azi.allianz.it/')
   cy.get('input[name="Ecom_User_ID"]').type(currentUser)
   cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
   cy.get('input[type="SUBMIT"]').click()
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
-
-  cy.wait('@gqlNotifications')
 })
 
 beforeEach(() => {
@@ -89,16 +81,16 @@ beforeEach(() => {
   })
 })
 
-after(() => {
-  cy.get('body').then($body => {
-      if ($body.find('.user-icon-container').length > 0) {   
-          cy.get('.user-icon-container').click();
-          cy.wait(1000).contains('Logout').click()
-          cy.wait(delayBetweenTests)
-      }
-  });
-  cy.clearCookies();
-})
+// after(() => {
+//   cy.get('body').then($body => {
+//       if ($body.find('.user-icon-container').length > 0) {   
+//           cy.get('.user-icon-container').click();
+//           cy.wait(1000).contains('Logout').click()
+//           cy.wait(delayBetweenTests)
+//       }
+//   });
+//   cy.clearCookies();
+// })
 
 describe('Matrix Web : Modifica PG', function () {
 
@@ -107,19 +99,27 @@ describe('Matrix Web : Modifica PG', function () {
     cy.generateTwoLetters().then(randomChars => {
       cy.get('input[name="main-search-input"]').type(randomChars).type('{enter}')
     })
-    cy.url().should('include', '/search/clients/clients').wait(3000)
+    cy.url().should('include', '/search/clients/clients').wait(5000)
 
     //Rimuoviamo le persone finische dai filtri di ricerca
     cy.get('.icon').find('[name="filter"]').click()
     cy.get('.filter-group').contains('Persona fisica').click()
     cy.get('.footer').find('button').contains('applica').click()
     cy.get('lib-applied-filters-item').find('span').should('be.visible')
-    cy.get('lib-client-item').first().click()
+    cy.get('lib-client-item').first().click().wait(3000)
     cy.contains('DETTAGLIO ANAGRAFICA').click()
   })
 
   it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
+
+    cy.contains('Modifica dati cliente').click()
+    let currentPartitaIva
+    getSCU().find('#partita-iva').then(($partitaIva) => {
+      currentPartitaIva = $partitaIva.text()
+      cy.log('Partita IVA recuperata : ' + currentPartitaIva)
+    })
+    getSCU().find('#codice-fiscale-impresa').clear().type(currentPartitaIva);
+    getSCU().find('a:contains("Consensi")').click()
     
   })
- 
 })

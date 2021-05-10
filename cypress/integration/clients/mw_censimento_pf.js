@@ -54,11 +54,13 @@ const getDocumentoPersonale = () => {
 let nuovoClientePF;
 
 before(() => {
-  cy.clearCookies();
 
   cy.task('nuovoClientePersonaFisica').then((object) => {
     nuovoClientePF = object;
   });
+  
+  cy.clearCookies();
+  cy.clearLocalStorage();
 
   let currentTestCaseName = 'Matrix.Tests.Matrix_Web_Censimento_PF'
   let currentEnv = 'PREPROD'
@@ -85,7 +87,7 @@ before(() => {
   cy.get('input[type="SUBMIT"]').click()
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
 
-  cy.wait('@gqlNotifications')
+  cy.wait('@gqlNotifications',{'responseTimeout': 60000})
 })
 
 beforeEach(() => {
