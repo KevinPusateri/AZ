@@ -5,6 +5,7 @@ logs/
 screenshots/
 videos/
 results/
+parallel-weights*
 
 # Logs
 logs
