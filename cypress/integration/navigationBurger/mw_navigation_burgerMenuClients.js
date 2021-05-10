@@ -31,14 +31,13 @@ const canaleFromPopup = () => {cy.get('body').then($body => {
 before(() => {
     cy.clearCookies();
     cy.clearLocalStorage();
-  
     cy.intercept('POST', '/graphql', (req) => {
-    // if (req.body.operationName.includes('notifications')) {
-    //     req.alias = 'gqlNotifications'
-    // }
-    if (req.body.operationName.includes('news')) {
-        req.alias = 'gqlNews'
-    }
+        // if (req.body.operationName.includes('notifications')) {
+        //     req.alias = 'gqlNotifications'
+        // }
+        if (req.body.operationName.includes('news')) {
+            req.alias = 'gqlNews'
+        }
     })
     cy.viewport(1920, 1080)
   
@@ -48,7 +47,7 @@ before(() => {
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
-    cy.wait(2000).wait('@gqlNews')
+    cy.wait('@gqlNews')
   })
   
   beforeEach(() => {
@@ -80,6 +79,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
         const linksBurger = [
             'Home Clients',
+            'Analisi dei bisogni',
             'Censimento nuovo cliente',
             'Digital Me',
             'Pannello anomalie',
@@ -89,9 +89,20 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
             'Gestione fonte principale',
             'Antiriciclaggio'
         ]
-        cy.get('lib-side-menu-link').find('a').should('have.length',9).each(($checkLinksBurger, i) => {
+        cy.get('lib-side-menu-link').find('a').should('have.length',10).each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
         })
+    });
+
+    // NEW 
+    it('Verifica aggancio Analisi dei bisogni', function () {
+        cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.url().should('eq', baseUrl + 'clients/')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Analisi dei bisogni').invoke('removeAttr','target').click()
+        cy.go('back')
+        cy.url().should('include', baseUrl)
+        
     });
 
     it('Verifica aggancio Censimento nuovo cliente', function () {

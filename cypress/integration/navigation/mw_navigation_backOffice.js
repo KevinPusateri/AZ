@@ -194,7 +194,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
         cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
-        cy.wait(3000)
+        cy.wait(5000)
         canaleFromPopup()
         cy.wait(10000)
         getIFrame().find('button:contains("Continua"):visible')
