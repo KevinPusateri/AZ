@@ -56,8 +56,8 @@ before(() => {
     cy.viewport(1920, 1080)
   
     cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
+    cy.get('input[name="Ecom_User_ID"]').type('le00080')
+    cy.get('input[name="Ecom_Password"]').type('Dragonball3')
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
@@ -99,15 +99,26 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.wait('@getClients', { requestTimeout: 30000 })
         const linksCollegamentiRapidi = [
+            'Analisi dei bisogni', // NEW
             'Digital Me',
             'Pannello anomalie',
             'Clienti duplicati',
             'Antiriciclaggio'
         ]
-        cy.get('app-home-right-section').find('app-rapid-link').should('have.length',4).each(($link, i) => {
+        cy.get('app-home-right-section').find('app-rapid-link').should('have.length',5).each(($link, i) => {
             expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
         })
     })
+
+    // TODO: NEW PAGINA
+    it('Verifica aggancio Analisi dei bisogni', function () {
+        interceptPageClients()
+        cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
+        cy.get('app-rapid-link').find('a[href="https://www.ageallianz.it/analisideibisogni/app"]').invoke('removeAttr','target').contains('Analisi dei bisogni').click()
+        cy.go('back')
+        cy.url().should('include', baseUrl + 'clients/')
+    });
 
     it('Verifica aggancio Digital Me', function () {
         interceptPageClients()

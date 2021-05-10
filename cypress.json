@@ -4,6 +4,7 @@
 	"trashAssetsBeforeRuns": false,
 	"projectId": "4ypuc8",
 	"numTestsKeptInMemory":20,
+	"chromeWebSecurity": false ,
 	"env": {
 		"db": {
 			"host": "PALZMSQDBPRLV01.srv.allianz",
