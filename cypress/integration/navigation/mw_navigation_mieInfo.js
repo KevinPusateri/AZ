@@ -35,8 +35,8 @@ before(() => {
     cy.viewport(1920, 1080)
   
     cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('le00080')
-    cy.get('input[name="Ecom_Password"]').type('Dragonball3')
+    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
+    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
@@ -66,7 +66,7 @@ before(() => {
   //   cy.clearLocalStorage();
   // })
 
-// NEW DA TESTARE
+
 describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
   it('Verifica presenza links Menu', function(){
@@ -287,8 +287,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
   });
 
-  // TODO: non legge aria-expanded USARE IL FOR 
-  it.only('Verifica aggancio Manuali Informatici', function () {
+  it('Verifica aggancio Manuali Informatici', function () {
     interceptPageMieInfo()
     cy.get('app-product-button-list').find('a').contains('Le mie info').click()
     cy.wait('@getMieInfo', { requestTimeout: 30000 })
@@ -299,83 +298,48 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     //  cy.wrap($list).find('[class="dynamic-list--element ng-star-inserted]').each(($card) =>{ $card.length})
     // })
     const cardManuali = [
-      'ADAM'
-    ]
-    
-    for (let index = 0; index < 35; index++) {
-      getIFrame().find('#nx-expansion-panel-header-'+index).each(($card,i) =>{
-        expect($card.text().trim()).to.include(cardManuali[i]);
+      'ADAM',
+      'Allianz1 e Allianz1 Business',
+      'AllianzPay',
+      'Allianz ULTRA',
+      'Anagrafica Intermediari',
+      'Antiriciclaggio',
+      'APP',
+      'Auto',
+      'Cliente',
+      'Configurazione postazioni',
+      'Contabilità',
+      'Deleghe SDD',
+      'e-Commerce',
+      'E-payment e firma digitale',
+      'FastQuote',
+      'Gestione Documentale',
+      'Gestione Provvigionale',
+      'Matrix Web',
+      'Media Library',
+      'MidCo',
+      'Modello Generico',
+      'Pubblica Amministrazione',
+      'Quadratura Unificata Digital Agency',
+      'Rami Vari',
+      'Reportistica',
+      'Resilience Digital Agency',
+      'Scadenze',
+      'Sfera',
+      'Sinistri',
+      'Vita Individuali - Emissione',
+      'Vita Individuali - Gestione',
+      'Vita Individuali - Liquidazione',
+      'Vita Individuali - Utilità',
+      'Vita Corporate'
+    ]  
+    for (let index = 0; index < cardManuali.length ; index++) {
+      getIFrame().find('#nx-expansion-panel-header-'+index).then(($card) =>{
+        expect($card.text().trim()).to.include(cardManuali[index]);
+        getIFrame().find('nx-expansion-panel-title').contains($card.text().trim()).click()
+        cy.wrap($card).should('have.attr','aria-expanded','true')
       })
-      
     }
-    // getIFrame().find('app-accordion').contains('ADAM').click().wait(2000)
-    // getIFrame().find('#nx-expansion-panel-header-0').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Allianz1 e Allianz1 Business').click()
-    // getIFrame().find('#nx-expansion-panel-header-1').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('AllianzPay').click()
-    // getIFrame().find('#nx-expansion-panel-header-2').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Allianz ULTRA').click()
-    // getIFrame().find('#nx-expansion-panel-header-3').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Anagrafica Intermediari').click()
-    // getIFrame().find('#nx-expansion-panel-header-4').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Antiriciclaggio').click()
-    // getIFrame().find('#nx-expansion-panel-header-5').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('APP').click()
-    // getIFrame().find('#nx-expansion-panel-header-6').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Auto').click()
-    // getIFrame().find('#nx-expansion-panel-header-7').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Cliente').click()
-    // getIFrame().find('#nx-expansion-panel-header-8').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Configurazione postazioni').click()
-    // getIFrame().find('#nx-expansion-panel-header-9').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Contabilità').click()
-    // getIFrame().find('#nx-expansion-panel-header-10').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Deleghe SDD').click()
-    // getIFrame().find('#nx-expansion-panel-header-11').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('e-Commerce').click()
-    // getIFrame().find('#nx-expansion-panel-header-12').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('E-payment e firma digitale').click()
-    // getIFrame().find('#nx-expansion-panel-header-13').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('FastQuote').click()
-    // getIFrame().find('#nx-expansion-panel-header-14').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Gestione Documentale').click()
-    // getIFrame().find('#nx-expansion-panel-header-15').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Gestione Provvigionale').click()
-    // getIFrame().find('#nx-expansion-panel-header-16').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Matrix Web').click()
-    // getIFrame().find('#nx-expansion-panel-header-17').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Media Library').click()
-    // getIFrame().find('#nx-expansion-panel-header-18').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('MidCo').click()
-    // getIFrame().find('#nx-expansion-panel-header-19').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Modello Generico').click()
-    // getIFrame().find('#nx-expansion-panel-header-20').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Pubblica Amministrazione').click()
-    // getIFrame().find('#nx-expansion-panel-header-21').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Quadratura Unificata Digital Agency').click()
-    // getIFrame().find('#nx-expansion-panel-header-22').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Rami Vari').click()
-    // getIFrame().find('#nx-expansion-panel-header-23').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Reportistica').click()
-    // getIFrame().find('#nx-expansion-panel-header-24').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Resilience Digital Agency').click()
-    // getIFrame().find('#nx-expansion-panel-header-25').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Scadenze').click()
-    // getIFrame().find('#nx-expansion-panel-header-26').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Sfera').click()
-    // getIFrame().find('#nx-expansion-panel-header-27').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Sinistri').click()
-    // getIFrame().find('#nx-expansion-panel-header-28').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Vita Individuali - Emissione').click()
-    // getIFrame().find('#nx-expansion-panel-header-29').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Vita Individuali - Gestione').click()
-    // getIFrame().find('#nx-expansion-panel-header-30').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Vita Individuali - Liquidazione').click()
-    // getIFrame().find('#nx-expansion-panel-header-31').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Vita Individuali - Utilità').click()
-    // getIFrame().find('#nx-expansion-panel-header-32').should('have.attr','aria-expanded','true')
-    // getIFrame().find('app-accordion').contains('Vita Corporate').click()
-    // getIFrame().find('#nx-expansion-panel-header-33').should('have.attr','aria-expanded','true')
   });
 
   it('Verifica aggancio Circolari', function () {
