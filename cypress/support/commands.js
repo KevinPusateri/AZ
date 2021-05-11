@@ -9,6 +9,7 @@
 // ***********************************************
 
 import 'cypress-file-upload'
+const moment = require('moment')
 
 //
 //
@@ -117,3 +118,17 @@ Cypress.Commands.add('generateTwoLetters', () => {
     return result;
 })
 
+Cypress.Commands.add('generateUnicoClienteLabel', () => {
+  let currentDateTime = moment().format('DD/MM/YYYY')
+  return "Consensi cliente (UNICO) " + currentDateTime + " CLIENTE"
+})
+
+Cypress.Commands.add('generateUnicoDirezioneLabel', () => {
+  let currentDateTime = moment().format('DD/MM/YYYY')
+  return "Consensi cliente (UNICO) " + currentDateTime + " DIREZIONE"
+})
+
+Cypress.Commands.add('generateVisuraCameraleLabel', () => {
+  let currentDateTime = moment().format('DD/MM/YYYY')
+  return "Visura Camerale (Rami Vari) " + currentDateTime
+})
