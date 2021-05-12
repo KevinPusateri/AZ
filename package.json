@@ -23,7 +23,7 @@
     "cypressDashKey": "507fe8fd-3134-4f76-9f6d-337029599497"
   },
   "scripts": {
-    "cypress:parallel:ricerca": "cypress-parallel -s cy:run -t 5 -d cypress/integration/ricerca/ -a '--reporter junit --reporter-options \"mochaFile=results/Report_Bobo.xml,toConsole=true\"'",
+    "cypress:parallel:ricerca": "cypress-parallel -s cy:run -t 5 -d cypress/integration/ricerca/ -o",
     "cy:run" : "./node_modules/.bin/cypress run",
 
     "rc_classica": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca_classica.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Classica.xml,toConsole=true\"",
@@ -36,7 +36,7 @@
     "cypress:run:navigations": "npm-run-all -s -c nav_backOffice nav_news nav_numbers nav_clients nav_sales nav_homePage nav_mieInfo",
     "cypress:run:ricerca": "npm-run-all -s -c rc_classica rc_ris_clients rc_ris_mieInfo rc_risultati ricerca",
     "cypress:run:burgerMenu": "npm-run-all -s -c nav_burgerMenuClients nav_burgerMenuNumbers nav_burgerMenuSales nav_burgerMenuBackOffice",
-    "cypress:run:censimenti": "npm-run-all -s -c nav_burgerMenuClients censimento_pf censimento_pg",
+    "cypress:run:censimenti": "npm-run-all -s -c censimento_pf censimento_pg",
     "cypress:run:ricerca_dash": "npm-run-all -s -c \"rc_classica -- {@}\" \"rc_ris_clients -- {@}\" \"rc_ris_mieInfo -- {@}\" \"rc_risultati -- {@}\" \"ricerca -- {@}\" -- --record --key %npm_package_config_cypressDashKey%",
     "cypress:run:navigations_dash": "npm-run-all -s -c \"nav_backOffice -- {@}\" \"nav_burgerMenuClients -- {@}\" \"nav_mieInfo -- {@}\" \"nav_news -- {@}\" \"nav_numbers -- {@}\" -- --record --key %npm_package_config_cypressDashKey%",
     "cypress:run:censimenti_dash": "npm-run-all -s -c \"censimento_pf -- {@}\" -- --record --key %npm_package_config_cypressDashKey%",
