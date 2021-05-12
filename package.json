@@ -25,13 +25,11 @@
   "scripts": {
     "cypress:parallel:ricerca": "cypress-parallel -s cy:run -t 5 -d cypress/integration/ricerca/ -o",
     "cy:run" : "./node_modules/.bin/cypress run",
-
-    "rc_classica": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca_classica.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Classica.xml,toConsole=true\"",
-    "rc_ris_clients": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati_clients.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati_Clients.xml,toConsole=true\"",
-    "rc_ris_mieInfo": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati_mieInfo.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati_Mie_Info.xml,toConsole=true\"",
-    "rc_risultati": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati.xml,toConsole=true\"",
-    "ricerca": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca.xml,toConsole=true\"",
-
+    "rc_classica": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_classica.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Classica.xml,toConsole=true\"",
+    "rc_ris_clients": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati_clients.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati_Clients.xml,toConsole=true\"",
+    "rc_ris_mieInfo": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati_mieInfo.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati_Mie_Info.xml,toConsole=true\"",
+    "rc_risultati": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati.xml,toConsole=true\"",
+    "ricerca": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca.xml,toConsole=true\"",
     "cypress:open": "./node_modules/.bin/cypress open",
     "cypress:run:navigations": "npm-run-all -s -c nav_backOffice nav_news nav_numbers nav_clients nav_sales nav_homePage nav_mieInfo",
     "cypress:run:ricerca": "npm-run-all -s -c rc_classica rc_ris_clients rc_ris_mieInfo rc_risultati ricerca",
@@ -53,7 +51,28 @@
     "nav_numbers": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/navigation/mw_navigation_numbers.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_Numbers.xml,toConsole=true\"",
     "nav_sales": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/navigation/mw_navigation_sales.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_Sales.xml,toConsole=true\"",
     "censimento_pf": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/clients/mw_censimento_pf.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Censimento_PF.xml,toConsole=true\"",
-    "censimento_pg": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/clients/mw_censimento_pg.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Censimento_PG.xml,toConsole=true\""
+    "censimento_pg": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/clients/mw_censimento_pg.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Censimento_PG.xml,toConsole=true\"",
+  
+    "f:nav_burgerMenuClients": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/navigationBurger/mw_navigation_burgerMenuClients.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_BurgerMenu_Clients.xml,toConsole=true\"",
+    "f:nav_burgerMenuNumbers": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/navigationBurger/mw_navigation_burgerMenuNumbers.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_BurgerMenu_Numbers.xml,toConsole=true\"",
+    "f:nav_burgerMenuSales": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/navigationBurger/mw_navigation_burgerMenuSales.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_BurgerMenu_Sales.xml,toConsole=true\"",
+    "f:nav_burgerMenuBackOffice": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/navigationBurger/mw_navigation_burgerMenuBackOffice.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_BurgerMenu_BackOffice.xml,toConsole=true\"",
+    "f:nav_backOffice": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/navigation/mw_navigation_backOffice.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_BackOffice.xml,toConsole=true\"",
+    "f:nav_news": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/navigation/mw_navigation_news.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_News.xml,toConsole=true\"",
+    "f:nav_numbers": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/navigation/mw_navigation_numbers.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_Numbers.xml,toConsole=true\"",
+    "f:nav_clients": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/navigation/mw_navigation_clients.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_Clients.xml,toConsole=true\"",
+    "f:nav_sales": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/navigation/mw_navigation_sales.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_Sales.xml,toConsole=true\"",
+    "f:nav_homePage": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/navigation/mw_navigation_homePage.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_Da_Home_Page.xml,toConsole=true\"",
+    "f:nav_mieInfo": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/navigation/mw_navigation_mieInfo.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Navigazioni_Mie_Info.xml,toConsole=true\"",
+    "f:rc_classica": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca_classica.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Classica.xml,toConsole=true\"",
+    "f:rc_ris_clients": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati_clients.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati_Clients.xml,toConsole=true\"",
+    "f:rc_ris_mieInfo": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati_mieInfo.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati_Mie_Info.xml,toConsole=true\"",
+    "f:rc_risultati": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati.xml,toConsole=true\"",
+    "f:ricerca": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca.xml,toConsole=true\"",
+    "cypress:f:run:navigations": "npm-run-all -s -c f:nav_backOffice f:nav_news f:nav_numbers f:nav_clients f:nav_sales f:nav_homePage f:nav_mieInfo",
+    "cypress:f:run:ricerca": "npm-run-all -s -c f:rc_classica f:rc_ris_clients f:rc_ris_mieInfo f:rc_risultati f:ricerca",
+    "cypress:f:run:burgerMenu": "npm-run-all -s -c f:nav_burgerMenuClients f:nav_burgerMenuNumbers f:nav_burgerMenuSales f:nav_burgerMenuBackOffice"
+    
   },
   "repository": {
     "type": "git",
