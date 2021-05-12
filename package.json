@@ -69,9 +69,12 @@
     "f:rc_ris_mieInfo": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati_mieInfo.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati_Mie_Info.xml,toConsole=true\"",
     "f:rc_risultati": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati.xml,toConsole=true\"",
     "f:ricerca": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/ricerca/mw_ricerca.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca.xml,toConsole=true\"",
+    "f:censimento_pf": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/clients/mw_censimento_pf.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Censimento_PF.xml,toConsole=true\"",
+    "f:censimento_pg": "./node_modules/.bin/cypress run --browser firefox --quiet --spec cypress/integration/clients/mw_censimento_pg.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Censimento_PG.xml,toConsole=true\"",
     "cypress:f:run:navigations": "npm-run-all -s -c f:nav_backOffice f:nav_news f:nav_numbers f:nav_clients f:nav_sales f:nav_homePage f:nav_mieInfo",
     "cypress:f:run:ricerca": "npm-run-all -s -c f:rc_classica f:rc_ris_clients f:rc_ris_mieInfo f:rc_risultati f:ricerca",
-    "cypress:f:run:burgerMenu": "npm-run-all -s -c f:nav_burgerMenuClients f:nav_burgerMenuNumbers f:nav_burgerMenuSales f:nav_burgerMenuBackOffice"
+    "cypress:f:run:burgerMenu": "npm-run-all -s -c f:nav_burgerMenuClients f:nav_burgerMenuNumbers f:nav_burgerMenuSales f:nav_burgerMenuBackOffice",
+    "cypress:f:run:censimenti": "npm-run-all -s -c f:censimento_pf f:censimento_pg"
     
   },
   "repository": {
