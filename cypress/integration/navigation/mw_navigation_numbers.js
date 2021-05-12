@@ -168,7 +168,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         cy.url().should('eq', baseUrl + 'numbers/operational-indicators')
     })
 
-    it('Verifica aggancio incentivi', function () {
+    it('Verifica aggancio su Incentivi', function () {
         cy.get('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.contains('INCENTIVI').click().should('have.class','active')
