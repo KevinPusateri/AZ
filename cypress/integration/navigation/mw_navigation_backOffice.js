@@ -197,7 +197,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.wait(5000)
         canaleFromPopup()
         cy.wait(10000)
-        getIFrame().find('button:contains("Continua"):visible')
+        getIFrame().find('h4:contains("Dettaglio cliente"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
     })

@@ -1,6 +1,7 @@
 {
 	"retries": 1,
 	"video": true,
+	"videoCompression": 0,
 	"trashAssetsBeforeRuns": false,
 	"projectId": "4ypuc8",
 	"numTestsKeptInMemory":20,
