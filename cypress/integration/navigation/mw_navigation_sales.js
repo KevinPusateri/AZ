@@ -144,7 +144,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         canaleFromPopup()
         cy.wait('@gqlCampaignAgent', { requestTimeout: 30000 });
         cy.url().should('eq',baseUrl+ 'sales/campaign-manager')
-        getIFrame().find('a:contains("Campagne di vendita"):visible')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
     })
