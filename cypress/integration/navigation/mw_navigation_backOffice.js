@@ -296,7 +296,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('eq', baseUrl + 'back-office')
     })
 
-    it('Verifica apertura disambiguazione: Quadratura unificata', function () {
+    it.skip('Verifica apertura disambiguazione: Quadratura unificata', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Quadratura unificata')
