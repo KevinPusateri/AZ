@@ -213,7 +213,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
 
     getDocumentoPersonale().find('#importMobileDocument').click();
     cy.wait('@uploadMobileDoc', { requestTimeout: 30000 });
-
+    cy.wait(3000)
     getSCU().contains('Conferma').click();
     //#endregion
   
