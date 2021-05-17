@@ -162,7 +162,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         cy.get('lib-burger-icon').click()
         cy.contains('Denuncia BMP').click()
         canaleFromPopup()
-        cy.wait(10000)
+        cy.wait(20000)
         getIFrame().find('fnol-root:contains("Continua"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')

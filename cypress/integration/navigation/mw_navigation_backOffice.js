@@ -97,6 +97,19 @@ before(() => {
 
 describe('Matrix Web : Navigazioni da BackOffice', function () {
 
+    it('Verifica apertura disambiguazione: Denuncia BMP', function () {
+        cy.get('app-product-button-list').find('a').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
+        cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
+        cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
+        cy.wait(5000)
+        canaleFromPopup()
+        cy.wait(20000)
+        getIFrame().find('h4:contains("Dettaglio cliente"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
+    })
+
    it('Verifica atterraggio su BackOffice', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
@@ -185,19 +198,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         getIFrameDenuncia().find('h3:contains("Ricerca per targa"):visible')
         getIFrameDenuncia().find('h3:contains("Ricerca per dati anagrafici"):visible')
         getIFrameDenuncia().find('a:contains("Esegui Ricerca"):visible')
-        cy.get('lib-breadcrumbs').contains('Backoffice').click()
-        cy.url().should('eq', baseUrl + 'back-office')
-    })
-
-    it('Verifica apertura disambiguazione: Denuncia BMP', function () {
-        cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('eq', baseUrl + 'back-office')
-        cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
-        cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
-        cy.wait(5000)
-        canaleFromPopup()
-        cy.wait(10000)
-        getIFrame().find('h4:contains("Dettaglio cliente"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
     })
@@ -296,7 +296,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('eq', baseUrl + 'back-office')
     })
 
-    it.skip('Verifica apertura disambiguazione: Quadratura unificata', function () {
+/*    it('Verifica apertura disambiguazione: Quadratura unificata', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Quadratura unificata')
@@ -308,7 +308,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         getIFrame().find('#ApriPdfAdesioneQuad:contains("PDF di Adesione"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
-    })
+    })*/
 
     it('Verifica apertura disambiguazione: Incasso per conto', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()

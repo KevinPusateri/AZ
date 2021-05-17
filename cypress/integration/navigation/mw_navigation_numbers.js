@@ -135,7 +135,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         cy.contains('LINEE DI BUSINESS').click().should('have.class','active')
         interceptGetAgenziePDF()
         cy.get('app-kpi-card').contains('Portafoglio').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 120000 });
         getIFrame().find('[class="ControlloFiltroBottone"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')

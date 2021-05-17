@@ -94,7 +94,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
             'Scarico Dati',
             'Indici Digitali',
             'New Business Danni',
-            'New Business Ultra',
+            //'New Business Ultra',
             'New Business Vita',
             'New Business Allianz1',
             'Monitoraggio PTF Danni',
@@ -106,7 +106,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
             'Capitale Vita Scadenza'
         ]
 
-        cy.get('lib-side-menu-link').find('a').should('have.length', 22).each(($checkLinksBurger, i) => {
+        cy.get('lib-side-menu-link').find('a').should('have.length', 21).each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
         })
     })
@@ -249,7 +249,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
-    it('Verifica aggancio New Business Ultra', function () {
+    // tolto per esigenze di business
+   /* it('Verifica aggancio New Business Ultra', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
@@ -260,7 +261,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
-    })
+    })*/
 
     it('Verifica aggancio New Business Vita', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
@@ -283,7 +284,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         interceptGetAgenziePDF()
         cy.contains('New Business Allianz1').click()
         canaleFromPopup()
-        cy.wait('@getDacommerciale', { requestTimeout: 50000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 120000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
@@ -309,7 +310,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Riserve Vita').click()
         canaleFromPopup()
-        cy.wait('@getDacommerciale', { requestTimeout: 30000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 120000 });
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')

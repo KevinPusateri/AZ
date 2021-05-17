@@ -155,7 +155,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
       'Finanziamenti Compass'
     ]
     getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-        cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length',13).each(($link,i) =>{
+        cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length',12).each(($link,i) =>{
           expect($link.text().trim()).to.include(linksProdottiMenu[i]);
         })
     })

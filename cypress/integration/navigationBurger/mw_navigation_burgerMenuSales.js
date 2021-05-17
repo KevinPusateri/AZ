@@ -94,9 +94,9 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
             'Allianz Ultra Salute',
             'Allianz1 Business',
             'FastQuote Infortuni da circolazione',
-            'FastQuote Universo Persona',
-            'FastQuote Universo Salute',
-            'FastQuote Universo Persona Malattie Gravi',
+            //'FastQuote Universo Persona',
+            //'FastQuote Universo Salute',
+            //'FastQuote Universo Persona Malattie Gravi',
             'FastQuote Impresa e Albergo',
             'Allianz1 premorienza',
             'Preventivo Anonimo Vita Individuali',
@@ -125,7 +125,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
             'Note di contratto',
             'ACOM Gestione iniziative',
         ]
-        cy.get('nx-expansion-panel').find('a').should('have.length',39).each(($checkLinksBurger, i) => {
+        cy.get('nx-expansion-panel').find('a').should('have.length',36).each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurgerMotor[i]);
         })
 
@@ -256,7 +256,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    it('Verifica aggancio FastQuote Universo Persona', function () {
+ /*   it('Verifica aggancio FastQuote Universo Persona', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -287,7 +287,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
-    })
+    })*/
 
     it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
@@ -313,6 +313,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
     //#endregion
 
+    // da verificare il wait
     //#region Vita
     it('Verifica aggancio Allianz1 premorienza', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
@@ -326,7 +327,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.wait(5000)
         canaleFromPopup()
         cy.wait('@getSalesPremo', { requestTimeout: 40000 });
-        cy.wait(10000)
+        cy.wait(20000)
         getIFrame().find('button[class="btn btn-info btn-block"]:contains("Ricerca"):visible')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -338,7 +339,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('lib-burger-icon').click()
         cy.contains('Preventivo Anonimo Vita Individuali').click()
         canaleFromPopup()
-        cy.wait(10000)
+        cy.wait(20000)
         getIFrame().find('input[value="Home"]').invoke('attr','value').should('equal','Home')
         getIFrame().find('input[value="Indietro"]').invoke('attr','value').should('equal','Indietro')
         getIFrame().find('input[value="Avanti"]').invoke('attr','value').should('equal','Avanti')
@@ -564,7 +565,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     // TODO:non clicca il button
-    it.skip('Verifica aggancio Allianz Global Assistance', function () {
+ /*   it('Verifica aggancio Allianz Global Assistance', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
@@ -572,7 +573,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.get('#logo-oazis-header')
         cy.go('back')
         cy.url().should('eq',baseUrl+ 'sales/')
-    })
+    })*/
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo e aggiungere su excel
     // it('Verifica aggancio Allianz Placement Platform', function () {

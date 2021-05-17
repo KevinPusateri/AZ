@@ -142,7 +142,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
         cy.get('app-quick-access').contains('Campagne Commerciali').click()
         canaleFromPopup()
-        cy.wait('@gqlCampaignAgent', { requestTimeout: 30000 });
+        cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 });
         cy.url().should('eq',baseUrl+ 'sales/campaign-manager')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -206,7 +206,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             url: '**/assuntivomotor/**'
         }).as('getMotor');
         canaleFromPopup()
-        cy.wait('@getMotor', { requestTimeout: 60000 });
+        cy.wait('@getMotor', { requestTimeout: 120000 });
         getIFrame().find('button:contains("Calcola"):visible')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -312,7 +312,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         buttonEmettiPolizza()
         popoverEmettiPolizza().contains('Preventivo anonimo Vita Individuali').click()
         canaleFromPopup()
-        cy.wait(10000)
+        cy.wait(20000)
         getIFrame().find('#AZBuilder1_ctl15_cmdIndietro[value="Indietro"]').invoke('attr','value').should('equal','Indietro')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
@@ -501,7 +501,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.get('app-paginated-cards').find('button:contains("Vita")').click()
         cy.get('.cards-container').find('.card').first().click()
         canaleFromPopup()
-        cy.wait(10000)
+        cy.wait(20000)
         getIFrame().find('#AZBuilder1_ctl08_cmdNote').invoke('attr','value').should('equal','Note')
         cy.get('a').contains('Sales').click()
         cy.url().should('eq',baseUrl+ 'sales/')
