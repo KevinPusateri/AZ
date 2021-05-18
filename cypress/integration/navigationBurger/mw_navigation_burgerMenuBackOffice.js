@@ -264,7 +264,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         cy.url().should('eq', baseUrl + 'back-office')
     })
 
-    it('Verifica aggancio Quadratura unificata', function () {
+ /*   it('Verifica aggancio Quadratura unificata', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-burger-icon').click()
@@ -276,7 +276,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         getIFrame().find('#ApriPdfAdesioneQuad:contains("PDF di Adesione"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
-    })
+    })*/
 
     it('Verifica aggancio Incasso per conto', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
