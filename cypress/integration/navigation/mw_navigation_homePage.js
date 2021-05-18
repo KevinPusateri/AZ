@@ -208,9 +208,9 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         cy.url().should('include', '/news/home')
     });
     
-    it('Button News', function () {
+    it('Button Le mie info', function () {
         cy.get('app-product-button-list').find('a').contains('Le mie info').click()
-        cy.url().should('include', '/news/home')
+        cy.url().should('include', '/lemieinfo?info=1')
     });
     it('Centro notifiche', function () {
         cy.get('app-notification-top-bar').find('a').contains('Vai al Centro notifiche').click()
