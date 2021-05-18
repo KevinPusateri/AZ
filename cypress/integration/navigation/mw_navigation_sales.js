@@ -399,7 +399,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
                 if(!$btn.hasClass('disabled')){
                 cy.wrap($btn).click()
                 cy.get('.details-container').find('button:contains("Estrai dettaglio")').click()
-                cy.wait('@getDacommerciale', { requestTimeout: 40000 });
+                cy.wait('@getDacommerciale', { requestTimeout: 50000 });
                 getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
                 check = false
                 }
