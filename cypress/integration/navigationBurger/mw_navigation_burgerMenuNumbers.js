@@ -46,8 +46,8 @@ before(() => {
     cy.viewport(1920, 1080)
   
     cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('le00080')
-    cy.get('input[name="Ecom_Password"]').type('Dragonball3')
+    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
+    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
