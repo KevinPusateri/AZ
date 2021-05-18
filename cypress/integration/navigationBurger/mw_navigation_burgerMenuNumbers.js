@@ -77,7 +77,7 @@ before(() => {
 
 describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
-    it.only('Verifica i link da Burger Menu', function () {
+    it('Verifica i link da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
 
@@ -252,7 +252,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
     })
 
     // da aggiungere excel
-    it.only('Verifica aggancio Ultra Casa e Patrimonio', function () {
+    it('Verifica aggancio Ultra Casa e Patrimonio', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
@@ -266,7 +266,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
     })
 
     // da aggiungere excel
-    it.only('Verifica aggancio Ultra Salute', function () {
+    it('Verifica aggancio Ultra Salute', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
         cy.get('lib-burger-icon').click()
