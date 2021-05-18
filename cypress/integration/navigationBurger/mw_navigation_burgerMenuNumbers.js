@@ -46,8 +46,8 @@ before(() => {
     cy.viewport(1920, 1080)
   
     cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
+    cy.get('input[name="Ecom_User_ID"]').type('le00080')
+    cy.get('input[name="Ecom_Password"]').type('Dragonball3')
     cy.get('input[type="SUBMIT"]').click()
     cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
   
@@ -77,7 +77,7 @@ before(() => {
 
 describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
-    it('Verifica i link da Burger Menu', function () {
+    it.only('Verifica i link da Burger Menu', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
 
@@ -94,6 +94,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
             'Scarico Dati',
             'Indici Digitali',
             'New Business Danni',
+            'Ultra Casa e Patrimonio', // da fare
+            'Ultra Salute', // da fare
             //'New Business Ultra',
             'New Business Vita',
             'New Business Allianz1',
@@ -106,7 +108,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
             'Capitale Vita Scadenza'
         ]
 
-        cy.get('lib-side-menu-link').find('a').should('have.length', 21).each(($checkLinksBurger, i) => {
+        cy.get('lib-side-menu-link').find('a').should('have.length', 23).each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
         })
     })
@@ -245,6 +247,34 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         canaleFromPopup()
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
+        cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
+    })
+
+    // da aggiungere excel
+    it.only('Verifica aggancio Ultra Casa e Patrimonio', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
+        cy.get('lib-burger-icon').click()
+        interceptGetAgenziePDF()
+        cy.contains('Ultra Casa e Patrimonio').click()
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
+        getIFrame().find('#submit-Mon_PTF:contains("Filtra"):visible')
+        cy.get('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
+    })
+
+    // da aggiungere excel
+    it.only('Verifica aggancio Ultra Salute', function () {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
+        cy.url().should('eq', baseUrl + 'numbers/business-lines')
+        cy.get('lib-burger-icon').click()
+        interceptGetAgenziePDF()
+        cy.contains('Ultra Salute').click()
+        canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
+        getIFrame().find('#submit-Mon_PTF:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
         cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
