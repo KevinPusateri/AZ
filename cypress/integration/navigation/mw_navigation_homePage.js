@@ -1,11 +1,10 @@
 /// <reference types="Cypress" />
 
 
-Cypress.config('defaultCommandTimeout', 30000)
 
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
+Cypress.config('defaultCommandTimeout', 50000)
 const delayBetweenTests = 3000
 const baseUrl = Cypress.env('baseUrl') 
 
@@ -87,7 +86,7 @@ Cypress._.times(1,()=>{
 
 describe('Matrix Web : Navigazioni da Home Page - ', function () {
 
-    it('Top Menu Principali', function () {
+    it('Verifica Top Menu Principali', function () {
         cy.get('lib-calendar').click()
         cy.get('lib-incident').click()
         cy.get('lib-notification-header').click()
@@ -98,7 +97,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     });
 
     // NEW
-    it('Top Menu incident - Verifica presenza dei link', function () {
+    it('Verifica Top Menu incident - Verifica presenza dei link', function () {
         cy.get('lib-incident').click()
         cy.wait(1000)
         const linksIncident = [
@@ -109,14 +108,12 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         cy.get('lib-utility-label').find('a').each(($link, i) => {
             expect($link.text().trim()).to.include(linksIncident[i]);
         })
-        canaleFromPopup()
-        getIFrame().find('#panel-1022_header-title-textEl:contains("Messaggi"):visible')
         cy.get('a[href="/matrix/"]').click()
         cy.url().should('eq',baseUrl)
     })
 
     // NEW
-    it('Top Menu incident - Verifica presenza dei link', function () {
+    it('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
         cy.get('lib-notification-header').click()
         cy.wait(100).get('lib-notification-settings').click()
         const linksNotificaion = [
@@ -137,31 +134,31 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     })
 
 
-    it('Top Menu Clients', function () {
+    it('Verifica Top Menu Clients', function () {
         cy.get('lib-switch-button').click().wait(500)
         cy.get('lib-switch-button-list').contains('Clients').click()
         cy.url().should('include', '/clients')
     });
 
-    it('Top Menu Sales', function () {
+    it('Verifica Top Menu Sales', function () {
         cy.get('lib-switch-button').click().wait(500)
         cy.get('lib-switch-button-list').contains('Sales').click()
         cy.url().should('include', '/sales')
     });
 
-    it('Top Menu Numbers', function () {
+    it('Verifica Top Menu Numbers', function () {
         cy.get('lib-switch-button').click().wait(500)
         cy.get('lib-switch-button-list').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
     });
 
-    it('Top Menu Backoffice', function () {
+    it('Verifica Top Menu Backoffice', function () {
         cy.get('lib-switch-button').click().wait(500)
         cy.get('lib-switch-button-list').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
     });
 
-    it('Top Menu News', function () {
+    it('Verifica Top Menu News', function () {
         cy.get('lib-switch-button').click().wait(500)
         cy.intercept({
             method: 'GET',
@@ -173,52 +170,52 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         cy.get('a[href="/matrix/"]').click()
     });
 
-    it('Top Menu Le mie info', function () {
+    it('Verifica Top Menu Le mie info', function () {
         cy.get('lib-switch-button').click().wait(500)
         cy.get('lib-switch-button-list').contains('Le mie info').click()
         cy.url().should('include', '/lemieinfo')
     });
 
-    it('Cerca in Matrix', function () {
+    it('Verica buca di ricerca', function () {
         cy.get('input').invoke('attr', 'placeholder').should('contain', 'Cerca in Matrix')
     });
 
-    it('Button Clients', function () {
+    it('Verifica Button Clients', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.url().should('include', '/clients')
     });
         
-    it('Button Sales', function () {
+    it('Verifica Button Sales', function () {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.url().should('include', '/sales')
     });
 
-    it('Button Numbers', function () {
+    it('Verifica Button Numbers', function () {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.url().should('include', '/numbers/business-lines')
     });
         
-    it('Button Backoffice', function () {
+    it('Verifica Button Backoffice', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('include', '/back-office')
     });
 
-    it('Button News', function () {
+    it('Verifica Button News', function () {
         cy.get('app-product-button-list').find('a').contains('News').click()
         cy.url().should('include', '/news/home')
     });
     
-    it('Button Le mie info', function () {
+    it('Verifica Button Le mie info', function () {
         cy.get('app-product-button-list').find('a').contains('Le mie info').click()
         cy.url().should('include', '/lemieinfo?info=1')
     });
-    it('Centro notifiche', function () {
-        cy.get('app-notification-top-bar').find('a').contains('Vai al Centro notifiche').click()
+    it('Verifica Centro notifiche', function () {
+        cy.get('app-notification-Verifica Top-bar').find('a').contains('Vai al Centro notifiche').click()
         cy.url().should('include', '/notification-center')
     });
 
-    it('Vedi tutte le news', function () {
-        cy.get('app-news-top-bar-title-cta').contains('Vedi tutte').click()
+    it('Verifica link: Vedi tutte le news', function () {
+        cy.get('app-news-Verifica Top-bar-title-cta').contains('Vedi tutte').click()
         cy.url().should('include', '/news/recent')
     });
 

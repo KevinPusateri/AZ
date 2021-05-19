@@ -111,7 +111,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     })
 
     // TODO: NEW PAGINA
-    it.skip('Verifica aggancio Analisi dei bisogni', function () {
+    it('Verifica aggancio Analisi dei bisogni', function () {
         interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.wait('@getClients', { requestTimeout: 30000 })
