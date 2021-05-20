@@ -97,19 +97,6 @@ before(() => {
 
 describe('Matrix Web : Navigazioni da BackOffice', function () {
 
-    it('Verifica apertura disambiguazione: Denuncia BMP', function () {
-        cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('eq', baseUrl + 'back-office')
-        cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
-        cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
-        cy.wait(5000)
-        canaleFromPopup()
-        cy.wait(20000)
-        getIFrame().find('h4:contains("Dettaglio cliente"):visible')
-        cy.get('lib-breadcrumbs').contains('Backoffice').click()
-        cy.url().should('eq', baseUrl + 'back-office')
-    })
-
    it('Verifica atterraggio su BackOffice', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
@@ -167,9 +154,10 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
             'Incasso massivo',
             'Sollecito titoli',
             'Impostazione contabilità',
-            'Convenzioni in trattenuta'
+            'Convenzioni in trattenuta',
+            'Monitoraggio Customer Digital Footprint'
         ]
-        cy.get('app-backoffice-cards-list').eq(1).find('a').should('have.length', 11).each(($labelCard, i) => {
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('have.length', 12).each(($labelCard, i) => {
             expect($labelCard).to.contain(buttonsContabilita[i])
         })
     });
@@ -198,6 +186,19 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         getIFrameDenuncia().find('h3:contains("Ricerca per targa"):visible')
         getIFrameDenuncia().find('h3:contains("Ricerca per dati anagrafici"):visible')
         getIFrameDenuncia().find('a:contains("Esegui Ricerca"):visible')
+        cy.get('lib-breadcrumbs').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
+    })
+
+    it('Verifica apertura disambiguazione: Denuncia BMP', function () {
+        cy.get('app-product-button-list').find('a').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
+        cy.get('app-backoffice-cards-list').first().find('a').should('contain','Denuncia BMP')
+        cy.get('.backoffice-card').find('a').contains('Denuncia BMP').click()
+        cy.wait(5000)
+        canaleFromPopup()
+        cy.wait(20000)
+        getIFrame().find('h4:contains("Dettaglio cliente"):visible')
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
     })
@@ -371,6 +372,16 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         cy.url().should('eq', baseUrl + 'back-office')
     });
 
-    
+    it('Verifica apertura disambiguazione: Monitoraggio Customer Digital Footprint', function () {
+        cy.get('app-product-button-list').find('a').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
+        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Monitoraggio Customer Digital Footprint')
+        cy.get('app-backoffice-cards-list').eq(1).find('a[href="https://portaleagenzie.pp.azi.allianz.it/cdf/"]')
+        .invoke('removeAttr','target').click()
+        cy.url().should('include', 'cdf')
+        cy.go('back')
+        cy.get('a').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
+    });
 })
 

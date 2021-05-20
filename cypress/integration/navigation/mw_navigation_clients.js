@@ -110,19 +110,16 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         })
     })
 
-    // TODO: NEW PAGINA
+    // TODO: NEW PAGINA con firefox
     it('Verifica aggancio Analisi dei bisogni', function () {
         interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.wait('@getClients', { requestTimeout: 30000 })
-        cy.window().then(win =>{
-            cy.spy(win,'open').as('redirect');
-        });
-        const a = cy.get('app-rapid-link').find('a[href="https://www.ageallianz.it/analisideibisogni/app"]').invoke('href')
-        console.log(a)
-        // .invoke('removeAttr','target').contains('Analisi dei bisogni').click()
-
-        // cy.url().should('include', baseUrl + 'clients/')
+        cy.wait('@getClients', { requestTimeout: 40000 })
+        cy.get('app-rapid-link').find('a[href="https://www.ageallianz.it/analisideibisogni/app"]')
+        .invoke('removeAttr','target').click()
+        cy.go('back')
+        backToClients()
+        cy.url().should('eq', baseUrl + 'clients/')
     });
 
     it('Verifica aggancio Digital Me', function () {

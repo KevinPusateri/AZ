@@ -340,4 +340,15 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
     })
     //#endregion
 
+    //TODO:aggiungere su tfs
+    it('Verifica aggancio Monitoraggio Customer Digital Footprint', function () {
+        cy.get('app-product-button-list').find('a').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
+        cy.get('lib-burger-icon').click()
+        cy.contains('Monitoraggio Customer Digital Footprint').invoke('removeAttr','target').click()
+        cy.url().should('include', 'cdf')
+        cy.go('back')
+        cy.get('a').contains('Backoffice').click()
+        cy.url().should('eq', baseUrl + 'back-office')
+    })
 })

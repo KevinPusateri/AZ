@@ -1,5 +1,4 @@
 {
-	"retries": 1,
 	"video": true,
 	"videoCompression": 0,
 	"trashAssetsBeforeRuns": false,
