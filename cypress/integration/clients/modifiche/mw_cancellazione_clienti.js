@@ -91,8 +91,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
   })
 
 
-  // TI RE un solo caso
-  it.only('Verifica Cancellazione clienti PF e PG', function () {
+  it('Verifica Cancellazione clienti PF e PG', function () {
     cy.get('app-product-button-list').find('a').contains('Clients').click()
     cy.url().should('eq', baseUrl + 'clients/')
     cy.get('lib-burger-icon').click()
@@ -104,10 +103,10 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
           cy.wrap($table).find('tbody').then(() => {
             if ($table.find('tr:contains("Nessun record da visualizzare.")').length === 1) {
               cy.generateTwoLetters().then(randomChars => {
-                getIFrame().find('#f-cognome').clear().type('Ro')
+                getIFrame().find('#f-cognome').clear().type(randomChars)
               })
               cy.generateTwoLetters().then(randomChars => {
-                getIFrame().find('#f-nome').clear().type('ma')
+                getIFrame().find('#f-nome').clear().type(randomChars)
               })
               getIFrame().find('input[class="k-button pull-right"]').contains('Cerca').click().wait(2000)
             } else {
@@ -150,9 +149,10 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
       getIFrame().find('[class="k-widget k-window allianz-alert-window-container"]').within(() => {
         cy.get('[class="message container"]:visible').should('contain', 'Attenzione l\'operazione non è reversibile.')
         cy.get('form[class="buttons"]:visible').contains('Ok').click()
-      }).then(() =>{
-        getIFrame().find('form[class="buttons"]:visible').contains('Chiudi').click()
       })
+
+      cy.get('a[href="/matrix/"]').click()
+
      
     })
   })
@@ -163,14 +163,12 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
       cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
     })
 
-    cy.get('.icon').find('[name="filter"]').click()
+    // TODO: modifica filtro non trova
+    cy.get('.tab-content-container').find('nx-icon[name="filter"]').click()
     cy.get('.filter-group').find('span:contains("Effettivo"):visible').click()
     cy.get('.filter-group').find('span:contains("Cessato"):visible').click()
     cy.get('.footer').find('button').contains('applica').click()
-
-
-    cy.get('lib-clients-container').should('not.contain', nameCliente)
-    // cy.get('div[class="text-container"]').should('contain','La ricerca non ha prodotto risultati')
+    cy.get('lib-clients-container').should('contain', 'La ricerca non ha prodotto risultati')
 
   })
 
