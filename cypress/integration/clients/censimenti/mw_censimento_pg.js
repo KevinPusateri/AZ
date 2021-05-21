@@ -3,10 +3,17 @@
 */
 
 /// <reference types="Cypress" />
+
+//#region import
 import LoginPage from "../../../mw_page_objects/common/LoginPage"
 import TopBar from "../../../mw_page_objects/common/TopBar"
 import LandingClients from "../../../mw_page_objects/clients/LandingClients"
 import SCU from "../../../mw_page_objects/clients/SCU"
+import Folder from "../../../mw_page_objects/common/Folder"
+import HomePage from "../../../mw_page_objects/common/HomePage"
+import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+//#endregion import
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
@@ -92,67 +99,13 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
   })
 
   it('Consensi > tutto no', () => {
-    getIframe().find('label[for="invio-documenti-no"]').click();
-    getIframe().find('label[for="firma-grafometrica-no"]').click();
-    getIframe().find('label[for="promo-allianz-no"]').click();
-    getIframe().find('label[for="promo-allianz-terzi-no"]').click();
-    getIframe().find('label[for="promo-allianz-profilazione-no"]').click();
-    getIframe().find('label[for="promo-allianz-indagini-no"]').click();
-    getIframe().find('label[for="quest-adeguatezza-vita-no"]').click();
-
-    cy.intercept({
-      method: 'GET',
-      url: /VerificaPiva*/
-    }).as('verificaPiva');
-
-    cy.intercept({
-      method: 'POST',
-      url: /Post/
-    }).as('post');
-
-    getIframe().find('button:contains("Avanti")').click().wait(2000);
-
-    cy.wait('@verificaPiva', { requestTimeout: 10000 });
-    cy.wait('@post', { requestTimeout: 10000 });
-
-    //#region Verifica presenza normalizzatore
-    getIframe().find('#Allianz-msg-container').then((container) => {
-      if (container.find('li:contains(normalizzati)').length > 0) {
-        getIframe().find('button:contains("Avanti")').click();
-      }
-    });
-    //#endregion
-
-    getIframe().find('button:contains("Conferma")').click();
+    SCU.nuovoClientePGConsensi()
+    SCU.nuovoClientePGConfermaInserimento()
   })
 
   it('Da Folder inserire l\'autocertificazione e verificare che l\'inserimento venga bloccato', () => {
-    getFolder().find('span[class="k-icon k-plus"]:visible').click();
-    getFolder().find('span[class="k-icon k-plus"]:first').click();
-    getFolder().find('#UploadDocument').click();
-    getFolder().find('#win-upload-document_wnd_title').click();
-    getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}');
-    getFolder().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('{downarrow}').type('{downarrow}').type('{enter}');
-
-    cy.intercept({
-      method: 'POST',
-      url: /uploadCustomerDocument/
-    }).as('uploadCustomerDoc');
-
-    const fileName = 'Autocertificazione_Test.pdf';
-    cy.fixture(fileName).then(fileContent => {
-      getFolder().find('#file').attachFile({
-        fileContent,
-        fileName,
-        mimeType: 'application/pdf'
-      }, { subjectType: 'input' });
-    });
-
-    getFolder().contains('Upload dei file selezionati').click();
-    cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 });
-
-    getIframe().find('button:contains("Conferma")').click();
-    getIframe().find('button:contains("Inserisci il documento")').click();
+    Folder.CaricaAutocertificazione()
+    SCU.VerificaDocumentiInsufficienti()
   })
 
   it('Da Folder inserire la visura camerale e procedere', () => {

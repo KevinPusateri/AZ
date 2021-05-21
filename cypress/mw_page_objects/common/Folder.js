@@ -69,7 +69,7 @@ class Folder {
         getDocumentScanner().find('button:contains("Continua"):visible').click()
         getDocumentoPersonale().find('#pupload').click()
 
-        const fileName = 'CI_Test.pdf';
+        const fileName = 'CI_Test.pdf'
 
         cy.fixture(fileName).then(fileContent => {
             getDocumentoPersonale().find('#pdfUpload').attachFile({
@@ -85,6 +85,34 @@ class Folder {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
+    }
+
+    static CaricaAutocertificazione() {
+        getFolder().find('span[class="k-icon k-plus"]:visible').click()
+        getFolder().find('span[class="k-icon k-plus"]:first').click()
+        getFolder().find('#UploadDocument').click()
+        getFolder().find('#win-upload-document_wnd_title').click()
+        getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}')
+        getFolder().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('{downarrow}').type('{downarrow}').type('{enter}')
+
+        cy.intercept({
+            method: 'POST',
+            url: /uploadCustomerDocument/
+        }).as('uploadCustomerDoc')
+
+        const fileName = 'Autocertificazione_Test.pdf'
+        cy.fixture(fileName).then(fileContent => {
+            getFolder().find('#file').attachFile({
+                fileContent,
+                fileName,
+                mimeType: 'application/pdf'
+            }, { subjectType: 'input' })
+        })
+
+        getFolder().contains('Upload dei file selezionati').click()
+        cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
+
+        getIframe().find('button:contains("Conferma")').click()
     }
 }
 
