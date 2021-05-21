@@ -28,22 +28,22 @@ const moment = require('moment')
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 /**
-	 * Will check if an iframe is ready for DOM manipulation. Just listening for the
-	 * load event will only work if the iframe is not already loaded. If so, it is
-	 * necessary to observe the readyState. The issue here is that Chrome initialises
-	 * iframes with "about:blank" and sets their readyState to complete. So it is
+   * Will check if an iframe is ready for DOM manipulation. Just listening for the
+   * load event will only work if the iframe is not already loaded. If so, it is
+   * necessary to observe the readyState. The issue here is that Chrome initialises
+   * iframes with "about:blank" and sets their readyState to complete. So it is
 
-	 * also necessary to check if it's the readyState of the correct target document.
-	 *
-	 * Some hints taken and adapted from:
-	 * https://stackoverflow.com/questions/17158932/how-to-detect-when-an-iframe-has-already-been-loaded/36155560
+   * also necessary to check if it's the readyState of the correct target document.
+   *
+   * Some hints taken and adapted from:
+   * https://stackoverflow.com/questions/17158932/how-to-detect-when-an-iframe-has-already-been-loaded/36155560
 
-	 *
-	 * @param $iframe - The iframe element
-	 */
+   *
+   * @param $iframe - The iframe element
+   */
 const isIframeLoaded = $iframe => {
   const contentWindow = $iframe.contentWindow;
-  
+
 
   const src = $iframe.attributes.src;
   const href = contentWindow.location.href;
@@ -54,7 +54,7 @@ const isIframeLoaded = $iframe => {
 
   return false;
 };
-  
+
 
 /**
   * Wait for iframe to load, and call callback
@@ -64,7 +64,7 @@ const isIframeLoaded = $iframe => {
 */
 Cypress.Commands.add('iframe', { prevSubject: 'element' }, $iframes => new Cypress.Promise(resolve => {
   const loaded = [];
-  
+
 
   $iframes.each((_, $iframe) => {
     loaded.push(
@@ -89,7 +89,7 @@ Cypress.Commands.add('iframe', { prevSubject: 'element' }, $iframes => new Cypre
 Cypress.Commands.overwrite("clearCookies", () => {
   cy.getCookies().then(cookies => {
     for (const cookie of cookies) {
-        cy.clearCookie(cookie.name)
+      cy.clearCookie(cookie.name)
     }
   })
 })
@@ -100,22 +100,22 @@ Cypress.Commands.add('getIframeBody', (iframeCode) => {
   cy.log('getIframeBody')
 
   return cy
-  .get(iframeCode, { log: false })
-  .its('0.contentDocument.body', { log: false }).should('not.be.empty')
-  // wraps "body" DOM element to allow
-  // chaining more Cypress commands, like ".find(...)"
-  // https://on.cypress.io/wrap
-  .then((body) => cy.wrap(body, { log: false }))
+    .get(iframeCode, { log: false })
+    .its('0.contentDocument.body', { log: false }).should('not.be.empty')
+    // wraps "body" DOM element to allow
+    // chaining more Cypress commands, like ".find(...)"
+    // https://on.cypress.io/wrap
+    .then((body) => cy.wrap(body, { log: false }))
 })
 
 Cypress.Commands.add('generateTwoLetters', () => {
-    var result = '';
-    var charactersFirstLetter = 'BCDFGLMNPRSTVZ';
-    result += charactersFirstLetter.charAt(Math.floor(Math.random() * charactersFirstLetter.length));
-    
-    var charactersSecondLetter = 'AEIOU';
-    result += charactersSecondLetter.charAt(Math.floor(Math.random() * charactersSecondLetter.length));
-    return result;
+  var result = '';
+  var charactersFirstLetter = 'BCDFGLMNPRSTVZ';
+  result += charactersFirstLetter.charAt(Math.floor(Math.random() * charactersFirstLetter.length));
+
+  var charactersSecondLetter = 'AEIOU';
+  result += charactersSecondLetter.charAt(Math.floor(Math.random() * charactersSecondLetter.length));
+  return result;
 })
 
 Cypress.Commands.add('generateUnicoClienteLabel', () => {
@@ -131,4 +131,28 @@ Cypress.Commands.add('generateUnicoDirezioneLabel', () => {
 Cypress.Commands.add('generateVisuraCameraleLabel', () => {
   let currentDateTime = moment().format('DD/MM/YYYY')
   return "Visura Camerale (Rami Vari) " + currentDateTime
+})
+
+Cypress.Commands.add('preserveCookies', () => {
+  cy.viewport(1920, 1080)
+  //Skip this two requests that blocks on homepage
+  cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
+  cy.intercept(/launch-*/, 'ignore').as('launchStaging')
+
+  //Wait for news graphQL to be returned
+  cy.intercept('POST', '/graphql', (req) => {
+    if (req.body.operationName.includes('news')) {
+      req.alias = 'gqlNews'
+    }
+  })
+
+  cy.visit(Cypress.env('urlMWPreprod'))
+
+  cy.wait('@gqlNews')
+  
+  Cypress.Cookies.defaults({
+    preserve: (cookie) => {
+      return true;
+    }
+  })
 })

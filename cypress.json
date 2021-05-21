@@ -13,6 +13,7 @@
 			"password": "vC4DwAHxznfGl8XywsoohZkbdmL6cf",
 			"database": "applogs"
 		},
-	"baseUrl": "https://portaleagenzie.pp.azi.allianz.it/matrix/"
+		"baseUrl": "https://portaleagenzie.pp.azi.allianz.it/matrix/",
+		"urlMWPreprod" : "https://matrix.pp.azi.allianz.it/"
 	}
 }

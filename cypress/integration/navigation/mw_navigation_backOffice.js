@@ -4,12 +4,17 @@
  */
 
 /// <reference types="Cypress" />
+import LoginPage from "../../mw_page_objects/common/LoginPage"
+import TopBar from "../../mw_page_objects/common/TopBar"
+
+//#region Variables
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
+//#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-const delayBetweenTests = 2000
 const baseUrl = Cypress.env('baseUrl') 
-
 //#endregion
 
 //#region Global Variables
@@ -52,57 +57,25 @@ const canaleFromPopup = () => {cy.get('body').then($body => {
 //#endregion
 
 before(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
+    LoginPage.logInMW(userName, psw)
+})
   
-    cy.intercept('POST', '/graphql', (req) => {
-    // if (req.body.operationName.includes('notifications')) {
-    //     req.alias = 'gqlNotifications'
-    // }
-    if (req.body.operationName.includes('news')) {
-        req.alias = 'gqlNews'
-    }
-    })
-    cy.viewport(1920, 1080)
+beforeEach(() => {
+    cy.preserveCookies()
+})
   
-    cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
-    cy.get('input[type="SUBMIT"]').click()
-    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
-  
-    cy.wait('@gqlNews')
-  })
-  
-  beforeEach(() => {
-    cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/')
-    Cypress.Cookies.defaults({
-      preserve: (cookie) => {
-        return true;
-      }
-    })
-  })
-  
-  after(() => {
-    cy.get('body').then($body => {
-        if ($body.find('.user-icon-container').length > 0) {   
-            cy.get('.user-icon-container').click();
-            cy.wait(1000).contains('Logout').click()
-            cy.wait(delayBetweenTests)
-        }
-    });
-    cy.clearCookies();
-  })
+after(() => {
+    TopBar.logOutMW()
+})
 
 describe('Matrix Web : Navigazioni da BackOffice', function () {
 
-   it('Verifica atterraggio su BackOffice', function () {
+   it.only('Verifica atterraggio su BackOffice', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
     });
 
-    it('Verifica atterraggio Appuntamenti Futuri', function () {
+    it.only('Verifica atterraggio Appuntamenti Futuri', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-upcoming-dates').click()
