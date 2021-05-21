@@ -135,21 +135,6 @@ Cypress.Commands.add('generateVisuraCameraleLabel', () => {
 
 Cypress.Commands.add('preserveCookies', () => {
   cy.viewport(1920, 1080)
-  //Skip this two requests that blocks on homepage
-  cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
-  cy.intercept(/launch-*/, 'ignore').as('launchStaging')
-
-  //Wait for news graphQL to be returned
-  cy.intercept('POST', '/graphql', (req) => {
-    if (req.body.operationName.includes('news')) {
-      req.alias = 'gqlNews'
-    }
-  })
-
-  cy.visit(Cypress.env('urlMWPreprod'))
-
-  cy.wait('@gqlNews')
-  
   Cypress.Cookies.defaults({
     preserve: (cookie) => {
       return true;
