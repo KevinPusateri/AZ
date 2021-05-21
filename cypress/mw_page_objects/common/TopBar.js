@@ -30,6 +30,11 @@ class TopBar {
                 cy.get('input[name="main-search-input"]').type(nome).type('{enter}');
         }
     }
+
+    static clickBackOffice() {
+        cy.get('app-product-button-list').find('a').contains('Backoffice').click()
+        cy.url().should('eq', Cypress.env('baseUrl') + 'back-office')
+    }
 }
 
 export default TopBar

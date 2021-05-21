@@ -300,7 +300,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         interceptGetAgenziePDF()
         cy.contains('New Business Vita').click()
         canaleFromPopup()
-        cy.wait('@getDacommerciale', { requestTimeout: 30000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 50000 });
         cy.wait(5000)
         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
         cy.get('a').contains('Numbers').click()
