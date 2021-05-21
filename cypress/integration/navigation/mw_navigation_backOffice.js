@@ -70,12 +70,12 @@ after(() => {
 
 describe('Matrix Web : Navigazioni da BackOffice', function () {
 
-   it.only('Verifica atterraggio su BackOffice', function () {
+   it('Verifica atterraggio su BackOffice', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
     });
 
-    it.only('Verifica atterraggio Appuntamenti Futuri', function () {
+    it('Verifica atterraggio Appuntamenti Futuri', function () {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', baseUrl + 'back-office')
         cy.get('lib-upcoming-dates').click()
