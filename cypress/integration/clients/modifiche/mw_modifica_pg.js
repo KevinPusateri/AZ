@@ -62,12 +62,25 @@ before(() => {
   //Skip this two requests that blocks on homepage
   cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
   cy.intercept(/launch-*/,'ignore').as('launchStaging');
+  cy.intercept('POST', '/graphql', (req) => {
+    if (req.body.operationName.includes('notifications')) {
+      req.alias = 'gqlNotifications'
+    }
+  });
+
+  cy.visit('https://matrix.pp.azi.allianz.it/',{
+    onBeforeLoad: win =>{
+        win.sessionStorage.clear();
+    }
+  })
 
   cy.visit('https://matrix.pp.azi.allianz.it/')
   cy.get('input[name="Ecom_User_ID"]').type(currentUser)
   cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
   cy.get('input[type="SUBMIT"]').click()
   cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
+
+  cy.wait('@gqlNotifications',{'responseTimeout': 60000})
 })
 
 beforeEach(() => {
@@ -93,19 +106,27 @@ beforeEach(() => {
 describe('Matrix Web : Modifica PG', function () {
 
   it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
+
+    cy.intercept('POST', '/graphql', (req) => {
+      if (req.body.operationName.includes('searchClient')) {
+        req.alias = 'gqlSearchClient'
+      }
+    });
+
     cy.get('input[name="main-search-input"]').click()
     cy.generateTwoLetters().then(randomChars => {
       cy.get('input[name="main-search-input"]').type(randomChars).type('{enter}')
     })
-    cy.url().should('include', '/search/clients/clients').wait(2000)
+    cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
+    cy.url().should('include', '/search/clients/clients')
 
     //Rimuoviamo le persone finische dai filtri di ricerca
     cy.get('.icon').find('[name="filter"]').click()
     cy.get('.filter-group').contains('Persona fisica').click()
     //Rimuoviamo le effettive e cessate
     cy.get('.filter-group').contains('Potenziale').click()
-
     cy.get('.footer').find('button').contains('applica').click()
+    cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
 
     cy.get('lib-applied-filters-item').find('span').should('be.visible')
     cy.get('lib-client-item').first().click().wait(3000)
@@ -150,23 +171,44 @@ describe('Matrix Web : Modifica PG', function () {
       url: /NormalizeImpresa/
     }).as('normalizeImpresa')
 
-    getIframe().find('#submit').click()
-    cy.wait('@normalizeImpresa', { requestTimeout: 30000 });
+    cy.intercept({
+      method: 'POST',
+      url: /ValidateForEdit/
+    }).as('validateForEdit')
+
+    cy.intercept({
+      method: 'GET',
+      url: '**/AnagrafeWA40/**'
+    }).as('anagrafeWA40')
+
+    cy.intercept({
+      method: 'GET',
+      url: '**/SCU/**'
+    }).as('scu')
+
+    getIframe().find('#submit').click().wait(1000)
 
     //#region Verifica presenza normalizzatore
     getIframe().find('#Allianz-msg-container').then((container) => {
       if (container.find('li:contains(normalizzati)').length > 0) {
         getIframe().find('#submit').click()
-      }
+    }
     });
     //#endregion
 
-    //Non ho trovato altre chiamate da attendere utili
-    cy.wait(10000)
+    cy.wait('@normalizeImpresa', { requestTimeout: 30000 });
+    cy.wait('@validateForEdit', { requestTimeout: 30000 });
+    cy.wait('@anagrafeWA40', { requestTimeout: 30000 });
+    cy.wait('@scu', { requestTimeout: 30000 }).wait(1000);
 
     getIframe().find('button:contains("Conferma")').click();
 
-    cy.wait(3000)
+    cy.intercept({
+      method: 'POST',
+      url: /getCustomerTree/
+    }).as('getCustomerTree')
+
+    cy.wait('@getCustomerTree', { requestTimeout: 30000 });
     
   })
   
@@ -184,7 +226,7 @@ describe('Matrix Web : Modifica PG', function () {
 
     const fileName = 'Autocertificazione_Test.pdf';
     cy.fixture(fileName).then(fileContent => {
-      getIframe().find('#file').attachFile({ 
+      getIframe().find('#file').attachFile({
         fileContent, 
         fileName, 
         mimeType: 'application/pdf'
@@ -194,18 +236,14 @@ describe('Matrix Web : Modifica PG', function () {
     getIframe().contains('Upload dei file selezionati').click()
     cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
       
-    getIframe().find('#idUrlBack').click()
+    getIframe().find('#idUrlBack').click().wait(2000)
 
-    cy.wait(5000)
-
-    //Verifichiamo presenza popup Risulta un UNICO con la sezione...
-    getIframe().find('body').then((body) => {
-      if (body.find('.allianz-alert-window k-window-content k-content').length > 0) {
-        getIframe().find('button:contains(SI)').click()
-      }
-    });
-      
     //#region Generazione documentazione
+    cy.intercept({
+      method: 'POST',
+      url: /WriteConsensi/
+    }).as('writeConsensi');
+
     cy.intercept({
       method: 'POST',
       url: /GenerazioneStampe/
@@ -216,14 +254,15 @@ describe('Matrix Web : Modifica PG', function () {
       url: /SalvaInContentManager/
     }).as('salvaInContentManager');
 
+    cy.wait('@writeConsensi', { requestTimeout: 60000 });
     cy.wait('@generazioneStampe', { requestTimeout: 60000 });
     cy.wait('@salvaInContentManager', { requestTimeout: 60000 });
 
-      getIframe().find('#endWorkflowButton').click();
+    getIframe().find('#endWorkflowButton').click();
     //#endregion
   })
 
-  it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)",()=> {
+  it.skip("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)",()=> {
     //Skip this two requests that blocks on homepage
     cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
     cy.intercept(/launch-*/,'ignore').as('launchStaging');
