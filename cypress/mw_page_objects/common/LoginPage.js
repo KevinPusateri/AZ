@@ -35,7 +35,7 @@ class LoginPage {
         cy.get('input[name="Ecom_Password"]').type(psw)
         cy.get('input[type="SUBMIT"]').click()
 
-        Cypress.env('currentEnv').toUpperCase() ? Cypress.env('baseUrlTest') :
+        Cypress.env('currentEnv').toUpperCase() === 'TEST' ? Cypress.env('baseUrlTest') :
             Cypress.env('baseUrlPreprod')
 
         cy.wait('@gqlNews')
