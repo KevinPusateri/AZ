@@ -14,7 +14,10 @@
 			"password": "vC4DwAHxznfGl8XywsoohZkbdmL6cf",
 			"database": "applogs"
 		},
-		"baseUrl": "https://portaleagenzie.pp.azi.allianz.it/matrix/",
-		"urlMWPreprod" : "https://matrix.pp.azi.allianz.it/"
+		"currentEnv": "PREPROD",
+		"baseUrlPreprod": "https://portaleagenzie.pp.azi.allianz.it/matrix/",
+		"urlMWPreprod" : "https://matrix.pp.azi.allianz.it/",
+		"baseUrlTest": "https://portaleagenzie.te.azi.allianzit/matrix/",
+		"urlMWTest" : "https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=0&option=credential&sid=0&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F"
 	}
 }

@@ -86,7 +86,7 @@ Cypress.Commands.add('iframe', { prevSubject: 'element' }, $iframes => new Cypre
   return Promise.all(loaded).then(resolve);
 }));
 
-Cypress.Commands.overwrite("clearCookies", () => {
+Cypress.Commands.overwrite('clearCookies', () => {
   cy.getCookies().then(cookies => {
     for (const cookie of cookies) {
       cy.clearCookie(cookie.name)
