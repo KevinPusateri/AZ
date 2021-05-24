@@ -2,13 +2,13 @@
 
 class LoginPage {
 
-    static launchMW() {
+    static launchMW(env) {
         cy.clearCookies()
         cy.clearLocalStorage()
         cy.viewport(1920, 1080)
 
         let url
-        Cypress.env('currentEnv').toUpperCase() === 'TEST' ? url = Cypress.env('urlMWTest') : url = Cypress.env('urlMWPreprod')
+        Cypress.env('currentEnv') === 'TEST' ? url = Cypress.env('urlMWTest') : url = Cypress.env('urlMWPreprod')
 
         cy.visit(url, {
             onBeforeLoad: win => {
@@ -17,8 +17,8 @@ class LoginPage {
         })
     }
 
-    static logInMW(userName, psw) {
-        this.launchMW()
+    static logInMW(userName, psw, env) {
+        this.launchMW(env)
 
         //Skip this two requests that blocks on homepage
         cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
@@ -35,8 +35,8 @@ class LoginPage {
         cy.get('input[name="Ecom_Password"]').type(psw)
         cy.get('input[type="SUBMIT"]').click()
 
-        Cypress.env('currentEnv').toUpperCase() === 'TEST' ? Cypress.env('baseUrlTest') :
-            Cypress.env('baseUrlPreprod')
+        Cypress.env('currentEnv') === 'TEST' ? cy.url().should('include', Cypress.env('baseUrlTest')) :
+            cy.url().should('include', Cypress.env('baseUrlPreprod'))
 
         cy.wait('@gqlNews')
     }
