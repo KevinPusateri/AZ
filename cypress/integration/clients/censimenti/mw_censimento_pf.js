@@ -62,13 +62,13 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
 
   it('Inserimento documento di identita e completamento flusso', () => {
     SCU.nuovoClientePFDocumento()
-    Folder.CaricaDocumentoIdentita()
+    Folder.caricaDocumentoIdentita()
     SCU.generazioneStampe()
   })
 
   it('Ricercare il cliente appena censito nella buca di ricerca', () => {
     HomePage.ReloadMWHomePage()
-    TopBar.searchClient("PF", nuovoClientePF.nome, nuovoClientePF.cognome)
+    TopBar.searchClientByName("PF", nuovoClientePF.nome, nuovoClientePF.cognome)
     LandingRicerca.clickFirstResult()
   })
 

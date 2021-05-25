@@ -44,7 +44,7 @@ const getDocumentoPersonale = () => {
 
 class Folder {
 
-    static CaricaDocumentoIdentita() {
+    static caricaDocumentoIdentita() {
         //#region BackEnd Calls
         cy.intercept({
             method: 'POST',
@@ -87,7 +87,7 @@ class Folder {
         cy.wait(3000)
     }
 
-    static CaricaAutocertificazione() {
+    static caricaAutocertificazione() {
         getFolder().find('span[class="k-icon k-plus"]:visible').click()
         getFolder().find('span[class="k-icon k-plus"]:first').click()
         getFolder().find('#UploadDocument').click()
@@ -112,7 +112,32 @@ class Folder {
         getFolder().contains('Upload dei file selezionati').click()
         cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
 
-        getIframe().find('button:contains("Conferma")').click()
+        getSCU().find('button:contains("Conferma")').click()
+    }
+
+    static caricaVisuraCamerale(){
+        getFolder().find('span[class="k-icon k-plus"]:visible').click()
+        getFolder().find('span[class="k-icon k-plus"]:first').click()
+        getFolder().find('#UploadDocument').click()
+        getFolder().find('#win-upload-document_wnd_title').click()
+        getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}')
+        getFolder().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('Visura').type('{enter}')
+        cy.intercept({
+          method: 'POST',
+          url: /uploadCustomerDocument/
+        }).as('uploadCustomerDoc')
+    
+        const fileName = 'Autocertificazione_Test.pdf';
+        cy.fixture(fileName).then(fileContent => {
+          getFolder().find('#file').attachFile({
+            fileContent,
+            fileName,
+            mimeType: 'application/pdf'
+          }, { subjectType: 'input' })
+        })
+    
+        getFolder().contains('Upload dei file selezionati').click()
+        cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
     }
 }
 

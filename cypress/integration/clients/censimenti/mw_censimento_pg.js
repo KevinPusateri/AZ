@@ -13,6 +13,7 @@ import Folder from "../../../mw_page_objects/common/Folder"
 import HomePage from "../../../mw_page_objects/common/HomePage"
 import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import DettaglioAnagrafica from "../../../mw_page_objects/clients/DettaglioAnagrafica"
 //#endregion import
 
 //#region Configuration
@@ -25,52 +26,18 @@ const psw = 'P@ssw0rd!'
 let nuovoClientePG
 //#endregion
 
-//#region Global Variables
-const getIframe = () => {
-  cy.get('iframe[class="iframe-content ng-star-inserted"]')
-    .iframe();
-
-  let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-    .its('0.contentDocument').should('exist');
-
-  return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
-}
-
-const getFolder = () => {
-  getIframe().find('iframe[class="w-100"]')
-    .iframe();
-
-  let iframeFolder = getIframe().find('iframe[class="w-100"]')
-    .its('0.contentDocument').should('exist');
-
-  return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
-}
-
-const getDocumentScanner = () => {
-  getFolder().find('iframe[src*="IdDocumentScanner"]')
-    .iframe();
-
-  let iframeDocumentScanner = getFolder().find('iframe[src*="IdDocumentScanner"]')
-    .its('0.contentDocument').should('exist');
-
-  return iframeDocumentScanner.its('body').should('not.be.undefined').then(cy.wrap)
-}
-
-const getDocumentoPersonale = () => {
-  getDocumentScanner().find('#documentoPersonaleFrame')
-    .iframe();
-
-  let iframeDocumentoPersonale = getDocumentScanner().find('#documentoPersonaleFrame')
-    .its('0.contentDocument').should('exist');
-
-  return iframeDocumentoPersonale.its('body').should('not.be.undefined').then(cy.wrap)
-}
-//#endregion
-
 //#region Before After
 before(() => {
   cy.task('nuovoClientePersonaGiuridica').then((object) => {
-    nuovoClientePG = object;
+    nuovoClientePG = object
+    nuovoClientePG.tipologia = "DITTA"
+    nuovoClientePG.formaGiuridica = "S.R.L."
+    nuovoClientePG.toponimo = "PIAZZA"
+    nuovoClientePG.indirizzo = "GIUSEPPE GARIBALDI"
+    nuovoClientePG.numCivico = "1"
+    nuovoClientePG.cap = "36045"
+    nuovoClientePG.citta = "LONIGO"
+    nuovoClientePG.provincia = "VI"
   })
   LoginPage.logInMW(userName, psw)
 })
@@ -90,12 +57,12 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
     LandingClients.inizializzaCensimentoClientePG(nuovoClientePG.partitaIva)
   })
 
-  it.only('Inserire i dati mancanti e premere avanti', () => {
+  it('Inserire i dati mancanti e premere avanti', () => {
     SCU.nuovoClientePGDatiAnagrafici(nuovoClientePG)
   })
 
   it('Contatti > inserire la mail e modificare l\'indirizzo della sede legale', () => {
-    SCU.nuovoClientePGDatiAnagrafici(nuovoClientePG)
+    SCU.nuovoClientePGContatti(nuovoClientePG)
   })
 
   it('Consensi > tutto no', () => {
@@ -104,82 +71,25 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
   })
 
   it('Da Folder inserire l\'autocertificazione e verificare che l\'inserimento venga bloccato', () => {
-    Folder.CaricaAutocertificazione()
+    Folder.caricaAutocertificazione()
     SCU.VerificaDocumentiInsufficienti()
   })
 
   it('Da Folder inserire la visura camerale e procedere', () => {
-    getFolder().find('span[class="k-icon k-plus"]:visible').click();
-    getFolder().find('span[class="k-icon k-plus"]:first').click();
-    getFolder().find('#UploadDocument').click();
-    getFolder().find('#win-upload-document_wnd_title').click();
-    getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}');
-    getFolder().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('Visura').type('{enter}');
-    cy.intercept({
-      method: 'POST',
-      url: /uploadCustomerDocument/
-    }).as('uploadCustomerDoc');
-
-    const fileName = 'Autocertificazione_Test.pdf';
-    cy.fixture(fileName).then(fileContent => {
-      getFolder().find('#file').attachFile({
-        fileContent,
-        fileName,
-        mimeType: 'application/pdf'
-      }, { subjectType: 'input' });
-    });
-
-    getFolder().contains('Upload dei file selezionati').click();
-    cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 });
-
-    getIframe().find('button:contains("Conferma")').click();
-
-    //#region Generazione documentazione
-    cy.intercept({
-      method: 'POST',
-      url: /WriteConsensi/
-    }).as('writeConsensi');
-
-    cy.intercept({
-      method: 'POST',
-      url: /GenerazioneStampe/
-    }).as('generazioneStampe');
-
-    cy.intercept({
-      method: 'POST',
-      url: /SalvaInContentManager/
-    }).as('salvaInContentManager');
-
-    cy.wait('@writeConsensi', { requestTimeout: 60000 });
-    cy.wait('@generazioneStampe', { requestTimeout: 60000 });
-    cy.wait('@salvaInContentManager', { requestTimeout: 60000 });
-
-    getIframe().find('#endWorkflowButton').click();
-    //#endregion
+    Folder.caricaVisuraCamerale()
+    SCU.generazioneStampe()
   })
 
   it('Ricercare il cliente appena censito nella buca di ricerca', () => {
-    //Skip this two requests that blocks on homepage
-    cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
-    cy.intercept(/launch-*/, 'ignore').as('launchStaging');
-    cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/')
 
-    cy.contains('Clients').click();
-    cy.get('input[name="main-search-input"]').type(nuovoClientePG.partitaIva).type('{enter}');
-    cy.get('lib-client-item').first().click();
+    HomePage.ReloadMWHomePage()
+    TopBar.searchClientByCForPI(nuovoClientePG.partitaIva)
+    LandingRicerca.clickFirstResult()
   })
 
   it('Verificare varie informazioni cliente', () => {
-    cy.get('.client-name').should('contain.text', String(nuovoClientePG.ragioneSociale).toUpperCase().replace(",", ""))
-    cy.get('#app-clients > app-root > lib-page-layout > div > div > div > app-client-profile > lib-sub-header-layout > div > div > lib-container > div > div > app-sidebar-left > nx-sidebar > div > div > lib-scrollable-container > div > div > div.scrollable-sidebar-content > div > app-client-resume-card > nx-card > div.padder > div:nth-child(3) > app-link-client-resume > nx-link > a > div').should('contain.text', "PIAZZA GIUSEPPE GARIBALDI, 1 - 36045 - LONIGO (VI)")
-    cy.get('#app-clients > app-root > lib-page-layout > div > div > div > app-client-profile > lib-sub-header-layout > div > div > lib-container > div > div > app-sidebar-left > nx-sidebar > div > div > lib-scrollable-container > div > div > div.scrollable-sidebar-content > div > app-client-resume-card > nx-card > div.padder > div:nth-child(5) > app-link-client-resume > nx-link > a > div').should('contain.text', String(nuovoClientePG.email).toLowerCase())
-
-    cy.contains('DETTAGLIO ANAGRAFICA').click()
-    //cy.get('#nx-tab-content-0-0 > app-client-personal-data > div > div > app-legal-client-main-data > div.box > div:nth-child(1) > app-client-data-label:nth-child(1) > div > div.value > div > div').should('contain.text',String(nuovoClientePG.ragioneSociale).toUpperCase().replace(",",""))
-    // cy.get('#nx-tab-content-0-0 > app-client-personal-data > div > div > app-legal-client-main-data > div.box > div:nth-child(2) > app-client-data-label:nth-child(1) > div > div.value > div > div').should('contain.text',String(nuovoClientePG.partitaIva))
-    // cy.get('#nx-tab-content-0-0 > app-client-personal-data > div > div > app-legal-client-main-data > div.box > div:nth-child(2) > app-client-data-label:nth-child(2) > div > div.value > div > div').should('contain.text',String(nuovoClientePG.partitaIva))
-    // cy.get('#nx-tab-content-0-0 > app-client-personal-data > div > div > app-legal-client-main-data > div.box > div:nth-child(1) > app-client-data-label:nth-child(2) > div > div.value > div > div').should('contain.text',"S.R.L.")
-    // cy.get('#nx-tab-content-0-0 > app-client-personal-data > div > div > app-legal-client-main-data > div.box > div:nth-child(1) > app-client-data-label:nth-child(3) > div > div.value > div > div').should('contain.text',"DITTA")
+    SintesiCliente.verificaDatiSpallaSinistra(nuovoClientePG)
+    DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(nuovoClientePG)
 
     cy.contains('ARCHIVIO CLIENTE').click()
     cy.contains('Comunicazioni').click()

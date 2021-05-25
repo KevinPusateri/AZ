@@ -70,9 +70,10 @@ class SCU {
     static nuovoClientePGDatiAnagrafici(nuovoClientePG) {
         getSCU().find('#ragione-sociale').type(nuovoClientePG.ragioneSociale)
         getSCU().find('span[aria-owns="forma-giuridica_listbox"]').click()
-        getSCU().find('li').contains(/^S.R.L.$/).click()
+        let re = new RegExp("\^" + nuovoClientePG.formaGiuridica + "\$")
+        getSCU().find('li').contains(re).click()
         getSCU().find('span[aria-owns="tipologia_listbox"]').click()
-        getSCU().find('li:contains("DITTA")').click()
+        getSCU().find("li:contains('" + nuovoClientePG.tipologia + "')").click()
         getSCU().find('span[aria-owns="settore-attivita_listbox"]').click()
         getSCU().find('li:contains("COSTRUZIONI")').click()
         getSCU().find('#partita-iva').type(nuovoClientePG.partitaIva)
@@ -85,10 +86,11 @@ class SCU {
     static nuovoClientePGContatti(nuovoClientePG) {
         //Sede Legale
         getSCU().find('span[aria-owns="toponomastica_listbox"]').click()
-        getSCU().find('li').contains(/^PIAZZA$/).click()
-        getSCU().find('#indirizzo-via').type('GIUSEPPE GARIBALDO')
-        getSCU().find('#indirizzo-num').type('1')
-        getSCU().find('#residenza-comune').type('LONIGO')
+        let re = new RegExp("\^" + nuovoClientePG.toponimo + "\$")
+        getSCU().find('li').contains(re).click()
+        getSCU().find('#indirizzo-via').type(nuovoClientePG.indirizzo)
+        getSCU().find('#indirizzo-num').type(nuovoClientePG.numCivico)
+        getSCU().find('#residenza-comune').type(nuovoClientePG.citta)
         getSCU().find('#residenza-comune_listbox').click()
         //Contatto Email
         getSCU().find('#email').type(nuovoClientePG.email)
@@ -172,7 +174,7 @@ class SCU {
         getSCU().find('#endWorkflowButton').click()
     }
 
-    static VerificaDocumentiInsufficienti(){
+    static VerificaDocumentiInsufficienti() {
         getSCU().find('button:contains("Inserisci il documento")').click()
     }
 }

@@ -37,7 +37,7 @@ class TopBar {
     * @param {string} nome - Nome proprio della PF o Nome della PG
     * @param {string} cognome - Opzionale, solo nel caso di PF
     */
-    static searchClient(tipoCliente, nome, cognome) {
+    static searchClientByName(tipoCliente, nome, cognome) {
         switch (tipoCliente) {
             case "PF":
                 cy.get('input[name="main-search-input"]').type(cognome + " " + nome).type('{enter}');
@@ -45,6 +45,14 @@ class TopBar {
             case "PG":
                 cy.get('input[name="main-search-input"]').type(nome).type('{enter}');
         }
+    }
+
+    /**
+    * @param {string} cfOrPi - Inserire Codice Fiscale o Partita Iva
+    */
+    static searchClientByCForPI(cfOrPi) {
+
+        cy.get('input[name="main-search-input"]').type(cfOrPi).type('{enter}');
     }
 
     static clickBackOffice() {
