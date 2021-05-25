@@ -83,7 +83,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
 
   it('Ricercare il cliente appena censito nella buca di ricerca', () => {
 
-    HomePage.ReloadMWHomePage()
+    HomePage.reloadMWHomePage()
     TopBar.searchClientByCForPI(nuovoClientePG.partitaIva)
     LandingRicerca.clickFirstResult()
   })
@@ -100,7 +100,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
 
   it('Emettere una Plein Air e verifica presenza in Folder', () => {
     SintesiCliente.emettiPleinAir()
-    HomePage.ReloadMWHomePage()
+    HomePage.reloadMWHomePage()
     TopBar.searchClientByCForPI(nuovoClientePG.partitaIva)
     LandingRicerca.clickFirstResult()
     SintesiCliente.verificaInFolder("PleinAir")

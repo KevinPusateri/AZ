@@ -2,7 +2,7 @@
 
 class HomePage {
 
-    static ReloadMWHomePage() {
+    static reloadMWHomePage() {
         //Skip this two requests that blocks on homepage
         cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
         cy.intercept(/launch-*/, 'ignore').as('launchStaging');
