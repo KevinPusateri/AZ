@@ -2,7 +2,7 @@
 
 class LoginPage {
 
-    static launchMW(env) {
+    static launchMW() {
         cy.clearCookies()
         cy.clearLocalStorage()
         cy.viewport(1920, 1080)
@@ -17,15 +17,15 @@ class LoginPage {
         })
     }
 
-    static logInMW(userName, psw, env) {
-        this.launchMW(env)
+    static logInMW(userName, psw) {
+        this.launchMW()
 
         //Skip this two requests that blocks on homepage
         cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
         cy.intercept(/launch-*/, 'ignore').as('launchStaging')
 
         //Wait for news graphQL to be returned
-        cy.intercept('POST', '/graphql', (req) => {
+        cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('news')) {
                 req.alias = 'gqlNews'
             }
