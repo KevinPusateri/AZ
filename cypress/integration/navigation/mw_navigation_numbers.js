@@ -5,7 +5,7 @@
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import Numbers from "../../mw_page_objects/Navigation/Numbers"
+import Numbers from "../../mw_page_objects/navigation/Numbers"
 
 //#region Variables
 const userName = 'TUTF021'

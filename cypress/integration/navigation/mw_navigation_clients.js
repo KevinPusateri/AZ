@@ -99,7 +99,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.wait('@getClients', { requestTimeout: 30000 })
         const linksCollegamentiRapidi = [
-            'Analisi dei bisogni', // NEW
+            'Analisi dei bisogni',
             'Digital Me',
             'Pannello anomalie',
             'Clienti duplicati',
@@ -115,8 +115,14 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.wait('@getClients', { requestTimeout: 40000 })
-        cy.get('app-rapid-link').find('a[href="https://www.ageallianz.it/analisideibisogni/app"]')
-        .invoke('removeAttr','target').click()
+        cy.get('app-rapid-link')
+                        .find('a[href="https://www.ageallianz.it/analisideibisogni/app"]')
+                        .invoke('attr','href')
+                        .then(href =>{
+                            cy.forceVisit(href)
+                        })
+
+        // .invoke('removeAttr','target').click()
         cy.go('back')
         backToClients()
         cy.url().should('eq', baseUrl + 'clients/')

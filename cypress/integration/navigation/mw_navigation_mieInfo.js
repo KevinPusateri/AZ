@@ -7,7 +7,7 @@
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import Mieinfo from "../../mw_page_objects/Navigation/Mieinfo"
+import Mieinfo from "../../mw_page_objects/navigation/Mieinfo"
 
 //#region Variables
 const userName = 'TUTF021'
@@ -122,26 +122,6 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickButtonOnMenu('Operatività')
     Mieinfo.checkPanelsOnOperativita()
-    // getIFrame().find('app-accordion').contains('Cambio sede').click()
-    // getIFrame().find('#nx-expansion-panel-header-0').should('have.attr', 'aria-expanded', 'true')
-    // getIFrame().find('app-accordion').contains('Codici sblocco rami vari').click()
-    // getIFrame().find('#nx-expansion-panel-header-1').should('have.attr', 'aria-expanded', 'true')
-    // getIFrame().find('app-accordion').contains('Contabilità').click()
-    // getIFrame().find('#nx-expansion-panel-header-2').should('have.attr', 'aria-expanded', 'true')
-    // getIFrame().find('app-accordion').contains('Fatturazione elettronica').click()
-    // getIFrame().find('#nx-expansion-panel-header-3').should('have.attr', 'aria-expanded', 'true')
-    // getIFrame().find('app-accordion').contains('Gestione documenti').click()
-    // getIFrame().find('#nx-expansion-panel-header-4').should('have.attr', 'aria-expanded', 'true')
-    // getIFrame().find('app-accordion').contains('Gestione collaboratori').click()
-    // getIFrame().find('#nx-expansion-panel-header-5').should('have.attr', 'aria-expanded', 'true')
-    // getIFrame().find('app-accordion').contains('Iniziativa whatsapp Agenti').click()
-    // getIFrame().find('#nx-expansion-panel-header-6').should('have.attr', 'aria-expanded', 'true')
-    // getIFrame().find('app-accordion').contains('Informativa privacy (tedesco)').click()
-    // getIFrame().find('#nx-expansion-panel-header-7').should('have.attr', 'aria-expanded', 'true')
-    // getIFrame().find('app-accordion').contains('Codice delle assicurazioni private').click()
-    // getIFrame().find('#nx-expansion-panel-header-8').should('have.attr', 'aria-expanded', 'true')
-    // getIFrame().find('app-accordion').contains('Titolo IX - Reg. ISVAP - Registro unico intermediari').click()
-    // getIFrame().find('#nx-expansion-panel-header-9').should('have.attr', 'aria-expanded', 'true')
   });
 
   it('Verifica aggancio Risorse per l\'Agente', function () {
