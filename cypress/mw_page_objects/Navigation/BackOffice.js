@@ -34,6 +34,46 @@ const getIFrameDenuncia = () => {
 
 class BackOffice {
 
+
+    /**
+     * Verifica che i link nel burgerMenu siano presenti
+     */
+    static checkLinkburgerMenu() {
+        const linksBurger = [
+            'Home Backoffice',
+            'Movimentazione sinistri',
+            'Denuncia',
+            'Denuncia BMP',
+            'Consultazione sinistri',
+            'Sinistri incompleti',
+            'Sinistri canalizzati',
+            'Sintesi Contabilità',
+            'Giornata contabile',
+            'Consultazione Movimenti',
+            'Estrazione Contabilità',
+            'Deleghe SDD',
+            'Quadratura unificata',
+            'Incasso per conto',
+            'Incasso massivo',
+            'Sollecito titoli',
+            'Impostazione contabilità',
+            'Convenzioni in trattenuta',
+            'Monitoraggio Customer Digital Footprint'
+        ]
+        cy.get('lib-side-menu-link').find('a').should('have.length',19).each(($checkLinksBurger, i) => {
+            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+        })
+    }
+
+    /**
+     * Click sul link richiesto dal BurgerMenu
+     * @param {string} page - nome del link 
+     */
+    static clickLinkOnBurgerMenu(page){
+        cy.get('lib-burger-icon').click()
+        cy.contains(page).click()
+    }
+
     /**
      * Verifica atterraggio su Appuntamenti futuri
      */
@@ -107,7 +147,7 @@ class BackOffice {
         })
     }
 
-//#region tutti i click Sinistri 
+    //#region tutti i click Sinistri 
     /**
      * Click "Movimentazione Sinistri" e verifica atterraggio
      */
@@ -157,9 +197,9 @@ class BackOffice {
     static clickSinistriCanalizzati() {
         getIFrame().find('a:contains("Filtra"):visible')
     }
-//#endregion
+    //#endregion
 
-//#region tutti i click Contabilità
+    //#region tutti i click Contabilità
     /**
      * Click "Sintesi Contabilità" e verifica atterraggio
      */
@@ -203,7 +243,7 @@ class BackOffice {
 
     /**
      * Click "Incasso per conto" e verifica atterraggio
-     */   
+     */
     static clickIncassoPerConto() {
         cy.wait(10000)
         getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
@@ -211,14 +251,14 @@ class BackOffice {
 
     /**
      * Click "Incasso massivo" e verifica atterraggio
-     */   
+     */
     static clickIncassoMassivo() {
         getIFrame().find('a:contains("Apri filtri"):visible')
     }
 
     /**
      * Click "Sollecito titoli" e verifica atterraggio
-     */ 
+     */
     static clickSollecitoTitoli() {
         getIFrame().find('span:contains("Gestione Sollecito Titoli")')
         getIFrame().find('#buttonCerca:contains("Cerca"):visible')
@@ -226,7 +266,7 @@ class BackOffice {
 
     /**
      * Click "Impostazione contabilità" e verifica atterraggio
-     */ 
+     */
     static clickImpostazioneContabilita() {
         getIFrame().find('ul > li > span:contains("Gestione dispositivi POS"):visible')
         getIFrame().find('ul > li > span:contains("Prenotazione POS"):visible')
@@ -236,7 +276,7 @@ class BackOffice {
 
     /**
      * Click "Convenzioni in trattenuta" e verifica atterraggio
-     */ 
+     */
     static clickConvenzioniInTrattenuta() {
         cy.wait(10000)
         getIFrame().find('#contentPane:contains("Gestione"):visible')
@@ -244,14 +284,14 @@ class BackOffice {
 
     /**
      * Click "Monitoraggio Customer Digital Footprint" e verifica atterraggio
-     */ 
+     */
     static clickMonitoraggioCustomerDigitalFootprint() {
         cy.get('app-backoffice-cards-list').eq(1).find('a[href="https://portaleagenzie.pp.azi.allianz.it/cdf/"]')
             .invoke('removeAttr', 'target').click()
         cy.url().should('include', 'cdf')
         cy.go('back')
     }
-//#endregion
+    //#endregion
 }
 
 export default BackOffice
