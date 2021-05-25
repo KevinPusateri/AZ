@@ -1,4 +1,5 @@
 /// <reference types="Cypress" />
+import Common from "../common/Common"
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
