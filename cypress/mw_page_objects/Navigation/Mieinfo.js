@@ -10,8 +10,6 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-
-
 class Mieinfo {
 
     /**
@@ -34,7 +32,9 @@ class Mieinfo {
             'Risorse per l\'Agenzia',
             'Operatività',
             'Risorse per l\'Agente',
-            'Il Mondo Allianz'
+            'Il Mondo Allianz',
+            'New Company Handbook',
+            'Test New CH'
         ]
         getIFrame().find('[class="menu--link menu_padding-0"]').each(($link, i) => {
             expect($link.text().trim()).to.include(linksMenu[i]);
@@ -100,7 +100,7 @@ class Mieinfo {
     //     getIFrame().find('a[class="menu--link menu--link_active menu_padding-0 menu--link_active_id"]').should('contain', 'Sales Academy')
     // }
 
-    //#region Verifica Links su Icone e subMenu 
+//#region Verifica Links su Icone e subMenu 
     /**
      * Verifica che le icon links e submenu di "Prodotti" siano presenti
      */
@@ -444,8 +444,8 @@ class Mieinfo {
             })
         }
     }
-
 //#endregion
+
     /**
      * verifica Atterraggio "Circolari"
      */
@@ -459,6 +459,7 @@ class Mieinfo {
     static checkCompanyHandbook() {
         getIFrame().find('app-dynamic-element').should('be.visible')
     }
+
 }
 
 export default Mieinfo

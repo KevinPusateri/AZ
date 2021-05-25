@@ -62,7 +62,7 @@ before(() => {
   //Skip this two requests that blocks on homepage
   cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
   cy.intercept(/launch-*/,'ignore').as('launchStaging');
-  cy.intercept('POST', '/graphql', (req) => {
+  cy.intercept('POST', '**/graphql', (req) => {
     if (req.body.operationName.includes('notifications')) {
       req.alias = 'gqlNotifications'
     }
@@ -107,7 +107,7 @@ describe('Matrix Web : Modifica PG', function () {
 
   it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
 
-    cy.intercept('POST', '/graphql', (req) => {
+    cy.intercept('POST', '**/graphql', (req) => {
       if (req.body.operationName.includes('searchClient')) {
         req.alias = 'gqlSearchClient'
       }
@@ -272,7 +272,7 @@ describe('Matrix Web : Modifica PG', function () {
     cy.get('input[name="main-search-input"]').type(currentSelectedPG).type('{enter}');
     cy.get('lib-client-item').first().click();
 
-    cy.intercept('POST', '/graphql', (req) => {
+    cy.intercept('POST', '**/graphql', (req) => {
       if (req.body.operationName.includes('client')) {
         req.alias = 'gqlClient'
       }

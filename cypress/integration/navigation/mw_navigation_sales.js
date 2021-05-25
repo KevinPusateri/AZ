@@ -205,7 +205,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     // it('Verifica aggancio Proposte Vita - Card Vita', function(){
     //     cy.get('app-product-button-list').find('a').contains('Sales').click()
     //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.intercept('POST', '/graphql', (req) => {
+    //     cy.intercept('POST', '**/graphql', (req) => {
     //         if (req.body.operationName.includes('salesContract') &&
     //         req.body.variables.filter.tabCallType.includes('LIFE')) {
     //           req.alias = 'gqlLife'
