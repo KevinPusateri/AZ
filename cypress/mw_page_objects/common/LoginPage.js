@@ -1,4 +1,5 @@
 /// <reference types="Cypress" />
+import Common from './Common'
 
 class LoginPage {
 
@@ -35,9 +36,7 @@ class LoginPage {
         cy.get('input[name="Ecom_Password"]').type(psw)
         cy.get('input[type="SUBMIT"]').click()
 
-        Cypress.env('currentEnv') === 'TEST' ? cy.url().should('include', Cypress.env('baseUrlTest')) :
-            cy.url().should('include', Cypress.env('baseUrlPreprod'))
-
+        Common.checkUrlEnv()
         cy.wait('@gqlNews')
     }
 }

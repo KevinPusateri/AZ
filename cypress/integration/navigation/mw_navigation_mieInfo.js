@@ -20,51 +20,35 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-before(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
-  
-    cy.intercept('POST', '/graphql', (req) => {
-    // if (req.body.operationName.includes('notifications')) {
-    //     req.alias = 'gqlNotifications'
-    // }
-    if (req.body.operationName.includes('news')) {
-        req.alias = 'gqlNews'
-    }
-    })
-    cy.viewport(1920, 1080)
-  
-    cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
-    cy.get('input[type="SUBMIT"]').click()
-    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
-  
-    cy.wait(2000).wait('@gqlNews')
 
-  })
-  
-  beforeEach(() => {
-    cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/')
-    Cypress.Cookies.defaults({
-      preserve: (cookie) => {
-        return true;
-      }
-    })
-  })
-  
-  // after(() => {
-  //   cy.get('body').then($body => {
-  //       if ($body.find('.user-icon-container').length > 0) {   
-  //           cy.wait(2000).get('.user-icon-container').click();
-  //           cy.wait(2000).contains('Logout').click()
-  //           cy.wait(delayBetweenTests)
-  //       }
-  //   });
-  //   cy.clearCookies();
-  //   cy.clearLocalStorage();
-  // })
+/// <reference types="Cypress" />
+import Common from "../../mw_page_objects/common/Common"
+import LoginPage from "../../mw_page_objects/common/LoginPage"
+import TopBar from "../../mw_page_objects/common/TopBar"
+import Mieinfo from "../../mw_page_objects/Navigation/Mieinfo"
+
+//#region Variables
+const userName = 'le00080'
+const psw = 'Dragonball3'
+//#endregion
+
+//#region Configuration
+Cypress.config('defaultCommandTimeout', 60000)
+//#endregion
+
+
+before(() => {
+    LoginPage.logInMW(userName, psw)
+})
+
+beforeEach(() => {
+    Common.visitUrlOnEnv()
+    cy.preserveCookies()
+})
+
+after(() => {
+    TopBar.logOutMW()
+})
 
 
 describe('Matrix Web : Navigazioni da Le Mie Info', function () {

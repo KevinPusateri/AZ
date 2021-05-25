@@ -575,7 +575,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })*/
 
-    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo e aggiungere su excel
+    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e aggiungere su excel
     // it('Verifica aggancio Allianz Placement Platform', function () {
     // cy.get('app-product-button-list').find('a').contains('Sales').click()
     //     cy.url().should('eq',baseUrl+ 'sales/')
@@ -616,7 +616,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
     })
 
-    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di disambiguazione di mezzo e excel
+    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e excel
     // it('Verifica aggancio ACOM Gestione iniziative', function () {
     // cy.get('app-product-button-list').find('a').contains('Sales').click()
     //     cy.url().should('eq',baseUrl+ 'sales/')

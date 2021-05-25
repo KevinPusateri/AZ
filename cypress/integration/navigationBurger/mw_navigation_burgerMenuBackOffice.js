@@ -118,9 +118,10 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
             'Incasso massivo',
             'Sollecito titoli',
             'Impostazione contabilità',
-            'Convenzioni in trattenuta'
+            'Convenzioni in trattenuta',
+            'Monitoraggio Customer Digital Footprint'
         ]
-        cy.get('lib-side-menu-link').find('a').should('have.length',18).each(($checkLinksBurger, i) => {
+        cy.get('lib-side-menu-link').find('a').should('have.length',19).each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
         })
     });

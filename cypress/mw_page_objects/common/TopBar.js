@@ -1,5 +1,15 @@
 /// <reference types="Cypress" />
 
+import Common from '../common/Common'
+
+const interceptPageSales = () => {
+    cy.intercept({
+        method: 'POST',
+        url: '**/sales/**',
+    }).as('getSales');
+}
+
+
 class TopBar {
 
     static logOutMW() {
@@ -33,7 +43,20 @@ class TopBar {
 
     static clickBackOffice() {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
-        cy.url().should('eq', Cypress.env('baseUrl') + 'back-office')
+        cy.url().should('eq', Common.getBaseUrl() + 'back-office')
+    }
+
+    static clickNumbers() {
+        cy.get('app-product-button-list').find('a').contains('Numbers').click()
+        cy.url().should('eq', Common.getBaseUrl() + 'numbers/business-lines')
+    }
+
+    static clickSales() {
+        interceptPageSales()
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.wait('@getSales', { requestTimeout: 50000 })
+        cy.url().should('eq', Common.getBaseUrl() + 'sales/')
+
     }
 }
 

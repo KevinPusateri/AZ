@@ -70,7 +70,6 @@ describe('Buca di Ricerca', function () {
             'Ricerca Cliente',
             'Ricerca Polizze proposte',
             'Ricerca Preventivi',
-            // 'Ricerca Documenti', deciso di toglierlo
             'Ricerca News',
             'Rubrica'
         ]
