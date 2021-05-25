@@ -9,6 +9,12 @@ const interceptPageSales = () => {
     }).as('getSales');
 }
 
+const interceptPageMieInfo = () => {
+    cy.intercept({
+        method: 'POST',
+        url: '**/lemieinfo/**',
+    }).as('getMieInfo');
+}
 
 class TopBar {
 
@@ -56,7 +62,13 @@ class TopBar {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         cy.wait('@getSales', { requestTimeout: 50000 })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
+    }
 
+    static clickMieInfo() {
+        interceptPageMieInfo()
+        cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+        cy.wait('@getMieInfo', { requestTimeout: 50000 })
+        cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo?info=1')
     }
 }
 

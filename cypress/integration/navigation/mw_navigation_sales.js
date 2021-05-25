@@ -14,7 +14,7 @@ const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
 //#endregion
 
-//#region  Configuration
+//#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 

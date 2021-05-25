@@ -41,7 +41,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     it('Verifica atterraggio Appuntamenti Futuri', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkAtterraggioAppuntamentiFuturi()
+        BackOffice.clickAppuntamentiFuturi()
     });
 
     // non compare piu
@@ -67,110 +67,110 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         BackOffice.checkLinksOnContabilitaExist()
     });
 
-    it('Verifica apertura Common: Movimentazione Sinistri', function () {
+    it('Verifica apertura disambiguazione: Movimentazione Sinistri', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Movimentazione sinistri')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioMovimentazioneSinistri()
+        BackOffice.clickMovimentazioneSinistri()
         BackOffice.backToBackOffice()
     })
 
-    it('Verifica apertura Common: Denuncia', function () {
+    it('Verifica apertura disambiguazione: Denuncia', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Denuncia')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioDenuncia()
+        BackOffice.clickDenuncia()
         BackOffice.backToBackOffice()
 
     })
 
-    it('Verifica apertura Common: Denuncia BMP', function () {
+    it('Verifica apertura disambiguazione: Denuncia BMP', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Denuncia BMP')
         cy.wait(5000)
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioDenunciaBMP()
+        BackOffice.clickDenunciaBMP()
         BackOffice.backToBackOffice()
 
     })
 
-    it('Verifica apertura Common: Consultazione sinistri', function () {
+    it('Verifica apertura disambiguazione: Consultazione sinistri', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Consultazione sinistri')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioConsultazioneSinistri()
+        BackOffice.clickConsultazioneSinistri()
         BackOffice.backToBackOffice()
 
     })
 
-    it('Verifica apertura Common: Sinistri incompleti', function () {
+    it('Verifica apertura disambiguazione: Sinistri incompleti', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Sinistri incompleti')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioSinistriIncompleti()
+        BackOffice.clickSinistriIncompleti()
         BackOffice.backToBackOffice()
 
     })
 
-    it('Verifica apertura Common: Sinistri canalizzati', function () {
+    it('Verifica apertura disambiguazione: Sinistri canalizzati', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Sinistri canalizzati')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioSinistriCanalizzati()
+        BackOffice.clickSinistriCanalizzati()
         BackOffice.backToBackOffice()
     })
 
-    it('Verifica apertura Common: Sintesi Contabilità', function () {
+    it('Verifica apertura disambiguazione: Sintesi Contabilità', function () {
         TopBar.clickBackOffice()
         BackOffice.checkCardExistOnContabilita('Sintesi Contabilità')
         BackOffice.clickCardLink('Sintesi Contabilità')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioSintesiContabilita()
+        BackOffice.clickSintesiContabilita()
         BackOffice.backToBackOffice()
 
     })
 
-    it('Verifica apertura Common: Giornata contabile', function () {
+    it('Verifica apertura disambiguazione: Giornata contabile', function () {
         TopBar.clickBackOffice()
         BackOffice.checkCardExistOnContabilita('Giornata contabile')
         BackOffice.clickCardLink('Giornata contabile')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioGiornataContabile()
+        BackOffice.clickGiornataContabile()
         BackOffice.backToBackOffice()
 
     })
 
-    it('Verifica apertura Common: Consultazione Movimenti', function () {
+    it('Verifica apertura disambiguazione: Consultazione Movimenti', function () {
         TopBar.clickBackOffice()
         BackOffice.checkCardExistOnContabilita('Consultazione Movimenti')
         BackOffice.clickCardLink('Consultazione Movimenti')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioConsultazioneMovimenti()
+        BackOffice.clickConsultazioneMovimenti()
         BackOffice.backToBackOffice()
 
     })
 
-    it('Verifica apertura Common: Estrazione Contabilità', function () {
+    it('Verifica apertura disambiguazione: Estrazione Contabilità', function () {
         TopBar.clickBackOffice()
         BackOffice.checkCardExistOnContabilita('Estrazione Contabilità')
         BackOffice.clickCardLink('Estrazione Contabilità')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioEstrazioneContabilita()
+        BackOffice.clickEstrazioneContabilita()
         BackOffice.backToBackOffice()
 
     })
 
-    it('Verifica apertura Common: Deleghe SDD', function () {
+    it('Verifica apertura disambiguazione: Deleghe SDD', function () {
         TopBar.clickBackOffice()
         BackOffice.checkCardExistOnContabilita('Deleghe SDD')
         BackOffice.clickCardLink('Deleghe SDD')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioDelegheSDD()
+        BackOffice.clickDelegheSDD()
         BackOffice.backToBackOffice()
 
     })
 
-    /*    it('Verifica apertura Common: Quadratura unificata', function () {
+    /*    it('Verifica apertura disambiguazione: Quadratura unificata', function () {
             TopBar.clickBackOffice()
            
             cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Quadratura unificata')
@@ -184,57 +184,57 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
            
         })*/
 
-    it('Verifica apertura Common: Incasso per conto', function () {
+    it('Verifica apertura disambiguazione: Incasso per conto', function () {
         TopBar.clickBackOffice()
         BackOffice.checkCardExistOnContabilita('Incasso per conto')
         BackOffice.clickCardLink('Incasso per conto')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioIncassoPerConto()
+        BackOffice.clickIncassoPerConto()
         BackOffice.backToBackOffice()
 
     })
 
-    it('Verifica apertura Common: Incasso massivo', function () {
+    it('Verifica apertura disambiguazione: Incasso massivo', function () {
         TopBar.clickBackOffice()
         BackOffice.checkCardExistOnContabilita('Incasso massivo')
         BackOffice.clickCardLink('Incasso massivo')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioIncassoMassivo()
+        BackOffice.clickIncassoMassivo()
         BackOffice.backToBackOffice()
     })
 
-    it('Verifica apertura Common: Sollecito titoli', function () {
+    it('Verifica apertura disambiguazione: Sollecito titoli', function () {
         TopBar.clickBackOffice()
         BackOffice.checkCardExistOnContabilita('Sollecito titoli')
         BackOffice.clickCardLink('Sollecito titoli')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioSollecitoTitoli()
+        BackOffice.clickSollecitoTitoli()
         BackOffice.backToBackOffice()
     })
 
-    it('Verifica apertura Common: Impostazione contabilità', function () {
+    it('Verifica apertura disambiguazione: Impostazione contabilità', function () {
         TopBar.clickBackOffice()
         BackOffice.checkCardExistOnContabilita('Impostazione contabilità')
         BackOffice.clickCardLink('Impostazione contabilità')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioImpostazioneContabilita()
+        BackOffice.clickImpostazioneContabilita()
         BackOffice.backToBackOffice()
     });
 
-    it('Verifica apertura Common: Convenzioni in trattenuta', function () {
+    it('Verifica apertura disambiguazione: Convenzioni in trattenuta', function () {
         TopBar.clickBackOffice()
         BackOffice.checkCardExistOnContabilita('Convenzioni in trattenuta')
         BackOffice.clickCardLink('Convenzioni in trattenuta')
         Common.canaleFromPopup()
-        BackOffice.checkAtterraggioConvenzioniInTrattenuta()
+        BackOffice.clickConvenzioniInTrattenuta()
         BackOffice.backToBackOffice()
 
     });
 
-    it('Verifica apertura Common: Monitoraggio Customer Digital Footprint', function () {
+    it('Verifica apertura disambiguazione: Monitoraggio Customer Digital Footprint', function () {
         TopBar.clickBackOffice()
         BackOffice.checkCardExistOnContabilita('Monitoraggio Customer Digital Footprint')
-        BackOffice.checkAtterraggioMonitoraggioCustomerDigitalFootprint()
+        BackOffice.clickMonitoraggioCustomerDigitalFootprint()
         BackOffice.backToBackOffice()
 
     });

@@ -74,7 +74,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.backToNumbers('business-lines')
     })
 
-    it('Verifica su Prodotti aggancio Primo indice prodotto', function () {
+    it.only('Verifica su Prodotti aggancio Primo indice prodotto', function () {
         TopBar.clickNumbers()
         Numbers.clickTab('PRODOTTI','products')
         Numbers.clickAndCheckAtterraggioPrimoIndiceProdotto()

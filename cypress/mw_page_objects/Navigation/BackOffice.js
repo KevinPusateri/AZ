@@ -52,7 +52,7 @@ class BackOffice {
     }
 
     /**
-     * Verifica se la Card link su Contabilità è presente nella pagina
+     * Verifica che la Card link su Contabilità è presente nella pagina
      * @param {string} linkTitlePage - Titolo del link della Card Link 
      */
     static checkCardExistOnContabilita(linkTitlePage) {
@@ -68,7 +68,7 @@ class BackOffice {
     }
 
     /**
-     * Verifica se tutti i link su Sinistri siano presenti
+     * Verifica che tutti i link su Sinistri siano presenti
      */
     static checkLinksOnSinistriExist() {
         const buttonsSinistri = [
@@ -85,7 +85,7 @@ class BackOffice {
     }
 
     /**
-     * Verifica se tutti i link su Contabilita siano presenti
+     * Verifica che tutti i link su Contabilita siano presenti
      */
     static checkLinksOnContabilitaExist() {
         const buttonsContabilita = [

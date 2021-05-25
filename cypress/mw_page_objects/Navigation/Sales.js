@@ -14,13 +14,6 @@ const getIFrame = () => {
 }
 const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza")').click()
 const popoverEmettiPolizza = () => cy.get('.card-container').find('lib-da-link')
-const interceptPageSales = () => {
-    cy.intercept({
-        method: 'POST',
-        url: '**/sales/**',
-    }).as('getSales');
-}
-
 
 //#endregion
 
