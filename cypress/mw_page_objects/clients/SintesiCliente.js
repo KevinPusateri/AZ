@@ -1,5 +1,15 @@
 /// <reference types="Cypress" />
 
+const getIframe = () => {
+    cy.get('iframe[class="iframe-content ng-star-inserted"]')
+        .iframe()
+
+    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+        .its('0.contentDocument').should('exist')
+
+    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+}
+
 class SintesiCliente {
 
     static cancellaCliente() {
@@ -9,7 +19,44 @@ class SintesiCliente {
         cy.contains('Ok').click();
     }
 
-    static verificaDatiSpallaSinistra(cliente){
+    static emettiPleinAir() {
+        cy.get('nx-icon[aria-label="Open menu"]').click();
+        cy.contains('PLEINAIR').click();
+
+        getIframe().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
+        getIframe().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
+        getIframe().find('#ButtonQuestOk').click().wait(6000)
+        getIframe().find('#TabVarieInserimentoTipoPagamento > div.left > span > span').click()
+        getIframe().find('li').contains("Contanti").click()
+        getIframe().find('#FiltroTabVarieInserimentoDescrizione').type("TEST AUTOMATICO")
+
+        cy.intercept({
+            method: 'POST',
+            url: /QuestionariWeb/
+        }).as('questionariWeb');
+
+        getIframe().find('#TabVarieInserimentoButton').click().wait(8000)
+
+        cy.wait('@questionariWeb', { requestTimeout: 60000 })
+
+        getIframe().find('#ButtonQuestOk').click()
+    }
+
+    /**
+    * @param {string} etichetta - documento da verificare in folder
+    */
+    static verificaInFolder(etichetta) {
+        cy.get('nx-icon[aria-label="Open menu"]').click()
+        cy.contains('folder').click()
+        cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
+
+        getIframe().find('span[class="k-icon k-plus"]:visible').click()
+        getIframe().find('span[class="k-icon k-plus"]:first').click()
+
+        getIframe().find('span').contains(etichetta).click()
+    }
+
+    static verificaDatiSpallaSinistra(cliente) {
         //Verifica indirizzo
         cy.get('.client-name').should('contain.text', String(cliente.ragioneSociale).toUpperCase().replace(",", ""))
         cy.get('nx-icon[class*=location]').parent().get('div').should('contain.text', cliente.toponimo)

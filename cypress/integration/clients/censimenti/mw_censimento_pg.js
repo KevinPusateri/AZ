@@ -14,6 +14,7 @@ import HomePage from "../../../mw_page_objects/common/HomePage"
 import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../../mw_page_objects/clients/DettaglioAnagrafica"
+import ArchivioCliente from "../../../mw_page_objects/clients/ArchivioCliente"
 //#endregion import
 
 //#region Configuration
@@ -90,52 +91,18 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
   it('Verificare varie informazioni cliente', () => {
     SintesiCliente.verificaDatiSpallaSinistra(nuovoClientePG)
     DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(nuovoClientePG)
-
-    cy.contains('ARCHIVIO CLIENTE').click()
-    cy.contains('Comunicazioni').click()
-    cy.get('.card-title').should('contain.text', "Invio per verifica contatto")
-    cy.contains('Unico').click()
-    //cy.get('#nx-tab-content-1-3 > app-client-archive-unique > div > div.actions-box.ng-star-inserted > app-section-title > div').should('contain.text'," 1 Aggiornamento unico")
+    ArchivioCliente.clickArchivioCliente()
+    ArchivioCliente.clickComunicazioni()
+    ArchivioCliente.verificaCardComunicazioni("Invio per verifica contatto")
+    ArchivioCliente.verificaUnico()
   })
 
+
   it('Emettere una Plein Air e verifica presenza in Folder', () => {
-    cy.get('nx-icon[aria-label="Open menu"]').click();
-    cy.contains('PLEINAIR').click();
-
-    getIframe().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
-    getIframe().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
-    getIframe().find('#ButtonQuestOk').click().wait(6000)
-    getIframe().find('#TabVarieInserimentoTipoPagamento > div.left > span > span').click()
-    getIframe().find('li').contains("Contanti").click()
-    getIframe().find('#FiltroTabVarieInserimentoDescrizione').type("TEST AUTOMATICO")
-
-    cy.intercept({
-      method: 'POST',
-      url: /QuestionariWeb/
-    }).as('questionariWeb');
-
-    getIframe().find('#TabVarieInserimentoButton').click().wait(20000)
-
-    cy.wait('@questionariWeb', { requestTimeout: 60000 });
-
-    getIframe().find('#ButtonQuestOk').click()
-
-    cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
-    cy.intercept(/launch-*/, 'ignore').as('launchStaging');
-    cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/')
-
-    cy.contains('Clients').click();
-    cy.get('input[name="main-search-input"]').type(nuovoClientePG.partitaIva).type('{enter}');
-    cy.get('lib-client-item').first().click();
-
-    cy.get('nx-icon[aria-label="Open menu"]').click();
-    cy.contains('folder').click();
-    cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
-
-    getIframe().find('span[class="k-icon k-plus"]:visible').click();
-    getIframe().find('span[class="k-icon k-plus"]:first').click();
-
-    getIframe().find('span').contains("PleinAir").click();
-
+    SintesiCliente.emettiPleinAir()
+    HomePage.ReloadMWHomePage()
+    TopBar.searchClientByCForPI(nuovoClientePG.partitaIva)
+    LandingRicerca.clickFirstResult()
+    SintesiCliente.verificaInFolder("PleinAir")
   })
 })
