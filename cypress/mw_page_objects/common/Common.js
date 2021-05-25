@@ -41,6 +41,7 @@ class Common {
       cy.visit(Cypress.env('urlMWTest')) :
       cy.visit(Cypress.env('urlMWPreprod'))
   }
+  
 }
 
 

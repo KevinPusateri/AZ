@@ -162,7 +162,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     it('Verifica apertura disambiguazione: Deleghe SDD', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkCardExistOnContabilita('Deleghe SDD')
         BackOffice.clickCardLink('Deleghe SDD')
         Common.canaleFromPopup()
         BackOffice.clickDelegheSDD()
@@ -170,23 +169,17 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     })
 
-    /*    it('Verifica apertura disambiguazione: Quadratura unificata', function () {
-            TopBar.clickBackOffice()
-           
-            cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain','Quadratura unificata')
-           BackOffice.clickCardLink('Quadratura unificata')
-            Common.canaleFromPopup()()
-            getIFrame().find('#quadNavigationBar:contains("Q.U.A.D. - home page"):visible')
-            getIFrame().find('#quadMenu:contains("Quadratura Unificata"):visible')
-            getIFrame().find('#quadMenu:contains("Agenzie Digital"):visible')
-            getIFrame().find('#ApriPdfAdesioneQuad:contains("PDF di Adesione"):visible')
-           BackOffice.backToBackOffice()
-           
-        })*/
+    it('Verifica apertura disambiguazione: Quadratura unificata', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Quadratura unificata')
+        Common.canaleFromPopup()()
+        BackOffice.checkQuadraturaUnificata()
+        BackOffice.backToBackOffice()
+
+    }) 
 
     it('Verifica apertura disambiguazione: Incasso per conto', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkCardExistOnContabilita('Incasso per conto')
         BackOffice.clickCardLink('Incasso per conto')
         Common.canaleFromPopup()
         BackOffice.clickIncassoPerConto()
@@ -196,7 +189,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     it('Verifica apertura disambiguazione: Incasso massivo', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkCardExistOnContabilita('Incasso massivo')
         BackOffice.clickCardLink('Incasso massivo')
         Common.canaleFromPopup()
         BackOffice.clickIncassoMassivo()
@@ -205,7 +197,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     it('Verifica apertura disambiguazione: Sollecito titoli', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkCardExistOnContabilita('Sollecito titoli')
         BackOffice.clickCardLink('Sollecito titoli')
         Common.canaleFromPopup()
         BackOffice.clickSollecitoTitoli()
@@ -214,7 +205,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     it('Verifica apertura disambiguazione: Impostazione contabilità', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkCardExistOnContabilita('Impostazione contabilità')
         BackOffice.clickCardLink('Impostazione contabilità')
         Common.canaleFromPopup()
         BackOffice.clickImpostazioneContabilita()
@@ -223,7 +213,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     it('Verifica apertura disambiguazione: Convenzioni in trattenuta', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkCardExistOnContabilita('Convenzioni in trattenuta')
         BackOffice.clickCardLink('Convenzioni in trattenuta')
         Common.canaleFromPopup()
         BackOffice.clickConvenzioniInTrattenuta()
@@ -233,7 +222,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     it('Verifica apertura disambiguazione: Monitoraggio Customer Digital Footprint', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkCardExistOnContabilita('Monitoraggio Customer Digital Footprint')
         BackOffice.clickMonitoraggioCustomerDigitalFootprint()
         BackOffice.backToBackOffice()
 

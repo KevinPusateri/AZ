@@ -83,10 +83,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.url().should('eq',baseUrl+ 'sales/')
         cy.get('lib-burger-icon').click()
         const linksBurgerMotor = [
-            // 'FastQuote Auto',
-            'Preventivo Motor',//NEW
-            // 'Preventivo anonimo Motor',
-            'Flotte e Convenzioni', // NEW
+            'Preventivo Motor',
+            'Flotte e Convenzioni',
             'MiniFlotte',
             'Trattative Auto Corporate',
             'Allianz Ultra Casa e Patrimonio',
@@ -94,9 +92,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
             'Allianz Ultra Salute',
             'Allianz1 Business',
             'FastQuote Infortuni da circolazione',
-            //'FastQuote Universo Persona',
-            //'FastQuote Universo Salute',
-            //'FastQuote Universo Persona Malattie Gravi',
             'FastQuote Impresa e Albergo',
             'Allianz1 premorienza',
             'Preventivo Anonimo Vita Individuali',

@@ -34,46 +34,6 @@ const getIFrameDenuncia = () => {
 
 class BackOffice {
 
-
-    /**
-     * Verifica che i link nel burgerMenu siano presenti
-     */
-    static checkLinkburgerMenu() {
-        const linksBurger = [
-            'Home Backoffice',
-            'Movimentazione sinistri',
-            'Denuncia',
-            'Denuncia BMP',
-            'Consultazione sinistri',
-            'Sinistri incompleti',
-            'Sinistri canalizzati',
-            'Sintesi Contabilità',
-            'Giornata contabile',
-            'Consultazione Movimenti',
-            'Estrazione Contabilità',
-            'Deleghe SDD',
-            'Quadratura unificata',
-            'Incasso per conto',
-            'Incasso massivo',
-            'Sollecito titoli',
-            'Impostazione contabilità',
-            'Convenzioni in trattenuta',
-            'Monitoraggio Customer Digital Footprint'
-        ]
-        cy.get('lib-side-menu-link').find('a').should('have.length', 19).each(($checkLinksBurger, i) => {
-            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-        })
-    }
-
-    /**
-     * Click sul link richiesto dal BurgerMenu
-     * @param {string} page - nome del link 
-     */
-    static clickLinkOnBurgerMenu(page) {
-        cy.get('lib-burger-icon').click()
-        cy.contains(page).click()
-    }
-
     /**
      * Verifica atterraggio su Appuntamenti futuri
      */
@@ -87,16 +47,8 @@ class BackOffice {
      * Clicca una delle card link presenti nella pagina BackOffice 
      * @param {string} page - Nome della pagina delle cards link 
      */
-    static cldicCardLink(page) {
+    static clickCardLink(page) {
         cy.get('.backoffice-card').find('a').contains(page).click()
-    }
-
-    /**
-     * Verifica che la Card link su Contabilità è presente nella pagina
-     * @param {string} linkTitlePage - Titolo del link della Card Link 
-     */
-    static checkCardExistOnContabilita(linkTitlePage) {
-        cy.get('app-backoffice-cards-list').eq(1).find('a').should('contain', linkTitlePage)
     }
 
     /**
@@ -149,7 +101,7 @@ class BackOffice {
 
     //#region tutti i click Sinistri 
     /**
-     * Click "Movimentazione Sinistri" e verifica atterraggio
+     * Verifica atterraggio su "Movimentazione Sinistri"
      */
     static checkMovimentazioneSinistri() {
         getIFrameMoveSinistri().find('[class="pageTitle"]:contains("Movimentazione Sinistri"):visible')
@@ -158,7 +110,7 @@ class BackOffice {
     }
 
     /**
-     * Click "Denuncia" e verifica atterraggio
+     * Verifica atterraggio su "Denuncia"
      */
     static checkDenuncia() {
         cy.wait(10000)
@@ -170,7 +122,7 @@ class BackOffice {
     }
 
     /**
-     * Click "Denuncia BMP" e verifica atterraggio
+     * Verifica atterraggio su "Denuncia BMP"
      */
     static checkDenunciaBMP() {
         cy.wait(20000)
@@ -178,21 +130,21 @@ class BackOffice {
     }
 
     /**
-     * Click "Consultazione sinistri" e verifica atterraggio
+     * Verifica atterraggio su "Consultazione sinistri"
      */
     static checkConsultazioneSinistri() {
         getIFrame().find('button:contains("Cerca"):visible')
     }
 
     /**
-     * Click "Sinistri incompleti" e verifica atterraggio
+     * Verifica atterraggio su "Sinistri incompleti"
      */
     static checkSinistriIncompleti() {
         getIFrame().find('h2:contains("Sinistri Incompleti"):visible')
     }
 
     /**
-     * Click "Sinistri canalizzati" e verifica atterraggio
+     * Verifica atterraggio su "Sinistri canalizzati"
      */
     static checkSinistriCanalizzati() {
         getIFrame().find('a:contains("Filtra"):visible')
@@ -201,7 +153,7 @@ class BackOffice {
 
     //#region tutti i click Contabilità
     /**
-     * Click "Sintesi Contabilità" e verifica atterraggio
+     * Verifica atterraggio su "Sintesi Contabilità"
      */
     static checkSintesiContabilita() {
         getIFrame().find('span:contains("Situazione finanziaria riepilogativa"):visible').click()
@@ -209,7 +161,7 @@ class BackOffice {
     }
 
     /**
-     * Click "Giornata contabile" e verifica atterraggio
+     * Verifica atterraggio su "Giornata contabile"
      */
     static checkGiornataContabile() {
         getIFrame().find('span:contains("Calendario"):visible')
@@ -217,14 +169,14 @@ class BackOffice {
     }
 
     /**
-     * Click "Consultazione Movimenti" e verifica atterraggio
+     * Verifica atterraggio su "Consultazione Movimenti"
      */
     static checkConsultazioneMovimenti() {
         getIFrame().find('button:contains("Cerca"):visible')
     }
 
     /**
-     * Click "Estrazione Contabilità" e verifica atterraggio
+     * Verifica atterraggio su "Estrazione Contabilità"
      */
     static checkEstrazioneContabilita() {
         getIFrame().find('h3:contains("ExtraDAS"):visible')
@@ -234,7 +186,7 @@ class BackOffice {
     }
 
     /**
-     * Click "Deleghe SDD" e verifica atterraggio
+     * Verifica atterraggio su "Deleghe SDD"
      */
     static checkDelegheSDD() {
         cy.wait(10000)
@@ -242,7 +194,7 @@ class BackOffice {
     }
 
     /**
-     * Click "Quadratura unificata" e verifica atterraggio
+     * Verifica atterraggio su "Quadratura unificata"
      */
     static checkQuadraturaUnificata() {
         getIFrame().find('#quadNavigationBar:contains("Q.U.A.D. - home page"):visible')
@@ -252,7 +204,7 @@ class BackOffice {
     }
 
     /**
-     * Click "Incasso per conto" e verifica atterraggio
+     * Verifica atterraggio su "Incasso per conto"
      */
     static checkIncassoPerConto() {
         cy.wait(10000)
@@ -260,14 +212,14 @@ class BackOffice {
     }
 
     /**
-     * Click "Incasso massivo" e verifica atterraggio
+     * Verifica atterraggio su "Incasso massivo"
      */
     static checkIncassoMassivo() {
         getIFrame().find('a:contains("Apri filtri"):visible')
     }
 
     /**
-     * Click "Sollecito titoli" e verifica atterraggio
+     * Verifica atterraggio su "Sollecito titoli"
      */
     static checkSollecitoTitoli() {
         getIFrame().find('span:contains("Gestione Sollecito Titoli")')
@@ -275,7 +227,7 @@ class BackOffice {
     }
 
     /**
-     * Click "Impostazione contabilità" e verifica atterraggio
+     * Verifica atterraggio su "Impostazione contabilità"
      */
     static checkImpostazioneContabilita() {
         getIFrame().find('ul > li > span:contains("Gestione dispositivi POS"):visible')
@@ -285,7 +237,7 @@ class BackOffice {
     }
 
     /**
-     * Click "Convenzioni in trattenuta" e verifica atterraggio
+     * Verifica atterraggio su "Convenzioni in trattenuta"
      */
     static checkConvenzioniInTrattenuta() {
         cy.wait(10000)
@@ -293,11 +245,11 @@ class BackOffice {
     }
 
     /**
-     * Click "Monitoraggio Customer Digital Footprint" e verifica atterraggio
+     * Verifica atterraggio su "Monitoraggio Customer Digital Footprint"
      */
-    static checkMonitoraggioCustomerDigitalFootprint() {
-        cy.get('app-backoffice-cards-list').eq(1).find('a[href="https://portaleagenzie.pp.azi.allianz.it/cdf/"]')
-            .invoke('removeAttr', 'target').click()
+    static clickAndCheckMonitoraggioCustomerDigitalFootprint() {
+        cy.get('lib-burger-icon').click()
+        cy.contains('Monitoraggio Customer Digital Footprint').invoke('removeAttr', 'target').click()
         cy.url().should('include', 'cdf')
         cy.go('back')
     }

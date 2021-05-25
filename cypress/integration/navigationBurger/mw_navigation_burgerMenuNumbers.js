@@ -1,12 +1,12 @@
-/// <reference types="Cypress" />
+/**
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it>
+ */
 
-//#region Configuration
-Cypress.config('defaultCommandTimeout', 60000)
-const delayBetweenTests = 3000
-const baseUrl = Cypress.env('baseUrl') 
-//#endregion
-
-//#region Global Variables
+import Common from "../../mw_page_objects/common/Common"
+import LoginPage from "../../mw_page_objects/common/LoginPage"
+import TopBar from "../../mw_page_objects/common/TopBar"
+import Numbers from "../../mw_page_objects/navigation/Numbers"
+import BurgerMenuNumbers from "../../mw_page_objects/burgerMenu/BurgerMenuNumbers"
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .iframe();
@@ -16,125 +16,54 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
+//#region Variables
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
+//#endregion
 
-const canaleFromPopup = () => {cy.get('body').then($body => {
-        if ($body.find('nx-modal-container').length > 0) {   
-            cy.get('nx-modal-container').find('.agency-row').first().click()
-        }
-    });
-}
-const interceptGetAgenziePDF = () => {
-    cy.intercept({
-        method: 'POST',
-        url: '**/dacommerciale/**'
-    }).as('getDacommerciale');
-}
+//#region  Configuration
+Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
-  
-    cy.intercept('POST', '**/graphql', (req) => {
-    // if (req.body.operationName.includes('notifications')) {
-    //     req.alias = 'gqlNotifications'
-    // }
-    if (req.body.operationName.includes('news')) {
-        req.alias = 'gqlNews'
-    }
-    })
-    cy.viewport(1920, 1080)
-  
-    cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
-    cy.get('input[type="SUBMIT"]').click()
-    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
-  
-    cy.wait(2000).wait('@gqlNews')
-  })
-  
-  beforeEach(() => {
-    cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/')
-    Cypress.Cookies.defaults({
-      preserve: (cookie) => {
-        return true;
-      }
-    })
-  })
-  
-  after(() => {
-    cy.get('body').then($body => {
-        if ($body.find('.user-icon-container').length > 0) {   
-            cy.get('.user-icon-container').click();
-            cy.wait(1000).contains('Logout').click()
-            cy.wait(delayBetweenTests)
-        }
-    });
-    cy.clearCookies();
-  })
+    LoginPage.logInMW(userName, psw)
+})
+
+beforeEach(() => {
+    Common.visitUrlOnEnv()
+    cy.preserveCookies()
+})
+
+after(() => {
+    TopBar.logOutMW()
+})
 
 describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     it('Verifica i link da Burger Menu', function () {
-        cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('eq', baseUrl + 'numbers/business-lines')
-
-        const linksBurger = [
-            'Home Numbers',
-            'Monitoraggio Fonti',
-            'Monitoraggio Carico',
-            'Monitoraggio Carico per Fonte',
-            'X - Advisor',
-            'Incentivazione',
-            'Incentivazione Recruiting',
-            'Andamenti Tecnici',
-            'Estrazioni Avanzate',
-            'Scarico Dati',
-            'Indici Digitali',
-            'New Business Danni',
-            'Ultra Casa e Patrimonio', // da fare
-            'Ultra Salute', // da fare
-            //'New Business Ultra',
-            'New Business Vita',
-            'New Business Allianz1',
-            'Monitoraggio PTF Danni',
-            'Monitoraggio Riserve Vita',
-            'Retention Motor',
-            'Retention Rami Vari',
-            'Monitoraggio Andamento Premi',
-            'Monitoraggio Ricavi d\'Agenzia',
-            'Capitale Vita Scadenza'
-        ]
-
-        cy.get('lib-side-menu-link').find('a').should('have.length', 23).each(($checkLinksBurger, i) => {
-            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-        })
+        TopBar.clickNumbers()
+        BurgerMenuNumbers.checkLinksBurgerMenu()
     })
 
     it('Verifica aggancio Monitoraggio Fonti', function () {
-        cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('eq', baseUrl + 'numbers/business-lines')
-        cy.get('lib-burger-icon').click()
-        cy.contains('Monitoraggio Fonti').click()
-        canaleFromPopup()
-        getIFrame().find('a:contains("Filtra")')
-        cy.get('a').contains('Numbers').click()
-        cy.url().should('eq', baseUrl + 'numbers/business-lines')
+        TopBar.clickNumbers()
+        BurgerMenuNumbers.clickLinkOnBurgerMenu('Monitoraggio Fonti')
+        Common.canaleFromPopup()
+        BurgerMenuNumbers.checkMonitoraggioFonti()
+        BurgerMenuNumbers.backToNumbers()
     })
 
-    it('Verifica aggancio Monitoraggio Carico', function () {
-        cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.url().should('eq', baseUrl + 'numbers/business-lines')
+    // TODO Da capire dove usare interceptGetAgenziePDF 
+    it.only('Verifica aggancio Monitoraggio Carico', function () {
+        TopBar.clickNumbers()
         cy.get('lib-burger-icon').click()
         interceptGetAgenziePDF()
         cy.contains('Monitoraggio Carico').click()
-        canaleFromPopup()
+        Common.canaleFromPopup()
         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
         getIFrame().find('#contentPane:contains("Fonti"):visible')
         cy.get('a').contains('Numbers').click()
-        cy.url().should('eq', baseUrl + 'numbers/business-lines')
+        // cy.url().should('eq', baseUrl + 'numbers/business-lines')
     })
 
     it('Verifica aggancio Monitoraggio Carico per Fonte', function () {

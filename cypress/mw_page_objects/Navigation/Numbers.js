@@ -21,7 +21,7 @@ const interceptGetAgenziePDF = () => {
 class Numbers {
 
     /**
-     * 
+     * Torna indetro su Numbers
      * @param {string} checkUrl - Verifica url della pagina di atterraggio
      */
     static backToNumbers(checkUrl) {
@@ -118,7 +118,7 @@ class Numbers {
         cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('a:contains("Apri filtri"):visible')
     }
-    
+
     /**
      * Verifica Atterraggio Incentivi
      */
