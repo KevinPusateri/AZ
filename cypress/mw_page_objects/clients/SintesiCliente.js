@@ -56,6 +56,7 @@ class SintesiCliente {
         getIframe().find('span').contains(etichetta).click()
     }
 
+
     static verificaDatiSpallaSinistra(cliente) {
         //Verifica indirizzo
         cy.get('.client-name').should('contain.text', String(cliente.ragioneSociale).toUpperCase().replace(",", ""))
@@ -67,6 +68,17 @@ class SintesiCliente {
         cy.get('nx-icon[class*=location]').parent().get('div').should('contain.text', cliente.provincia)
         //Verifica email
         cy.get('nx-icon[class*=mail]').parent().get('div').should('contain.text', String(cliente.email).toLowerCase())
+    }
+
+    static retriveClientName() {
+
+        let clientName
+
+        cy.get('div[class*=client-name]').then(($divClientName) => {
+            clientName = $divClientName.text()
+        })
+        cy.log(clientName)
+        return clientName
     }
 }
 

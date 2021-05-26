@@ -4,141 +4,66 @@
 
 /// <reference types="Cypress" />
 
+//#region import
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LandingClients from "../../../mw_page_objects/clients/LandingClients"
+import SCU from "../../../mw_page_objects/clients/SCU"
+import Folder from "../../../mw_page_objects/common/Folder"
+import HomePage from "../../../mw_page_objects/common/HomePage"
+import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import DettaglioAnagrafica from "../../../mw_page_objects/clients/DettaglioAnagrafica"
+import ArchivioCliente from "../../../mw_page_objects/clients/ArchivioCliente"
+//#endregion import
+
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-const delayBetweenTests = 2000
 //#endregion
 
-//#region Global Variables
-const getIframe = () => {
-  cy.get('iframe[class="iframe-content ng-star-inserted"]')
-  .iframe();
-
-  let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-  .its('0.contentDocument').should('exist');
-
-  return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
-}
-
-const getDocumentScanner = () => {
-  getIframe().find('iframe[src*="IdDocumentScanner"]')
-  .iframe();
-
-  let iframeDocumentScanner = getIframe().find('iframe[src*="IdDocumentScanner"]')
-  .its('0.contentDocument').should('exist');
-
-  return iframeDocumentScanner.its('body').should('not.be.undefined').then(cy.wrap)
-}
-
-const getDocumentoPersonale = () => {
-  getDocumentScanner().find('#documentoPersonaleFrame')
-  .iframe();
-
-  let iframeDocumentoPersonale = getDocumentScanner().find('#documentoPersonaleFrame')
-  .its('0.contentDocument').should('exist');
-
-  return iframeDocumentoPersonale.its('body').should('not.be.undefined').then(cy.wrap)
-}
-//#endregion
-
+//#region Variables
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
 let nuovoClientePG
 let currentSelectedPG
+//#endregion
 
+//#region Before After
 before(() => {
-
   cy.task('nuovoClientePersonaGiuridica').then((object) => {
-    nuovoClientePG = object;
+    nuovoClientePG = object
+    nuovoClientePG.tipologia = "DITTA"
+    nuovoClientePG.formaGiuridica = "S.R.L."
+    nuovoClientePG.toponimo = "PIAZZA"
+    nuovoClientePG.indirizzo = "GIUSEPPE GARIBALDI"
+    nuovoClientePG.numCivico = "1"
+    nuovoClientePG.cap = "36045"
+    nuovoClientePG.citta = "LONIGO"
+    nuovoClientePG.provincia = "VI"
   })
-
-  cy.clearCookies();
-  cy.clearLocalStorage();
-
-  let currentTestCaseName = 'Matrix.Tests.Matrix_Web_Modifica_PG'
-  let currentEnv = 'PREPROD'
-  let currentUser = 'TUTF021'
-
-  //cy.task('mysqlStart', {"testCaseName": currentTestCaseName, "currentEnv": currentEnv, "currentUser": currentUser});
-
-  //Skip this two requests that blocks on homepage
-  cy.intercept(/embed.nocache.js/,'ignore').as('embededNoCache');
-  cy.intercept(/launch-*/,'ignore').as('launchStaging');
-  cy.intercept('POST', '**/graphql', (req) => {
-    if (req.body.operationName.includes('notifications')) {
-      req.alias = 'gqlNotifications'
-    }
-  });
-
-  cy.visit('https://matrix.pp.azi.allianz.it/',{
-    onBeforeLoad: win =>{
-        win.sessionStorage.clear();
-    }
-  })
-
-  cy.visit('https://matrix.pp.azi.allianz.it/')
-  cy.get('input[name="Ecom_User_ID"]').type(currentUser)
-  cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
-  cy.get('input[type="SUBMIT"]').click()
-  cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
-
-  cy.wait('@gqlNotifications',{'responseTimeout': 60000})
+  LoginPage.logInMW(userName, psw)
 })
 
 beforeEach(() => {
-  cy.viewport(1920, 1080)
-  Cypress.Cookies.defaults({
-    preserve: (cookie) => {
-      return true;
-    }
-  })
+  cy.preserveCookies()
 })
 
-// after(() => {
-//   cy.get('body').then($body => {
-//       if ($body.find('.user-icon-container').length > 0) {   
-//           cy.get('.user-icon-container').click();
-//           cy.wait(1000).contains('Logout').click()
-//           cy.wait(delayBetweenTests)
-//       }
-//   });
-//   cy.clearCookies();
-// })
+after(() => {
+  TopBar.logOutMW()
+})
+//#endregion Before After
 
 describe('Matrix Web : Modifica PG', function () {
 
-  it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
-
-    cy.intercept('POST', '**/graphql', (req) => {
-      if (req.body.operationName.includes('searchClient')) {
-        req.alias = 'gqlSearchClient'
-      }
-    });
-
-    cy.get('input[name="main-search-input"]').click()
-    cy.generateTwoLetters().then(randomChars => {
-      cy.get('input[name="main-search-input"]').type(randomChars).type('{enter}')
-    })
-    cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
-    cy.url().should('include', '/search/clients/clients')
-
-    //Rimuoviamo le persone finische dai filtri di ricerca
-    cy.get('.icon').find('[name="filter"]').click()
-    cy.get('.filter-group').contains('Persona fisica').click()
-    //Rimuoviamo le effettive e cessate
-    cy.get('.filter-group').contains('Potenziale').click()
-    cy.get('.footer').find('button').contains('applica').click()
-    cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
-
-    cy.get('lib-applied-filters-item').find('span').should('be.visible')
-    cy.get('lib-client-item').first().click().wait(3000)
-    cy.get('#app-clients > app-root > lib-page-layout > div > div > div > app-client-profile > lib-sub-header-layout > div > div > lib-container > div > div > app-sidebar-left > nx-sidebar > div > div > lib-scrollable-container > div > div > div.scrollable-sidebar-content > div > app-client-resume-card > nx-card > div.padder > div.center > div > div.client-name.ng-star-inserted').then(($pgName) => {
-      currentSelectedPG = $pgName.text()
-      cy.log("Cliente PG selezionato : " + currentSelectedPG)
-    })
-    cy.contains('DETTAGLIO ANAGRAFICA').click()
+  it.only('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
+    LandingRicerca.searchRandomClient("PG","E")
+    LandingRicerca.clickFirstResult()
+    currentSelectedPG = SintesiCliente.retriveClientName()
   })
 
   it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
 
+    cy.contains('DETTAGLIO ANAGRAFICA').click()
     cy.contains('Modifica dati cliente').click()
     //Modifichiamo vari dati
     getIframe().find('#partita-iva').clear().type(nuovoClientePG.partitaIva)
