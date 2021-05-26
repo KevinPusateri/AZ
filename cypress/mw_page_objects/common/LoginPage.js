@@ -35,7 +35,6 @@ class LoginPage {
         cy.get('input[name="Ecom_User_ID"]').type(userName)
         cy.get('input[name="Ecom_Password"]').type(psw)
         cy.get('input[type="SUBMIT"]').click()
-
         Common.checkUrlEnv()
         cy.wait('@gqlNews')
     }

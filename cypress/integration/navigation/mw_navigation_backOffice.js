@@ -10,8 +10,8 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import BackOffice from "../../mw_page_objects/Navigation/BackOffice"
 
 //#region Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rds!'
+const userName = 'le00080'
+const psw = 'Dragonball3'
 //#endregion
 
 //#region Configuration
@@ -70,16 +70,12 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     it('Verifica apertura disambiguazione: Movimentazione Sinistri', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Movimentazione sinistri')
-        Common.canaleFromPopup()
-        BackOffice.clickMovimentazioneSinistri()
         BackOffice.backToBackOffice()
     })
 
     it('Verifica apertura disambiguazione: Denuncia', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Denuncia')
-        Common.canaleFromPopup()
-        BackOffice.clickDenuncia()
         BackOffice.backToBackOffice()
 
     })
@@ -87,9 +83,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     it('Verifica apertura disambiguazione: Denuncia BMP', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Denuncia BMP')
-        cy.wait(5000)
-        Common.canaleFromPopup()
-        BackOffice.clickDenunciaBMP()
         BackOffice.backToBackOffice()
 
     })
@@ -97,65 +90,45 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     it('Verifica apertura disambiguazione: Consultazione sinistri', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Consultazione sinistri')
-        Common.canaleFromPopup()
-        BackOffice.clickConsultazioneSinistri()
         BackOffice.backToBackOffice()
-
     })
 
     it('Verifica apertura disambiguazione: Sinistri incompleti', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Sinistri incompleti')
-        Common.canaleFromPopup()
-        BackOffice.clickSinistriIncompleti()
         BackOffice.backToBackOffice()
-
     })
 
     it('Verifica apertura disambiguazione: Sinistri canalizzati', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Sinistri canalizzati')
-        Common.canaleFromPopup()
-        BackOffice.clickSinistriCanalizzati()
         BackOffice.backToBackOffice()
     })
 
     it('Verifica apertura disambiguazione: Sintesi Contabilità', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkCardExistOnContabilita('Sintesi Contabilità')
         BackOffice.clickCardLink('Sintesi Contabilità')
-        Common.canaleFromPopup()
-        BackOffice.clickSintesiContabilita()
         BackOffice.backToBackOffice()
 
     })
 
     it('Verifica apertura disambiguazione: Giornata contabile', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkCardExistOnContabilita('Giornata contabile')
         BackOffice.clickCardLink('Giornata contabile')
-        Common.canaleFromPopup()
-        BackOffice.clickGiornataContabile()
         BackOffice.backToBackOffice()
 
     })
 
     it('Verifica apertura disambiguazione: Consultazione Movimenti', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkCardExistOnContabilita('Consultazione Movimenti')
         BackOffice.clickCardLink('Consultazione Movimenti')
-        Common.canaleFromPopup()
-        BackOffice.clickConsultazioneMovimenti()
         BackOffice.backToBackOffice()
 
     })
 
     it('Verifica apertura disambiguazione: Estrazione Contabilità', function () {
         TopBar.clickBackOffice()
-        BackOffice.checkCardExistOnContabilita('Estrazione Contabilità')
         BackOffice.clickCardLink('Estrazione Contabilità')
-        Common.canaleFromPopup()
-        BackOffice.clickEstrazioneContabilita()
         BackOffice.backToBackOffice()
 
     })
@@ -163,8 +136,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     it('Verifica apertura disambiguazione: Deleghe SDD', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Deleghe SDD')
-        Common.canaleFromPopup()
-        BackOffice.clickDelegheSDD()
         BackOffice.backToBackOffice()
 
     })
@@ -172,8 +143,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     it('Verifica apertura disambiguazione: Quadratura unificata', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Quadratura unificata')
-        Common.canaleFromPopup()()
-        BackOffice.checkQuadraturaUnificata()
         BackOffice.backToBackOffice()
 
     }) 
@@ -181,8 +150,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     it('Verifica apertura disambiguazione: Incasso per conto', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Incasso per conto')
-        Common.canaleFromPopup()
-        BackOffice.clickIncassoPerConto()
         BackOffice.backToBackOffice()
 
     })
@@ -190,39 +157,31 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     it('Verifica apertura disambiguazione: Incasso massivo', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Incasso massivo')
-        Common.canaleFromPopup()
-        BackOffice.clickIncassoMassivo()
         BackOffice.backToBackOffice()
     })
 
     it('Verifica apertura disambiguazione: Sollecito titoli', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Sollecito titoli')
-        Common.canaleFromPopup()
-        BackOffice.clickSollecitoTitoli()
         BackOffice.backToBackOffice()
     })
 
     it('Verifica apertura disambiguazione: Impostazione contabilità', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Impostazione contabilità')
-        Common.canaleFromPopup()
-        BackOffice.clickImpostazioneContabilita()
         BackOffice.backToBackOffice()
     });
 
     it('Verifica apertura disambiguazione: Convenzioni in trattenuta', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Convenzioni in trattenuta')
-        Common.canaleFromPopup()
-        BackOffice.clickConvenzioniInTrattenuta()
         BackOffice.backToBackOffice()
 
     });
 
     it('Verifica apertura disambiguazione: Monitoraggio Customer Digital Footprint', function () {
         TopBar.clickBackOffice()
-        BackOffice.clickMonitoraggioCustomerDigitalFootprint()
+        BackOffice.clickCardLink('Monitoraggio Customer Digital Footprint')
         BackOffice.backToBackOffice()
 
     });
