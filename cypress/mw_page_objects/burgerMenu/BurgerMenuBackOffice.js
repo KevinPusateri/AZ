@@ -29,7 +29,8 @@ class BurgerMenuBackOffice extends BackOffice {
     /**
      * Verifica che i link nel burgerMenu siano presenti
      */
-    static checkLinksBurgerMenu() {
+    static checkExistLinks() {
+        cy.get('lib-burger-icon').click()
         const linksBurger = Object.values(LinksBurgerMenu)
 
         cy.get('lib-side-menu-link').find('a').should('have.length', 19).each(($checkLinksBurger, i) => {
@@ -41,14 +42,13 @@ class BurgerMenuBackOffice extends BackOffice {
      * Click sul link richiesto dal BurgerMenu
      * @param {string} page - nome del link 
      */
-    static clickLinkOnBurgerMenu(page) {
+    static clickLink(page) {
         cy.get('lib-burger-icon').click()
         cy.contains(page).click()
 
         Common.canaleFromPopup()
         super.checkPage(page)
     }
-
 
 
 }

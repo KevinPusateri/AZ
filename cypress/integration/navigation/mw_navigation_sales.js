@@ -40,30 +40,30 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica presenza dei collegamenti rapidi', function () {
         TopBar.clickSales()
-        Sales.checkLinksCollegamentiRapidi()
+        Sales.checkExistLinksCollegamentiRapidi()
     })
 
     it('Verifica aggancio Sfera', function () {
         TopBar.clickSales()
-        Sales.clickLinkRapidoSfera()
+        Sales.clickLinkRapido('Sfera')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Campagne Commerciali', function () {
         TopBar.clickSales()
-        Sales.clickLinkRapidoCampagneCommerciali()
+        Sales.clickLinkRapido('Campagne Commerciali')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Recupero preventivi e quotazioni', function () {
         TopBar.clickSales()
-        Sales.clickLinkRapidoRecuperoPreventiviQuotazioni()
+        Sales.clickLinkRapido('Recupero preventivi e quotazioni')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Monitoraggio Polizze Proposte', function () {
         TopBar.clickSales()
-        Sales.clickLinkRapidoMonitoraggioPolizzeProposte()
+        Sales.clickLinkRapido('Monitoraggio Polizze Proposte')
         Sales.backToSales()
     })
 
@@ -74,72 +74,74 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
         TopBar.clickSales()
-        Sales.clickPreventivoMotor()
+        Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio', function () {
         TopBar.clickSales()
-        Sales.clickAllianzUltraCasaPatrimonio()
+        Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Salute', function () {
         TopBar.clickSales()
-        Sales.clickAllianzUltraSalute()
+        Sales.clickLinkOnEmettiPolizza('Allianz Ultra Salute')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function () {
         TopBar.clickSales()
-        Sales.clickAllianzUltraCasaPatrimonioBMP()
+        Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio BMP')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz1 Business', function () {
         TopBar.clickSales()
-        Sales.clickAllianz1Business()
+        Sales.clickLinkOnEmettiPolizza('Allianz1 Business')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Emetti Polizza - FastQuote Impresa e Albergo', function () {
         TopBar.clickSales()
-        Sales.clickAllianz1Business()
+        Sales.clickLinkOnEmettiPolizza('FastQuote Impresa e Albergo')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Emetti Polizza - Flotte e Convenzioni', function () {
         TopBar.clickSales()
-        Sales.clickFlotteConvenzioni()
+        Sales.clickLinkOnEmettiPolizza('Flotte e Convenzioni')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Emetti Polizza - Preventivo anonimo Vita Individuali', function () {
         TopBar.clickSales()
-        Sales.clickPreventivoAnonimoVitaIndividuali()
+        Sales.clickLinkOnEmettiPolizza('Preventivo anonimo Vita Individuali')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Emetti Polizza - MiniFlotte', function () {
         TopBar.clickSales()
-        Sales.clickMiniFlotte()
+        Sales.clickLinkOnEmettiPolizza('MiniFlotte')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Emetti Polizza - Trattative Auto Corporate', function () {
         TopBar.clickSales()
-        Sales.clickTrattativeAutoCorporate()
+        Sales.clickLinkOnEmettiPolizza('Trattative Auto Corporate')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Emetti Polizza - Gestione Richieste per PA', function () {
         TopBar.clickSales()
-        Sales.clickGestioneRichiestePerPA()
+        Sales.clickLinkOnEmettiPolizza('Gestione Richieste per PA')
         Sales.backToSales()
     })
 
+    //ADD TFS quello che fa
     it('Verifica aggancio Estrai dettaglio', function () {
         TopBar.clickSales()
+        Sales.clickAttivitaInScadenza()
         Sales.clickEstraiDettaglio()
         Sales.backToSales()
     })
@@ -149,12 +151,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.clickAppuntamento()
     })
 
-    // Non viene piu mostrato
-    // it('Verifica aggancio News image Primo comandamento', function () {
-    //     TopBar.clickSales()
-    //     Sales.clickNewsImagePrimoComandamento()
-    //     Sales.backToSales()
-    // })
+    //ADD TFS
+    it('Verifica aggancio News image Primo comandamento', function () {
+        TopBar.clickSales()
+        Sales.clickNewsImagePrimoComandamento()
+        Sales.backToSales()
+    })
 
     it('Verifica aggancio Preventivi e quotazioni - Card Danni', function () {
         TopBar.clickSales()
@@ -177,8 +179,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-
-    // ADD TO TFS
     it('Verifica aggancio Preventivi e quotazioni Vita - button: Vedi Tutti', function () {
         TopBar.clickSales()
         Sales.clickPreventiviQuotazioniOnTabVita()

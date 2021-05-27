@@ -17,8 +17,8 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 //#region Variables
-const userName = 'le00080'
-const psw = 'Dragonball3'
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
 //#endregion
 
 //#region  Configuration
@@ -42,7 +42,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     it('Verifica i link da Burger Menu', function () {
         TopBar.clickNumbers()
-        BurgerMenuNumbers.checkLinksBurgerMenu()
+        BurgerMenuNumbers.checkExistLinks()
     })
 
     it('Verifica aggancio Monitoraggio Fonti', function () {
@@ -191,7 +191,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         BurgerMenuNumbers.backToNumbers()
     })
 
-    it.only('Verifica aggancio Capitale Vita Scadenza', function () {
+    it('Verifica aggancio Capitale Vita Scadenza', function () {
         TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Capitale Vita Scadenza')
         BurgerMenuNumbers.backToNumbers()

@@ -12,10 +12,31 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza")').click()
+const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza"):visible').click()
 const popoverEmettiPolizza = () => cy.get('.card-container').find('lib-da-link')
-
 //#endregion
+
+const LinksRapidi = {
+    SFERA: 'Sfera',
+    CAMPAGNE_COMMERCIALI: 'Campagne Commerciali',
+    RECUPERO_PREVENTIVI_E_QUOTAZIONI: 'Recupero preventivi e quotazioni',
+    MONITORAGGIO_POLIZZE_PROPOSTE: 'Monitoraggio Polizze Proposte',
+    GED_GESTIONE_DOCUMENTALE: 'GED – Gestione Documentale'
+}
+
+const LinksOnEmettiPolizza = {
+    PREVENTIVO_MOTOR: 'Preventivo Motor',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_SALUTE: 'Allianz Ultra Salute',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
+    ALLIANZ1_BUSINESS: 'Allianz1 Business',
+    FASTQUOTE_IMPRESA_E_ALBERGO: 'FastQuote Impresa e Albergo',
+    FLOTTE_E_CONVENZIONI: 'Flotte e Convenzioni',
+    PREVENTIVO_ANONIMO_VITA_INDIVIDUALI: 'Preventivo anonimo Vita Individuali',
+    MINIFLOTTE: 'MiniFlotte',
+    TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
+    GESTIONE_RICHIESTE_PER_PA: 'Gestione Richieste per PA'
+}
 
 class Sales {
 
@@ -30,241 +51,187 @@ class Sales {
     /**
      * Verifica che i link dei collegamenti rapidi siano presenti nella pagina
      */
-    static checkLinksCollegamentiRapidi() {
-        const linksCollegamentiRapidi = [
-            'Sfera',
-            'Campagne Commerciali',
-            'Recupero preventivi e quotazioni',
-            'Monitoraggio Polizze Proposte',
-            'GED – Gestione Documentale'
-        ]
+    static checkExistLinksCollegamentiRapidi() {
+        const linksCollegamentiRapidi = Object.values(LinksRapidi)
+
         cy.get('app-quick-access').find('[class="link-item ng-star-inserted"]').should('have.length', 5).each(($link, i) => {
             expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
         })
     }
 
-//#region links collegamenti rapidi
     /**
-     * Click sul link rapido Sfera e verifica atterraggio
+     * Click link nella sezione "Collegamenti rapidi"
+     * @param {string} page - nome del link
      */
-    static clickLinkRapidoSfera() {
-        cy.intercept({
-            method: 'POST',
-            url: '**/dacommerciale/**'
-        }).as('getDacommerciale');
-        cy.get('app-quick-access').contains('Sfera').click()
-        Common.canaleFromPopup()
-        cy.wait('@getDacommerciale', { requestTimeout: 40000 });
-        getIFrame().find('ul > li > span:contains("Quietanzamento"):visible')
-        getIFrame().find('ul > li > span:contains("Visione Globale"):visible')
-        getIFrame().find('ul > li > span:contains("Portafoglio"):visible')
-        getIFrame().find('ul > li > span:contains("Clienti"):visible')
-        getIFrame().find('ul > li > span:contains("Uscite Auto"):visible')
-        getIFrame().find('ul > li > span:contains("Gestore Attività"):visible')
-        getIFrame().find('ul > li > span:contains("Operatività"):visible')
-        getIFrame().find('button:contains("Applica filtri"):visible')
+    static clickLinkRapido(page) {
+        switch (page) {
+            case LinksRapidi.SFERA:
+                cy.intercept({
+                    method: 'POST',
+                    url: '**/dacommerciale/**'
+                }).as('getDacommerciale');
+                cy.get('app-quick-access').contains('Sfera').click()
+                Common.canaleFromPopup()
+                cy.wait('@getDacommerciale', { requestTimeout: 40000 });
+                getIFrame().find('ul > li > span:contains("Quietanzamento"):visible')
+                getIFrame().find('ul > li > span:contains("Visione Globale"):visible')
+                getIFrame().find('ul > li > span:contains("Portafoglio"):visible')
+                getIFrame().find('ul > li > span:contains("Clienti"):visible')
+                getIFrame().find('ul > li > span:contains("Uscite Auto"):visible')
+                getIFrame().find('ul > li > span:contains("Gestore Attività"):visible')
+                getIFrame().find('ul > li > span:contains("Operatività"):visible')
+                getIFrame().find('button:contains("Applica filtri"):visible')
+                break;
+            case LinksRapidi.CAMPAGNE_COMMERCIALI:
+                cy.intercept('POST', '**/graphql', (req) => {
+                    if (req.body.operationName.includes('campaignAgent')) {
+                        req.alias = 'gqlCampaignAgent'
+                    }
+                })
+                cy.get('app-quick-access').contains('Campagne Commerciali').click()
+                Common.canaleFromPopup()
+                cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 });
+                cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
+                break;
+            case LinksRapidi.RECUPERO_PREVENTIVI_E_QUOTAZIONI:
+                cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
+                Common.canaleFromPopup()
+                cy.wait(10000);
+                getIFrame().find('button:contains("Cerca"):visible')
+                break;
+            case LinksRapidi.MONITORAGGIO_POLIZZE_PROPOSTE:
+                cy.intercept({
+                    method: 'POST',
+                    url: /InizializzaContratti/
+                }).as('inizializzaContratti');
+                cy.get('app-quick-access').contains('Monitoraggio Polizze Proposte').click()
+                Common.canaleFromPopup()
+                cy.wait('@inizializzaContratti', { requestTimeout: 30000 });
+                getIFrame().find('button:contains("Cerca"):visible')
+                break;
+            case LinksRapidi.GED_GESTIONE_DOCUMENTALE:
+                cy.intercept({
+                    method: 'POST',
+                    url: /InizializzaContratti/
+                }).as('inizializzaContratti');
+                cy.get('app-quick-access').contains('Monitoraggio Polizze Proposte').click()
+                Common.canaleFromPopup()
+                cy.wait('@inizializzaContratti', { requestTimeout: 30000 });
+                getIFrame().find('button:contains("Cerca"):visible')
+                break;
+        }
     }
 
     /**
-     * Click sul link rapido Campagne Commerciali e verifica atterraggio
+     * Click link nel button "Emetti polizza"
+     * @param {string} page - nome del link
      */
-    static clickLinkRapidoCampagneCommerciali() {
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('campaignAgent')) {
-                req.alias = 'gqlCampaignAgent'
-            }
-        })
-        cy.get('app-quick-access').contains('Campagne Commerciali').click()
-        Common.canaleFromPopup()
-        cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 });
-        cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
+    static clickLinkOnEmettiPolizza(page) {
+        cy.wait(3000)
+        // buttonEmettiPolizza()
+        // popoverEmettiPolizza().contains(page).click()
+        cy.contains('Emetti polizza').click({ force: true })
+        // cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza"):visible').click().wait()
+        cy.get('.card-container').find('lib-da-link').contains(page).click()
+        switch (page) {
+            case LinksOnEmettiPolizza.PREVENTIVO_MOTOR:
+                cy.intercept({
+                    method: 'POST',
+                    url: '**/assuntivomotor/**'
+                }).as('getMotor');
+                Common.canaleFromPopup()
+                cy.wait('@getMotor', { requestTimeout: 100000 });
+                getIFrame().find('button:contains("Calcola"):visible')
+                break;
+            case LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO:
+                cy.intercept({
+                    method: 'GET',
+                    url: '**/ultra/**'
+                }).as('getUltra');
+                Common.canaleFromPopup()
+                cy.wait('@getUltra', { requestTimeout: 30000 });
+                cy.wait(5000)
+                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
+                break;
+            case LinksOnEmettiPolizza.ALLIANZ_ULTRA_SALUTE:
+                cy.intercept({
+                    method: 'GET',
+                    url: '**/ultra/**'
+                }).as('getUltra');
+                Common.canaleFromPopup()
+                cy.wait('@getUltra', { requestTimeout: 50000 });
+                cy.wait(5000)
+                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
+                break;
+            case LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP:
+                // cy.intercept({
+                //     method: 'GET',
+                //     url: '/ultra2/**'
+                // }).as('getUltra2');
+                Common.canaleFromPopup()
+                // cy.wait('@getUltra2', { requestTimeout: 30000 });
+                cy.wait(15000)
+                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
+                break;
+            case LinksOnEmettiPolizza.ALLIANZ1_BUSINESS:
+                cy.intercept({
+                    method: 'POST',
+                    url: '**/Danni/**'
+                }).as('getDanni');
+                Common.canaleFromPopup()
+                cy.wait('@getDanni', { requestTimeout: 30000 });
+                getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
+                break;
+            case LinksOnEmettiPolizza.FASTQUOTE_IMPRESA_E_ALBERGO:
+                cy.intercept({
+                    method: 'POST',
+                    url: '**/Auto/**'
+                }).as('getAuto');
+                Common.canaleFromPopup()
+                cy.wait('@getAuto', { requestTimeout: 30000 });
+                getIFrame().find('form input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
+                break;
+            case LinksOnEmettiPolizza.FLOTTE_E_CONVENZIONI:
+                Common.canaleFromPopup()
+                getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+                break;
+            case LinksOnEmettiPolizza.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
+                Common.canaleFromPopup()
+                cy.wait(20000)
+                getIFrame().find('#AZBuilder1_ctl15_cmdIndietro[value="Indietro"]').invoke('attr', 'value').should('equal', 'Indietro')
+
+                break;
+            case LinksOnEmettiPolizza.MINIFLOTTE:
+                cy.intercept({
+                    method: 'POST',
+                    url: '**/Auto/**'
+                }).as('getAuto');
+                Common.canaleFromPopup()
+                cy.wait('@getAuto', { requestTimeout: 30000 });
+                getIFrame().find('span:contains("Nuova Trattativa"):visible')
+                break;
+            case LinksOnEmettiPolizza.TRATTATIVE_AUTO_CORPORATE:
+                cy.intercept({
+                    method: 'POST',
+                    url: '**/Auto/**'
+                }).as('getAuto');
+                Common.canaleFromPopup()
+                cy.wait('@getAuto', { requestTimeout: 30000 });
+                getIFrame().find('span:contains("Nuova Trattativa"):visible')
+                break;
+            case LinksOnEmettiPolizza.GESTIONE_RICHIESTE_PER_PA:
+                cy.intercept({
+                    method: 'POST',
+                    url: /Danni*/
+                }).as('getDanni');
+                Common.canaleFromPopup()
+                cy.wait('@getDanni', { requestTimeout: 40000 });
+                getIFrame().find('#main-wrapper input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
+                break;
+
+        }
     }
 
-    /**
-     * Click sul link rapido Recupero preventivi e quotazioni e verifica atterraggio
-     */
-    static clickLinkRapidoRecuperoPreventiviQuotazioni() {
-        cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
-        Common.canaleFromPopup()
-        cy.wait(10000);
-        getIFrame().find('button:contains("Cerca"):visible')
-    }
-
-    /**
-     * Click sul link rapido Monitoraggio Polizze Proposte e verifica atterraggio
-     */
-    static clickLinkRapidoMonitoraggioPolizzeProposte() {
-        cy.intercept({
-            method: 'POST',
-            url: /InizializzaContratti/
-        }).as('inizializzaContratti');
-        cy.get('app-quick-access').contains('Monitoraggio Polizze Proposte').click()
-        Common.canaleFromPopup()
-        cy.wait('@inizializzaContratti', { requestTimeout: 30000 });
-        getIFrame().find('button:contains("Cerca"):visible')
-    }
-//#endregion
-
-//#region popover Emetti Polizza
-    /**
-     * Click "Preventivo Motor" e verifica atterraggio
-     */
-    static clickPreventivoMotor() {
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('Preventivo Motor').click()
-        cy.intercept({
-            method: 'POST',
-            url: '**/assuntivomotor/**'
-        }).as('getMotor');
-        Common.canaleFromPopup()
-        cy.wait('@getMotor', { requestTimeout: 120000 });
-        getIFrame().find('button:contains("Calcola"):visible')
-    }
-
-    /**
-     * Click "Allianz Ultra Casa e Patrimonio" e verifica atterraggio
-     */
-    static clickAllianzUltraCasaPatrimonio() {
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('Allianz Ultra Casa e Patrimonio').click()
-        cy.intercept({
-            method: 'GET',
-            url: '**/ultra/**'
-        }).as('getUltra');
-        Common.canaleFromPopup()
-        cy.wait('@getUltra', { requestTimeout: 30000 });
-        cy.wait(5000)
-        getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
-    }
-
-    /**
-     * Click "Allianz Ultra Salute" e verifica atterraggio
-     */
-    static clickAllianzUltraSalute() {
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('Allianz Ultra Salute').click()
-        cy.intercept({
-            method: 'GET',
-            url: '**/ultra/**'
-        }).as('getUltra');
-        Common.canaleFromPopup()
-        cy.wait('@getUltra', { requestTimeout: 50000 });
-        cy.wait(5000)
-        getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
-    }
-
-    /**
-     * Click "Allianz Ultra Salute" e verifica atterraggio
-     */
-    static clickAllianzUltraCasaPatrimonioBMP() {
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('Allianz Ultra Casa e Patrimonio BMP').click()
-        // cy.intercept({
-        //     method: 'GET',
-        //     url: '/ultra2/**'
-        // }).as('getUltra2');
-        Common.canaleFromPopup()
-        // cy.wait('@getUltra2', { requestTimeout: 30000 });
-        cy.wait(15000)
-        getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
-    }
-
-    /**
-     * Click "Allianz1 Business" e verifica atterraggio
-     */
-    static clickAllianz1Business() {
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('Allianz1 Business').click()
-        cy.intercept({
-            method: 'POST',
-            url: '**/Danni/**'
-        }).as('getDanni');
-        Common.canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 30000 });
-        getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
-    }
-
-    /**
-     * Click "Allianz FastQuote Impresa" e Albergo e verifica atterraggio
-     */
-    static clickAllianz1Business() {
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('FastQuote Impresa e Albergo').click()
-        cy.intercept({
-            method: 'POST',
-            url: '**/Auto/**'
-        }).as('getAuto');
-        Common.canaleFromPopup()
-        cy.wait('@getAuto', { requestTimeout: 30000 });
-        getIFrame().find('form input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
-    }
-
-    /**
-     * Click "Flotte e Convenzioni" e verifica atterraggio
-     */
-    static clickFlotteConvenzioni() {
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('Flotte e Convenzioni').click()
-        Common.canaleFromPopup()
-        getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
-    }
-
-    /**
-     * Click "Preventivo anonimo Vita Individuali" e verifica atterraggio
-     */
-    static clickPreventivoAnonimoVitaIndividuali() {
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('Preventivo anonimo Vita Individuali').click()
-        Common.canaleFromPopup()
-        cy.wait(20000)
-        getIFrame().find('#AZBuilder1_ctl15_cmdIndietro[value="Indietro"]').invoke('attr', 'value').should('equal', 'Indietro')
-    }
-
-    /**
-     * Click "MiniFlotte" e verifica atterraggio
-     */
-    static clickMiniFlotte() {
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('MiniFlotte').click()
-        cy.intercept({
-            method: 'POST',
-            url: '**/Auto/**'
-        }).as('getAuto');
-        Common.canaleFromPopup()
-        cy.wait('@getAuto', { requestTimeout: 30000 });
-        getIFrame().find('span:contains("Nuova Trattativa"):visible')
-    }
-
-    /**
-     * Click "Trattative Auto Corporate" e verifica atterraggio
-     */
-    static clickTrattativeAutoCorporate() {
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('Trattative Auto Corporate').click()
-        cy.intercept({
-            method: 'POST',
-            url: '**/Auto/**'
-        }).as('getAuto');
-        Common.canaleFromPopup()
-        cy.wait('@getAuto', { requestTimeout: 30000 });
-        getIFrame().find('span:contains("Nuova Trattativa"):visible')
-    }
-
-    /**
-     * Click "Gestione Richieste per PA" e verifica atterraggio
-     */
-    static clickGestioneRichiestePerPA() {
-        buttonEmettiPolizza()
-        popoverEmettiPolizza().contains('Gestione Richieste per PA').click()
-        cy.intercept({
-            method: 'POST',
-            url: /Danni*/
-        }).as('getDanni');
-        Common.canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 40000 });
-        getIFrame().find('#main-wrapper input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
-    }
-    //#endregion
 
     /**
      * Click su una delle attività in scadenza dopodichè click Estrai Dettaglio
@@ -310,7 +277,22 @@ class Sales {
         getIFrame().find('app-header:contains("Tutte"):visible')
     }
 
-//#region Preventivi e quotazioni
+
+    /**
+     * Click sul pannello "Attivita in scadenza" atterraggio su tab Danni
+     */
+    static clickAttivitaInScadenza() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('countReceipts')) {
+                req.alias = 'gqlReceipts'
+            }
+        })
+        cy.get('app-expiring-activities-accordion').contains('Attività in scadenza').click()
+        cy.wait('@gqlReceipts')
+    }
+
+
+    //#region Preventivi e quotazioni
     /**
      * Click sul pannello "Preventivi e quotazioni" atterraggio su tab Danni
      */
@@ -387,9 +369,9 @@ class Sales {
             getIFrame().find('form:contains("Cerca"):visible')
         })
     }
-//#endregion
+    //#endregion
 
-//#region Proposte Danni
+    //#region Proposte Danni
     /**
      * Click sul pannello "Proposte danni" atterraggio su tab Danni
      */
@@ -456,7 +438,7 @@ class Sales {
             getIFrame().find('form:contains("Cerca"):visible')
         })
     }
-//#endregion
+    //#endregion
 
 
 }

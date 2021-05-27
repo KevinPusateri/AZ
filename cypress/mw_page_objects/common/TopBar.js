@@ -16,6 +16,15 @@ const interceptPageMieInfo = () => {
     }).as('getMieInfo');
 }
 
+const interceptPageClients = () =>{
+    cy.intercept({
+        method: 'POST',
+        url: '**/clients/**' ,
+      }).as('getClients');
+    
+}
+
+
 class TopBar {
 
     static logOutMW() {
@@ -53,6 +62,13 @@ class TopBar {
     static searchClientByCForPI(cfOrPi) {
 
         cy.get('input[name="main-search-input"]').type(cfOrPi).type('{enter}');
+    }
+
+    static clickClients() {
+        interceptPageClients()
+        cy.get('app-product-button-list').find('a').contains('Clients').click()
+        cy.wait('@getClients', { requestTimeout: 30000 })
+        cy.url().should('eq', Common.getBaseUrl() + 'clients/')
     }
 
     static clickBackOffice() {

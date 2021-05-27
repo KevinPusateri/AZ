@@ -58,10 +58,19 @@ const LinksBurgerMenu = {
 
 class BurgerMenuNumbers extends Numbers {
 
+   /**
+     * Torna indetro su Numbers
+     * @param {string} checkUrl - Verifica url della pagina di atterraggio
+     */
+    static backToNumbers() {
+        super.backToNumbers('business-lines')
+    }
+
     /**
      * Verifica che i link nel burgerMenu siano presenti
      */
-    static checkLinksBurgerMenu() {
+    static checkExistLinks() {
+        cy.get('lib-burger-icon').click()
         const linksBurger = Object.values(LinksBurgerMenu)
 
         cy.get('lib-side-menu-link').find('a').should('have.length', 23).each(($checkLinksBurger, i) => {
@@ -157,13 +166,6 @@ class BurgerMenuNumbers extends Numbers {
         }
     }
 
-
-    /**
-     * Torna indetro su Numbers
-     */
-    static backToNumbers() {
-        super.backToNumbers('business-lines')
-    }
 }
 
 export default BurgerMenuNumbers
