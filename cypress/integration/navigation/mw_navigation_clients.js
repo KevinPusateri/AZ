@@ -10,8 +10,8 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import Clients from "../../mw_page_objects/clients/LandingClients";
 
 //#region Variables
-const userName = 'le00080'
-const psw = 'Dragonball3'
+const userName = 'TUF021'
+const psw = 'P@ssw0rd!'
 //#endregion
 
 //#region Configuration
