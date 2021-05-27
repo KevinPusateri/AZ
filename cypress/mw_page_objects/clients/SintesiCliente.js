@@ -72,15 +72,10 @@ class SintesiCliente {
 
     static retriveClientName() {
 
-        let clientName
-
         cy.get('div[class*=client-name]').then(($divClientName) => {
-            clientName = $divClientName.text()
-            debugger
+            let clientName = $divClientName.text()
+            return clientName
         })
-        cy.log(clientName)
-        debugger
-        return clientName
     }
 }
 

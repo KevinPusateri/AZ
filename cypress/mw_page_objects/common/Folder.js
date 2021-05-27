@@ -139,6 +139,10 @@ class Folder {
         getFolder().contains('Upload dei file selezionati').click()
         cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
     }
+
+    static clickTornaIndietro(){
+        getFolder().find('#idUrlBack').click().wait(2000)
+    }
 }
 
 export default Folder
