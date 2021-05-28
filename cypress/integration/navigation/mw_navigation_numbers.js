@@ -89,7 +89,8 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.backToNumbers('operational-indicators')
     })
 
-    it.only('Verifica aggancio su Incentivi', function () {
+    /
+    it('Verifica aggancio su Incentivi', function () {
         TopBar.clickNumbers()
         Numbers.clickTab('INCENTIVI','incentives')
         Numbers.checkAtterraggioPrimoIndiceIncentivi()
