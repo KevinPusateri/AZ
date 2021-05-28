@@ -52,6 +52,32 @@ class LandingRicerca {
     static clickFirstResult() {
         cy.get('lib-client-item').first().click();
     }
+
+
+    /**
+     * 
+     * @param {string} pageLanding - nome della pagina 
+     */
+    static checkBucaRicercaSuggerrimenti(pageLanding){
+        cy.get('input[name="main-search-input"]').click()
+        const getSection = () => cy.get('lib-shortcut-section-item')
+        getSection().find('[class="title"]:contains("Ultime pagine visitate"):visible').should('contain', 'Ultime pagine visitate')
+        getSection().find('[class="title"]:contains("Ultimi clienti visualizzati"):visible').should('contain', 'Ultimi clienti visualizzati')
+        getSection().find('[class="title"]:contains("Ultime polizze visualizzate"):visible').should('contain', 'Ultime polizze visualizzate')
+    
+        getSection().find('[class="left nx-grid__column-6"]').should('exist').and('be.visible').and('have.length', 9)
+        getSection().find('a[href^="/matrix/clients/client/"]').should('have.length', 3).and('exist').and('be.visible').and('have.attr', 'href')
+        getSection().find('img').should('have.length', 3).and('exist').and('be.visible').and('have.attr', 'src')
+    
+        getSection().find('[class="right nx-grid__column-6"]').each(($text) => {
+            expect($text.text()).not.to.be.empty
+        })
+        getSection().find('[class="left nx-grid__column-6"]').each(($text) => {
+            expect($text.text()).not.to.be.empty
+        })
+
+        cy.get('a[href="/matrix/"]').click()
+    }
 }
 
 export default LandingRicerca
