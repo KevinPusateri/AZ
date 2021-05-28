@@ -183,7 +183,6 @@ class Mieinfo {
         }
     }
 
-
     /**
      * Verifica che i link icon presenti nella pagina corrispondano
      * @param {page} page - nome della pagina 
@@ -377,63 +376,10 @@ class Mieinfo {
                 break;
         }
     }
-    // /**
-    //  *  Click "Primo Piano" e verifica atterraggio
-    //  */
-    // static clickPrimoPiano() {
-    //     getIFrame().contains('Primo Piano').click().wait(2000)
-    //     getIFrame().find('a[class="menu--link menu--link_active menu_padding-0 menu--link_active_id"]').should('contain', 'Primo Piano')
-    // }
-
-    // /**
-    //  *  Click "Raccolte" e verifica atterraggio
-    //  */
-    // static clickRaccolte() {
-    //     getIFrame().contains('Raccolte').click().wait(2000)
-    //     getIFrame().find('a[class="menu--link menu--link_active menu_padding-0 menu--link_active_id"]').should('contain', 'Primo Piano')
-    // }
-
-    // /**
-    //  *  Click "Prodotti" e verifica atterraggio
-    //  */
-    // static clickProdotti() {
-    //     getIFrame().contains('Prodotti').click().wait(2000)
-    //     getIFrame().find('a[class="menu--link menu--link_active menu_padding-0 menu--link_active_id"]').should('contain', 'Prodotti')
-    // }
-
-    // /**
-    //  *  Click "Iniziative" e verifica atterraggio
-    //  */
-    // static clickIniziative() {
-    //     getIFrame().contains('Iniziative').click().wait(2000)
-    //     getIFrame().find('a[class="menu--link menu--link_active menu_padding-0 menu--link_active_id"]').should('contain', 'Iniziative')
-    // }
-
-    // /**
-    //  *  Click "Eventi e Sponsorizzazioni" e verifica atterraggio
-    //  */
-    // static clickEventiSponsorizzazioni() {
-    //     getIFrame().contains('Eventi e Sponsorizzazioni').click().wait(2000)
-    //     getIFrame().find('a[class="menu--link menu--link_active menu_padding-0 menu--link_active_id"]').should('contain', 'Eventi e Sponsorizzazioni')
-    //     getIFrame().find('app-page-title').should('contain', 'Eventi').and('be.visible')
-    // }
-
-    // /**
-    //  *  Click "Sales Academy" e verifica atterraggio
-    //  */
-    // static clickSalesAcademy() {
-    //     getIFrame().contains('Sales Academy').click().wait(2000)
-    //     getIFrame().find('a[class="menu--link menu--link_active menu_padding-0 menu--link_active_id"]').should('contain', 'Sales Academy')
-    // }
-
-
-
-
-    //#endregion  
-
-    //#region Verifica Panel espansi
+   
+    //#region Verifica Panel aperti
     /**
-     * Verifica che i panel si espandono
+     * Verifica che i panel si espandono su Release
      */
     static checkPanelsOnRelease() {
         getIFrame().find('app-accordion').contains('Matrix').click()
@@ -443,7 +389,7 @@ class Mieinfo {
     }
 
     /**
-     * Verifica che le icon links e submenu di "Manuali informatici" siano presenti
+     * Verifica che i panel si espandono su "Manuali informatici"
      */
     static checkPanelsOnManualiInformatici() {
         const cardManuali = [
@@ -492,7 +438,7 @@ class Mieinfo {
     }
 
     /**
-    * Verifica che le icon links e submenu di "Operatività" siano presenti
+     * Verifica che i panel si espandono su "Operatività"
     */
     static checkPanelsOnOperativita() {
         const cardOperativita = [
@@ -516,20 +462,6 @@ class Mieinfo {
         }
     }
     //#endregion
-
-    /**
-     * verifica Atterraggio "Circolari"
-     */
-    static checkCircolari() {
-        getIFrame().find('app-page-title').should('contain', 'Circolari').and('be.visible')
-    }
-
-    /**
-     * verifica Atterraggio "Company Handbook"
-     */
-    static checkCompanyHandbook() {
-        getIFrame().find('app-dynamic-element').should('be.visible')
-    }
 
 }
 

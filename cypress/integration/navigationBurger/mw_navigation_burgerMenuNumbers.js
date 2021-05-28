@@ -7,15 +7,6 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import BurgerMenuNumbers from "../../mw_page_objects/burgerMenu/BurgerMenuNumbers"
 
-const getIFrame = () => {
-    cy.get('iframe[class="iframe-content ng-star-inserted"]')
-        .iframe();
-
-    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-        .its('0.contentDocument').should('exist');
-
-    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
-}
 //#region Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
