@@ -122,8 +122,13 @@ class Numbers {
     /**
      * Verifica Atterraggio Incentivi
      */
-    static checkAtterraggioIncentivi() {
-        cy.get('.empty-list').should('be.visible').and('contain', 'La sezione sarà disponibile')
+    static checkAtterraggioPrimoIndiceIncentivi() {
+        cy.get('app-incentives').find('[class="text-panel-header"]').should('contain','TOTALE MATURATO INCENTIVI')
+        interceptGetAgenziePDF()
+        cy.get('app-incentive-card').find('lib-card').first().click()
+        Common.canaleFromPopup()
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
+        getIFrame().find('#btnRicerca_CapoGruppo:contains("Nuova ricerca"):visible')
     }
 
 }
