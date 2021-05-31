@@ -3,55 +3,33 @@
 */
 
 /// <reference types="Cypress" />
+import BurgerMenuBackOffice from "../../mw_page_objects/burgerMenu/BurgerMenuBackOffice"
+import Common from "../../mw_page_objects/common/Common"
+import LoginPage from "../../mw_page_objects/common/LoginPage"
+import TopBar from "../../mw_page_objects/common/TopBar"
 
-//#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
-const delayBetweenTests = 3000
+//#region Variables
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
 //#endregion
 
+//#region Configuration
+Cypress.config('defaultCommandTimeout', 60000)
+//#endregion
+
+
 before(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
-  
-    cy.intercept('POST', '**/graphql', (req) => {
-    // if (req.body.operationName.includes('notifications')) {
-    //     req.alias = 'gqlNotifications'
-    // }
-    if (req.body.operationName.includes('news')) {
-        req.alias = 'gqlNews'
-    }
-    })
-    cy.viewport(1920, 1080)
-  
-    cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
-    cy.get('input[type="SUBMIT"]').click()
-    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
-  
-    cy.wait('@gqlNews')
-  })
-  
-  beforeEach(() => {
-    cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/')
-    Cypress.Cookies.defaults({
-      preserve: (cookie) => {
-        return true;
-      }
-    })
-  })
-  
-  after(() => {
-    cy.get('body').then($body => {
-        if ($body.find('.user-icon-container').length > 0) {   
-            cy.get('.user-icon-container').click();
-            cy.wait(1000).contains('Logout').click()
-            cy.wait(delayBetweenTests)
-        }
-    });
-    cy.clearCookies();
-  })
+    LoginPage.logInMW(userName, psw)
+})
+
+beforeEach(() => {
+    Common.visitUrlOnEnv()
+    cy.preserveCookies()
+})
+
+after(() => {
+    TopBar.logOutMW()
+})
 
 describe('Buca di Ricerca - Risultati Clients', function () {
     it('Verifica Ricerca Cliente: nome o cognome ',function(){

@@ -4,91 +4,68 @@
  */
 
 /// <reference types="Cypress" />
+import SCU from "../../mw_page_objects/clients/SCU"
+import Common from "../../mw_page_objects/common/Common"
+import LoginPage from "../../mw_page_objects/common/LoginPage"
+import TopBar from "../../mw_page_objects/common/TopBar"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
+import News from "../../mw_page_objects/Navigation/News"
 
-//#region Configuration
-Cypress.config('defaultCommandTimeout', 30000)
-const delayBetweenTests = 3000
-const baseUrl = Cypress.env('baseUrl') 
+//#region Variables
+const userName = 'LE00038'
+const psw = 'Aprile2021$'
 //#endregion
 
-//#region Before and After
+//#region Configuration
+Cypress.config('defaultCommandTimeout', 60000)
+//#endregion
+
 before(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
-  
-    cy.intercept('POST', '**/graphql', (req) => {
-    // if (req.body.operationName.includes('notifications')) {
-    //     req.alias = 'gqlNotifications'
-    // }
-    if (req.body.operationName.includes('news')) {
-        req.alias = 'gqlNews'
-    }
-    })
-    cy.viewport(1920, 1080)
-  
-    cy.visit('https://matrix.pp.azi.allianz.it/')
-    cy.get('input[name="Ecom_User_ID"]').type('TUTF021')
-    cy.get('input[name="Ecom_Password"]').type('P@ssw0rd!')
-    cy.get('input[type="SUBMIT"]').click()
-    cy.url().should('include','/portaleagenzie.pp.azi.allianz.it/matrix/')
-  
-    cy.wait('@gqlNews')
-  })
-  
-  beforeEach(() => {
-    cy.viewport(1920, 1080)
-    cy.visit('https://matrix.pp.azi.allianz.it/')
-    Cypress.Cookies.defaults({
-      preserve: (cookie) => {
-        return true;
-      }
-    })
+    LoginPage.logInMW(userName, psw)
+})
 
-  })
-  
-  after(() => {
-    cy.get('body').then($body => {
-        if ($body.find('.user-icon-container').length > 0) {   
-            cy.get('.user-icon-container').click();
-            cy.wait(1000).contains('Logout').click()
-            cy.wait(delayBetweenTests)
-        }
-    });
-    cy.clearCookies();
-  })
-//#endregion Before and After
+beforeEach(() => {
+    Common.visitUrlOnEnv()
+    cy.preserveCookies()
+})
 
+after(() => {
+    TopBar.logOutMW()
+})
 
 describe('Buca di Ricerca', function () {
-    it('Verifica Click su Ricerca Classica', function () {
-        cy.get('input[name="main-search-input"]').click()
-        cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
-        cy.url().should('include', '/search/clients/clients')
+    // it('Verifica Click su Ricerca Classica', function () {
+    //     LandingRicerca.searchRandomClient(false)
+    //     LandingRicerca.checkRicercaClassica()
+    // })
 
-        cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
+    // it('Verifica Click su Ricerca Cliente', function () {
+    //     LandingRicerca.searchRandomClient(false)
+    //     LandingRicerca.clickRicercaClassicaLabel('Ricerca Cliente')
+    //     SCU.checkAggancioRicerca()
+    // })
 
-        const links = [
-            'Ricerca Cliente',
-            'Ricerca Polizze proposte',
-            'Ricerca Preventivi',
-            'Ricerca News',
-            'Rubrica'
-        ]
-        cy.get('nx-modal-container').find('lib-da-link').each(($linkRicerca, i) => {
-            expect($linkRicerca.text().trim()).to.include(links[i]);
-        })
-        cy.get('nx-modal-container').find('button[aria-label="Close dialog"]').click()
+    // it('Verifica Click su Ricerca Polizze proposte', function () {
+    //     LandingRicerca.searchRandomClient(false)
+    //     LandingRicerca.clickRicercaClassicaLabel('Ricerca Polizze proposte')
+    //     SCU.checkAggancioPolizzePropostePreventivi()
+    // })
+
+    // it('Verifica Click su Ricerca Preventivi', function () {
+    //     LandingRicerca.searchRandomClient(false)
+    //     LandingRicerca.clickRicercaClassicaLabel('Ricerca Preventivi')
+    //     SCU.checkAggancioPolizzePropostePreventivi()
+    // })
+
+
+    it('Verifica Click su Ricerca News', function () {
+        LandingRicerca.searchRandomClient(false)
+        LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
+        News.checkAtterraggio(true)
     })
-
-    it('Verifica Click su Ricerca Cliente', function () {
-        cy.get('input[name="main-search-input"]').click()
-        cy.get('input[name="main-search-input"]').type('Ro').type('{enter}')
-        cy.url().should('include', '/search/clients/clients')
-        cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
-
-        cy.get('nx-modal-container').find('lib-da-link').contains('Ricerca Cliente').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click()
-        cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
-
+    it('Verifica Click su Rubrica', function () {
+        LandingRicerca.searchRandomClient(false)
+        LandingRicerca.clickRicercaClassicaLabel('Rubrica')
+        SCU.checkAggancioRicerca()
     })
 })

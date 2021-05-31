@@ -261,6 +261,14 @@ class SCU {
     static VerificaDocumentiInsufficienti() {
         getSCU().find('button:contains("Inserisci il documento")').click()
     }
+
+    static checkAggancioRicerca(){
+        getSCU().find('#cerca-pers-forinsert-cf').should('exist').and('be.visible')
+    }
+
+    static checkAggancioPolizzePropostePreventivi(){
+        getSCU().find('#casella-ricerca').should('exist').and('be.visible')
+    }
 }
 
 export default SCU

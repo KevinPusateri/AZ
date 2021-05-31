@@ -58,7 +58,7 @@ after(() => {
 describe('Matrix Web : Modifica PG', function () {
 
   it.only('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
-    LandingRicerca.searchRandomClient("PG", "E")
+    LandingRicerca.searchRandomClient(true, "PG", "E")
     LandingRicerca.clickFirstResult()
     clientePG.nominatico = SintesiCliente.retriveClientName()
   })
