@@ -31,7 +31,7 @@
     "rc_risultati": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati.xml,toConsole=true\"",
     "ricerca": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca.xml,toConsole=true\"",
     "cypress:open": "./node_modules/.bin/cypress open",
-    "cypress:run:navigations": "npm-run-all -s -c nav_backOffice nav_news nav_numbers nav_clients nav_homePage nav_mieInfo",
+    "cypress:run:navigations": "npm-run-all -s -c nav_backOffice nav_clients nav_homePage nav_mieInfo nav_news nav_numbers nav_sales",
     "cypress:run:ricerca": "npm-run-all -s -c rc_classica rc_ris_clients rc_ris_mieInfo rc_risultati ricerca",
     "cypress:run:burgerMenu": "npm-run-all -s -c nav_burgerMenuClients nav_burgerMenuNumbers nav_burgerMenuSales nav_burgerMenuBackOffice",
     "cypress:run:censimenti": "npm-run-all -s -c censimento_pf censimento_pg",
