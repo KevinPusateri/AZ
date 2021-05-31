@@ -1,4 +1,5 @@
 /// <reference types="Cypress" />
+import Common from "../../mw_page_objects/common/Common"
 
 class HomePage {
 
@@ -7,7 +8,23 @@ class HomePage {
         cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
         cy.intercept(/launch-*/, 'ignore').as('launchStaging');
 
-        cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/')
+        cy.visit(Common.getBaseUrl())
+    }
+
+    /**
+     * Click link "Vai al Centro notifiche"
+     */
+    static clickVaiAlCentroNotifiche() {
+        cy.contains('Vai al Centro notifiche').click()
+        cy.url().should('include', Common.getBaseUrl() + 'notification-center')
+    }
+
+    /**
+     * Click link "Vedi tutte"
+     */
+    static clickVediTutte() {
+        cy.contains('Vedi tutte').click()
+        cy.url().should('eq', Common.getBaseUrl() + 'news/recent')
     }
 }
 

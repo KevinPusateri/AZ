@@ -219,7 +219,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
-    // ADD ON TFS EXCEL
     it('Verifica aggancio Gestione attività in scadenza', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Gestione attività in scadenza')

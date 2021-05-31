@@ -50,7 +50,6 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.clickLinkOnMenu('Raccolte')
   });
 
-  // ADD TFS
   it('Verifica aggancio Contenuti Salvati', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Contenuti Salvati')

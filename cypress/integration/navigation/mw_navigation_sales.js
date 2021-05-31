@@ -138,7 +138,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    //ADD TFS quello che fa
     it('Verifica aggancio Estrai dettaglio', function () {
         TopBar.clickSales()
         Sales.clickAttivitaInScadenza()
@@ -151,7 +150,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.clickAppuntamento()
     })
 
-    //ADD TFS
     it('Verifica aggancio News image Primo comandamento', function () {
         TopBar.clickSales()
         Sales.clickNewsImagePrimoComandamento()
