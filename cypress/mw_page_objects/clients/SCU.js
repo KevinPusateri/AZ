@@ -10,6 +10,8 @@ const getSCU = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+
+
 class SCU {
 
     //#region Persona Fisica
@@ -268,6 +270,11 @@ class SCU {
 
     static checkAggancioPolizzePropostePreventivi(){
         getSCU().find('#casella-ricerca').should('exist').and('be.visible')
+    }
+
+    static checkAggancioRubrica(){
+        getSCU().find('[class="container"]').should('include', 'La funzionalità non è al momento disponibile')
+            .should('exist').and('be.visible')
     }
 }
 

@@ -3,20 +3,22 @@ import Common from "../common/Common"
 
 const getIFrame = () => {
 
-    let iframeClass
     cy.get('iframe').then($iframe => {
+        let iframeClass
+
         if ($iframe.hasClass('iframe-object'))
             iframeClass = 'iframe-object'
         else
             iframeClass = 'iframe-content ng-star-inserted'
 
         cy.get('iframe[class="' + iframeClass + '"]').iframe();
+
+        cy.get('iframe[class="' + iframeClass + '"]')
+            .its('0.contentDocument').should('exist').as('getFrame')
     })
 
-    let iframe = cy.get('iframe[class="' + iframeClass + '"]')
-        .its('0.contentDocument').should('exist');
+    return cy.get('@getFrame').its('body').should('not.be.undefined').then(cy.wrap)
 
-    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 class News {

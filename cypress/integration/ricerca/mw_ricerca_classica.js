@@ -63,9 +63,9 @@ describe('Buca di Ricerca', function () {
         LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
         News.checkAtterraggio(true)
     })
-    it('Verifica Click su Rubrica', function () {
+    it.only('Verifica Click su Rubrica', function () {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.clickRicercaClassicaLabel('Rubrica')
-        SCU.checkAggancioRicerca()
+        SCU.checkAggancioRubrica()
     })
 })
