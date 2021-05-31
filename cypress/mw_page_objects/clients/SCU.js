@@ -271,11 +271,6 @@ class SCU {
     static checkAggancioPolizzePropostePreventivi(){
         getSCU().find('#casella-ricerca').should('exist').and('be.visible')
     }
-
-    static checkAggancioRubrica(){
-        getSCU().find('[class="container"]').should('include', 'La funzionalità non è al momento disponibile')
-            .should('exist').and('be.visible')
-    }
 }
 
 export default SCU

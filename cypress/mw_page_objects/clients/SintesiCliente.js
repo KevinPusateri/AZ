@@ -70,6 +70,11 @@ class SintesiCliente {
         cy.get('nx-icon[class*=mail]').parent().get('div').should('contain.text', String(cliente.email).toLowerCase())
     }
 
+    static checkAtterraggioSintesiCliente(cliente) {
+        cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class', 'active')
+        cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
+    }
+
     static retriveClientName() {
 
         cy.get('div[class*=client-name]').then(($divClientName) => {

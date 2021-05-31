@@ -12,8 +12,8 @@ import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import News from "../../mw_page_objects/Navigation/News"
 
 //#region Variables
-const userName = 'LE00038'
-const psw = 'Aprile2021$'
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
 //#endregion
 
 //#region Configuration
@@ -34,38 +34,37 @@ after(() => {
 })
 
 describe('Buca di Ricerca', function () {
-    // it('Verifica Click su Ricerca Classica', function () {
-    //     LandingRicerca.searchRandomClient(false)
-    //     LandingRicerca.checkRicercaClassica()
-    // })
+    it('Verifica Click su Ricerca Classica', function () {
+        LandingRicerca.searchRandomClient(false)
+        LandingRicerca.checkRicercaClassica()
+    })
 
-    // it('Verifica Click su Ricerca Cliente', function () {
-    //     LandingRicerca.searchRandomClient(false)
-    //     LandingRicerca.clickRicercaClassicaLabel('Ricerca Cliente')
-    //     SCU.checkAggancioRicerca()
-    // })
+    it('Verifica Click su Ricerca Cliente', function () {
+        LandingRicerca.searchRandomClient(false)
+        LandingRicerca.clickRicercaClassicaLabel('Ricerca Cliente')
+        SCU.checkAggancioRicerca()
+    })
 
-    // it('Verifica Click su Ricerca Polizze proposte', function () {
-    //     LandingRicerca.searchRandomClient(false)
-    //     LandingRicerca.clickRicercaClassicaLabel('Ricerca Polizze proposte')
-    //     SCU.checkAggancioPolizzePropostePreventivi()
-    // })
+    it('Verifica Click su Ricerca Polizze proposte', function () {
+        LandingRicerca.searchRandomClient(false)
+        LandingRicerca.clickRicercaClassicaLabel('Ricerca Polizze proposte')
+        SCU.checkAggancioPolizzePropostePreventivi()
+    })
 
-    // it('Verifica Click su Ricerca Preventivi', function () {
-    //     LandingRicerca.searchRandomClient(false)
-    //     LandingRicerca.clickRicercaClassicaLabel('Ricerca Preventivi')
-    //     SCU.checkAggancioPolizzePropostePreventivi()
-    // })
+    it('Verifica Click su Ricerca Preventivi', function () {
+        LandingRicerca.searchRandomClient(false)
+        LandingRicerca.clickRicercaClassicaLabel('Ricerca Preventivi')
+        SCU.checkAggancioPolizzePropostePreventivi()
+    })
 
-
+    it('Verifica Click su Rubrica', function () {
+        LandingRicerca.searchRandomClient(false)
+        LandingRicerca.clickRicercaClassicaLabel('Rubrica')
+    })
+    
     it('Verifica Click su Ricerca News', function () {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
         News.checkAtterraggio(true)
-    })
-    it.only('Verifica Click su Rubrica', function () {
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.clickRicercaClassicaLabel('Rubrica')
-        SCU.checkAggancioRubrica()
     })
 })
