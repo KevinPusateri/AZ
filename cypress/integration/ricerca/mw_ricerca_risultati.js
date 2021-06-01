@@ -36,26 +36,8 @@ after(() => {
 describe('Buca di Ricerca - Risultati', function () {
 
     it('Verifica Atterraggio nella Pagina',function(){
-        LandingRicerca.search('RO')
         LandingRicerca.checkTabs()
         LandingRicerca.checkSuggestedLinks('RO')
         LandingRicerca.checkButtonRicercaClassica()
-
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.checkTabDopoRicerca()
-
-        cy.get('lib-advice-navigation-section').contains('Suggerimenti di navigazione').should('exist').and('be.visible')
-
-        const suggLinks = [
-            'Provvigioni',
-            'Quattroruote - Calcolo valore Veicolo',
-            'Interrogazioni Centralizzate',
-            'Recupero preventivi e quotazioni',
-            'Monitoraggio Polizze Proposte'
-        ]
-        cy.get('lib-advice-navigation-section').find('.position-sidebar>.title').should('have.length',5).each(($suggerimenti,i) =>{
-            expect($suggerimenti.text().trim()).to.include(suggLinks[i]);
-        })
-        cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible')
     })
 })
