@@ -10,9 +10,9 @@ import TopBar from "../../../mw_page_objects/common/TopBar"
 import LandingClients from "../../../mw_page_objects/clients/LandingClients"
 import SCU from "../../../mw_page_objects/clients/SCU"
 import Folder from "../../../mw_page_objects/common/Folder"
-import HomePage from "../../../mw_page_objects/common/HomePage"
 import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import HomePage from "../../../mw_page_objects/common/HomePage"
 //#endregion import
 
 //#region Configuration
@@ -67,7 +67,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
   })
 
   it('Ricercare il cliente appena censito nella buca di ricerca', () => {
-    HomePage.ReloadMWHomePage()
+    HomePage.reloadMWHomePage()
     TopBar.searchClientByName("PF", nuovoClientePF.nome, nuovoClientePF.cognome)
     LandingRicerca.clickFirstResult()
   })
