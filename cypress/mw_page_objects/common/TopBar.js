@@ -50,7 +50,7 @@ const LandingPage = {
 }
 
 
-class TopBar extends HomePage{
+class TopBar extends HomePage {
 
     static logOutMW() {
 
@@ -67,32 +67,16 @@ class TopBar extends HomePage{
     }
 
     /**
-    * @param {string} tipoCliente - Tipo Cliente a scelta tra "PF" o "PG"
-    * @param {string} nome - Nome proprio della PF o Nome della PG
-    * @param {string} cognome - Opzionale, solo nel caso di PF
+    * @param {string} value - What to search
     */
-    static searchClientByName(tipoCliente, nome, cognome) {
-        switch (tipoCliente) {
-            case "PF":
-                cy.get('input[name="main-search-input"]').type(cognome + " " + nome).type('{enter}');
-                break;
-            case "PG":
-                cy.get('input[name="main-search-input"]').type(nome).type('{enter}');
-        }
-    }
-
-    /**
-    * @param {string} cfOrPi - Inserire Codice Fiscale o Partita Iva
-    */
-    static searchClientByCForPI(cfOrPi) {
-
-        cy.get('input[name="main-search-input"]').type(cfOrPi).type('{enter}');
+    static search(value) {
+        cy.get('input[name="main-search-input"]').type(value).type('{enter}').wait(2000)
     }
 
     /**
      * Verifica click Buca di ricerca
      */
-    static clickBucaRicerca(){
+    static clickBucaRicerca() {
         cy.get('input[name="main-search-input"]').click()
     }
 

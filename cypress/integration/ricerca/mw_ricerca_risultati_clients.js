@@ -1,6 +1,7 @@
 /**
  * @author Kevin Pusateri <kevin.pusateri@allianz.it>
-*/
+ * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+ */
 
 /// <reference types="Cypress" />
 import Common from "../../mw_page_objects/common/Common"
@@ -43,7 +44,7 @@ describe('Buca di Ricerca - Risultati Clients', function () {
     })
 
     it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function () {
-        TopBar.searchClientByName('PG','PULINI')
+        TopBar.search('PULINI')
         LandingRicerca.clickFirstResult()
         SintesiCliente.checkAtterraggioSintesiCliente('PULINI')
     })
