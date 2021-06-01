@@ -104,7 +104,7 @@ class LandingRicerca {
      * 
      * @param {string} pageLanding - nome della pagina 
      */
-    static checkBucaRicercaSuggerrimenti(pageLanding) {
+    static checkBucaRicercaSuggerrimenti() {
         cy.get('input[name="main-search-input"]').click()
         const getSection = () => cy.get('lib-shortcut-section-item')
         getSection().find('[class="title"]:contains("Ultime pagine visitate"):visible').should('contain', 'Ultime pagine visitate')
@@ -246,10 +246,14 @@ class LandingRicerca {
             });
     }
 
+    /**
+     * 
+     * @param {string} value - Keywork da cercare (in base alla keyword vengono dei suggerimenti di default correlati)
+     */
     static checkSuggestedLinks(value) {
         let suggLinks = []
         let linkLength = 0
-        switch (value) {
+        switch (value.toLocaleLowerCase()) {
             case 'incasso':
                 suggLinks = [
                     'Incasso per conto',
@@ -272,12 +276,23 @@ class LandingRicerca {
                 ]
                 linkLength = 3
                 break
+            case 'ro':
+                suggLinks = [
+                    'Provvigioni',
+                    'Quattroruote - Calcolo valore Veicolo',
+                    'Interrogazioni Centralizzate',
+                    'Recupero preventivi e quotazioni',
+                    'Monitoraggio Polizze Proposte'
+                ]
+                linkLength = 5
+                break
         }
 
         cy.get('lib-navigation-item-link').find('.title').should('have.length', linkLength)
             .each(($suggerimenti, i) => {
                 expect($suggerimenti.text()).to.include(suggLinks[i]);
             })
+        cy.get('lib-advice-navigation-section').contains('Suggerimenti di navigazione').should('exist').and('be.visible')
     }
 
     static checkLeMieInfo() {
@@ -419,6 +434,10 @@ class LandingRicerca {
         cy.get('lib-circular-item').find('a').first().invoke('removeAttr', 'target').click()
         cy.get('#detailStampaImg')
         cy.go('back')
+    }
+
+    static checkButtonRicercaClassica(){
+        cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible')
     }
 }
 

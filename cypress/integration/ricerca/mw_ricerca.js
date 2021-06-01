@@ -1,12 +1,13 @@
 /**
  * @author Kevin Pusateri <kevin.pusateri@allianz.it>
-*/
+ * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+ */
 
 /// <reference types="Cypress" />
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import Ricerca from "../../mw_page_objects/ricerca/LandingRicerca";
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 
 //#region Variables
 const userName = 'TUTF021'
@@ -34,29 +35,35 @@ after(() => {
 describe('Matrix Ricerca', function () {
 
   it('Verifica Ricerca Da Switch Page', function () {
-    Ricerca.checkBucaRicercaSuggerrimenti()
+    LandingRicerca.checkBucaRicercaSuggerrimenti()
   })
 
-  it('Verifica Ricerca Da Landing Page', function () {
+  it('Verifica Ricerca Da Landing Clients', function () {
     TopBar.clickClients()
-    Ricerca.checkBucaRicercaSuggerrimenti()
+    LandingRicerca.checkBucaRicercaSuggerrimenti()
+  })
 
+  it('Verifica Ricerca Da Landing Sales', function () {
     TopBar.clickSales()
-    Ricerca.checkBucaRicercaSuggerrimenti()
+    LandingRicerca.checkBucaRicercaSuggerrimenti()
     cy.get('a[href="/matrix/"]').click()
+  })
 
+  it('Verifica Ricerca Da Landing Numbers', function () {
     TopBar.clickNumbers()
-    Ricerca.checkBucaRicercaSuggerrimenti()
+    LandingRicerca.checkBucaRicercaSuggerrimenti()
     cy.get('a[href="/matrix/"]').click()
+  })
+
+  it('Verifica Ricerca Da Landing BackOffice', function () {
 
     TopBar.clickBackOffice()
-    Ricerca.checkBucaRicercaSuggerrimenti()
-    cy.get('a[href="/matrix/"]').click()
-
-    landingPage().contains('News').click()
-    cy.url().should('include', '/news/home')
-    checkBucaRicerca()
+    LandingRicerca.checkBucaRicercaSuggerrimenti()
     cy.get('a[href="/matrix/"]').click()
   })
 
+  it('Verifica Ricerca Da News', function () {
+    TopBar.clickNews()
+    LandingRicerca.checkBucaRicercaSuggerrimenti()
+  })
 })
