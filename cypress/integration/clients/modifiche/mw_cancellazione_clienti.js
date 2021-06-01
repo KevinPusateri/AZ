@@ -4,12 +4,20 @@
 
 /// <reference types="Cypress" />
 
+import BurgerMenuClients from "../../../mw_page_objects/burgerMenu/BurgerMenuClients";
+import Common from "../../../mw_page_objects/common/Common"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
+
+
+//#region Variables
+const userName = 'le00080'
+const psw = 'Dragonball3'
+//#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-const delayBetweenTests = 2000
-const baseUrl = Cypress.env('baseUrl')
-
 //#endregion
 
 //#region Global Variables
@@ -22,101 +30,54 @@ const getIFrame = () => {
 
   return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-
-const canaleFromPopup = () => {
-  cy.get('body').then($body => {
-    if ($body.find('nx-modal-container').length > 0) {
-      cy.wait(2000)
-      cy.get('nx-modal-container').find('.agency-row').first().click()
-    }
-  });
-}
-//#endregion
-
 before(() => {
-  cy.clearCookies();
-  cy.clearLocalStorage();
-
-  cy.intercept('POST', '**/graphql', (req) => {
-    if (req.body.operationName.includes('news')) {
-      req.alias = 'gqlNews'
-    }
-  })
-  cy.viewport(1920, 1080)
-
-  cy.visit('https://matrix.pp.azi.allianz.it/')
-  cy.get('input[name="Ecom_User_ID"]').type('LE00080')
-  cy.get('input[name="Ecom_Password"]').type('Dragonball3')
-  cy.get('input[type="SUBMIT"]').click()
-  cy.url().should('include', '/portaleagenzie.pp.azi.allianz.it/matrix/')
-
-  cy.wait('@gqlNews')
+  LoginPage.logInMW(userName, psw)
 })
 
 beforeEach(() => {
-  cy.viewport(1920, 1080)
-  cy.visit('https://matrix.pp.azi.allianz.it/')
-  Cypress.Cookies.defaults({
-    preserve: (cookie) => {
-      return true;
-    }
-  })
+  Common.visitUrlOnEnv()
+  cy.preserveCookies()
 })
 
-//   after(() => {
-//     cy.get('body').then($body => {
-//         if ($body.find('.user-icon-container').length > 0) {   
-//             cy.get('.user-icon-container').click();
-//             cy.wait(1000).contains('Logout').click()
-//             cy.wait(delayBetweenTests)
-//         }
-//     });
-//     cy.clearCookies();
-//   })
+after(() => {
+  TopBar.logOutMW()
+})
+//#endregion
+
 var clienteCF;
 var indexCliente;
-var nameCliente;
 describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
 
-  it('Verifica aggancio pagina Cancellazione clienti', function () {
-    cy.get('app-product-button-list').find('a').contains('Clients').click()
-    cy.url().should('eq', baseUrl + 'clients/')
-    cy.get('lib-burger-icon').click()
-    cy.contains('Cancellazione Clienti').click()
-    canaleFromPopup()
-    getIFrame().find('span:contains("Persona fisica"):visible')
-    getIFrame().find('span:contains("Persona giuridica"):visible')
-    cy.get('a').contains('Clients').click()
-    cy.url().should('eq', baseUrl + 'clients/')
+  it('Verifica aggancio pagina Cancellazione Clienti', function () {
+    TopBar.clickClients()
+    BurgerMenuClients.clickLink('Cancellazione Clienti')
+    BurgerMenuClients.backToClients()
   })
 
 
   it('Verifica Cancellazione clienti PF e PG', function () {
-    cy.get('app-product-button-list').find('a').contains('Clients').click()
-    cy.url().should('eq', baseUrl + 'clients/')
-    cy.get('lib-burger-icon').click()
-    cy.contains('Cancellazione Clienti').click()
-    canaleFromPopup()
-    getIFrame().find('#tabstrip').then(() => {
-      for (var i = 0; i < 10; i++) {
-        getIFrame().find('[class="search-grid-fisica k-grid k-widget"]').then(($table) => {
-          cy.wrap($table).find('tbody').then(() => {
-            if ($table.find('tr:contains("Nessun record da visualizzare.")').length === 1) {
-              cy.generateTwoLetters().then(randomChars => {
-                getIFrame().find('#f-cognome').clear().type(randomChars)
-              })
-              cy.generateTwoLetters().then(randomChars => {
-                getIFrame().find('#f-nome').clear().type(randomChars)
-              })
-              getIFrame().find('input[class="k-button pull-right"]').contains('Cerca').click().wait(2000)
-            } else {
-              i = 11; // QUEST NON VIENE LETTO
-            }
-          })
-        })
-      }
-    })
+    TopBar.clickClients()
+    BurgerMenuClients.clickLink('Cancellazione Clienti')
 
+    const searchClients = () => {
+      getIFrame().find('[class="search-grid-fisica k-grid k-widget"]').then(($table) => {
+        const isTrovato = $table.find('tr:contains("Nessun record da visualizzare.")').is(':visible')
+        if (isTrovato) {
+          cy.generateTwoLetters().then(randomChars => {
+            getIFrame().find('#f-cognome').clear().type(randomChars)
+          })
+          cy.generateTwoLetters().then(randomChars => {
+            getIFrame().find('#f-nome').clear().type(randomChars)
+          })
+          getIFrame().find('input[class="k-button pull-right"]').contains('Cerca').click().wait(2000)
+
+          searchClients()
+        } else {
+          return
+        }
+      })
+    }
+    searchClients()
 
     cy.get('#body').then(() => {
 
@@ -137,9 +98,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
           cy.wrap($tr).eq(indexCliente).find('td').eq(1).invoke('text').then(clientCfText => {
             clienteCF = clientCfText;
           })
-          cy.wrap($tr).eq(indexCliente).find('td').eq(0).invoke('text').then(clientNameText => {
-            nameCliente = clientNameText;
-          })
+
         })
       })
 
@@ -153,22 +112,15 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
 
       cy.get('a[href="/matrix/"]').click()
 
-     
+
     })
   })
 
   it('Ricercare i clienti in buca di ricera - accedere alla scheda', function () {
-    cy.get('form').then(() => {
-      cy.get('input[name="main-search-input"]').click()
-      cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
-    })
-
-    // TODO: modifica filtro non trova
-    cy.get('.tab-content-container').find('nx-icon[name="filter"]').click()
-    cy.get('.filter-group').find('span:contains("Effettivo"):visible').click()
-    cy.get('.filter-group').find('span:contains("Cessato"):visible').click()
-    cy.get('.footer').find('button').contains('applica').click()
-    cy.get('lib-clients-container').should('contain', 'La ricerca non ha prodotto risultati')
+    
+    TopBar.searchClientByCForPI(clienteCF)
+    LandingRicerca.filtraRicerca('P')
+    LandingRicerca.checkClienteNotFound()
 
   })
 

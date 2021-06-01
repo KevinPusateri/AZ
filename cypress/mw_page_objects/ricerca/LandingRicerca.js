@@ -205,7 +205,7 @@ class LandingRicerca {
             }
         });
 
-        cy.get('.icon').find('[name="filter"]').click()
+        cy.wait(3000).get('.icon').find('[name="filter"]').click()
 
         //Verifica Stato
         cy.get('.filter-group').find('span:contains("Effettivo"):visible')
@@ -438,6 +438,43 @@ class LandingRicerca {
 
     static checkButtonRicercaClassica(){
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible')
+    }
+    /**
+     * Verifica i tab(Clients,sales,Le mie info) presenti dopo
+     * aver effettuato la ricerca
+     */
+    static checkTabDopoRicerca() {
+        const tabHeader = [
+            'clients',
+            'sales',
+            'le mie info'
+        ]
+        cy.get('[class^="docs-grid-colored-row tabs-container"]').find('[class^="tab-header"]').each(($tab, i) => {
+            expect($tab.text().trim()).to.include(tabHeader[i]);
+        })
+    }
+
+    /**
+     * Verifica i tab(Clients,sales,Le mie info) presenti dopo
+     * aver effettuato la ricerca
+     */
+    static checkTabSuggerimentiRicerca() {
+        const tabHeader = [
+            'clients',
+            'sales',
+            'le mie info'
+        ]
+        cy.get('[class^="docs-grid-colored-row tabs-container"]').find('[class^="tab-header"]').each(($tab, i) => {
+            expect($tab.text().trim()).to.include(tabHeader[i]);
+        })
+    }
+
+    /**
+     * Verifica che la ricerca non ha prodotto risultati
+     */
+    static checkClienteNotFound() {
+        cy.get('lib-client-item').first().click().wait(2000)
+        cy.get('body').should('contain.text','Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
     }
 }
 

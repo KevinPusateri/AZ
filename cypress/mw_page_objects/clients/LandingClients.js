@@ -54,7 +54,6 @@ class LandingClients {
 
     /**
      * Torna indetro su Clients
-     * @param {string} checkUrl - Verifica url della pagina di atterraggio
      */
     static backToClients() {
         cy.get('a').contains('Clients').click()

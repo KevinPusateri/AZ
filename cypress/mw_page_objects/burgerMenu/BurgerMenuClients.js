@@ -43,7 +43,7 @@ class BurgerMenuClients extends Clients {
     }
 
     /**
-     * Click sul link richiesto dal BurgerMenu
+     * Apre il burgerMenu e click sul link richiesto dal BurgerMenu
      * @param {string} page - nome del link 
      */
     static clickLink(page) {
@@ -108,7 +108,6 @@ class BurgerMenuClients extends Clients {
     
     /**
      * Torna indetro su Clients
-     * @param {string} checkUrl - Verifica url della pagina di atterraggio
      */
      static backToClients() {
         super.backToClients()
