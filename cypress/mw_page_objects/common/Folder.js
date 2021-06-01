@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 
 //#region iFrame
-const getSCU = () => {
+const getIframe = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .iframe()
 
@@ -12,10 +12,10 @@ const getSCU = () => {
 }
 
 const getFolder = () => {
-    getSCU().find('iframe[class="w-100"]')
+    getIframe().find('iframe[class="w-100"]')
         .iframe()
 
-    let iframeFolder = getSCU().find('iframe[class="w-100"]')
+    let iframeFolder = getIframe().find('iframe[class="w-100"]')
         .its('0.contentDocument').should('exist')
 
     return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
@@ -112,36 +112,70 @@ class Folder {
         getFolder().contains('Upload dei file selezionati').click()
         cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
 
-        getSCU().find('button:contains("Conferma")').click()
+        getIframe().find('button:contains("Conferma")').click()
     }
 
-    static caricaVisuraCamerale(){
-        getFolder().find('span[class="k-icon k-plus"]:visible').click()
-        getFolder().find('span[class="k-icon k-plus"]:first').click()
-        getFolder().find('#UploadDocument').click()
-        getFolder().find('#win-upload-document_wnd_title').click()
-        getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}')
-        getFolder().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('Visura').type('{enter}')
-        cy.intercept({
-          method: 'POST',
-          url: /uploadCustomerDocument/
-        }).as('uploadCustomerDoc')
+    /**
+    * @param {boolean} isModifica - se in fase di modifica e non censimento, l'iframe è diffrente
+    */
+    static caricaVisuraCamerale(isModifica = false) {
+        if(!isModifica)
+        {
+            getFolder().find('span[class="k-icon k-plus"]:visible').click()
+            getFolder().find('span[class="k-icon k-plus"]:first').click()
+            getFolder().find('#UploadDocument').click()
+            getFolder().find('#win-upload-document_wnd_title').click()
+            getFolder().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}')
+            getFolder().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('Visura').type('{enter}')
+            cy.intercept({
+                method: 'POST',
+                url: /uploadCustomerDocument/
+            }).as('uploadCustomerDoc')
     
-        const fileName = 'Autocertificazione_Test.pdf';
-        cy.fixture(fileName).then(fileContent => {
-          getFolder().find('#file').attachFile({
-            fileContent,
-            fileName,
-            mimeType: 'application/pdf'
-          }, { subjectType: 'input' })
-        })
+            const fileName = 'Autocertificazione_Test.pdf';
+            cy.fixture(fileName).then(fileContent => {
+                getFolder().find('#file').attachFile({
+                    fileContent,
+                    fileName,
+                    mimeType: 'application/pdf'
+                }, { subjectType: 'input' })
+            })
     
-        getFolder().contains('Upload dei file selezionati').click()
-        cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
+            getFolder().contains('Upload dei file selezionati').click()
+            cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
+        }
+        else
+        {
+            getIframe().find('span[class="k-icon k-plus"]:visible').click()
+            getIframe().find('span[class="k-icon k-plus"]:first').click()
+            getIframe().find('#UploadDocument').click()
+            getIframe().find('#win-upload-document_wnd_title').click()
+            getIframe().find('span[aria-owns="wizard-folder-type-select_listbox"]').click().type('{downarrow}')
+            getIframe().find('span[aria-owns="wizard-document-type-select_listbox"]').click().type('Visura').type('{enter}')
+            cy.intercept({
+                method: 'POST',
+                url: /uploadCustomerDocument/
+            }).as('uploadCustomerDoc')
+    
+            const fileName = 'Autocertificazione_Test.pdf';
+            cy.fixture(fileName).then(fileContent => {
+                getIframe().find('#file').attachFile({
+                    fileContent,
+                    fileName,
+                    mimeType: 'application/pdf'
+                }, { subjectType: 'input' })
+            })
+    
+            getIframe().contains('Upload dei file selezionati').click()
+            cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
+        }
     }
 
-    static clickTornaIndietro(){
-        getFolder().find('#idUrlBack').click().wait(2000)
+    /**
+    * @param {boolean} isModifica - se in fase di modifica e non censimento, l'iframe è diffrente
+    */
+    static clickTornaIndietro(isModifica = false) {
+        !isModifica ? getFolder().find('#idUrlBack').click().wait(2000) : getIframe().find('#idUrlBack').click().wait(2000)
     }
 }
 

@@ -10,8 +10,6 @@ const getSCU = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-
-
 class SCU {
 
     //#region Persona Fisica
@@ -234,8 +232,15 @@ class SCU {
     //#endregion
 
     static generazioneStampe() {
-        getSCU().contains('Conferma').then(($conferma) => {
-           $conferma.click()
+
+        //Popup Risulta un UNICO...
+        
+        getSCU().find('button:contains("SI")').then(($si) => {
+            cy.wrap($si).click()
+        });
+
+        getSCU().find('button:contains("Conferma")').then(($conferma) => {
+            cy.wrap($conferma).click()
         });
 
         cy.intercept({
@@ -264,11 +269,11 @@ class SCU {
         getSCU().find('button:contains("Inserisci il documento")').click()
     }
 
-    static checkAggancioRicerca(){
+    static checkAggancioRicerca() {
         getSCU().find('#cerca-pers-forinsert-cf').should('exist').and('be.visible')
     }
 
-    static checkAggancioPolizzePropostePreventivi(){
+    static checkAggancioPolizzePropostePreventivi() {
         getSCU().find('#casella-ricerca').should('exist').and('be.visible')
     }
 }
