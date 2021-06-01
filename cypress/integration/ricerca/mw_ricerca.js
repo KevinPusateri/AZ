@@ -65,5 +65,6 @@ describe('Matrix Ricerca', function () {
   it('Verifica Ricerca Da News', function () {
     TopBar.clickNews()
     LandingRicerca.checkBucaRicercaSuggerrimenti()
+    cy.get('a[href="/matrix/"]').click()
   })
 })
