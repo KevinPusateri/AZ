@@ -103,8 +103,6 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Circolari', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Circolari')
-    Mieinfo.checkCircolari()
-
   });
 
   // ADD TFS -> Pagina Vuota
@@ -115,7 +113,6 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
   it('Verifica aggancio Company Handbook', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Company Handbook')
-    Mieinfo.checkCompanyHandbook()
   })
 
   it('Verifica aggancio Antiriciclaggio', function () {
