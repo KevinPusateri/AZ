@@ -58,9 +58,9 @@ const LinksContabilita = {
 
 class BackOffice {
 
-   /**
-     * Verifica che tutti i link su Sinistri siano presenti
-     */
+    /**
+      * Verifica che tutti i link su Sinistri siano presenti
+      */
     static checkLinksOnSinistriExist() {
         const linksSinistri = Object.values(LinksSinistri)
 
@@ -98,7 +98,7 @@ class BackOffice {
             cy.get('.backoffice-card').find('a').contains('Monitoraggio Customer Digital Footprint').invoke('removeAttr', 'target').click()
         else
             cy.get('.backoffice-card').find('a').contains(page).click()
-        
+
         Common.canaleFromPopup()
         this.checkPage(page)
     }
@@ -197,16 +197,16 @@ class BackOffice {
         cy.url().should('eq', Common.getBaseUrl() + 'back-office')
     }
 
-    /**
-     * Verifica atterraggio su "Monitoraggio Customer Digital Footprint"
-     */
-    static clickAndCheckMonitoraggioCustomerDigitalFootprint() {
-        cy.get('lib-burger-icon').click()
-        cy.contains('Monitoraggio Customer Digital Footprint').invoke('removeAttr', 'target').click()
-        cy.url().should('include', 'cdf')
-        cy.go('back')
-    }
     //#endregion
+
+    /**
+     * Clicca VPS Rami Vari ("News")
+     */
+    static clickVPSRami() {
+        cy.get('lib-news-card').click();
+        Common.canaleFromPopup()
+        getIFrame().find('span:contains("VPS Rami Vari: meno è meglio!"):visible')
+    }
 }
 
 export default BackOffice

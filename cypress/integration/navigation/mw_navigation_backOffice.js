@@ -44,18 +44,12 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         BackOffice.clickAppuntamentiFuturi()
     });
 
-    // non compare piu
-    // it('Verifica Gestione Documentale', function () {
-    //    
-    //     cy.get('lib-news-image').click();
-    //     cy.get('nx-modal-container').find('.agency-row').first().click().wait(5000)
-    //     //TODO 2 minuti dura TROPPO
-    //     getIFrame().find('a:contains("Primo Piano"):visible')
-    //     getIFrame().find('span:contains("Primo comandamento: GED, GED e solo GED"):visible')
+    it('Verifica atterraggio VPS Rami Vari("News")', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickVPSRami()
+        BackOffice.backToBackOffice()
 
-    //    BackOffice.backToBackOffice()
-    //    
-    // });
+    });
 
     it('Verifica links Sinistri', function () {
         TopBar.clickBackOffice()
@@ -145,7 +139,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         BackOffice.clickCardLink('Quadratura unificata')
         BackOffice.backToBackOffice()
 
-    }) 
+    })
 
     it('Verifica apertura disambiguazione: Incasso per conto', function () {
         TopBar.clickBackOffice()

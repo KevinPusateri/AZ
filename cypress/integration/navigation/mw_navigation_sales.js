@@ -199,29 +199,13 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    // TODO: stesso problema sopra Frame
-    // it('Verifica aggancio Proposte Vita - Card Vita', function(){
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.intercept('POST', '**/graphql', (req) => {
-    //         if (req.body.operationName.includes('salesContract') &&
-    //         req.body.variables.filter.tabCallType.includes('LIFE')) {
-    //           req.alias = 'gqlLife'
-    //         }
-    //     })
-    //     cy.get('app-proposals-section').contains('Proposte').click()
-    //     cy.wait('@gqlLife')
-    //     cy.get('app-paginated-cards').find('button:contains("Vita")').click()
-    //     cy.intercept({
-    //         method: 'POST',
-    //         url: '**/Vita/**'
-    //     }).as('getVita');
-    //     cy.get('.cards-container').find('.card').first().click()
-    //     cy.wait('@getVita', { requestTimeout: 30000 });
-    //     getIFrame().find('#AZBuilder1_ctl08_cmdNote')
-    //          cy.get('a').contains('Sales').click()
-
-    // })
+    // NEW
+    it('Verifica aggancio Proposte Vita - Card Vita', function(){
+        TopBar.clickSales()
+        Sales.clickTabVitaOnProposte()
+        Sales.clickPrimaCardVitaOnProposte()
+        Sales.backToSales()
+    })
 
     it('Verifica aggancio Proposte Vita - button: Vedi Tutte', function () {
         TopBar.clickSales()

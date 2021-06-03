@@ -305,7 +305,7 @@ class Sales {
         })
         cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
         cy.wait('@gqlDamage')
-        cy.get('app-paginated-cards').find('button:contains("Danni")').click()
+        cy.get('app-paginated-cards').find('button:contains("Danni")').click().wait(3000)
     }
 
     /**
@@ -320,7 +320,7 @@ class Sales {
         })
         cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
         cy.wait('@gqlLife')
-        cy.get('app-paginated-cards').find('button:contains("Vita")').click()
+        cy.get('app-paginated-cards').find('button:contains("Vita")').click().wait(3000)
     }
 
     /**
@@ -384,7 +384,7 @@ class Sales {
         })
         cy.get('app-proposals-section').contains('Proposte').click()
         cy.wait('@gqlDamage')
-        cy.get('app-paginated-cards').find('button:contains("Danni")').click()
+        cy.get('app-paginated-cards').find('button:contains("Danni")').click().wait(3000)
     }
 
     /**
@@ -399,12 +399,12 @@ class Sales {
         })
         cy.get('app-proposals-section').contains('Proposte').click()
         cy.wait('@gqlLife')
-        cy.get('app-paginated-cards').find('button:contains("Vita")').click()
+        cy.get('app-paginated-cards').find('button:contains("Vita")').click().wait(3000)
     }
 
     /**
-      * Click sulla prima card Danni 
-      */
+     * Click sulla prima card Danni 
+     */
     static clickPrimaCardDanniOnProposte() {
         cy.intercept({
             method: 'POST',
@@ -412,10 +412,23 @@ class Sales {
         }).as('getAuto');
         cy.get('.cards-container').find('.card').first().click()
         Common.canaleFromPopup()
-        cy.wait('@getAuto', { requestTimeout: 30000 });
+        cy.wait('@getAuto', { requestTimeout: 40000 });
         getIFrame().find('a:contains("« Uscita"):visible')
     }
 
+    /**
+     * Click sulla prima card Vita 
+     */
+    static clickPrimaCardVitaOnProposte() {
+      cy.intercept({
+            method: 'POST',
+            url: '**/Vita/**'
+        }).as('getVita');
+        cy.get('.cards-container').find('.card').first().click()
+        cy.wait('@getVita', { requestTimeout: 40000 });
+        cy.wait(5000)
+        getIFrame().find('#AZBuilder1_ctl08_cmdNote').invoke('attr', 'value').should('equal', 'Note')
+    }
     /**
      * Sul pannello "Proposte Danni", all'apertura del pannello
      * click sul button "Vedi tutte"

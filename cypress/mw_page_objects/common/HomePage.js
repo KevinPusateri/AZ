@@ -26,6 +26,47 @@ class HomePage {
         cy.contains('Vedi tutte').click()
         cy.url().should('eq', Common.getBaseUrl() + 'news/recent')
     }
+
+    /**
+     * Click Pannello "Notifiche in evidenza"
+     */
+    static clickPanelNotifiche() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('notifications')) {
+                req.alias = 'gqlNotifications'
+            }
+        })
+        cy.get('nx-expansion-panel').click()
+        cy.wait('@gqlNotifications')
+        cy.get('lib-notification-list').should('be.visible')
+
+    }
+
+    /**
+     * Verifica notifiche siano visibili,
+     * che i titoli corrispondano e 
+     * controlla i testi dal menu a tendina di ciascuna notifica 
+     * corrispondano
+     */
+    static checkNotifiche() {
+        cy.get('lib-notification-list').find('lib-notification-card').each(($checkNotifica) => {
+            expect($checkNotifica).to.be.visible
+        })
+
+        cy.get('lib-notification-list').find('[class="title-container"]').each((checkNotificaTitle) => {
+            expect(['portafoglio', 'contabilità','vps']).to.include(checkNotificaTitle.text().trim())
+        })
+
+        cy.get('lib-notification-list').find('button[class="nx-button--tertiary nx-button--medium"]').each(($checkTendina) => {
+            cy.wrap($checkTendina).click({force:true})
+            cy.get('[class^="nx-context-menu__content"]').find('button').each($button => {
+                expect(['Disattiva notifiche di questo tipo', 'Attiva notifiche di questo tipo',
+                    'Segna come da leggere', 'Segna come già letta', 'Segna come da leggere'])
+                    .to.include($button.text().trim())
+            })
+
+        })
+    }
 }
 
 export default HomePage
