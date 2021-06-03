@@ -27,14 +27,13 @@ beforeEach(() => {
 after(() => {
     TopBar.logOutMW()
 })
-Cypress._.times(1, () => {
 
     describe('Matrix Web : Navigazioni da Home Page - ', function () {
 
         it('Verifica Top Menu Principali', function () {
             TopBar.clickIconCalendar()
             TopBar.clickIconIncident()
-            TopBar.clickIconNotification()
+            // TopBar.clickIconNotification() -> è stato tolto canpanellina notifiche
             TopBar.clickIconUser()
             TopBar.clickIconSwitchPage()
         });
@@ -43,11 +42,12 @@ Cypress._.times(1, () => {
             TopBar.clickIconIncident()
             TopBar.checkLinksIncident()
         })
-
-        it('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
-            TopBar.clickIconNotification()
-            TopBar.checkNotificheEvidenza()
-        })
+        
+        // è stato tolto
+        // it('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
+        //     TopBar.clickIconNotification()
+        //     TopBar.checkNotificheEvidenza()
+        // })
 
         it('Verifica Top Menu Clients', function () {
             TopBar.clickIconSwitchPage('Clients')
@@ -109,44 +109,14 @@ Cypress._.times(1, () => {
             HomePage.clickVediTutte()
         });
 
+        it('Verifica Click Pannello "Notifiche in evidenza"', function () {
+            HomePage.clickPanelNotifiche()
+        })
 
+        it('Verifica testi e link delle notifiche', function () {
 
+            HomePage.clickPanelNotifiche()
+            HomePage.checkNotifiche()
+        })
 
-        // it('Verifica card Notifica', function () {
-
-        //     cy.wait('@gqlNotifications')
-        //     cy.get('lib-notification-card').first().find('button').click()
-
-        // })
-
-        // it('Verifica cards Notifiche', function () {
-        //     //TODO non trova i button
-        //     cy.get('lib-notification-card').first().find('button').click()
-        //     cy.wait(5000)
-        //     cy.get('.cdk-overlay-container').find('button').contains('Disattiva notifiche di questo tipo').should('be.visible')
-        //     // cy.get('.cdk-overlay-container').find('button').contains('Disattiva notifiche di questo tipo').should('be.visible')
-        //     // cy.get('.cdk-overlay-container').find('button:contains("Segna come da leggere"):visible')
-        //     // cy.get('lib-notification-list').find('button').each($button =>{
-        //     //     cy.wrap($button).click()
-        //     //     cy.wait(3000)
-        //     //     cy.get('.nx-context-menu__content').find('button:contains("Disattiva notifiche di questo tipo"):visible')
-        //     //     cy.get('.nx-context-menu__content').find('button:contains("Segna come da leggere"):visible')
-        //     // })
-        //     // cy.get('lib-notification-list').then($cardsNotification =>{
-        //     //     if($cardsNotification.find('lib-notification-card').length > 0){
-        //     //         cy.wrap($cardsNotification).find('[class^="body"]').first().then($card =>{
-        //     //             if($card.hasClass('body unread')){
-
-        //     //                 cy.wrap($card).click()
-        //     //                 cy.get('nx-modal-container').find('[class="notification-da-container ng-star-inserted"]').first().click()
-        //     //             }else
-        //     //                 cy.wrap($card).click()
-        //     //         })
-        //     //         cy.get('a[href="/matrix/"]').click()
-        //     //     }
-        //     // })
-        // });
-
-
-    });
 })
