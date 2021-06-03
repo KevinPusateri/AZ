@@ -60,7 +60,7 @@ describe('Matrix Web : Modifica PG', function () {
   it.only('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
     LandingRicerca.searchRandomClient(true, "PG", "E")
     LandingRicerca.clickFirstResult()
-    clientePG.nominatico = SintesiCliente.retriveClientName()
+    clientePG.nominativo = SintesiCliente.retriveClientName()
   })
 
   it.only('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
@@ -72,20 +72,16 @@ describe('Matrix Web : Modifica PG', function () {
   })
 
   it.only('Da Folder inserire la visura camerale e procedere', () => {
-    Folder.caricaVisuraCamerale()
-    Folder.clickTornaIndietro()
+    Folder.caricaVisuraCamerale(true)
+    Folder.clickTornaIndietro(true)
     SCU.generazioneStampe()
   })
 
-  it.skip("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
-    //Skip this two requests that blocks on homepage
-    cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
-    cy.intercept(/launch-*/, 'ignore').as('launchStaging');
-    cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/')
-
-    cy.contains('Clients').click();
-    cy.get('input[name="main-search-input"]').type(currentSelectedPG).type('{enter}');
-    cy.get('lib-client-item').first().click();
+  it.only("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
+    HomePage.reloadMWHomePage()
+    TopBar.search(clientePG.nominativo)
+    LandingRicerca.clickFirstResult()
+    SintesiCliente.checkAtterraggioSintesiCliente(clientePG.nominativo)
 
     cy.intercept('POST', '**/graphql', (req) => {
       if (req.body.operationName.includes('client')) {
