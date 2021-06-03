@@ -124,38 +124,38 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
-    /*   it('Verifica aggancio FastQuote Universo Persona', function () {
-           cy.get('app-product-button-list').find('a').contains('Sales').click()
-           cy.url().should('eq',baseUrl+ 'sales/')
-           cy.get('lib-burger-icon').click()
-           cy.contains('FastQuote Universo Persona').click()
-           canaleFromPopup()
-           getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-           cy.get('a').contains('Sales').click()
-           cy.url().should('eq',baseUrl+ 'sales/')
-       })
+    //  it('Verifica aggancio FastQuote Universo Persona', function () {
+    //        cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //        cy.url().should('eq',baseUrl+ 'sales/')
+    //        cy.get('lib-burger-icon').click()
+    //        cy.contains('FastQuote Universo Persona').click()
+    //        canaleFromPopup()
+    //        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+    //        cy.get('a').contains('Sales').click()
+    //        cy.url().should('eq',baseUrl+ 'sales/')
+    //    })
    
-       it('Verifica aggancio FastQuote Universo Salute', function () {
-           cy.get('app-product-button-list').find('a').contains('Sales').click()
-           cy.url().should('eq',baseUrl+ 'sales/')
-           cy.get('lib-burger-icon').click()
-           cy.contains('FastQuote Universo Salute').click()
-           canaleFromPopup()
-           getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-           cy.get('a').contains('Sales').click()
-           cy.url().should('eq',baseUrl+ 'sales/')
-       })
+    //  it('Verifica aggancio FastQuote Universo Salute', function () {
+    //        cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //        cy.url().should('eq',baseUrl+ 'sales/')
+    //        cy.get('lib-burger-icon').click()
+    //        cy.contains('FastQuote Universo Salute').click()
+    //        canaleFromPopup()
+    //        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+    //        cy.get('a').contains('Sales').click()
+    //        cy.url().should('eq',baseUrl+ 'sales/')
+    //    })
    
-       it('Verifica aggancio FastQuote Universo Persona Malattie Gravi', function () {
-           cy.get('app-product-button-list').find('a').contains('Sales').click()
-           cy.url().should('eq',baseUrl+ 'sales/')
-           cy.get('lib-burger-icon').click()
-           cy.contains('FastQuote Universo Persona Malattie Gravi').click()
-           canaleFromPopup()
-           getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-           cy.get('a').contains('Sales').click()
-           cy.url().should('eq',baseUrl+ 'sales/')
-       })*/
+    //  it('Verifica aggancio FastQuote Universo Persona Malattie Gravi', function () {
+    //        cy.get('app-product-button-list').find('a').contains('Sales').click()
+    //        cy.url().should('eq',baseUrl+ 'sales/')
+    //        cy.get('lib-burger-icon').click()
+    //        cy.contains('FastQuote Universo Persona Malattie Gravi').click()
+    //        canaleFromPopup()
+    //        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
+    //        cy.get('a').contains('Sales').click()
+    //        cy.url().should('eq',baseUrl+ 'sales/')
+    //    })
 
     it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
         TopBar.clickSales()
