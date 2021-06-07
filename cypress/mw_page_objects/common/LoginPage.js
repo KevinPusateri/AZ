@@ -11,7 +11,7 @@ class LoginPage {
         let url
         Cypress.env('currentEnv') === 'TEST' ? url = Cypress.env('urlMWTest') : url = Cypress.env('urlMWPreprod')
 
-        cy.visit(url, {
+        cy.visit(url ,{ responseTimeout: 31000 }, {
             onBeforeLoad: win => {
                 win.sessionStorage.clear();
             }
