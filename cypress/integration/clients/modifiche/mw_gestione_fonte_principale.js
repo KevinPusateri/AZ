@@ -8,12 +8,10 @@ import BurgerMenuClients from "../../../mw_page_objects/burgerMenu/BurgerMenuCli
 import Common from "../../../mw_page_objects/common/Common"
 import LoginPage from "../../../mw_page_objects/common/LoginPage"
 import TopBar from "../../../mw_page_objects/common/TopBar"
-import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
-
 
 //#region Variables
-const userName = 'le00080'
-const psw = 'Dragonball3'
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
 //#endregion
 
 //#region Configuration
@@ -40,138 +38,123 @@ beforeEach(() => {
 })
 
 after(() => {
-  // TopBar.logOutMW()
+  TopBar.logOutMW()
 })
 //#endregion
 
-var clienteCF;
-var indexCliente;
-var indexFonte;
-var agente;
+
 describe('Matrix Web : Gestione fonte principale', function () {
 
 
-  it('Verifica aggancio Gestione fonte principale - referenti siano corretti', function () {
-    TopBar.clickClients()
-    BurgerMenuClients.clickLink('Gestione fonte principale')
-    const searchClients = () => {
-      getIFrame().find('[class="k-grid-content k-auto-scrollable"]:visible').first().then(($table) => {
-        const isTrovato = $table.find(':contains("Nessun record da visualizzare")').is(':visible')
-        if (isTrovato) {
-          cy.generateTwoLetters().then(randomChars => {
-            getIFrame().find('#f-cognome').clear().type(randomChars)
-          })
-          cy.generateTwoLetters().then(randomChars => {
-            getIFrame().find('#f-nome').clear().type(randomChars)
-          })
-          getIFrame().find('td > button[class="k-button"]').contains('Cerca').click().wait(2000)
+  Cypress._.times(3, () => {
 
-          searchClients()
-        } else {
-          return
-        }
-      })
-    }
-    searchClients()
+    it('Verifica aggancio Gestione fonte principale - referenti siano corretti', function () {
+      TopBar.clickClients()
+      BurgerMenuClients.clickLink('Gestione fonte principale')
+      const searchClients = () => {
+        getIFrame().find('[class="k-grid-content k-auto-scrollable"]:visible').first().scrollIntoView().then(($table) => {
+          const isTrovato = $table.find(':contains("Nessun record da visualizzare")').is(':visible')
+          if (isTrovato) {
+            cy.generateTwoLetters().then(randomChars => {
+              getIFrame().find('#f-cognome').clear().type(randomChars)
+            })
+            cy.generateTwoLetters().then(randomChars => {
+              getIFrame().find('#f-nome').clear().type(randomChars)
+            })
+            getIFrame().find('td > button[class="k-button"]').contains('Cerca').click().wait(2000)
 
-    // getIFrame().find('#tabstrip').then(() => {
-    //   for (let i = 0; i < 10; i++) {
-    //     getIFrame().find('[class="k-grid-content k-auto-scrollable"]').then(($table) => {
-    //       cy.wrap($table).find('tbody').then(() => {
-    //         if ($table.find('tr').length === 0) {
-    //           cy.generateTwoLetters().then(randomChars => {
-    //             getIFrame().find('#f-cognome').clear().type(randomChars)
-    //           })
-    //           cy.generateTwoLetters().then(randomChars => {
-    //             getIFrame().find('#f-nome').clear().type(randomChars)
-    //           })
-    //           getIFrame().find('td > button[class="k-button"]').contains('Cerca').click().wait(2000)
-    //         } else {
-    //           i = 11; // QUEST NON VIENE LETTO
-    //         }
-    //       })
-    //     })
-    //   }
-    // })
+            searchClients()
+          } else {
+            return
+          }
+        })
+      }
+      searchClients()
 
-    cy.get('#body').then(() => {
-
+      var clienteCF;
+      var indexCliente;
+      var indexFonte;
+      var nameAgente;
       const listIndex = []
       getIFrame().find('[class="k-grid-content k-auto-scrollable"]:visible').first().within(() => {
         cy.get('tr').each(($ele, index) => {
           cy.wrap($ele).find('td').eq(5).invoke('text').then((textState) => {
-            if (textState.trim() === "P" || textState.trim() === "C") {
+            if (textState.trim() === "P" || textState.trim() === "C" || textState.trim() === "E") {
               listIndex.push(index)
             }
           })
-
         })
 
         cy.get('tr').then(($tr) => {
           indexCliente = listIndex[Math.floor(Math.random() * listIndex.length)]
 
           cy.wait(2000)
-          // cy.wrap($tr).eq(indexCliente).find('td').eq(6).click()
           cy.wrap($tr).eq(indexCliente).find('td > input[class="assegnafonte"]').click()
           cy.wrap($tr).eq(indexCliente).find('td').eq(2).invoke('text').then(clientCfText => {
             clienteCF = clientCfText;
+            // console.log('cliente: ' + clienteCF)
           })
-
         })
       })
 
-    })
 
+      getIFrame().find('#showFonti').scrollIntoView().click().within(() => {
+        cy.wait(4000)
+        cy.get('table[class="k-selectable"] > tbody').then(($table) => {
+          cy.wrap($table).find('tr:visible').not('tr:first').not('tr:contains("AUTOVELLETRI SRL")').then(($tr) => {
+            indexFonte = Math.floor(Math.random() * $tr.length)
 
-    getIFrame().find('#showFonti').click().within(() =>{
-      cy.wait(4000)
-      cy.get('table[class="k-selectable"] > tbody').then(($table)=>{
-        cy.wrap($table).find('tr').then(($tr) =>{
-          indexFonte = Math.floor(Math.random() * $tr.length)
+            if ($tr.eq(indexFonte).hasClass('k-treelist-group')) {
+              cy.wrap($tr.eq(indexFonte)).find('span[class="k-icon k-i-expand"]').click().wait(2000)
+              cy.wrap($tr.eq(indexFonte).next().find('td').eq(0)).invoke('text').then((agente) => {
+                nameAgente = agente
+                // console.log('agente: ' + nameAgente)
+              })
+              cy.wrap($tr.eq(indexFonte).next().find('td').eq(2)).invoke('text').then((nome) => {
+                // console.log('nome agente: ' + nome)
+              })
+              cy.wrap($tr.eq(indexFonte).next()).click()
+            } else {
+              cy.wrap($tr.eq(indexFonte).find('td').eq(0)).invoke('text').then((agente) => {
+                nameAgente = agente
+                // console.log('agente: ' + nameAgente)
+              })
+              cy.wrap($tr.eq(indexFonte)).click()
+            }
+          })
+        })
+      })
+
+      cy.get('body').within(() => {
+
+        getIFrame().find('button[class="k-button assegnafonte"]').scrollIntoView().click().wait(5000)
+
+        getIFrame()
+          .find('div[class="message container"]:contains("Fonte principale impostata con successo per 1 cliente")')
+          .should('be.visible')
+
+        getIFrame().find('div:contains("Fonte principale impostata")').parent().find('button:contains("Chiudi")').click()
+      })
+
+      cy.get('body').within(() => {
+        cy.get('input[name="main-search-input"]').click()
+        cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
+        cy.get('lib-client-item').first().click()
+      }).then(($body) => {
+        cy.wait(4000)
+        const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+        if (check) {
+          cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
+          cy.get('lib-client-item').next().click()
+        }
+        cy.wait(9000)
+        cy.get('#cdk-describedby-message-container:hidden').invoke('text').then((referente) => {
+          expect(referente).to.be.include(nameAgente)
         })
 
       })
     })
-
-    // getIFrame().find('span[class="k-icon k-i-expand"]:visible').first().click()
-    // getIFrame().find('span[class="k-icon k-i-none"]:visible').first().parents('tr').find('td').eq(2).invoke('text').then(agent =>{
-    //   Cypress.env('agente', agent);
-    //   cy.wait(1500)
-    // })
-    // agente = Cypress.env('agente');
-    // cy.wait(1500)
-    // getIFrame().find('span[class="k-icon k-i-none"]:visible').first().click()
-    // cy.wait(3000)
-    
-    // getIFrame().contains('Imposta fonte').click()
-    // getIFrame()
-    //   .find('div[class="k-widget k-window allianz-alert-window-container"]:contains("Fonte principale impostata con successo per 1 cliente")').should('be.visible')
-    // getIFrame().find('div:contains("Fonte principale impostata")').parent().find('button:contains("Chiudi")').click()
-
-    // cy.get('input[name="main-search-input"]').click()
-    // cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
-    // cy.get('lib-client-item').first().click()
-
-    // cy.wait(4000)
-    // cy.get('#cdk-describedby-message-container:hidden')
-    // .should('contain.text',agente)
-
 
   })
-
-
-  // cy.get('a').contains('Clients').click()
-  // cy.url().should('eq', baseUrl + 'clients/')
-  // cy.get('body').then($body => {
-  //           if ($body.find('.user-icon-container').length > 0) {   
-  //               cy.get('.user-icon-container').click();
-  //               cy.wait(1000).contains('Logout').click()
-  //               cy.wait(delayBetweenTests)
-  //           }
-  //       });
-  //       cy.clearCookies();
-  // }) 
-
-
 })
 

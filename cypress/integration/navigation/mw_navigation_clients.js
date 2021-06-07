@@ -44,7 +44,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         Clients.checkExistLinksCollegamentiRapidi()
     })
 
-    // TODO: NEW PAGINA con firefox
+    // TODO: NEW PAGINA problemi con firefox
     it('Verifica aggancio Analisi dei bisogni', function () {
         TopBar.clickClients()
         Clients.clickLinkRapido('Analisi dei bisogni')

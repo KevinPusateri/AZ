@@ -28,95 +28,164 @@ after(() => {
     TopBar.logOutMW()
 })
 
-    describe('Matrix Web : Navigazioni da Home Page - ', function () {
+describe('Matrix Web : Navigazioni da Home Page - ', function () {
 
-        it('Verifica Top Menu Principali', function () {
-            TopBar.clickIconCalendar()
-            TopBar.clickIconIncident()
-            // TopBar.clickIconNotification() -> è stato tolto canpanellina notifiche
-            TopBar.clickIconUser()
-            TopBar.clickIconSwitchPage()
-        });
+    it('Verifica Top Menu Principali', function () {
+        TopBar.clickIconCalendar()
+        TopBar.clickIconIncident()
+        // TopBar.clickIconNotification() -> è stato tolto canpanellina notifiche
+        TopBar.clickIconUser()
+        TopBar.clickIconSwitchPage()
+    });
 
-        it('Verifica Top Menu incident - Verifica presenza dei link', function () {
-            TopBar.clickIconIncident()
-            TopBar.checkLinksIncident()
-        })
-        
-        // è stato tolto
-        // it('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
-        //     TopBar.clickIconNotification()
-        //     TopBar.checkNotificheEvidenza()
-        // })
+    it('Verifica Top Menu incident - Verifica presenza dei link', function () {
+        TopBar.clickIconIncident()
+        TopBar.checkLinksIncident()
+    })
 
-        it('Verifica Top Menu Clients', function () {
-            TopBar.clickIconSwitchPage('Clients')
-        });
+    it('Verifica Top Menu incident - Verifica atterraggio SRM Online', function () {
+        TopBar.clickLinkOnIconIncident('SRM Online')
+    })
 
-        it('Verifica Top Menu Sales', function () {
-            TopBar.clickIconSwitchPage('Sales')
-        });
+    it('Verifica Top Menu incident - Verifica atterraggio SisCo', function () {
+        TopBar.clickLinkOnIconIncident('SisCo')
+    })
 
-        it('Verifica Top Menu Numbers', function () {
-            TopBar.clickIconSwitchPage('Numbers')
-        });
+    it('Verifica Top Menu incident - Verifica atterraggio Elenco telefonico', function () {
+        TopBar.clickLinkOnIconIncident('Elenco telefonico')
+    })
 
-        it('Verifica Top Menu Backoffice', function () {
-            TopBar.clickIconSwitchPage('Backoffice')
-        });
+    it('Verifica presenza links da Utility', function () {
+        TopBar.clickIconSwitchPage()
+        TopBar.checkLinksUtility()
+    })
 
-        it('Verifica Top Menu News', function () {
-            TopBar.clickIconSwitchPage('News')
-        });
+    it('Verifica atterraggio da Utility - Cruscotto resilience', function () {
+        TopBar.clickIconSwitchPage()
+        TopBar.clickLinkOnUtilita('Cruscotto resilience')
+    })
 
-        it('Verifica Top Menu Le mie info', function () {
-            TopBar.clickIconSwitchPage('Le mie info')
-        });
+    // --add excel porta su microsoft(apre per forza una new window)
+    // it.skip('Verifica atterraggio da Utility - Casella di posta agente ed agenzia', function () {
+    //     TopBar.clickIconSwitchPage()
+    //     TopBar.clickLinkOnUtilita('Casella di posta agente ed agenzia')
+    // })
 
-        it('Verica buca di ricerca', function () {
-            TopBar.clickBucaRicerca()
-        });
+    it('Verifica atterraggio da Utility - Quattroruote - Calcolo valore veicolo', function () {
+        TopBar.clickIconSwitchPage()
+        TopBar.clickLinkOnUtilita('Quattroruote - Calcolo valore veicolo')
+    })
 
-        it('Verifica Button Clients', function () {
-            TopBar.clickClients()
-        });
+    // Mostra non sei autorizzato ad accedere alla pagina backoffice --add excel
+    // it.skip('Verifica atterraggio da Utility - Report Allianz Now', function () {
+    //     TopBar.clickIconSwitchPage()
+    //     TopBar.clickLinkOnUtilita('Report Allianz Now')
+    // })
 
-        it('Verifica Button Sales', function () {
-            TopBar.clickSales()
-        });
+    it('Verifica atterraggio da Utility - Interrogazioni centralizzate', function () {
+        TopBar.clickIconSwitchPage()
+        TopBar.clickLinkOnUtilita('Interrogazioni centralizzate')
+    })
 
-        it('Verifica Button Numbers', function () {
-            TopBar.clickNumbers()
-        });
+    it('Verifica atterraggio da Utility - Banche Dati ANIA', function () {
+        TopBar.clickIconSwitchPage()
+        TopBar.clickLinkOnUtilita('Banche Dati ANIA')
+    })
 
-        it('Verifica Button Backoffice', function () {
-            TopBar.clickBackOffice()
-        });
+    it('Verifica atterraggio da Utility - Gestione Magazzino OBU', function () {
+        TopBar.clickIconSwitchPage()
+        TopBar.clickLinkOnUtilita('Gestione Magazzino OBU')
+    })
 
-        it('Verifica Button News', function () {
-            TopBar.clickNews()
-        });
+    // Accesso non autorizzato --add excel
+    // it.skip('Verifica atterraggio da Utility - Piattaforma contratti AZ Telematics', function () {
+    //     TopBar.clickIconSwitchPage()
+    //     TopBar.clickLinkOnUtilita('Piattaforma contratti AZ Telematics')
+    // })
 
-        it('Verifica Button Le mie info', function () {
-            TopBar.clickMieInfo()
+    it('Verifica atterraggio da Utility - Cruscotto Installazione Dispositivo Satellitare', function () {
+        TopBar.clickIconSwitchPage()
+        TopBar.clickLinkOnUtilita('Cruscotto Installazione Dispositivo Satellitare')
+    })
 
-        });
-        it('Verifica link "Vai al Centro notifiche"', function () {
-            HomePage.clickVaiAlCentroNotifiche()
-        });
+    it('Verifica atterraggio da Utility - Monitor Scoring AZ Bonus Drive', function () {
+        TopBar.clickIconSwitchPage()
+        TopBar.clickLinkOnUtilita('Monitor Scoring AZ Bonus Drive')
+    })
 
-        it('Verifica link: "Vedi tutte"', function () {
-            HomePage.clickVediTutte()
-        });
+    // è stato tolto -- da togliere su excel?
+    // it.skip('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
+    //     TopBar.clickIconNotification()
+    //     TopBar.checkNotificheEvidenza()
+    // })
 
-        it('Verifica Click Pannello "Notifiche in evidenza"', function () {
-            HomePage.clickPanelNotifiche()
-        })
+    it('Verifica Top Menu Clients', function () {
+        TopBar.clickIconSwitchPage('Clients')
+    })
 
-        it('Verifica testi e link delle notifiche', function () {
+    it('Verifica Top Menu Sales', function () {
+        TopBar.clickIconSwitchPage('Sales')
+    })
 
-            HomePage.clickPanelNotifiche()
-            HomePage.checkNotifiche()
-        })
+    it('Verifica Top Menu Numbers', function () {
+        TopBar.clickIconSwitchPage('Numbers')
+    });
+
+    it('Verifica Top Menu Backoffice', function () {
+        TopBar.clickIconSwitchPage('Backoffice')
+    });
+
+    it('Verifica Top Menu News', function () {
+        TopBar.clickIconSwitchPage('News')
+    });
+
+    it('Verifica Top Menu Le mie info', function () {
+        TopBar.clickIconSwitchPage('Le mie info')
+    });
+
+    it('Verica buca di ricerca', function () {
+        TopBar.clickBucaRicerca()
+    });
+
+    it('Verifica Button Clients', function () {
+        TopBar.clickClients()
+    });
+
+    it('Verifica Button Sales', function () {
+        TopBar.clickSales()
+    });
+
+    it('Verifica Button Numbers', function () {
+        TopBar.clickNumbers()
+    });
+
+    it('Verifica Button Backoffice', function () {
+        TopBar.clickBackOffice()
+    });
+
+    it('Verifica Button News', function () {
+        TopBar.clickNews()
+    });
+
+    it('Verifica Button Le mie info', function () {
+        TopBar.clickMieInfo()
+
+    });
+    it('Verifica link "Vai al Centro notifiche"', function () {
+        HomePage.clickVaiAlCentroNotifiche()
+    });
+
+    it('Verifica link: "Vedi tutte"', function () {
+        HomePage.clickVediTutte()
+    });
+
+    it('Verifica Click Pannello "Notifiche in evidenza"', function () {
+        HomePage.clickPanelNotifiche()
+    })
+
+    it('Verifica testi e link delle notifiche', function () {
+        HomePage.clickPanelNotifiche()
+        HomePage.checkNotifiche()
+    })
 
 })
