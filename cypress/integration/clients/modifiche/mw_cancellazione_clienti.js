@@ -54,7 +54,6 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
     BurgerMenuClients.backToClients()
   })
 
-
   it('Verifica Cancellazione clienti PF e PG', function () {
     TopBar.clickClients()
     BurgerMenuClients.clickLink('Cancellazione Clienti')
@@ -72,6 +71,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
           getIFrame().find('input[class="k-button pull-right"]').contains('Cerca').click().wait(2000)
 
           searchClients()
+          
         } else {
           return
         }
@@ -80,7 +80,6 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
     searchClients()
 
     cy.get('#body').then(() => {
-
       const listIndex = []
       getIFrame().find('table[role="grid"] > tbody').first().within(() => {
         cy.get('tr').each(($ele, index) => {
@@ -98,30 +97,30 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
           cy.wrap($tr).eq(indexCliente).find('td').eq(1).invoke('text').then(clientCfText => {
             clienteCF = clientCfText;
           })
-
         })
       })
 
-      getIFrame().find('[class="search-grid-container person-selected"]').within(() => {
-        cy.get('button:contains("Cancella"):visible').click()
-      })
-      getIFrame().find('[class="k-widget k-window allianz-alert-window-container"]').within(() => {
-        cy.get('[class="message container"]:visible').should('contain', 'Attenzione l\'operazione non è reversibile.')
-        cy.get('form[class="buttons"]:visible').contains('Ok').click()
+      cy.get('body').within(() => {
+        getIFrame().find('button:contains("Cancella"):visible').click()
+
+        getIFrame()
+          .find('div[class="message container"]:contains("Attenzione l\'operazione non è reversibile."):visible')
+          .should('be.visible')
+          getIFrame().find('form[class="buttons"]:visible').contains('Ok').click()
+
+        getIFrame().find('div[class="message container"]:contains("Cancellazione clienti completata")').should('be.visible')
+        getIFrame().find('form[class="buttons"]:visible').contains('Chiudi').click()
+
       })
 
       cy.get('a[href="/matrix/"]').click()
-
-
     })
   })
 
   it('Ricercare i clienti in buca di ricera - accedere alla scheda', function () {
-    
-    TopBar.searchClientByCForPI(clienteCF)
+    TopBar.search(clienteCF)
     LandingRicerca.filtraRicerca('P')
     LandingRicerca.checkClienteNotFound()
-
   })
 
 })

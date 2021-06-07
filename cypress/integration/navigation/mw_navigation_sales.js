@@ -67,11 +67,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    //TODO: GED - Gestione Documentale Apre new window -> Unauthorized
-    // it('Verifica aggancio GED - Gestione Documentale', function(){
-
-    // })
-
     it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
         TopBar.clickSales()
         Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
