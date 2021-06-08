@@ -120,11 +120,12 @@ class Numbers {
     }
 
     /**
-     * Verifica Atterraggio Incentivi
+     * Verifica Atterraggio Incentivi dal panel "GRUPPO INCENTIVATO 178 DAN"
      */
     static checkAtterraggioPrimoIndiceIncentivi() {
         cy.get('app-incentives').find('[class="text-panel-header"]').should('contain','TOTALE MATURATO INCENTIVI')
         interceptGetAgenziePDF()
+        cy.contains('GRUPPO INCENTIVATO 178 DAN').click()
         cy.get('app-incentive-card').find('lib-card').first().click()
         Common.canaleFromPopup()
         cy.wait('@getDacommerciale', { requestTimeout: 60000 });

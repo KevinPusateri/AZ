@@ -7,11 +7,12 @@
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
+import LinkMieInfo from "../../mw_page_objects/navigation/LinkMieInfo"
 import Mieinfo from "../../mw_page_objects/navigation/Mieinfo"
 
 //#region Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rd!'
+const userName = 'le00080'
+const psw = 'Dragonball3'
 //#endregion
 
 //#region Configuration
@@ -34,6 +35,9 @@ after(() => {
 
 
 describe('Matrix Web : Navigazioni da Le Mie Info', function () {
+  it('Verifica aggancio Le Mie Info', function () {
+    TopBar.clickMieInfo()
+  })
 
   it('Verifica presenza links Menu', function () {
     TopBar.clickMieInfo()
@@ -55,14 +59,22 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.clickLinkOnMenu('Contenuti Salvati')
   });
 
-  it('Verifica aggancio Prodotti', function () {
-    TopBar.clickMieInfo()
-    Mieinfo.clickLinkOnMenu('Prodotti')
-    Mieinfo.checkLinksOnSubMenu('Prodotti')
-    Mieinfo.checkLinksOnIcon('Prodotti')
+  context('Menu Prodotti', () => {
 
-  });
+    it('Verifica aggancio Prodotti', function () {
+      TopBar.clickMieInfo()
+      Mieinfo.clickLinkOnMenu('Prodotti')
+      Mieinfo.checkLinksOnSubMenu('Prodotti')
+      Mieinfo.checkLinksOnIcon('Prodotti')
+    });
 
+    it.only('Verifica aggancio alle sotto pagine di Prodotti',function () {
+      TopBar.clickMieInfo()
+      Mieinfo.clickLinkOnMenu('Prodotti');
+      Mieinfo.checkPageOnSubMenu('Prodotti')
+    })
+
+  })
   it('Verifica aggancio Iniziative', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Iniziative')
@@ -105,10 +117,11 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.clickLinkOnMenu('Circolari')
   });
 
-  // ADD TFS -> Pagina Vuota
-  // it('Verifica aggancio New Company Handbook', function () {
-  
-  // })
+  it('Verifica aggancio New Company Handbook', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('New Company Handbook')
+    Mieinfo.checkLinksOnSubMenu('New Company Handbook')
+  })
 
   it('Verifica aggancio Company Handbook', function () {
     TopBar.clickMieInfo()

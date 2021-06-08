@@ -89,12 +89,10 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.backToNumbers('operational-indicators')
     })
 
-    // MODIFICARE SU TFS 
-    it('Verifica aggancio su Incentivi', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('INCENTIVI', 'incentives')
-        Numbers.checkAtterraggioPrimoIndiceIncentivi()
-        Numbers.backToNumbers('incentives')
-
-    })
+    // it.skip('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function () {
+    //     TopBar.clickNumbers()
+    //     Numbers.clickTab('INCENTIVI', 'incentives')
+    //     Numbers.checkAtterraggioPrimoIndiceIncentivi()
+    //     Numbers.backToNumbers('incentives')
+    // })
 });

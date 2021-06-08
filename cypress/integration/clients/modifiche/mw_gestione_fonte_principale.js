@@ -10,8 +10,8 @@ import LoginPage from "../../../mw_page_objects/common/LoginPage"
 import TopBar from "../../../mw_page_objects/common/TopBar"
 
 //#region Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rd!'
+const userName = 'le00080'
+const psw = 'Dragonball3'
 //#endregion
 
 //#region Configuration
@@ -92,7 +92,6 @@ describe('Matrix Web : Gestione fonte principale', function () {
           cy.wrap($tr).eq(indexCliente).find('td > input[class="assegnafonte"]').click()
           cy.wrap($tr).eq(indexCliente).find('td').eq(2).invoke('text').then(clientCfText => {
             clienteCF = clientCfText;
-            // console.log('cliente: ' + clienteCF)
           })
         })
       })
@@ -108,16 +107,13 @@ describe('Matrix Web : Gestione fonte principale', function () {
               cy.wrap($tr.eq(indexFonte)).find('span[class="k-icon k-i-expand"]').click().wait(2000)
               cy.wrap($tr.eq(indexFonte).next().find('td').eq(0)).invoke('text').then((agente) => {
                 nameAgente = agente
-                // console.log('agente: ' + nameAgente)
               })
               cy.wrap($tr.eq(indexFonte).next().find('td').eq(2)).invoke('text').then((nome) => {
-                // console.log('nome agente: ' + nome)
               })
               cy.wrap($tr.eq(indexFonte).next()).click()
             } else {
               cy.wrap($tr.eq(indexFonte).find('td').eq(0)).invoke('text').then((agente) => {
                 nameAgente = agente
-                // console.log('agente: ' + nameAgente)
               })
               cy.wrap($tr.eq(indexFonte)).click()
             }

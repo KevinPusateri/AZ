@@ -4,7 +4,7 @@
 	"videoCompression": 0,
 	"trashAssetsBeforeRuns": false,
 	"projectId": "4ypuc8",
-	"numTestsKeptInMemory":40,
+	"numTestsKeptInMemory":1,
 	"chromeWebSecurity": false,
 	"env": {
 		"db": {

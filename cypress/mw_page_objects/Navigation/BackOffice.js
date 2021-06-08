@@ -53,7 +53,8 @@ const LinksContabilita = {
     SOLLECITO_TITOLI: 'Sollecito titoli',
     IMPOSTAZIONE_CONTABILITA: 'Impostazione contabilità',
     CONVENZIONI_IN_TRATTENUTA: 'Convenzioni in trattenuta',
-    MONITORAGGIO_CUSTOMER_DIGITAL_FOOTPRINT: 'Monitoraggio Customer Digital Footprint'
+    // MONITORAGGIO_CUSTOMER_DIGITAL_FOOTPRINT: 'Monitoraggio Customer Digital Footprint',
+    MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart'
 }
 
 class BackOffice {
@@ -64,7 +65,7 @@ class BackOffice {
     static checkLinksOnSinistriExist() {
         const linksSinistri = Object.values(LinksSinistri)
 
-        cy.get('app-backoffice-cards-list').first().find('a').should('have.length', 6).each(($labelCard, i) => {
+        cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
             expect($labelCard).to.contain(linksSinistri[i])
         })
     }
@@ -183,9 +184,10 @@ class BackOffice {
                 cy.wait(10000)
                 getIFrame().find('#contentPane:contains("Gestione"):visible')
                 break;
-            case LinksContabilita.MONITORAGGIO_CUSTOMER_DIGITAL_FOOTPRINT:
+            case LinksContabilita.MONITORAGGIO_GUIDA_SMART:
                 getIFrame().find('p:contains("Customer Digital Footprint"):visible')
                 break;
+
         }
     }
 

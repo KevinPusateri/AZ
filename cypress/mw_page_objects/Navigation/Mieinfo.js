@@ -1,4 +1,5 @@
 /// <reference types="Cypress" />
+import LinkMieInfo from "../navigation/LinkMieInfo"
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-object"]')
@@ -10,26 +11,6 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-const LinksMenu = {
-    PRIMO_PIANO: 'Primo Piano',
-    RACCOLTE: 'Raccolte',
-    CONTENUTI_SALVATI: 'Contenuti Salvati',
-    PRODOTTI: 'Prodotti',
-    INIZIATIVE: 'Iniziative',
-    EVENTI_E_SPONSORIZZAZIONI: 'Eventi e Sponsorizzazioni',
-    SALES_ACADEMY: 'Sales Academy',
-    MOMENTO_DELLA_VERITA: 'Momento della Verità',
-    LE_RELEASE: 'Le release',
-    MANUALI_INFORMATICI: 'Manuali Informatici',
-    CIRCOLARI: 'Circolari',
-    NEW_COMPANY_HANDBOOK: 'New Company Handbook',
-    COMPANY_HANDBOOK: 'Company Handbook',
-    ANTIRICICLAGGIO: 'Antiriciclaggio',
-    RISORSE_PER_AGENZIA: 'Risorse per l\'Agenzia',
-    OPERATIVITA: 'Operatività',
-    RISORSE_PER_AGENTE: 'Risorse per l\'Agente',
-    IL_MONDO_ALLIANZ: 'Il Mondo Allianz',
-}
 
 class Mieinfo {
 
@@ -37,7 +18,7 @@ class Mieinfo {
      * Verifica che tutti i link nel menu MieInfo siano presenti
      */
     static checkLinksOnMenuInfo() {
-        const linksMenu = Object.values(LinksMenu)
+        const linksMenu = Object.values(LinkMieInfo.getLinksMenu())
 
         getIFrame().find('[class="menu--link menu_padding-0"]').each(($link, i) => {
             expect($link.text().trim()).to.include(linksMenu[i + 1]);
@@ -59,124 +40,64 @@ class Mieinfo {
      * @param {page} page - nome della pagina 
      */
     static checkLinksOnSubMenu(page) {
+        var checkLinks = []
+        const LinksMenu = LinkMieInfo.getLinksMenu()
+        const linksSubMenu = LinkMieInfo.getLinksSubMenu()
+
         switch (page) {
             case LinksMenu.PRODOTTI:
-                const linksProdottiMenu = [
-                    'Allianz Ultra',
-                    'Allianz1 Business',
-                    'Auto e Motori',
-                    'Casa condominio e petcare',
-                    'Infortuni e salute',
-                    'Impresa e rischi dedicati',
-                    'Tutela Legale',
-                    'Vita',
-                    'Vita Corporate',
-                    'Convenzioni nazionali',
-                    'Convenzioni locali e offerte dedicate',
-                    'AGCS Italia',
-                    'Finanziamenti Compass'
-                ]
+                checkLinks = Object.values(linksSubMenu.PRODOTTI)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 13).each(($link, i) => {
-                        expect($link.text().trim()).to.include(linksProdottiMenu[i]);
+                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
+                        expect($link.text().trim()).to.include(checkLinks[i]);
                     })
                 })
                 break
             case LinksMenu.INIZIATIVE:
-                const linksIniziativeMenu = [
-                    'Stop&Drive',
-                    'Proponi LTC',
-                    'Proponi TCM',
-                    'Mensilizzazione Rami Vari',
-                    'Mensilizzazione Auto',
-                    'Clienti Valore Extra',
-                    'AllianzPay',
-                    'Busta arancione',
-                    'Winback Motor',
-                    'Decommissioning telematici',
-                    'Digitalizzazione del certificato',
-                    'Attestato di rischio dinamico',
-                    'Test'
-                ]
+                checkLinks = Object.values(LinksSubMenu.INIZIATIVE)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 13).each(($link, i) => {
-                        expect($link.text().trim()).to.include(linksIniziativeMenu[i]);
+                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
+                        expect($link.text().trim()).to.include(checkLinks[i]);
                     })
                 })
                 break;
             case LinksMenu.SALES_ACADEMY:
-                const linksSalesAcademyMenu = [
-                    'Chi Siamo',
-                    'Allianz Business School',
-                    'Master Professione Agente',
-                    'Obblighi IVASS',
-                    'Formazione Multicanale',
-                    'Percorsi di ruolo'
-                ]
+                checkLinks = Object.values(LinksSubMenu.SALES_ACADEMY)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 6).each(($link, i) => {
-                        expect($link.text().trim()).to.include(linksSalesAcademyMenu[i]);
+                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
+                        expect($link.text().trim()).to.include(checkLinks[i]);
                     })
                 })
                 break;
             case LinksMenu.ANTIRICICLAGGIO:
-                const linksAntiriciclaggio = [
-                    'Normativa',
-                    'Moduli, manuali e procedure',
-                    'Link utili'
-                ]
+                checkLinks = Object.values(LinksSubMenu.ANTIRICICLAGGIO)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 3).each(($link, i) => {
-                        expect($link.text().trim()).to.include(linksAntiriciclaggio[i]);
+                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
+                        expect($link.text().trim()).to.include(checkLinks[i]);
                     })
                 })
                 break;
             case LinksMenu.RISORSE_PER_AGENZIA:
-                const linksRisorseAgenziaMenu = [
-                    'Reclutamento',
-                    'Arredare l\'Agenzia',
-                    'Digital Marketing e Social Media',
-                    'Materiali di comunicazione',
-                    'Richiesta stampati',
-                    'Ordini di toner e carta',
-                    'Cataloghi prodotti tecnologici',
-                    'Sicurezza IT',
-                    'L\'app ADAM',
-                    'Pacchetti di sicurezza',
-                    'Riferimenti aziendali',
-                    'Link utili',
-                    'Minisito IDD',
-                ]
+                checkLinks = Object.values(LinksSubMenu.RISORSE_PER_AGENZIA)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 13).each(($link, i) => {
-                        expect($link.text().trim()).to.include(linksRisorseAgenziaMenu[i]);
+                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
+                        expect($link.text().trim()).to.include(checkLinks[i]);
                     })
                 })
                 break;
             case LinksMenu.RISORSE_PER_AGENTE:
-                const linksRisorseAgenteMenu = [
-                    'Trattamenti provvigionali',
-                    'Incentivazione, mission, regolamenti',
-                    'Convenzioni Prodotti Allianz',
-                    'Cassa Previdenza Agenti',
-                    'Le scelte di investimento',
-                    'Catalogo idee'
-                ]
+                checkLinks = Object.values(LinksSubMenu.RISORSE_PER_AGENTE)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 6).each(($link, i) => {
-                        expect($link.text().trim()).to.include(linksRisorseAgenteMenu[i]);
+                        expect($link.text().trim()).to.include(checkLinks[i]);
                     })
                 })
                 break;
             case LinksMenu.IL_MONDO_ALLIANZ:
-                const linksMondoAllianzMenu = [
-                    'I codici di Allianz SpA',
-                    'La rassegna stampa',
-                    'Agricola San Felice'
-                ]
+                checkLinks = Object.values(LinksSubMenu.IL_MONDO_ALLIANZ)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 3).each(($link, i) => {
-                        expect($link.text().trim()).to.include(linksMondoAllianzMenu[i]);
+                        expect($link.text().trim()).to.include(checkLinks[i]);
                     })
                 })
                 break;
@@ -188,6 +109,7 @@ class Mieinfo {
      * @param {page} page - nome della pagina 
      */
     static checkLinksOnIcon(page) {
+        const LinksMenu = LinkMieInfo.getLinksMenu()
         switch (page) {
             case LinksMenu.PRODOTTI:
                 const linksProdottiIcon = [
@@ -205,7 +127,7 @@ class Mieinfo {
                     'AGCS Italia',
                     'Finanziamenti Compass'
                 ]
-                getIFrame().find('.product-icon--name').should('have.length', 13).each(($link, i) => {
+                getIFrame().find('.product-icon--name').each(($link, i) => {
                     expect($link.text().trim()).to.include(linksProdottiIcon[i]);
                 })
                 break
@@ -238,8 +160,18 @@ class Mieinfo {
                     'Percorsi di ruolo',
                     'Formazione Multicanale',
                 ]
-                getIFrame().find('.product-icon--name').should('have.length', 5).each(($link, i) => {
+                getIFrame().find('.product-icon--name').each(($link, i) => {
                     expect($link.text().trim()).to.include(linksSalesAcademyIcon[i]);
+                })
+                break;
+            case LinksMenu.NEW_COMPANY_HANDBOOK:
+                const linksNewCompanyHandbookMenu = [
+                    'ACH',
+                ]
+                getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
+                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
+                        expect($link.text().trim()).to.include(linksNewCompanyHandbookMenu[i]);
+                    })
                 })
                 break;
             case LinksMenu.ANTIRICICLAGGIO:
@@ -248,7 +180,7 @@ class Mieinfo {
                     'Moduli, manuali e procedure',
                     'Link utili'
                 ]
-                getIFrame().find('.product-icon--name').should('have.length', 3).each(($link, i) => {
+                getIFrame().find('.product-icon--name').each(($link, i) => {
                     expect($link.text().trim()).to.include(linksAntiriciclaggio[i]);
                 })
                 break;
@@ -263,7 +195,7 @@ class Mieinfo {
                     'Valutazione',
                     'Pagamento'
                 ]
-                getIFrame().find('.product-icon--name').should('have.length', 8).each(($link, i) => {
+                getIFrame().find('.product-icon--name').each(($link, i) => {
                     expect($link.text().trim()).to.include(linksMomentoVeritaIcon[i]);
                 })
                 break;
@@ -283,7 +215,7 @@ class Mieinfo {
                     'Manuali di travaso MISA',
                     'Minisito IDD',
                 ]
-                getIFrame().find('.product-icon--name').should('have.length', 13).each(($link, i) => {
+                getIFrame().find('.product-icon--name').each(($link, i) => {
                     expect($link.text().trim()).to.include(linksRisorseAgenziaIcon[i]);
                 })
                 break;
@@ -296,7 +228,7 @@ class Mieinfo {
                     'Le scelte di investimento',
                     'Catalogo idee'
                 ]
-                getIFrame().find('.product-icon--name').should('have.length', 6).each(($link, i) => {
+                getIFrame().find('.product-icon--name').each(($link, i) => {
                     expect($link.text().trim()).to.include(linksRisorseAgenteIcon[i]);
                 })
                 break;
@@ -306,18 +238,20 @@ class Mieinfo {
                     'La rassegna stampa',
                     'Agricola San Felice'
                 ]
-                getIFrame().find('.product-icon--name').should('have.length', 3).each(($link, i) => {
+                getIFrame().find('.product-icon--name').each(($link, i) => {
                     expect($link.text().trim()).to.include(linksMondoAllianzIcon[i]);
                 })
                 break;
         }
     }
 
+
     /**
       * Verifica atterraggio alla pagina
-      * @param {string} page - Nome della pagina 
+      * @param {string} page - Nome della pagina dal menu principale
       */
     static checkPageOnMenu(page) {
+        const LinksMenu = LinkMieInfo.getLinksMenu()
         switch (page) {
             case LinksMenu.PRIMO_PIANO:
                 getIFrame().find('app-principal-news').should('be.visible')
@@ -372,11 +306,46 @@ class Mieinfo {
                 break;
             case LinksMenu.NEW_COMPANY_HANDBOOK:
                 break;
-            case LinksMenu.TEST_NEW_CH:
-                break;
         }
     }
-   
+
+    /**
+     * Verifica atterraggio delle sotto pagine
+     * @param {string} page - Nome della pagina(parent)
+     */
+    static checkPageOnSubMenu(page) {
+        const LinksMenu = LinkMieInfo.getLinksMenu()
+        switch (page) {
+            case LinksMenu.PRODOTTI:
+                this.checkAllPagesOnProdotti()
+                break;
+            case LinksMenu.INIZIATIVE:
+                this.checkAllPagesOnIniziative()
+                break;
+            case LinksMenu.SALES_ACADEMY:
+                this.checkAllPagesOnSalesAcademy()
+                break;
+            case LinksMenu.INIZIATIVE:
+                this.checkAllPagesNewCompanyHandbook()
+                break;
+            case LinksMenu.ANTIRICICLAGGIO:
+                this.checkAllPagesAntiriciclaggio()
+                break;
+            case LinksMenu.RISORSE_PER_AGENZIA:
+                this.checkAllPagesRisorsePerAgenzia()
+                break;
+            case LinksMenu.RISORSE_PER_AGENTE:
+                this.checkAllPagesRisorsePerAgente()
+                break;
+            case LinksMenu.IL_MONDO_ALLIANZ:
+                this.checkAllPagesIlMondoAllianz()  
+                break;
+
+        }
+    }
+
+
+
     //#region Verifica Panel aperti
     /**
      * Verifica che i panel si espandono su Release
@@ -463,6 +432,208 @@ class Mieinfo {
     }
     //#endregion
 
+
+
+    static checkAllPagesOnProdotti() {
+        const linksProdotti = LinkMieInfo.getLinksSubMenu().PRODOTTI
+        cy.contains('Allianz Ultra').click()
+        getIFrame().find('h1:contains("Allianz Ultra")').should('be.visible')
+
+        cy.contains(linksProdotti.ALLIANZ1_BUSINESS).click()
+        getIFrame().find('h1:contains("Allianz1 Business")').should('be.visible')
+
+        cy.contains(linksProdotti.AUTO_E_MOTORI).click()
+        getIFrame().find('h1:contains("Auto e Motori")').should('be.visible')
+
+        cy.contains(linksProdotti.CASA_CONDOMINIO_E_PETCARE).click()
+        getIFrame().find('h1:contains("Casa")').should('be.visible')
+
+        cy.contains(linksProdotti.INFORTUNI_E_SALUTE).click()
+        getIFrame().find('h1:contains("Infortuni e Salute")').should('be.visible')
+
+        cy.contains(linksProdotti.IMPRESA_E_RISCHI_DEDICATI).click()
+        getIFrame().find('h1:contains("Impresa e rischi dedicati")').should('be.visible')
+
+        cy.contains(linksProdotti.TUTELA_LEGALE).click()
+        getIFrame().find('h1:contains("Tutela Legale")').should('be.visible')
+
+        cy.contains(linksProdotti.CASA_CONDOMINIO_E_PETCARE).click()
+        getIFrame().find('h1:contains("Vita")').should('be.visible')
+
+        cy.contains(linksProdotti.VITA_CORPORATE).click()
+        getIFrame().find('h1:contains("Vita Corporate")').should('be.visible')
+
+        cy.contains(linksProdotti.CONVENZIONI_NAZIONALI).click()
+        getIFrame().find('h1:contains("Convenzioni nazionali")').should('be.visible')
+
+        cy.contains(linksProdotti.CONVENZIONI_LOCALI_E_OFFERTE_DEDICATE).click()
+        getIFrame().find('h1:contains("Convenzioni locali e Offerte dedicate")').should('be.visible')
+
+        cy.contains(linksProdotti.AGCS_ITALIA).click()
+        getIFrame().find('h1:contains("AGCS")').should('be.visible')
+
+        cy.contains(linksProdotti.FINANZIAMENTI_COMPASS).click()
+        getIFrame().find('h1:contains("Finanziamenti Compass")').should('be.visible')
+    }
+
+    static checkAllPagesOnIniziative() {
+        const linksIniziative = LinkMieInfo.getLinksSubMenu().INIZIATIVE
+        cy.contains(linksIniziative.STOPDRIVE).click()
+        getIFrame().find('h1:contains("' + linksIniziative.STOPDRIVE + '")').should('be.visible')
+
+        cy.contains(linksIniziative.PROPONI_LTC).click()
+        getIFrame().find('h1:contains("' + linksIniziative.PROPONI_LTC + '")').should('be.visible')
+
+        cy.contains(linksIniziative.PROPONI_TCM).click()
+        getIFrame().find('h1:contains("' + linksIniziative.PROPONI_TCM + '")').should('be.visible')
+
+        cy.contains(linksIniziative.MENSILIZZAZIONE_RAMI_VARI).click()
+        getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_RAMI_VARI + '")').should('be.visible')
+
+        cy.contains(linksIniziative.MENSILIZZAZIONE_AUTO).click()
+        getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_AUTO + '")').should('be.visible')
+
+        cy.contains(linksIniziative.CLIENTI_VALORE_EXTRA).click()
+        getIFrame().find('h1:contains("' + linksIniziative.CLIENTI_VALORE_EXTRA + '")').should('be.visible')
+
+        cy.contains(linksIniziative.ALLIANZPAY).click()
+        getIFrame().find('h1:contains("' + linksIniziative.ALLIANZPAY + '")').should('be.visible')
+
+        cy.contains(linksIniziative.BUSTA_ARANCIONE).click()
+        getIFrame().find('h1:contains("' + linksIniziative.BUSTA_ARANCIONE + '")').should('be.visible')
+
+        cy.contains(linksIniziative.WINBACK_MOTOR).click()
+        getIFrame().find('h1:contains("' + linksIniziative.WINBACK_MOTOR + '")').should('be.visible')
+
+        cy.contains(linksIniziative.DECOMMISSIONING_TELEMATICI).click()
+        getIFrame().find('h1:contains("' + linksIniziative.DECOMMISSIONING_TELEMATICI + '")').should('be.visible')
+
+        cy.contains(linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR).click()
+        getIFrame().find('h1:contains("' + linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR + '")').should('be.visible')
+
+        cy.contains(linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO).click()
+        getIFrame().find('h1:contains("' + linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO + '")').should('be.visible')
+
+        cy.contains(linksIniziative.TEST).click()
+        getIFrame().find('h1:contains("' + linksIniziative.TEST + '")').should('be.visible')
+    }
+
+    static checkAllPagesOnSalesAcademy() {
+        const linksSalesAcademy = LinkMieInfo.getLinksSubMenu().SALES_ACADEMY
+        cy.contains(linksSalesAcademy.CHI_SIAMO).click()
+        getIFrame().find('h1:contains("' + linksSalesAcademy.CHI_SIAMO + '")').should('be.visible') // errore
+
+        cy.contains(linksSalesAcademy.ALLIANZ_BUSINESS_SCHOOL).click()
+        getIFrame().find('h1:contains("' + linksSalesAcademy.ALLIANZ_BUSINESS_SCHOOL + '")').should('be.visible')
+
+        cy.contains(linksSalesAcademy.MASTER_PROFESSIONE_AGENTE).click()
+        getIFrame().find('h1:contains("' + linksSalesAcademy.MASTER_PROFESSIONE_AGENTE + '")').should('be.visible')
+
+        cy.contains(linksSalesAcademy.OBBLIGHI_IVASS).click()
+        getIFrame().find('h1:contains("' + linksSalesAcademy.OBBLIGHI_IVASS + '")').should('be.visible')
+
+        cy.contains(linksSalesAcademy.FORMAZIONE_MULTICANALE).click()
+        getIFrame().find('h1:contains("' + linksSalesAcademy.FORMAZIONE_MULTICANALE + '")').should('be.visible')
+
+        cy.contains(linksSalesAcademy.PERCORSI_DI_RUOLO).click()
+        getIFrame().find('h1:contains("Oltre l’offerta: Percorsi di sviluppo dedicati")').should('be.visible')
+
+    }
+
+    static checkAllPagesNewCompanyHandbook() {
+    }
+
+    static checkAllPagesAntiriciclaggio() {
+        const linksSalesAcademy = LinkMieInfo.getLinksSubMenu().ANTIRICICLAGGIO
+        cy.contains(linksSalesAcademy.NORMATIVA).click()
+        getIFrame().find('h1:contains("' + linksSalesAcademy.NORMATIVA + '")').should('be.visible')
+
+        cy.contains(linksSalesAcademy.MODULI_MANUALI_E_PROCEDURE).click()
+        getIFrame().find('h1:contains("' + linksSalesAcademy.MODULI_MANUALI_E_PROCEDURE + '")').should('be.visible')
+
+        cy.contains(linksSalesAcademy.LINK_UTILI).click()
+        getIFrame().find('h1:contains("' + linksSalesAcademy.LINK_UTILI + '")').should('be.visible')
+    }
+
+    static checkAllPagesRisorsePerAgenzia() {
+        const linksRisorseAgenzie = LinkMieInfo.getLinksSubMenu().RISORSE_PER_AGENZIA
+        cy.contains(linksRisorseAgenzie.RECLUTAMENTO).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.RECLUTAMENTO + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.ARREDARE_AGENZIA).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.ARREDARE_AGENZIA + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.DIGITAL_MARKETING_E_SOCIAL_MEDIA).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.RECDIGITAL_MARKETING_E_SOCIAL_MEDIALUTAMENTO + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.MATERIALI_DI_COMUNICAZIONE).click()
+        getIFrame().find('h1:contains("' + MATERIALI_DI_COMUNICAZIONE.RECLUTAMENTO + ' istituzionale")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.RECLUTAMENTO).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.RECLUTAMENTO + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.RICHIESTA_STAMPATI).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.RICHIESTA_STAMPATI + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.ORDINI_DI_TONER_E_CARTA).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.ORDINI_DI_TONER_E_CARTA + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.CATALOGHI_PRODOTTI_TECNOLOGICI).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.CATALOGHI_PRODOTTI_TECNOLOGICI + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.SICUREZZA_IT).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.SICUREZZA_IT + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.APP_ADAM).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.APP_ADAM + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.PACCHETTI_DI_SICUREZZA).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.PACCHETTI_DI_SICUREZZA + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.RIFERIMENTI_AZIENDALI).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.RIFERIMENTI_AZIENDALI + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.LINK_UTILI).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.LINK_UTILI + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgenzie.MINISITO_IDD).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.MINISITO_IDD + '")').should('be.visible')
+
+
+    }
+
+    static checkAllPagesRisorsePerAgente() {
+        const linksRisorseAgente = LinkMieInfo.getLinksSubMenu().RISORSE_PER_AGENTE
+        cy.contains(linksRisorseAgente.TRATTAMENTI_PROVVIGIONALI).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgente.TRATTAMENTI_PROVVIGIONALI + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgente.INCENTIVAZIONE_MISSION_REGOLAMENTI).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgente.INCENTIVAZIONE_MISSION_REGOLAMENTI + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgente.CONVENZIONI_PRODOTTI_ALLIANZ).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgente.CONVENZIONI_PRODOTTI_ALLIANZ + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgente.CASSA_PREVIDENZA_AGENTI).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgente.CASSA_PREVIDENZA_AGENTI + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgente.LE_SCELTE_DI_INVESTIMENTO).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgente.LE_SCELTE_DI_INVESTIMENTO + '")').should('be.visible')
+
+        cy.contains(linksRisorseAgente.CATALOGO_IDEE).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgente.CATALOGO_IDEE + '")').should('be.visible')
+    }
+
+    static checkAllPagesIlMondoAllianz(){
+        const linksMondoAllianz = LinkMieInfo.getLinksSubMenu().IL_MONDO_ALLIANZ
+        cy.contains(linksMondoAllianz.I_CODICI_DI_ALLIANZ_SPA).click()
+        getIFrame().find('h1:contains("' + linksMondoAllianz.I_CODICI_DI_ALLIANZ_SPA + '")').should('be.visible')
+  
+        cy.contains(linksMondoAllianz.LA_RASSEGNA_STAMPA).click()
+        getIFrame().find('h1:contains("' + linksMondoAllianz.LA_RASSEGNA_STAMPA + '")').should('be.visible')
+
+        cy.contains(linksMondoAllianz.AGRICOLA_SAN_FELICE).click()
+        getIFrame().find('h1:contains("' + linksMondoAllianz.AGRICOLA_SAN_FELICE + '")').should('be.visible')
+    }
 }
 
 export default Mieinfo
