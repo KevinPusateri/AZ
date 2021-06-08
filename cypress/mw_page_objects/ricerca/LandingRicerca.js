@@ -97,7 +97,16 @@ class LandingRicerca {
     }
 
     static clickFirstResult() {
+        //Attende il caricamento della scheda cliente
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'client'
+            }
+        });
+
         cy.get('lib-client-item').first().click();
+
+        cy.wait('@client', { requestTimeout: 30000 });
     }
 
     /**

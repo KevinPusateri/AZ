@@ -78,6 +78,7 @@ class SintesiCliente {
     static retriveClientName() {
 
         cy.get('div[class*=client-name]').then(($divClientName) => {
+            debugger
             let clientName = $divClientName.text()
             return clientName
         })

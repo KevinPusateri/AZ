@@ -173,9 +173,11 @@ class Folder {
 
     /**
     * @param {boolean} isModifica - se in fase di modifica e non censimento, l'iframe è diffrente
+    * @param {boolean} isPG - se true, il click torna indietro è relativo a una PG con il relativo intercept delle chiamate a SCImpresa
     */
     static clickTornaIndietro(isModifica = false) {
         !isModifica ? getFolder().find('#idUrlBack').click().wait(2000) : getIframe().find('#idUrlBack').click().wait(2000)
+        cy.wait(12000)
     }
 }
 

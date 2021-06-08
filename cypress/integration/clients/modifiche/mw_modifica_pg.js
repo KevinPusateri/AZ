@@ -74,7 +74,7 @@ describe('Matrix Web : Modifica PG', function () {
   it.only('Da Folder inserire la visura camerale e procedere', () => {
     Folder.caricaVisuraCamerale(true)
     Folder.clickTornaIndietro(true)
-    SCU.generazioneStampe()
+    SCU.generazioneStampe(true)
   })
 
   it.only("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
@@ -83,39 +83,39 @@ describe('Matrix Web : Modifica PG', function () {
     LandingRicerca.clickFirstResult()
     SintesiCliente.checkAtterraggioSintesiCliente(clientePG.nominativo)
 
-    cy.intercept('POST', '**/graphql', (req) => {
-      if (req.body.operationName.includes('client')) {
-        req.alias = 'gqlClient'
-      }
-    });
+    // cy.intercept('POST', '**/graphql', (req) => {
+    //   if (req.body.operationName.includes('client')) {
+    //     req.alias = 'gqlClient'
+    //   }
+    // });
 
-    cy.contains('DETTAGLIO ANAGRAFICA').click()
+    // cy.contains('DETTAGLIO ANAGRAFICA').click()
 
-    cy.wait('@gqlClient', { requestTimeout: 30000 });
+    // cy.wait('@gqlClient', { requestTimeout: 30000 });
 
-    cy.contains('Invio documento via PEC')
-      .parent('div')
-      .get('nx-icon').should('have.class', 'nx-icon--s nx-icon--check-circle color-true')
+    // cy.contains('Invio documento via PEC')
+    //   .parent('div')
+    //   .get('nx-icon').should('have.class', 'nx-icon--s nx-icon--check-circle color-true')
 
-    //Verifica in Folder
-    cy.get('nx-icon[aria-label="Open menu"]').click();
-    cy.contains('folder').click();
-    cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
+    // //Verifica in Folder
+    // cy.get('nx-icon[aria-label="Open menu"]').click();
+    // cy.contains('folder').click();
+    // cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
 
-    getIframe().find('span[class="k-icon k-plus"]:visible').click();
-    getIframe().find('span[class="k-icon k-plus"]:first').click();
+    // getIframe().find('span[class="k-icon k-plus"]:visible').click();
+    // getIframe().find('span[class="k-icon k-plus"]:first').click();
 
-    cy.generateUnicoClienteLabel().then(label => {
-      getIframe().find('span').contains(label).click()
-    })
+    // cy.generateUnicoClienteLabel().then(label => {
+    //   getIframe().find('span').contains(label).click()
+    // })
 
-    cy.generateUnicoDirezioneLabel().then(label => {
-      getIframe().find('span').contains(label).click()
-    })
+    // cy.generateUnicoDirezioneLabel().then(label => {
+    //   getIframe().find('span').contains(label).click()
+    // })
 
-    cy.generateVisuraCameraleLabel().then(label => {
-      getIframe().find('span').contains(label).click()
-    })
+    // cy.generateVisuraCameraleLabel().then(label => {
+    //   getIframe().find('span').contains(label).click()
+    // })
 
   })
 })

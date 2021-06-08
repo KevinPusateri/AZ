@@ -231,16 +231,22 @@ class SCU {
     }
     //#endregion
 
-    static generazioneStampe() {
+    static generazioneStampe(isModifica = false) {
 
+        debugger
         //Popup Risulta un UNICO...
-        
-        getSCU().find('button:contains("SI")').then(($si) => {
-            cy.wrap($si).click()
+        getSCU().then($body => {
+            debugger
+            if ($body.find('button:contains("SI")').length > 0) {
+                $body.find('button:contains("SI")').click();
+            }
         });
 
-        getSCU().find('button:contains("Conferma")').then(($conferma) => {
-            cy.wrap($conferma).click()
+        getSCU().then($body => {
+            debugger
+            if ($body.find('button:contains("Conferma")').length > 0) {
+                cy.get('button:contains("Conferma")').click();
+            }
         });
 
         cy.intercept({
@@ -258,11 +264,25 @@ class SCU {
             url: /SalvaInContentManager/
         }).as('salvaInContentManager')
 
-        cy.wait('@writeConsensi', { requestTimeout: 60000 })
+        if (!isModifica)
+            cy.wait('@writeConsensi', { requestTimeout: 60000 })
+
+        //Nessun documento da stampare...
+        getSCU().then($body => {
+            debugger
+            if ($body.find('button:contains("Esci")').length > 0)
+                getSCU().find('button:contains("Esci")').click()
+        });
+
         cy.wait('@generazioneStampe', { requestTimeout: 60000 })
         cy.wait('@salvaInContentManager', { requestTimeout: 60000 })
 
-        getSCU().find('#endWorkflowButton').click()
+        getSCU().then($body => {
+            debugger
+            if ($body.find('#endWorkflowButton').length > 0)
+                getSCU().find('#endWorkflowButton').click()
+        });
+
     }
 
     static VerificaDocumentiInsufficienti() {
