@@ -1,13 +1,12 @@
 /**
  * @author Kevin Pusateri <kevin.pusateri@allianz.it>
-*/
+ */
 /// <reference types="Cypress" />
 
 
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import LinkMieInfo from "../../mw_page_objects/navigation/LinkMieInfo"
 import Mieinfo from "../../mw_page_objects/navigation/Mieinfo"
 
 //#region Variables
