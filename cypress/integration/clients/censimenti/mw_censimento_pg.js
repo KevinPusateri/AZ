@@ -103,6 +103,6 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
     HomePage.reloadMWHomePage()
     TopBar.search(nuovoClientePG.partitaIva)
     LandingRicerca.clickFirstResult()
-    SintesiCliente.verificaInFolder("PleinAir")
+    SintesiCliente.verificaInFolder(["PleinAir"])
   })
 })

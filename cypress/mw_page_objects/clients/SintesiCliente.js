@@ -45,7 +45,7 @@ class SintesiCliente {
     /**
     * @param {string} etichetta - documento da verificare in folder
     */
-    static verificaInFolder(etichetta) {
+    static verificaInFolder([etichette]) {
         cy.get('nx-icon[aria-label="Open menu"]').click()
         cy.contains('folder').click()
         cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
@@ -53,7 +53,9 @@ class SintesiCliente {
         getIframe().find('span[class="k-icon k-plus"]:visible').click()
         getIframe().find('span[class="k-icon k-plus"]:first').click()
 
-        getIframe().find('span').contains(etichetta).click()
+        etichette.forEach(label => {
+            getIframe().find('span').contains(label).click() 
+        });
     }
 
 

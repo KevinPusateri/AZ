@@ -177,7 +177,7 @@ class Folder {
     */
     static clickTornaIndietro(isModifica = false) {
         !isModifica ? getFolder().find('#idUrlBack').click().wait(2000) : getIframe().find('#idUrlBack').click().wait(2000)
-        cy.wait(12000)
+        cy.wait(8000)
     }
 }
 

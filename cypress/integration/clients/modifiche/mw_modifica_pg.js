@@ -40,6 +40,7 @@ before(() => {
     clientePG.citta = "LONIGO"
     clientePG.provincia = "VI"
     clientePG.mail = "test_automatici@allianz.it"
+    clientePG.isPEC = true
     clientePG.pec = "test_automatici@pec.it"
     clientePG.invioPec = true
   })
@@ -84,40 +85,23 @@ describe('Matrix Web : Modifica PG', function () {
     TopBar.search(clientePG.nominativo)
     LandingRicerca.clickFirstResult()
     SintesiCliente.checkAtterraggioSintesiCliente(clientePG.nominativo)
-
-    // cy.intercept('POST', '**/graphql', (req) => {
-    //   if (req.body.operationName.includes('client')) {
-    //     req.alias = 'gqlClient'
-    //   }
-    // });
-
-    // cy.contains('DETTAGLIO ANAGRAFICA').click()
-
-    // cy.wait('@gqlClient', { requestTimeout: 30000 });
-
-    // cy.contains('Invio documento via PEC')
-    //   .parent('div')
-    //   .get('nx-icon').should('have.class', 'nx-icon--s nx-icon--check-circle color-true')
-
-    // //Verifica in Folder
-    // cy.get('nx-icon[aria-label="Open menu"]').click();
-    // cy.contains('folder').click();
-    // cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
-
-    // getIframe().find('span[class="k-icon k-plus"]:visible').click();
-    // getIframe().find('span[class="k-icon k-plus"]:first').click();
-
+    DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePG)
+    
+    // let unicoClienteLebel
+    // let unicoDirezionaleLabel
+    // let visuraCameraleLebel
     // cy.generateUnicoClienteLabel().then(label => {
-    //   getIframe().find('span').contains(label).click()
+    //   unicoClienteLebel = label
     // })
 
     // cy.generateUnicoDirezioneLabel().then(label => {
-    //   getIframe().find('span').contains(label).click()
+    //   unicoDirezionaleLabel = label
     // })
 
     // cy.generateVisuraCameraleLabel().then(label => {
-    //   getIframe().find('span').contains(label).click()
+    //   visuraCameraleLebel = label
     // })
 
+    // SintesiCliente.verificaInFolder([unicoClienteLebel,unicoDirezionaleLabel,visuraCameraleLebel])
   })
 })

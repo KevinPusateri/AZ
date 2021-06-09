@@ -233,17 +233,14 @@ class SCU {
 
     static generazioneStampe(isModifica = false) {
 
-        debugger
         //Popup Risulta un UNICO...
         getSCU().then($body => {
-            debugger
             if ($body.find('button:contains("SI")').length > 0) {
                 $body.find('button:contains("SI")').click();
             }
         });
 
         getSCU().then($body => {
-            debugger
             if ($body.find('button:contains("Conferma")').length > 0) {
                 cy.get('button:contains("Conferma")').click();
             }
@@ -269,7 +266,6 @@ class SCU {
 
         //Nessun documento da stampare...
         getSCU().then($body => {
-            debugger
             if ($body.find('button:contains("Esci")').length > 0)
                 getSCU().find('button:contains("Esci")').click()
         });
@@ -278,7 +274,6 @@ class SCU {
         cy.wait('@salvaInContentManager', { requestTimeout: 60000 })
 
         getSCU().then($body => {
-            debugger
             if ($body.find('#endWorkflowButton').length > 0)
                 getSCU().find('#endWorkflowButton').click()
         });
