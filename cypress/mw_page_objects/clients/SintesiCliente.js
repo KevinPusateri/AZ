@@ -75,17 +75,14 @@ class SintesiCliente {
         cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
     }
 
-    static retriveClientName(clientName) {
-        
-        cy.get('div[class*=client-name]').then((divClientName) => {
-            const currentClientName = divClientName.text()
-            debugger
-            cy.wrap(currentClientName).as('currentClientName')
-        })
-
-        cy.get('@currentClientName').then((value) => {
-            clientName = value
-        })
+    static retriveClientName() {
+        return new Promise((resolve, reject) => {
+            cy.get('div[class*=client-name]').invoke('text')
+                .then(currentClientName => {
+                    cy.log('Nome Cliente : ', currentClientName);
+                    resolve(currentClientName);
+                });
+        });
     }
 }
 

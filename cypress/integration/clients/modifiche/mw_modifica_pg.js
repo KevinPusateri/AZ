@@ -42,7 +42,6 @@ before(() => {
     clientePG.mail = "test_automatici@allianz.it"
     clientePG.pec = "test_automatici@pec.it"
     clientePG.invioPec = true
-    clientePG.nominativo = ""
   })
   LoginPage.logInMW(userName, psw)
 })
@@ -58,12 +57,12 @@ after(() => {
 
 describe('Matrix Web : Modifica PG', function () {
 
-  it.only('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
+  it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
     LandingRicerca.searchRandomClient(true, "PG", "E")
     LandingRicerca.clickFirstResult()
-    SintesiCliente.retriveClientName(clientePG.nominativo)
-    cy.log(clientePG.nominativo)
-    //TopBar.search(clientePG.nominativo)
+    SintesiCliente.retriveClientName().then(currentClientName => {
+      clientePG.nominativo = currentClientName
+    })
   })
 
   it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
