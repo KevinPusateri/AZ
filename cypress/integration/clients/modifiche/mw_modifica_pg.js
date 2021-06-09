@@ -60,12 +60,16 @@ describe('Matrix Web : Modifica PG', function () {
   it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
     LandingRicerca.searchRandomClient(true, "PG", "E")
     LandingRicerca.clickFirstResult()
+<<<<<<< Updated upstream
     SintesiCliente.retriveClientName().then(currentClientName => {
       clientePG.nominativo = currentClientName
     })
+=======
+    clientePG.nominativo = SintesiCliente.retriveClientName()
+>>>>>>> Stashed changes
   })
 
-  it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
+  it.only('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
     DettaglioAnagrafica.modificaCliente()
     SCU.modificaClientePGDatiAnagrafici(clientePG)
     SCU.modificaClientePGModificaContatti(clientePG)
@@ -73,13 +77,13 @@ describe('Matrix Web : Modifica PG', function () {
     SCU.modificaClientePGConfermaModifiche()
   })
 
-  it('Da Folder inserire la visura camerale e procedere', () => {
+  it.only('Da Folder inserire la visura camerale e procedere', () => {
     Folder.caricaVisuraCamerale(true)
     Folder.clickTornaIndietro(true)
     SCU.generazioneStampe(true)
   })
 
-  it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
+  it.only("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
     HomePage.reloadMWHomePage()
     TopBar.search(clientePG.nominativo)
     LandingRicerca.clickFirstResult()
