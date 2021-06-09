@@ -66,7 +66,7 @@ describe('Matrix Web : Modifica PG', function () {
     })
   })
 
-  it.only('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
+  it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
     DettaglioAnagrafica.modificaCliente()
     SCU.modificaClientePGDatiAnagrafici(clientePG)
     SCU.modificaClientePGModificaContatti(clientePG)
@@ -74,13 +74,13 @@ describe('Matrix Web : Modifica PG', function () {
     SCU.modificaClientePGConfermaModifiche()
   })
 
-  it.only('Da Folder inserire la visura camerale e procedere', () => {
+  it('Da Folder inserire la visura camerale e procedere', () => {
     Folder.caricaVisuraCamerale(true)
     Folder.clickTornaIndietro(true)
     SCU.generazioneStampe(true)
   })
 
-  it.only("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
+  it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
     HomePage.reloadMWHomePage()
     TopBar.search(clientePG.nominativo)
     LandingRicerca.clickFirstResult()
