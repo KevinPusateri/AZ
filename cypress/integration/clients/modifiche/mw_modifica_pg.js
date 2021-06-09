@@ -60,13 +60,9 @@ describe('Matrix Web : Modifica PG', function () {
   it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
     LandingRicerca.searchRandomClient(true, "PG", "E")
     LandingRicerca.clickFirstResult()
-<<<<<<< Updated upstream
     SintesiCliente.retriveClientName().then(currentClientName => {
       clientePG.nominativo = currentClientName
     })
-=======
-    clientePG.nominativo = SintesiCliente.retriveClientName()
->>>>>>> Stashed changes
   })
 
   it.only('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
