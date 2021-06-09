@@ -16,7 +16,7 @@
 		},
 		"currentEnv": "PREPROD",
 		"baseUrlPreprod": "https://portaleagenzie.pp.azi.allianz.it/matrix/",
-		"urlMWPreprod" : "https://matrix.pp.azi.allianz.it/",
+		"urlMWPreprod" : "https://amlogin-pp.allianz.it/nidp/idff/sso?id=5&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.pp.azi.allianz.it%2Fmatrix%2F",
 		"baseUrlTest": "https://portaleagenzie.te.azi.allianzit/matrix/",
 		"urlMWTest" : "https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=0&option=credential&sid=0&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F"
 	}

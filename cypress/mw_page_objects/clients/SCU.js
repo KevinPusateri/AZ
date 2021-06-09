@@ -232,20 +232,6 @@ class SCU {
     //#endregion
 
     static generazioneStampe(isModifica = false) {
-
-        //Popup Risulta un UNICO...
-        getSCU().then($body => {
-            if ($body.find('button:contains("SI")').length > 0) {
-                $body.find('button:contains("SI")').click();
-            }
-        });
-
-        getSCU().then($body => {
-            if ($body.find('button:contains("Conferma")').length > 0) {
-                cy.get('button:contains("Conferma")').click();
-            }
-        });
-
         cy.intercept({
             method: 'POST',
             url: /WriteConsensi/
@@ -260,6 +246,25 @@ class SCU {
             method: 'POST',
             url: /SalvaInContentManager/
         }).as('salvaInContentManager')
+
+        if (isModifica)
+            //Popup Risulta un UNICO...
+            getSCU().then($body => {
+                if ($body.find('button:contains("SI")').length > 0) {
+                    $body.find('button:contains("SI")').click();
+                }
+            });
+
+        //Pulsante di Conferma post caricamento documento
+        if(!isModifica)
+        {
+            getSCU().then($body => {
+                if ($body.find('button:contains("Conferma")').length > 0) {
+                    cy.get('button:contains("Conferma")').click();
+                }
+            });
+        }
+
 
         if (!isModifica)
             cy.wait('@writeConsensi', { requestTimeout: 60000 })
