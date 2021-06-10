@@ -85,8 +85,8 @@ class TopBar extends HomePage {
 
         cy.get('body').then($body => {
             if ($body.find('.user-icon-container').length > 0) {
-                cy.get('.user-icon-container').click();
-                cy.wait(1000).contains('Logout').click()
+                cy.wait(2000).get('.user-icon-container').click();
+                cy.wait(2000).contains('Logout').click()
                 cy.wait(delayBetweenTests)
             }
         });
@@ -224,7 +224,7 @@ class TopBar extends HomePage {
         if (page === LinkUtilita.CASELLA_DI_POSTA_ED_AGENZIA ||
             page === LinkUtilita.BANCHE_DATI_ANIA ||
             page === LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS) {
-            cy.contains(page).parents('a[class="ng-star-inserted"]').invoke('removeAttr', 'target').click()
+            cy.contains(page).parent('lib-check-user-permissions').find('a[class="ng-star-inserted"]').invoke('removeAttr', 'target').click()
         } else {
             cy.contains(page).click()
         }
@@ -366,7 +366,12 @@ class TopBar extends HomePage {
         cy.get('button[class^="nx-modal__close"]').click()
     }
 
-
+    /**
+     * Click logo Matrix -> torna indietro alla HomePage
+     */
+    static clickMatrixHome() {
+        cy.get('a[href="/matrix/"]').click()
+    }
 }
 
 export default TopBar

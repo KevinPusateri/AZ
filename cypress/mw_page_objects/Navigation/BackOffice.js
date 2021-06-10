@@ -53,7 +53,6 @@ const LinksContabilita = {
     SOLLECITO_TITOLI: 'Sollecito titoli',
     IMPOSTAZIONE_CONTABILITA: 'Impostazione contabilità',
     CONVENZIONI_IN_TRATTENUTA: 'Convenzioni in trattenuta',
-    // MONITORAGGIO_CUSTOMER_DIGITAL_FOOTPRINT: 'Monitoraggio Customer Digital Footprint',
     MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart'
 }
 
@@ -95,8 +94,8 @@ class BackOffice {
      * @param {string} page - Nome della pagina delle cards link 
      */
     static clickCardLink(page) {
-        if (page === LinksContabilita.MONITORAGGIO_CUSTOMER_DIGITAL_FOOTPRINT)
-            cy.get('.backoffice-card').find('a').contains('Monitoraggio Customer Digital Footprint').invoke('removeAttr', 'target').click()
+        if (page === LinksContabilita.MONITORAGGIO_GUIDA_SMART)
+            cy.get('.backoffice-card').find('a').contains(page).invoke('removeAttr', 'target').click()
         else
             cy.get('.backoffice-card').find('a').contains(page).click()
 
@@ -185,7 +184,7 @@ class BackOffice {
                 getIFrame().find('#contentPane:contains("Gestione"):visible')
                 break;
             case LinksContabilita.MONITORAGGIO_GUIDA_SMART:
-                getIFrame().find('p:contains("Customer Digital Footprint"):visible')
+                getIFrame().find('p:contains("Guida Smart"):visible')
                 break;
 
         }

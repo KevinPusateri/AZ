@@ -146,10 +146,9 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Monitoraggio Customer Digital Footprint', function () {
+    it('Verifica aggancio Monitoraggio Guida Smart', function () {
         TopBar.clickBackOffice()
-        BurgerMenuBackOffice.clickLink('Monitoraggio Customer Digital Footprint')
-        BurgerMenuBackOffice.backToBackOffice()
+        BurgerMenuBackOffice.clickLink('Monitoraggio Guida Smart')
 
     })
     //#endregion

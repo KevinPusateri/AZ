@@ -21,7 +21,7 @@ const LinksBurgerMenu = {
     SOLLECITO_TITOLI: 'Sollecito titoli',
     IMPOSTAZIONE_CONTABILITÀ: 'Impostazione contabilità',
     CONVENZIONI_IN_TRATTENUTA: 'Convenzioni in trattenuta',
-    MONITORAGGIO_CUSTOMER_DIGITAL_FOOTPRINT: 'Monitoraggio Customer Digital Footprint'
+    MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart'
 }
 
 class BurgerMenuBackOffice extends BackOffice {
@@ -33,9 +33,9 @@ class BurgerMenuBackOffice extends BackOffice {
         cy.get('lib-burger-icon').click()
         const linksBurger = Object.values(LinksBurgerMenu)
 
-        cy.get('lib-side-menu-link').find('a').should('have.length', 19).each(($checkLinksBurger, i) => {
+        cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-        })
+        }).should('have.length', 19)
     }
 
     /**

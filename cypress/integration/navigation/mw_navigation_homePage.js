@@ -33,7 +33,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     it('Verifica Top Menu Principali', function () {
         TopBar.clickIconCalendar()
         TopBar.clickIconIncident()
-        // TopBar.clickIconNotification() -> è stato tolto canpanellina notifiche
+        TopBar.clickIconNotification()
         TopBar.clickIconUser()
         TopBar.clickIconSwitchPage()
     });
@@ -55,69 +55,68 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickLinkOnIconIncident('Elenco telefonico')
     })
 
-    it('Verifica presenza links da Utility', function () {
+    it('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
+        TopBar.clickIconNotification()
+        TopBar.checkNotificheEvidenza()
+    })
+
+    it('Verifica presenza links da Utilità', function () {
         TopBar.clickIconSwitchPage()
         TopBar.checkLinksUtility()
     })
 
-    it('Verifica atterraggio da Utility - Cruscotto resilience', function () {
+    it('Verifica atterraggio da Utilità - Cruscotto resilience', function () {
         TopBar.clickIconSwitchPage()
         TopBar.clickLinkOnUtilita('Cruscotto resilience')
     })
 
     // --add excel porta su microsoft(apre per forza una new window)
-    // it.skip('Verifica atterraggio da Utility - Casella di posta agente ed agenzia', function () {
+    // it.skip('Verifica atterraggio da Utilità - Casella di posta agente ed agenzia', function () {
     //     TopBar.clickIconSwitchPage()
     //     TopBar.clickLinkOnUtilita('Casella di posta agente ed agenzia')
     // })
 
-    it('Verifica atterraggio da Utility - Quattroruote - Calcolo valore veicolo', function () {
+    it('Verifica atterraggio da Utilità - Quattroruote - Calcolo valore veicolo', function () {
         TopBar.clickIconSwitchPage()
         TopBar.clickLinkOnUtilita('Quattroruote - Calcolo valore veicolo')
     })
 
     // Mostra non sei autorizzato ad accedere alla pagina backoffice --add excel
-    // it.skip('Verifica atterraggio da Utility - Report Allianz Now', function () {
+    // it.skip('Verifica atterraggio da Utilità - Report Allianz Now', function () {
     //     TopBar.clickIconSwitchPage()
     //     TopBar.clickLinkOnUtilita('Report Allianz Now')
     // })
 
-    it('Verifica atterraggio da Utility - Interrogazioni centralizzate', function () {
+    it('Verifica atterraggio da Utilità - Interrogazioni centralizzate', function () {
         TopBar.clickIconSwitchPage()
         TopBar.clickLinkOnUtilita('Interrogazioni centralizzate')
     })
 
-    it('Verifica atterraggio da Utility - Banche Dati ANIA', function () {
-        TopBar.clickIconSwitchPage()
-        TopBar.clickLinkOnUtilita('Banche Dati ANIA')
-    })
+    // it.skip('Verifica atterraggio da Utilità - Banche Dati ANIA', function () {
+    //     TopBar.clickIconSwitchPage()
+    //     TopBar.clickLinkOnUtilita('Banche Dati ANIA')
+    // })
 
-    it('Verifica atterraggio da Utility - Gestione Magazzino OBU', function () {
+    it('Verifica atterraggio da Utilità - Gestione Magazzino OBU', function () {
         TopBar.clickIconSwitchPage()
         TopBar.clickLinkOnUtilita('Gestione Magazzino OBU')
     })
 
     // Accesso non autorizzato --add excel
-    // it.skip('Verifica atterraggio da Utility - Piattaforma contratti AZ Telematics', function () {
+    // it.skip('Verifica atterraggio da Utilità - Piattaforma contratti AZ Telematics', function () {
     //     TopBar.clickIconSwitchPage()
     //     TopBar.clickLinkOnUtilita('Piattaforma contratti AZ Telematics')
     // })
 
-    it('Verifica atterraggio da Utility - Cruscotto Installazione Dispositivo Satellitare', function () {
+    it('Verifica atterraggio da Utilità - Cruscotto Installazione Dispositivo Satellitare', function () {
         TopBar.clickIconSwitchPage()
         TopBar.clickLinkOnUtilita('Cruscotto Installazione Dispositivo Satellitare')
     })
 
-    it('Verifica atterraggio da Utility - Monitor Scoring AZ Bonus Drive', function () {
+    it('Verifica atterraggio da Utilità - Monitor Scoring AZ Bonus Drive', function () {
         TopBar.clickIconSwitchPage()
         TopBar.clickLinkOnUtilita('Monitor Scoring AZ Bonus Drive')
     })
-
-    // è stato tolto -- da togliere su excel?
-    // it.skip('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
-    //     TopBar.clickIconNotification()
-    //     TopBar.checkNotificheEvidenza()
-    // })
 
     it('Verifica Top Menu Clients', function () {
         TopBar.clickIconSwitchPage('Clients')

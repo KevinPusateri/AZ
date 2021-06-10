@@ -34,84 +34,83 @@ after(() => {
 
 describe('Matrix Web : Navigazioni da BackOffice', function () {
 
-    // it('Verifica atterraggio su BackOffice', function () {
-    //     TopBar.clickBackOffice()
+    it('Verifica atterraggio su BackOffice', function () {
+        TopBar.clickBackOffice()
+    });
 
-    // });
+    it('Verifica atterraggio Appuntamenti Futuri', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickAppuntamentiFuturi()
+    });
 
-    // it('Verifica atterraggio Appuntamenti Futuri', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickAppuntamentiFuturi()
-    // });
+    it('Verifica atterraggio VPS Rami Vari("News")', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickVPSRami()
+        BackOffice.backToBackOffice()
 
-    // it('Verifica atterraggio VPS Rami Vari("News")', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickVPSRami()
-    //     BackOffice.backToBackOffice()
+    });
 
-    // });
+    it('Verifica links Sinistri', function () {
+        TopBar.clickBackOffice()
+        BackOffice.checkLinksOnSinistriExist()
+    });
 
-    // it('Verifica links Sinistri', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.checkLinksOnSinistriExist()
-    // });
+    it('Verifica links Contabilità', function () {
+        TopBar.clickBackOffice()
+        BackOffice.checkLinksOnContabilitaExist()
+    });
 
-    // it('Verifica links Contabilità', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.checkLinksOnContabilitaExist()
-    // });
+    it('Verifica apertura disambiguazione: Movimentazione Sinistri', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Movimentazione sinistri')
+        BackOffice.backToBackOffice()
+    })
 
-    // it('Verifica apertura disambiguazione: Movimentazione Sinistri', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickCardLink('Movimentazione sinistri')
-    //     BackOffice.backToBackOffice()
-    // })
+    it('Verifica apertura disambiguazione: Denuncia', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Denuncia')
+        BackOffice.backToBackOffice()
 
-    // it('Verifica apertura disambiguazione: Denuncia', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickCardLink('Denuncia')
-    //     BackOffice.backToBackOffice()
+    })
 
-    // })
+    it('Verifica apertura disambiguazione: Denuncia BMP', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Denuncia BMP')
+        BackOffice.backToBackOffice()
 
-    // it('Verifica apertura disambiguazione: Denuncia BMP', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickCardLink('Denuncia BMP')
-    //     BackOffice.backToBackOffice()
+    })
 
-    // })
+    it('Verifica apertura disambiguazione: Consultazione sinistri', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Consultazione sinistri')
+        BackOffice.backToBackOffice()
+    })
 
-    // it('Verifica apertura disambiguazione: Consultazione sinistri', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickCardLink('Consultazione sinistri')
-    //     BackOffice.backToBackOffice()
-    // })
+    it('Verifica apertura disambiguazione: Sinistri incompleti', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Sinistri incompleti')
+        BackOffice.backToBackOffice()
+    })
 
-    // it('Verifica apertura disambiguazione: Sinistri incompleti', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickCardLink('Sinistri incompleti')
-    //     BackOffice.backToBackOffice()
-    // })
+    it('Verifica apertura disambiguazione: Sinistri canalizzati', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Sinistri canalizzati')
+        BackOffice.backToBackOffice()
+    })
 
-    // it('Verifica apertura disambiguazione: Sinistri canalizzati', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickCardLink('Sinistri canalizzati')
-    //     BackOffice.backToBackOffice()
-    // })
+    it('Verifica apertura disambiguazione: Sintesi Contabilità', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Sintesi Contabilità')
+        BackOffice.backToBackOffice()
 
-    // it('Verifica apertura disambiguazione: Sintesi Contabilità', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickCardLink('Sintesi Contabilità')
-    //     BackOffice.backToBackOffice()
+    })
 
-    // })
+    it('Verifica apertura disambiguazione: Giornata contabile', function () {
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Giornata contabile')
+        BackOffice.backToBackOffice()
 
-    // it('Verifica apertura disambiguazione: Giornata contabile', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickCardLink('Giornata contabile')
-    //     BackOffice.backToBackOffice()
-
-    // })
+    })
 
     it('Verifica apertura disambiguazione: Consultazione Movimenti', function () {
         TopBar.clickBackOffice()
@@ -179,7 +178,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     //     BackOffice.clickCardLink('Monitoraggio Customer Digital Footprint')
     //     BackOffice.backToBackOffice()
     // });
-    it.only('Verifica apertura disambiguazione: Monitoraggio Guida Smart', function () {
+    it('Verifica apertura disambiguazione: Monitoraggio Guida Smart', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Monitoraggio Guida Smart')
         BackOffice.backToBackOffice()

@@ -46,25 +46,31 @@ describe('Matrix Ricerca', function () {
   it('Verifica Ricerca Da Landing Sales', function () {
     TopBar.clickSales()
     LandingRicerca.checkBucaRicercaSuggerrimenti()
-    cy.get('a[href="/matrix/"]').click()
+    TopBar.clickMatrixHome()
   })
 
   it('Verifica Ricerca Da Landing Numbers', function () {
     TopBar.clickNumbers()
     LandingRicerca.checkBucaRicercaSuggerrimenti()
-    cy.get('a[href="/matrix/"]').click()
+    TopBar.clickMatrixHome()
   })
 
   it('Verifica Ricerca Da Landing BackOffice', function () {
 
     TopBar.clickBackOffice()
     LandingRicerca.checkBucaRicercaSuggerrimenti()
-    cy.get('a[href="/matrix/"]').click()
+    TopBar.clickMatrixHome()
   })
 
-  it('Verifica Ricerca Da News', function () {
+  it('Verifica Ricerca Da Landing News', function () {
     TopBar.clickNews()
     LandingRicerca.checkBucaRicercaSuggerrimenti()
-    cy.get('a[href="/matrix/"]').click()
+    TopBar.clickMatrixHome()
+  })
+
+  it('Verifica Ricerca Da Landing Le mie info', function () {
+    TopBar.clickMieInfo()
+    LandingRicerca.checkBucaRicercaSuggerrimenti()
+    TopBar.clickMatrixHome()
   })
 })

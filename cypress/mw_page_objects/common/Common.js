@@ -38,8 +38,8 @@ class Common {
    */
   static visitUrlOnEnv(){
     Cypress.env('currentEnv') === 'TEST' ?
-      cy.visit(Cypress.env('urlMWTest'),{ responseTimeout: 31000 },{retryOnStatusCodeFailure:true},{retryOnNetworkFailure:true}) :
-      cy.visit(Cypress.env('urlMWPreprod'),{ responseTimeout: 31000 },{retryOnStatusCodeFailure:true},{retryOnNetworkFailure:true})
+      cy.visit(Cypress.env('urlMWTest'),{ responseTimeout: 31000 }) :
+      cy.visit(Cypress.env('urlMWPreprod'),{ responseTimeout: 31000 })
   }
   
 }

@@ -1,5 +1,6 @@
 /// <reference types="Cypress" />
 import Common from './Common'
+import HomePage from './HomePage'
 
 class LoginPage {
 
@@ -35,6 +36,9 @@ class LoginPage {
         cy.get('input[name="Ecom_User_ID"]').type(userName)
         cy.get('input[name="Ecom_Password"]').type(psw)
         cy.get('input[type="SUBMIT"]').click()
+
+        HomePage.reloadMWHomePage()
+
         Common.checkUrlEnv()
         cy.wait('@gqlNews')
     }
