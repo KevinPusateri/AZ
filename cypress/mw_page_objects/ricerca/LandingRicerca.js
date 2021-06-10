@@ -115,14 +115,16 @@ class LandingRicerca {
      */
     static checkBucaRicercaSuggerrimenti() {
         cy.get('input[name="main-search-input"]').click()
+
+        cy.wait(3000)
         const getSection = () => cy.get('lib-shortcut-section-item')
         getSection().find('[class="title"]:contains("Ultime pagine visitate"):visible').should('contain', 'Ultime pagine visitate')
         getSection().find('[class="title"]:contains("Ultimi clienti visualizzati"):visible').should('contain', 'Ultimi clienti visualizzati')
         getSection().find('[class="title"]:contains("Ultime polizze visualizzate"):visible').should('contain', 'Ultime polizze visualizzate')
 
-        getSection().find('[class="left nx-grid__column-6"]').should('exist').and('be.visible').and('have.length', 9)
-        getSection().find('a[href^="/matrix/clients/client/"]').should('have.length', 3).and('exist').and('be.visible').and('have.attr', 'href')
-        getSection().find('img').should('have.length', 3).and('exist').and('be.visible').and('have.attr', 'src')
+        getSection().find('[class="left nx-grid__column-6"]').should('exist').and('be.visible')
+        getSection().find('a[href^="/matrix/clients/client/"]').should('exist').and('be.visible').and('have.attr', 'href')
+        getSection().find('img').should('exist').and('have.attr', 'src')
 
         getSection().find('[class="right nx-grid__column-6"]').each(($text) => {
             expect($text.text()).not.to.be.empty
@@ -130,6 +132,7 @@ class LandingRicerca {
         getSection().find('[class="left nx-grid__column-6"]').each(($text) => {
             expect($text.text()).not.to.be.empty
         })
+
 
         cy.get('a[href="/matrix/"]').click()
     }
@@ -438,14 +441,14 @@ class LandingRicerca {
         })
     }
 
-    static checkAggancioCircolari(){
+    static checkAggancioCircolari() {
         cy.get('[class="lib-tab-info nx-grid"]').contains('Circolari').click()
         cy.get('lib-circular-item').find('a').first().invoke('removeAttr', 'target').click()
         cy.get('#detailStampaImg')
         cy.go('back')
     }
 
-    static checkButtonRicercaClassica(){
+    static checkButtonRicercaClassica() {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible')
     }
     /**
@@ -483,7 +486,7 @@ class LandingRicerca {
      */
     static checkClienteNotFound() {
         cy.get('lib-client-item').first().click().wait(2000)
-        cy.get('body').should('contain.text','Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
+        cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
     }
 }
 
