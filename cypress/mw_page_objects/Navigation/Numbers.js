@@ -11,9 +11,17 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-const interceptGetAgenziePDF = () => {
+const interceptPostAgenziePDF = () => {
     cy.intercept({
         method: 'POST',
+        url: '**/dacommerciale/**'
+    }).as('postDacommerciale');
+}
+
+
+const interceptGetAgenziePDF = () => {
+    cy.intercept({
+        method: 'GET',
         url: '**/dacommerciale/**'
     }).as('getDacommerciale');
 }
@@ -23,6 +31,7 @@ class Numbers {
     /**
      * Torna indetro su Numbers
      * @param {string} checkUrl - Verifica url della pagina di atterraggio
+     * url: business-lines, products, operational-indicators, incentives
      */
     static backToNumbers(checkUrl) {
         cy.get('a').contains('Numbers').click()
@@ -63,59 +72,57 @@ class Numbers {
      * Verifica Atterraggio Ricavi di Agenzia
      */
     static checkAtterraggioRicaviDiAgenzia() {
-        interceptGetAgenziePDF()
+        interceptPostAgenziePDF()
         cy.get('app-agency-incoming').contains('RICAVI DI AGENZIA').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 80000 });
+        cy.wait('@postDacommerciale', { requestTimeout: 80000 });
         getIFrame().find('a:contains("Filtra"):visible')
     }
 
     /**
-     * Verifica Atterraggio New business
+     * 
+     * @param {string} tab - titolo del tab
+     * @param {string} link - titolo del link: 
      */
-    static clickAndCheckAtterraggioNewBusiness() {
-        interceptGetAgenziePDF()
-        cy.get('app-kpi-card').contains('New business').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
-        getIFrame().find('#submit-Mon_PTF:contains("Filtra"):visible')
+    static clickAndCheckAtterraggio(tab, link) {
+        switch (tab) {
+            case 'DANNI':
+            case 'VITA':
+                interceptPostAgenziePDF()
+                cy.get('app-kpi-card').contains(link).click()
+                break;
+            case 'MOTOR':
+            case 'RAMI VARI RETAIL':
+            case 'MIDCO':
+            case 'ALTRO':
+                interceptPostAgenziePDF()
+                cy.get('app-lob-title').contains(tab).parents('app-border-card')
+                    .find('lib-da-link:contains("'+link+'")').click()
+                break;
+
+        }
+        cy.wait('@postDacommerciale', { requestTimeout: 60000 });
+        getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
+
     }
 
-    /**
-    * Verifica Atterraggio Incassi
-    */
-    static clickAndCheckAtterraggioIncassi() {
-        interceptGetAgenziePDF()
-        cy.get('app-kpi-card').contains('Incassi').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
-        getIFrame().find('[class="ControlloFiltroBottone"]:contains("Filtra"):visible')
-    }
-
-    /**
-     * Verifica Atterraggio Incassi
-     */
-    static clickAndCheckAtterraggioPortafoglio() {
-        interceptGetAgenziePDF()
-        cy.get('app-kpi-card').contains('Portafoglio').click()
-        cy.wait('@getDacommerciale', { requestTimeout: 120000 });
-        getIFrame().find('[class="ControlloFiltroBottone"]:contains("Filtra"):visible')
-    }
 
     /**
      * Verifica Atterraggio Primo indice prodotto
      */
     static clickAndCheckAtterraggioPrimoIndiceProdotto() {
-        interceptGetAgenziePDF()
+        interceptPostAgenziePDF()
         cy.get('lib-card').first().click()
-        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
-        getIFrame().find('[class="ControlloFiltroBottone"]:contains("Filtra"):visible')
+        cy.wait('@postDacommerciale', { requestTimeout: 60000 });
+        getIFrame().find('[class="ElementoFiltro"]:contains("Filtra"):visible')
     }
 
     /**
      * Verifica Atterraggio Primo indice digitale
      */
     static clickAndCheckAtterraggioPrimoIndiceDigitale() {
-        interceptGetAgenziePDF()
+        interceptPostAgenziePDF()
         cy.get('app-digital-indexes').find('lib-card').first().click()
-        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
+        cy.wait('@postDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('a:contains("Apri filtri"):visible')
     }
 
@@ -123,13 +130,110 @@ class Numbers {
      * Verifica Atterraggio Incentivi dal panel "GRUPPO INCENTIVATO 178 DAN"
      */
     static checkAtterraggioPrimoIndiceIncentivi() {
-        cy.get('app-incentives').find('[class="text-panel-header"]').should('contain','TOTALE MATURATO INCENTIVI')
-        interceptGetAgenziePDF()
+        cy.get('app-incentives').find('[class="text-panel-header"]').should('contain', 'TOTALE MATURATO INCENTIVI')
+        interceptPostAgenziePDF()
         cy.contains('GRUPPO INCENTIVATO 178 DAN').click()
         cy.get('app-incentive-card').find('lib-card').first().click()
         Common.canaleFromPopup()
-        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
+        cy.wait('@postDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('#btnRicerca_CapoGruppo:contains("Nuova ricerca"):visible')
+    }
+
+    /**
+     * Verifica dati delle card siano visibili e corretti
+     */
+    static checkCards() {
+
+        cy.contains('DANNI').click().then(() => {
+
+            cy.get('[class="docs-grid-colored-row sum-container nx-grid__row"]').find('lib-da-link').each((link) => {
+                cy.wrap(link).find('[class="title"]').then((title) => {
+                    const titleCardTitle = [
+                        'New business',
+                        'Incassi',
+                        'Portafoglio',
+                        'Retention'
+                    ]
+                    expect(titleCardTitle).include(title.text())
+                })
+            })
+
+        })
+        cy.contains('VITA').click().then(() => {
+            cy.get('app-kpi-card').each((link) => {
+                cy.wrap(link).find('[class="title"]').then((title) => {
+                    const titleCardTitle = [
+                        'New business',
+                        'Incassi',
+                        'Riserve'
+                    ]
+                    expect(titleCardTitle).include(title.text())
+                })
+            })
+        })
+
+        cy.contains('DANNI').click()
+        cy.get('app-border-card').find('app-lob-title').each((titleLobCard) => {
+            var title = titleLobCard.text()
+            switch (title) {
+                case 'MOTOR':
+                case 'RAMI VARI RETAIL':
+                case 'MIDCO':
+                case 'ALTRO':
+                    cy.wrap(titleLobCard).parents('app-border-card').find('lib-da-link').each((link) => {
+                        cy.wrap(link).find('[class="title"]').then((title) => {
+                            const titleCardTitle = [
+                                'New business',
+                                'Incassi',
+                                'Portafoglio',
+                                'Retention'
+                            ]
+                            expect(titleCardTitle).include(title.text())
+                        })
+                    })
+                    break;
+            }
+        })
+
+
+        // cy.get('app-border-card').find('lib-da-link').its('length').then((length) => {
+
+        //     for (let index = 0; index < length; index++) {
+        //         cy.get('app-border-card').find('lib-da-link').eq(index).then((link) => {
+        //             interceptPostAgenziePDF()
+        //             interceptGetAgenziePDF()
+        //             cy.wrap(link).click()
+        //             cy.wait('@postDacommerciale', { requestTimeout: 60000 });
+        //             // cy.wait('@getDacommerciale', { requestTimeout: 60000 });
+        //             cy.wait(10000)
+        //             getIFrame().find('a[class="xwbtn btnFiltra"]').should('be.visible')
+        //             this.backToNumbers('business-lines')
+        //         })
+        //     }
+        // })
+
+        // Titoli Motor, Rami Vari Retail, MIDCO ALTRO
+        // const checkLobTitle = []
+        // cy.get('app-border-card').find('[class="app-lob-title"]').each((titleLobCard) => {
+        //     checkLobTitle.push(titleLobCard.text())
+
+        // })
+        // checkLobTitle.forEach(title => {
+        //     const titleLobCard = [
+        //         'MOTOR',
+        //         'RAMI VARI RETAIL',
+        //         'MIDCO',
+        //         'ALTRO'
+        //     ]
+        //     expect(titleLobCard).include(title)
+
+        // })
+
+        //     interceptPostAgenziePDF()
+        //     cy.wrap(titleCard).click()
+        //     cy.wait('@postDacommerciale', { requestTimeout: 60000 });
+        //     getIFrame().find('#submit-Mon_PTF:contains("Filtra"):visible')
+        // })
     }
 
 }
