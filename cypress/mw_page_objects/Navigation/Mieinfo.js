@@ -506,7 +506,7 @@ class Mieinfo {
         getIFrame().find('h1:contains("' + linksIniziative.WINBACK_MOTOR + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.DECOMMISSIONING_TELEMATICI).click()
-        getIFrame().find('h1:contains("Decomissioning telematici")').should('be.visible')
+        getIFrame().find('h1:contains("'+linksIniziative.DECOMMISSIONING_TELEMATICI+'")').should('be.visible')
 
         getIFrame().contains(linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR).click()
         getIFrame().find('h1:contains("' + linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR + '")').should('be.visible')

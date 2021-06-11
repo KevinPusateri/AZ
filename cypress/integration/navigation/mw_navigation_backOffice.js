@@ -172,12 +172,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     });
 
-    // é stato tolto o SOSTITUITO da Monitoraggio Guida Smart -> Blocked
-    // it.skip('Verifica apertura disambiguazione: Monitoraggio Customer Digital Footprint', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickCardLink('Monitoraggio Customer Digital Footprint')
-    //     BackOffice.backToBackOffice()
-    // });
     it('Verifica apertura disambiguazione: Monitoraggio Guida Smart', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Monitoraggio Guida Smart')

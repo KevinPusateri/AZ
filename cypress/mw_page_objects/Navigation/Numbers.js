@@ -113,7 +113,7 @@ class Numbers {
         interceptPostAgenziePDF()
         cy.get('lib-card').first().click()
         cy.wait('@postDacommerciale', { requestTimeout: 60000 });
-        getIFrame().find('[class="ElementoFiltro"]:contains("Filtra"):visible')
+        getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
     }
 
     /**
@@ -195,45 +195,6 @@ class Numbers {
             }
         })
 
-
-        // cy.get('app-border-card').find('lib-da-link').its('length').then((length) => {
-
-        //     for (let index = 0; index < length; index++) {
-        //         cy.get('app-border-card').find('lib-da-link').eq(index).then((link) => {
-        //             interceptPostAgenziePDF()
-        //             interceptGetAgenziePDF()
-        //             cy.wrap(link).click()
-        //             cy.wait('@postDacommerciale', { requestTimeout: 60000 });
-        //             // cy.wait('@getDacommerciale', { requestTimeout: 60000 });
-        //             cy.wait(10000)
-        //             getIFrame().find('a[class="xwbtn btnFiltra"]').should('be.visible')
-        //             this.backToNumbers('business-lines')
-        //         })
-        //     }
-        // })
-
-        // Titoli Motor, Rami Vari Retail, MIDCO ALTRO
-        // const checkLobTitle = []
-        // cy.get('app-border-card').find('[class="app-lob-title"]').each((titleLobCard) => {
-        //     checkLobTitle.push(titleLobCard.text())
-
-        // })
-        // checkLobTitle.forEach(title => {
-        //     const titleLobCard = [
-        //         'MOTOR',
-        //         'RAMI VARI RETAIL',
-        //         'MIDCO',
-        //         'ALTRO'
-        //     ]
-        //     expect(titleLobCard).include(title)
-
-        // })
-
-        //     interceptPostAgenziePDF()
-        //     cy.wrap(titleCard).click()
-        //     cy.wait('@postDacommerciale', { requestTimeout: 60000 });
-        //     getIFrame().find('#submit-Mon_PTF:contains("Filtra"):visible')
-        // })
     }
 
 }

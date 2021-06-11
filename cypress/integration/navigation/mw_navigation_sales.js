@@ -133,7 +133,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it.skip('Verifica aggancio Estrai dettaglio', function () {
+    it('Verifica aggancio Estrai dettaglio', function () {
         TopBar.clickSales()
         Sales.clickAttivitaInScadenza()
         Sales.clickEstraiDettaglio()

@@ -10,8 +10,8 @@ import LoginPage from "../../../mw_page_objects/common/LoginPage"
 import TopBar from "../../../mw_page_objects/common/TopBar"
 
 //#region Variables
-const userName = 'le00080'
-const psw = 'Dragonball3'
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
 //#endregion
 
 //#region Configuration
