@@ -109,6 +109,23 @@ class LandingRicerca {
         cy.wait('@client', { requestTimeout: 30000 });
     }
 
+    static clickRandomResult() {
+        //Attende il caricamento della scheda cliente
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'client'
+            }
+        });
+        cy.get('.ps--active-y').then(($clienti) => {
+            debugger
+            let schedeClienti = $clienti.find('lib-client-item')
+            let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
+            cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
+          })
+
+        cy.wait('@client', { requestTimeout: 30000 });
+    }
+
     /**
      * 
      * @param {string} pageLanding - nome della pagina 

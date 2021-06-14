@@ -247,37 +247,39 @@ class SCU {
             url: /SalvaInContentManager/
         }).as('salvaInContentManager')
 
-        if (isModifica)
+
+        //Se sono in Censimento
+        if (!isModifica) {
+            getSCU().then($body => {
+                debugger
+                if ($body.find('button:contains("Conferma")').length > 0) {
+                    cy.get('button:contains("Conferma")').click();
+                }
+            });
+
+            cy.wait('@writeConsensi', { requestTimeout: 60000 })
+            cy.wait('@generazioneStampe', { requestTimeout: 60000 })
+            cy.wait('@salvaInContentManager', { requestTimeout: 60000 })
+        }
+        //Se sono in Modifica
+        else {
             //Popup Risulta un UNICO...
             getSCU().then($body => {
                 if ($body.find('button:contains("SI")').length > 0) {
                     $body.find('button:contains("SI")').click();
                 }
             });
-
-        //Pulsante di Conferma post caricamento documento
-        if(!isModifica)
-        {
+            //Nessun documento da stampare...
             getSCU().then($body => {
-                if ($body.find('button:contains("Conferma")').length > 0) {
-                    cy.get('button:contains("Conferma")').click();
-                }
+                if ($body.find('button:contains("Esci")').length > 0)
+                    getSCU().find('button:contains("Esci")').click()
             });
+
+            cy.wait('@generazioneStampe', { requestTimeout: 60000 })
+            cy.wait('@salvaInContentManager', { requestTimeout: 60000 })
         }
 
-
-        if (!isModifica)
-            cy.wait('@writeConsensi', { requestTimeout: 60000 })
-
-        //Nessun documento da stampare...
-        getSCU().then($body => {
-            if ($body.find('button:contains("Esci")').length > 0)
-                getSCU().find('button:contains("Esci")').click()
-        });
-
-        cy.wait('@generazioneStampe', { requestTimeout: 60000 })
-        cy.wait('@salvaInContentManager', { requestTimeout: 60000 })
-
+        //Pulsante per terminare la procedura di censimento/modifica
         getSCU().then($body => {
             if ($body.find('#endWorkflowButton').length > 0)
                 getSCU().find('#endWorkflowButton').click()
