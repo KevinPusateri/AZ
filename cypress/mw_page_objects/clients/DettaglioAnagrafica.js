@@ -87,16 +87,16 @@ class DettaglioAnagrafica {
      * @param {string} contatto - Object contatto creato
      */
     static checkContattiFisso(contatto) {
-    cy.get('nx-tab-body').then((list) => {
+    cy.get('app-client-contact-table-row').then((list) => {
         cy.log(contatto)
-        let checkContatto = JSON.stringify(contatto)
+        // let checkContatto = JSON.stringify(contatto)
         debugger
-        expect(list).to.include(checkContatto.tipo)
-        expect(list).to.include(checkContatto.principale)
-        expect(list).to.include(checkContatto.prefissoInt)
-        expect(list).to.include(checkContatto.prefisso)
-        expect(list).to.include(checkContatto.phone)
-        expect(list).to.include(checkContatto.orario)
+        expect(list).to.include(contatto.tipo)
+        expect(list).to.include(contatto.principale)
+        expect(list).to.include(contatto.prefissoInt)
+        expect(list).to.include(contatto.prefisso)
+        expect(list).to.include(contatto.phone)
+        expect(list).to.include(contatto.orario)
     })
 }
 }

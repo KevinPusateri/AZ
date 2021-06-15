@@ -53,7 +53,7 @@ describe('Matrix Web - Aggiungi contatto ', function () {
   it.only('Aggiungi tipo: Fisso', function () {
     LandingRicerca.searchRandomClient(true, "PF", "E")
     LandingRicerca.clickRandomResult()
-    SintesiCliente.retriveClientName().then(currentClient => {
+    SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
       client = currentClient
     })
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()

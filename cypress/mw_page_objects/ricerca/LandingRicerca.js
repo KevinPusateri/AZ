@@ -124,15 +124,57 @@ class LandingRicerca {
         cy.wait('@client', { requestTimeout: 30000 });
     }
 
-    static clickClientName(client) {
+    static clickClientName(client, filtri=false, tipoCliente, statoCliente) {
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {
                 req.alias = 'client'
             }
         });
-        debugger
-        cy.get('lib-client-item:contains("' + client.name + '"):contains("' + client.address+ '")').click();
+
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('searchClient')) {
+                req.alias = 'gqlSearchClient'
+            }
+        });
+
+        if (filtri) {
+            //Filtriamo la ricerca in base a tipoCliente
+            cy.get('.icon').find('[name="filter"]').click()
+            if (tipoCliente === "PF")
+                cy.get('.filter-group').contains('Persona giuridica').click()
+            else
+                cy.get('.filter-group').contains('Persona fisica').click()
+
+            //Filtriamo la ricerca in base a statoCliente
+            switch (statoCliente) {
+                case "E":
+                    cy.get('.filter-group').contains('Potenziale').click()
+                    cy.get('.filter-group').contains('Cessato').click()
+                    break
+                case "P":
+                    cy.get('.filter-group').contains('Effettivo').click()
+                    cy.get('.filter-group').contains('Cessato').click()
+                    break
+                case "C":
+                    cy.get('.filter-group').contains('Potenziale').click()
+                    cy.get('.filter-group').contains('Effettivo').click()
+                    break
+            }
+
+            cy.get('.footer').find('button').contains('applica').click()
+            cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
+
+            cy.get('lib-applied-filters-item').find('span').should('be.visible')
+        }
+
+        cy.get('lib-client-item:contains("' + client.name + '")').then((card) => {
+            if (card.length === 1) {
+                cy.wrap(card).click()
+            } else {
+                cy.get('lib-client-item:contains("' + client.name + '"):contains("' + client.address + '")').click();
+            }
+        })
 
         cy.wait('@client', { requestTimeout: 30000 });
     }
