@@ -12,7 +12,7 @@ class LoginPage {
         let url
         Cypress.env('currentEnv') === 'TEST' ? url = Cypress.env('urlMWTest') : url = Cypress.env('urlMWPreprod')
 
-        cy.visit(url ,{ responseTimeout: 31000 }, {
+        cy.visit(url, { responseTimeout: 31000 }, {
             onBeforeLoad: win => {
                 win.sessionStorage.clear();
             }
@@ -26,10 +26,23 @@ class LoginPage {
         cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
         cy.intercept(/launch-*/, 'ignore').as('launchStaging')
 
+        //Moked notifications
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('notifications')) {
+                req.reply({ fixture: 'mockNotifications.json' })
+            }
+        })
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('getNotificationCategories')) {
+                req.reply({ fixture: 'mockGetNotificationCategories.json' })
+            }
+        })
+
         //Wait for news graphQL to be returned
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('news')) {
                 req.alias = 'gqlNews'
+                req.res
             }
         })
 

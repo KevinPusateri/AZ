@@ -21,8 +21,22 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#region Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
-let currentClient
-let numeroDocumentoCI = 'AR6666'
+let currentClient = ''
+let documentType = ''
+//#endregion
+
+//#region Support
+const searchClientWithoutDoc = () => {
+    LandingRicerca.searchRandomClient(true, "PF", "P")
+    LandingRicerca.clickRandomResult()
+    DettaglioAnagrafica.sezioneDocumenti()
+    DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+        if (documentIsPresent)
+            searchClientWithoutDoc()
+        else
+            return
+    })
+}
 //#endregion
 
 //#region Before After
@@ -39,24 +53,27 @@ beforeEach(() => {
 // })
 //#endregion Before After
 
-describe('Matrix Web : Documenti', function () {
+describe('Matrix Web : Documenti - Carta D\'Identità', function () {
+
+    it('Cerca Cliente senza Carta D\'Identità', () => {
+        documentType = 'identita'
+        searchClientWithoutDoc()
+    })
 
     it('Inserisci Carta D\'Identità', () => {
-        LandingRicerca.searchRandomClient(true, "PF", "P")
-        LandingRicerca.clickRandomResult()
         SintesiCliente.retriveClientName().then(currentClientName => {
+            debugger
             currentClient = currentClientName
         })
 
         DettaglioAnagrafica.aggiungiDocumento()
-        SCUDocumenti.nuovaCartaIdentita(numeroDocumentoCI)
+        SCUDocumenti.nuovaCartaIdentita()
     })
 
     it('Verifica Carta D\'Identità inserita', () => {
-        HomePage.reloadMWHomePage()
-        TopBar.search(currentClient)
-        LandingRicerca.clickFirstResult()
-        SintesiCliente.checkAtterraggioSintesiCliente(currentClient)
-        DettaglioAnagrafica.checkDocumento(numeroDocumentoCI)
+        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+            if (!documentIsPresent)
+                assert.fail('Documento D\'Identità NON inserito')
+        })
     })
 })

@@ -21,7 +21,6 @@ class LandingRicerca {
             cy.get('input[name="main-search-input"]').type(randomChars).type('{enter}')
         })
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
-        cy.url().should('eq', Common.getBaseUrl() + 'search/clients/clients')
 
         if (filtri) {
             //Filtriamo la ricerca in base a tipoCliente
@@ -117,11 +116,23 @@ class LandingRicerca {
             }
         });
         cy.get('.ps--active-y').then(($clienti) => {
-            debugger
             let schedeClienti = $clienti.find('lib-client-item')
             let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
             cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
-          })
+        })
+
+        cy.wait('@client', { requestTimeout: 30000 });
+    }
+
+    static clickClientName(clientName) {
+        //Attende il caricamento della scheda cliente
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'client'
+            }
+        });
+
+        cy.get('div:contains("' + clientName + '")').first().click();
 
         cy.wait('@client', { requestTimeout: 30000 });
     }

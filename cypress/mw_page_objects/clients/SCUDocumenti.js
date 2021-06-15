@@ -27,7 +27,7 @@ class SCUDocumenti {
     static nuovaCartaIdentita(numeroDocumentoCI) {
         getSCU().find('span[aria-owns="tipo-documento_listbox"]').click()
         getSCU().find('li:contains("CARTA")').click()
-        getSCU().find('#numero-documento').type(numeroDocumentoCI)
+        getSCU().find('#numero-documento').type('AR666')
         getSCU().find('#data-emissione').type('01012021')
         getSCU().find('#data-scadenza').type('01012025')
         getSCU().find('#luogo-emissione').type('TRIESTE')

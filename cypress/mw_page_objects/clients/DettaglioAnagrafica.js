@@ -20,29 +20,37 @@ class DettaglioAnagrafica {
     }
 
     static aggiungiDocumento() {
-        cy.contains('DETTAGLIO ANAGRAFICA').click()
-        cy.contains('Documenti').click()
         cy.contains('Aggiungi documento').click()
     }
 
-    static checkDocumento() {
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('identityDocuments')) {
-                req.alias = 'gqlIdentityDocuments'
-            }
+    static checkDocumento(documentType) {
+        return new Promise((resolve, reject) => {
+            cy.get('body')
+                .then(body => {
+                    if (body.find('div:contains("' + documentType + '")').length > 0)
+                        resolve(true)
+                    else
+                        resolve(false)
+                })
         })
-
-        cy.contains('DETTAGLIO ANAGRAFICA').click()
-        cy.contains('Documenti').click()
-
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
-
-        cy.should('contain.text("' + numeroDocumentoCI + '")')
     }
 
     static modificaCliente() {
         cy.contains('DETTAGLIO ANAGRAFICA').click()
         cy.contains('Modifica dati cliente').click()
+    }
+
+    static sezioneDocumenti() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('identityDocuments')) {
+                req.alias = 'gqlIdentityDocuments'
+            }
+        })
+        debugger
+        cy.contains('DETTAGLIO ANAGRAFICA').click()
+        cy.contains('Documenti').click()
+
+        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
     }
 }
 
