@@ -35,8 +35,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         TopBar.clickNumbers()
     })
 
-    // ADD TFS
-    it('Verifica dati scritti siano corretti', function () {
+    it('Verifica dati scritti siano corretti nella pagina Linee di Business', function () {
         TopBar.clickNumbers()
         Numbers.checkCards()
     })
@@ -201,11 +200,18 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.clickAndCheckAtterraggioPrimoIndiceDigitale()
         Numbers.backToNumbers('operational-indicators')
     })
+ 
+    it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function () {
+        TopBar.clickNumbers()
+        Numbers.clickTab('INCENTIVI', 'incentives')
+        Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178 DAN')
+        Numbers.backToNumbers('incentives')
+    })
 
-    // it.skip('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function () {
-    //     TopBar.clickNumbers()
-    //     Numbers.clickTab('INCENTIVI', 'incentives')
-    //     Numbers.checkAtterraggioPrimoIndiceIncentivi()
-    //     Numbers.backToNumbers('incentives')
-    // })
+    it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178"', function () {
+        TopBar.clickNumbers()
+        Numbers.clickTab('INCENTIVI', 'incentives')
+        Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178')
+        Numbers.backToNumbers('incentives')
+    })
 });

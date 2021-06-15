@@ -228,31 +228,6 @@ class LinkMieInfo {
     }
 
 
-    /**
-     * Resituisce i sotto link della pagina richiesta
-     * @param {string} page - nome della pagina(parent)
-     * @returns {string} tutti i link della pagina(parent)
-     */
-    static getLinks(page) {
-        switch (page) {
-            case LinksMenu.PRODOTTI:
-                return LinksSubMenu.PRODOTTI
-            case LinksMenu.INIZIATIVE:
-                return LinksSubMenu.INIZIATIVE
-            case LinksMenu.SALES_ACADEMY:
-                return LinksSubMenu.SALES_ACADEMY
-            case LinksMenu.NEW_COMPANY_HANDBOOK:
-                return LinksSubMenu.NEW_COMPANY_HANDBOOK
-            case LinksMenu.ANTIRICICLAGGIO:
-                return LinksSubMenu.ANTIRICICLAGGIO
-            case LinksMenu.RISORSE_PER_AGENZIA:
-                return LinksSubMenu.RISORSE_PER_AGENTE
-            case LinksMenu.RISORSE_PER_AGENTE:
-                return LinksSubMenu.RISORSE_PER_AGENTE
-            case LinksMenu.IL_MONDO_ALLIANZ:
-                return LinksSubMenu.IL_MONDO_ALLIANZ
-        }
-    }
     
 
 }

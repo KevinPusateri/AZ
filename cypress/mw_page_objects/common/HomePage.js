@@ -31,13 +31,14 @@ class HomePage {
      * Click Pannello "Notifiche in evidenza"
      */
     static clickPanelNotifiche() {
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('notifications')) {
-                req.alias = 'gqlNotifications'
-            }
-        })
-        cy.get('nx-expansion-panel').click()
-        cy.wait('@gqlNotifications')
+// APERTURA PANNELLO             
+        // cy.intercept('POST', '**/graphql', (req) => {
+        //     if (req.body.operationName.includes('notifications')) {
+        //         req.alias = 'gqlNotifications'
+        //     }
+        // })
+        // cy.get('nx-expansion-panel').click()
+        // cy.wait('@gqlNotifications')
         cy.get('lib-notification-list').should('be.visible')
 
     }

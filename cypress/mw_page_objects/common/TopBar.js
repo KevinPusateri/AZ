@@ -94,6 +94,15 @@ class TopBar extends HomePage {
     }
 
     /**
+     * fa la Ricerca di due lettere random 
+     */
+    static searchRandom() {
+        cy.generateTwoLetters().then(randomChars => {
+            cy.get('input[name="main-search-input"]').clear().type(randomChars).click()
+        })
+    }
+
+    /**
     * @param {string} value - What to search
     */
     static search(value) {
@@ -272,6 +281,13 @@ class TopBar extends HomePage {
      */
     static clickIconUser() {
         cy.get('lib-user-header').click()
+        cy.get('lib-user-name-container').should('be.visible')
+        cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
+        cy.contains('Ci sono altri profili collegati')
+        cy.contains('Cambio password')
+        cy.contains('Configurazione stampanti')
+        cy.contains('Impostazioni di agenzia')
+
     }
 
     /**

@@ -76,9 +76,15 @@ class LandingClients {
     static clickLinkRapido(page) {
         switch (page) {
             case LinksRapidi.ANALISI_DEI_BISOGNI:
-                cy.get('app-rapid-link').contains(page).invoke('removeAttr', 'target').click()
-                cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
-                cy.go('back')
+                if(Cypress.isBrowser('firefox')){
+
+                    cy.get('app-home-right-section').find('app-rapid-link[linkname="Analisi dei bisogni"] > a')
+                            .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
+                }else{
+                    cy.get('app-rapid-link').contains(page).invoke('removeAttr', 'target').click()
+                    cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
+                    cy.go('back')
+                }
                 cy.url().should('include', Common.getBaseUrl())
                 break;
             case LinksRapidi.DIGITAL_ME:

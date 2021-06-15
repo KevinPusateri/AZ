@@ -81,7 +81,7 @@ class Numbers {
     /**
      * 
      * @param {string} tab - titolo del tab
-     * @param {string} link - titolo del link: 
+     * @param {string} link - titolo del link 
      */
     static clickAndCheckAtterraggio(tab, link) {
         switch (tab) {
@@ -127,16 +127,18 @@ class Numbers {
     }
 
     /**
-     * Verifica Atterraggio Incentivi dal panel "GRUPPO INCENTIVATO 178 DAN"
+     * 
+     * Verifica Atterraggio Incentivi dal panel 
+     * @param {string} panel - titolo del panel: ("GRUPPO INCENTIVATO 178 DAN","GRUPPO INCENTIVATO 178" )
      */
-    static checkAtterraggioPrimoIndiceIncentivi() {
+    static checkAtterraggioPrimoIndiceIncentivi(panel) {
         cy.get('app-incentives').find('[class="text-panel-header"]').should('contain', 'TOTALE MATURATO INCENTIVI')
         interceptPostAgenziePDF()
-        cy.contains('GRUPPO INCENTIVATO 178 DAN').click()
-        cy.get('app-incentive-card').find('lib-card').first().click()
+        cy.contains(panel).click()
+        cy.get('app-incentive-card').first().click({force:true})
         Common.canaleFromPopup()
         cy.wait('@postDacommerciale', { requestTimeout: 60000 });
-        getIFrame().find('#btnRicerca_CapoGruppo:contains("Nuova ricerca"):visible')
+        getIFrame().contains('Report').should('be.visible')
     }
 
     /**
@@ -145,7 +147,6 @@ class Numbers {
     static checkCards() {
 
         cy.contains('DANNI').click().then(() => {
-
             cy.get('[class="docs-grid-colored-row sum-container nx-grid__row"]').find('lib-da-link').each((link) => {
                 cy.wrap(link).find('[class="title"]').then((title) => {
                     const titleCardTitle = [
