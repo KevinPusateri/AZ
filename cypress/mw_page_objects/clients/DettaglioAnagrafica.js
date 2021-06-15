@@ -70,25 +70,35 @@ class DettaglioAnagrafica {
      * @param {string} subTab - nome sel subTab  
      */
     static clickSubTab(subTab) {
+
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'gqlClient'
+            }
+        });
+
         cy.contains(subTab).click()
+        cy.wait('@gqlClient', { requestTimeout: 30000 });
     }
 
-    
-    
+
     /**
      * Verifica contatto creato sia presente
      * @param {string} contatto - Object contatto creato
      */
     static checkContattiFisso(contatto) {
-        cy.get('nx-tab-body').then((list)=>{
-            expect(list).to.contain(contatto.tipo)
-            expect(list).to.contain(contatto.principale)
-            expect(list).to.contain(contatto.prefissoInt)
-            expect(list).to.contain(contatto.prefisso)
-            expect(list).to.contain(contatto.phone)
-            expect(list).to.contain(contatto.orario)
-        })
-    }
+    cy.get('nx-tab-body').then((list) => {
+        cy.log(contatto)
+        let checkContatto = JSON.stringify(contatto)
+        debugger
+        expect(list).to.include(checkContatto.tipo)
+        expect(list).to.include(checkContatto.principale)
+        expect(list).to.include(checkContatto.prefissoInt)
+        expect(list).to.include(checkContatto.prefisso)
+        expect(list).to.include(checkContatto.phone)
+        expect(list).to.include(checkContatto.orario)
+    })
+}
 }
 
 export default DettaglioAnagrafica

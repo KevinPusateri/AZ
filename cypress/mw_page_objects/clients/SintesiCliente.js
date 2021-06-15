@@ -54,7 +54,7 @@ class SintesiCliente {
         getIframe().find('span[class="k-icon k-plus"]:first').click()
 
         etichette.forEach(label => {
-            getIframe().find('span').contains(label).click() 
+            getIframe().find('span').contains(label).click()
         });
     }
 
@@ -77,13 +77,18 @@ class SintesiCliente {
         cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
     }
 
-    static retriveClientName() {
+    static retriveClientNameAndAddress() {
         return new Promise((resolve, reject) => {
+            let client = {name:'', address:''}
             cy.get('div[class*=client-name]').invoke('text')
                 .then(currentClientName => {
-                    cy.log('Nome Cliente : ', currentClientName);
-                    resolve(currentClientName);
-                });
+                    client.name = currentClientName
+                })
+            cy.get('nx-icon[class="nx-icon--location nx-icon--auto nx-link__icon"]').parents('a')
+                .find('div[class="value ng-star-inserted"]').invoke('text').then((currentAddress) => {
+                    client.address = currentAddress.split('-')[0].replace(',','').trim()
+                })
+            resolve(client);
         });
     }
 }

@@ -124,15 +124,15 @@ class LandingRicerca {
         cy.wait('@client', { requestTimeout: 30000 });
     }
 
-    static clickClientName(clientName) {
+    static clickClientName(client) {
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {
                 req.alias = 'client'
             }
         });
-
-        cy.get('div[class="name"]:contains("' + clientName + '")').click();
+        debugger
+        cy.get('lib-client-item:contains("' + client.name + '"):contains("' + client.address+ '")').click();
 
         cy.wait('@client', { requestTimeout: 30000 });
     }

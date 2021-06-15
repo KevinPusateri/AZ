@@ -28,9 +28,6 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
   LoginPage.logInMW(userName, psw)
-})
-
-beforeEach(() => {
   cy.task('nuovoContatto').then((object) => {
     contatto = object
     contatto.tipo = ""
@@ -38,6 +35,9 @@ beforeEach(() => {
     contatto.prefisso = ""
     contatto.orario = ""
   })
+})
+
+beforeEach(() => {
   cy.preserveCookies()
 })
 
@@ -47,19 +47,20 @@ after(() => {
 //#endregion
 
 
-let clientName
+let client
 describe('Matrix Web - Aggiungi contatto ', function () {
 
   it.only('Aggiungi tipo: Fisso', function () {
     LandingRicerca.searchRandomClient(true, "PF", "E")
     LandingRicerca.clickRandomResult()
-    SintesiCliente.retriveClientName().then(currentClientName => {
-      clientName = currentClientName
-      cy.log(clientName)
+    SintesiCliente.retriveClientName().then(currentClient => {
+      client = currentClient
     })
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
-    SCUContatti.aggiungiFisso(contatto)
+    SCUContatti.aggiungiFisso(contatto).then((contact)=>{
+      contatto = contact
+    })
 
 
   })
@@ -69,8 +70,8 @@ describe('Matrix Web - Aggiungi contatto ', function () {
   it.only('Verifica telefono: Fisso', function () {
 
     HomePage.reloadMWHomePage()
-      TopBar.search(clientName)
-      LandingRicerca.clickClientName(clientName)
+      TopBar.search(client.name)
+      LandingRicerca.clickClientName(client)
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContattiFisso(contatto)

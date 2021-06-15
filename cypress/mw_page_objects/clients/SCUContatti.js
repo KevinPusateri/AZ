@@ -53,7 +53,7 @@ class SCUContatti {
                 var index = Math.floor(Math.random() * listOrario.length)
                 console.log(index)
                 console.log(listOrario)
-                cy.wrap(listOrario).eq(4).then(orarioSelected => {
+                cy.wrap(listOrario).eq(index).then(orarioSelected => {
                     console.log(orarioSelected.text())
                     cy.wrap(orarioSelected).click()
                     switch (orarioSelected.text()) {
