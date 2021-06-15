@@ -132,7 +132,7 @@ class LandingRicerca {
             }
         });
 
-        cy.get('div:contains("' + clientName + '")').first().click();
+        cy.get('div[class="name"]:contains("' + clientName + '")').click();
 
         cy.wait('@client', { requestTimeout: 30000 });
     }

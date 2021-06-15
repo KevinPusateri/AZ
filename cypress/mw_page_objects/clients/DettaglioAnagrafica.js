@@ -52,6 +52,43 @@ class DettaglioAnagrafica {
 
         cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
     }
+
+    static clickTabDettaglioAnagrafica() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'gqlClient'
+            }
+        });
+
+        cy.contains('DETTAGLIO ANAGRAFICA').click()
+
+        cy.wait('@gqlClient', { requestTimeout: 30000 });
+    }
+
+    /**
+     * Click sub-tab
+     * @param {string} subTab - nome sel subTab  
+     */
+    static clickSubTab(subTab) {
+        cy.contains(subTab).click()
+    }
+
+    
+    
+    /**
+     * Verifica contatto creato sia presente
+     * @param {string} contatto - Object contatto creato
+     */
+    static checkContattiFisso(contatto) {
+        cy.get('nx-tab-body').then((list)=>{
+            expect(list).to.contain(contatto.tipo)
+            expect(list).to.contain(contatto.principale)
+            expect(list).to.contain(contatto.prefissoInt)
+            expect(list).to.contain(contatto.prefisso)
+            expect(list).to.contain(contatto.phone)
+            expect(list).to.contain(contatto.orario)
+        })
+    }
 }
 
 export default DettaglioAnagrafica
