@@ -24,7 +24,7 @@ const getDocumentoPersonale = () => {
 
 class SCUDocumenti {
 
-    static nuovaCartaIdentita(numeroDocumentoCI) {
+    static nuovaCartaIdentita() {
         getSCU().find('span[aria-owns="tipo-documento_listbox"]').click()
         getSCU().find('li:contains("CARTA")').click()
         getSCU().find('#numero-documento').type('AR666')
@@ -50,6 +50,12 @@ class SCUDocumenti {
             method: 'POST',
             url: /uploadMobileDocument/
         }).as('uploadMobileDoc')
+
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('identityDocuments')) {
+                req.alias = 'gqlIdentityDocuments'
+            }
+        })
         //#endregion BackEnd Calls
 
         getDocumentoPersonale().find('#pupload').click()
@@ -70,6 +76,63 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
+        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+    }
+
+    static nuovaPatente() {
+        getSCU().find('span[aria-owns="tipo-documento_listbox"]').click()
+        getSCU().find('li:contains("PATENTE")').click()
+        getSCU().find('#numero-documento').type('U1H851592X')
+        getSCU().find('#data-emissione').type('01012021')
+        getSCU().find('#data-scadenza').type('01012025')
+        getSCU().find('span[aria-owns="descrizione-documento-patente_listbox"]').click()
+        getSCU().find('li:contains("B")').click({ multiple: true })
+        getSCU().find('#luogo-emissione').type('TRIESTE')
+        cy.wait(1000)
+        getSCU().find('li:contains("TRIESTE")').click()
+        getSCU().find('button:contains("Salva")').click()
+
+        //#region BackEnd Calls
+        cy.intercept({
+            method: 'POST',
+            url: /uploadPdfDocument/
+        }).as('uploadPdfDoc')
+
+        cy.intercept({
+            method: 'POST',
+            url: /previewPdfTemplate/
+        }).as('preview')
+
+        cy.intercept({
+            method: 'POST',
+            url: /uploadMobileDocument/
+        }).as('uploadMobileDoc')
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('identityDocuments')) {
+                req.alias = 'gqlIdentityDocuments'
+            }
+        })
+        //#endregion BackEnd Calls
+
+        getDocumentoPersonale().find('#pupload').click()
+
+        const fileName = 'CI_Test.pdf'
+
+        cy.fixture(fileName).then(fileContent => {
+            getDocumentoPersonale().find('#pdfUpload').attachFile({
+                fileContent,
+                fileName,
+                mimeType: 'application/pdf'
+            }, { subjectType: 'input' })
+        })
+
+        cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
+        cy.wait('@preview', { requestTimeout: 30000 })
+
+        getDocumentoPersonale().find('#importMobileDocument').click()
+        cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
+        cy.wait(3000)
+        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
     }
 }
 

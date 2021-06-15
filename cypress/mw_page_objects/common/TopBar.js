@@ -80,9 +80,7 @@ class TopBar extends HomePage {
      * Logout
      */
     static logOutMW() {
-
         const delayBetweenTests = 2000
-
         cy.get('body').then($body => {
             if ($body.find('.user-icon-container').length > 0) {
                 cy.wait(2000).get('.user-icon-container').click();
@@ -90,6 +88,7 @@ class TopBar extends HomePage {
                 cy.wait(delayBetweenTests)
             }
         });
+
         cy.clearCookies();
     }
 

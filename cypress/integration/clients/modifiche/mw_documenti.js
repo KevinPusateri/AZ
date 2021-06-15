@@ -48,9 +48,9 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// after(() => {
-//   TopBar.logOutMW()
-// })
+after(() => {
+  TopBar.logOutMW()
+})
 //#endregion Before After
 
 describe('Matrix Web : Documenti - Carta D\'Identità', function () {
@@ -62,7 +62,6 @@ describe('Matrix Web : Documenti - Carta D\'Identità', function () {
 
     it('Inserisci Carta D\'Identità', () => {
         SintesiCliente.retriveClientName().then(currentClientName => {
-            debugger
             currentClient = currentClientName
         })
 
@@ -74,6 +73,30 @@ describe('Matrix Web : Documenti - Carta D\'Identità', function () {
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
             if (!documentIsPresent)
                 assert.fail('Documento D\'Identità NON inserito')
+        })
+    })
+})
+
+describe('Matrix Web : Documenti - Patente', function () {
+
+    it('Cerca Cliente senza Patente', () => {
+        documentType = 'Patente'
+        searchClientWithoutDoc()
+    })
+
+    it('Inserisci Patente', () => {
+        SintesiCliente.retriveClientName().then(currentClientName => {
+            currentClient = currentClientName
+        })
+
+        DettaglioAnagrafica.aggiungiDocumento()
+        SCUDocumenti.nuovaPatente()
+    })
+
+    it('Verifica Patente', () => {
+        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+            if (!documentIsPresent)
+                assert.fail('Patente NON inserita')
         })
     })
 })
