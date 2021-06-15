@@ -61,8 +61,8 @@ describe('Matrix Web : Documenti - Carta D\'Identità', function () {
     })
 
     it('Inserisci Carta D\'Identità', () => {
-        SintesiCliente.retriveClientName().then(currentClientName => {
-            currentClient = currentClientName
+        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+            currentClient = retrivedClient
         })
 
         DettaglioAnagrafica.aggiungiDocumento()
@@ -85,8 +85,8 @@ describe('Matrix Web : Documenti - Patente', function () {
     })
 
     it('Inserisci Patente', () => {
-        SintesiCliente.retriveClientName().then(currentClientName => {
-            currentClient = currentClientName
+        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+            currentClient = retrivedClient
         })
 
         DettaglioAnagrafica.aggiungiDocumento()
@@ -109,8 +109,8 @@ describe('Matrix Web : Documenti - Passaporto', function () {
     })
 
     it('Inserisci Passaporto', () => {
-        SintesiCliente.retriveClientName().then(currentClientName => {
-            currentClient = currentClientName
+        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+            currentClient = retrivedClient
         })
 
         DettaglioAnagrafica.aggiungiDocumento()
@@ -133,8 +133,8 @@ describe('Matrix Web : Documenti - Porto D\'Armi', function () {
     })
 
     it('Inserisci Porto D\'Armi', () => {
-        SintesiCliente.retriveClientName().then(currentClientName => {
-            currentClient = currentClientName
+        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+            currentClient = retrivedClient
         })
 
         DettaglioAnagrafica.aggiungiDocumento()
@@ -157,8 +157,8 @@ describe('Matrix Web : Documenti - Tessera Postale', function () {
     })
 
     it('Inserisci Tessera Postale', () => {
-        SintesiCliente.retriveClientName().then(currentClientName => {
-            currentClient = currentClientName
+        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+            currentClient = retrivedClient
         })
 
         DettaglioAnagrafica.aggiungiDocumento()
@@ -173,7 +173,7 @@ describe('Matrix Web : Documenti - Tessera Postale', function () {
     })
 })
 
-describe.only('Matrix Web : Documenti - Altro', function () {
+describe('Matrix Web : Documenti - Altro', function () {
 
     it('Cerca Cliente senza Altro Documento', () => {
         documentType = 'Altro'
@@ -181,8 +181,8 @@ describe.only('Matrix Web : Documenti - Altro', function () {
     })
 
     it('Inserisci Altro Documento', () => {
-        SintesiCliente.retriveClientName().then(currentClientName => {
-            currentClient = currentClientName
+        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+            currentClient = retrivedClient
         })
 
         DettaglioAnagrafica.aggiungiDocumento()
