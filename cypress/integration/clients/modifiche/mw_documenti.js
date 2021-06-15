@@ -100,3 +100,99 @@ describe('Matrix Web : Documenti - Patente', function () {
         })
     })
 })
+
+describe('Matrix Web : Documenti - Passaporto', function () {
+
+    it('Cerca Cliente senza Passaporto', () => {
+        documentType = 'Passaporto'
+        searchClientWithoutDoc()
+    })
+
+    it('Inserisci Passaporto', () => {
+        SintesiCliente.retriveClientName().then(currentClientName => {
+            currentClient = currentClientName
+        })
+
+        DettaglioAnagrafica.aggiungiDocumento()
+        SCUDocumenti.nuovoPassaporto()
+    })
+
+    it('Verifica Passaporto', () => {
+        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+            if (!documentIsPresent)
+                assert.fail('Passaporto NON inserito')
+        })
+    })
+})
+
+describe('Matrix Web : Documenti - Porto D\'Armi', function () {
+
+    it('Cerca Cliente senza Porto D\'Armi', () => {
+        documentType = 'armi'
+        searchClientWithoutDoc()
+    })
+
+    it('Inserisci Porto D\'Armi', () => {
+        SintesiCliente.retriveClientName().then(currentClientName => {
+            currentClient = currentClientName
+        })
+
+        DettaglioAnagrafica.aggiungiDocumento()
+        SCUDocumenti.nuovoPortoArmi()
+    })
+
+    it('Verifica Porto D\'Armi', () => {
+        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+            if (!documentIsPresent)
+                assert.fail('Porto D\'Armi NON inserito')
+        })
+    })
+})
+
+describe('Matrix Web : Documenti - Tessera Postale', function () {
+
+    it('Cerca Cliente senza Tessera Postale', () => {
+        documentType = 'Postale'
+        searchClientWithoutDoc()
+    })
+
+    it('Inserisci Tessera Postale', () => {
+        SintesiCliente.retriveClientName().then(currentClientName => {
+            currentClient = currentClientName
+        })
+
+        DettaglioAnagrafica.aggiungiDocumento()
+        SCUDocumenti.nuovaTesseraPostale()
+    })
+
+    it('Verifica Tessera Postale', () => {
+        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+            if (!documentIsPresent)
+                assert.fail('Tessera Postale NON inserita')
+        })
+    })
+})
+
+describe.only('Matrix Web : Documenti - Altro', function () {
+
+    it('Cerca Cliente senza Altro Documento', () => {
+        documentType = 'Altro'
+        searchClientWithoutDoc()
+    })
+
+    it('Inserisci Altro Documento', () => {
+        SintesiCliente.retriveClientName().then(currentClientName => {
+            currentClient = currentClientName
+        })
+
+        DettaglioAnagrafica.aggiungiDocumento()
+        SCUDocumenti.nuovoAltroDocumento()
+    })
+
+    it('Verifica Altro Documento', () => {
+        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+            if (!documentIsPresent)
+                assert.fail('Altro Documento NON inserito')
+        })
+    })
+})

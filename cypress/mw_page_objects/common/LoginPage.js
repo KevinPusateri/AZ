@@ -19,32 +19,47 @@ class LoginPage {
         })
     }
 
-    static logInMW(userName, psw) {
+    static logInMW(userName, psw, mockedNotifications = true, mockedNews = true) {
         this.launchMW()
 
         //Skip this two requests that blocks on homepage
         cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
         cy.intercept(/launch-*/, 'ignore').as('launchStaging')
 
-        //Moked notifications
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('notifications')) {
-                req.reply({ fixture: 'mockNotifications.json' })
-            }
-        })
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('getNotificationCategories')) {
-                req.reply({ fixture: 'mockGetNotificationCategories.json' })
-            }
-        })
+        if (mockedNotifications) {
 
-        //Wait for news graphQL to be returned
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('news')) {
-                req.alias = 'gqlNews'
-                req.res
-            }
-        })
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('notifications')) {
+                    req.reply({ fixture: 'mockNotifications.json' })
+                }
+            })
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('getNotificationCategories')) {
+                    req.reply({ fixture: 'mockGetNotificationCategories.json' })
+                }
+            })
+
+        }
+
+        if (mockedNotifications) {
+
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('news')) {
+                    req.reply({ fixture: 'mockNews.json' })
+                }
+            })
+        }
+        else {
+            //Wait for news graphQL to be returned
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('news')) {
+                    req.alias = 'gqlNews'
+                    req.res
+                }
+            })
+        }
+
+
 
         cy.get('input[name="Ecom_User_ID"]').type(userName)
         cy.get('input[name="Ecom_Password"]').type(psw)
@@ -53,7 +68,8 @@ class LoginPage {
         HomePage.reloadMWHomePage()
 
         Common.checkUrlEnv()
-        cy.wait('@gqlNews')
+        if(!mockedNews)
+            cy.wait('@gqlNews')
     }
 }
 
