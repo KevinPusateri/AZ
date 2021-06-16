@@ -111,13 +111,7 @@ class Folder {
         getFolder().contains('Upload dei file selezionati').click()
         cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
 
-        cy.intercept({
-            method: 'POST',
-            url: '/checkActionOnDocument'
-        }).as('checkActionOnDocument')
-
         getIframe().find('button:contains("Conferma")').click()
-        cy.wait('checkActionOnDocument', { requestTimeout: 30000 })
     }
 
     /**
