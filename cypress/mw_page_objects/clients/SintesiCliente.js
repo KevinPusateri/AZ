@@ -22,7 +22,7 @@ class SintesiCliente {
     static emettiPleinAir() {
         cy.get('nx-icon[aria-label="Open menu"]').click();
         cy.contains('PLEINAIR').click();
-
+        debugger
         getIframe().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
         getIframe().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
         getIframe().find('#ButtonQuestOk').click().wait(6000)
@@ -43,9 +43,9 @@ class SintesiCliente {
     }
 
     /**
-    * @param {string} etichetta - documento da verificare in folder
+    * @param {Array.String} labels - labels dei documenti da verificare in folder
     */
-    static verificaInFolder([etichette]) {
+    static verificaInFolder(labels) {
         cy.get('nx-icon[aria-label="Open menu"]').click()
         cy.contains('folder').click()
         cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
@@ -53,9 +53,9 @@ class SintesiCliente {
         getIframe().find('span[class="k-icon k-plus"]:visible').click()
         getIframe().find('span[class="k-icon k-plus"]:first').click()
 
-        etichette.forEach(label => {
+        cy.wrap(labels).each((label, i, array) => {
             getIframe().find('span').contains(label).click()
-        });
+        })
     }
 
 
@@ -79,14 +79,14 @@ class SintesiCliente {
 
     static retriveClientNameAndAddress() {
         return new Promise((resolve, reject) => {
-            let client = {name:'', address:''}
+            let client = { name: '', address: '' }
             cy.get('div[class*=client-name]').invoke('text')
                 .then(currentClientName => {
                     client.name = currentClientName
                 })
             cy.get('nx-icon[class="nx-icon--location nx-icon--auto nx-link__icon"]').parents('a')
                 .find('div[class="value ng-star-inserted"]').invoke('text').then((currentAddress) => {
-                    client.address = currentAddress.split('-')[0].replace(',','').trim()
+                    client.address = currentAddress.split('-')[0].replace(',', '').trim()
                 })
             resolve(client);
         });
