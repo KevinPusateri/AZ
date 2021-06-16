@@ -58,7 +58,6 @@ class SintesiCliente {
         })
     }
 
-
     static verificaDatiSpallaSinistra(cliente) {
         //Verifica indirizzo
         cy.get('.client-name').should('contain.text', String(cliente.ragioneSociale).toUpperCase().replace(",", ""))
@@ -79,7 +78,6 @@ class SintesiCliente {
 
     static retriveClientNameAndAddress() {
         return new Promise((resolve, reject) => {
-            debugger
             let client = { name: '', address: '' }
             cy.get('div[class*=client-name]').invoke('text')
                 .then(currentClientName => {

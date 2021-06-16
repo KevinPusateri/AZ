@@ -51,10 +51,9 @@ before(() => {
 beforeEach(() => {
   cy.preserveCookies()
 })
-
-// after(() => {
-//   TopBar.logOutMW()
-// })
+after(() => {
+  TopBar.logOutMW()
+})
 //#endregion Before After
 
 describe('Matrix Web : Modifica PG', function () {
@@ -89,21 +88,21 @@ describe('Matrix Web : Modifica PG', function () {
     SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
     DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)
 
-    // let unicoClienteLebel
-    // let unicoDirezionaleLabel
-    // let visuraCameraleLebel
-    // cy.generateUnicoClienteLabel().then(label => {
-    //   unicoClienteLebel = label
-    // })
+    let unicoClienteLebel
+    let unicoDirezionaleLabel
+    let visuraCameraleLebel
+    cy.generateUnicoClienteLabel().then(label => {
+      unicoClienteLebel = label
+    })
 
-    // cy.generateUnicoDirezioneLabel().then(label => {
-    //   unicoDirezionaleLabel = label
-    // })
+    cy.generateUnicoDirezioneLabel().then(label => {
+      unicoDirezionaleLabel = label
+    })
 
-    // cy.generateVisuraCameraleLabel().then(label => {
-    //   visuraCameraleLebel = label
-    // })
+    cy.generateVisuraCameraleLabel().then(label => {
+      visuraCameraleLebel = label
+    })
 
-    // SintesiCliente.verificaInFolder([unicoClienteLebel,unicoDirezionaleLabel,visuraCameraleLebel])
+    SintesiCliente.verificaInFolder([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel])
   })
 })
