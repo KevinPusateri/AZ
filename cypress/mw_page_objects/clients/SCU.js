@@ -247,14 +247,12 @@ class SCU {
             url: /SalvaInContentManager/
         }).as('salvaInContentManager')
 
-
         //Se sono in Censimento
         if (!isModifica) {
             cy.wait(3000)
             getSCU().then($body => {
-                debugger
                 if ($body.find('button:contains("Conferma")').length > 0) {
-                    cy.get('button:contains("Conferma")').click();
+                    getSCU().find('button:contains("Conferma")').click();
                 }
             });
 

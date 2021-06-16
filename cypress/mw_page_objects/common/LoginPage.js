@@ -63,10 +63,8 @@ class LoginPage {
         cy.get('input[name="Ecom_Password"]').type(psw)
         cy.get('input[type="SUBMIT"]').click()
 
-        HomePage.reloadMWHomePage()
-
         Common.checkUrlEnv()
-        if(!mockedNews)
+        if (!mockedNews)
             cy.wait('@gqlNews')
     }
 }

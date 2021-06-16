@@ -53,6 +53,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', function () {
   })
 
   it('Inserimento contatti : residenza (no cellulare e mail)', () => {
+
     SCU.nuovoClientePFContatti()
   })
 

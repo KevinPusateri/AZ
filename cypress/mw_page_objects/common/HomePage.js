@@ -3,12 +3,48 @@ import Common from "../../mw_page_objects/common/Common"
 
 class HomePage {
 
-    static reloadMWHomePage() {
+    static reloadMWHomePage(mockedNotifications = true, mockedNews = true) {
         //Skip this two requests that blocks on homepage
         cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache');
         cy.intercept(/launch-*/, 'ignore').as('launchStaging');
 
+        if (mockedNotifications) {
+
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('notifications')) {
+                    req.reply({ fixture: 'mockNotifications.json' })
+                }
+            })
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('getNotificationCategories')) {
+                    req.reply({ fixture: 'mockGetNotificationCategories.json' })
+                }
+            })
+
+        }
+
+        if (mockedNotifications) {
+
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('news')) {
+                    req.reply({ fixture: 'mockNews.json' })
+                }
+            })
+        }
+        else {
+            //Wait for news graphQL to be returned
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('news')) {
+                    req.alias = 'gqlNews'
+                    req.res
+                }
+            })
+        }
+
         cy.visit(Common.getBaseUrl())
+
+        if (!mockedNews)
+            cy.wait('@gqlNews')
     }
 
     /**
@@ -31,7 +67,7 @@ class HomePage {
      * Click Pannello "Notifiche in evidenza"
      */
     static clickPanelNotifiche() {
-// APERTURA PANNELLO             
+        // APERTURA PANNELLO             
         // cy.intercept('POST', '**/graphql', (req) => {
         //     if (req.body.operationName.includes('notifications')) {
         //         req.alias = 'gqlNotifications'
@@ -55,11 +91,11 @@ class HomePage {
         })
 
         cy.get('lib-notification-list').find('[class="title-container"]').each((checkNotificaTitle) => {
-            expect(['portafoglio', 'contabilità','vps']).to.include(checkNotificaTitle.text().trim())
+            expect(['portafoglio', 'contabilità', 'vps']).to.include(checkNotificaTitle.text().trim())
         })
 
         cy.get('lib-notification-list').find('button[class="nx-button--tertiary nx-button--medium"]').each(($checkTendina) => {
-            cy.wrap($checkTendina).click({force:true})
+            cy.wrap($checkTendina).click({ force: true })
             cy.get('[class^="nx-context-menu__content"]').find('button').each($button => {
                 expect(['Disattiva notifiche di questo tipo', 'Attiva notifiche di questo tipo',
                     'Segna come da leggere', 'Segna come già letta', 'Segna come da leggere'])
