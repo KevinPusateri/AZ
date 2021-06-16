@@ -86,19 +86,26 @@ class DettaglioAnagrafica {
      * Verifica contatto creato sia presente
      * @param {string} contatto - Object contatto creato
      */
-    static checkContattiFisso(contatto) {
-    cy.get('app-client-contact-table-row').then((list) => {
-        cy.log(contatto)
-        // let checkContatto = JSON.stringify(contatto)
-        debugger
-        expect(list).to.include(contatto.tipo)
-        expect(list).to.include(contatto.principale)
-        expect(list).to.include(contatto.prefissoInt)
-        expect(list).to.include(contatto.prefisso)
-        expect(list).to.include(contatto.phone)
-        expect(list).to.include(contatto.orario)
-    })
-}
+    static checkContatti(contatto) {
+        cy.then(() => {
+            cy.get('app-client-other-contacts').find('app-client-contact-table-row').then((list) => {
+                console.log(list.text())
+                expect(list.text()).to.include(contatto.tipo)
+                expect(list.text()).to.include(contatto.principale)
+                if (contatto.tipo === 'E-Mail' || contatto.tipo === 'PEC') {
+                    expect(list.text()).to.include(contatto.email)
+                } else if (contatto.tipo === 'Sito Web') {
+                    expect(list.text()).to.include(contatto.url)
+                } else {
+                    expect(list.text()).to.include(contatto.prefissoInt)
+                    expect(list.text()).to.include(contatto.prefisso)
+                    expect(list.text()).to.include(contatto.phone)
+                    expect(list.text()).to.include(contatto.orario)
+                }
+            })
+        })
+    }
+
 }
 
 export default DettaglioAnagrafica

@@ -204,7 +204,7 @@ module.exports = (on, config) => {
         nuovoContatto() {
             contatto = {
                 phone: faker.phone.phoneNumberFormat().replace(/-/g,''),
-                email: faker.internet.email(),
+                email: faker.internet.email().toLowerCase(),
                 url: faker.internet.url()
             };
             console.info("--> Generate Contatto for test : " + JSON.stringify(contatto));

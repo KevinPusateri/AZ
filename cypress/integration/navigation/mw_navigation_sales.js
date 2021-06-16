@@ -91,11 +91,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it('Verifica aggancio Emetti Polizza - Allianz1 Business', function () {
-        TopBar.clickSales()
-        Sales.clickLinkOnEmettiPolizza('Allianz1 Business')
-        Sales.backToSales()
-    })
+    // TOLTO
+    // it.skip('Verifica aggancio Emetti Polizza - Allianz1 Business', function () {
+    //     TopBar.clickSales()
+    //     Sales.clickLinkOnEmettiPolizza('Allianz1 Business')
+    //     Sales.backToSales()
+    // })
 
     it('Verifica aggancio Emetti Polizza - FastQuote Impresa e Albergo', function () {
         TopBar.clickSales()
