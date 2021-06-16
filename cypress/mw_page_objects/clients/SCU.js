@@ -250,6 +250,7 @@ class SCU {
 
         //Se sono in Censimento
         if (!isModifica) {
+            cy.wait(3000)
             getSCU().then($body => {
                 debugger
                 if ($body.find('button:contains("Conferma")').length > 0) {

@@ -49,150 +49,152 @@ beforeEach(() => {
 })
 
 after(() => {
-  TopBar.logOutMW()
+    TopBar.logOutMW()
 })
 //#endregion Before After
 
-describe('Matrix Web : Documenti - Carta D\'Identità', function () {
+describe('Matrix Web : Documenti', function () {
+    context('Carta D\'Identità', function () {
 
-    it('Cerca Cliente senza Carta D\'Identità', () => {
-        documentType = 'identita'
-        searchClientWithoutDoc()
-    })
-
-    it('Inserisci Carta D\'Identità', () => {
-        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
-            currentClient = retrivedClient
+        it('Cerca Cliente senza Carta D\'Identità', () => {
+            documentType = 'identita'
+            searchClientWithoutDoc()
         })
 
-        DettaglioAnagrafica.aggiungiDocumento()
-        SCUDocumenti.nuovaCartaIdentita()
-    })
+        it('Inserisci Carta D\'Identità', () => {
+            SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+                currentClient = retrivedClient
+            })
 
-    it('Verifica Carta D\'Identità inserita', () => {
-        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
-            if (!documentIsPresent)
-                assert.fail('Documento D\'Identità NON inserito')
-        })
-    })
-})
-
-describe('Matrix Web : Documenti - Patente', function () {
-
-    it('Cerca Cliente senza Patente', () => {
-        documentType = 'Patente'
-        searchClientWithoutDoc()
-    })
-
-    it('Inserisci Patente', () => {
-        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
-            currentClient = retrivedClient
+            DettaglioAnagrafica.aggiungiDocumento()
+            SCUDocumenti.nuovaCartaIdentita()
         })
 
-        DettaglioAnagrafica.aggiungiDocumento()
-        SCUDocumenti.nuovaPatente()
-    })
-
-    it('Verifica Patente', () => {
-        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
-            if (!documentIsPresent)
-                assert.fail('Patente NON inserita')
+        it('Verifica Carta D\'Identità inserita', () => {
+            DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+                if (!documentIsPresent)
+                    assert.fail('Documento D\'Identità NON inserito')
+            })
         })
     })
-})
 
-describe('Matrix Web : Documenti - Passaporto', function () {
+    context('Patente', function () {
 
-    it('Cerca Cliente senza Passaporto', () => {
-        documentType = 'Passaporto'
-        searchClientWithoutDoc()
-    })
-
-    it('Inserisci Passaporto', () => {
-        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
-            currentClient = retrivedClient
+        it('Cerca Cliente senza Patente', () => {
+            documentType = 'Patente'
+            searchClientWithoutDoc()
         })
 
-        DettaglioAnagrafica.aggiungiDocumento()
-        SCUDocumenti.nuovoPassaporto()
-    })
+        it('Inserisci Patente', () => {
+            SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+                currentClient = retrivedClient
+            })
 
-    it('Verifica Passaporto', () => {
-        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
-            if (!documentIsPresent)
-                assert.fail('Passaporto NON inserito')
-        })
-    })
-})
-
-describe('Matrix Web : Documenti - Porto D\'Armi', function () {
-
-    it('Cerca Cliente senza Porto D\'Armi', () => {
-        documentType = 'armi'
-        searchClientWithoutDoc()
-    })
-
-    it('Inserisci Porto D\'Armi', () => {
-        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
-            currentClient = retrivedClient
+            DettaglioAnagrafica.aggiungiDocumento()
+            SCUDocumenti.nuovaPatente()
         })
 
-        DettaglioAnagrafica.aggiungiDocumento()
-        SCUDocumenti.nuovoPortoArmi()
-    })
-
-    it('Verifica Porto D\'Armi', () => {
-        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
-            if (!documentIsPresent)
-                assert.fail('Porto D\'Armi NON inserito')
+        it('Verifica Patente', () => {
+            DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+                if (!documentIsPresent)
+                    assert.fail('Patente NON inserita')
+            })
         })
     })
-})
 
-describe('Matrix Web : Documenti - Tessera Postale', function () {
+    context('Passaporto', function () {
 
-    it('Cerca Cliente senza Tessera Postale', () => {
-        documentType = 'Postale'
-        searchClientWithoutDoc()
-    })
-
-    it('Inserisci Tessera Postale', () => {
-        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
-            currentClient = retrivedClient
+        it('Cerca Cliente senza Passaporto', () => {
+            documentType = 'Passaporto'
+            searchClientWithoutDoc()
         })
 
-        DettaglioAnagrafica.aggiungiDocumento()
-        SCUDocumenti.nuovaTesseraPostale()
-    })
+        it('Inserisci Passaporto', () => {
+            SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+                currentClient = retrivedClient
+            })
 
-    it('Verifica Tessera Postale', () => {
-        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
-            if (!documentIsPresent)
-                assert.fail('Tessera Postale NON inserita')
-        })
-    })
-})
-
-describe('Matrix Web : Documenti - Altro', function () {
-
-    it('Cerca Cliente senza Altro Documento', () => {
-        documentType = 'Altro'
-        searchClientWithoutDoc()
-    })
-
-    it('Inserisci Altro Documento', () => {
-        SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
-            currentClient = retrivedClient
+            DettaglioAnagrafica.aggiungiDocumento()
+            SCUDocumenti.nuovoPassaporto()
         })
 
-        DettaglioAnagrafica.aggiungiDocumento()
-        SCUDocumenti.nuovoAltroDocumento()
+        it('Verifica Passaporto', () => {
+            DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+                if (!documentIsPresent)
+                    assert.fail('Passaporto NON inserito')
+            })
+        })
     })
 
-    it('Verifica Altro Documento', () => {
-        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
-            if (!documentIsPresent)
-                assert.fail('Altro Documento NON inserito')
+    context('Porto D\'Armi', function () {
+
+        it('Cerca Cliente senza Porto D\'Armi', () => {
+            documentType = 'armi'
+            searchClientWithoutDoc()
+        })
+
+        it('Inserisci Porto D\'Armi', () => {
+            SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+                currentClient = retrivedClient
+            })
+
+            DettaglioAnagrafica.aggiungiDocumento()
+            SCUDocumenti.nuovoPortoArmi()
+        })
+
+        it('Verifica Porto D\'Armi', () => {
+            DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+                if (!documentIsPresent)
+                    assert.fail('Porto D\'Armi NON inserito')
+            })
+        })
+    })
+
+    context('Tessera Postale', function () {
+
+        it('Cerca Cliente senza Tessera Postale', () => {
+            documentType = 'Postale'
+            searchClientWithoutDoc()
+        })
+
+        it('Inserisci Tessera Postale', () => {
+            SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+                currentClient = retrivedClient
+            })
+
+            DettaglioAnagrafica.aggiungiDocumento()
+            SCUDocumenti.nuovaTesseraPostale()
+        })
+
+        it('Verifica Tessera Postale', () => {
+            DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+                if (!documentIsPresent)
+                    assert.fail('Tessera Postale NON inserita')
+            })
+        })
+    })
+
+    context('Altro', function () {
+
+        it('Cerca Cliente senza Altro Documento', () => {
+            documentType = 'Altro'
+            searchClientWithoutDoc()
+        })
+
+        it('Inserisci Altro Documento', () => {
+            SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
+                currentClient = retrivedClient
+            })
+
+            DettaglioAnagrafica.aggiungiDocumento()
+            SCUDocumenti.nuovoAltroDocumento()
+        })
+
+        it('Verifica Altro Documento', () => {
+            DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+                if (!documentIsPresent)
+                    assert.fail('Altro Documento NON inserito')
+            })
         })
     })
 })

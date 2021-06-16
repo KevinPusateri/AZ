@@ -43,7 +43,6 @@ const getDocumentoPersonale = () => {
 //#endregion iFrame
 
 class Folder {
-
     static caricaDocumentoIdentita() {
         //#region BackEnd Calls
         cy.intercept({
