@@ -24,27 +24,26 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#region Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
-let clientePG
+let clientePGNewData
+let currentClientPG
 //#endregion
 
 //#region Before After
 before(() => {
   cy.task('nuovoClientePersonaGiuridica').then((object) => {
-    clientePG = object
-    clientePG.tipologia = "DITTA"
-    clientePG.formaGiuridica = "S.R.L."
-    clientePG.toponimo = "PIAZZA"
-    clientePG.indirizzo = "GIUSEPPE GARIBALDI"
-    clientePG.numCivico = "1"
-    clientePG.cap = "36045"
-    clientePG.citta = "LONIGO"
-    clientePG.provincia = "VI"
-    clientePG.mail = "test_automatici@allianz.it"
-    clientePG.isPEC = true
-    clientePG.pec = "test_automatici@pec.it"
-    clientePG.invioPec = true
-    clientePG.address = "PIAZZA GIUSEPPE GARIBALDI 1"
-    clientePG.name = ""
+    clientePGNewData = object
+    clientePGNewData.tipologia = "DITTA"
+    clientePGNewData.formaGiuridica = "S.R.L."
+    clientePGNewData.toponimo = "PIAZZA"
+    clientePGNewData.indirizzo = "GIUSEPPE GARIBALDI"
+    clientePGNewData.numCivico = "1"
+    clientePGNewData.cap = "36045"
+    clientePGNewData.citta = "LONIGO"
+    clientePGNewData.provincia = "VI"
+    clientePGNewData.mail = "test_automatici@allianz.it"
+    clientePGNewData.isPEC = true
+    clientePGNewData.pec = "test_automatici@pec.it"
+    clientePGNewData.invioPec = true
   })
   LoginPage.logInMW(userName, psw)
 })
@@ -60,22 +59,21 @@ beforeEach(() => {
 
 describe('Matrix Web : Modifica PG', function () {
 
-  it.only('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
+  it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
     LandingRicerca.searchRandomClient(true, "PG", "E")
     LandingRicerca.clickRandomResult()
+    SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+      currentClientPG = currentClient
+    })
   })
 
-  it.only('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
-    SintesiCliente.retriveClientNameAndAddress().then(client => {
-      clientePG.name = client.name
-      cy.log("ooooooooooooooooooooooooooooooooo" + clientePG.name)
-    })
+  it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
 
-    // DettaglioAnagrafica.modificaCliente()
-    // SCU.modificaClientePGDatiAnagrafici(clientePG)
-    // SCU.modificaClientePGModificaContatti(clientePG)
-    // SCU.modificaClientePGConsensi(clientePG)
-    // SCU.modificaClientePGConfermaModifiche()
+    DettaglioAnagrafica.modificaCliente()
+    SCU.modificaClientePGDatiAnagrafici(clientePGNewData)
+    SCU.modificaClientePGModificaContatti(clientePGNewData)
+    SCU.modificaClientePGConsensi(clientePGNewData)
+    SCU.modificaClientePGConfermaModifiche()
   })
 
   it('Da Folder inserire la visura camerale e procedere', () => {
@@ -86,10 +84,10 @@ describe('Matrix Web : Modifica PG', function () {
 
   it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
     HomePage.reloadMWHomePage()
-    TopBar.search(clientePG.name)
-    LandingRicerca.clickClientName(clientePG)
-    SintesiCliente.checkAtterraggioSintesiCliente(clientePG.name)
-    DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePG)
+    TopBar.search(currentClientPG.name)
+    LandingRicerca.clickClientName(currentClientPG)
+    SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
+    DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)
 
     // let unicoClienteLebel
     // let unicoDirezionaleLabel
