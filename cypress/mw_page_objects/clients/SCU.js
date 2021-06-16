@@ -274,7 +274,7 @@ class SCU {
                     getSCU().find('button:contains("Esci")').click()
             });
 
-            cy.wait('@generazioneStampe', { requestTimeout: 60000 })
+            //cy.wait('@generazioneStampe', { requestTimeout: 60000 })
             cy.wait('@salvaInContentManager', { requestTimeout: 60000 })
         }
 

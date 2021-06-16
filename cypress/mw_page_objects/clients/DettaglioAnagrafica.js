@@ -3,12 +3,13 @@
 class DettaglioAnagrafica {
 
     static verificaDatiDettaglioAnagrafica(cliente) {
+
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {
                 req.alias = 'gqlClient'
             }
         })
-
+        debugger
         cy.contains('DETTAGLIO ANAGRAFICA').click()
 
         cy.wait('@gqlClient', { requestTimeout: 30000 })

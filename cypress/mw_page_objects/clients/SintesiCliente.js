@@ -79,15 +79,20 @@ class SintesiCliente {
 
     static retriveClientNameAndAddress() {
         return new Promise((resolve, reject) => {
+            debugger
             let client = { name: '', address: '' }
             cy.get('div[class*=client-name]').invoke('text')
                 .then(currentClientName => {
                     client.name = currentClientName
+
+                    cy.log('Retrived Client Name : ' + client.name)
                 })
             cy.get('nx-icon[class="nx-icon--location nx-icon--auto nx-link__icon"]').parents('a')
                 .find('div[class="value ng-star-inserted"]').invoke('text').then((currentAddress) => {
                     client.address = currentAddress.split('-')[0].replace(',', '').trim()
+                    cy.log('Retrived Client Address : ' + client.address)
                 })
+
             resolve(client);
         });
     }

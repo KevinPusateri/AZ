@@ -43,6 +43,8 @@ before(() => {
     clientePG.isPEC = true
     clientePG.pec = "test_automatici@pec.it"
     clientePG.invioPec = true
+    clientePG.address = "PIAZZA GIUSEPPE GARIBALDI 1"
+    clientePG.name = ""
   })
   LoginPage.logInMW(userName, psw)
 })
@@ -51,27 +53,29 @@ beforeEach(() => {
   cy.preserveCookies()
 })
 
-after(() => {
-  TopBar.logOutMW()
-})
+// after(() => {
+//   TopBar.logOutMW()
+// })
 //#endregion Before After
 
 describe('Matrix Web : Modifica PG', function () {
 
-  it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
+  it.only('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
     LandingRicerca.searchRandomClient(true, "PG", "E")
-    LandingRicerca.clickFirstResult()
-    SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-      clientePG.nominativo = currentClient.name
-    })
+    LandingRicerca.clickRandomResult()
   })
 
-  it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
-    DettaglioAnagrafica.modificaCliente()
-    SCU.modificaClientePGDatiAnagrafici(clientePG)
-    SCU.modificaClientePGModificaContatti(clientePG)
-    SCU.modificaClientePGConsensi(clientePG)
-    SCU.modificaClientePGConfermaModifiche()
+  it.only('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
+    SintesiCliente.retriveClientNameAndAddress().then(client => {
+      clientePG.name = client.name
+      cy.log("ooooooooooooooooooooooooooooooooo" + clientePG.name)
+    })
+
+    // DettaglioAnagrafica.modificaCliente()
+    // SCU.modificaClientePGDatiAnagrafici(clientePG)
+    // SCU.modificaClientePGModificaContatti(clientePG)
+    // SCU.modificaClientePGConsensi(clientePG)
+    // SCU.modificaClientePGConfermaModifiche()
   })
 
   it('Da Folder inserire la visura camerale e procedere', () => {
@@ -82,11 +86,11 @@ describe('Matrix Web : Modifica PG', function () {
 
   it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
     HomePage.reloadMWHomePage()
-    TopBar.search(clientePG.nominativo)
-    LandingRicerca.clickClientName()
-    SintesiCliente.checkAtterraggioSintesiCliente(clientePG.nominativo)
+    TopBar.search(clientePG.name)
+    LandingRicerca.clickClientName(clientePG)
+    SintesiCliente.checkAtterraggioSintesiCliente(clientePG.name)
     DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePG)
-    
+
     // let unicoClienteLebel
     // let unicoDirezionaleLabel
     // let visuraCameraleLebel

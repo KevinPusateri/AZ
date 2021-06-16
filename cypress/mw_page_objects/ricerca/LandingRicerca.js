@@ -108,6 +108,9 @@ class LandingRicerca {
         cy.wait('@client', { requestTimeout: 30000 });
     }
 
+    /**
+     * Seleziona un Cliente Random dalla lista di ricerca ritornata
+     */
     static clickRandomResult() {
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
