@@ -118,6 +118,7 @@ class LandingRicerca {
                 req.alias = 'client'
             }
         });
+
         cy.get('.ps--active-y').then(($clienti) => {
             let schedeClienti = $clienti.find('lib-client-item')
             let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
@@ -127,7 +128,7 @@ class LandingRicerca {
         cy.wait('@client', { requestTimeout: 30000 });
     }
 
-    static clickClientName(client, filtri=false, tipoCliente, statoCliente) {
+    static clickClientName(client, filtri = false, tipoCliente, statoCliente) {
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {
@@ -178,8 +179,10 @@ class LandingRicerca {
                 cy.get('lib-client-item:contains("' + client.name + '"):contains("' + client.address + '")').click();
             }
         })
-
-        cy.wait('@client', { requestTimeout: 30000 });
+        //Verifica se ci sono problemi nel retrive del cliente per permessi
+        cy.wait('@client', { requestTimeout: 30000 })
+            .its('response.body.data.client')
+            .should('not.be.null')
     }
 
     /**

@@ -77,6 +77,7 @@ class SCUContatti {
         });
     });
   }
+
   static aggiungiContattoFax(contatto) {
     cy.contains("Aggiungi contatto").click();
     return new Promise((resolve, reject) => {
@@ -302,6 +303,28 @@ class SCUContatti {
           resolve(contatto);
         });
     });
+  }
+
+  static aggiungiNuovoTelefonoPrincipale(contatto) {
+    debugger
+    // Tipo: Cellulare - indice -> 1
+    this.addTipo(contatto, 1);
+
+    // Principale: NO
+    this.addPrincipale(contatto);
+
+    //Pref. Int.
+    this.addPrefInt(contatto);
+
+    //Prefisso: numero random
+    this.addPrefisso(contatto);
+
+    this.addOrario(contatto);
+    // Telefono: numero random
+    this.addPhone(contatto);
+
+    //click salva
+    getSCU().find('#submit:contains("Salva")').click().wait(4000);
   }
   //#endregion
 

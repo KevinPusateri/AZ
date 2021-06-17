@@ -93,6 +93,36 @@ class SintesiCliente {
             resolve(client);
         });
     }
+    /**
+     * Verifica se la Scheda del Cliente ha presente o meno il Numero o la Mail principale
+     * @param {*} contactType tipo di contatto a scelta tra 'numero' e 'mail'
+     * @returns true se presente, false se assente
+     */
+    static checkContattoPrincipale(contactType) {
+        return new Promise((resolve, reject) => {
+            cy.get('body')
+                .then(body => {
+                    let missingValue
+                    (contactType === 'numero') ? missingValue = 'Aggiungi numero principale' : missingValue = ' Aggiungi mail principale '
+                    if (body.find('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').length > 0)
+                        resolve(false)
+                    else
+                        resolve(true)
+                })
+        })
+    }
+
+    /**
+     * Aggiunge Contatto principale (a scelta tra 'numero' o 'mail') 
+     * @param {*} contactType tipo di contatto a scelta tra 'numero' e 'mail'
+     */
+    static aggiungiContattoPrincipale(contactType) {
+        let missingValue
+        (contactType === 'numero') ? missingValue = 'Aggiungi numero principale' : missingValue = ' Aggiungi mail principale '
+        debugger
+        cy.get('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').click({ multiple: true })
+
+    }
 }
 
 export default SintesiCliente
