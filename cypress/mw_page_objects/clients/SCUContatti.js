@@ -1,670 +1,602 @@
 /// <reference types="Cypress" />
 
-
 const getSCU = () => {
-    cy.get('iframe[class="iframe-content ng-star-inserted"]')
-        .iframe()
+  cy.get('iframe[class="iframe-content ng-star-inserted"]').iframe();
 
-    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-        .its('0.contentDocument').should('exist')
+  let iframeSCU = cy
+    .get('iframe[class="iframe-content ng-star-inserted"]')
+    .its("0.contentDocument")
+    .should("exist");
 
-    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
-}
+  return iframeSCU.its("body").should("not.be.undefined").then(cy.wrap);
+};
 
 class SCUContatti {
-
-    static aggiungiContattoFisso(contatto) {
-        cy.contains('Aggiungi contatto').click()
-        return new Promise((resolve, reject) => {
-
-            cy.task('nuovoContatto').then((object) => {
-                contatto = object
-                contatto.tipo = ""
-                contatto.prefissoInt = ""
-                contatto.prefisso = ""
-                contatto.orario = ""
-            }).then(() => {
-                // Tipo: Fisso
-                getSCU().contains('Seleziona...').click()
-                getSCU().find('#tipoReperibilita_listbox > li').eq(0).then((tipo) => {
-                    contatto.tipo = tipo.text()
-                }).click()
-
-                // Principale: NO
-                getSCU().find('span[aria-owns="principale_listbox"]').click()
-                getSCU().find('#principale-list').find('li:contains("No")').then((principale) => {
-                    contatto.principale = principale.text()
-                }).click()
-
-                //Pref. Int.
-                getSCU().find('span[aria-controls="tel-pr-int_listbox"]').click()
-                getSCU().find('#tel-pr-int_listbox > li[data-offset-index="94"]').then((list) => {
-                    contatto.prefissoInt = list.text()
-                })
-
-
-                //Prefisso: numero random
-                getSCU().find('span[aria-controls="tel-pref_listbox"]').click()
-                getSCU().find('#tel-pref_listbox > li').then((list) => {
-                    var index = Math.floor(Math.random() * list.length)
-                    cy.log(index)
-                    cy.wrap(list).eq(index).then(numberText => {
-                        contatto.prefisso = numberText.text()
-                    })
-                    cy.wrap(list).eq(index).click()
-
-                })
-
-                getSCU().find('span[aria-owns="orario_listbox"]').click()
-                getSCU().find('#orario_listbox > li').then((listOrario) => {
-                    var index = Math.floor(Math.random() * listOrario.length)
-                    console.log(index)
-                    console.log(listOrario)
-                    cy.wrap(listOrario).eq(index).then(orarioSelected => {
-                        console.log(orarioSelected.text())
-                        cy.wrap(orarioSelected).click()
-                        switch (orarioSelected.text()) {
-                            case 'Tutto il giorno':
-                                contatto.orario = '09:00 - 19:00'
-                                break;
-                            case 'Solo la mattina':
-                                contatto.orario = '09:00 - 13:00'
-                                break;
-                            case 'Sera':
-                                contatto.orario = '19:00 - 22:00'
-                                break;
-                            case 'Pomeriggio':
-                                contatto.orario = '14:00 - 19:00'
-                                break;
-                            case 'Reperibilità Oraria':
-                                getSCU().find('span[aria-owns="alle_listbox"]').click()
-                                getSCU().find('#alle_listbox > li').then((orarioAlle) => {
-                                    var indexOra = Math.floor(Math.random() * orarioAlle.length)
-                                    cy.wrap(orarioAlle).eq(indexOra).then(orarioAlleSelected => {
-                                        getSCU().find('span[aria-owns="dalle_listbox"]').then((orarioDalle) => {
-                                            cy.wrap(orarioDalle).find('span[class="k-input"]').then((orarioDalleSelected) => {
-                                                contatto.orario = orarioDalleSelected.text() + ' - ' + orarioAlleSelected.text()
-                                            })
-                                        })
-                                    })
-                                    cy.wrap(orarioAlle).eq(indexOra).click()
-                                })
-                                break;
-                        }
-                    })
-
-                })
-                // Telefono: numero random
-                getSCU().find('#tel-num').type(contatto.phone)
-                cy.log(contatto.phone)
-
-                //click salva
-                getSCU().find('#submit:contains("Salva")').click().wait(4000)
-                resolve(contatto)
-
-            })
+  //#region AggiungiContatto
+  static aggiungiContattoFisso(contatto) {
+    cy.contains("Aggiungi contatto").click();
+    return new Promise((resolve, reject) => {
+      cy.task("nuovoContatto")
+        .then((object) => {
+          contatto = object;
         })
-    }
-    static aggiungiContattoCellulare(contatto) {
-        cy.contains('Aggiungi contatto').click()
-        return new Promise((resolve, reject) => {
-            cy.task('nuovoContatto').then((object) => {
-                contatto = object
-                contatto.tipo = ""
-                contatto.prefissoInt = ""
-                contatto.prefisso = ""
-                contatto.orario = ""
-            }).then(() => {
-                getSCU().contains('Seleziona...').click()
-                getSCU().find('#tipoReperibilita_listbox > li').eq(1).then((tipo) => {
-                    contatto.tipo = tipo.text()
-                }).click()
+        .then(() => {
+          // Tipo: Fisso - indice -> 0
+          this.addTipo(contatto, 0);
 
-                // Principale: NO
-                getSCU().find('span[aria-owns="principale_listbox"]').click()
-                getSCU().find('#principale-list').find('li:contains("No")').then((principale) => {
-                    contatto.principale = principale.text()
-                }).click()
+          // Principale: NO
+          this.addPrincipale(contatto);
 
-                //Pref. Int.
-                getSCU().find('span[aria-controls="tel-pr-int_listbox"]').click()
-                getSCU().find('#tel-pr-int_listbox > li[data-offset-index="94"]').then((list) => {
-                    contatto.prefissoInt = list.text()
-                })
+          //Pref. Int.
+          this.addPrefInt(contatto);
 
-                //Prefisso: numero random
-                getSCU().find('span[aria-controls="tel-pref_listbox"]').click()
-                getSCU().find('#tel-pref_listbox > li').then((list) => {
-                    var index = Math.floor(Math.random() * list.length)
-                    cy.log(index)
-                    cy.wrap(list).eq(index).then(numberText => {
-                        contatto.prefisso = numberText.text()
-                    })
-                    cy.wrap(list).eq(index).click()
-                })
+          //Prefisso: numero random
+          this.addPrefisso(contatto);
 
-                // Orario
-                getSCU().find('span[aria-owns="orario_listbox"]').click()
-                getSCU().find('#orario_listbox > li').then((listOrario) => {
-                    var index = Math.floor(Math.random() * listOrario.length)
-                    console.log(index)
-                    console.log(listOrario)
-                    cy.wrap(listOrario).eq(index).then(orarioSelected => {
-                        console.log(orarioSelected.text())
-                        cy.wrap(orarioSelected).click()
-                        switch (orarioSelected.text()) {
-                            case 'Tutto il giorno':
-                                contatto.orario = '09:00 - 19:00'
-                                break;
-                            case 'Solo la mattina':
-                                contatto.orario = '09:00 - 13:00'
-                                break;
-                            case 'Sera':
-                                contatto.orario = '19:00 - 22:00'
-                                break;
-                            case 'Pomeriggio':
-                                contatto.orario = '14:00 - 19:00'
-                                break;
-                            case 'Reperibilità Oraria':
-                                getSCU().find('span[aria-owns="alle_listbox"]').click()
-                                getSCU().find('#alle_listbox > li').then((orarioAlle) => {
-                                    var indexOra = Math.floor(Math.random() * orarioAlle.length)
-                                    cy.wrap(orarioAlle).eq(indexOra).then(orarioAlleSelected => {
-                                        getSCU().find('span[aria-owns="dalle_listbox"]').then((orarioDalle) => {
-                                            cy.wrap(orarioDalle).find('span[class="k-input"]').then((orarioDalleSelected) => {
-                                                contatto.orario = orarioDalleSelected.text() + ' - ' + orarioAlleSelected.text()
-                                            })
-                                        })
-                                    })
-                                    cy.wrap(orarioAlle).eq(indexOra).click()
-                                })
-                                break;
-                        }
-                    })
-                })
-                getSCU().find('#tel-num').type(contatto.phone)
-                cy.log(contatto.phone)
-                // Telefono: numero random
+          this.addOrario(contatto);
+          // Telefono: numero random
+          this.addPhone(contatto);
 
-                //click salva
-                getSCU().find('#submit:contains("Salva")').click().wait(4000)
-                resolve(contatto)
-
-            })
+          //click salva
+          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          resolve(contatto);
         });
-    }
-    static aggiungiContattoFax(contatto) {
-        cy.contains('Aggiungi contatto').click()
-        return new Promise((resolve, reject) => {
-            cy.task('nuovoContatto').then((object) => {
-                contatto = object
-                contatto.tipo = ""
-                contatto.prefissoInt = ""
-                contatto.prefisso = ""
-                contatto.orario = ""
-            }).then(() => {
-                return new Promise((resolve, reject) => {
-                    // Tipo: Fax
-                    getSCU().contains('Seleziona...').click()
-                    getSCU().find('#tipoReperibilita_listbox > li').eq(2).then((tipo) => {
-                        contatto.tipo = tipo.text()
-                    }).click()
-
-                    // Principale: NO
-                    getSCU().find('span[aria-owns="principale_listbox"]').click()
-                    getSCU().find('#principale-list').find('li:contains("No")').then((principale) => {
-                        contatto.principale = principale.text()
-                    }).click()
-
-                    //Pref. Int.
-                    getSCU().find('span[aria-controls="tel-pr-int_listbox"]').click()
-                    getSCU().find('#tel-pr-int_listbox > li[data-offset-index="94"]').then((list) => {
-                        contatto.prefissoInt = list.text()
-                    })
-
-                    //Prefisso: numero random
-                    getSCU().find('span[aria-controls="tel-pref_listbox"]').click()
-                    getSCU().find('#tel-pref_listbox > li').then((list) => {
-                        var index = Math.floor(Math.random() * list.length)
-                        cy.log(index)
-                        cy.wrap(list).eq(index).then(numberText => {
-                            contatto.prefisso = numberText.text()
-                        })
-                        cy.wrap(list).eq(index).click()
-                    })
-
-                    getSCU().find('span[aria-owns="orario_listbox"]').click()
-                    getSCU().find('#orario_listbox > li').then((listOrario) => {
-                        var index = Math.floor(Math.random() * listOrario.length)
-                        console.log(index)
-                        console.log(listOrario)
-                        cy.wrap(listOrario).eq(index).then(orarioSelected => {
-                            console.log(orarioSelected.text())
-                            cy.wrap(orarioSelected).click()
-                            switch (orarioSelected.text()) {
-                                case 'Tutto il giorno':
-                                    contatto.orario = '09:00 - 19:00'
-                                    break;
-                                case 'Solo la mattina':
-                                    contatto.orario = '09:00 - 13:00'
-                                    break;
-                                case 'Sera':
-                                    contatto.orario = '19:00 - 22:00'
-                                    break;
-                                case 'Pomeriggio':
-                                    contatto.orario = '14:00 - 19:00'
-                                    break;
-                                case 'Reperibilità Oraria':
-                                    getSCU().find('span[aria-owns="alle_listbox"]').click()
-                                    getSCU().find('#alle_listbox > li').then((orarioAlle) => {
-                                        var indexOra = Math.floor(Math.random() * orarioAlle.length)
-                                        cy.wrap(orarioAlle).eq(indexOra).then(orarioAlleSelected => {
-                                            getSCU().find('span[aria-owns="dalle_listbox"]').then((orarioDalle) => {
-                                                cy.wrap(orarioDalle).find('span[class="k-input"]').then((orarioDalleSelected) => {
-                                                    contatto.orario = orarioDalleSelected.text() + ' - ' + orarioAlleSelected.text()
-                                                })
-                                            })
-                                        })
-                                        cy.wrap(orarioAlle).eq(indexOra).click()
-                                    })
-                                    break;
-                            }
-                        })
-                    })
-                    // Telefono: numero random
-                    getSCU().find('#tel-num').type(contatto.phone)
-                    cy.log(contatto.phone)
-
-                    //click salva
-                    getSCU().find('#submit:contains("Salva")').click().wait(4000)
-                    resolve(contatto)
-                })
-            })
-        });
-    }
-    static aggiungiContattoEmail(contatto) {
-        cy.contains('Aggiungi contatto').click()
-        return new Promise((resolve, reject) => {
-            cy.task('nuovoContatto').then((object) => {
-                contatto = object
-                contatto.tipo = ""
-                contatto.prefissoInt = ""
-                contatto.prefisso = ""
-                contatto.orario = ""
-            }).then(() => {
-                // Tipo: Email
-                getSCU().contains('Seleziona...').click()
-                getSCU().find('#tipoReperibilita_listbox > li').eq(3).then((tipo) => {
-                    contatto.tipo = 'E-Mail'
-                }).click()
-
-                // Principale: NO
-                getSCU().find('span[aria-owns="principale_listbox"]').click()
-                getSCU().find('#principale-list').find('li:contains("No")').then((principale) => {
-                    contatto.principale = principale.text()
-                }).click()
-
-                // Inserisci Email
-                getSCU().find('#otherKind').type(contatto.email)
-
-                //click salva
-                getSCU().find('#submit:contains("Salva")').click()
-                resolve(contatto)
-            })
-        });
-    }
-    static aggiungiContattoSitoWeb(contatto) {
-
-        cy.contains('Aggiungi contatto').click()
-        return new Promise((resolve, reject) => {
-            cy.task('nuovoContatto').then((object) => {
-                contatto = object
-                contatto.tipo = ""
-                contatto.prefissoInt = ""
-                contatto.prefisso = ""
-                contatto.orario = ""
-            }).then(() => {
-                // Tipo: Sito Web
-                getSCU().contains('Seleziona...').click()
-                getSCU().find('#tipoReperibilita_listbox > li').eq(4).then((tipo) => {
-                    contatto.tipo = tipo.text()
-                }).click()
-
-                // Principale: NO
-                getSCU().find('span[aria-owns="principale_listbox"]').click()
-                getSCU().find('#principale-list').find('li:contains("No")').then((principale) => {
-                    contatto.principale = principale.text()
-                }).click()
-
-                // Inserisci Url
-                getSCU().find('#otherKind').type(contatto.url)
-
-                //click salva
-                getSCU().find('#submit:contains("Salva")').click()
-                resolve(contatto)
-            })
-        });
-    }
-
-    static aggiungiContattoNumeroVerde(contatto) {
-        cy.contains('Aggiungi contatto').click()
-        return new Promise((resolve, reject) => {
-            cy.task('nuovoContatto').then((object) => {
-                contatto = object
-                contatto.tipo = ""
-                contatto.prefissoInt = ""
-                contatto.prefisso = ""
-                contatto.orario = ""
-            }).then(() => {
-                // Tipo: Numero Verde
-                getSCU().contains('Seleziona...').click()
-                getSCU().find('#tipoReperibilita_listbox > li').eq(5).then((tipo) => {
-                    contatto.tipo = tipo.text()
-                }).click()
-
-                // Principale: NO
-                getSCU().find('span[aria-owns="principale_listbox"]').click()
-                getSCU().find('#principale-list').find('li:contains("No")').then((principale) => {
-                    contatto.principale = principale.text()
-                }).click()
-
-                //Pref. Int.
-                getSCU().find('span[aria-controls="tel-pr-int_listbox"]').click()
-                getSCU().find('#tel-pr-int_listbox > li[data-offset-index="94"]').then((list) => {
-                    contatto.prefissoInt = list.text()
-                })
-
-                //Prefisso: numero random
-                getSCU().find('span[aria-controls="tel-pref_listbox"]').click()
-                getSCU().find('#tel-pref_listbox > li').then((list) => {
-                    var index = Math.floor(Math.random() * list.length)
-                    cy.log(index)
-                    cy.wrap(list).eq(index).then(numberText => {
-                        contatto.prefisso = numberText.text()
-                    })
-                    cy.wrap(list).eq(index).click()
-                })
-
-                getSCU().find('span[aria-owns="orario_listbox"]').click()
-                getSCU().find('#orario_listbox > li').then((listOrario) => {
-                    var index = Math.floor(Math.random() * listOrario.length)
-                    console.log(index)
-                    console.log(listOrario)
-                    cy.wrap(listOrario).eq(index).then(orarioSelected => {
-                        console.log(orarioSelected.text())
-                        cy.wrap(orarioSelected).click()
-                        switch (orarioSelected.text()) {
-                            case 'Tutto il giorno':
-                                contatto.orario = '09:00 - 19:00'
-                                break;
-                            case 'Solo la mattina':
-                                contatto.orario = '09:00 - 13:00'
-                                break;
-                            case 'Sera':
-                                contatto.orario = '19:00 - 22:00'
-                                break;
-                            case 'Pomeriggio':
-                                contatto.orario = '14:00 - 19:00'
-                                break;
-                            case 'Reperibilità Oraria':
-                                getSCU().find('span[aria-owns="alle_listbox"]').click()
-                                getSCU().find('#alle_listbox > li').then((orarioAlle) => {
-                                    var indexOra = Math.floor(Math.random() * orarioAlle.length)
-                                    cy.wrap(orarioAlle).eq(indexOra).then(orarioAlleSelected => {
-                                        getSCU().find('span[aria-owns="dalle_listbox"]').then((orarioDalle) => {
-                                            cy.wrap(orarioDalle).find('span[class="k-input"]').then((orarioDalleSelected) => {
-                                                contatto.orario = orarioDalleSelected.text() + ' - ' + orarioAlleSelected.text()
-                                            })
-                                        })
-                                    })
-                                    cy.wrap(orarioAlle).eq(indexOra).click()
-                                })
-                                break;
-                        }
-                    })
-                })
-                // Telefono: numero random
-                getSCU().find('#tel-num').type(contatto.phone)
-                cy.log(contatto.phone)
-
-                //click salva
-                getSCU().find('#submit:contains("Salva")').click().wait(4000)
-                resolve(contatto)
-            })
-        });
-    }
-
-    static aggiungiContattoFaxVerde(contatto) {
-        cy.contains('Aggiungi contatto').click()
-        return new Promise((resolve, reject) => {
-            cy.task('nuovoContatto').then((object) => {
-                contatto = object
-                contatto.tipo = ""
-                contatto.prefissoInt = ""
-                contatto.prefisso = ""
-                contatto.orario = ""
-            }).then(() => {
-                // Tipo: Fax Verde
-                getSCU().contains('Seleziona...').click()
-                getSCU().find('#tipoReperibilita_listbox > li').eq(6).then((tipo) => {
-                    contatto.tipo = tipo.text()
-                }).click()
-
-                // Principale: NO
-                getSCU().find('span[aria-owns="principale_listbox"]').click()
-                getSCU().find('#principale-list').find('li:contains("No")').then((principale) => {
-                    contatto.principale = principale.text()
-                }).click()
-
-                //Pref. Int.
-                getSCU().find('span[aria-controls="tel-pr-int_listbox"]').click()
-                getSCU().find('#tel-pr-int_listbox > li[data-offset-index="94"]').then((list) => {
-                    contatto.prefissoInt = list.text()
-                })
-
-                //Prefisso: numero random
-                getSCU().find('span[aria-controls="tel-pref_listbox"]').click()
-                getSCU().find('#tel-pref_listbox > li').then((list) => {
-                    var index = Math.floor(Math.random() * list.length)
-                    cy.log(index)
-                    cy.wrap(list).eq(index).then(numberText => {
-                        contatto.prefisso = numberText.text()
-                    })
-                    cy.wrap(list).eq(index).click()
-                })
-
-                getSCU().find('span[aria-owns="orario_listbox"]').click()
-                getSCU().find('#orario_listbox > li').then((listOrario) => {
-                    var index = Math.floor(Math.random() * listOrario.length)
-                    console.log(index)
-                    console.log(listOrario)
-                    cy.wrap(listOrario).eq(index).then(orarioSelected => {
-                        console.log(orarioSelected.text())
-                        cy.wrap(orarioSelected).click()
-                        switch (orarioSelected.text()) {
-                            case 'Tutto il giorno':
-                                contatto.orario = '09:00 - 19:00'
-                                break;
-                            case 'Solo la mattina':
-                                contatto.orario = '09:00 - 13:00'
-                                break;
-                            case 'Sera':
-                                contatto.orario = '19:00 - 22:00'
-                                break;
-                            case 'Pomeriggio':
-                                contatto.orario = '14:00 - 19:00'
-                                break;
-                            case 'Reperibilità Oraria':
-                                getSCU().find('span[aria-owns="alle_listbox"]').click()
-                                getSCU().find('#alle_listbox > li').then((orarioAlle) => {
-                                    var indexOra = Math.floor(Math.random() * orarioAlle.length)
-                                    cy.wrap(orarioAlle).eq(indexOra).then(orarioAlleSelected => {
-                                        getSCU().find('span[aria-owns="dalle_listbox"]').then((orarioDalle) => {
-                                            cy.wrap(orarioDalle).find('span[class="k-input"]').then((orarioDalleSelected) => {
-                                                contatto.orario = orarioDalleSelected.text() + ' - ' + orarioAlleSelected.text()
-                                            })
-                                        })
-                                    })
-                                    cy.wrap(orarioAlle).eq(indexOra).click()
-                                })
-                                break;
-                        }
-                    })
-                })
-                // Telefono: numero random
-                getSCU().find('#tel-num').type(contatto.phone)
-                cy.log(contatto.phone)
-
-                //click salva
-                getSCU().find('#submit:contains("Salva")').click().wait(4000)
-                resolve(contatto)
-            })
-        });
-    }
-
-    static aggiungiContattoUfficio(contatto) {
-        cy.contains('Aggiungi contatto').click()
-        return new Promise((resolve, reject) => {
-            cy.task('nuovoContatto').then((object) => {
-                contatto = object
-                contatto.tipo = ""
-                contatto.prefissoInt = ""
-                contatto.prefisso = ""
-                contatto.orario = ""
-            }).then(() => {
-                // Tipo: Ufficio
-                getSCU().contains('Seleziona...').click()
-                getSCU().find('#tipoReperibilita_listbox > li').eq(7).then((tipo) => {
-                    contatto.tipo = tipo.text()
-                }).click()
-
-                // Principale: NO
-                getSCU().find('span[aria-owns="principale_listbox"]').click()
-                getSCU().find('#principale-list').find('li:contains("No")').then((principale) => {
-                    contatto.principale = principale.text()
-                }).click()
-
-                //Pref. Int.
-                getSCU().find('span[aria-controls="tel-pr-int_listbox"]').click()
-                getSCU().find('#tel-pr-int_listbox > li[data-offset-index="94"]').then((list) => {
-                    contatto.prefissoInt = list.text()
-                })
-
-                //Prefisso: numero random
-                getSCU().find('span[aria-controls="tel-pref_listbox"]').click()
-                getSCU().find('#tel-pref_listbox > li').then((list) => {
-                    var index = Math.floor(Math.random() * list.length)
-                    cy.log(index)
-                    cy.wrap(list).eq(index).then(numberText => {
-                        contatto.prefisso = numberText.text()
-                    })
-                    cy.wrap(list).eq(index).click()
-                })
-
-                getSCU().find('span[aria-owns="orario_listbox"]').click()
-                getSCU().find('#orario_listbox > li').then((listOrario) => {
-                    var index = Math.floor(Math.random() * listOrario.length)
-                    console.log(index)
-                    console.log(listOrario)
-                    cy.wrap(listOrario).eq(index).then(orarioSelected => {
-                        console.log(orarioSelected.text())
-                        cy.wrap(orarioSelected).click()
-                        switch (orarioSelected.text()) {
-                            case 'Tutto il giorno':
-                                contatto.orario = '09:00 - 19:00'
-                                break;
-                            case 'Solo la mattina':
-                                contatto.orario = '09:00 - 13:00'
-                                break;
-                            case 'Sera':
-                                contatto.orario = '19:00 - 22:00'
-                                break;
-                            case 'Pomeriggio':
-                                contatto.orario = '14:00 - 19:00'
-                                break;
-                            case 'Reperibilità Oraria':
-                                getSCU().find('span[aria-owns="alle_listbox"]').click()
-                                getSCU().find('#alle_listbox > li').then((orarioAlle) => {
-                                    var indexOra = Math.floor(Math.random() * orarioAlle.length)
-                                    cy.wrap(orarioAlle).eq(indexOra).then(orarioAlleSelected => {
-                                        getSCU().find('span[aria-owns="dalle_listbox"]').then((orarioDalle) => {
-                                            cy.wrap(orarioDalle).find('span[class="k-input"]').then((orarioDalleSelected) => {
-                                                contatto.orario = orarioDalleSelected.text() + ' - ' + orarioAlleSelected.text()
-                                            })
-                                        })
-                                    })
-                                    cy.wrap(orarioAlle).eq(indexOra).click()
-                                })
-                                break;
-                        }
-                    })
-                })
-                // Telefono: numero random
-                getSCU().find('#tel-num').type(contatto.phone)
-                cy.log(contatto.phone)
-
-                //click salva
-                getSCU().find('#submit:contains("Salva")').click().wait(4000)
-                resolve(contatto)
-            });
-        });
-    }
-
-    static aggiungiContattoPEC(contatto) {
-        cy.contains('Aggiungi contatto').click()
-        return new Promise((resolve, reject) => {
-            cy.task('nuovoContatto').then((object) => {
-                contatto = object
-                contatto.tipo = ""
-                contatto.prefissoInt = ""
-                contatto.prefisso = ""
-                contatto.orario = ""
-            }).then(() => {
-                // Tipo: PEC
-                getSCU().contains('Seleziona...').click()
-                getSCU().find('#tipoReperibilita_listbox > li').eq(8).then((tipo) => {
-                    contatto.tipo = tipo.text()
-                }).click()
-
-                // Principale: NO
-                getSCU().find('span[aria-owns="principale_listbox"]').click()
-                getSCU().find('#principale-list').find('li:contains("No")').then((principale) => {
-                    contatto.principale = principale.text()
-                }).click()
-
-                // Inserisci Email
-                getSCU().find('#otherKind').type(contatto.email)
-
-                //click salva
-                getSCU().find('#submit:contains("Salva")').click()
-                resolve(contatto)
-            });
-        });
-    }
-
-
-    static checkModificaContatti() {
-        cy.then(() => {
-            cy.get('app-client-other-contacts').then(()=>{
-
-                // .find('app-client-contact-table-row:contains("'+contatto.tipo+'"):contains("'+contatto.principale+'")')
-                //     .and(':contains("")').then((list) => {
-                //     console.log(list.text())
-                //     expect(list.text()).to.include(contatto.tipo)
-                //     expect(list.text()).to.include(contatto.principale)
-                //     if (contatto.tipo === 'E-Mail' || contatto.tipo === 'PEC') {
-                //         expect(list.text()).to.include(contatto.email)
-                //     } else if (contatto.tipo === 'Sito Web') {
-                //         expect(list.text()).to.include(contatto.url)
-                //     } else {
-                //         expect(list.text()).to.include(contatto.prefissoInt)
-                //         expect(list.text()).to.include(contatto.prefisso)
-                //         expect(list.text()).to.include(contatto.phone)
-                //         expect(list.text()).to.include(contatto.orario)
-                //     }
-                // })
-            })
+    });
+  }
+  static aggiungiContattoCellulare(contatto) {
+    cy.contains("Aggiungi contatto").click();
+    return new Promise((resolve, reject) => {
+      cy.task("nuovoContatto")
+        .then((object) => {
+          contatto = object;
+          contatto.tipo = "";
+          contatto.prefissoInt = "";
+          contatto.prefisso = "";
+          contatto.orario = "";
         })
-    }
+        .then(() => {
+          // Tipo: Cellulare - indice -> 1
+          this.addTipo(contatto, 1);
+
+          // Principale: NO
+          this.addPrincipale(contatto);
+
+          //Pref. Int.
+          this.addPrefInt(contatto);
+
+          //Prefisso: numero random
+          this.addPrefisso(contatto);
+
+          this.addOrario(contatto);
+          // Telefono: numero random
+          this.addPhone(contatto);
+
+          //click salva
+          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          resolve(contatto);
+        });
+    });
+  }
+  static aggiungiContattoFax(contatto) {
+    cy.contains("Aggiungi contatto").click();
+    return new Promise((resolve, reject) => {
+      cy.task("nuovoContatto")
+        .then((object) => {
+          contatto = object;
+          contatto.tipo = "";
+          contatto.prefissoInt = "";
+          contatto.prefisso = "";
+          contatto.orario = "";
+        })
+        .then(() => {
+          // Tipo: Fax - indice -> 2
+          this.addTipo(contatto, 2);
+
+          // Principale: NO
+          this.addPrincipale(contatto);
+
+          //Pref. Int.
+          this.addPrefInt(contatto);
+
+          //Prefisso: numero random
+          this.addPrefisso(contatto);
+
+          // Orario
+          this.addOrario(contatto);
+
+          // Telefono: numero random
+          this.addPhone(contatto);
+
+          //click salva
+          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          resolve(contatto);
+        });
+    });
+  }
+  static aggiungiContattoEmail(contatto) {
+    cy.contains("Aggiungi contatto").click();
+    return new Promise((resolve, reject) => {
+      cy.task("nuovoContatto")
+        .then((object) => {
+          contatto = object;
+          contatto.tipo = "";
+          contatto.prefissoInt = "";
+          contatto.prefisso = "";
+          contatto.orario = "";
+        })
+        .then(() => {
+          // Tipo: Email - indice -> 3
+          this.addTipo(contatto, 3);
+
+          // Principale: NO
+          this.addPrincipale(contatto);
+
+          // Inserisci Email
+          this.addEmail(contatto);
+
+          //click salva
+          getSCU().find('#submit:contains("Salva")').click();
+          resolve(contatto);
+        });
+    });
+  }
+  static aggiungiContattoSitoWeb(contatto) {
+    cy.contains("Aggiungi contatto").click();
+    return new Promise((resolve, reject) => {
+      cy.task("nuovoContatto")
+        .then((object) => {
+          contatto = object;
+          contatto.tipo = "";
+          contatto.prefissoInt = "";
+          contatto.prefisso = "";
+          contatto.orario = "";
+        })
+        .then(() => {
+          // Tipo: Sito Web - indice -> 4
+          this.addTipo(contatto, 4);
+
+          // Principale: NO
+          this.addPrincipale(contatto);
+
+          // Inserisci Sito Web
+          this.addSitoWeb(contatto);
+
+          //click salva
+          getSCU().find('#submit:contains("Salva")').click();
+          resolve(contatto);
+        });
+    });
+  }
+
+  static aggiungiContattoNumeroVerde(contatto) {
+    cy.contains("Aggiungi contatto").click();
+    return new Promise((resolve, reject) => {
+      cy.task("nuovoContatto")
+        .then((object) => {
+          contatto = object;
+          contatto.tipo = "";
+          contatto.prefissoInt = "";
+          contatto.prefisso = "";
+          contatto.orario = "";
+        })
+        .then(() => {
+          // Tipo: Numero Verde - indice -> 5
+          this.addTipo(contatto, 5);
+
+          // Principale: NO
+          this.addPrincipale(contatto);
+
+          //Pref. Int.
+          this.addPrefInt(contatto);
+
+          //Prefisso: numero random
+          this.addPrefisso(contatto);
+
+          this.addOrario(contatto);
+
+          // Telefono: numero random
+          this.addPhone(contatto);
+
+          //click salva
+          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          resolve(contatto);
+        });
+    });
+  }
+
+  static aggiungiContattoFaxVerde(contatto) {
+    cy.contains("Aggiungi contatto").click();
+    return new Promise((resolve, reject) => {
+      cy.task("nuovoContatto")
+        .then((object) => {
+          contatto = object;
+          contatto.tipo = "";
+          contatto.prefissoInt = "";
+          contatto.prefisso = "";
+          contatto.orario = "";
+        })
+        .then(() => {
+          // Tipo: Fax Verde - indice -> 6
+          this.addTipo(contatto, 6);
+
+          // Principale: NO
+          this.addPrincipale(contatto);
+
+          //Pref. Int.
+          this.addPrefInt(contatto);
+
+          //Prefisso: numero random
+          this.addPrefisso(contatto);
+
+          this.addOrario(contatto);
+
+          // Telefono: numero random
+          this.addPhone(contatto);
+
+          //click salva
+          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          resolve(contatto);
+        });
+    });
+  }
+
+  static aggiungiContattoUfficio(contatto) {
+    cy.contains("Aggiungi contatto").click();
+    return new Promise((resolve, reject) => {
+      cy.task("nuovoContatto")
+        .then((object) => {
+          contatto = object;
+          contatto.tipo = "";
+          contatto.prefissoInt = "";
+          contatto.prefisso = "";
+          contatto.orario = "";
+        })
+        .then(() => {
+          // Tipo: Ufficio - indice -> 7
+          this.addTipo(contatto, 7);
+
+          // Principale: NO
+          this.addPrincipale(contatto);
+
+          //Pref. Int.
+          this.addPrefInt(contatto);
+
+          //Prefisso: numero random
+          this.addPrefisso(contatto);
+
+          this.addOrario(contatto);
+
+          // Telefono: numero random
+          this.addPhone(contatto);
+
+          //click salva
+          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          resolve(contatto);
+        });
+    });
+  }
+
+  static aggiungiContattoPEC(contatto) {
+    cy.contains("Aggiungi contatto").click();
+    return new Promise((resolve, reject) => {
+      cy.task("nuovoContatto")
+        .then((object) => {
+          contatto = object;
+          contatto.tipo = "";
+          contatto.prefissoInt = "";
+          contatto.prefisso = "";
+          contatto.orario = "";
+        })
+        .then(() => {
+          // Tipo: PEC - indice -> 8
+          this.addTipo(contatto, 8);
+
+          // Principale: NO
+          this.addPrincipale(contatto);
+
+          // Inserisci PEC
+          this.addEmail(contatto);
+
+          //click salva
+          getSCU().find('#submit:contains("Salva")').click();
+          resolve(contatto);
+        });
+    });
+  }
+  //#endregion
+
+  //#region CheckModifica
+  static modificaContatti(contatto) {
+    return new Promise((resolve, reject) => {
+      cy.get("app-client-other-contacts").then((table) => {
+        if (contatto.tipo === "E-Mail" || contatto.tipo === "PEC") {
+          cy.wrap(table)
+            .find(
+              'app-client-contact-table-row:contains("' + contatto.tipo + '"):contains("' + contatto.principale + '")')
+            .find(':contains("' + contatto.email + '")')
+            .then((row) => {
+              cy.wrap(row)
+                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                .click();
+              cy.get("lib-da-link").contains("Modifica contatto").click();
+            });
+        } else if (contatto.tipo === "Sito Web") {
+          cy.wrap(table)
+            .find(
+              'app-client-contact-table-row:contains("' + contatto.tipo + '"):contains("' + contatto.principale + '")')
+            .find(':contains("' + contatto.url + '")')
+            .then((row) => {
+              cy.wrap(row)
+                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                .click();
+              cy.get("lib-da-link").contains("Modifica contatto").click();
+            });
+        } else {
+          cy.wrap(table)
+            .find(
+              'app-client-contact-table-row:contains("' +
+                contatto.tipo +
+                '"):contains("' +
+                contatto.principale +
+                '")'
+            )
+            .find(
+              ':contains("' +
+                contatto.prefissoInt +
+                " " +
+                contatto.prefisso +
+                " " +
+                contatto.phone +
+                '")'
+            )
+            .then((row) => {
+              cy.wrap(row)
+                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                .click()
+                .wait(2000);
+              cy.get("lib-da-link").contains("Modifica contatto").click();
+              const scelta = [
+                "PrefInt",
+                "Numero",
+                "Orario",
+                "Email",
+                "Sito Web",
+              ]; /*"Prefisso", (Tipo)*/
+              var indexScelta = Math.floor(Math.random() * scelta.length);
+              cy.then(() => {
+                cy.task("nuovoContatto")
+                  .then((object) => {
+                    debugger;
+                    if (scelta[indexScelta] === "Numero")
+                      contatto.phone = object.phone;
+                    if (scelta[indexScelta] === "Email")
+                      contatto.email = object.email;
+                    if (scelta[indexScelta] === "Sito Web")
+                      contatto.url = object.url;
+                  })
+                  .then(() => {
+                    switch (scelta[indexScelta]) {
+                      case "PrefInt":
+                        this.addPrefix(contatto);
+                        break;
+                      // case "Prefisso":
+                      //   this.addPrefisso(contatto);
+                      //   break;
+                      case "Numero":
+                        this.addPhone(contatto);
+                        break;
+                      case "Orario":
+                        this.addOrario(contatto);
+                        break;
+                    }
+                    getSCU()
+                      .find('#submit:contains("Salva")')
+                      .click()
+                      .wait(4000);
+                    resolve(contatto);
+                  });
+              });
+            });
+        }
+      });
+    });
+  }
+  //#endregion
+
+  //#region Add methods
+
+  static addPhone(contatto) {
+    getSCU().find("#tel-num").type(contatto.phone);
+  }
+
+  static addOrario(contatto) {
+    getSCU().find('span[aria-owns="orario_listbox"]').click();
+    getSCU()
+      .find("#orario_listbox > li")
+      .then((listOrario) => {
+        var index = Math.floor(Math.random() * listOrario.length);
+        console.log(index);
+        console.log(listOrario);
+        cy.wrap(listOrario)
+          .eq(index)
+          .then((orarioSelected) => {
+            console.log(orarioSelected.text());
+            cy.wrap(orarioSelected).click();
+            switch (orarioSelected.text()) {
+              case "Tutto il giorno":
+                contatto.orario = "09:00 - 19:00";
+                break;
+              case "Solo la mattina":
+                contatto.orario = "09:00 - 13:00";
+                break;
+              case "Sera":
+                contatto.orario = "19:00 - 22:00";
+                break;
+              case "Pomeriggio":
+                contatto.orario = "14:00 - 19:00";
+                break;
+              case "Reperibilità Oraria":
+                getSCU().find('span[aria-owns="alle_listbox"]').click();
+                getSCU()
+                  .find("#alle_listbox > li")
+                  .then((orarioAlle) => {
+                    var indexOra = Math.floor(
+                      Math.random() * orarioAlle.length
+                    );
+                    cy.wrap(orarioAlle)
+                      .eq(indexOra)
+                      .then((orarioAlleSelected) => {
+                        getSCU()
+                          .find('span[aria-owns="dalle_listbox"]')
+                          .then((orarioDalle) => {
+                            cy.wrap(orarioDalle)
+                              .find('span[class="k-input"]')
+                              .then((orarioDalleSelected) => {
+                                contatto.orario =
+                                  orarioDalleSelected.text() +
+                                  " - " +
+                                  orarioAlleSelected.text();
+                              });
+                          });
+                      });
+                    cy.wrap(orarioAlle).eq(indexOra).click();
+                  });
+                break;
+            }
+          });
+      });
+  }
+
+  static addPrefix(contatto) {
+    getSCU().find('span[aria-controls="tel-pref_listbox"]').click();
+    getSCU()
+      .find("#tel-pref_listbox > li")
+      .then((list) => {
+        var index = Math.floor(Math.random() * list.length);
+        cy.log(index);
+        cy.wrap(list)
+          .eq(index)
+          .then((numberText) => {
+            contatto.prefisso = numberText.text();
+          });
+        cy.wrap(list).eq(index).click();
+      });
+  }
+
+  static addPrefisso(contatto) {
+    getSCU().find('span[aria-controls="tel-pref_listbox"]').click();
+    getSCU()
+      .find("#tel-pref_listbox > li")
+      .then((list) => {
+        var index = Math.floor(Math.random() * list.length);
+        cy.log(index);
+        cy.wrap(list)
+          .eq(index)
+          .then((numberText) => {
+            contatto.prefisso = numberText.text();
+          });
+        cy.wrap(list).eq(index).click();
+      });
+  }
+
+  static addPrefInt(contatto) {
+    getSCU().find('span[aria-controls="tel-pr-int_listbox"]').click();
+    getSCU()
+      .find('#tel-pr-int_listbox > li[data-offset-index="94"]')
+      .then((list) => {
+        contatto.prefissoInt = list.text();
+      });
+  }
+
+  static addTipo(contatto, index) {
+    getSCU().find('span[aria-owns="tipoReperibilita_listbox"]').click();
+    getSCU()
+      .find("#tipoReperibilita_listbox > li")
+      .eq(index)
+      .then((tipo) => {
+        contatto.tipo = tipo.text();
+        if (contatto.tipo === "Email") contatto.tipo = "E-Mail";
+        
+      })
+      .click();
+  }
+
+  static addOrario(contatto) {
+    getSCU().find('span[aria-owns="orario_listbox"]').click();
+    getSCU()
+      .find("#orario_listbox > li")
+      .then((listOrario) => {
+        var index = Math.floor(Math.random() * listOrario.length);
+        console.log(index);
+        console.log(listOrario);
+        cy.wrap(listOrario)
+          .eq(index)
+          .then((orarioSelected) => {
+            console.log(orarioSelected.text());
+            cy.wrap(orarioSelected).click();
+            switch (orarioSelected.text()) {
+              case "Tutto il giorno":
+                contatto.orario = "09:00 - 19:00";
+                break;
+              case "Solo la mattina":
+                contatto.orario = "09:00 - 13:00";
+                break;
+              case "Sera":
+                contatto.orario = "19:00 - 22:00";
+                break;
+              case "Pomeriggio":
+                contatto.orario = "14:00 - 19:00";
+                break;
+              case "Reperibilità Oraria":
+                getSCU().find('span[aria-owns="alle_listbox"]').click();
+                getSCU()
+                  .find("#alle_listbox > li")
+                  .then((orarioAlle) => {
+                    var indexOra = Math.floor(
+                      Math.random() * orarioAlle.length
+                    );
+                    cy.wrap(orarioAlle)
+                      .eq(indexOra)
+                      .then((orarioAlleSelected) => {
+                        getSCU()
+                          .find('span[aria-owns="dalle_listbox"]')
+                          .then((orarioDalle) => {
+                            cy.wrap(orarioDalle)
+                              .find('span[class="k-input"]')
+                              .then((orarioDalleSelected) => {
+                                contatto.orario =
+                                  orarioDalleSelected.text() +
+                                  " - " +
+                                  orarioAlleSelected.text();
+                              });
+                          });
+                      });
+                    cy.wrap(orarioAlle).eq(indexOra).click();
+                  });
+                break;
+            }
+          });
+      });
+  }
+
+  static addPrincipale(contatto) {
+    getSCU().find('span[aria-owns="principale_listbox"]').click();
+    getSCU()
+      .find("#principale-list")
+      .find('li:contains("No")')
+      .then((principale) => {
+        contatto.principale = principale.text();
+      })
+      .click();
+  }
+
+  static addEmail(contatto) {
+    getSCU().find("#otherKind").type(contatto.email);
+  }
+
+  static addSitoWeb(contatto) {
+    getSCU().find("#otherKind").type(contatto.url);
+  }
+  //#endregion
 }
-export default SCUContatti
+export default SCUContatti;

@@ -79,7 +79,6 @@ class SintesiCliente {
 
     static retriveClientNameAndAddress() {
         return new Promise((resolve, reject) => {
-            debugger
             let client = { name: '', address: '' }
             cy.get('div[class*=client-name]').invoke('text')
                 .then(currentClientName => {
