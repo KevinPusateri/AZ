@@ -7,14 +7,12 @@
 //#region import
 import LoginPage from "../../../mw_page_objects/common/LoginPage"
 import TopBar from "../../../mw_page_objects/common/TopBar"
-import LandingClients from "../../../mw_page_objects/clients/LandingClients"
 import SCU from "../../../mw_page_objects/clients/SCU"
 import Folder from "../../../mw_page_objects/common/Folder"
 import HomePage from "../../../mw_page_objects/common/HomePage"
 import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../../mw_page_objects/clients/DettaglioAnagrafica"
-import ArchivioCliente from "../../../mw_page_objects/clients/ArchivioCliente"
 //#endregion import
 
 //#region Configuration
@@ -26,6 +24,9 @@ const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
 let clientePGNewData
 let currentClientPG
+let unicoClienteLebel
+let unicoDirezionaleLabel
+let visuraCameraleLebel
 //#endregion
 
 //#region Before After
@@ -45,18 +46,42 @@ before(() => {
     clientePGNewData.pec = "test_automatici@pec.it"
     clientePGNewData.invioPec = true
   })
+  cy.generateUnicoClienteLabel().then(label => {
+    unicoClienteLebel = label
+  })
+
+  cy.generateUnicoDirezioneLabel().then(label => {
+    unicoDirezionaleLabel = label
+  })
+
+  cy.generateVisuraCameraleLabel().then(label => {
+    visuraCameraleLebel = label
+  })
+
   LoginPage.logInMW(userName, psw)
 })
-
 beforeEach(() => {
   cy.preserveCookies()
 })
+afterEach(function () {
+  if (this.currentTest.state === 'failed' &&
+    //@ts-ignore
+    this.currentTest._currentRetry === this.currentTest._retries) {
+    //@ts-ignore
+    Cypress.runner.stop();
+  }
+});
 after(() => {
   TopBar.logOutMW()
 })
 //#endregion Before After
 
-describe('Matrix Web : Modifica PG', function () {
+describe('Matrix Web : Modifica PG', {
+  retries: {
+    runMode: 0,
+    openMode: 0,
+  }
+}, () => {
 
   it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
     LandingRicerca.searchRandomClient(true, "PG", "E")
@@ -87,22 +112,6 @@ describe('Matrix Web : Modifica PG', function () {
     LandingRicerca.clickClientName(currentClientPG)
     SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
     DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)
-
-    let unicoClienteLebel
-    let unicoDirezionaleLabel
-    let visuraCameraleLebel
-    cy.generateUnicoClienteLabel().then(label => {
-      unicoClienteLebel = label
-    })
-
-    cy.generateUnicoDirezioneLabel().then(label => {
-      unicoDirezionaleLabel = label
-    })
-
-    cy.generateVisuraCameraleLabel().then(label => {
-      visuraCameraleLebel = label
-    })
-
     SintesiCliente.verificaInFolder([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel])
   })
 })

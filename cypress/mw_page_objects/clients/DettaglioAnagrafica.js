@@ -9,7 +9,6 @@ class DettaglioAnagrafica {
                 req.alias = 'gqlClient'
             }
         })
-        debugger
         cy.contains('DETTAGLIO ANAGRAFICA').click()
 
         cy.wait('@gqlClient', { requestTimeout: 30000 })
