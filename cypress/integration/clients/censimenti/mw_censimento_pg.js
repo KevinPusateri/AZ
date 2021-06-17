@@ -42,18 +42,28 @@ before(() => {
   })
   LoginPage.logInMW(userName, psw)
 })
-
 beforeEach(() => {
   cy.preserveCookies()
 })
-
+afterEach(function () {
+  if (this.currentTest.state === 'failed' &&
+    //@ts-ignore
+    this.currentTest._currentRetry === this.currentTest._retries) {
+    //@ts-ignore
+    Cypress.runner.stop();
+  }
+});
 after(() => {
   TopBar.logOutMW()
 })
 //#endregion Before After
 
-describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
-
+describe('Matrix Web : Censimento Nuovo Cliente PG', {
+  retries: {
+    runMode: 0,
+    openMode: 0,
+  }
+}, () => {
   it('Verifica apertura maschera di censimento', () => {
     LandingClients.inizializzaCensimentoClientePG(nuovoClientePG.partitaIva)
   })

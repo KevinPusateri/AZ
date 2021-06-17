@@ -22,7 +22,6 @@ class SintesiCliente {
     static emettiPleinAir() {
         cy.get('nx-icon[aria-label="Open menu"]').click();
         cy.contains('PLEINAIR').click();
-        debugger
         getIframe().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
         getIframe().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
         getIframe().find('#ButtonQuestOk').click().wait(6000)
@@ -52,7 +51,7 @@ class SintesiCliente {
 
         getIframe().find('span[class="k-icon k-plus"]:visible').click()
         getIframe().find('span[class="k-icon k-plus"]:first').click()
-
+        debugger
         cy.wrap(labels).each((label, i, array) => {
             getIframe().find('span').contains(label).click()
         })
