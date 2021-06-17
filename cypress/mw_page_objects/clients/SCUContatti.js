@@ -310,9 +310,6 @@ class SCUContatti {
     // Tipo: Cellulare - indice -> 1
     this.addTipo(contatto, 1);
 
-    // Principale: NO
-    this.addPrincipale(contatto);
-
     //Pref. Int.
     this.addPrefInt(contatto);
 
@@ -663,4 +660,4 @@ class SCUContatti {
   }
   //#endregion
 }
-export default SCUContatti;
+export default SCUContatti
