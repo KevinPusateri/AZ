@@ -58,7 +58,6 @@ class SintesiCliente {
         })
     }
 
-
     static verificaDatiSpallaSinistra(cliente) {
         //Verifica indirizzo
         cy.get('.client-name').should('contain.text', String(cliente.ragioneSociale).toUpperCase().replace(",", ""))
