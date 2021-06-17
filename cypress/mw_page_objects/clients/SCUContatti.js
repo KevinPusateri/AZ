@@ -312,61 +312,120 @@ class SCUContatti {
         if (contatto.tipo === "E-Mail" || contatto.tipo === "PEC") {
           cy.wrap(table)
             .find(
-              'app-client-contact-table-row:contains("' + contatto.tipo + '"):contains("' + contatto.principale + '")')
+              'app-client-contact-table-row:contains("' +
+              contatto.tipo +
+              '"):contains("' +
+              contatto.principale +
+              '")'
+            )
             .find(':contains("' + contatto.email + '")')
             .then((row) => {
               cy.wrap(row)
                 .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
-                .click();
+                .click()
+                .wait(5000);
               cy.get("lib-da-link").contains("Modifica contatto").click();
+              // getSCU()
+              //   .find('span[aria-owns="principale_listbox"]')
+              //   .should("include", contatto.principale);
+              // getSCU()
+              //   .find('span[aria-owns="tipoReperibilita_listbox"]')
+              //   .should("include", contatto.tipo);
+              // getSCU().find("#otherKind").should("include", contatto.email);
+              cy.then(() => {
+                cy.task("nuovoContatto").then((object) => {
+                  contatto.email = object.email;
+                  this.addEmail(contatto);
+                  getSCU().find('#submit:contains("Salva")').click().wait(4000);
+                  resolve(contatto);
+                });
+              });
             });
         } else if (contatto.tipo === "Sito Web") {
           cy.wrap(table)
             .find(
-              'app-client-contact-table-row:contains("' + contatto.tipo + '"):contains("' + contatto.principale + '")')
+              'app-client-contact-table-row:contains("' +
+              contatto.tipo +
+              '"):contains("' +
+              contatto.principale +
+              '")'
+            )
             .find(':contains("' + contatto.url + '")')
             .then((row) => {
               cy.wrap(row)
                 .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
-                .click();
+                .click()
+                .wait(5000);
               cy.get("lib-da-link").contains("Modifica contatto").click();
+              // getSCU()
+              //   .find('span[aria-owns="principale_listbox"]')
+              //   .should("include", contatto.principale);
+              // getSCU()
+              //   .find('span[aria-owns="tipoReperibilita_listbox"]')
+              //   .should("include", contatto.tipo);
+              // getSCU().find("#otherKind").should("include", contatto.url);
+              cy.then(() => {
+                cy.task("nuovoContatto").then((object) => {
+                  contatto.url = object.url;
+                  this.addSitoWeb(contatto);
+                  getSCU().find('#submit:contains("Salva")').click().wait(4000);
+                  resolve(contatto);
+                });
+              });
             });
         } else {
           cy.wrap(table)
             .find(
               'app-client-contact-table-row:contains("' +
-                contatto.tipo +
-                '"):contains("' +
-                contatto.principale +
-                '")'
+              contatto.tipo +
+              '"):contains("' +
+              contatto.principale +
+              '")'
             )
             .find(
               ':contains("' +
-                contatto.prefissoInt +
-                " " +
-                contatto.prefisso +
-                " " +
-                contatto.phone +
-                '")'
+              contatto.prefissoInt +
+              " " +
+              contatto.prefisso +
+              " " +
+              contatto.phone +
+              '")'
             )
             .then((row) => {
               cy.wrap(row)
                 .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
                 .click()
-                .wait(2000);
+                .wait(5000);
+              //   cy.intercept({
+              //     method: 'GET',
+              //     url: '**/daanagrafe/**'
+              // }).as('danagrafe');
               cy.get("lib-da-link").contains("Modifica contatto").click();
+              // cy.wait('@danagrafe', { requestTimeout: 40000 });
+              // getSCU()
+              //   .find('span[aria-owns="principale_listbox"]')
+              //   .should("include", contatto.principale);
+              // getSCU()
+              //   .find('span[aria-owns="tipoReperibilita_listbox"]')
+              //   .should("include", contatto.tipo);
+              // getSCU()
+              //   .find('span[aria-controls="tel-pref_listbox"]')
+              //   .should("include", contatto.prefisso);
+              // getSCU()
+              //   .find('span[aria-controls="tel-pr-int_listbox"]')
+              //   .should("include", contatto.prefissoInt);
+              // getSCU().find("#tel-num").should("include", contatto.phone);
               const scelta = [
-                "PrefInt",
+                "Prefisso",
                 "Numero",
                 "Orario",
                 "Email",
                 "Sito Web",
-              ]; /*"Prefisso", (Tipo)*/
+              ]; /*"PrefInt", (Tipo)*/
               var indexScelta = Math.floor(Math.random() * scelta.length);
               cy.then(() => {
                 cy.task("nuovoContatto")
                   .then((object) => {
-                    debugger;
                     if (scelta[indexScelta] === "Numero")
                       contatto.phone = object.phone;
                     if (scelta[indexScelta] === "Email")
@@ -376,12 +435,12 @@ class SCUContatti {
                   })
                   .then(() => {
                     switch (scelta[indexScelta]) {
-                      case "PrefInt":
-                        this.addPrefix(contatto);
-                        break;
-                      // case "Prefisso":
-                      //   this.addPrefisso(contatto);
+                      // case "PrefInt":
+                      //   this.addPrefInt(contatto);
                       //   break;
+                      case "Prefisso":
+                        this.addPrefisso(contatto);
+                        break;
                       case "Numero":
                         this.addPhone(contatto);
                         break;
@@ -406,7 +465,7 @@ class SCUContatti {
   //#region Add methods
 
   static addPhone(contatto) {
-    getSCU().find("#tel-num").type(contatto.phone);
+    getSCU().find("#tel-num").clear().type(contatto.phone);
   }
 
   static addOrario(contatto) {
@@ -467,29 +526,12 @@ class SCUContatti {
       });
   }
 
-  static addPrefix(contatto) {
-    getSCU().find('span[aria-controls="tel-pref_listbox"]').click();
-    getSCU()
-      .find("#tel-pref_listbox > li")
-      .then((list) => {
-        var index = Math.floor(Math.random() * list.length);
-        cy.log(index);
-        cy.wrap(list)
-          .eq(index)
-          .then((numberText) => {
-            contatto.prefisso = numberText.text();
-          });
-        cy.wrap(list).eq(index).click();
-      });
-  }
-
   static addPrefisso(contatto) {
     getSCU().find('span[aria-controls="tel-pref_listbox"]').click();
     getSCU()
       .find("#tel-pref_listbox > li")
       .then((list) => {
         var index = Math.floor(Math.random() * list.length);
-        cy.log(index);
         cy.wrap(list)
           .eq(index)
           .then((numberText) => {
@@ -516,7 +558,6 @@ class SCUContatti {
       .then((tipo) => {
         contatto.tipo = tipo.text();
         if (contatto.tipo === "Email") contatto.tipo = "E-Mail";
-        
       })
       .click();
   }
@@ -591,11 +632,11 @@ class SCUContatti {
   }
 
   static addEmail(contatto) {
-    getSCU().find("#otherKind").type(contatto.email);
+    getSCU().find("#otherKind").clear().type(contatto.email);
   }
 
   static addSitoWeb(contatto) {
-    getSCU().find("#otherKind").type(contatto.url);
+    getSCU().find("#otherKind").clear().type(contatto.url);
   }
   //#endregion
 }
