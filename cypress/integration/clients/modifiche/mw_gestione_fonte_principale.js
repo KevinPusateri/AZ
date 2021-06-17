@@ -45,11 +45,10 @@ describe('Matrix Web : Gestione fonte principale', function () {
       SCUGestioneFontePrincipale.eseguiOnPersonaFisica()
     })
 
-    it.only('Verifica aggancio Gestione fonte principale - Persona Giuridica -i referenti siano corretti', function () {
+    it('Verifica aggancio Gestione fonte principale - Persona Giuridica -i referenti siano corretti', function () {
       TopBar.clickClients()
       BurgerMenuClients.clickLink('Gestione fonte principale')
       SCUGestioneFontePrincipale.eseguiOnPersonaGiuridica()
-
     })
 
   })
