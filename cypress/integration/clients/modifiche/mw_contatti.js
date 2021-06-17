@@ -14,15 +14,14 @@ import TopBar from "../../../mw_page_objects/common/TopBar"
 
 
 //#region Variables
-const userName = 'le00080'
-const psw = 'Giugno2021$'
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
 let contatto
 //#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
-5372570165
 
 before(() => {
   LoginPage.logInMW(userName, psw)
@@ -40,7 +39,7 @@ beforeEach(() => {
 })
 
 after(() => {
-  TopBar.logsOutMW()
+  // TopBar.logOutMW()
 })
 //#endregion
 
@@ -73,7 +72,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
 
     it('Verifica la modifica: Fisso ', function () {
-      SCUContatti.modificaContatti(contatto).then(contact =>{
+      SCUContatti.modificaContatti(contatto).then(contact => {
         contatto = contact
       })
       HomePage.reloadMWHomePage()
@@ -109,7 +108,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
 
     it('Verifica la modifica: Cellulare ', function () {
-      SCUContatti.modificaContatti(contatto).then(contact =>{
+      SCUContatti.modificaContatti(contatto).then(contact => {
         contatto = contact
       })
       HomePage.reloadMWHomePage()
@@ -145,7 +144,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
 
     it('Verifica la modifica: Fax ', function () {
-      SCUContatti.modificaContatti(contatto).then(contact =>{
+      SCUContatti.modificaContatti(contatto).then(contact => {
         contatto = contact
       })
       HomePage.reloadMWHomePage()
@@ -156,8 +155,8 @@ describe('Matrix Web : Creazione Contatto', function () {
       DettaglioAnagrafica.checkContatti(contatto)
     })
   })
-  
-  context('Email', () => {
+
+  context.only('Email', () => {
     it('Verifica l\'operazione di inserimento - tipo: Email', function () {
       LandingRicerca.searchRandomClient(true, "PF", "E")
       LandingRicerca.clickRandomResult()
@@ -181,7 +180,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
 
     it('Verifica la modifica: Email ', function () {
-      SCUContatti.modificaContatti(contatto).then(contact =>{
+      SCUContatti.modificaContatti(contatto).then(contact => {
         contatto = contact
       })
       HomePage.reloadMWHomePage()
@@ -217,7 +216,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
 
     it('Verifica la modifica: Sito Web ', function () {
-      SCUContatti.modificaContatti(contatto).then(contact =>{
+      SCUContatti.modificaContatti(contatto).then(contact => {
         contatto = contact
       })
       HomePage.reloadMWHomePage()
@@ -252,7 +251,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       DettaglioAnagrafica.checkContatti(contatto)
     })
     it('Verifica la modifica: Numero Verde ', function () {
-      SCUContatti.modificaContatti(contatto).then(contact =>{
+      SCUContatti.modificaContatti(contatto).then(contact => {
         contatto = contact
       })
       HomePage.reloadMWHomePage()
@@ -288,7 +287,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
 
     it('Verifica la modifica: Fax Verde ', function () {
-      SCUContatti.modificaContatti(contatto).then(contact =>{
+      SCUContatti.modificaContatti(contatto).then(contact => {
         contatto = contact
       })
       HomePage.reloadMWHomePage()
@@ -324,7 +323,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
 
     it('Verifica la modifica: Ufficio ', function () {
-      SCUContatti.modificaContatti(contatto).then(contact =>{
+      SCUContatti.modificaContatti(contatto).then(contact => {
         contatto = contact
       })
       HomePage.reloadMWHomePage()
@@ -360,7 +359,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
 
     it('Verifica la modifica: PEC ', function () {
-      SCUContatti.modificaContatti(contatto).then(contact =>{
+      SCUContatti.modificaContatti(contatto).then(contact => {
         contatto = contact
       })
       HomePage.reloadMWHomePage()
