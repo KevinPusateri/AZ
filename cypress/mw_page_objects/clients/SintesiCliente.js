@@ -119,7 +119,6 @@ class SintesiCliente {
     static aggiungiContattoPrincipale(contactType) {
         let missingValue
         (contactType === 'numero') ? missingValue = 'Aggiungi numero principale' : missingValue = ' Aggiungi mail principale '
-        debugger
         cy.get('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').click({ multiple: true })
 
     }

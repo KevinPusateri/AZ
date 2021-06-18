@@ -30,6 +30,7 @@ let cliente
  * @param {*} contactType : tipo di contatto a scelta tra 'numero' e 'mail'
  */
 const searchClientWithoutContattiPrincipali = (contactType) => {
+    debugger
     LandingRicerca.searchRandomClient(true, "PF", "P")
     LandingRicerca.clickRandomResult()
 
@@ -63,9 +64,9 @@ afterEach(function () {
         Cypress.runner.stop();
     }
 });
-// after(() => {
-//     TopBar.logOutMW()
-// })
+after(() => {
+    TopBar.logOutMW()
+})
 //#endregion Before After
 
 describe('Matrix Web : Clients Numero e Mail Principali', {
@@ -74,7 +75,7 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
         openMode: 0,
     }
 }, () => {
-    context('Cellulare Principale', () => {
+    context('Numero Principale', () => {
         it('Cerca Cliente senza Numero Principale', () => {
             searchClientWithoutContattiPrincipali('numero')
         })
@@ -92,6 +93,11 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
             TopBar.search(cliente.name)
             LandingRicerca.clickClientName(cliente)
             SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
+            SintesiCliente.checkContattoPrincipale('numero').then(contactIsPresent => {
+                debugger
+                if (!contactIsPresent)
+                    assert.fail('Numero Principale NON inserito correttamente')
+            })
         })
     })
 })

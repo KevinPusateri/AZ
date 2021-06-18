@@ -306,7 +306,6 @@ class SCUContatti {
   }
 
   static aggiungiNuovoTelefonoPrincipale(contatto) {
-    debugger
     // Tipo: Cellulare - indice -> 1
     this.addTipo(contatto, 1);
 
