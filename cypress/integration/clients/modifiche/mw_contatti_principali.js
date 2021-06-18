@@ -94,7 +94,6 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
             LandingRicerca.clickClientName(cliente)
             SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
             SintesiCliente.checkContattoPrincipale('numero').then(contactIsPresent => {
-                debugger
                 if (!contactIsPresent)
                     assert.fail('Numero Principale NON inserito correttamente')
             })
@@ -114,13 +113,12 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
             SCUContatti.aggiungiNuovaMailPrincipale(contatto)
         })
 
-        it('Verifica Mail Principale inserit1', () => {
+        it('Verifica Mail Principale inserita', () => {
             HomePage.reloadMWHomePage()
             TopBar.search(cliente.name)
             LandingRicerca.clickClientName(cliente)
             SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
             SintesiCliente.checkContattoPrincipale('mail').then(contactIsPresent => {
-                debugger
                 if (!contactIsPresent)
                     assert.fail('Mail Principale NON inserita correttamente')
             })
