@@ -39,7 +39,7 @@ beforeEach(() => {
 })
 
 after(() => {
-  // TopBar.logOutMW()
+  TopBar.logOutMW()
 })
 //#endregion
 
