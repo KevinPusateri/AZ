@@ -128,11 +128,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it('Verifica aggancio Emetti Polizza - Gestione Richieste per PA', function () {
-        TopBar.clickSales()
-        Sales.clickLinkOnEmettiPolizza('Gestione Richieste per PA')
-        Sales.backToSales()
-    })
+    // it.skip('Verifica aggancio Emetti Polizza - Gestione Richieste per PA', function () {
+    //     TopBar.clickSales()
+    //     Sales.clickLinkOnEmettiPolizza('Gestione Richieste per PA')
+    //     Sales.backToSales()
+    // })
 
     it('Verifica aggancio Estrai dettaglio', function () {
         TopBar.clickSales()
@@ -195,7 +195,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    // NEW
     it('Verifica aggancio Proposte Vita - Card Vita', function(){
         TopBar.clickSales()
         Sales.clickTabVitaOnProposte()
