@@ -549,6 +549,10 @@ class SCUContatti {
       });
   }
 
+  /**
+   * Inserisci Prefisso
+   * @param {Object} contatto - contatto Prefisso 
+   */
   static addPrefisso(contatto) {
     getSCU().find('span[aria-controls="tel-pref_listbox"]').click();
     getSCU()
@@ -564,6 +568,11 @@ class SCUContatti {
       });
   }
 
+  /**
+   * Inserisci Prefisso Internazionale
+   * @param {Object} contatto - contatto Prefisso Internazionale  
+   */
+  //TODO: Randomizzarlo
   static addPrefInt(contatto) {
     getSCU().find('span[aria-controls="tel-pr-int_listbox"]').click();
     getSCU()
@@ -572,7 +581,10 @@ class SCUContatti {
         contatto.prefissoInt = list.text();
       });
   }
-
+  /**
+   * Inserisci Tipo
+   * @param {Object} contatto - contatto Tipo  
+   */
   static addTipo(contatto, index) {
     getSCU().find('span[aria-owns="tipoReperibilita_listbox"]').click();
     getSCU()
@@ -585,6 +597,10 @@ class SCUContatti {
       .click();
   }
 
+  /**
+   * Inserisci Orario 
+   * @param {Object} contatto - contatto Orario  
+   */
   static addOrario(contatto) {
     getSCU().find('span[aria-owns="orario_listbox"]').click();
     getSCU()
@@ -643,6 +659,10 @@ class SCUContatti {
       });
   }
 
+  /**
+   * Inserisci Principale 
+   * @param {Object} contatto - contatto Principale  
+   */
   static addPrincipale(contatto) {
     getSCU().find('span[aria-owns="principale_listbox"]').click();
     getSCU()
@@ -654,10 +674,18 @@ class SCUContatti {
       .click();
   }
 
+  /**
+   * Inserisci Email 
+   * @param {Object} contatto - contatto Principale  
+   */
   static addEmail(contatto) {
     getSCU().find("#otherKind").clear().type(contatto.email);
   }
 
+  /**
+   * Inserisci Sito Web 
+   * @param {Object} contatto - contatto Sito Web  
+   */
   static addSitoWeb(contatto) {
     getSCU().find("#otherKind").clear().type(contatto.url);
   }
