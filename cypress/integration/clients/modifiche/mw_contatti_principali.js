@@ -5,6 +5,8 @@
 /// <reference types="Cypress" />
 
 //#region import
+import HomePage from "../../../mw_page_objects/common/HomePage"
+import TopBar from "../../../mw_page_objects/common/TopBar"
 import SCUContatti from "../../../mw_page_objects/clients/SCUContatti"
 import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
 import LoginPage from "../../../mw_page_objects/common/LoginPage"
@@ -19,6 +21,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
 let contatto
+let cliente
 //#endregion
 
 //#region Support
@@ -31,6 +34,7 @@ const searchClientWithoutContattiPrincipali = (contactType) => {
     LandingRicerca.clickRandomResult()
 
     SintesiCliente.checkContattoPrincipale(contactType).then(contactIsPresent => {
+        debugger
         if (!contactIsPresent)
             return
         else
@@ -76,8 +80,18 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
         })
 
         it('Aggiungi Numero Principale', () => {
+            SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+                cliente = currentClient
+            })
             SintesiCliente.aggiungiContattoPrincipale('numero')
             SCUContatti.aggiungiNuovoTelefonoPrincipale(contatto)
+        })
+
+        it('Verifica Numero Principale inserito', () => {
+            HomePage.reloadMWHomePage()
+            TopBar.search(cliente.name)
+            LandingRicerca.clickClientName(cliente)
+            SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
         })
     })
 })
