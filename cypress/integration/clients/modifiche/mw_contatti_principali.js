@@ -101,7 +101,7 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
         })
     })
 
-    context.only('Mail Principale', () => {
+    context('Mail Principale', () => {
         it('Cerca Cliente senza Mail Principale', () => {
             searchClientWithoutContattiPrincipali('mail')
         })
