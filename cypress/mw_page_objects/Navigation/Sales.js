@@ -29,7 +29,7 @@ const LinksOnEmettiPolizza = {
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_SALUTE: 'Allianz Ultra Salute',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
-    ALLIANZ1_BUSINESS: 'Allianz1 Business',
+    // ALLIANZ1_BUSINESS: 'Allianz1 Business',
     FASTQUOTE_IMPRESA_E_ALBERGO: 'FastQuote Impresa e Albergo',
     FLOTTE_E_CONVENZIONI: 'Flotte e Convenzioni',
     PREVENTIVO_ANONIMO_VITA_INDIVIDUALI: 'Preventivo anonimo Vita Individuali',
@@ -173,15 +173,15 @@ class Sales {
                 cy.wait(15000)
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
                 break;
-            case LinksOnEmettiPolizza.ALLIANZ1_BUSINESS:
-                cy.intercept({
-                    method: 'POST',
-                    url: '**/Danni/**'
-                }).as('getDanni');
-                Common.canaleFromPopup()
-                cy.wait('@getDanni', { requestTimeout: 30000 });
-                getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
-                break;
+            // case LinksOnEmettiPolizza.ALLIANZ1_BUSINESS:
+            //     cy.intercept({
+            //         method: 'POST',
+            //         url: '**/Danni/**'
+            //     }).as('getDanni');
+            //     Common.canaleFromPopup()
+            //     cy.wait('@getDanni', { requestTimeout: 30000 });
+            //     getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
+            //     break;
             case LinksOnEmettiPolizza.FASTQUOTE_IMPRESA_E_ALBERGO:
                 cy.intercept({
                     method: 'POST',
