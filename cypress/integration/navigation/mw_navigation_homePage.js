@@ -55,7 +55,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickLinkOnIconIncident('Elenco telefonico')
     })
 
-    it.only('Verifica Top Menu User - Verifica apertura icona User', function () {
+    it('Verifica Top Menu User - Verifica apertura icona User', function () {
         TopBar.clickIconUser()
     })
 
