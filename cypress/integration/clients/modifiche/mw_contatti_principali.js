@@ -100,4 +100,30 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
             })
         })
     })
+
+    context.only('Mail Principale', () => {
+        it('Cerca Cliente senza Mail Principale', () => {
+            searchClientWithoutContattiPrincipali('mail')
+        })
+
+        it('Aggiungi Mail Principale', () => {
+            SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+                cliente = currentClient
+            })
+            SintesiCliente.aggiungiContattoPrincipale('mail')
+            SCUContatti.aggiungiNuovaMailPrincipale(contatto)
+        })
+
+        it('Verifica Mail Principale inserit1', () => {
+            HomePage.reloadMWHomePage()
+            TopBar.search(cliente.name)
+            LandingRicerca.clickClientName(cliente)
+            SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
+            SintesiCliente.checkContattoPrincipale('mail').then(contactIsPresent => {
+                debugger
+                if (!contactIsPresent)
+                    assert.fail('Mail Principale NON inserita correttamente')
+            })
+        })
+    })
 })

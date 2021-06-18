@@ -322,6 +322,14 @@ class SCUContatti {
     //click salva
     getSCU().find('#submit:contains("Salva")').click().wait(4000);
   }
+
+  static aggiungiNuovaMailPrincipale(contatto) {
+    // Inserisci Email
+    this.addEmail(contatto);
+
+    //click salva
+    getSCU().find('#submit:contains("Salva")').click();
+  }
   //#endregion
 
   //#region CheckModifica
