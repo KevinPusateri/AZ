@@ -31,7 +31,7 @@ beforeEach(() => {
 })
 
 after(() => {
-  // TopBar.logOutMW()
+  TopBar.logOutMW()
 })
 //#endregion
 
@@ -61,9 +61,9 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
     })
   })
 
-  Cypress._.times(3, () => {
+  Cypress._.times(1, () => {
 
-    context.only('Cancellazione Clienti - Persona Giuridica', () => {
+    context('Cancellazione Clienti - Persona Giuridica', () => {
 
       it('Verifica Cancellazione clienti PG', function () {
         TopBar.clickClients()

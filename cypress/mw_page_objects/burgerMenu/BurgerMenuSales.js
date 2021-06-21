@@ -63,7 +63,7 @@ class BurgerMenuSales extends Sales {
 
         const linksBurger = Object.values(LinksBurgerMenu)
 
-        cy.get('nx-expansion-panel').find('a').should('have.length', 35).each(($checkLinksBurger, i) => {
+        cy.get('nx-expansion-panel').find('a').should('have.length', 36).each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
         })
     }

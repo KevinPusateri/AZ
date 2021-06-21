@@ -36,7 +36,6 @@ after(() => {
 
 describe('Matrix Web : Gestione fonte principale', function () {
 
-
   Cypress._.times(1, () => {
 
     it('Verifica aggancio Gestione fonte principale - Persona Fisica -i referenti siano corretti', function () {

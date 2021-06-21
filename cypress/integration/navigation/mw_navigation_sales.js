@@ -141,6 +141,67 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
+    // ADD TFS
+    it.skip('Verifica "Quietanamento" - lob di interesse: Motor', function () {
+
+        cy.get('app-lob-link').find(':contains("Motor")').click()
+        cy.get('app-receipt-manager-footer').find(':contains("Estrai")').click()
+
+    })
+
+    //ADD TFS
+    it.skip('Verifica "Quietanamento" - lob di interesse: Rami Vari', function () {
+
+        cy.get('app-lob-link').find(':contains("Rami Vari")').click()
+        cy.get('app-receipt-manager-footer').find(':contains("Estrai")').click()
+
+
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('getTotalSferaReceipts')) {
+                req.alias = 'gqlSfera'
+            }
+        })
+        cy.get('app-lob-link').find(':contains("Rami Vari")').click()
+        cy.wait('@gqlSfera')
+    })
+    //ADD TFS
+    it.skip('Verifica "Quietanamento" - lob di interesse: Vita', function () {
+
+        cy.get('app-lob-link').find(':contains("Vita")').click()
+        cy.get('app-receipt-manager-footer').find(':contains("Estrai")').click()
+
+
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('getTotalSferaReceipts')) {
+                req.alias = 'gqlSfera'
+            }
+        })
+        cy.get('app-lob-link').find(':contains("Vita")').click()
+        cy.wait('@gqlSfera')
+    })
+
+    //ADD TFS
+    it.skip('Verifica "Quietanamento" - lob di interesse: Tutte', function () {
+
+        cy.get('app-lob-link').find(':contains("Tutte")').click()
+        cy.get('app-receipt-manager-footer').find(':contains("Estrai")').click()
+
+
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('getTotalSferaReceipts')) {
+                req.alias = 'gqlSfera'
+            }
+        })
+        cy.get('app-lob-link').find(':contains("Tutte")').click()
+        cy.wait('@gqlSfera')
+    })
+
+    //ADD TFS
+    it.skip('Verifica "Campagne"', function () {
+        cy.get('app-sfera').find(':contains("CAMPAGNE")').click()
+        cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
+    })
+
     it('Verifica aggancio Appuntamento', function () {
         TopBar.clickSales()
         Sales.clickAppuntamento()
@@ -195,7 +256,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it('Verifica aggancio Proposte Vita - Card Vita', function(){
+    it('Verifica aggancio Proposte Vita - Card Vita', function () {
         TopBar.clickSales()
         Sales.clickTabVitaOnProposte()
         Sales.clickPrimaCardVitaOnProposte()

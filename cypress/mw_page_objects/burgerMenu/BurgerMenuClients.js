@@ -69,10 +69,12 @@ class BurgerMenuClients extends Clients {
     static checkPage(page) {
         switch (page) {
             case LinksBurgerMenu.ANALISI_DEI_BISOGNI:
+                Common.canaleFromPopup()
                 if(Cypress.isBrowser('firefox')){
 
                     cy.get('app-home-right-section').find('app-rapid-link[linkname="Analisi dei bisogni"] > a')
                             .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
+                    cy.url().should('eq', Common.getBaseUrl() + 'clients/new-client')
                 }else{
                     cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
                     cy.go('back')
@@ -112,8 +114,19 @@ class BurgerMenuClients extends Clients {
                 Common.canaleFromPopup()
                 getIFrame().find('#divMain:contains("Servizi antiriciclaggio"):visible')
                 break;
-            case LinksBurgerMenu.HOSPITAL_SCANNER:
-                break;
+            // case LinksBurgerMenu.HOSPITAL_SCANNER:
+            //     Common.canaleFromPopup()
+            //     if(Cypress.isBrowser('firefox')){
+
+            //         cy.get('app-home-right-section').find('app-rapid-link[linkname="Analisi dei bisogni"] > a')
+            //                 .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
+            //         cy.url().should('eq', Common.getBaseUrl() + 'clients/new-client')
+            //     }else{
+            //         cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
+            //         cy.go('back')
+            //     }
+            //     cy.contains('CERCA INTERVENTO').should('be.visible')
+            //     break;
         }
     }
 

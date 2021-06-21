@@ -96,10 +96,10 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickLinkOnUtilita('Interrogazioni centralizzate')
     })
 
-    // it.skip('Verifica atterraggio da Utilità - Banche Dati ANIA', function () {
-    //     TopBar.clickIconSwitchPage()
-    //     TopBar.clickLinkOnUtilita('Banche Dati ANIA')
-    // })
+    it('Verifica atterraggio da Utilità - Banche Dati ANIA', function () {
+        TopBar.clickIconSwitchPage()
+        TopBar.clickLinkOnUtilita('Banche Dati ANIA')
+    })
 
     it('Verifica atterraggio da Utilità - Gestione Magazzino OBU', function () {
         TopBar.clickIconSwitchPage()

@@ -156,7 +156,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
   })
 
-  context.only('Email', () => {
+  context('Email', () => {
     it('Verifica l\'operazione di inserimento - tipo: Email', function () {
       LandingRicerca.searchRandomClient(true, "PF", "E")
       LandingRicerca.clickRandomResult()

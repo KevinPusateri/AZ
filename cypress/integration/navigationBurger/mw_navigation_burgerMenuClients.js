@@ -89,8 +89,10 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         BurgerMenuClients.backToClients()
     });
 
-    // TODO NEW TFS  -> al momento mostra connessione non sicura
-    // it('Verifica aggancio Hospital scanner', function () {
-
+    // TODO ADD TFS  -> mostra canale e non c'è _blank
+    // it.skip('Verifica aggancio Hospital scanner', function () {
+    //     TopBar.clickClients()
+    //     BurgerMenuClients.clickLink('Hospital scanner')
+    //     BurgerMenuClients.backToClients()
     // });
 });

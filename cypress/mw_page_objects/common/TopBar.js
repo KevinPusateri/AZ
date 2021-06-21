@@ -232,7 +232,7 @@ class TopBar extends HomePage {
         if (page === LinkUtilita.CASELLA_DI_POSTA_ED_AGENZIA ||
             page === LinkUtilita.BANCHE_DATI_ANIA ||
             page === LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS) {
-            cy.contains(page).parent('lib-check-user-permissions').find('a[class="ng-star-inserted"]').invoke('removeAttr', 'target').click()
+            cy.contains(page).parents('lib-check-user-permissions').find('a[class="ng-star-inserted"]').invoke('removeAttr', 'target').click()
         } else {
             cy.contains(page).click()
         }
@@ -253,6 +253,8 @@ class TopBar extends HomePage {
                 getIFrame().find('h4').should('be.visible').and('contain.text', 'Interrogazioni centralizzate')
                 break;
             case LinkUtilita.BANCHE_DATI_ANIA:
+                cy.url().should('include','Auto/InquiryAnia/Ricerca.aspx')
+                cy.go('back')
                 break;
             case LinkUtilita.GESTIONE_MAGAZZINO_OBU:
                 getIFrame().find('#btnSearch').should('be.visible').and('contain.text', 'Cerca')

@@ -37,38 +37,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     });
 
     //#region New Business
-
-    // è stato TOLTO
-    //#region Motor
-    // it('Verifica aggancio FasqtQuote Auto', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('FastQuote Auto').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // });
-
     it('Verifica aggancio Preventivo Motor', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Preventivo Motor')
         BurgerMenuSales.backToSales()
     })
-
-    // è stato TOLTO
-    // it('Verifica aggancio Preventivo anonimo Motor', function () {
-    //     cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Preventivo anonimo Motor').click()
-    //     canaleFromPopup()
-    //     getIFrame().find('input[value="› Home"]').invoke('attr','value').should('equal','› Home')
-    //     getIFrame().find('input[value="› Avanti"]').invoke('attr','value').should('equal','› Avanti')
-    //     cy.get('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    // });
 
     it('Verifica aggancio Flotte e Convenzioni', function () {
         TopBar.clickSales()
@@ -114,39 +87,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.clickLink('Allianz1 Business')
         BurgerMenuSales.backToSales()
     })
-
-    //  it('Verifica aggancio FastQuote Universo Persona', function () {
-    //        cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //        cy.url().should('eq',baseUrl+ 'sales/')
-    //        cy.get('lib-burger-icon').click()
-    //        cy.contains('FastQuote Universo Persona').click()
-    //        canaleFromPopup()
-    //        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-    //        cy.get('a').contains('Sales').click()
-    //        cy.url().should('eq',baseUrl+ 'sales/')
-    //    })
-   
-    //  it('Verifica aggancio FastQuote Universo Salute', function () {
-    //        cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //        cy.url().should('eq',baseUrl+ 'sales/')
-    //        cy.get('lib-burger-icon').click()
-    //        cy.contains('FastQuote Universo Salute').click()
-    //        canaleFromPopup()
-    //        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-    //        cy.get('a').contains('Sales').click()
-    //        cy.url().should('eq',baseUrl+ 'sales/')
-    //    })
-   
-    //  it('Verifica aggancio FastQuote Universo Persona Malattie Gravi', function () {
-    //        cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //        cy.url().should('eq',baseUrl+ 'sales/')
-    //        cy.get('lib-burger-icon').click()
-    //        cy.contains('FastQuote Universo Persona Malattie Gravi').click()
-    //        canaleFromPopup()
-    //        getIFrame().find('input[value="› Calcola"]').invoke('attr','value').should('equal','› Calcola')
-    //        cy.get('a').contains('Sales').click()
-    //        cy.url().should('eq',baseUrl+ 'sales/')
-    //    })
 
     it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
         TopBar.clickSales()
