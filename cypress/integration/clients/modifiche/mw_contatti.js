@@ -47,7 +47,7 @@ after(() => {
 let client
 describe('Matrix Web : Creazione Contatto', function () {
 
-  context('Telefono Fisso', () => {
+  context.only('Telefono Fisso', () => {
 
     it('Verifica l\'operazione di inserimento - tipo: Fisso', function () {
       LandingRicerca.searchRandomClient(true, "PF", "E")

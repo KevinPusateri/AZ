@@ -19,6 +19,10 @@ class SCUContatti {
       cy.task("nuovoContatto")
         .then((object) => {
           contatto = object;
+          contatto.tipo = "";
+          contatto.prefissoInt = "";
+          contatto.prefisso = "";
+          contatto.orario = "";
         })
         .then(() => {
           // Tipo: Fisso - indice -> 0
@@ -592,13 +596,11 @@ class SCUContatti {
   static addTipo(contatto, index) {
     getSCU().find('span[aria-owns="tipoReperibilita_listbox"]').click();
     getSCU()
-      .find("#tipoReperibilita_listbox > li")
-      .eq(index)
-      .then((tipo) => {
+      .find("#tipoReperibilita_listbox > li").eq(index).then((tipo) => {
         contatto.tipo = tipo.text();
         if (contatto.tipo === "Email") contatto.tipo = "E-Mail";
-      })
-      .click();
+        debugger
+      }).click();
   }
 
   /**

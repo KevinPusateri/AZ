@@ -12,8 +12,6 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza"):visible').click()
-const popoverEmettiPolizza = () => cy.get('.card-container').find('lib-da-link')
 //#endregion
 
 const LinksRapidi = {
@@ -29,7 +27,7 @@ const LinksOnEmettiPolizza = {
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_SALUTE: 'Allianz Ultra Salute',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
-    // ALLIANZ1_BUSINESS: 'Allianz1 Business',
+    ALLIANZ1_BUSINESS: 'Allianz1 Business',
     FASTQUOTE_IMPRESA_E_ALBERGO: 'FastQuote Impresa e Albergo',
     FLOTTE_E_CONVENZIONI: 'Flotte e Convenzioni',
     PREVENTIVO_ANONIMO_VITA_INDIVIDUALI: 'Preventivo anonimo Vita Individuali',
@@ -122,16 +120,25 @@ class Sales {
         }
     }
 
+
+    /**
+     * Verifica link presenti su Emetti Polizza
+     */
+    static checkLinksOnEmettiPolizza(){
+        cy.contains('Emetti polizza').click({ force: true })
+        const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
+        cy.get('.card-container').find('lib-da-link').each(($link, i) => {
+            expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
+        })
+    }
+
     /**
      * Click link nel button "Emetti polizza"
      * @param {string} page - nome del link
      */
     static clickLinkOnEmettiPolizza(page) {
         cy.wait(3000)
-        // buttonEmettiPolizza()
-        // popoverEmettiPolizza().contains(page).click()
         cy.contains('Emetti polizza').click({ force: true })
-        // cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza"):visible').click().wait()
         cy.get('.card-container').find('lib-da-link').contains(page).click()
         switch (page) {
             case LinksOnEmettiPolizza.PREVENTIVO_MOTOR:
@@ -173,15 +180,15 @@ class Sales {
                 cy.wait(15000)
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
                 break;
-            // case LinksOnEmettiPolizza.ALLIANZ1_BUSINESS:
-            //     cy.intercept({
-            //         method: 'POST',
-            //         url: '**/Danni/**'
-            //     }).as('getDanni');
-            //     Common.canaleFromPopup()
-            //     cy.wait('@getDanni', { requestTimeout: 30000 });
-            //     getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
-            //     break;
+            case LinksOnEmettiPolizza.ALLIANZ1_BUSINESS:
+                cy.intercept({
+                    method: 'POST',
+                    url: '**/Danni/**'
+                }).as('getDanni');
+                Common.canaleFromPopup()
+                cy.wait('@getDanni', { requestTimeout: 30000 });
+                getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
+                break;
             case LinksOnEmettiPolizza.FASTQUOTE_IMPRESA_E_ALBERGO:
                 cy.intercept({
                     method: 'POST',
@@ -453,6 +460,18 @@ class Sales {
     }
     //#endregion
 
+    // Click tab "CAMPAGNE"
+    static clickTabCampagne() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('campaignAgent')) {
+                req.alias = 'gqlCampaignAgent'
+            }
+        })
+        cy.get('nx-tab-header').find('button:contains("CAMPAGNE")').click()
+        Common.canaleFromPopup()
+        cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 });
+        cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
+    }
 
 }
 

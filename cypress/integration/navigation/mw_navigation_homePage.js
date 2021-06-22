@@ -186,9 +186,9 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         HomePage.clickPanelNotifiche()
     })
 
-    it('Verifica testi e link delle notifiche', function () {
-        HomePage.clickPanelNotifiche()
-        HomePage.checkNotifiche()
-    })
+    // it.skip('Verifica testi e link delle notifiche', function () {
+    //     HomePage.clickPanelNotifiche()
+    //     HomePage.checkNotifiche()
+    // })
 
 })

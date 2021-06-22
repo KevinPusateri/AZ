@@ -179,7 +179,6 @@ class LandingRicerca {
                 cy.get('lib-client-item:contains("' + client.name + '"):contains("' + client.address + '")').click();
             }
         })
-        debugger
         //Verifica se ci sono problemi nel retrive del cliente per permessi
         cy.wait('@client', { requestTimeout: 30000 })
             .its('response.body.data.client')

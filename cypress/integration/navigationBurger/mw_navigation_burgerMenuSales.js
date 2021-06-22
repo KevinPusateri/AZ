@@ -155,7 +155,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.clickLink('Gestione attività in scadenza')
         BurgerMenuSales.backToSales()
     })
-    
+
     it('Verifica aggancio Manutenzione portafoglio RV Midco', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Manutenzione portafoglio RV Midco')
@@ -234,16 +234,15 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
-    // TODO:non clicca il button
-    /*   it('Verifica aggancio Allianz Global Assistance', function () {
-           cy.get('app-product-button-list').find('a').contains('Sales').click()
-           cy.url().should('eq',baseUrl+ 'sales/')
-           cy.get('lib-burger-icon').click()
-           cy.contains('Allianz Global Assistance').invoke('removeAttr','target').click()
-           cy.get('#logo-oazis-header')
-           cy.go('back')
-           cy.url().should('eq',baseUrl+ 'sales/')
-       })*/
+    it('Verifica aggancio Allianz Global Assistance', function () {
+        cy.get('app-product-button-list').find('a').contains('Sales').click()
+        cy.url().should('eq', Common.getBaseUrl() + 'sales/')
+        cy.get('lib-burger-icon').click({ force: true })
+        cy.contains('Allianz Global Assistance').invoke('removeAttr', 'target').click()
+        cy.get('#logo-oazis-header').should('be.visible')
+        cy.go('back')
+        cy.url().should('eq', Common.getBaseUrl() + 'sales/')
+    })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e aggiungere su excel
     // it('Verifica aggancio Allianz Placement Platform', function () {
@@ -277,13 +276,22 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e excel
-    // it('Verifica aggancio ACOM Gestione iniziative', function () {
-    // cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('ACOM Gestione iniziative').click()
-    // canaleFromPopup()
+    // it.only('Verifica aggancio ACOM Gestione iniziative', function () {
+    //     TopBar.clickSales()
+    //     cy.get('lib-burger-icon').click({force:true})
+        
+    //     var newUrl = '';
+    //     cy.window().then((win) => {
+    //         cy.stub(win, 'open').as('windowOpen').callsFake(url => {
+    //             newUrl = url;
+    //         });
+    //     }).then(()=>{
 
+    //         cy.contains('ACOM Gestione iniziative').click()
+    //         Common.canaleFromPopup()
+    //         cy.get('@windowOpen').should('be.called');
+    //         cy.visit(newUrl)
+    //     })
     // })
     //#endregion
 })
