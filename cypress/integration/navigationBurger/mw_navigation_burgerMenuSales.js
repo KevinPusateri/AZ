@@ -37,6 +37,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     });
 
     //#region New Business
+    //#region Motor
     it('Verifica aggancio Preventivo Motor', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Preventivo Motor')
@@ -101,7 +102,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
     //#endregion
 
-    // da verificare il wait
     //#region Vita
     it('Verifica aggancio Allianz1 premorienza', function () {
         TopBar.clickSales()
@@ -235,13 +235,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Allianz Global Assistance', function () {
-        cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.url().should('eq', Common.getBaseUrl() + 'sales/')
-        cy.get('lib-burger-icon').click({ force: true })
-        cy.contains('Allianz Global Assistance').invoke('removeAttr', 'target').click()
-        cy.get('#logo-oazis-header').should('be.visible')
-        cy.go('back')
-        cy.url().should('eq', Common.getBaseUrl() + 'sales/')
+        TopBar.clickSales()
+        BurgerMenuSales.clickLink('Allianz Global Assistance')
     })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e aggiungere su excel
@@ -279,7 +274,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     // it.only('Verifica aggancio ACOM Gestione iniziative', function () {
     //     TopBar.clickSales()
     //     cy.get('lib-burger-icon').click({force:true})
-        
+
     //     var newUrl = '';
     //     cy.window().then((win) => {
     //         cy.stub(win, 'open').as('windowOpen').callsFake(url => {

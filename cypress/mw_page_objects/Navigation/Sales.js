@@ -47,6 +47,32 @@ class Sales {
     }
 
     /**
+     * Verifica se i "pz" sono presenti 
+     */
+    static checkExistPezzi(){
+        cy.get('app-lob-link').each((lob) => {
+            cy.wrap(lob).find('span:contains("' + lob.text() + '")').click()
+            cy.get('app-receipt-header').find('span:contains("Pezzi")').click()
+            cy.get('app-receipt-header').find('span[class="value ng-star-inserted"]').invoke('text').should('not.include', '€')
+            cy.get('app-receipt-manager-header-item').invoke('text').should('not.include', '€')
+            cy.get('app-receipt-manager-footer').invoke('text').should('not.include', '€')
+        })
+    }
+
+    /**
+     * Verifica se i "pz" sono presenti 
+     */
+     static checkExistPremi(){
+        cy.get('app-lob-link').each((lob) => {
+            cy.wrap(lob).find('span:contains("' + lob.text() + '")').click()
+            cy.get('app-receipt-header').find('span:contains("Pezzi")').click()
+            cy.get('app-receipt-header').find('span[class="value ng-star-inserted"]').invoke('text').should('not.include', '€')
+            cy.get('app-receipt-manager-header-item').invoke('text').should('not.include', '€')
+            cy.get('app-receipt-manager-footer').invoke('text').should('not.include', '€')
+        })
+    }
+
+    /**
      * Verifica che i link dei collegamenti rapidi siano presenti nella pagina
      */
     static checkExistLinksCollegamentiRapidi() {

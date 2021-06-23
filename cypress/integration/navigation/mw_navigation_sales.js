@@ -28,7 +28,7 @@ beforeEach(() => {
 })
 
 after(() => {
-    // TopBar.logOutMW()
+    TopBar.logOutMW()
 })
 
 
@@ -67,7 +67,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it('Verifica la presenza dei link su "Emetti Polizza"',function(){
+    it('Verifica la presenza dei link su "Emetti Polizza"', function () {
         TopBar.clickSales()
         Sales.checkLinksOnEmettiPolizza()
     })
@@ -138,7 +138,19 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //     Sales.backToSales()
     // })
 
-    it('Verifica aggancio Estrai dettaglio', function () {
+    it('Verifica tab "Pezzi"', function () {
+
+        TopBar.clickSales()
+        Sales.checkExistPezzi()
+    })
+
+    it('Verifica "Premi"', function () {
+
+        TopBar.clickSales()
+        Sales.checkExistPremi()
+    })
+
+    it('Verifica aggancio Attività in scadenza - Estrai dettaglio', function () {
         TopBar.clickSales()
         Sales.clickAttivitaInScadenza()
         Sales.clickEstraiDettaglio()

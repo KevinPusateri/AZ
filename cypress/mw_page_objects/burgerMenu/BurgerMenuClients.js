@@ -33,7 +33,7 @@ class BurgerMenuClients extends Clients {
      */
     static checkExistLinks() {
 
-        cy.get('lib-burger-icon').click({force:true})
+        cy.get('lib-burger-icon').click({ force: true })
 
         const linksBurger = Object.values(LinksBurgerMenu)
 
@@ -47,19 +47,14 @@ class BurgerMenuClients extends Clients {
      * @param {string} page - nome del link 
      */
     static clickLink(page) {
-        cy.get('lib-burger-icon').click({force:true})
+        cy.get('lib-burger-icon').click({ force: true })
         if (page === LinksBurgerMenu.ANALISI_DEI_BISOGNI) {
-            if(Cypress.isBrowser('firefox')){
-                cy.contains(page).parents('nx-link').find('a')
-                        .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
-            }else{
-                cy.contains(page).invoke('removeAttr', 'target').click()
-            }
-        }else{
+            this.checkPage(page)
+        } else {
             cy.contains(page).click()
+            this.checkPage(page)
         }
 
-        this.checkPage(page)
     }
 
     /**
@@ -70,12 +65,13 @@ class BurgerMenuClients extends Clients {
         switch (page) {
             case LinksBurgerMenu.ANALISI_DEI_BISOGNI:
                 Common.canaleFromPopup()
-                if(Cypress.isBrowser('firefox')){
+                if (Cypress.isBrowser('firefox')) {
 
                     cy.get('app-home-right-section').find('app-rapid-link[linkname="Analisi dei bisogni"] > a')
-                            .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
-                    cy.url().should('eq', Common.getBaseUrl() + 'clients/new-client')
-                }else{
+                        .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
+                    } else {
+                        cy.contains(page).invoke('removeAttr', 'target').click()
+                        cy.url().should('eq', 'https://www.ageallianz.it/analisideibisogni/app/login')
                     cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
                     cy.go('back')
                 }
@@ -130,11 +126,11 @@ class BurgerMenuClients extends Clients {
         }
     }
 
-    
+
     /**
      * Torna indetro su Clients
      */
-     static backToClients() {
+    static backToClients() {
         super.backToClients()
     }
 

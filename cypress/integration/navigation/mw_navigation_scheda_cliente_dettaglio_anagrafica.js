@@ -1,5 +1,7 @@
 /// <reference types="Cypress" />
 
+const { default: DettaglioAnagrafica } = require("cypress/mw_page_objects/clients/DettaglioAnagrafica");
+
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
 
@@ -69,39 +71,16 @@ before(() => {
 describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Dettaglio Anagrafica', function () {
 
     it('Verifica presenza di subtab nel Tab Dettaglio Anagrafica', function () {
-        const tabAnagrafica = [
-            'Dati anagrafici',
-            'Altri contatti',
-            'Altri indirizzi',
-            'Documenti',
-            'Legami',
-            'Conti correnti',
-            'Convenzioni'
-        ]
-        cy.get('nx-tab-header').find('button').should('have.length', 7).each(($checkTabAnagrafica, i) => {
-            expect($checkTabAnagrafica.text().trim()).to.include(tabAnagrafica[i]);
-        })
-
+        DettaglioAnagrafica.checkLinksSubTabs()
     })
 
     it('Dettaglio Anagrafica: verifica SubTab Dati Anagrafici', function () {
-        cy.get('app-section-title').find('.title:contains("Dati principali persona fisica"):visible')
-        cy.get('app-physical-client-main-data').find('button:contains("Modifica dati cliente"):visible')
-        cy.get('app-client-risk-profiles').find('.title:contains("Identificazione e adeguata verifica"):visible')
-        cy.get('app-client-consents-accordion').find('.title:contains("Consensi"):visible')
-        cy.get('nx-expansion-panel-header').contains('Consensi e adeguatezza').click()
-        cy.get('nx-expansion-panel-header').contains('Consensi e adeguatezza AGL').click()
-        cy.get('nx-expansion-panel-header').contains('Consensi e adeguatezza Leben').click()
-        cy.get('app-section-title').find('.title:contains("Residenza anagrafica"):visible')
-        cy.get('app-section-title').find('.title:contains("Domicilio"):visible')
-        cy.get('app-section-title').find('.title:contains("Numero di telefono principale"):visible')
-        cy.get('app-section-title').find('.title:contains("Email"):visible')
-        cy.get('app-section-title').find('.title:contains("Documento principale"):visible')
+        DettaglioAnagrafica.checkSubTabDatiAnagrafici()
     })
 
-    it('Dettaglio Anagrafica: verifica SubTab Altri contatti', function () {
+    it('Dettaglio Anagrafica: verifica SubTab contatti', function () {
         cy.intercept('GET','**/omazeuxnewsdev/**').as('pageTab')
-        cy.get('nx-tab-header').contains('Altri contatti').click()
+        cy.get('nx-tab-header').contains('Contatti').click()
         cy.wait('@pageTab')
         cy.url().should('include', '/profile-detail?tabIndex=1')
         cy.get('app-client-contact-table-row').find('.label:contains("Orario")')

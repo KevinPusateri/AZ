@@ -59,7 +59,7 @@ class BurgerMenuSales extends Sales {
      */
     static checkExistLinks() {
 
-        cy.get('lib-burger-icon').click({force:true})
+        cy.get('lib-burger-icon').click({ force: true })
 
         const linksBurger = Object.values(LinksBurgerMenu)
 
@@ -73,10 +73,14 @@ class BurgerMenuSales extends Sales {
      * @param {string} page - nome del link 
      */
     static clickLink(page) {
-        cy.get('lib-burger-icon').click({force:true})
-        cy.contains(page).click()
 
-        this.checkPage(page)
+        cy.get('lib-burger-icon').click({ force: true })
+        if (page === LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE) {
+            this.checkPage(page)
+        } else {
+            cy.contains(page).click()
+            this.checkPage(page)
+        }
     }
 
     /**
@@ -233,14 +237,14 @@ class BurgerMenuSales extends Sales {
             case LinksBurgerMenu.REPORT_CLIENTE_T4L:
                 cy.intercept({
                     method: 'POST',
-                    url: /Vita*/
+                    url: '**/Vita/**'
                 }).as('vita');
                 Common.canaleFromPopup()
                 // cy.wait('@vita', { requestTimeout: 30000 });
                 cy.wait(6000)
                 getIFrame().find('input[value="Ricerca"]').invoke('attr', 'value').should('equal', 'Ricerca')
                 break;
-                case LinksBurgerMenu.DOCUMENTI_ANNULLATI:
+            case LinksBurgerMenu.DOCUMENTI_ANNULLATI:
                 Common.canaleFromPopup()
                 getIFrame().find('span:contains("Storico polizze e quietanze distrutte"):visible')
                 break;
@@ -256,6 +260,16 @@ class BurgerMenuSales extends Sales {
                 getIFrame().find('button:contains("Cerca"):visible')
                 break;
             case LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE:
+                if (Cypress.isBrowser('firefox')) {
+
+                    cy.get('lib-side-menu').find('a:contains("Allianz Global Assistance")')
+                        .should('have.attr', 'href', 'http://oazis.allianz-assistance.it')
+                } else {
+                    cy.contains('Allianz Global Assistance').invoke('removeAttr', 'target').click()
+                    cy.url().should('eq', 'https://oazis.allianz-assistance.it/dynamic/home/index')
+                    cy.get('#logo-oazis-header').should('be.visible')
+                    cy.go('back')
+                }
                 break;
             case LinksBurgerMenu.ALLIANZ_PLACEMENT_PLATFORM:
                 break;

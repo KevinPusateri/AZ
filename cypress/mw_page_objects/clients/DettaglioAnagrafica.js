@@ -2,6 +2,22 @@
 
 class DettaglioAnagrafica {
 
+
+    static checkLinksSubTabs() {
+        const tabAnagrafica = [
+            'Dati anagrafici',
+            'Altri contatti',
+            'Altri indirizzi',
+            'Documenti',
+            'Legami',
+            'Conti correnti',
+            'Convenzioni'
+        ]
+        cy.get('nx-tab-header').find('button').each(($checkTabAnagrafica, i) => {
+            expect($checkTabAnagrafica.text().trim()).to.include(tabAnagrafica[i]);
+        })
+    }
+
     static verificaDatiDettaglioAnagrafica(cliente) {
 
         cy.intercept('POST', '**/graphql', (req) => {
@@ -79,6 +95,21 @@ class DettaglioAnagrafica {
 
         cy.contains(subTab).click()
         cy.wait('@gqlClient', { requestTimeout: 30000 });
+    }
+
+    static checkSubTabDatiAnagrafici(){
+        cy.get('app-section-title').find('.title:contains("Dati principali persona fisica"):visible')
+        cy.get('app-physical-client-main-data').find('button:contains("Modifica dati cliente"):visible')
+        cy.get('app-client-risk-profiles').find('.title:contains("Identificazione e adeguata verifica"):visible')
+        cy.get('app-client-consents-accordion').find('.title:contains("Consensi"):visible')
+        cy.get('nx-expansion-panel-header').contains('Consensi e adeguatezza').click()
+        cy.get('nx-expansion-panel-header').contains('Consensi e adeguatezza AGL').click()
+        cy.get('nx-expansion-panel-header').contains('Consensi e adeguatezza Leben').click()
+        cy.get('app-section-title').find('.title:contains("Residenza anagrafica"):visible')
+        cy.get('app-section-title').find('.title:contains("Domicilio"):visible')
+        cy.get('app-section-title').find('.title:contains("Numero di telefono principale"):visible')
+        cy.get('app-section-title').find('.title:contains("Email"):visible')
+        cy.get('app-section-title').find('.title:contains("Documento principale"):visible')
     }
 
 
