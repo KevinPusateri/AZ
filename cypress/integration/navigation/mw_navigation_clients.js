@@ -39,7 +39,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         TopBar.clickClients()
     });
 
-    it('Verifica presenza dei collegamenti rapidi',function() {
+    it('Verifica presenza dei collegamenti rapidi', function () {
         TopBar.clickClients()
         Clients.checkExistLinksCollegamentiRapidi()
     })
@@ -79,6 +79,11 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         Clients.clickNuovoCliente()
         Clients.backToClients()
     });
+
+    it('Verifica che il contenuto di Visione globale cliente sia presente', function () {
+        TopBar.clickClients()
+        Clients.checkVisioneGlobaleCliente()
+    })
 
     it('Verifica aggancio Vai a visione globale', function () {
         TopBar.clickClients()

@@ -2,6 +2,16 @@
 
 import Common from "../common/Common";
 
+const getIFrame = () => {
+    cy.get('iframe[class="iframe-content ng-star-inserted"]').iframe();
+
+    let iframeSCU = cy
+        .get('iframe[class="iframe-content ng-star-inserted"]')
+        .its("0.contentDocument")
+        .should("exist");
+
+    return iframeSCU.its("body").should("not.be.undefined").then(cy.wrap);
+};
 class LandingRicerca {
 
     /**
