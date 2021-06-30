@@ -76,11 +76,11 @@ class LandingClients {
     static clickLinkRapido(page) {
         switch (page) {
             case LinksRapidi.ANALISI_DEI_BISOGNI:
-                if(Cypress.isBrowser('firefox')){
+                if (Cypress.isBrowser('firefox')) {
 
                     cy.get('app-home-right-section').find('app-rapid-link[linkname="Analisi dei bisogni"] > a')
-                            .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
-                }else{
+                        .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
+                } else {
                     cy.get('app-rapid-link').contains(page).invoke('removeAttr', 'target').click()
                     cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
                     cy.go('back')
@@ -155,6 +155,7 @@ class LandingClients {
         cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@')
         cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente')
         cy.get('app-digital-me-context-menu ').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
+        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente')
     }
 
     /**
@@ -162,11 +163,11 @@ class LandingClients {
      * verificando dal menu a tendina  della prima card 
      * che il contenuto non sia vuoto e che i dati corrispondano
      */
-     static verificaVediTutte() {
+    static verificaVediTutte() {
         cy.contains('Vedi tutte').click()
         cy.url().should('include', '/clients/digital-me')
         cy.get('[class="ellipsis-box"]').first().find('button').click()
-        cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').each(($checkLink) =>{
+        cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').each(($checkLink) => {
             expect($checkLink.text()).not.to.be.empty
         })
         cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
@@ -174,6 +175,33 @@ class LandingClients {
         cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@')
         cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente')
         cy.get('app-digital-me-context-menu ').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
+    }
+
+    /**
+     * Verifica che il contenuto di Visione globale cliente sia presente
+     */
+    static checkVisioneGlobaleCliente() {
+        cy.get('app-global-vision-carousel').should('be.visible')
+        cy.get('app-global-vision-carousel').within(() => {
+            cy.get('svg').should('be.visible')
+
+            const titleGlobals = [
+                'Polizze Clienti',
+                'Contatti e consensi concessi',
+                'Contatti e consensi non concessi',
+                'Monocoperti',
+                'Anzianità del Cliente',
+                'Età del Cliente',
+                'Tipo Persona',
+                'Coperture',
+                'Scoperture'
+            ]
+            cy.get('ngu-tile').find('div[class="chart-title homepage-chart-title"]:visible')
+                .should('be.visible').each((title, i) => {
+                    expect(title.text().trim()).to.include(titleGlobals[i]);
+                })
+        })
+
     }
 }
 

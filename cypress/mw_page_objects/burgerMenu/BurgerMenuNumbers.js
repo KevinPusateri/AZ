@@ -83,7 +83,7 @@ class BurgerMenuNumbers extends Numbers {
      * @param {string} page - nome del link 
      */
     static clickLink(page) {
-        cy.get('lib-burger-icon').click()
+        cy.get('lib-burger-icon').click({force:true})
 
         if (page === LinksBurgerMenu.ESTRAZIONI_AVANZATE)
             interceptGetPentahoDA()

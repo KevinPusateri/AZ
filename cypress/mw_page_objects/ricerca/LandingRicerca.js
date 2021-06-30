@@ -28,7 +28,7 @@ class LandingRicerca {
 
         cy.get('input[name="main-search-input"]').click()
         cy.generateTwoLetters().then(randomChars => {
-            cy.get('input[name="main-search-input"]').type(randomChars).type('{enter}')
+            cy.get('input[name="main-search-input"]').clear().type(randomChars).type('{enter}')
         })
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
 
@@ -570,10 +570,21 @@ class LandingRicerca {
     /**
      * Verifica che la ricerca non ha prodotto risultati
      */
-    static checkClienteNotFound() {
-        cy.get('lib-client-item').first().click().wait(2000)
-        cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
-    }
-}
+    static checkClienteNotFound(cliente) {
+        cy.get('body').then(($body) => {
 
+            const check = $body.find('span:contains("La ricerca non ha prodotto risultati")').is(':visible')
+            if (check) {
+                cy.get('body').should('contain.text', 'La ricerca non ha prodotto risultati')
+            } else {
+                cy.get('body').find('lib-client-item').first().click().wait(2000)
+                cy.get('body').then(() => {
+
+                    cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
+                })
+            }
+        })
+    }
+
+}
 export default LandingRicerca

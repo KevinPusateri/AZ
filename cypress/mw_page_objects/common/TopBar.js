@@ -14,6 +14,15 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+const getIFrameElencoTelefonico = () => {
+    getIFrame().find('iframe[src="/phoneBook/searchInterniWithCompanyDA.do"]')
+        .iframe();
+
+    let iframeFolder = getIFrame().find('iframe[src="/phoneBook/searchInterniWithCompanyDA.do"]')
+        .its('0.contentDocument').should('exist');
+
+    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+}
 const interceptPageSales = () => {
     cy.intercept({
         method: 'POST',
@@ -207,7 +216,8 @@ class TopBar extends HomePage {
             case "Elenco telefonico":
                 cy.get('lib-incident-container').find('a:contains("Elenco telefonico"):visible').click()
                 Common.canaleFromPopup()
-                getIFrame().find('[class="container"]:contains("La funzionalità non è al momento disponibile, verrà riattivata il prima possibile.")').should('be.visible')
+                getIFrameElencoTelefonico().find('input[name="btnCerca"]').invoke('attr', 'value').should('equal', ' Cerca ')
+
                 break;
         }
 
@@ -253,7 +263,7 @@ class TopBar extends HomePage {
                 getIFrame().find('h4').should('be.visible').and('contain.text', 'Interrogazioni centralizzate')
                 break;
             case LinkUtilita.BANCHE_DATI_ANIA:
-                cy.url().should('include','Auto/InquiryAnia/Ricerca.aspx')
+                cy.url().should('include', 'Auto/InquiryAnia/Ricerca.aspx')
                 cy.go('back')
                 break;
             case LinkUtilita.GESTIONE_MAGAZZINO_OBU:
