@@ -52,7 +52,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         LandingRicerca.search('ultra')
         LandingRicerca.checkTabs()
         LandingRicerca.checkSuggestedLinks('ultra')
-        LandingRicerca.checkClients()
+        // LandingRicerca.checkClients()
         LandingRicerca.checkLeMieInfo()
     })
 

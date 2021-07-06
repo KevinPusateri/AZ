@@ -25,8 +25,13 @@ class SintesiCliente {
         cy.contains('PLEINAIR').click();
         getIFrame().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
         getIFrame().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
-        getIFrame().find('#ButtonQuestOk').click().wait(6000)
-        getIFrame().find('#TabVarieInserimentoTipoPagamento > div.left > span > span').click()
+        cy.intercept({
+            method: 'POST',
+            url: '**/dacontabilita/**'
+        }).as('dacontabilita');
+        getIFrame().find('#ButtonQuestOk').click().wait(10000)
+        cy.wait('@dacontabilita', { requestTimeout: 60000 })
+        getIFrame().find('#TabVarieInserimentoTipoPagamento').click()
         getIFrame().find('li').contains("Contanti").click()
         getIFrame().find('#FiltroTabVarieInserimentoDescrizione').type("TEST AUTOMATICO")
 

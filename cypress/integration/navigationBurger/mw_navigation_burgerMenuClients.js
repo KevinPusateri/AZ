@@ -3,37 +3,38 @@
  * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
  */
 
- import Common from "../../mw_page_objects/common/Common"
- import LoginPage from "../../mw_page_objects/common/LoginPage"
- import TopBar from "../../mw_page_objects/common/TopBar"
- import BurgerMenuClients from "../../mw_page_objects/burgerMenu/BurgerMenuClients"
+import Common from "../../mw_page_objects/common/Common"
+import LoginPage from "../../mw_page_objects/common/LoginPage"
+import TopBar from "../../mw_page_objects/common/TopBar"
+import BurgerMenuClients from "../../mw_page_objects/burgerMenu/BurgerMenuClients"
+import Clients from "../../mw_page_objects/clients/LandingClients"
 
- //#region Variables
- const userName = 'TUTF021'
- const psw = 'P@ssw0rd!'
- //#endregion
- 
- //#region  Configuration
- Cypress.config('defaultCommandTimeout', 60000)
- //#endregion
- 
- before(() => {
-     LoginPage.logInMW(userName, psw)
- })
- 
- beforeEach(() => {
-     Common.visitUrlOnEnv()
-     cy.preserveCookies()
- })
- 
- after(() => {
-     TopBar.logOutMW()
- })
+//#region Variables
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
+//#endregion
+
+//#region  Configuration
+Cypress.config('defaultCommandTimeout', 60000)
+//#endregion
+
+before(() => {
+    LoginPage.logInMW(userName, psw)
+})
+
+beforeEach(() => {
+    Common.visitUrlOnEnv()
+    cy.preserveCookies()
+})
+
+after(() => {
+    TopBar.logOutMW()
+})
 describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica i link da Burger Menu', function () {
-       TopBar.clickClients()
-       BurgerMenuClients.checkExistLinks()
+        TopBar.clickClients()
+        BurgerMenuClients.checkExistLinks()
     });
 
     it('Verifica aggancio Analisi dei bisogni', function () {
@@ -47,9 +48,10 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         BurgerMenuClients.backToClients()
     });
 
-    it('Verifica aggancio Digital Me', function () {
+    it.only('Verifica aggancio Digital Me', function () {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Digital Me')
+        Clients.verificaRichiesteDigitalMe()
         BurgerMenuClients.backToClients()
     });
 
