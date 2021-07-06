@@ -174,7 +174,7 @@ describe('Matrix Web : Documenti', function () {
         })
     })
 
-    context('Altro', function () {
+    context.only('Altro', function () {
 
         it('Cerca Cliente senza Altro Documento', () => {
             documentType = 'Altro'

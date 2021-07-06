@@ -75,8 +75,8 @@ class SCUDocumenti {
 
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
-        cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        cy.wait(10000)
+        // // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })  
     }
 
     static nuovaPatente() {
@@ -132,7 +132,9 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
+        cy.wait(10000)
+
     }
 
     static nuovoPassaporto() {
@@ -186,7 +188,9 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
+        cy.wait(10000)
+
     }
 
     static nuovoPortoArmi() {
@@ -240,7 +244,9 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
+        cy.wait(10000)
+
     }
 
     static nuovaTesseraPostale () {
@@ -294,7 +300,9 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
+        cy.wait(10000)
+
     }
 
     static nuovoAltroDocumento () {
@@ -350,7 +358,9 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
+        cy.wait(10000)
+
     }
 }
 
