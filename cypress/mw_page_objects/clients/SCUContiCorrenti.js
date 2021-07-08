@@ -71,7 +71,6 @@ class SCUContiCorrenti {
         cy.then(() => {
             cy.get('app-client-bank-accounts').find('app-client-bank-account-card').then((list) => {
                 console.log(list.text())
-                debugger
                 expect(list.text()).to.include(contoCorrente.iban)
             })
         })

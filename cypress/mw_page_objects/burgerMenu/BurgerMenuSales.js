@@ -26,6 +26,7 @@ const LinksBurgerMenu = {
     ALLIANZ1_PREMORIENZA: 'Allianz1 premorienza',
     PREVENTIVO_ANONIMO_VITA_INDIVIDUALI: 'Preventivo Anonimo Vita Individuali',
     GESTIONE_RICHIESTE_PER_PA: 'Gestione richieste per PA',
+    NUOVO_SFERA: 'Nuovo Sfera',
     SFERA: 'Sfera',
     CAMPAGNE_COMMERCIALI: 'Campagne Commerciali',
     RECUPERO_PREVENTIVI_E_QUOTAZIONI: 'Recupero preventivi e quotazioni',
@@ -63,7 +64,7 @@ class BurgerMenuSales extends Sales {
 
         const linksBurger = Object.values(LinksBurgerMenu)
 
-        cy.get('nx-expansion-panel').find('a').should('have.length', 36).each(($checkLinksBurger, i) => {
+        cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
         })
     }
@@ -78,7 +79,8 @@ class BurgerMenuSales extends Sales {
         if (page === LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE) {
             this.checkPage(page)
         } else {
-            cy.contains(page).click()
+            let pageRegex = new RegExp("\^" + page + "\$")
+            cy.contains(pageRegex).click()
             this.checkPage(page)
         }
     }
@@ -163,6 +165,10 @@ class BurgerMenuSales extends Sales {
             case LinksBurgerMenu.GESTIONE_RICHIESTE_PER_PA:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Visualizza"):visible')
+                break;
+            case LinksBurgerMenu.NUOVO_SFERA:
+                Common.canaleFromPopup()
+                getIFrame().find('button:contains("Applica filtri"):visible')
                 break;
             case LinksBurgerMenu.SFERA:
                 Common.canaleFromPopup()

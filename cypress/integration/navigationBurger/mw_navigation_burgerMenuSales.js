@@ -126,6 +126,13 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //#endregion
 
     //#region Gestione
+    //ADD TFS
+    it('Verifica aggancio Nuovo Sfera', function () {
+        TopBar.clickSales()
+        BurgerMenuSales.clickLink('Nuovo Sfera')
+        BurgerMenuSales.backToSales()
+    })
+
     it('Verifica aggancio Sfera', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Sfera')

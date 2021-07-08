@@ -93,11 +93,11 @@ class DettaglioAnagrafica {
             }
         });
 
-        cy.contains(subTab).click()
+        cy.contains(subTab).click({force:true})
         cy.wait('@gqlClient', { requestTimeout: 30000 });
     }
 
-    static checkSubTabDatiAnagrafici(){
+    static checkSubTabDatiAnagrafici() {
         cy.get('app-section-title').find('.title:contains("Dati principali persona fisica"):visible')
         cy.get('app-physical-client-main-data').find('button:contains("Modifica dati cliente"):visible')
         cy.get('app-client-risk-profiles').find('.title:contains("Identificazione e adeguata verifica"):visible')
@@ -134,6 +134,18 @@ class DettaglioAnagrafica {
                     expect(list.text()).to.include(contatto.orario)
                 }
             })
+        })
+    }
+
+    static checkCampiDatiAnagrficiPF() {
+        cy.get('app-physical-client-main-data').find('[class="box-unico"]').then((box) => {
+            cy.wrap(box).find('app-section-title').should('contain.text', 'Dati principali persona fisica')
+            cy.wrap(box).find('button[class="button-edit-client nx-button--primary nx-button--small-medium"]')
+                .should('contain.text', 'Modifica dati cliente')
+            cy.get('app-physical-client-main-data').find('[class="label"]').then((text) => {
+                expect(text.text().trim()).to.include('Titolo');
+            })
+
         })
     }
 

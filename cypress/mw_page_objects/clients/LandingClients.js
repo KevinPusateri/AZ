@@ -157,14 +157,14 @@ class LandingClients {
      * che il contenuto non sia vuoto e che i dati corrispondano
      */
     static verificaRichiesteDigitalMe() {
-        const tabDigitalMe = [
-            'Richieste Cliente',
-            'Pubblicazione Proposte'
-        ]
-        cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
-            expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
-        })
-        cy.contains('Richieste Cliente').click().wait(4000)
+        // const tabDigitalMe = [
+        //     'Richieste Cliente',
+        //     'Pubblicazione Proposte'
+        // ]
+        // cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
+        //     expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
+        // })
+        // cy.contains('Richieste Cliente').click().wait(4000)
         this.checkDigitalMe()
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('dmEventMotor')) {
@@ -175,23 +175,48 @@ class LandingClients {
         cy.wait('@gqlEventMotor')
         this.checkDigitalMe()
 
-
     }
 
     static checkDigitalMe() {
-        cy.get('app-digital-me-main-table').find('tr:visible').find('td:visible')
-        cy.get('tr[class="nx-table-row ng-star-inserted"]').first().find('button[class="row-more-icon-button"]').click()
-        cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').each(($checkLink) => {
-            expect($checkLink.text()).not.to.be.empty
+        const tabDigitalMe = [
+            'Richieste Cliente',
+            'Pubblicazione Proposte'
+        ]
+        cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
+            expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
         })
-        cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
-            .should('include', '+')
-        cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@')
-        cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente')
-        // cy.get('app-digital-me-context-menu ').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
-        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente')
+
+        cy.contains('Richieste Cliente').click().wait(4000)
+        this.digitalMe('Richieste Cliente');
+
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('dmEventMotor')) {
+                req.alias = 'gqlEventMotor'
+            }
+        })
+        cy.contains('Pubblicazione Proposte').click()
+        this.digitalMe('Pubblicazione Proposte');
     }
 
+
+    /**
+     * Verifica se gli elementi sono visibili e il menu a tendina sia corretta
+     * @param {string} tab - Nome del tab (Richieste Cliente, Pubblicazione Proposte)  
+     */
+     static digitalMe(tab) {
+        cy.get('app-digital-me-main-table').find('tr:visible').find('td:visible');
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').first().find('button[class="row-more-icon-button"]').click();
+        cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').each(($checkLink) => {
+            expect($checkLink.text()).not.to.be.empty;
+        });
+        cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
+            .should('include', '+');
+        cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
+        cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
+        if(tab === 'Pubblicazione Proposte')
+            cy.get('app-digital-me-context-menu ').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
+        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
+    }
 
     /**
      * Click su button "Vedi tutte" da Richieste Digital Me
@@ -201,7 +226,6 @@ class LandingClients {
     static verificaVediTutte() {
         cy.contains('Vedi tutte').click()
         cy.url().should('include', '/clients/digital-me')
-        this.checkDigitalMe()
         // cy.get('[class="ellipsis-box"]').first().find('button').click()
         // cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').each(($checkLink) => {
         //     expect($checkLink.text()).not.to.be.empty

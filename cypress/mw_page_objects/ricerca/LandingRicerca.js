@@ -2,17 +2,71 @@
 
 import Common from "../common/Common";
 
-const getIFrame = () => {
-    cy.get('iframe[class="iframe-content ng-star-inserted"]').iframe();
+const SubTabsMieInfo = {
+    CIRCOLARI: 'Circolari',
+    COMPANY_HANDBOOK: 'Company Handbook',
+    PRODOTTI: 'Prodotti',
+    PAGINE: 'Pagine',
+}
 
-    let iframeSCU = cy
-        .get('iframe[class="iframe-content ng-star-inserted"]')
-        .its("0.contentDocument")
-        .should("exist");
+const Tabs = {
+    CLIENTS: 'clients',
+    SALES: 'sales',
+    LE_MIE_INFO: 'le mie info',
+}
 
-    return iframeSCU.its("body").should("not.be.undefined").then(cy.wrap);
-};
+
+
 class LandingRicerca {
+
+    /**
+     * Click tab Clients
+     */
+    static clickTabClients() {
+        cy.get('a[href="/matrix/search/clients"]').click()
+    }
+
+    /**
+     * Click tab Clients
+     */
+    static clickTabSales() {
+        cy.get('a[href="/matrix/search/sales"]').click()
+    }
+
+    /**
+     * Click tab Clients
+     */
+    static clickTabMieInfo() {
+        cy.get('a[href="/matrix/search/infos"]').click()
+    }
+
+    static checkSubTabMieInfo() {
+        const subTabs = Object.values(SubTabsMieInfo)
+        cy.get('lib-subsection').find('a').each(($subTab, i) => {
+            expect($subTab.text()).to.include(subTabs[i]);
+        });
+    }
+
+    /**
+     * Click subTab da "Le mie Info"
+     * @param {string} subTab - Nome subTab  
+     */
+    static clickSubTabMieInfo(subTab) {
+        switch (subTab) {
+            case SubTabsMieInfo.CIRCOLARI:
+                cy.url().should('eq', Common.getBaseUrl() + 'search/infos/circulars')
+                break;
+            case SubTabsMieInfo.COMPANY_HANDBOOK:
+                cy.url().should('eq', Common.getBaseUrl() + 'search/infos/handbooks')
+                break;
+            case SubTabsMieInfo.PRODOTTI:
+                cy.url().should('eq', Common.getBaseUrl() + 'search/infos/products')
+                break;
+            case SubTabsMieInfo.PAGINE:
+                cy.url().should('eq', Common.getBaseUrl() + 'search/infos/documents')
+                break;
+        }
+    }
 
     /**
     * @param {boolean} filtri - Se true, imposta filtri aggiuntivi di ricerca, altrimenti no
@@ -182,7 +236,8 @@ class LandingRicerca {
             cy.get('lib-applied-filters-item').find('span').should('be.visible')
         }
 
-        cy.get('lib-client-item:contains("' + client.name + '")').then((card) => {
+        // cy.get('lib-client-item:contains(' + client.name + '")').then((card) => {
+        cy.get('lib-scrollable-container').contains(client.name).then((card) => {
             if (card.length === 1) {
                 cy.wrap(card).click()
             } else {
@@ -337,7 +392,7 @@ class LandingRicerca {
     }
 
     static checkTabs() {
-        const tabs = ['clients', 'sales', 'le mie info'];
+        const tabs = Object.values(SubTabsMieInfo)
         cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').find('a').should('have.length', 3)
             .each(($tab, i) => {
                 expect($tab.text()).to.include(tabs[i]);

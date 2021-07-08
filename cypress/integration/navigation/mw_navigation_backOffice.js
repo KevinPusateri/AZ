@@ -77,7 +77,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Denuncia BMP')
         BackOffice.backToBackOffice()
-
     })
 
     it('Verifica apertura disambiguazione: Consultazione sinistri', function () {

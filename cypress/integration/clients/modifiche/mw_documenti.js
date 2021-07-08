@@ -26,7 +26,7 @@ let documentType = ''
 //#endregion
 
 //#region Support
-const searchClientWithoutDoc = () => {
+const searchClientWithoutDoc = (documentType) => {
     LandingRicerca.searchRandomClient(true, "PF", "P")
     LandingRicerca.clickRandomResult()
     DettaglioAnagrafica.sezioneDocumenti()
@@ -71,9 +71,15 @@ describe('Matrix Web : Documenti', function () {
         })
 
         it('Verifica Carta D\'Identità inserita', () => {
+            HomePage.reloadMWHomePage()
+            TopBar.search(currentClient.name)
+            LandingRicerca.clickClientName(currentClient)
+            DettaglioAnagrafica.sezioneDocumenti()
             DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
                 if (!documentIsPresent)
                     assert.fail('Documento D\'Identità NON inserito')
+                else
+                    assert.isTrue(documentIsPresent, 'è stato inserito');
             })
         })
     })
@@ -95,9 +101,15 @@ describe('Matrix Web : Documenti', function () {
         })
 
         it('Verifica Patente', () => {
+            HomePage.reloadMWHomePage()
+            TopBar.search(currentClient.name)
+            LandingRicerca.clickClientName(currentClient)
+            DettaglioAnagrafica.sezioneDocumenti()
             DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
                 if (!documentIsPresent)
                     assert.fail('Patente NON inserita')
+                else
+                    assert.isTrue(documentIsPresent, 'è stato inserito');
             })
         })
     })
@@ -119,9 +131,15 @@ describe('Matrix Web : Documenti', function () {
         })
 
         it('Verifica Passaporto', () => {
+            HomePage.reloadMWHomePage()
+            TopBar.search(currentClient.name)
+            LandingRicerca.clickClientName(currentClient)
+            DettaglioAnagrafica.sezioneDocumenti()
             DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
                 if (!documentIsPresent)
                     assert.fail('Passaporto NON inserito')
+                else
+                    assert.isTrue(documentIsPresent, 'è stato inserito');
             })
         })
     })
@@ -143,9 +161,15 @@ describe('Matrix Web : Documenti', function () {
         })
 
         it('Verifica Porto D\'Armi', () => {
+            HomePage.reloadMWHomePage()
+            TopBar.search(currentClient.name)
+            LandingRicerca.clickClientName(currentClient)
+            DettaglioAnagrafica.sezioneDocumenti()
             DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
                 if (!documentIsPresent)
                     assert.fail('Porto D\'Armi NON inserito')
+                else
+                    assert.isTrue(documentIsPresent, 'è stato inserito');
             })
         })
     })
@@ -167,14 +191,20 @@ describe('Matrix Web : Documenti', function () {
         })
 
         it('Verifica Tessera Postale', () => {
+            HomePage.reloadMWHomePage()
+            TopBar.search(currentClient.name)
+            LandingRicerca.clickClientName(currentClient)
+            DettaglioAnagrafica.sezioneDocumenti()
             DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
                 if (!documentIsPresent)
                     assert.fail('Tessera Postale NON inserita')
+                else
+                    assert.isTrue(documentIsPresent, 'è stato inserito');
             })
         })
     })
 
-    context.only('Altro', function () {
+    context('Altro', function () {
 
         it('Cerca Cliente senza Altro Documento', () => {
             documentType = 'Altro'
@@ -191,9 +221,15 @@ describe('Matrix Web : Documenti', function () {
         })
 
         it('Verifica Altro Documento', () => {
+            HomePage.reloadMWHomePage()
+            TopBar.search(currentClient.name)
+            LandingRicerca.clickClientName(currentClient)
+            DettaglioAnagrafica.sezioneDocumenti()
             DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
                 if (!documentIsPresent)
                     assert.fail('Altro Documento NON inserito')
+                else
+                    assert.isTrue(documentIsPresent, 'è stato inserito');
             })
         })
     })

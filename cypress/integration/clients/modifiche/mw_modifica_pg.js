@@ -76,42 +76,42 @@ after(() => {
 })
 //#endregion Before After
 
-describe('Matrix Web : Modifica PG', {
-  retries: {
-    runMode: 0,
-    openMode: 0,
-  }
-}, () => {
+  describe('Matrix Web : Modifica PG', {
+    retries: {
+      runMode: 0,
+      openMode: 0,
+    }
+  }, () => {
 
-  it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
-    LandingRicerca.searchRandomClient(true, "PG", "E")
-    LandingRicerca.clickRandomResult()
-    SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-      currentClientPG = currentClient
+    it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
+      LandingRicerca.searchRandomClient(true, "PG", "E")
+      LandingRicerca.clickRandomResult()
+      SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+        currentClientPG = currentClient
+      })
+    })
+
+    it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
+
+      DettaglioAnagrafica.modificaCliente()
+      SCU.modificaClientePGDatiAnagrafici(clientePGNewData)
+      SCU.modificaClientePGModificaContatti(clientePGNewData)
+      SCU.modificaClientePGConsensi(clientePGNewData)
+      SCU.modificaClientePGConfermaModifiche()
+    })
+
+    it('Da Folder inserire la visura camerale e procedere', () => {
+      Folder.caricaVisuraCamerale(true)
+      Folder.clickTornaIndietro(true)
+      SCU.generazioneStampe(true)
+    })
+
+    it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
+      HomePage.reloadMWHomePage()
+      TopBar.search(currentClientPG.name)
+      LandingRicerca.clickClientName(currentClientPG)
+      SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
+      DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)
+      SintesiCliente.verificaInFolder([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel])
     })
   })
-
-  it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
-
-    DettaglioAnagrafica.modificaCliente()
-    SCU.modificaClientePGDatiAnagrafici(clientePGNewData)
-    SCU.modificaClientePGModificaContatti(clientePGNewData)
-    SCU.modificaClientePGConsensi(clientePGNewData)
-    SCU.modificaClientePGConfermaModifiche()
-  })
-
-  it('Da Folder inserire la visura camerale e procedere', () => {
-    Folder.caricaVisuraCamerale(true)
-    Folder.clickTornaIndietro(true)
-    SCU.generazioneStampe(true)
-  })
-
-  it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
-    HomePage.reloadMWHomePage()
-    TopBar.search(currentClientPG.name)
-    LandingRicerca.clickClientName(currentClientPG)
-    SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
-    DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)
-    SintesiCliente.verificaInFolder([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel])
-  })
-})

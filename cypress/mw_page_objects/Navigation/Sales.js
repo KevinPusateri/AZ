@@ -497,6 +497,7 @@ class Sales {
         Common.canaleFromPopup()
         cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 });
         cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
+        cy.contains('Verifica stato campagne attive')
     }
 
 }
