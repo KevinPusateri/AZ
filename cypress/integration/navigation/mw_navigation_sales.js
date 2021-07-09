@@ -43,6 +43,14 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.checkExistLinksCollegamentiRapidi()
     })
 
+    //ADD TFS
+    it('Verifica aggancio Nuovo Sfera', function () {
+        this.skip()
+        TopBar.clickSales()
+        Sales.clickLinkRapido('Nuovo Sfera')
+        Sales.backToSales()
+    })
+
     it('Verifica aggancio Sfera', function () {
         TopBar.clickSales()
         Sales.clickLinkRapido('Sfera')

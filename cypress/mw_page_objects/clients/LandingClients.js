@@ -56,7 +56,7 @@ class LandingClients {
      * Torna indetro su Clients
      */
     static backToClients() {
-        cy.get('a').contains('Clients').click()
+        cy.get('a').contains('Clients').click({force:true})
         cy.url().should('eq', Common.getBaseUrl() + 'clients/')
     }
 

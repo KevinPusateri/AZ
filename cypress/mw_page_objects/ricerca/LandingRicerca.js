@@ -393,7 +393,7 @@ class LandingRicerca {
 
     static checkTabs() {
         const tabs = Object.values(SubTabsMieInfo)
-        cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').find('a').should('have.length', 3)
+        cy.get('[class="lib-tab-info nx-grid"]').find('a')
             .each(($tab, i) => {
                 expect($tab.text()).to.include(tabs[i]);
             });

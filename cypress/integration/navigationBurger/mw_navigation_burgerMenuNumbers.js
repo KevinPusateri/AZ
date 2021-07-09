@@ -108,15 +108,15 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         BurgerMenuNumbers.backToNumbers()
     })
 
-    it('Verifica aggancio Ultra Casa e Patrimonio', function () {
+    it('Verifica aggancio New Business Ultra Casa e Patrimonio', function () {
         TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Ultra Casa e Patrimonio')
+        BurgerMenuNumbers.clickLink('New Business Ultra Casa e Patrimonio')
         BurgerMenuNumbers.backToNumbers()
     })
 
-    it('Verifica aggancio Ultra Salute', function () {
+    it('Verifica aggancio New Business Ultra Salute', function () {
         TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Ultra Salute')
+        BurgerMenuNumbers.clickLink('New Business Ultra Salute')
         BurgerMenuNumbers.backToNumbers()
     })
 

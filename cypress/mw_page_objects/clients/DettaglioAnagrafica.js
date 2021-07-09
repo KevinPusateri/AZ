@@ -93,7 +93,7 @@ class DettaglioAnagrafica {
             }
         });
 
-        cy.contains(subTab).click({force:true})
+        cy.contains(subTab).click({ force: true })
         cy.wait('@gqlClient', { requestTimeout: 30000 });
     }
 
@@ -137,18 +137,175 @@ class DettaglioAnagrafica {
         })
     }
 
-    static checkCampiDatiAnagrficiPF() {
+    static checkCampiDatiPrincipaliPF() {
         cy.get('app-physical-client-main-data').find('[class="box-unico"]').then((box) => {
             cy.wrap(box).find('app-section-title').should('contain.text', 'Dati principali persona fisica')
             cy.wrap(box).find('button[class="button-edit-client nx-button--primary nx-button--small-medium"]')
                 .should('contain.text', 'Modifica dati cliente')
-            cy.get('app-physical-client-main-data').find('[class="label"]').then((text) => {
-                expect(text.text().trim()).to.include('Titolo');
+            cy.get('app-physical-client-main-data').find('[class^="label"]').should('have.length', 21).then((label) => {
+                expect(label.text().trim()).to.include('Titolo');
+                expect(label.text().trim()).to.include('Cittadinanza');
+                expect(label.text().trim()).to.include('Nome*');
+                expect(label.text().trim()).to.include('Professione*');
+                expect(label.text().trim()).to.include('Cognome*');
+                expect(label.text().trim()).to.include('Unità di mercato*');
+                expect(label.text().trim()).to.include('Sesso*');
+                expect(label.text().trim()).to.include('Residenza fiscale');
+                expect(label.text().trim()).to.include('Data di nascita*');
+                expect(label.text().trim()).to.include('SAE');
+                expect(label.text().trim()).to.include('Comune di nascita*');
+                expect(label.text().trim()).to.include('Provincia*');
+                expect(label.text().trim()).to.include('RAE');
+                expect(label.text().trim()).to.include('Nazione di nascita*');
+                expect(label.text().trim()).to.include('P.E.P. (autocert.)');
+                expect(label.text().trim()).to.include('Stato civile');
+                expect(label.text().trim()).to.include('Relazione P.E.P.');
+                expect(label.text().trim()).to.include('Coniugato in');
+                expect(label.text().trim()).to.include('Tipologia P.E.P.');
+                expect(label.text().trim()).to.include('Codice fiscale*');
+                expect(label.text().trim()).to.include('Referente');
             })
 
         })
     }
 
+    static checkCampiIdentificazioneAdeguataVerifica() {
+        cy.get('app-client-risk-profiles').then((box) => {
+            cy.wrap(box).find('app-section-title').should('contain.text', 'Identificazione e adeguata verifica')
+            cy.get('app-client-risk-profiles').find('[class^="label"]').should('have.length', 4).then((label) => {
+                expect(label.text().trim()).to.include('Profilo rischio riciclaggio');
+                expect(label.text().trim()).to.include('Profilo FATCA');
+                expect(label.text().trim()).to.include('Stato operativo Vita');
+                expect(label.text().trim()).to.include('Profilo CRS');
+            })
+
+        })
+    }
+
+    static checkCampiConsensi() {
+        cy.get('app-client-consents-accordion').find('app-section-title').should('contain.text', 'Consensi')
+        cy.get('app-client-consents-accordion').find('nx-expansion-panel:visible').then(($box) => {
+            let panelName = []
+            cy.get('app-client-consents-accordion').find('nx-expansion-panel-title').each(($elements) => {
+                panelName.push($elements.text().trim())
+            }).then(() => {
+
+                for (let i = 0; i < panelName.length; i++) {
+                    if (panelName[i] === 'Consensi e adeguatezza') {
+                        // cy.contains(pageRegex).click()
+
+                        cy.contains(panelName[i]).parents('nx-expansion-panel').find('[id^=cdk-accordion-child]')
+                            .find('[class^="label"]').its('length').should('be.lt', 15)
+
+                        cy.contains(panelName[i]).parents('nx-expansion-panel').find('[id^=cdk-accordion-child]')
+                            .find('[class^="label"]').then((label) => {
+                                expect(label.text().trim()).to.include('Privacy per scopi assicurativi');
+                                expect(label.text().trim()).to.include('Invio documento via mail');
+                                expect(label.text().trim()).to.include('Firma grafometrica');
+                                expect(label.text().trim()).to.include('Firma OTP');
+                                expect(label.text().trim()).to.include('Numero di telefono OTP');
+                                if (label.text().trim() === 'Consenso Digital Me')
+                                    expect(label.text().trim()).to.include('Consenso Digital Me');
+                                expect(label.text().trim()).to.include('Profilo di sostenibilità finanziaria');
+                                expect(label.text().trim()).to.include('Questionario adeguatezza cliente - Prodotti IBIPs');
+                                expect(label.text().trim()).to.include('Profilo di esperienza & conoscenza');
+                                expect(label.text().trim()).to.include('Attività promozionali relative al gruppo Allianz');
+                                expect(label.text().trim()).to.include('Attività di profilazione realizzate da Allianz S.p.A.');
+                                expect(label.text().trim()).to.include('Attività promozionali relative a società terze partner');
+                                expect(label.text().trim()).to.include('Indagini di mercato');
+                            })
+                    } else if (panelName[i] === 'Consensi e adeguatezza AGL') {
+                        cy.contains(panelName[i]).click()
+
+                        cy.contains(panelName[i]).parents('nx-expansion-panel').find('[id^=cdk-accordion-child]')
+                            .find('[class^="label"]').its('length').should('be.lt', 11)
+
+                        cy.contains(panelName[i]).parents('nx-expansion-panel').find('[id^=cdk-accordion-child]')
+                            .find('[class^="label"]').then((label) => {
+                                expect(label.text().trim()).to.include('Privacy per scopi assicurativi');
+                                expect(label.text().trim()).to.include('Invio documento via mail');
+                                expect(label.text().trim()).to.include('Firma grafometrica');
+                                // if (label.text().trim() === 'Consenso Digital Me')
+                                // expect(label.text().trim()).to.include('Consenso Digital Me');
+                                expect(label.text().trim()).to.include('Profilo di sostenibilità finanziaria');
+                                expect(label.text().trim()).to.include('Questionario adeguatezza cliente - Prodotti IBIPs');
+                                expect(label.text().trim()).to.include('Profilo di esperienza & conoscenza');
+                                expect(label.text().trim()).to.include('Attività promozionali relative al gruppo Allianz');
+                                expect(label.text().trim()).to.include('Attività di profilazione realizzate da Allianz S.p.A.');
+                                expect(label.text().trim()).to.include('Attività promozionali relative a società terze partner');
+                                expect(label.text().trim()).to.include('Indagini di mercato');
+                            })
+                        cy.contains(panelName[i]).parents('nx-expansion-panel').find('lib-da-link')
+                            .should('contain.text', 'Modifica consensi AGL')
+
+                    } else if (panelName[i] === 'Consensi e adeguatezza Leben') {
+                        cy.contains(panelName[i]).click()
+
+                        cy.contains(panelName[i]).parents('nx-expansion-panel').find('[id^=cdk-accordion-child]')
+                            .find('[class^="label"]').its('length').should('be.lt', 11)
+
+                        cy.contains(panelName[i]).parents('nx-expansion-panel').find('[id^=cdk-accordion-child]')
+                            .find('[class^="label"]').then((label) => {
+                                expect(label.text().trim()).to.include('Privacy per scopi assicurativi');
+                                expect(label.text().trim()).to.include('Invio documento via mail');
+                                expect(label.text().trim()).to.include('Firma grafometrica');
+                                // if (label.text().trim() === 'Consenso Digital Me')
+                                // expect(label.text().trim()).to.include('Consenso Digital Me');
+                                expect(label.text().trim()).to.include('Profilo di sostenibilità finanziaria');
+                                expect(label.text().trim()).to.include('Questionario adeguatezza cliente - Prodotti IBIPs');
+                                expect(label.text().trim()).to.include('Profilo di esperienza & conoscenza');
+                                expect(label.text().trim()).to.include('Attività promozionali relative al gruppo Allianz');
+                                expect(label.text().trim()).to.include('Attività di profilazione realizzate da Allianz S.p.A.');
+                                expect(label.text().trim()).to.include('Attività promozionali relative a società terze partner');
+                                expect(label.text().trim()).to.include('Indagini di mercato');
+                            })
+                        cy.contains(panelName[i]).parents('nx-expansion-panel').find('lib-da-link')
+                            .should('contain.text', 'Modifica consensi Leben')
+                    }
+                }
+            })
+
+        })
+    }
+
+
+    static checkCampiResidenzaAnagrafica() {
+        cy.contains('app-section-title', 'Residenza anagrafica', { timeout: 10000 }).should('exist')
+        cy.get('[class="label"]').should('include.text', 'Comune*')
+        cy.get('[class="label"]').should('include.text', 'Indirizzo*')
+    }
+
+    static checkCampiDomicilio() {
+        cy.contains('app-section-title', 'Domicilio', { timeout: 10000 }).should('exist')
+        cy.get('[class="label"]').should('include.text', 'Comune*')
+        cy.get('[class="label"]').should('include.text', 'Indirizzo*')
+    }
+
+    static checkCampiNumeroTelefonoPrincipale() {
+        cy.contains('app-section-title', 'Numero di telefono principale', { timeout: 10000 }).should('exist')
+        cy.contains('app-section-title', 'Numero di telefono principale', { timeout: 10000 }).should('exist')
+            .next('.box').should('include.text', 'Tipologia').and('include.text', 'Numero')
+    }
+
+    static checkCampiEmail() {
+        cy.contains('app-section-title', 'Email', { timeout: 10000 }).should('exist')
+        cy.contains('app-section-title', 'Email', { timeout: 10000 }).should('exist')
+            .next('.box').should('include.text', 'Email')
+
+    }
+
+    static checkCampiDocumentoPrincipale() {
+        cy.contains('app-section-title', 'Documento principale', { timeout: 10000 }).should('exist')
+        cy.contains('app-section-title', 'Documento principale', { timeout: 10000 }).should('exist')
+            .next('.box')
+            .should('include.text', 'Tipologia documento')
+            .and('include.text', 'Data di emissione')
+            .and('include.text', 'Numero di documento')
+            .and('include.text', 'Data di scadenza')
+            .and('include.text', 'Autorità di rilascio')
+            .and('include.text', 'Scansione')
+            .and('include.text', 'Luogo di emissione')
+    }
 }
 
 export default DettaglioAnagrafica

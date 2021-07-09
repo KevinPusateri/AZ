@@ -51,7 +51,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
     it('Verifica aggancio Digital Me', function () {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Digital Me')
-        Clients.verificaRichiesteDigitalMe()
+        Clients.checkDigitalMe()
         BurgerMenuClients.backToClients()
     });
 

@@ -42,8 +42,8 @@ const LinksBurgerMenu = {
     SCARICO_DATI: 'Scarico Dati',
     INDICI_DIGITALI: 'Indici Digitali',
     NEW_BUSINESS_DANNI: 'New Business Danni',
-    ULTRA_CASA_PATRIMONIO: 'Ultra Casa e Patrimonio',
-    ULTRA_SALUTE: 'Ultra Salute',
+    NEW_BUSINESS_ULTRA_CASA_PATRIMONIO: 'New Business Ultra Casa e Patrimonio',
+    NEW_BUSINESS_ULTRA_SALUTE: 'Ultra Salute',
     NEW_BUSINESS_VITA: 'New Business Vita',
     NEW_BUSINESS_ALLIANZ1: 'New Business Allianz1',
     MONITORAGGIO_PTF_DANNI: 'Monitoraggio PTF Danni',
@@ -142,8 +142,8 @@ class BurgerMenuNumbers extends Numbers {
                 cy.wait('@getDacommerciale', { requestTimeout: 100000 });
                 getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
                 break;
-            case LinksBurgerMenu.ULTRA_CASA_PATRIMONIO:
-            case LinksBurgerMenu.ULTRA_SALUTE:
+            case LinksBurgerMenu.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO:
+            case LinksBurgerMenu.NEW_BUSINESS_ULTRA_SALUTE:
                 cy.wait('@getDacommerciale', { requestTimeout: 100000 });
                 getIFrame().find('#submit-Mon_PTF:contains("Filtra"):visible')
                 break;

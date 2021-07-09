@@ -10,6 +10,16 @@ const getSCU = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+const getIFrameElencoTelefonico = () => {
+    getSCU().find('iframe[src="/phoneBook/searchInterniWithCompanyDA.do"]')
+        .iframe();
+
+    let iframeFolder = getSCU().find('iframe[src="/phoneBook/searchInterniWithCompanyDA.do"]')
+        .its('0.contentDocument').should('exist');
+
+    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+}
+
 class SCU {
 
     //#region Persona Fisica
@@ -298,10 +308,10 @@ class SCU {
         getSCU().find('#casella-ricerca').should('exist').and('be.visible')
     }
 
-    static checkAggancioRubrica(){
-        getIFrame().find('div[class="container"]').should('not.contain','La funzionalità non è al momento disponibile, verrà riattivata il prima possibile.')
-    } 
-    
+    static checkAggancioRubrica() {
+        getIFrameElencoTelefonico().find('input[name="btnCerca"]').invoke('attr', 'value').should('equal', ' Cerca ')
+    }
+
 }
 
 export default SCU

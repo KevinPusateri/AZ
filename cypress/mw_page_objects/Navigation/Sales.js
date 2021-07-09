@@ -12,9 +12,21 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
+
+const getIFrameCampagne = () => {
+
+    cy.get('iframe[class="iframe-container"]')
+        .iframe();
+
+    let iframeSCU = cy.get('iframe[class="iframe-container"]')
+        .its('0.contentDocument').should('exist');
+
+    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+}
 //#endregion
 
 const LinksRapidi = {
+    NUOVO_SFERA: 'Nuovo Sfera',
     SFERA: 'Sfera',
     CAMPAGNE_COMMERCIALI: 'Campagne Commerciali',
     RECUPERO_PREVENTIVI_E_QUOTAZIONI: 'Recupero preventivi e quotazioni',
@@ -49,7 +61,7 @@ class Sales {
     /**
      * Verifica se i "pz" sono presenti 
      */
-    static checkExistPezzi(){
+    static checkExistPezzi() {
         cy.get('app-lob-link').each((lob) => {
             cy.wrap(lob).find('span:contains("' + lob.text() + '")').click()
             cy.get('app-receipt-header').find('span:contains("Pezzi")').click()
@@ -62,7 +74,7 @@ class Sales {
     /**
      * Verifica se i "pz" sono presenti 
      */
-     static checkExistPremi(){
+    static checkExistPremi() {
         cy.get('app-lob-link').each((lob) => {
             cy.wrap(lob).find('span:contains("' + lob.text() + '")').click()
             cy.get('app-receipt-header').find('span:contains("Pezzi")').click()
@@ -89,6 +101,8 @@ class Sales {
      */
     static clickLinkRapido(page) {
         switch (page) {
+            case LinksRapidi.NUOVO_SFERA:
+                break;
             case LinksRapidi.SFERA:
                 cy.intercept({
                     method: 'POST',
@@ -150,7 +164,7 @@ class Sales {
     /**
      * Verifica link presenti su Emetti Polizza
      */
-    static checkLinksOnEmettiPolizza(){
+    static checkLinksOnEmettiPolizza() {
         cy.contains('Emetti polizza').click({ force: true })
         const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
         cy.get('.card-container').find('lib-da-link').each(($link, i) => {
@@ -453,7 +467,7 @@ class Sales {
      * Click sulla prima card Vita 
      */
     static clickPrimaCardVitaOnProposte() {
-      cy.intercept({
+        cy.intercept({
             method: 'POST',
             url: '**/Vita/**'
         }).as('getVita');
@@ -497,7 +511,7 @@ class Sales {
         Common.canaleFromPopup()
         cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 });
         cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
-        cy.contains('Verifica stato campagne attive')
+        getIFrame().find('button:contains("Verifica stato campagne attive"):visible')
     }
 
 }
