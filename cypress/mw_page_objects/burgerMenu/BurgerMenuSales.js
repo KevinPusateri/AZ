@@ -168,7 +168,7 @@ class BurgerMenuSales extends Sales {
                 break;
             case LinksBurgerMenu.NUOVO_SFERA:
                 Common.canaleFromPopup()
-                getIFrame().find('button:contains("Applica filtri"):visible')
+                cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
                 break;
             case LinksBurgerMenu.SFERA:
                 Common.canaleFromPopup()

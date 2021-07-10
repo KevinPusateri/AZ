@@ -90,7 +90,7 @@ class Sales {
     static checkExistLinksCollegamentiRapidi() {
         const linksCollegamentiRapidi = Object.values(LinksRapidi)
 
-        cy.get('app-quick-access').find('[class="link-item ng-star-inserted"]').should('have.length', 5).each(($link, i) => {
+        cy.get('app-quick-access').find('[class="link-item ng-star-inserted"]').should('have.length', 6).each(($link, i) => {
             expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
         })
     }
@@ -102,13 +102,15 @@ class Sales {
     static clickLinkRapido(page) {
         switch (page) {
             case LinksRapidi.NUOVO_SFERA:
+                cy.get('app-quick-access').contains('Nuovo Sfera').click()
+                cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
                 break;
             case LinksRapidi.SFERA:
                 cy.intercept({
                     method: 'POST',
                     url: '**/dacommerciale/**'
                 }).as('getDacommerciale');
-                cy.get('app-quick-access').contains('Sfera').click()
+                cy.get('app-quick-access').find('lib-da-link').contains('Sfera').click()
                 Common.canaleFromPopup()
                 cy.wait('@getDacommerciale', { requestTimeout: 40000 });
                 getIFrame().find('ul > li > span:contains("Quietanzamento"):visible')

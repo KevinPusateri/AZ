@@ -283,19 +283,16 @@ class DettaglioAnagrafica {
 
     static checkCampiNumeroTelefonoPrincipale() {
         cy.contains('app-section-title', 'Numero di telefono principale', { timeout: 10000 }).should('exist')
-        cy.contains('app-section-title', 'Numero di telefono principale', { timeout: 10000 }).should('exist')
             .next('.box').should('include.text', 'Tipologia').and('include.text', 'Numero')
     }
 
     static checkCampiEmail() {
-        cy.contains('app-section-title', 'Email', { timeout: 10000 }).should('exist')
         cy.contains('app-section-title', 'Email', { timeout: 10000 }).should('exist')
             .next('.box').should('include.text', 'Email')
 
     }
 
     static checkCampiDocumentoPrincipale() {
-        cy.contains('app-section-title', 'Documento principale', { timeout: 10000 }).should('exist')
         cy.contains('app-section-title', 'Documento principale', { timeout: 10000 }).should('exist')
             .next('.box')
             .should('include.text', 'Tipologia documento')

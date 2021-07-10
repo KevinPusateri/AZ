@@ -98,8 +98,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
 
     it('Verifica aggancio Richiesta Digital Me', function () {
         TopBar.clickClients()
-        // Clients.verificaRichiesteDigitalMe()
-        cy.get('app-dm-requests').should('contain.text', 'Non ci sono dati da mostrare')
+        Clients.verificaRichiesteDigitalMe()
     });
 
     it('Verifica aggancio Richiesta Digital Me - button Vedi tutte', function () {

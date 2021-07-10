@@ -86,7 +86,7 @@ class SCUDocumenti {
         getSCU().find('#data-emissione').type('01012021')
         getSCU().find('#data-scadenza').type('01012025')
         getSCU().find('span[aria-owns="descrizione-documento-patente_listbox"]').click()
-        getSCU().find('li:contains("B")').click({ multiple: true })
+        getSCU().find('#descrizione-documento-patente_listbox > li:contains("B")').click()
         getSCU().find('#luogo-emissione').type('TRIESTE')
         cy.wait(1000)
         getSCU().find('li:contains("TRIESTE")').click()

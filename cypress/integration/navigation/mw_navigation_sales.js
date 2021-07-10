@@ -28,7 +28,7 @@ beforeEach(() => {
 })
 
 after(() => {
-    TopBar.logOutMW()
+    // TopBar.logOutMW()
 })
 
 
@@ -45,13 +45,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     //ADD TFS
     it('Verifica aggancio Nuovo Sfera', function () {
-        this.skip()
         TopBar.clickSales()
         Sales.clickLinkRapido('Nuovo Sfera')
         Sales.backToSales()
     })
 
-    it('Verifica aggancio Sfera', function () {
+    it.only('Verifica aggancio Sfera', function () {
         TopBar.clickSales()
         Sales.clickLinkRapido('Sfera')
         Sales.backToSales()

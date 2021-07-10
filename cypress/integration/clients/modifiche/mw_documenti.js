@@ -32,7 +32,7 @@ const searchClientWithoutDoc = (documentType) => {
     DettaglioAnagrafica.sezioneDocumenti()
     DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
         if (documentIsPresent)
-            searchClientWithoutDoc()
+            searchClientWithoutDoc(documentType)
         else
             return
     })
@@ -58,7 +58,7 @@ describe('Matrix Web : Documenti', function () {
 
         it('Cerca Cliente senza Carta D\'Identità', () => {
             documentType = 'identita'
-            searchClientWithoutDoc()
+            searchClientWithoutDoc(documentType)
         })
 
         it('Inserisci Carta D\'Identità', () => {
@@ -88,7 +88,7 @@ describe('Matrix Web : Documenti', function () {
 
         it('Cerca Cliente senza Patente', () => {
             documentType = 'Patente'
-            searchClientWithoutDoc()
+            searchClientWithoutDoc(documentType)
         })
 
         it('Inserisci Patente', () => {
@@ -118,7 +118,7 @@ describe('Matrix Web : Documenti', function () {
 
         it('Cerca Cliente senza Passaporto', () => {
             documentType = 'Passaporto'
-            searchClientWithoutDoc()
+            searchClientWithoutDoc(documentType)
         })
 
         it('Inserisci Passaporto', () => {
@@ -148,7 +148,7 @@ describe('Matrix Web : Documenti', function () {
 
         it('Cerca Cliente senza Porto D\'Armi', () => {
             documentType = 'armi'
-            searchClientWithoutDoc()
+            searchClientWithoutDoc(documentType)
         })
 
         it('Inserisci Porto D\'Armi', () => {
@@ -178,7 +178,7 @@ describe('Matrix Web : Documenti', function () {
 
         it('Cerca Cliente senza Tessera Postale', () => {
             documentType = 'Postale'
-            searchClientWithoutDoc()
+            searchClientWithoutDoc(documentType)
         })
 
         it('Inserisci Tessera Postale', () => {
@@ -208,7 +208,7 @@ describe('Matrix Web : Documenti', function () {
 
         it('Cerca Cliente senza Altro Documento', () => {
             documentType = 'Altro'
-            searchClientWithoutDoc()
+            searchClientWithoutDoc(documentType)
         })
 
         it('Inserisci Altro Documento', () => {

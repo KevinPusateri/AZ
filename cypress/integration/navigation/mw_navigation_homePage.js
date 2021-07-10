@@ -138,7 +138,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickIconSwitchPage('Backoffice')
     });
 
-    it('Verifica Top Menu News', function () {
+    it.only('Verifica Top Menu News', function () {
         TopBar.clickIconSwitchPage('News')
     });
 

@@ -57,7 +57,7 @@ describe('Buca di Ricerca', function () {
         SCU.checkAggancioPolizzePropostePreventivi()
     })
 
-    it.only('Verifica Click su Rubrica', function () {
+    it('Verifica Click su Rubrica', function () {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.clickRicercaClassicaLabel('Rubrica')
         SCU.checkAggancioRubrica()
