@@ -36,29 +36,39 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
 
     it('Verifica Ricerca Incasso', function () {
         LandingRicerca.search('incasso')
-        LandingRicerca.checkTabs()
+        LandingRicerca.clickTabMieInfo()
+        LandingRicerca.checkSubTabMieInfo()
         LandingRicerca.checkSuggestedLinks('incasso')
-        LandingRicerca.checkLeMieInfo()
+        cy.get('body').find('lib-subsection:contains("La ricerca non ha prodotto risultati"):visible')
+        // LandingRicerca.checkLeMieInfo()
     })
 
     it('Verifica Ricerca Fastquote', function () {
         LandingRicerca.search('fastquote')
-        LandingRicerca.checkTabs()
+        LandingRicerca.clickTabMieInfo()
+        LandingRicerca.checkSubTabMieInfo()
         LandingRicerca.checkSuggestedLinks('fastquote')
-        LandingRicerca.checkLeMieInfo()
+        // LandingRicerca.checkLeMieInfo()
+        cy.get('body').find('lib-subsection:contains("La ricerca non ha prodotto risultati"):visible')
     })
 
     it('Verifica Ricerca Prodotto: Ultra', function () {
         LandingRicerca.search('ultra')
-        LandingRicerca.checkTabs()
+        LandingRicerca.clickTabMieInfo()
+        LandingRicerca.checkSubTabMieInfo()
         LandingRicerca.checkSuggestedLinks('ultra')
         // LandingRicerca.checkClients()
-        LandingRicerca.checkLeMieInfo()
+        // LandingRicerca.checkLeMieInfo()
+        cy.get('body').find('lib-subsection:contains("La ricerca non ha prodotto risultati"):visible')
     })
 
-    it('Verifica Click su card di una Circolare', function () {
-        LandingRicerca.search('circolari')
-        LandingRicerca.checkTabs()
-        //LandingRicerca.checkAggancioCircolari()
-    })
+    // Rimosso in quanto non presenta nemmeno una circola per il click
+    // it('Verifica Click su card di una Circolare', function () {
+    //     LandingRicerca.search('circolari')
+    //     LandingRicerca.checkTabs()
+    //     LandingRicerca.clickTabMieInfo
+    //     LandingRicerca.checkSubTabMieInfo()
+    //     //LandingRicerca.checkAggancioCircolari()
+    //     cy.get('body').find('lib-subsection:contains("La ricerca non ha prodotto risultati"):visible')
+    // })
 })

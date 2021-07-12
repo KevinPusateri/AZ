@@ -56,15 +56,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     })
 
-    //TODO: connessione non sicura Apre una nuova pagina
-    // it('Verifica aggancio X - Advisor', function () {
-    // cy.get('app-product-button-list').find('a').contains('Numbers').click()
-    //     cy.url().should('eq', baseUrl + 'numbers/business-lines')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('X - Advisor').click()
-    //     canaleFromPopup()
-    //     cy.get('a').contains('Numbers').click()
-    // })
+    // TODO: connessione non sicura Apre una nuova pagina -- FUNZIONAAA ADDD TFSSS
+    it('Verifica aggancio X - Advisor', function () {
+        TopBar.clickNumbers()
+        BurgerMenuNumbers.clickLink('X - Advisor')
+    })
 
     it('Verifica aggancio Incentivazione', function () {
         TopBar.clickNumbers()

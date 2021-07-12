@@ -126,11 +126,11 @@ class LandingRicerca {
             case 'fastquote':
             case 'ultra':
             case 'circolari':
-                cy.intercept('POST', '**/graphql', (req) => {
-                    if (req.body.operationName.includes('searchCircular')) {
-                        req.alias = 'gqlSearchCircular'
-                    }
-                });
+                // cy.intercept('POST', '**/graphql', (req) => {
+                //     if (req.body.operationName.includes('searchCircular')) {
+                //         req.alias = 'gqlSearchCircular'
+                //     }
+                // });
                 break;
             default:
                 cy.intercept('POST', '**/graphql', (req) => {
@@ -149,8 +149,10 @@ class LandingRicerca {
             case 'fastquote':
             case 'ultra':
             case 'circolari':
-                cy.wait('@gqlSearchCircular', { requestTimeout: 30000 });
-                cy.url().should('include', 'search/infos/circulars')
+                // cy.wait('@gqlSearchCircular', { requestTimeout: 30000 });
+                // cy.url().should('include', 'search/infos/circulars')
+                cy.url().should('include', 'search/clients/clients')
+
                 break
             default:
                 cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
@@ -391,13 +393,6 @@ class LandingRicerca {
         cy.get('lib-applied-filters-item').find('span').should('be.visible')
     }
 
-    static checkTabs() {
-        const tabs = Object.values(SubTabsMieInfo)
-        cy.get('[class="lib-tab-info nx-grid"]').find('a')
-            .each(($tab, i) => {
-                expect($tab.text()).to.include(tabs[i]);
-            });
-    }
 
     /**
      * 

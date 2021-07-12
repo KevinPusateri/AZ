@@ -58,10 +58,10 @@ const LinksBurgerMenu = {
 
 class BurgerMenuNumbers extends Numbers {
 
-   /**
-     * Torna indetro su Numbers
-     * @param {string} checkUrl - Verifica url della pagina di atterraggio
-     */
+    /**
+      * Torna indetro su Numbers
+      * @param {string} checkUrl - Verifica url della pagina di atterraggio
+      */
     static backToNumbers() {
         super.backToNumbers('business-lines')
     }
@@ -83,14 +83,18 @@ class BurgerMenuNumbers extends Numbers {
      * @param {string} page - nome del link 
      */
     static clickLink(page) {
-        cy.get('lib-burger-icon').click({force:true})
+        cy.get('lib-burger-icon').click({ force: true })
 
         if (page === LinksBurgerMenu.ESTRAZIONI_AVANZATE)
             interceptGetPentahoDA()
         else
             interceptGetAgenziePDF()
 
-        cy.contains(page).click()
+        if (page === LinksBurgerMenu.X_ADVISOR)
+            cy.contains('X - Advisor').invoke('removeAttr', 'target').click()
+        else
+            cy.contains(page).click()
+
         Common.canaleFromPopup()
         this.checkPage(page)
     }
@@ -112,6 +116,12 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.MONITORAGGIO_CARICO_FONTE:
                 cy.wait('@getDacommerciale', { requestTimeout: 100000 });
                 getIFrame().find('#contentPane:contains("Applica filtri"):visible')
+                break;
+            case LinksBurgerMenu.X_ADVISOR:
+                cy.contains('Advisor')
+                cy.contains('Dashboard')
+                cy.get('textarea').should('be.visible')
+                cy.go('back')
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE:
                 cy.wait('@getDacommerciale', { requestTimeout: 100000 });
