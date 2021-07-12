@@ -65,7 +65,6 @@ const isIframeLoaded = $iframe => {
 Cypress.Commands.add('iframe', { prevSubject: 'element' }, $iframes => new Cypress.Promise(resolve => {
   const loaded = [];
 
-
   $iframes.each((_, $iframe) => {
     loaded.push(
       new Promise(subResolve => {
@@ -85,6 +84,14 @@ Cypress.Commands.add('iframe', { prevSubject: 'element' }, $iframes => new Cypre
 
   return Promise.all(loaded).then(resolve);
 }));
+
+Cypress.Commands.add('iframeCustom', { prevSubject: 'element' }, ($iframe) => {
+  return new Cypress.Promise((resolve) => {
+    $iframe.ready(function () {
+      resolve($iframe.contents().find('body'));
+    })
+  })
+})
 
 Cypress.Commands.overwrite('clearCookies', () => {
   cy.getCookies().then(cookies => {
@@ -147,3 +154,33 @@ Cypress.Commands.add('forceVisit', url => {
       return win.open(url, '_self'); 
     });
 });
+
+
+let active_tab_index = 0;
+let myTabNames = [];
+let myTabs = [];
+
+Cypress.Commands.add('switchToTab', (index_or_name) => {
+  return new Cypress.Promise((resolve) => {
+      let index = resolve_index_or_name_to_index(index_or_name)
+      console.warn('switchToTab',{index,index_or_name})
+      active_tab_index = index;
+      let winNext = myTabs[active_tab_index]
+      if(!winNext){
+          throw new Error('tab missing')
+      }
+      cy.state('document', winNext.document)
+      cy.state('window', winNext)
+      debugTabState()
+      resolve()
+  })
+})
+
+function resolve_index_or_name_to_index(index_or_name){
+  let index = parseInt(index_or_name) >= 0 ? index_or_name : active_tab_index || 0
+  let name_index = myTabNames.indexOf(index_or_name)
+  if(name_index>-1){
+      index = name_index
+  }
+  return index;
+}
