@@ -24,40 +24,25 @@ before(() => {
 beforeEach(() => {
     Common.visitUrlOnEnv()
     cy.preserveCookies()
-    cy.get('input[name="main-search-input"]').type('Pulini Francesco').type('{enter}')
-    cy.intercept({
-        method: 'POST',
-        url: '**/clients/**'
-    }).as('pageClient');
-    cy.intercept('POST', '**/graphql', (req) => {
-        // Queries
-        aliasQuery(req, 'clientContractValidation')
-        aliasQuery(req, 'fastQuoteProfiling')
-        aliasQuery(req, 'getScopes')
-
-    })
-    cy.get('lib-client-item').first().click()
-    cy.wait('@pageClient', { requestTimeout: 60000 });
-    cy.wait('@gqlclientContractValidation', { requestTimeout: 60000 })
-    cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 60000 })
-    cy.wait('@gqlgetScopes', { requestTimeout: 60000 })
+    TopBar.search('Pulini Francesco')
+    SintesiCliente.wait()
 })
 
 after(() => {
-    // TopBar.logOutMW()
+    TopBar.logOutMW()
 })
 
 describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Sintesi Cliente', function () {
-    
-    it('Navigation Scheda Cliente', function () {
+
+    it.only('Navigation Scheda Cliente', function () {
         SintesiCliente.checkTabs()
     })
 
-    it('Verifica Situazione cliente', function () {
+    it.only('Verifica Situazione cliente', function () {
         SintesiCliente.checkSituazioneCliente()
     })
 
-    it('Verifica FastQuote: Tab Utra - subTabs Casa e Patrimonio, Salute', function () {
+    it.only('Verifica FastQuote: Tab Utra - subTabs Casa e Patrimonio, Salute', function () {
         SintesiCliente.checkFastQuoteUltra()
     })
 

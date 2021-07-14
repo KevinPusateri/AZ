@@ -14,6 +14,25 @@ const getIFrame = () => {
 
 class SintesiCliente {
 
+    static wait() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/clients/**'
+        }).as('pageClient');
+        cy.intercept('POST', '**/graphql', (req) => {
+            // Queries
+            aliasQuery(req, 'clientContractValidation')
+            aliasQuery(req, 'fastQuoteProfiling')
+            aliasQuery(req, 'getScopes')
+
+        })
+        cy.get('lib-client-item').first().click()
+        cy.wait('@pageClient', { requestTimeout: 60000 });
+        cy.wait('@gqlclientContractValidation', { requestTimeout: 60000 })
+        cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 60000 })
+        cy.wait('@gqlgetScopes', { requestTimeout: 60000 })
+    }
+
     static checkTabs() {
         // Verifica Tab clients corretti
         const tabProfile = [
@@ -504,7 +523,7 @@ class SintesiCliente {
     //#endregion
 
     //#region Contratti in Evidenza
-    
+
     /**
      * Verifica l'aggancio alla pgina del primo contratto
      */
