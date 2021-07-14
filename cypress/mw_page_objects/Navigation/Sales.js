@@ -431,8 +431,14 @@ class Sales {
                 req.alias = 'gqlDamage'
             }
         })
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('salesDamagePremium')) {
+                req.alias = 'gqlsalesDamagePremium'
+            }
+        })
         cy.get('app-proposals-section').contains('Proposte').click()
         cy.wait('@gqlDamage')
+        cy.wait('@gqlsalesDamagePremium')
         cy.get('app-paginated-cards').find('button:contains("Danni")').click().wait(3000)
     }
 

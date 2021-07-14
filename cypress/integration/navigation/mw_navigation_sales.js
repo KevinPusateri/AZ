@@ -50,7 +50,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it.only('Verifica aggancio Sfera', function () {
+    it('Verifica aggancio Sfera', function () {
         TopBar.clickSales()
         Sales.clickLinkRapido('Sfera')
         Sales.backToSales()

@@ -275,7 +275,7 @@ class SCUContatti {
           this.addPhone(contatto);
 
           //click salva
-          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          getSCU().find('#submit:contains("Salva")').click().wait(5000);
           resolve(contatto);
         });
     });
@@ -482,7 +482,7 @@ class SCUContatti {
                     getSCU()
                       .find('#submit:contains("Salva")')
                       .click()
-                      .wait(4000);
+                      .wait(5000);
                     resolve(contatto);
                   });
               });

@@ -37,7 +37,7 @@ describe('Buca di Ricerca - Risultati', function () {
     it('Verifica Atterraggio nella Pagina', function () {
         LandingRicerca.search('RO')
         LandingRicerca.clickTabMieInfo()
-        LandingRicerca.checkTabs()
+        LandingRicerca.checkTabDopoRicerca()
         LandingRicerca.checkSuggestedLinks('RO')
         LandingRicerca.checkButtonRicercaClassica()
     })
