@@ -12,7 +12,6 @@ import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../../mw_page_objects/clients/DettaglioAnagrafica"
 import HomePage from "../../../mw_page_objects/common/HomePage"
 import SCUContiCorrenti from "../../../mw_page_objects/clients/SCUContiCorrenti"
-const ibantools = require('ibantools')
 //#endregion import
 
 //#region Configuration
@@ -20,12 +19,9 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 //#region Variables
-const userName = 'le00080'
-const psw = 'Giugno2021$'
-// var contoCorrente = {}
-let codFisc
-// var iban
-// var vat
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
+
 var client
 var contoCorrente = {
   coordinate: "",
