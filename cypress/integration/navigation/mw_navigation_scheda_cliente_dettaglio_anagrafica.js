@@ -1,6 +1,5 @@
 /// <reference types="Cypress" />
 
-const { default: DettaglioAnagrafica } = require("cypress/mw_page_objects/clients/DettaglioAnagrafica");
 
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 3000
@@ -79,52 +78,40 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Dettaglio Anagrafica'
     })
 
     it('Dettaglio Anagrafica: verifica SubTab contatti', function () {
-        cy.intercept('GET','**/omazeuxnewsdev/**').as('pageTab')
         cy.get('nx-tab-header').contains('Contatti').click()
-        cy.wait('@pageTab')
         cy.url().should('include', '/profile-detail?tabIndex=1')
         cy.get('app-client-contact-table-row').find('.label:contains("Orario")')
         cy.get('app-client-contact-table-row').find('.label:contains("Contatto principale")')
     })
 
     it('Dettaglio Anagrafica: verifica SubTab Altri indirizzi', function () {
-        cy.intercept('GET','**/omazeuxnewsdev/**').as('pageTab')
         cy.get('nx-tab-header').contains('Altri indirizzi').click()
-        cy.wait('@pageTab')
         cy.url().should('include', '/profile-detail?tabIndex=2')
         cy.get('app-client-other-addresses').find('button:contains("Aggiungi indirizzo"):visible')
     })
 
     // NON VISIBILE
     it('Dettaglio Anagrafica: verifica SubTab Documenti ', function () {
-        cy.intercept('GET','**/omazeuxnewsdev/**').as('pageTab')
         cy.get('nx-tab-header').contains('Documenti').click()
-        cy.wait('@pageTab')
         cy.url().should('include', '/profile-detail?tabIndex=3')
         cy.find('button:contains("Aggiungi documento"):visible')
     })
 
     it('Dettaglio Anagrafica: verifica SubTab Legami', function () {
-        cy.intercept('GET','**/omazeuxnewsdev/**').as('pageTab')
         cy.get('nx-tab-header').contains('Legami').click()
-        cy.wait('@pageTab')
         cy.url().should('include', '/profile-detail?tabIndex=4')
         cy.find('button:contains("Modifica nucleo"):visible')
         cy.find('button:contains("Inserisci legame"):visible')
     })
 
     it('Dettaglio Anagrafica: verifica SubTab Conti correnti', function () {
-        cy.intercept('GET','**/omazeuxnewsdev/**').as('pageTab')
         cy.get('nx-tab-header').contains('Conti correnti').click()
-        cy.wait('@pageTab')
         cy.url().should('include', '/profile-detail?tabIndex=5')
         cy.get('app-coming-soon-message').contains('La sezione sarà disponibile a breve')
     })
 
     it('Dettaglio Anagrafica: verifica SubTab Conti Convenzioni', function () {
-        cy.intercept('GET','**/omazeuxnewsdev/**').as('pageTab')
         cy.get('nx-tab-header').contains('Convenzioni').click()
-        cy.wait('@pageTab')
         cy.url().should('include', '/profile-detail?tabIndex=6')
         cy.get('app-coming-soon-message').contains('La sezione sarà disponibile a breve')
         cy.get('nx-tab-header').contains('Dati anagrafici').click()

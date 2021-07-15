@@ -101,7 +101,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', {
   it('Verificare varie informazioni cliente', () => {
     SintesiCliente.verificaDatiSpallaSinistra(nuovoClientePG)
     DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(nuovoClientePG)
-    ArchivioCliente.clickArchivioCliente()
+    ArchivioCliente.clickTabArchivioCliente()
     ArchivioCliente.clickComunicazioni()
     ArchivioCliente.verificaCardComunicazioni("Invio per verifica contatto")
     ArchivioCliente.verificaUnico()

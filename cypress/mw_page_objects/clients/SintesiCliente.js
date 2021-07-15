@@ -404,6 +404,20 @@ class SintesiCliente {
         getIFrame().find('span:contains("PROCEDI"):visible')
     }
 
+    static clickAllianzUltraCasaPatrimonioBMP(){
+        cy.wait(2000)
+        cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio BMP').click()
+        cy.wait(2000)
+        cy.intercept({
+            method: 'GET',
+            url: '**/fonti'
+        }).as('getFonti');
+        Common.canaleFromPopup()
+        cy.wait('@getFonti', { requestTimeout: 50000 });
+        getIFrame().find('img[src="./assets/img/allianz-logo-casa.png"]').should('be.visible')
+        getIFrame().find('span:contains("PROCEDI"):visible')
+    }
+
     static clickAllianzUltraSalute() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Salute').click()
@@ -525,7 +539,7 @@ class SintesiCliente {
     //#region Contratti in Evidenza
 
     /**
-     * Verifica l'aggancio alla pgina del primo contratto
+     * Verifica l'aggancio alla pagina del primo contratto
      */
     static checkContrattiEvidenza() {
         cy.get('lib-container').find('app-proposals-in-evidence:visible').then(($contratto) => {

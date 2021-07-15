@@ -628,7 +628,7 @@ class LandingRicerca {
             if (check) {
                 cy.get('body').should('contain.text', 'La ricerca non ha prodotto risultati')
             } else {
-                cy.get('body').find('lib-client-item').first().click().wait(2000)
+                cy.get('body').find('lib-client-item',{timeout:30000}).first().click().wait(2000)
                 cy.get('body').then(() => {
 
                     cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')

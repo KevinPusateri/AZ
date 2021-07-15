@@ -82,16 +82,20 @@ class SCUAltriIndirizzi {
 
                         //#region Indirizzo
                         getSCU().find('#indirizzo-via').clear().type('XX SETTEMBRE')
+                        indirizzo.address = 'XX SETTEMBRE'
                         //#endregion
 
                         //#region Comune
-                        getSCU().find('#residenza-comune').clear().type('MILANO')
+                        getSCU().find('#residenza-comune').clear()
+                        getSCU().find('#residenza-comune').type('MILANO')
+                        indirizzo.comune = 'MILANO'
                         getSCU().find('#residenza-comune_listbox > li').first().click()
                         //#endregion
 
                         //#region CAP
-                        getSCU().find('span[aria-controls="cap_listbox"]').click()
+                        getSCU().find('span[aria-controls="cap_listbox"]').click().wait(1000)
                         getSCU().find('#cap_listbox > li:contains("20123")').click()
+                        indirizzo.cap = '20123'
                         //#endregion
 
                         getSCU().find('#submit:contains("Salva")').click().wait(30000);
