@@ -18,13 +18,13 @@ if (process.argv.slice(2).length < 1) {
 else {
 	//Verify first arg is a number
 	if (isNaN(process.argv.slice(2)[0])) {
-		console.log("\x1b[31m%s\x1b[0m", 'Please specify a number for parallelism (Max is 3)\n');
+		console.log("\x1b[31m%s\x1b[0m", 'Please specify a number for parallelism (Max is 5)\n');
 		process.exit(0);
 	}
 }
 
-if (process.argv.slice(2)[0] > 3) {
-	console.log("\x1b[31m%s\x1b[0m", 'Max Level of parallelism for this kind of tests is 3!\n');
+if (process.argv.slice(2)[0] > 5) {
+	console.log("\x1b[31m%s\x1b[0m", 'Max Level of parallelism for this kind of tests is 5!\n');
 	process.exit(0);
 }
 
