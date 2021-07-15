@@ -15,15 +15,12 @@ if (process.argv.slice(2).length < 1) {
 
 	process.exit(0);
 }
-else
-{
+else {
 	//Verify first arg is a number
-	if(isNaN(process.argv.slice(2)[0]))
-	{
+	if (isNaN(process.argv.slice(2)[0])) {
 		console.log("\x1b[31m%s\x1b[0m", 'Please specify a number for parallelism (Max is 3)\n');
 		process.exit(0);
 	}
-
 }
 
 if (process.argv.slice(2)[0] > 3) {
@@ -34,13 +31,13 @@ if (process.argv.slice(2)[0] > 3) {
 let headed = false
 if (process.argv.slice(2).length >= 2 && process.argv.slice(2)[1] === 'true') {
 	headed = true
-	console.log("\x1b[32m%s\x1b[0m", '\nHeaded is ON\n')
+	console.log('\nHeaded is ON\n')
 }
 
 let scheduled = false
 if (process.argv.slice(2).length >= 2 && process.argv.slice(2)[2] === 'true') {
 	scheduled = true
-	console.log("\x1b[32m%s\x1b[0m", '\nScheduled is ON\n')
+	console.log('Scheduled is ON\n')
 }
 
 //#region DO NOT EDIT
@@ -49,7 +46,8 @@ const async = require('async')
 const fs = require('fs')
 const cypress = require('cypress')
 const { addListener, exit } = require('process')
-const { resolve } = require('path')
+const { resolve } = require('path');
+const { clear } = require('console');
 const prompt = require('prompt-sync')()
 let PARALLEL_RUN_COUNT = process.argv.slice(2)[0]
 const integrationDirectory = path.join(__dirname, String("./cypress/integration/ricerca/"))
@@ -127,22 +125,26 @@ function chunkArray(myArray, chunk_size) {
 
 const scheduleCypressnRun = async (paramRequests) => {
 
-	const promises = paramRequests.map(
-		currentRequest => new Promise(function (resolve) {
-			cypress.run(currentRequest.paramsRun, function (err) {
-				if (err) { throw err; }
-				resolve(true);
-			});
-		}
-		));
+	return Promise.all(
+		paramRequests.map(
+			currentRequest => cypress.run(currentRequest.paramsRun).then(result => {
+				if (result.failures) {
+					console.error('Could not execute tests ' + currentRequest.specName)
+					console.error(result.message)
+				}
 
-	const result = await Promise.all(promises).then(values => {
-		console.log('Cypress Run for');
-		for (i = 0; i < paramRequests.length; i++)
-			console.log(paramRequests[i].specName);
-		console.log('completed!');
-	}
-	);
+				console.info('\n------ ' + currentRequest.specName + ' --------')
+				console.info('\nTotal Test : ' + result.totalTests)
+				console.log('Total Test Passed : ' + result.totalPassed)
+				console.error('Total Test Failed : ' + result.totalFailed)
+				console.error('Total Test Skipped : ' + result.totalSkipped)
+				console.info('\n--------------------------')
+			}).catch(err => {
+				console.error(err.message)
+				process.exit(1)
+			})
+		)
+	)
 }
 
 const runTests = async (specs) => {
@@ -150,10 +152,11 @@ const runTests = async (specs) => {
 	var batchSpecs = chunkArray(specs, PARALLEL_RUN_COUNT);
 
 	for (let i = 0; i < batchSpecs.length; i++) {
-		console.log('Start run in parallell for : \n');
+		let typeRun
+		(PARALLEL_RUN_COUNT === '1' || option == 2) ? typeRun = 'serial' : typeRun = 'parallel'
+		console.log('\n--> Start run in ' + typeRun + '... Please wait for results...');
 		const paramRequests = batchSpecs[i].map((spec) => {
 			let specName = String(spec).replace(/^.*[\\\/]/, '').replace('.js', '');
-			console.log(specName)
 			return cypressParamsRun = {
 				specName: specName,
 				paramsRun: {
@@ -163,7 +166,7 @@ const runTests = async (specs) => {
 					reporter: 'junit',
 					reporterOptions: {
 						"mochaFile": "./results//Report_" + specName + ".xml",
-						"toConsole": true
+						"toConsole": false
 					}
 				}
 			};
@@ -190,6 +193,7 @@ async function main() {
 	await runTests(fullTests);
 
 	console.log('Test MW Ricerca FE Cypress Completed!');
+	process.exit(0)
 }
 
 main();
