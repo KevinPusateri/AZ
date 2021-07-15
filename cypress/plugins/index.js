@@ -162,12 +162,7 @@ module.exports = (on, config) => {
             return user;
         }
     });
-
-    on('task', {
-        mysqlStart({ testCaseName, currentEnv, currentUser }) {
-            return mysqlStart(testCaseName, currentEnv, currentUser, config);
-        },
-    })
+    
     on("task", {
         mysqlStart({ testCaseName, ambiente, utenza }) {
             con.connect((err) => {
