@@ -259,7 +259,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it('Verifica aggancio Proposte Danni - Card Danni', function () {
+    it.only('Verifica aggancio Proposte Danni - Card Danni', function () {
         TopBar.clickSales()
         Sales.clickTabDanniOnProposte()
         Sales.clickPrimaCardDanniOnProposte()

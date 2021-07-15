@@ -437,9 +437,9 @@ class Sales {
             }
         })
         cy.get('app-proposals-section').contains('Proposte').click()
-        cy.wait('@gqlDamage')
-        cy.wait('@gqlsalesDamagePremium')
-        cy.get('app-paginated-cards').find('button:contains("Danni")').click().wait(3000)
+        cy.wait('@gqlDamage', { requestTimeout: 50000 });
+        cy.wait('@gqlsalesDamagePremium', { requestTimeout: 50000 });
+        cy.get('app-paginated-cards').find('button:contains("Danni")').click().wait(5000)
     }
 
     /**
@@ -453,7 +453,7 @@ class Sales {
             }
         })
         cy.get('app-proposals-section').contains('Proposte').click()
-        cy.wait('@gqlLife')
+        cy.wait('@gqlLife', { requestTimeout: 30000 });
         cy.get('app-paginated-cards').find('button:contains("Vita")').click().wait(3000)
     }
 
@@ -465,7 +465,7 @@ class Sales {
             method: 'POST',
             url: '**/Auto/**'
         }).as('getAuto');
-        cy.get('.cards-container').find('.card').first().click()
+        cy.get('.cards-container').find('lib-contract-card:visible').first().scrollIntoView().click()
         Common.canaleFromPopup()
         cy.wait('@getAuto', { requestTimeout: 40000 });
         getIFrame().find('a:contains("« Uscita"):visible')

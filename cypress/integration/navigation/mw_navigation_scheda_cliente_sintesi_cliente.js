@@ -4,7 +4,6 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Common from "../../mw_page_objects/common/Common"
-import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 
 Cypress.config('defaultCommandTimeout', 60000)
 
@@ -28,21 +27,30 @@ beforeEach(() => {
     SintesiCliente.wait()
 })
 
+// afterEach(function () {
+//     if (this.currentTest.state === 'failed' &&
+//         //@ts-ignore
+//         this.currentTest._currentRetry === this.currentTest._retries) {
+//         //@ts-ignore
+//         Cypress.runner.stop();
+//     }
+// });
+
 after(() => {
     TopBar.logOutMW()
 })
 
 describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Sintesi Cliente', function () {
 
-    it.only('Navigation Scheda Cliente', function () {
+    it('Navigation Scheda Cliente', function () {
         SintesiCliente.checkTabs()
     })
 
-    it.only('Verifica Situazione cliente', function () {
+    it('Verifica Situazione cliente', function () {
         SintesiCliente.checkSituazioneCliente()
     })
 
-    it.only('Verifica FastQuote: Tab Utra - subTabs Casa e Patrimonio, Salute', function () {
+    it('Verifica FastQuote: Tab Utra - subTabs Casa e Patrimonio, Salute', function () {
         SintesiCliente.checkFastQuoteUltra()
     })
 
@@ -59,6 +67,10 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Sintesi Cliente', fun
     })
 
     context('Auto', () => {
+        it('Verifica Link Auto', function () {
+
+        })
+
         it('Verifica Card Auto: Emissione -> Preventivo Motor', function () {
             SintesiCliente.clickAuto()
             SintesiCliente.clickPreventivoMotor()
@@ -146,14 +158,11 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Sintesi Cliente', fun
             SintesiCliente.back()
         })
 
-        // //ADD TFS -> mostra in pagina user code not valid
+        // Funziona ma non su cypress
         // it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio BMP', function () {
-        //     buttonRamivari()
-        //     cy.wait(2000)
-        //     cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio BMP').click()
-        //     cy.wait(2000)
-        //     canaleFromPopup()
-        //     backToClients()
+        //     SintesiCliente.clickRamiVari()
+        //     SintesiCliente.clickAllianzUltraCasaPatrimonioBMP()
+        //     SintesiCliente.back()
         // })
 
 
@@ -192,6 +201,13 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Sintesi Cliente', fun
             SintesiCliente.clickFastQuoteAlbergo()
             SintesiCliente.back()
         })
+
+        //TODO: canale + new window -> trovare un modo
+        // it('Verifica Card Rami Vari: Gestione Grandine', function () {
+        //     SintesiCliente.clickRamiVari()
+        //     SintesiCliente.clickGestioneGrandine()
+        //     SintesiCliente.back()
+        // })
 
         it('Verifica Card Rami Vari: Emissione - Polizza Nuova', function () {
             SintesiCliente.clickRamiVari()

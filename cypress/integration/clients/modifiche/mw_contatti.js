@@ -134,7 +134,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       })
     })
 
-    it('Verifica telefono Fisso sia inserito nella tabella', function () {
+    it('Verifica Fax sia inserito nella tabella', function () {
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
       LandingRicerca.clickClientName(client,true,'PF','E')
@@ -335,7 +335,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
   })
 
-  context('PEC', () => {
+  context.only('PEC', () => {
     it('Verifica l\'operazione di inserimento - tipo: PEC', function () {
       LandingRicerca.searchRandomClient(true, "PF", "E")
       LandingRicerca.clickRandomResult()
