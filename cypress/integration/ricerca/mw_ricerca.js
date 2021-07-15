@@ -34,6 +34,8 @@ after(() => {
 
 describe('Matrix Ricerca', function () {
 
+  this.timeout(10000)
+
   it('Verifica Ricerca Da Switch Page', function () {
     LandingRicerca.checkBucaRicercaSuggerrimenti()
   })

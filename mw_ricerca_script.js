@@ -136,9 +136,8 @@ const scheduleCypressnRun = async (paramRequests) => {
 				console.info('\n------ ' + currentRequest.specName + ' --------')
 				console.info('\nTotal Test : ' + result.totalTests)
 				console.log('Total Test Passed : ' + result.totalPassed)
-				console.error('Total Test Failed : ' + result.totalFailed)
-				console.error('Total Test Skipped : ' + result.totalSkipped)
-				console.info('\n--------------------------')
+				console.log('Total Test Failed : ' + result.totalFailed)
+				console.log('Total Test Skipped : ' + result.totalSkipped)
 			}).catch(err => {
 				console.error(err.message)
 				process.exit(1)
@@ -185,10 +184,8 @@ async function main() {
 		specs.forEach((spec) => {
 			fullTests.push(integrationDirectory + spec);
 		});
-	} else {
+	} else
 		fullTests.push(integrationDirectory + specName);
-
-	}
 
 	await runTests(fullTests);
 
