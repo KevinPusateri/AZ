@@ -164,7 +164,7 @@ const runTests = async (specs) => {
 					headed: headed,
 					reporter: 'junit',
 					reporterOptions: {
-						"mochaFile": "./results//Report_" + specName + ".xml",
+						"mochaFile": "./results//Report_" + specName.toUpperCase() + ".xml",
 						"toConsole": false
 					}
 				}
