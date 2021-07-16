@@ -5,14 +5,14 @@
 /// <reference types="Cypress" />
 
 //#region import
-import LoginPage from "../mw_page_objects/common/LoginPage"
-import TopBar from "../mw_page_objects/common/TopBar"
-import LandingClients from "../mw_page_objects/clients/LandingClients"
-import SCU from "../mw_page_objects/clients/SCU"
+import LoginPage from "../../mw_page_objects/common/LoginPage"
+import TopBar from "../../mw_page_objects/common/TopBar"
+import LandingClients from "../../mw_page_objects/clients/LandingClients"
+import SCU from "../../mw_page_objects/clients/SCU"
 import Folder from "../../mw_page_objects/common/Folder"
-import LandingRicerca from "../mw_page_objects/ricerca/LandingRicerca"
-import SintesiCliente from "../mw_page_objects/clients/SintesiCliente"
-import HomePage from "../mw_page_objects/common/HomePage"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
+import HomePage from "../../mw_page_objects/common/HomePage"
 //#endregion import
 
 //#region Configuration
