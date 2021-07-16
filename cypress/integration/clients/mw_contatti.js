@@ -4,13 +4,13 @@
 
 /// <reference types="Cypress" />
 
-import LoginPage from "../../../mw_page_objects/common/LoginPage"
-import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
-import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
-import DettaglioAnagrafica from "../../../mw_page_objects/clients/DettaglioAnagrafica"
-import SCUContatti from "../../../mw_page_objects/clients/SCUContatti"
-import HomePage from "../../../mw_page_objects/common/HomePage"
-import TopBar from "../../../mw_page_objects/common/TopBar"
+import LoginPage from "../mw_page_objects/common/LoginPage"
+import LandingRicerca from "../mw_page_objects/ricerca/LandingRicerca"
+import SintesiCliente from "../mw_page_objects/clients/SintesiCliente"
+import DettaglioAnagrafica from "../mw_page_objects/clients/DettaglioAnagrafica"
+import SCUContatti from "../mw_page_objects/clients/SCUContatti"
+import HomePage from "../mw_page_objects/common/HomePage"
+import TopBar from "../mw_page_objects/common/TopBar"
 
 
 //#region Variables
@@ -335,7 +335,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
   })
 
-  context.only('PEC', () => {
+  context('PEC', () => {
     it('Verifica l\'operazione di inserimento - tipo: PEC', function () {
       LandingRicerca.searchRandomClient(true, "PF", "E")
       LandingRicerca.clickRandomResult()

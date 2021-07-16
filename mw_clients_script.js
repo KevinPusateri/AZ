@@ -50,7 +50,7 @@ const { resolve } = require('path');
 const { clear } = require('console');
 const prompt = require('prompt-sync')()
 let PARALLEL_RUN_COUNT = process.argv.slice(2)[0]
-const integrationDirectory = path.join(__dirname, String("./cypress/integration/ricerca/"))
+const integrationDirectory = path.join(__dirname, String("./cypress/integration/clients/"))
 
 
 //#region Chooser Type run all or single collections
@@ -193,7 +193,7 @@ async function main() {
 
 	await runTests(fullTests);
 
-	console.log('Test MW Ricerca FE Cypress Completed!');
+	console.log('Test MW Clients FE Cypress Completed!');
 	process.exit(0)
 }
 
