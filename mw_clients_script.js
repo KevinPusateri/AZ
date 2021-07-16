@@ -150,11 +150,11 @@ const scheduleCypressnRun = async (paramRequests) => {
 const runTests = async (specs) => {
 
 	var batchSpecs = chunkArray(specs, PARALLEL_RUN_COUNT);
+	let typeRun
+	(PARALLEL_RUN_COUNT === '1' || option == 2) ? typeRun = 'serial' : typeRun = 'parallel'
+	console.log('\n--> Start run in ' + typeRun + '... Please wait for results...');
 
 	for (let i = 0; i < batchSpecs.length; i++) {
-		let typeRun
-		(PARALLEL_RUN_COUNT === '1' || option == 2) ? typeRun = 'serial' : typeRun = 'parallel'
-		console.log('\n--> Start run in ' + typeRun + '... Please wait for results...');
 		const paramRequests = batchSpecs[i].map((spec) => {
 			let specName = String(spec).replace(/^.*[\\\/]/, '').replace('.js', '');
 			return cypressParamsRun = {
