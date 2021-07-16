@@ -37,7 +37,7 @@ class SintesiCliente {
         // Verifica Tab clients corretti
         const tabProfile = [
             'SINTESI CLIENTE',
-            'DETTAGLIO ANAGRAFICA',
+            'DETTAGLIO fasANAGRAFICA',
             'PORTAFOGLIO',
             'ARCHIVIO CLIENTE'
         ]

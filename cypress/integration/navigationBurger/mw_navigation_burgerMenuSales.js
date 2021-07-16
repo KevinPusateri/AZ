@@ -95,7 +95,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
-    it.only('Verifica aggancio FastQuote Impresa e Albergo', function () {
+    it('Verifica aggancio FastQuote Impresa e Albergo', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('FastQuote Impresa e Albergo')
         BurgerMenuSales.backToSales()

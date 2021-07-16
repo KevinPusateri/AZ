@@ -70,10 +70,10 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Portafoglio', functio
         ArchivioCliente.checkComunicazioni()
     })
 
-    //TODO:
-    // it('Verifica Tab Unico', function () {
-    //     ArchivioCliente.clickTabArchivioCliente()
-    //     ArchivioCliente.clickSubTab('Unico')
-    //     ArchivioCliente.checkComunicazioni()
-    // })
+    TODO:
+    it.only('Verifica Tab Unico', function () {
+        ArchivioCliente.clickTabArchivioCliente()
+        ArchivioCliente.clickSubTab('Unico')
+        ArchivioCliente.checkUnico()
+    })
 })

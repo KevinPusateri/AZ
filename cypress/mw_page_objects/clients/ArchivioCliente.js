@@ -65,6 +65,14 @@ class ArchivioCliente {
         cy.get('button[aria-label="Close dialog"]').click()
     }
 
+    static checkUnico() {
+        cy.get('app-client-archive-unique').find('app-section-title').should('contain.text', 'Aggiornamenti unico')
+        cy.get('app-client-archive-unique').find('app-client-archive-unique-change-card')
+            .should('be.visible')
+        cy.get('app-client-archive-unique').find('app-client-archive-unique-change-card').first()
+            .find('nx-icon[class="nx-icon--s nx-icon--password-show"]').click()
+    }
+
     static clickComunicazioni() {
         cy.contains('Comunicazioni').click()
     }
