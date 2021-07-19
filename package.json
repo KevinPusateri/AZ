@@ -4,6 +4,7 @@
   "description": "Cypress Tests for Matrix Web",
   "main": "index.js",
   "dependencies": {
+    "aggregate-error": "^4.0.0",
     "archiver": "^5.3.0",
     "cypress": "^7.5.0",
     "cypress-file-upload": "^5.0.7",
@@ -14,6 +15,7 @@
     "ibantools": "^3.3.0",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
+    "p-map": "^4.0.0",
     "prompt-sync": "^4.2.0",
     "rimraf": "^3.0.2"
   },
