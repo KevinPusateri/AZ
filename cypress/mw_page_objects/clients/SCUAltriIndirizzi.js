@@ -12,7 +12,6 @@ const getSCU = () => {
     return iframeSCU.its("body").should("not.be.undefined").then(cy.wrap);
 };
 
-//ADD TFS
 class SCUAltriIndirizzi {
 
     static aggiungiInidirizzo(indirizzo) {

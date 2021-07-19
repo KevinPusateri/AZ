@@ -43,7 +43,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.checkExistLinksCollegamentiRapidi()
     })
 
-    //ADD TFS
     it('Verifica aggancio Nuovo Sfera', function () {
         TopBar.clickSales()
         Sales.clickLinkRapido('Nuovo Sfera')
@@ -139,12 +138,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    // it.skip('Verifica aggancio Emetti Polizza - Gestione Richieste per PA', function () {
-    //     TopBar.clickSales()
-    //     Sales.clickLinkOnEmettiPolizza('Gestione Richieste per PA')
-    //     Sales.backToSales()
-    // })
-
     it('Verifica tab "Pezzi"', function () {
 
         TopBar.clickSales()
@@ -164,57 +157,31 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    // // ADD TFS
-    // it.skip('Verifica "Quietanamento" - lob di interesse: Motor', function () {
-    //     TopBar.clickSales()
+    it('Verifica "Quietanamento" - lob di interesse: Motor', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse()
+        Sales.backToSales()
+    })
 
-    //     cy.get('app-lob-link').find('span:contains("Motor")').click()
-    //     cy.get('app-receipt-manager-footer').find('button:contains("Estrai")').click()
+    it('Verifica "Quietanamento" - lob di interesse: Rami Vari', function () {
+        TopBar.clickSales()        
+        Sales.lobDiInteresse()
+        Sales.backToSales()
+    })
 
-    // })
+    it('Verifica "Quietanamento" - lob di interesse: Vita', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse()
+        Sales.backToSales()
 
-    // //ADD TFS
-    // it.skip('Verifica "Quietanamento" - lob di interesse: Rami Vari', function () {
-    //     TopBar.clickSales()
-    //     cy.intercept('POST', '**/graphql', (req) => {
-    //         if (req.body.operationName.includes('getTotalSferaReceipts')) {
-    //             req.alias = 'gqlSfera'
-    //         }
-    //     })
-    //     cy.get('app-lob-link').find('span:contains("Rami vari")').click()
-    //     cy.wait('@gqlSfera')
-    //     cy.get('app-receipt-manager-footer').find('button:contains("Estrai")').click()
-    // })
+    })
 
-    // //ADD TFS
-    // it.skip('Verifica "Quietanamento" - lob di interesse: Vita', function () {
-    //     TopBar.clickSales()
+    it('Verifica "Quietanamento" - lob di interesse: Tutte', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse()
+        Sales.backToSales()
+    })
 
-    //     cy.intercept('POST', '**/graphql', (req) => {
-    //         if (req.body.operationName.includes('getTotalSferaReceipts')) {
-    //             req.alias = 'gqlSfera'
-    //         }
-    //     })
-    //     cy.get('app-lob-link').find('span:contains("Vita")').click()
-    //     cy.wait('@gqlSfera')
-    //     cy.get('app-receipt-manager-footer').find('button:contains("Estrai")').click()
-    // })
-
-    //ADD TFS
-    // it.skip('Verifica "Quietanamento" - lob di interesse: Tutte', function () {
-    //     TopBar.clickSales()
-
-    //     cy.intercept('POST', '**/graphql', (req) => {
-    //         if (req.body.operationName.includes('getTotalSferaReceipts')) {
-    //             req.alias = 'gqlSfera'
-    //         }
-    //     })
-    //     cy.get('app-lob-link').find('span:contains("Tutte")').click()
-    //     cy.wait('@gqlSfera')
-    //     cy.get('app-receipt-manager-footer').find('button:contains("Estrai")').click()
-    // })
-
-    //ADD TFS
     it('Verifica TAB: "Campagne"', function () {
         TopBar.clickSales()
         Sales.clickTabCampagne()

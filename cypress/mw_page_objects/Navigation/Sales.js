@@ -522,6 +522,24 @@ class Sales {
         getIFrame().find('button:contains("Verifica stato campagne attive"):visible')
     }
 
+    /**
+     * Clicca il lob di interess e fa l'Estrai -
+     * Verifica l'aggancio alla pagina
+     * @param {string} lob - nome del lob
+     */
+    static lobDiInteresse(lob){
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('getTotalSferaReceipts')) {
+                req.alias = 'gqlSfera'
+            }
+        })
+        cy.get('app-lob-link').find('span:contains("Rami vari")').click()
+        cy.wait('@gqlSfera')
+        cy.get('app-receipt-manager-footer').find('button:contains("Estrai")').click()
+        cy.get('app-table-component').should('be.visible')
+        cy.get('nx-header-actions').should('contain.text','Espandi Pannello')
+    }
+
 }
 
 export default Sales
