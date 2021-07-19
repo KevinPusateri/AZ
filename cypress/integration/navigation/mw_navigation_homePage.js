@@ -186,6 +186,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         HomePage.clickPanelNotifiche()
     })
 
+    // ADD TFS
     // it.skip('Verifica testi e link delle notifiche', function () {
     //     HomePage.clickPanelNotifiche()
     //     HomePage.checkNotifiche()
