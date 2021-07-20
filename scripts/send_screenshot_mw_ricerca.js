@@ -5,18 +5,17 @@
 const path = require('path');
 const async = require('async');
 const fs = require('fs');
-const archiver = require('..//node_modules//archiver');
-var rimraf = require('..//node_modules//rimraf');
+const archiver = require('archiver');
+var rimraf = require('rimraf');
 const nodemailer = require('..//node_modules//nodemailer');
-var FtpDeploy = require('ftp-deploy');
 const moment = require('moment');
 const currentDT = moment().format('YYYY-MM-DD_HH.mm.ss');
-const dirLogs = '..//cypress//screenshots//';
+const dirLogs = '..//cypress//screenshots//ricerca//';
 //#endregion
 
 const htmlExportLogMailTo = 'andrea.oboe@allianz.it, kevin.pusateri@allianz.it';
 
-const sendFTP = async() => {
+const sendFTP = async () => {
 
 	var ftpDeploy = new FtpDeploy();
 
@@ -45,31 +44,33 @@ const sendFTP = async() => {
 		.catch(err => console.log(err));
 }
 
-const zipDirectory = async(source, out) => {
-	const archive = archiver('zip', { zlib: { level: 9 }});
+const zipDirectory = async (source, out) => {
+	const archive = archiver('zip', { zlib: { level: 9 } });
 	const stream = fs.createWriteStream(out);
-  
+
 	return new Promise((resolve, reject) => {
-	  archive
-		.directory(source, false)
-		.on('error', err => reject(err))
-		.pipe(stream)
-	  ;
-  
-	  stream.on('close', () => resolve());
-	  archive.finalize();
+		archive
+			.directory(source, false)
+			.on('error', err => reject(err))
+			.pipe(stream)
+			;
+
+		stream.on('close', () => resolve());
+		archive.finalize();
 	});
 }
 
-
-const sendMail = async() =>{
+const sendMail = async () => {
 	let transporter = nodemailer.createTransport({
 		host: 'mail.azi.allianzit',
 		port: 25,
-		secure: false
+		secure: false,
+		tls: {
+			rejectUnauthorized: false
+		}
 	});
 
-	let mailSubject = 'Report MW FE PREPROD';
+	let mailSubject = 'Report Screenshot MW FE RICERCA PREPROD';
 
 	await transporter.sendMail({
 		from: '"MW FE Testing" <noreply@allianz.it>',
@@ -79,21 +80,18 @@ const sendMail = async() =>{
 		html: '<b>Report ' + mailSubject + '</b></br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>',
 		attachments: [
 			{
-				filename: 'MW_FE_PREPROD.zip',
-				path: '..//MW_FE_PREPROD.zip'
-					
+				filename: 'MW_FE_RICERCA_PREPROD.zip',
+				path: '..//MW_FE_RICERCA_PREPROD.zip'
+
 			}
 		]
 	});
 }
 
-async function main()
-{
-	if(fs.existsSync(dirLogs))
-	{
-		await zipDirectory(dirLogs, '..//MW_FE_PREPROD.zip');
+async function main() {
+	if (fs.existsSync(dirLogs)) {
+		await zipDirectory(dirLogs, '..//MW_FE_RICERCA_PREPROD.zip');
 		await sendMail();
-		await sendFTP();
 	}
 }
 
