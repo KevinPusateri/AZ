@@ -48,10 +48,11 @@ const cypress = require('cypress')
 const { addListener, exit } = require('process')
 const { resolve } = require('path');
 const { clear } = require('console');
+const pMap = require('p-map');
 const prompt = require('prompt-sync')()
 let PARALLEL_RUN_COUNT = process.argv.slice(2)[0]
 const integrationDirectory = path.join(__dirname, String("./cypress/integration/navigationBurger/"))
-
+//#endregion DO NOT EDIT
 
 //#region Chooser Type run all or single collections
 var filenames = fs.readdirSync(integrationDirectory);
@@ -82,7 +83,6 @@ else
 	option = 1;
 //#endregion
 
-
 function showAllCollectionToDecide() {
 
 	// Function to get current filenames 
@@ -97,6 +97,12 @@ function showAllCollectionToDecide() {
 
 }
 
+function millisToMinutesAndSeconds(millis) {
+	var minutes = Math.floor(millis / 60000);
+	var seconds = ((millis % 60000) / 1000).toFixed(0);
+	return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+}
+
 function getCollectionName() {
 	var collectionChooser = -1;
 	do {
@@ -104,78 +110,6 @@ function getCollectionName() {
 	} while (isNaN(collectionChooser) || collectionChooser > indexCollection - 1 || collectionChooser < 0);
 
 	return filenames[collectionChooser];
-}
-
-/**
- * Returns an array with arrays of the given size.
- *
- * @param myArray {Array} Array to split
- * @param chunkSize {Integer} Size of every group
-*/
-function chunkArray(myArray, chunk_size) {
-	var results = [];
-
-	while (myArray.length) {
-		results.push(myArray.splice(0, chunk_size));
-	}
-
-	return results;
-}
-
-
-const scheduleCypressnRun = async (paramRequests) => {
-
-	return Promise.all(
-		paramRequests.map(
-			currentRequest => cypress.run(currentRequest.paramsRun).then(result => {
-				if (result.failures) {
-					console.error('Could not execute tests ' + currentRequest.specName)
-					console.error(result.message)
-				}
-
-				console.info('\n------ ' + currentRequest.specName + ' --------')
-				console.info('\nTotal Test : ' + result.totalTests)
-				console.log('Total Test Passed : ' + result.totalPassed)
-				console.log('Total Test Failed : ' + result.totalFailed)
-				console.log('Total Test Skipped : ' + result.totalSkipped)
-			}).catch(err => {
-				console.error(err.message)
-				process.exit(1)
-			})
-		)
-	)
-}
-
-const runTests = async (specs) => {
-
-	var batchSpecs = chunkArray(specs, PARALLEL_RUN_COUNT);
-	let typeRun
-	(PARALLEL_RUN_COUNT === '1' || option == 2) ? typeRun = 'serial' : typeRun = 'parallel'
-	console.log('\n--> Start run in ' + typeRun + '... Please wait for results...');
-
-	for (let i = 0; i < batchSpecs.length; i++) {
-		const paramRequests = batchSpecs[i].map((spec) => {
-			let specName = String(spec).replace(/^.*[\\\/]/, '').replace('.js', '');
-			return cypressParamsRun = {
-				specName: specName,
-				paramsRun: {
-					quiet: true,
-					spec: spec,
-					headed: headed,
-					reporter: 'junit',
-					reporterOptions: {
-						"mochaFile": "./results//Report_" + specName.toUpperCase() + ".xml",
-						"toConsole": false
-					},
-					config: {
-						video: false
-					}
-				}
-			};
-		});
-		await scheduleCypressnRun(paramRequests);
-		console.log('*************************************')
-	}
 }
 
 async function main() {
@@ -190,10 +124,55 @@ async function main() {
 	} else
 		fullTests.push(integrationDirectory + specName);
 
-	await runTests(fullTests);
+	const paramsRun = []
+	for (let i = 0; i < fullTests.length; i++) {
+		let specName = String(fullTests[i]).replace(/^.*[\\\/]/, '').replace('.js', '')
+		paramsRun.push({
+			specName: specName,
+			cypressParams: {
+				quiet: true,
+				spec: fullTests[i],
+				headed: headed,
+				reporter: 'junit',
+				reporterOptions: {
+					"mochaFile": "./results//Report_" + specName.toUpperCase() + ".xml",
+					"toConsole": false
+				},
+				config: {
+					video: false
+				}
+			}
+		})
+	}
 
-	console.log('Test MW BugerMenu FE Cypress Completed!');
+	const mapper = async paramRun => {
+		console.log("Start run for " + paramRun.specName + "...")
+		return await cypress.run(paramRun.cypressParams)
+	}
+
+	const results = await pMap(paramsRun, mapper, { concurrency: parseInt(PARALLEL_RUN_COUNT) })
+
+	let totalTests = 0
+	let totalPassed = 0
+	let totalFailed = 0
+	let totalSkipped = 0
+	let totalDuration = 0
+	for (let i = 0; i < results.length; i++) {
+		totalTests += results[i].totalTests
+		totalPassed += results[i].totalPassed
+		totalFailed += results[i].totalFailed
+		totalSkipped += results[i].totalSkipped
+		totalDuration += results[i].totalDuration
+	}
+	console.log('********************************************************')
+	console.log('\nTotal Test Executed : ' + totalTests)
+	console.log('Total Test Passed : ' + totalPassed)
+	console.log('Total Test Failed : ' + totalFailed)
+	console.log('Total Test Skipped : ' + totalSkipped)
+	console.log('Total Runtime Duration => ' + millisToMinutesAndSeconds(totalDuration))
+	console.log('********************************************************')
+	console.log('Test MW Navigation Burger FE Cypress Completed!');
 	process.exit(0)
 }
 
-main();
+main()
