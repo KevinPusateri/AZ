@@ -59,21 +59,34 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Portafoglio', functio
     })
 
     // it('Verifica Tab Attività', function () {
-        // ArchivioCliente.clickTabArchivioCliente()
-        // ArchivioCliente.clickSubTab('Attività')
-        // ArchivioCliente.checkAttivita()
+    // ArchivioCliente.clickTabArchivioCliente()
+    // ArchivioCliente.clickSubTab('Attività')
+    // ArchivioCliente.checkAttivita()
     // })
-    
+
     it('Verifica Tab Comunicazioni', function () {
         ArchivioCliente.clickTabArchivioCliente()
         ArchivioCliente.clickSubTab('Comunicazioni')
         ArchivioCliente.checkComunicazioni()
     })
 
-    TODO:
-    it.only('Verifica Tab Unico', function () {
+    // TODO: Apri PDF in failed
+    it('Verifica Tab Unico', function () {
         ArchivioCliente.clickTabArchivioCliente()
         ArchivioCliente.clickSubTab('Unico')
         ArchivioCliente.checkUnico()
+    })
+
+    // TODO: Apri PDF in failed
+    // it.skip('Verifica Tab Documentazione', function () {
+
+    // })
+
+
+    //TODO: 
+    it.only('Verifica Tab Digital Me', function () {
+        ArchivioCliente.clickTabArchivioCliente()
+        ArchivioCliente.clickSubTab('Digital Me')
+        ArchivioCliente.checkDigitalMe()
     })
 })

@@ -56,7 +56,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     })
 
-    // TODO: connessione non sicura Apre una nuova pagina -- FUNZIONAAA ADDD TFSSS
     it('Verifica aggancio X - Advisor', function () {
         TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('X - Advisor')
@@ -115,20 +114,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         BurgerMenuNumbers.clickLink('New Business Ultra Salute')
         BurgerMenuNumbers.backToNumbers()
     })
-
-    // tolto per esigenze di business
-    /* it('Verifica aggancio New Business Ultra', function () {
-         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-         cy.url().should('eq', baseUrl + 'numbers/business-lines')
-         cy.get('lib-burger-icon').click()
-         interceptGetAgenziePDF()
-         cy.contains('New Business Ultra').click()
-         canaleFromPopup()
-         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
-         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
-         cy.get('a').contains('Numbers').click()
-         cy.url().should('eq', baseUrl + 'numbers/business-lines')
-     })*/
 
     it('Verifica aggancio New Business Vita', function () {
         TopBar.clickNumbers()

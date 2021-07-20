@@ -156,7 +156,7 @@ class LandingRicerca {
                 break
             default:
                 cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
-                cy.url().should('eq', Common.getBaseUrl() + 'search/clients/clients')
+                cy.url().should('include', 'search/clients')
                 break
         }
     }

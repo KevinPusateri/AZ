@@ -24,7 +24,7 @@ before(() => {
 })
 
 beforeEach(() => {
-    Common.visitUrlOnEnv()
+    // Common.visitUrlOnEnv()
     cy.preserveCookies()
 })
 
@@ -35,22 +35,21 @@ after(() => {
 
 describe('Matrix Web : Navigazioni da Clients', function () {
 
-    it('Verifica aggancio Clients', function () {
+    it.only('Verifica aggancio Clients', function () {
         TopBar.clickClients()
     });
 
-    it('Verifica presenza dei collegamenti rapidi', function () {
+    it.only('Verifica presenza dei collegamenti rapidi', function () {
         TopBar.clickClients()
         Clients.checkExistLinksCollegamentiRapidi()
     })
 
-    // TODO: NEW PAGINA problemi con firefox
-    it('Verifica aggancio Analisi dei bisogni', function () {
+    it.only('Verifica aggancio Analisi dei bisogni', function () {
         TopBar.clickClients()
         Clients.clickLinkRapido('Analisi dei bisogni')
     });
 
-    it('Verifica aggancio Digital Me', function () {
+    it.only('Verifica aggancio Digital Me', function () {
         TopBar.clickClients()
         Clients.clickLinkRapido('Digital Me')
         Clients.backToClients()
