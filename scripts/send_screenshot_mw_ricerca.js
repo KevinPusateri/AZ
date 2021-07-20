@@ -13,7 +13,7 @@ const currentDT = moment().format('YYYY-MM-DD_HH.mm.ss');
 const dirLogs = '..//cypress//screenshots//ricerca//';
 //#endregion
 
-const htmlExportLogMailTo = 'andrea.oboe@allianz.it, kevin.pusateri@allianz.it';
+const htmlExportLogMailTo = process.argv.slice(2)[0]
 
 const sendFTP = async () => {
 
