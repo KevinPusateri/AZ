@@ -9,7 +9,7 @@ slice(2)[2] -> scheduled (true or false)
 
 if (process.argv.slice(2).length < 1) {
 	console.log('\nMissing arguments. Please Use like this:\n');
-	console.log("\x1b[33m%s\x1b[0m", '[0] -> level of parallelism (if 1, specs are executed sequential); MAX is 3\n');
+	console.log("\x1b[33m%s\x1b[0m", '[0] -> level of parallelism (if 1, specs are executed sequential); MAX is 4\n');
 	console.log("\x1b[35m%s\x1b[0m", '[1] -> headed (true or false) [OPTIONAL, default is false]\n');
 	console.log("\x1b[34m%s\x1b[0m", '[2] -> scheduled (true or false) [OPTIONAL, default is false]\n');
 
@@ -18,13 +18,13 @@ if (process.argv.slice(2).length < 1) {
 else {
 	//Verify first arg is a number
 	if (isNaN(process.argv.slice(2)[0])) {
-		console.log("\x1b[31m%s\x1b[0m", 'Please specify a number for parallelism (Max is 3)\n');
+		console.log("\x1b[31m%s\x1b[0m", 'Please specify a number for parallelism (Max is 4)\n');
 		process.exit(0);
 	}
 }
 
-if (process.argv.slice(2)[0] > 3) {
-	console.log("\x1b[31m%s\x1b[0m", 'Max Level of parallelism for this kind of tests is 3!\n');
+if (process.argv.slice(2)[0] > 4) {
+	console.log("\x1b[31m%s\x1b[0m", 'Max Level of parallelism for this kind of tests is 4!\n');
 	process.exit(0);
 }
 
