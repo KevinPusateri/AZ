@@ -1,4 +1,5 @@
 /// <reference types="Cypress" />
+import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 
 class DettaglioAnagrafica {
 
@@ -51,6 +52,22 @@ class DettaglioAnagrafica {
         })
     }
 
+    static checkLegami() {
+        // cy.wait(10000)
+        cy.get('ac-anagrafe-panel').should('be.visible')
+        return new Promise((resolve, reject) => {
+            cy.get('body').should('be.visible')
+                .then($body => {
+                    cy.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+                    const isTrovato = $body.find('button:contains("Inserisci membro"):visible').is(':visible')
+                    if (isTrovato)
+                        resolve(true)
+                    else
+                        resolve(false)
+                })
+        })
+    }
+
     static modificaCliente() {
         cy.contains('DETTAGLIO ANAGRAFICA').click()
         cy.contains('Modifica dati cliente').click()
@@ -62,11 +79,28 @@ class DettaglioAnagrafica {
                 req.alias = 'gqlIdentityDocuments'
             }
         })
-        debugger
         cy.contains('DETTAGLIO ANAGRAFICA').click()
         cy.contains('Documenti').click()
 
         cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+    }
+
+    static sezioneLegami() {
+        cy.contains('DETTAGLIO ANAGRAFICA').click()
+
+        cy.intercept({
+            method: 'GET',
+            url: '**/api/**'
+        }).as('getApi');
+        cy.intercept('POST', '**/graphql', (req) => {
+            // Queries
+            aliasQuery(req, 'fastQuoteProfiling')
+//TODO: 
+        })
+        cy.contains('Legami').click()
+        cy.wait('@getApi', { requestTimeout: 40000 });
+        cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 40000 });
+
     }
 
     static clickTabDettaglioAnagrafica() {
@@ -140,7 +174,7 @@ class DettaglioAnagrafica {
     static checkCampiDatiPrincipaliPF() {
         cy.get('app-physical-client-main-data').find('[class="box-unico"]').then((box) => {
             cy.wrap(box).find('app-section-title').should('contain.text', 'Dati principali persona fisica')
-            cy.wrap(box).find('button[class="button-edit-client nx-button--primary nx-button--small-medium"]')
+            cy.wrap(box).find('button[ngclass="button-edit-client"]')
                 .should('contain.text', 'Modifica dati cliente')
             cy.get('app-physical-client-main-data').find('[class^="label"]').should('have.length', 21).then((label) => {
                 expect(label.text().trim()).to.include('Titolo');

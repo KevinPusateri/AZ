@@ -27,15 +27,6 @@ beforeEach(() => {
     SintesiCliente.wait()
 })
 
-// afterEach(function () {
-//     if (this.currentTest.state === 'failed' &&
-//         //@ts-ignore
-//         this.currentTest._currentRetry === this.currentTest._retries) {
-//         //@ts-ignore
-//         Cypress.runner.stop();
-//     }
-// });
-
 after(() => {
     TopBar.logOutMW()
 })
@@ -158,12 +149,11 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Sintesi Cliente', fun
             SintesiCliente.back()
         })
 
-        // Funziona ma non su cypress
-        // it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio BMP', function () {
-        //     SintesiCliente.clickRamiVari()
-        //     SintesiCliente.clickAllianzUltraCasaPatrimonioBMP()
-        //     SintesiCliente.back()
-        // })
+        it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio BMP', function () {
+            SintesiCliente.clickRamiVari()
+            SintesiCliente.clickAllianzUltraCasaPatrimonioBMP()
+            SintesiCliente.back()
+        })
 
 
         it('Verifica Card Rami Vari: Allianz Ultra Salute', function () {

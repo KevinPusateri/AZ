@@ -117,6 +117,17 @@ class Numbers {
     }
 
     /**
+     * Verifica Atterraggio Primo indice Monitoraggio Carico
+     */
+    static clickAndCheckAtterraggioMonitoraggioCarico(){
+        cy.get('app-load-monitoring').should('be.visible')
+        cy.get('app-load-monitoring').find('lib-da-link').should('be.visible')
+        cy.get('app-load-monitoring').find('app-lob-title').should('contain.text','DANNI')
+        cy.get('app-load-monitoring').find('app-lob-title').should('contain.text','MOTOR')
+        cy.get('app-load-monitoring').find('app-lob-title').should('contain.text','RAMI VARI RETAIL')
+    }
+
+    /**
      * Verifica Atterraggio Primo indice digitale
      */
     static clickAndCheckAtterraggioPrimoIndiceDigitale() {
