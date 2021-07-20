@@ -98,12 +98,6 @@ function showAllCollectionToDecide() {
 
 }
 
-function millisToMinutesAndSeconds(millis) {
-	var minutes = Math.floor(millis / 60000);
-	var seconds = ((millis % 60000) / 1000).toFixed(0);
-	return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-}
-
 function getCollectionName() {
 	var collectionChooser = -1;
 	do {
@@ -157,20 +151,17 @@ async function main() {
 	let totalPassed = 0
 	let totalFailed = 0
 	let totalSkipped = 0
-	let totalDuration = 0
 	for (let i = 0; i < results.length; i++) {
 		totalTests += results[i].totalTests
 		totalPassed += results[i].totalPassed
 		totalFailed += results[i].totalFailed
 		totalSkipped += results[i].totalSkipped
-		totalDuration += results[i].totalDuration
 	}
 	console.log('********************************************************')
 	console.log('\nTotal Test Executed : ' + totalTests)
 	console.log('Total Test Passed : ' + totalPassed)
 	console.log('Total Test Failed : ' + totalFailed)
 	console.log('Total Test Skipped : ' + totalSkipped)
-	console.log('Total Runtime Duration => ' + millisToMinutesAndSeconds(totalDuration))
 	console.log('********************************************************')
 	console.log('Test MW Navigation FE Cypress Completed!');
 	process.exit(0)
