@@ -34,7 +34,7 @@ const zipDirectory = async (source, out) => {
 
 const sendMail = async () => {
 	let transporter = nodemailer.createTransport({
-		host: 'mail.azi.allianzit',
+		host: 'techuser.mail.allianz',
 		port: 25,
 		secure: false,
 		tls: {
