@@ -15,35 +15,6 @@ const dirLogs = '..//cypress//screenshots//ricerca//';
 
 const htmlExportLogMailTo = process.argv.slice(2)[0]
 
-const sendFTP = async () => {
-
-	var ftpDeploy = new FtpDeploy();
-
-	var config = {
-		user: "qa",
-		password: "Febbraio2021$",
-		host: "H2019LE00038J",
-		port: 21,
-		localRoot: __dirname + '\\' + dirLogs,
-		remoteRoot: 'matrix/MW_FE_PP_' + currentDT + '/',
-		include: ["*", "**/*"],      // this would upload everything except dot files
-		//include: ["*.php", "dist/*", ".*"],
-		// e.g. exclude sourcemaps, and ALL files in node_modules (including dot files)
-		exclude: ["*.zip"],
-		// delete ALL existing files at destination before uploading, if true
-		deleteRemote: false,
-		// Passive mode is forced (EPSV command is not sent)
-		forcePasv: true,
-		// use sftp or ftp
-		sftp: false
-	};
-
-	await ftpDeploy
-		.deploy(config)
-		.then(res => console.log("FTP Upload Finished:", res))
-		.catch(err => console.log(err));
-}
-
 const zipDirectory = async (source, out) => {
 	const archive = archiver('zip', { zlib: { level: 9 } });
 	const stream = fs.createWriteStream(out);
@@ -93,6 +64,8 @@ async function main() {
 		await zipDirectory(dirLogs, '..//MW_FE_RICERCA_PREPROD.zip');
 		await sendMail();
 	}
+	else
+		console.log('Nothing to send : NO ERRORS :) ')
 }
 
 main();
