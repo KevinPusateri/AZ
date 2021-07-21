@@ -1,5 +1,6 @@
 /// <reference types="Cypress" />
 import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
+import LandingRicerca from '../ricerca/LandingRicerca.js';
 
 class DettaglioAnagrafica {
 
@@ -52,20 +53,23 @@ class DettaglioAnagrafica {
         })
     }
 
-    static checkLegami() {
-        // cy.wait(10000)
-        cy.get('ac-anagrafe-panel').should('be.visible')
-        return new Promise((resolve, reject) => {
+    static checkClientWithoutLegame() {
+        const searchClientWithoutLegame = () => {
+            LandingRicerca.searchRandomClient(true, "PG", "P")
+            LandingRicerca.clickRandomResult()
+            DettaglioAnagrafica.sezioneLegami()
+            cy.get('ac-anagrafe-panel').should('be.visible')
             cy.get('body').should('be.visible')
                 .then($body => {
-                    cy.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
                     const isTrovato = $body.find('button:contains("Inserisci membro"):visible').is(':visible')
                     if (isTrovato)
-                        resolve(true)
+                        searchClientWithoutLegame()
                     else
-                        resolve(false)
+                        return
                 })
-        })
+        }
+
+        searchClientWithoutLegame()
     }
 
     static modificaCliente() {
@@ -95,9 +99,8 @@ class DettaglioAnagrafica {
         cy.intercept('POST', '**/graphql', (req) => {
             // Queries
             aliasQuery(req, 'fastQuoteProfiling')
-//TODO: 
         })
-        cy.contains('Legami').click()
+        cy.contains('Legami').click({force:true})
         cy.wait('@getApi', { requestTimeout: 40000 });
         cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 40000 });
 

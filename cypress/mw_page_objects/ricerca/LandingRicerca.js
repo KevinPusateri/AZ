@@ -88,7 +88,7 @@ class LandingRicerca {
 
         if (filtri) {
             //Filtriamo la ricerca in base a tipoCliente
-            cy.get('.icon').find('[name="filter"]').click()
+            cy.get('lib-clients-container').find('nx-icon[name="filter"]').click()
             if (tipoCliente === "PF")
                 cy.get('.filter-group').contains('Persona giuridica').click()
             else
@@ -179,18 +179,31 @@ class LandingRicerca {
      */
     static clickRandomResult() {
         //Attende il caricamento della scheda cliente
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('client')) {
-                req.alias = 'client'
-            }
-        });
+        const searchOtherMember = () => {
 
-        cy.get('.ps--active-y').then(($clienti) => {
-            let schedeClienti = $clienti.find('lib-client-item')
-            let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
-            cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
-        })
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('client')) {
+                    req.alias = 'client'
+                }
+            });
 
+            cy.get('.ps--active-y').then(($clienti) => {
+                let schedeClienti = $clienti.find('lib-client-item')
+                let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
+                cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
+                cy.wait(5000)
+                cy.get('body').then(($body) => {
+                    const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
+                    if (check){
+                        this.searchRandomClient(true, "PG", "P")
+                        searchOtherMember()
+                    }
+
+                })
+            })
+        }
+
+        searchOtherMember()
         cy.wait('@client', { requestTimeout: 30000 });
     }
 
@@ -628,7 +641,7 @@ class LandingRicerca {
             if (check) {
                 cy.get('body').should('contain.text', 'La ricerca non ha prodotto risultati')
             } else {
-                cy.get('body').find('lib-client-item',{timeout:30000}).first().click().wait(2000)
+                cy.get('body').find('lib-client-item', { timeout: 30000 }).first().click().wait(2000)
                 cy.get('body').then(() => {
 
                     cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')

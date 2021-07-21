@@ -622,6 +622,11 @@ class SintesiCliente {
         cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
     }
 
+    static checkAtterraggioName(cliente) {
+        cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class', 'active')
+        cy.get('.client-name').should('contain.text',cliente)       
+    }
+
     static retriveClientNameAndAddress() {
         return new Promise((resolve, reject) => {
             let client = { name: '', address: '' }
