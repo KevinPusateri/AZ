@@ -57,10 +57,11 @@ class DettaglioAnagrafica {
         const searchClientWithoutLegame = () => {
             LandingRicerca.searchRandomClient(true, "PG", "P")
             LandingRicerca.clickRandomResult()
-            DettaglioAnagrafica.sezioneLegami()
+            this.sezioneLegami()
             cy.get('ac-anagrafe-panel').should('be.visible')
             cy.get('body').should('be.visible')
                 .then($body => {
+                    cy.wait(5000)
                     const isTrovato = $body.find('button:contains("Inserisci membro"):visible').is(':visible')
                     if (isTrovato)
                         searchClientWithoutLegame()
@@ -96,13 +97,11 @@ class DettaglioAnagrafica {
             method: 'GET',
             url: '**/api/**'
         }).as('getApi');
-        cy.intercept('POST', '**/graphql', (req) => {
-            // Queries
-            aliasQuery(req, 'fastQuoteProfiling')
-        })
-        cy.contains('Legami').click({force:true})
+        cy.intercept('POST', '**/graphql', (req) => { aliasQuery(req, 'fastQuoteProfiling') })
+        cy.contains('Legami').click({ force: true })
         cy.wait('@getApi', { requestTimeout: 40000 });
-        cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 40000 });
+        cy.get('body').find('ac-anagrafe-panel:contains("Gruppo aziendale")').should('be.visible')
+        // cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 40000 });
 
     }
 

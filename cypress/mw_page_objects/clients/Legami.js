@@ -15,8 +15,8 @@ class Legami {
 
     }
 
-    static inserisciMembro() {
-        return new Promise((resolve, reject) => {
+    static inserisciMembroFromGroup() {
+        return new Cypress.Promise((resolve, reject) => {
 
             cy.get('nx-modal').then(($modal) => {
                 const searchOtherMember = () => {
@@ -48,9 +48,10 @@ class Legami {
                             cy.get('.cdk-overlay-container').find('nx-message-toast').then($overlay => {
 
                                 const checkIsPresente = $overlay.find(':contains("Aderente già presente in altro Gruppo Aziendale.")').is(':visible')
-                                const checkError = $overlay.find('nx-message-toast:contains("ERROR")').is(':visible')
+                                const checkError = $overlay.find(':contains("ERROR")').is(':visible')
+                                const checkNotImprese = $overlay.find(':contains("In un gruppo aziendale possono esser inserite solamente imprese")').is(':visible')
 
-                                if (checkIsPresente || checkError)
+                                if (checkIsPresente || checkError || checkNotImprese)
                                     searchOtherMember()
                                 else {
                                     cy.get('.cdk-overlay-container').find('nx-message-toast')
@@ -67,6 +68,7 @@ class Legami {
             })
 
         })
+
     }
 
     static eliminaGruppo() {
@@ -80,18 +82,26 @@ class Legami {
     static checkMembroInserito(membro, capogruppo) {
         cy.get('ac-anagrafe-panel')
             .should('be.visible').then((name) => {
-                expect(capogruppo).to.include(name.text())
+                if (capogruppo.length >= 28){
+                    expect(name.text()).to.include(capogruppo.substring(0, 28))
+                }
+                else
+                    expect(name.text()).to.include(capogruppo)
             })
         cy.get('ac-anagrafe-panel').find('div[class="member-name"]').eq(0)
-            .parents('div[class="member ng-star-inserted"]')
+            .parents('div[class^="member"]')
             .find('div[class="member-data"] > div[class="data"]').should('contain.text', 'Capogruppo')
 
         cy.get('ac-anagrafe-panel')
             .should('be.visible').then((name) => {
-                expect(membro).to.include(name.text())
+                if (membro.length >= 28)
+                    expect(name.text()).to.include(membro.substring(0, 28))
+                else
+                    expect(name.text()).to.include(membro)
+
             })
         cy.get('ac-anagrafe-panel').find('div[class="member-name"]').eq(1)
-            .parents('div[class="member ng-star-inserted"]')
+            .parents('div[class^="member"]')
             .find('div[class="member-data"] > div[class="data"]').should('contain.text', 'Appartenente')
 
     }
@@ -141,14 +151,14 @@ class Legami {
         cy.contains(membro).click()
     }
 
-    static eliminaMembro() {
+    static eliminaMembro(membro) {
         cy.get('nx-icon[class="trash-icon nx-icon--s ndbx-icon nx-icon--trash"]').first().click()
         cy.get('.cdk-overlay-container').find('span[class="text"]:visible').should('contain.text', 'Rimuovere')
         cy.contains('Si').click()
 
         cy.get('.cdk-overlay-container').find('nx-message-toast')
             .should('be.visible').and('contain.text', 'Membro rimosso dal gruppo')
-
+        cy.wait(4000)
         cy.get('ac-anagrafe-panel').find('div[class="member-name"]')
             .should('be.visible').then((name) => {
                 expect(name.text()).to.not.include(membro)
@@ -181,11 +191,12 @@ class Legami {
                         cy.wait(2000)
                         cy.wrap($modal).find('span:contains("Aggiungi"):visible').click()
                         cy.wait(2000)
-                        cy.get('.cdk-overlay-container').then($overlay => {
-                            const checkIsPresente = $overlay.find('nx-message-toast:contains("Aderente già presente in altro Gruppo Aziendale.")').is(':visible')
-                            const checkError = $overlay.find('nx-message-toast:contains("ERROR")').is(':visible')
+                        cy.get('.cdk-overlay-container').find('nx-message-toast').then($overlay => {
+                            const checkIsPresente = $overlay.find(':contains("Aderente già presente in altro Gruppo Aziendale.")').is(':visible')
+                            const checkError = $overlay.find(':contains("ERROR")').is(':visible')
+                            const checkNotImprese = $overlay.find(':contains("In un gruppo aziendale possono esser inserite solamente imprese")').is(':visible')
 
-                            if (checkIsPresente || checkError)
+                            if (checkIsPresente || checkError || checkNotImprese)
                                 searchOtherMember()
                             else
                                 cy.get('.cdk-overlay-container').find('nx-message-toast')
@@ -238,9 +249,10 @@ class Legami {
                             cy.get('.cdk-overlay-container').find('nx-message-toast').then($overlay => {
 
                                 const checkIsPresente = $overlay.find(':contains("Aderente già presente in altro Gruppo Aziendale.")').is(':visible')
-                                const checkError = $overlay.find('nx-message-toast:contains("ERROR")').is(':visible')
-
-                                if (checkIsPresente || checkError)
+                                const checkError = $overlay.find(':contains("ERROR")').is(':visible')
+                                const checkNotImprese = $overlay.find(':contains("In un gruppo aziendale possono esser inserite solamente imprese")').is(':visible')
+                                
+                                if (checkIsPresente || checkError || checkNotImprese)
                                     searchOtherMember()
                                 else {
                                     cy.get('.cdk-overlay-container').find('nx-message-toast')
