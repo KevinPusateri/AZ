@@ -32,12 +32,12 @@ after(() => {
 })
 describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
-    it.only('Verifica i link da Burger Menu', function () {
+    it('Verifica i link da Burger Menu', function () {
         TopBar.clickClients()
         BurgerMenuClients.checkExistLinks()
     });
 
-    it.only('Verifica aggancio Analisi dei bisogni', function () {
+    it('Verifica aggancio Analisi dei bisogni', function () {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Analisi dei bisogni')
     });

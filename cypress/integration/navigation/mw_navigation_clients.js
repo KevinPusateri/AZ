@@ -35,21 +35,21 @@ after(() => {
 
 describe('Matrix Web : Navigazioni da Clients', function () {
 
-    it.only('Verifica aggancio Clients', function () {
+    it('Verifica aggancio Clients', function () {
         TopBar.clickClients()
     });
 
-    it.only('Verifica presenza dei collegamenti rapidi', function () {
+    it('Verifica presenza dei collegamenti rapidi', function () {
         TopBar.clickClients()
         Clients.checkExistLinksCollegamentiRapidi()
     })
 
-    it.only('Verifica aggancio Analisi dei bisogni', function () {
+    it('Verifica aggancio Analisi dei bisogni', function () {
         TopBar.clickClients()
         Clients.clickLinkRapido('Analisi dei bisogni')
     });
 
-    it.only('Verifica aggancio Digital Me', function () {
+    it('Verifica aggancio Digital Me', function () {
         TopBar.clickClients()
         Clients.clickLinkRapido('Digital Me')
         Clients.backToClients()

@@ -46,7 +46,7 @@ class LandingClients {
     static checkExistLinksCollegamentiRapidi() {
 
         const linksCollegamentiRapidi = Object.values(LinksRapidi)
-
+        cy.get('app-home-right-section').should('be.visible')
         cy.get('app-home-right-section').find('app-rapid-link').should('have.length', 5).each(($checkLinksRapidi, i) => {
             expect($checkLinksRapidi.text().trim()).to.include(linksCollegamentiRapidi[i]);
         })

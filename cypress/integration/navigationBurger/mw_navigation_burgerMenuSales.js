@@ -240,7 +240,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
-    it.only('Verifica aggancio Allianz Global Assistance', function () {
+    it('Verifica aggancio Allianz Global Assistance', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz Global Assistance')
     })
