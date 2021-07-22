@@ -83,10 +83,12 @@ class Legami {
         cy.get('ac-anagrafe-panel')
             .should('be.visible').then((name) => {
                 if (capogruppo.length >= 28){
-                    expect(name.text()).to.include(capogruppo.substring(0, 28))
+                    console.log(name.text().split(' ')[0])
+                    debugger
+                    expect(name.text().split(' ')[0]).to.include(capogruppo.substring(0, 28))
                 }
                 else
-                    expect(name.text()).to.include(capogruppo)
+                    expect(name.text().split(' ')[0]).to.include(capogruppo)
             })
         cy.get('ac-anagrafe-panel').find('div[class="member-name"]').eq(0)
             .parents('div[class^="member"]')
@@ -95,9 +97,9 @@ class Legami {
         cy.get('ac-anagrafe-panel')
             .should('be.visible').then((name) => {
                 if (membro.length >= 28)
-                    expect(name.text()).to.include(membro.substring(0, 28))
+                    expect(name.text().split(' ')[0]).to.include(membro.substring(0, 28))
                 else
-                    expect(name.text()).to.include(membro)
+                    expect(name.text().split(' ')[0]).to.include(membro)
 
             })
         cy.get('ac-anagrafe-panel').find('div[class="member-name"]').eq(1)
@@ -158,7 +160,7 @@ class Legami {
 
         cy.get('.cdk-overlay-container').find('nx-message-toast')
             .should('be.visible').and('contain.text', 'Membro rimosso dal gruppo')
-        cy.wait(4000)
+        cy.wait(6000)
         cy.get('ac-anagrafe-panel').find('div[class="member-name"]')
             .should('be.visible').then((name) => {
                 expect(name.text()).to.not.include(membro)
@@ -217,7 +219,7 @@ class Legami {
 
     static clickInserisciMembro() {
         cy.contains('Inserisci membro').click()
-        return new Promise((resolve, reject) => {
+        return new Cypress.Promise((resolve, reject) => {
 
             cy.get('nx-modal').then(($modal) => {
                 const searchOtherMember = () => {
@@ -269,6 +271,10 @@ class Legami {
             })
 
         })
+    }
+
+    static checkLegameIsNotPresent(){
+        cy.get('ac-anagrafe-panel').should('not.contain.text', 'Crea gruppo')
     }
 }
 

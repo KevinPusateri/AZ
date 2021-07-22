@@ -61,17 +61,28 @@ describe('Matrix Web : Legami', function () {
         })
 
         it('Verifica l\'eliminazione di un solo Appartenente', function () {
-            Legami.eliminaMembro(membro)
+            Legami.clickInserisciMembro().then(retrivedMember => {
+                let newMembro = retrivedMember
+                Legami.eliminaMembro(newMembro)
+                Legami.clickLinkMembro(newMembro)
+                SintesiCliente.checkAtterraggioName(newMembro)
+                DettaglioAnagrafica.sezioneLegami()
+                Legami.checkMembroInserito(newMembro, currentClient.name)
+
+                Legami.clickLinkMembro(currentClient.name)
+                SintesiCliente.checkAtterraggioName(currentClient.name)
+                DettaglioAnagrafica.sezioneLegami()
+            })
+            // INserisci un altro membro
+            // TODO: TP eliminazione
+            // verifica dal membro se manca il membro eliminato
         })
 
         it('Verifica "Inserisci membro"', function () {
             Legami.clickInserisciMembro().then(retrivedMember => {
                 newMembro = retrivedMember
+                Legami.checkMembroInserito(newMembro, currentClient.name)
             })
-        })
-
-        it('Verifica membro inserito su legami', function () {
-            Legami.checkMembroInserito(newMembro, currentClient.name)
         })
 
         it('Verifica membro eliminato', function () {
@@ -91,9 +102,8 @@ describe('Matrix Web : Legami', function () {
 
         it('Verifica link scheda Cliente del membro', function () {
             Legami.creaGruppo()
-            let newMembro = ''
             Legami.inserisciMembroFromGroup().then(retrivedMember => {
-                newMembro = retrivedMember
+                let newMembro = retrivedMember
                 Legami.checkMembroInserito(newMembro, currentClient.name)
 
                 Legami.clickLinkMembro(newMembro)
@@ -106,19 +116,14 @@ describe('Matrix Web : Legami', function () {
                 DettaglioAnagrafica.sezioneLegami()
                 Legami.clickEliminaGruppo()
             })
-            // TopBar.logOutMW()
+            TopBar.logOutMW()
         })
 
         it.only('Verifica con fonte secondaria il non utilizzo dei legami', function () {
-            cy.request({
-                method: 'POST',
-                url: 'http://profilingbe.pp.azi.allianzit/profilingManagement/personation/TUTF003',
-                body: JSON.stringify({ persUser: "ARGBERNARDI2", channel: "010710000" })
-            })
-
-            LoginPage.logInMW('tutf003', psw)
+            cy.impersonification('TUTF003','ARGBERNARDI2','010710000')
+            LoginPage.logInMW(userName, psw)
             DettaglioAnagrafica.checkClientWithoutLegame()
-            cy.get('ac-anagrafe-panel').should('not.contain.text', 'Crea gruppo')
+            Legami.checkLegameIsNotPresent
         })
     })
 })

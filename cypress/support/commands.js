@@ -141,3 +141,12 @@ Cypress.Commands.add('preserveCookies', () => {
     }
   })
 })
+
+Cypress.Commands.add('impersonification', (tutf,getPersUser,getChannel) => {
+  cy.request({
+    method: 'POST',
+    url: 'http://profilingbe.pp.azi.allianzit/profilingManagement/personation/'+tutf,
+    form: true,
+    body: { persUser: getPersUser, channel: getChannel }
+  })
+})
