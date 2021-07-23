@@ -85,7 +85,7 @@ after(() => {
 
     it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
       LandingRicerca.searchRandomClient(true, "PG", "E")
-      LandingRicerca.clickRandomResult()
+      LandingRicerca.clickRandomResult('E')
       SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
         currentClientPG = currentClient
       })

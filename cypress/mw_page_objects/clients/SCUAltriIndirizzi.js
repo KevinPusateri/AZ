@@ -57,7 +57,7 @@ class SCUAltriIndirizzi {
             getSCU().find('#cap_listbox > li:contains("' + indirizzo.cap + '")').click()
             //#endregion
 
-            getSCU().find('#submit:contains("Salva")').click().wait(30000);
+            getSCU().find('#submit:contains("Salva")').click()
             resolve(indirizzo);
         })
 

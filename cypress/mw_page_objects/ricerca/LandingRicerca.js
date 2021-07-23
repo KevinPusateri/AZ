@@ -177,7 +177,7 @@ class LandingRicerca {
     /**
      * Seleziona un Cliente Random dalla lista di ricerca ritornata
      */
-    static clickRandomResult() {
+    static clickRandomResult(clientType = 'P') {
         //Attende il caricamento della scheda cliente
         const searchOtherMember = () => {
 
@@ -187,15 +187,15 @@ class LandingRicerca {
                 }
             });
 
-            cy.get('.ps--active-y').then(($clienti) => {
+            cy.get('.ps--active-y').should('be.visible').then(($clienti) => {
                 let schedeClienti = $clienti.find('lib-client-item')
                 let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
                 cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
                 cy.wait(10000)
                 cy.get('body').then(($body) => {
                     const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
-                    if (check){
-                        this.searchRandomClient(true, "PG", "P")
+                    if (check) {
+                        this.searchRandomClient(true, "PG", clientType)
                         searchOtherMember()
                     }
 
