@@ -85,7 +85,7 @@ class LandingRicerca {
             cy.get('input[name="main-search-input"]').clear().type(randomChars).type('{enter}')
         })
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
-
+        cy.get('lib-client-item').should('be.visible')
         if (filtri) {
             //Filtriamo la ricerca in base a tipoCliente
             cy.get('lib-clients-container').find('nx-icon[name="filter"]').click()
@@ -191,7 +191,7 @@ class LandingRicerca {
                 let schedeClienti = $clienti.find('lib-client-item')
                 let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
                 cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
-                cy.wait(5000)
+                cy.wait(10000)
                 cy.get('body').then(($body) => {
                     const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
                     if (check){

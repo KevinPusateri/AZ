@@ -28,7 +28,7 @@ var newMembro = ''
 
 //#region Before After
 before(() => {
-    // LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw)
 })
 
 beforeEach(() => {
@@ -36,7 +36,7 @@ beforeEach(() => {
 })
 
 after(() => {
-    // TopBar.logOutMW()
+    TopBar.logOutMW()
 })
 //#endregion Before After
 
@@ -44,7 +44,7 @@ describe('Matrix Web : Legami', function () {
 
     Cypress._.times(1, () => {
 
-        it('Verifica creazione di un Gruppo aziendale e inserimento membro', function () {
+        it('Verifica creazione di un Gruppo aziendale con inserimento membro', function () {
             DettaglioAnagrafica.checkClientWithoutLegame()
             SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
                 currentClient = retrivedClient
@@ -52,11 +52,11 @@ describe('Matrix Web : Legami', function () {
             Legami.creaGruppo()
             Legami.inserisciMembroFromGroup().then(retrivedMember => {
                 membro = retrivedMember
-                Legami.checkMembroInserito(membro, currentClient.name)
             })
         })
 
         it('Verifica membro non inseribile in un altro gruppo', function () {
+            Legami.checkMembroInserito(membro, currentClient.name)
             Legami.checkMembroNonInseribile(membro)
         })
 
@@ -64,35 +64,31 @@ describe('Matrix Web : Legami', function () {
             Legami.clickInserisciMembro().then(retrivedMember => {
                 let newMembro = retrivedMember
                 Legami.eliminaMembro(newMembro)
-                Legami.clickLinkMembro(newMembro)
-                SintesiCliente.checkAtterraggioName(newMembro)
+                Legami.clickLinkMembro(membro)
+                SintesiCliente.checkAtterraggioName(membro)
                 DettaglioAnagrafica.sezioneLegami()
-                Legami.checkMembroInserito(newMembro, currentClient.name)
+                Legami.checkMembroInserito(membro, currentClient.name)
+                Legami.checkMembroEliminato(newMembro)
 
                 Legami.clickLinkMembro(currentClient.name)
                 SintesiCliente.checkAtterraggioName(currentClient.name)
                 DettaglioAnagrafica.sezioneLegami()
+                Legami.eliminaMembro(membro)
             })
-            // INserisci un altro membro
-            // TODO: TP eliminazione
-            // verifica dal membro se manca il membro eliminato
         })
 
-        it('Verifica "Inserisci membro"', function () {
+        it('Verifica button "Inserisci membro"', function () {
             Legami.clickInserisciMembro().then(retrivedMember => {
-                newMembro = retrivedMember
+                let newMembro = retrivedMember
                 Legami.checkMembroInserito(newMembro, currentClient.name)
+                // Legami.eliminaMembro(newMembro)
             })
         })
 
-        it('Verifica membro eliminato', function () {
-            Legami.eliminaMembro(newMembro)
-        })
         it('Verifica inserimento massimo 3 membri', function () {
-
-            for (let index = 0; index < 2; index++) {
+            // for (let index = 0; index < 2; index++) {
                 Legami.clickInserisciMembro()
-            }
+            // }
             Legami.checkTerzoMembroNonInseribile()
         })
 
@@ -119,11 +115,11 @@ describe('Matrix Web : Legami', function () {
             TopBar.logOutMW()
         })
 
-        it.only('Verifica con fonte secondaria il non utilizzo dei legami', function () {
+        it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
             cy.impersonification('TUTF003','ARGBERNARDI2','010710000')
-            LoginPage.logInMW(userName, psw)
+            LoginPage.logInMW('TUTF003', psw)
             DettaglioAnagrafica.checkClientWithoutLegame()
-            Legami.checkLegameIsNotPresent
+            Legami.checkLegameIsNotPresent()
         })
     })
 })

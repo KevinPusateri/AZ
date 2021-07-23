@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 import LandingRicerca from '../ricerca/LandingRicerca.js';
+import Legami from './Legami.js';
 
 class DettaglioAnagrafica {
 
@@ -55,18 +56,18 @@ class DettaglioAnagrafica {
 
     static checkClientWithoutLegame() {
         const searchClientWithoutLegame = () => {
-            // LandingRicerca.searchRandomClient(true, "PG", "P")
-            // LandingRicerca.clickRandomResult()
-            LandingRicerca.search('CREDITCON SPA')
-            LandingRicerca.clickFirstResult()
+            LandingRicerca.searchRandomClient(true, "PG", "P")
+            LandingRicerca.clickRandomResult()
+            // LandingRicerca.search('CREDITCON SPA')
+            // LandingRicerca.clickFirstResult()
             this.sezioneLegami()
             cy.get('ac-anagrafe-panel').should('be.visible')
+            cy.get('ac-anagrafe-panel').find('h4').should('contain.text','Gruppo aziendale')
             cy.get('body').should('be.visible')
                 .then($body => {
-                    cy.wait(5000)
                     const isTrovato = $body.find('button:contains("Inserisci membro"):visible').is(':visible')
                     if (isTrovato)
-                        searchClientWithoutLegame()
+                        Legami.clickEliminaGruppo()
                     else
                         return
                 })
