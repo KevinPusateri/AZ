@@ -37,7 +37,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         BurgerMenuClients.checkExistLinks()
     });
 
-    it('Verifica aggancio Analisi dei bisogni', function () {
+    it.only('Verifica aggancio Analisi dei bisogni', function () {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Analisi dei bisogni')
     });

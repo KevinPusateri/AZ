@@ -140,6 +140,25 @@ function generateRandomVatIn() {
 //#endregion
 
 module.exports = (on, config) => {
+    //TODO da verificare se puo' tornare utile
+    // on('before:browser:launch', (browser = {}, launchOptions) => {
+    //     console.log('..browser ', launchOptions);
+    //     if (browser.name === 'chrome') {
+    //         launchOptions.args.push('--disable-site-isolation-trials');
+    //         launchOptions.args.push('--reduce-security-for-testing');
+    //         launchOptions.args.push('--out-of-blink-cors');
+
+    //         return launchOptions;
+    //     }
+
+    //     if (browser.name === 'electron') {
+    //         launchOptions.preferences.webPreferences.webSecurity = false;
+
+    //         return launchOptions;
+    //     }
+    // })
+
+
     on("task", {
         nuovoClientePersonaFisica() {
             user = {
@@ -162,7 +181,7 @@ module.exports = (on, config) => {
             return user;
         }
     });
-    
+
     on("task", {
         mysqlStart({ testCaseName, ambiente, utenza }) {
             con.connect((err) => {
@@ -198,7 +217,7 @@ module.exports = (on, config) => {
     on("task", {
         nuovoContatto() {
             contatto = {
-                phone: faker.phone.phoneNumberFormat().replace(/-/g,''),
+                phone: faker.phone.phoneNumberFormat().replace(/-/g, ''),
                 email: faker.internet.email().toLowerCase(),
                 url: faker.internet.url()
             };
