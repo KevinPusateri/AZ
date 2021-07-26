@@ -22,7 +22,6 @@ const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
 let currentClient = ''
 var membro = ''
-var newMembro = ''
 //#endregion
 
 
