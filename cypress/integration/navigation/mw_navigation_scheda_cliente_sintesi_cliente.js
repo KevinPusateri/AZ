@@ -3,9 +3,9 @@
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
+import HomePage from "../../mw_page_objects/common/HomePage"
 import Common from "../../mw_page_objects/common/Common"
 
-Cypress.config('defaultCommandTimeout', 60000)
 
 //#region Variables
 const userName = 'TUTF021'
@@ -13,27 +13,35 @@ const psw = 'P@ssw0rd!'
 //#endregion
 
 //#region  Configuration
-Cypress.config('defaultCommandTimeout', 60000)
+Cypress.config('defaultCommandTimeout', 50000)
 //#endregion
-
 before(() => {
     LoginPage.logInMW(userName, psw)
 })
 
 beforeEach(() => {
-    Common.visitUrlOnEnv()
     cy.preserveCookies()
+    HomePage.reloadMWHomePage()
     TopBar.search('Pulini Francesco')
     SintesiCliente.wait()
 })
+
+// afterEach(function () {
+//     if (this.currentTest.state === 'failed' &&
+//         this.currentTest._currentRetry === this.currentTest._retries) {
+//         HomePage.reloadMWHomePage()
+//         TopBar.search('Pulini Francesco')
+//         SintesiCliente.wait()
+//     }
+// });
 
 after(() => {
     TopBar.logOutMW()
 })
 
-describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Sintesi Cliente', function () {
+describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
 
-    it('Navigation Scheda Cliente', function () {
+    it('Verifica i tab', function () {
         SintesiCliente.checkTabs()
     })
 
@@ -41,7 +49,7 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Sintesi Cliente', fun
         SintesiCliente.checkSituazioneCliente()
     })
 
-    it('Verifica FastQuote: Tab Utra - subTabs Casa e Patrimonio, Salute', function () {
+    it('Verifica FastQuote: Tab Utra - subTabs', function () {
         SintesiCliente.checkFastQuoteUltra()
     })
 
@@ -58,9 +66,9 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Sintesi Cliente', fun
     })
 
     context('Auto', () => {
-        it('Verifica Link Auto', function () {
-
-        })
+        // it('Verifica Link Auto', function () {
+        //TODO: completare
+        //     })
 
         it('Verifica Card Auto: Emissione -> Preventivo Motor', function () {
             SintesiCliente.clickAuto()

@@ -4,10 +4,10 @@
  */
 
 /// <reference types="Cypress" />
-import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import Clients from "../../mw_page_objects/clients/LandingClients";
+import HomePage from "../../mw_page_objects/common/HomePage";
 
 //#region Variables
 const userName = 'TUTF021'
@@ -24,7 +24,7 @@ before(() => {
 })
 
 beforeEach(() => {
-    // Common.visitUrlOnEnv()
+    HomePage.reloadMWHomePage()
     cy.preserveCookies()
 })
 

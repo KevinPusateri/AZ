@@ -114,6 +114,7 @@ class TopBar extends HomePage {
     * @param {string} value - What to search
     */
     static search(value) {
+        cy.get('input[name="main-search-input"]').should('be.visible').click()
         cy.get('input[name="main-search-input"]').type(value).type('{enter}').wait(2000)
     }
 
@@ -132,6 +133,9 @@ class TopBar extends HomePage {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.wait('@getClients', { requestTimeout: 30000 })
         cy.url().should('eq', Common.getBaseUrl() + 'clients/')
+        cy.get('app-donut-chart').should('be.visible')
+        cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
+
     }
 
     /**

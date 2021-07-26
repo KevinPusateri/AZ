@@ -54,7 +54,7 @@ class Sales {
      * Torna indietro su Sales
      */
     static backToSales() {
-        cy.get('a').contains('Sales').click()
+        cy.get('a').contains('Sales').scrollIntoView().click({force:true})
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
     }
 
@@ -465,6 +465,7 @@ class Sales {
             method: 'POST',
             url: '**/Auto/**'
         }).as('getAuto');
+        cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
         cy.get('.cards-container').find('lib-contract-card:visible').first().scrollIntoView().click()
         Common.canaleFromPopup()
         cy.wait('@getAuto', { requestTimeout: 40000 });
@@ -479,6 +480,7 @@ class Sales {
             method: 'POST',
             url: '**/Vita/**'
         }).as('getVita');
+        cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
         cy.get('.cards-container').find('.card').first().click()
         cy.wait('@getVita', { requestTimeout: 40000 });
         cy.wait(5000)

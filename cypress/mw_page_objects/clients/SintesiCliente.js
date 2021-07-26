@@ -26,6 +26,7 @@ class SintesiCliente {
             aliasQuery(req, 'getScopes')
 
         })
+        cy.get('lib-client-item').should('be.visible')
         cy.get('lib-client-item').first().click()
         cy.wait('@pageClient', { requestTimeout: 60000 });
         cy.wait('@gqlclientContractValidation', { requestTimeout: 60000 })
@@ -37,7 +38,7 @@ class SintesiCliente {
         // Verifica Tab clients corretti
         const tabProfile = [
             'SINTESI CLIENTE',
-            'DETTAGLIO fasANAGRAFICA',
+            'DETTAGLIO ANAGRAFICA',
             'PORTAFOGLIO',
             'ARCHIVIO CLIENTE'
         ]
@@ -68,6 +69,7 @@ class SintesiCliente {
 
     //#region Fastquote
     static checkFastQuoteUltra() {
+        cy.get('app-fast-quote').find('app-scope-element').should('be.visible')
         cy.get('lib-container').find('app-client-resume:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Fast Quote")').is(':visible')
             if (check) {
@@ -171,6 +173,8 @@ class SintesiCliente {
     }
 
     static checkFastQuoteAuto() {
+        cy.get('app-ultra-fast-quote').should('be.visible')
+        cy.get('app-ultra-fast-quote').find('app-scope-element').should('be.visible')
         cy.get('lib-container').find('app-client-resume:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Fast Quote")').is(':visible')
             if (check) {
@@ -404,7 +408,7 @@ class SintesiCliente {
         getIFrame().find('span:contains("PROCEDI"):visible')
     }
 
-    static clickAllianzUltraCasaPatrimonioBMP(){
+    static clickAllianzUltraCasaPatrimonioBMP() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio BMP').click()
         cy.wait(2000)
@@ -624,7 +628,7 @@ class SintesiCliente {
 
     static checkAtterraggioName(cliente) {
         cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class', 'active')
-        cy.get('.client-name').should('contain.text',cliente)       
+        cy.get('.client-name').should('contain.text', cliente)
     }
 
     static retriveClientNameAndAddress() {
@@ -676,7 +680,25 @@ class SintesiCliente {
     }
 
     static back() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/clients/**'
+        }).as('pageClient');
+        cy.intercept('POST', '**/graphql', (req) => {
+            // Queries
+            aliasQuery(req, 'clientContractValidation')
+            aliasQuery(req, 'fastQuoteProfiling')
+            aliasQuery(req, 'getScopes')
+
+        })
         cy.get('a').contains('Clients').click().wait(5000)
+        cy.wait('@pageClient', { requestTimeout: 60000 });
+        cy.wait('@gqlclientContractValidation', { requestTimeout: 60000 })
+        cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 60000 })
+        cy.wait('@gqlgetScopes', { requestTimeout: 60000 })
+        cy.get('app-fast-quote').should('be.visible')
+        cy.get('app-fast-quote').find('nx-tab-group').should('be.visible')
+        cy.get('app-fast-quote').find('app-scope-element').should('be.visible')
     }
 
 

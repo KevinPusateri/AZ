@@ -192,11 +192,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.clickAppuntamento()
     })
 
-    it('Verifica aggancio News image Primo comandamento', function () {
-        TopBar.clickSales()
-        Sales.clickNewsImagePrimoComandamento()
-        Sales.backToSales()
-    })
+    //TODO: togliere su excel e tfs 
+    // it('Verifica aggancio News image Primo comandamento', function () {
+    //     TopBar.clickSales()
+    //     Sales.clickNewsImagePrimoComandamento()
+    //     Sales.backToSales()
+    // })
 
     it('Verifica aggancio Preventivi e quotazioni - Card Danni', function () {
         TopBar.clickSales()
