@@ -158,6 +158,7 @@ class DettaglioAnagrafica {
      */
     static checkContatti(contatto) {
         cy.then(() => {
+            cy.get('app-client-other-contacts').find('app-client-contact-table-row').should('be.visible')
             cy.get('app-client-other-contacts').find('app-client-contact-table-row').then((list) => {
                 console.log(list.text())
                 expect(list.text()).to.include(contatto.tipo)

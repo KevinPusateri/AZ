@@ -54,7 +54,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it.only('Verifica aggancio Denuncia BMP', function () {
+    it('Verifica aggancio Denuncia BMP', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Denuncia BMP')
         BurgerMenuBackOffice.backToBackOffice()
