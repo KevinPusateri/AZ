@@ -27,7 +27,7 @@ var membro = ''
 
 //#region Before After
 before(() => {
-    LoginPage.logInMW(userName, psw)
+    // LoginPage.logInMW(userName, psw)
 })
 
 beforeEach(() => {
@@ -114,7 +114,7 @@ describe('Matrix Web : Legami', function () {
             TopBar.logOutMW()
         })
 
-        it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
+        it.only('Verifica con fonte secondaria il non utilizzo dei legami', function () {
             cy.impersonification('TUTF003','ARGBERNARDI2','010710000')
             LoginPage.logInMW('TUTF003', psw)
             DettaglioAnagrafica.checkClientWithoutLegame()
