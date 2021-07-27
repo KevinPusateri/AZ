@@ -37,40 +37,40 @@ after(() => {
 
 describe('MW: Navigazioni da Scheda Cliente - Tab Portafoglio', function () {
 
-    it('Verifica Subtab Portafoglio', function () {
+    it('Verifica subTab Portafoglio', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.checkLinksSubTabs()
     })
 
-    it('Verifica Tab Polizze attive', function () {
+    it('Verifica subTab Polizze attive', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Polizze attive')
         Portafoglio.checkPolizzeAttive()
         Portafoglio.back()
     })
 
-    it('Verifica Tab Proposte', function () {
+    it('Verifica subTab Proposte', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Proposte')
         Portafoglio.checkProposte()
         Portafoglio.back()
     })
 
-    it('Verifica Tab Preventivi', function () {
+    it('Verifica subTab Preventivi', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Preventivi')
         Portafoglio.checkPreventivi()
         Portafoglio.back()
     })
 
-    it('Verifica Tab Non in vigore', function () {
+    it('Verifica subTab Non in vigore', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Non in vigore')
         Portafoglio.checkNonInVigore()
         Portafoglio.back()
     })
 
-    it('Verifica Tab Sinistri', function () {
+    it('Verifica subTab Sinistri', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Sinistri')
         Portafoglio.checkSinistri()

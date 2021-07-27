@@ -103,7 +103,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //#endregion
 
     //#region Vita
-    it('Verifica aggancio Allianz1 premorienza', function () {
+    it.only('Verifica aggancio Allianz1 premorienza', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz1 premorienza')
         BurgerMenuSales.backToSales()

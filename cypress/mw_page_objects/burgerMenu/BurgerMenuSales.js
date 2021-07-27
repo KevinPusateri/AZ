@@ -149,11 +149,12 @@ class BurgerMenuSales extends Sales {
                     method: 'POST',
                     url: '**/sales/**'
                 }).as('getSalesPremo');
-                cy.wait(5000)
+                // cy.wait(5000)
                 Common.canaleFromPopup()
                 cy.wait('@getSalesPremo', { requestTimeout: 40000 });
-                cy.wait(20000)
-                getIFrame().find('button[class="btn btn-info btn-block"]:contains("Ricerca"):visible')
+                // cy.wait(20000)
+                getIFrame().should('be.visible')
+                getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text','Ricerca')
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
                 Common.canaleFromPopup()

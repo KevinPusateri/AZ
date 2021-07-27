@@ -40,40 +40,40 @@ describe('MW: Navigazioni da Scheda Cliente - Tab Archivio Cliente', function ()
         ArchivioCliente.checkLinksSubTabs()
     })
 
-    it('Verifica Tab Note', function () {
+    it('Verifica subTab Note', function () {
         ArchivioCliente.clickTabArchivioCliente()
         ArchivioCliente.clickSubTab('Note')
         ArchivioCliente.checkNote()
     })
 
     // TODO: NON ha nessuna attività
-    // it.skip('Verifica Tab Attività', function () {
+    // it.skip('Verifica subTab Attività', function () {
     // ArchivioCliente.clickTabArchivioCliente()
     // ArchivioCliente.clickSubTab('Attività')
     // ArchivioCliente.checkAttivita()
     // })
 
-    it('Verifica Tab Comunicazioni', function () {
+    it('Verifica subTab Comunicazioni', function () {
         ArchivioCliente.clickTabArchivioCliente()
         ArchivioCliente.clickSubTab('Comunicazioni')
         ArchivioCliente.checkComunicazioni()
     })
 
     // TODO: Apri PDF in failed
-    it('Verifica Tab Unico', function () {
+    it('Verifica subTab Unico', function () {
         ArchivioCliente.clickTabArchivioCliente()
         ArchivioCliente.clickSubTab('Unico')
         ArchivioCliente.checkUnico()
     })
 
     // TODO: Sezione sarà disponibile a breve
-    // it.skip('Verifica Tab Documentazione', function () {
+    // it.skip('Verifica subTab Documentazione', function () {
 
     // })
 
 
     //TODO: NON contiene richieste
-    // it.skip('Verifica Tab Digital Me', function () {
+    // it.skip('Verifica subTab Digital Me', function () {
     //     ArchivioCliente.clickTabArchivioCliente()
     //     ArchivioCliente.clickSubTab('Digital Me')
     //     ArchivioCliente.checkDigitalMe()
