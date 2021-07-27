@@ -142,11 +142,43 @@ Cypress.Commands.add('preserveCookies', () => {
   })
 })
 
-Cypress.Commands.add('impersonification', (tutf,getPersUser,getChannel) => {
+Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
   cy.request({
     method: 'POST',
-    url: 'http://profilingbe.pp.azi.allianzit/profilingManagement/personation/'+tutf,
+    url: 'http://profilingbe.pp.azi.allianzit/profilingManagement/personation/' + tutf,
     form: true,
     body: { persUser: getPersUser, channel: getChannel }
+  })
+})
+
+Cypress.Commands.add('getTestsInfos', (testsArray) => {
+  return new Cypress.Promise((resolve) => {
+
+    let tests = {}
+
+    //Count total of tests in the spec file
+    tests.ntc = testsArray.length
+
+    //Verify if all tests are passed or not
+    let resultOutCome = 'Passed'
+    let resultMessage = 'All Tests are OK!'
+    let resultStack = ''
+    tests.test = []
+    for (let i = 0; i < testsArray.length; i++) {
+      if (testsArray[i].state !== 'passed') {
+        resultOutCome = 'Failed'
+        //Also get the error message
+        resultMessage = testsArray[i].title + ' - ' + testsArray[i].err.message
+        resultStack = testsArray[i].title + ' - ' + testsArray[i].err.stack
+      }
+
+      tests.test.push({
+        resultOutCome: resultOutCome,
+        resultMessage: resultMessage,
+        resultStack: resultStack
+      })
+    }
+
+    resolve(tests)
   })
 })

@@ -22,12 +22,11 @@ const mysql = require('mysql')
 const moment = require('moment')
 
 //#region Mysql
-function mysqlStart(testCaseName, currentEnv, currentUser, config) {
-
-    const connection = mysql.createConnection(config.env.db)
+function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
+    const connection = mysql.createConnection(dbConfig)
     connection.connect((err) => {
         if (err) throw err;
-        console.log('%c --> Connected to ' + config.env.db.host, 'color: green; font-weight: bold;');
+        console.log('--> Connected to ' + dbConfig.host);
     })
 
     let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -43,6 +42,52 @@ function mysqlStart(testCaseName, currentEnv, currentUser, config) {
             }
             else {
                 connection.end()
+                console.log('--> Iserted ID ' + results.insertId + ' for test ' + testCaseName);
+                return resolve(results)
+            }
+        })
+    })
+}
+
+
+function mysqlFinish(dbConfig, rowId, tests) {
+    const connection = mysql.createConnection(dbConfig)
+    connection.connect((err) => {
+        if (err) throw err;
+        console.log('--> Connected to ' + dbConfig.host);
+    })
+
+    //Verify if all tests are passed or not
+    let resultOutCome = 'Passed'
+    let resultMessage = 'All Tests are OK!'
+    let resultStack = ''
+    for (let i = 0; i < tests.test.length; i++) {
+        if (tests.test[i].resultOutCome !== 'Passed') {
+            resultOutCome = 'Failed'
+            //Also get the error message
+            resultMessage = tests.test[i].resultMessage
+            resultStack = tests.test[i].resultStack
+        }
+    }
+
+    let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss')
+
+    var query = "UPDATE TC_Log SET NTC=" + tests.ntc + "," +
+        "DataFine='" + currentDateTime + "'," +
+        "ResultOutcome='" + resultOutCome + "'," +
+        "ResultMessage='" + resultMessage + "'," +
+        "ResultStack='" + resultStack + "' " +
+        "WHERE Id=" + rowId
+
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error) {
+                console.error(error)
+                reject(error)
+            }
+            else {
+                connection.end()
+                console.log('--> Update ID ' + results.insertId);
                 return resolve(results)
             }
         })
@@ -183,18 +228,14 @@ module.exports = (on, config) => {
     });
 
     on("task", {
-        mysqlStart({ testCaseName, ambiente, utenza }) {
-            con.connect((err) => {
-                if (err) throw err;
-                console.info("--> Connected to PALZMSQDBPRLV01.srv.allianz for Mysql Report Testing...");
+        startMyql({ dbConfig, testCaseName, currentEnv, currentUser }) {
+            return mysqlStart(dbConfig, testCaseName, currentEnv, currentUser)
+        }
+    });
 
-                con.query(sql, function (err, result) {
-                    if (err)
-                        throw err;
-                    else
-                        return result.insertId;
-                });
-            });
+    on("task", {
+        finishMyql({ dbConfig, rowId, tests }) {
+            return mysqlFinish(dbConfig, rowId, tests)
         }
     });
 
