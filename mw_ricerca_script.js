@@ -8,36 +8,36 @@ slice(2)[2] -> scheduled (true or false)
 */
 
 if (process.argv.slice(2).length < 1) {
-	console.log('\nMissing arguments. Please Use like this:\n');
-	console.log("\x1b[33m%s\x1b[0m", '[0] -> level of parallelism (if 1, specs are executed sequential); MAX is 4\n');
-	console.log("\x1b[35m%s\x1b[0m", '[1] -> headed (true or false) [OPTIONAL, default is false]\n');
-	console.log("\x1b[34m%s\x1b[0m", '[2] -> scheduled (true or false) [OPTIONAL, default is false]\n');
+	console.info('\nMissing arguments. Please Use like this:\n');
+	console.info("\x1b[33m%s\x1b[0m", '[0] -> level of parallelism (if 1, specs are executed sequential); MAX is 4\n');
+	console.info("\x1b[35m%s\x1b[0m", '[1] -> headed (true or false) [OPTIONAL, default is false]\n');
+	console.info("\x1b[34m%s\x1b[0m", '[2] -> scheduled (true or false) [OPTIONAL, default is false]\n');
 
 	process.exit(0);
 }
 else {
 	//Verify first arg is a number
 	if (isNaN(process.argv.slice(2)[0])) {
-		console.log("\x1b[31m%s\x1b[0m", 'Please specify a number for parallelism (Max is 4)\n');
+		console.info("\x1b[31m%s\x1b[0m", 'Please specify a number for parallelism (Max is 4)\n');
 		process.exit(0);
 	}
 }
 
 if (process.argv.slice(2)[0] > 4) {
-	console.log("\x1b[31m%s\x1b[0m", 'Max Level of parallelism for this kind of tests is 4!\n');
+	console.info("\x1b[31m%s\x1b[0m", 'Max Level of parallelism for this kind of tests is 4!\n');
 	process.exit(0);
 }
 
 let headed = false
 if (process.argv.slice(2).length >= 2 && process.argv.slice(2)[1] === 'true') {
 	headed = true
-	console.log('\nHeaded is ON\n')
+	console.info('\nHeaded is ON\n')
 }
 
 let scheduled = false
 if (process.argv.slice(2).length >= 2 && process.argv.slice(2)[2] === 'true') {
 	scheduled = true
-	console.log('Scheduled is ON\n')
+	console.info('Scheduled is ON\n')
 }
 
 //#region DO NOT EDIT
@@ -53,6 +53,8 @@ const prompt = require('prompt-sync')()
 require('events').EventEmitter.defaultMaxListeners = 15
 let PARALLEL_RUN_COUNT = process.argv.slice(2)[0]
 const integrationDirectory = path.join(__dirname, String("./cypress/integration/ricerca/"))
+//HACK to prevent logs output from other node modules
+console.log = function(){};
 //#endregion DO NOT EDIT
 
 //#region Chooser Type run all or single collections
@@ -60,8 +62,8 @@ var filenames = fs.readdirSync(integrationDirectory);
 var indexCollection = 0;
 let option = '';
 if (!scheduled) {
-	console.log("\x1b[35m%s\x1b[0m", '\n1. Test all Specs\n');
-	console.log("\x1b[36m%s\x1b[0m", '2. Test a Single Spec\n');
+	console.info("\x1b[35m%s\x1b[0m", '\n1. Test all Specs\n');
+	console.info("\x1b[36m%s\x1b[0m", '2. Test a Single Spec\n');
 	var runChooser = -1;
 	do {
 		runChooser = parseInt(prompt('Enter your choice : '), 10);
@@ -89,9 +91,9 @@ function showAllCollectionToDecide() {
 	// Function to get current filenames 
 	// in directory 
 
-	console.log("\nFilenames in directory:");
+	console.info("\nFilenames in directory:");
 	filenames.forEach((file) => {
-		console.log(indexCollection + " - File:", file);
+		console.info(indexCollection + " - File:", file);
 		indexCollection++;
 	});
 
@@ -141,7 +143,7 @@ async function main() {
 	}
 
 	const mapper = async paramRun => {
-		console.log("Start run for " + paramRun.specName + "...")
+		console.info("Start run for " + paramRun.specName + "...")
 		return await cypress.run(paramRun.cypressParams)
 	}
 
@@ -157,13 +159,13 @@ async function main() {
 		totalFailed += results[i].totalFailed
 		totalSkipped += results[i].totalSkipped
 	}
-	console.log('********************************************************')
-	console.log('\nTotal Test Executed : ' + totalTests)
-	console.log('Total Test Passed : ' + totalPassed)
-	console.log('Total Test Failed : ' + totalFailed)
-	console.log('Total Test Skipped : ' + totalSkipped)
-	console.log('********************************************************')
-	console.log('Test MW Ricerca FE Cypress Completed!');
+	console.info('********************************************************')
+	console.info('\nTotal Test Executed : ' + totalTests)
+	console.info('Total Test Passed : ' + totalPassed)
+	console.info('Total Test Failed : ' + totalFailed)
+	console.info('Total Test Skipped : ' + totalSkipped)
+	console.info('********************************************************')
+	console.info('Test MW Ricerca FE Cypress Completed!');
 	process.exit(0)
 }
 
