@@ -246,12 +246,9 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e aggiungere su excel
-    // it('Verifica aggancio Allianz Placement Platform', function () {
-    // cy.get('app-product-button-list').find('a').contains('Sales').click()
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('Allianz placement platform').click()
-    //     cy.get('nx-modal-container').find('.agency-row').first().click()
+    // it.skip('Verifica aggancio Allianz Placement Platform', function () {
+    //     TopBar.clickSales()
+    //     BurgerMenuSales.clickLink('Allianz placement platform')
     // })
 
     it('Verifica aggancio Qualità portafoglio auto', function () {
@@ -266,7 +263,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //     cy.get('lib-burger-icon').click()
     //     cy.contains('App cumulo terremoti').click()
     // canaleFromPopup()
-
     //     cy.get('a').contains('Sales').click()
     // })
 

@@ -267,7 +267,6 @@ class BurgerMenuSales extends Sales {
                 break;
             case LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE:
                 if (Cypress.isBrowser('firefox')) {
-
                     cy.get('lib-side-menu').find('a:contains("Allianz Global Assistance")')
                         .should('have.attr', 'href', 'http://oazis.allianz-assistance.it')
                 } else {

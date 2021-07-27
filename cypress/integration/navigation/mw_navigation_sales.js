@@ -198,7 +198,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     //     Sales.clickNewsImagePrimoComandamento()
     //     Sales.backToSales()
     // })
-
     it('Verifica aggancio Preventivi e quotazioni - Card Danni', function () {
         TopBar.clickSales()
         Sales.clickPreventiviQuotazioniOnTabDanni()
@@ -233,7 +232,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.clickPrimaCardDanniOnProposte()
         Sales.backToSales()
     })
-
 
     it('Verifica aggancio Proposte Danni - button: Vedi Tutte', function () {
         TopBar.clickSales()

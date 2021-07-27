@@ -15,6 +15,7 @@ class ArchivioCliente {
     }
 
     static checkLinksSubTabs() {
+        cy.get('nx-tab-header').should('be.visible')
         const tabArchivioCliente = [
             'Note',
             'Attività',
@@ -72,8 +73,8 @@ class ArchivioCliente {
         cy.get('app-client-archive-unique').find('div[class="nx-grid__column-2"]').should('contain.text', 'Modifiche')
         cy.get('app-client-archive-unique').find('div[class="nx-grid__column-3"]').should('contain.text', 'Consensi accettati')
         cy.get('app-client-archive-unique').find('div[class="nx-grid__column-3"]').should('contain.text', 'Consensi rifiutati')
-        cy.get('app-client-archive-unique').find('app-client-archive-unique-change-card').first()
-            .find('nx-icon[class="nx-icon--s nx-icon--password-show"]').click()
+        // cy.get('app-client-archive-unique').find('app-client-archive-unique-change-card').first()
+        //     .find('nx-icon[class="nx-icon--s nx-icon--password-show"]').click()
     }
 
     static checkDigitalMe() {

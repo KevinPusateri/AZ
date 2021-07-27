@@ -29,25 +29,13 @@ beforeEach(() => {
     SintesiCliente.wait()
 })
 
-// afterEach(function () {
-//     if (this.currentTest.state === 'failed' &&
-//         //@ts-ignore
-//         this.currentTest._currentRetry === this.currentTest._retries) {
-//         //@ts-ignore
-//             Common.visitUrlOnEnv()
-// cy.preserveCookies()
-// TopBar.search('Pulini Francesco')
-// SintesiCliente.wait()
-//     }
-// });
-
 after(() => {
-    // TopBar.logOutMW()
+    TopBar.logOutMW()
 })
 
-describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Portafoglio', function () {
+describe('MW: Navigazioni da Scheda Cliente - Tab Archivio Cliente', function () {
 
-    it('Verifica Subtab Portafoglio', function () {
+    it('Verifica Subtab Archivio Cliente', function () {
         ArchivioCliente.clickTabArchivioCliente()
         ArchivioCliente.checkLinksSubTabs()
     })
@@ -58,7 +46,8 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Portafoglio', functio
         ArchivioCliente.checkNote()
     })
 
-    // it('Verifica Tab Attività', function () {
+    // TODO: NON ha nessuna attività
+    // it.skip('Verifica Tab Attività', function () {
     // ArchivioCliente.clickTabArchivioCliente()
     // ArchivioCliente.clickSubTab('Attività')
     // ArchivioCliente.checkAttivita()
@@ -77,16 +66,16 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Portafoglio', functio
         ArchivioCliente.checkUnico()
     })
 
-    // TODO: Apri PDF in failed
+    // TODO: Sezione sarà disponibile a breve
     // it.skip('Verifica Tab Documentazione', function () {
 
     // })
 
 
-    //TODO: 
-    it.only('Verifica Tab Digital Me', function () {
-        ArchivioCliente.clickTabArchivioCliente()
-        ArchivioCliente.clickSubTab('Digital Me')
-        ArchivioCliente.checkDigitalMe()
-    })
+    //TODO: NON contiene richieste
+    // it.skip('Verifica Tab Digital Me', function () {
+    //     ArchivioCliente.clickTabArchivioCliente()
+    //     ArchivioCliente.clickSubTab('Digital Me')
+    //     ArchivioCliente.checkDigitalMe()
+    // })
 })

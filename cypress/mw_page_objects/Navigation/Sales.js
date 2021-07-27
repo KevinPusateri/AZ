@@ -439,7 +439,9 @@ class Sales {
         cy.get('app-proposals-section').contains('Proposte').click()
         cy.wait('@gqlDamage', { requestTimeout: 50000 });
         cy.wait('@gqlsalesDamagePremium', { requestTimeout: 50000 });
-        cy.get('app-paginated-cards').find('button:contains("Danni")').click().wait(5000)
+        cy.get('app-paginated-cards').find('button:contains("Danni")').click()
+        cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
+        cy.wait(10000)
     }
 
     /**
@@ -461,15 +463,20 @@ class Sales {
      * Click sulla prima card Danni 
      */
     static clickPrimaCardDanniOnProposte() {
-        cy.intercept({
-            method: 'POST',
-            url: '**/Auto/**'
-        }).as('getAuto');
+        // cy.intercept({
+        //     method: 'POST',
+        //     url: '**/InquiryAgenzia_AD/**'
+        // }).as('getAuto');
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
-        cy.get('.cards-container').find('lib-contract-card:visible').first().scrollIntoView().click()
-        Common.canaleFromPopup()
-        cy.wait('@getAuto', { requestTimeout: 40000 });
-        getIFrame().find('a:contains("« Uscita"):visible')
+        cy.get('div[class="damages prop-card ng-star-inserted"]').first().find('lib-da-link').first().click()
+        // cy.wait(10000)
+        // cy.wait('@getAuto', { requestTimeout: 40000 });
+        getIFrame().within(()=>{
+            cy.get('#menuContainer').should('be.visible')
+            cy.get('#menuContainer').find('a').should('be.visible').and('contain.text','« Uscita')
+        })
+        // .find('#menuContainer > a').should('be.visible').and('contain.text','« Uscita')
+        // getIFrame().find('a:contains("« Uscita"):visible')
     }
 
     /**

@@ -193,7 +193,6 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.backToNumbers('products')
     })
 
-    // Mancherebbe test su Monitoraggio carico
     it('Verifica su Indicatori Operativi aggancio  Monitoraggio carico', function () {
         TopBar.clickNumbers()
         Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')

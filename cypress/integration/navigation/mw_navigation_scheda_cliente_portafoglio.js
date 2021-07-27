@@ -3,8 +3,8 @@
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Common from "../../mw_page_objects/common/Common"
 import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
+import HomePage from "../../mw_page_objects/common/HomePage"
 
 Cypress.config('defaultCommandTimeout', 60000)
 
@@ -23,29 +23,19 @@ before(() => {
 })
 
 beforeEach(() => {
-    Common.visitUrlOnEnv()
     cy.preserveCookies()
+    HomePage.reloadMWHomePage()
+    // TopBar.searchClickLinkSuggest()
     TopBar.search('Pulini Francesco')
     SintesiCliente.wait()
 })
 
-// afterEach(function () {
-//     if (this.currentTest.state === 'failed' &&
-//         //@ts-ignore
-//         this.currentTest._currentRetry === this.currentTest._retries) {
-//         //@ts-ignore
-//             Common.visitUrlOnEnv()
-// cy.preserveCookies()
-// TopBar.search('Pulini Francesco')
-// SintesiCliente.wait()
-//     }
-// });
 
 after(() => {
-    // TopBar.logOutMW()
+    TopBar.logOutMW()
 })
 
-describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Portafoglio', function () {
+describe('MW: Navigazioni da Scheda Cliente - Tab Portafoglio', function () {
 
     it('Verifica Subtab Portafoglio', function () {
         Portafoglio.clickTabPortafoglio()
@@ -59,30 +49,27 @@ describe('Matrix Web : Navigazioni da Scheda Cliente - Tab Portafoglio', functio
         Portafoglio.back()
     })
 
-    // NON CLICCA 
-    // it('Verifica Tab Proposte',function(){
-    //     Portafoglio.clickTabPortafoglio()
-    //     Portafoglio.clickSubTab('Proposte')
-    //     Portafoglio.back()
-    // })
+    it('Verifica Tab Proposte', function () {
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Proposte')
+        Portafoglio.checkProposte()
+        Portafoglio.back()
+    })
 
-    // NON CLICCA 
-    // it('Verifica Tab Preventivi', function () {
-    //     Portafoglio.clickTabPortafoglio()
-    //     Portafoglio.clickSubTab('Preventivi')
-    //     Portafoglio.checkPreventivi()
-    //     Portafoglio.back()
-    // })
+    it('Verifica Tab Preventivi', function () {
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Preventivi')
+        Portafoglio.checkPreventivi()
+        Portafoglio.back()
+    })
 
-    // NON CLICCA 
-    it.only('Verifica Tab Non in vigore', function () {
+    it('Verifica Tab Non in vigore', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Non in vigore')
         Portafoglio.checkNonInVigore()
         Portafoglio.back()
     })
 
-    // FUNZIA
     it('Verifica Tab Sinistri', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Sinistri')

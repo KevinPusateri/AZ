@@ -119,6 +119,16 @@ class TopBar extends HomePage {
     }
 
     /**
+     * Click link dai suggerimenti
+    */
+    static searchClickLinkSuggest() {
+        cy.get('input[name="main-search-input"]').should('be.visible').click()
+        cy.get('lib-shortcut-section-item').should('be.visible')
+        cy.get('lib-search-input').find('a:contains("pulini")').click()
+    }
+
+
+    /**
      * Verifica click Buca di ricerca
      */
     static clickBucaRicerca() {
