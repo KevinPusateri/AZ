@@ -57,8 +57,8 @@ const { resolve } = require('path');
 const { clear } = require('console');
 const pMap = require('p-map');
 const prompt = require('prompt-sync')()
-require('dotenv').config({path:'./.env'})
 require('events').EventEmitter.defaultMaxListeners = 15
+process.env['NO_PROXY']='*.pp.azi.allianzit'
 let PARALLEL_RUN_COUNT = process.argv.slice(2)[0]
 const integrationDirectory = path.join(__dirname, String("./cypress/integration/clients/"))
 //#endregion DO NOT EDIT
