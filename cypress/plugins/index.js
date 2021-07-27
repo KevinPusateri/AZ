@@ -26,7 +26,6 @@ function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
     const connection = mysql.createConnection(dbConfig)
     connection.connect((err) => {
         if (err) throw err;
-        console.log('--> Connected to ' + dbConfig.host);
     })
 
     let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -42,7 +41,6 @@ function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
             }
             else {
                 connection.end()
-                console.log('--> Iserted ID ' + results.insertId + ' for test ' + testCaseName);
                 return resolve(results)
             }
         })
@@ -54,7 +52,6 @@ function mysqlFinish(dbConfig, rowId, tests) {
     const connection = mysql.createConnection(dbConfig)
     connection.connect((err) => {
         if (err) throw err;
-        console.log('--> Connected to ' + dbConfig.host);
     })
 
     //Verify if all tests are passed or not
@@ -87,7 +84,6 @@ function mysqlFinish(dbConfig, rowId, tests) {
             }
             else {
                 connection.end()
-                console.log('--> Update ID ' + results.insertId);
                 return resolve(results)
             }
         })
