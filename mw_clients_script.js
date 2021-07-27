@@ -40,6 +40,13 @@ if (process.argv.slice(2).length >= 2 && process.argv.slice(2)[2] === 'true') {
 	console.log('Scheduled is ON\n')
 }
 
+let singleFile = -1
+let specToRun = -1
+if (process.argv.slice(2).length >= 4) {
+	singleFile = process.argv.slice(2)[3]
+	specToRun = process.argv.slice(2)[4]
+}
+
 //#region DO NOT EDIT
 const path = require('path')
 const async = require('async')
@@ -64,7 +71,10 @@ if (!scheduled) {
 	console.log("\x1b[36m%s\x1b[0m", '2. Test a Single Spec\n');
 	var runChooser = -1;
 	do {
-		runChooser = parseInt(prompt('Enter your choice : '), 10);
+		if (singleFile !== -1)
+			runChooser = parseInt(prompt('Enter your choice : ', singleFile.toString()), 10);
+		else
+			runChooser = parseInt(prompt('Enter your choice : '), 10);
 	} while (isNaN(runChooser) || runChooser > 2 || runChooser < 1);
 
 	switch (runChooser) {
@@ -101,7 +111,10 @@ function showAllCollectionToDecide() {
 function getCollectionName() {
 	var collectionChooser = -1;
 	do {
-		collectionChooser = parseInt(prompt('Enter your choice : '), 10);
+		if (specToRun !== -1)
+			collectionChooser = parseInt(prompt('Enter your choice : ', specToRun.toString()), 10);
+		else
+			collectionChooser = parseInt(prompt('Enter your choice : '), 10);
 	} while (isNaN(collectionChooser) || collectionChooser > indexCollection - 1 || collectionChooser < 0);
 
 	return filenames[collectionChooser];
