@@ -16,6 +16,8 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 
+import Common from "../mw_page_objects/common/Common"
+
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 Cypress.on('uncaught:exception', (err, runnable) => {

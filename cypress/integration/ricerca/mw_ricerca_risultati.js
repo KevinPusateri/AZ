@@ -34,7 +34,7 @@ before(() => {
 })
 
 beforeEach(() => {
-    Common.visitUrlOnEnv()
+    //Common.visitUrlOnEnv()
     cy.preserveCookies()
 })
 

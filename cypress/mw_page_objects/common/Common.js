@@ -25,6 +25,14 @@ class Common {
   }
 
   /**
+   * Setta il il baseUrl
+   */
+  static setBaseUrl(){
+    Cypress.env('currentEnv') === 'TEST' ? Cypress.config('baseUrl', Cypress.env('baseUrlTest')) : Cypress.config('baseUrl', Cypress.env('baseUrlPreprod'))
+
+  }
+
+  /**
    * Se Preprod fa should su baseUrlPreprod altrimenti su baseUrlTest
    */
   static checkUrlEnv() {
