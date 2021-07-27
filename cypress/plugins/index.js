@@ -32,7 +32,7 @@ function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
     let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss');
     let machineName = os.hostname();
     var query = "INSERT INTO TC_Log (TestCaseName, Ambiente, Utenza, DataInizio, DataFine, MachineName, ResultOutcome) " +
-        "VALUES ('" + testCaseName + "','" + currentEnv + "','" + currentUser + "','" + currentDateTime + "','" + currentDateTime + "','" + machineName + "','Unfinished')";
+        "VALUES ('Matrix.Tests." + testCaseName + "','" + currentEnv + "','" + currentUser + "','" + currentDateTime + "','" + currentDateTime + "','" + machineName + "','Unfinished')";
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
