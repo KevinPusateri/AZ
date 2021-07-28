@@ -136,7 +136,7 @@ class Sales {
             case LinksRapidi.RECUPERO_PREVENTIVI_E_QUOTAZIONI:
                 cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
                 Common.canaleFromPopup()
-                cy.wait(10000);
+                cy.wait(12000);
                 getIFrame().find('button:contains("Cerca"):visible')
                 break;
             case LinksRapidi.MONITORAGGIO_POLIZZE_PROPOSTE:

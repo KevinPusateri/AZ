@@ -71,7 +71,7 @@ class Portafoglio {
         cy.get('app-contract-card').first().click()
         cy.wait(10000)
         Common.canaleFromPopup()
-        cy.wait(10000)
+        cy.wait(12000)
         getIFrame().find('input[value="  Esci  "]').invoke('attr', 'value').should('equal', '  Esci  ')
 
     }

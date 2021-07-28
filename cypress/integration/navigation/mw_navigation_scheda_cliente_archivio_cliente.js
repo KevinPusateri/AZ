@@ -34,8 +34,8 @@ before(() => {
 
 
 beforeEach(() => {
-    Common.visitUrlOnEnv()
     cy.preserveCookies()
+    Common.visitUrlOnEnv()
     TopBar.search('Pulini Francesco')
     SintesiCliente.wait()
 })

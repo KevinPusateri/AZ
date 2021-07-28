@@ -199,7 +199,6 @@ module.exports = (on, config) => {
     //     }
     // })
 
-
     on("task", {
         nuovoClientePersonaFisica() {
             user = {

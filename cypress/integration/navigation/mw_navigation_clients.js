@@ -34,8 +34,8 @@ before(() => {
 })
 
 beforeEach(() => {
-    HomePage.reloadMWHomePage()
     cy.preserveCookies()
+    HomePage.reloadMWHomePage()
 })
 
 after(function () {
@@ -62,8 +62,16 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     })
 
     it('Verifica aggancio Analisi dei bisogni', function () {
-        TopBar.clickClients()
-        Clients.clickLinkRapido('Analisi dei bisogni')
+        cy.getHostName().then(hostName => {
+            let currentHostName = hostName
+            if (currentHostName.startsWith('SM'))
+                this.skip()
+            else {
+                TopBar.clickClients()
+                Clients.clickLinkRapido('Analisi dei bisogni')
+            }
+        })
+
     });
 
     it('Verifica aggancio Digital Me', function () {
