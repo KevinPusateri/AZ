@@ -42,7 +42,7 @@ class SCUContatti {
           this.addPhone(contatto);
 
           //click salva
-          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          getSCU().find('#submit:contains("Salva")').click().wait(8000);
           resolve(contatto);
         });
     });
@@ -76,7 +76,7 @@ class SCUContatti {
           this.addPhone(contatto);
 
           //click salva
-          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          getSCU().find('#submit:contains("Salva")').click().wait(8000);
           resolve(contatto);
         });
     });
@@ -113,7 +113,7 @@ class SCUContatti {
           this.addPhone(contatto);
 
           //click salva
-          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          getSCU().find('#submit:contains("Salva")').click().wait(8000);
           resolve(contatto);
         });
     });
@@ -203,7 +203,7 @@ class SCUContatti {
           this.addPhone(contatto);
 
           //click salva
-          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          getSCU().find('#submit:contains("Salva")').click().wait(8000);
           resolve(contatto);
         });
     });
@@ -239,7 +239,7 @@ class SCUContatti {
           this.addPhone(contatto);
 
           //click salva
-          getSCU().find('#submit:contains("Salva")').click().wait(4000);
+          getSCU().find('#submit:contains("Salva")').click().wait(8000);
           resolve(contatto);
         });
     });
@@ -324,7 +324,7 @@ class SCUContatti {
     this.addPhone(contatto);
 
     //click salva
-    getSCU().find('#submit:contains("Salva")').click().wait(4000);
+    getSCU().find('#submit:contains("Salva")').click().wait(8000);
   }
 
   static aggiungiNuovaMailPrincipale(contatto) {
@@ -335,6 +335,109 @@ class SCUContatti {
     getSCU().find('#submit:contains("Salva")').click();
   }
   //#endregion
+
+  static eliminaContatto(contatto) {
+    cy.get("app-client-other-contacts").then((table) => {
+      if (contatto.tipo === "E-Mail" || contatto.tipo === "PEC") {
+        cy.wrap(table)
+          .find(
+            'app-client-contact-table-row:contains("' +
+            contatto.tipo +
+            '"):contains("' +
+            contatto.principale +
+            '")'
+          )
+          .find(':contains("' + contatto.email + '")')
+          .then((row) => {
+            cy.wrap(row)
+              .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+              .click()
+              .wait(5000);
+            cy.get("button").contains("Elimina contatto").click();
+            cy.get('nx-modal-container').should('be.visible')
+            cy.get('nx-modal-container').find('span:contains("Conferma"):visible').click()
+            cy.wait(3000)
+            if (!row.is(':visible'))
+              assert.isTrue(true, 'contatto eliminato')
+            else
+              assert.fail('il contatto non è stato eliminato')
+            // cy.wrap(table).find('app-client-contact-table-row').should('not.contain.text',contatto.tipo)
+            // .and('not.contain.text',contatto.principale).and('not.contain.text', contatto.email)
+          });
+      } else if (contatto.tipo === "Sito Web") {
+        cy.wrap(table)
+          .find(
+            'app-client-contact-table-row:contains("' +
+            contatto.tipo +
+            '"):contains("' +
+            contatto.principale +
+            '")'
+          )
+          .find(':contains("' + contatto.url + '")')
+          .then((row) => {
+            cy.wrap(row).as('row')
+            cy.wrap(row)
+              .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+              .click()
+              .wait(5000);
+            cy.get("button").contains("Elimina contatto").click();
+            cy.get('nx-modal-container').should('be.visible')
+            cy.get('nx-modal-container').find('span:contains("Conferma"):visible').click()
+            cy.wait(3000)
+            if (!row.is(':visible'))
+              assert.isTrue(true, 'contatto eliminato')
+            else
+              assert.fail('il contatto non è stato eliminato')
+            // cy.wrap(table).find('app-client-contact-table-row').should('not.contain.text',contatto.tipo)
+            // .and('not.contain.text',contatto.principale).and('not.contain.text', contatto.url)
+          })
+      } else {
+        cy.wrap(table)
+          .find(
+            'app-client-contact-table-row:contains("' +
+            contatto.tipo +
+            '"):contains("' +
+            contatto.principale +
+            '")'
+          )
+          .find(
+            ':contains("' +
+            contatto.prefissoInt +
+            " " +
+            contatto.prefisso +
+            " " +
+            contatto.phone +
+            '")'
+          )
+          .then((row) => {
+            console.log('row: '+ row)
+            console.log('wrap: '+ cy.wrap(row))
+            cy.wrap(row)
+              .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+              .click()
+              .wait(5000);
+            cy.get("button").contains("Elimina contatto").click();
+            cy.get('nx-modal-container').should('be.visible')
+            cy.get('nx-modal-container').find('span:contains("Conferma"):visible').click()
+            cy.wait(3000)
+            debugger
+            if (!row.is(':visible'))
+              assert.isTrue(true, 'contatto eliminato')
+            else
+              assert.fail('il contatto non è stato eliminato')            // .find('app-client-contact-table-row').should('not.contain.text',contatto.tipo)
+            // .and('not.contain.text',contatto.principale)
+            // .and('not.contain.text',contatto.prefissoInt)
+            // .and('not.contain.text',contatto.prefisso)
+            // .and('not.contain.text', contatto.phone)
+            // cy.wrap(table).find('app-client-contact-table-row').should('not.contain.text',contatto.tipo)
+            // .and('not.contain.text',contatto.principale)
+            // .and('not.contain.text',contatto.prefissoInt)
+            // .and('not.contain.text',contatto.prefisso)
+            // .and('not.contain.text', contatto.phone)
+          })
+      }
+    })
+  }
 
   //#region CheckModifica
   static modificaContatti(contatto) {
@@ -367,7 +470,7 @@ class SCUContatti {
                 cy.task("nuovoContatto").then((object) => {
                   contatto.email = object.email;
                   this.addEmail(contatto);
-                  getSCU().find('#submit:contains("Salva")').click().wait(4000);
+                  getSCU().find('#submit:contains("Salva")').click().wait(8000);
                   resolve(contatto);
                 });
               });
@@ -399,7 +502,7 @@ class SCUContatti {
                 cy.task("nuovoContatto").then((object) => {
                   contatto.url = object.url;
                   this.addSitoWeb(contatto);
-                  getSCU().find('#submit:contains("Salva")').click().wait(4000);
+                  getSCU().find('#submit:contains("Salva")').click().wait(8000);
                   resolve(contatto);
                 });
               });
@@ -599,7 +702,6 @@ class SCUContatti {
       .find("#tipoReperibilita_listbox > li").eq(index).then((tipo) => {
         contatto.tipo = tipo.text();
         if (contatto.tipo === "Email") contatto.tipo = "E-Mail";
-        debugger
       }).click();
   }
 

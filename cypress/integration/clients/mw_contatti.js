@@ -64,7 +64,7 @@ after(function () {
 let client
 describe('Matrix Web : Creazione Contatto', function () {
 
-  context('Telefono Fisso', () => {
+  context.only('Telefono Fisso', () => {
 
     it('Verifica l\'operazione di inserimento - tipo: Fisso', function () {
       LandingRicerca.searchRandomClient(true, "PF", "E")
@@ -98,6 +98,12 @@ describe('Matrix Web : Creazione Contatto', function () {
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
+    })
+
+    
+    it('Verifica l\'eliminazione del Fisso',function() {
+      SCUContatti.eliminaContatto(contatto)
+      cy.wait(10000)
     })
   })
 
