@@ -1,6 +1,5 @@
 /// <reference types="Cypress" />
 
-
 class Common {
 
   /**
@@ -49,8 +48,8 @@ class Common {
       cy.visit(Cypress.env('urlMWTest'),{ responseTimeout: 31000 }) :
       cy.visit(Cypress.env('urlMWPreprod'),{ responseTimeout: 31000 })
   }
-  
 }
+
 
 
 export default Common

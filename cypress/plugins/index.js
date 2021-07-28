@@ -60,7 +60,7 @@ function mysqlFinish(dbConfig, rowId, tests) {
     let resultStack = ''
     for (let i = 0; i < tests.test.length; i++) {
         if (tests.test[i].resultOutCome !== 'Passed') {
-            resultOutCome = 'Failed'
+            resultOutCome = tests.test[i].resultOutCome
             //Also get the error message
             resultMessage = tests.test[i].resultMessage
             resultStack = tests.test[i].resultStack
@@ -263,5 +263,4 @@ module.exports = (on, config) => {
             return contatto;
         }
     })
-
 };

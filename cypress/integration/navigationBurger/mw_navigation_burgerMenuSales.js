@@ -257,8 +257,16 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Allianz Global Assistance', function () {
-        TopBar.clickSales()
-        BurgerMenuSales.clickLink('Allianz Global Assistance')
+
+        cy.getHostName().then(hostName => {
+            let currentHostName = hostName
+            if (currentHostName.startsWith('SM'))
+                this.skip()
+            else {
+                TopBar.clickSales()
+                BurgerMenuSales.clickLink('Allianz Global Assistance')
+            }
+        })
     })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e aggiungere su excel

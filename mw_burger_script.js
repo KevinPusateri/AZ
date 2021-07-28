@@ -151,17 +151,20 @@ async function main() {
 	let totalPassed = 0
 	let totalFailed = 0
 	let totalSkipped = 0
+	let totalPending = 0
 	for (let i = 0; i < results.length; i++) {
 		totalTests += results[i].totalTests
 		totalPassed += results[i].totalPassed
 		totalFailed += results[i].totalFailed
 		totalSkipped += results[i].totalSkipped
+		totalPending += results[i].totalPending
 	}
 	console.log('********************************************************')
 	console.log('\nTotal Test Executed : ' + totalTests)
 	console.log('Total Test Passed : ' + totalPassed)
 	console.log('Total Test Failed : ' + totalFailed)
 	console.log('Total Test Skipped : ' + totalSkipped)
+	console.log('Total Test Pending : ' + totalPending)
 	console.log('********************************************************')
 	console.log('Test MW Navigation Burger FE Cypress Completed!');
 	process.exit(0)

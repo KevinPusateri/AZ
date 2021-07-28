@@ -32,8 +32,8 @@ before(() => {
 
 
 beforeEach(() => {
-    Common.visitUrlOnEnv()
     cy.preserveCookies()
+    Common.visitUrlOnEnv()
 })
 
 after(function () {
@@ -75,8 +75,15 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
     })
 
     it('Verifica aggancio X - Advisor', function () {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('X - Advisor')
+        cy.getHostName().then(hostName => {
+            let currentHostName = hostName
+            if (currentHostName.startsWith('SM'))
+                this.skip()
+            else {
+                TopBar.clickNumbers()
+                BurgerMenuNumbers.clickLink('X - Advisor')
+            }
+        })
     })
 
     it('Verifica aggancio Incentivazione', function () {

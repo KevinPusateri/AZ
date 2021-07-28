@@ -10,6 +10,7 @@
 
 import 'cypress-file-upload'
 const moment = require('moment')
+const os = require('os')
 
 //
 //
@@ -165,13 +166,21 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
     let resultStack = ''
     tests.test = []
     for (let i = 0; i < testsArray.length; i++) {
-      if (testsArray[i].state !== 'passed') {
-        resultOutCome = 'Failed'
-        //Also get the error message
-        resultMessage = testsArray[i].title + ' - ' + testsArray[i].err.message
-        resultStack = testsArray[i].title + ' - ' + testsArray[i].err.stack
+      switch (testsArray[i].state) {
+        case 'failed':
+          resultOutCome = 'Failed'
+          //Also get the error message
+          resultMessage = testsArray[i].title + ' - ' + testsArray[i].err.message
+          resultStack = testsArray[i].title + ' - ' + testsArray[i].err.stack
+          break;
+        case 'pending':
+          resultOutCome = 'Skipped'
+          //Also get the error message
+          resultMessage = testsArray[i].title + ' - ' + testsArray[i].err.message
+          resultStack = testsArray[i].title + ' - ' + testsArray[i].err.stack
+          break;
       }
-
+      
       tests.test.push({
         resultOutCome: resultOutCome,
         resultMessage: resultMessage,
@@ -181,4 +190,8 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
 
     resolve(tests)
   })
+})
+
+Cypress.Commands.add('getHostName', () => {
+  return os.hostname()
 })
