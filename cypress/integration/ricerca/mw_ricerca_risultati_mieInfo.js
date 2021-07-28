@@ -34,8 +34,8 @@ before(() => {
 })
 
 beforeEach(() => {
+    cy.preserveCookies()
     Common.visitUrlOnEnv()
-    // cy.preserveCookies()
 })
 
 after(function () {

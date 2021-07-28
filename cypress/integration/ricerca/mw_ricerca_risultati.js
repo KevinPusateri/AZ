@@ -34,7 +34,7 @@ before(() => {
 })
 
 beforeEach(() => {
-    // cy.preserveCookies()
+    cy.preserveCookies()
 })
 
 after(function () {
