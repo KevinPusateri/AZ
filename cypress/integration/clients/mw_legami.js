@@ -17,24 +17,41 @@ import Legami from "../../mw_page_objects/clients/Legami"
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
-//#region Variables
+//#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
-let currentClient = ''
-var membro = ''
 //#endregion
 
+//#region Mysql DB Variables
+const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const currentEnv = Cypress.env('currentEnv')
+const dbConfig = Cypress.env('db')
+let insertedId
+//#endregion
+
+let currentClient = ''
+var membro = ''
 
 //#region Before After
 before(() => {
-    // LoginPage.logInMW(userName, psw)
+    cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+        insertedId = results.insertId
+    })
+    LoginPage.logInMW(userName, psw)
 })
 
 beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(() => {
+after(function () {
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    })
+    //#endregion
+
     TopBar.logOutMW()
 })
 //#endregion Before After
@@ -86,7 +103,7 @@ describe('Matrix Web : Legami', function () {
 
         it('Verifica inserimento massimo 3 membri', function () {
             // for (let index = 0; index < 2; index++) {
-                Legami.clickInserisciMembro()
+            Legami.clickInserisciMembro()
             // }
             Legami.checkTerzoMembroNonInseribile()
         })
@@ -115,7 +132,7 @@ describe('Matrix Web : Legami', function () {
         })
 
         it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
-            cy.impersonification('TUTF003','ARGBERNARDI2','010710000')
+            cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000')
             LoginPage.logInMW('TUTF003', psw)
             DettaglioAnagrafica.checkClientWithoutLegame()
             Legami.checkLegameIsNotPresent()

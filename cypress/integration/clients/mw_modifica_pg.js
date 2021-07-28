@@ -19,18 +19,30 @@ import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafi
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
-//#region Variables
+//#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+//#endregion
+
+//#region Mysql DB Variables
+const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const currentEnv = Cypress.env('currentEnv')
+const dbConfig = Cypress.env('db')
+let insertedId
+//#endregion
+
 let clientePGNewData
 let currentClientPG
 let unicoClienteLebel
 let unicoDirezionaleLabel
 let visuraCameraleLebel
-//#endregion
 
 //#region Before After
 before(() => {
+  cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+    insertedId = results.insertId
+  })
+
   cy.task('nuovoClientePersonaGiuridica').then((object) => {
     clientePGNewData = object
     clientePGNewData.tipologia = "DITTA"
@@ -71,47 +83,54 @@ afterEach(function () {
     Cypress.runner.stop();
   }
 });
-after(() => {
+after(function () {
+  //#region Mysql
+  cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+    let tests = testsInfo
+    cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+  })
+  //#endregion
+
   TopBar.logOutMW()
 })
 //#endregion Before After
 
-  describe('Matrix Web : Modifica PG', {
-    retries: {
-      runMode: 0,
-      openMode: 0,
-    }
-  }, () => {
+describe('Matrix Web : Modifica PG', {
+  retries: {
+    runMode: 0,
+    openMode: 0,
+  }
+}, () => {
 
-    it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
-      LandingRicerca.searchRandomClient(true, "PG", "E")
-      LandingRicerca.clickRandomResult('E')
-      SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-        currentClientPG = currentClient
-      })
-    })
-
-    it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
-
-      DettaglioAnagrafica.modificaCliente()
-      SCU.modificaClientePGDatiAnagrafici(clientePGNewData)
-      SCU.modificaClientePGModificaContatti(clientePGNewData)
-      SCU.modificaClientePGConsensi(clientePGNewData)
-      SCU.modificaClientePGConfermaModifiche()
-    })
-
-    it('Da Folder inserire la visura camerale e procedere', () => {
-      Folder.caricaVisuraCamerale(true)
-      Folder.clickTornaIndietro(true)
-      SCU.generazioneStampe(true)
-    })
-
-    it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
-      HomePage.reloadMWHomePage()
-      TopBar.search(currentClientPG.name)
-      LandingRicerca.clickClientName(currentClientPG)
-      SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
-      DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)
-      SintesiCliente.verificaInFolder([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel])
+  it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
+    LandingRicerca.searchRandomClient(true, "PG", "E")
+    LandingRicerca.clickRandomResult('E')
+    SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+      currentClientPG = currentClient
     })
   })
+
+  it('Modificare alcuni dati inserendo la PEC il consenso all\'invio', () => {
+
+    DettaglioAnagrafica.modificaCliente()
+    SCU.modificaClientePGDatiAnagrafici(clientePGNewData)
+    SCU.modificaClientePGModificaContatti(clientePGNewData)
+    SCU.modificaClientePGConsensi(clientePGNewData)
+    SCU.modificaClientePGConfermaModifiche()
+  })
+
+  it('Da Folder inserire la visura camerale e procedere', () => {
+    Folder.caricaVisuraCamerale(true)
+    Folder.clickTornaIndietro(true)
+    SCU.generazioneStampe(true)
+  })
+
+  it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
+    HomePage.reloadMWHomePage()
+    TopBar.search(currentClientPG.name)
+    LandingRicerca.clickClientName(currentClientPG)
+    SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
+    DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)
+    SintesiCliente.verificaInFolder([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel])
+  })
+})

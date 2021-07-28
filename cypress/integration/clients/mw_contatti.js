@@ -12,18 +12,28 @@ import SCUContatti from "../../mw_page_objects/clients/SCUContatti"
 import HomePage from "../../mw_page_objects/common/HomePage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 
-
-//#region Variables
+//#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
-let contatto
 //#endregion
+
+//#region Mysql DB Variables
+const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const currentEnv = Cypress.env('currentEnv')
+const dbConfig = Cypress.env('db')
+let insertedId
+//#endregion
+
+let contatto
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
+  cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+    insertedId = results.insertId
+  })
   LoginPage.logInMW(userName, psw)
   cy.task('nuovoContatto').then((object) => {
     contatto = object
@@ -38,7 +48,14 @@ beforeEach(() => {
   cy.preserveCookies()
 })
 
-after(() => {
+after(function () {
+  //#region Mysql
+  cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+    let tests = testsInfo
+    cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+  })
+  //#endregion
+
   TopBar.logOutMW()
 })
 //#endregion
@@ -65,7 +82,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     it('Verifica telefono Fisso sia inserito nella tabella', function () {
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -77,7 +94,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       })
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -101,7 +118,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     it('Verifica telefono Cellulare sia inserito nella tabella', function () {
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -113,7 +130,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       })
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -137,7 +154,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     it('Verifica Fax sia inserito nella tabella', function () {
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -149,7 +166,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       })
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -173,7 +190,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     it('Verifica Email sia inserito nella tabella', function () {
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -185,7 +202,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       })
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -209,7 +226,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     it('Verifica Sito Web sia inserito nella tabella', function () {
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -221,7 +238,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       })
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -245,7 +262,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     it('Verifica Numero Verde sia inserito nella tabella', function () {
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -256,7 +273,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       })
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -280,7 +297,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     it('Verifica Fax Verde sia inserito nella tabella', function () {
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -292,7 +309,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       })
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -316,7 +333,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     it('Verifica Ufficio sia inserito nella tabella', function () {
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -328,7 +345,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       })
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -352,7 +369,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     it('Verifica PEC sia inserito nella tabella', function () {
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
@@ -364,7 +381,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       })
       HomePage.reloadMWHomePage()
       TopBar.search(client.name)
-      LandingRicerca.clickClientName(client,true,'PF','E')
+      LandingRicerca.clickClientName(client, true, 'PF', 'E')
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Contatti')
       DettaglioAnagrafica.checkContatti(contatto)
