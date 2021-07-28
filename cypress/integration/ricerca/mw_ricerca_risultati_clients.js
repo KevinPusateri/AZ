@@ -52,7 +52,7 @@ after(function () {
 
 describe('Buca di Ricerca - Risultati Clients', function () {
     it('Verifica Ricerca Cliente: nome o cognome ', function () {
-        LandingRicerca.searchRandomClient(false)
+        LandingRicerca.searchRandomClient(true,'PF','E')
         LandingRicerca.checkRisultatiRicerca()
     })
 
