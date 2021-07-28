@@ -8,9 +8,16 @@ import ArchivioCliente from "../../mw_page_objects/clients/ArchivioCliente"
 
 Cypress.config('defaultCommandTimeout', 60000)
 
-//#region Variables
+//#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+//#endregion
+
+//#region Mysql DB Variables
+const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const currentEnv = Cypress.env('currentEnv')
+const dbConfig = Cypress.env('db')
+let insertedId
 //#endregion
 
 //#region  Configuration
@@ -19,8 +26,12 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 
 before(() => {
+    cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+        insertedId = results.insertId
+    })
     LoginPage.logInMW(userName, psw)
 })
+
 
 beforeEach(() => {
     Common.visitUrlOnEnv()
@@ -29,7 +40,14 @@ beforeEach(() => {
     SintesiCliente.wait()
 })
 
-after(() => {
+after(function () {
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    })
+    //#endregion
+
     TopBar.logOutMW()
 })
 
