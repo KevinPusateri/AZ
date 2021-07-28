@@ -232,7 +232,7 @@ class SCU {
         cy.wait('@normalizeImpresa', { requestTimeout: 30000 });
         cy.wait('@validateForEdit', { requestTimeout: 30000 });
         cy.wait('@anagrafeWA40', { requestTimeout: 30000 });
-        cy.wait('@scu', { requestTimeout: 30000 }).wait(1000);
+        cy.wait('@scu', { requestTimeout: 60000 }).wait(1000);
 
         getSCU().find('button:contains("Conferma")').click();
 

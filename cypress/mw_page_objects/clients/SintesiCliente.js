@@ -674,8 +674,8 @@ class SintesiCliente {
      */
     static aggiungiContattoPrincipale(contactType) {
         let missingValue
-        (contactType === 'numero') ? missingValue = 'Aggiungi numero principale' : missingValue = ' Aggiungi mail principale '
-        cy.get('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').click({ multiple: true })
+        (contactType === 'numero') ? missingValue = ' Aggiungi numero principale ' : missingValue = ' Aggiungi mail principale '
+        cy.get('div.da-link.ng-star-inserted').should('be.visible').find('div:contains("' + missingValue + '")').click()
 
     }
 

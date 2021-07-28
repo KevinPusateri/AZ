@@ -43,7 +43,7 @@ class DettaglioAnagrafica {
     }
 
     static checkDocumento(documentType) {
-        return new Promise((resolve, reject) => {
+        return new Cypress.Promise((resolve, reject) => {
             cy.get('body')
                 .then(body => {
                     if (body.find('div:contains("' + documentType + '")').length > 0)
