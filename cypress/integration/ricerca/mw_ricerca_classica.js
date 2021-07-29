@@ -35,7 +35,13 @@ before(() => {
 })
 
 beforeEach(() => {
-    cy.preserveCookies()
+    //cy.preserveCookies()
+    cy.viewport(1920, 1080)
+    Cypress.Cookies.defaults({
+        preserve: (cookie) => {
+            return true;
+        }
+    })
     Common.visitUrlOnEnv()
 })
 
