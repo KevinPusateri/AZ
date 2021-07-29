@@ -299,6 +299,7 @@ class TopBar extends HomePage {
      */
     static clickIconNotification() {
         cy.get('lib-notification-header').click()
+        cy.get('lib-notification-list').should('be.visible')
     }
 
     /**
@@ -386,7 +387,7 @@ class TopBar extends HomePage {
      */
     static checkNotificheEvidenza() {
         cy.wait(3000).get('lib-notification-settings').click()
-        const linksNotificaion = [
+        const linksNotification = [
             'Contabilità',
             'Portafoglio',
             'Sinistri',
@@ -401,8 +402,8 @@ class TopBar extends HomePage {
             'Gestione Attività'
         ]
         cy.wait(3000)
-        cy.get('lib-notification-settings-container').find('lib-notification-settings-item').each(($link, i) => {
-            expect($link.text().trim()).to.include(linksNotificaion[i]);
+        cy.get('lib-notification-settings-container').should('be.visible').find('lib-notification-settings-item:visible').each(($link, i) => {
+            expect($link.text().trim()).to.include(linksNotification[i]);
         })
         cy.get('button[class^="nx-modal__close"]').click()
     }
