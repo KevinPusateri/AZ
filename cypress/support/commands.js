@@ -180,7 +180,7 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
           resultStack = testsArray[i].title + ' - ' + testsArray[i].err.stack
           break;
       }
-      
+
       tests.test.push({
         resultOutCome: resultOutCome,
         resultMessage: resultMessage,

@@ -29,26 +29,20 @@ Cypress.config('defaultCommandTimeout', 60000)
 before(() => {
   cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
     insertedId = results.insertId
-})
+  })
   LoginPage.logInMW(userName, psw)
 })
 
 beforeEach(() => {
-    //cy.preserveCookies()
-    cy.viewport(1920, 1080)
-    Cypress.Cookies.defaults({
-        preserve: (cookie) => {
-            return true;
-        }
-    })
+  cy.preserveCookies()
   Common.visitUrlOnEnv()
 })
 
 after(function () {
   //#region Mysql
   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-      let tests = testsInfo
-      cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    let tests = testsInfo
+    cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
   })
   //#endregion
 

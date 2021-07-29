@@ -34,13 +34,7 @@ before(() => {
 })
 
 beforeEach(() => {
-    //cy.preserveCookies()
-    cy.viewport(1920, 1080)
-    Cypress.Cookies.defaults({
-        preserve: (cookie) => {
-            return true;
-        }
-    })
+    cy.preserveCookies()
 })
 
 after(function () {

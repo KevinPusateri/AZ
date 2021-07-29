@@ -14,12 +14,17 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
-
-import Common from "../mw_page_objects/common/Common"
+//import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+const customCommands = require('./commands.js')
+
+module.exports = {
+  commands: customCommands
+}
+
 Cypress.on('uncaught:exception', (err, runnable) => {
   // returning false here prevents Cypress from
   // failing the test
