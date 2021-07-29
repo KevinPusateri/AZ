@@ -158,19 +158,14 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
     let tests = {}
 
     //Count total of tests in the spec file
-    //tests.ntc = testsArray.length
-
     let totalNtc = 0
     for (let h = 0; h < testsArray.length; h++) {
       let currentTest = testsArray[h]
-      console.log(currentTest)
-      //console.log(currentTest.commands.length)
       for (let i = 0; i < currentTest.commands.length; i++) {
         if (currentTest.commands[i].name === 'assert')
           totalNtc++
       }
     }
-
     tests.ntc = totalNtc
 
 
