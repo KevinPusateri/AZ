@@ -121,7 +121,12 @@ class LandingRicerca {
     * @param {string} value - What to search
     */
     static search(value) {
-
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('searchClient')) {
+                req.alias = 'gqlSearchClient'
+            }
+        });
+        
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type(value).type('{enter}').wait(2000)
 
