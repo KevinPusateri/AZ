@@ -1,5 +1,5 @@
 /**
-* @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+* @author Kevin Pusateri <kevin.pusateri@allianz.it>
 */
 
 /// <reference types="Cypress" />
