@@ -64,7 +64,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         LandingRicerca.checkSuggestedLinks('fastquote')
     })
 
-    it.only('Verifica Ricerca Prodotto: Ultra', function () {
+    it('Verifica Ricerca Prodotto: Ultra', function () {
         LandingRicerca.search('ultra')
         LandingRicerca.clickTabMieInfo()
         LandingRicerca.checkSubTabMieInfo()
