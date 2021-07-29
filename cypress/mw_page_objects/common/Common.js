@@ -26,7 +26,7 @@ class Common {
   /**
    * Setta il il baseUrl
    */
-  static setBaseUrl(){
+  static setBaseUrl() {
     Cypress.env('currentEnv') === 'TEST' ? Cypress.config('baseUrl', Cypress.env('baseUrlTest')) : Cypress.config('baseUrl', Cypress.env('baseUrlPreprod'))
 
   }
@@ -43,10 +43,48 @@ class Common {
   /**
    * Se Preprod fa il visit su urlMWPreprod altrimenti su urlMWTest
    */
-  static visitUrlOnEnv(){
+  static visitUrlOnEnv(mockedNotifications = true, mockedNews = true) {
+    cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
+    cy.intercept(/launch-*/, 'ignore').as('launchStaging')
+
+    if (mockedNotifications) {
+
+      cy.intercept('POST', '**/graphql', (req) => {
+        if (req.body.operationName.includes('notifications')) {
+          req.reply({ fixture: 'mockNotifications.json' })
+        }
+      })
+      cy.intercept('POST', '**/graphql', (req) => {
+        if (req.body.operationName.includes('getNotificationCategories')) {
+          req.reply({ fixture: 'mockGetNotificationCategories.json' })
+        }
+      })
+
+    }
+
+    if (mockedNotifications) {
+
+      cy.intercept('POST', '**/graphql', (req) => {
+        if (req.body.operationName.includes('news')) {
+          req.reply({ fixture: 'mockNews.json' })
+        }
+      })
+    }
+    else {
+      //Wait for news graphQL to be returned
+      cy.intercept('POST', '**/graphql', (req) => {
+        if (req.body.operationName.includes('news')) {
+          req.alias = 'gqlNews'
+          req.res
+        }
+      })
+    }
+
     Cypress.env('currentEnv') === 'TEST' ?
-      cy.visit(Cypress.env('urlMWTest'),{ responseTimeout: 31000 }) :
-      cy.visit(Cypress.env('urlMWPreprod'),{ responseTimeout: 31000 })
+      cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 }) :
+      cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
+    if (!mockedNews)
+      cy.wait('@gqlNews')
   }
 }
 

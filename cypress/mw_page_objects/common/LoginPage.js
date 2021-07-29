@@ -1,7 +1,5 @@
 /// <reference types="Cypress" />
-import common from 'mocha/lib/interfaces/common'
 import Common from './Common'
-import HomePage from './HomePage'
 
 class LoginPage {
 
