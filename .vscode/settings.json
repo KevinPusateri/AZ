@@ -1,3 +1,18 @@
 {
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "PALZMSQDBPRLV01.srv.allianz",
+            "port": 5551,
+            "driver": "MySQL",
+            "name": "mysqlTA_Log",
+            "database": "applogs",
+            "username": "MY_taut_VeeC9",
+            "password": "vC4DwAHxznfGl8XywsoohZkbdmL6cf"
+        }
+    ]
 }

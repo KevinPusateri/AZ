@@ -5,9 +5,16 @@ import HomePage from "../../mw_page_objects/common/HomePage"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 
-//#region Variables
+//#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+//#endregion
+
+//#region Mysql DB Variables
+const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const currentEnv = Cypress.env('currentEnv')
+const dbConfig = Cypress.env('db')
+let insertedId
 //#endregion
 
 //#region Configuration
@@ -16,15 +23,25 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 
 before(() => {
+    cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+        insertedId = results.insertId
+    })
     LoginPage.logInMW(userName, psw)
 })
 
 beforeEach(() => {
-    Common.visitUrlOnEnv()
     cy.preserveCookies()
+    Common.visitUrlOnEnv()
 })
 
-after(() => {
+after(function () {
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    })
+    //#endregion
+
     TopBar.logOutMW()
 })
 
@@ -55,7 +72,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickLinkOnIconIncident('Elenco telefonico')
     })
 
-    it.only('Verifica Top Menu User - Verifica apertura icona User', function () {
+    it('Verifica Top Menu User - Verifica apertura icona User', function () {
         TopBar.clickIconUser()
     })
 
@@ -96,10 +113,10 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickLinkOnUtilita('Interrogazioni centralizzate')
     })
 
-    // it.skip('Verifica atterraggio da Utilità - Banche Dati ANIA', function () {
-    //     TopBar.clickIconSwitchPage()
-    //     TopBar.clickLinkOnUtilita('Banche Dati ANIA')
-    // })
+    it('Verifica atterraggio da Utilità - Banche Dati ANIA', function () {
+        TopBar.clickIconSwitchPage()
+        TopBar.clickLinkOnUtilita('Banche Dati ANIA')
+    })
 
     it('Verifica atterraggio da Utilità - Gestione Magazzino OBU', function () {
         TopBar.clickIconSwitchPage()
@@ -186,9 +203,10 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         HomePage.clickPanelNotifiche()
     })
 
-    it('Verifica testi e link delle notifiche', function () {
-        HomePage.clickPanelNotifiche()
-        HomePage.checkNotifiche()
-    })
+    // ADD TFS
+    // it.skip('Verifica testi e link delle notifiche', function () {
+    //     HomePage.clickPanelNotifiche()
+    //     HomePage.checkNotifiche()
+    // })
 
 })

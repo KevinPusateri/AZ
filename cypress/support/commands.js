@@ -10,6 +10,7 @@
 
 import 'cypress-file-upload'
 const moment = require('moment')
+const os = require('os')
 
 //
 //
@@ -184,3 +185,56 @@ function resolve_index_or_name_to_index(index_or_name){
   }
   return index;
 }
+
+Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
+  cy.request({
+    method: 'POST',
+    url: 'https://profilingbe.pp.azi.allianzit/profilingManagement/personation/' + tutf,
+    form: true,
+    body: { persUser: getPersUser, channel: getChannel }
+  })
+})
+
+Cypress.Commands.add('getTestsInfos', (testsArray) => {
+  return new Cypress.Promise((resolve) => {
+
+    let tests = {}
+
+    //Count total of tests in the spec file
+    tests.ntc = testsArray.length
+
+    //Verify if all tests are passed or not
+    let resultOutCome = 'Passed'
+    let resultMessage = 'All Tests are OK!'
+    let resultStack = ''
+    tests.test = []
+    for (let i = 0; i < testsArray.length; i++) {
+      switch (testsArray[i].state) {
+        case 'failed':
+          resultOutCome = 'Failed'
+          //Also get the error message
+          resultMessage = testsArray[i].title + ' - ' + testsArray[i].err.message
+          resultStack = testsArray[i].title + ' - ' + testsArray[i].err.stack
+          break;
+        case 'pending':
+          resultOutCome = 'Skipped'
+          //Also get the error message
+          resultMessage = testsArray[i].title + ' - ' + testsArray[i].err.message
+          resultStack = testsArray[i].title + ' - ' + testsArray[i].err.stack
+          break;
+      }
+
+      tests.test.push({
+        resultOutCome: resultOutCome,
+        resultMessage: resultMessage,
+        resultStack: resultStack
+      })
+    }
+
+    resolve(tests)
+  })
+})
+
+Cypress.Commands.add('getHostName', () => {
+  return os.hostname()
+})

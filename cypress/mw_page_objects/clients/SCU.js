@@ -10,6 +10,16 @@ const getSCU = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+const getIFrameElencoTelefonico = () => {
+    getSCU().find('iframe[src="/phoneBook/searchInterniWithCompanyDA.do"]')
+        .iframe();
+
+    let iframeFolder = getSCU().find('iframe[src="/phoneBook/searchInterniWithCompanyDA.do"]')
+        .its('0.contentDocument').should('exist');
+
+    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+}
+
 class SCU {
 
     //#region Persona Fisica
@@ -222,7 +232,7 @@ class SCU {
         cy.wait('@normalizeImpresa', { requestTimeout: 30000 });
         cy.wait('@validateForEdit', { requestTimeout: 30000 });
         cy.wait('@anagrafeWA40', { requestTimeout: 30000 });
-        cy.wait('@scu', { requestTimeout: 30000 }).wait(1000);
+        cy.wait('@scu', { requestTimeout: 60000 }).wait(1000);
 
         getSCU().find('button:contains("Conferma")').click();
 
@@ -274,7 +284,7 @@ class SCU {
                     getSCU().find('button:contains("Esci")').click()
             });
 
-            cy.wait('@generazioneStampe', { requestTimeout: 60000 })
+            //cy.wait('@generazioneStampe', { requestTimeout: 60000 })
             cy.wait('@salvaInContentManager', { requestTimeout: 60000 })
         }
 
@@ -297,6 +307,11 @@ class SCU {
     static checkAggancioPolizzePropostePreventivi() {
         getSCU().find('#casella-ricerca').should('exist').and('be.visible')
     }
+
+    static checkAggancioRubrica() {
+        getIFrameElencoTelefonico().find('input[name="btnCerca"]').invoke('attr', 'value').should('equal', ' Cerca ')
+    }
+
 }
 
 export default SCU

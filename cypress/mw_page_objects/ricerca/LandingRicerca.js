@@ -2,7 +2,71 @@
 
 import Common from "../common/Common";
 
+const SubTabsMieInfo = {
+    CIRCOLARI: 'Circolari',
+    COMPANY_HANDBOOK: 'Company Handbook',
+    PRODOTTI: 'Prodotti',
+    PAGINE: 'Pagine',
+}
+
+const Tabs = {
+    CLIENTS: 'clients',
+    SALES: 'sales',
+    LE_MIE_INFO: 'le mie info',
+}
+
+
+
 class LandingRicerca {
+
+    /**
+     * Click tab Clients
+     */
+    static clickTabClients() {
+        cy.get('a[href="/matrix/search/clients"]').click()
+    }
+
+    /**
+     * Click tab Clients
+     */
+    static clickTabSales() {
+        cy.get('a[href="/matrix/search/sales"]').click()
+    }
+
+    /**
+     * Click tab Clients
+     */
+    static clickTabMieInfo() {
+        cy.get('a[href="/matrix/search/infos"]').click()
+    }
+
+    static checkSubTabMieInfo() {
+        const subTabs = Object.values(SubTabsMieInfo)
+        cy.get('lib-subsection').find('a').each(($subTab, i) => {
+            expect($subTab.text()).to.include(subTabs[i]);
+        });
+    }
+
+    /**
+     * Click subTab da "Le mie Info"
+     * @param {string} subTab - Nome subTab  
+     */
+    static clickSubTabMieInfo(subTab) {
+        switch (subTab) {
+            case SubTabsMieInfo.CIRCOLARI:
+                cy.url().should('eq', Common.getBaseUrl() + 'search/infos/circulars')
+                break;
+            case SubTabsMieInfo.COMPANY_HANDBOOK:
+                cy.url().should('eq', Common.getBaseUrl() + 'search/infos/handbooks')
+                break;
+            case SubTabsMieInfo.PRODOTTI:
+                cy.url().should('eq', Common.getBaseUrl() + 'search/infos/products')
+                break;
+            case SubTabsMieInfo.PAGINE:
+                cy.url().should('eq', Common.getBaseUrl() + 'search/infos/documents')
+                break;
+        }
+    }
 
     /**
     * @param {boolean} filtri - Se true, imposta filtri aggiuntivi di ricerca, altrimenti no
@@ -18,13 +82,13 @@ class LandingRicerca {
 
         cy.get('input[name="main-search-input"]').click()
         cy.generateTwoLetters().then(randomChars => {
-            cy.get('input[name="main-search-input"]').type(randomChars).type('{enter}')
+            cy.get('input[name="main-search-input"]').clear().type(randomChars).type('{enter}')
         })
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
-
+        cy.get('lib-client-item').should('be.visible')
         if (filtri) {
             //Filtriamo la ricerca in base a tipoCliente
-            cy.get('.icon').find('[name="filter"]').click()
+            cy.get('lib-clients-container').find('nx-icon[name="filter"]').click()
             if (tipoCliente === "PF")
                 cy.get('.filter-group').contains('Persona giuridica').click()
             else
@@ -57,40 +121,31 @@ class LandingRicerca {
     * @param {string} value - What to search
     */
     static search(value) {
-        switch (value) {
-            case 'incasso':
-            case 'fastquote':
-            case 'ultra':
-            case 'circolari':
-                cy.intercept('POST', '**/graphql', (req) => {
-                    if (req.body.operationName.includes('searchCircular')) {
-                        req.alias = 'gqlSearchCircular'
-                    }
-                });
-                break;
-            default:
-                cy.intercept('POST', '**/graphql', (req) => {
-                    if (req.body.operationName.includes('searchClient')) {
-                        req.alias = 'gqlSearchClient'
-                    }
-                });
-                break;
-        }
-
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('search')) {
+                req.alias = 'gqlSearch'
+            }
+        });
+        
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type(value).type('{enter}').wait(2000)
 
+        cy.wait('@gqlSearch', { requestTimeout: 30000 });
+
         switch (value) {
             case 'incasso':
             case 'fastquote':
             case 'ultra':
             case 'circolari':
-                cy.wait('@gqlSearchCircular', { requestTimeout: 30000 });
-                cy.url().should('include', 'search/infos/circulars')
+                cy.url().then($url => {
+                    if ($url.includes("search/infos/circulars"))
+                        cy.get('[class="lib-tab-info nx-grid"]').should('be.visible').and('contain.text', "Circolari")
+                    else
+                        cy.get('[class="lib-tab-info nx-grid"]').should('be.visible').and('contain.text', "Clienti")
+                })
                 break
             default:
-                cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
-                cy.url().should('eq', Common.getBaseUrl() + 'search/clients/clients')
+                cy.url().should('include', 'search/clients')
                 break
         }
     }
@@ -108,23 +163,40 @@ class LandingRicerca {
         cy.wait('@client', { requestTimeout: 30000 });
     }
 
-    static clickRandomResult() {
+    /**
+     * Seleziona un Cliente Random dalla lista di ricerca ritornata
+     */
+    static clickRandomResult(clientType = 'P') {
         //Attende il caricamento della scheda cliente
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('client')) {
-                req.alias = 'client'
-            }
-        });
-        cy.get('.ps--active-y').then(($clienti) => {
-            let schedeClienti = $clienti.find('lib-client-item')
-            let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
-            cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
-        })
+        const searchOtherMember = () => {
 
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('client')) {
+                    req.alias = 'client'
+                }
+            });
+
+            cy.get('.ps--active-y').should('be.visible').then(($clienti) => {
+                let schedeClienti = $clienti.find('lib-client-item')
+                let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
+                cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
+                cy.wait(10000)
+                cy.get('body').then(($body) => {
+                    const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
+                    if (check) {
+                        this.searchRandomClient(true, "PG", clientType)
+                        searchOtherMember()
+                    }
+
+                })
+            })
+        }
+
+        searchOtherMember()
         cy.wait('@client', { requestTimeout: 30000 });
     }
 
-    static clickClientName(client, filtri=false, tipoCliente, statoCliente) {
+    static clickClientName(client, filtri = false, tipoCliente, statoCliente) {
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {
@@ -168,15 +240,18 @@ class LandingRicerca {
             cy.get('lib-applied-filters-item').find('span').should('be.visible')
         }
 
-        cy.get('lib-client-item:contains("' + client.name + '")').then((card) => {
+        // cy.get('lib-client-item:contains(' + client.name + '")').then((card) => {
+        cy.get('lib-scrollable-container').contains(client.name).then((card) => {
             if (card.length === 1) {
                 cy.wrap(card).click()
             } else {
                 cy.get('lib-client-item:contains("' + client.name + '"):contains("' + client.address + '")').click();
             }
         })
-
-        cy.wait('@client', { requestTimeout: 30000 });
+        //Verifica se ci sono problemi nel retrive del cliente per permessi
+        cy.wait('@client', { requestTimeout: 30000 })
+            .its('response.body.data.client')
+            .should('not.be.null')
     }
 
     /**
@@ -200,7 +275,8 @@ class LandingRicerca {
             expect($text.text()).not.to.be.empty
         })
         getSection().find('[class="left nx-grid__column-6"]').each(($text) => {
-            expect($text.text()).not.to.be.empty
+            //TODO Per problemi di indicizzazione, possono non comparire le polizze in ricerca
+            //expect($text.text()).not.to.be.empty
         })
 
 
@@ -320,13 +396,6 @@ class LandingRicerca {
         cy.get('lib-applied-filters-item').find('span').should('be.visible')
     }
 
-    static checkTabs() {
-        const tabs = ['clients', 'sales', 'le mie info'];
-        cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').find('a').should('have.length', 3)
-            .each(($tab, i) => {
-                expect($tab.text()).to.include(tabs[i]);
-            });
-    }
 
     /**
      * 
@@ -554,10 +623,21 @@ class LandingRicerca {
     /**
      * Verifica che la ricerca non ha prodotto risultati
      */
-    static checkClienteNotFound() {
-        cy.get('lib-client-item').first().click().wait(2000)
-        cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
-    }
-}
+    static checkClienteNotFound(cliente) {
+        cy.get('body').then(($body) => {
 
+            const check = $body.find('span:contains("La ricerca non ha prodotto risultati")').is(':visible')
+            if (check) {
+                cy.get('body').should('contain.text', 'La ricerca non ha prodotto risultati')
+            } else {
+                cy.get('body').find('lib-client-item', { timeout: 30000 }).first().click().wait(2000)
+                cy.get('body').then(() => {
+
+                    cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
+                })
+            }
+        })
+    }
+
+}
 export default LandingRicerca

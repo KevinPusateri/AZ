@@ -12,11 +12,21 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-const buttonEmettiPolizza = () => cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza"):visible').click()
-const popoverEmettiPolizza = () => cy.get('.card-container').find('lib-da-link')
+
+const getIFrameCampagne = () => {
+
+    cy.get('iframe[class="iframe-container"]')
+        .iframe();
+
+    let iframeSCU = cy.get('iframe[class="iframe-container"]')
+        .its('0.contentDocument').should('exist');
+
+    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+}
 //#endregion
 
 const LinksRapidi = {
+    NUOVO_SFERA: 'Nuovo Sfera',
     SFERA: 'Sfera',
     CAMPAGNE_COMMERCIALI: 'Campagne Commerciali',
     RECUPERO_PREVENTIVI_E_QUOTAZIONI: 'Recupero preventivi e quotazioni',
@@ -44,8 +54,34 @@ class Sales {
      * Torna indietro su Sales
      */
     static backToSales() {
-        cy.get('a').contains('Sales').click()
+        cy.get('a').contains('Sales').scrollIntoView().click({force:true})
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
+    }
+
+    /**
+     * Verifica se i "pz" sono presenti 
+     */
+    static checkExistPezzi() {
+        cy.get('app-lob-link').each((lob) => {
+            cy.wrap(lob).find('span:contains("' + lob.text() + '")').click()
+            cy.get('app-receipt-header').find('span:contains("Pezzi")').click()
+            cy.get('app-receipt-header').find('span[class="value ng-star-inserted"]').invoke('text').should('not.include', '€')
+            cy.get('app-receipt-manager-header-item').invoke('text').should('not.include', '€')
+            cy.get('app-receipt-manager-footer').invoke('text').should('not.include', '€')
+        })
+    }
+
+    /**
+     * Verifica se i "pz" sono presenti 
+     */
+    static checkExistPremi() {
+        cy.get('app-lob-link').each((lob) => {
+            cy.wrap(lob).find('span:contains("' + lob.text() + '")').click()
+            cy.get('app-receipt-header').find('span:contains("Pezzi")').click()
+            cy.get('app-receipt-header').find('span[class="value ng-star-inserted"]').invoke('text').should('not.include', '€')
+            cy.get('app-receipt-manager-header-item').invoke('text').should('not.include', '€')
+            cy.get('app-receipt-manager-footer').invoke('text').should('not.include', '€')
+        })
     }
 
     /**
@@ -54,7 +90,7 @@ class Sales {
     static checkExistLinksCollegamentiRapidi() {
         const linksCollegamentiRapidi = Object.values(LinksRapidi)
 
-        cy.get('app-quick-access').find('[class="link-item ng-star-inserted"]').should('have.length', 5).each(($link, i) => {
+        cy.get('app-quick-access').find('[class="link-item ng-star-inserted"]').should('have.length', 6).each(($link, i) => {
             expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
         })
     }
@@ -65,12 +101,16 @@ class Sales {
      */
     static clickLinkRapido(page) {
         switch (page) {
+            case LinksRapidi.NUOVO_SFERA:
+                cy.get('app-quick-access').contains('Nuovo Sfera').click()
+                cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
+                break;
             case LinksRapidi.SFERA:
                 cy.intercept({
                     method: 'POST',
                     url: '**/dacommerciale/**'
                 }).as('getDacommerciale');
-                cy.get('app-quick-access').contains('Sfera').click()
+                cy.get('app-quick-access').find('lib-da-link').contains('Sfera').click()
                 Common.canaleFromPopup()
                 cy.wait('@getDacommerciale', { requestTimeout: 40000 });
                 getIFrame().find('ul > li > span:contains("Quietanzamento"):visible')
@@ -96,7 +136,7 @@ class Sales {
             case LinksRapidi.RECUPERO_PREVENTIVI_E_QUOTAZIONI:
                 cy.get('app-quick-access').contains('Recupero preventivi e quotazioni').click()
                 Common.canaleFromPopup()
-                cy.wait(10000);
+                cy.wait(12000);
                 getIFrame().find('button:contains("Cerca"):visible')
                 break;
             case LinksRapidi.MONITORAGGIO_POLIZZE_PROPOSTE:
@@ -122,16 +162,25 @@ class Sales {
         }
     }
 
+
+    /**
+     * Verifica link presenti su Emetti Polizza
+     */
+    static checkLinksOnEmettiPolizza() {
+        cy.contains('Emetti polizza').click({ force: true })
+        const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
+        cy.get('.card-container').find('lib-da-link').each(($link, i) => {
+            expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
+        })
+    }
+
     /**
      * Click link nel button "Emetti polizza"
      * @param {string} page - nome del link
      */
     static clickLinkOnEmettiPolizza(page) {
         cy.wait(3000)
-        // buttonEmettiPolizza()
-        // popoverEmettiPolizza().contains(page).click()
         cy.contains('Emetti polizza').click({ force: true })
-        // cy.get('app-emit-policy-popover').find('button:contains("Emetti polizza"):visible').click().wait()
         cy.get('.card-container').find('lib-da-link').contains(page).click()
         switch (page) {
             case LinksOnEmettiPolizza.PREVENTIVO_MOTOR:
@@ -382,9 +431,17 @@ class Sales {
                 req.alias = 'gqlDamage'
             }
         })
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('salesDamagePremium')) {
+                req.alias = 'gqlsalesDamagePremium'
+            }
+        })
         cy.get('app-proposals-section').contains('Proposte').click()
-        cy.wait('@gqlDamage')
-        cy.get('app-paginated-cards').find('button:contains("Danni")').click().wait(3000)
+        cy.wait('@gqlDamage', { requestTimeout: 50000 });
+        cy.wait('@gqlsalesDamagePremium', { requestTimeout: 50000 });
+        cy.get('app-paginated-cards').find('button:contains("Danni")').click()
+        cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
+        cy.wait(10000)
     }
 
     /**
@@ -398,7 +455,7 @@ class Sales {
             }
         })
         cy.get('app-proposals-section').contains('Proposte').click()
-        cy.wait('@gqlLife')
+        cy.wait('@gqlLife', { requestTimeout: 30000 });
         cy.get('app-paginated-cards').find('button:contains("Vita")').click().wait(3000)
     }
 
@@ -406,24 +463,31 @@ class Sales {
      * Click sulla prima card Danni 
      */
     static clickPrimaCardDanniOnProposte() {
-        cy.intercept({
-            method: 'POST',
-            url: '**/Auto/**'
-        }).as('getAuto');
-        cy.get('.cards-container').find('.card').first().click()
-        Common.canaleFromPopup()
-        cy.wait('@getAuto', { requestTimeout: 40000 });
-        getIFrame().find('a:contains("« Uscita"):visible')
+        // cy.intercept({
+        //     method: 'POST',
+        //     url: '**/InquiryAgenzia_AD/**'
+        // }).as('getAuto');
+        cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
+        cy.get('div[class="damages prop-card ng-star-inserted"]').first().find('lib-da-link').first().click()
+        // cy.wait(10000)
+        // cy.wait('@getAuto', { requestTimeout: 40000 });
+        getIFrame().within(()=>{
+            cy.get('#menuContainer').should('be.visible')
+            cy.get('#menuContainer').find('a').should('be.visible').and('contain.text','« Uscita')
+        })
+        // .find('#menuContainer > a').should('be.visible').and('contain.text','« Uscita')
+        // getIFrame().find('a:contains("« Uscita"):visible')
     }
 
     /**
      * Click sulla prima card Vita 
      */
     static clickPrimaCardVitaOnProposte() {
-      cy.intercept({
+        cy.intercept({
             method: 'POST',
             url: '**/Vita/**'
         }).as('getVita');
+        cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
         cy.get('.cards-container').find('.card').first().click()
         cy.wait('@getVita', { requestTimeout: 40000 });
         cy.wait(5000)
@@ -453,6 +517,37 @@ class Sales {
     }
     //#endregion
 
+    // Click tab "CAMPAGNE"
+    static clickTabCampagne() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('campaignAgent')) {
+                req.alias = 'gqlCampaignAgent'
+            }
+        })
+        cy.get('nx-tab-header').find('button:contains("CAMPAGNE")').click()
+        Common.canaleFromPopup()
+        cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 });
+        cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
+        getIFrame().find('button:contains("Verifica stato campagne attive"):visible')
+    }
+
+    /**
+     * Clicca il lob di interess e fa l'Estrai -
+     * Verifica l'aggancio alla pagina
+     * @param {string} lob - nome del lob
+     */
+    static lobDiInteresse(lob){
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('getTotalSferaReceipts')) {
+                req.alias = 'gqlSfera'
+            }
+        })
+        cy.get('app-lob-link').find('span:contains("Rami vari")').click()
+        cy.wait('@gqlSfera')
+        cy.get('app-receipt-manager-footer').find('button:contains("Estrai")').click()
+        cy.get('app-table-component').should('be.visible')
+        cy.get('nx-header-actions').should('contain.text','Espandi Pannello')
+    }
 
 }
 

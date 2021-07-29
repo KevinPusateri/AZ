@@ -22,18 +22,58 @@ const mysql = require('mysql')
 const moment = require('moment')
 
 //#region Mysql
-function mysqlStart(testCaseName, currentEnv, currentUser, config) {
-
-    const connection = mysql.createConnection(config.env.db)
+function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
+    const connection = mysql.createConnection(dbConfig)
     connection.connect((err) => {
         if (err) throw err;
-        console.log('%c --> Connected to ' + config.env.db.host, 'color: green; font-weight: bold;');
     })
 
     let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss');
     let machineName = os.hostname();
     var query = "INSERT INTO TC_Log (TestCaseName, Ambiente, Utenza, DataInizio, DataFine, MachineName, ResultOutcome) " +
-        "VALUES ('" + testCaseName + "','" + currentEnv + "','" + currentUser + "','" + currentDateTime + "','" + currentDateTime + "','" + machineName + "','Unfinished')";
+        "VALUES ('Matrix.Tests." + testCaseName + "','" + currentEnv + "','" + currentUser + "','" + currentDateTime + "','" + currentDateTime + "','" + machineName + "','Unfinished')";
+
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error) {
+                console.error(error)
+                reject(error)
+            }
+            else {
+                connection.end()
+                return resolve(results)
+            }
+        })
+    })
+}
+
+function mysqlFinish(dbConfig, rowId, tests) {
+    const connection = mysql.createConnection(dbConfig)
+    connection.connect((err) => {
+        if (err) throw err;
+    })
+
+    //Verify if all tests are passed or not
+    let resultOutCome = 'Passed'
+    let resultMessage = 'All Tests are OK!'
+    let resultStack = ''
+    for (let i = 0; i < tests.test.length; i++) {
+        if (tests.test[i].resultOutCome !== 'Passed') {
+            resultOutCome = tests.test[i].resultOutCome
+            //Also get the error message
+            resultMessage = tests.test[i].resultMessage.toString()
+            resultStack = tests.test[i].resultStack.toString()
+        }
+    }
+
+    let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss')
+
+    var query = "UPDATE TC_Log SET NTC=" + tests.ntc + "," +
+        "DataFine='" + currentDateTime + "'," +
+        "ResultOutcome='" + resultOutCome + "'," +
+        "ResultMessage='" + resultMessage.substring(0, 999).replace('\'','') + "'," +
+        "ResultStack='" + resultStack.substring(0, 4999).replace('\'','') + "' " +
+        "WHERE Id=" + rowId
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
@@ -140,13 +180,31 @@ function generateRandomVatIn() {
 //#endregion
 
 module.exports = (on, config) => {
+    //TODO da verificare se puo' tornare utile
+    // on('before:browser:launch', (browser = {}, launchOptions) => {
+    //     console.log('..browser ', launchOptions);
+    //     if (browser.name === 'chrome') {
+    //         launchOptions.args.push('--disable-site-isolation-trials');
+    //         launchOptions.args.push('--reduce-security-for-testing');
+    //         launchOptions.args.push('--out-of-blink-cors');
+
+    //         return launchOptions;
+    //     }
+
+    //     if (browser.name === 'electron') {
+    //         launchOptions.preferences.webPreferences.webSecurity = false;
+
+    //         return launchOptions;
+    //     }
+    // })
+
     on("task", {
         nuovoClientePersonaFisica() {
             user = {
                 nome: faker.name.firstName(),
                 cognome: faker.name.lastName()
             };
-            console.info("--> Generate Persona Fisica for test : " + JSON.stringify(user));
+            //console.info("--> Generate Persona Fisica for test : " + JSON.stringify(user));
 
             return user;
         }
@@ -163,24 +221,15 @@ module.exports = (on, config) => {
         }
     });
 
-    on('task', {
-        mysqlStart({ testCaseName, currentEnv, currentUser }) {
-            return mysqlStart(testCaseName, currentEnv, currentUser, config);
-        },
-    })
     on("task", {
-        mysqlStart({ testCaseName, ambiente, utenza }) {
-            con.connect((err) => {
-                if (err) throw err;
-                console.info("--> Connected to PALZMSQDBPRLV01.srv.allianz for Mysql Report Testing...");
+        startMyql({ dbConfig, testCaseName, currentEnv, currentUser }) {
+            return mysqlStart(dbConfig, testCaseName, currentEnv, currentUser)
+        }
+    });
 
-                con.query(sql, function (err, result) {
-                    if (err)
-                        throw err;
-                    else
-                        return result.insertId;
-                });
-            });
+    on("task", {
+        finishMyql({ dbConfig, rowId, tests }) {
+            return mysqlFinish(dbConfig, rowId, tests)
         }
     });
 
@@ -203,11 +252,11 @@ module.exports = (on, config) => {
     on("task", {
         nuovoContatto() {
             contatto = {
-                phone: faker.phone.phoneNumberFormat().replace(/-/g,''),
-                email: faker.internet.email(),
+                phone: faker.phone.phoneNumberFormat().replace(/-/g, ''),
+                email: faker.internet.email().toLowerCase(),
                 url: faker.internet.url()
             };
-            console.info("--> Generate Contatto for test : " + JSON.stringify(contatto));
+            //console.info("--> Generate Contatto for test : " + JSON.stringify(contatto));
 
             return contatto;
         }

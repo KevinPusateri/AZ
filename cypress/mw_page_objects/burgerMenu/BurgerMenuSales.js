@@ -26,6 +26,7 @@ const LinksBurgerMenu = {
     ALLIANZ1_PREMORIENZA: 'Allianz1 premorienza',
     PREVENTIVO_ANONIMO_VITA_INDIVIDUALI: 'Preventivo Anonimo Vita Individuali',
     GESTIONE_RICHIESTE_PER_PA: 'Gestione richieste per PA',
+    NUOVO_SFERA: 'Nuovo Sfera',
     SFERA: 'Sfera',
     CAMPAGNE_COMMERCIALI: 'Campagne Commerciali',
     RECUPERO_PREVENTIVI_E_QUOTAZIONI: 'Recupero preventivi e quotazioni',
@@ -59,11 +60,11 @@ class BurgerMenuSales extends Sales {
      */
     static checkExistLinks() {
 
-        cy.get('lib-burger-icon').click({force:true})
+        cy.get('lib-burger-icon').click({ force: true })
 
         const linksBurger = Object.values(LinksBurgerMenu)
 
-        cy.get('nx-expansion-panel').find('a').should('have.length', 36).each(($checkLinksBurger, i) => {
+        cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
         })
     }
@@ -73,10 +74,15 @@ class BurgerMenuSales extends Sales {
      * @param {string} page - nome del link 
      */
     static clickLink(page) {
-        cy.get('lib-burger-icon').click({force:true})
-        cy.contains(page).click()
 
-        this.checkPage(page)
+        cy.get('lib-burger-icon').click({ force: true })
+        if (page === LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE) {
+            this.checkPage(page)
+        } else {
+            let pageRegex = new RegExp("\^" + page + "\$")
+            cy.contains(pageRegex).click()
+            this.checkPage(page)
+        }
     }
 
     /**
@@ -143,11 +149,12 @@ class BurgerMenuSales extends Sales {
                     method: 'POST',
                     url: '**/sales/**'
                 }).as('getSalesPremo');
-                cy.wait(5000)
+                // cy.wait(5000)
                 Common.canaleFromPopup()
                 cy.wait('@getSalesPremo', { requestTimeout: 40000 });
-                cy.wait(20000)
-                getIFrame().find('button[class="btn btn-info btn-block"]:contains("Ricerca"):visible')
+                // cy.wait(20000)
+                getIFrame().should('be.visible')
+                getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text','Ricerca')
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
                 Common.canaleFromPopup()
@@ -159,6 +166,10 @@ class BurgerMenuSales extends Sales {
             case LinksBurgerMenu.GESTIONE_RICHIESTE_PER_PA:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Visualizza"):visible')
+                break;
+            case LinksBurgerMenu.NUOVO_SFERA:
+                Common.canaleFromPopup()
+                cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
                 break;
             case LinksBurgerMenu.SFERA:
                 Common.canaleFromPopup()
@@ -233,14 +244,14 @@ class BurgerMenuSales extends Sales {
             case LinksBurgerMenu.REPORT_CLIENTE_T4L:
                 cy.intercept({
                     method: 'POST',
-                    url: /Vita*/
+                    url: '**/Vita/**'
                 }).as('vita');
                 Common.canaleFromPopup()
                 // cy.wait('@vita', { requestTimeout: 30000 });
                 cy.wait(6000)
                 getIFrame().find('input[value="Ricerca"]').invoke('attr', 'value').should('equal', 'Ricerca')
                 break;
-                case LinksBurgerMenu.DOCUMENTI_ANNULLATI:
+            case LinksBurgerMenu.DOCUMENTI_ANNULLATI:
                 Common.canaleFromPopup()
                 getIFrame().find('span:contains("Storico polizze e quietanze distrutte"):visible')
                 break;
@@ -256,6 +267,15 @@ class BurgerMenuSales extends Sales {
                 getIFrame().find('button:contains("Cerca"):visible')
                 break;
             case LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE:
+                if (Cypress.isBrowser('firefox')) {
+                    cy.get('lib-side-menu').find('a:contains("Allianz Global Assistance")')
+                        .should('have.attr', 'href', 'http://oazis.allianz-assistance.it')
+                } else {
+                    cy.contains('Allianz Global Assistance').invoke('removeAttr', 'target').click()
+                    cy.url().should('eq', 'https://oazis.allianz-assistance.it/dynamic/home/index')
+                    cy.get('#logo-oazis-header').should('be.visible')
+                    cy.go('back')
+                }
                 break;
             case LinksBurgerMenu.ALLIANZ_PLACEMENT_PLATFORM:
                 break;

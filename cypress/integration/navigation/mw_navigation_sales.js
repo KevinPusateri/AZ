@@ -9,9 +9,16 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import Sales from "../../mw_page_objects/Navigation/Sales"
 
-//#region Variables
+//#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+//#endregion
+
+//#region Mysql DB Variables
+const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const currentEnv = Cypress.env('currentEnv')
+const dbConfig = Cypress.env('db')
+let insertedId
 //#endregion
 
 //#region Configuration
@@ -19,15 +26,25 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
+    cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+        insertedId = results.insertId
+    })
     LoginPage.logInMW(userName, psw)
 })
 
 beforeEach(() => {
-    Common.visitUrlOnEnv()
     cy.preserveCookies()
+    Common.visitUrlOnEnv()
 })
 
-after(() => {
+after(function () {
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    })
+    //#endregion
+
     TopBar.logOutMW()
 })
 
@@ -41,6 +58,12 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica presenza dei collegamenti rapidi', function () {
         TopBar.clickSales()
         Sales.checkExistLinksCollegamentiRapidi()
+    })
+
+    it('Verifica aggancio Nuovo Sfera', function () {
+        TopBar.clickSales()
+        Sales.clickLinkRapido('Nuovo Sfera')
+        Sales.backToSales()
     })
 
     it('Verifica aggancio Sfera', function () {
@@ -65,6 +88,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         TopBar.clickSales()
         Sales.clickLinkRapido('Monitoraggio Polizze Proposte')
         Sales.backToSales()
+    })
+
+    it('Verifica la presenza dei link su "Emetti Polizza"', function () {
+        TopBar.clickSales()
+        Sales.checkLinksOnEmettiPolizza()
     })
 
     it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
@@ -127,30 +155,59 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it('Verifica aggancio Emetti Polizza - Gestione Richieste per PA', function () {
+    it('Verifica tab "Pezzi"', function () {
+
         TopBar.clickSales()
-        Sales.clickLinkOnEmettiPolizza('Gestione Richieste per PA')
-        Sales.backToSales()
+        Sales.checkExistPezzi()
     })
 
-    it('Verifica aggancio Estrai dettaglio', function () {
+    it('Verifica "Premi"', function () {
+
+        TopBar.clickSales()
+        Sales.checkExistPremi()
+    })
+
+    it('Verifica aggancio Attività in scadenza - Estrai dettaglio', function () {
         TopBar.clickSales()
         Sales.clickAttivitaInScadenza()
         Sales.clickEstraiDettaglio()
         Sales.backToSales()
     })
 
+    it('Verifica "Quietanamento" - lob di interesse: Motor', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse()
+        Sales.backToSales()
+    })
+
+    it('Verifica "Quietanamento" - lob di interesse: Rami Vari', function () {
+        TopBar.clickSales()        
+        Sales.lobDiInteresse()
+        Sales.backToSales()
+    })
+
+    it('Verifica "Quietanamento" - lob di interesse: Vita', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse()
+        Sales.backToSales()
+
+    })
+
+    it('Verifica "Quietanamento" - lob di interesse: Tutte', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse()
+        Sales.backToSales()
+    })
+
+    it('Verifica TAB: "Campagne"', function () {
+        TopBar.clickSales()
+        Sales.clickTabCampagne()
+    })
+
     it('Verifica aggancio Appuntamento', function () {
         TopBar.clickSales()
         Sales.clickAppuntamento()
     })
-
-    it('Verifica aggancio News image Primo comandamento', function () {
-        TopBar.clickSales()
-        Sales.clickNewsImagePrimoComandamento()
-        Sales.backToSales()
-    })
-
     it('Verifica aggancio Preventivi e quotazioni - Card Danni', function () {
         TopBar.clickSales()
         Sales.clickPreventiviQuotazioniOnTabDanni()
@@ -186,7 +243,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-
     it('Verifica aggancio Proposte Danni - button: Vedi Tutte', function () {
         TopBar.clickSales()
         Sales.clickTabDanniOnProposte()
@@ -194,8 +250,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    // NEW
-    it('Verifica aggancio Proposte Vita - Card Vita', function(){
+    it('Verifica aggancio Proposte Vita - Card Vita', function () {
         TopBar.clickSales()
         Sales.clickTabVitaOnProposte()
         Sales.clickPrimaCardVitaOnProposte()

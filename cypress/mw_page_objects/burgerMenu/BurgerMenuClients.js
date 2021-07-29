@@ -33,7 +33,7 @@ class BurgerMenuClients extends Clients {
      */
     static checkExistLinks() {
 
-        cy.get('lib-burger-icon').click({force:true})
+        cy.get('lib-burger-icon').click({ force: true })
 
         const linksBurger = Object.values(LinksBurgerMenu)
 
@@ -47,19 +47,15 @@ class BurgerMenuClients extends Clients {
      * @param {string} page - nome del link 
      */
     static clickLink(page) {
-        cy.get('lib-burger-icon').click({force:true})
-        if (page === LinksBurgerMenu.ANALISI_DEI_BISOGNI) {
-            if(Cypress.isBrowser('firefox')){
-                cy.contains(page).parents('nx-link').find('a')
-                        .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
-            }else{
-                cy.contains(page).invoke('removeAttr', 'target').click()
-            }
-        }else{
+        cy.get('lib-burger-icon').click({ force: true })
+        if (page === LinksBurgerMenu.ANALISI_DEI_BISOGNI
+            || page === LinksBurgerMenu.HOSPITAL_SCANNER) {
+            this.checkPage(page)
+        } else {
             cy.contains(page).click()
+            this.checkPage(page)
         }
 
-        this.checkPage(page)
     }
 
     /**
@@ -69,11 +65,14 @@ class BurgerMenuClients extends Clients {
     static checkPage(page) {
         switch (page) {
             case LinksBurgerMenu.ANALISI_DEI_BISOGNI:
-                if(Cypress.isBrowser('firefox')){
+                Common.canaleFromPopup()
+                if (Cypress.isBrowser('firefox')) {
 
                     cy.get('app-home-right-section').find('app-rapid-link[linkname="Analisi dei bisogni"] > a')
-                            .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
-                }else{
+                        .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
+                } else {
+                    cy.contains(page).invoke('removeAttr', 'target').click()
+                    cy.url().should('eq', 'https://www.ageallianz.it/analisideibisogni/app/login')
                     cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
                     cy.go('back')
                 }
@@ -113,15 +112,46 @@ class BurgerMenuClients extends Clients {
                 getIFrame().find('#divMain:contains("Servizi antiriciclaggio"):visible')
                 break;
             case LinksBurgerMenu.HOSPITAL_SCANNER:
+                cy.contains(page).click()
+
+                Common.canaleFromPopup()
+
+                cy.window().then(win => {
+                    cy.stub(win, 'open').as('windowOpen');
+                });
+
+                // you can try exclude the 'should' below
+                // in my code it worked without this 'should' first
+                // after merging the latest changes this part failed somehow though no change was made here
+                // after investigation I found that the stub argument was not ready immediately
+                // so I added 'should' here to wait the argument load
+                // before visiting the url contained within it
+
+                cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(stub => {
+                    cy.visit(stub.args[0][0]);
+                    stub.restore;
+                });
+                cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
+
+                // if (Cypress.isBrowser('firefox')) {
+
+                //     cy.get('app-home-right-section').find('app-rapid-link[linkname="Analisi dei bisogni"] > a')
+                //         .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
+                //     cy.url().should('eq', Common.getBaseUrl() + 'clients/new-client')
+                // } else {
+                //     cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
+                //     cy.go('back')
+                // }
+                // cy.contains('CERCA INTERVENTO').should('be.visible')
                 break;
         }
     }
 
-    
+
     /**
      * Torna indetro su Clients
      */
-     static backToClients() {
+    static backToClients() {
         super.backToClients()
     }
 

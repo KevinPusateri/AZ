@@ -5,30 +5,41 @@
 /// <reference types="Cypress" />
 
 //#region import
-import LoginPage from "../../../mw_page_objects/common/LoginPage"
-import TopBar from "../../../mw_page_objects/common/TopBar"
-import LandingClients from "../../../mw_page_objects/clients/LandingClients"
-import SCU from "../../../mw_page_objects/clients/SCU"
-import Folder from "../../../mw_page_objects/common/Folder"
-import HomePage from "../../../mw_page_objects/common/HomePage"
-import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
-import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
-import DettaglioAnagrafica from "../../../mw_page_objects/clients/DettaglioAnagrafica"
-import ArchivioCliente from "../../../mw_page_objects/clients/ArchivioCliente"
+import LoginPage from "../../mw_page_objects/common/LoginPage"
+import TopBar from "../../mw_page_objects/common/TopBar"
+import LandingClients from "../../mw_page_objects/clients/LandingClients"
+import SCU from "../../mw_page_objects/clients/SCU"
+import Folder from "../../mw_page_objects/common/Folder"
+import HomePage from "../../mw_page_objects/common/HomePage"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
+import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
+import ArchivioCliente from "../../mw_page_objects/clients/ArchivioCliente"
 //#endregion import
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
-//#region Variables
+//#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
-let nuovoClientePG
 //#endregion
+
+//#region Mysql DB Variables
+const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const currentEnv = Cypress.env('currentEnv')
+const dbConfig = Cypress.env('db')
+let insertedId
+//#endregion
+
+let nuovoClientePG
 
 //#region Before After
 before(() => {
+  cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+    insertedId = results.insertId
+  })
   cy.task('nuovoClientePersonaGiuridica').then((object) => {
     nuovoClientePG = object
     nuovoClientePG.tipologia = "DITTA"
@@ -42,18 +53,35 @@ before(() => {
   })
   LoginPage.logInMW(userName, psw)
 })
-
 beforeEach(() => {
   cy.preserveCookies()
 })
+afterEach(function () {
+  if (this.currentTest.state === 'failed' &&
+    //@ts-ignore
+    this.currentTest._currentRetry === this.currentTest._retries) {
+    //@ts-ignore
+    Cypress.runner.stop();
+  }
+});
+after(function () {
+  //#region Mysql
+  cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+    let tests = testsInfo
+    cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+  })
+  //#endregion
 
-after(() => {
   TopBar.logOutMW()
 })
 //#endregion Before After
 
-describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
-
+describe('Matrix Web : Censimento Nuovo Cliente PG', {
+  retries: {
+    runMode: 0,
+    openMode: 0,
+  }
+}, () => {
   it('Verifica apertura maschera di censimento', () => {
     LandingClients.inizializzaCensimentoClientePG(nuovoClientePG.partitaIva)
   })
@@ -91,7 +119,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', function () {
   it('Verificare varie informazioni cliente', () => {
     SintesiCliente.verificaDatiSpallaSinistra(nuovoClientePG)
     DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(nuovoClientePG)
-    ArchivioCliente.clickArchivioCliente()
+    ArchivioCliente.clickTabArchivioCliente()
     ArchivioCliente.clickComunicazioni()
     ArchivioCliente.verificaCardComunicazioni("Invio per verifica contatto")
     ArchivioCliente.verificaUnico()

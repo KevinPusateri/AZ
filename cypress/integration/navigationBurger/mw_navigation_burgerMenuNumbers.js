@@ -7,9 +7,16 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import BurgerMenuNumbers from "../../mw_page_objects/burgerMenu/BurgerMenuNumbers"
 
-//#region Variables
+//#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+//#endregion
+
+//#region Mysql DB Variables
+const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const currentEnv = Cypress.env('currentEnv')
+const dbConfig = Cypress.env('db')
+let insertedId
 //#endregion
 
 //#region  Configuration
@@ -17,15 +24,26 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
+    cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+        insertedId = results.insertId
+    })
     LoginPage.logInMW(userName, psw)
 })
 
+
 beforeEach(() => {
-    Common.visitUrlOnEnv()
     cy.preserveCookies()
+    Common.visitUrlOnEnv()
 })
 
-after(() => {
+after(function () {
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    })
+    //#endregion
+
     TopBar.logOutMW()
 })
 
@@ -56,15 +74,17 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     })
 
-    //TODO: connessione non sicura Apre una nuova pagina
-    // it('Verifica aggancio X - Advisor', function () {
-    // cy.get('app-product-button-list').find('a').contains('Numbers').click()
-    //     cy.url().should('eq', baseUrl + 'numbers/business-lines')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('X - Advisor').click()
-    //     canaleFromPopup()
-    //     cy.get('a').contains('Numbers').click()
-    // })
+    it('Verifica aggancio X - Advisor', function () {
+        cy.getHostName().then(hostName => {
+            let currentHostName = hostName
+            if (currentHostName.startsWith('SM'))
+                this.skip()
+            else {
+                TopBar.clickNumbers()
+                BurgerMenuNumbers.clickLink('X - Advisor')
+            }
+        })
+    })
 
     it('Verifica aggancio Incentivazione', function () {
         TopBar.clickNumbers()
@@ -108,31 +128,17 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         BurgerMenuNumbers.backToNumbers()
     })
 
-    it('Verifica aggancio Ultra Casa e Patrimonio', function () {
+    it('Verifica aggancio New Business Ultra Casa e Patrimonio', function () {
         TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Ultra Casa e Patrimonio')
+        BurgerMenuNumbers.clickLink('New Business Ultra Casa e Patrimonio')
         BurgerMenuNumbers.backToNumbers()
     })
 
-    it('Verifica aggancio Ultra Salute', function () {
+    it('Verifica aggancio New Business Ultra Salute', function () {
         TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Ultra Salute')
+        BurgerMenuNumbers.clickLink('New Business Ultra Salute')
         BurgerMenuNumbers.backToNumbers()
     })
-
-    // tolto per esigenze di business
-    /* it('Verifica aggancio New Business Ultra', function () {
-         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-         cy.url().should('eq', baseUrl + 'numbers/business-lines')
-         cy.get('lib-burger-icon').click()
-         interceptGetAgenziePDF()
-         cy.contains('New Business Ultra').click()
-         canaleFromPopup()
-         cy.wait('@getDacommerciale', { requestTimeout: 30000 });
-         getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
-         cy.get('a').contains('Numbers').click()
-         cy.url().should('eq', baseUrl + 'numbers/business-lines')
-     })*/
 
     it('Verifica aggancio New Business Vita', function () {
         TopBar.clickNumbers()

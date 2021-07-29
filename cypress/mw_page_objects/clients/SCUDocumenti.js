@@ -75,8 +75,8 @@ class SCUDocumenti {
 
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
-        cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        cy.wait(10000)
+        // // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })  
     }
 
     static nuovaPatente() {
@@ -86,7 +86,7 @@ class SCUDocumenti {
         getSCU().find('#data-emissione').type('01012021')
         getSCU().find('#data-scadenza').type('01012025')
         getSCU().find('span[aria-owns="descrizione-documento-patente_listbox"]').click()
-        getSCU().find('li:contains("B")').click({ multiple: true })
+        getSCU().find('#descrizione-documento-patente_listbox > li:contains("B")').click()
         getSCU().find('#luogo-emissione').type('TRIESTE')
         cy.wait(1000)
         getSCU().find('li:contains("TRIESTE")').click()
@@ -132,7 +132,9 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
+        cy.wait(10000)
+
     }
 
     static nuovoPassaporto() {
@@ -186,7 +188,9 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
+        cy.wait(10000)
+
     }
 
     static nuovoPortoArmi() {
@@ -240,7 +244,9 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
+        cy.wait(10000)
+
     }
 
     static nuovaTesseraPostale () {
@@ -294,7 +300,9 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
+        cy.wait(10000)
+
     }
 
     static nuovoAltroDocumento () {
@@ -350,7 +358,9 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
+        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
+        cy.wait(10000)
+
     }
 }
 

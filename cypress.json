@@ -1,11 +1,12 @@
 {
 	"retries": 1,
 	"video": true,
-	"videoCompression": 0,
+	"videoCompression": 25,
 	"trashAssetsBeforeRuns": false,
 	"projectId": "4ypuc8",
 	"numTestsKeptInMemory":1,
 	"chromeWebSecurity": false,
+	"baseUrl": "https://portaleagenzie.pp.azi.allianz.it/matrix/",
 	"env": {
 		"db": {
 			"host": "PALZMSQDBPRLV01.srv.allianz",

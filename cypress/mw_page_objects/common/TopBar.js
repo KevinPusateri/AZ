@@ -14,6 +14,15 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+const getIFrameElencoTelefonico = () => {
+    getIFrame().find('iframe[src="/phoneBook/searchInterniWithCompanyDA.do"]')
+        .iframe();
+
+    let iframeFolder = getIFrame().find('iframe[src="/phoneBook/searchInterniWithCompanyDA.do"]')
+        .its('0.contentDocument').should('exist');
+
+    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+}
 const interceptPageSales = () => {
     cy.intercept({
         method: 'POST',
@@ -105,8 +114,19 @@ class TopBar extends HomePage {
     * @param {string} value - What to search
     */
     static search(value) {
+        cy.get('input[name="main-search-input"]').should('be.visible').click()
         cy.get('input[name="main-search-input"]').type(value).type('{enter}').wait(2000)
     }
+
+    /**
+     * Click link dai suggerimenti
+    */
+    static searchClickLinkSuggest() {
+        cy.get('input[name="main-search-input"]').should('be.visible').click()
+        cy.get('lib-shortcut-section-item').should('be.visible')
+        cy.get('lib-search-input').find('a:contains("pulini")').click()
+    }
+
 
     /**
      * Verifica click Buca di ricerca
@@ -123,6 +143,9 @@ class TopBar extends HomePage {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.wait('@getClients', { requestTimeout: 30000 })
         cy.url().should('eq', Common.getBaseUrl() + 'clients/')
+        cy.get('app-donut-chart').should('be.visible')
+        cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
+
     }
 
     /**
@@ -207,7 +230,8 @@ class TopBar extends HomePage {
             case "Elenco telefonico":
                 cy.get('lib-incident-container').find('a:contains("Elenco telefonico"):visible').click()
                 Common.canaleFromPopup()
-                getIFrame().find('[class="container"]:contains("La funzionalità non è al momento disponibile, verrà riattivata il prima possibile.")').should('be.visible')
+                getIFrameElencoTelefonico().find('input[name="btnCerca"]').invoke('attr', 'value').should('equal', ' Cerca ')
+
                 break;
         }
 
@@ -232,7 +256,7 @@ class TopBar extends HomePage {
         if (page === LinkUtilita.CASELLA_DI_POSTA_ED_AGENZIA ||
             page === LinkUtilita.BANCHE_DATI_ANIA ||
             page === LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS) {
-            cy.contains(page).parent('lib-check-user-permissions').find('a[class="ng-star-inserted"]').invoke('removeAttr', 'target').click()
+            cy.contains(page).parents('lib-check-user-permissions').find('a[class="ng-star-inserted"]').invoke('removeAttr', 'target').click()
         } else {
             cy.contains(page).click()
         }
@@ -253,6 +277,8 @@ class TopBar extends HomePage {
                 getIFrame().find('h4').should('be.visible').and('contain.text', 'Interrogazioni centralizzate')
                 break;
             case LinkUtilita.BANCHE_DATI_ANIA:
+                cy.url().should('include', 'Auto/InquiryAnia/Ricerca.aspx')
+                cy.go('back')
                 break;
             case LinkUtilita.GESTIONE_MAGAZZINO_OBU:
                 getIFrame().find('#btnSearch').should('be.visible').and('contain.text', 'Cerca')
@@ -273,6 +299,7 @@ class TopBar extends HomePage {
      */
     static clickIconNotification() {
         cy.get('lib-notification-header').click()
+        cy.get('lib-notification-list').should('be.visible')
     }
 
     /**
@@ -360,7 +387,7 @@ class TopBar extends HomePage {
      */
     static checkNotificheEvidenza() {
         cy.wait(3000).get('lib-notification-settings').click()
-        const linksNotificaion = [
+        const linksNotification = [
             'Contabilità',
             'Portafoglio',
             'Sinistri',
@@ -375,8 +402,8 @@ class TopBar extends HomePage {
             'Gestione Attività'
         ]
         cy.wait(3000)
-        cy.get('lib-notification-settings-container').find('lib-notification-settings-item').each(($link, i) => {
-            expect($link.text().trim()).to.include(linksNotificaion[i]);
+        cy.get('lib-notification-settings-container').should('be.visible').find('lib-notification-settings-item:visible').each(($link, i) => {
+            expect($link.text().trim()).to.include(linksNotification[i]);
         })
         cy.get('button[class^="nx-modal__close"]').click()
     }
