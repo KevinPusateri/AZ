@@ -122,20 +122,21 @@ class LandingRicerca {
     */
     static search(value) {
         cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('searchClient')) {
-                req.alias = 'gqlSearchClient'
+            if (req.body.operationName.includes('search')) {
+                req.alias = 'gqlSearch'
             }
         });
         
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type(value).type('{enter}').wait(2000)
 
+        cy.wait('@gqlSearch', { requestTimeout: 30000 });
+
         switch (value) {
             case 'incasso':
             case 'fastquote':
             case 'ultra':
             case 'circolari':
-                cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
                 cy.url().then($url => {
                     if ($url.includes("search/infos/circulars"))
                         cy.get('[class="lib-tab-info nx-grid"]').should('be.visible').and('contain.text', "Circolari")
@@ -144,7 +145,6 @@ class LandingRicerca {
                 })
                 break
             default:
-                cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
                 cy.url().should('include', 'search/clients')
                 break
         }
