@@ -166,6 +166,7 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
           totalNtc++
       }
     }
+    
     tests.ntc = totalNtc
 
 

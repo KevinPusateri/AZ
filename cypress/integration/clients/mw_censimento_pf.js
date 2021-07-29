@@ -55,6 +55,7 @@ afterEach(function () {
   }
 });
 after(function () {
+  TopBar.logOutMW()
   //#region Mysql
   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
     let tests = testsInfo
@@ -62,7 +63,6 @@ after(function () {
   })
   //#endregion
 
-  TopBar.logOutMW()
 })
 //#endregion Before After
 

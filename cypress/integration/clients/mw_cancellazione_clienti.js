@@ -30,7 +30,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
   cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-      insertedId = results.insertId
+    insertedId = results.insertId
   })
   LoginPage.logInMW(userName, psw)
 })
@@ -41,13 +41,13 @@ beforeEach(() => {
 })
 
 after(function () {
-  
+
   TopBar.logOutMW()
 
   //#region Mysql
   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-      let tests = testsInfo
-      cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    let tests = testsInfo
+    cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
   })
   //#endregion
 })
@@ -62,43 +62,34 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
     BurgerMenuClients.backToClients()
   })
 
-  context('Cancellazione Clienti - Persona Fisica', () => {
-
-    it('Verifica Cancellazione clienti PF', function () {
-      TopBar.clickClients()
-      BurgerMenuClients.clickLink('Cancellazione Clienti bo')
-      SCUCancellazioneClienti.eseguiCancellazioneOnPersonaFisica().then(currentClient => {
-        cliente = currentClient
-      })
-    })
-
-    it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
-      HomePage.reloadMWHomePage()
-      TopBar.search(cliente)
-      LandingRicerca.filtraRicerca('P')
-      LandingRicerca.checkClienteNotFound(cliente)
+  it('Verifica Cancellazione clienti PF', function () {
+    TopBar.clickClients()
+    BurgerMenuClients.clickLink('Cancellazione Clienti')
+    SCUCancellazioneClienti.eseguiCancellazioneOnPersonaFisica().then(currentClient => {
+      cliente = currentClient
     })
   })
 
-  Cypress._.times(1, () => {
+  it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
+    HomePage.reloadMWHomePage()
+    TopBar.search(cliente)
+    LandingRicerca.filtraRicerca('P')
+    LandingRicerca.checkClienteNotFound(cliente)
+  })
 
-    context('Cancellazione Clienti - Persona Giuridica', () => {
-
-      it('Verifica Cancellazione clienti PG', function () {
-        TopBar.clickClients()
-        BurgerMenuClients.clickLink('Cancellazione Clienti')
-        SCUCancellazioneClienti.eseguiCancellazioneOnPersonaGiuridica().then(currentClient => {
-          cliente = currentClient
-        })
-
-      })
-
-      it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
-        HomePage.reloadMWHomePage()
-        TopBar.search(cliente)
-        LandingRicerca.checkClienteNotFound(cliente)
-      })
+  it('Verifica Cancellazione clienti PG', function () {
+    TopBar.clickClients()
+    BurgerMenuClients.clickLink('Cancellazione Clienti')
+    SCUCancellazioneClienti.eseguiCancellazioneOnPersonaGiuridica().then(currentClient => {
+      cliente = currentClient
     })
+
+  })
+
+  it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
+    HomePage.reloadMWHomePage()
+    TopBar.search(cliente)
+    LandingRicerca.checkClienteNotFound(cliente)
   })
 })
 
