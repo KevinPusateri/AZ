@@ -135,6 +135,7 @@ class LandingRicerca {
             case 'fastquote':
             case 'ultra':
             case 'circolari':
+                cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
                 cy.url().then($url => {
                     if ($url.includes("search/infos/circulars"))
                         cy.get('[class="lib-tab-info nx-grid"]').should('be.visible').and('contain.text', "Circolari")

@@ -71,8 +71,8 @@ function mysqlFinish(dbConfig, rowId, tests) {
     var query = "UPDATE TC_Log SET NTC=" + tests.ntc + "," +
         "DataFine='" + currentDateTime + "'," +
         "ResultOutcome='" + resultOutCome + "'," +
-        "ResultMessage='" + resultMessage.substring(0, 999) + "'," +
-        "ResultStack='" + resultStack.substring(0, 4999) + "' " +
+        "ResultMessage='" + resultMessage.substring(0, 999).replace('\'','') + "'," +
+        "ResultStack='" + resultStack.substring(0, 4999).replace('\'','') + "' " +
         "WHERE Id=" + rowId
 
     return new Promise((resolve, reject) => {
