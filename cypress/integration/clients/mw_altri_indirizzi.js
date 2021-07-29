@@ -88,6 +88,7 @@ describe('Matrix Web : Creazione Indirizzo', function () {
         DettaglioAnagrafica.clickTabDettaglioAnagrafica()
         DettaglioAnagrafica.clickSubTab('Altri indirizzi')
         SCUAltriIndirizzi.checkAltriIndirizzi(indirizzo)
+
     })
 
 
@@ -107,6 +108,4 @@ describe('Matrix Web : Creazione Indirizzo', function () {
     it('Verifica Elimina Indirizzo ', function () {
         SCUAltriIndirizzi.eliminaIndirizzo(indirizzo)
     })
-
-
 })

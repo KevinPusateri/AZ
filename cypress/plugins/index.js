@@ -61,8 +61,8 @@ function mysqlFinish(dbConfig, rowId, tests) {
         if (tests.test[i].resultOutCome !== 'Passed') {
             resultOutCome = tests.test[i].resultOutCome
             //Also get the error message
-            resultMessage = tests.test[i].resultMessage
-            resultStack = tests.test[i].resultStack
+            resultMessage = tests.test[i].resultMessage.toString()
+            resultStack = tests.test[i].resultStack.toString()
         }
     }
 
@@ -71,8 +71,8 @@ function mysqlFinish(dbConfig, rowId, tests) {
     var query = "UPDATE TC_Log SET NTC=" + tests.ntc + "," +
         "DataFine='" + currentDateTime + "'," +
         "ResultOutcome='" + resultOutCome + "'," +
-        "ResultMessage='" + resultMessage.substring(0, 999).replace('\'','').replace('`','') + "'," +
-        "ResultStack='" + resultStack.substring(0, 4999).replace('\'','').replace('`','') + "' " +
+        "ResultMessage='" + resultMessage.substring(0, 999).replace('\'','') + "'," +
+        "ResultStack='" + resultStack.substring(0, 4999).replace('\'','') + "' " +
         "WHERE Id=" + rowId
 
     return new Promise((resolve, reject) => {
@@ -204,7 +204,7 @@ module.exports = (on, config) => {
                 nome: faker.name.firstName(),
                 cognome: faker.name.lastName()
             };
-            console.info("--> Generate Persona Fisica for test : " + JSON.stringify(user));
+            //console.info("--> Generate Persona Fisica for test : " + JSON.stringify(user));
 
             return user;
         }
@@ -256,7 +256,7 @@ module.exports = (on, config) => {
                 email: faker.internet.email().toLowerCase(),
                 url: faker.internet.url()
             };
-            console.info("--> Generate Contatto for test : " + JSON.stringify(contatto));
+            //console.info("--> Generate Contatto for test : " + JSON.stringify(contatto));
 
             return contatto;
         }
