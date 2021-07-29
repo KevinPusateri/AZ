@@ -61,8 +61,6 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         LandingRicerca.clickTabMieInfo()
         LandingRicerca.checkSubTabMieInfo()
         LandingRicerca.checkSuggestedLinks('incasso')
-        cy.get('body').find('lib-subsection:contains("La ricerca non ha prodotto risultati"):visible')
-        // LandingRicerca.checkLeMieInfo()
     })
 
     it('Verifica Ricerca Fastquote', function () {
@@ -70,8 +68,6 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         LandingRicerca.clickTabMieInfo()
         LandingRicerca.checkSubTabMieInfo()
         LandingRicerca.checkSuggestedLinks('fastquote')
-        // LandingRicerca.checkLeMieInfo()
-        cy.get('body').find('lib-subsection:contains("La ricerca non ha prodotto risultati"):visible')
     })
 
     it('Verifica Ricerca Prodotto: Ultra', function () {
@@ -79,9 +75,6 @@ describe('Buca di Ricerca - Risultati Le mie Info', function () {
         LandingRicerca.clickTabMieInfo()
         LandingRicerca.checkSubTabMieInfo()
         LandingRicerca.checkSuggestedLinks('ultra')
-        // LandingRicerca.checkClients()
-        // LandingRicerca.checkLeMieInfo()
-        cy.get('body').find('lib-subsection:contains("La ricerca non ha prodotto risultati"):visible')
     })
 
     // Rimosso in quanto non presenta nemmeno una circola per il click

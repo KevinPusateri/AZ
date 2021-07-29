@@ -47,7 +47,6 @@ function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
     })
 }
 
-
 function mysqlFinish(dbConfig, rowId, tests) {
     const connection = mysql.createConnection(dbConfig)
     connection.connect((err) => {
@@ -72,8 +71,8 @@ function mysqlFinish(dbConfig, rowId, tests) {
     var query = "UPDATE TC_Log SET NTC=" + tests.ntc + "," +
         "DataFine='" + currentDateTime + "'," +
         "ResultOutcome='" + resultOutCome + "'," +
-        "ResultMessage='" + resultMessage + "'," +
-        "ResultStack='" + resultStack + "' " +
+        "ResultMessage='" + resultMessage.substring(0, 999) + "'," +
+        "ResultStack='" + resultStack.substring(0, 4999) + "' " +
         "WHERE Id=" + rowId
 
     return new Promise((resolve, reject) => {
