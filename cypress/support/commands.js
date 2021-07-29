@@ -158,7 +158,21 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
     let tests = {}
 
     //Count total of tests in the spec file
-    tests.ntc = testsArray.length
+    //tests.ntc = testsArray.length
+
+    let totalNtc = 0
+    for (let h = 0; h < testsArray.length; h++) {
+      let currentTest = testsArray[h]
+      console.log(currentTest)
+      //console.log(currentTest.commands.length)
+      for (let i = 0; i < currentTest.commands.length; i++) {
+        if (currentTest.commands[i].name === 'assert')
+          totalNtc++
+      }
+    }
+
+    tests.ntc = totalNtc
+
 
     //Verify if all tests are passed or not
     let resultOutCome = 'Passed'
@@ -168,18 +182,24 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
     for (let i = 0; i < testsArray.length; i++) {
       switch (testsArray[i].state) {
         case 'failed':
+          console.log(testsArray[i].err.stack)
           resultOutCome = 'Failed'
           //Also get the error message
-          resultMessage = testsArray[i].title + ' - ' + testsArray[i].err.message
-          resultStack = testsArray[i].title + ' - ' + testsArray[i].err.stack
+          resultMessage = (testsArray[i].title + ' - ' + testsArray[i].err.message).replace(/'/g, "");
+          resultStack = (testsArray[i].title + ' - ' + testsArray[i].err.stack).replace(/'/g, "");
           break;
         case 'pending':
           resultOutCome = 'Skipped'
           //Also get the error message
-          resultMessage = testsArray[i].title + ' - ' + testsArray[i].err.message
-          resultStack = testsArray[i].title + ' - ' + testsArray[i].err.stack
+          resultMessage = (testsArray[i].title + ' - ' + testsArray[i].err.message).replace(/'/g, "");
+          resultStack = (testsArray[i].title + ' - ' + testsArray[i].err.stack).replace(/'/g, "");
           break;
       }
+
+      if (resultMessage.length > 1000)
+        resultMessage.substring(0, 999)
+      if (resultStack.length > 5000)
+        resultStack.substring(0, 4999)
 
       tests.test.push({
         resultOutCome: resultOutCome,

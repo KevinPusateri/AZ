@@ -61,19 +61,23 @@ function mysqlFinish(dbConfig, rowId, tests) {
         if (tests.test[i].resultOutCome !== 'Passed') {
             resultOutCome = tests.test[i].resultOutCome
             //Also get the error message
-            resultMessage = tests.test[i].resultMessage.toString()
-            resultStack = tests.test[i].resultStack.toString()
+            resultMessage = tests.test[i].resultMessage
+            resultStack = tests.test[i].resultStack
         }
     }
 
     let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss')
 
+    console.log(resultStack)
+
     var query = "UPDATE TC_Log SET NTC=" + tests.ntc + "," +
         "DataFine='" + currentDateTime + "'," +
         "ResultOutcome='" + resultOutCome + "'," +
-        "ResultMessage='" + resultMessage.substring(0, 999).replace('\'','') + "'," +
-        "ResultStack='" + resultStack.substring(0, 4999).replace('\'','') + "' " +
+        "ResultMessage='" + resultMessage + "'," +
+        "ResultStack='" + resultStack + "' " +
         "WHERE Id=" + rowId
+
+    console.log(query)
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {

@@ -55,17 +55,17 @@ after(function () {
 var cliente;
 describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
 
-  it('Verifica aggancio pagina Cancellazione Clienti', function () {
+  it.only('Verifica aggancio pagina Cancellazione Clienti', function () {
     TopBar.clickClients()
-    BurgerMenuClients.clickLink('Cancellazione Clienti')
-    BurgerMenuClients.backToClients()
+    // BurgerMenuClients.clickLink('Cancellazione Clienti')
+    // BurgerMenuClients.backToClients()
   })
 
   context('Cancellazione Clienti - Persona Fisica', () => {
 
     it('Verifica Cancellazione clienti PF', function () {
       TopBar.clickClients()
-      BurgerMenuClients.clickLink('Cancellazione Clienti')
+      BurgerMenuClients.clickLink('Cancellazione Clienti bo')
       SCUCancellazioneClienti.eseguiCancellazioneOnPersonaFisica().then(currentClient => {
         cliente = currentClient
       })

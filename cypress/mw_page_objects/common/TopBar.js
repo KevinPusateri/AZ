@@ -89,14 +89,10 @@ class TopBar extends HomePage {
      * Logout
      */
     static logOutMW() {
-        const delayBetweenTests = 2000
-        cy.get('body').then($body => {
-            if ($body.find('.user-icon-container').length > 0) {
-                cy.wait(2000).get('.user-icon-container').click();
-                cy.wait(2000).contains('Logout').click()
-                cy.wait(delayBetweenTests)
-            }
-        });
+
+        cy.get('lib-user-header').should('be.visible')
+        cy.get('figure').should('be.visible').find('img[src="/matrix/clients/assets/user-placeholder.png"]').click({force: true});
+        cy.contains('Logout').click({force:true})
 
         cy.clearCookies();
     }
