@@ -81,7 +81,7 @@ class SCUCancellazioneClienti {
 
     static eseguiCancellazioneOnPersonaGiuridica() {
         getIFrame().contains('Persona giuridica').click()
-        return new Promise((resolve, reject) => {
+        return new Cypress.Promise((resolve, reject) => {
             const searchClients = () => {
                 getIFrame().find('div[class="search-grid-giuridica k-grid k-widget"]:visible').then(($table) => {
                     const isTrovato = $table.find('tr:contains("Nessun record da visualizzare."):visible').is(':visible')
