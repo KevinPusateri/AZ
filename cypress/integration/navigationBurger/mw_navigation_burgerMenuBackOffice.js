@@ -38,6 +38,7 @@ beforeEach(() => {
 })
 
 after(function () {
+    TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
@@ -45,7 +46,6 @@ after(function () {
     })
     //#endregion
 
-    TopBar.logOutMW()
 })
 
 
@@ -62,7 +62,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         BurgerMenuBackOffice.clickLink('Movimentazione sinistri')
         BurgerMenuBackOffice.backToBackOffice()
     })
-
 
     it('Verifica aggancio Denuncia', function () {
         TopBar.clickBackOffice()
@@ -95,7 +94,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
     })
     //#endregion
 
-    //#region Contabilità
+    //#region abilità
     it('Verifica aggancio Sintesi Contabilità', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Sintesi Contabilità')
