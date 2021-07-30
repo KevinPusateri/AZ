@@ -68,16 +68,12 @@ function mysqlFinish(dbConfig, rowId, tests) {
 
     let currentDateTime = moment().format('YYYY-MM-DD HH:mm:ss')
 
-    console.log(resultStack)
-
     var query = "UPDATE TC_Log SET NTC=" + tests.ntc + "," +
         "DataFine='" + currentDateTime + "'," +
         "ResultOutcome='" + resultOutCome + "'," +
         "ResultMessage='" + resultMessage + "'," +
         "ResultStack='" + resultStack + "' " +
         "WHERE Id=" + rowId
-
-    console.log(query)
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
