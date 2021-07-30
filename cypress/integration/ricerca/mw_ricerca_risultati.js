@@ -39,7 +39,6 @@ beforeEach(() => {
 
 after(function () {
     TopBar.logOutMW()
-    console.log(this.test)
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
