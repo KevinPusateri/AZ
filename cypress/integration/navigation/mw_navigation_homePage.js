@@ -45,7 +45,7 @@ after(function () {
 
 })
 
-describe('Matrix Web : Navigazioni da Home Page - ', function () {
+describe('Matrix Web : Navigazioni da Home Page - ',  function () {
 
     it('Verifica Top Menu Principali', function () {
         TopBar.clickIconCalendar()
@@ -208,5 +208,4 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     //     HomePage.clickPanelNotifiche()
     //     HomePage.checkNotifiche()
     // })
-
 })

@@ -97,11 +97,11 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.checkContatti(contatto)
   })
 
-
-  it('Verifica l\'eliminazione del Fisso', function () {
-    SCUContatti.eliminaContatto(contatto)
-    cy.wait(10000)
-  })
+  //TODO: Da completare
+  // it('Verifica l\'eliminazione del Fisso', function () {
+  //   SCUContatti.eliminaContatto(contatto)
+  //   cy.wait(10000)
+  // })
 
   it('Verifica l\'operazione di inserimento - tipo: Cellulare', function () {
     LandingRicerca.searchRandomClient(true, "PF", "E")

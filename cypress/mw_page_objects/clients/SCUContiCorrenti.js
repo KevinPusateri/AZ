@@ -23,62 +23,52 @@ class SCUContiCorrenti {
 
         return new Promise((resolve, reject) => {
 
-            cy.then(() => {
 
-                getSCU().find('span[aria-owns="tipoCoordinate_listbox"]').click()
-                getSCU()
-                    .find("#tipoCoordinate_listbox > li").then((list) => {
-                        var index = Math.floor(Math.random() * list.length);
-                        cy.wrap(list).eq(index).then(textCoordinate => {
-                            contoCorrente.coordinate = textCoordinate.text()
-                        }).click();
-                    })
-                var validIban = ibantools.isValidIBAN(contoCorrente.iban)
-                if (validIban)
-                    getSCU().find('#iban').type(contoCorrente.iban)
-                else
-                    assert.fail('Iban non valido')
+            getSCU().find('span[aria-owns="tipoCoordinate_listbox"]').click()
+            getSCU()
+                .find("#tipoCoordinate_listbox > li").then((list) => {
+                    var index = Math.floor(Math.random() * list.length);
+                    cy.wrap(list).eq(index).then(textCoordinate => {
+                        contoCorrente.coordinate = textCoordinate.text()
+                    }).click();
+                })
+            var validIban = ibantools.isValidIBAN(contoCorrente.iban)
+            if (validIban)
+                getSCU().find('#iban').type(contoCorrente.iban)
+            else
+                assert.fail('Iban non valido')
 
-                getSCU().find('#intestatario').type(client.name)
-                contoCorrente.intestatario = client.name
+            getSCU().find('#intestatario').type(client.name)
+            contoCorrente.intestatario = client.name
 
-                var checkCod = this.checkCodiceFISCALE(contoCorrente.vat)
-                if (checkCod)
-                    getSCU().find('#codFiscale').type(contoCorrente.vat)
-                else
-                    assert.fail('codFiscale non valido')
+            var checkCod = this.checkCodiceFISCALE(contoCorrente.vat)
+            if (checkCod)
+                getSCU().find('#codFiscale').type(contoCorrente.vat)
+            else
+                assert.fail('codFiscale non valido')
 
-                // getSCU().find('label[for="nomeBanca"]').then((textNomeBanca) => contoCorrente.denominazioneBanca = textNomeBanca.text())
-                // getSCU().find('label[for="nomeSportello"]').then((textNomeSportello) => contoCorrente.sportello = textNomeSportello.text())
-                // getSCU().find('label[for="indirizzoBanca"]').then((textIndirizzo) => contoCorrente.indirizzo = textIndirizzo.text())
-                // getSCU().find('label[for="comuneBanca"]').then((textComuneBanca) => contoCorrente.comune = textComuneBanca.text())
-                // getSCU().find('label[for="provincia"]').then((textProvincia) => contoCorrente.provincia = textProvincia.text())
-                // getSCU().find('label[for="cap"]').then((textCap) => contoCorrente.cap = textCap.text())
-                contoCorrente.intestatario = client.name
-                getSCU().find('label[for="annoApertura"]').then((textAnnoApertura) => contoCorrente.annoApertura = textAnnoApertura.text())
+            contoCorrente.intestatario = client.name
+            getSCU().find('label[for="annoApertura"]').then((textAnnoApertura) => contoCorrente.annoApertura = textAnnoApertura.text())
 
-                getSCU().find('#submit:contains("Salva")').click().wait(4000);
-                resolve(contoCorrente);
-            })
+            getSCU().find('#submit:contains("Salva")').click().wait(4000);
+            resolve(contoCorrente);
         });
     }
 
     /**
-    * Verifica contoCorrete creato sia presente
-    * @param {string} contoCorrente - Object contoCorrete creato
+    * Verifica contoCorrente creato sia presente
+    * @param {string} contoCorrente - Object contoCorrente creato
     */
     static checkContoCorrente(contoCorrente) {
-        cy.then(() => {
-            cy.get('app-client-bank-accounts').find('app-client-bank-account-card').then((list) => {
-                console.log(list.text())
-                expect(list.text()).to.include(contoCorrente.iban)
-            })
+        cy.get('app-client-bank-accounts').find('app-client-bank-account-card').then((list) => {
+            console.log(list.text())
+            expect(list.text()).to.include(contoCorrente.iban)
         })
     }
 
     /**
-    * Verifica contoCorrete modificato
-    * @param {string} contoCorrente - Object contoCorrete creato
+    * Verifica contoCorrente modificato
+    * @param {string} contoCorrente - Object contoCorrente creato
     */
     static modificaConto(contoCorrente) {
         cy.get("app-client-bank-accounts").then((table) => {
@@ -102,8 +92,8 @@ class SCUContiCorrenti {
     }
 
     /**
-    * Verifica contoCorrete eliminato
-    * @param {string} contoCorrente - Object contoCorrete creato
+    * Verifica contoCorrente eliminato
+    * @param {string} contoCorrente - Object contoCorrente creato
     */
     static eliminaConto(contoCorrente) {
         cy.get("app-client-bank-accounts").then((table) => {
