@@ -158,16 +158,20 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
     let tests = {}
 
     //Count total of tests in the spec file
-    let totalNtc = 0
-    for (let h = 0; h < testsArray.length; h++) {
-      let currentTest = testsArray[h]
-      for (let i = 0; i < currentTest.commands.length; i++) {
-        if (currentTest.commands[i].name === 'assert')
-          totalNtc++
-      }
-    }
-    
-    tests.ntc = totalNtc
+
+    tests.ntc = testsArray.length
+
+    //TODO l'array commands non è disponibile sembra in RUN mode
+    // let totalNtc = 0
+    // for (let h = 0; h < testsArray.length; h++) {
+    //   let currentTest = testsArray[h]
+    //   if (currentTest.commands !== undefined)
+    //     for (let i = 0; i < currentTest.commands.length; i++) {
+    //       if (currentTest.commands[i].name === 'assert')
+    //         totalNtc++
+    //     }
+    // }
+    // tests.ntc = totalNtc
 
 
     //Verify if all tests are passed or not
