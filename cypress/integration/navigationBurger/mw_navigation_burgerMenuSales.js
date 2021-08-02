@@ -258,7 +258,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     it('Verifica aggancio Allianz Global Assistance', function () {
 
-        cy.getHostName().then(hostName => {
+        cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             if (currentHostName.startsWith('SM'))
                 this.skip()

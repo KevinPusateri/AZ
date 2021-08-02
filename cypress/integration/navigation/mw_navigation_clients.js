@@ -62,7 +62,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     })
 
     it('Verifica aggancio Analisi dei bisogni', function () {
-        cy.getHostName().then(hostName => {
+        cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             if (currentHostName.startsWith('SM'))
                 this.skip()

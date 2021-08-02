@@ -55,8 +55,9 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
     });
 
     it('Verifica aggancio Analisi dei bisogni', function () {
-        cy.getHostName().then(hostName => {
+        cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
+            cy.log(currentHostName)
             if (currentHostName.startsWith('SM'))
                 this.skip()
             else {
