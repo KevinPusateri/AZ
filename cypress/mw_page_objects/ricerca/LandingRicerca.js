@@ -166,7 +166,7 @@ class LandingRicerca {
     /**
      * Seleziona un Cliente Random dalla lista di ricerca ritornata
      */
-    static clickRandomResult(clientType = 'P') {
+    static clickRandomResult(clientForm = 'PG', clientType = 'P') {
         //Attende il caricamento della scheda cliente
         const searchOtherMember = () => {
 
@@ -184,7 +184,7 @@ class LandingRicerca {
                 cy.get('body').then(($body) => {
                     const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
                     if (check) {
-                        this.searchRandomClient(true, "PG", clientType)
+                        this.searchRandomClient(true, clientForm, clientType)
                         searchOtherMember()
                     }
 

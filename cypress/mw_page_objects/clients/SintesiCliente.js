@@ -632,7 +632,7 @@ class SintesiCliente {
     }
 
     static retriveClientNameAndAddress() {
-        return new Promise((resolve, reject) => {
+        return new Cypress.Promise((resolve, reject) => {
             let client = { name: '', address: '' }
             cy.get('div[class*=client-name]').invoke('text')
                 .then(currentClientName => {
@@ -649,6 +649,17 @@ class SintesiCliente {
             resolve(client);
         });
     }
+
+    static retriveUrl(){
+        return new Cypress.Promise((resolve) => {
+            resolve(cy.url())
+        })
+    }
+
+    static visitUrlClient(currentUrl){
+        cy.visit(currentUrl)
+    }
+
     /**
      * Verifica se la Scheda del Cliente ha presente o meno il Numero o la Mail principale
      * @param {*} contactType tipo di contatto a scelta tra 'numero' e 'mail'
