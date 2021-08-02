@@ -265,7 +265,7 @@ module.exports = (on, config) => {
     on("task", {
         getHostName(){
             return new Promise((resolve) => {
-                return resolve(os.hostname())
+                return resolve(os.hostname().toUpperCase())
             })
         }
     })
