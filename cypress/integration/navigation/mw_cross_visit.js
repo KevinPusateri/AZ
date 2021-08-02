@@ -17,7 +17,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-    cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: 'ANONIMO' }).then((results) => {
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: 'ANONIMO' }).then((results) => {
         insertedId = results.insertId
     })
 })
@@ -26,7 +26,7 @@ after(function () {
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
     })
     //#endregion
 })
@@ -43,7 +43,7 @@ describe('Matrix Web : Aggancio Cross Visit', function () {
                 cy.get('#oaz-login-btn').should('be.visible').and('contain.text', 'Accedi')
             }
         })
-        cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: 'ANONIMO' }).then((results) => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: 'ANONIMO' }).then((results) => {
             insertedId = results.insertId
         })
     });

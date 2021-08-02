@@ -222,13 +222,13 @@ module.exports = (on, config) => {
     });
 
     on("task", {
-        startMyql({ dbConfig, testCaseName, currentEnv, currentUser }) {
+        startMysql({ dbConfig, testCaseName, currentEnv, currentUser }) {
             return mysqlStart(dbConfig, testCaseName, currentEnv, currentUser)
         }
     });
 
     on("task", {
-        finishMyql({ dbConfig, rowId, tests }) {
+        finishMysql({ dbConfig, rowId, tests }) {
             return mysqlFinish(dbConfig, rowId, tests)
         }
     });

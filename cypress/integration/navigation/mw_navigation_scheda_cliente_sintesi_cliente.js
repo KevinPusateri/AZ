@@ -22,7 +22,7 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 50000)
 //#endregion
 before(() => {
-    cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
     LoginPage.logInMW(userName, psw)
@@ -49,7 +49,7 @@ after(function () {
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
     })
     //#endregion
 
