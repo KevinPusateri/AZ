@@ -44,7 +44,7 @@ var contoCorrente = {
   iban: "",
   vat: "",
 }
-
+let urlClient
 //#region Before After
 before(() => {
   cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
@@ -63,6 +63,9 @@ before(() => {
 
   LandingRicerca.searchRandomClient(true, "PF", "E")
   LandingRicerca.clickRandomResult()
+  SintesiCliente.retriveUrl().then(currentUrl => {
+    urlClient = currentUrl
+  })
   SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
     client = currentClient
   })
@@ -96,9 +99,9 @@ describe('Matrix Web : Conti Correnti', function () {
   })
 
   it('Verifica Conto corrente inserito', function () {
-    HomePage.reloadMWHomePage()
-    TopBar.search(client.name)
-    LandingRicerca.clickClientName(client)
+    SintesiCliente.visitUrlClient(urlClient)
+    // TopBar.search(client.name)
+    // LandingRicerca.clickClientName(client)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Conti correnti')
     SCUContiCorrenti.checkContoCorrente(contoCorrente)
