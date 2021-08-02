@@ -88,6 +88,7 @@ class Numbers {
             case 'DANNI':
             case 'VITA':
                 interceptPostAgenziePDF()
+                interceptGetAgenziePDF()
                 cy.get('app-kpi-card').contains(link).click()
                 break;
             case 'MOTOR':
@@ -96,11 +97,13 @@ class Numbers {
             case 'ALTRO':
                 interceptPostAgenziePDF()
                 cy.get('app-lob-title').contains(tab).parents('app-border-card')
-                    .find('lib-da-link:contains("'+link+'")').click()
+                    .find('lib-da-link:contains("' + link + '")').click()
+                cy.wait('@postDacommerciale', { requestTimeout: 60000 });
                 break;
 
         }
-        cy.wait('@postDacommerciale', { requestTimeout: 60000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
+
         getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
 
     }
@@ -119,12 +122,12 @@ class Numbers {
     /**
      * Verifica Atterraggio Primo indice Monitoraggio Carico
      */
-    static clickAndCheckAtterraggioMonitoraggioCarico(){
+    static clickAndCheckAtterraggioMonitoraggioCarico() {
         cy.get('app-load-monitoring').should('be.visible')
         cy.get('app-load-monitoring').find('lib-da-link').should('be.visible')
-        cy.get('app-load-monitoring').find('app-lob-title').should('contain.text','DANNI')
-        cy.get('app-load-monitoring').find('app-lob-title').should('contain.text','MOTOR')
-        cy.get('app-load-monitoring').find('app-lob-title').should('contain.text','RAMI VARI RETAIL')
+        cy.get('app-load-monitoring').find('app-lob-title').should('contain.text', 'DANNI')
+        cy.get('app-load-monitoring').find('app-lob-title').should('contain.text', 'MOTOR')
+        cy.get('app-load-monitoring').find('app-lob-title').should('contain.text', 'RAMI VARI RETAIL')
     }
 
     /**
@@ -146,7 +149,7 @@ class Numbers {
         cy.get('app-incentives').find('[class="text-panel-header"]').should('contain', 'TOTALE MATURATO INCENTIVI')
         interceptPostAgenziePDF()
         cy.contains(panel).click()
-        cy.get('app-incentive-card').first().click({force:true})
+        cy.get('app-incentive-card').first().click({ force: true })
         Common.canaleFromPopup()
         cy.wait('@postDacommerciale', { requestTimeout: 60000 });
         getIFrame().contains('Report').should('be.visible')
