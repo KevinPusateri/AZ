@@ -185,14 +185,14 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
           console.log(testsArray[i].err.stack)
           resultOutCome = 'Failed'
           //Also get the error message
-          resultMessage = (testsArray[i].title + ' - ' + testsArray[i].err.message).replace(/'/g, "");
-          resultStack = (testsArray[i].title + ' - ' + testsArray[i].err.stack).replace(/'/g, "");
+          resultMessage = (testsArray[i].title + ' - ' + testsArray[i].err.message).replace(/'/g, "''");
+          resultStack = (testsArray[i].title + ' - ' + testsArray[i].err.stack).replace(/'/g, "''");
           break;
         case 'pending':
           resultOutCome = 'Skipped'
           //Also get the error message
-          resultMessage = (testsArray[i].title + ' - ' + testsArray[i].err.message).replace(/'/g, "");
-          resultStack = (testsArray[i].title + ' - ' + testsArray[i].err.stack).replace(/'/g, "");
+          resultMessage = (testsArray[i].title + ' - ' + testsArray[i].err.message).replace(/'/g, "''");
+          resultStack = (testsArray[i].title + ' - ' + testsArray[i].err.stack).replace(/'/g, "''");
           break;
       }
 
