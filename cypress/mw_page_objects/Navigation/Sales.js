@@ -483,15 +483,20 @@ class Sales {
      * Click sulla prima card Vita 
      */
     static clickPrimaCardVitaOnProposte() {
-        cy.intercept({
-            method: 'POST',
-            url: '**/Vita/**'
-        }).as('getVita');
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('digitalAgencyLink')) {
+                req.alias = 'digitalAgencyLink'
+            }
+        });
+
         cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
-        cy.get('.cards-container').find('.card').first().click()
-        cy.wait('@getVita', { requestTimeout: 40000 });
+        cy.get('.cards-container').should('be.visible').find('.card').first().click()
+        cy.wait('@digitalAgencyLink', { requestTimeout: 30000 });
         cy.wait(5000)
-        getIFrame().find('#AZBuilder1_ctl08_cmdNote').invoke('attr', 'value').should('equal', 'Note')
+        getIFrame().within(() =>{
+            cy.get('#AZBuilder1_ctl08_cmdNote').should('be.visible').invoke('attr', 'value').should('equal', 'Note')
+        })
+        
     }
     /**
      * Sul pannello "Proposte Danni", all'apertura del pannello

@@ -21,7 +21,7 @@ class SintesiCliente {
         }).as('pageClient');
         cy.intercept('POST', '**/graphql', (req) => {
             // Queries
-            aliasQuery(req, 'clientContractValidation')
+            //aliasQuery(req, 'clientContractValidation')
             aliasQuery(req, 'fastQuoteProfiling')
             aliasQuery(req, 'getScopes')
 
@@ -29,7 +29,7 @@ class SintesiCliente {
         cy.get('lib-client-item').should('be.visible')
         cy.get('lib-client-item').first().click()
         cy.wait('@pageClient', { requestTimeout: 60000 });
-        cy.wait('@gqlclientContractValidation', { requestTimeout: 60000 })
+        //cy.wait('@gqlclientContractValidation', { requestTimeout: 60000 })
         cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 60000 })
         cy.wait('@gqlgetScopes', { requestTimeout: 60000 })
     }

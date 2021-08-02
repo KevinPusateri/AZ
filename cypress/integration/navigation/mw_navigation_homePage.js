@@ -45,7 +45,7 @@ after(function () {
 
 })
 
-describe('Matrix Web : Navigazioni da Home Page - ',  function () {
+describe('Matrix Web : Navigazioni da Home Page - ', function () {
 
     it('Verifica Top Menu Principali', function () {
         TopBar.clickIconCalendar()
@@ -69,7 +69,14 @@ describe('Matrix Web : Navigazioni da Home Page - ',  function () {
     })
 
     it('Verifica Top Menu incident - Verifica atterraggio Elenco telefonico', function () {
-        TopBar.clickLinkOnIconIncident('Elenco telefonico')
+        cy.task('getHostName').then(hostName => {
+            let currentHostName = hostName
+            if (currentHostName.includes('SM'))
+                this.skip()
+            else {
+                TopBar.clickLinkOnIconIncident('Elenco telefonico')
+            }
+        })
     })
 
     it('Verifica Top Menu User - Verifica apertura icona User', function () {
