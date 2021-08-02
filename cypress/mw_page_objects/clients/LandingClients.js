@@ -189,7 +189,7 @@ class LandingClients {
             }
         })
         cy.contains('Pubblicazione Proposte').click()
-        this.digitalMe('Pubblicazione Proposte');
+        cy.get('app-digital-me-main-table').should('be.visible')
     }
 
 
