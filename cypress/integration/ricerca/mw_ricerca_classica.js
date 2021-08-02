@@ -56,7 +56,7 @@ describe('Buca di Ricerca', {
         openMode: 0,
     }
 }, function () {
-    it('Verifica Click su Ricerca Classica', function () {
+    it('Verifica Click su Ricerca Classica 2', function () {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.checkRicercaClassica()
     })
