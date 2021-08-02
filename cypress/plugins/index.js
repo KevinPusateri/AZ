@@ -261,4 +261,10 @@ module.exports = (on, config) => {
             return contatto;
         }
     })
+
+    on("task", {
+        getHostName(){
+            return os.hostname()
+        }
+    })
 };

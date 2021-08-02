@@ -211,7 +211,3 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
     resolve(tests)
   })
 })
-
-Cypress.Commands.add('getHostName', () => {
-  return os.hostname()
-})

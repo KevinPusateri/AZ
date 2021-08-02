@@ -28,7 +28,7 @@ after(function () {
 describe('Matrix Web : Aggancio Cross Visit', function () {
     it('Numbers - Verifica aggancio Allianz Global Assistance', function () {
 
-        cy.getHostName().then(hostName => {
+        cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             if (currentHostName.startsWith('SM'))
                 this.skip()
@@ -43,7 +43,7 @@ describe('Matrix Web : Aggancio Cross Visit', function () {
     });
 
     it('Clients - Verifica aggancio Analisi dei Bisogni', function () {
-        cy.getHostName().then(hostName => {
+        cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             if (currentHostName.startsWith('SM'))
                 this.skip()
