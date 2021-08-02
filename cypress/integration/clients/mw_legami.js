@@ -43,7 +43,14 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
 })
-
+afterEach(function () {
+    if (this.currentTest.state === 'failed' &&
+        //@ts-ignore
+        this.currentTest._currentRetry === this.currentTest._retries) {
+        //@ts-ignore
+        Cypress.runner.stop();
+    }
+});
 after(function () {
     TopBar.logOutMW()
     //#region Mysql

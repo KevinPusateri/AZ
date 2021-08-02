@@ -36,7 +36,7 @@ let documentType = ''
 //#region Support
 const searchClientWithoutDoc = (documentType) => {
     LandingRicerca.searchRandomClient(true, "PF", "P")
-    LandingRicerca.clickRandomResult()
+    LandingRicerca.clickRandomResult('PF')
     DettaglioAnagrafica.sezioneDocumenti()
     DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
         if (documentIsPresent)
