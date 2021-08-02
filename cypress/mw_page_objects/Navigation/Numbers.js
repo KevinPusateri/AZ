@@ -87,9 +87,10 @@ class Numbers {
         switch (tab) {
             case 'DANNI':
             case 'VITA':
-                interceptPostAgenziePDF()
+                // interceptPostAgenziePDF()
                 interceptGetAgenziePDF()
                 cy.get('app-kpi-card').contains(link).click()
+                cy.wait('@getDacommerciale', { requestTimeout: 60000 });
                 break;
             case 'MOTOR':
             case 'RAMI VARI RETAIL':
@@ -102,8 +103,6 @@ class Numbers {
                 break;
 
         }
-        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
-
         getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
 
     }
