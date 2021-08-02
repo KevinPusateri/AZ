@@ -43,7 +43,7 @@ after(function () {
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.task('finishMdasdsayql', { dbConfig: dbConfig, rowId: insertedId, tests })
     })
     //#endregion
 
