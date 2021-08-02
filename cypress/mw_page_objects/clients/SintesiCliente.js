@@ -671,7 +671,7 @@ class SintesiCliente {
                 .then(body => {
                     let missingValue
                     (contactType === 'numero') ? missingValue = 'Aggiungi numero principale' : missingValue = ' Aggiungi mail principale '
-                    if (body.find('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').length > 0)
+                    if (body.find('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').is(':visible'))
                         resolve(false)
                     else
                         resolve(true)

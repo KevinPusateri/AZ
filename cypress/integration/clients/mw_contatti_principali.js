@@ -38,18 +38,17 @@ let cliente
  * @param {*} contactType : tipo di contatto a scelta tra 'numero' e 'mail'
  */
 const searchClientWithoutContattiPrincipali = (contactType) => {
-    debugger
     LandingRicerca.searchRandomClient(true, "PF", "P")
     LandingRicerca.clickRandomResult()
 
     SintesiCliente.checkContattoPrincipale(contactType).then(contactIsPresent => {
-        debugger
         if (!contactIsPresent)
             return
         else
             searchClientWithoutContattiPrincipali(contactType)
 
     })
+    searchClientWithoutLegame()
 }
 //#endregion
 
