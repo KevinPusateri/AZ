@@ -36,7 +36,7 @@ describe('Matrix Web : Aggancio Cross Visit', function () {
 
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
-            if (currentHostName.startsWith('SM'))
+            if (currentHostName.contains('SM'))
                 this.skip()
             else {
                 cy.visit('https://oazis.allianz-assistance.it/dynamic/home/index')
@@ -51,7 +51,7 @@ describe('Matrix Web : Aggancio Cross Visit', function () {
     it('Clients - Verifica aggancio Analisi dei Bisogni', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
-            if (currentHostName.startsWith('SM'))
+            if (currentHostName.contains('SM'))
                 this.skip()
             else {
                 cy.visit('https://www.ageallianz.it/analisideibisogni/app')

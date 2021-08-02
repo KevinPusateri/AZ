@@ -58,7 +58,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             cy.log(currentHostName)
-            if (currentHostName.startsWith('SM'))
+            if (currentHostName.contains('SM'))
                 this.skip()
             else {
                 TopBar.clickClients()
