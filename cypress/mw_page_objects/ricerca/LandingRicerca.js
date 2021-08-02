@@ -439,7 +439,7 @@ class LandingRicerca {
                 break
         }
 
-        cy.get('lib-navigation-item-link').find('.title').should('have.length', linkLength)
+        cy.get('lib-navigation-item-link').should('be.visible').find('.title').should('have.length', linkLength)
             .each(($suggerimenti, i) => {
                 expect($suggerimenti.text()).to.include(suggLinks[i]);
             })
