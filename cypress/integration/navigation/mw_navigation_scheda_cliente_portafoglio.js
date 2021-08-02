@@ -21,7 +21,7 @@ let insertedId
 //#endregion
 
 //#region  Configuration
-Cypress.config('defaultCommandTimeout', 60000)
+Cypress.config('defaultCommassndTimeout', 60000)
 //#endregion
 
 
