@@ -6,7 +6,6 @@ import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
 import HomePage from "../../mw_page_objects/common/HomePage"
 
-Cypress.config('defaultCommandTimeout', 60000)
 
 //#region Username Variables
 const userName = 'TUTF021'
