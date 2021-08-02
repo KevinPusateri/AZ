@@ -50,9 +50,14 @@ after(function () {
 
 })
 
-describe('Buca di Ricerca - Risultati Clients', function () {
+describe('Buca di Ricerca - Risultati Clients', {
+    retries: {
+        runMode: 1,
+        openMode: 0,
+    }
+}, function () {
     it('Verifica Ricerca Cliente: nome o cognome ', function () {
-        LandingRicerca.searchRandomClient(true,'PF','E')
+        LandingRicerca.searchRandomClient(true, 'PF', 'E')
         LandingRicerca.checkRisultatiRicerca()
     })
 

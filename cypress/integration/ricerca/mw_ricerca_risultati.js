@@ -47,7 +47,12 @@ after(function () {
     //#endregion
 })
 
-describe('Buca di Ricerca - Risultati', function () {
+describe('Buca di Ricerca - Risultati', {
+    retries: {
+        runMode: 1,
+        openMode: 0,
+    }
+}, function () {
 
     it('Verifica Atterraggio nella Pagina', function () {
         LandingRicerca.search('RO')

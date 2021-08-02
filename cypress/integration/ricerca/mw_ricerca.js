@@ -49,7 +49,12 @@ after(function () {
 
 })
 
-describe('Matrix Ricerca', function () {
+describe('Matrix Ricerca', {
+  retries: {
+    runMode: 1,
+    openMode: 0,
+  }
+}, function () {
 
   it('Verifica Ricerca Da Switch Page', function () {
     LandingRicerca.checkBucaRicercaSuggerrimenti()

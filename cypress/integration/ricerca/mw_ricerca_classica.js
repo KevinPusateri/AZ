@@ -50,7 +50,12 @@ after(function () {
 
 })
 
-describe('Buca di Ricerca', function () {
+describe('Buca di Ricerca', {
+    retries: {
+        runMode: 1,
+        openMode: 0,
+    }
+}, function () {
     it('Verifica Click su Ricerca Classica', function () {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.checkRicercaClassica()

@@ -48,7 +48,12 @@ after(function () {
     //#endregion
 
 })
-describe('Buca di Ricerca - Risultati Le mie Info', function () {
+describe('Buca di Ricerca - Risultati Le mie Info', {
+    retries: {
+        runMode: 1,
+        openMode: 0,
+    }
+}, function () {
 
     it('Verifica Ricerca Incasso', function () {
         LandingRicerca.search('incasso')
