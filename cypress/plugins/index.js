@@ -20,6 +20,7 @@ const faker = require('faker')
 const os = require('os')
 const mysql = require('mysql')
 const moment = require('moment')
+const { resolve } = require('cypress/types/bluebird')
 
 //#region Mysql
 function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
@@ -264,7 +265,9 @@ module.exports = (on, config) => {
 
     on("task", {
         getHostName(){
-            return os.hostname()
+            return new Cypress.Promise((resolve) => {
+                resolve(os.hostname())
+            })
         }
     })
 };
