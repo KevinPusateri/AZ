@@ -95,6 +95,10 @@ Cypress.Commands.overwrite('clearCookies', () => {
   })
 })
 
+Cypress.Commands.add('getIFrame', () => {
+  cy.get('iframe',{log:false}).its('0.contentDocument.body').as('iframe')
+})
+
 Cypress.Commands.add('getIframeBody', (iframeCode) => {
   // get the iframe > document > body
   // and retry until the body element is not empty

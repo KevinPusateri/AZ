@@ -12,22 +12,24 @@ const getIFrame = () => {
 class SCUCancellazioneClienti {
 
     static eseguiCancellazioneOnPersonaFisica() {
-        getIFrame().contains('Persona fisica').click()
+        cy.get('@iframe').contains('Persona fisica').click()
         cy.get('#body').should('be.visible').as('body')
+        cy.get('@iframe').find('#tabstrip-1').should('be.visible')
+
         return new Cypress.Promise((resolve, reject) => {
             const loop = () => {
 
                  const searchClients = () => {
-                    getIFrame().find('[class="search-grid-fisica k-grid k-widget"]').should('be.visible').then(($table) => {
+                    cy.getIFrame().find('[class="search-grid-fisica k-grid k-widget"]').should('be.visible').then(($table) => {
                         const isTrovato = $table.find('tr:contains("Nessun record da visualizzare.")').is(':visible')
                         if (isTrovato) {
                             cy.generateTwoLetters().then(randomChars => {
-                                getIFrame().find('#f-cognome').clear().type(randomChars)
+                                cy.getIFrame().find('#f-cognome').clear().type(randomChars)
                             })
                             cy.generateTwoLetters().then(randomChars => {
-                                getIFrame().find('#f-nome').clear().type(randomChars)
+                                cy.getIFrame().find('#f-nome').clear().type(randomChars)
                             })
-                            getIFrame().find('input[class="k-button pull-right"]').contains('Cerca').click().wait(2000)
+                            cy.getIFrame().find('input[class="k-button pull-right"]').contains('Cerca').click().wait(2000)
 
                             searchClients()
 
@@ -42,7 +44,7 @@ class SCUCancellazioneClienti {
                     const listIndex = []
                     var clienteCF = ''
                     var indexCliente = ''
-                    getIFrame().find('table[role="grid"] > tbody').first().within(() => {
+                    cy.getIFrame().find('table[role="grid"] > tbody').first().within(() => {
                         cy.get('tr').each(($ele, index) => {
                             cy.wrap($ele).find('td').eq(3).invoke('text').then((textState) => {
                                 if (textState === "P") {
@@ -62,23 +64,23 @@ class SCUCancellazioneClienti {
                         })
                     })
                     cy.get('@body').within(() => {
-                        getIFrame().find('button:contains("Cancella"):visible').click()
+                        cy.getIFrame().find('button:contains("Cancella"):visible').click()
 
-                        getIFrame()
+                        cy.getIFrame()
                             .find('div[class="message container"]:contains("Attenzione l\'operazione non è reversibile."):visible')
                             .should('be.visible')
-                        getIFrame().find('form[class="buttons"]:visible').contains('Ok').click().wait(4000)
+                        cy.getIFrame().find('form[class="buttons"]:visible').contains('Ok').click().wait(4000)
 
-                        getIFrame()
+                        cy.getIFrame()
                             .find('div[class="message container"]:visible').should('be.visible').then((messaggio) => {
                                 let message = messaggio.text()
                                 if (message.includes('Il cliente è un titolare effettivo')) {
-                                    getIFrame().find('button[class="k-button"]:contains("Chiudi"):visible').click()
+                                    cy.getIFrame().find('button[class="k-button"]:contains("Chiudi"):visible').click()
                                     loop()
 
                                 } else {
-                                    getIFrame().find('div[class="message container"]:contains("Cancellazione clienti completata")').should('be.visible')
-                                    getIFrame().find('form[class="buttons"]:visible').contains('Chiudi').click()
+                                    cy.getIFrame().find('div[class="message container"]:contains("Cancellazione clienti completata")').should('be.visible')
+                                    cy.getIFrame().find('form[class="buttons"]:visible').contains('Chiudi').click()
 
                                     cy.get('a[href="/matrix/"]').click()
                                     resolve(clienteCF);
@@ -94,21 +96,23 @@ class SCUCancellazioneClienti {
 
     
     static eseguiCancellazioneOnPersonaGiuridica() {
-        getIFrame().contains('Persona giuridica').click()
+        cy.getIFrame()
+        cy.get('@iframe').contains('Persona giuridica').click()
         cy.get('#body').as('body')
+        cy.get('@iframe').find('#tabstrip-2').should('be.visible')
 
         return new Cypress.Promise((resolve, reject) => {
             const loop = () => {
 
                 const searchClients = () => {
-                    getIFrame().find('div[class="search-grid-giuridica k-grid k-widget"]').should('be.visible').then(($table) => {
-                        const isTrovato = $table.find('tr:contains("Nessun record da visualizzare."):visible').is(':visible')
+                    cy.getIFrame().find('div[class="search-grid-giuridica k-grid k-widget"]').should('be.visible').then(($table) => {
+                            cy.wait(3000)
+                        const isTrovato = $table.find('tr:contains("Nessun record da visualizzare.")').is(':visible')
                         if (isTrovato) {
                             cy.generateTwoLetters().then(randomChars => {
-                                getIFrame().find('#g-denominazione').clear().type(randomChars)
+                                cy.getIFrame().find('#g-denominazione').clear().type(randomChars)
                             })
-                            getIFrame().find('input[class="k-button pull-right"]:visible').contains('Cerca').click().wait(3000)
-
+                            cy.getIFrame().find('input[class="k-button pull-right"]:visible').contains('Cerca').click().wait(3000)
                             searchClients()
 
                         } else {
@@ -122,7 +126,7 @@ class SCUCancellazioneClienti {
                     const listIndex = []
                     var clienteIVA = ''
                     var indexCliente = ''
-                    getIFrame().find('table[role="grid"]:visible > tbody').first().within(() => {
+                    cy.getIFrame().find('table[role="grid"]:visible > tbody').first().within(() => {
                         cy.get('tr').each(($ele, index) => {
                             cy.wrap($ele).find('td').eq(3).invoke('text').then((textState) => {
                                 if (textState === "P") {
@@ -143,24 +147,24 @@ class SCUCancellazioneClienti {
                     })
                     cy.then(() => {
                         cy.get('@body').within(() => {
-                            getIFrame().find('button:contains("Cancella"):visible').click()
+                            cy.getIFrame().find('button:contains("Cancella"):visible').click()
 
-                            getIFrame()
+                            cy.getIFrame()
                                 .find('div[class="message container"]:contains("Attenzione l\'operazione non è reversibile."):visible')
                                 .should('be.visible')
-                            getIFrame().find('form[class="buttons"]:visible').contains('Ok').click()
+                            cy.getIFrame().find('form[class="buttons"]:visible').contains('Ok').click()
 
-                            getIFrame()
+                            cy.getIFrame()
                                 .find('div[class="message container"]:visible').should('be.visible').then((messaggio) => {
                                     let message = messaggio.text()
                                     if (message.includes('Il cliente è un titolare effettivo') ||
                                         message.includes('Il cliente è in relazione con almeno una polizza')) {
-                                        getIFrame().find('button[class="k-button"]:contains("Chiudi"):visible').click()
+                                        cy.getIFrame().find('button[class="k-button"]:contains("Chiudi"):visible').click()
                                         loop()
 
                                     } else {
-                                        getIFrame().find('div[class="message container"]:contains("Cancellazione clienti completata"):visible').should('be.visible')
-                                        getIFrame().find('form[class="buttons"]:visible').contains('Chiudi').click()
+                                        cy.getIFrame().find('div[class="message container"]:contains("Cancellazione clienti completata"):visible').should('be.visible')
+                                        cy.getIFrame().find('form[class="buttons"]:visible').contains('Chiudi').click()
 
                                         cy.get('a[href="/matrix/"]').click()
                                         resolve(clienteIVA);
