@@ -157,17 +157,24 @@ class LandingClients {
      * che il contenuto non sia vuoto e che i dati corrispondano
      */
     static verificaRichiesteDigitalMe() {
-        cy.get('app-dm-requests-card').should('be.visible')
-        cy.get('app-dm-requests-card').first().find('button[class^="row-more-icon-button"]').click();
-        cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').each(($checkLink) => {
-            expect($checkLink.text()).not.to.be.empty;
-        });
-        cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
-            .should('include', '+');
-        cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
-        cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
-        cy.get('app-digital-me-context-menu ').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
-        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
+        cy.get('app-dm-requests').should('be.visible').then($request => {
+            const checkDatiIsPresent = $request.find('p:contains("Non ci sono dati da mostrare")').is(':visible')
+            if (!checkDatiIsPresent) {
+                cy.get('app-dm-requests-card').should('be.visible')
+                cy.get('app-dm-requests-card').first().find('button[class^="row-more-icon-button"]').click();
+                cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').each(($checkLink) => {
+                    expect($checkLink.text()).not.to.be.empty;
+                });
+                cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
+                    .should('include', '+');
+                cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
+                cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
+                cy.get('app-digital-me-context-menu ').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
+                cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
+            } else {
+                cy.get('app-dm-requests').find('p').should('contain.text', 'Non ci sono dati da mostrare')
+            }
+        })
     }
 
     static checkDigitalMe() {

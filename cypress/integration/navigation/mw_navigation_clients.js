@@ -120,7 +120,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         Clients.clickAppuntamenti()
     });
 
-    it('Verifica aggancio Richiesta Digital Me', function () {
+    it.only('Verifica aggancio Richiesta Digital Me', function () {
         TopBar.clickClients()
         Clients.verificaRichiesteDigitalMe()
     });
