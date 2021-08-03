@@ -64,6 +64,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
     SCUCancellazioneClienti.eseguiCancellazioneOnPersonaFisica().then(currentClient => {
       cliente = currentClient
     })
+    cy.wait(200)
   })
 
   it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
