@@ -111,7 +111,7 @@ class TopBar extends HomePage {
     */
     static search(value) {
         cy.get('input[name="main-search-input"]').should('be.visible').click()
-        cy.get('input[name="main-search-input"]').type(value).type('{enter}').wait(2000)
+        cy.get('input[name="main-search-input"]').should('be.visible').type(value).type('{enter}').wait(2000)
     }
 
     /**
