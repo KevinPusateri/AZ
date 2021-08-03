@@ -312,7 +312,7 @@ class LandingRicerca {
 
         if (link === 'Ricerca Polizze proposte' || link === 'Ricerca Preventivi') {
             cy.wait('@danni', { requestTimeout: 30000 })
-            cy.wait(2000)
+            cy.wait(3000)
         }
 
     }
