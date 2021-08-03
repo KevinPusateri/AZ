@@ -37,7 +37,6 @@ before(() => {
 
 beforeEach(() => {
   cy.preserveCookies()
-  Common.visitUrlOnEnv()
 })
 
 after(function () {
@@ -59,12 +58,9 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
   it('Verifica aggancio pagina Cancellazione Clienti', function () {
     TopBar.clickClients()
     BurgerMenuClients.clickLink('Cancellazione Clienti')
-    BurgerMenuClients.backToClients()
   })
 
   it('Verifica Cancellazione clienti PF', function () {
-    TopBar.clickClients()
-    BurgerMenuClients.clickLink('Cancellazione Clienti')
     SCUCancellazioneClienti.eseguiCancellazioneOnPersonaFisica().then(currentClient => {
       cliente = currentClient
     })
@@ -79,6 +75,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
 
   //TODO:  VERIFICA PERCHE non va avanti forse context tolto
   it('Verifica Cancellazione clienti PG', function () {
+    HomePage.reloadMWHomePage()
     TopBar.clickClients()
     BurgerMenuClients.clickLink('Cancellazione Clienti')
     SCUCancellazioneClienti.eseguiCancellazioneOnPersonaGiuridica().then(currentClient => {

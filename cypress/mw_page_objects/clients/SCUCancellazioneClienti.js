@@ -13,12 +13,12 @@ class SCUCancellazioneClienti {
 
     static eseguiCancellazioneOnPersonaFisica() {
         getIFrame().contains('Persona fisica').click()
-        cy.get('#body').as('body')
+        cy.get('#body').should('be.visible').as('body')
         return new Cypress.Promise((resolve, reject) => {
             const loop = () => {
 
-                const searchClients = () => {
-                    getIFrame().find('[class="search-grid-fisica k-grid k-widget"]').then(($table) => {
+                 const searchClients = () => {
+                    getIFrame().find('[class="search-grid-fisica k-grid k-widget"]').should('be.visible').then(($table) => {
                         const isTrovato = $table.find('tr:contains("Nessun record da visualizzare.")').is(':visible')
                         if (isTrovato) {
                             cy.generateTwoLetters().then(randomChars => {
@@ -61,39 +61,38 @@ class SCUCancellazioneClienti {
                             })
                         })
                     })
-                    cy.then(() => {
-                        cy.get('@body').within(() => {
-                            getIFrame().find('button:contains("Cancella"):visible').click()
+                    cy.get('@body').within(() => {
+                        getIFrame().find('button:contains("Cancella"):visible').click()
 
-                            getIFrame()
-                                .find('div[class="message container"]:contains("Attenzione l\'operazione non è reversibile."):visible')
-                                .should('be.visible')
-                            getIFrame().find('form[class="buttons"]:visible').contains('Ok').click().wait(4000)
+                        getIFrame()
+                            .find('div[class="message container"]:contains("Attenzione l\'operazione non è reversibile."):visible')
+                            .should('be.visible')
+                        getIFrame().find('form[class="buttons"]:visible').contains('Ok').click().wait(4000)
 
-                            getIFrame()
-                                .find('div[class="message container"]:visible').should('be.visible').then((messaggio) => {
-                                    let message = messaggio.text()
-                                    if (message.includes('Il cliente è un titolare effettivo')) {
-                                        getIFrame().find('button[class="k-button"]:contains("Chiudi"):visible').click()
-                                        loop()
+                        getIFrame()
+                            .find('div[class="message container"]:visible').should('be.visible').then((messaggio) => {
+                                let message = messaggio.text()
+                                if (message.includes('Il cliente è un titolare effettivo')) {
+                                    getIFrame().find('button[class="k-button"]:contains("Chiudi"):visible').click()
+                                    loop()
 
-                                    } else {
-                                        getIFrame().find('div[class="message container"]:contains("Cancellazione clienti completata")').should('be.visible')
-                                        getIFrame().find('form[class="buttons"]:visible').contains('Chiudi').click()
+                                } else {
+                                    getIFrame().find('div[class="message container"]:contains("Cancellazione clienti completata")').should('be.visible')
+                                    getIFrame().find('form[class="buttons"]:visible').contains('Chiudi').click()
 
-                                        cy.get('a[href="/matrix/"]').click()
-                                        resolve(clienteCF);
-                                    }
-                                })
-                        })
-
+                                    cy.get('a[href="/matrix/"]').click()
+                                    resolve(clienteCF);
+                                }
+                            })
                     })
+
                 })
             }
             loop()
         })
     }
 
+    
     static eseguiCancellazioneOnPersonaGiuridica() {
         getIFrame().contains('Persona giuridica').click()
         cy.get('#body').as('body')
@@ -102,13 +101,13 @@ class SCUCancellazioneClienti {
             const loop = () => {
 
                 const searchClients = () => {
-                    getIFrame().find('div[class="search-grid-giuridica k-grid k-widget"]:visible').then(($table) => {
+                    getIFrame().find('div[class="search-grid-giuridica k-grid k-widget"]').should('be.visible').then(($table) => {
                         const isTrovato = $table.find('tr:contains("Nessun record da visualizzare."):visible').is(':visible')
                         if (isTrovato) {
                             cy.generateTwoLetters().then(randomChars => {
                                 getIFrame().find('#g-denominazione').clear().type(randomChars)
                             })
-                            getIFrame().find('input[class="k-button pull-right"]:visible').contains('Cerca').click().wait(2000)
+                            getIFrame().find('input[class="k-button pull-right"]:visible').contains('Cerca').click().wait(3000)
 
                             searchClients()
 
@@ -154,7 +153,8 @@ class SCUCancellazioneClienti {
                             getIFrame()
                                 .find('div[class="message container"]:visible').should('be.visible').then((messaggio) => {
                                     let message = messaggio.text()
-                                    if (message.includes('Il cliente è un titolare effettivo')) {
+                                    if (message.includes('Il cliente è un titolare effettivo') ||
+                                        message.includes('Il cliente è in relazione con almeno una polizza')) {
                                         getIFrame().find('button[class="k-button"]:contains("Chiudi"):visible').click()
                                         loop()
 
