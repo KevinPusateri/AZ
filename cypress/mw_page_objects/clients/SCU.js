@@ -268,7 +268,7 @@ class SCU {
 
             cy.wait('@writeConsensi', { requestTimeout: 60000 })
             cy.wait('@generazioneStampe', { requestTimeout: 60000 })
-            cy.wait('@salvaInContentManager', { requestTimeout: 60000 })
+            cy.wait('@salvaInContentManager', { requestTimeout: 80000 })
         }
         //Se sono in Modifica
         else {

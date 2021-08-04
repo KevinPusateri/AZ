@@ -89,9 +89,7 @@ describe('MW: Navigazioni da Scheda Cliente - Tab Portafoglio', function () {
     it('Verifica subTab Sinistri', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
-            if (currentHostName.includes('SM'))
-                this.skip()
-            else {
+            if (!currentHostName.includes('SM')) {
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Sinistri')
                 Portafoglio.checkSinistri()
