@@ -123,8 +123,9 @@ class BackOffice {
                 getIFrameDenuncia().find('a:contains("Esegui Ricerca"):visible')
                 break;
             case LinksSinistri.DENUNCIA_BMP:
-                cy.wait(20000)
-                getIFrame().find('h4:contains("Dettaglio cliente"):visible')
+                getIFrame().find('h4').should('be.visible').then($title => {
+                    expect(['Dettaglio cliente','Customer details']).to.include($title.text().trim())
+                })
                 break;
             case LinksSinistri.CONSULTAZIONE_SINISTRI:
                 getIFrame().find('button:contains("Cerca"):visible')

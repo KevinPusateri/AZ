@@ -44,10 +44,10 @@ var contoCorrente = {
   iban: "",
   vat: "",
 }
-
+let urlClient
 //#region Before After
 before(() => {
-  cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+  cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
     insertedId = results.insertId
   })
   LoginPage.logInMW(userName, psw)
@@ -63,6 +63,9 @@ before(() => {
 
   LandingRicerca.searchRandomClient(true, "PF", "E")
   LandingRicerca.clickRandomResult()
+  SintesiCliente.retriveUrl().then(currentUrl => {
+    urlClient = currentUrl
+  })
   SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
     client = currentClient
   })
@@ -73,14 +76,14 @@ beforeEach(() => {
 })
 
 after(function () {
+  TopBar.logOutMW()
   //#region Mysql
   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
       let tests = testsInfo
-      cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+      cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
   })
   //#endregion
 
-  TopBar.logOutMW()
 })
 //#endregion Before After
 
@@ -96,9 +99,9 @@ describe('Matrix Web : Conti Correnti', function () {
   })
 
   it('Verifica Conto corrente inserito', function () {
-    HomePage.reloadMWHomePage()
-    TopBar.search(client.name)
-    LandingRicerca.clickClientName(client)
+    SintesiCliente.visitUrlClient(urlClient)
+    // TopBar.search(client.name)
+    // LandingRicerca.clickClientName(client)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Conti correnti')
     SCUContiCorrenti.checkContoCorrente(contoCorrente)

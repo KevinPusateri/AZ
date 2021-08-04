@@ -28,7 +28,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 
 before(() => {
-    cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
     LoginPage.logInMW(userName, psw)
@@ -40,19 +40,24 @@ beforeEach(() => {
 })
 
 after(function () {
+    TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
     })
     //#endregion
 
-    TopBar.logOutMW()
 })
 
-describe('Buca di Ricerca - Risultati Clients', function () {
+describe('Buca di Ricerca - Risultati Clients', {
+    retries: {
+        runMode: 1,
+        openMode: 0,
+    }
+}, function () {
     it('Verifica Ricerca Cliente: nome o cognome ', function () {
-        LandingRicerca.searchRandomClient(true,'PF','E')
+        LandingRicerca.searchRandomClient(true, 'PF', 'E')
         LandingRicerca.checkRisultatiRicerca()
     })
 

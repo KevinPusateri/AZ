@@ -23,7 +23,7 @@ class HomePage {
 
         }
 
-        if (mockedNotifications) {
+        if (mockedNews) {
 
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news')) {
@@ -45,6 +45,11 @@ class HomePage {
 
         if (!mockedNews)
             cy.wait('@gqlNews')
+
+        //Attendiamo caricamento dell'icona utente in alto a dx
+        cy.get('.user-icon-container').should('be.visible')
+
+        
     }
 
     /**

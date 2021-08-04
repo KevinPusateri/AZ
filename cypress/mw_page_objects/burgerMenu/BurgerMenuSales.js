@@ -152,7 +152,7 @@ class BurgerMenuSales extends Sales {
                 // cy.wait(5000)
                 Common.canaleFromPopup()
                 cy.wait('@getSalesPremo', { requestTimeout: 40000 });
-                // cy.wait(20000)
+                cy.wait(20000)
                 getIFrame().should('be.visible')
                 getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text','Ricerca')
                 break;

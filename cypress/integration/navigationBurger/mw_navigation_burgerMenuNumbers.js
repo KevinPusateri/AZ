@@ -24,7 +24,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-    cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
     LoginPage.logInMW(userName, psw)
@@ -37,14 +37,14 @@ beforeEach(() => {
 })
 
 after(function () {
+    TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
     })
     //#endregion
 
-    TopBar.logOutMW()
 })
 
 describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
@@ -75,9 +75,9 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
     })
 
     it('Verifica aggancio X - Advisor', function () {
-        cy.getHostName().then(hostName => {
+        cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
-            if (currentHostName.startsWith('SM'))
+            if (currentHostName.includes('SM'))
                 this.skip()
             else {
                 TopBar.clickNumbers()

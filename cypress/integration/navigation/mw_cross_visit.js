@@ -16,11 +16,17 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
+before(() => {
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: 'ANONIMO' }).then((results) => {
+        insertedId = results.insertId
+    })
+})
+
 after(function () {
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
     })
     //#endregion
 })
@@ -28,24 +34,24 @@ after(function () {
 describe('Matrix Web : Aggancio Cross Visit', function () {
     it('Numbers - Verifica aggancio Allianz Global Assistance', function () {
 
-        cy.getHostName().then(hostName => {
+        cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
-            if (currentHostName.startsWith('SM'))
+            if (currentHostName.includes('SM'))
                 this.skip()
             else {
                 cy.visit('https://oazis.allianz-assistance.it/dynamic/home/index')
                 cy.get('#oaz-login-btn').should('be.visible').and('contain.text', 'Accedi')
             }
         })
-        cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: 'ANONIMO' }).then((results) => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: 'ANONIMO' }).then((results) => {
             insertedId = results.insertId
         })
     });
 
     it('Clients - Verifica aggancio Analisi dei Bisogni', function () {
-        cy.getHostName().then(hostName => {
+        cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
-            if (currentHostName.startsWith('SM'))
+            if (currentHostName.includes('SM'))
                 this.skip()
             else {
                 cy.visit('https://www.ageallianz.it/analisideibisogni/app')

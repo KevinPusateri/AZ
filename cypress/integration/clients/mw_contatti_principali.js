@@ -38,24 +38,23 @@ let cliente
  * @param {*} contactType : tipo di contatto a scelta tra 'numero' e 'mail'
  */
 const searchClientWithoutContattiPrincipali = (contactType) => {
-    debugger
     LandingRicerca.searchRandomClient(true, "PF", "P")
     LandingRicerca.clickRandomResult()
 
     SintesiCliente.checkContattoPrincipale(contactType).then(contactIsPresent => {
-        debugger
         if (!contactIsPresent)
             return
         else
             searchClientWithoutContattiPrincipali(contactType)
 
     })
+    searchClientWithoutLegame()
 }
 //#endregion
 
 //#region Before After
 before(() => {
-    cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
     cy.task('nuovoContatto').then((object) => {
@@ -76,14 +75,14 @@ afterEach(function () {
     }
 });
 after(function () {
+    TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
     })
     //#endregion
 
-    TopBar.logOutMW()
 })
 //#endregion Before After
 
@@ -93,53 +92,48 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
         openMode: 0,
     }
 }, () => {
-    context('Numero Principale', () => {
-        it('Cerca Cliente senza Numero Principale', () => {
-            searchClientWithoutContattiPrincipali('numero')
-        })
-
-        it('Aggiungi Numero Principale', () => {
-            SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-                cliente = currentClient
-            })
-            SintesiCliente.aggiungiContattoPrincipale('numero')
-            SCUContatti.aggiungiNuovoTelefonoPrincipale(contatto)
-        })
-
-        it('Verifica Numero Principale inserito', () => {
-            HomePage.reloadMWHomePage()
-            TopBar.search(cliente.name)
-            LandingRicerca.clickClientName(cliente)
-            SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
-            SintesiCliente.checkContattoPrincipale('numero').then(contactIsPresent => {
-                if (!contactIsPresent)
-                    assert.fail('Numero Principale NON inserito correttamente')
-            })
-        })
+    it('Cerca Cliente senza Numero Principale', () => {
+        searchClientWithoutContattiPrincipali('numero')
     })
 
-    context('Mail Principale', () => {
-        it('Cerca Cliente senza Mail Principale', () => {
-            searchClientWithoutContattiPrincipali('mail')
+    it('Aggiungi Numero Principale', () => {
+        SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+            cliente = currentClient
         })
+        SintesiCliente.aggiungiContattoPrincipale('numero')
+        SCUContatti.aggiungiNuovoTelefonoPrincipale(contatto)
+    })
 
-        it('Aggiungi Mail Principale', () => {
-            SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-                cliente = currentClient
-            })
-            SintesiCliente.aggiungiContattoPrincipale('mail')
-            SCUContatti.aggiungiNuovaMailPrincipale(contatto)
+    it('Verifica Numero Principale inserito', () => {
+        HomePage.reloadMWHomePage()
+        TopBar.search(cliente.name)
+        LandingRicerca.clickClientName(cliente)
+        SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
+        SintesiCliente.checkContattoPrincipale('numero').then(contactIsPresent => {
+            if (!contactIsPresent)
+                assert.fail('Numero Principale NON inserito correttamente')
         })
+    })
+    it('Cerca Cliente senza Mail Principale', () => {
+        searchClientWithoutContattiPrincipali('mail')
+    })
 
-        it('Verifica Mail Principale inserita', () => {
-            HomePage.reloadMWHomePage()
-            TopBar.search(cliente.name)
-            LandingRicerca.clickClientName(cliente)
-            SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
-            SintesiCliente.checkContattoPrincipale('mail').then(contactIsPresent => {
-                if (!contactIsPresent)
-                    assert.fail('Mail Principale NON inserita correttamente')
-            })
+    it('Aggiungi Mail Principale', () => {
+        SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+            cliente = currentClient
+        })
+        SintesiCliente.aggiungiContattoPrincipale('mail')
+        SCUContatti.aggiungiNuovaMailPrincipale(contatto)
+    })
+
+    it('Verifica Mail Principale inserita', () => {
+        HomePage.reloadMWHomePage()
+        TopBar.search(cliente.name)
+        LandingRicerca.clickClientName(cliente)
+        SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
+        SintesiCliente.checkContattoPrincipale('mail').then(contactIsPresent => {
+            if (!contactIsPresent)
+                assert.fail('Mail Principale NON inserita correttamente')
         })
     })
 })

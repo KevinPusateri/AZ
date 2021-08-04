@@ -29,26 +29,26 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-  cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-      insertedId = results.insertId
+  cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+    insertedId = results.insertId
   })
   LoginPage.logInMW(userName, psw)
 })
 
 beforeEach(() => {
   cy.preserveCookies()
-  Common.visitUrlOnEnv()
 })
 
 after(function () {
-  //#region Mysql
-  cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-      let tests = testsInfo
-      cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
-  })
-  //#endregion
 
   TopBar.logOutMW()
+
+  //#region Mysql
+  cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+    let tests = testsInfo
+    cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+  })
+  //#endregion
 })
 //#endregion
 
@@ -58,46 +58,36 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
   it('Verifica aggancio pagina Cancellazione Clienti', function () {
     TopBar.clickClients()
     BurgerMenuClients.clickLink('Cancellazione Clienti')
-    BurgerMenuClients.backToClients()
   })
 
-  context('Cancellazione Clienti - Persona Fisica', () => {
-
-    it('Verifica Cancellazione clienti PF', function () {
-      TopBar.clickClients()
-      BurgerMenuClients.clickLink('Cancellazione Clienti')
-      SCUCancellazioneClienti.eseguiCancellazioneOnPersonaFisica().then(currentClient => {
-        cliente = currentClient
-      })
-    })
-
-    it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
-      HomePage.reloadMWHomePage()
-      TopBar.search(cliente)
-      LandingRicerca.filtraRicerca('P')
-      LandingRicerca.checkClienteNotFound(cliente)
+  it('Verifica Cancellazione clienti PF', function () {
+    SCUCancellazioneClienti.eseguiCancellazioneOnPersonaFisica().then(currentClient => {
+      cliente = currentClient
     })
   })
 
-  Cypress._.times(1, () => {
+  it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
+    HomePage.reloadMWHomePage()
+    TopBar.search(cliente)
+    LandingRicerca.filtraRicerca('P')
+    LandingRicerca.checkClienteNotFound(cliente)
+  })
 
-    context('Cancellazione Clienti - Persona Giuridica', () => {
-
-      it('Verifica Cancellazione clienti PG', function () {
-        TopBar.clickClients()
-        BurgerMenuClients.clickLink('Cancellazione Clienti')
-        SCUCancellazioneClienti.eseguiCancellazioneOnPersonaGiuridica().then(currentClient => {
-          cliente = currentClient
-        })
-
-      })
-
-      it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
-        HomePage.reloadMWHomePage()
-        TopBar.search(cliente)
-        LandingRicerca.checkClienteNotFound(cliente)
-      })
+  //TODO:  VERIFICA PERCHE non va avanti forse context tolto
+  it('Verifica Cancellazione clienti PG', function () {
+    HomePage.reloadMWHomePage()
+    TopBar.clickClients()
+    BurgerMenuClients.clickLink('Cancellazione Clienti')
+    SCUCancellazioneClienti.eseguiCancellazioneOnPersonaGiuridica().then(currentClient => {
+      cliente = currentClient
     })
+
+  })
+
+  it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
+    HomePage.reloadMWHomePage()
+    TopBar.search(cliente)
+    LandingRicerca.checkClienteNotFound(cliente)
   })
 })
 

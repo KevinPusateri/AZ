@@ -27,7 +27,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 
 before(() => {
-  cy.task('startMyql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+  cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
       insertedId = results.insertId
   })
   LoginPage.logInMW(userName, psw)
@@ -39,14 +39,14 @@ beforeEach(() => {
 })
 
 after(function () {
+  TopBar.logOutMW()
   //#region Mysql
   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
       let tests = testsInfo
-      cy.task('finishMyql', { dbConfig: dbConfig, rowId: insertedId, tests })
+      cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
   })
   //#endregion
 
-  TopBar.logOutMW()
 })
 
 describe('Matrix Web : Navigazioni da Le Mie Info', function () {
@@ -74,35 +74,30 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.clickLinkOnMenu('Contenuti Salvati')
   });
 
-  context('Menu Prodotti', () => {
-    it('Verifica aggancio Prodotti', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Prodotti')
-      Mieinfo.checkLinksOnSubMenu('Prodotti')
-      Mieinfo.checkLinksOnIcon('Prodotti')
-    });
+  it('Verifica aggancio Prodotti', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Prodotti')
+    Mieinfo.checkLinksOnSubMenu('Prodotti')
+    Mieinfo.checkLinksOnIcon('Prodotti')
+  });
 
-    it('Verifica aggancio su tutte le sotto pagine di Prodotti', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Prodotti');
-      Mieinfo.checkPageOnSubMenu('Prodotti')
-    })
-
+  it('Verifica aggancio su tutte le sotto pagine di Prodotti', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Prodotti');
+    Mieinfo.checkPageOnSubMenu('Prodotti')
   })
 
-  context('Menu Iniziative', () => {
-    it('Verifica aggancio Iniziative', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Iniziative')
-      Mieinfo.checkLinksOnSubMenu('Iniziative')
-      Mieinfo.checkLinksOnIcon('Iniziative')
-    });
+  it('Verifica aggancio Iniziative', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Iniziative')
+    Mieinfo.checkLinksOnSubMenu('Iniziative')
+    Mieinfo.checkLinksOnIcon('Iniziative')
+  });
 
-    it('Verifica aggancio su tutte le sotto pagine di Iniziative', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Iniziative');
-      Mieinfo.checkPageOnSubMenu('Iniziative')
-    })
+  it('Verifica aggancio su tutte le sotto pagine di Iniziative', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Iniziative');
+    Mieinfo.checkPageOnSubMenu('Iniziative')
   })
 
   it('Verifica aggancio Eventi e Sponsorizzazioni', function () {
@@ -110,19 +105,17 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.clickLinkOnMenu('Eventi e Sponsorizzazioni')
   });
 
-  context('Menu sales Academy', () => {
-    it('Verifica aggancio Sales Academy', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Sales Academy')
-      Mieinfo.checkLinksOnSubMenu('Sales Academy')
-      Mieinfo.checkLinksOnIcon('Sales Academy')
-    });
+  it('Verifica aggancio Sales Academy', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Sales Academy')
+    Mieinfo.checkLinksOnSubMenu('Sales Academy')
+    Mieinfo.checkLinksOnIcon('Sales Academy')
+  });
 
-    it('Verifica aggancio su tutte le sotto pagine di Sales Academy', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Sales Academy');
-      Mieinfo.checkPageOnSubMenu('Sales Academy')
-    })
+  it('Verifica aggancio su tutte le sotto pagine di Sales Academy', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Sales Academy');
+    Mieinfo.checkPageOnSubMenu('Sales Academy')
   })
 
   it('Verifica aggancio Momento della Verità', function () {
@@ -167,37 +160,29 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.clickLinkOnMenu('Company Handbook')
   })
 
-  context('Menu Antiriciclaggio', () => {
-    it('Verifica aggancio Antiriciclaggio', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Antiriciclaggio')
-      Mieinfo.checkLinksOnSubMenu('Antiriciclaggio')
-      Mieinfo.checkLinksOnIcon('Antiriciclaggio')
-    })
-
-    it('Verifica aggancio su tutte le sotto pagine di Antiriciclaggio', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Antiriciclaggio');
-      Mieinfo.checkPageOnSubMenu('Antiriciclaggio')
-    })
-
+  it('Verifica aggancio Antiriciclaggio', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Antiriciclaggio')
+    Mieinfo.checkLinksOnSubMenu('Antiriciclaggio')
+    Mieinfo.checkLinksOnIcon('Antiriciclaggio')
   })
 
+  it('Verifica aggancio su tutte le sotto pagine di Antiriciclaggio', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Antiriciclaggio');
+    Mieinfo.checkPageOnSubMenu('Antiriciclaggio')
+  })
 
-  context('Menu Risorse per l\'Agenzia', () => {
-
-    it('Verifica aggancio Risorse per l\'Agenzia', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia')
-      Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agenzia')
-      Mieinfo.checkLinksOnIcon('Risorse per l\'Agenzia')
-    });
-    it('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agenzia', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia');
-      Mieinfo.checkPageOnSubMenu('Risorse per l\'Agenzia')
-    })
-
+  it('Verifica aggancio Risorse per l\'Agenzia', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia')
+    Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agenzia')
+    Mieinfo.checkLinksOnIcon('Risorse per l\'Agenzia')
+  });
+  it('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agenzia', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia');
+    Mieinfo.checkPageOnSubMenu('Risorse per l\'Agenzia')
   })
 
   it('Verifica aggancio Operatività', function () {
@@ -206,33 +191,27 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.checkPanelsOnOperativita()
   });
 
-  context('Menu Risorse per l\'Agente', () => {
-
-    it('Verifica aggancio Risorse per l\'Agente', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Risorse per l\'Agente')
-      Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agente')
-      Mieinfo.checkLinksOnIcon('Risorse per l\'Agente')
-    });
-    it('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agente', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Risorse per l\'Agente');
-      Mieinfo.checkPageOnSubMenu('Risorse per l\'Agente')
-    })
+  it('Verifica aggancio Risorse per l\'Agente', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Risorse per l\'Agente')
+    Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agente')
+    Mieinfo.checkLinksOnIcon('Risorse per l\'Agente')
+  });
+  it('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agente', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Risorse per l\'Agente');
+    Mieinfo.checkPageOnSubMenu('Risorse per l\'Agente')
   })
 
-  context('Menu Il Mondo Allianz', () => {
-
-    it('Verifica aggancio Il Mondo Allianz', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Il Mondo Allianz')
-      Mieinfo.checkLinksOnSubMenu('Il Mondo Allianz')
-      Mieinfo.checkLinksOnIcon('Il Mondo Allianz')
-    })
-    it('Verifica aggancio su tutte le sotto pagine di Il Mondo Allianz', function () {
-      TopBar.clickMieInfo()
-      Mieinfo.clickLinkOnMenu('Il Mondo Allianz');
-      Mieinfo.checkPageOnSubMenu('Il Mondo Allianz')
-    })
+  it('Verifica aggancio Il Mondo Allianz', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Il Mondo Allianz')
+    Mieinfo.checkLinksOnSubMenu('Il Mondo Allianz')
+    Mieinfo.checkLinksOnIcon('Il Mondo Allianz')
+  })
+  it('Verifica aggancio su tutte le sotto pagine di Il Mondo Allianz', function () {
+    TopBar.clickMieInfo()
+    Mieinfo.clickLinkOnMenu('Il Mondo Allianz');
+    Mieinfo.checkPageOnSubMenu('Il Mondo Allianz')
   })
 })

@@ -62,7 +62,7 @@ class Common {
 
     }
 
-    if (mockedNotifications) {
+    if (mockedNews) {
 
       cy.intercept('POST', '**/graphql', (req) => {
         if (req.body.operationName.includes('news')) {

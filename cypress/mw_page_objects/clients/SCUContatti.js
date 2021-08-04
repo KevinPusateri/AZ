@@ -424,16 +424,7 @@ class SCUContatti {
             if (!row.is(':visible'))
               assert.isTrue(true, 'contatto eliminato')
             else
-              assert.fail('il contatto non è stato eliminato')            // .find('app-client-contact-table-row').should('not.contain.text',contatto.tipo)
-            // .and('not.contain.text',contatto.principale)
-            // .and('not.contain.text',contatto.prefissoInt)
-            // .and('not.contain.text',contatto.prefisso)
-            // .and('not.contain.text', contatto.phone)
-            // cy.wrap(table).find('app-client-contact-table-row').should('not.contain.text',contatto.tipo)
-            // .and('not.contain.text',contatto.principale)
-            // .and('not.contain.text',contatto.prefissoInt)
-            // .and('not.contain.text',contatto.prefisso)
-            // .and('not.contain.text', contatto.phone)
+              assert.fail('il contatto non è stato eliminato')         
           })
       }
     })

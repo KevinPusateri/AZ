@@ -61,8 +61,8 @@ function mysqlFinish(dbConfig, rowId, tests) {
         if (tests.test[i].resultOutCome !== 'Passed') {
             resultOutCome = tests.test[i].resultOutCome
             //Also get the error message
-            resultMessage = tests.test[i].resultMessage.toString()
-            resultStack = tests.test[i].resultStack.toString()
+            resultMessage = tests.test[i].resultMessage.length > 1000 ? tests.test[i].resultMessage.substring(0,999) : tests.test[i].resultMessage
+            resultStack = tests.test[i].resultStack.length > 5000 ? tests.test[i].resultStack.substring(0,4999) : tests.test[i].resultStack
         }
     }
 
@@ -71,8 +71,8 @@ function mysqlFinish(dbConfig, rowId, tests) {
     var query = "UPDATE TC_Log SET NTC=" + tests.ntc + "," +
         "DataFine='" + currentDateTime + "'," +
         "ResultOutcome='" + resultOutCome + "'," +
-        "ResultMessage='" + resultMessage.substring(0, 999).replace('\'','') + "'," +
-        "ResultStack='" + resultStack.substring(0, 4999).replace('\'','') + "' " +
+        "ResultMessage='" + resultMessage + "'," +
+        "ResultStack='" + resultStack + "' " +
         "WHERE Id=" + rowId
 
     return new Promise((resolve, reject) => {
@@ -222,13 +222,13 @@ module.exports = (on, config) => {
     });
 
     on("task", {
-        startMyql({ dbConfig, testCaseName, currentEnv, currentUser }) {
+        startMysql({ dbConfig, testCaseName, currentEnv, currentUser }) {
             return mysqlStart(dbConfig, testCaseName, currentEnv, currentUser)
         }
     });
 
     on("task", {
-        finishMyql({ dbConfig, rowId, tests }) {
+        finishMysql({ dbConfig, rowId, tests }) {
             return mysqlFinish(dbConfig, rowId, tests)
         }
     });
@@ -259,6 +259,14 @@ module.exports = (on, config) => {
             //console.info("--> Generate Contatto for test : " + JSON.stringify(contatto));
 
             return contatto;
+        }
+    })
+
+    on("task", {
+        getHostName(){
+            return new Promise((resolve) => {
+                return resolve(os.hostname().toUpperCase())
+            })
         }
     })
 };

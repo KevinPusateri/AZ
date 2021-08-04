@@ -21,7 +21,7 @@ class SintesiCliente {
         }).as('pageClient');
         cy.intercept('POST', '**/graphql', (req) => {
             // Queries
-            aliasQuery(req, 'clientContractValidation')
+            //aliasQuery(req, 'clientContractValidation')
             aliasQuery(req, 'fastQuoteProfiling')
             aliasQuery(req, 'getScopes')
 
@@ -29,7 +29,7 @@ class SintesiCliente {
         cy.get('lib-client-item').should('be.visible')
         cy.get('lib-client-item').first().click()
         cy.wait('@pageClient', { requestTimeout: 60000 });
-        cy.wait('@gqlclientContractValidation', { requestTimeout: 60000 })
+        //cy.wait('@gqlclientContractValidation', { requestTimeout: 60000 })
         cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 60000 })
         cy.wait('@gqlgetScopes', { requestTimeout: 60000 })
     }
@@ -632,7 +632,7 @@ class SintesiCliente {
     }
 
     static retriveClientNameAndAddress() {
-        return new Promise((resolve, reject) => {
+        return new Cypress.Promise((resolve, reject) => {
             let client = { name: '', address: '' }
             cy.get('div[class*=client-name]').invoke('text')
                 .then(currentClientName => {
@@ -649,6 +649,17 @@ class SintesiCliente {
             resolve(client);
         });
     }
+
+    static retriveUrl(){
+        return new Cypress.Promise((resolve) => {
+            resolve(cy.url())
+        })
+    }
+
+    static visitUrlClient(currentUrl){
+        cy.visit(currentUrl)
+    }
+
     /**
      * Verifica se la Scheda del Cliente ha presente o meno il Numero o la Mail principale
      * @param {*} contactType tipo di contatto a scelta tra 'numero' e 'mail'
@@ -660,7 +671,7 @@ class SintesiCliente {
                 .then(body => {
                     let missingValue
                     (contactType === 'numero') ? missingValue = 'Aggiungi numero principale' : missingValue = ' Aggiungi mail principale '
-                    if (body.find('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').length > 0)
+                    if (body.find('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').is(':visible'))
                         resolve(false)
                     else
                         resolve(true)

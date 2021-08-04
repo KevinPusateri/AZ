@@ -126,7 +126,7 @@ class LandingRicerca {
                 req.alias = 'gqlSearch'
             }
         });
-        
+
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type(value).type('{enter}').wait(2000)
 
@@ -166,7 +166,7 @@ class LandingRicerca {
     /**
      * Seleziona un Cliente Random dalla lista di ricerca ritornata
      */
-    static clickRandomResult(clientType = 'P') {
+    static clickRandomResult(clientForm = 'PG', clientType = 'P') {
         //Attende il caricamento della scheda cliente
         const searchOtherMember = () => {
 
@@ -184,7 +184,7 @@ class LandingRicerca {
                 cy.get('body').then(($body) => {
                     const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
                     if (check) {
-                        this.searchRandomClient(true, "PG", clientType)
+                        this.searchRandomClient(true, clientForm, clientType)
                         searchOtherMember()
                     }
 
@@ -308,11 +308,11 @@ class LandingRicerca {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
         cy.get('nx-modal-container').find('lib-da-link').contains(link).click()
 
-        Common.canaleFromPopup()
+         Common.canaleFromPopup()
 
         if (link === 'Ricerca Polizze proposte' || link === 'Ricerca Preventivi') {
             cy.wait('@danni', { requestTimeout: 30000 })
-            cy.wait(2000)
+            cy.wait(3000)
         }
 
     }
@@ -439,7 +439,7 @@ class LandingRicerca {
                 break
         }
 
-        cy.get('lib-navigation-item-link').find('.title').should('have.length', linkLength)
+        cy.get('lib-navigation-item-link').should('be.visible').find('.title').should('have.length', linkLength)
             .each(($suggerimenti, i) => {
                 expect($suggerimenti.text()).to.include(suggLinks[i]);
             })
@@ -522,14 +522,14 @@ class LandingRicerca {
                                     assert.fail('Manca titolo su un elemento della su pagina handbook')
                                 }
                             })
-                            // Verifica Testo skippato 
-                            // cy.wrap($hanbooks).find('[class="text"]').each($text =>{
-                            //     if($text.text().substring(0,5).trim().length > 0){
-                            //         cy.wrap($text).should('contain', $text.text().trim().substring(0,5))
-                            //     }else{
-                            //         assert.fail('Manca un\'anteprima del testo su un elemento della pagina handbook')
-                            //     }
-                            // }) 
+                            Verifica Testo skippato 
+                            cy.wrap($hanbooks).find('[class="text"]').each($text =>{
+                                if($text.text().substring(0,5).trim().length > 0){
+                                    cy.wrap($text).should('contain', $text.text().trim().substring(0,5))
+                                }else{
+                                    assert.fail('Manca un\'anteprima del testo su un elemento della pagina handbook')
+                                }
+                            }) 
                 
                         })*/
                 //#endregion Company Handbook
@@ -624,17 +624,38 @@ class LandingRicerca {
      * Verifica che la ricerca non ha prodotto risultati
      */
     static checkClienteNotFound(cliente) {
-        cy.get('body').then(($body) => {
-
+        cy.get('body').as('body').then(($body) => {
+            cy.get('lib-clients-container').should('be.visible')
             const check = $body.find('span:contains("La ricerca non ha prodotto risultati")').is(':visible')
             if (check) {
                 cy.get('body').should('contain.text', 'La ricerca non ha prodotto risultati')
             } else {
-                cy.get('body').find('lib-client-item', { timeout: 30000 }).first().click().wait(2000)
-                cy.get('body').then(() => {
-
-                    cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
+                cy.intercept('POST', '**/graphql', (req) => {
+                    if (req.body.operationName.includes('client')) {
+                        req.alias = 'client'
+                    }
+                });
+        
+                cy.get('@body').find('lib-client-item', { requestTimeouttimeout: 10000 }).first().click()
+        
+                cy.wait('@client', { requestTimeout: 30000 });
+                cy.get('@body').then($body =>{
+                    cy.wrap($body).should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari',{requestTimeout:10000})
+                    const check = $body.find('lib-page-layout:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+                    debugger
+                    if(check){
+                        assert.isTrue(true, 'Cliente eliminato');
+                    }else{
+                        assert.fail('Cliente non è stato eliminato -> '+cliente);
+                    }
                 })
+                // cy.get('body').then(() => {
+                //     cy.get('app-client-profile-tabs').should('', { requestTimeout: 20000 })
+                    // if(checkScheda){
+                    //     cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
+                    // }else
+                    //     assert.fail('Il seguente cliente non è stato eliminato: '+ cliente)
+                // })
             }
         })
     }
