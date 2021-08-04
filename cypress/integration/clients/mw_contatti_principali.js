@@ -39,7 +39,7 @@ let cliente
  */
 const searchClientWithoutContattiPrincipali = (contactType) => {
     LandingRicerca.searchRandomClient(true, "PF", "P")
-    LandingRicerca.clickRandomResult()
+    LandingRicerca.clickRandomResult("PF","P")
 
     SintesiCliente.checkContattoPrincipale(contactType).then(contactIsPresent => {
         if (!contactIsPresent)
@@ -48,7 +48,6 @@ const searchClientWithoutContattiPrincipali = (contactType) => {
             searchClientWithoutContattiPrincipali(contactType)
 
     })
-    searchClientWithoutLegame()
 }
 //#endregion
 
@@ -86,6 +85,7 @@ after(function () {
 })
 //#endregion Before After
 
+let urlClient
 describe('Matrix Web : Clients Numero e Mail Principali', {
     retries: {
         runMode: 0,
@@ -100,14 +100,17 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
         SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
             cliente = currentClient
         })
+
+        SintesiCliente.retriveUrl().then(currentUrl => {
+            urlClient = currentUrl
+        })
+
         SintesiCliente.aggiungiContattoPrincipale('numero')
         SCUContatti.aggiungiNuovoTelefonoPrincipale(contatto)
     })
 
     it('Verifica Numero Principale inserito', () => {
-        HomePage.reloadMWHomePage()
-        TopBar.search(cliente.name)
-        LandingRicerca.clickClientName(cliente)
+        SintesiCliente.visitUrlClient(urlClient)
         SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
         SintesiCliente.checkContattoPrincipale('numero').then(contactIsPresent => {
             if (!contactIsPresent)
@@ -122,14 +125,16 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
         SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
             cliente = currentClient
         })
+        SintesiCliente.retriveUrl().then(currentUrl => {
+            urlClient = currentUrl
+        })
+
         SintesiCliente.aggiungiContattoPrincipale('mail')
         SCUContatti.aggiungiNuovaMailPrincipale(contatto)
     })
 
     it('Verifica Mail Principale inserita', () => {
-        HomePage.reloadMWHomePage()
-        TopBar.search(cliente.name)
-        LandingRicerca.clickClientName(cliente)
+        SintesiCliente.visitUrlClient(urlClient)
         SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
         SintesiCliente.checkContattoPrincipale('mail').then(contactIsPresent => {
             if (!contactIsPresent)

@@ -324,7 +324,7 @@ class SCUContatti {
     this.addPhone(contatto);
 
     //click salva
-    getSCU().find('#submit:contains("Salva")').click().wait(8000);
+    getSCU().find('#submit:contains("Salva")').click();
   }
 
   static aggiungiNuovaMailPrincipale(contatto) {
