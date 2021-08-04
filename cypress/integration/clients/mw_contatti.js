@@ -42,6 +42,7 @@ before(() => {
     contatto.prefisso = ""
     contatto.orario = ""
   })
+  HomePage.closeIndidentBox()
 })
 
 beforeEach(() => {
