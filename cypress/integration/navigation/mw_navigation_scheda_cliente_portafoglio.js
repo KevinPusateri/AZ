@@ -65,7 +65,7 @@ describe('MW: Navigazioni da Scheda Cliente - Tab Portafoglio', function () {
         Portafoglio.back()
     })
 
-    it.only('Verifica subTab Proposte', function () {
+    it('Verifica subTab Proposte', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Proposte')
         Portafoglio.checkProposte()
