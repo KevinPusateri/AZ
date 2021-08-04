@@ -589,7 +589,9 @@ class SintesiCliente {
 
         cy.wait('@questionariWeb', { requestTimeout: 60000 })
 
-        getIFrame().find('#ButtonQuestOk').click()
+        getIFrame().within(($frame) => {
+            $frame.find('#ButtonQuestOk').click()
+        })
     }
 
     /**

@@ -260,9 +260,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
-            if (currentHostName.includes('SM'))
-                this.skip()
-            else {
+            if (!currentHostName.includes('SM')) {
                 TopBar.clickSales()
                 BurgerMenuSales.clickLink('Allianz Global Assistance')
             }

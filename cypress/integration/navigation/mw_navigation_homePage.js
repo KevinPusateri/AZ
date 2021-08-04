@@ -71,11 +71,8 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     it('Verifica Top Menu incident - Verifica atterraggio Elenco telefonico', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
-            if (currentHostName.includes('SM'))
-                this.skip()
-            else {
+            if (!currentHostName.includes('SM'))
                 TopBar.clickLinkOnIconIncident('Elenco telefonico')
-            }
         })
     })
 
