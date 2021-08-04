@@ -64,9 +64,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     it('Verifica aggancio Analisi dei bisogni', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
-            if (currentHostName.includes('SM'))
-                this.skip()
-            else {
+            if (!currentHostName.includes('SM')){
                 TopBar.clickClients()
                 Clients.clickLinkRapido('Analisi dei bisogni')
             }

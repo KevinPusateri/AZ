@@ -42,6 +42,7 @@ before(() => {
     contatto.prefisso = ""
     contatto.orario = ""
   })
+  HomePage.closeIndidentBox()
 })
 
 beforeEach(() => {
@@ -187,7 +188,7 @@ describe('Matrix Web : Creazione Contatto', function () {
 
   it('Verifica Email sia inserito nella tabella', function () {
     SintesiCliente.visitUrlClient(urlClient)
-    
+
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
@@ -199,7 +200,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       contatto = contact
     })
     SintesiCliente.visitUrlClient(urlClient)
-    
+
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
@@ -223,7 +224,7 @@ describe('Matrix Web : Creazione Contatto', function () {
 
   it('Verifica Sito Web sia inserito nella tabella', function () {
     SintesiCliente.visitUrlClient(urlClient)
-    
+
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
@@ -235,7 +236,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       contatto = contact
     })
     SintesiCliente.visitUrlClient(urlClient)
-    
+
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
@@ -259,7 +260,7 @@ describe('Matrix Web : Creazione Contatto', function () {
 
   it('Verifica Numero Verde sia inserito nella tabella', function () {
     SintesiCliente.visitUrlClient(urlClient)
-    
+
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
@@ -270,7 +271,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       contatto = contact
     })
     SintesiCliente.visitUrlClient(urlClient)
-    
+
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
@@ -295,7 +296,7 @@ describe('Matrix Web : Creazione Contatto', function () {
 
   it('Verifica Fax Verde sia inserito nella tabella', function () {
     SintesiCliente.visitUrlClient(urlClient)
-    
+
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
@@ -307,7 +308,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       contatto = contact
     })
     SintesiCliente.visitUrlClient(urlClient)
-    
+
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
@@ -332,7 +333,7 @@ describe('Matrix Web : Creazione Contatto', function () {
 
   it('Verifica Ufficio sia inserito nella tabella', function () {
     SintesiCliente.visitUrlClient(urlClient)
-    
+
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
@@ -344,7 +345,7 @@ describe('Matrix Web : Creazione Contatto', function () {
       contatto = contact
     })
     SintesiCliente.visitUrlClient(urlClient)
-    
+
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
@@ -353,6 +354,7 @@ describe('Matrix Web : Creazione Contatto', function () {
   it('Verifica l\'operazione di inserimento - tipo: PEC', function () {
     LandingRicerca.searchRandomClient(true, "PF", "E")
     LandingRicerca.clickRandomResult('PF')
+
     SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
       client = currentClient
     })
@@ -368,8 +370,6 @@ describe('Matrix Web : Creazione Contatto', function () {
 
   it('Verifica PEC sia inserito nella tabella', function () {
     SintesiCliente.visitUrlClient(urlClient)
-    
-
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
@@ -380,8 +380,6 @@ describe('Matrix Web : Creazione Contatto', function () {
       contatto = contact
     })
     SintesiCliente.visitUrlClient(urlClient)
-    
-
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)

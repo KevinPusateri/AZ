@@ -109,6 +109,14 @@ class HomePage {
 
         })
     }
+
+    static closeIndidentBox(){
+        cy.wait(4000)
+        cy.get('body').then($body => {
+            if ($body.find('.lib-incident-notification').length > 0)
+                cy.get('.nx-icon--close').click()
+        });
+    }
 }
 
 export default HomePage

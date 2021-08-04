@@ -14,6 +14,7 @@ const getIFrame = () => {
 
 class SintesiCliente {
 
+
     static wait() {
         cy.intercept({
             method: 'POST',
@@ -24,14 +25,14 @@ class SintesiCliente {
             //aliasQuery(req, 'clientContractValidation')
             aliasQuery(req, 'fastQuoteProfiling')
             aliasQuery(req, 'getScopes')
-
         })
         cy.get('lib-client-item').should('be.visible')
         cy.get('lib-client-item').first().click()
         cy.wait('@pageClient', { requestTimeout: 60000 });
         //cy.wait('@gqlclientContractValidation', { requestTimeout: 60000 })
-        cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 60000 })
-        cy.wait('@gqlgetScopes', { requestTimeout: 60000 })
+        // cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 60000 })
+        // cy.wait('@gqlgetScopes', { requestTimeout: 60000 })
+        cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
     }
 
     static checkTabs() {
@@ -589,7 +590,9 @@ class SintesiCliente {
 
         cy.wait('@questionariWeb', { requestTimeout: 60000 })
 
-        getIFrame().find('#ButtonQuestOk').click()
+        getIFrame().within(($frame) => {
+            $frame.find('#ButtonQuestOk').click()
+        })
     }
 
     /**
@@ -650,13 +653,13 @@ class SintesiCliente {
         });
     }
 
-    static retriveUrl(){
+    static retriveUrl() {
         return new Cypress.Promise((resolve) => {
             resolve(cy.url())
         })
     }
 
-    static visitUrlClient(currentUrl){
+    static visitUrlClient(currentUrl) {
         cy.visit(currentUrl)
     }
 

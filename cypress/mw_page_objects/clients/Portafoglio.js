@@ -64,15 +64,15 @@ class Portafoglio {
         getIFrame().find('#casella-ricerca').should('be.visible').and('contain.text', 'Cerca')
     }
 
-    static checkProposte(){
+    static checkProposte() {
         cy.get('app-wallet-proposals').should('be.visible')
         cy.get('app-contract-card').should('be.visible')
         cy.get('lib-filter-button-with-modal').should('be.visible')
         cy.get('app-contract-card').first().click()
         cy.wait(10000)
         Common.canaleFromPopup()
-        cy.wait(12000)
-        getIFrame().find('input[value="  Esci  "]').invoke('attr', 'value').should('equal', '  Esci  ')
+        cy.wait(15000)
+        cy.getIFrame().find('#AZBuilder1_ctl13_cmdEsci').should('be.visible')
 
     }
 

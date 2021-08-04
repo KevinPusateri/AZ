@@ -77,9 +77,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
     it('Verifica aggancio X - Advisor', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
-            if (currentHostName.includes('SM'))
-                this.skip()
-            else {
+            if (!currentHostName.includes('SM')) {
                 TopBar.clickNumbers()
                 BurgerMenuNumbers.clickLink('X - Advisor')
             }
