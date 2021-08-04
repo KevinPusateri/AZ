@@ -72,7 +72,7 @@ class Portafoglio {
         cy.wait(10000)
         Common.canaleFromPopup()
         cy.wait(12000)
-        getIFrame().find('input[value="  Esci  "]').invoke('attr', 'value').should('equal', '  Esci  ')
+        getIFrame().find('#AZBuilder1_ctl13_cmdEsci').should('be.visible')
 
     }
 
