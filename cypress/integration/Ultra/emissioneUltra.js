@@ -4,7 +4,6 @@
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import 'cypress-iframe';
-import { find } from "cypress/types/lodash";
 //#endregion
 
 //#region Configuration
