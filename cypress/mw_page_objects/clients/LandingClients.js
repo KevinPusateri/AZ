@@ -169,7 +169,7 @@ class LandingClients {
                     .should('include', '+');
                 cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
                 cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
-                cy.get('app-digital-me-context-menu ').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
+                cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
                 cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
             } else {
                 cy.get('app-dm-requests').find('p').should('contain.text', 'Non ci sono dati da mostrare')
@@ -212,7 +212,7 @@ class LandingClients {
                 cy.get('tr[class="nx-table-row ng-star-inserted"]').first().find('button[class="row-more-icon-button"]').click()
                 switch (checkAttivita) {
                     case 'Firma Digital Me':
-                        cy.get('app-digital-me-context-menu ').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
+                        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
                         break;
                     case 'Attivazione Consensi Digital Me':
@@ -227,7 +227,7 @@ class LandingClients {
                             .should('include', '+');
                         cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
                         cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
-                        cy.get('app-digital-me-context-menu ').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
+                        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
                         break;
                 }

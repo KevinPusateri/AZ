@@ -89,7 +89,7 @@ class ArchivioCliente {
         .should('include', '+');
         cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
         cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
-        cy.get('app-digital-me-context-menu ').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
+        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
         
 
