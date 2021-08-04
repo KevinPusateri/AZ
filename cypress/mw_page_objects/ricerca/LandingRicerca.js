@@ -177,7 +177,8 @@ class LandingRicerca {
             });
 
             cy.get('.ps--active-y').should('be.visible').then(($clienti) => {
-                let schedeClienti = $clienti.find('lib-client-item')
+                // let schedeClienti = $clienti.find('lib-client-item')
+                let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
                 let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
                 cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
                 cy.wait(10000)
@@ -308,7 +309,7 @@ class LandingRicerca {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
         cy.get('nx-modal-container').find('lib-da-link').contains(link).click()
 
-         Common.canaleFromPopup()
+        Common.canaleFromPopup()
 
         if (link === 'Ricerca Polizze proposte' || link === 'Ricerca Preventivi') {
             cy.wait('@danni', { requestTimeout: 30000 })
@@ -635,26 +636,26 @@ class LandingRicerca {
                         req.alias = 'client'
                     }
                 });
-        
+
                 cy.get('@body').find('lib-client-item', { requestTimeouttimeout: 10000 }).first().click()
-        
+
                 cy.wait('@client', { requestTimeout: 30000 });
-                cy.get('@body').then($body =>{
-                    cy.wrap($body).should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari',{requestTimeout:10000})
+                cy.get('@body').then($body => {
+                    cy.wrap($body).should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari', { requestTimeout: 10000 })
                     const check = $body.find('lib-page-layout:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
                     debugger
-                    if(check){
+                    if (check) {
                         assert.isTrue(true, 'Cliente eliminato');
-                    }else{
-                        assert.fail('Cliente non è stato eliminato -> '+cliente);
+                    } else {
+                        assert.fail('Cliente non è stato eliminato -> ' + cliente);
                     }
                 })
                 // cy.get('body').then(() => {
                 //     cy.get('app-client-profile-tabs').should('', { requestTimeout: 20000 })
-                    // if(checkScheda){
-                    //     cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
-                    // }else
-                    //     assert.fail('Il seguente cliente non è stato eliminato: '+ cliente)
+                // if(checkScheda){
+                //     cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
+                // }else
+                //     assert.fail('Il seguente cliente non è stato eliminato: '+ cliente)
                 // })
             }
         })
