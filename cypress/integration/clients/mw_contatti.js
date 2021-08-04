@@ -350,7 +350,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
   })
-  it.only('Verifica l\'operazione di inserimento - tipo: PEC', function () {
+  it('Verifica l\'operazione di inserimento - tipo: PEC', function () {
     LandingRicerca.searchRandomClient(true, "PF", "E")
     LandingRicerca.clickRandomResult('PF')
 
@@ -367,20 +367,18 @@ describe('Matrix Web : Creazione Contatto', function () {
     })
   })
 
-  it.only('Verifica PEC sia inserito nella tabella', function () {
+  it('Verifica PEC sia inserito nella tabella', function () {
     SintesiCliente.visitUrlClient(urlClient)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
   })
 
-  it.only('Verifica la modifica: PEC ', function () {
+  it('Verifica la modifica: PEC ', function () {
     SCUContatti.modificaContatti(contatto).then(contact => {
       contatto = contact
     })
     SintesiCliente.visitUrlClient(urlClient)
-
-
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
