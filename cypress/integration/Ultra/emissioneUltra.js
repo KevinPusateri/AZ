@@ -4,7 +4,6 @@
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import 'cypress-iframe';
-import { find } from "cypress/types/lodash";
 //#endregion
 
 //#region Configuration
@@ -13,11 +12,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-//var ambiente = "preprod";
-//var cliente = "PAOLO MAGRIS"
-//var cliente = "MARIO MENEGALDO"
 var cliente = "MARIO ROSSO"
-//var cliente = "PIERO VERDE"
 var ambiti = ['Fabbricato', 'Contenuto']
 let nuovoCliente;
 let iFrameUltra = '[class="iframe-content ng-star-inserted"]'
