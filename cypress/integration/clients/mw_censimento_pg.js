@@ -80,6 +80,7 @@ after(function () {
 })
 //#endregion Before After
 
+let urlClient
 describe('Matrix Web : Censimento Nuovo Cliente PG', {
   retries: {
     runMode: 0,
@@ -121,6 +122,9 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', {
   })
 
   it('Verificare varie informazioni cliente', () => {
+    SintesiCliente.retriveUrl().then(currentUrl => {
+      urlClient = currentUrl
+    })
     SintesiCliente.verificaDatiSpallaSinistra(nuovoClientePG)
     DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(nuovoClientePG)
     ArchivioCliente.clickTabArchivioCliente()
@@ -132,9 +136,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', {
 
   it('Emettere una Plein Air e verifica presenza in Folder', () => {
     SintesiCliente.emettiPleinAir()
-    HomePage.reloadMWHomePage()
-    TopBar.search(nuovoClientePG.partitaIva)
-    LandingRicerca.clickFirstResult()
+    SintesiCliente.visitUrlClient(urlClient)
     SintesiCliente.verificaInFolder(["PleinAir"])
   })
 })
