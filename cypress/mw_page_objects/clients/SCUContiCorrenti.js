@@ -70,7 +70,7 @@ class SCUContiCorrenti {
     * Verifica contoCorrente modificato
     * @param {string} contoCorrente - Object contoCorrente creato
     */
-    static modificaConto(contoCorrente) {
+    static modificaConto(contoCorrente,client) {
         cy.get("app-client-bank-accounts").then((table) => {
             cy.wrap(table)
                 .find(
@@ -97,7 +97,7 @@ class SCUContiCorrenti {
             else
                 assert.fail('Iban non valido')
 
-            getSCU().find('#intestatario').type(client.name)
+            getSCU().find('#intestatario').type('xx')
             contoCorrente.intestatario = 'xx'
 
             getSCU().find('#iban').invoke('attr', 'data-bind').should('equal', contoCorrente.iban)

@@ -55,24 +55,58 @@ class Portafoglio {
     static checkPreventivi() {
         cy.get('lib-da-link').should('be.visible')
         cy.get('lib-filters-sorting').should('be.visible')
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('contract')) {
+                req.alias = 'gqlcontract'
+            }
+
+        })
         cy.get('app-wallet-quotations').find('app-section-title').should('contain.text', 'Preventivi')
+        // cy.wait('@gqlcontract', { requestTimeout: 40000 }).then((interception) => {
+        //     expect(interception.response.statusCode).to.be.eq(200);
+        // });
         cy.get('lib-filter-button-with-modal').should('be.visible')
-        cy.get('app-contract-card').should('be.visible').first().click()
-        cy.wait(10000)
-        Common.canaleFromPopup()
-        cy.wait(10000)
-        getIFrame().find('#casella-ricerca').should('be.visible').and('contain.text', 'Cerca')
+        cy.get('app-contract-card').should('be.visible')
+        cy.get('app-contract-card').first().within(() => {
+            // cy.get('div[class="title-info"]').find('[class="value"]').should('contain.text','202')
+            // cy.get('div[class="title-info"]').find('[class="value"]').then(($textDate) => {
+            //     cy.wrap($textDate).contains('giu 2021')
+            // })
+        })
+        cy.get('app-contract-card').first().then(() => {
+            cy.wait(10000)
+            cy.get('app-contract-card').first().click()
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('digitalAgencyLink')) {
+                    req.alias = 'gqlDigitalAgencyLink'
+                }
+            })
+            // cy.wait(10000)
+            Common.canaleFromPopup()
+            // cy.wait(10000)
+            cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 }).then((interception) => {
+                expect(interception.response.statusCode).to.be.eq(200);
+            });
+
+            getIFrame().find('#casella-ricerca').should('be.visible').and('contain.text', 'Cerca')
+        })
     }
 
     static checkProposte() {
         cy.get('app-wallet-proposals').should('be.visible')
         cy.get('app-contract-card').should('be.visible')
         cy.get('lib-filter-button-with-modal').should('be.visible')
-        cy.get('app-contract-card').first().click()
         cy.wait(10000)
+        cy.get('app-contract-card').first().click()
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('digitalAgencyLink')) {
+                req.alias = 'gqlDigitalAgencyLink'
+            }
+        })
         Common.canaleFromPopup()
-        cy.wait(15000)
-        cy.getIFrame().find('#AZBuilder1_ctl13_cmdEsci').should('be.visible')
+        cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 })
+        cy.wait(10000)
+        getIFrame().find('#AZBuilder1_ctl08_cmdNote').should('exist').and('be.visible')
 
     }
 
