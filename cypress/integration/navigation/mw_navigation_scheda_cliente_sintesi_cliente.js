@@ -34,16 +34,6 @@ beforeEach(() => {
     TopBar.search('Pulini Francesco')
     SintesiCliente.wait()
 })
-
-// afterEach(function () {
-//     if (this.currentTest.state === 'failed' &&
-//         this.currentTest._currentRetry === this.currentTest._retries) {
-//         HomePage.reloadMWHomePage()
-//         TopBar.search('Pulini Francesco')
-//         SintesiCliente.wait()
-//     }
-// });
-
 after(function () {
     TopBar.logOutMW()
     //#region Mysql
