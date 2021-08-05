@@ -274,8 +274,8 @@ class SCU {
         else {
             //Popup Risulta un UNICO...
             getSCU().then($body => {
-                if ($body.find('button:contains("SI")').length > 0) {
-                    $body.find('button:contains("SI")').click();
+                if ($body.find('button:contains("NO")').length > 0) {
+                    $body.find('button:contains("NO")').click();
                 }
             });
             //Nessun documento da stampare...

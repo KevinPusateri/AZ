@@ -575,7 +575,7 @@ class SintesiCliente {
             method: 'POST',
             url: '**/dacontabilita/**'
         }).as('dacontabilita');
-        getIFrame().find('#ButtonQuestOk').click().wait(10000)
+        getIFrame().find('#ButtonQuestOk').click().wait(15000)
         cy.wait('@dacontabilita', { requestTimeout: 60000 })
         getIFrame().find('#TabVarieInserimentoTipoPagamento').click()
         getIFrame().find('li').contains("Contanti").click()
