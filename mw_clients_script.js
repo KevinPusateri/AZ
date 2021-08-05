@@ -141,6 +141,7 @@ async function main() {
 				quiet: true,
 				spec: fullTests[i],
 				headed: headed,
+				exit: true,
 				reporter: 'junit',
 				reporterOptions: {
 					"mochaFile": "./results//Report_" + specName.toUpperCase() + ".xml",

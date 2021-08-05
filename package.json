@@ -20,8 +20,9 @@
     "rimraf": "^3.0.2"
   },
   "devDependencies": {
-    "cypress-iframe": "^1.0.1",
     "cypress": "^8.1.0",
+    "cypress-iframe": "^1.0.1",
+    "cypress-plugin-tab": "^1.0.5",
     "npm-run-all": "^4.1.5"
   },
   "config": {

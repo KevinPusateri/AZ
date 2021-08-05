@@ -89,7 +89,6 @@ class TopBar extends HomePage {
      * Logout
      */
     static logOutMW() {
-
         cy.get('lib-user-header').should('be.visible')
         cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]').click({force: true});
         cy.contains('Logout').click({force:true})
