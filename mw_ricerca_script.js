@@ -135,7 +135,7 @@ async function main() {
 					"toConsole": false
 				},
 				config: {
-					video: false
+					video: true
 				}
 			}
 		})
