@@ -53,10 +53,22 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
 })
+afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+        TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
+})
 
 after(function () {
     TopBar.logOutMW()
-    
+
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
@@ -67,7 +79,7 @@ after(function () {
 })
 //#endregion Before After
 
-
+let urlClient
 describe('Matrix Web : Creazione Indirizzo', function () {
 
     it('Verifica l\'operazione di inserimento Indirizzo', function () {
@@ -75,6 +87,9 @@ describe('Matrix Web : Creazione Indirizzo', function () {
         LandingRicerca.clickRandomResult()
         SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
             client = currentClient
+        })
+        SintesiCliente.retriveUrl().then(currentUrl => {
+            urlClient = currentUrl
         })
         DettaglioAnagrafica.clickTabDettaglioAnagrafica()
         DettaglioAnagrafica.clickSubTab('Altri indirizzi')
@@ -84,9 +99,7 @@ describe('Matrix Web : Creazione Indirizzo', function () {
     })
 
     it('Verifica Indirizzo sia inserito nella tabella', function () {
-        HomePage.reloadMWHomePage()
-        TopBar.search(client.name)
-        LandingRicerca.clickClientName(client, true, 'PF', 'E')
+        SintesiCliente.visitUrlClient(urlClient)
         DettaglioAnagrafica.clickTabDettaglioAnagrafica()
         DettaglioAnagrafica.clickSubTab('Altri indirizzi')
         SCUAltriIndirizzi.checkAltriIndirizzi(indirizzo)
@@ -98,9 +111,7 @@ describe('Matrix Web : Creazione Indirizzo', function () {
         SCUAltriIndirizzi.modificaIndirizzo(indirizzo).then(address => {
             indirizzo = address
         })
-        HomePage.reloadMWHomePage()
-        TopBar.search(client.name)
-        LandingRicerca.clickClientName(client, true, 'PF', 'E')
+        SintesiCliente.visitUrlClient(urlClient)
         DettaglioAnagrafica.clickTabDettaglioAnagrafica()
         DettaglioAnagrafica.clickSubTab('Altri indirizzi')
         SCUAltriIndirizzi.checkAltriIndirizzi(indirizzo)

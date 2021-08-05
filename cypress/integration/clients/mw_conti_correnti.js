@@ -100,15 +100,14 @@ describe('Matrix Web : Conti Correnti', function () {
 
   it('Verifica Conto corrente inserito', function () {
     SintesiCliente.visitUrlClient(urlClient)
-    // TopBar.search(client.name)
-    // LandingRicerca.clickClientName(client)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Conti correnti')
     SCUContiCorrenti.checkContoCorrente(contoCorrente)
   })
-  // it('Verifica Modifica Conto corrente', function () {
-  //   SCUContiCorrenti.modificaConto(contoCorrente)
-  // })
+
+  it('Verifica Modifica Conto corrente', function () {
+    SCUContiCorrenti.modificaConto(contoCorrente)
+  })
 
   it('Verifica Conto corrente eliminato', function () {
     SCUContiCorrenti.eliminaConto(contoCorrente)

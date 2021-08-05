@@ -44,10 +44,7 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 afterEach(function () {
-    if (this.currentTest.state === 'failed' &&
-        //@ts-ignore
-        this.currentTest._currentRetry === this.currentTest._retries) {
-        //@ts-ignore
+    if (this.currentTest.state !== 'passed') {
         TopBar.logOutMW()
         //#region Mysql
         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
@@ -57,7 +54,7 @@ afterEach(function () {
         //#endregion
         Cypress.runner.stop();
     }
-});
+})
 after(function () {
     TopBar.logOutMW()
     //#region Mysql

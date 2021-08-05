@@ -70,7 +70,7 @@ class SCUContiCorrenti {
     * Verifica contoCorrente modificato
     * @param {string} contoCorrente - Object contoCorrente creato
     */
-    static modificaConto(contoCorrente) {
+    static modificaConto(contoCorrente,client) {
         cy.get("app-client-bank-accounts").then((table) => {
             cy.wrap(table)
                 .find(
@@ -82,13 +82,31 @@ class SCUContiCorrenti {
                     cy.wrap(row)
                         .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
                         .click()
-                        .wait(5000);
-                    cy.get("lib-check-user-permissions").contains("Modifica conto corrente").click();
+                    cy.get('button[class="nx-context-menu-item context-link"]').should('be.visible')
+                    cy.get("lib-da-link").contains("Modifica conto corrente").click();
+
                 })
+            cy.fixture('iban.json').then((data) => {
+                var indexScelta = Math.floor(Math.random() * data.iban.length);
+                contoCorrente.iban = data.iban[indexScelta]
+            })
+
+            var validIban = ibantools.isValidIBAN(contoCorrente.iban)
+            if (validIban)
+                getSCU().find('#iban').type(contoCorrente.iban)
+            else
+                assert.fail('Iban non valido')
+
+            getSCU().find('#intestatario').type('xx')
+            contoCorrente.intestatario = 'xx'
+
+            getSCU().find('#iban').invoke('attr', 'data-bind').should('equal', contoCorrente.iban)
+            getSCU().find('span[class="k-dropdown-wrap k-state-default"] > span[class="k-input"]').should('contain.text', contoCorrente.coordinate)
+            getSCU().find('#intestatario').invoke('attr', 'data-bind').should('equal', contoCorrente.intestatario)
         })
 
-        getSCU().find('#iban').should('contain.text', contoCorrente.iban)
-        getSCU().find('span[class="k-dropdown-wrap k-state-default"] > span[class="k-input"]').should('contain.text', contoCorrente.coordinate)
+
+        // getSCU().find('#codFiscale').should('contain.text', contoCorrente.intestatario)
     }
 
     /**
