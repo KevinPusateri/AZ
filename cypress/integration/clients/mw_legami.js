@@ -44,8 +44,6 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 afterEach(function () {
-    console.log('Ocio qua')
-    console.log(this)
     if (this.currentTest.state !== 'passed') {
         TopBar.logOutMW()
         //#region Mysql
