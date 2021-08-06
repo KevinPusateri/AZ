@@ -270,7 +270,19 @@ class SintesiCliente {
    
        
     }
-
+    static DatiPreventivo() {
+        cy.wait(2000)
+        cy.get('.cdk-overlay-container').find('button').contains('NON CONOSCI LA TARGA?').click()
+        cy.wait(2000)
+      /*  Common.canaleFromPopup()
+        getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
+        getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+   */
+  // cy.get('.cdk-overlay-container').find('Targa').type('AA345TG')
+     //  cy.get('input').type('AA345TG')
+    
+       
+    }
     static clickFlotteConvenzioni() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
