@@ -86,6 +86,21 @@ Cypress.Commands.add('iframe', { prevSubject: 'element' }, $iframes => new Cypre
   return Promise.all(loaded).then(resolve);
 }));
 
+//TODO da veridicare l'addEventListener in base all'iframe
+Cypress.Commands.add('isIFrameReady', () => {
+  return cy.window().then({ timeout: 10 * 1000 }, window => {
+    return new Cypress.Promise(resolve => {
+      window.addEventListener('message', e => {
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data
+
+        if (data.code === 'Ready') {
+          resolve()
+        }
+      })
+    })
+  })
+})
+
 Cypress.Commands.add('iframeCustom', { prevSubject: 'element' }, ($iframe) => {
   return new Cypress.Promise((resolve) => {
     $iframe.ready(function () {

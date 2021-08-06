@@ -3,7 +3,7 @@ import Common from "../common/Common";
 import Sales from "../navigation/Sales";
 
 const getIFrame = () => {
-    cy.get('iframe[class="iframe-content ng-star-inserted"]').should('not.be.empty')
+    cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .iframe();
 
     let iframe = cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -214,7 +214,9 @@ class BurgerMenuSales extends Sales {
 
                 cy.wait('@getDanni', { requestTimeout: 40000 })
                 cy.wait('@postDanni', { requestTimeout: 40000 })
-                getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').invoke('attr', 'value').should('equal', 'Applica Filtri')
+                cy.isIFrameReady().then(() => {
+                    getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').invoke('attr', 'value').should('equal', 'Applica Filtri')
+                })
                 break;
             case LinksBurgerMenu.VITA_CORPORATE:
                 cy.intercept({
