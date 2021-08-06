@@ -178,7 +178,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Manutenzione portafoglio RV Midco', function () {
+    it.only('Verifica aggancio Manutenzione portafoglio RV Midco', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Manutenzione portafoglio RV Midco')
         BurgerMenuSales.backToSales()

@@ -154,7 +154,7 @@ class BurgerMenuSales extends Sales {
                 cy.wait('@getSalesPremo', { requestTimeout: 40000 });
                 cy.wait(20000)
                 getIFrame().should('be.visible')
-                getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text','Ricerca')
+                getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text', 'Ricerca')
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
                 Common.canaleFromPopup()
@@ -204,12 +204,19 @@ class BurgerMenuSales extends Sales {
             case LinksBurgerMenu.MANUTENZIONE_PORTAFOGLIO_RV_MIDCO:
                 cy.intercept({
                     method: 'POST',
-                    url: '**/DirMPTF/**'
-                }).as('danni');
+                    url: '**/Danni/**'
+                }).as('postDanni');
+                cy.intercept({
+                    method: 'GET',
+                    url: '**/Danni/**'
+                }).as('getDanni');
                 Common.canaleFromPopup()
-                cy.wait('@danni', { requestTimeout: 40000 });
-                cy.wait(15000)
-                getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri[value="Applica Filtri"]').invoke('attr', 'value').should('equal', 'Applica Filtri')
+
+                cy.wait('@getDanni', { requestTimeout: 40000 })
+                cy.wait('@postDanni', { requestTimeout: 40000 })
+                // cy.wait(20000)
+                cy.get('#matrixIframe').its('0.contentDocument.body').debug()
+                getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').invoke('attr', 'value').should('equal', 'Applica Filtri')
                 break;
             case LinksBurgerMenu.VITA_CORPORATE:
                 cy.intercept({
