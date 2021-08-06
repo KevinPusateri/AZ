@@ -214,9 +214,7 @@ class BurgerMenuSales extends Sales {
 
                 cy.wait('@getDanni', { requestTimeout: 40000 })
                 cy.wait('@postDanni', { requestTimeout: 40000 })
-                cy.isIFrameReady().then(() => {
-                    getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').invoke('attr', 'value').should('equal', 'Applica Filtri')
-                })
+                getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').invoke('attr', 'value').should('equal', 'Applica Filtri')
                 break;
             case LinksBurgerMenu.VITA_CORPORATE:
                 cy.intercept({
