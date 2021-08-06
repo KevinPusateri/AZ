@@ -3,13 +3,13 @@ import Common from "../common/Common";
 import Sales from "../navigation/Sales";
 
 const getIFrame = () => {
-    cy.get('iframe[class="iframe-content ng-star-inserted"]')
+    cy.get('iframe[class="iframe-content ng-star-inserted"]').should('not.be.empty')
         .iframe();
 
-    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+    let iframe = cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .its('0.contentDocument').should('exist');
 
-    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const LinksBurgerMenu = {
@@ -214,8 +214,6 @@ class BurgerMenuSales extends Sales {
 
                 cy.wait('@getDanni', { requestTimeout: 40000 })
                 cy.wait('@postDanni', { requestTimeout: 40000 })
-                // cy.wait(20000)
-                cy.get('#matrixIframe').its('0.contentDocument.body').debug()
                 getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').invoke('attr', 'value').should('equal', 'Applica Filtri')
                 break;
             case LinksBurgerMenu.VITA_CORPORATE:
