@@ -77,7 +77,7 @@ describe('Buca di Ricerca - Risultati Clients', {
       // cy.get('.cdk-overlay-container').find('button').contains('NON CONOSCI LA TARGA?').click()
       // cy.get('.cdk-overlay-container').find('Targa').type('AA345TG')
       // cy.get('input').type('AA345TG')
-       //SintesiCliente.clickPassioneBlu()
+       SintesiCliente.clickPassioneBlu()
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
     })
 })
