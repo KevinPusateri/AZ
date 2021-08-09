@@ -8,7 +8,7 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import { contains } from "cypress/types/jquery"
+//import { contains } from "cypress/types/jquery"
 
 //#region Username Variables
 const userName = 'TUTF021'   // 'TUTF021'
@@ -72,12 +72,11 @@ describe('Buca di Ricerca - Risultati Clients', {
        LandingRicerca.clickFirstResult()
        //cy.wait(2000)
        SintesiCliente.clickAuto()
-      // SintesiCliente.clickPreventivoMotor()
+       SintesiCliente.clickPreventivoMotor()
+       SintesiCliente.DatiPreventivo()
+
       // getIFrame().find('button:contains("NON CONOSCI LA TARGA?"):visible')
-      // cy.get('.cdk-overlay-container').find('button').contains('NON CONOSCI LA TARGA?').click()
-      // cy.get('.cdk-overlay-container').find('Targa').type('AA345TG')
-      // cy.get('input').type('AA345TG')
-       SintesiCliente.clickPassioneBlu()
+      // SintesiCliente.clickPassioneBlu()
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
     })
 })
