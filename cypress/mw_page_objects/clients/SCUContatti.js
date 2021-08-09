@@ -303,7 +303,7 @@ class SCUContatti {
           this.addEmail(contatto);
 
           //click salva
-          getSCU().find('#submit:contains("Salva")').click();
+          getSCU().find('#submit:contains("Salva")').click().wait(8000);
           resolve(contatto);
         });
     });

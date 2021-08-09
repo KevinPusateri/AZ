@@ -488,11 +488,10 @@ class Sales {
                 req.alias = 'digitalAgencyLink'
             }
         });
-
         cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
         cy.get('.cards-container').should('be.visible').find('.card').first().click()
+        cy.wait(15000)
         cy.wait('@digitalAgencyLink', { requestTimeout: 30000 });
-        cy.wait(5000)
         getIFrame().within(() =>{
             cy.get('#AZBuilder1_ctl08_cmdNote').should('be.visible').invoke('attr', 'value').should('equal', 'Note')
         })

@@ -100,9 +100,11 @@ class SCUContiCorrenti {
             getSCU().find('#intestatario').type('xx')
             contoCorrente.intestatario = 'xx'
 
-            getSCU().find('#iban').invoke('attr', 'data-bind').should('equal', contoCorrente.iban)
+            // getSCU().find('#iban').invoke('attr', 'data-bind').should('equal', contoCorrente.iban)
             getSCU().find('span[class="k-dropdown-wrap k-state-default"] > span[class="k-input"]').should('contain.text', contoCorrente.coordinate)
             getSCU().find('#intestatario').invoke('attr', 'data-bind').should('equal', contoCorrente.intestatario)
+            getSCU().find('#submit:contains("Salva")').click().wait(4000);
+
         })
 
 
