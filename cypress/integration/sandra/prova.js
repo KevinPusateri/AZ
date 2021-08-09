@@ -11,7 +11,7 @@ import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 //import { contains } from "cypress/types/jquery"
 
 //#region Username Variables
-const userName = 'TUTF021'   // 'TUTF021'
+const userName = 'TUTF017'   // 'TUTF021'
 const psw = 'P@ssw0rd!'
 //#endregion
 
@@ -73,7 +73,7 @@ describe('Buca di Ricerca - Risultati Clients', {
        //cy.wait(2000)
        SintesiCliente.clickAuto()
        SintesiCliente.clickPreventivoMotor()
-       SintesiCliente.DatiPreventivo()
+     //  SintesiCliente.DatiPreventivo()
 
       // getIFrame().find('button:contains("NON CONOSCI LA TARGA?"):visible')
       // SintesiCliente.clickPassioneBlu()
