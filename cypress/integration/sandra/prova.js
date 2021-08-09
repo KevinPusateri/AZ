@@ -3,6 +3,7 @@
 */
 
 /// <reference types="Cypress" />
+import Common from "../../mw_page_objects/Motor/DatiPreventivo"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -40,7 +41,7 @@ beforeEach(() => {
 })
 
 after(function () {
-    TopBar.logOutMW()
+   // TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
@@ -73,8 +74,8 @@ describe('Buca di Ricerca - Risultati Clients', {
        //cy.wait(2000)
        SintesiCliente.clickAuto()
        SintesiCliente.clickPreventivoMotor()
-     //  SintesiCliente.DatiPreventivo()
-
+       
+       DatiPreventivo.clickCeckTarga()
       // getIFrame().find('button:contains("NON CONOSCI LA TARGA?"):visible')
       // SintesiCliente.clickPassioneBlu()
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
