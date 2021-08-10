@@ -263,7 +263,6 @@ class NoteContratto {
                         cy.get('lib-note-action-modal').should('exist').and('be.visible').within(() => {
                             cy.get('input[name="title"]').clear().type('TEST IMPORTANTE')
                             cy.get('textarea[name="description"]').clear().type('TEST AGGIUNTO NOTA IMPORTANTE')
-                            cy.get('textarea[name="description"]').clear().type('TEST AGGIUNTO NOTA IMPORTANTE')
                             cy.get('span[class="nx-checkbox__control"]').click()
                             cy.get('button').find('span:contains("Salva")').first().click()
                         })
@@ -322,12 +321,42 @@ class NoteContratto {
                         })
 
                         cy.then(() => {
-                            debugger
                             resolve(polizza)
                         })
                     })
 
                 })
+        })
+    }
+
+
+    /**
+     * Verifica dal badge delle note la modifica effettuata
+     * @param {string} testo - titolo o testo modificato 
+     */
+    static checkNotaModificata(testo){
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('@polizza').first().should('exist').then(() => {
+            cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
+                if ($note.find("nx-icon").length > 0) {
+                    cy.get('lib-contract-notes-badge').should('be.visible')
+                    cy.wrap($note).click()
+
+                    cy.get('.cdk-overlay-container').should('be.visible').within(() => {
+                        cy.get('div[class="note-content"]').should('exist').and('be.visible')
+                        cy.get('nx-modal-container')
+                            .should('be.visible')
+                            .and('contain.text', testo)
+                    })
+                    cy.get('.cdk-overlay-container').within(() => {
+                        cy.get('nx-icon[name="close"]').click()
+                    })
+
+                    cy.get('nx-modal-container').should('not.exist')
+                } else {
+                    assert.fail('badge non è presente')
+                }
+            })
         })
     }
 }

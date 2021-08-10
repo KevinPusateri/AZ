@@ -7,9 +7,11 @@ class Common {
    */
   static canaleFromPopup() {
     cy.get('body').then($body => {
+      cy.get('nx-modal-container').should('be.visible')
       if ($body.find('nx-modal-container').length > 0) {
         cy.wait(2000)
-        cy.get('nx-modal-container').find('.agency-row').first().click()
+        cy.get('div[ngclass="agency-row"]').should('be.visible')
+        cy.get('div[ngclass="agency-row"]').first().click()
       }
     })
   }

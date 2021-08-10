@@ -78,7 +78,6 @@ describe('Matrix Web : Note di contratto', function () {
         })
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Polizze attive')
-
         NoteContratto.inserisciNotaContratto()
     })
 
@@ -125,5 +124,19 @@ describe('Matrix Web : Note di contratto', function () {
             SCUSalesNoteContratto.searchPolizza(polizza)
         })
     })
+
+    it.only('Verifica modifica nota da Sales', function () {
+        SCUSalesNoteContratto.modificaNota()
+    })
+
+    it.only('Verifica che la modifica sia stata effettuata anche su Clients', function () {
+        SintesiCliente.visitUrlClient(urlClient)
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Polizze attive')
+        NoteContratto.checkNotaModificata('TEST DESCRIZIONE MODIFICATO DA SALES')
+    })
+
+
+
 
 })
