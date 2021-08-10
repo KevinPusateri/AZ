@@ -3,7 +3,7 @@
 */
 
 /// <reference types="Cypress" />
-//import DatiPreventivo from "../../mw_page_objects/Motor/DatiPreventivo"
+import DatiPreventivo from "../../mw_page_objects/Motor/DatiPreventivo"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -67,7 +67,7 @@ describe('Matrix Ricerca', {
        SintesiCliente.clickAuto()
        SintesiCliente.clickPreventivoMotor()
        
-      // DatiPreventivo.clickCeckTarga()
+       DatiPreventivo.ClickCheckTarga()
        cy.wait(2000)
        // getIFrame().find('button:contains("NON CONOSCI LA TARGA?"):visible')
       // SintesiCliente.clickPassioneBlu()

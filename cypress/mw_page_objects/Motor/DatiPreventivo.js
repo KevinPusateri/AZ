@@ -6,7 +6,7 @@
 
 class DatiPreventivo {
 
-    static clickCeckTarga() {
+    static ClickCheckTarga() {
         cy.contains('NON CONOSCI LA TARGA?').click()
     }
     static verificaUnico() {
