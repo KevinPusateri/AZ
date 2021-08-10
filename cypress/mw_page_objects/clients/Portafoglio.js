@@ -2,6 +2,7 @@
 
 import Common from "../common/Common";
 import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
+import LandingRicerca from "../ricerca/LandingRicerca";
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -14,15 +15,45 @@ const getIFrame = () => {
 }
 class Portafoglio {
 
+    /**
+     * Loop
+     * Ricerca un cliente fino a quando non trova
+     * una polizza attiva presente
+     */
+    static checkClientWithPolizza() {
+        const searchClientWithPolizza = () => {
+            LandingRicerca.searchRandomClient(true, "PF", "E")
+            LandingRicerca.clickRandomResult()
+            Portafoglio.clickTabPortafoglio()
+            Portafoglio.clickSubTab('Polizze attive')
+            cy.get('app-wallet-active-contracts').should('be.visible')
+            cy.get('body').should('be.visible')
+                .then($body => {
+                    const isTrovato = $body.find('app-wallet-active-contracts:contains("Il cliente non possiede Polizze attive"):visible').is(':visible')
+                    if (isTrovato)
+                        searchClientWithPolizza()
+                    else
+                        return
+                })
+        }
+
+        searchClientWithPolizza()
+    }
+
     static back() {
         cy.get('a').contains('Clients').click()
     }
 
     static clickTabPortafoglio() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            aliasQuery(req, 'contract')
+        })
+        
         cy.get('app-client-profile-tabs').should('be.visible').within(() => {
             cy.get('a').should('be.visible')
         })
         cy.contains('PORTAFOGLIO').click()
+        cy.wait('@gqlcontract', { requestTimeout: 60000 });
 
     }
 
@@ -136,6 +167,11 @@ class Portafoglio {
         getIFrame().find('a[class="active"]').should('contain.text', 'Dettaglio del Sinistro')
     }
 
+    /**
+     * 
+     * @param {string} subTab - nome di una subtab
+     * ("Polizze attive")
+     */
     static clickSubTab(subTab) {
         cy.get('nx-tab-header').contains(subTab).click({ force: true })
     }
