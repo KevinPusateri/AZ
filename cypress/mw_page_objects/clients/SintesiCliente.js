@@ -1,4 +1,6 @@
 /// <reference types="Cypress" />
+require('cypress-plugin-tab')
+
 import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 import Common from '../common/Common.js'
 
@@ -14,7 +16,9 @@ const getIFrame = () => {
 
 class SintesiCliente {
 
-
+    /**
+     * Funzione che attende il caricamento della Sintesi Cliente dopo aver cliccato il primo risultato riportato dalla ricerca
+     */
     static wait() {
         cy.intercept({
             method: 'POST',
@@ -267,10 +271,10 @@ class SintesiCliente {
         Common.canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
-   
-       
+
+
     }
-    
+
     static clickFlotteConvenzioni() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
@@ -590,7 +594,7 @@ class SintesiCliente {
 
         getIFrame().find('#ButtonQuestOk').click().wait(10000)
         cy.wait('@dacontabilita', { requestTimeout: 60000 })
-        
+
         getIFrame().find('#TabVarieInserimentoTipoPagamento').click()
         getIFrame().find('li').contains("Contanti").click()
         getIFrame().find('#FiltroTabVarieInserimentoDescrizione').type("TEST AUTOMATICO")
@@ -675,8 +679,25 @@ class SintesiCliente {
         })
     }
 
-    static visitUrlClient(currentUrl) {
-        cy.visit(currentUrl)
+    /**
+     * Funzione che carica direttamente l'url del cliente
+     * @param {boolean} fullUrl default a true, viene passato l'url completo, altrimenti viene generato
+     * @param {string} param viene passato l'url completo
+     */
+    static visitUrlClient(fullUrl = true, param) {
+        cy.intercept({
+            method: 'POST',
+            url: '**/clients/**'
+        }).as('pageClient');
+
+        if (fullUrl)
+            cy.visit(param)
+        else
+            cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/clients/client/' + param)
+
+
+        cy.wait('@pageClient', { requestTimeout: 60000 });
+        cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
     }
 
     /**

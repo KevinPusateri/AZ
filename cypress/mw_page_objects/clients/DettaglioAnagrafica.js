@@ -4,8 +4,6 @@ import LandingRicerca from '../ricerca/LandingRicerca.js';
 import Legami from './Legami.js';
 
 class DettaglioAnagrafica {
-
-
     static checkLinksSubTabs() {
         const tabAnagrafica = [
             'Dati anagrafici',
@@ -62,7 +60,7 @@ class DettaglioAnagrafica {
             // LandingRicerca.clickFirstResult()
             this.sezioneLegami()
             cy.get('ac-anagrafe-panel').should('be.visible')
-            cy.get('ac-anagrafe-panel').find('h4').should('contain.text','Gruppo aziendale')
+            cy.get('ac-anagrafe-panel').find('h4').should('contain.text', 'Gruppo aziendale')
             cy.get('body').should('be.visible')
                 .then($body => {
                     const isTrovato = $body.find('button:contains("Inserisci membro"):visible').is(':visible')
@@ -131,9 +129,17 @@ class DettaglioAnagrafica {
                 req.alias = 'gqlClient'
             }
         });
+        //Intercept dedicata per il subTab Convenzioni
+        cy.intercept({
+            method: 'GET',
+            url: '**/getclientagreements/**'
+        }).as('getClientAgreements');
 
         cy.contains(subTab).click({ force: true })
         cy.wait('@gqlClient', { requestTimeout: 30000 });
+        
+        if(subTab === 'Convenzioni')
+            cy.wait('@getClientAgreements', { requestTimeout: 30000 });
     }
 
     static checkSubTabDatiAnagrafici() {
@@ -342,6 +348,64 @@ class DettaglioAnagrafica {
             .and('include.text', 'Autorità di rilascio')
             .and('include.text', 'Scansione')
             .and('include.text', 'Luogo di emissione')
+    }
+
+    /**
+     * Click sul pulsante Aggiungi Convenzione da Dettaglio Anagrafica\Convenzioni
+     * @param {bool} convenzionePresente : se false, verifica che non sia possibile emettere convenzione (con check popup); default a true
+     * @param {string} agenzia : agenzia da selezionare dal dropdown menu in caso di aggiunta della convenzione
+     */
+    static clickAggiungiConvenzione(convenzionePresente = true, agenzia) {
+        cy.contains('Aggiungi Convenzione').should('be.visible').click()
+        if (!convenzionePresente) {
+            cy.get('h4').should('contain.text', 'Nessuna convenzione disponibile per l\'agenzia selezionata')
+            cy.contains('Annulla').click()
+        }
+        else {
+            //Agenzia
+            cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').find('span').invoke('text').then($text => {
+                if($text !== agenzia)
+                {
+                    cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').click()
+                    cy.contains(agenzia).should('be.visible').click()
+                }
+            })
+            //Convenzione
+            cy.get('#nx-dropdown-rendered-1').click()
+            cy.contains('FINSEDA').should('be.visible').click()
+            cy.focused().tab()
+            //Matricola
+            cy.get('input[formcontrolname="matricola"]').should('be.visible').type(Math.floor(Math.random() * 1000000000).toString())
+            //Ruolo
+            cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click()
+            let re = new RegExp("\^Convenzionato\$")
+            cy.contains(re).should('be.visible').click()
+            cy.contains('Aggiungi').should('be.visible').click()
+        }
+    }
+
+    /**
+     * Verifica la presenza delle convenzioni, e in caso ne effettua la cancellazione se specificato
+     * @param {Boolean} isPresent se true, verifica la presenza di convenzioni
+     * @param {Boolean} toBeDelated default false; se true, cancella eventuali convenzioni presenti
+     */
+    static checkConvenzioniPresenti(isPresent, toBeDelated = false) {
+        cy.get('h3').invoke('text').then($text => {
+            let numberOfConvenzioni = Number.parseInt($text.trim(), 10)
+            switch (numberOfConvenzioni) {
+                case 0:
+                    if (isPresent)
+                        assert.fail('Convezioni non presenti!')
+                    break;
+                default:
+                    cy.wrap(numberOfConvenzioni).should('be.greaterThan', 0)
+                    if (toBeDelated) {
+                        cy.get('svg[data-icon="trash-alt"]').click()
+                        cy.contains('Conferma').should('be.visible').click()
+                    }
+                    break;
+            }
+        })
     }
 }
 

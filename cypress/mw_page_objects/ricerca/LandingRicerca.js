@@ -165,6 +165,8 @@ class LandingRicerca {
 
     /**
      * Seleziona un Cliente Random dalla lista di ricerca ritornata
+     * @param {string} clientForm a scelta tra PF o PG (default is PG)
+     * @param {string} clientType a scelta tra P,E o C (default is P)
      */
     static clickRandomResult(clientForm = 'PG', clientType = 'P') {
         //Attende il caricamento della scheda cliente

@@ -171,8 +171,8 @@ Cypress.Commands.add('preserveCookies', () => {
 
 Cypress.Commands.add('forceVisit', url => {
   cy.window().then(win => {
-      return win.open(url, '_self'); 
-    });
+    return win.open(url, '_self');
+  });
 });
 
 
@@ -182,25 +182,25 @@ let myTabs = [];
 
 Cypress.Commands.add('switchToTab', (index_or_name) => {
   return new Cypress.Promise((resolve) => {
-      let index = resolve_index_or_name_to_index(index_or_name)
-      console.warn('switchToTab',{index,index_or_name})
-      active_tab_index = index;
-      let winNext = myTabs[active_tab_index]
-      if(!winNext){
-          throw new Error('tab missing')
-      }
-      cy.state('document', winNext.document)
-      cy.state('window', winNext)
-      debugTabState()
-      resolve()
+    let index = resolve_index_or_name_to_index(index_or_name)
+    console.warn('switchToTab', { index, index_or_name })
+    active_tab_index = index;
+    let winNext = myTabs[active_tab_index]
+    if (!winNext) {
+      throw new Error('tab missing')
+    }
+    cy.state('document', winNext.document)
+    cy.state('window', winNext)
+    debugTabState()
+    resolve()
   })
 })
 
-function resolve_index_or_name_to_index(index_or_name){
+function resolve_index_or_name_to_index(index_or_name) {
   let index = parseInt(index_or_name) >= 0 ? index_or_name : active_tab_index || 0
   let name_index = myTabNames.indexOf(index_or_name)
-  if(name_index>-1){
-      index = name_index
+  if (name_index > -1) {
+    index = name_index
   }
   return index;
 }
@@ -211,6 +211,45 @@ Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
     url: 'https://profilingbe.pp.azi.allianzit/profilingManagement/personation/' + tutf,
     form: true,
     body: { persUser: getPersUser, channel: getChannel }
+  })
+})
+
+Cypress.Commands.add('getPartyRelations', (tutf) => {
+  cy.clearCookies();
+  cy.generateTwoLetters().then(nameRandom => {
+    cy.generateTwoLetters().then(firstNameRandom => {
+      cy.request({
+        method: 'GET',
+        url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person',
+        headers: {
+          'x-allianz-user': tutf
+        }
+      }).then(response => {
+        expect(response.status).to.eq(200)
+        if (response.body.length === 0)
+          cy.getPartyRelations(tutf)
+        else {
+          let currentClient = response.body[Math.floor(Math.random() * response.body.length)]
+          cy.log('Retrived client : ' + currentClient.name + ' ' + currentClient.firstName)
+          cy.request({
+            method: 'GET',
+            url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/partyrelations/',
+            headers: {
+              'x-allianz-user': tutf
+            }
+          }).then(responsePartyRelations => {
+            expect(responsePartyRelations.status).to.eq(200)
+            //Verifico che i legami presenti siano almeno 2
+            if(responsePartyRelations.body.length === 0 || responsePartyRelations.body.length === 1)
+              cy.getPartyRelations(tutf)
+            else
+            {
+              return currentClient.customerNumber
+            }
+          })
+        }
+      })
+    })
   })
 })
 
