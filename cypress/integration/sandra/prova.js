@@ -6,7 +6,7 @@
 //import Common from "../../mw_page_objects/Motor/DatiPreventivo"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
-//import TopBar from "../../mw_page_objects/common/TopBar"
+import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 
@@ -41,7 +41,7 @@ beforeEach(() => {
 })
 
 after(function () {
-   // TopBar.logOutMW()
+    TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
@@ -75,7 +75,7 @@ describe('Buca di Ricerca - Risultati Clients', {
        SintesiCliente.clickAuto()
        SintesiCliente.clickPreventivoMotor()
        
-       DatiPreventivo.clickCeckTarga()
+      // DatiPreventivo.clickCeckTarga()
       // getIFrame().find('button:contains("NON CONOSCI LA TARGA?"):visible')
       // SintesiCliente.clickPassioneBlu()
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
