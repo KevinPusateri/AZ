@@ -3,13 +3,13 @@
 */
 
 /// <reference types="Cypress" />
-import Common from "../../mw_page_objects/Motor/DatiPreventivo"
+//import Common from "../../mw_page_objects/Motor/DatiPreventivo"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 //import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-//import { contains } from "cypress/types/jquery"
+
 
 //#region Username Variables
 const userName = 'TUTF017'   // 'TUTF021'
