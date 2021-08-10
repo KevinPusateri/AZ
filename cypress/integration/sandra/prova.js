@@ -3,7 +3,7 @@
 */
 
 /// <reference types="Cypress" />
-//import Common from "../../mw_page_objects/Motor/DatiPreventivo"
+import DatiPreventivo from "../../mw_page_objects/Motor/DatiPreventivo"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -71,12 +71,13 @@ describe('Buca di Ricerca - Risultati Clients', {
       //  TopBar.search('AUTOMATICI')
        LandingRicerca.searchRandomClient(true,'PF','P')
        LandingRicerca.clickFirstResult()
-       //cy.wait(2000)
+       
        SintesiCliente.clickAuto()
        SintesiCliente.clickPreventivoMotor()
        
-      // DatiPreventivo.clickCeckTarga()
-      // getIFrame().find('button:contains("NON CONOSCI LA TARGA?"):visible')
+       DatiPreventivo.clickCeckTarga()
+       cy.wait(2000)
+       // getIFrame().find('button:contains("NON CONOSCI LA TARGA?"):visible')
       // SintesiCliente.clickPassioneBlu()
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
     })
