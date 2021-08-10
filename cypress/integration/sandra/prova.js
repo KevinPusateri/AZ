@@ -12,7 +12,7 @@ import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 
 
 //#region Username Variables
-const userName = 'TUTF017'   // 'TUTF021'
+const userName = 'TUTF021'   // 'TUTF021'
 const psw = 'P@ssw0rd!'
 //#endregion
 
@@ -51,24 +51,16 @@ after(function () {
 
 })
 
-describe('Buca di Ricerca - Risultati Clients', {
+describe('Matrix Ricerca', {
     retries: {
-        runMode: 1,
-        openMode: 0,
+      runMode: 1,
+      openMode: 0,
     }
-}, function () {
-   /* 
-
-    HomePage.reloadMWHomePage()
-    TopBar.search(currentClientPG.name)
-    LandingRicerca.clickClientName(currentClientPG)
-    SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
-   // TMTFRC52A41F205U 
-*/
-
-
-    it('Ricerca Cliente e Atterraggio in Sintesi Cliente', function () {
-      //  TopBar.search('AUTOMATICI')
+  }, function () {
+  
+  
+    it('Ricerca cliente per preventivo', function () {
+              //  TopBar.search('AUTOMATICI')
        LandingRicerca.searchRandomClient(true,'PF','P')
        LandingRicerca.clickFirstResult()
        
