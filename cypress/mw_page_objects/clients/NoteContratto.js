@@ -44,7 +44,7 @@ class NoteContratto {
         cy.get('nx-icon[name="product-board-paper-note"]').should('not.exist')
         //#endregion
 
-        //#region Aggiungi note di contratto 
+        //#region Aggiungi una nota di contratto 
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').first().should('exist').then(($contract) => {
             cy.wrap($contract)
                 .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h ellipsis-icon"]').click()
@@ -60,12 +60,25 @@ class NoteContratto {
             cy.get('lib-note-action-modal').should('be.visible').within(() => {
                 cy.get('span').should('be.visible').and('contain.text', 'Salva')
                 cy.get('input[name="title"]').should('be.visible').type('Test Nota')
-                cy.get('textarea[name="description"]').should('be.visible').type('Test Descrizione Nota')
-                cy.get('button').find('span:contains("Salva")').first().click()
+
+                cy.fixture('Nota.json').then((data) => {
+                    cy.get('textarea[name="description"]').should('be.visible').type(JSON.stringify(data.nota))
+                    cy.get('button').find('span:contains("Salva")').first().click()
+                })
+
             })
-            cy.get('lib-note-action-modal').should('be.visible').within(() => {
-                cy.get('lib-disambiguation').find('div[ngclass="agency-row"]').first().click()
+            // cy.get('lib-note-action-modal').should('be.visible').within(() => {
+            //TODO: Verifica se c'è disamgiguaione allotra fai altrimenti no 
+            cy.get('body').then($body => {
+                cy.get('nx-modal-container').should('be.visible')
+                if ($body.find('nx-modal-container').length > 0) {
+                    cy.wait(2000)
+                    cy.get('div[ngclass="agency-row"]').should('be.visible')
+                    cy.get('div[ngclass="agency-row"]').first().click()
+                }
             })
+            // cy.get('lib-disambiguation').should('be.visible').find('div[ngclass="agency-row"]').first().click()
+            // })
 
             cy.get('lib-contract-notes-badge').should('exist').and('be.visible')
                 .find('[class="badge-label"]:contains("Note")').should('be.visible')
@@ -170,7 +183,7 @@ class NoteContratto {
         })
 
         cy.get('@polizza').first().should('exist').then(() => {
-            
+
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
                 cy.wait(1000)
                 if ($note.find("nx-icon").length > 0) {

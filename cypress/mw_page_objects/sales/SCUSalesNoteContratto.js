@@ -6,13 +6,12 @@
 class SCUSalesNoteContratto {
 
     /**
-     * Verifica se sono presenti le note della polizza
+     * Verifica se sono presenti le note nella polizza
      * @param {object} polizza - polizza = { numberPolizza, lob } 
      */
     static searchPolizza(polizza) {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
-            debugger
             cy.get('#f-numero-contratto').type(polizza.numberPolizza)
             cy.get('span[aria-owns="f-portafoglio_listbox"]').click()
             cy.get('#f-portafoglio-list').should('be.visible')
@@ -28,16 +27,17 @@ class SCUSalesNoteContratto {
             cy.get('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
             cy.get('input[value="Cerca"]').click().wait(3500)
             cy.get('tbody[role="rowgroup"] > tr').should('not.contain.text', 'Nessun record da visualizzare.')
-            // cy.get('@iframe').within(() => {
                 cy.get('td[role="gridcell"]').should('include.text', 'TEST DESCRIZIONE NOTA MODIFICATA')
                     .and('include.text', 'TEST AGGIUNTO NOTA DA BADGE')
                     .and('include.text', 'TEST AGGIUNTO NOTA IMPORTANTE')
-            // })
         })
 
 
     }
 
+    /**
+     * Modifica una nota
+     */
     static modificaNota() {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
