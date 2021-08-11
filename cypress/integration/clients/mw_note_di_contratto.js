@@ -109,14 +109,14 @@ describe('Matrix Web : Note di contratto', function () {
         NoteContratto.checkTooltipNote('3')
     })
 
-    it.only('Verifica Da Sales La presenza delle note di contratto', function () {
-        LandingRicerca.search('PTNCLD43L26L719E')
-        LandingRicerca.clickFirstResult()
-        SintesiCliente.retriveUrl().then(currentUrl => {
-            urlClient = currentUrl
-        })
-        Portafoglio.clickTabPortafoglio()
-        Portafoglio.clickSubTab('Polizze attive')
+    it('Verifica Da Sales La presenza delle note di contratto', function () {
+        // LandingRicerca.search('PTNCLD43L26L719E')
+        // LandingRicerca.clickFirstResult()
+        // SintesiCliente.retriveUrl().then(currentUrl => {
+        //     urlClient = currentUrl
+        // })
+        // Portafoglio.clickTabPortafoglio()
+        // Portafoglio.clickSubTab('Polizze attive')
         NoteContratto.getPolizza().then((polizza)=>{
             HomePage.reloadMWHomePage()
             TopBar.clickSales()
@@ -125,16 +125,21 @@ describe('Matrix Web : Note di contratto', function () {
         })
     })
 
-    it.only('Verifica modifica nota da Sales', function () {
+    it('Verifica modifica nota da Sales', function () {
         SCUSalesNoteContratto.modificaNota()
     })
 
-    it.only('Verifica che la modifica sia stata effettuata anche su Clients', function () {
+    it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
         SintesiCliente.visitUrlClient(urlClient)
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Polizze attive')
         NoteContratto.checkNotaModificata('TEST DESCRIZIONE MODIFICATO DA SALES')
     })
+
+    it('Verifica l\'eliminazione delle note', function () {
+        NoteContratto.cancellaNote()
+    })
+
 
 
 

@@ -29,8 +29,8 @@ class NoteContratto {
 
                         cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Elimina Nota')
                             .find('span:contains("Elimina Nota")').click()
-                        cy.get('nx-modal-container').should('be.visible').and('contain.text', 'Stai per eliminare la nota.')
-                        cy.get('nx-modal-container').should('be.visible').and('contain.text', 'Elimina Nota')
+                        cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Stai per eliminare la nota.')
+                        cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Elimina Nota')
                         cy.get('lib-note-action-modal').find('span:contains("Elimina Nota")').click()
 
                         loopDeleteNotes()
@@ -334,7 +334,7 @@ class NoteContratto {
      * Verifica dal badge delle note la modifica effettuata
      * @param {string} testo - titolo o testo modificato 
      */
-    static checkNotaModificata(testo){
+    static checkNotaModificata(testo) {
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
@@ -358,6 +358,47 @@ class NoteContratto {
                 }
             })
         })
+    }
+
+    /**
+     * Cancella tutte le note della prima polizza
+     */
+    static cancellaNote() {
+        cy.get('app-contract-card').should('be.visible')
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+
+        //#region Loop elimina le note se presenti
+        const loopDeleteNotes = () => {
+            cy.wait(3000)
+            cy.get('@polizza').first().should('exist').then(() => {
+                cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
+                    if ($note.find("nx-icon").length > 0) {
+                        cy.get('lib-contract-notes-badge').should('be.visible')
+                        cy.wrap($note).click()
+
+                        cy.get('.cdk-overlay-container').should('be.visible').within(() => {
+                            cy.get('div[class="note-content"]').should('exist').and('be.visible')
+                            cy.get('nx-modal-container')
+                                .should('be.visible')
+                                .find('nx-icon[aria-label="Apri menu"]').first().click()
+                            cy.get('button[role="menuitem"]').should('exist').and('be.visible')
+                        })
+
+                        cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Elimina Nota')
+                            .find('span:contains("Elimina Nota")').click()
+                        cy.get('nx-modal-container').should('be.visible').and('contain.text', 'Stai per eliminare la nota.')
+                        cy.get('nx-modal-container').should('be.visible').and('contain.text', 'Elimina Nota')
+                        cy.get('lib-note-action-modal').find('span:contains("Elimina Nota")').click()
+
+                        loopDeleteNotes()
+                    }
+
+                })
+
+            })
+        }
+        loopDeleteNotes()
+        cy.get('nx-icon[name="product-board-paper-note"]').should('not.exist')
     }
 }
 export default NoteContratto

@@ -684,7 +684,7 @@ class SintesiCliente {
      * @param {boolean} fullUrl default a true, viene passato l'url completo, altrimenti viene generato
      * @param {string} param viene passato l'url completo
      */
-    static visitUrlClient(fullUrl = true, param) {
+    static visitUrlClient(param,fullUrl = true) {
         cy.intercept({
             method: 'POST',
             url: '**/clients/**'
