@@ -38,16 +38,16 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 afterEach(function () {
-    if (this.currentTest.state !== 'passed') {
-        TopBar.logOutMW()
-        //#region Mysql
-        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-            let tests = testsInfo
-            cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-        })
-        //#endregion
-        Cypress.runner.stop();
-    }
+    // if (this.currentTest.state !== 'passed') {
+    //     TopBar.logOutMW()
+    //     //#region Mysql
+    //     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+    //         let tests = testsInfo
+    //         cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    //     })
+    //     //#endregion
+    //     Cypress.runner.stop();
+    // }
 })
 after(function () {
     // TopBar.logOutMW()
@@ -75,9 +75,6 @@ describe('Matrix Web : Convenzioni', {
     //     SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
     //         currentClientPG = currentClient
     //     })
-    //     SintesiCliente.retriveUrl().then(currentUrl => {
-    //         urlClient = currentUrl
-    //     })
 
     //     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     //     DettaglioAnagrafica.clickSubTab('Convenzioni')
@@ -90,18 +87,18 @@ describe('Matrix Web : Convenzioni', {
     //         TopBar.logOutMW()
     //     });
 
-    it('Come delegato accedere all\'agenzia 01-745000 e cercare un cliente PF che abbia un legame familiare\n' +
-        'Inserire una Convezione a piacere tra quelli presenti, inserire Matricola e Ruolo "Convenzionato\n' +
-        'N.B. Prendersi nota delle convenzioni e del legame\n' +
-        'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', () => {
-            cy.impersonification('TUTF003', 'ARGMOLLICA3', '010745000')
-            cy.getPartyRelations('TUTF003').then(customerNumber => {
-                LoginPage.logInMW('TUTF003', psw)
-                SintesiCliente.visitUrlClient(false, customerNumber)
-                DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-                DettaglioAnagrafica.clickSubTab('Convenzioni')
-                DettaglioAnagrafica.checkConvenzioniPresenti(false,true)
-                DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000')
-            })
-        });
+    // it('Come delegato accedere all\'agenzia 01-745000 e cercare un cliente PF che abbia un legame familiare\n' +
+    //     'Inserire una Convezione a piacere tra quelli presenti, inserire Matricola e Ruolo "Convenzionato\n' +
+    //     'N.B. Prendersi nota delle convenzioni e del legame\n' +
+    //     'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', () => {
+    //         cy.impersonification('TUTF003', 'ARGMOLLICA3', '010745000')
+    //         cy.getPartyRelations('TUTF003').then(customerNumber => {
+    //             LoginPage.logInMW('TUTF003', psw)
+    //             SintesiCliente.visitUrlClient(customerNumber,false)
+    //             DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+    //             DettaglioAnagrafica.clickSubTab('Convenzioni')
+    //             DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
+    //             DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000')
+    //         })
+    //     });
 })

@@ -48,7 +48,7 @@ class Portafoglio {
         cy.intercept('POST', '**/graphql', (req) => {
             aliasQuery(req, 'contract')
         })
-        
+
         cy.get('app-client-profile-tabs').should('be.visible').within(() => {
             cy.get('a').should('be.visible')
         })
@@ -174,6 +174,35 @@ class Portafoglio {
      */
     static clickSubTab(subTab) {
         cy.get('nx-tab-header').contains(subTab).click({ force: true })
+    }
+
+    /**
+     * Filtraggio Polizze estratte in base ai filtri passati
+     * @param {String} lob a scelta tra Motor,Rami vari, Vita, Allianz 1 e Allianz Ultra
+     * @param {String} stato opzionale, a scelta tra Da incassare, Sostituzione, Annullata, Bloccata, Bloccata Parz., Sospesa
+     */
+    static filtraPolizze(lob, stato = '') {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('contract')) {
+                req.alias = 'gqlcontract'
+            }
+
+        })
+
+        cy.get('lib-filter-button-with-modal').find('nx-icon[name="filter"]').click()
+        cy.get('lib-modal-container').should('be.visible').within(() => {
+            //Stato della polizza (opzionale)
+            if (stato !== '')
+                cy.contains(stato).click()
+
+            //Lob della polizza
+            cy.contains(lob).click()
+        })
+
+        cy.wait(1000)
+
+        cy.get('.footer').find('button').contains('applica').click()
+        cy.wait('@gqlcontract', { timeout: 30000 })
     }
 }
 

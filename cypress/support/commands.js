@@ -220,6 +220,8 @@ Cypress.Commands.add('getPartyRelations', (tutf) => {
     cy.generateTwoLetters().then(firstNameRandom => {
       cy.request({
         method: 'GET',
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
         url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person',
         headers: {
           'x-allianz-user': tutf
@@ -233,6 +235,8 @@ Cypress.Commands.add('getPartyRelations', (tutf) => {
           cy.log('Retrived client : ' + currentClient.name + ' ' + currentClient.firstName)
           cy.request({
             method: 'GET',
+            retryOnStatusCodeFailure: true,
+            timeout: 60000,
             url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/partyrelations/',
             headers: {
               'x-allianz-user': tutf
@@ -240,13 +244,71 @@ Cypress.Commands.add('getPartyRelations', (tutf) => {
           }).then(responsePartyRelations => {
             expect(responsePartyRelations.status).to.eq(200)
             //Verifico che i legami presenti siano almeno 2
-            if(responsePartyRelations.body.length === 0 || responsePartyRelations.body.length === 1)
+            if (responsePartyRelations.body.length === 0 || responsePartyRelations.body.length === 1)
               cy.getPartyRelations(tutf)
-            else
-            {
+            else {
               return currentClient.customerNumber
             }
           })
+        }
+      })
+    })
+  })
+})
+
+/**
+ * Verifica la presenza delle convenzioni, e in caso ne effettua la cancellazione se specificato
+ * @param {String} tutf tutf utilizzata negli headers per invocare i servizi in x-allianz-user
+ * @param {String} branchId tipo di polizza da trovare (31 [AU], 16 [RV],42 - 0 [Ultra], 86 [VI])
+ */
+Cypress.Commands.add('getClientWithPolizze', (tutf, branchId) => {
+  cy.generateTwoLetters().then(nameRandom => {
+    cy.generateTwoLetters().then(firstNameRandom => {
+      cy.request({
+        method: 'GET',
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
+        url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person',
+        headers: {
+          'x-allianz-user': tutf
+        }
+      }).then(response => {
+        expect(response.status).to.eq(200)
+        if (response.body.length === 0)
+          cy.getClientWithPolizze(tutf, branchId)
+        else {
+          //Verifichiamo solo clienti in stato EFFETTIVO
+          let clientiEffettivi = response.body.filter(el => {
+            return el.partyCategory[0] === 'E'
+          })
+
+          if (clientiEffettivi.length > 0) {
+            let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+            cy.log('Retrived client : ' + currentClient.name + ' ' + currentClient.firstName)
+
+            //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+            cy.request({
+              method: 'GET',
+              retryOnStatusCodeFailure: true,
+              timeout: 60000,
+              url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
+              headers: {
+                'x-allianz-user': tutf
+              }
+            }).then(responseContracts => {
+              expect(responseContracts.status).to.eq(200)
+              //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
+              let contractsWithBranchId = responseContracts.body.filter(el => {
+                return el.branchId.includes(branchId)
+              })
+              if (contractsWithBranchId.length > 0)
+                return currentClient.customerNumber
+              else
+                cy.getClientWithPolizze(tutf, branchId)
+            })
+          }
+          else
+            cy.getClientWithPolizze(tutf, branchId)
         }
       })
     })

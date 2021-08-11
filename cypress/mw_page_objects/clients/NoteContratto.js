@@ -324,7 +324,7 @@ class NoteContratto {
 
                     cy.get('@polizza').first().should('exist').then(() => {
 
-                        cy.get('div[class="contract-number"]').then((polizzaContract) => {
+                        cy.get('div[class="contract-number"]:first').then((polizzaContract) => {
                             polizza.numberPolizza = polizzaContract.text().split('-')[1].trim()
                         })
 
@@ -340,6 +340,7 @@ class NoteContratto {
                         })
 
                         cy.then(() => {
+                            cy.log('Retrived Polizza : ' + polizza)
                             resolve(polizza)
                         })
                     })

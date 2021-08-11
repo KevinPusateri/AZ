@@ -139,7 +139,7 @@ class DettaglioAnagrafica {
         cy.wait('@gqlClient', { requestTimeout: 30000 });
         
         if(subTab === 'Convenzioni')
-            cy.wait('@getClientAgreements', { requestTimeout: 30000 });
+            cy.wait('@getClientAgreements', { requestTimeout: 60000 });
     }
 
     static checkSubTabDatiAnagrafici() {
@@ -380,7 +380,7 @@ class DettaglioAnagrafica {
             cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click()
             let re = new RegExp("\^Convenzionato\$")
             cy.contains(re).should('be.visible').click()
-            cy.contains('Aggiungi').should('be.visible').click()
+            cy.get('.ng-star-inserted').find('div:contains("Aggiungi")').click().should('be.visible').click()
         }
     }
 

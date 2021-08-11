@@ -76,7 +76,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
         LandingRicerca.checkSuggestedLinks('ultra')
     })
 
-    // Rimosso in quanto non presenta nemmeno una circola per il click
+    //!Rimosso in quanto non presenta nemmeno una circola per il click
     // it('Verifica Click su card di una Circolare', function () {
     //     LandingRicerca.search('circolari')
     //     LandingRicerca.checkTabs()
