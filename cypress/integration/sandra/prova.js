@@ -3,7 +3,7 @@
 */
 
 /// <reference types="Cypress" />
-import DatiPreventivo from "../../mw_page_objects/Motor/DatiPreventivo"
+//import DatiPreventivo from "../../mw_page_objects/Motor/DatiPreventivo"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -51,14 +51,12 @@ after(function () {
 
 })
 
-describe('Matrix Ricerca', {
+describe('Ricerca per preventivo', {
     retries: {
-      runMode: 1,
-      openMode: 0,
+        runMode: 1,
+        openMode: 0,
     }
-  }, function () {
-  
-  
+}, function () {
     it('Ricerca cliente per preventivo', function () {
               //  TopBar.search('AUTOMATICI')
        LandingRicerca.searchRandomClient(true,'PF','P')
@@ -67,8 +65,8 @@ describe('Matrix Ricerca', {
        SintesiCliente.clickAuto()
        SintesiCliente.clickPreventivoMotor()
        
-       DatiPreventivo.ClickCheckTarga()
-       cy.wait(2000)
+      // DatiPreventivo.ClickCheckTarga()
+     //  cy.wait(2000)
        // getIFrame().find('button:contains("NON CONOSCI LA TARGA?"):visible')
       // SintesiCliente.clickPassioneBlu()
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
