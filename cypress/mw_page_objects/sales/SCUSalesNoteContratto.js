@@ -5,6 +5,10 @@
 
 class SCUSalesNoteContratto {
 
+    /**
+     * Verifica se sono presenti le note della polizza
+     * @param {object} polizza - polizza = { numberPolizza, lob } 
+     */
     static searchPolizza(polizza) {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
@@ -14,7 +18,7 @@ class SCUSalesNoteContratto {
             cy.get('#f-portafoglio-list').should('be.visible')
             if (polizza.lob === 'Auto')
                 cy.get('#f-portafoglio-list').find('li:contains("Auto")').click()
-            if (polizza.lob === 'RamiVari')
+            if (polizza.lob === 'Rami Vari')
                 cy.get('#f-portafoglio-list').find('li:contains("RamiVari")').click()
             if (polizza.lob === 'Vita')
                 cy.get('#f-portafoglio-list').find('li:contains("Vita")').click()
@@ -22,10 +26,8 @@ class SCUSalesNoteContratto {
                 cy.get('#f-portafoglio-list').find('li:contains("Quadro")').click()
 
             cy.get('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
-            cy.get('input[value="Cerca"]').click().wait(2000)
+            cy.get('input[value="Cerca"]').click().wait(3500)
             cy.get('tbody[role="rowgroup"] > tr').should('not.contain.text', 'Nessun record da visualizzare.')
-            //TODO: RIFARE IL RUN VERIFICANDO CHE NON SERVA IL WAIT E @iframe altrimenti rimetti 
-            //! ATTENZIONE AL CONTAIN
             // cy.get('@iframe').within(() => {
                 cy.get('td[role="gridcell"]').should('include.text', 'TEST DESCRIZIONE NOTA MODIFICATA')
                     .and('include.text', 'TEST AGGIUNTO NOTA DA BADGE')

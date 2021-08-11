@@ -100,6 +100,7 @@ class NoteContratto {
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
+                cy.wait(1000)
                 if ($note.find("nx-icon").length > 0) {
                     cy.get('lib-contract-notes-badge').should('be.visible')
                     cy.wrap($note).click()
@@ -135,6 +136,7 @@ class NoteContratto {
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
+                cy.wait(1000)
                 if ($note.find("nx-icon").length > 0) {
                     cy.get('lib-contract-notes-badge').should('be.visible')
                     cy.wrap($note).click()
@@ -168,7 +170,9 @@ class NoteContratto {
         })
 
         cy.get('@polizza').first().should('exist').then(() => {
+            
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
+                cy.wait(1000)
                 if ($note.find("nx-icon").length > 0) {
                     cy.get('lib-contract-notes-badge').should('be.visible')
                     cy.wrap($note).click()
@@ -192,7 +196,9 @@ class NoteContratto {
         })
     }
 
-
+    /**
+     * Verifica Inserimento di una nota direttamente dal "badge"(icona) Note 
+     */
     static inserisciNotaFromBadge() {
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
 
@@ -244,6 +250,9 @@ class NoteContratto {
         })
     }
 
+    /**
+     * Verifica nota con flag Importante sia stato inserito
+     */
     static checkImportante() {
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
 
@@ -297,6 +306,12 @@ class NoteContratto {
         })
     }
 
+    /**
+     * Ritorna l'oggetto polizza con numero e tipo di polizza
+     * @returns {object} polizza = { numebrPolizza, lob}
+     * numberPolizza -> numero della polizz
+     * lob -> Rami Vari/Auto/Vita
+     */
     static getPolizza() {
         return new Cypress.Promise((resolve, reject) => {
             cy.get('body')
@@ -317,6 +332,10 @@ class NoteContratto {
                             cy.get('div').first().then(($lobIcon) => {
                                 if ($lobIcon.hasClass('icon-bubble motor'))
                                     polizza.lob = 'Auto'
+                                if ($lobIcon.hasClass('icon-bubble life'))
+                                    polizza.lob = 'Vita'
+                                if ($lobIcon.hasClass('icon-bubble retail'))
+                                    polizza.lob = 'Rami Vari'
                             })
                         })
 
@@ -386,8 +405,8 @@ class NoteContratto {
 
                         cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Elimina Nota')
                             .find('span:contains("Elimina Nota")').click()
-                        cy.get('nx-modal-container').should('be.visible').and('contain.text', 'Stai per eliminare la nota.')
-                        cy.get('nx-modal-container').should('be.visible').and('contain.text', 'Elimina Nota')
+                        cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Stai per eliminare la nota.')
+                        cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Elimina Nota')
                         cy.get('lib-note-action-modal').find('span:contains("Elimina Nota")').click()
 
                         loopDeleteNotes()

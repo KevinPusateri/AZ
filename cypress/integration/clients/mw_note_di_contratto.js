@@ -43,18 +43,7 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
 })
-// afterEach(function () {
-//     if (this.currentTest.state !== 'passed') {
-//         TopBar.logOutMW()
-//         //#region Mysql
-//         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//             let tests = testsInfo
-//             cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-//         })
-//         //#endregion
-//         Cypress.runner.stop();
-//     }
-// })
+
 after(function () {
     TopBar.logOutMW()
     //#region Mysql
@@ -69,9 +58,13 @@ after(function () {
 let urlClient
 describe('Matrix Web : Note di contratto', function () {
 
+context('Polizza Auto',function(){
     it('Verifica Aggiungi Nota', function () {
         // Portafoglio.checkClientWithPolizza() 
-        LandingRicerca.search('PTNCLD43L26L719E')
+        LandingRicerca.search('PTNCLD43L26L719E') //AUTO
+        // LandingRicerca.search('BSCDRN54L06A401O') // VITA
+        // LandingRicerca.search('LBNCSR49L29G274Y') // RamiVari (Retail)
+        // LandingRicerca.search('DLTCRL81R18H501R') //! RamiVari (Retail) NON VA!!!
         LandingRicerca.clickFirstResult()
         SintesiCliente.retriveUrl().then(currentUrl => {
             urlClient = currentUrl
@@ -84,7 +77,7 @@ describe('Matrix Web : Note di contratto', function () {
     it('Verifica Tooltip numero di note presenti(1 nota)', function () {
         NoteContratto.checkTooltipNote('1')
     })
-    
+
     it('Verifica Badge Nota', function () {
         NoteContratto.checkBadgeNota()
     })
@@ -110,14 +103,7 @@ describe('Matrix Web : Note di contratto', function () {
     })
 
     it('Verifica Da Sales La presenza delle note di contratto', function () {
-        // LandingRicerca.search('PTNCLD43L26L719E')
-        // LandingRicerca.clickFirstResult()
-        // SintesiCliente.retriveUrl().then(currentUrl => {
-        //     urlClient = currentUrl
-        // })
-        // Portafoglio.clickTabPortafoglio()
-        // Portafoglio.clickSubTab('Polizze attive')
-        NoteContratto.getPolizza().then((polizza)=>{
+        NoteContratto.getPolizza().then((polizza) => {
             HomePage.reloadMWHomePage()
             TopBar.clickSales()
             BurgerMenuSales.clickLink('Note di contratto')
@@ -139,9 +125,144 @@ describe('Matrix Web : Note di contratto', function () {
     it('Verifica l\'eliminazione delle note', function () {
         NoteContratto.cancellaNote()
     })
+})
 
+context('Polizza Vita',function(){
+    it('Verifica Aggiungi Nota', function () {
+        // Portafoglio.checkClientWithPolizza() 
+        // LandingRicerca.search('PTNCLD43L26L719E') //AUTO
+        LandingRicerca.search('BSCDRN54L06A401O') // VITA
+        // LandingRicerca.search('LBNCSR49L29G274Y') // RamiVari (Retail)
+        // LandingRicerca.search('DLTCRL81R18H501R') //! RamiVari (Retail) NON VA!!!
+        LandingRicerca.clickFirstResult()
+        SintesiCliente.retriveUrl().then(currentUrl => {
+            urlClient = currentUrl
+        })
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Polizze attive')
+        NoteContratto.inserisciNotaContratto()
+    })
 
+    it('Verifica Tooltip numero di note presenti(1 nota)', function () {
+        NoteContratto.checkTooltipNote('1')
+    })
 
+    it('Verifica Badge Nota', function () {
+        NoteContratto.checkBadgeNota()
+    })
 
+    it('Verifica Modifica di una nota', function () {
+        NoteContratto.modificaNota()
+    })
+
+    it('Verifica "Aggiungi nota" dal badge Note', function () {
+        NoteContratto.inserisciNotaFromBadge()
+    })
+
+    it('Verifica Tooltip numero di note presenti(2 note)', function () {
+        NoteContratto.checkTooltipNote('2')
+    })
+
+    it('Verifica Flag Importante', function () {
+        NoteContratto.checkImportante()
+    })
+
+    it('Verifica Tooltip numero di note presenti(2 note) di cui 1 importante', function () {
+        NoteContratto.checkTooltipNote('3')
+    })
+
+    it('Verifica Da Sales La presenza delle note di contratto', function () {
+        NoteContratto.getPolizza().then((polizza) => {
+            HomePage.reloadMWHomePage()
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('Note di contratto')
+            SCUSalesNoteContratto.searchPolizza(polizza)
+        })
+    })
+
+    it('Verifica modifica nota da Sales', function () {
+        SCUSalesNoteContratto.modificaNota()
+    })
+
+    it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
+        SintesiCliente.visitUrlClient(urlClient)
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Polizze attive')
+        NoteContratto.checkNotaModificata('TEST DESCRIZIONE MODIFICATO DA SALES')
+    })
+
+    it('Verifica l\'eliminazione delle note', function () {
+        NoteContratto.cancellaNote()
+    })
+})
+
+context('Polizza Rami Vari',function(){
+    it('Verifica Aggiungi Nota', function () {
+        // Portafoglio.checkClientWithPolizza() 
+        // LandingRicerca.search('PTNCLD43L26L719E') //AUTO
+        // LandingRicerca.search('BSCDRN54L06A401O') // VITA
+        LandingRicerca.search('LBNCSR49L29G274Y') // RamiVari (Retail)
+        // LandingRicerca.search('DLTCRL81R18H501R') //! RamiVari (Retail) NON VA!!!
+        LandingRicerca.clickFirstResult()
+        SintesiCliente.retriveUrl().then(currentUrl => {
+            urlClient = currentUrl
+        })
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Polizze attive')
+        NoteContratto.inserisciNotaContratto()
+    })
+
+    it('Verifica Tooltip numero di note presenti(1 nota)', function () {
+        NoteContratto.checkTooltipNote('1')
+    })
+
+    it('Verifica Badge Nota', function () {
+        NoteContratto.checkBadgeNota()
+    })
+
+    it('Verifica Modifica di una nota', function () {
+        NoteContratto.modificaNota()
+    })
+
+    it('Verifica "Aggiungi nota" dal badge Note', function () {
+        NoteContratto.inserisciNotaFromBadge()
+    })
+
+    it('Verifica Tooltip numero di note presenti(2 note)', function () {
+        NoteContratto.checkTooltipNote('2')
+    })
+
+    it('Verifica Flag Importante', function () {
+        NoteContratto.checkImportante()
+    })
+
+    it('Verifica Tooltip numero di note presenti(2 note) di cui 1 importante', function () {
+        NoteContratto.checkTooltipNote('3')
+    })
+
+    it('Verifica Da Sales La presenza delle note di contratto', function () {
+        NoteContratto.getPolizza().then((polizza) => {
+            HomePage.reloadMWHomePage()
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('Note di contratto')
+            SCUSalesNoteContratto.searchPolizza(polizza)
+        })
+    })
+
+    it('Verifica modifica nota da Sales', function () {
+        SCUSalesNoteContratto.modificaNota()
+    })
+
+    it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
+        SintesiCliente.visitUrlClient(urlClient)
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Polizze attive')
+        NoteContratto.checkNotaModificata('TEST DESCRIZIONE MODIFICATO DA SALES')
+    })
+
+    it('Verifica l\'eliminazione delle note', function () {
+        NoteContratto.cancellaNote()
+    })
+})
 
 })
