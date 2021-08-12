@@ -1,5 +1,6 @@
 /**
 * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+* @description Verifica delle Convenzioni da Clients (su AG che non puo' emetterle e su AG che puo' emetterle)
 */
 
 /// <reference types="Cypress" />
@@ -87,18 +88,18 @@ describe('Matrix Web : Convenzioni', {
     //         TopBar.logOutMW()
     //     });
 
-    // it('Come delegato accedere all\'agenzia 01-745000 e cercare un cliente PF che abbia un legame familiare\n' +
-    //     'Inserire una Convezione a piacere tra quelli presenti, inserire Matricola e Ruolo "Convenzionato\n' +
-    //     'N.B. Prendersi nota delle convenzioni e del legame\n' +
-    //     'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', () => {
-    //         cy.impersonification('TUTF003', 'ARGMOLLICA3', '010745000')
-    //         cy.getPartyRelations('TUTF003').then(customerNumber => {
-    //             LoginPage.logInMW('TUTF003', psw)
-    //             SintesiCliente.visitUrlClient(customerNumber,false)
-    //             DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-    //             DettaglioAnagrafica.clickSubTab('Convenzioni')
-    //             DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
-    //             DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000')
-    //         })
-    //     });
+    it('Come delegato accedere all\'agenzia 01-745000 e cercare un cliente PF che abbia un legame familiare\n' +
+        'Inserire una Convezione a piacere tra quelli presenti, inserire Matricola e Ruolo "Convenzionato\n' +
+        'N.B. Prendersi nota delle convenzioni e del legame\n' +
+        'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', () => {
+            cy.impersonification('TUTF003', 'ARGMOLLICA3', '010745000')
+            cy.getPartyRelations('TUTF003').then(customerNumber => {
+                LoginPage.logInMW('TUTF003', psw)
+                SintesiCliente.visitUrlClient(customerNumber,false)
+                DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+                DettaglioAnagrafica.clickSubTab('Convenzioni')
+                DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
+                DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000')
+            })
+        });
 })

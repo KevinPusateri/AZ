@@ -137,8 +137,8 @@ class DettaglioAnagrafica {
 
         cy.contains(subTab).click({ force: true })
         cy.wait('@gqlClient', { requestTimeout: 30000 });
-        
-        if(subTab === 'Convenzioni')
+
+        if (subTab === 'Convenzioni')
             cy.wait('@getClientAgreements', { requestTimeout: 60000 });
     }
 
@@ -364,8 +364,7 @@ class DettaglioAnagrafica {
         else {
             //Agenzia
             cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').find('span').invoke('text').then($text => {
-                if($text !== agenzia)
-                {
+                if ($text !== agenzia) {
                     cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').click()
                     cy.contains(agenzia).should('be.visible').click()
                 }
@@ -378,8 +377,22 @@ class DettaglioAnagrafica {
             cy.get('input[formcontrolname="matricola"]').should('be.visible').type(Math.floor(Math.random() * 1000000000).toString())
             //Ruolo
             cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click()
-            let re = new RegExp("\^Convenzionato\$")
+            let re = new RegExp('\\b' + 'Convenzionato' + '\\b')
             cy.contains(re).should('be.visible').click()
+
+            //KEVIN
+            // cy.get('#nx-dropdown-item-3').should('exist').and('be.visible')
+            // cy.wait(3000)
+            // cy.get('.cdk-overlay-container').should('be.visible').within(($element) => {
+            //     console.log($element)
+            //     cy.get('#cdk-overlay-2').should('exist').and('be.visible').within(($tendina) => {
+            //         console.log($tendina)
+            //         let re = new RegExp("\^Convenzionato\$")
+            //         cy.contains(re).click()
+            //     })
+            // })
+
+
             cy.get('.ng-star-inserted').find('div:contains("Aggiungi")').click().should('be.visible').click()
         }
     }
@@ -390,7 +403,13 @@ class DettaglioAnagrafica {
      * @param {Boolean} toBeDelated default false; se true, cancella eventuali convenzioni presenti
      */
     static checkConvenzioniPresenti(isPresent, toBeDelated = false) {
-        cy.get('h3').invoke('text').then($text => {
+
+        cy.intercept({
+            method: 'GET',
+            url: '**/getclientagreements/**'
+        }).as('getClientAgreements');
+
+        cy.get('h3').should('be.visible').invoke('text').then($text => {
             let numberOfConvenzioni = Number.parseInt($text.trim(), 10)
             switch (numberOfConvenzioni) {
                 case 0:
@@ -402,6 +421,7 @@ class DettaglioAnagrafica {
                     if (toBeDelated) {
                         cy.get('svg[data-icon="trash-alt"]').click()
                         cy.contains('Conferma').should('be.visible').click()
+                        cy.wait('@getClientAgreements', { timeout: 30000 })
                     }
                     break;
             }

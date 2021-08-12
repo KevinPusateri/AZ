@@ -697,7 +697,7 @@ class SintesiCliente {
 
 
         cy.wait('@pageClient', { requestTimeout: 60000 });
-        cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
+        cy.get('app-scope-element', { timeout: 120000 }).should('exist').and('be.visible')
     }
 
     /**
