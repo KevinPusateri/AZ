@@ -259,9 +259,11 @@ Cypress.Commands.add('getPartyRelations', (tutf) => {
 /**
  * Verifica la presenza delle convenzioni, e in caso ne effettua la cancellazione se specificato
  * @param {String} tutf tutf utilizzata negli headers per invocare i servizi in x-allianz-user
- * @param {String} branchId tipo di polizza da trovare (31 [AU], 16 [RV],42 - 0 [Ultra], 86 [VI])
+ * @param {String} branchId tipo di polizza da trovare (31 [AU], 11 [RV], 42 [Ultra + Allianz1], 86 [VI])
+ * @param {boolean} isUltra default a false, da specificare a true se si ricercano polizze Ultra (altrimenti si confondono con quelle allianz1)
+ * @param {boolean} isAZ1 default a false, da specificare a true se si ricercano polizze AZ1 Business
  */
-Cypress.Commands.add('getClientWithPolizze', (tutf, branchId) => {
+Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, isAZ1 = false) => {
   cy.generateTwoLetters().then(nameRandom => {
     cy.generateTwoLetters().then(firstNameRandom => {
       cy.request({
@@ -298,9 +300,20 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId) => {
             }).then(responseContracts => {
               expect(responseContracts.status).to.eq(200)
               //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
-              let contractsWithBranchId = responseContracts.body.filter(el => {
-                return el.branchId.includes(branchId)
-              })
+              let contractsWithBranchId
+              if (isUltra)
+                contractsWithBranchId = responseContracts.body.filter(el => {
+                  return (el.branchId.includes(branchId) && el.branchName.includes('ULTRA'))
+                })
+              else if (isAZ1)
+                contractsWithBranchId = responseContracts.body.filter(el => {
+                  return (el.branchId.includes(branchId) && el.branchName.includes('ALLIANZ1'))
+                })
+              else
+                contractsWithBranchId = responseContracts.body.filter(el => {
+                  return el.branchId.includes(branchId)
+                })
+
               if (contractsWithBranchId.length > 0)
                 return currentClient.customerNumber
               else

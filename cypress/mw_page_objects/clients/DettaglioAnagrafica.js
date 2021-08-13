@@ -354,8 +354,10 @@ class DettaglioAnagrafica {
      * Click sul pulsante Aggiungi Convenzione da Dettaglio Anagrafica\Convenzioni
      * @param {bool} convenzionePresente : se false, verifica che non sia possibile emettere convenzione (con check popup); default a true
      * @param {string} agenzia : agenzia da selezionare dal dropdown menu in caso di aggiunta della convenzione
+     * @param {string} convenzione : convenzione da selezionare dal dropdown menu in caso di aggiunta della convenzione
+     * @param {string} ruolo : ruolo da selezionare dal dropdown menu in caso di aggiunta della convenzione
      */
-    static clickAggiungiConvenzione(convenzionePresente = true, agenzia) {
+    static clickAggiungiConvenzione(convenzionePresente = true, agenzia, convenzione, ruolo) {
 
         cy.contains('Aggiungi Convenzione').should('be.visible').click()
         if (!convenzionePresente) {
@@ -364,51 +366,33 @@ class DettaglioAnagrafica {
         }
         else {
             return new Cypress.Promise((resolve, reject) => {
-                const convenzione = {
-                    agenzia: '',
-                    convenzioneId: '',
+                const convenzioneInserita = {
+                    agenzia: agenzia,
+                    convenzioneId: convenzione,
                     matricola: '',
                     ruolo: '',
                 }
                 //Agenzia
-                cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').find('span').invoke('text').then($text => {
+                cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').find('span:visible').invoke('text').then($text => {
                     if ($text !== agenzia) {
                         cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').click()
                         cy.contains(agenzia).should('be.visible').click()
                     }
                 })
-                cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').find('span').invoke('text').then($text => {
-                    convenzione.agenzia = $text
-                })
                 //Convenzione
                 cy.get('#nx-dropdown-rendered-1').click()
-                cy.contains('FINSEDA').should('be.visible').click()
-                cy.contains('FINSEDA').invoke('text').then(($convenzioneSelect) => {
-                    convenzione.convenzioneId = $convenzioneSelect
-                })
-                // cy.contains('FINSEDA').should('be.visible').click()
-                // cy.focused().tab()
+                cy.contains(convenzione).should('be.visible').click()
                 //Matricola
                 let matricola = Math.floor(Math.random() * 1000000000).toString()
                 cy.get('input[formcontrolname="matricola"]').should('be.visible').type(matricola)
                 convenzione.matricola = matricola
                 //Ruolo
                 cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click()
-                // let re = new RegExp('\\b' + 'Convenzionato' + '\\b')
-                // cy.contains(re).should('be.visible').click()
-
-                //KEVIN
                 cy.get('#nx-dropdown-item-3').should('exist').and('be.visible')
                 cy.get('.cdk-overlay-container').should('be.visible').within(($element) => {
                     console.log($element)
                     cy.get('[aria-activedescendant="nx-dropdown-item-3"]').should('exist').and('be.visible').within(($tendina) => {
-                        const sceltaConvenzione = [
-                            'Convenzionato',
-                            'Ente Convenzionante'
-                            // 'Familiare del Convenzionato'
-                        ]
-                        var indexScelta = Math.floor(Math.random() * sceltaConvenzione.length);
-                        switch (sceltaConvenzione[indexScelta]) {
+                        switch (ruolo) {
                             case 'Convenzionato':
                                 cy.wrap($tendina).find('span').contains(/\s*Convenzionato/).click()
                                 convenzione.ruolo = 'Convenzionato'
@@ -424,12 +408,10 @@ class DettaglioAnagrafica {
                         }
                     })
                     cy.contains('Aggiungi').click()
-                    // cy.get('nx-modal-container').should('not.be.visible')
-                    // resolve(convenzione)
                 })
                 cy.get('.cdk-overlay-container').should('be.visible').within(() => {
                     cy.get('nx-modal-container').should('not.be.visible')
-                    resolve(convenzione)
+                    resolve(convenzioneInserita)
                 })
             })
         }
