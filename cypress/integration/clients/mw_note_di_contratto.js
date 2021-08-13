@@ -8,7 +8,6 @@
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import HomePage from "../../mw_page_objects/common/HomePage"
-import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
 import NoteContratto from "../../mw_page_objects/clients/NoteContratto"
@@ -71,6 +70,7 @@ describe('Matrix Web : Note di contratto', function () {
                 Portafoglio.clickSubTab('Polizze attive')
                 Portafoglio.filtraPolizze('Motor')
                 NoteContratto.inserisciNotaContratto()
+                NoteContratto.checkNotaInserita()
             })
         })
 
@@ -329,7 +329,7 @@ describe('Matrix Web : Note di contratto', function () {
         })
     })
 
-    context.only('Polizza Allianz1 Business', function () {
+    context('Polizza Allianz1 Business', function () {
         it('Verifica Aggiungi Nota', function () {
             cy.getClientWithPolizze('TUTF021', '42', false, true).then(customerNumber => {
                 currentCustomerNumber = customerNumber

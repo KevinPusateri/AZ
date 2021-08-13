@@ -63,13 +63,10 @@ class NoteContratto {
 
                 cy.fixture('Nota.json').then((data) => {
                     cy.get('textarea[name="description"]').should('be.visible').type(JSON.stringify(data.nota))
-                    //TODO: Verifica Perchè non clicca 
                     cy.get('button').find('span:contains("Salva")').first().click()
                 })
 
             })
-            // cy.get('lib-note-action-modal').should('be.visible').within(() => {
-            //TODO: Verifica se c'è disamgiguaione allotra fai altrimenti no 
             cy.get('body').then($body => {
                 if ($body.find('nx-modal-container').length > 0) {
                     cy.wait(2000)
@@ -77,14 +74,46 @@ class NoteContratto {
                     cy.get('div[ngclass="agency-row"]').first().click()
                 }
             })
-            // cy.get('lib-disambiguation').should('be.visible').find('div[ngclass="agency-row"]').first().click()
-            // })
 
             cy.get('lib-contract-notes-badge').should('exist').and('be.visible')
                 .find('[class="badge-label"]:contains("Note")').should('be.visible')
 
         })
         //#endregion
+    }
+
+    /**
+     *  Verifica la nota inserita con descrizione presa dal file nota.json
+     */
+    static checkNotaInserita() {
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('@polizza').first().should('exist').then(() => {
+
+            cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
+                cy.wait(1000)
+                if ($note.find("nx-icon").length > 0) {
+                    cy.get('lib-contract-notes-badge').should('be.visible')
+                    cy.wrap($note).click()
+
+                    cy.get('.cdk-overlay-container').should('be.visible').within(() => {
+                        cy.get('div[class="note-content"]').should('exist').and('be.visible')
+
+                        cy.fixture('Nota.json').then((data) => {
+                            cy.get('nx-modal-container')
+                                .should('be.visible')
+                                .and('contain.text', JSON.stringify(data.nota).toUpperCase())
+                        })
+                    })
+                    cy.get('.cdk-overlay-container').within(() => {
+                        cy.get('nx-icon[name="close"]').click()
+                    })
+
+                    cy.get('nx-modal-container').should('not.exist')
+                } else {
+                    assert.fail('badge non è presente')
+                }
+            })
+        })
     }
 
     /**
@@ -235,8 +264,12 @@ class NoteContratto {
                         })
                     })
 
-                    cy.get('lib-note-action-modal').should('be.visible').within(() => {
-                        cy.get('lib-disambiguation').find('div[ngclass="agency-row"]').first().click()
+                    cy.get('body').then($body => {
+                        if ($body.find('nx-modal-container').length > 0) {
+                            cy.wait(2000)
+                            cy.get('div[ngclass="agency-row"]').should('be.visible')
+                            cy.get('div[ngclass="agency-row"]').first().click()
+                        }
                     })
 
                     cy.get('nx-modal-container').should('not.exist')
@@ -351,7 +384,7 @@ class NoteContratto {
                                     polizza.lob = 'Rami Vari'
                                 else
                                     polizza.lob = 'Quadro'
-                                
+
                             })
                         })
 
@@ -364,7 +397,6 @@ class NoteContratto {
                 })
         })
     }
-
 
     /**
      * Verifica dal badge delle note la modifica effettuata
