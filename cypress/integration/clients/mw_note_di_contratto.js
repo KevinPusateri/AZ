@@ -331,7 +331,7 @@ describe('Matrix Web : Note di contratto', function () {
 
     context.only('Polizza Allianz1 Business', function () {
         it('Verifica Aggiungi Nota', function () {
-            cy.getClientWithPolizze('TUTF021', '42 - 0', false, true).then(customerNumber => {
+            cy.getClientWithPolizze('TUTF021', '42', false, true).then(customerNumber => {
                 currentCustomerNumber = customerNumber
                 SintesiCliente.visitUrlClient(customerNumber, false)
                 Portafoglio.clickTabPortafoglio()
