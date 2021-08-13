@@ -263,7 +263,7 @@ describe('Matrix Web : Note di contratto', function () {
         })
     })
 
-    context.only('Polizza Ultra', function () {
+    context('Polizza Ultra', function () {
         it('Verifica Aggiungi Nota', function () {
             cy.getClientWithPolizze('TUTF021', '42', true).then(customerNumber => {
                 currentCustomerNumber = customerNumber

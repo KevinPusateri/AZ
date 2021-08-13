@@ -345,10 +345,13 @@ class NoteContratto {
                             cy.get('div').first().then(($lobIcon) => {
                                 if ($lobIcon.hasClass('icon-bubble motor'))
                                     polizza.lob = 'Auto'
-                                if ($lobIcon.hasClass('icon-bubble life'))
+                                else if ($lobIcon.hasClass('icon-bubble life'))
                                     polizza.lob = 'Vita'
-                                if ($lobIcon.hasClass('icon-bubble retail'))
+                                else if ($lobIcon.hasClass('icon-bubble retail'))
                                     polizza.lob = 'Rami Vari'
+                                else
+                                    polizza.lob = 'Quadro'
+                                
                             })
                         })
 
