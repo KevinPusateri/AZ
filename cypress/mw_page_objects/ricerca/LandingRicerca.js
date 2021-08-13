@@ -130,7 +130,7 @@ class LandingRicerca {
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type(value).type('{enter}').wait(2000)
 
-        cy.wait('@gqlSearch', { requestTimeout: 30000 });
+        cy.wait('@gqlSearch', { requestTimeout: 60000 });
 
         switch (value) {
             case 'incasso':
@@ -160,7 +160,7 @@ class LandingRicerca {
 
         cy.get('lib-client-item').first().click();
 
-        cy.wait('@client', { requestTimeout: 30000 });
+        cy.wait('@client', { requestTimeout: 60000 });
     }
 
     /**

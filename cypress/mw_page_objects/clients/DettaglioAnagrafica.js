@@ -356,44 +356,82 @@ class DettaglioAnagrafica {
      * @param {string} agenzia : agenzia da selezionare dal dropdown menu in caso di aggiunta della convenzione
      */
     static clickAggiungiConvenzione(convenzionePresente = true, agenzia) {
+
         cy.contains('Aggiungi Convenzione').should('be.visible').click()
         if (!convenzionePresente) {
             cy.get('h4').should('contain.text', 'Nessuna convenzione disponibile per l\'agenzia selezionata')
             cy.contains('Annulla').click()
         }
         else {
-            //Agenzia
-            cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').find('span').invoke('text').then($text => {
-                if ($text !== agenzia) {
-                    cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').click()
-                    cy.contains(agenzia).should('be.visible').click()
+            return new Cypress.Promise((resolve, reject) => {
+                const convenzione = {
+                    agenzia: '',
+                    convenzioneId: '',
+                    matricola: '',
+                    ruolo: '',
                 }
+                //Agenzia
+                cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').find('span').invoke('text').then($text => {
+                    if ($text !== agenzia) {
+                        cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').click()
+                        cy.contains(agenzia).should('be.visible').click()
+                    }
+                })
+                cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').find('span').invoke('text').then($text => {
+                    convenzione.agenzia = $text
+                })
+                //Convenzione
+                cy.get('#nx-dropdown-rendered-1').click()
+                cy.contains('FINSEDA').should('be.visible').click()
+                cy.contains('FINSEDA').invoke('text').then(($convenzioneSelect) => {
+                    convenzione.convenzioneId = $convenzioneSelect
+                })
+                // cy.contains('FINSEDA').should('be.visible').click()
+                // cy.focused().tab()
+                //Matricola
+                let matricola = Math.floor(Math.random() * 1000000000).toString()
+                cy.get('input[formcontrolname="matricola"]').should('be.visible').type(matricola)
+                convenzione.matricola = matricola
+                //Ruolo
+                cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click()
+                // let re = new RegExp('\\b' + 'Convenzionato' + '\\b')
+                // cy.contains(re).should('be.visible').click()
+
+                //KEVIN
+                cy.get('#nx-dropdown-item-3').should('exist').and('be.visible')
+                cy.get('.cdk-overlay-container').should('be.visible').within(($element) => {
+                    console.log($element)
+                    cy.get('[aria-activedescendant="nx-dropdown-item-3"]').should('exist').and('be.visible').within(($tendina) => {
+                        const sceltaConvenzione = [
+                            'Convenzionato',
+                            'Ente Convenzionante'
+                            // 'Familiare del Convenzionato'
+                        ]
+                        var indexScelta = Math.floor(Math.random() * sceltaConvenzione.length);
+                        switch (sceltaConvenzione[indexScelta]) {
+                            case 'Convenzionato':
+                                cy.wrap($tendina).find('span').contains(/\s*Convenzionato/).click()
+                                convenzione.ruolo = 'Convenzionato'
+                                break;
+                            case 'Ente Convenzionante':
+                                cy.wrap($tendina).find('span').contains(/\s*Ente Convenzionante/).click()
+                                convenzione.ruolo = 'Ente Convenzionante'
+                                break;
+                            case 'Familiare del Convenzionato':
+                                convenzione.ruolo = 'Familiare del Convenzionato'
+                                cy.wrap($tendina).find('span').contains(/\s*Familiare del Convenzionato/).click()
+                                break;
+                        }
+                    })
+                    cy.contains('Aggiungi').click()
+                    // cy.get('nx-modal-container').should('not.be.visible')
+                    // resolve(convenzione)
+                })
+                cy.get('.cdk-overlay-container').should('be.visible').within(() => {
+                    cy.get('nx-modal-container').should('not.be.visible')
+                    resolve(convenzione)
+                })
             })
-            //Convenzione
-            cy.get('#nx-dropdown-rendered-1').click()
-            cy.contains('FINSEDA').should('be.visible').click()
-            cy.focused().tab()
-            //Matricola
-            cy.get('input[formcontrolname="matricola"]').should('be.visible').type(Math.floor(Math.random() * 1000000000).toString())
-            //Ruolo
-            cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click()
-            let re = new RegExp('\\b' + 'Convenzionato' + '\\b')
-            cy.contains(re).should('be.visible').click()
-
-            //KEVIN
-            // cy.get('#nx-dropdown-item-3').should('exist').and('be.visible')
-            // cy.wait(3000)
-            // cy.get('.cdk-overlay-container').should('be.visible').within(($element) => {
-            //     console.log($element)
-            //     cy.get('#cdk-overlay-2').should('exist').and('be.visible').within(($tendina) => {
-            //         console.log($tendina)
-            //         let re = new RegExp("\^Convenzionato\$")
-            //         cy.contains(re).click()
-            //     })
-            // })
-
-
-            cy.get('.ng-star-inserted').find('div:contains("Aggiungi")').click().should('be.visible').click()
         }
     }
 
@@ -422,9 +460,26 @@ class DettaglioAnagrafica {
                         cy.get('svg[data-icon="trash-alt"]').click()
                         cy.contains('Conferma').should('be.visible').click()
                         cy.wait('@getClientAgreements', { timeout: 30000 })
+                        cy.get('h3').should('be.visible').should('be.lessThan',1)
                     }
                     break;
             }
+        })
+    }
+
+
+    static checkConvenzioneInserito(convenzione) {
+
+        cy.wait(3000)
+        cy.get('app-convenzioni').should('exist').and('be.visible').within(() => {
+            cy.get('div[class="row"]').should('exist').and('be.visible')
+
+            cy.get('[class="row"]').eq(1).within(() => {
+                cy.get('[class~="list-content"]').should('contain.text', convenzione.agenzia)
+                cy.get('[class~="list-content"]').should('contain.text', convenzione.convenzioneId)
+                cy.get('[class~="list-content"]').should('contain.text', convenzione.matricola)
+                cy.get('[class~="list-content"]').should('contain.text', convenzione.ruolo)
+            })
         })
     }
 }

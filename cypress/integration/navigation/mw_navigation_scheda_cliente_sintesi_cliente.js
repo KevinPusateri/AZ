@@ -70,9 +70,89 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.checkCardsEmissioni()
     })
 
-    // it('Verifica Link Auto', function () {
-    //TODO: completare
-    //     })
+    // !ADD TFS
+    it('Verifica Link da Card Auto', function () {
+        // TODO: completare
+        SintesiCliente.clickAuto()
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
+            const linksAuto = [
+                'Emissione',
+                'Prodotti particolari',
+                'Passione BLU'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksAuto[i])
+            })
+        })
+    })
+
+    // !ADD TFS
+    it('Verifica Link da Card Auto -> Emissione', function () {
+        SintesiCliente.clickAuto()
+        cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
+            const linksEmissione = [
+                'Preventivo Motor',
+                'Flotte e Convenzioni'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksEmissione[i])
+            })
+        })
+    })
+
+    // !ADD TFS
+    it('Verifica Link da Card Auto -> Prodotti particolari', function () {
+        SintesiCliente.clickAuto()
+        cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
+            const linksProdottiParticolari = [
+                'Assunzione guidata (con cod. di autorizz.)',
+                'Veicoli d\'epoca durata 10 giorni',
+                'Libri matricola',
+                'Kasko e ARD per \'Dipendenti in Missione\'',
+                'Polizza aperta',
+                'Coassicurazione'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksProdottiParticolari[i])
+            })
+        })
+    })
+
+    it.only('Verifica Link da Card Auto -> Passione BLU', function () {
+        SintesiCliente.clickAuto()
+        cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
+            const linksPassioneBlu = [
+                'Nuova polizza',
+                'Nuova polizza guidata',
+                'Nuova polizza Coassicurazione'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksPassioneBlu[i])
+            })
+        })
+    })
+
+    it.only('Verifica Link da Card Rami vari', function () {
+        // TODO: completare
+        SintesiCliente.clickRamiVari()
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first.should('exist').and('be.visible').within(() => {
+            const linksPassioneBlu = [
+                'Allianz Ultra Casa e Patrimonio',
+                'Allianz Ultra Casa e Patrimonio BMP',
+                'Allianz Ultra Salute',
+                'Allianz1 Business',
+                'FastQuote Universo Salute',
+                'FastQuote Infortuni'
+                //TODO: Finire
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksPassioneBlu[i])
+            })
+        })
+    })
 
     it('Verifica Card Auto: Emissione -> Preventivo Motor', function () {
         SintesiCliente.clickAuto()

@@ -61,18 +61,18 @@ describe('Matrix Web : Note di contratto', function () {
     context.only('Polizza Auto', function () {
 
         it('Verifica Aggiungi Nota', function () {
-            // cy.getClientWithPolizze('TUTF021', '31').then(customerNumber => {
-                // SintesiCliente.visitUrlClient(customerNumber, false)
-                TopBar.search('MCACLD61L29E091J')
-                LandingRicerca.clickFirstResult()
-                // SintesiCliente.retriveUrl().then(currentUrl => {
-                //     urlClient = currentUrl
-                // })
+            cy.getClientWithPolizze('TUTF021', '31').then(customerNumber => {
+                SintesiCliente.visitUrlClient(customerNumber, false)
+                // TopBar.search('MCACLD61L29E091J') // !added
+                // LandingRicerca.clickFirstResult()// !added
+                SintesiCliente.retriveUrl().then(currentUrl => {
+                    urlClient = currentUrl
+                })
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')
                 Portafoglio.filtraPolizze('Motor')
                 NoteContratto.inserisciNotaContratto()
-            // })
+            })
         })
 
         it('Verifica Tooltip numero di note presenti(1 nota)', function () {

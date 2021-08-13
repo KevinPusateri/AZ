@@ -10,6 +10,7 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 //#endregion import
 
 //#region Configuration
@@ -93,13 +94,18 @@ describe('Matrix Web : Convenzioni', {
         'N.B. Prendersi nota delle convenzioni e del legame\n' +
         'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', () => {
             cy.impersonification('TUTF003', 'ARGMOLLICA3', '010745000')
-            cy.getPartyRelations('TUTF003').then(customerNumber => {
+            // cy.getPartyRelations('TUTF003').then(customerNumber => {
                 LoginPage.logInMW('TUTF003', psw)
-                SintesiCliente.visitUrlClient(customerNumber,false)
+                TopBar.search('SLRCSR43C06E995L')
+                LandingRicerca.clickFirstResult()
+                // SintesiCliente.visitUrlClient(customerNumber,false)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
                 DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
-                DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000')
-            })
+                DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000').then((retrivedConvenzione)=>{
+                    debugger
+                    DettaglioAnagrafica.checkConvenzioneInserito(retrivedConvenzione)
+                })
+                // })
         });
 })

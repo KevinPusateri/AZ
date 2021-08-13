@@ -63,6 +63,7 @@ class NoteContratto {
 
                 cy.fixture('Nota.json').then((data) => {
                     cy.get('textarea[name="description"]').should('be.visible').type(JSON.stringify(data.nota))
+                    //TODO: Verifica Perchè non clicca 
                     cy.get('button').find('span:contains("Salva")').first().click()
                 })
 
@@ -70,7 +71,6 @@ class NoteContratto {
             // cy.get('lib-note-action-modal').should('be.visible').within(() => {
             //TODO: Verifica se c'è disamgiguaione allotra fai altrimenti no 
             cy.get('body').then($body => {
-                cy.get('nx-modal-container').should('be.visible')
                 if ($body.find('nx-modal-container').length > 0) {
                     cy.wait(2000)
                     cy.get('div[ngclass="agency-row"]').should('be.visible')
