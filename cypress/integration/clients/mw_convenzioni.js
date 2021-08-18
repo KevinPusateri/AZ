@@ -11,6 +11,7 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
+import Legami from "../../mw_page_objects/clients/Legami"
 //#endregion import
 
 //#region Configuration
@@ -64,6 +65,8 @@ after(function () {
 //#endregion Before After
 
 let urlClient
+let retrivedClient
+let retrivedPartyRelations
 describe('Matrix Web : Convenzioni', {
     retries: {
         runMode: 0,
@@ -94,14 +97,39 @@ describe('Matrix Web : Convenzioni', {
         'N.B. Prendersi nota delle convenzioni e del legame\n' +
         'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', () => {
             cy.impersonification('TUTF003', 'ARGMOLLICA3', '010745000')
-            cy.getPartyRelations('TUTF003').then(customerNumber => {
+            cy.log('Retriving client with relations, please wait...')
+            cy.getPartyRelations('TUTF003').then(currentClient => {
+                cy.log('Retrived client : ' + currentClient[0].name + ' ' + currentClient[0].firstName)
+                cy.log('Retrived party relation : ' + currentClient[1].name + ' ' + currentClient[1].firstName)
+                retrivedClient = currentClient[0]
+                retrivedPartyRelations = currentClient[1]
                 LoginPage.logInMW('TUTF003', psw)
-                SintesiCliente.visitUrlClient(customerNumber,false)
+                SintesiCliente.visitUrlClient(currentClient[0].customerNumber, false)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
                 DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
-                DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000','FINSEDA','Convenzionato').then((retrivedConvenzione) => {
+                DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'FINSEDA', 'Convenzionato').then((retrivedConvenzione) => {
                     DettaglioAnagrafica.checkConvenzioneInserito(retrivedConvenzione)
+                })
+            })
+        });
+
+    it('Accedere alla scheda del cliente con cui c\'è il legame\n' +
+        'Inserire una Convezione a piacere tra quelli presenti, inserire Matricola e Ruolo "Familiare del Convenzionato"\n' +
+        'Verificare che:\n' +
+        '- si apra il campo "Aderenti Convenzione" nel cui menu a tendina sia presente il nome del cliente con cui c\'è il legame.\n' +
+        'Scegliere conferma e verificare che:\n' +
+        '- l\'operazione vada a buon fine\n' +
+        '- sia presente la convenzione\n', () => {
+            DettaglioAnagrafica.clickSubTab('Legami')
+            Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
+            SintesiCliente.checkAtterraggioName(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
+            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+            DettaglioAnagrafica.clickSubTab('Convenzioni')
+            DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
+            cy.wrap(null).then(() => {
+                DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'FINSEDA', 'Familiare del Convenzionato', retrivedClient.name + ' ' + retrivedClient.firstName).then((retrivedRelatedConvenzione) => {
+                    DettaglioAnagrafica.checkConvenzioneInserito(retrivedRelatedConvenzione)
                 })
             })
         });

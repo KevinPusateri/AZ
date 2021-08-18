@@ -112,7 +112,9 @@ Cypress.Commands.add('iframeCustom', { prevSubject: 'element' }, ($iframe) => {
 Cypress.Commands.overwrite('clearCookies', () => {
   cy.getCookies().then(cookies => {
     for (const cookie of cookies) {
-      cy.clearCookie(cookie.name)
+      cy.clearCookie(cookie.name,{
+        log: false
+      })
     }
   })
 })
@@ -208,6 +210,7 @@ function resolve_index_or_name_to_index(index_or_name) {
 Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
   cy.request({
     method: 'POST',
+    log: false,
     url: 'https://profilingbe.pp.azi.allianzit/profilingManagement/personation/' + tutf,
     form: true,
     body: { persUser: getPersUser, channel: getChannel }
@@ -215,41 +218,65 @@ Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
 })
 
 Cypress.Commands.add('getPartyRelations', (tutf) => {
-  cy.clearCookies();
   cy.generateTwoLetters().then(nameRandom => {
     cy.generateTwoLetters().then(firstNameRandom => {
       cy.request({
         method: 'GET',
         retryOnStatusCodeFailure: true,
         timeout: 60000,
+        log: false,
         url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person',
         headers: {
           'x-allianz-user': tutf
         }
       }).then(response => {
-        expect(response.status).to.eq(200)
         if (response.body.length === 0)
           cy.getPartyRelations(tutf)
         else {
-          let currentClient = response.body[Math.floor(Math.random() * response.body.length)]
-          cy.log('Retrived client : ' + currentClient.name + ' ' + currentClient.firstName)
-          cy.request({
-            method: 'GET',
-            retryOnStatusCodeFailure: true,
-            timeout: 60000,
-            url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/partyrelations/',
-            headers: {
-              'x-allianz-user': tutf
-            }
-          }).then(responsePartyRelations => {
-            expect(responsePartyRelations.status).to.eq(200)
-            //Verifico che i legami presenti siano almeno 2
-            if (responsePartyRelations.body.length === 0 || responsePartyRelations.body.length === 1)
-              cy.getPartyRelations(tutf)
-            else {
-              return currentClient.customerNumber
-            }
+          let clientiPotenziali = response.body.filter(el => {
+            return el.partyCategory[0] === 'P'
           })
+
+          if (clientiPotenziali.length > 0) {
+            let currentClient = clientiPotenziali[Math.floor(Math.random() * clientiPotenziali.length)]
+            cy.request({
+              method: 'GET',
+              retryOnStatusCodeFailure: true,
+              log: false,
+              timeout: 120000,
+              url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/partyrelations/',
+              headers: {
+                'x-allianz-user': tutf
+              }
+            }).then(responsePartyRelations => {
+              //Verifico che i legami presenti siano almeno 2
+              if (responsePartyRelations.body.length === 0 || responsePartyRelations.body.length === 1)
+                cy.getPartyRelations(tutf)
+              else {
+                let filteredRelations = responsePartyRelations.body.filter(el => {
+                  return (!el.relatedParty.includes(currentClient.customerNumber) && el.extEntity.groupRelationDescription !== 'Aderente')
+                })
+                if (filteredRelations.length === 0)
+                  cy.getPartyRelations(tutf)
+                else {
+                  cy.request({
+                    method: 'GET',
+                    retryOnStatusCodeFailure: true,
+                    log: false,
+                    timeout: 120000,
+                    url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore' + filteredRelations[0].relatedParty,
+                    headers: {
+                      'x-allianz-user': tutf
+                    }
+                  }).then(currentRelatedParty => {
+                    return [currentClient, currentRelatedParty.body]
+                  })
+                }
+              }
+            })
+          }
+          else
+            cy.getPartyRelations(tutf)
         }
       })
     })
@@ -275,7 +302,6 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, i
           'x-allianz-user': tutf
         }
       }).then(response => {
-        expect(response.status).to.eq(200)
         if (response.body.length === 0)
           cy.getClientWithPolizze(tutf, branchId)
         else {
@@ -298,7 +324,6 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, i
                 'x-allianz-user': tutf
               }
             }).then(responseContracts => {
-              expect(responseContracts.status).to.eq(200)
               //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
               let contractsWithBranchId
               if (isUltra)

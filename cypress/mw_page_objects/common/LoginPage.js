@@ -19,7 +19,7 @@ class LoginPage {
                 Object.defineProperty(win.navigator, 'accept_languages', { value: ['it'] });
             },
             headers: {
-                'Accept-Language': 'de',
+                'Accept-Language': 'it',
             },
         })
     }
@@ -46,7 +46,7 @@ class LoginPage {
 
         }
 
-        if (mockedNotifications) {
+        if (mockedNews) {
 
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news')) {
@@ -57,12 +57,16 @@ class LoginPage {
         else {
             //Wait for news graphQL to be returned
             cy.intercept('POST', '**/graphql', (req) => {
-                if (req.body.operationName.includes('news')) {
+                if (req.body.operationName.includes('news'))
                     req.alias = 'gqlNews'
-                    req.res
-                }
             })
         }
+
+        //Intecettiamo by default userDetails che serve a tutta una serie di chiamate in MW
+        cy.intercept('POST','**/graphql', (req) =>{
+            if(req.body.operationName.includes('userDetails'))
+            req.alias = 'gqlUserDetails'
+        })
 
         cy.get('input[name="Ecom_User_ID"]').type(userName,{ log: false })
         cy.get('input[name="Ecom_Password"]').type(psw,{ log: false })
@@ -71,6 +75,10 @@ class LoginPage {
         Common.checkUrlEnv()
         if (!mockedNews)
             cy.wait('@gqlNews')
+
+        cy.wait('@gqlUserDetails')
+
+        
     }
 }
 

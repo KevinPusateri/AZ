@@ -138,17 +138,20 @@ class Legami {
     }
 
     /**
-     * click link membro
+     * Click link membro
      * @param {string} membro - link membro
+     * @param {Boolean} editMembro - default a true, effettuato trim e substring per i test di mw_legami
      */
-    static clickLinkMembro(membro) {
+    static clickLinkMembro(membro,editMembro = true) {
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {
                 req.alias = 'client'
             }
         });
-        cy.get('ac-anagrafe-panel').find('a[class="data"]:contains("' + membro.trim().substring(0, 5) + '")').click()
 
+        let currentMembro = editMembro ? membro.trim().substring(0, 5) : membro
+
+        cy.get('ac-anagrafe-panel').find('a[class="data"]:contains("' + currentMembro + '"):first').click()
 
         cy.wait('@client', { requestTimeout: 30000 });
     }

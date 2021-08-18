@@ -125,9 +125,8 @@ class DettaglioAnagrafica {
     static clickSubTab(subTab) {
 
         cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('client')) {
+            if (req.body.operationName.includes('client'))
                 req.alias = 'gqlClient'
-            }
         });
         //Intercept dedicata per il subTab Convenzioni
         cy.intercept({
@@ -136,10 +135,13 @@ class DettaglioAnagrafica {
         }).as('getClientAgreements');
 
         cy.contains(subTab).click({ force: true })
-        cy.wait('@gqlClient', { requestTimeout: 30000 });
+
+        //Sul tab Legami non c'è la gqlClient specificata
+        if (subTab !== 'Legami')
+            cy.wait('@gqlClient', { requestTimeout: 30000 })
 
         if (subTab === 'Convenzioni')
-            cy.wait('@getClientAgreements', { requestTimeout: 60000 });
+            cy.wait('@getClientAgreements', { requestTimeout: 120000 })
     }
 
     static checkSubTabDatiAnagrafici() {
@@ -314,7 +316,6 @@ class DettaglioAnagrafica {
         })
     }
 
-
     static checkCampiResidenzaAnagrafica() {
         cy.contains('app-section-title', 'Residenza anagrafica', { timeout: 10000 }).should('exist')
         cy.get('[class="label"]').should('include.text', 'Comune*')
@@ -352,12 +353,13 @@ class DettaglioAnagrafica {
 
     /**
      * Click sul pulsante Aggiungi Convenzione da Dettaglio Anagrafica\Convenzioni
-     * @param {bool} convenzionePresente : se false, verifica che non sia possibile emettere convenzione (con check popup); default a true
+     * @param {bool} convenzionePresente : se false, verifica che non sia possibile emettere convenzione (con check popup)
      * @param {string} agenzia : agenzia da selezionare dal dropdown menu in caso di aggiunta della convenzione
      * @param {string} convenzione : convenzione da selezionare dal dropdown menu in caso di aggiunta della convenzione
      * @param {string} ruolo : ruolo da selezionare dal dropdown menu in caso di aggiunta della convenzione
+     * @param {string} aderente : aderente da selezionare dal dropdown menu in caso di aggiunta Familiare del Convenzionato
      */
-    static clickAggiungiConvenzione(convenzionePresente = true, agenzia, convenzione, ruolo) {
+    static clickAggiungiConvenzione(convenzionePresente, agenzia, convenzione, ruolo, aderente) {
 
         cy.contains('Aggiungi Convenzione').should('be.visible').click()
         if (!convenzionePresente) {
@@ -369,8 +371,9 @@ class DettaglioAnagrafica {
                 const convenzioneInserita = {
                     agenzia: agenzia,
                     convenzioneId: convenzione,
-                    matricola: '',
-                    ruolo: '',
+                    matricola: Math.floor(Math.random() * 1000000000).toString(),
+                    ruolo: ruolo,
+                    aderente: aderente
                 }
                 //Agenzia
                 cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').find('span:visible').invoke('text').then($text => {
@@ -383,9 +386,7 @@ class DettaglioAnagrafica {
                 cy.get('#nx-dropdown-rendered-1').click()
                 cy.contains(convenzione).should('be.visible').click()
                 //Matricola
-                let matricola = Math.floor(Math.random() * 1000000000).toString()
-                cy.get('input[formcontrolname="matricola"]').should('be.visible').type(matricola)
-                convenzione.matricola = matricola
+                cy.get('input[formcontrolname="matricola"]').should('be.visible').type(convenzioneInserita.matricola)
                 //Ruolo
                 cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click()
                 cy.get('#nx-dropdown-item-3').should('exist').and('be.visible')
@@ -395,24 +396,27 @@ class DettaglioAnagrafica {
                         switch (ruolo) {
                             case 'Convenzionato':
                                 cy.wrap($tendina).find('span').contains(/\s*Convenzionato/).click()
-                                convenzione.ruolo = 'Convenzionato'
                                 break;
                             case 'Ente Convenzionante':
                                 cy.wrap($tendina).find('span').contains(/\s*Ente Convenzionante/).click()
-                                convenzione.ruolo = 'Ente Convenzionante'
                                 break;
                             case 'Familiare del Convenzionato':
-                                convenzione.ruolo = 'Familiare del Convenzionato'
                                 cy.wrap($tendina).find('span').contains(/\s*Familiare del Convenzionato/).click()
                                 break;
                         }
                     })
+
+                    //Aderenti Convenzione che si apre in automatico se selezionato 'Famigliare del Convenzionato'
+                    if (aderente !== undefined) {
+                        cy.wait(2000)
+                        cy.get('nx-dropdown[formcontrolname="aderente"]').should('be.visible').click()
+                        cy.get('#nx-dropdown-item-6').should('exist').and('be.visible')
+                        cy.contains(aderente.toUpperCase()).should('be.visible').click()
+                    }
+
                     cy.contains('Aggiungi').click()
                 })
-                cy.get('.cdk-overlay-container').should('be.visible').within(() => {
-                    cy.get('nx-modal-container').should('not.be.visible')
-                    resolve(convenzioneInserita)
-                })
+                resolve(convenzioneInserita)
             })
         }
     }
@@ -429,7 +433,7 @@ class DettaglioAnagrafica {
             url: '**/getclientagreements/**'
         }).as('getClientAgreements');
 
-        cy.get('h3').should('be.visible').invoke('text').then($text => {
+        cy.get('h3').should('be.visible').and('exist').invoke('text').then($text => {
             let numberOfConvenzioni = Number.parseInt($text.trim(), 10)
             switch (numberOfConvenzioni) {
                 case 0:
@@ -442,7 +446,7 @@ class DettaglioAnagrafica {
                         cy.get('svg[data-icon="trash-alt"]').click()
                         cy.contains('Conferma').should('be.visible').click()
                         cy.wait('@getClientAgreements', { timeout: 30000 })
-                        cy.get('h3').should('be.visible').should('be.lessThan',1)
+                        cy.wait(2000)
                     }
                     break;
             }
@@ -451,12 +455,9 @@ class DettaglioAnagrafica {
 
 
     static checkConvenzioneInserito(convenzione) {
-
-        cy.wait(3000)
+        cy.wait(2000)
         cy.get('app-convenzioni').should('exist').and('be.visible').within(() => {
-            cy.get('div[class="row"]').should('exist').and('be.visible')
-
-            cy.get('[class="row"]').eq(1).within(() => {
+            cy.get('.row:eq(1)').should('exist').and('be.visible').within(() => {
                 cy.get('[class~="list-content"]').should('contain.text', convenzione.agenzia)
                 cy.get('[class~="list-content"]').should('contain.text', convenzione.convenzioneId)
                 cy.get('[class~="list-content"]').should('contain.text', convenzione.matricola)
