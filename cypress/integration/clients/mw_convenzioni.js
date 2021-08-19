@@ -32,35 +32,34 @@ let insertedId
 
 //#region Before After
 before(() => {
-    // cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-    //     insertedId = results.insertId
-    // })
-    // LoginPage.logInMW(userName, psw)
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+        insertedId = results.insertId
+    })
+    LoginPage.logInMW(userName, psw)
 })
 beforeEach(() => {
     cy.preserveCookies()
 })
 afterEach(function () {
-    // if (this.currentTest.state !== 'passed') {
-    //     TopBar.logOutMW()
-    //     //#region Mysql
-    //     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-    //         let tests = testsInfo
-    //         cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-    //     })
-    //     //#endregion
-    //     Cypress.runner.stop();
-    // }
+    if (this.currentTest.state !== 'passed') {
+        TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
 })
 after(function () {
-    // TopBar.logOutMW()
+    TopBar.logOutMW()
     //#region Mysql
-    // cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-    //     let tests = testsInfo
-    //     cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-    // })
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    })
     //#endregion
-
 })
 //#endregion Before After
 
@@ -74,23 +73,23 @@ describe('Matrix Web : Convenzioni', {
     }
 }, () => {
 
-    // it('Come delegato accedere all\'agenzia 01-710000 e cercare un cliente PG e verificare in Dettaglio Anagrafica la presenza del Tab Convenzioni', () => {
-    //     LandingRicerca.searchRandomClient(true, 'PG', 'P')
-    //     LandingRicerca.clickRandomResult()
-    //     SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-    //         currentClientPG = currentClient
-    //     })
+    it('Come delegato accedere all\'agenzia 01-710000 e cercare un cliente PG e verificare in Dettaglio Anagrafica la presenza del Tab Convenzioni', () => {
+        LandingRicerca.searchRandomClient(true, 'PG', 'P')
+        LandingRicerca.clickRandomResult()
+        SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+            currentClientPG = currentClient
+        })
 
-    //     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-    //     DettaglioAnagrafica.clickSubTab('Convenzioni')
-    // })
+        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+        DettaglioAnagrafica.clickSubTab('Convenzioni')
+    })
 
-    // it('Cliccare su Aggiungi Nuovo e Verificare che : \n' +
-    //     '- compaia il messaggio "Nessuna convenzione disponibile"\n' +
-    //     '- non venga creata alcuna convenzione', () => {
-    //         DettaglioAnagrafica.clickAggiungiConvenzione(false)
-    //         TopBar.logOutMW()
-    //     });
+    it('Cliccare su Aggiungi Nuovo e Verificare che : \n' +
+        '- compaia il messaggio "Nessuna convenzione disponibile"\n' +
+        '- non venga creata alcuna convenzione', () => {
+            DettaglioAnagrafica.clickAggiungiConvenzione(false)
+            TopBar.logOutMW()
+        });
 
     it('Come delegato accedere all\'agenzia 01-745000 e cercare un cliente PF che abbia un legame familiare\n' +
         'Inserire una Convezione a piacere tra quelli presenti, inserire Matricola e Ruolo "Convenzionato\n' +
@@ -127,10 +126,28 @@ describe('Matrix Web : Convenzioni', {
             DettaglioAnagrafica.clickTabDettaglioAnagrafica()
             DettaglioAnagrafica.clickSubTab('Convenzioni')
             DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
+            //? Se non facevo il wrap, andava in esecuzione come prima istruzione dell'it il checkConvenzioneInserito
             cy.wrap(null).then(() => {
                 DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'FINSEDA', 'Familiare del Convenzionato', retrivedClient.name + ' ' + retrivedClient.firstName).then((retrivedRelatedConvenzione) => {
                     DettaglioAnagrafica.checkConvenzioneInserito(retrivedRelatedConvenzione)
                 })
             })
+        });
+
+    it('Accedere nuovamente alla scheda del convenzionato e da Azioni scegliere Elimina' +
+        'Verificare che:' +
+        '- l\'operazione vada a buon fine' +
+        '- la convenzione non sia più presente (anche per il familiare)', () => {
+            SintesiCliente.visitUrlClient(retrivedClient.customerNumber, false)
+            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+            DettaglioAnagrafica.clickSubTab('Convenzioni')
+            DettaglioAnagrafica.checkConvenzioniPresenti(true, true)
+
+            DettaglioAnagrafica.clickSubTab('Legami')
+            Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
+            SintesiCliente.checkAtterraggioName(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
+            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+            DettaglioAnagrafica.clickSubTab('Convenzioni')
+            DettaglioAnagrafica.checkConvenzioniPresenti(false)
         });
 })

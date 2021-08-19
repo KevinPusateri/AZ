@@ -60,6 +60,7 @@ describe('Matrix Web : Note di contratto', function () {
     context('Polizza Auto', function () {
 
         it('Verifica Aggiungi Nota', function () {
+            cy.log('Retriving client with polizze auto, please wait...')
             cy.getClientWithPolizze('TUTF021', '31').then(customerNumber => {
                 currentCustomerNumber = customerNumber
                 SintesiCliente.visitUrlClient(customerNumber, false)
@@ -130,6 +131,7 @@ describe('Matrix Web : Note di contratto', function () {
 
     context('Polizza Vita', function () {
         it('Verifica Aggiungi Nota', function () {
+            cy.log('Retriving client with polizze vita, please wait...')
             cy.getClientWithPolizze('TUTF021', '86').then(customerNumber => {
                 currentCustomerNumber = customerNumber
                 SintesiCliente.visitUrlClient(customerNumber, false)
@@ -199,6 +201,7 @@ describe('Matrix Web : Note di contratto', function () {
 
     context('Polizza Rami Vari', function () {
         it('Verifica Aggiungi Nota', function () {
+            cy.log('Retriving client with polizze rami vari, please wait...')
             cy.getClientWithPolizze('TUTF021', '11').then(customerNumber => {
                 currentCustomerNumber = customerNumber
                 SintesiCliente.visitUrlClient(customerNumber, false)
@@ -265,6 +268,7 @@ describe('Matrix Web : Note di contratto', function () {
 
     context('Polizza Ultra', function () {
         it('Verifica Aggiungi Nota', function () {
+            cy.log('Retriving client with polizze ultra, please wait...')
             cy.getClientWithPolizze('TUTF021', '42', true).then(customerNumber => {
                 currentCustomerNumber = customerNumber
                 SintesiCliente.visitUrlClient(customerNumber, false)
@@ -330,6 +334,7 @@ describe('Matrix Web : Note di contratto', function () {
     })
 
     context('Polizza Allianz1 Business', function () {
+        cy.log('Retriving client with polizze allianz 1 business, please wait...')
         it('Verifica Aggiungi Nota', function () {
             cy.getClientWithPolizze('TUTF021', '42', false, true).then(customerNumber => {
                 currentCustomerNumber = customerNumber

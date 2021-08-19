@@ -297,6 +297,7 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, i
         method: 'GET',
         retryOnStatusCodeFailure: true,
         timeout: 60000,
+        log: false,
         url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person',
         headers: {
           'x-allianz-user': tutf
@@ -319,6 +320,7 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, i
               method: 'GET',
               retryOnStatusCodeFailure: true,
               timeout: 60000,
+              log: false,
               url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
               headers: {
                 'x-allianz-user': tutf

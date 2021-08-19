@@ -371,7 +371,7 @@ class DettaglioAnagrafica {
                 const convenzioneInserita = {
                     agenzia: agenzia,
                     convenzioneId: convenzione,
-                    matricola: Math.floor(Math.random() * 1000000000).toString(),
+                    matricola: (ruolo === 'Familiare del Convenzionato') ? '' : Math.floor(Math.random() * 1000000000).toString(),
                     ruolo: ruolo,
                     aderente: aderente
                 }
@@ -386,7 +386,8 @@ class DettaglioAnagrafica {
                 cy.get('#nx-dropdown-rendered-1').click()
                 cy.contains(convenzione).should('be.visible').click()
                 //Matricola
-                cy.get('input[formcontrolname="matricola"]').should('be.visible').type(convenzioneInserita.matricola)
+                if (convenzioneInserita.matricola !== '')
+                    cy.get('input[formcontrolname="matricola"]').should('be.visible').type(convenzioneInserita.matricola)
                 //Ruolo
                 cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click()
                 cy.get('#nx-dropdown-item-3').should('exist').and('be.visible')
@@ -460,7 +461,6 @@ class DettaglioAnagrafica {
             cy.get('.row:eq(1)').should('exist').and('be.visible').within(() => {
                 cy.get('[class~="list-content"]').should('contain.text', convenzione.agenzia)
                 cy.get('[class~="list-content"]').should('contain.text', convenzione.convenzioneId)
-                cy.get('[class~="list-content"]').should('contain.text', convenzione.matricola)
                 cy.get('[class~="list-content"]').should('contain.text', convenzione.ruolo)
             })
         })
