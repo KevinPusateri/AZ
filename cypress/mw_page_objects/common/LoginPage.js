@@ -68,7 +68,7 @@ class LoginPage {
             req.alias = 'gqlUserDetails'
         })
 
-        cy.get('input[name="Ecom_User_ID"]').type(userName,{ log: false })
+        cy.get('input[name="Ecom_User_ID"]').type(userName)
         cy.get('input[name="Ecom_Password"]').type(psw,{ log: false })
         cy.get('input[type="SUBMIT"]').click()
 
