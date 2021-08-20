@@ -12,7 +12,7 @@ import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 
 
 //#region Username Variables
-const userName = 'TUTF021'   // 'TUTF021'
+const userName = 'TUTF017'   // 'TUTF021'
 const psw = 'P@ssw0rd!'
 //#endregion
 
@@ -63,12 +63,10 @@ describe('Ricerca per preventivo', {
        LandingRicerca.clickFirstResult()
        
        SintesiCliente.clickAuto()
-       SintesiCliente.clickPreventivoMotor()
+      // SintesiCliente.clickPreventivoMotor()
        
       // DatiPreventivo.ClickCheckTarga()
-     //  cy.wait(2000)
-       // getIFrame().find('button:contains("NON CONOSCI LA TARGA?"):visible')
-      // SintesiCliente.clickPassioneBlu()
+       SintesiCliente.clickPassioneBlu()
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
     })
 })
