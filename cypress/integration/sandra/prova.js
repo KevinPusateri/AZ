@@ -61,10 +61,10 @@ describe('Ricerca per preventivo', {
        LandingRicerca.searchRandomClient(true,'PF','E')
        LandingRicerca.clickFirstResult()
        
-       //DatiPreventivo.cickAuto_()
+      
        
-    
-   // DatiPreventivo.clickPassioneBu()
+       DatiPreventivo.clickAuto_()
+       DatiPreventivo.clickPassioneBu()
       // DatiPreventivo.clickPreventivoMotor_()
        
       // DatiPreventivo.ClickCheckTarga()

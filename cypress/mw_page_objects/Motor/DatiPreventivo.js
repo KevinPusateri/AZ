@@ -20,7 +20,7 @@ class DatiPreventivo {
 
 
     static clickPreventivoMotor_() {
-        cy.wait(2000)
+        cy.wait(3000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Preventivo Motor').click()
@@ -34,7 +34,7 @@ class DatiPreventivo {
     }
 
     static clickPassioneBlu() {
-        cy.wait(2000)
+        cy.wait(3000)
         cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Nuova polizza').click()
