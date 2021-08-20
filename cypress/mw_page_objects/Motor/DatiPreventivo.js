@@ -32,6 +32,7 @@ class DatiPreventivo {
         cy.wait('@getMotor', { requestTimeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
     }
+    
     static clickPassioneBlu() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
