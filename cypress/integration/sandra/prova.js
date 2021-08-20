@@ -40,7 +40,7 @@ beforeEach(() => {
 })
 
 after(function () {
-    TopBar.logOutMW()
+  //  TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
@@ -63,8 +63,8 @@ describe('Ricerca per preventivo', {
        
        DatiPreventivo.cickAuto_()
        
-    
-       DatiPreventivo.clickPreventivoMotor_()
+    DatiPreventivo.clickPassioneBu()
+      // DatiPreventivo.clickPreventivoMotor_()
        
       // DatiPreventivo.ClickCheckTarga()
      

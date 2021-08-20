@@ -32,7 +32,7 @@ class DatiPreventivo {
         cy.wait('@getMotor', { requestTimeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
     }
-    
+
     static clickPassioneBlu() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
@@ -44,7 +44,9 @@ class DatiPreventivo {
 
 
     }
+    
     static clickAuto_() {
+        cy.wait(3000)
         cy.get('lib-container').find('app-client-resume-emissions:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Auto")').is(':visible')
             if (check)
@@ -56,6 +58,7 @@ class DatiPreventivo {
         })
     }
 
+    
     static clickNuovaPolizza_() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
