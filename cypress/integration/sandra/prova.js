@@ -58,12 +58,13 @@ describe('Ricerca per preventivo', {
 }, function () {
     it('Ricerca cliente per preventivo', function () {
               //  TopBar.search('AUTOMATICI')
-       LandingRicerca.searchRandomClient(true,'PF','P')
+       LandingRicerca.searchRandomClient(true,'PF','E')
        LandingRicerca.clickFirstResult()
        
-       DatiPreventivo.cickAuto_()
+       //DatiPreventivo.cickAuto_()
        
-    DatiPreventivo.clickPassioneBu()
+    
+   // DatiPreventivo.clickPassioneBu()
       // DatiPreventivo.clickPreventivoMotor_()
        
       // DatiPreventivo.ClickCheckTarga()
