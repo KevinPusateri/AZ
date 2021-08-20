@@ -19,7 +19,7 @@ class DatiPreventivo {
     }
 
 
-    static clickPreventivoMotor_() {
+    static clickPreventivoMotor_(){
         cy.wait(3000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
         cy.wait(2000)

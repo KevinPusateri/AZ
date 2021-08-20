@@ -66,7 +66,7 @@ describe('Ricerca per preventivo', {
        DatiPreventivo.clickAuto_()
        DatiPreventivo.clickPassioneBu()
       // DatiPreventivo.clickPreventivoMotor_()
-       
+       DatiPreventivo.
       // DatiPreventivo.ClickCheckTarga()
      
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
