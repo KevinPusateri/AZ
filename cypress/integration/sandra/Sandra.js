@@ -8,7 +8,7 @@ import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import SintesiCliente from "cypress/mw_page_objects/clients/SintesiCliente"
+//import SintesiCliente from "cypress/mw_page_objects/clients/SintesiCliente"
 
 //#region Username Variables
 const userName = 'TUTF021'
@@ -54,7 +54,6 @@ describe('Prova Auto', () => {
         LandingRicerca.searchRandomClient(true,"PF", "P")
         LandingRicerca.clickFirstResult()
        
-       SintesiCliente.clickAuto()
-       SintesiCliente.clickPassioneBlu()
+      
     });
 });

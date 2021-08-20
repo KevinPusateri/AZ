@@ -8,11 +8,10 @@ import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-
+import DatiPreventivo from "../../mw_page_objects/Motor/DatiPreventivo"
 
 //#region Username Variables
-const userName = 'TUTF017'   // 'TUTF021'
+const userName = 'TUTF021'   // 'TUTF021'
 const psw = 'P@ssw0rd!'
 //#endregion
 
@@ -62,11 +61,12 @@ describe('Ricerca per preventivo', {
        LandingRicerca.searchRandomClient(true,'PF','P')
        LandingRicerca.clickFirstResult()
        
-       SintesiCliente.clickAuto()
+       DatiPreventivo.clickAuto_()
+      // SintesiCliente.clickAuto()
       // SintesiCliente.clickPreventivoMotor()
        
       // DatiPreventivo.ClickCheckTarga()
-       SintesiCliente.clickPassioneBlu()
+      // SintesiCliente.clickPassioneBlu()
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
     })
 })

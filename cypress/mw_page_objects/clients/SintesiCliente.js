@@ -263,17 +263,7 @@ class SintesiCliente {
         cy.wait('@getMotor', { requestTimeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
     }
-    static clickPassioneBlu() {
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
-        cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Nuova polizza').click()
-        Common.canaleFromPopup()
-        getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
-        getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
-
-
-    }
+   
 
     static clickFlotteConvenzioni() {
         cy.wait(2000)
