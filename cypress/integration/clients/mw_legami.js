@@ -7,7 +7,6 @@
 //#region import
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Legami from "../../mw_page_objects/clients/Legami"
@@ -108,14 +107,14 @@ describe('Matrix Web : Legami', function () {
             Legami.clickInserisciMembro().then(retrivedMember => {
                 let newMembro = retrivedMember
                 Legami.checkMembroInserito(newMembro, currentClient.name)
-                // Legami.eliminaMembro(newMembro)
+                Legami.eliminaMembro(newMembro)
             })
         })
 
         it('Verifica inserimento massimo 3 membri', function () {
-            // for (let index = 0; index < 2; index++) {
-            Legami.clickInserisciMembro()
-            // }
+            for (let index = 0; index < 2; index++) {
+                Legami.clickInserisciMembro()
+            }
             Legami.checkTerzoMembroNonInseribile()
         })
 

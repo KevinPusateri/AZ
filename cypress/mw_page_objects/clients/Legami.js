@@ -185,7 +185,7 @@ class Legami {
      * @param {string} membro - nome del membro 
      */
     static eliminaMembro(membro) {
-        cy.get('div[class^="member"]').find('a:contains("' + membro + '")')
+        cy.get('div[class^="member"]').contains(membro)
             .parents('div[class^="member"]').find('nx-icon[class="trash-icon nx-icon--s ndbx-icon nx-icon--trash"]').click()
         cy.get('.cdk-overlay-container').find('span[class="text"]:visible').should('contain.text', 'Rimuovere')
         cy.contains('Si').click()
