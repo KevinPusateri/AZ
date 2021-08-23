@@ -263,7 +263,7 @@ class SintesiCliente {
         cy.wait('@getMotor', { requestTimeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
     }
-   
+
 
     static clickFlotteConvenzioni() {
         cy.wait(2000)
@@ -674,7 +674,7 @@ class SintesiCliente {
      * @param {boolean} fullUrl default a true, viene passato l'url completo, altrimenti viene generato
      * @param {string} param viene passato l'url completo
      */
-    static visitUrlClient(param,fullUrl = true) {
+    static visitUrlClient(param, fullUrl = true) {
         cy.intercept({
             method: 'POST',
             url: '**/clients/**'
@@ -742,7 +742,47 @@ class SintesiCliente {
         cy.get('app-fast-quote').find('app-scope-element').should('be.visible')
     }
 
+    /**
+     * Verifica la presenza della voce specificata cliccando sui 3 puntini in spalla sinistra
+     * @param {String} voce etichetta da verifica cliccando sui 3 puntini in spalla sinistra
+     */
+    static checkVociSpallaSinistra(voce) {
+        cy.get('nx-icon[aria-label="Open menu"]').click()
+        cy.contains(voce).should('exist').and('be.visible')
+        //per chiudere il menu contestuale
+        cy.get('nx-icon[aria-label="Open menu"]').click()
+    }
 
+    /**
+     * Emette Report Profilo Vita cliccando sui 3 puntini della spalla sx in atterraggio su Sintesi Cliente
+     */
+    static emettiReportProfiloVita() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            aliasQuery(req, 'clientReportLifePdf')
+        })
+
+
+        cy.get('nx-icon[aria-label="Open menu"]').click()
+        cy.contains('Report Profilo Vita').should('exist').and('be.visible').click()
+
+
+        cy.window().then(win => {
+            cy.stub(win, 'open').callsFake((url, target) => {
+                expect(target).to.be.undefined
+                // call the original `win.open` method
+                // but pass the `_self` argument
+                return win.open.wrappedMethod.call(win, url, '_self')
+            }).as('open')
+        })
+
+        //Finestra di disambiguazione
+        cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
+        cy.get('@open')
+
+        cy.wait('@gqlclientReportLifePdf')
+            .its('response.body.data')
+            .should('have.property','clientReportLifePdf')
+    }
 }
 
 export default SintesiCliente
