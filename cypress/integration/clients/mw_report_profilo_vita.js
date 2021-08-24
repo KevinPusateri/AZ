@@ -91,13 +91,17 @@ describe('Matrix Web : Report Profilo Vita', {
             TopBar.logOutMW()
         })
 
-    it.only('', () => {
+    it.only('Da Clients ricercare un cliente PG presente su più agenzia dell\'hub con Polizza Vita e da menu azioni premere Report profilo vita\n' +
+    'Verificare che si apra la maschera di disambiguazione con le agenzie\n' +
+    '- scegliendo l\'agenzia dove non ha polizze vita : Verificare che venga visualizzato il messaggio "il cliente non ha in portafoglio nessuna polizza vita"\n' +
+    '- scegliendo l\'agenzia dove ha le polizze vita :  verificare che si apra correttamente il pdf\n', () => {
         cy.clearCookies()
         cy.clearLocalStorage()
             cy.log('Retriving client PG present in different agencies with polizze vita, please wait...')
+
             cy.getClientInDifferentAgenciesWithPolizze('TUTF021', '81', false, false, 'PG').then(currentClient => {
                 cy.log('Retrived Client : ' + currentClient.name)
-                LoginPage.logInMW('TUTF021', psw)
+                LoginPage.logInMW('TUTF003', psw)
                 SintesiCliente.visitUrlClient(currentClient.customerNumber, false)
                 SintesiCliente.retriveUrl().then(currentUrl => {
                     urlClient = currentUrl
