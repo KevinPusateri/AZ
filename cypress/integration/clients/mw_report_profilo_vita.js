@@ -10,6 +10,7 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import HomePage from "../../mw_page_objects/common/HomePage"
 import TopBar from "../../mw_page_objects/common/TopBar"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 //#endregion import
 
 //#region Configuration
@@ -92,21 +93,40 @@ describe('Matrix Web : Report Profilo Vita', {
         })
 
     it.only('Da Clients ricercare un cliente PG presente su più agenzia dell\'hub con Polizza Vita e da menu azioni premere Report profilo vita\n' +
-    'Verificare che si apra la maschera di disambiguazione con le agenzie\n' +
-    '- scegliendo l\'agenzia dove non ha polizze vita : Verificare che venga visualizzato il messaggio "il cliente non ha in portafoglio nessuna polizza vita"\n' +
-    '- scegliendo l\'agenzia dove ha le polizze vita :  verificare che si apra correttamente il pdf\n', () => {
-        cy.clearCookies()
-        cy.clearLocalStorage()
+        'Verificare che si apra la maschera di disambiguazione con le agenzie\n' +
+        '- scegliendo l\'agenzia dove non ha polizze vita : Verificare che venga visualizzato il messaggio "il cliente non ha in portafoglio nessuna polizza vita"\n' +
+        '- scegliendo l\'agenzia dove ha le polizze vita :  verificare che si apra correttamente il pdf\n', () => {
+            cy.clearCookies()
+            cy.clearLocalStorage()
             cy.log('Retriving client PG present in different agencies with polizze vita, please wait...')
 
-            cy.getClientInDifferentAgenciesWithPolizze('TUTF021', '81', false, false, 'PG').then(currentClient => {
-                cy.log('Retrived Client : ' + currentClient.name)
-                LoginPage.logInMW('TUTF003', psw)
-                SintesiCliente.visitUrlClient(currentClient.customerNumber, false)
-                SintesiCliente.retriveUrl().then(currentUrl => {
-                    urlClient = currentUrl
+            const loopRetriving = (() => {
+                cy.impersonification('TUTF021', 'ARFPULINI2', '010710000').then(() => {
+                    cy.getClientInDifferentAgenciesWithPolizze('TUTF021', 80, false, false, 'PG').then(currentClient => {
+                        cy.impersonification('TUTF003', currentClient.impersonificationToUse.account, currentClient.impersonificationToUse.agency).then(() => {
+                            LoginPage.logInMW('TUTF003', psw)
+                            TopBar.search(currentClient.clientToUse.vatIN)
+                            cy.get('body').as('body').then(($body) => {
+                                cy.get('lib-clients-container').should('be.visible')
+                                const check = $body.find('span:contains("La ricerca non ha prodotto risultati")').is(':visible')
+                                if (check) {
+                                    TopBar.logOutMW()
+                                    loopRetriving()
+                                }
+                            })
+
+                            LandingRicerca.clickFirstResult()
+                        })
+                    })
                 })
-                SintesiCliente.checkVociSpallaSinistra('Report Profilo Vita')
             })
-    });
+
+            loopRetriving()
+
+            SintesiCliente.retriveUrl().then(currentUrl => {
+                urlClient = currentUrl
+            })
+            SintesiCliente.checkVociSpallaSinistra('Report Profilo Vita')
+
+        });
 })
