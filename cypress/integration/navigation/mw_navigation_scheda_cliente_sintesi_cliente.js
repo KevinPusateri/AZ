@@ -4,7 +4,6 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import HomePage from "../../mw_page_objects/common/HomePage"
-import Common from "../../mw_page_objects/common/Common"
 
 //#region Username Variables
 const userName = 'TUTF021'

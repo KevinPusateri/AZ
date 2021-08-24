@@ -10,7 +10,6 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
-import HomePage from "../../mw_page_objects/common/HomePage"
 import SCUContiCorrenti from "../../mw_page_objects/clients/SCUContiCorrenti"
 //#endregion import
 

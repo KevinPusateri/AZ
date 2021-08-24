@@ -5,7 +5,6 @@
 
 /// <reference types="Cypress" />
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
-import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 

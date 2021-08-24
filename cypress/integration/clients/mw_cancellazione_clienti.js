@@ -6,7 +6,6 @@
 
 import SCUCancellazioneClienti from "../../mw_page_objects/clients/SCUCancellazioneClienti";
 import BurgerMenuClients from "../../mw_page_objects/burgerMenu/BurgerMenuClients";
-import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
