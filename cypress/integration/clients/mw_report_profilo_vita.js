@@ -20,6 +20,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -101,22 +102,22 @@ describe('Matrix Web : Report Profilo Vita', {
             cy.log('Retriving client PG present in different agencies with polizze vita, please wait...')
 
             const loopRetriving = (() => {
-                cy.impersonification('TUTF021', 'ARFPULINI2', '010710000').then(() => {
-                    cy.getClientInDifferentAgenciesWithPolizze('TUTF021', 80, false, false, 'PG').then(currentClient => {
-                        cy.impersonification('TUTF003', currentClient.impersonificationToUse.account, currentClient.impersonificationToUse.agency).then(() => {
-                            LoginPage.logInMW('TUTF003', psw)
-                            TopBar.search(currentClient.clientToUse.vatIN)
-                            cy.get('body').as('body').then(($body) => {
-                                cy.get('lib-clients-container').should('be.visible')
-                                const check = $body.find('span:contains("La ricerca non ha prodotto risultati")').is(':visible')
-                                if (check) {
-                                    TopBar.logOutMW()
-                                    loopRetriving()
-                                }
-                            })
-
-                            LandingRicerca.clickFirstResult()
+                //! Cliente registrato su più agenzie HUB 010375000 con polizza VI solo su una ag -> partita iva 00578020935 
+                cy.getClientInDifferentAgenciesWithPolizze('TUTF021', 'TUTF003', '010375000', 80, false, false, 'PG', '00578020935').then(currentClient => {
+                    cy.impersonification('TUTF003', currentClient.impersonificationToUse.account, currentClient.impersonificationToUse.agency).then(() => {
+                        cy.log('Retrived Client : ' + currentClient.clientToUse.vatIN)
+                        LoginPage.logInMW('TUTF003', psw)
+                        TopBar.search(currentClient.clientToUse.vatIN)
+                        cy.get('body').as('body').then(($body) => {
+                            cy.get('lib-clients-container').should('be.visible')
+                            const check = $body.find('span:contains("La ricerca non ha prodotto risultati")').is(':visible')
+                            if (check) {
+                                TopBar.logOutMW()
+                                loopRetriving()
+                            }
                         })
+
+                        LandingRicerca.clickFirstResult()
                     })
                 })
             })

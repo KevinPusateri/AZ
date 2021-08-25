@@ -15,6 +15,7 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables

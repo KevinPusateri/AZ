@@ -12,6 +12,7 @@ import BackOffice from "../../mw_page_objects/Navigation/BackOffice"
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables

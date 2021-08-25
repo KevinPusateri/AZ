@@ -24,7 +24,7 @@ class LoginPage {
         })
     }
 
-    static logInMW(userName, psw, mockedNotifications = true, mockedNews = true) {
+    static logInMW(userName, psw, agency = '010710000', mockedNotifications = true, mockedNews = true) {
         this.launchMW()
 
         //Skip this two requests that blocks on homepage
@@ -63,22 +63,34 @@ class LoginPage {
         }
 
         //Intecettiamo by default userDetails che serve a tutta una serie di chiamate in MW
-        cy.intercept('POST','**/graphql', (req) =>{
-            if(req.body.operationName.includes('userDetails'))
-            req.alias = 'gqlUserDetails'
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('userDetails'))
+                req.alias = 'gqlUserDetails'
         })
 
-        cy.get('input[name="Ecom_User_ID"]').type(userName)
-        cy.get('input[name="Ecom_Password"]').type(psw,{ log: false })
-        cy.get('input[type="SUBMIT"]').click()
+        //effettuo impersonification
+        //TODO Implementare anche altre agenzie che si vogliono
+        let agentId
+        switch (agency) {
+            case '010710000':
+                agentId = 'ARFPULINI2'
+                break;
+            case '010375000':
+                agentId = 'ARALONGO7'
+                break;
+        }
 
-        Common.checkUrlEnv()
-        if (!mockedNews)
-            cy.wait('@gqlNews')
+        cy.impersonification(userName, agentId, agency).then(() => {
+            cy.get('input[name="Ecom_User_ID"]').type(userName)
+            cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
+            cy.get('input[type="SUBMIT"]').click()
 
-        cy.wait('@gqlUserDetails')
+            Common.checkUrlEnv()
+            if (!mockedNews)
+                cy.wait('@gqlNews')
 
-        
+            cy.wait('@gqlUserDetails')
+        })
     }
 }
 
