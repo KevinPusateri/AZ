@@ -24,7 +24,7 @@ class LoginPage {
         })
     }
 
-    static logInMW(userName, psw, agency = '010710000', mockedNotifications = true, mockedNews = true) {
+    static logInMW(userName, psw, performeImpersonification = true, agency = '010710000', mockedNotifications = true, mockedNews = true) {
         this.launchMW()
 
         //Skip this two requests that blocks on homepage
@@ -68,19 +68,32 @@ class LoginPage {
                 req.alias = 'gqlUserDetails'
         })
 
-        //effettuo impersonification
-        //TODO Implementare anche altre agenzie che si vogliono
-        let agentId
-        switch (agency) {
-            case '010710000':
-                agentId = 'ARFPULINI2'
-                break;
-            case '010375000':
-                agentId = 'ARALONGO7'
-                break;
-        }
+        //effettuo impersonification se specificato
+        if (performeImpersonification) {
+            //TODO Implementare anche altre agenzie che si vogliono
+            let agentId
+            switch (agency) {
+                case '010710000':
+                    agentId = 'ARFPULINI2'
+                    break;
+                case '010375000':
+                    agentId = 'ARALONGO7'
+                    break;
+            }
 
-        cy.impersonification(userName, agentId, agency).then(() => {
+            cy.impersonification(userName, agentId, agency).then(() => {
+                cy.get('input[name="Ecom_User_ID"]').type(userName)
+                cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
+                cy.get('input[type="SUBMIT"]').click()
+
+                Common.checkUrlEnv()
+                if (!mockedNews)
+                    cy.wait('@gqlNews')
+
+                cy.wait('@gqlUserDetails')
+            })
+        }
+        else {
             cy.get('input[name="Ecom_User_ID"]').type(userName)
             cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
             cy.get('input[type="SUBMIT"]').click()
@@ -90,7 +103,7 @@ class LoginPage {
                 cy.wait('@gqlNews')
 
             cy.wait('@gqlUserDetails')
-        })
+        }
     }
 }
 

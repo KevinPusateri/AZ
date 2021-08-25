@@ -103,10 +103,10 @@ describe('Matrix Web : Report Profilo Vita', {
 
             const loopRetriving = (() => {
                 //! Cliente registrato su più agenzie HUB 010375000 con polizza VI solo su una ag -> partita iva 00578020935 
-                cy.getClientInDifferentAgenciesWithPolizze('TUTF021', 'TUTF003', '010375000', 80, false, false, 'PG', '00578020935').then(currentClient => {
+                cy.getClientInDifferentAgenciesWithPolizze('010375000', 80, false, false, 'PG').then(currentClient => {
                     cy.impersonification('TUTF003', currentClient.impersonificationToUse.account, currentClient.impersonificationToUse.agency).then(() => {
                         cy.log('Retrived Client : ' + currentClient.clientToUse.vatIN)
-                        LoginPage.logInMW('TUTF003', psw)
+                        LoginPage.logInMW('TUTF003', psw, false)
                         TopBar.search(currentClient.clientToUse.vatIN)
                         cy.get('body').as('body').then(($body) => {
                             cy.get('lib-clients-container').should('be.visible')
@@ -127,7 +127,8 @@ describe('Matrix Web : Report Profilo Vita', {
             SintesiCliente.retriveUrl().then(currentUrl => {
                 urlClient = currentUrl
             })
-            SintesiCliente.checkVociSpallaSinistra('Report Profilo Vita')
 
+            //Clicchiamo in disambiguazione nell'agenzia che ha la polizza VI
+            SintesiCliente.emettiReportProfiloVita('375000')
         });
 })

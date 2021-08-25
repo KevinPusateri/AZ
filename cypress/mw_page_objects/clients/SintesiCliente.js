@@ -756,7 +756,7 @@ class SintesiCliente {
     /**
      * Emette Report Profilo Vita cliccando sui 3 puntini della spalla sx in atterraggio su Sintesi Cliente
      */
-    static emettiReportProfiloVita() {
+    static emettiReportProfiloVita(agenzia, errorMessage = false) {
         cy.intercept('POST', '**/graphql', (req) => {
             aliasQuery(req, 'clientReportLifePdf')
         })
@@ -765,23 +765,24 @@ class SintesiCliente {
         cy.get('nx-icon[aria-label="Open menu"]').click()
         cy.contains('Report Profilo Vita').should('exist').and('be.visible').click()
 
+        if (!errorMessage) {
+            cy.window().then(win => {
+                cy.stub(win, 'open').callsFake((url, target) => {
+                    expect(target).to.be.undefined
+                    // call the original `win.open` method
+                    // but pass the `_self` argument
+                    return win.open.wrappedMethod.call(win, url, '_self')
+                }).as('open')
+            })
 
-        cy.window().then(win => {
-            cy.stub(win, 'open').callsFake((url, target) => {
-                expect(target).to.be.undefined
-                // call the original `win.open` method
-                // but pass the `_self` argument
-                return win.open.wrappedMethod.call(win, url, '_self')
-            }).as('open')
-        })
+            //Finestra di disambiguazione
+            cy.get('nx-modal-container').find('.agency-row').contains(agenzia).first().click().wait(3000)
+            cy.get('@open')
 
-        //Finestra di disambiguazione
-        cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
-        cy.get('@open')
-
-        cy.wait('@gqlclientReportLifePdf')
-            .its('response.body.data')
-            .should('have.property','clientReportLifePdf')
+            cy.wait('@gqlclientReportLifePdf')
+                .its('response.body.data')
+                .should('have.property', 'clientReportLifePdf')
+        }
     }
 }
 
