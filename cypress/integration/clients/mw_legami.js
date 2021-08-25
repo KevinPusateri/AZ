@@ -55,12 +55,12 @@ afterEach(function () {
     }
 })
 after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-    })
+    // TopBar.logOutMW()
+    // //#region Mysql
+    // cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+    //     let tests = testsInfo
+    //     cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    // })
     //#endregion
 
 })
