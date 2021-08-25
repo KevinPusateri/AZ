@@ -371,14 +371,17 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, i
  * Metodo very extreme : ricerca un cliente censito in almeno due agenzie di un HUB (in questo caso sulla 1-710000 e 73-552) e in particolare sulla seconda
  * verifica che non ci siano polizze del branchId specificato che sono invece presenti sulla prima
  * !!! attualmente operante su polizze Vita
- * !!! attenzione che opera SOLO sulla 1-710000 e relativo HUB
- * @param {String} tutf tutf utilizzata negli headers per invocare i servizi in x-allianz-user
+ * !!! attenzione che opera SOLO sugli HUB della 1-710000 (FRANCESCO PULINI) e 1-375000 (ALBERTO LONGO)
+ * @param {String} tutfMain utilizzata negli headers per invocare i servizi in x-allianz-user per il cliente con polizze
+ * @param {String} tutfSlave utilizzata negli headers per invocare i servizi in x-allianz-user per il cliente che non deve avere polizze
+ * @param {String} agencyMain agenzia principale dell'HUB dove ricercare il cliente con polizze vive (a scelta tra 010710000 3 010375000)
  * @param {number} branchId tipo di polizza da trovare (80 [VI]) -> viene automaticamente creato un array di branch
  * @param {boolean} isUltra default a false, da specificare a true se si ricercano polizze Ultra (altrimenti si confondono con quelle allianz1)
  * @param {boolean} isAZ1 default a false, da specificare a true se si ricercano polizze AZ1 Business
  * @param {String} clientType default a PF, specifica il tipo di cliente da trovare tra PF e PG
+ * @param {String} fixedPIorSSN default a '', se specificato effettuo la ricerca su un cliente PF in base al suo CF, se PG in base alla sua PI
  */
-Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (tutf, branchId, isUltra = false, isAZ1 = false, clientType = 'PF') => {
+Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (tutfMain, tutfSlave, agencyMain, branchId, isUltra = false, isAZ1 = false, clientType = 'PF', fixedPIorSSN = '') => {
   //Creiamo range di branchID in base a quella di partenza
   let branchRange = [
     branchId.toString() + ' ',
@@ -394,141 +397,160 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (tutf, branchId,
   let impersonificationToReturn
   let currentClient
 
-  cy.generateTwoLetters().then(nameRandom => {
-    cy.generateTwoLetters().then(firstNameRandom => {
-      cy.request({
-        method: 'GET',
-        retryOnStatusCodeFailure: true,
-        timeout: 60000,
-        log: false,
-        url: (clientType === 'PF') ? 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
-          : 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&partySign=Company',
-        headers: {
-          'x-allianz-user': tutf
+  let agentId = (agencyMain === '010710000') ? 'ARFPULINI2' : 'ARALONGO7'
+
+  cy.impersonification(tutfMain, agentId, agencyMain).then(() => {
+    cy.generateTwoLetters().then(nameRandom => {
+      cy.generateTwoLetters().then(firstNameRandom => {
+
+        let mainSearch
+        if (clientType === 'PF') {
+          if (fixedPIorSSN === '')
+            mainSearch = 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          else
+            mainSearch = 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?socialSecurityNumber=' + fixedPIorSSN + '&partySign=Person'
         }
-      }).then(response => {
-        if (response.body.length === 0)
-          cy.getClientInDifferentAgenciesWithPolizze(tutf, branchId, isUltra, isAZ1, clientType)
         else {
-          //Verifichiamo solo clienti in stato EFFETTIVO
-          let clientiEffettivi = response.body.filter(el => {
-            return el.partyCategory[0] === 'E'
-          })
+          if (fixedPIorSSN === '')
+            mainSearch = 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&partySign=Company'
+          else
+            mainSearch = 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?vatIN=' + fixedPIorSSN + '&partySign=Company'
+        }
 
-          if (clientiEffettivi.length > 0) {
-            currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
-            //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
-            cy.request({
-              method: 'GET',
-              retryOnStatusCodeFailure: true,
-              timeout: 60000,
-              log: false,
-              url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
-              headers: {
-                'x-allianz-user': tutf
-              }
-            }).then(responseContracts => {
-              //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
-              let contractsWithBranchId
-              if (isUltra)
-                contractsWithBranchId = responseContracts.body.filter(el => {
-                  if (branchRange.some(ids => el.branchId.includes(ids)))
-                    return el.branchName.includes('ULTRA')
-                })
-              else if (isAZ1)
-                contractsWithBranchId = responseContracts.body.filter(el => {
-                  if (branchRange.some(ids => el.branchId.includes(ids)))
-                    return el.branchName.includes('ALLIANZ1')
-                })
-              else
-                contractsWithBranchId = responseContracts.body.filter(el => {
-                  if (branchRange.some(ids => el.branchId.includes(ids)))
-                    return el
-                })
+        cy.request({
+          method: 'GET',
+          retryOnStatusCodeFailure: true,
+          timeout: 60000,
+          log: false,
+          url: mainSearch,
+          headers: {
+            'x-allianz-user': tutfMain
+          }
+        }).then(response => {
+          if (response.body.length === 0)
+            cy.getClientInDifferentAgenciesWithPolizze(tutfMain, tutfSlave, agencyMain, branchId, isUltra, isAZ1, clientType, fixedPIorSSN)
+          else {
+            //Verifichiamo solo clienti in stato EFFETTIVO
+            let clientiEffettivi = response.body.filter(el => {
+              return (el.partyCategory[0] === 'E' || el.partyCategory[0] === '')
+            })
 
-              if (contractsWithBranchId.length > 0) {
-                //Verifica che il cliente sia presente anche in altre agenzie
-                let possibleImpersonifications = [
-                  { account: 'PULINIFR.0552', agency: '730000552' },
-                  { account: 'ARFPULINI3', agency: '010748000' },
-                  { account: 'AZFPULINI', agency: '050000851' },
-                  { account: 'ASFPULINI2', agency: '070004266' }
-                ]
+            if (clientiEffettivi.length > 0) {
+              currentClient = (fixedPIorSSN === '') ? clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)] : clientiEffettivi[0]
+              //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+              cy.request({
+                method: 'GET',
+                retryOnStatusCodeFailure: true,
+                timeout: 60000,
+                log: false,
+                url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
+                headers: {
+                  'x-allianz-user': tutfMain
+                }
+              }).then(responseContracts => {
+                //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
+                let contractsWithBranchId
+                if (isUltra)
+                  contractsWithBranchId = responseContracts.body.filter(el => {
+                    if (branchRange.some(ids => el.branchId.includes(ids)))
+                      return el.branchName.includes('ULTRA')
+                  })
+                else if (isAZ1)
+                  contractsWithBranchId = responseContracts.body.filter(el => {
+                    if (branchRange.some(ids => el.branchId.includes(ids)))
+                      return el.branchName.includes('ALLIANZ1')
+                  })
+                else
+                  contractsWithBranchId = responseContracts.body.filter(el => {
+                    if (branchRange.some(ids => el.branchId.includes(ids)))
+                      return el
+                  })
+                if (contractsWithBranchId.length > 0) {
+                  //Verifica che il cliente sia presente anche in altre agenzie
+                  let possibleImpersonifications = (agencyMain === '010710000') ? [
+                    { account: 'PULINIFR.0552', agency: '730000552' },
+                    { account: 'ARFPULINI3', agency: '010748000' },
+                    { account: 'AZFPULINI', agency: '050000851' },
+                    { account: 'ASFPULINI2', agency: '070004266' }
+                  ] :
+                    [
+                      { account: 'ARALONGO20', agency: '010523000' },
+                      { account: 'AMALONGO', agency: '020002002' }
+                    ]
 
-                for (let i = 0; i < possibleImpersonifications.length; i++) {
-                  console.log('Try with ' + currentClient.name)
-                  cy.impersonification('TUTF003', possibleImpersonifications[i].account, possibleImpersonifications[i].agency).then(() => {
-                    cy.request({
-                      method: 'GET',
-                      retryOnStatusCodeFailure: true,
-                      timeout: 60000,
-                      log: false,
-                      url: (clientType === 'PF') ? 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + currentClient.name + '&firstName=' + currentClient.firstName + '&partySign=Person'
-                        : 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?vatIN=' + currentClient.vatIN + '&partySign=Company',
-                      headers: {
-                        'x-allianz-user': 'TUTF003'
-                      }
-                    }).then((responseParties) => {
-                      if (responseParties.status === 200 && responseParties.body.length > 0) {
-                        //Verifichiamo che siano presenti polizze e che non ce ne siano nel branchId passato
-                        cy.request({
-                          method: 'GET',
-                          retryOnStatusCodeFailure: true,
-                          timeout: 60000,
-                          log: false,
-                          url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + responseParties.body[0].customerNumber + '&contractProcessState=Contract&status=Live',
-                          headers: {
-                            'x-allianz-user': 'TUTF003'
-                          }
-                        }).then(resp => {
-                          console.log('Try with ' + currentClient.name)
-                          //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato (SUCESSIVAMENTE EFFETTUO LA NEGAZIONE)
-                          let contractsWithBranchIdFinal
-                          if (isUltra)
-                            contractsWithBranchIdFinal = resp.body.filter(el => {
-                              if (branchRange.some(ids => el.branchId.includes(ids)))
-                                return el.branchName.includes('ULTRA')
-                            })
-                          else if (isAZ1)
-                            contractsWithBranchIdFinal = resp.body.filter(el => {
-                              if (branchRange.some(ids => el.branchId.includes(ids)))
-                                return el.branchName.includes('ALLIANZ1')
-                            })
-                          else
-                            contractsWithBranchIdFinal = resp.body.filter(el => {
-                              if (branchRange.some(ids => el.branchId.includes(ids)))
-                                return el
-                            })
-                          //Se non ce ne sono ma ci sono altre polizze procedo
-                          if (contractsWithBranchIdFinal.length === 0) {
-                            if (resp.body.length > 0) {
-                              if (found === false) {
+                  for (let i = 0; i < possibleImpersonifications.length; i++) {
+                    console.log('Try with ' + currentClient.name)
+                    cy.impersonification(tutfSlave, possibleImpersonifications[i].account, possibleImpersonifications[i].agency).then(() => {
+                      cy.request({
+                        method: 'GET',
+                        retryOnStatusCodeFailure: true,
+                        timeout: 60000,
+                        log: false,
+                        url: (clientType === 'PF') ? 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + currentClient.name + '&firstName=' + currentClient.firstName + '&partySign=Person'
+                          : 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?vatIN=' + currentClient.vatIN + '&partySign=Company',
+                        headers: {
+                          'x-allianz-user': tutfSlave
+                        }
+                      }).then((responseParties) => {
+                        if (responseParties.status === 200 && responseParties.body.length > 0) {
+                          //Verifichiamo che siano presenti polizze e che non ce ne siano nel branchId passato
+                          cy.request({
+                            method: 'GET',
+                            retryOnStatusCodeFailure: true,
+                            timeout: 60000,
+                            log: false,
+                            url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + responseParties.body[0].self.split('/')[2] + '&contractProcessState=Contract&status=Live',
+                            headers: {
+                              'x-allianz-user': tutfSlave
+                            }
+                          }).then(resp => {
+                            console.log('Try with ' + currentClient.name)
+                            //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato (SUCESSIVAMENTE EFFETTUO LA NEGAZIONE)
+                            let contractsWithBranchIdFinal
+                            if (isUltra)
+                              contractsWithBranchIdFinal = resp.body.filter(el => {
+                                if (branchRange.some(ids => el.branchId.includes(ids)))
+                                  return el.branchName.includes('ULTRA')
+                              })
+                            else if (isAZ1)
+                              contractsWithBranchIdFinal = resp.body.filter(el => {
+                                if (branchRange.some(ids => el.branchId.includes(ids)))
+                                  return el.branchName.includes('ALLIANZ1')
+                              })
+                            else
+                              contractsWithBranchIdFinal = resp.body.filter(el => {
+                                if (branchRange.some(ids => el.branchId.includes(ids)))
+                                  return el
+                              })
+                            //Se non ce ne sono ma ci sono altre polizze procedo
+                            if (contractsWithBranchIdFinal.length === 0) {
+                              if (!found) {
                                 found = true
                                 impersonificationToReturn = possibleImpersonifications[i]
                               }
                             }
-                          }
-                        })
-                      }
+                          })
+                        }
+                      })
                     })
+                  }
+                  cy.then(() => {
+                    if (found) {
+                      debugger
+                      return { clientToUse: currentClient, impersonificationToUse: impersonificationToReturn }
+                    }
+                    else
+                      cy.getClientInDifferentAgenciesWithPolizze(tutfMain, tutfSlave, agencyMain, branchId, isUltra, isAZ1, clientType, fixedPIorSSN)
                   })
                 }
-                cy.then(() => {
-                  if (found) {
-                    debugger
-                    return { clientToUse: currentClient, impersonificationToUse: impersonificationToReturn }
-                  }
-                  else
-                    cy.getClientInDifferentAgenciesWithPolizze(tutf, branchId, isUltra, isAZ1, clientType)
-                })
-              }
-              else
-                cy.getClientInDifferentAgenciesWithPolizze(tutf, branchId, isUltra, isAZ1, clientType)
-            })
+                else
+                  cy.getClientInDifferentAgenciesWithPolizze(tutfMain, tutfSlave, agencyMain, branchId, isUltra, isAZ1, clientType, fixedPIorSSN)
+              })
+            }
+            else
+              cy.getClientInDifferentAgenciesWithPolizze(tutfMain, tutfSlave, agencyMain, branchId, isUltra, isAZ1, clientType, fixedPIorSSN)
           }
-          else
-            cy.getClientInDifferentAgenciesWithPolizze(tutf, branchId, isUltra, isAZ1, clientType)
-        }
+        })
       })
     })
   })

@@ -14,6 +14,7 @@ import News from "../../mw_page_objects/Navigation/News"
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
