@@ -25,17 +25,20 @@ const getIFrameMovSinistri = () => {
 class ConsultazioneSinistriPage {
     
 
-    static ConsultazioneSinistriPage()
-    {   
-          debugger
-        
+    static ConsultazioneSinistriPage() {                  
         getIFrame().contains("Ricerca sinistro").should('be.visible').log('Ricerca sinistro')
     }
     
+    /**
+   * Write msg in log console
+   */
+    static writeInLog(value) {
+        cy.log(value)
+        cy.wait(500)
+    }
+
    /**
      * Click button by locator id
-     * 
-     * 
      */
     static clickBtn_ById(id) {             
         getIFrame().find(id).should('be.visible').then((btn) => {    
@@ -83,19 +86,20 @@ class ConsultazioneSinistriPage {
         cy.wait(1000)        
     }
 
-    static checkVisibleTypeState(value)
-    {    
-        getIFrame().contains(value).should('be.visible').log('Verificato che il sinistro sia in stato '+value)
+    static checkVisibleTextValue(value) {    
+        getIFrame().contains(value).should('be.visible').log('Verificato il valore: '+value)
         cy.wait(1000)        
     }
     
-    static clickSelectClaim(value)
+    static checkVisibleClaimNumberInPageDetails(value)
     {    
-        
-        getIFrame().find('a[href*="'+value+'"]').should('be.enabled').click()
-       
-        //getIFrame().get('a').find('[href="InterfacciaRicercaIngresso/InterfacciaRicercaIngresso/getClaimDetail.spr?claimNumber='+value+'&amp;companyCode=1"]').should('have.attr', 'href').and('be.enabled').click()
-       
+        getIFrame().find('[class="pageTitle"]').should('be.visible').contains(value).log('Verificato il valore: '+value)
+        cy.wait(1000)        
+    }
+
+    static clickSelectClaim(value)
+    {        
+        getIFrame().find('a[href*="'+value+'"]').should('exist').click()       
         cy.wait(1000)        
     }
 
@@ -112,6 +116,36 @@ class ConsultazioneSinistriPage {
             }
         })
     }
+
+    static getValueInClaimDetails(index)
+    {
+        return new Cypress.Promise((resolve) => {
+        getIFrame()
+        .find('#results > div.k-grid-content > table > tbody > tr > td:nth-child('+index+')')
+        .invoke('text')  // for input or textarea, .invoke('val')
+        .then(text => {
+           
+            const someText = text;           
+            cy.log(someText);
+            resolve(someText)            
+            });
+        });
+    }
+
+
+    static printClaimDetailsValue()   
+    {
+        
+        getIFrame()
+            .find('#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)')
+            .invoke('text')  // for input or textarea, .invoke('val')
+            .then(text => {               
+                const someText = text;              
+                cy.log(someText);               
+            });
+        //getIFrame().find('#results > div.k-grid-content > table > tbody > tr').should('exist').log()
+    }
+
 
     static VerifySxPayedFields()
     {

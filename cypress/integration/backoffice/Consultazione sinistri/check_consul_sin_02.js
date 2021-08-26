@@ -33,7 +33,8 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-    LoginPage.logInMW(userName, psw, true, '010375000')
+    //LoginPage.logInMW(userName, psw, true, '010375000')
+    LoginPage.logInMW(userName, psw, false)
     TopBar.clickBackOffice()
     BackOffice.clickCardLink('Consultazione sinistri')
 })
@@ -55,15 +56,28 @@ after(function () {
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
 
-    it.only('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca il numero sinistro poi successivamente selezionandolo verifica che in alto nella pagina di dettaglio sia riportato il numero di sinistro ', function () {
+    it.only('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
+    'Si entra nella pagina di dettaglio e si verifica l\'intestazione di pagina: ' +
+    ' (1) In alto alla pagina di dettaglio è riportato il numero di sinistro ' +
+    ' (2) La Data di avvenimento, Cliente, Località sono valorizzate' +
+    ' (3) E\' riportato il Tipo sinistro', function () {
+        var sinistro = '927646985'
+        var stato_sin = 'CHIUSO PAGATO'
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        csSinObjPage.putValue_ById('#claim_number', '927646985')
+        csSinObjPage.putValue_ById('#claim_number', sinistro)
         csSinObjPage.clickBtn_ByClassAndText('claim_number', 'Cerca')
-        csSinObjPage.checkVisibleTypeState('CHIUSO PAGATO')
-        //TODO :  se il sinistro è in stato chiuso pagato selezionare il sinistro
-        csSinObjPage.clickSelectClaim('927646985')
-        //TODO : Controllare la presenza del numero di sinistro nella pagina di dettaglio
+        csSinObjPage.checkVisibleTextValue(stato_sin)
+        csSinObjPage.printClaimDetailsValue()
+        var cliente = csSinObjPage.getValueInClaimDetails(1)
+        var polizza = csSinObjPage.getValueInClaimDetails(2)       
+        var tiposin = csSinObjPage.getValueInClaimDetails(4)
+        var statosin = csSinObjPage.getValueInClaimDetails(5)
+        var dtAvvenimento = csSinObjPage.getValueInClaimDetails(6)
+        csSinObjPage.clickSelectClaim(sinistro)
+        // Verifica (1)
+        csSinObjPage.checkVisibleClaimNumberInPageDetails(sinistro)
+        // Verifica (2)
     });
 
 

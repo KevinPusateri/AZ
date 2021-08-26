@@ -87,6 +87,7 @@ class Common {
     if (!mockedNews)
       cy.wait('@gqlNews')
   }
+  
 }
 
 
