@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 import Common from './Common'
-import TopBar from "./TopBar"
+import TopBar from './TopBar'
 
 class LoginPage {
 

@@ -25,6 +25,7 @@ const agency = '010710000'
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
@@ -46,7 +47,7 @@ before(() => {
         insertedId = results.insertId
     })
 
-      LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw)
 
 
 })
