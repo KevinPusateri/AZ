@@ -761,10 +761,11 @@ class SintesiCliente {
             aliasQuery(req, 'clientReportLifePdf')
         })
 
-
-        cy.get('nx-icon[aria-label="Open menu"]').click()
+        debugger
+        cy.get('nx-icon[aria-label="Open menu"]').click().wait(500)
         cy.contains('Report Profilo Vita').should('exist').and('be.visible').click()
 
+        //NON DEVE COMPARIRE L'ERRORE
         if (!errorMessage) {
             cy.window().then(win => {
                 cy.stub(win, 'open').callsFake((url, target) => {
@@ -782,6 +783,11 @@ class SintesiCliente {
             cy.wait('@gqlclientReportLifePdf')
                 .its('response.body.data')
                 .should('have.property', 'clientReportLifePdf')
+        }
+        //DEVE COMPARIRE L'ERRORE
+        else {
+            //Finestra di disambiguazione
+            cy.get('nx-modal-container').find('.agency-row').contains(agenzia).first().click().wait(3000)
         }
     }
 }

@@ -395,6 +395,7 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
 
   let found = false
   let impersonificationToReturn
+  let agencyToReturn
   let currentClient
 
   let agentId = (agencyMain === '010710000') ? 'ARFPULINI2' : 'ARALONGO7'
@@ -425,7 +426,6 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
           'x-allianz-user': agentId
         }
       }).then(response => {
-        debugger
         if (response.body.length === 0)
           cy.getClientInDifferentAgenciesWithPolizze(agencyMain, branchId, isUltra, isAZ1, clientType, fixedPIorSSN)
         else {
@@ -447,7 +447,6 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
                 'x-allianz-user': agentId
               }
             }).then(responseContracts => {
-              debugger
               //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
               let contractsWithBranchId
               if (isUltra)
@@ -468,14 +467,14 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
               if (contractsWithBranchId.length > 0) {
                 //Verifica che il cliente sia presente anche in altre agenzie
                 let possibleImpersonifications = (agencyMain === '010710000') ? [
-                  { account: 'PULINIFR.0552', agency: '730000552' },
-                  { account: 'ARFPULINI3', agency: '010748000' },
-                  { account: 'AZFPULINI', agency: '050000851' },
-                  { account: 'ASFPULINI2', agency: '070004266' }
+                  { account: 'PULINIFR.0552', agency: '730000552', codAgency : '552' },
+                  { account: 'ARFPULINI3', agency: '010748000', codAgency : '748000' },
+                  { account: 'AZFPULINI', agency: '050000851', codAgency : '851' },
+                  { account: 'ASFPULINI2', agency: '070004266', codAgency : '4266' }
                 ] :
                   [
-                    { account: 'ARALONGO20', agency: '010523000' },
-                    { account: 'AMALONGO', agency: '020002002' }
+                    { account: 'ARALONGO20', agency: '010523000', codAgency : '523000' },
+                    { account: 'AMALONGO', agency: '020002002', codAgency : '2002' }
                   ]
                 for (let i = 0; i < possibleImpersonifications.length; i++) {
                   let parsedClient = ''
@@ -491,7 +490,6 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
                       'x-allianz-user': possibleImpersonifications[i].account
                     }
                   }).then((responseParties) => {
-                    debugger
                     parsedClient = responseParties.body[0].self.split('/')[2]
                     if (responseParties.status === 200 && parsedClient !== '0' && responseParties.body.length > 0) {
                       //Verifichiamo che siano presenti polizze e che non ce ne siano nel branchId passato
@@ -543,6 +541,7 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
                                 if (!found) {
                                   found = true
                                   impersonificationToReturn = possibleImpersonifications[i]
+                                  agencyToReturn = possibleImpersonifications[i].codAgency
                                 }
                               }
                             }
@@ -554,7 +553,7 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
                 }
                 cy.then(() => {
                   if (found)
-                    return { clientToUse: currentClient, impersonificationToUse: impersonificationToReturn }
+                    return { clientToUse: currentClient, impersonificationToUse: impersonificationToReturn, agencyToVerify: agencyToReturn }
                   else
                     cy.getClientInDifferentAgenciesWithPolizze(agencyMain, branchId, isUltra, isAZ1, clientType, fixedPIorSSN)
                 })

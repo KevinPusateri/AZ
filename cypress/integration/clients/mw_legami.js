@@ -143,7 +143,7 @@ describe('Matrix Web : Legami', function () {
         })
 
         //TODO: DA FIXARE
-        it.only('Verifica con fonte secondaria il non utilizzo dei legami', function () {
+        it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
             cy.clearCookies()
             cy.clearLocalStorage()
             cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000').then(() => {

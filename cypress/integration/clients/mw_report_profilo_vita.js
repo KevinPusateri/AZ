@@ -103,10 +103,10 @@ describe('Matrix Web : Report Profilo Vita', {
 
             const loopRetriving = (() => {
                 //! Cliente registrato su più agenzie HUB 010375000 con polizza VI solo su una ag -> partita iva 00578020935 
-                cy.getClientInDifferentAgenciesWithPolizze('010375000', 80, false, false, 'PG').then(currentClient => {
-                    cy.impersonification('TUTF003', currentClient.impersonificationToUse.account, currentClient.impersonificationToUse.agency).then(() => {
+                cy.getClientInDifferentAgenciesWithPolizze('010375000', 80, false, false, 'PG', '00578020935').then(currentClient => {
+                    cy.impersonification('TUTF008', currentClient.impersonificationToUse.account, currentClient.impersonificationToUse.agency).then(() => {
                         cy.log('Retrived Client : ' + currentClient.clientToUse.vatIN)
-                        LoginPage.logInMW('TUTF003', psw, false)
+                        LoginPage.logInMW('TUTF008', psw, false)
                         TopBar.search(currentClient.clientToUse.vatIN)
                         cy.get('body').as('body').then(($body) => {
                             cy.get('lib-clients-container').should('be.visible')
@@ -118,17 +118,21 @@ describe('Matrix Web : Report Profilo Vita', {
                         })
 
                         LandingRicerca.clickFirstResult()
+                        SintesiCliente.retriveUrl().then(currentUrl => {
+                            urlClient = currentUrl
+                        })
+
+                        SintesiCliente.checkAtterraggioSintesiCliente(currentClient.clientToUse.name)
+
+                        //Clicchiamo in disambiguazione nell'ag dove NON ha le polizze VI
+                        SintesiCliente.emettiReportProfiloVita(currentClient.agencyToVerify, true)
+
+                        // //Clicchiamo in disambiguazione nell'ag che ha la polizza VI
+                        // SintesiCliente.emettiReportProfiloVita('375000')
                     })
                 })
             })
 
             loopRetriving()
-
-            SintesiCliente.retriveUrl().then(currentUrl => {
-                urlClient = currentUrl
-            })
-
-            //Clicchiamo in disambiguazione nell'agenzia che ha la polizza VI
-            SintesiCliente.emettiReportProfiloVita('375000')
         });
 })

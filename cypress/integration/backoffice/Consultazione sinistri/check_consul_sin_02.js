@@ -33,9 +33,9 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-    LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw, true, '010375000')
     TopBar.clickBackOffice()
-    BackOffice.clickCardLink('Consultazione sinistri') 
+    BackOffice.clickCardLink('Consultazione sinistri')
 })
 
 beforeEach(() => {
@@ -54,26 +54,26 @@ after(function () {
 })
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
-    
+
     it.only('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca il numero sinistro poi successivamente selezionandolo verifica che in alto nella pagina di dettaglio sia riportato il numero di sinistro ', function () {
-      
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage) 
-        csSinObjPage.putValue_ById('#claim_number','927646985')
-        csSinObjPage.clickBtn_ByClassAndText('claim_number','Cerca')
+
+        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
+        csSinObjPage.putValue_ById('#claim_number', '927646985')
+        csSinObjPage.clickBtn_ByClassAndText('claim_number', 'Cerca')
         csSinObjPage.checkVisibleTypeState('CHIUSO PAGATO')
- //TODO :  se il sinistro è in stato chiuso pagato selezionare il sinistro
+        //TODO :  se il sinistro è in stato chiuso pagato selezionare il sinistro
         csSinObjPage.clickSelectClaim('927646985')
-//TODO : Controllare la presenza del numero di sinistro nella pagina di dettaglio
+        //TODO : Controllare la presenza del numero di sinistro nella pagina di dettaglio
     });
-    
+
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca il numero sinistro e verifica che nell\'intestazione di pagina siano riportati i seguenti dati: Data di avvenimento, Cliente, Località, Tipo sinistro', function () {
-        
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Polizza');
-        csSinObjPage.putValue_ById('#policy_number','528771171')
-        csSinObjPage.clickBtn_ByClassAndText('polizza','Cerca')
-       
+
+        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
+        csSinObjPage.clickObj_ByLabel('a', 'Polizza');
+        csSinObjPage.putValue_ById('#policy_number', '528771171')
+        csSinObjPage.clickBtn_ByClassAndText('polizza', 'Cerca')
+
     });
 
 });
