@@ -20,7 +20,7 @@ class Common {
    * @returns {string} indirizzo url
    */
   static getBaseUrl() {
-    const url
+    let url
     if (Cypress.env('currentEnv') === 'TEST')
       url = Cypress.env('baseUrlTest')
     else
