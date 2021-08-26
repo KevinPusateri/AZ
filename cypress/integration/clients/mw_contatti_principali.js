@@ -14,6 +14,7 @@ import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 //#region Username Variables
@@ -60,7 +61,9 @@ before(() => {
         contatto = object
     })
 
-    LoginPage.logInMW(userName, psw)
+      LoginPage.logInMW(userName, psw)
+
+
 })
 beforeEach(() => {
     cy.preserveCookies()

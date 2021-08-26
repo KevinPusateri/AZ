@@ -16,6 +16,7 @@ import HomePage from "../../mw_page_objects/common/HomePage"
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 //#region Username Variables
@@ -53,7 +54,9 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-    LoginPage.logInMW(userName, psw)
+      LoginPage.logInMW(userName, psw)
+
+
 })
 
 beforeEach(() => {

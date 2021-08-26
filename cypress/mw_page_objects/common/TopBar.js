@@ -90,8 +90,8 @@ class TopBar extends HomePage {
      */
     static logOutMW() {
         cy.get('lib-user-header').should('be.visible')
-        cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]').click({force: true});
-        cy.contains('Logout').click({force:true})
+        cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]').click({ force: true });
+        cy.contains('Logout').click({ force: true })
 
         cy.clearCookies();
     }
@@ -304,7 +304,8 @@ class TopBar extends HomePage {
         cy.get('lib-user-header').click()
         cy.get('lib-user-name-container').should('be.visible')
         cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
-        cy.contains('Ci sono altri profili collegati')
+        if (!Cypress.env('isSecondWindow'))
+            cy.contains('Ci sono altri profili collegati')
         cy.contains('Cambio password')
         cy.contains('Configurazione stampanti')
         cy.contains('Impostazioni di agenzia')
@@ -408,6 +409,13 @@ class TopBar extends HomePage {
      */
     static clickMatrixHome() {
         cy.get('a[href="/matrix/"]').click()
+    }
+
+    /**
+     * Permettere di aprire la seconda finestra di MW
+     */
+    static clickSecondWindow() {
+        cy.get('a[target="MatrixF2"]').should('exist').invoke('removeAttr', 'target').click()
     }
 }
 

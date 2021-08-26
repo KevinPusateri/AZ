@@ -682,9 +682,12 @@ class SintesiCliente {
 
         if (fullUrl)
             cy.visit(param)
-        else
-            cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/clients/client/' + param)
-
+        else {
+            if (!Cypress.env('isSecondWindow'))
+                cy.visit(cypress.env('baseUrlPreprod') + 'clients/client/' + param)
+            else
+                cy.visit(cypress.env('urlSecondWindow') + 'clients/client/' + param)
+        }
 
         cy.wait('@pageClient', { requestTimeout: 60000 });
         cy.get('app-scope-element', { timeout: 120000 }).should('exist').and('be.visible')

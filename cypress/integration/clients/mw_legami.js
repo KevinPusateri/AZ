@@ -14,6 +14,7 @@ import Legami from "../../mw_page_objects/clients/Legami"
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 //#region Username Variables
@@ -37,7 +38,9 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-    LoginPage.logInMW(userName, psw)
+      LoginPage.logInMW(userName, psw)
+
+
 })
 
 beforeEach(() => {
@@ -144,8 +147,6 @@ describe('Matrix Web : Legami', function () {
 
         //TODO: DA FIXARE
         it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
-            cy.clearCookies()
-            cy.clearLocalStorage()
             cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000').then(() => {
                 LoginPage.logInMW('TUTF003', psw, false)
                 DettaglioAnagrafica.checkClientWithoutLegame()

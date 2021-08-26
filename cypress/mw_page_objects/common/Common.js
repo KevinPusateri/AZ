@@ -20,25 +20,30 @@ class Common {
    * @returns {string} indirizzo url
    */
   static getBaseUrl() {
-    const url = Cypress.env('currentEnv') === 'TEST' ? Cypress.env('baseUrlTest') : Cypress.env('baseUrlPreprod');
+    let url
+    if (Cypress.env('currentEnv') === 'TEST')
+      url = Cypress.env('baseUrlTest')
+    else
+      if (!Cypress.env('isSecondWindow'))
+        url = Cypress.env('baseUrlPreprod')
+      else
+        url = Cypress.env('urlSecondWindow')
+
     return url;
-  }
-
-  /**
-   * Setta il il baseUrl
-   */
-  static setBaseUrl() {
-    Cypress.env('currentEnv') === 'TEST' ? Cypress.config('baseUrl', Cypress.env('baseUrlTest')) : Cypress.config('baseUrl', Cypress.env('baseUrlPreprod'))
-
   }
 
   /**
    * Se Preprod fa should su baseUrlPreprod altrimenti su baseUrlTest
    */
   static checkUrlEnv() {
-    Cypress.env('currentEnv') === 'TEST' ?
-      cy.url().should('include', Cypress.env('baseUrlTest')) :
-      cy.url().should('include', Cypress.env('baseUrlPreprod'))
+    if (Cypress.env('currentEnv') === 'TEST')
+      cy.url().should('include', Cypress.env('baseUrlTest'))
+    else {
+      if (!Cypress.env('isSecondWindow'))
+        cy.url().should('include', Cypress.env('baseUrlPreprod'))
+      else
+        cy.url().should('include', Cypress.env('urlSecondWindow'))
+    }
   }
 
   /**
@@ -81,9 +86,14 @@ class Common {
       })
     }
 
-    Cypress.env('currentEnv') === 'TEST' ?
-      cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 }) :
-      cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
+    if (Cypress.env('currentEnv') === 'TEST')
+      cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 })
+    else {
+      if (!Cypress.env('isSecondWindow'))
+        cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
+      else
+        cy.visit(Cypress.env('urlSecondWindow'), { responseTimeout: 31000 })
+    }
     if (!mockedNews)
       cy.wait('@gqlNews')
   }
