@@ -103,7 +103,8 @@ class LoginPage {
                 cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
                 cy.get('input[type="SUBMIT"]').click()
 
-                Common.checkUrlEnv()
+                if (!Cypress.env('isSecondWindow'))
+                    Common.checkUrlEnv()
                 if (!mockedNews)
                     cy.wait('@gqlNews')
 
