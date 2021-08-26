@@ -90,8 +90,8 @@ class TopBar extends HomePage {
      */
     static logOutMW() {
         cy.get('lib-user-header').should('be.visible')
-        cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]').click({force: true});
-        cy.contains('Logout').click({force:true})
+        cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]').click({ force: true });
+        cy.contains('Logout').click({ force: true })
 
         cy.clearCookies();
     }
@@ -408,6 +408,13 @@ class TopBar extends HomePage {
      */
     static clickMatrixHome() {
         cy.get('a[href="/matrix/"]').click()
+    }
+
+    /**
+     * Permettere di aprire la seconda finestra di MW
+     */
+    static clickSecondWindow() {
+        cy.get('a[target="MatrixF2"]').should('exist').invoke('removeAttr', 'target').click()
     }
 }
 

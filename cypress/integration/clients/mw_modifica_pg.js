@@ -17,6 +17,7 @@ import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafi
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 //#region Username Variables
@@ -71,7 +72,9 @@ before(() => {
     visuraCameraleLebel = label
   })
 
-  LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw)
+
+
 })
 beforeEach(() => {
   cy.preserveCookies()

@@ -20,6 +20,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 
@@ -27,7 +28,9 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-    LoginPage.logInMW(userName, psw)
+      LoginPage.logInMW(userName, psw)
+
+
 })
 
 beforeEach(() => {

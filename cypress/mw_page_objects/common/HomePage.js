@@ -41,7 +41,10 @@ class HomePage {
             })
         }
 
-        cy.visit(Common.getBaseUrl())
+        if (Cypress.env('isSecondWindow'))
+            cy.visit(Cypress.env('urlSecondWindow'))
+        else
+            cy.visit(Common.getBaseUrl())
 
         if (!mockedNews)
             cy.wait('@gqlNews')
@@ -49,7 +52,7 @@ class HomePage {
         //Attendiamo caricamento dell'icona utente in alto a dx
         cy.get('.user-icon-container').should('be.visible')
 
-        
+
     }
 
     /**
@@ -110,7 +113,7 @@ class HomePage {
         })
     }
 
-    static closeIndidentBox(){
+    static closeIndidentBox() {
         cy.wait(4000)
         cy.get('body').then($body => {
             if ($body.find('.lib-incident-notification').length > 0)

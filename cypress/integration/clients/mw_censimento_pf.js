@@ -42,6 +42,7 @@ before(() => {
   cy.task('nuovoClientePersonaFisica').then((object) => {
     nuovoClientePF = object;
   })
+  
   LoginPage.logInMW(userName, psw)
 })
 beforeEach(() => {

@@ -17,6 +17,7 @@ import SCUSalesNoteContratto from "../../mw_page_objects/sales/SCUSalesNoteContr
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 //#region Username Variables
@@ -37,7 +38,9 @@ before(() => {
         insertedId = results.insertId
     })
 
-    LoginPage.logInMW(userName, psw)
+      LoginPage.logInMW(userName, psw)
+
+
 })
 beforeEach(() => {
     cy.preserveCookies()

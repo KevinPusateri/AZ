@@ -1,5 +1,6 @@
 /// <reference types="Cypress" />
 import Common from './Common'
+import TopBar from "./TopBar"
 
 class LoginPage {
 
@@ -24,6 +25,15 @@ class LoginPage {
         })
     }
 
+    /**
+     * Login in MW
+     * @param {*} userName : TUTF utilizzata per il login
+     * @param {*} psw : PSW della TUTF per effettuare il login
+     * @param {*} performeImpersonification  : default a true, effettua l'impersonificazione che di default è impostata su ARFPULINI2 sulla 010710000
+     * @param {*} agency : default a 010710000, setta l'agenzia sulla quale effettuare l'impersonificazione !! Al momento disponibili 01710000 e 01375000 !!
+     * @param {*} mockedNotifications : default a true, mocka le notifiche in atterraggio su MW
+     * @param {*} mockedNews : default a true, mocka le news in atterraggio su MW
+     */
     static logInMW(userName, psw, performeImpersonification = true, agency = '010710000', mockedNotifications = true, mockedNews = true) {
         this.launchMW()
 
@@ -70,17 +80,24 @@ class LoginPage {
 
         //effettuo impersonification se specificato
         if (performeImpersonification) {
-            //TODO Implementare anche altre agenzie che si vogliono
             let agentId
-            switch (agency) {
-                case '010710000':
-                    agentId = 'ARFPULINI2'
-                    break;
-                case '010375000':
-                    agentId = 'ARALONGO7'
-                    break;
-            }
 
+            //! MONOUTENZA DEDICATA PER EFFETTUARE I TEST SU SECONDA FINESTRA (AG 070004549)
+            if (Cypress.env('isSecondWindow')) {
+                agency = '070004549'
+                agentId = 'ASGNAZZARRO1'
+            }
+            else {
+                //TODO Implementare anche altre agenzie che si vogliono
+                switch (agency) {
+                    case '010710000':
+                        agentId = 'ARFPULINI2'
+                        break;
+                    case '010375000':
+                        agentId = 'ARALONGO7'
+                        break;
+                }
+            }
             cy.impersonification(userName, agentId, agency).then(() => {
                 cy.get('input[name="Ecom_User_ID"]').type(userName)
                 cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
@@ -91,6 +108,9 @@ class LoginPage {
                     cy.wait('@gqlNews')
 
                 cy.wait('@gqlUserDetails')
+
+                if (Cypress.env('isSecondWindow'))
+                    TopBar.clickSecondWindow()
             })
         }
         else {
@@ -99,6 +119,7 @@ class LoginPage {
             cy.get('input[type="SUBMIT"]').click()
 
             Common.checkUrlEnv()
+
             if (!mockedNews)
                 cy.wait('@gqlNews')
 
