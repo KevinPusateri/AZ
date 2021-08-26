@@ -56,8 +56,6 @@ class DettaglioAnagrafica {
         const searchClientWithoutLegame = () => {
             LandingRicerca.searchRandomClient(true, "PG", "P")
             LandingRicerca.clickRandomResult()
-            // LandingRicerca.search('CREDITCON SPA')
-            // LandingRicerca.clickFirstResult()
             this.sezioneLegami()
             cy.get('ac-anagrafe-panel').should('be.visible')
             cy.get('ac-anagrafe-panel').find('h4').should('contain.text', 'Gruppo aziendale')

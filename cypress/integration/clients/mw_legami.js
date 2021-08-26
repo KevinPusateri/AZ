@@ -56,12 +56,12 @@ afterEach(function () {
     }
 })
 after(function () {
-    // TopBar.logOutMW()
-    // //#region Mysql
-    // cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-    //     let tests = testsInfo
-    //     cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-    // })
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    })
     //#endregion
 
 })
@@ -142,11 +142,15 @@ describe('Matrix Web : Legami', function () {
             TopBar.logOutMW()
         })
 
-        it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
-            cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000')
-            LoginPage.logInMW('TUTF003', psw)
-            DettaglioAnagrafica.checkClientWithoutLegame()
-            Legami.checkLegameIsNotPresent()
+        //TODO: DA FIXARE
+        it.only('Verifica con fonte secondaria il non utilizzo dei legami', function () {
+            cy.clearCookies()
+            cy.clearLocalStorage()
+            cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000').then(() => {
+                LoginPage.logInMW('TUTF003', psw, false)
+                DettaglioAnagrafica.checkClientWithoutLegame()
+                Legami.checkLegameIsNotPresent()
+            })
         })
     })
 })

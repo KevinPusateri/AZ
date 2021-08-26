@@ -179,10 +179,10 @@ class LandingRicerca {
             });
 
             cy.get('.ps--active-y').should('be.visible').then(($clienti) => {
-                // let schedeClienti = $clienti.find('lib-client-item')
                 let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
                 let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
                 cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
+                
                 cy.wait(10000)
                 cy.get('body').then(($body) => {
                     const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
