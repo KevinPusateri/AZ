@@ -29,7 +29,7 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-      LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw)
 
 
 })
@@ -89,12 +89,15 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
         BurgerMenuSales.backToSales()
+
     });
 
     it('Verifica aggancio Allianz Ultra Casa e Patrimonio BMP', function () {
-        TopBar.clickSales()
-        BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
-        BurgerMenuSales.backToSales()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
+            BurgerMenuSales.backToSales()
+        } else this.skip()
     });
 
     it('Verifica aggancio Allianz Ultra Salute', function () {
@@ -147,9 +150,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     //#region Gestione
     it('Verifica aggancio Nuovo Sfera', function () {
-        TopBar.clickSales()
-        BurgerMenuSales.clickLink('Nuovo Sfera')
-        BurgerMenuSales.backToSales()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('Nuovo Sfera')
+            BurgerMenuSales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica aggancio Sfera', function () {
@@ -159,9 +164,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Campagne Commerciali', function () {
-        TopBar.clickSales()
-        BurgerMenuSales.clickLink('Campagne Commerciali')
-        BurgerMenuSales.backToSales()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('Campagne Commerciali')
+            BurgerMenuSales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica aggancio Recupero preventivi e quotazioni', function () {

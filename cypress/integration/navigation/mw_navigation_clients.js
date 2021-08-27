@@ -106,7 +106,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         Clients.backToClients()
     });
 
-    it('Verifica che il contenuto di Visione globale cliente sia presente', function () {
+    it.only('Verifica che il contenuto di Visione globale cliente sia presente', function () {
         TopBar.clickClients()
         Clients.checkVisioneGlobaleCliente()
     })

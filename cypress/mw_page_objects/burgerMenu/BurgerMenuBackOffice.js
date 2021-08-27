@@ -33,9 +33,20 @@ class BurgerMenuBackOffice extends BackOffice {
         cy.get('lib-burger-icon').click()
         const linksBurger = Object.values(LinksBurgerMenu)
 
-        cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
-            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-        }).should('have.length', 19)
+        if (!Cypress.env('isSecondWindow'))
+            cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            }).should('have.length', 19)
+        else {
+
+            delete LinksBurgerMenu.DENUNCIA_BMP
+            delete LinksBurgerMenu.CONVENZIONI_IN_TRATTENUTA
+            delete LinksBurgerMenu.MONITORAGGIO_GUIDA_SMART
+            const linksBurger = Object.values(LinksBurgerMenu)
+            cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            }).should('have.length', 16)
+        }
     }
 
     /**

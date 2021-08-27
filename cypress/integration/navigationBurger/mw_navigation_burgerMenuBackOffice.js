@@ -31,7 +31,7 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-      LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw)
 
 
 })
@@ -42,13 +42,13 @@ beforeEach(() => {
 })
 
 after(function () {
+    //#endregion
     TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
         cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
     })
-    //#endregion
 
 })
 
@@ -59,7 +59,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.checkExistLinks()
     });
-
     //#region Sinistri
     it('Verifica aggancio Movimentazione sinistri', function () {
         TopBar.clickBackOffice()
@@ -74,9 +73,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
     })
 
     it('Verifica aggancio Denuncia BMP', function () {
-        TopBar.clickBackOffice()
-        BurgerMenuBackOffice.clickLink('Denuncia BMP')
-        BurgerMenuBackOffice.backToBackOffice()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickBackOffice()
+            BurgerMenuBackOffice.clickLink('Denuncia BMP')
+            BurgerMenuBackOffice.backToBackOffice()
+        } else this.skip()
+
     })
 
     it('Verifica aggancio Consultazione sinistri', function () {
@@ -153,22 +155,28 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         BurgerMenuBackOffice.backToBackOffice()
     })
 
+    it('Verifica aggancio Convenzioni in trattenuta', function () {
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickBackOffice()
+            BurgerMenuBackOffice.clickLink('Convenzioni in trattenuta')
+            BurgerMenuBackOffice.backToBackOffice()
+        } else this.skip()
+    })
+
+    it('Verifica aggancio Monitoraggio Guida Smart', function () {
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickBackOffice()
+            BurgerMenuBackOffice.clickLink('Monitoraggio Guida Smart')
+        } else {
+            this.skip()
+        }
+    })
+
     it('Verifica aggancio Impostazione contabilità', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Impostazione contabilità')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Convenzioni in trattenuta', function () {
-        TopBar.clickBackOffice()
-        BurgerMenuBackOffice.clickLink('Convenzioni in trattenuta')
-        BurgerMenuBackOffice.backToBackOffice()
-    })
-
-    it('Verifica aggancio Monitoraggio Guida Smart', function () {
-        TopBar.clickBackOffice()
-        BurgerMenuBackOffice.clickLink('Monitoraggio Guida Smart')
-
-    })
     //#endregion
 })

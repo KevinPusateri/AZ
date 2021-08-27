@@ -91,17 +91,21 @@ class LandingClients {
                 cy.get('app-rapid-link').contains(page).click()
                 Common.canaleFromPopup()
                 cy.url().should('eq', Common.getBaseUrl() + 'clients/digital-me')
-                const tabDigitalMe = [
-                    'Richieste Cliente',
-                    'Pubblicazione Proposte'
-                ]
-                cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
-                    expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
+                cy.get('app-digital-me-header').should('exist').and('be.visible').then(($digitalme) => {
+                    const checkIsRequest = $digitalme.find(':contains("Ci sono 0 richieste Digital me, di cui 0 da gestire")').is(':visible')
+                    if (!checkIsRequest) {
+                        const tabDigitalMe = [
+                            'Richieste Cliente',
+                            'Pubblicazione Proposte'
+                        ]
+                        cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
+                            expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
+                        })
+                        cy.contains('Richieste Cliente').click()
+                        cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
+                    } else
+                        cy.wrap($digitalme).should('contain.text', 'Ci sono 0 richieste Digital me, di cui 0 da gestire')
                 })
-                cy.contains('Richieste Cliente').click()
-                cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
-                // cy.contains('Pubblicazione Proposte').click()
-                // cy.get('app-digital-me-main-table').find('tr:visible').find('td:visible')
                 break;
             case LinksRapidi.PANNELLO_ANOMALIE:
                 cy.get('app-rapid-link').contains(page).click()
@@ -178,25 +182,32 @@ class LandingClients {
     }
 
     static checkDigitalMe() {
-        const tabDigitalMe = [
-            'Richieste Cliente',
-            'Pubblicazione Proposte'
-        ]
-        cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
-            expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
-        })
+        cy.get('app-digital-me-header').should('exist').and('be.visible').then(($digitalme) => {
+            const checkIsRequest = $digitalme.find(':contains("Ci sono 0 richieste Digital me, di cui 0 da gestire")').is(':visible')
+            if (!checkIsRequest) {
+                const tabDigitalMe = [
+                    'Richieste Cliente',
+                    'Pubblicazione Proposte'
+                ]
+                cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
+                    expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
+                })
 
-        cy.contains('Richieste Cliente').click()
-        cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
-        this.digitalMe('Richieste Cliente');
+                cy.contains('Richieste Cliente').click()
+                cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
+                this.digitalMe('Richieste Cliente');
 
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('dmEventMotor')) {
-                req.alias = 'gqlEventMotor'
-            }
+                cy.intercept('POST', '**/graphql', (req) => {
+                    if (req.body.operationName.includes('dmEventMotor')) {
+                        req.alias = 'gqlEventMotor'
+                    }
+                })
+                cy.contains('Pubblicazione Proposte').click()
+                cy.get('app-digital-me-main-table').should('be.visible')
+            } else
+                cy.wrap($digitalme).should('contain.text', 'Ci sono 0 richieste Digital me, di cui 0 da gestire')
+
         })
-        cy.contains('Pubblicazione Proposte').click()
-        cy.get('app-digital-me-main-table').should('be.visible')
     }
 
 
@@ -232,10 +243,6 @@ class LandingClients {
                         break;
                 }
             });
-        // cy.get('tr[class="nx-table-row ng-star-inserted"]').first().find('button[class="row-more-icon-button"]').click();
-        // cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').each(($checkLink) => {
-        //     expect($checkLink.text()).not.to.be.empty;
-        // });
     }
 
     /**
@@ -253,7 +260,7 @@ class LandingClients {
      */
     static checkVisioneGlobaleCliente() {
         cy.get('app-global-vision-carousel').should('be.visible')
-        cy.get('app-global-vision-carousel').within(() => {
+        cy.get('app-global-vision-carousel').should('exist').and('be.visible').within(() => {
             cy.get('svg').should('be.visible')
 
             const titleGlobals = [
@@ -267,8 +274,8 @@ class LandingClients {
                 'Coperture',
                 'Scoperture'
             ]
-            cy.get('ngu-tile').find('div[class="chart-title homepage-chart-title"]:visible')
-                .should('be.visible').each((title, i) => {
+            //TODO: Verifica each 
+            cy.get('ngu-tile').should('be.visible').each((title, i) => {
                     expect(title.text().trim()).to.include(titleGlobals[i]);
                 })
         })

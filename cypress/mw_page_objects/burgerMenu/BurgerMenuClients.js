@@ -36,10 +36,17 @@ class BurgerMenuClients extends Clients {
         cy.get('lib-burger-icon').click({ force: true })
 
         const linksBurger = Object.values(LinksBurgerMenu)
-
-        cy.get('lib-side-menu-link').find('a').should('have.length', 11).each(($checkLinksBurger, i) => {
-            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-        })
+        if (!Cypress.env('isSecondWindow'))
+            cy.get('lib-side-menu-link').find('a').should('have.length', 11).each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            })
+        else {
+            delete LinksBurgerMenu.HOSPITAL_SCANNER
+            const linksBurger = Object.values(LinksBurgerMenu)
+            cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            }).should('have.length', 10)
+        }
     }
 
     /**

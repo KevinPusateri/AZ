@@ -119,7 +119,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
     });
 
     // TODO ADD TFS  -> mostra canale e non c'è _blank
-    // it.only('Verifica aggancio Hospital scanner', function () {
+    // it('Verifica aggancio Hospital scanner', function () {
     //     TopBar.clickClients()
     //     BurgerMenuClients.clickLink('Hospital scanner')
     //     BurgerMenuClients.backToClients()
