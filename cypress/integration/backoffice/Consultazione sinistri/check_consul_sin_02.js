@@ -59,25 +59,47 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it.only('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
     'Si entra nella pagina di dettaglio e si verifica l\'intestazione di pagina: ' +
     ' (1) In alto alla pagina di dettaglio è riportato il numero di sinistro ' +
-    ' (2) La Data di avvenimento, Cliente, Località sono valorizzate' +
+    ' (2) Data di avvenimento, Cliente, Località siano valorizzate' +
     ' (3) E\' riportato il Tipo sinistro', function () {
-        var sinistro = '927646985'
-        var stato_sin = 'CHIUSO PAGATO'
+        let sinistro = '927646985'
+        let stato_sin = 'CHIUSO PAGATO'
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        csSinObjPage.putValue_ById('#claim_number', sinistro)
-        csSinObjPage.clickBtn_ByClassAndText('claim_number', 'Cerca')
-        csSinObjPage.checkVisibleTextValue(stato_sin)
+        csSinObjPage.setValue_ById('#claim_number', sinistro)
+        let classvalue = "search_submit claim_number k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
+        csSinObjPage.checkObj_ByText(stato_sin)
         csSinObjPage.printClaimDetailsValue()
-        var cliente = csSinObjPage.getValueInClaimDetails(1)
-        var polizza = csSinObjPage.getValueInClaimDetails(2)       
-        var tiposin = csSinObjPage.getValueInClaimDetails(4)
-        var statosin = csSinObjPage.getValueInClaimDetails(5)
-        var dtAvvenimento = csSinObjPage.getValueInClaimDetails(6)
-        csSinObjPage.clickSelectClaim(sinistro)
-        // Verifica (1)
-        csSinObjPage.checkVisibleClaimNumberInPageDetails(sinistro)
-        // Verifica (2)
+        const css1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
+        let cliente = csSinObjPage.getValue_ByCss(css1)
+        const css2 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
+        let polizza = csSinObjPage.getValue_ByCss(css2)
+        const css3 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
+        let targa = csSinObjPage.getValue_ByCss(css3)
+        const css4 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(5)"  
+        let tiposin = csSinObjPage.getValue_ByCss(css4)
+        const css6 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
+        let dtAvvenimento = csSinObjPage.getValue_ByCss(css6)
+        
+        const css5 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(6)"  
+        let statosin = csSinObjPage.getValue_ByCss(css5)
+      
+        // Seleziona il sinistro
+        csSinObjPage.clickLnk_ByHref(sinistro)
+      
+        // Verifica (1): numero di sinistro in alto alla pagina di dettaglio
+        const clssDtl = "pageTitle"
+        csSinObjPage.checkObj_ByClassAndText(clssDtl, sinistro)
+
+        // Verifica (2): Valore della data avvenimento      
+        const cssDtAvv = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
+        csSinObjPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento)
+        // Verifica (2): Valore del cliente
+        const cssCliente = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
+        csSinObjPage.checkObj_ByLocatorAndText(cssCliente, cliente)
+        // Verifica (2): Valore della località
+        const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer"
+        csSinObjPage.IsNullOrEmpty(csSinObjPage.getValue_ByCss(csslocalità))
     });
 
 
@@ -85,8 +107,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
         csSinObjPage.clickObj_ByLabel('a', 'Polizza');
-        csSinObjPage.putValue_ById('#policy_number', '528771171')
-        csSinObjPage.clickBtn_ByClassAndText('polizza', 'Cerca')
+        csSinObjPage.setValue_ById('#policy_number', '528771171')
+        let classvalue = "search_submit polizza k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
 
     });
 

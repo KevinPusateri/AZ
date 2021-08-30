@@ -150,14 +150,12 @@ class MovimentazioneSinistriPage {
     }
     
     static GetArrayLengthMovimentazioneSinistri() {
-        getIFrameMovSinistri().find('td[class="numCruscotto"]').then(($els) => {
-                     
+        getIFrameMovSinistri().find('td[class="numCruscotto"]').then(($els) => {                     
                 expect(Cypress.dom.isJquery($els), 'jQuery object').to.be.true
                 const elements = Cypress.$.makeArray($els)
                 expect(Cypress.dom.isJquery(elements), 'converted').to.be.false
                 expect(elements, 'to array').to.be.an('array')
-                // we are returning an array of DOM elements    
-              
+                // we are returning an array of DOM elements                  
                 return elements.length
         })    
     }

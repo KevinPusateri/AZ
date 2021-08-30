@@ -33,7 +33,7 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-    LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw, false)
     TopBar.clickBackOffice()
     BackOffice.clickCardLink('Consultazione sinistri') 
 })
@@ -59,78 +59,87 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per numero sinistro  ', function () {
       
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.putValue_ById('#claim_number','927646985')
-        csSinObjPage.clickBtn_ByClassAndText('claim_number','Cerca')
+        csSinObjPage.setValue_ById('#claim_number','927646985')
+        let classvalue = "search_submit claim_number k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per polizza assicurato  ', function () {
         
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
         csSinObjPage.clickObj_ByLabel('a','Polizza');
-        csSinObjPage.putValue_ById('#policy_number','528771171')
-        csSinObjPage.clickBtn_ByClassAndText('polizza','Cerca')
+        csSinObjPage.setValue_ById('#policy_number','528771171')
+        let classvalue = "search_submit polizza k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa assicurato  ', function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
         csSinObjPage.clickObj_ByLabel('a','Targa');
-        csSinObjPage.putValue_ById('#plate','EN813ZW')
-        csSinObjPage.clickBtn_ByClassAndText('targa','Cerca')
+        csSinObjPage.setValue_ById('#plate','EN813ZW')
+        let classvalue = "search_submit targa k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici del cliente persona fisica ', function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
         csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
-        csSinObjPage.putValue_ById('#cognome','MASET')
-        csSinObjPage.putValue_ById('#nome','LUCA')
-        csSinObjPage.clickBtn_ByClassAndText('anagrafica','Cerca')
+        csSinObjPage.setValue_ById('#cognome','MASET')
+        csSinObjPage.setValue_ById('#nome','LUCA')
+        let classvalue = "search_submit anagrafica k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per codice fiscale del cliente persona fisica ', function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
         csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
-        csSinObjPage.putValue_ById('#cognome','')
-        csSinObjPage.putValue_ById('#nome','')
-        csSinObjPage.putValue_ById('#cf','MSTLCU83L27C957U')
-        csSinObjPage.clickBtn_ByClassAndText('anagrafica','Cerca')
+        csSinObjPage.setValue_ById('#cognome','')
+        csSinObjPage.setValue_ById('#nome','')
+        csSinObjPage.setValue_ById('#cf','MSTLCU83L27C957U')
+        let classvalue = "search_submit anagrafica k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
     });
     
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per denominazione del cliente come persona giuridica ', function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
         csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
-        csSinObjPage.putValue_ById('#cf','')
-        csSinObjPage.putValue_ById('#cognome','GIRASOLE INDUSTRIE')
-        csSinObjPage.clickBtn_ByClassAndText('anagrafica','Cerca')
+        csSinObjPage.setValue_ById('#cf','')
+        csSinObjPage.setValue_ById('#cognome','GIRASOLE INDUSTRIE')
+        let classvalue = "search_submit anagrafica k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per codice fiscale / partita IVA del cliente persona giuridica ', function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
         csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
-        csSinObjPage.putValue_ById('#cognome','')
-        csSinObjPage.putValue_ById('#cf','04922730264')
-        csSinObjPage.clickBtn_ByClassAndText('anagrafica','Cerca')
+        csSinObjPage.setValue_ById('#cognome','')
+        csSinObjPage.setValue_ById('#cf','04922730264')
+        let classvalue = "search_submit anagrafica k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa controparte  ', function () {
         
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
         csSinObjPage.clickObj_ByLabel('a','Targa CTP')
-        csSinObjPage.putValue_ById('#plateCTP','FJ220KA')
-        csSinObjPage.clickBtn_ByClassAndText('targaCTP','Cerca')
+        csSinObjPage.setValue_ById('#plateCTP','FJ220KA')
+        let classvalue = "search_submit targaCTP k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici della controparte persona fisica ', function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
         csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici CTP')
-        csSinObjPage.putValue_ById('#cognomeCTP','VIVAN')
-        csSinObjPage.putValue_ById('#nomeCTP','GERALD')
-        csSinObjPage.clickBtn_ByClassAndText('anagraficaCTP','Cerca')
+        csSinObjPage.setValue_ById('#cognomeCTP','VIVAN')
+        csSinObjPage.setValue_ById('#nomeCTP','GERALD')
+        let classvalue = "search_submit anagraficaCTP k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
     });
      
 });
