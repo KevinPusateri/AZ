@@ -142,7 +142,11 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE_RECRUITING:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
-                getIFrame().find('[class="menu-padre"]:contains("Report"):visible')
+                if (!Cypress.env('isSecondWindow'))
+                    getIFrame().find('[class="menu-padre"]:contains("Report"):visible')
+                else
+                    getIFrame().find('#likelyCauses').should('be.visible')
+                        .and('contain.text','Non esistono piani di incentivazioni recruiting per l\'agenzia.')
                 break;
             case LinksBurgerMenu.ANDAMENTI_TECNICI:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
@@ -163,17 +167,17 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_DANNI:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
-                getIFrame().find('#ricerca_cliente').should('be.visible').and('contain.text' , 'Filtra')
+                getIFrame().find('#ricerca_cliente').should('be.visible').and('contain.text', 'Filtra')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO:
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_SALUTE:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
-                getIFrame().find('#submit-Mon_PTF').should('be.visible').and('contain.text' , 'Filtra')
+                getIFrame().find('#submit-Mon_PTF').should('be.visible').and('contain.text', 'Filtra')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_VITA:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
                 cy.wait(5000)
-                getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text' , 'Filtra')
+                getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_ALLIANZ1:
             case LinksBurgerMenu.MONITORAGGIO_RISERVE_VITA:
@@ -185,7 +189,7 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.CAPITALE_VITA_SCADENZA:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
                 cy.wait('@getDacommercialePOST', { requestTimeout: 120000 });
-                getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text' , 'Filtra')
+                getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 break;
         }
     }

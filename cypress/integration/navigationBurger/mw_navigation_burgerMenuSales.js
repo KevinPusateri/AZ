@@ -306,7 +306,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e excel
-    // it.only('Verifica aggancio ACOM Gestione iniziative', function () {
+    // it('Verifica aggancio ACOM Gestione iniziative', function () {
     //     TopBar.clickSales()
     //     cy.get('lib-burger-icon').click({force:true})
 

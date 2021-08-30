@@ -77,7 +77,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     })
 
-    it.skip('Verifica aggancio X - Advisor', function () {
+    it('Verifica aggancio X - Advisor', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             if (!currentHostName.includes('SM')) {
@@ -93,9 +93,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         BurgerMenuNumbers.backToNumbers()
     })
 
-    //TODO: Seconda finestra
-    //! DA CAPIRE SE é BUG
-    it.skip('Verifica aggancio Incentivazione Recruiting', function () {
+    it('Verifica aggancio Incentivazione Recruiting', function () {
         TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Incentivazione Recruiting')
         BurgerMenuNumbers.backToNumbers()
@@ -139,7 +137,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         BurgerMenuNumbers.clickLink('New Business Ultra Casa e Patrimonio')
         BurgerMenuNumbers.backToNumbers()
     })
-    
+
     it('Verifica aggancio New Business Ultra Salute', function () {
         TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('New Business Ultra Salute')
