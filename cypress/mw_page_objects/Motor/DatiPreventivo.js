@@ -1,25 +1,28 @@
 /// <reference types="Cypress" />
+//require('cypress-plugin-tab')
 
-//import Common from "../common/Common";
-
+import Common from "../common/Common";
+//import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 
 
 
 class DatiPreventivo {
 
-    static ClickCheckTarga() {
-        cy.contains('NON CONOSCI LA TARGA?').click()
-    }
-    static verificaUnico() {
-        cy.contains('Unico').click()
-        //TODO" 1 Aggiornamento unico"
-    }
-    static clickP2() {
-        cy.get('nx-tab-header').contains('NON TARGA?').click()
-    }
+static ClickCheckTarga() {
+    cy.contains('NON CONOSCI LA TARGA?').click()
+}
+static verificaUnico() {
+    cy.contains('Unico').click()
+    //TODO" 1 Aggiornamento unico"
+}
+static clickP2() {
+    cy.get('nx-tab-header').contains('NON TARGA?').click()
+}
 
 
-    static clickPreventivoMotor_(){
+   
+ //#region Links Card Auto
+    static clickPreventivoMotor(){
         cy.wait(3000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
         cy.wait(2000)
@@ -31,6 +34,8 @@ class DatiPreventivo {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { requestTimeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
+
+        cy.wait(3000)
     }
 
     static clickPassioneBlu() {
@@ -41,11 +46,11 @@ class DatiPreventivo {
         Common.canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
-
+        cy.wait(3000)
 
     }
     
-    static clickAuto_() {
+    static clickAuto() {
         cy.wait(3000)
         cy.get('lib-container').find('app-client-resume-emissions:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Auto")').is(':visible')
@@ -56,10 +61,11 @@ class DatiPreventivo {
 
 
         })
+        cy.wait(3000)
     }
 
     
-    static clickNuovaPolizza_() {
+    static clickNuovaPolizza() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
         cy.wait(2000)
@@ -69,6 +75,8 @@ class DatiPreventivo {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
-
+//#endregion 
 
  }
+
+ export default DatiPreventivo

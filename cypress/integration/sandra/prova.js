@@ -63,9 +63,9 @@ describe('Ricerca per preventivo', {
        
       
        
-       DatiPreventivo.clickAuto_()
-       DatiPreventivo.clickPassioneBu()
-      // DatiPreventivo.clickPreventivoMotor_()
+       DatiPreventivo.clickAuto()
+     //  DatiPreventivo.clickPassioneBlu()
+       DatiPreventivo.clickPreventivoMotor()
        
       // DatiPreventivo.ClickCheckTarga()
      
