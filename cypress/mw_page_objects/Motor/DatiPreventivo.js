@@ -35,7 +35,7 @@ static clickP2() {
         cy.wait('@getMotor', { requestTimeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
 
-        cy.wait(3000)
+       
     }
 
     static clickPassioneBlu() {
