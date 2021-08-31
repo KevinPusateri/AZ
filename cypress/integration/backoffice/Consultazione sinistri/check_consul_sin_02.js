@@ -71,19 +71,18 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         csSinObjPage.checkObj_ByText(stato_sin)
         csSinObjPage.printClaimDetailsValue()
         const css1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
-        let cliente = csSinObjPage.getValue_ByCss(css1)
+        var cliente = csSinObjPage.getPromiseValue_ByCss(css1)
         const css2 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
-        let polizza = csSinObjPage.getValue_ByCss(css2)
+        let polizza = csSinObjPage.getPromiseValue_ByCss(css2)
         const css3 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
-        let targa = csSinObjPage.getValue_ByCss(css3)
+        let targa = csSinObjPage.getPromiseValue_ByCss(css3)
         const css4 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(5)"  
-        let tiposin = csSinObjPage.getValue_ByCss(css4)
+        let tiposin = csSinObjPage.getPromiseValue_ByCss(css4)
         const css6 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-        let dtAvvenimento = csSinObjPage.getValue_ByCss(css6)
-        
+        var dtAvvenimento = csSinObjPage.getPromiseValue_ByCss(css6)        
         const css5 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(6)"  
-        let statosin = csSinObjPage.getValue_ByCss(css5)
-      
+        let statosin = csSinObjPage.getPromiseValue_ByCss(css5)
+       
         // Seleziona il sinistro
         csSinObjPage.clickLnk_ByHref(sinistro)
       
@@ -99,7 +98,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         csSinObjPage.checkObj_ByLocatorAndText(cssCliente, cliente)
         // Verifica (2): Valore della località
         const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer"
-        csSinObjPage.IsNullOrEmpty(csSinObjPage.getValue_ByCss(csslocalità))
+        csSinObjPage.IsNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(csslocalità))
     });
 
 

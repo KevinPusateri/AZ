@@ -139,23 +139,20 @@ class ConsultazioneSinistriPage {
      */
      static checkObj_ByLocatorAndText(locator, label) {
         let txt = ""
-        //return new Cypress.Promise((resolve, reject) => {
+        return new Cypress.Promise((resolve, reject) => {
             getIFrame().find(locator).should('be.visible')
             .then(($val) => {                                       
-                expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true
-                    txt = $val.text().trim()
-                    debugger
-                    if (txt.includes(label)) {                   
-                        cy.log('>> object with label: "' + label +'" is defined')
-                        //resolve(txt)            
-                    } else {
-                        //assert.fail('>> object with label: "' + label +'" is NOT defined')                       
-                    }
-
+                expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
+                txt = $val.text().trim()                
+                debugger
+                let str = label.toString()
+                if (txt.includes(str)) {                   
+                    cy.log('>> object with label: "' + label +'" is defined')
+                    resolve(txt)    
+                }
             })
-           
-       // });                               
-        cy.wait(1000)            
+        });                               
+       // cy.wait(1000)            
     }
     /**
      * Inserts a string @value into the object identified by its @id
@@ -173,16 +170,20 @@ class ConsultazioneSinistriPage {
      * Get a value defined on object identified by its @css
      * @param {string} css : locator object id
      */
-    static getValue_ByCss(css) {       
+    static getPromiseValue_ByCss(css) {
+        return new Cypress.Promise(function(resolve, reject) {
+        //return new Cypress.Promise((resolve) => {
         getIFrame()
         .find(css)
         .invoke('text')  // for input or textarea, .invoke('val')
-        .then(text => {           
-            const someText = text;           
-            cy.log('>> read the value: ' + someText)                     
+        .then(text => {                                     
+            cy.log('>> read the value: ' + text)
+            resolve(text)                
             });
-        //});
+        });
     }
+
+
     //#endregion  Generic function
 
 
