@@ -63,7 +63,7 @@ describe('Ricerca per preventivo', {
        
       
        
-       DatiPreventivo.clickAuto_()
+       DatiPreventivo.clickAuto()
        DatiPreventivo.clickPassioneBu()
       // DatiPreventivo.clickPreventivoMotor_()
        
