@@ -31,7 +31,7 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-      LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw)
 
 
 })
@@ -65,9 +65,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Nuovo Sfera', function () {
-        TopBar.clickSales()
-        Sales.clickLinkRapido('Nuovo Sfera')
-        Sales.backToSales()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            Sales.clickLinkRapido('Nuovo Sfera')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica aggancio Sfera', function () {
@@ -99,7 +101,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.checkLinksOnEmettiPolizza()
     })
 
-    it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
+    it.skip('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
         TopBar.clickSales()
         Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
         Sales.backToSales()
@@ -118,9 +120,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function () {
-        TopBar.clickSales()
-        Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio BMP')
-        Sales.backToSales()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio BMP')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz1 Business', function () {
@@ -160,52 +164,65 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica tab "Pezzi"', function () {
-
-        TopBar.clickSales()
-        Sales.checkExistPezzi()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            Sales.checkExistPezzi()
+        } else this.skip()
     })
 
     it('Verifica "Premi"', function () {
-
-        TopBar.clickSales()
-        Sales.checkExistPremi()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            Sales.checkExistPremi()
+        } else this.skip()
     })
 
     it('Verifica aggancio Attività in scadenza - Estrai dettaglio', function () {
         TopBar.clickSales()
-        Sales.clickAttivitaInScadenza()
+        if (!Cypress.env('isSecondWindow')) {
+            Sales.clickAttivitaInScadenza()
+        }
         Sales.clickEstraiDettaglio()
         Sales.backToSales()
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Motor', function () {
-        TopBar.clickSales()
-        Sales.lobDiInteresse()
-        Sales.backToSales()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            Sales.lobDiInteresse('Motor')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Rami Vari', function () {
-        TopBar.clickSales()        
-        Sales.lobDiInteresse()
-        Sales.backToSales()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            Sales.lobDiInteresse('Rami Vari')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Vita', function () {
-        TopBar.clickSales()
-        Sales.lobDiInteresse()
-        Sales.backToSales()
-
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            Sales.lobDiInteresse('Vita')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Tutte', function () {
-        TopBar.clickSales()
-        Sales.lobDiInteresse()
-        Sales.backToSales()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            Sales.lobDiInteresse('Tutte')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica TAB: "Campagne"', function () {
-        TopBar.clickSales()
-        Sales.clickTabCampagne()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickSales()
+            Sales.clickTabCampagne()
+        } else this.skip()
     })
 
     it('Verifica aggancio Appuntamento', function () {

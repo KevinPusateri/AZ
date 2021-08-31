@@ -73,8 +73,8 @@ const LandingPage = {
 const LinkUtilita = {
     CRUSCOTTO_RESILIENCE: 'Cruscotto resilience',
     CASELLA_DI_POSTA_ED_AGENZIA: 'Casella di posta agente ed agenzia',
-    QUATTRORUOTE_CALCOLO_VALORE_VEICOLO: 'Quattroruote - Calcolo valore veicolo',
-    REPORT_ALLIANZ_NOW: 'Report Allianz Now',
+    QUATTRORUOTE_CALCOLO_VALORE_VEICOLO: 'Quattroruote - Calcolo valore veicolo', //! seconda finestra
+    REPORT_ALLIANZ_NOW: 'Report Allianz Now', //! seconda finestra
     INTERROGAZIONI_CENTRALIZZATE: 'Interrogazioni centralizzate',
     BANCHE_DATI_ANIA: 'Banche Dati ANIA',
     GESTIONE_MAGAZZINO_OBU: 'Gestione Magazzino OBU',
@@ -237,11 +237,22 @@ class TopBar extends HomePage {
      * Verifica la presenza di tutti i link su Utility
      */
     static checkLinksUtility() {
+
         const linksUtilita = Object.values(LinkUtilita)
 
-        cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
-            expect($labelCard).to.contain(linksUtilita[i])
-        })
+        if (!Cypress.env('isSecondWindow'))
+            cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksUtilita[i])
+            })
+        else {
+            delete LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO
+            delete LinkUtilita.REPORT_ALLIANZ_NOW
+            const linksUtilita = Object.values(LinkUtilita)
+            cy.get('lib-utility').find('lib-utility-label').should('have.length', 8).each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksUtilita[i])
+            })
+        }
+
     }
     /**
      * Click su un link dal menu a tendina di Utilità

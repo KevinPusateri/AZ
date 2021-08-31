@@ -26,9 +26,9 @@ const getIFrameCampagne = () => {
 //#endregion
 
 const LinksRapidi = {
-    NUOVO_SFERA: 'Nuovo Sfera',
+    NUOVO_SFERA: 'Nuovo Sfera',  //! seconda finestra
     SFERA: 'Sfera',
-    CAMPAGNE_COMMERCIALI: 'Campagne Commerciali',
+    CAMPAGNE_COMMERCIALI: 'Campagne Commerciali', //! seconda finestra
     RECUPERO_PREVENTIVI_E_QUOTAZIONI: 'Recupero preventivi e quotazioni',
     MONITORAGGIO_POLIZZE_PROPOSTE: 'Monitoraggio Polizze Proposte',
     GED_GESTIONE_DOCUMENTALE: 'GED – Gestione Documentale'
@@ -38,14 +38,14 @@ const LinksOnEmettiPolizza = {
     PREVENTIVO_MOTOR: 'Preventivo Motor',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_SALUTE: 'Allianz Ultra Salute',
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP', //! seconda finestra
     ALLIANZ1_BUSINESS: 'Allianz1 Business',
     FASTQUOTE_IMPRESA_E_ALBERGO: 'FastQuote Impresa e Albergo',
     FLOTTE_E_CONVENZIONI: 'Flotte e Convenzioni',
     PREVENTIVO_ANONIMO_VITA_INDIVIDUALI: 'Preventivo anonimo Vita Individuali',
     MINIFLOTTE: 'MiniFlotte',
     TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
-    GESTIONE_RICHIESTE_PER_PA: 'Gestione Richieste per PA'
+    GESTIONE_RICHIESTE_PER_PA: 'Gestione Richieste per PA' //! seconda finestra
 }
 
 class Sales {
@@ -54,7 +54,7 @@ class Sales {
      * Torna indietro su Sales
      */
     static backToSales() {
-        cy.get('a').contains('Sales').scrollIntoView().click({force:true})
+        cy.get('a').contains('Sales').scrollIntoView().click({ force: true })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
     }
 
@@ -90,9 +90,19 @@ class Sales {
     static checkExistLinksCollegamentiRapidi() {
         const linksCollegamentiRapidi = Object.values(LinksRapidi)
 
-        cy.get('app-quick-access').find('[class="link-item ng-star-inserted"]').should('have.length', 6).each(($link, i) => {
-            expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
-        })
+        if (!Cypress.env('isSecondWindow'))
+            cy.get('app-quick-access').find('a').should('have.length', 5).each(($link, i) => {
+                expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
+            })
+        else {
+
+            delete LinksRapidi.NUOVO_SFERA
+            delete LinksRapidi.CAMPAGNE_COMMERCIALI
+            const linksCollegamentiRapidi = Object.values(LinksRapidi)
+            cy.get('app-quick-access').find('a').should('have.length', 4).each(($link, i) => {
+                expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
+            })
+        }
     }
 
     /**
@@ -169,9 +179,20 @@ class Sales {
     static checkLinksOnEmettiPolizza() {
         cy.contains('Emetti polizza').click({ force: true })
         const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
-        cy.get('.card-container').find('lib-da-link').each(($link, i) => {
-            expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
-        })
+
+        if (!Cypress.env('isSecondWindow'))
+            cy.get('.card-container').find('lib-da-link').each(($link, i) => {
+                expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
+            })
+        else {
+
+            delete LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
+            delete LinksOnEmettiPolizza.GESTIONE_RICHIESTE_PER_PA
+            const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
+            cy.get('.card-container').find('lib-da-link').each(($link, i) => {
+                expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
+            })
+        }
     }
 
     /**
@@ -233,7 +254,7 @@ class Sales {
                 break;
             case LinksOnEmettiPolizza.FASTQUOTE_IMPRESA_E_ALBERGO:
                 cy.intercept({
-                    method: 'POST',
+                    method: 'GET',
                     url: '**/Auto/**'
                 }).as('getAuto');
                 Common.canaleFromPopup()
@@ -471,9 +492,9 @@ class Sales {
         cy.get('div[class="damages prop-card ng-star-inserted"]').first().find('lib-da-link').first().click()
         // cy.wait(10000)
         // cy.wait('@getAuto', { requestTimeout: 40000 });
-        getIFrame().within(()=>{
+        getIFrame().within(() => {
             cy.get('#menuContainer').should('be.visible')
-            cy.get('#menuContainer').find('a').should('be.visible').and('contain.text','« Uscita')
+            cy.get('#menuContainer').find('a').should('be.visible').and('contain.text', '« Uscita')
         })
         // .find('#menuContainer > a').should('be.visible').and('contain.text','« Uscita')
         // getIFrame().find('a:contains("« Uscita"):visible')
@@ -492,10 +513,10 @@ class Sales {
         cy.get('.cards-container').should('be.visible').find('.card').first().click()
         cy.wait(15000)
         cy.wait('@digitalAgencyLink', { requestTimeout: 30000 });
-        getIFrame().within(() =>{
+        getIFrame().within(() => {
             cy.get('#AZBuilder1_ctl08_cmdNote').should('be.visible').invoke('attr', 'value').should('equal', 'Note')
         })
-        
+
     }
     /**
      * Sul pannello "Proposte Danni", all'apertura del pannello
@@ -540,17 +561,17 @@ class Sales {
      * Verifica l'aggancio alla pagina
      * @param {string} lob - nome del lob
      */
-    static lobDiInteresse(lob){
+    static lobDiInteresse(lob) {
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('getTotalSferaReceipts')) {
                 req.alias = 'gqlSfera'
             }
         })
-        cy.get('app-lob-link').find('span:contains("Rami vari")').click()
+        cy.get('app-lob-link').contains(lob).click()
         cy.wait('@gqlSfera')
         cy.get('app-receipt-manager-footer').find('button:contains("Estrai")').click()
         cy.get('app-table-component').should('be.visible')
-        cy.get('nx-header-actions').should('contain.text','Espandi Pannello')
+        cy.get('nx-header-actions').should('contain.text', 'Espandi Pannello')
     }
 
 }

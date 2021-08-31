@@ -76,7 +76,6 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
     LandingRicerca.checkClienteNotFound(cliente)
   })
 
-  //TODO:  VERIFICA PERCHE non va avanti forse context tolto
   it('Verifica Cancellazione clienti PG', function () {
     HomePage.reloadMWHomePage()
     TopBar.clickClients()

@@ -311,7 +311,9 @@ class LandingRicerca {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
         cy.get('nx-modal-container').find('lib-da-link').contains(link).click()
 
-        Common.canaleFromPopup()
+        if (!Cypress.env('isSecondWindow')) {
+            Common.canaleFromPopup()
+        }
 
         if (link === 'Ricerca Polizze proposte' || link === 'Ricerca Preventivi') {
             cy.wait('@danni', { requestTimeout: 30000 })

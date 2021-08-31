@@ -104,8 +104,10 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     // })
 
     it('Verifica atterraggio da Utilità - Quattroruote - Calcolo valore veicolo', function () {
-        TopBar.clickIconSwitchPage()
-        TopBar.clickLinkOnUtilita('Quattroruote - Calcolo valore veicolo')
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickIconSwitchPage()
+            TopBar.clickLinkOnUtilita('Quattroruote - Calcolo valore veicolo')
+        } else this.skip()
     })
 
     // Mostra non sei autorizzato ad accedere alla pagina backoffice --add excel
@@ -136,8 +138,10 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     // })
 
     it('Verifica atterraggio da Utilità - Cruscotto Installazione Dispositivo Satellitare', function () {
-        TopBar.clickIconSwitchPage()
-        TopBar.clickLinkOnUtilita('Cruscotto Installazione Dispositivo Satellitare')
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickIconSwitchPage()
+            TopBar.clickLinkOnUtilita('Cruscotto Installazione Dispositivo Satellitare')
+        } else this.skip()
     })
 
     it('Verifica atterraggio da Utilità - Monitor Scoring AZ Bonus Drive', function () {
@@ -162,11 +166,15 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     });
 
     it('Verifica Top Menu News', function () {
-        TopBar.clickIconSwitchPage('News')
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickIconSwitchPage('News')
+        } else this.skip()
     });
 
     it('Verifica Top Menu Le mie info', function () {
-        TopBar.clickIconSwitchPage('Le mie info')
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickIconSwitchPage('Le mie info')
+        } else this.skip()
     });
 
     it('Verica buca di ricerca', function () {
@@ -190,11 +198,15 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     });
 
     it('Verifica Button News', function () {
-        TopBar.clickNews()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickNews()
+        } else this.skip()
     });
 
     it('Verifica Button Le mie info', function () {
-        TopBar.clickMieInfo()
+        if (!Cypress.env('isSecondWindow')) {
+            TopBar.clickMieInfo()
+        } else this.skip()
 
     });
     it('Verifica link "Vai al Centro notifiche"', function () {

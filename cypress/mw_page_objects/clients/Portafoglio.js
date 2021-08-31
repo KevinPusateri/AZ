@@ -204,6 +204,31 @@ class Portafoglio {
         cy.get('.footer').find('button').contains('applica').click()
         cy.wait('@gqlcontract', { timeout: 30000 })
     }
+
+
+    static clickAnnullamento() {
+        cy.get('app-contract-card').should('be.visible')
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+
+        // Click tre puntini dalla prima polizza
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').first().should('exist').then(($contract) => {
+            cy.wrap($contract)
+                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h ellipsis-icon"]').click()
+        })
+
+        // Click Link Annullamento
+        cy.get('.cdk-overlay-container').should('contain.text', 'Annullamento').within(($overlay) => {
+            cy.get('button').should('be.visible')
+            cy.wrap($overlay).find('button:contains("Annullamento")').click()
+        })
+
+        Common.canaleFromPopup()
+
+        cy.getIFrame()
+        cy.get('@iframe').within(() =>{
+            cy.get('td[title="Vendita]').click()
+        })
+    }
 }
 
 export default Portafoglio

@@ -264,9 +264,9 @@ class LandingClients {
             cy.get('svg').should('be.visible')
 
             const titleGlobals = [
-                'Polizze Clienti',
                 'Contatti e consensi concessi',
                 'Contatti e consensi non concessi',
+                'Polizze Clienti',
                 'Monocoperti',
                 'Anzianità del Cliente',
                 'Età del Cliente',
@@ -274,7 +274,6 @@ class LandingClients {
                 'Coperture',
                 'Scoperture'
             ]
-            //TODO: Verifica each 
             cy.get('ngu-tile').should('be.visible').each((title, i) => {
                     expect(title.text().trim()).to.include(titleGlobals[i]);
                 })

@@ -684,9 +684,9 @@ class SintesiCliente {
             cy.visit(param)
         else {
             if (!Cypress.env('isSecondWindow'))
-                cy.visit(cypress.env('baseUrlPreprod') + 'clients/client/' + param)
+                cy.visit(Cypress.env('baseUrlPreprod') + 'clients/client/' + param)
             else
-                cy.visit(cypress.env('urlSecondWindow') + 'clients/client/' + param)
+                cy.visit(Cypress.env('urlSecondWindow') + 'clients/client/' + param)
         }
 
         cy.wait('@pageClient', { requestTimeout: 60000 });

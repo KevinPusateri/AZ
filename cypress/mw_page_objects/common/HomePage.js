@@ -1,5 +1,6 @@
 /// <reference types="Cypress" />
 import Common from "../../mw_page_objects/common/Common"
+import News from "../Navigation/News";
 
 class HomePage {
 
@@ -69,6 +70,7 @@ class HomePage {
     static clickVediTutte() {
         cy.contains('Vedi tutte').click()
         cy.url().should('eq', Common.getBaseUrl() + 'news/recent')
+        News.checkAtterraggio()
     }
 
     /**

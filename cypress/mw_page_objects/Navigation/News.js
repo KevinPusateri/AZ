@@ -29,8 +29,9 @@ class News {
         if (da)
             cy.url().should('include', Common.getBaseUrl() + 'legacyda')
         else
-            cy.url().should('eq', Common.getBaseUrl() + 'news/home')
+            cy.url().should('include', Common.getBaseUrl() + 'news')
 
+        
         getIFrame().find('app-header:contains("Primo Piano"):visible')
         getIFrame().find('app-header:contains("Tutte"):visible')
     }

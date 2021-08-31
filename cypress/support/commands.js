@@ -467,14 +467,14 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
               if (contractsWithBranchId.length > 0) {
                 //Verifica che il cliente sia presente anche in altre agenzie
                 let possibleImpersonifications = (agencyMain === '010710000') ? [
-                  { account: 'PULINIFR.0552', agency: '730000552', codAgency : '552' },
-                  { account: 'ARFPULINI3', agency: '010748000', codAgency : '748000' },
-                  { account: 'AZFPULINI', agency: '050000851', codAgency : '851' },
-                  { account: 'ASFPULINI2', agency: '070004266', codAgency : '4266' }
+                  { account: 'PULINIFR.0552', agency: '730000552', codAgency: '552' },
+                  { account: 'ARFPULINI3', agency: '010748000', codAgency: '748000' },
+                  { account: 'AZFPULINI', agency: '050000851', codAgency: '851' },
+                  { account: 'ASFPULINI2', agency: '070004266', codAgency: '4266' }
                 ] :
                   [
-                    { account: 'ARALONGO20', agency: '010523000', codAgency : '523000' },
-                    { account: 'AMALONGO', agency: '020002002', codAgency : '2002' }
+                    { account: 'ARALONGO20', agency: '010523000', codAgency: '523000' },
+                    { account: 'AMALONGO', agency: '020002002', codAgency: '2002' }
                   ]
                 for (let i = 0; i < possibleImpersonifications.length; i++) {
                   let parsedClient = ''
@@ -564,6 +564,98 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
           }
           else
             cy.getClientInDifferentAgenciesWithPolizze(agencyMain, branchId, isUltra, isAZ1, clientType, fixedPIorSSN)
+        }
+      })
+    })
+  })
+})
+
+Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, isUltra = false, isAZ1 = false, clientType = 'PF') => {
+  cy.generateTwoLetters().then(nameRandom => {
+    cy.generateTwoLetters().then(firstNameRandom => {
+      cy.request({
+        method: 'GET',
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
+        log: false,
+        url: (clientType === 'PF') ? 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          : 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+        headers: {
+          'x-allianz-user': tutf
+        }
+      }).then(response => {
+        if (response.body.length === 0)
+          cy.getClientWithPolizzeAnnullamento(tutf, branchId, isUltra, isAZ1, clientType)
+        else {
+          //Verifichiamo solo clienti in stato EFFETTIVO
+          let clientiEffettivi = response.body.filter(el => {
+            return el.partyCategory[0] === 'E'
+          })
+
+          if (clientiEffettivi.length > 0) {
+            let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+            //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+            cy.request({
+              method: 'GET',
+              retryOnStatusCodeFailure: true,
+              timeout: 60000,
+              log: false,
+              url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
+              headers: {
+                'x-allianz-user': tutf
+              }
+            }).then(responseContracts => {
+              //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
+              let contractsWithBranchId
+              let contractsWithScadenza
+              debugger
+              if (isUltra)
+                contractsWithBranchId = responseContracts.body.filter(el => {
+                  return (el.branchId.includes(branchId) && el.branchName.includes('ULTRA'))
+                })
+              else if (isAZ1)
+                contractsWithBranchId = responseContracts.body.filter(el => {
+                  return (el.branchId.includes(branchId) && el.branchName.includes('ALLIANZ1'))
+                })
+              else
+                contractsWithBranchId = responseContracts.body.filter(el => {
+                  return el.branchId.includes(branchId)
+                })
+              if (contractsWithBranchId.length > 0) {
+                var options = {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: '2-digit'
+                }
+                contractsWithScadenza = contractsWithBranchId.filter(el => {
+                  return el.paymentFrequency.includes('Annuale')// && (formatDate > currentDate)
+                })
+                if (contractsWithScadenza.length > 0) {
+                  var datePolizzaScadenza = contractsWithScadenza.filter(el => {
+                    debugger
+                    var date = el._meta.metaInfoEntries[0].messages[3].message
+                    var dateSplited = date.replaceAll('-', '/').split('/')
+                    var newdate = dateSplited[1] + '/' + dateSplited[0] + '/' + dateSplited[2];
+                    let formatDate = new Date(newdate)
+                    let currentDate = new Date()
+                    debugger
+                    if (formatDate > currentDate)
+                      return el
+                  })
+
+                  if (datePolizzaScadenza.length > 0) {
+                    return currentClient.customerNumber
+                  } else
+                    cy.getClientWithPolizzeAnnullamento(tutf, branchId, isUltra, isAZ1, clientType)
+                } else
+                  cy.getClientWithPolizzeAnnullamento(tutf, branchId, isUltra, isAZ1, clientType)
+              }
+              else
+                cy.getClientWithPolizzeAnnullamento(tutf, branchId, isUltra, isAZ1, clientType)
+            })
+          }
+          else
+            cy.getClientWithPolizzeAnnullamento(tutf, branchId, isUltra, isAZ1, clientType)
         }
       })
     })
