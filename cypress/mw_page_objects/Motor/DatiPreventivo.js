@@ -34,6 +34,8 @@ static clickP2() {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { requestTimeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
+
+        cy.wait(3000)
     }
 
     static clickPassioneBlu() {
@@ -44,7 +46,7 @@ static clickP2() {
         Common.canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
-
+        cy.wait(3000)
 
     }
     
@@ -59,6 +61,7 @@ static clickP2() {
 
 
         })
+        cy.wait(3000)
     }
 
     
