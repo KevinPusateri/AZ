@@ -1,5 +1,5 @@
 /// <reference types="Cypress" />
-require('cypress-plugin-tab')
+//require('cypress-plugin-tab')
 
 import Common from "../common/Common";
 //import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
