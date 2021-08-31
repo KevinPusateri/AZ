@@ -608,7 +608,6 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, isUltr
               //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
               let contractsWithBranchId
               let contractsWithScadenza
-              debugger
               if (isUltra)
                 contractsWithBranchId = responseContracts.body.filter(el => {
                   return (el.branchId.includes(branchId) && el.branchName.includes('ULTRA'))
@@ -632,19 +631,21 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, isUltr
                 })
                 if (contractsWithScadenza.length > 0) {
                   var datePolizzaScadenza = contractsWithScadenza.filter(el => {
-                    debugger
                     var date = el._meta.metaInfoEntries[0].messages[3].message
                     var dateSplited = date.replaceAll('-', '/').split('/')
                     var newdate = dateSplited[1] + '/' + dateSplited[0] + '/' + dateSplited[2];
                     let formatDate = new Date(newdate)
                     let currentDate = new Date()
-                    debugger
+
                     if (formatDate > currentDate)
                       return el
                   })
-
                   if (datePolizzaScadenza.length > 0) {
-                    return currentClient.customerNumber
+                    var polizza = {
+                      customerNumber : currentClient.customerNumber,
+                      numberPolizza : datePolizzaScadenza[0].bundleNumber
+                    }
+                    return polizza
                   } else
                     cy.getClientWithPolizzeAnnullamento(tutf, branchId, isUltra, isAZ1, clientType)
                 } else

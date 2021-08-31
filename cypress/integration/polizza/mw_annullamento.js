@@ -45,34 +45,41 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-    })
-    //#endregion
-})
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+//     })
+//     //#endregion
+// })
 //#endregion Before After
 
 let currentCustomerNumber
+let numberPolizza
 describe('Matrix Web : Annullamento ', function () {
 
     it('Verifica annullamento', function () {
-        cy.getClientWithPolizzeAnnullamento('TUTF021', '31').then(customerNumber => {
-            debugger
-            currentCustomerNumber = customerNumber
-            SintesiCliente.visitUrlClient(customerNumber, false)
-            SintesiCliente.retriveUrl().then(currentUrl => {
-                urlClient = currentUrl
-            })
-            Portafoglio.clickTabPortafoglio()
-            Portafoglio.clickSubTab('Polizze attive')
-            Portafoglio.filtraPolizze('Motor')
-            Portafoglio.clickAnnullamento()
-            Annullamento.annullaContratto()
+        // cy.getClientWithPolizzeAnnullamento('TUTF021', '31').then(polizzaClient => {
+        // currentCustomerNumber = polizzaClient.customerNumber
+        // numberPolizza = polizzaClient.numberPolizza
+        SintesiCliente.visitUrlClient('982411894', false)
+        SintesiCliente.retriveUrl().then(currentUrl => {
+            urlClient = currentUrl
         })
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Polizze attive')
+        Portafoglio.filtraPolizze('Motor')
+        // Portafoglio.clickAnnullamento(numberPolizza) 
+        Portafoglio.clickAnnullamento('529693102')
+        Annullamento.annullaContratto()
+        SintesiCliente.visitUrlClient('982411894', false)
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.checkPolizzaIsNotPresent('529693102')
+        Portafoglio.clickSubTab('Non in vigore')
+        Portafoglio.checkPolizzaIsPresent('529693102')
+        // })
     })
 
 

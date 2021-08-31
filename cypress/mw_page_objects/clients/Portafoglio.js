@@ -206,12 +206,13 @@ class Portafoglio {
     }
 
 
-    static clickAnnullamento() {
+    static clickAnnullamento(numberPolizza) {
         cy.get('app-contract-card').should('be.visible')
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
-
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first()
+            .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.log(numberPolizza)
         // Click tre puntini dalla prima polizza
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').first().should('exist').then(($contract) => {
+        cy.get('@polizza').should('exist').then(($contract) => {
             cy.wrap($contract)
                 .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h ellipsis-icon"]').click()
         })
@@ -221,13 +222,27 @@ class Portafoglio {
             cy.get('button').should('be.visible')
             cy.wrap($overlay).find('button:contains("Annullamento")').click()
         })
+        cy.intercept({
+            method: 'POST',
+            url: '**/Auto/**'
+        }).as('postAuto');
 
         Common.canaleFromPopup()
+        cy.wait('@postAuto', { requestTimeout: 60000 });
 
         cy.getIFrame()
-        cy.get('@iframe').within(() =>{
-            cy.get('td[title="Vendita]').click()
+        cy.get('@iframe').within(() => {
+            cy.contains('Vendita').first().should('be.visible').click()
         })
+    }
+
+    static checkPolizzaIsNotPresent(numberPolizza) {
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first().should('not.be.visible')
+    }
+
+    static checkPolizzaIsPresent(numberPolizza) {
+        cy.get('app-contract-card').should('be.visible')
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first().should('be.visible')
     }
 }
 
