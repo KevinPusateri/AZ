@@ -18,6 +18,9 @@ import Common from "../common/Common";
 class DatiPreventivo {
 
 static ClickCheckTarga() {
+   cy.wait(10000)
+   // cy.get('span[class=”nx-checkbox__control”]').click()
+   // cy.wait(10000)
     cy.contains('NON CONOSCI LA TARGA?').click()
 }
 static verificaUnico() {
@@ -80,7 +83,7 @@ static clickP2() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Nuova polizza').click()
         Common.canaleFromPopup()
-      //  getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
+       // getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
       //  getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
