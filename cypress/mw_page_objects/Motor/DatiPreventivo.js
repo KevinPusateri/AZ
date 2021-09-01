@@ -3,7 +3,16 @@
 
 import Common from "../common/Common";
 //import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
+//import SintesiCliente from "../clients/SintesiCliente";
+const getIFrame = () => {
+    cy.get('iframe[class="iframe-content ng-star-inserted"]')
+        .iframe()
 
+    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+        .its('0.contentDocument').should('exist')
+
+    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+}
 
 
 class DatiPreventivo {
@@ -39,7 +48,7 @@ static clickP2() {
     }
 
     static clickPassioneBlu() {
-        cy.wait(3000)
+        cy.wait(30000)
         cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Nuova polizza').click()
@@ -51,7 +60,7 @@ static clickP2() {
     }
     
     static clickAuto() {
-        cy.wait(30000)
+        cy.wait(50000)
         cy.get('lib-container').find('app-client-resume-emissions:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Auto")').is(':visible')
             if (check)
