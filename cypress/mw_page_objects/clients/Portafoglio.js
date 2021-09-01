@@ -233,7 +233,7 @@ class Portafoglio {
     }
 
 
-    static clickAnnullamento(numberPolizza) {
+    static clickAnnullamento(numberPolizza,typeAnnullamento) {
         cy.get('app-contract-card').should('be.visible')
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first()
             .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
@@ -259,7 +259,7 @@ class Portafoglio {
 
         cy.getIFrame()
         cy.get('@iframe').within(() => {
-            cy.contains('Vendita').first().should('be.visible').click()
+            cy.contains(typeAnnullamento).first().should('be.visible').click()
         })
     }
 

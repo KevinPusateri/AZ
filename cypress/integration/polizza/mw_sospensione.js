@@ -13,7 +13,7 @@ import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
 import NoteContratto from "../../mw_page_objects/clients/NoteContratto"
 import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
 import SCUSalesNoteContratto from "../../mw_page_objects/sales/SCUSalesNoteContratto"
-import Annullamento from "../../mw_page_objects/polizza/Annullamento"
+import Sospensione from "../../mw_page_objects/polizza/Sospensione"
 //#endregion import
 
 //#region Configuration
@@ -58,9 +58,9 @@ beforeEach(() => {
 
 let currentCustomerNumber
 let numberPolizza
-describe('Matrix Web : Annullamento ', function () {
+describe('Matrix Web : Sospensione ', function () {
 
-    it.only('Verifica annullamento', function () {
+    it.only('Verifica sospensione', function () {
         cy.getClientWithPolizzeAnnullamento('TUTF021', '31').then(polizzaClient => {
             currentCustomerNumber = polizzaClient.customerNumber
             numberPolizza = polizzaClient.numberPolizza
@@ -71,13 +71,13 @@ describe('Matrix Web : Annullamento ', function () {
             Portafoglio.clickTabPortafoglio()
             Portafoglio.clickSubTab('Polizze attive')
             Portafoglio.filtraPolizze('Motor')
-            Portafoglio.clickAnnullamento(numberPolizza,'Vendita')
-            Annullamento.annullaContratto()
+            Portafoglio.clickAnnullamento(numberPolizza,'Sospensione')
+            Sospensione.sospendiPolizza()
             SintesiCliente.visitUrlClient(currentCustomerNumber, false)
-            Portafoglio.clickTabPortafoglio()
-            Portafoglio.checkPolizzaIsNotPresent(numberPolizza)
-            Portafoglio.clickSubTab('Non in vigore')
-            Portafoglio.checkPolizzaIsPresent(numberPolizza)
+            // Portafoglio.clickTabPortafoglio()
+            // Portafoglio.checkPolizzaIsNotPresent(numberPolizza)
+            // Portafoglio.clickSubTab('Non in vigore')
+            // Portafoglio.checkPolizzaIsPresent(numberPolizza)
             //TODO : verifica tooltip
         })
     })
