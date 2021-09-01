@@ -167,7 +167,7 @@ class TopBar extends HomePage {
     static clickSales() {
         interceptPageSales()
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.wait('@getSales', { requestTimeout: 50000 })
+        // cy.wait('@getSales', { requestTimeout: 50000 })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
     }
 
