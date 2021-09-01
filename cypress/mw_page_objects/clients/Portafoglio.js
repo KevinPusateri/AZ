@@ -73,98 +73,125 @@ class Portafoglio {
     }
 
     static checkPolizzeAttive() {
-        cy.get('app-wallet-active-contracts').should('be.visible').and('contain.text', 'Polizze attive')
-        cy.get('app-wallet-active-contracts').find('span[class="nx-button__content-wrapper"]')
-            .should('be.visible').and('include.text', 'Incassa').and('include.text', 'Modifica consensi')
-        cy.get('lib-filters-sorting').should('be.visible')
-        cy.get('lib-filter-button-with-modal').should('be.visible')
-        cy.get('app-contract-card').should('be.visible').first().click()
-        Common.canaleFromPopup()
-        getIFrame().find('#navigation-area:contains("Contratto"):visible')
+        cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
+            const container = $container.find(':contains("Il cliente non possiede Polizze attive")').is(':visible')
+            if (container)
+                assert.isTrue(true, 'Cliente non possiede polizze')
+            else {
+                cy.get('app-wallet-active-contracts').should('be.visible').and('contain.text', 'Polizze attive')
+                cy.get('lib-filters-sorting').should('be.visible')
+                cy.get('lib-filter-button-with-modal').should('be.visible')
+                cy.wait(3000)
+                cy.get('app-contract-card').should('be.visible').first().click()
+                cy.wait(3000)
+                Common.canaleFromPopup()
+                getIFrame().find('#navigation-area:contains("Contratto"):visible')
+                this.back()
+            }
+        })
     }
 
     static checkPreventivi() {
-        cy.get('lib-da-link').should('be.visible')
-        cy.get('lib-filters-sorting').should('be.visible')
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('contract')) {
-                req.alias = 'gqlcontract'
+        cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
+            const container = $container.find(':contains("Il cliente non possiede Preventivi")').is(':visible')
+            if (container)
+                assert.isTrue(true, 'Cliente non possiede Preventivi')
+            else {
+                cy.get('app-wallet-quotations').should('be.visible')
+                cy.get('app-contract-card').should('be.visible')
+                cy.get('lib-filter-button-with-modal').should('be.visible')
+                cy.wait(10000)
+                cy.get('app-contract-card').first().click()
+                cy.intercept('POST', '**/graphql', (req) => {
+                    if (req.body.operationName.includes('digitalAgencyLink')) {
+                        req.alias = 'gqlDigitalAgencyLink'
+                    }
+                })
+                Common.canaleFromPopup()
+                cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 })
+                cy.wait(10000)
+                getIFrame().find('#casella-ricerca').should('exist').and('be.visible').and('contain.text','Cerca')
+                this.back()
             }
-
-        })
-        cy.get('app-wallet-quotations').find('app-section-title').should('contain.text', 'Preventivi')
-        // cy.wait('@gqlcontract', { requestTimeout: 40000 }).then((interception) => {
-        //     expect(interception.response.statusCode).to.be.eq(200);
-        // });
-        cy.get('lib-filter-button-with-modal').should('be.visible')
-        cy.get('app-contract-card').should('be.visible')
-        cy.get('app-contract-card').first().within(() => {
-            // cy.get('div[class="title-info"]').find('[class="value"]').should('contain.text','202')
-            // cy.get('div[class="title-info"]').find('[class="value"]').then(($textDate) => {
-            //     cy.wrap($textDate).contains('giu 2021')
-            // })
-        })
-        cy.get('app-contract-card').first().then(() => {
-            cy.wait(10000)
-            cy.get('app-contract-card').first().click()
-            cy.intercept('POST', '**/graphql', (req) => {
-                if (req.body.operationName.includes('digitalAgencyLink')) {
-                    req.alias = 'gqlDigitalAgencyLink'
-                }
-            })
-            // cy.wait(10000)
-            Common.canaleFromPopup()
-            // cy.wait(10000)
-            cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 }).then((interception) => {
-                expect(interception.response.statusCode).to.be.eq(200);
-            });
-
-            getIFrame().find('#casella-ricerca').should('be.visible').and('contain.text', 'Cerca')
         })
     }
 
     static checkProposte() {
-        cy.get('app-wallet-proposals').should('be.visible')
-        cy.get('app-contract-card').should('be.visible')
-        cy.get('lib-filter-button-with-modal').should('be.visible')
-        cy.wait(10000)
-        cy.get('app-contract-card').first().click()
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('digitalAgencyLink')) {
-                req.alias = 'gqlDigitalAgencyLink'
+        cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
+            const container = $container.find(':contains("Il cliente non possiede Proposte")').is(':visible')
+            if (container)
+                assert.isTrue(true, 'Cliente non possiede Proposte')
+            else {
+                cy.get('lib-da-link').should('be.visible')
+                cy.get('lib-filters-sorting').should('be.visible')
+                cy.intercept('POST', '**/graphql', (req) => {
+                    if (req.body.operationName.includes('contract')) {
+                        req.alias = 'gqlcontract'
+                    }
+
+                })
+                cy.get('app-wallet-proposals').find('app-section-title').should('contain.text', 'Proposte')
+                cy.get('lib-filter-button-with-modal').should('be.visible')
+                cy.get('app-contract-card').should('be.visible')
+                cy.get('app-contract-card').first().then(() => {
+                    cy.wait(10000)
+                    cy.get('app-contract-card').first().click()
+                    cy.intercept('POST', '**/graphql', (req) => {
+                        if (req.body.operationName.includes('digitalAgencyLink')) {
+                            req.alias = 'gqlDigitalAgencyLink'
+                        }
+                    })
+                    Common.canaleFromPopup()
+                    cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 }).then((interception) => {
+                        expect(interception.response.statusCode).to.be.eq(200);
+                    });
+
+                    getIFrame().find('#casella-ricerca').should('be.visible').and('contain.text', 'Cerca')
+                    this.back()
+                })
             }
         })
-        Common.canaleFromPopup()
-        cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 })
-        cy.wait(10000)
-        getIFrame().find('#AZBuilder1_ctl08_cmdNote').should('exist').and('be.visible')
 
     }
 
     static checkNonInVigore() {
-        cy.get('lib-da-link').should('be.visible')
-        cy.get('lib-filters-sorting').should('be.visible')
-        cy.get('app-wallet-inactive-contracts').find('app-section-title').should('contain.text', 'Polizze')
-        cy.get('lib-filter-button-with-modal').should('be.visible')
-        cy.get('app-wallet-inactive-contracts').find('span[class="nx-button__content-wrapper"]')
-            .should('be.visible').and('include.text', 'Incassa')
-        cy.get('app-contract-card').should('be.visible').first().click()
-        cy.wait(10000)
-        Common.canaleFromPopup()
-        cy.wait(10000)
-        getIFrame().find('#navigation-area').should('be.visible').and('contain.text', '« Uscita')
+        cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
+            const container = $container.find(':contains("Il cliente non possiede Polizze")').is(':visible')
+            if (container)
+                assert.isTrue(true, 'Cliente non possiede Polizze')
+            else {
+                cy.get('lib-da-link').should('be.visible')
+                cy.get('lib-filters-sorting').should('be.visible')
+                cy.get('app-wallet-inactive-contracts').find('app-section-title').should('contain.text', 'Polizze')
+                cy.get('lib-filter-button-with-modal').should('be.visible')
+                cy.wait(5000)
+                cy.get('app-contract-card').should('be.visible').first().click()
+                Common.canaleFromPopup()
+                cy.wait(10000)
+                getIFrame().find('#navigation-area').should('be.visible').and('contain.text', '« Uscita')
+                this.back()
+            }
+        })
     }
 
     static checkSinistri() {
-        cy.get('lib-da-link').should('be.visible')
-        cy.get('lib-filters-sorting').should('be.visible')
-        cy.get('app-wallet-claims').find('app-section-title').should('contain.text', 'Sinistri')
-        cy.get('lib-filter-button-with-modal').should('be.visible')
-        cy.get('app-claim-card').first()
-            .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h ellipsis-icon"]').click()
+        cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
+            const container = $container.find(':contains("Il cliente non possiede Sinistri")').is(':visible')
+            if (container)
+                assert.isTrue(true, 'Cliente non possiede Sinistri')
+            else {
+                cy.get('lib-da-link').should('be.visible')
+                cy.get('lib-filters-sorting').should('be.visible')
+                cy.get('app-wallet-claims').find('app-section-title').should('contain.text', 'Sinistri')
+                cy.get('lib-filter-button-with-modal').should('be.visible')
+                cy.get('app-claim-card').first()
+                    .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h ellipsis-icon"]').click()
 
-        cy.get('.cdk-overlay-container').find('button').contains('Consulta sinistro').click()
-        getIFrame().find('a[class="active"]').should('contain.text', 'Dettaglio del Sinistro')
+                cy.get('.cdk-overlay-container').find('button').contains('Consulta sinistro').click()
+                getIFrame().find('a[class="active"]').should('contain.text', 'Dettaglio del Sinistro')
+                this.back()
+            }
+        })
     }
 
     /**

@@ -38,9 +38,13 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
     HomePage.reloadMWHomePage()
-    // TopBar.searchClickLinkSuggest()
-    TopBar.search('Pulini Francesco')
-    SintesiCliente.wait()
+    if (!Cypress.env('isSecondWindow')) {
+        TopBar.search('Pulini Francesco')
+        SintesiCliente.wait()
+    } else{
+        TopBar.search('SLZNLL54A04H431Q')
+        SintesiCliente.wait()
+    }
 })
 
 
@@ -66,28 +70,24 @@ describe('MW: Navigazioni da Scheda Cliente - Tab Portafoglio', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Polizze attive')
         Portafoglio.checkPolizzeAttive()
-        Portafoglio.back()
     })
 
     it('Verifica subTab Proposte', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Proposte')
         Portafoglio.checkProposte()
-        Portafoglio.back()
     })
 
     it('Verifica subTab Preventivi', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Preventivi')
         Portafoglio.checkPreventivi()
-        Portafoglio.back()
     })
 
     it('Verifica subTab Non in vigore', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Non in vigore')
         Portafoglio.checkNonInVigore()
-        Portafoglio.back()
     })
 
     it('Verifica subTab Sinistri', function () {
@@ -97,7 +97,6 @@ describe('MW: Navigazioni da Scheda Cliente - Tab Portafoglio', function () {
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Sinistri')
                 Portafoglio.checkSinistri()
-                Portafoglio.back()
             }
         })
     })

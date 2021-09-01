@@ -182,7 +182,7 @@ class LandingRicerca {
                 let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
                 let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
                 cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
-                
+
                 cy.wait(10000)
                 cy.get('body').then(($body) => {
                     const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
@@ -630,7 +630,7 @@ class LandingRicerca {
      */
     static checkClienteNotFound(cliente) {
         cy.get('body').as('body').then(($body) => {
-            cy.get('lib-clients-container').should('be.visible')
+            cy.get('[class="lib-clients-container"]').should('be.visible')
             const check = $body.find('span:contains("La ricerca non ha prodotto risultati")').is(':visible')
             if (check) {
                 cy.get('body').should('contain.text', 'La ricerca non ha prodotto risultati')
@@ -654,13 +654,6 @@ class LandingRicerca {
                         assert.fail('Cliente non è stato eliminato -> ' + cliente);
                     }
                 })
-                // cy.get('body').then(() => {
-                //     cy.get('app-client-profile-tabs').should('', { requestTimeout: 20000 })
-                // if(checkScheda){
-                //     cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
-                // }else
-                //     assert.fail('Il seguente cliente non è stato eliminato: '+ cliente)
-                // })
             }
         })
     }

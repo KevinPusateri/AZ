@@ -69,7 +69,7 @@ class ArchivioCliente {
     static checkUnico() {
         cy.get('app-client-archive-unique').find('app-client-archive-unique-change-card')
             .should('be.visible')
-        cy.get('app-client-archive-unique').find('app-section-title').should('contain.text', 'Aggiornamenti unico')
+        cy.get('app-client-archive-unique').find('app-section-title').should('include.text', 'Aggiornament unico')
         cy.get('app-client-archive-unique').find('div[class="nx-grid__column-2"]').should('contain.text', 'Modifiche')
         cy.get('app-client-archive-unique').find('div[class="nx-grid__column-3"]').should('contain.text', 'Consensi accettati')
         cy.get('app-client-archive-unique').find('div[class="nx-grid__column-3"]').should('contain.text', 'Consensi rifiutati')
