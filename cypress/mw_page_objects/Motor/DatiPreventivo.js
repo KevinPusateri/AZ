@@ -51,7 +51,7 @@ static clickP2() {
     }
     
     static clickAuto() {
-        cy.wait(3000)
+        cy.wait(30000)
         cy.get('lib-container').find('app-client-resume-emissions:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Auto")').is(':visible')
             if (check)
@@ -61,7 +61,7 @@ static clickP2() {
 
 
         })
-        cy.wait(3000)
+      
     }
 
     
