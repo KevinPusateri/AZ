@@ -19,8 +19,8 @@ class DatiPreventivo {
 
 static ClickCheckTarga() {
    cy.wait(10000)
-    cy.get('span[class=”nx-checkbox__control”]').click()
-    cy.wait(10000)
+   // cy.get('span[class=”nx-checkbox__control”]').click()
+   // cy.wait(10000)
     cy.contains('NON CONOSCI LA TARGA?').click()
 }
 static verificaUnico() {
