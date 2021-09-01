@@ -4,7 +4,7 @@
 import Common from "../common/Common";
 //import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 //import SintesiCliente from "../clients/SintesiCliente";
-const getIFrame = () => {
+/*const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .iframe()
 
@@ -13,7 +13,7 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-
+*/
 
 class DatiPreventivo {
 
@@ -42,7 +42,7 @@ static clickP2() {
         }).as('getMotor');
         Common.canaleFromPopup()
         cy.wait('@getMotor', { requestTimeout: 50000 });
-        getIFrame().find('button:contains("Calcola"):visible')
+      //  getIFrame().find('button:contains("Calcola"):visible')
 
        
     }
@@ -53,8 +53,8 @@ static clickP2() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Nuova polizza').click()
         Common.canaleFromPopup()
-        getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
-        getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+      //  getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
+      //  getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
         cy.wait(3000)
 
     }
@@ -80,8 +80,8 @@ static clickP2() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Nuova polizza').click()
         Common.canaleFromPopup()
-        getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
-        getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+      //  getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
+      //  getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
 //#endregion 
