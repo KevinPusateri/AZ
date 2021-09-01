@@ -40,8 +40,13 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
     Common.visitUrlOnEnv()
-    TopBar.search('Pulini Francesco')
-    SintesiCliente.wait()
+    if (!Cypress.env('isSecondWindow')) {
+        TopBar.search('Pulini Francesco')
+        SintesiCliente.wait()
+    } else{
+        TopBar.search('Giuseppe Nazzarro')
+        SintesiCliente.wait()
+    }
 })
 
 after(function () {

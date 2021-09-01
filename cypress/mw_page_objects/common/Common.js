@@ -6,13 +6,16 @@ class Common {
    * dal popup clicca sulla prima agenzia per accedere alla pagina
    */
   static canaleFromPopup() {
-    cy.get('body').then($body => {
-      if ($body.find('nx-modal-container').length > 0) {
-        cy.wait(2000)
-        cy.get('div[ngclass="agency-row"]').should('be.visible')
-        cy.get('div[ngclass="agency-row"]').first().click()
-      }
-    })
+
+    if (!Cypress.env('isSecondWindow')) {
+      cy.get('body').then($body => {
+        if ($body.find('nx-modal-container').length > 0) {
+          cy.wait(2000)
+          cy.get('div[ngclass="agency-row"]').should('be.visible')
+          cy.get('div[ngclass="agency-row"]').first().click()
+        }
+      })
+    }
   }
 
   /**
@@ -97,7 +100,7 @@ class Common {
     if (!mockedNews)
       cy.wait('@gqlNews')
   }
-  
+
 }
 
 

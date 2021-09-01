@@ -190,7 +190,9 @@ class SintesiCliente {
                 cy.wait('@gqldataSettings', { requestTimeout: 60000 })
                 cy.get('app-new-auto-fast-quote').contains('Tipo veicolo').should('be.visible')
                 cy.get('app-new-auto-fast-quote').contains('Targa').should('be.visible')
-                cy.get('app-new-auto-fast-quote').contains('Agenzia').should('be.visible')
+                if (!Cypress.env('isSecondWindow')) {
+                    cy.get('app-new-auto-fast-quote').contains('Agenzia').should('be.visible')
+                }
                 cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible')
             } else
                 assert.fail('FastQuote non è presente')
@@ -476,7 +478,7 @@ class SintesiCliente {
         cy.get('.cdk-overlay-container').find('button').contains('FastQuote Impresa Sicura').click()
         cy.wait(2000)
         cy.intercept({
-            method: 'POST',
+            method: 'GET',
             url: '**/Auto/**'
         }).as('getAuto');
         Common.canaleFromPopup()

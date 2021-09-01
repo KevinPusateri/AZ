@@ -27,7 +27,7 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-      LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw)
 
 
 })
@@ -35,8 +35,13 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
     HomePage.reloadMWHomePage()
-    TopBar.search('Pulini Francesco')
-    SintesiCliente.wait()
+    if (!Cypress.env('isSecondWindow')) {
+        TopBar.search('Pulini Francesco')
+        SintesiCliente.wait()
+    } else {
+        TopBar.search('SLZNLL54A04H431Q')
+        SintesiCliente.wait()
+    }
 })
 after(function () {
     TopBar.logOutMW()
@@ -75,7 +80,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     // !ADD TFS
-    it('Verifica Link da Card Auto', function () {
+    it.skip('Verifica Link da Card Auto', function () {
         // TODO: completare
         SintesiCliente.clickAuto()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
@@ -91,7 +96,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     // !ADD TFS
-    it('Verifica Link da Card Auto -> Emissione', function () {
+    it.skip('Verifica Link da Card Auto -> Emissione', function () {
         SintesiCliente.clickAuto()
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
@@ -106,7 +111,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     // !ADD TFS
-    it('Verifica Link da Card Auto -> Prodotti particolari', function () {
+    it.skip('Verifica Link da Card Auto -> Prodotti particolari', function () {
         SintesiCliente.clickAuto()
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
@@ -124,7 +129,8 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         })
     })
 
-    it.only('Verifica Link da Card Auto -> Passione BLU', function () {
+    // !ADD TFS
+    it.skip('Verifica Link da Card Auto -> Passione BLU', function () {
         SintesiCliente.clickAuto()
         cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
@@ -139,7 +145,9 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         })
     })
 
-    it.only('Verifica Link da Card Rami vari', function () {
+    // !ADD TFS
+
+    it.skip('Verifica Link da Card Rami vari', function () {
         // TODO: completare
         SintesiCliente.clickRamiVari()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first.should('exist').and('be.visible').within(() => {
@@ -243,9 +251,11 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio BMP', function () {
-        SintesiCliente.clickRamiVari()
-        SintesiCliente.clickAllianzUltraCasaPatrimonioBMP()
-        SintesiCliente.back()
+        if (!Cypress.env('isSecondWindow')) {
+            SintesiCliente.clickRamiVari()
+            SintesiCliente.clickAllianzUltraCasaPatrimonioBMP()
+            SintesiCliente.back()
+        } else this.skip()
     })
 
 
@@ -278,7 +288,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.clickFastQuoteImpresaSicura()
         SintesiCliente.back()
     })
-
+    //TODO: Fare quelli in basso
     it('Verifica Card Rami Vari: FastQuote Albergo', function () {
         SintesiCliente.clickRamiVari()
         SintesiCliente.clickFastQuoteAlbergo()
