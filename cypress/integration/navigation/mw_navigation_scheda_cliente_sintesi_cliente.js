@@ -289,7 +289,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.back()
     })
     //TODO: Fare quelli in basso
-    it.only('Verifica Card Rami Vari: FastQuote Albergo', function () {
+    it('Verifica Card Rami Vari: FastQuote Albergo', function () {
         SintesiCliente.clickRamiVari()
         SintesiCliente.clickFastQuoteAlbergo()
         SintesiCliente.back()
@@ -302,19 +302,19 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     //     SintesiCliente.back()
     // })
 
-    it.only('Verifica Card Rami Vari: Emissione - Polizza Nuova', function () {
+    it('Verifica Card Rami Vari: Emissione - Polizza Nuova', function () {
         SintesiCliente.clickRamiVari()
         SintesiCliente.clickPolizzaNuova()
         SintesiCliente.back()
     })
 
-    it.only('Verifica Card Vita: Accedi al servizio di consulenza', function () {
+    it('Verifica Card Vita: Accedi al servizio di consulenza', function () {
         SintesiCliente.clickVita()
         SintesiCliente.clickSevizioConsulenza()
         SintesiCliente.back()
     })
 
-    it.only('Verifica Contratti in evidenza', function () {
+    it('Verifica Contratti in evidenza', function () {
         SintesiCliente.checkContrattiEvidenza()
         SintesiCliente.back()
     })
