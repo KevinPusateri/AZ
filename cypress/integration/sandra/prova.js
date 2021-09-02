@@ -67,7 +67,7 @@ describe('Ricerca per preventivo', {
       //DatiPreventivo.clickPassioneBlu()
        DatiPreventivo.clickPreventivoMotor()
        
-      // DatiPreventivo.ClickCheckTarga()
+       DatiPreventivo.ClickCheckTarga()
       
      
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
