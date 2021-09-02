@@ -4,7 +4,7 @@
 import Common from "../common/Common";
 //import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 //import SintesiCliente from "../clients/SintesiCliente";
-/*const getIFrame = () => {
+const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .iframe()
 
@@ -13,16 +13,16 @@ import Common from "../common/Common";
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-*/
+
 
 class DatiPreventivo {
 
 static ClickCheckTarga() {
    cy.wait(10000)
-   cy.get('.nx-natural-language-form-wrapper').contains('intermediario dichiara di aver reso al cliente').click()
-   //find('').contains('Auto').click()
+  // cy.get('cdk-overlay-container').find('nx-grid_column-12').contains('intermediario dichiara di aver reso al cliente').click()
+   
    // cy.wait(10000)
-   // cy.contains('NON CONOSCI LA TARGA?').click()
+   cy.contains('NON CONOSCI LA TARGA?').click()
 }
 static verificaUnico() {
     cy.contains('Unico').click()
@@ -46,7 +46,7 @@ static clickP2() {
         }).as('getMotor');
         Common.canaleFromPopup()
         cy.wait('@getMotor', { requestTimeout: 50000 });
-      //  getIFrame().find('button:contains("Calcola"):visible')
+        getIFrame().find('button:contains("Calcola"):visible')
 
        
     }
