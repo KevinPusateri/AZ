@@ -20,7 +20,6 @@ class Annullamento {
             // Inserimento "Scelta Firma Cliete" Autografa
             cy.get('#dataAnnullamento').then(($firma) => {
                 const isOnlyAutografa = $firma.find('#dropTipoFirma > option')
-                debugger
                 if (isOnlyAutografa.length > 1)
                     cy.get('#dropTipoFirma').select('Autografa')
             })

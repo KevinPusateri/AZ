@@ -51,7 +51,7 @@ before(() => {
   cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
     insertedId = results.insertId
   })
-    LoginPage.logInMW(userName, psw)
+  LoginPage.logInMW(userName, psw)
 
 
   cy.fixture('iban.json').then((data) => {
@@ -82,8 +82,8 @@ after(function () {
   TopBar.logOutMW()
   //#region Mysql
   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-      let tests = testsInfo
-      cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    let tests = testsInfo
+    cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
   })
   //#endregion
 
@@ -109,10 +109,18 @@ describe('Matrix Web : Conti Correnti', function () {
   })
 
   it('Verifica Modifica Conto corrente', function () {
-    SCUContiCorrenti.modificaConto(contoCorrente)
+    SCUContiCorrenti.modificaConto(contoCorrente).then((newConto) => {
+      debugger
+      SintesiCliente.visitUrlClient(urlClient)
+      DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+      DettaglioAnagrafica.clickSubTab('Conti correnti')
+      SCUContiCorrenti.checkContoCorrenteModificato(newConto)
+    })
   })
 
-  it('Verifica Conto corrente eliminato', function () {
-    SCUContiCorrenti.eliminaConto(contoCorrente)
-  })
+
+  //ADD TFS
+  // it('Verifica Conto corrente eliminato', function () {
+  //   SCUContiCorrenti.eliminaConto(contoCorrente)
+  // })
 })

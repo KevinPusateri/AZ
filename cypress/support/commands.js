@@ -570,7 +570,17 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
   })
 })
 
-Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, isUltra = false, isAZ1 = false, clientType = 'PF') => {
+/**
+ * Verifica la presenza di un cliente con almeno una polizza per effettuare l'annullamento
+ * @param {String} tutf tutf utilizzata negli headers per invocare i servizi in x-allianz-user
+ * @param {String} branchId tipo di polizza da trovare (31 [AU], 11 [RV], 42 [Ultra + Allianz1], 86 [VI])
+ * @param {String} state default a annulla(Vendita), da specificare a 'sospesa' se si vuole fare Sospensione(cod 30;sottoCod 00)
+ * @param {boolean} isUltra default a false, da specificare a true se si ricercano polizze Ultra (altrimenti si confondono con quelle allianz1)
+ * @param {boolean} isAZ1 default a false, da specificare a true se si ricercano polizze AZ1 Business
+ * @param {String} clientType default a PF, specifica il tipo di cliente da trovare tra PF e PG
+ * 
+ */
+Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state = 'annulla', isUltra = false, isAZ1 = false, clientType = 'PF') => {
   cy.generateTwoLetters().then(nameRandom => {
     cy.generateTwoLetters().then(firstNameRandom => {
       cy.request({
@@ -585,7 +595,7 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, isUltr
         }
       }).then(response => {
         if (response.body.length === 0)
-          cy.getClientWithPolizzeAnnullamento(tutf, branchId, isUltra, isAZ1, clientType)
+          cy.getClientWithPolizzeAnnullamento(tutf, state, branchId, isUltra, isAZ1, clientType)
         else {
           //Verifichiamo solo clienti in stato EFFETTIVO
           let clientiEffettivi = response.body.filter(el => {
@@ -631,32 +641,42 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, isUltr
                 })
                 if (contractsWithScadenza.length > 0) {
                   var datePolizzaScadenza = contractsWithScadenza.filter(el => {
+
+                    //trovo p
                     var date = el._meta.metaInfoEntries[0].messages[3].message
                     var dateSplited = date.replaceAll('-', '/').split('/')
                     var newdate = dateSplited[1] + '/' + dateSplited[0] + '/' + dateSplited[2];
                     let formatDate = new Date(newdate)
                     let currentDate = new Date()
 
-                    if (formatDate > currentDate)
-                      return el
+                    // Verifico che la polizza non sia già sospesa
+                    if (state === 'sospesa') {
+                      var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
+                      if ((formatDate > currentDate) && stato == false)
+                        return el
+                    }
+                    else
+                      if ((formatDate > currentDate))
+                        return el
                   })
+
                   if (datePolizzaScadenza.length > 0) {
                     var polizza = {
-                      customerNumber : currentClient.customerNumber,
-                      numberPolizza : datePolizzaScadenza[0].bundleNumber
+                      customerNumber: currentClient.customerNumber,
+                      numberPolizza: datePolizzaScadenza[0].bundleNumber
                     }
                     return polizza
                   } else
-                    cy.getClientWithPolizzeAnnullamento(tutf, branchId, isUltra, isAZ1, clientType)
+                    cy.getClientWithPolizzeAnnullamento(tutf, state, branchId, isUltra, isAZ1, clientType)
                 } else
-                  cy.getClientWithPolizzeAnnullamento(tutf, branchId, isUltra, isAZ1, clientType)
+                  cy.getClientWithPolizzeAnnullamento(tutf, state, branchId, isUltra, isAZ1, clientType)
               }
               else
-                cy.getClientWithPolizzeAnnullamento(tutf, branchId, isUltra, isAZ1, clientType)
+                cy.getClientWithPolizzeAnnullamento(tutf, state, branchId, isUltra, isAZ1, clientType)
             })
           }
           else
-            cy.getClientWithPolizzeAnnullamento(tutf, branchId, isUltra, isAZ1, clientType)
+            cy.getClientWithPolizzeAnnullamento(tutf, state, branchId, isUltra, isAZ1, clientType)
         }
       })
     })

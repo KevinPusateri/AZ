@@ -3,6 +3,8 @@
 import Common from "../common/Common";
 import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 import LandingRicerca from "../ricerca/LandingRicerca";
+import SintesiCliente from "./SintesiCliente";
+import DettaglioAnagrafica from "./DettaglioAnagrafica";
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -110,7 +112,7 @@ class Portafoglio {
                 Common.canaleFromPopup()
                 cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 })
                 cy.wait(10000)
-                getIFrame().find('#casella-ricerca').should('exist').and('be.visible').and('contain.text','Cerca')
+                getIFrame().find('#casella-ricerca').should('exist').and('be.visible').and('contain.text', 'Cerca')
                 this.back()
             }
         })
@@ -232,8 +234,12 @@ class Portafoglio {
         cy.wait('@gqlcontract', { timeout: 30000 })
     }
 
-
-    static clickAnnullamento(numberPolizza,typeAnnullamento) {
+    /**
+     * 
+     * @param {string} numberPolizza 
+     * @param {string} typeAnnullamento : tipo di annullamento("Sospesa",)
+     */
+    static clickAnnullamento(numberPolizza, typeAnnullamento) {
         cy.get('app-contract-card').should('be.visible')
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first()
             .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
@@ -263,13 +269,219 @@ class Portafoglio {
         })
     }
 
+    /**
+     * Verifico che la polizza non sia presente
+     * @param {string} numberPolizza : numero della polizza 
+     */
     static checkPolizzaIsNotPresent(numberPolizza) {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first().should('not.be.visible')
+
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+
+        cy.get('@polizza').should('be.visible')
+        cy.contains('DETTAGLIO ANAGRAFICA').as('dettaglio')
+        cy.contains('PORTAFOGLIO').as('portafoglio')
+
+        var check = true
+        const loop = () => {
+            var loopCheck = false
+            cy.get('@polizza').should('be.visible').then(($card) => {
+
+                var checkStatus = $card.find(':contains("' + numberPolizza + '")').is(':visible')
+
+                if (checkStatus == false) {
+                    startTime()
+                    cy.get('@polizza').should('not.include.text',numberPolizza)
+
+                    loopCheck = false
+                }
+                else {
+                    if (check)
+                        startTime()
+                    check = false
+                    loopCheck = true
+
+                }
+            })
+
+            cy.get('body').then(() => {
+                if (loopCheck) {
+
+                    cy.get('@dettaglio').click()
+                    cy.get('@portafoglio').click()
+                    loop()
+                }
+            })
+        }
+        loop()
+
+        function startTime() {
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            // add a zero in front of numbers<10
+            m = checkTime(m);
+            s = checkTime(s);
+            // var t = setTimeout(function () { startTime() }, 500);
+            console.log(h + ":" + m + ":" + s)
+
+        }
+
+        function checkTime(i) {
+            if (i < 10) {
+                i = "0" + i;
+            }
+            return i;
+        }
     }
 
+    /**
+     * Verifico che la pollizza sia presente
+     * @param {string} numberPolizza : numero della polizza
+     */
     static checkPolizzaIsPresent(numberPolizza) {
-        cy.get('app-contract-card').should('be.visible')
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first().should('be.visible')
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+
+        cy.get('@polizza').should('be.visible')
+        cy.contains('DETTAGLIO ANAGRAFICA').as('dettaglio')
+        cy.contains('PORTAFOGLIO').as('portafoglio')
+        cy.get('button').contains('Non in vigore').as('nonInVigore')
+        // cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first().should('be.visible')
+
+        var check = true
+        const loop = () => {
+            var loopCheck = false
+
+            // TODO: Fare in modo che se compare polizze inesistenti sia anche corretto
+            cy.get('@polizza').should('be.visible').then(($card) => {
+                var checkStatus = $card.find(':contains("' + numberPolizza + '")').is(':visible')
+
+                if (checkStatus) {
+                    startTime()
+                    cy.get('@polizza').contains(numberPolizza).first().should('be.visible').within(()=>{
+
+                        cy.get('nx-badge').should('contain.text', 'Non in vigore')
+
+                        cy.get('nx-badge').invoke('attr','aria-describedby').should('equal', 'cdk-describedby-message-6')
+                        cy.document().its('body').find('#cdk-describedby-message-container')
+                        .should('include.text', '4 - Vendita / conto vendita')
+                    })
+
+                    loopCheck = false
+                }
+                else {
+                    if (check)
+                        startTime()
+                    check = false
+                    loopCheck = true
+
+                }
+            })
+
+            cy.get('body').then(() => {
+                if (loopCheck) {
+
+                    cy.get('@dettaglio').click()
+                    cy.get('@portafoglio').click()
+                    cy.get('@nonInVigore').click()
+                    loop()
+                }
+            })
+        }
+        loop()
+
+        function startTime() {
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            // add a zero in front of numbers<10
+            m = checkTime(m);
+            s = checkTime(s);
+            // var t = setTimeout(function () { startTime() }, 500);
+            console.log(h + ":" + m + ":" + s)
+
+        }
+
+        function checkTime(i) {
+            if (i < 10) {
+                i = "0" + i;
+            }
+            return i;
+        }
+    }
+
+    /**
+     * 
+     * @param {string} currentCustomerNumber : url del client specifico
+     * @param {string} numberPolizza : numero della polizza
+     */
+    static checkPolizzaIsSospesa(currentCustomerNumber, numberPolizza) {
+
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first().as('polizza')
+
+        cy.get('@polizza').should('be.visible')
+        cy.contains('DETTAGLIO ANAGRAFICA').as('dettaglio')
+        cy.contains('PORTAFOGLIO').as('portafoglio')
+
+        // Faccio il loop finchè non riaggiorna la pagina mostrando il tooltip SOSPESa
+        var check = true
+        const loop = () => {
+            var loopCheck = false
+            cy.get('@polizza')
+                .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').should('be.visible').within(() => {
+                    cy.get('[ngclass="top-card-grid"]').as('stato')
+                    cy.get('@stato').then(($stato) => {
+                        var checkStatus = $stato.find(':contains("SOSPESA")').is(':visible')
+
+                        if (checkStatus) {
+                            startTime()
+
+                            cy.get('app-contract-status-badge').should('contain.text', 'SOSPESA')
+                            cy.document().its('body').find('#cdk-describedby-message-container')
+                                .should('include.text', '30 - Nuova sospensione (senza integrazione)')
+                            loopCheck = false
+                        }
+                        else {
+                            if (check)
+                                startTime()
+                            check = false
+                            loopCheck = true
+
+                        }
+                    })
+                })
+
+            cy.get('body').then(() => {
+                if (loopCheck) {
+
+                    cy.get('@dettaglio').click()
+                    cy.get('@portafoglio').click()
+                    loop()
+                }
+            })
+        }
+        loop()
+
+        function startTime() {
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            // add a zero in front of numbers<10
+            m = checkTime(m);
+            s = checkTime(s);
+            // var t = setTimeout(function () { startTime() }, 500);
+            console.log(h + ":" + m + ":" + s)
+
+        }
+
+        function checkTime(i) {
+            if (i < 10) {
+                i = "0" + i;
+            }
+            return i;
+        }
     }
 }
 

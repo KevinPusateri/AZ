@@ -60,8 +60,8 @@ let currentCustomerNumber
 let numberPolizza
 describe('Matrix Web : Sospensione ', function () {
 
-    it.only('Verifica sospensione', function () {
-        cy.getClientWithPolizzeAnnullamento('TUTF021', '31').then(polizzaClient => {
+    it('Verifica sospensione', function () {
+        cy.getClientWithPolizzeAnnullamento('TUTF021', '31','sospesa').then(polizzaClient => {
             currentCustomerNumber = polizzaClient.customerNumber
             numberPolizza = polizzaClient.numberPolizza
             SintesiCliente.visitUrlClient(currentCustomerNumber, false)
@@ -74,11 +74,8 @@ describe('Matrix Web : Sospensione ', function () {
             Portafoglio.clickAnnullamento(numberPolizza,'Sospensione')
             Sospensione.sospendiPolizza()
             SintesiCliente.visitUrlClient(currentCustomerNumber, false)
-            // Portafoglio.clickTabPortafoglio()
-            // Portafoglio.checkPolizzaIsNotPresent(numberPolizza)
-            // Portafoglio.clickSubTab('Non in vigore')
-            // Portafoglio.checkPolizzaIsPresent(numberPolizza)
-            //TODO : verifica tooltip
+            Portafoglio.clickTabPortafoglio()
+            Portafoglio.checkPolizzaIsSospesa(currentCustomerNumber,numberPolizza)
         })
     })
 

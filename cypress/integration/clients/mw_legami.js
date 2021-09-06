@@ -38,7 +38,7 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-      LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw)
 
 
 })
@@ -73,6 +73,16 @@ after(function () {
 describe('Matrix Web : Legami', function () {
 
     Cypress._.times(1, () => {
+
+        it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
+            if (!Cypress.env('isSecondWindow')) {
+                cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000').then(() => {
+                    LoginPage.logInMW('TUTF003', psw, false)
+                    DettaglioAnagrafica.checkClientWithoutLegame()
+                    Legami.checkLegameIsNotPresent()
+                })
+            } else this.skip()
+        })
 
         it('Verifica creazione di un Gruppo aziendale con inserimento membro', function () {
             DettaglioAnagrafica.checkClientWithoutLegame()
@@ -145,13 +155,5 @@ describe('Matrix Web : Legami', function () {
             TopBar.logOutMW()
         })
 
-        //TODO: DA FIXARE
-        it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
-            cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000').then(() => {
-                LoginPage.logInMW('TUTF003', psw, false)
-                DettaglioAnagrafica.checkClientWithoutLegame()
-                Legami.checkLegameIsNotPresent()
-            })
-        })
     })
 })

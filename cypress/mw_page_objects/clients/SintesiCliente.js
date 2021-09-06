@@ -26,16 +26,12 @@ class SintesiCliente {
         }).as('pageClient');
         cy.intercept('POST', '**/graphql', (req) => {
             // Queries
-            //aliasQuery(req, 'clientContractValidation')
             aliasQuery(req, 'fastQuoteProfiling')
             aliasQuery(req, 'getScopes')
         })
         cy.get('lib-client-item').should('be.visible')
         cy.get('lib-client-item').first().click()
         cy.wait('@pageClient', { requestTimeout: 60000 });
-        //cy.wait('@gqlclientContractValidation', { requestTimeout: 60000 })
-        // cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 60000 })
-        // cy.wait('@gqlgetScopes', { requestTimeout: 60000 })
         cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
     }
 
@@ -579,8 +575,13 @@ class SintesiCliente {
         getIFrame().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
         getIFrame().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
 
-        cy.intercept({
-            method: 'POST',
+        if (!Cypress.env('isSecondWindow'))
+            cy.intercept({
+                method: 'POST',
+                url: '**/dacontabilita/**'
+            }).as('dacontabilita');
+        else cy.intercept({
+            method: 'GET',
             url: '**/dacontabilita/**'
         }).as('dacontabilita');
 
@@ -613,8 +614,7 @@ class SintesiCliente {
     static verificaInFolder(labels) {
         cy.get('nx-icon[aria-label="Open menu"]').click()
         cy.contains('folder').click()
-        cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
-
+        Common.canaleFromPopup()
         getIFrame().find('span[class="k-icon k-plus"]:visible').click()
         getIFrame().find('span[class="k-icon k-plus"]:first').click()
         debugger

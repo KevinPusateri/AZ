@@ -1,5 +1,7 @@
 /// <reference types="Cypress" />
 
+import Common from "../common/Common"
+
 
 class NoteContratto {
 
@@ -67,13 +69,7 @@ class NoteContratto {
                 })
 
             })
-            cy.get('body').then($body => {
-                if ($body.find('nx-modal-container').length > 0) {
-                    cy.wait(2000)
-                    cy.get('div[ngclass="agency-row"]').should('be.visible')
-                    cy.get('div[ngclass="agency-row"]').first().click()
-                }
-            })
+            Common.canaleFromPopup()
 
             cy.get('lib-contract-notes-badge').should('exist').and('be.visible')
                 .find('[class="badge-label"]:contains("Note")').should('be.visible')
@@ -264,13 +260,7 @@ class NoteContratto {
                         })
                     })
 
-                    cy.get('body').then($body => {
-                        if ($body.find('nx-modal-container').length > 0) {
-                            cy.wait(2000)
-                            cy.get('div[ngclass="agency-row"]').should('be.visible')
-                            cy.get('div[ngclass="agency-row"]').first().click()
-                        }
-                    })
+                    Common.canaleFromPopup()
 
                     cy.get('nx-modal-container').should('not.exist')
                     cy.wait(2500)
@@ -323,9 +313,10 @@ class NoteContratto {
                         })
                     })
 
-                    cy.get('lib-note-action-modal').should('be.visible').within(() => {
-                        cy.get('lib-disambiguation').find('div[ngclass="agency-row"]').first().click()
-                    })
+                    // cy.get('lib-note-action-modal').should('be.visible').within(() => {
+                    //     cy.get('lib-disambiguation').find('div[ngclass="agency-row"]').first().click()
+                    // })
+                    Common.canaleFromPopup()
 
                     cy.get('nx-modal-container').should('not.exist')
                     cy.wait(2500)

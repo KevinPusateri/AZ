@@ -16,7 +16,11 @@ class Sospensione {
             cy.get('[class="ui-datepicker-trigger"]').first().click()
             cy.get('#ui-datepicker-div').should('be.visible')
             cy.get('table[class="ui-datepicker-calendar"]').find('a').contains(formattedDate).click()
-
+            cy.get('#dataAnnullamento').should('be.visible').then(($firma)=>{
+                const isOnlyAutografa = $firma.find('#dropTipoFirma > option')
+                if (isOnlyAutografa.length > 1)
+                    cy.get('#dropTipoFirma').select('Autografa')
+            })
             // Click Calcola
             cy.get('#btnCalcola').click()
 
@@ -36,7 +40,7 @@ class Sospensione {
 
 
             cy.get('div[class="messaggioAnnullamenti"]').should('be.visible')
-                .and('contain.text', 'Sospensione eseguito correttamente.')
+                .and('contain.text', 'Sospensione eseguita correttamente.')
 
             cy.get('input[title="Home"]').should('be.visible').click()
 

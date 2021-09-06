@@ -183,7 +183,7 @@ class LandingRicerca {
                 let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
                 cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
 
-                cy.wait(10000)
+                cy.wait(5000)
                 cy.get('body').then(($body) => {
                     const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
                     if (check) {
@@ -197,6 +197,8 @@ class LandingRicerca {
 
         searchOtherMember()
         cy.wait('@client', { requestTimeout: 30000 });
+        cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
+
     }
 
     static clickClientName(client, filtri = false, tipoCliente, statoCliente) {
