@@ -56,11 +56,10 @@ after(function () {
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
 
-    it.only('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
     'Si entra nella pagina di dettaglio e si verifica l\'intestazione di pagina: ' +
     ' (1) In alto alla pagina di dettaglio è riportato il numero di sinistro ' +
-    ' (2) Data di avvenimento, Cliente, Località siano valorizzate' +
-    ' (3) E\' riportato il Tipo sinistro', function () {
+    ' (2) Data di avvenimento e Cliente ', function () {
         let sinistro = '927646985'
         let stato_sin = 'CHIUSO PAGATO'
 
@@ -78,11 +77,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let targa = csSinObjPage.getPromiseValue_ByCss(css3)
         const css4 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(5)"  
         let tiposin = csSinObjPage.getPromiseValue_ByCss(css4)
-        const css6 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-        var dtAvvenimento = csSinObjPage.getPromiseValue_ByCss(css6)        
         const css5 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(6)"  
         let statosin = csSinObjPage.getPromiseValue_ByCss(css5)
-       
+        const css6 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
+        var dtAvvenimento = csSinObjPage.getPromiseValue_ByCss(css6)        
+             
         // Seleziona il sinistro
         csSinObjPage.clickLnk_ByHref(sinistro)
       
@@ -90,25 +89,71 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const clssDtl = "pageTitle"
         csSinObjPage.checkObj_ByClassAndText(clssDtl, sinistro)
 
-        // Verifica (2): Valore della data avvenimento      
-        const cssDtAvv = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
-        csSinObjPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento)
-        // Verifica (2): Valore del cliente
-        const cssCliente = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
-        csSinObjPage.checkObj_ByLocatorAndText(cssCliente, cliente)
-        // Verifica (2): Valore della località
-        const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer"
-        csSinObjPage.IsNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(csslocalità))
+          // Verifica (2): Valore della data avvenimento      
+          const cssDtAvv = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
+          csSinObjPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento)
+          // Verifica (2): Cliente
+          const cssCliente = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
+          csSinObjPage.checkObj_ByLocatorAndText(cssCliente, cliente)
+      
     });
-
-
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca il numero sinistro e verifica che nell\'intestazione di pagina siano riportati i seguenti dati: Data di avvenimento, Cliente, Località, Tipo sinistro', function () {
-
+    
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
+    'Dalla pagina di dettaglio è verificato quanto segue: ' +
+    ' (1) Sono valorizzati i campi Località e CLD/Danneggiato ', function () {
+       
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        csSinObjPage.clickObj_ByLabel('a', 'Polizza');
-        csSinObjPage.setValue_ById('#policy_number', '528771171')
-        let classvalue = "search_submit polizza k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+
+          // Verifica (2): Valore della località
+          const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer"
+          csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(csslocalità))
+          // Verifica (2): la valorizzazione del CLD
+          const csscldDanneggiato = '#soggetti_danneggiati > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a'
+          csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(csscldDanneggiato))
+
+    });
+    
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
+    'Dalla pagina di dettaglio è verificato quanto segue: ' +
+    ' (1) Selezionando un danneggiato analizzo la sezione "Pagamenti" con la valorizzazione dei seguenti campi (Data pagamento, Data invio banca, Causale, Importo, Percipiente). ' +
+    ' (2) Cliccando sul pulsante di "Dettagli", è verificato che nella pop-Up siano riportate ' +
+    ' le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
+    
+    const csSinObjPage = Object.create(ConsultazioneSinistriPage)
+         
+        // Verifica (1): Apro la sezione del danneggiato (1)
+         const btnDanneggiato = "#soggetti_danneggiati > div > div > a"
+         csSinObjPage.clickBtn_ById(btnDanneggiato)
+         
+        // Verifica (2): la valorizzazione del campo "Data pagamento" in Sezione Pagamenti
+        const cssDtPagamento = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > p'
+        let dtPagamento = csSinObjPage.getPromiseValue_ByCss(cssDtPagamento)
+        csSinObjPage.isNullOrEmpty(dtPagamento)
+        
+       
+        //csSinObjPage.isValidDate(dtPagamento)
+
+        // Verifica (2): la valorizzazione del campo "Data invio banca" in Sezione Pagamenti
+        const cssDtInvioBanca = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
+        let dtInvioBanca = csSinObjPage.getPromiseValue_ByCss(cssDtInvioBanca)
+        csSinObjPage.isNullOrEmpty(dtInvioBanca)
+ 
+       // Verifica (2): la valorizzazione del campo "Causale" in Sezione Pagamenti
+        const cssCausale = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
+        var causale = csSinObjPage.getPromiseValue_ByCss(cssCausale)
+        csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(cssCausale))
+
+        // Verifica (2): la valorizzazione del campo "Importo" in Sezione Pagamenti
+        const cssImporto = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
+        var importo = csSinObjPage.getPromiseValue_ByCss(cssImporto)
+        csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(cssImporto))
+
+         // Verifica (2): la valorizzazione del campo "Percepiente pagamento" in Sezione Pagamenti
+         const cssPercepiente = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
+         var percepiente = csSinObjPage.getPromiseValue_ByCss(cssPercepiente)
+         csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(cssPercepiente))
+        //csSinObjPage.isValidDate(dtPagamento)
+
 
     });
 

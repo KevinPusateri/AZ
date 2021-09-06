@@ -59,13 +59,19 @@ class ConsultazioneSinistriPage {
      * Check if the value is defined
      * @param {string} value : string value to check
      */
-    static IsNullOrEmpty(value) {             
-        if(value !== null && value !== ''  && value!==undefined) {
-            console.log('>> value ['+value+'] is defined')
+    static isNullOrEmpty(value) {
+        debugger
+        //if(value !== null && value !== ''  && value!=='undefined') {
+            if(value === undefined) {
+                alert('Variable "'+value+'" is undefined.');
+            } else if(value === null) {
+                alert('Variable "'+value+'" is null.');
+            } else if(value === '') {
+                alert('Variable "'+value+'" is empty.');
+            } else 
+                console.log('>> value ['+value+'] is defined')
             cy.wait(1000)
-        } else {
-            //assert.fail('undefined value')
-        }
+        
     }
     /**
      * Click on object defined by locator id
@@ -130,7 +136,7 @@ class ConsultazioneSinistriPage {
                 resolve(label)
             }            
         });
-    cy.wait(1000)                 
+        cy.wait(1000)                 
     }
     /**
      * Check if an object identified by locator and its label is displayed
@@ -138,21 +144,21 @@ class ConsultazioneSinistriPage {
      * @param {string} label : text displayed
      */
      static checkObj_ByLocatorAndText(locator, label) {
-        let txt = ""
         return new Cypress.Promise((resolve, reject) => {
             getIFrame().find(locator).should('be.visible')
             .then(($val) => {                                       
                 expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
-                txt = $val.text().trim()                
-                debugger
-                let str = label.toString()
+                let txt = $val.text().trim()                
+                
+                let str = label._rejectionHandler0.toString()
                 if (txt.includes(str)) {                   
-                    cy.log('>> object with label: "' + label +'" is defined')
+                    cy.log('>> object with label: "' + str +'" is defined')
                     resolve(txt)    
-                }
+                } else
+                    assert.fail(' object with label: "' + str +'" is not defined')
             })
         });                               
-       // cy.wait(1000)            
+        cy.wait(1000)            
     }
     /**
      * Inserts a string @value into the object identified by its @id
@@ -170,20 +176,36 @@ class ConsultazioneSinistriPage {
      * Get a value defined on object identified by its @css
      * @param {string} css : locator object id
      */
+
     static getPromiseValue_ByCss(css) {
-        return new Cypress.Promise(function(resolve, reject) {
-        //return new Cypress.Promise((resolve) => {
+        return new Cypress.Promise((resolve) => {
         getIFrame()
         .find(css)
         .invoke('text')  // for input or textarea, .invoke('val')
-        .then(text => {                                     
+        .then(text => {         
             cy.log('>> read the value: ' + text)
-            resolve(text)                
+            resolve((text.toString()))                
             });
         });
     }
 
-
+    /**
+     * Get a @dt value and is verified if its a correct format date 
+     * @param {string} dt : locator object id
+     */
+    static isValidDate(dt) {
+        debugger
+        var date = new Date(dt, 'DD-MM-YYYY');
+        var validDate = /(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])?|(?:(?:16|[2468][048]|[3579][26])00)?)))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))(\4)?(?:(?:1[6-9]|[2-9]\d)?\d{2})?$/g; //Check the validity of the date
+       
+        myString = validDate.exec(dt)
+        console.log(myString[0])
+        // Display the result
+        if( !isNaN ( myString.getMonth() ))
+            console.log('>> Date: '+myString+' is valid')
+        else
+            console.log('>> Date: '+myString+' is not valid')
+    }
     //#endregion  Generic function
 
 
