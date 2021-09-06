@@ -128,9 +128,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Verifica (2): la valorizzazione del campo "Data pagamento" in Sezione Pagamenti
         const cssDtPagamento = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > p'
         let dtPagamento = csSinObjPage.getPromiseValue_ByCss(cssDtPagamento)
-        csSinObjPage.isNullOrEmpty(dtPagamento)
-        
-       
+        if (dtPagamento === undefined)
+        cy.log("dtPagamento is "+dtPagamento)
+        csSinObjPage.isNullOrEmpty(dtPagamento)       
         //csSinObjPage.isValidDate(dtPagamento)
 
         // Verifica (2): la valorizzazione del campo "Data invio banca" in Sezione Pagamenti
