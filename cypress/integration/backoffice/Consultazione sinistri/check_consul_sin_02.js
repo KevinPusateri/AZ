@@ -98,63 +98,96 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
       
     });
     
+
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
     'Dalla pagina di dettaglio è verificato quanto segue: ' +
     ' (1) Sono valorizzati i campi Località e CLD/Danneggiato ', function () {
        
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
 
-          // Verifica (2): Valore della località
-          const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer"
-          csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(csslocalità))
-          // Verifica (2): la valorizzazione del CLD
-          const csscldDanneggiato = '#soggetti_danneggiati > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a'
-          csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(csscldDanneggiato))
-
+        // Verifica (2): Valore della località
+        const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer"
+        csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(csslocalità))
+        // Verifica (2): la valorizzazione del CLD
+        const csscldDanneggiato = '#soggetti_danneggiati > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a'
+        csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(csscldDanneggiato))
     });
     
+
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
     'Dalla pagina di dettaglio è verificato quanto segue: ' +
     ' (1) Selezionando un danneggiato analizzo la sezione "Pagamenti" con la valorizzazione dei seguenti campi (Data pagamento, Data invio banca, Causale, Importo, Percipiente). ' +
     ' (2) Cliccando sul pulsante di "Dettagli", è verificato che nella pop-Up siano riportate ' +
     ' le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
     
-    const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-         
+        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
         // Verifica (1): Apro la sezione del danneggiato (1)
-         const btnDanneggiato = "#soggetti_danneggiati > div > div > a"
-         csSinObjPage.clickBtn_ById(btnDanneggiato)
-         
+        const btnDanneggiato = "#soggetti_danneggiati > div > div > a"
+        csSinObjPage.clickBtn_ById(btnDanneggiato)
         // Verifica (2): la valorizzazione del campo "Data pagamento" in Sezione Pagamenti
         const cssDtPagamento = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > p'
-        let dtPagamento = csSinObjPage.getPromiseValue_ByCss(cssDtPagamento)
-        if (dtPagamento === undefined)
-        cy.log("dtPagamento is "+dtPagamento)
-        csSinObjPage.isNullOrEmpty(dtPagamento)       
-        //csSinObjPage.isValidDate(dtPagamento)
-
+        csSinObjPage.getPromiseValue_ByCss(cssDtPagamento).then(dtPagamento => {
+            setTimeout(() => {
+                if (dtPagamento === undefined)
+                    console.log('>> dt Pagamento value is not defined'); 
+                else 
+                    console.log('>> dt dtPagamento value is defined as '+dtPagamento);  
+                csSinObjPage.containValidDate(dtPagamento)
+            }, 11000);           
+        });     
+        
         // Verifica (2): la valorizzazione del campo "Data invio banca" in Sezione Pagamenti
         const cssDtInvioBanca = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
-        let dtInvioBanca = csSinObjPage.getPromiseValue_ByCss(cssDtInvioBanca)
-        csSinObjPage.isNullOrEmpty(dtInvioBanca)
+        csSinObjPage.getPromiseValue_ByCss(cssDtInvioBanca).then(dtInvioBanca => {
+            setTimeout(() => {
+                if (dtInvioBanca === undefined)
+                    console.log('>> dt Invio Banca value is not defined'); 
+                else 
+                    console.log('>> dt Invio Banca value is defined as '+dtInvioBanca);       
+                csSinObjPage.containValidDate(dtInvioBanca)
+            }, 11000);           
+        });      
  
        // Verifica (2): la valorizzazione del campo "Causale" in Sezione Pagamenti
         const cssCausale = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
-        var causale = csSinObjPage.getPromiseValue_ByCss(cssCausale)
-        csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(cssCausale))
+        csSinObjPage.getPromiseValue_ByCss(cssCausale).then(causale => {
+            setTimeout(() => {
+                if (dtInvioBanca === undefined)
+                    console.log('>> causale value is not defined');       
+                else 
+                    console.log('>> causale value is defined as '+causale);                
+            }, 11000);           
+        });        
 
         // Verifica (2): la valorizzazione del campo "Importo" in Sezione Pagamenti
         const cssImporto = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
-        var importo = csSinObjPage.getPromiseValue_ByCss(cssImporto)
-        csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(cssImporto))
+        csSinObjPage.getPromiseValue_ByCss(cssImporto).then(causale => {
+            setTimeout(() => {
+                if (importo === undefined)
+                    console.log('>> importo value is not defined');       
+                else 
+                    console.log('>> importo value is defined as '+importo);                
+            }, 11000);           
+        });
 
          // Verifica (2): la valorizzazione del campo "Percepiente pagamento" in Sezione Pagamenti
-         const cssPercepiente = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
-         var percepiente = csSinObjPage.getPromiseValue_ByCss(cssPercepiente)
-         csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(cssPercepiente))
-        //csSinObjPage.isValidDate(dtPagamento)
-
+        const cssPercepiente = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
+        csSinObjPage.getPromiseValue_ByCss(cssPercepiente).then(percepiente => {
+            setTimeout(() => {
+                if (percepiente === undefined)
+                    console.log('>> percepiente value is not defined');       
+                else 
+                    console.log('>> percepiente value is defined as '+importo);                
+            }, 11000);           
+        });
 
     });
 
+
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
+    'Dalla pagina di dettaglio è verificato quanto segue: ' +
+    ' (1) Selezionando il danneggiato, analizza la sezione "Perizie" verificando con la valorizzazione dei seguenti campi (Data incarico, Data scarico, Fiduciario, Tipo incarico, Stato. ' , function () {
+
+
+    });
 });
