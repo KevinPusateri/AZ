@@ -191,11 +191,10 @@ class ConsultazioneSinistriPage {
     }
 
     /**
-     * Get a @dt value and is verified if its a include a date in correct format 
-     * @param {string} dt : locator object id
+     * Put a @str value and is verified if its a date value is included in a correct format 
+     * @param {string} dt : string date format
      */
-    static containValidDate(str) {
-        debugger        
+    static containValidDate(str) {  
         const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
         var pattern = new RegExp(regexExp)
         //Tests for a match in a string. It returns true or false.
@@ -204,19 +203,36 @@ class ConsultazioneSinistriPage {
         {
             console.log('>> no valid date is included in '+str)
             return false;
-        }
-           
-        else
-        {
+        } else {
             let myString = str.match(pattern)
             console.log('>> a valid date: '+myString[0]+' is included in: '+str)
             return true;
-        }
-       
+        }        
+    }
+    /**
+     * Put a @numstr (ex.: numStr = "123,20") value and is verified if its a currency correct value 
+     * @param {string} numstr : string currency value
+     */
+    static isCurrency(numstr)
+    {
+        debugger
+        const regexExp = /^\d+(?:\,\d{0,2})$/;
+        if (regexExp.test(numstr))
+            console.log('>> Number ('+numstr+') is valid currency')
+        else
+        console.log('>> Number ('+numstr+') is not valid currency')
     }
     //#endregion  Generic function
-
-
+/**
+     * Get a currency correct value by @str (ex.: numStr = "importo: 123,20") 
+     * @param {string} str : string value
+     */
+    static getCurrency(str)
+    {               
+        const regexExp = /\d{1,3},\d{2}/;
+        var amount = str.match(regexExp)[0]
+        ConsultazioneSinistriPage.isCurrency(amount)
+    }
     
     static getValueInClaimDetails(index) {
         return new Cypress.Promise((resolve) => {
