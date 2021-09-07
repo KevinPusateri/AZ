@@ -46,11 +46,11 @@ class MovimentazioneSinistriPage {
     {
         cy.get('body').then(($body) => {
             if ($body.find(id).length > 0) {
-                console.log(id + ' element exists!')
+                cy.log(id + ' element exists!')
                 return true
             } else
             { 
-                console.log(id + ' element exists!')
+                cy.log(id + ' element exists!')
                 return false
             }
         })
@@ -65,7 +65,7 @@ class MovimentazioneSinistriPage {
         getIFrameMovSinistri().find('td[class="numCruscottoTOT"]:first').then(($val) => {                                       
             expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true
                 tot = $val.text().trim()
-                console.log(tot)   
+                cy.log(tot)   
         })
         return tot 
     }
@@ -86,7 +86,7 @@ class MovimentazioneSinistriPage {
             for (let i=0; i<elements.length; i++)
             {              
                 sum += parseInt(elements[i].textContent.trim(), 10)
-                console.log('sum tot ['+i+']: ' +sum)  
+                cy.log('sum tot ['+i+']: ' +sum)  
             }                 
         })
         return sum
@@ -117,7 +117,7 @@ class MovimentazioneSinistriPage {
         getIFrameMovSinistri().find('td[class="numCruscottoTOT"]:first').then(($val) => {                                
             expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true
                 totMov = $val.text().trim()
-                console.log('Totale Movimenti: ' +totMov)            
+                cy.log('Totale Movimenti: ' +totMov)            
         })
 
         getIFrameMovSinistri().find('td[class="numCruscotto"]').then(($els) => {                                  
@@ -128,7 +128,7 @@ class MovimentazioneSinistriPage {
             for (let i=0; i<elements.length; i++)
             {              
                 tot += parseInt(elements[i].textContent.trim(), 10)
-                console.log('sum tot ['+i+']: ' +tot)  
+                cy.log('sum tot ['+i+']: ' +tot)  
             }                        
             if (tot == totMov)
                 assert.ok(msg)
@@ -170,7 +170,7 @@ class MovimentazioneSinistriPage {
             for (let i=0; i<elements.length; i++)
             {              
                 sum += parseInt(elements[i].textContent.trim(), 10)
-                console.log('sum tot ['+i+']: ' +sum)  
+                cy.log('sum tot ['+i+']: ' +sum)  
             }                 
         })
     }

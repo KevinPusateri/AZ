@@ -128,63 +128,34 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Verifica (1): la valorizzazione del campo "Data incarico" in Sezione Perizie
         const cssDtIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > p'
         csSinObjPage.getPromiseValue_ByCss(cssDtIncarico).then(dtIncarico => {
-            setTimeout(() => {
-                if (dtIncarico === undefined)
-                    console.log('>> dt incarico value is not defined'); 
-                else 
-                {
-                    console.log('>> dt incarico value is defined as '+dtIncarico);  
-                    csSinObjPage.containValidDate(dtIncarico)
-                }                                    
-            }, 11000);           
+            csSinObjPage.isNullOrEmpty(dtIncarico)       
+            csSinObjPage.containValidDate(dtIncarico)  
         });
          
          // Verifica (1): la valorizzazione del campo "Data scarico" in Sezione Perizie
          const cssDtScarico= '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
          csSinObjPage.getPromiseValue_ByCss(cssDtScarico).then(dtScarico => {
-             setTimeout(() => {
-                 if (dtScarico === undefined)
-                     console.log('>> dt scarico value is not defined'); 
-                 else 
-                 {
-                    console.log('>> dt scarico value is defined as '+dtScarico);  
-                    csSinObjPage.containValidDate(dtScarico)
-                 }                    
-             }, 11000);           
+             csSinObjPage.isNullOrEmpty(dtScarico)       
+             csSinObjPage.containValidDate(dtScarico)
          });
 
           // Verifica (1): la valorizzazione del campo "Fiduciario" in Sezione Perizie
         const cssFiduciario = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
         csSinObjPage.getPromiseValue_ByCss(cssFiduciario).then(fiduciario => {
-            setTimeout(() => {
-                if (fiduciario === undefined)
-                    console.log('>> fiduciario value is not defined');       
-                else 
-                    console.log('>> fiduciario value is defined as '+fiduciario);                
-            }, 11000);           
+            csSinObjPage.isNullOrEmpty(fiduciario)     
         });
 
-           // Verifica (1): la valorizzazione del campo "Tipo incarico" in Sezione Perizie
-           const cssTipoIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
-           csSinObjPage.getPromiseValue_ByCss(cssTipoIncarico).then(tipoIncarico => {
-               setTimeout(() => {
-                   if (tipoIncarico === undefined)
-                       console.log('>> tipo Incarico value is not defined');       
-                   else 
-                       console.log('>> tipo Incarico value is defined as '+tipoIncarico);                
-               }, 11000);           
-           });
-           
-            // Verifica (1): la valorizzazione del campo "Stato" in Sezione Perizie
-            const cssStato = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
-            csSinObjPage.getPromiseValue_ByCss(cssStato).then(stato => {
-                setTimeout(() => {
-                    if (stato === undefined)
-                        console.log('>> Stato value is not defined');       
-                    else 
-                        console.log('>> Stato value is defined as '+stato);                
-                }, 11000);           
-            });     
+        // Verifica (1): la valorizzazione del campo "Tipo incarico" in Sezione Perizie
+        const cssTipoIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
+        csSinObjPage.getPromiseValue_ByCss(cssTipoIncarico).then(tipoIncarico => {
+            csSinObjPage.isNullOrEmpty(tipoIncarico)           
+        });
+        
+        // Verifica (1): la valorizzazione del campo "Stato" in Sezione Perizie
+        const cssStato = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
+        csSinObjPage.getPromiseValue_ByCss(cssStato).then(stato => {
+            csSinObjPage.isNullOrEmpty(stato)  
+        });     
     });
 
 
@@ -198,61 +169,34 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Verifica (1): la valorizzazione del campo "Data pagamento" in Sezione Pagamenti
         const cssDtPagamento = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > p'
         csSinObjPage.getPromiseValue_ByCss(cssDtPagamento).then(dtPagamento => {
-            setTimeout(() => {
-                if (dtPagamento === undefined)
-                    console.log('>> dt Pagamento value is not defined'); 
-                else 
-                    console.log('>> dt dtPagamento value is defined as '+dtPagamento);  
-                csSinObjPage.containValidDate(dtPagamento)
-            }, 11000);           
+            csSinObjPage.isNullOrEmpty(dtPagamento)       
+            csSinObjPage.containValidDate(dtPagamento)  
         });     
         
         // Verifica (1): la valorizzazione del campo "Data invio banca" in Sezione Pagamenti
         const cssDtInvioBanca = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
         csSinObjPage.getPromiseValue_ByCss(cssDtInvioBanca).then(dtInvioBanca => {
-            setTimeout(() => {
-                if (dtInvioBanca === undefined)
-                    console.log('>> dt Invio Banca value is not defined'); 
-                else 
-                    console.log('>> dt Invio Banca value is defined as '+dtInvioBanca);       
-                csSinObjPage.containValidDate(dtInvioBanca)
-            }, 11000);           
+            csSinObjPage.isNullOrEmpty(dtInvioBanca)       
+            csSinObjPage.containValidDate(dtInvioBanca)                     
         });      
  
        // Verifica (1): la valorizzazione del campo "Causale" in Sezione Pagamenti
         const cssCausale = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
         csSinObjPage.getPromiseValue_ByCss(cssCausale).then(causale => {
-            setTimeout(() => {
-                if (causale === undefined)
-                    console.log('>> causale value is not defined');       
-                else 
-                    console.log('>> causale value is defined as '+causale);                
-            }, 11000);           
+            csSinObjPage.isNullOrEmpty(causale) 
         });        
 
         // Verifica (1): la valorizzazione del campo "Importo" in Sezione Pagamenti
         const cssImporto = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
         csSinObjPage.getPromiseValue_ByCss(cssImporto).then(importo => {
-            setTimeout(() => {
-                if (importo === undefined)
-                    console.log('>> importo value is not defined');       
-                else 
-                {
-                    console.log('>> importo value is defined as '+importo);  
-                    csSinObjPage.getCurrency(importo.toString())
-                }                                 
-            }, 11000);           
+            csSinObjPage.isNullOrEmpty(importo) 
+            csSinObjPage.getCurrency(importo)               
         });
 
          // Verifica (1): la valorizzazione del campo "Percepiente pagamento" in Sezione Pagamenti
         const cssPercepiente = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
         csSinObjPage.getPromiseValue_ByCss(cssPercepiente).then(percepiente => {
-            setTimeout(() => {
-                if (percepiente === undefined)
-                    console.log('>> percepiente value is not defined');       
-                else 
-                    console.log('>> percepiente value is defined as '+percepiente);                
-            }, 11000);           
+            csSinObjPage.isNullOrEmpty(percepiente)  
         });
 
     });

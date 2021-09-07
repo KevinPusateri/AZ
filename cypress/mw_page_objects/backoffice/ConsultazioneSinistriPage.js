@@ -47,10 +47,10 @@ class ConsultazioneSinistriPage {
     static IdExist(id) {
         cy.get('body').then(($body) => {
             if ($body.find(id).length > 0) {
-                console.log(id + ' element exists!')
+                cy.log('>> ' + id + ' element exists!')
                 return true
             } else { 
-                console.log(id + ' element exists!')
+                cy.log('>> ' + id + ' element not exists!')
                 return false
             }
         })
@@ -60,16 +60,16 @@ class ConsultazioneSinistriPage {
      * @param {string} value : string value to check
      */
     static isNullOrEmpty(value) {        
-        
+            debugger
             if(value === undefined) {
-                console.log('Variable "'+value+'" is undefined.');
+                cy.log('>> value "'+value+'" is undefined.');
             } else if(value === null) {
-                console.log('Variable "'+value+'" is null.');
+                cy.log('>> value"'+value+'" is null.');
             } else if(value === '') {
-                console.log('Variable "'+value+'" is empty.');
+                cy.log('>> value "'+value+'" is empty.');
             } else {
-                console.log('>> value ['+value+'] is defined'); 
-             }         
+                cy.log('>> value "'+value+'" is defined'); 
+            }         
        
             cy.wait(1000)
         
@@ -201,11 +201,11 @@ class ConsultazioneSinistriPage {
         let validation = pattern.test(str)
         if (!validation)
         {
-            console.log('>> no valid date is included in '+str)
+            cy.log('>> no valid date is included in "'+str+'"')
             return false;
         } else {
             let myString = str.match(pattern)
-            console.log('>> a valid date: '+myString[0]+' is included in: '+str)
+            cy.log('>> a valid date ('+myString[0]+') is included in "'+str+'"')
             return true;
         }        
     }
@@ -218,12 +218,12 @@ class ConsultazioneSinistriPage {
         debugger
         const regexExp = /^\d+(?:\,\d{0,2})$/;
         if (regexExp.test(numstr))
-            console.log('>> Number ('+numstr+') is valid currency')
+            cy.log('>> Number ('+numstr+') is valid currency')
         else
-        console.log('>> Number ('+numstr+') is not valid currency')
+            cy.log('>> Number ('+numstr+') is not valid currency')
     }
-    //#endregion  Generic function
-/**
+    
+    /**
      * Get a currency correct value by @str (ex.: numStr = "importo: 123,20") 
      * @param {string} str : string value
      */
@@ -233,7 +233,8 @@ class ConsultazioneSinistriPage {
         var amount = str.match(regexExp)[0]
         ConsultazioneSinistriPage.isCurrency(amount)
     }
-    
+
+    //#endregion  Generic function
     static getValueInClaimDetails(index) {
         return new Cypress.Promise((resolve) => {
         getIFrame()
