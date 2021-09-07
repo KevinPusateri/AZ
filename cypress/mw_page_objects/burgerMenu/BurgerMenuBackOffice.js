@@ -33,7 +33,7 @@ class BurgerMenuBackOffice extends BackOffice {
         cy.get('lib-burger-icon').click()
         const linksBurger = Object.values(LinksBurgerMenu)
 
-        if (!Cypress.env('isSecondWindow'))
+        if (!Cypress.env('monoUtenza'))
             cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
             }).should('have.length', 19)

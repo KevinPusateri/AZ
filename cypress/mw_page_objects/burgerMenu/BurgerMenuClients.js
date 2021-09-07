@@ -36,7 +36,7 @@ class BurgerMenuClients extends Clients {
         cy.get('lib-burger-icon').click({ force: true })
 
         const linksBurger = Object.values(LinksBurgerMenu)
-        if (!Cypress.env('isSecondWindow'))
+        if (!Cypress.env('monoUtenza'))
             cy.get('lib-side-menu-link').find('a').should('have.length', 11).each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
             })

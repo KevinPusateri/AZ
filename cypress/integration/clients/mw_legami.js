@@ -74,16 +74,6 @@ describe('Matrix Web : Legami', function () {
 
     Cypress._.times(1, () => {
 
-        it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
-            if (!Cypress.env('isSecondWindow')) {
-                cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000').then(() => {
-                    LoginPage.logInMW('TUTF003', psw, false)
-                    DettaglioAnagrafica.checkClientWithoutLegame()
-                    Legami.checkLegameIsNotPresent()
-                })
-            } else this.skip()
-        })
-
         it('Verifica creazione di un Gruppo aziendale con inserimento membro', function () {
             DettaglioAnagrafica.checkClientWithoutLegame()
             SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
@@ -153,6 +143,16 @@ describe('Matrix Web : Legami', function () {
                 Legami.clickEliminaGruppo()
             })
             TopBar.logOutMW()
+        })
+
+        it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
+            if (!Cypress.env('monoUtenza')) {
+                cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000').then(() => {
+                    LoginPage.logInMW('TUTF003', psw, false)
+                    DettaglioAnagrafica.checkClientWithoutLegame()
+                    Legami.checkLegameIsNotPresent()
+                })
+            } else this.skip()
         })
 
     })

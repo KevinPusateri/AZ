@@ -90,7 +90,7 @@ class Sales {
     static checkExistLinksCollegamentiRapidi() {
         const linksCollegamentiRapidi = Object.values(LinksRapidi)
 
-        if (!Cypress.env('isSecondWindow'))
+        if (!Cypress.env('monoUtenza'))
             cy.get('app-quick-access').find('a').should('have.length', 5).each(($link, i) => {
                 expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
             })
@@ -180,7 +180,7 @@ class Sales {
         cy.contains('Emetti polizza').click({ force: true })
         const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
 
-        if (!Cypress.env('isSecondWindow'))
+        if (!Cypress.env('monoUtenza'))
             cy.get('.card-container').find('lib-da-link').each(($link, i) => {
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })

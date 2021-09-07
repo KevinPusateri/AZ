@@ -66,7 +66,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         TopBar.clickBackOffice()
         BackOffice.clickVPSRami()
         BackOffice.backToBackOffice()
-
     });
 
     it('Verifica links Sinistri', function () {
@@ -93,7 +92,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Denuncia BMP', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickBackOffice()
             BackOffice.clickCardLink('Denuncia BMP')
             BackOffice.backToBackOffice()
@@ -180,7 +179,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Convenzioni in trattenuta', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickBackOffice()
             BackOffice.clickCardLink('Convenzioni in trattenuta')
             BackOffice.backToBackOffice()
@@ -189,7 +188,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     });
 
     it('Verifica apertura disambiguazione: Monitoraggio Guida Smart', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickBackOffice()
             BackOffice.clickCardLink('Monitoraggio Guida Smart')
             BackOffice.backToBackOffice()

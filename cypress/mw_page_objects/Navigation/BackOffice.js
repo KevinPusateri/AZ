@@ -64,7 +64,7 @@ class BackOffice {
     static checkLinksOnSinistriExist() {
         const linksSinistri = Object.values(LinksSinistri)
 
-        if (!Cypress.env('isSecondWindow'))
+        if (!Cypress.env('monoUtenza'))
             cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
                 expect($labelCard).to.contain(linksSinistri[i])
             })
@@ -83,7 +83,7 @@ class BackOffice {
     static checkLinksOnContabilitaExist() {
         const linksContabilita = Object.values(LinksContabilita)
 
-        if (!Cypress.env('isSecondWindow'))
+        if (!Cypress.env('monoUtenza'))
             cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').should('have.length', 12).each(($labelCard, i) => {
                 expect($labelCard).to.contain(linksContabilita[i])
             })

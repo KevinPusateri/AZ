@@ -247,7 +247,7 @@ class Portafoglio {
         // Click tre puntini dalla prima polizza
         cy.get('@polizza').should('exist').then(($contract) => {
             cy.wrap($contract)
-                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h ellipsis-icon"]').click()
+                .find('app-contract-context-menu').find('nx-icon').click()
         })
 
         // Click Link Annullamento
@@ -273,7 +273,7 @@ class Portafoglio {
      * Verifico che la polizza non sia presente
      * @param {string} numberPolizza : numero della polizza 
      */
-    static checkPolizzaIsNotPresent(numberPolizza) {
+    static checkPolizzaIsNotPresentOnPolizzeAttive(numberPolizza) {
 
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
 
@@ -284,33 +284,44 @@ class Portafoglio {
         var check = true
         const loop = () => {
             var loopCheck = false
-            cy.get('@polizza').should('be.visible').then(($card) => {
-
-                var checkStatus = $card.find(':contains("' + numberPolizza + '")').is(':visible')
-
-                if (checkStatus == false) {
+            cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
+                const container = $container.find(':contains("Il cliente non possiede Polizze attive")').is(':visible')
+                if (container) {
                     startTime()
-                    cy.get('@polizza').should('not.include.text',numberPolizza)
-
                     loopCheck = false
+                    assert.isTrue(true, 'Cliente non possiede Polizze')
                 }
                 else {
-                    if (check)
-                        startTime()
-                    check = false
-                    loopCheck = true
+                    cy.get('@polizza').should('be.visible').then(($card) => {
 
+                        var checkStatus = $card.find(':contains("' + numberPolizza + '")').is(':visible')
+
+                        if (checkStatus == false) {
+                            startTime()
+                            cy.get('@polizza').should('not.include.text', numberPolizza)
+
+                            loopCheck = false
+                        }
+                        else {
+                            if (check)
+                                startTime()
+                            check = false
+                            loopCheck = true
+
+                        }
+                    })
+
+                    cy.get('body').then(() => {
+                        if (loopCheck) {
+
+                            cy.get('@dettaglio').click()
+                            cy.get('@portafoglio').click()
+                            loop()
+                        }
+                    })
                 }
             })
 
-            cy.get('body').then(() => {
-                if (loopCheck) {
-
-                    cy.get('@dettaglio').click()
-                    cy.get('@portafoglio').click()
-                    loop()
-                }
-            })
         }
         loop()
 
@@ -335,37 +346,111 @@ class Portafoglio {
         }
     }
 
+    static checkPolizzaIsPresentOnPolizzeAttive(numberPolizza) {
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+
+        cy.get('@polizza').should('be.visible')
+        // cy.contains('DETTAGLIO ANAGRAFICA').as('dettaglio')
+        // cy.contains('PORTAFOGLIO').as('portafoglio')
+        cy.get('@polizza').should('include.text', numberPolizza)
+
+
+        // var check = true
+        // const loop = () => {
+        //     var loopCheck = false
+        //     cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
+        //         const container = $container.find(':contains("Il cliente non possiede Polizze attive")').is(':visible')
+        //         if (container) {
+        //             startTime()
+        //             loopCheck = false
+        //             assert.isTrue(true, 'Cliente non possiede Polizze')
+        //         }
+        //         else {
+        //             cy.get('@polizza').should('be.visible').then(($card) => {
+
+        //                 var checkStatus = $card.find(':contains("' + numberPolizza + '")').is(':visible')
+
+        //                 if (checkStatus == false) {
+        //                     startTime()
+        //                     cy.get('@polizza').should('not.include.text', numberPolizza)
+
+        //                     loopCheck = false
+        //                 }
+        //                 else {
+        //                     if (check)
+        //                         startTime()
+        //                     check = false
+        //                     loopCheck = true
+
+        //                 }
+        //             })
+
+        //             cy.get('body').then(() => {
+        //                 if (loopCheck) {
+
+        //                     cy.get('@dettaglio').click()
+        //                     cy.get('@portafoglio').click()
+        //                     loop()
+        //                 }
+        //             })
+        //         }
+        //     })
+
+        // }
+        // loop()
+
+        // function startTime() {
+        //     var today = new Date();
+        //     var h = today.getHours();
+        //     var m = today.getMinutes();
+        //     var s = today.getSeconds();
+        //     // add a zero in front of numbers<10
+        //     m = checkTime(m);
+        //     s = checkTime(s);
+        //     // var t = setTimeout(function () { startTime() }, 500);
+        //     console.log(h + ":" + m + ":" + s)
+
+        // }
+
+        // function checkTime(i) {
+        //     if (i < 10) {
+        //         i = "0" + i;
+        //     }
+        //     return i;
+        // }
+    }
+
     /**
      * Verifico che la pollizza sia presente
      * @param {string} numberPolizza : numero della polizza
      */
-    static checkPolizzaIsPresent(numberPolizza) {
+    static checkPolizzaIsPresentOnNonInVigore(numberPolizza) {
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
 
         cy.get('@polizza').should('be.visible')
         cy.contains('DETTAGLIO ANAGRAFICA').as('dettaglio')
         cy.contains('PORTAFOGLIO').as('portafoglio')
         cy.get('button').contains('Non in vigore').as('nonInVigore')
-        // cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first().should('be.visible')
 
         var check = true
         const loop = () => {
             var loopCheck = false
 
-            // TODO: Fare in modo che se compare polizze inesistenti sia anche corretto
             cy.get('@polizza').should('be.visible').then(($card) => {
                 var checkStatus = $card.find(':contains("' + numberPolizza + '")').is(':visible')
 
                 if (checkStatus) {
                     startTime()
-                    cy.get('@polizza').contains(numberPolizza).first().should('be.visible').within(()=>{
+                    cy.get('@polizza').contains(numberPolizza).first()
+                        .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').should('be.visible').within(() => {
 
-                        cy.get('nx-badge').should('contain.text', 'Non in vigore')
+                            cy.get('nx-badge').should('contain.text', 'Non in vigore')
 
-                        cy.get('nx-badge').invoke('attr','aria-describedby').should('equal', 'cdk-describedby-message-6')
-                        cy.document().its('body').find('#cdk-describedby-message-container')
-                        .should('include.text', '4 - Vendita / conto vendita')
-                    })
+                            cy.get('nx-badge').invoke('attr', 'aria-describedby').then(($described) => {
+                                cy.document().its('body').find('#cdk-describedby-message-container').find('#' + $described)
+                                    .should('include.text', '4 - Vendita / conto vendita')
+                            })
+                        })
 
                     loopCheck = false
                 }
@@ -377,6 +462,7 @@ class Portafoglio {
 
                 }
             })
+
 
             cy.get('body').then(() => {
                 if (loopCheck) {
@@ -411,12 +497,13 @@ class Portafoglio {
         }
     }
 
+
     /**
      * 
      * @param {string} currentCustomerNumber : url del client specifico
      * @param {string} numberPolizza : numero della polizza
      */
-    static checkPolizzaIsSospesa(currentCustomerNumber, numberPolizza) {
+    static checkPolizzaIsSospesa(numberPolizza) {
 
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first().as('polizza')
 
@@ -482,6 +569,43 @@ class Portafoglio {
             }
             return i;
         }
+    }
+
+    static clickStornoAnnullamento(numberPolizza) {
+        cy.get('app-contract-card').should('be.visible')
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first()
+            .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        // Click tre puntini dalla prima polizza
+        cy.get('@polizza').should('exist').then(($contract) => {
+            cy.wrap($contract)
+                .find('app-contract-context-menu').find('nx-icon').click()
+        })
+
+        // Click Link Storno annullamento 
+        cy.get('.cdk-overlay-container').should('contain.text', 'Storno annullamento').within(($overlay) => {
+            cy.get('button').should('be.visible')
+            cy.wrap($overlay).find('button:contains("Storno annullamento")').click()
+        })
+        cy.intercept({
+            method: 'POST',
+            url: '**/Auto/**'
+        }).as('postAuto');
+
+        Common.canaleFromPopup()
+        cy.wait('@postAuto', { requestTimeout: 60000 });
+
+        cy.getIFrame()
+        cy.get('@iframe').should('be.visible').within(() => {
+            cy.wait(5000)
+
+            cy.get('#btnStorno').should('exist').and('be.visible').click()
+
+            cy.get('div[class="messaggioAnnullamenti"]').should('exist').and('be.visible')
+                .and('contain.text', 'Storno eseguito correttamente.')
+
+            cy.get('input[title="Home"]').should('be.visible').click()
+            cy.wait(10000)
+        })
     }
 }
 

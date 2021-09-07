@@ -35,7 +35,7 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
     HomePage.reloadMWHomePage()
-    if (!Cypress.env('isSecondWindow')) {
+    if (!Cypress.env('monoUtenza')) {
         TopBar.search('Pulini Francesco')
         SintesiCliente.wait()
     } else {
@@ -251,7 +251,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio BMP', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             SintesiCliente.clickRamiVari()
             SintesiCliente.clickAllianzUltraCasaPatrimonioBMP()
             SintesiCliente.back()

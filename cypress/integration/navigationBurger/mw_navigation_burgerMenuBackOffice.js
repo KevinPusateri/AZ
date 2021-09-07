@@ -73,7 +73,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
     })
 
     it('Verifica aggancio Denuncia BMP', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickBackOffice()
             BurgerMenuBackOffice.clickLink('Denuncia BMP')
             BurgerMenuBackOffice.backToBackOffice()
@@ -156,7 +156,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
     })
 
     it('Verifica aggancio Convenzioni in trattenuta', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickBackOffice()
             BurgerMenuBackOffice.clickLink('Convenzioni in trattenuta')
             BurgerMenuBackOffice.backToBackOffice()
@@ -164,7 +164,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
     })
 
     it('Verifica aggancio Monitoraggio Guida Smart', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickBackOffice()
             BurgerMenuBackOffice.clickLink('Monitoraggio Guida Smart')
         } else {

@@ -112,7 +112,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
     })
 
     it('Verifica aggancio Scarico Dati', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickNumbers()
             BurgerMenuNumbers.clickLink('Scarico Dati')
             BurgerMenuNumbers.backToNumbers()

@@ -65,7 +65,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Nuovo Sfera', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.clickLinkRapido('Nuovo Sfera')
             Sales.backToSales()
@@ -120,7 +120,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio BMP')
             Sales.backToSales()
@@ -164,14 +164,14 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica tab "Pezzi"', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.checkExistPezzi()
         } else this.skip()
     })
 
     it('Verifica "Premi"', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.checkExistPremi()
         } else this.skip()
@@ -179,7 +179,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Attività in scadenza - Estrai dettaglio', function () {
         TopBar.clickSales()
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             Sales.clickAttivitaInScadenza()
         }
         Sales.clickEstraiDettaglio()
@@ -187,7 +187,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Motor', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Motor')
             Sales.backToSales()
@@ -195,7 +195,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Rami Vari', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Rami Vari')
             Sales.backToSales()
@@ -203,7 +203,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Vita', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Vita')
             Sales.backToSales()
@@ -211,7 +211,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Tutte', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Tutte')
             Sales.backToSales()
@@ -219,7 +219,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica TAB: "Campagne"', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.clickTabCampagne()
         } else this.skip()

@@ -186,7 +186,7 @@ class SintesiCliente {
                 cy.wait('@gqldataSettings', { requestTimeout: 60000 })
                 cy.get('app-new-auto-fast-quote').contains('Tipo veicolo').should('be.visible')
                 cy.get('app-new-auto-fast-quote').contains('Targa').should('be.visible')
-                if (!Cypress.env('isSecondWindow')) {
+                if (!Cypress.env('monoUtenza')) {
                     cy.get('app-new-auto-fast-quote').contains('Agenzia').should('be.visible')
                 }
                 cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible')
@@ -575,7 +575,7 @@ class SintesiCliente {
         getIFrame().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
         getIFrame().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
 
-        if (!Cypress.env('isSecondWindow'))
+        if (!Cypress.env('monoUtenza'))
             cy.intercept({
                 method: 'POST',
                 url: '**/dacontabilita/**'
@@ -655,7 +655,7 @@ class SintesiCliente {
 
                     cy.log('Retrived Client Name : ' + client.name)
                 })
-            cy.get('nx-icon[class="nx-icon--location nx-icon--auto nx-link__icon"]').parents('a')
+            cy.get('app-link-client-resume').find('a:first')
                 .find('div[class="value ng-star-inserted"]').invoke('text').then((currentAddress) => {
                     client.address = currentAddress.split('-')[0].replace(',', '').trim()
                     cy.log('Retrived Client Address : ' + client.address)
@@ -685,7 +685,7 @@ class SintesiCliente {
         if (fullUrl)
             cy.visit(param)
         else {
-            if (!Cypress.env('isSecondWindow'))
+            if (!Cypress.env('monoUtenza'))
                 cy.visit(Cypress.env('baseUrlPreprod') + 'clients/client/' + param)
             else
                 cy.visit(Cypress.env('urlSecondWindow') + 'clients/client/' + param)

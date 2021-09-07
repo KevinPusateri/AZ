@@ -40,7 +40,7 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
     Common.visitUrlOnEnv()
-    if (!Cypress.env('isSecondWindow')) {
+    if (!Cypress.env('monoUtenza')) {
         TopBar.search('Pulini Francesco')
         SintesiCliente.wait()
     } else{

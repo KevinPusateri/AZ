@@ -93,7 +93,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     });
 
     it('Verifica aggancio Allianz Ultra Casa e Patrimonio BMP', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
             BurgerMenuSales.backToSales()
@@ -150,7 +150,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     //#region Gestione
     it('Verifica aggancio Nuovo Sfera', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             BurgerMenuSales.clickLink('Nuovo Sfera')
             BurgerMenuSales.backToSales()
@@ -164,7 +164,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Campagne Commerciali', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             BurgerMenuSales.clickLink('Campagne Commerciali')
             BurgerMenuSales.backToSales()

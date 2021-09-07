@@ -75,7 +75,7 @@ describe('Matrix Web : Sospensione ', function () {
             Sospensione.sospendiPolizza()
             SintesiCliente.visitUrlClient(currentCustomerNumber, false)
             Portafoglio.clickTabPortafoglio()
-            Portafoglio.checkPolizzaIsSospesa(currentCustomerNumber,numberPolizza)
+            Portafoglio.checkPolizzaIsSospesa(numberPolizza)
         })
     })
 

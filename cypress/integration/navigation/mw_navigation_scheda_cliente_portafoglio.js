@@ -38,7 +38,7 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
     HomePage.reloadMWHomePage()
-    if (!Cypress.env('isSecondWindow')) {
+    if (!Cypress.env('monoUtenza')) {
         TopBar.search('Pulini Francesco')
         SintesiCliente.wait()
     } else{
