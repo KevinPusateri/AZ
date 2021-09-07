@@ -73,7 +73,7 @@ class SCUAltriIndirizzi {
                         indirizzo.address +'")')
                     .then((row) => {
                         cy.wrap(row)
-                            .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                            .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
                             .click()
                             .wait(5000);
                     }).then(() => {
@@ -132,7 +132,7 @@ class SCUAltriIndirizzi {
                 )
                 .then((row) => {
                     cy.wrap(row)
-                        .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                        .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
                         .click()
                         .wait(5000);
                     cy.get("lib-check-user-permissions").contains("Elimina indirizzo").click();

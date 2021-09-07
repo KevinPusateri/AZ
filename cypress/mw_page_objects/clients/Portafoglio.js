@@ -350,74 +350,73 @@ class Portafoglio {
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
 
         cy.get('@polizza').should('be.visible')
-        // cy.contains('DETTAGLIO ANAGRAFICA').as('dettaglio')
-        // cy.contains('PORTAFOGLIO').as('portafoglio')
-        cy.get('@polizza').should('include.text', numberPolizza)
+        cy.contains('DETTAGLIO ANAGRAFICA').as('dettaglio')
+        cy.contains('PORTAFOGLIO').as('portafoglio')
 
 
-        // var check = true
-        // const loop = () => {
-        //     var loopCheck = false
-        //     cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
-        //         const container = $container.find(':contains("Il cliente non possiede Polizze attive")').is(':visible')
-        //         if (container) {
-        //             startTime()
-        //             loopCheck = false
-        //             assert.isTrue(true, 'Cliente non possiede Polizze')
-        //         }
-        //         else {
-        //             cy.get('@polizza').should('be.visible').then(($card) => {
+        var check = true
+        const loop = () => {
+            var loopCheck = false
+            cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
+                const container = $container.find(':contains("Il cliente non possiede Polizze attive")').is(':visible')
+                if (container) {
+                    startTime()
+                    loopCheck = false
+                    assert.isTrue(true, 'Cliente non possiede Polizze')
+                }
+                else {
+                    cy.get('@polizza').should('be.visible').then(($card) => {
 
-        //                 var checkStatus = $card.find(':contains("' + numberPolizza + '")').is(':visible')
+                        var checkStatus = $card.find(':contains("' + numberPolizza + '")').is(':visible')
 
-        //                 if (checkStatus == false) {
-        //                     startTime()
-        //                     cy.get('@polizza').should('not.include.text', numberPolizza)
+                        if (checkStatus) {
+                            startTime()
+                            cy.get('@polizza').should('include.text', numberPolizza)
 
-        //                     loopCheck = false
-        //                 }
-        //                 else {
-        //                     if (check)
-        //                         startTime()
-        //                     check = false
-        //                     loopCheck = true
+                            loopCheck = false
+                        }
+                        else {
+                            if (check)
+                                startTime()
+                            check = false
+                            loopCheck = true
 
-        //                 }
-        //             })
+                        }
+                    })
 
-        //             cy.get('body').then(() => {
-        //                 if (loopCheck) {
+                    cy.get('body').then(() => {
+                        if (loopCheck) {
 
-        //                     cy.get('@dettaglio').click()
-        //                     cy.get('@portafoglio').click()
-        //                     loop()
-        //                 }
-        //             })
-        //         }
-        //     })
+                            cy.get('@dettaglio').click()
+                            cy.get('@portafoglio').click()
+                            loop()
+                        }
+                    })
+                }
+            })
 
-        // }
-        // loop()
+        }
+        loop()
 
-        // function startTime() {
-        //     var today = new Date();
-        //     var h = today.getHours();
-        //     var m = today.getMinutes();
-        //     var s = today.getSeconds();
-        //     // add a zero in front of numbers<10
-        //     m = checkTime(m);
-        //     s = checkTime(s);
-        //     // var t = setTimeout(function () { startTime() }, 500);
-        //     console.log(h + ":" + m + ":" + s)
+        function startTime() {
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            // add a zero in front of numbers<10
+            m = checkTime(m);
+            s = checkTime(s);
+            // var t = setTimeout(function () { startTime() }, 500);
+            console.log(h + ":" + m + ":" + s)
 
-        // }
+        }
 
-        // function checkTime(i) {
-        //     if (i < 10) {
-        //         i = "0" + i;
-        //     }
-        //     return i;
-        // }
+        function checkTime(i) {
+            if (i < 10) {
+                i = "0" + i;
+            }
+            return i;
+        }
     }
 
     /**
@@ -599,9 +598,17 @@ class Portafoglio {
             cy.wait(5000)
 
             cy.get('#btnStorno').should('exist').and('be.visible').click()
+            cy.get('div[role="dialog"]').then(($form) => {
+                const checkFormVisible = $form.find(':contains("Lo storno è stato eseguito ma si è verificato un errore in fase di invio mail della documentazione.")')
+                if (checkFormVisible) {
+                    cy.contains('Ok').click()
+                    cy.wrap($form).should('not.be.visible')
+                } else
+                    cy.get('div[class="messaggioAnnullamenti"]').should('exist').and('be.visible')
+                        .and('contain.text', 'Storno eseguito correttamente.')
 
-            cy.get('div[class="messaggioAnnullamenti"]').should('exist').and('be.visible')
-                .and('contain.text', 'Storno eseguito correttamente.')
+            })
+
 
             cy.get('input[title="Home"]').should('be.visible').click()
             cy.wait(10000)
