@@ -59,17 +59,18 @@ class ConsultazioneSinistriPage {
      * Check if the value is defined
      * @param {string} value : string value to check
      */
-    static isNullOrEmpty(value) {
-        debugger
-        //if(value !== null && value !== ''  && value!=='undefined') {
+    static isNullOrEmpty(value) {        
+        
             if(value === undefined) {
-                alert('Variable "'+value+'" is undefined.');
+                console.log('Variable "'+value+'" is undefined.');
             } else if(value === null) {
-                alert('Variable "'+value+'" is null.');
+                console.log('Variable "'+value+'" is null.');
             } else if(value === '') {
-                alert('Variable "'+value+'" is empty.');
-            } else 
-                console.log('>> value ['+value+'] is defined')
+                console.log('Variable "'+value+'" is empty.');
+            } else {
+                console.log('>> value ['+value+'] is defined'); 
+             }         
+       
             cy.wait(1000)
         
     }
@@ -190,21 +191,28 @@ class ConsultazioneSinistriPage {
     }
 
     /**
-     * Get a @dt value and is verified if its a correct format date 
+     * Get a @dt value and is verified if its a include a date in correct format 
      * @param {string} dt : locator object id
      */
-    static isValidDate(dt) {
-        debugger
-        var date = new Date(dt, 'DD-MM-YYYY');
-        var validDate = /(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])?|(?:(?:16|[2468][048]|[3579][26])00)?)))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))(\4)?(?:(?:1[6-9]|[2-9]\d)?\d{2})?$/g; //Check the validity of the date
-       
-        myString = validDate.exec(dt)
-        console.log(myString[0])
-        // Display the result
-        if( !isNaN ( myString.getMonth() ))
-            console.log('>> Date: '+myString+' is valid')
+    static containValidDate(str) {
+        debugger        
+        const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
+        var pattern = new RegExp(regexExp)
+        //Tests for a match in a string. It returns true or false.
+        let validation = pattern.test(str)
+        if (!validation)
+        {
+            console.log('>> no valid date is included in '+str)
+            return false;
+        }
+           
         else
-            console.log('>> Date: '+myString+' is not valid')
+        {
+            let myString = str.match(pattern)
+            console.log('>> a valid date: '+myString[0]+' is included in: '+str)
+            return true;
+        }
+       
     }
     //#endregion  Generic function
 
