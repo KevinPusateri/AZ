@@ -64,7 +64,7 @@ class BurgerMenuSales extends Sales {
 
         const linksBurger = Object.values(LinksBurgerMenu)
 
-        if (!Cypress.env('isSecondWindow'))
+        if (!Cypress.env('monoUtenza'))
             cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
             })
@@ -212,7 +212,7 @@ class BurgerMenuSales extends Sales {
                 getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
                 break;
             case LinksBurgerMenu.MANUTENZIONE_PORTAFOGLIO_RV_MIDCO:
-                if (!Cypress.env('isSecondWindow')) {
+                if (!Cypress.env('monoUtenza')) {
                     cy.intercept({
                         method: 'POST',
                         url: '**/Danni/**'

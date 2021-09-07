@@ -209,7 +209,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickNumbers()
             Numbers.clickTab('INCENTIVI', 'incentives')
             Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178 DAN')
@@ -218,7 +218,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178"', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickNumbers()
             Numbers.clickTab('INCENTIVI', 'incentives')
             Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178')
@@ -227,7 +227,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Incentivi aggancio Primo indice dal Panel "AGENZIA 7 - 4549 MONZA"', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             this.skip()
         } else {
             TopBar.clickNumbers()

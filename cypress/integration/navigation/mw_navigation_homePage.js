@@ -104,7 +104,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     // })
 
     it('Verifica atterraggio da Utilità - Quattroruote - Calcolo valore veicolo', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickIconSwitchPage()
             TopBar.clickLinkOnUtilita('Quattroruote - Calcolo valore veicolo')
         } else this.skip()
@@ -138,7 +138,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     // })
 
     it('Verifica atterraggio da Utilità - Cruscotto Installazione Dispositivo Satellitare', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickIconSwitchPage()
             TopBar.clickLinkOnUtilita('Cruscotto Installazione Dispositivo Satellitare')
         } else this.skip()
@@ -166,13 +166,13 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     });
 
     it('Verifica Top Menu News', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickIconSwitchPage('News')
         } else this.skip()
     });
 
     it('Verifica Top Menu Le mie info', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickIconSwitchPage('Le mie info')
         } else this.skip()
     });
@@ -198,13 +198,13 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     });
 
     it('Verifica Button News', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickNews()
         } else this.skip()
     });
 
     it('Verifica Button Le mie info', function () {
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickMieInfo()
         } else this.skip()
 

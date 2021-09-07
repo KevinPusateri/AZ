@@ -83,7 +83,7 @@ class LoginPage {
             let agentId
 
             //! MONOUTENZA DEDICATA PER EFFETTUARE I TEST SU SECONDA FINESTRA (AG 070004549)
-            if (Cypress.env('isSecondWindow')) {
+            if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
                 agency = '070004549'
                 agentId = 'ASGNAZZARRO1'
             }
@@ -103,7 +103,7 @@ class LoginPage {
                 cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
                 cy.get('input[type="SUBMIT"]').click()
 
-                if (!Cypress.env('isSecondWindow'))
+                if (!Cypress.env('monoUtenza'))
                     Common.checkUrlEnv()
                 if (!mockedNews)
                     cy.wait('@gqlNews')

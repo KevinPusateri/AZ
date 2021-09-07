@@ -71,15 +71,30 @@ describe('Matrix Web : Annullamento ', function () {
             Portafoglio.clickTabPortafoglio()
             Portafoglio.clickSubTab('Polizze attive')
             Portafoglio.filtraPolizze('Motor')
-            Portafoglio.clickAnnullamento(numberPolizza,'Vendita')
+            Portafoglio.clickAnnullamento(numberPolizza, 'Vendita')
             Annullamento.annullaContratto()
-            SintesiCliente.visitUrlClient(currentCustomerNumber, false)
-            Portafoglio.clickTabPortafoglio()
-            Portafoglio.checkPolizzaIsNotPresent(numberPolizza)
-            Portafoglio.clickSubTab('Non in vigore')
-            Portafoglio.checkPolizzaIsPresent(numberPolizza)
-            //TODO : verifica tooltip
         })
+
+    })
+
+    it.only('Verifica Polizza non sia presente su Polizze attive', function () {
+        SintesiCliente.visitUrlClient(currentCustomerNumber, false)
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.checkPolizzaIsNotPresentOnPolizzeAttive(numberPolizza)
+    })
+    it.only('Verifica Polizza sia presente su Non in vigore', function () {
+        Portafoglio.clickSubTab('Non in vigore')
+        Portafoglio.checkPolizzaIsPresentOnNonInVigore(numberPolizza)
+
+    })
+
+    it.only('Verifica Storno annullamento', function () {
+
+        Portafoglio.clickStornoAnnullamento(numberPolizza)
+        SintesiCliente.visitUrlClient(currentCustomerNumber, false)
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.checkPolizzaIsPresentOnPolizzeAttive(numberPolizza)
+        //TODO : verifica tooltip
     })
 
 

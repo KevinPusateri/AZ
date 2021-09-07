@@ -77,7 +77,7 @@ class BurgerMenuNumbers extends Numbers {
         cy.get('lib-burger-icon').click()
         const linksBurger = Object.values(LinksBurgerMenu)
 
-        if (!Cypress.env('isSecondWindow'))
+        if (!Cypress.env('monoUtenza'))
             cy.get('lib-side-menu-link').find('a').should('have.length', 23).each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
             })
@@ -142,7 +142,7 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE_RECRUITING:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
-                if (!Cypress.env('isSecondWindow'))
+                if (!Cypress.env('monoUtenza'))
                     getIFrame().find('[class="menu-padre"]:contains("Report"):visible')
                 else
                     getIFrame().find('#likelyCauses').should('be.visible')

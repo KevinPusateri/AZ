@@ -313,7 +313,7 @@ class LandingRicerca {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
         cy.get('nx-modal-container').find('lib-da-link').contains(link).click()
 
-        if (!Cypress.env('isSecondWindow')) {
+        if (!Cypress.env('monoUtenza')) {
             Common.canaleFromPopup()
         }
 

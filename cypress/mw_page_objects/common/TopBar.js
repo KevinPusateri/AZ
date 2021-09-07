@@ -240,7 +240,7 @@ class TopBar extends HomePage {
 
         const linksUtilita = Object.values(LinkUtilita)
 
-        if (!Cypress.env('isSecondWindow'))
+        if (!Cypress.env('monoUtenza'))
             cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
                 expect($labelCard).to.contain(linksUtilita[i])
             })
@@ -315,7 +315,7 @@ class TopBar extends HomePage {
         cy.get('lib-user-header').click()
         cy.get('lib-user-name-container').should('be.visible')
         cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
-        if (!Cypress.env('isSecondWindow'))
+        if (!Cypress.env('monoUtenza'))
             cy.contains('Ci sono altri profili collegati')
         cy.contains('Cambio password')
         cy.contains('Configurazione stampanti')
@@ -426,7 +426,14 @@ class TopBar extends HomePage {
      * Permettere di aprire la seconda finestra di MW
      */
     static clickSecondWindow() {
-        cy.get('a[target="MatrixF2"]').should('exist').invoke('removeAttr', 'target').click()
+        if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
+            cy.get('a[target="MatrixF2"]').should('exist').invoke('removeAttr', 'target').click()
+        }else{
+            cy.get('lib-header-right').should('be.visible').within(()=>{
+                cy.get('nx-icon[name="launch"]').click()
+            })
+            Common.canaleFromPopup(true)
+        }
     }
 }
 
