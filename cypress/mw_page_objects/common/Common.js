@@ -39,13 +39,23 @@ class Common {
     }
 
     // Scegli utenza se siamo su finestra principale multiutenza
-    if (!Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
+    if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && chooseUtenza) {
       cy.get('body').then($body => {
         if ($body.find('nx-modal-container').length > 0) {
           cy.wait(2000)
           cy.get('div[ngclass="agency-row"]').should('be.visible')
 
           cy.get('div[ngclass="agency-row"]').contains(Cypress.env('Utenza')).click()
+        }
+      })
+    } 
+    
+    if (!Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && !chooseUtenza) {
+      cy.get('body').then($body => {
+        if ($body.find('nx-modal-container').length > 0) {
+          cy.wait(2000)
+          cy.get('div[ngclass="agency-row"]').should('be.visible')
+          cy.get('div[ngclass="agency-row"]').first().click()
         }
       })
     }
