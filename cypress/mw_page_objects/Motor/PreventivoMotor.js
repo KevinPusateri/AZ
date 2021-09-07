@@ -39,32 +39,45 @@ class PreventivoMotor {
 
             cy.get('input[ng-reflect-name="Comune"]').should('exist').and('be.visible').type('Savona')
 
-            
+
         })
 
         cy.getIFrame()
         cy.get('@iframe').within(() => {
-            cy.contains('Calcola').should('be.visible')
-            cy.contains('Calcola').click({ force: true })
-
             const loopClickCalcola = () => {
-                cy.get('nx-modal-container').should('exist').then(($note) => {
-                    const checkButtonOk = $note.find(':contains("OK")').is(':visible')
-                    if (checkButtonOk) {
-                        cy.contains('Ok').should('be.visible')
-                        cy.contains('Ok').click({ force: true })
-                    }
-                    else {
 
+                cy.get('button').then(($calcola) => {
+                    debugger
+                    const checkButton = $calcola.find(':contains("Calcola")').is(':visible')
+                    if (checkButton) {
+                        cy.contains('Calcola').should('be.visible')
+                        cy.contains('Calcola').click({ force: true })
+                    } else
                         loopClickCalcola()
-                    }
+
                 })
-               
             }
+
             loopClickCalcola()
         })
-        
+
+
     }
+    // const loopClickCalcola = () => {
+    //     cy.get('nx-modal-container').should('exist').then(($note) => {
+    //         const checkButtonOk = $note.find(':contains("OK")').is(':visible')
+    //         if (checkButtonOk) {
+    //             cy.contains('Ok').should('be.visible')
+    //             cy.contains('Ok').click({ force: true })
+    //         }
+    //         else {
+
+    //             loopClickCalcola()
+    //         }
+    //     })
+
+    // }
+    // loopClickCalcola()
 }
 
 export default PreventivoMotor

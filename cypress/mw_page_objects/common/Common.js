@@ -19,6 +19,7 @@ class Common {
       })
     }
 
+    // Scegli utenza se siamo su finestra principale e procediamo dall'icona sulla seconda finestra
     if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && chooseUtenza) {
       cy.get('body').then($body => {
         if ($body.find('nx-modal-container').length > 0) {
@@ -37,7 +38,8 @@ class Common {
       })
     }
 
-    if (!Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
+    // Scegli utenza se siamo su finestra principale multiutenza
+    if (!Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
       cy.get('body').then($body => {
         if ($body.find('nx-modal-container').length > 0) {
           cy.wait(2000)
