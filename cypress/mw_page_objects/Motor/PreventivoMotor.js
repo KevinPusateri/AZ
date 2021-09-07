@@ -15,28 +15,56 @@ class PreventivoMotor {
     static compilaDatiQuotazione(targa, dataNascita) {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
-      
-        cy.get('input[id="nx-input-1"]').should('exist').and('be.visible')
-        cy.get('input[ng-reflect-name="DataNascitaProprietario"]').type(dataNascita)
-        cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').type(targa);
-       
-        cy.get('nx-checkbox[id="informativa"]').should('exist').and('be.visible').within(() => {
-            cy.get('span[class="nx-checkbox__control"]').click()
-            })       
-         cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').type(targa);
-        
-        
 
-        cy.contains('Calcola').should('be.visible')
-        cy.contains('Calcola').click({force:true})
-        cy.get('input[ng-reflect-name]').should('be.visible').type('mazzini')
-        //cy.get('input[nx-input-9]').type('1')
-        //cy.get('input[nx-input-9]').type('Monfalcone')
 
+            cy.get('input[ng-reflect-name="DataNascitaProprietario"]').should('exist').and('be.visible').type(dataNascita)
+            cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').type(targa);
+
+            cy.get('nx-checkbox[id="informativa"]').should('exist').and('be.visible').within(() => {
+                cy.get('span[class="nx-checkbox__control"]').click()
+            })
+            cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').type(targa);
+
+            cy.wait(2000);
+            cy.contains('Calcola').should('be.visible')
+            cy.contains('Calcola').click({ force: true })
+
+            cy.wait(2000);
+
+            cy.get('input[ng-reflect-name="Indirizzo"]').should('exist').and('be.visible').type('vittorio veneto{enter}');
+            cy.wait(200);
+
+            cy.get('input[ng-reflect-name="NumeroCivico"]').should('exist').and('be.visible').type('52{enter}')
+            cy.wait(200);
+
+            cy.get('input[ng-reflect-name="Comune"]').should('exist').and('be.visible').type('Savona')
+
+            
         })
-        }
-  }
-  
-  
-  
-  export default PreventivoMotor
+
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.contains('Calcola').should('be.visible')
+            cy.contains('Calcola').click({ force: true })
+
+            const loopClickCalcola = () => {
+                cy.get('nx-modal-container').should('exist').then(($note) => {
+                    const checkButtonOk = $note.find(':contains("OK")').is(':visible')
+                    if (checkButtonOk) {
+                        cy.contains('Ok').should('be.visible')
+                        cy.contains('Ok').click({ force: true })
+                    }
+                    else {
+
+                        loopClickCalcola()
+                    }
+                })
+               
+            }
+            loopClickCalcola()
+        })
+        
+    }
+}
+
+export default PreventivoMotor
