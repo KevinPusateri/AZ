@@ -350,7 +350,7 @@ class SCUContatti {
           .find(':contains("' + contatto.email + '")')
           .then((row) => {
             cy.wrap(row)
-              .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+              .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
               .click()
               .wait(5000);
             cy.get("button").contains("Elimina contatto").click();
@@ -377,7 +377,7 @@ class SCUContatti {
           .then((row) => {
             cy.wrap(row).as('row')
             cy.wrap(row)
-              .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+              .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
               .click()
               .wait(5000);
             cy.get("button").contains("Elimina contatto").click();
@@ -413,7 +413,7 @@ class SCUContatti {
             console.log('row: '+ row)
             console.log('wrap: '+ cy.wrap(row))
             cy.wrap(row)
-              .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+              .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
               .click()
               .wait(5000);
             cy.get("button").contains("Elimina contatto").click();
@@ -446,7 +446,7 @@ class SCUContatti {
             .find(':contains("' + contatto.email + '")')
             .then((row) => {
               cy.wrap(row)
-                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
                 .click()
                 .wait(5000);
               cy.get("lib-da-link").contains("Modifica contatto").click();
@@ -478,7 +478,7 @@ class SCUContatti {
             .find(':contains("' + contatto.url + '")')
             .then((row) => {
               cy.wrap(row)
-                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
                 .click()
                 .wait(5000);
               cy.get("lib-da-link").contains("Modifica contatto").click();
@@ -518,7 +518,7 @@ class SCUContatti {
             )
             .then((row) => {
               cy.wrap(row)
-                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
                 .click()
                 .wait(5000);
               //   cy.intercept({

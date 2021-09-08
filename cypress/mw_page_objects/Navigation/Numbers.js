@@ -113,7 +113,7 @@ class Numbers {
      */
     static clickAndCheckAtterraggioPrimoIndiceProdotto() {
         interceptPostAgenziePDF()
-        cy.get('lib-card').first().click()
+        cy.get('lib-card').should('be.visible').first().click()
         cy.wait('@postDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
     }

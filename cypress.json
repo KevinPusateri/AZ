@@ -4,7 +4,7 @@
 	"videoCompression": 25,
 	"trashAssetsBeforeRuns": false,
 	"projectId": "4ypuc8",
-	"numTestsKeptInMemory":1,
+	"numTestsKeptInMemory": 1,
 	"chromeWebSecurity": false,
 	"baseUrl": "https://portaleagenzie.pp.azi.allianz.it/matrix/",
 	"env": {
@@ -17,12 +17,12 @@
 		},
 		"currentEnv": "PREPROD",
 		"baseUrlPreprod": "https://portaleagenzie.pp.azi.allianz.it/matrix/",
-		"urlMWPreprod" : "https://matrix.pp.azi.allianz.it/",
+		"urlMWPreprod": "https://matrix.pp.azi.allianz.it/",
 		"baseUrlTest": "https://portaleagenzie.te.azi.allianzit/matrix/",
-		"urlMWTest" : "https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=0&option=credential&sid=0&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F",
-		"urlSecondWindow" : "https://portaleagenzie2.pp.azi.allianz.it/matrix/",
-		"isSecondWindow" : false,
-		"monoUtenza" : false,
-		"Utenza" : "5-851-0-100"
+		"urlMWTest": "https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=0&option=credential&sid=0&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F",
+		"urlSecondWindow": "https://portaleagenzie2.pp.azi.allianz.it/matrix/",
+		"isSecondWindow": false,
+		"monoUtenza": false,
+		"Utenza": "5-851-0-100"
 	}
 }

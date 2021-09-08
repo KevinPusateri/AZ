@@ -655,9 +655,14 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
                       if ((formatDate > currentDate) && stato == false)
                         return el
                     }
-                    else
-                      if ((formatDate > currentDate))
+                    else {
+                      var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
+                      if (stato == false && (formatDate > currentDate))
                         return el
+                      else
+                        cy.getClientWithPolizzeAnnullamento(tutf, state, branchId, isUltra, isAZ1, clientType)
+
+                    }
                   })
 
                   if (datePolizzaScadenza.length > 0) {
@@ -746,3 +751,18 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
 Cypress.Commands.add('getHostName', () => {
   return os.hostname()
 })
+
+
+/**
+ * metodo per aprire link nella stessa pagina
+ * (Risolve casi in cui link non hanno l'attributo target=_blank)  
+ */
+Cypress.Commands.add('selfWindow', () => {
+  cy.window().then(win => {
+    cy.stub(win, 'open').callsFake((url) => {
+      return win.open.wrappedMethod.call(win, url, '_self');
+    }).as('Open');
+  });
+})
+
+
