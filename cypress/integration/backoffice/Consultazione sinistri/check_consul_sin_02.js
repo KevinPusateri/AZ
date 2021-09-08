@@ -203,8 +203,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
     ' Dalla pagina di dettaglio è verificato quanto segue: ' +
-    ' (1) Nella sezione "Pagamenti", cliccando sul pulsante di "Dettagli", si apre la POPUP "Dettaglio Pagamento" ' +
-    ' e verificare che le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
+    ' Nella sezione "Pagamenti", cliccando sul pulsante di "Dettagli", si apre la POPUP "Dettaglio Pagamento" ' +
+    ' verificare che le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
     
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
         const xpathDettaglioPagamento = "#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > a"
@@ -272,8 +272,45 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             csSinObjPage.isNullOrEmpty(statoPagamento)       
             csSinObjPage.containValidDate(statoPagamento)                          
         });
-     
+
+        csSinObjPage.clickObj_ByLabel("span", "Close")        
     });
 
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
+    ' Dalla pagina di dettaglio è verificato quanto segue: ' +
+    ' Nella sezione "Perizie", cliccando sul pulsante di "Dettagli", si apre la POPUP "Dettaglio Incarico Perizia" ' +
+    ' (1) verificare che le informazioni riferite all\'anagrafica fiduciario (Fiduciario,Tipo collaborazione, Indirizzo, Telefono ) ' +
+    ' (2) verificare che le informazioni riferite ai dati di incarico (Data incarico, Data scarico, Tipo incarico, Stato incarico, Esito perizia, Data verifica perizia, Esito verifica perizia)', function () {
+    
+        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
+        const xpathDettaglioPagamento = "#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > a"
+        csSinObjPage.clickBtn_ById(xpathDettaglioPagamento)
+
+         // Verifica(1) : la valorizzazione del campo "Fiduciario" nella popup "Dettaglio Incarico Perizia"      
+         const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
+         csSinObjPage.getPromiseValue_Bylocator(popUplocator1).then(fiduciario => {
+             csSinObjPage.isNullOrEmpty(fiduciario)                                           
+         });
+
+        // Verifica(1) : la valorizzazione del campo "Tipo Collaborazione" nella popup "Dettaglio Incarico Perizia"
+         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)"  
+         csSinObjPage.getPromiseValue_Bylocator(popUplocator2).then(tipoCollaborazione => {
+             csSinObjPage.isNullOrEmpty(tipoCollaborazione)                                           
+         });
+
+          // Verifica(1) : la valorizzazione del campo "Indirizzo" nella popup "Dettaglio Incarico Perizia"
+          const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)"  
+          csSinObjPage.getPromiseValue_Bylocator(popUplocator3).then(indirizzo => {
+              csSinObjPage.isNullOrEmpty(indirizzo)                                           
+          });
+          // Verifica(1) : la valorizzazione del campo "Telefono" nella popup "Dettaglio Incarico Perizia"
+          const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"  
+          csSinObjPage.getPromiseValue_Bylocator(popUplocator3).then(telefono => {
+              csSinObjPage.isNullOrEmpty(telefono)                                           
+          });
+
+          
+          csSinObjPage.clickObj_ByLabel("span", "Close") 
+    });
 
 });
