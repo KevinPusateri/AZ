@@ -89,13 +89,12 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const clssDtl = "pageTitle"
         csSinObjPage.checkObj_ByClassAndText(clssDtl, sinistro)
 
-          // Verifica (2): Valore della data avvenimento      
-          const cssDtAvv = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
-          csSinObjPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento)
-          // Verifica (2): Cliente
-          const cssCliente = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
-          csSinObjPage.checkObj_ByLocatorAndText(cssCliente, cliente)
-      
+        // Verifica (2): Valore della data avvenimento      
+        const cssDtAvv = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
+        csSinObjPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento)
+        // Verifica (2): Cliente
+        const cssCliente = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
+        csSinObjPage.checkObj_ByLocatorAndText(cssCliente, cliente)    
     });
     
 
@@ -197,7 +196,6 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         csSinObjPage.getPromiseValue_ByCss(cssPercepiente).then(percepiente => {
             csSinObjPage.isNullOrEmpty(percepiente)  
         });
-
     });
 
 
@@ -298,19 +296,58 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
              csSinObjPage.isNullOrEmpty(tipoCollaborazione)                                           
          });
 
-          // Verifica(1) : la valorizzazione del campo "Indirizzo" nella popup "Dettaglio Incarico Perizia"
-          const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)"  
-          csSinObjPage.getPromiseValue_Bylocator(popUplocator3).then(indirizzo => {
-              csSinObjPage.isNullOrEmpty(indirizzo)                                           
-          });
-          // Verifica(1) : la valorizzazione del campo "Telefono" nella popup "Dettaglio Incarico Perizia"
-          const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"  
-          csSinObjPage.getPromiseValue_Bylocator(popUplocator3).then(telefono => {
-              csSinObjPage.isNullOrEmpty(telefono)                                           
-          });
+        // Verifica(1) : la valorizzazione del campo "Indirizzo" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)"  
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator3).then(indirizzo => {
+            csSinObjPage.isNullOrEmpty(indirizzo)                                           
+        });
 
-          
-          csSinObjPage.clickObj_ByLabel("span", "Close") 
+        // Verifica(1) : la valorizzazione del campo "Telefono" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"  
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator4).then(telefono => {
+            csSinObjPage.isNullOrEmpty(telefono)                                           
+        });
+
+        // Verifica(2) : la valorizzazione del campo "Data incarico" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"  
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator5).then(dtIncarico => {
+            csSinObjPage.isNullOrEmpty(dtIncarico)       
+            csSinObjPage.containValidDate(dtIncarico)                                          
+        });
+
+        // Verifica(2) : la valorizzazione del campo "Data scarico" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"  
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator6).then(dtScarico => {
+            csSinObjPage.isNullOrEmpty(dtScarico)       
+            csSinObjPage.containValidDate(dtScarico)                                          
+        });
+        
+        // Verifica(2) : la valorizzazione del campo "Tipo incarico" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(10) > td:nth-child(2)"  
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator7).then(tipoIncarico => {
+            csSinObjPage.isNullOrEmpty(tipoIncarico)                                           
+        });
+        
+        // Verifica(2) : la valorizzazione del campo "Stato incarico" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(11) > td:nth-child(2)"  
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator8).then(statoIncarico => {
+            csSinObjPage.isNullOrEmpty(statoIncarico)                                           
+        });
+
+        // Verifica(2) : la valorizzazione del campo "Perizia" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(12) > td:nth-child(2)"  
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator9).then(perizia => {
+            csSinObjPage.isNullOrEmpty(perizia)                                           
+        });
+        
+        // Verifica(2) : la valorizzazione del campo "Data verifica perizia" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator10 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(13) > td:nth-child(2)"  
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator10).then(dtVerificaPerizia => {
+            csSinObjPage.isNullOrEmpty(dtVerificaPerizia)       
+            csSinObjPage.containValidDate(dtVerificaPerizia)                                          
+        });
+
+        csSinObjPage.clickObj_ByLabel("span", "Close") 
     });
 
 });
