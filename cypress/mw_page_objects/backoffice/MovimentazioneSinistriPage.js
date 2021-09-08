@@ -41,6 +41,11 @@ class MovimentazioneSinistriPage {
         cy.wait(2000)
     }
 
+    static clickRow_ByIdAndRow(id) {     
+        let str = id.replace("_Div", "C1_Div")   
+        getIFrameMovSinistri().find(str).should('be.visible').click().log('>> row is clicked')       
+        cy.wait(1000)        
+    }
 
     static IdExist(id)
     {
