@@ -89,7 +89,7 @@ class SCUContiCorrenti {
                     )
                     .then((row) => {
                         cy.wrap(row)
-                            .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
+                            .find('nx-icon')
                             .click()
                         cy.get('button[class="nx-context-menu-item context-link"]').should('be.visible')
                         cy.get("lib-da-link").contains("Modifica conto corrente").click();
@@ -131,7 +131,7 @@ class SCUContiCorrenti {
                 )
                 .then((row) => {
                     cy.wrap(row)
-                        .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
+                        .find('nx-icon')
                         .click()
                         .wait(5000);
                     cy.get("lib-check-user-permissions").contains("Elimina conto corrente").click();
