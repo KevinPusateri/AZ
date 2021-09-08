@@ -59,20 +59,17 @@ class ConsultazioneSinistriPage {
      * Check if the value is defined
      * @param {string} value : string value to check
      */
-    static isNullOrEmpty(value) {        
-            debugger
-            if(value === undefined) {
-                cy.log('>> value "'+value+'" is undefined.');
-            } else if(value === null) {
-                cy.log('>> value"'+value+'" is null.');
-            } else if(value === '') {
-                cy.log('>> value "'+value+'" is empty.');
-            } else {
-                cy.log('>> value "'+value+'" is defined'); 
-            }         
-       
-            cy.wait(1000)
-        
+    static isNullOrEmpty(value) {                   
+        if(value === undefined) {
+            cy.log('>> value "'+value+'" is undefined.');
+        } else if(value === null) {
+            cy.log('>> value "'+value+'" is null.');
+        } else if(value === '') {
+            cy.log('>> value "'+value+'" is empty.');
+        } else {
+            cy.log('>> value "'+value+'" is defined.'); 
+        }       
+        cy.wait(1000)        
     }
     /**
      * Click on object defined by locator id
@@ -85,7 +82,7 @@ class ConsultazioneSinistriPage {
             cy.wrap($btn)
             .should('be.visible')
             .wait(1000)
-            .click().log('>> object with id ['+id+ '] is clicked')
+            .click().log('>> object with id ['+id+'] is clicked')
         })
     }
     /**
@@ -144,7 +141,7 @@ class ConsultazioneSinistriPage {
      * @param {string} locator : class attribute 
      * @param {string} label : text displayed
      */
-     static checkObj_ByLocatorAndText(locator, label) {
+    static checkObj_ByLocatorAndText(locator, label) {
         return new Cypress.Promise((resolve, reject) => {
             getIFrame().find(locator).should('be.visible')
             .then(($val) => {                                       
@@ -174,22 +171,35 @@ class ConsultazioneSinistriPage {
         cy.wait(1000)        
     }
     /**
-     * Get a value defined on object identified by its @css
+     * Get a text value defined on object identified by its @css
      * @param {string} css : locator object id
      */
-
     static getPromiseValue_ByCss(css) {
         return new Cypress.Promise((resolve) => {
-        getIFrame()
-        .find(css)
-        .invoke('text')  // for input or textarea, .invoke('val')
-        .then(text => {         
-            cy.log('>> read the value: ' + text)
-            resolve((text.toString()))                
-            });
+            getIFrame()
+            .find(css)
+            .invoke('text')  // for input or textarea, .invoke('val')
+            .then(text => {         
+                cy.log('>> read the value: ' + text)
+                resolve((text.toString()))                
+                });
         });
     }
-
+    /**
+     * Get a text value defined on object identified by its @locator
+     * @param {string} locator : locator object id
+     */
+    static getPromiseValue_Bylocator(locator) {
+        cy.log('>> locator value: ' + locator)
+        return new Cypress.Promise((resolve) => {            
+            getIFrame().find(locator).should('be.visible')
+            .invoke('text')  // for input or textarea, .invoke('val')        
+            .then(text => {         
+                cy.log('>> read the value: ' + text)
+                resolve((text.toString()))                
+                });
+        });
+    }
     /**
      * Put a @str value and is verified if its a date value is included in a correct format 
      * @param {string} dt : string date format
@@ -213,22 +223,19 @@ class ConsultazioneSinistriPage {
      * Put a @numstr (ex.: numStr = "123,20") value and is verified if its a currency correct value 
      * @param {string} numstr : string currency value
      */
-    static isCurrency(numstr)
-    {
-        debugger
+    static isCurrency(numstr) {      
         const regexExp = /^\d+(?:\,\d{0,2})$/;
         if (regexExp.test(numstr))
-            cy.log('>> Number ('+numstr+') is valid currency')
+            cy.log('>> Number = "'+numstr+'" is valid currency')
         else
-            cy.log('>> Number ('+numstr+') is not valid currency')
+            cy.log('>> Number = "'+numstr+'" is not valid currency')
     }
     
     /**
      * Get a currency correct value by @str (ex.: numStr = "importo: 123,20") 
      * @param {string} str : string value
      */
-    static getCurrency(str)
-    {               
+    static getCurrency(str) {               
         const regexExp = /\d{1,3},\d{2}/;
         var amount = str.match(regexExp)[0]
         ConsultazioneSinistriPage.isCurrency(amount)

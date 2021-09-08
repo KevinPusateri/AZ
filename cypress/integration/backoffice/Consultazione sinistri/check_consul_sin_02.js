@@ -85,7 +85,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Seleziona il sinistro
         csSinObjPage.clickLnk_ByHref(sinistro)
       
-        // Verifica (1): numero di sinistro in alto alla pagina di dettaglio
+        // Verifica : numero di sinistro in alto alla pagina di dettaglio
         const clssDtl = "pageTitle"
         csSinObjPage.checkObj_ByClassAndText(clssDtl, sinistro)
 
@@ -113,7 +113,6 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(csscldDanneggiato))
     });
     
-
     
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
     ' Dalla pagina di dettaglio è verificato quanto segue: ' +
@@ -121,37 +120,37 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     ' dei seguenti campi (Data incarico, Data scarico, Fiduciario, Tipo incarico, Stato. ' , function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        // Verifica (1): Apro la sezione del danneggiato (1)
+        // Verifica : Apro la sezione del danneggiato (1)
         const btnDanneggiato = "#soggetti_danneggiati > div > div > a"
         csSinObjPage.clickBtn_ById(btnDanneggiato)
 
-        // Verifica (1): la valorizzazione del campo "Data incarico" in Sezione Perizie
+        // Verifica : la valorizzazione del campo "Data incarico" in Sezione Perizie
         const cssDtIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > p'
         csSinObjPage.getPromiseValue_ByCss(cssDtIncarico).then(dtIncarico => {
             csSinObjPage.isNullOrEmpty(dtIncarico)       
             csSinObjPage.containValidDate(dtIncarico)  
         });
          
-         // Verifica (1): la valorizzazione del campo "Data scarico" in Sezione Perizie
+         // Verifica : la valorizzazione del campo "Data scarico" in Sezione Perizie
          const cssDtScarico= '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
          csSinObjPage.getPromiseValue_ByCss(cssDtScarico).then(dtScarico => {
              csSinObjPage.isNullOrEmpty(dtScarico)       
              csSinObjPage.containValidDate(dtScarico)
          });
 
-          // Verifica (1): la valorizzazione del campo "Fiduciario" in Sezione Perizie
+          // Verifica : la valorizzazione del campo "Fiduciario" in Sezione Perizie
         const cssFiduciario = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
         csSinObjPage.getPromiseValue_ByCss(cssFiduciario).then(fiduciario => {
             csSinObjPage.isNullOrEmpty(fiduciario)     
         });
 
-        // Verifica (1): la valorizzazione del campo "Tipo incarico" in Sezione Perizie
+        // Verifica : la valorizzazione del campo "Tipo incarico" in Sezione Perizie
         const cssTipoIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
         csSinObjPage.getPromiseValue_ByCss(cssTipoIncarico).then(tipoIncarico => {
             csSinObjPage.isNullOrEmpty(tipoIncarico)           
         });
         
-        // Verifica (1): la valorizzazione del campo "Stato" in Sezione Perizie
+        // Verifica : la valorizzazione del campo "Stato" in Sezione Perizie
         const cssStato = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
         csSinObjPage.getPromiseValue_ByCss(cssStato).then(stato => {
             csSinObjPage.isNullOrEmpty(stato)  
@@ -166,34 +165,34 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
         
-        // Verifica (1): la valorizzazione del campo "Data pagamento" in Sezione Pagamenti
+        // Verifica : la valorizzazione del campo "Data pagamento" in Sezione Pagamenti
         const cssDtPagamento = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > p'
         csSinObjPage.getPromiseValue_ByCss(cssDtPagamento).then(dtPagamento => {
             csSinObjPage.isNullOrEmpty(dtPagamento)       
             csSinObjPage.containValidDate(dtPagamento)  
         });     
         
-        // Verifica (1): la valorizzazione del campo "Data invio banca" in Sezione Pagamenti
+        // Verifica : la valorizzazione del campo "Data invio banca" in Sezione Pagamenti
         const cssDtInvioBanca = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
         csSinObjPage.getPromiseValue_ByCss(cssDtInvioBanca).then(dtInvioBanca => {
             csSinObjPage.isNullOrEmpty(dtInvioBanca)       
             csSinObjPage.containValidDate(dtInvioBanca)                     
         });      
  
-       // Verifica (1): la valorizzazione del campo "Causale" in Sezione Pagamenti
+       // Verifica : la valorizzazione del campo "Causale" in Sezione Pagamenti
         const cssCausale = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
         csSinObjPage.getPromiseValue_ByCss(cssCausale).then(causale => {
             csSinObjPage.isNullOrEmpty(causale) 
         });        
 
-        // Verifica (1): la valorizzazione del campo "Importo" in Sezione Pagamenti
+        // Verifica : la valorizzazione del campo "Importo" in Sezione Pagamenti
         const cssImporto = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
         csSinObjPage.getPromiseValue_ByCss(cssImporto).then(importo => {
             csSinObjPage.isNullOrEmpty(importo) 
             csSinObjPage.getCurrency(importo)               
         });
 
-         // Verifica (1): la valorizzazione del campo "Percepiente pagamento" in Sezione Pagamenti
+         // Verifica : la valorizzazione del campo "Percepiente pagamento" in Sezione Pagamenti
         const cssPercepiente = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
         csSinObjPage.getPromiseValue_ByCss(cssPercepiente).then(percepiente => {
             csSinObjPage.isNullOrEmpty(percepiente)  
@@ -201,14 +200,80 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
     });
 
-/*
+
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
     ' Dalla pagina di dettaglio è verificato quanto segue: ' +
-    ' (1) Nella sezione "Pagamenti", cliccando sul pulsante di "Dettagli", è verificato che nella pop-Up siano riportate ' +
-    ' le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
+    ' (1) Nella sezione "Pagamenti", cliccando sul pulsante di "Dettagli", si apre la POPUP "Dettaglio Pagamento" ' +
+    ' e verificare che le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
     
+        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
+        const xpathDettaglioPagamento = "#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > a"
+        csSinObjPage.clickBtn_ById(xpathDettaglioPagamento)
 
+        // Verifica : la valorizzazione del campo "Data pagamento" nella popup "Dettaglio Pagamento"      
+        const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(1) > td:nth-child(2)"  
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator1).then(dtPagamento => {
+            csSinObjPage.isNullOrEmpty(dtPagamento)       
+            csSinObjPage.containValidDate(dtPagamento)                          
+        });
+
+        // Verifica : la valorizzazione del campo "Data invio Banca" nella popup "Dettaglio Pagamento"
+        const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator2).then(dtInvioBanca => {
+            csSinObjPage.isNullOrEmpty(dtInvioBanca)       
+            csSinObjPage.containValidDate(dtInvioBanca)                          
+        });
+
+        // Verifica : la valorizzazione del campo "Importo" nella popup "Dettaglio Pagamento"
+        const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)" 
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator3).then(importo => {
+            csSinObjPage.isNullOrEmpty(importo)       
+            csSinObjPage.containValidDate(importo)                          
+        });
+
+        // Verifica : la valorizzazione del campo "Valuta" nella popup "Dettaglio Pagamento"
+        const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)" 
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator4).then(valuta => {
+            csSinObjPage.isNullOrEmpty(valuta)       
+            csSinObjPage.containValidDate(valuta)                          
+        });
+
+        // Verifica : la valorizzazione del campo "Causale" nella popup "Dettaglio Pagamento"
+        const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"       
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator5).then(causale => {
+            csSinObjPage.isNullOrEmpty(causale)       
+            csSinObjPage.containValidDate(causale)                          
+        });
+
+        // Verifica : la valorizzazione del campo "Modalità di pagamento" nella popup "Dettaglio Pagamento"
+        const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(6) > td:nth-child(2)"       
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator6).then(modPagamento => {
+            csSinObjPage.isNullOrEmpty(modPagamento)       
+            csSinObjPage.containValidDate(modPagamento)                          
+        });
+
+        // Verifica : la valorizzazione del campo "IBAN" nella popup "Dettaglio Pagamento"
+        const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(7) > td:nth-child(2)"       
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator7).then(iban => {
+            csSinObjPage.isNullOrEmpty(iban)       
+            csSinObjPage.containValidDate(iban)                          
+        });
+    
+        // Verifica : la valorizzazione del campo "Tipo Proposta" nella popup "Dettaglio Pagamento"
+        const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"       
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator8).then(tipoProposta => {
+            csSinObjPage.isNullOrEmpty(tipoProposta)       
+            csSinObjPage.containValidDate(tipoProposta)                          
+        });
+
+        // Verifica : la valorizzazione del campo "Stato Pagamento" nella popup "Dettaglio Pagamento"
+        const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"       
+        csSinObjPage.getPromiseValue_Bylocator(popUplocator9).then(statoPagamento => {
+            csSinObjPage.isNullOrEmpty(statoPagamento)       
+            csSinObjPage.containValidDate(statoPagamento)                          
+        });
+     
     });
 
-    */
+
 });
