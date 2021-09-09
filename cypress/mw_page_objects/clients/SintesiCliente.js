@@ -795,6 +795,135 @@ class SintesiCliente {
             cy.get('nx-modal-container').find('.agency-row').contains(agenzia).first().click().wait(3000)
         }
     }
-}
 
+    static checkLinksFromAuto() {
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
+            const linksAuto = [
+                'Emissione',
+                'Prodotti particolari',
+                'Passione BLU'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksAuto[i])
+            })
+        })
+    }
+
+    static checkLinksFromRamiVari() {
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
+            const linksRamiVari = [
+                'Allianz Ultra Casa e Patrimonio',
+                'Allianz Ultra Casa e Patrimonio BMP',
+                'Allianz Ultra Salute',
+                'Allianz1 Business',
+                'FastQuote Universo Salute',
+                'FastQuote Infortuni Da Circolazione',
+                'FastQuote Impresa Sicura',
+                'FastQuote Albergo',
+                'Gestione Grandine',
+                'Emissione'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksRamiVari[i])
+            })
+        })
+    }
+
+    static checkLinksFromVita() {
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
+            const linksPassioneBlu = [
+                'Accedi al servizio di consulenza'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksPassioneBlu[i])
+            })
+        })
+    }
+
+    static checkLinksFromAutoOnEmissione() {
+        cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
+            const linksEmissione = [
+                'Preventivo Motor',
+                'Flotte e Convenzioni'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksEmissione[i])
+            })
+        })
+    }
+
+    static checkLinksFromAutoOnProdottiParticolari() {
+        cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
+            const linksProdottiParticolari = [
+                'Assunzione guidata (con cod. di autorizz.)',
+                'Veicoli d\'epoca durata 10 giorni',
+                'Libri matricola',
+                'Kasko e ARD per \'Dipendenti in Missione\'',
+                'Polizza aperta',
+                'Coassicurazione'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksProdottiParticolari[i])
+            })
+        })
+    }
+
+    static checkLinksFromAutoOnPassioneBlu() {
+        cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
+            const linksPassioneBlu = [
+                'Nuova polizza',
+                'Nuova polizza guidata',
+                'Nuova polizza Coassicurazione'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksPassioneBlu[i])
+            })
+        })
+    }
+
+
+    static checkLinksFromRamiVariOnEmissione() {
+        cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
+            const linksEmissioneRamiVari = [
+                'Polizza nuova'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                debugger
+                expect($buttonLinks).to.contain(linksEmissioneRamiVari[i])
+            })
+        })
+    }
+
+    static checkLinksFromAutoOnProdottiParticolariKasko() {
+        cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
+        cy.get('.cdk-overlay-container').find('button').contains('Kasko e ARD per \'Dipendenti in Missione\'').click()
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(2).should('exist').and('be.visible').within(() => {
+            const linksProdottiParticolariKasko = [
+                'Kasko e ARD al Chilometro',
+                'Kasko e ARD a Giornata',
+                'Kasko e ARD a Veicolo'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksProdottiParticolariKasko[i])
+            })
+        })
+    }
+
+    static checkLinksFromAutoOnProdottiParticolariPolizzaAperta() {
+        cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
+        cy.get('.cdk-overlay-container').find('button').contains('Polizza aperta').click()
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(2).should('exist').and('be.visible').within(() => {
+            const linksProdottiParticolariPolizzaAperta = [
+                'Polizza base'
+            ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksProdottiParticolariPolizzaAperta[i])
+            })
+        })
+    }
+}
 export default SintesiCliente

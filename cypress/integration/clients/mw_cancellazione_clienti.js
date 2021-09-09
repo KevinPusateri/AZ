@@ -42,18 +42,6 @@ beforeEach(() => {
   cy.preserveCookies()
 })
 
-afterEach(function () {
-  if (this.currentTest.state !== 'passed') {
-      TopBar.logOutMW()
-      //#region Mysql
-      cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-          let tests = testsInfo
-          cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-      })
-      //#endregion
-      Cypress.runner.stop();
-  }
-})
 
 after(function () {
 
@@ -89,7 +77,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
     LandingRicerca.checkClienteNotFound(cliente)
   })
 
-  it('Verifica Cancellazione clienti PG', function () {
+  it.only('Verifica Cancellazione clienti PG', function () {
     HomePage.reloadMWHomePage()
     TopBar.clickClients()
     BurgerMenuClients.clickLink('Cancellazione Clienti')
@@ -99,7 +87,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
 
   })
 
-  it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
+  it.only('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
     HomePage.reloadMWHomePage()
     TopBar.search(cliente)
     LandingRicerca.checkClienteNotFound(cliente)

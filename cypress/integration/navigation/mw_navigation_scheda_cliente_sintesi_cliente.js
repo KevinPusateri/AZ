@@ -20,7 +20,6 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-
 //#endregion
 
 before(() => {
@@ -28,7 +27,6 @@ before(() => {
         insertedId = results.insertId
     })
     LoginPage.logInMW(userName, psw)
-
 
 })
 
@@ -79,91 +77,49 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.checkCardsEmissioni()
     })
 
-    // !ADD TFS
-    it.skip('Verifica Link da Card Auto', function () {
-        // TODO: completare
+    it('Verifica Link da Card Auto', function () {
         SintesiCliente.clickAuto()
-        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
-            const linksAuto = [
-                'Emissione',
-                'Prodotti particolari',
-                'Passione BLU'
-            ]
-            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-                expect($buttonLinks).to.contain(linksAuto[i])
-            })
-        })
+        SintesiCliente.checkLinksFromAuto()
     })
 
-    // !ADD TFS
-    it.skip('Verifica Link da Card Auto -> Emissione', function () {
+    it('Verifica Link da Card Auto -> Emissione', function () {
         SintesiCliente.clickAuto()
-        cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
-        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
-            const linksEmissione = [
-                'Preventivo Motor',
-                'Flotte e Convenzioni'
-            ]
-            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-                expect($buttonLinks).to.contain(linksEmissione[i])
-            })
-        })
+        SintesiCliente.checkLinksFromAutoOnEmissione()
     })
 
-    // !ADD TFS
-    it.skip('Verifica Link da Card Auto -> Prodotti particolari', function () {
+    it('Verifica Link da Card Auto -> Prodotti particolari', function () {
         SintesiCliente.clickAuto()
-        cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
-        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
-            const linksProdottiParticolari = [
-                'Assunzione guidata (con cod. di autorizz.)',
-                'Veicoli d\'epoca durata 10 giorni',
-                'Libri matricola',
-                'Kasko e ARD per \'Dipendenti in Missione\'',
-                'Polizza aperta',
-                'Coassicurazione'
-            ]
-            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-                expect($buttonLinks).to.contain(linksProdottiParticolari[i])
-            })
-        })
+        SintesiCliente.checkLinksFromAutoOnProdottiParticolari()
     })
 
-    // !ADD TFS
-    it.skip('Verifica Link da Card Auto -> Passione BLU', function () {
+    it('Verifica Link da Card Auto -> Prodotti particolari -> Kasko e ARD per Dipendenti in Missione', function () {
         SintesiCliente.clickAuto()
-        cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
-        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
-            const linksPassioneBlu = [
-                'Nuova polizza',
-                'Nuova polizza guidata',
-                'Nuova polizza Coassicurazione'
-            ]
-            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-                expect($buttonLinks).to.contain(linksPassioneBlu[i])
-            })
-        })
+        SintesiCliente.checkLinksFromAutoOnProdottiParticolariKasko()
     })
 
-    // !ADD TFS
+    it('Verifica Link da Card Auto -> Prodotti particolari -> Polizza aperta', function () {
+        SintesiCliente.clickAuto()
+        SintesiCliente.checkLinksFromAutoOnProdottiParticolariPolizzaAperta()
+    })
 
-    it.skip('Verifica Link da Card Rami vari', function () {
-        // TODO: completare
+    it('Verifica Link da Card Auto -> Passione BLU', function () {
+        SintesiCliente.clickAuto()
+        SintesiCliente.checkLinksFromAutoOnPassioneBlu()
+    })
+
+    it('Verifica Link da Card Rami vari', function () {
         SintesiCliente.clickRamiVari()
-        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first.should('exist').and('be.visible').within(() => {
-            const linksPassioneBlu = [
-                'Allianz Ultra Casa e Patrimonio',
-                'Allianz Ultra Casa e Patrimonio BMP',
-                'Allianz Ultra Salute',
-                'Allianz1 Business',
-                'FastQuote Universo Salute',
-                'FastQuote Infortuni'
-                //TODO: Finire
-            ]
-            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-                expect($buttonLinks).to.contain(linksPassioneBlu[i])
-            })
-        })
+        SintesiCliente.checkLinksFromRamiVari()
+    })
+
+    it('Verifica Link da Card Rami Vari -> Emissione', function () {
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.checkLinksFromRamiVariOnEmissione()
+    })
+    
+    it('Verifica Link da Card Vita', function () {
+        SintesiCliente.clickVita()
+        SintesiCliente.checkLinksFromVita()
     })
 
     it('Verifica Card Auto: Emissione -> Preventivo Motor', function () {
@@ -288,7 +244,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.clickFastQuoteImpresaSicura()
         SintesiCliente.back()
     })
-    //TODO: Fare quelli in basso
+
     it('Verifica Card Rami Vari: FastQuote Albergo', function () {
         SintesiCliente.clickRamiVari()
         SintesiCliente.clickFastQuoteAlbergo()
