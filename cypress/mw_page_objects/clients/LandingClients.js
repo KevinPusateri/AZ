@@ -279,8 +279,8 @@ class LandingClients {
                 'Coperture',
                 'Scoperture'
             ]
-            cy.get('ngu-tile').should('be.visible').each((title, i) => {
-                expect(title.text().trim()).to.include(titleGlobals[i]);
+            cy.get('ngu-tile').should('be.visible').find('div[class="chart-title homepage-chart-title"]').each((title, i) => {
+                expect(titleGlobals).to.include(title.text().trim());
             })
         })
 

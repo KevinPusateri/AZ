@@ -161,6 +161,7 @@ class LandingRicerca {
         cy.get('lib-client-item').first().click();
 
         cy.wait('@client', { requestTimeout: 60000 });
+        cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
     }
 
     /**

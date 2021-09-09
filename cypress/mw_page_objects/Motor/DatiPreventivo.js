@@ -17,27 +17,30 @@ const getIFrame = () => {
 
 class DatiPreventivo {
 
-static ClickCheckTarga() {
-   cy.wait(10000)
-  // cy.get('cdk-overlay-container').find('nx-grid_column-12').contains('intermediario dichiara di aver reso al cliente').click()
-   
-   // cy.wait(10000)
-  // cy.contains('NON CONOSCI LA TARGA?').click()
-   getIFrame().find('button').contains ('NON CONOSCI LA TARGA?').click()
+    static ClickCheckTarga() {
+        cy.wait(10000)
+        // cy.get('cdk-overlay-container').find('nx-grid_column-12').contains('intermediario dichiara di aver reso al cliente').click()
 
-}
-static verificaUnico() {
-    cy.contains('Unico').click()
-    //TODO" 1 Aggiornamento unico"
-}
-static clickP2() {
-    cy.get('nx-tab-header').contains('NON TARGA?').click()
-}
+        // cy.wait(10000)
+        // cy.contains('NON CONOSCI LA TARGA?').click()
+        getIFrame().find('nx-checkbox[id="informativa"]').should('exist').and('be.visible').within(() => {
+            cy.get('span[class="nx-checkbox__control"]').click()
+        })
+        getIFrame().find('button').contains('Non conosci la targa?').click()
+
+    }
+    static verificaUnico() {
+        cy.contains('Unico').click()
+        //TODO" 1 Aggiornamento unico"
+    }
+    static clickP2() {
+        cy.get('nx-tab-header').contains('NON TARGA?').click()
+    }
 
 
-   
- //#region Links Card Auto
-    static clickPreventivoMotor(){
+
+    //#region Links Card Auto
+    static clickPreventivoMotor() {
         cy.wait(3000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
         cy.wait(2000)
@@ -50,7 +53,7 @@ static clickP2() {
         cy.wait('@getMotor', { requestTimeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
 
-       
+
     }
 
     static clickPassioneBlu() {
@@ -59,14 +62,13 @@ static clickP2() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Nuova polizza').click()
         Common.canaleFromPopup()
-      //  getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
-      //  getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        //  getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
+        //  getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
         cy.wait(3000)
 
     }
-    
+
     static clickAuto() {
-        cy.wait(50000)
         cy.get('lib-container').find('app-client-resume-emissions:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Auto")').is(':visible')
             if (check)
@@ -76,22 +78,22 @@ static clickP2() {
 
 
         })
-      
+
     }
 
-    
+
     static clickNuovaPolizza() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Nuova polizza').click()
         Common.canaleFromPopup()
-       // getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
-      //  getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        // getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
+        //  getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
-//#endregion 
+    //#endregion 
 
- }
+}
 
- export default DatiPreventivo
+export default DatiPreventivo
