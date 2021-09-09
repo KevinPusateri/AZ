@@ -19,11 +19,7 @@ class DatiPreventivo {
 
     static ClickCheckTarga() {
         cy.wait(10000)
-        // cy.get('cdk-overlay-container').find('nx-grid_column-12').contains('intermediario dichiara di aver reso al cliente').click()
-
-        // cy.wait(10000)
-        // cy.contains('NON CONOSCI LA TARGA?').click()
-        getIFrame().find('nx-checkbox[id="informativa"]').should('exist').and('be.visible').within(() => {
+         getIFrame().find('nx-checkbox[id="informativa"]').should('exist').and('be.visible').within(() => {
             cy.get('span[class="nx-checkbox__control"]').click()
         })
         getIFrame().find('button').contains('Non conosci la targa?').click()
@@ -33,8 +29,10 @@ class DatiPreventivo {
         cy.contains('Unico').click()
         //TODO" 1 Aggiornamento unico"
     }
-    static clickP2() {
-        cy.get('nx-tab-header').contains('NON TARGA?').click()
+    static clickAvanti() {
+        cy.wait(10000)
+        getIFrame().find('button').contains('AVANTI').click()
+
     }
 
 
