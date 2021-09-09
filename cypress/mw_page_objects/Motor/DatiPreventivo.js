@@ -22,7 +22,9 @@ static ClickCheckTarga() {
   // cy.get('cdk-overlay-container').find('nx-grid_column-12').contains('intermediario dichiara di aver reso al cliente').click()
    
    // cy.wait(10000)
-   cy.contains('NON CONOSCI LA TARGA?').click()
+  // cy.contains('NON CONOSCI LA TARGA?').click()
+   getIFrame().find('button').contains ('NON CONOSCI LA TARGA?').click()
+
 }
 static verificaUnico() {
     cy.contains('Unico').click()
