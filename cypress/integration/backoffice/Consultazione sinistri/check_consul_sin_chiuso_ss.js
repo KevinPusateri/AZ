@@ -67,24 +67,31 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const locatorRow1 = "#cruscottoDettaglioGridR2_Div"
         mvSinObjPage.clickRow_ByIdAndRow(locatorRow1)
 
-
-        cy.window().then(win => {
-        cy.stub(win, 'open').callsFake((url) => {
-            return win.open.wrappedMethod.call(win, url, '_self');
-        }).as('Open');
-        });
+        
 
 
         mvSinObjPage.clickBtn_ById('#CmdConsultazione')
 
+        cy.window().then(win => {
+            cy.stub(win, 'open').callsFake((url) => {
+                return win.open.wrappedMethod.call(win, url, '_self');
+            }).as('Open');
+        });
+
+        mvSinObjPage.clickBtn_ById('#torna')
+  /* 
+        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
+        const xpathDettaglioPagamento = "#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > a"
+        csSinObjPage.clickBtn_ById(xpathDettaglioPagamento)
+
        
-                 
+              
           cy.get('@Open').wait(3000) 
           cy.find('.accordion').should('be.visible').invoke('text')  // for input or textarea, .invoke('val')
           .then(text => {         
               cy.log('>> read the value: ' + text)
           })
-       
+       */
         mvSinObjPage.clickBtn_ById('#CmdEsci')
     });
 });

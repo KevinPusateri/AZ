@@ -55,41 +55,57 @@ after(function () {
 
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistri', () => {
-    
+    // DATI DEL TEST
+    const numsin = "927646985"
+    const numpol = "528771171"
+    const targa_assicurato = "EN813ZW"
+    const nome_assicurato = "LUCA"
+    const cognome_assicurato = "MASET"
+    const cf_assicurato = "MSTLCU83L27C957U"
+    const targa_CTP = "FJ220KA"
+    const nome_CTP = "GERALD"
+    const cognome_CTP = "VIVAN"
+    const cf_CTP = "VVNGLD86A14Z222H"
+
+    const lblnumsin = "k-grid-content"
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per numero sinistro  ', function () {
-      
+    
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.setValue_ById('#claim_number','927646985')
+        csSinObjPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
         csSinObjPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
+        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per polizza assicurato  ', function () {
         
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
         csSinObjPage.clickObj_ByLabel('a','Polizza');
-        csSinObjPage.setValue_ById('#policy_number','528771171')
+        csSinObjPage.setValue_ById('#policy_number', numpol)
         let classvalue = "search_submit polizza k-button"
         csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa assicurato  ', function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
         csSinObjPage.clickObj_ByLabel('a','Targa');
-        csSinObjPage.setValue_ById('#plate','EN813ZW')
+        csSinObjPage.setValue_ById('#plate', targa_assicurato)
         let classvalue = "search_submit targa k-button"
         csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici del cliente persona fisica ', function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
         csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
-        csSinObjPage.setValue_ById('#cognome','MASET')
-        csSinObjPage.setValue_ById('#nome','LUCA')
+        csSinObjPage.setValue_ById('#cognome', cognome_assicurato)
+        csSinObjPage.setValue_ById('#nome', nome_assicurato)
         let classvalue = "search_submit anagrafica k-button"
         csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per codice fiscale del cliente persona fisica ', function () {
@@ -98,11 +114,44 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
         csSinObjPage.setValue_ById('#cognome','')
         csSinObjPage.setValue_ById('#nome','')
-        csSinObjPage.setValue_ById('#cf','MSTLCU83L27C957U')
+        csSinObjPage.setValue_ById('#cf', cf_assicurato)
         let classvalue = "search_submit anagrafica k-button"
         csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
+    });
+
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa controparte  ', function () {
+        
+        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
+        csSinObjPage.clickObj_ByLabel('a','Targa CTP')
+        csSinObjPage.setValue_ById('#plateCTP', targa_CTP)
+        let classvalue = "search_submit targaCTP k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
+    });
+
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici della controparte persona fisica ', function () {
+
+        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
+        csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici CTP')
+        csSinObjPage.setValue_ById('#cognomeCTP', cognome_CTP)
+        csSinObjPage.setValue_ById('#nomeCTP', nome_CTP)
+        let classvalue = "search_submit anagraficaCTP k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
     
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per codice fiscale del CTP persona fisica ', function () {
+
+        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
+        csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
+        csSinObjPage.setValue_ById('#cognomeCTP','')
+        csSinObjPage.setValue_ById('#nomeCTP','')
+        csSinObjPage.setValue_ById('#cfCTP', cf_assicurato)
+        let classvalue = "search_submit anagrafica k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
+    });
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per denominazione del cliente come persona giuridica ', function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
@@ -122,24 +171,4 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let classvalue = "search_submit anagrafica k-button"
         csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
     });
-
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa controparte  ', function () {
-        
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Targa CTP')
-        csSinObjPage.setValue_ById('#plateCTP','FJ220KA')
-        let classvalue = "search_submit targaCTP k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-    });
-
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici della controparte persona fisica ', function () {
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici CTP')
-        csSinObjPage.setValue_ById('#cognomeCTP','VIVAN')
-        csSinObjPage.setValue_ById('#nomeCTP','GERALD')
-        let classvalue = "search_submit anagraficaCTP k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-    });
-     
 });
