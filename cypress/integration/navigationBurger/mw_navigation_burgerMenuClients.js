@@ -118,7 +118,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         HomePage.reloadMWHomePage()
     });
     
-    it.only('Verifica aggancio Antiriciclaggio', function () {
+    it('Verifica aggancio Antiriciclaggio', function () {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Antiriciclaggio')
         BurgerMenuClients.backToClients()

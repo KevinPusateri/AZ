@@ -223,6 +223,7 @@ class BurgerMenuSales extends Sales {
                     Common.canaleFromPopup()
                     cy.wait('@getDanni', { requestTimeout: 40000 })
                     cy.wait('@postDanni', { requestTimeout: 40000 })
+                    cy.wait(5000)
                     getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
                 }
                 else {
