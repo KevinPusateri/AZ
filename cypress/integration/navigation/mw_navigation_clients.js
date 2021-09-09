@@ -127,7 +127,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
         Clients.verificaRichiesteDigitalMe()
     });
 
-    it('Verifica aggancio Richiesta Digital Me - button Vedi tutte', function () {
+    it.only('Verifica aggancio Richiesta Digital Me - button Vedi tutte', function () {
         TopBar.clickClients()
         Clients.clickVediTutte()
         Clients.checkDigitalMe()

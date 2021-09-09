@@ -174,7 +174,7 @@ class LandingClients {
                 });
                 cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
                     .should('include', '+');
-                cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
+                cy.get('app-digital-me-context-menu').find('nx-icon[name^="mail"]').parent().invoke('text').should('include', '@');
                 cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
                 cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
                 cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
@@ -234,14 +234,14 @@ class LandingClients {
                     case 'Attivazione Consensi Digital Me':
                         cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
                             .should('include', '+');
-                        cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
+                        cy.get('app-digital-me-context-menu').find('nx-icon[name^="mail"]').parent().invoke('text').should('include', '@');
                         cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
                         break;
                     default:
                         cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
                             .should('include', '+');
-                        cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
+                        cy.get('app-digital-me-context-menu').find('nx-icon[name^="mail"]').parent().invoke('text').should('include', '@');
                         cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');

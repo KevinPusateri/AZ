@@ -290,15 +290,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
-    // Accesso Negato e su excel
-    // it('Verifica aggancio App cumulo terremoti', function () {
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('App cumulo terremoti').click()
-    // canaleFromPopup()
-    //     cy.get('a').contains('Sales').click()
-    // })
-
     it('Verifica aggancio Note di contratto', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Note di contratto')
