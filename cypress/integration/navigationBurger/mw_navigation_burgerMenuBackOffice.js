@@ -137,7 +137,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it.only('Verifica aggancio Incasso per conto', function () {
+    it('Verifica aggancio Incasso per conto', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Incasso per conto')
         BurgerMenuBackOffice.backToBackOffice()
