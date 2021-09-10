@@ -26,8 +26,12 @@ class DatiPreventivo {
 
     }
     static verificaUnico() {
-        cy.contains('Unico').click()
+       // cy.contains('Unico').click()
         //TODO" 1 Aggiornamento unico"
+        cy.wait(10000)
+        cy.get('span[class="nx-checkbox__control"]').click()
+        cy.wait(10000)
+        getIFrame().find('nx-checkbox[id="informativa"]').click()
     }
     static clickAvanti() {
         cy.wait(10000)
