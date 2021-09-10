@@ -218,9 +218,8 @@ class LandingClients {
 
     /**
      * Verifica se gli elementi sono visibili e il menu a tendina sia corretta
-     * @param {string} tab - Nome del tab (Richieste Cliente, Pubblicazione Proposte)  
      */
-    static digitalMe(tab) {
+    static digitalMe() {
         cy.get('app-digital-me-main-table').find('tr[class="nx-table-row ng-star-inserted"]').should('be.visible')
         cy.get('app-digital-me-main-table').find('tr[class="nx-table-row ng-star-inserted"]').first()
             .find('td').eq(2).then(($td) => {
@@ -228,6 +227,10 @@ class LandingClients {
                 cy.get('tr[class="nx-table-row ng-star-inserted"]').first().find('button[class="row-more-icon-button"]').click()
                 switch (checkAttivita) {
                     case 'Firma Digital Me':
+                        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
+                        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
+                        break;
+                    case 'Firma e Pagamento DM':
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
                         break;

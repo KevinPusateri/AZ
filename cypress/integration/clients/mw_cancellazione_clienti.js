@@ -77,7 +77,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
     LandingRicerca.checkClienteNotFound(cliente)
   })
 
-  it.only('Verifica Cancellazione clienti PG', function () {
+  it('Verifica Cancellazione clienti PG', function () {
     HomePage.reloadMWHomePage()
     TopBar.clickClients()
     BurgerMenuClients.clickLink('Cancellazione Clienti')
@@ -87,7 +87,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
 
   })
 
-  it.only('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
+  it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
     HomePage.reloadMWHomePage()
     TopBar.search(cliente)
     LandingRicerca.checkClienteNotFound(cliente)
