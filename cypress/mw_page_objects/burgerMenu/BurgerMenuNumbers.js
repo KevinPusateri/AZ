@@ -123,7 +123,7 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
-                getIFrame().find('#contentPane:contains("Fonti"):visible')
+                getIFrame().find('#btnFonti:contains("Fonti"):visible')
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO_FONTE:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });

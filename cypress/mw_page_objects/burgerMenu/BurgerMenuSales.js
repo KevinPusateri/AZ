@@ -47,7 +47,6 @@ const LinksBurgerMenu = {
     ALLIANZ_GLOBAL_ASSISTANCE: 'Allianz Global Assistance',
     ALLIANZ_PLACEMENT_PLATFORM: 'Allianz placement platform',
     QUALITÀ_PORTAFOGLIO_AUTO: 'Qualità portafoglio auto',
-    APP_CUMULO_TERREMOTI: 'App cumulo terremoti',
     NOTE_DI_CONTRATTO: 'Note di contratto',
     ACOM_GESTIONE_INIZIATIVE: 'ACOM Gestione iniziative',
 
@@ -224,6 +223,7 @@ class BurgerMenuSales extends Sales {
                     Common.canaleFromPopup()
                     cy.wait('@getDanni', { requestTimeout: 40000 })
                     cy.wait('@postDanni', { requestTimeout: 40000 })
+                    cy.wait(5000)
                     getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
                 }
                 else {
@@ -273,9 +273,9 @@ class BurgerMenuSales extends Sales {
                     url: '**/Vita/**'
                 }).as('vita');
                 Common.canaleFromPopup()
-                // cy.wait('@vita', { requestTimeout: 30000 });
+                cy.wait('@vita', { requestTimeout: 30000 });
                 cy.wait(6000)
-                getIFrame().find('input[value="Ricerca"]').invoke('attr', 'value').should('equal', 'Ricerca')
+                getIFrame().find('input[value="Ricerca"]:visible')
                 break;
             case LinksBurgerMenu.DOCUMENTI_ANNULLATI:
                 Common.canaleFromPopup()
@@ -308,8 +308,6 @@ class BurgerMenuSales extends Sales {
             case LinksBurgerMenu.QUALITÀ_PORTAFOGLIO_AUTO:
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
-                break;
-            case LinksBurgerMenu.APP_CUMULO_TERREMOTI:
                 break;
             case LinksBurgerMenu.NOTE_DI_CONTRATTO:
                 Common.canaleFromPopup()

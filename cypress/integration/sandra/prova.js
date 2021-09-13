@@ -69,7 +69,8 @@ describe('Ricerca per preventivo', {
        
        DatiPreventivo.ClickCheckTarga()
       
-     
+       DatiPreventivo.clickAvanti()
+
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
     })
 })

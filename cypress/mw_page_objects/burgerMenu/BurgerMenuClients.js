@@ -131,7 +131,6 @@ class BurgerMenuClients extends Clients {
                 cy.get('@Open')
                 
                 cy.get('app-home').should('exist').and('be.visible').and('contain.text', 'CERCA INTERVENTO')
-                cy.go('back')
                 break;
         }
     }

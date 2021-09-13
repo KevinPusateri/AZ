@@ -172,7 +172,7 @@ class BackOffice {
                 break;
             case LinksContabilita.DELEGHE_SDD:
                 cy.wait(10000)
-                getIFrame().find('input[value="Carica"]').invoke('attr', 'value').should('equal', 'Carica')
+                getIFrame().find('input[value="Carica"]').should('be.visible').invoke('attr', 'value').should('equal', 'Carica')
                 break;
             case LinksContabilita.QUADRATURA_UNIFICATA:
                 getIFrame().find('#quadNavigationBar:contains("Q.U.A.D. - home page"):visible')
@@ -182,7 +182,7 @@ class BackOffice {
                 break;
             case LinksContabilita.INCASSO_PER_CONTO:
                 cy.wait(10000)
-                getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
+                getIFrame().find('input[value="Cerca"]').should('be.visible').invoke('attr', 'value').should('equal', 'Cerca')
                 break;
             case LinksContabilita.INCASSO_MASSIVO:
                 getIFrame().find('a:contains("Apri filtri"):visible')

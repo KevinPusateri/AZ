@@ -101,7 +101,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.checkLinksOnEmettiPolizza()
     })
 
-    it.skip('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
+    it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
         TopBar.clickSales()
         Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
         Sales.backToSales()

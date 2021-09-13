@@ -7,6 +7,7 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import BurgerMenuClients from "../../mw_page_objects/burgerMenu/BurgerMenuClients"
 import Clients from "../../mw_page_objects/clients/LandingClients"
+import HomePage from "../../mw_page_objects/common/HomePage"
 
 //#region Username Variables
 const userName = 'TUTF021'
@@ -30,7 +31,7 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-      LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw)
 
 
 })
@@ -111,16 +112,16 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         BurgerMenuClients.clickLink('Gestione fonte principale')
         BurgerMenuClients.backToClients()
     });
-
+    it('Verifica aggancio Hospital scanner', function () {
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Hospital scanner')
+        HomePage.reloadMWHomePage()
+    });
+    
     it('Verifica aggancio Antiriciclaggio', function () {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Antiriciclaggio')
         BurgerMenuClients.backToClients()
     });
 
-    it('Verifica aggancio Hospital scanner', function () {
-        TopBar.clickClients()
-        BurgerMenuClients.clickLink('Hospital scanner')
-        BurgerMenuClients.backToClients()
-    });
 });

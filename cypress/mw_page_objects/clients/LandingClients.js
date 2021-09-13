@@ -174,7 +174,7 @@ class LandingClients {
                 });
                 cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
                     .should('include', '+');
-                cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
+                cy.get('app-digital-me-context-menu').find('nx-icon[name^="mail"]').parent().invoke('text').should('include', '@');
                 cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
                 cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
                 cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
@@ -218,9 +218,8 @@ class LandingClients {
 
     /**
      * Verifica se gli elementi sono visibili e il menu a tendina sia corretta
-     * @param {string} tab - Nome del tab (Richieste Cliente, Pubblicazione Proposte)  
      */
-    static digitalMe(tab) {
+    static digitalMe() {
         cy.get('app-digital-me-main-table').find('tr[class="nx-table-row ng-star-inserted"]').should('be.visible')
         cy.get('app-digital-me-main-table').find('tr[class="nx-table-row ng-star-inserted"]').first()
             .find('td').eq(2).then(($td) => {
@@ -231,17 +230,21 @@ class LandingClients {
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
                         break;
+                    case 'Firma e Pagamento DM':
+                        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
+                        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
+                        break;
                     case 'Attivazione Consensi Digital Me':
                         cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
                             .should('include', '+');
-                        cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
+                        cy.get('app-digital-me-context-menu').find('nx-icon[name^="mail"]').parent().invoke('text').should('include', '@');
                         cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
                         break;
                     default:
                         cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
                             .should('include', '+');
-                        cy.get('app-digital-me-context-menu').find('[href^="mailto"]').invoke('text').should('include', '@');
+                        cy.get('app-digital-me-context-menu').find('nx-icon[name^="mail"]').parent().invoke('text').should('include', '@');
                         cy.get('app-digital-me-context-menu').find('[href^="/matrix/clients/"]').should('contain', 'Apri scheda cliente');
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
@@ -279,8 +282,8 @@ class LandingClients {
                 'Coperture',
                 'Scoperture'
             ]
-            cy.get('ngu-tile').should('be.visible').each((title, i) => {
-                expect(title.text().trim()).to.include(titleGlobals[i]);
+            cy.get('ngu-tile').should('be.visible').find('div[class="chart-title homepage-chart-title"]').each((title, i) => {
+                expect(titleGlobals).to.include(title.text().trim());
             })
         })
 
