@@ -106,7 +106,7 @@ describe('Matrix Web : Convenzioni', {
                 cy.log('Retrived party relation : ' + currentClient[1].name + ' ' + currentClient[1].firstName)
                 retrivedClient = currentClient[0]
                 retrivedPartyRelations = currentClient[1]
-                LoginPage.logInMW('TUTF003', psw)
+                LoginPage.logInMW('TUTF003', psw,true,'010745000')
                 SintesiCliente.visitUrlClient(currentClient[0].customerNumber, false)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
