@@ -91,7 +91,7 @@ class SCUContiCorrenti {
                         cy.wrap(row)
                             .find('nx-icon')
                             .click()
-                        cy.get('button[class="nx-context-menu-item context-link"]').should('be.visible')
+                        cy.get('button[class^="nx-context-menu-item context-link"]').should('be.visible')
                         cy.get("lib-da-link").contains("Modifica conto corrente").click();
 
                     })

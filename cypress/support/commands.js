@@ -216,6 +216,7 @@ function resolve_index_or_name_to_index(index_or_name) {
 }
 
 Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
+  debugger
   cy.request({
     method: 'POST',
     log: false,

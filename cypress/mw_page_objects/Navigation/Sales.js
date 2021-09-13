@@ -91,7 +91,7 @@ class Sales {
         const linksCollegamentiRapidi = Object.values(LinksRapidi)
 
         if (!Cypress.env('monoUtenza'))
-            cy.get('app-quick-access').find('a').should('have.length', 5).each(($link, i) => {
+            cy.get('app-quick-access').find('a').should('have.length', 6).each(($link, i) => {
                 expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
             })
         else {
