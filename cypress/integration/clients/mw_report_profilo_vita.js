@@ -74,7 +74,7 @@ describe('Matrix Web : Report Profilo Vita', {
         openMode: 0,
     }
 }, () => {
-    it.skip('Accedere a MW con un\'utenza con doppio ruolo\n' +
+    it('Accedere a MW con un\'utenza con doppio ruolo\n' +
         'e ricercare un cliente PF presente solo in un\'agenzia con polizza Vita e da menu azioni\n' +
         'Verificare che ci sia la voce "Report Profilo Vita"', () => {
             cy.log('Retriving client PF with polizze vita, please wait...')
@@ -88,7 +88,7 @@ describe('Matrix Web : Report Profilo Vita', {
             })
         })
 
-    it.skip('Cliccare su "Report Profilo Vita"\n' +
+    it('Cliccare su "Report Profilo Vita"\n' +
         'Verificare che si apra la maschera di disambiguazione con la scelta dei due accuont, sceglierne uno\n' +
         'Verificare che si apra correttamente il pdf', () => {
             SintesiCliente.emettiReportProfiloVita()
@@ -96,7 +96,7 @@ describe('Matrix Web : Report Profilo Vita', {
             TopBar.logOutMW()
         })
 
-    it.skip('Da Clients ricercare un cliente PG presente su più agenzia dell\'hub con Polizza Vita e da menu azioni premere Report profilo vita\n' +
+    it('Da Clients ricercare un cliente PG presente su più agenzia dell\'hub con Polizza Vita e da menu azioni premere Report profilo vita\n' +
         'Verificare che si apra la maschera di disambiguazione con le agenzie\n' +
         '- scegliendo l\'agenzia dove non ha polizze vita : Verificare che venga visualizzato il messaggio "il cliente non ha in portafoglio nessuna polizza vita"\n' +
         '- scegliendo l\'agenzia dove ha le polizze vita :  verificare che si apra correttamente il pdf\n', () => {
