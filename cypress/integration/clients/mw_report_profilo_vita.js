@@ -33,10 +33,10 @@ let insertedId
 
 //#region Before After
 before(() => {
-    // cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-    //     insertedId = results.insertId
-    // })
-    //   LoginPage.logInMW(userName, psw)
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+        insertedId = results.insertId
+    })
+      LoginPage.logInMW(userName, psw)
 
 
 })
@@ -44,16 +44,16 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 afterEach(function () {
-    // if (this.currentTest.state !== 'passed') {
-    //     TopBar.logOutMW()
-    //     //#region Mysql
-    //     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-    //         let tests = testsInfo
-    //         cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-    //     })
-    //     //#endregion
-    //     Cypress.runner.stop();
-    // }
+    if (this.currentTest.state !== 'passed') {
+        TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
 })
 after(function () {
     TopBar.logOutMW()
