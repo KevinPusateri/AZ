@@ -123,16 +123,11 @@ class SCUCancellazioneClienti {
                     var indexCliente = ''
                     cy.get('@iframe').find('table[role="grid"] > tbody').first().within(() => {
                         cy.get('tr').each(($ele, index) => {
-                            // cy.wrap($ele).find('td').eq(3).invoke('text').then((textState) => {
-                            //     if (textState === "P") {
                             listIndex.push(index)
-                            // }
-                            // })
                         })
 
                         cy.get('tr').then(($tr) => {
                             indexCliente = listIndex[Math.floor(Math.random() * listIndex.length)]
-                            debugger
                             cy.wait(2000)
                             cy.wrap($tr).eq(indexCliente).find('td').eq(5).find('input').click()
                             cy.wrap($tr).eq(indexCliente).find('td').eq(2).find('span[class="value"]:first')
@@ -161,7 +156,7 @@ class SCUCancellazioneClienti {
                         cy.getIFrame()
                         cy.get('@iframe').find('div[class="modal-dialog"]').should('exist').and('be.visible')
                             .and('contain.text', 'Cancellazione clienti completata')
-                        cy.get('@iframe').find('button[class="close"]').click()
+                        cy.get('@iframe').find('button:contains("Chiudi"):visible').click()
                     })
 
                 })
@@ -281,11 +276,7 @@ class SCUCancellazioneClienti {
                     var indexCliente = ''
                     cy.get('@iframe').find('table[role="grid"]:visible > tbody').first().within(() => {
                         cy.get('tr').each(($ele, index) => {
-                            // cy.wrap($ele).find('td').eq(3).invoke('text').then((textState) => {
-                            // if (textState === "P") {
                             listIndex.push(index)
-                            // }
-                            // })
                         })
 
                         cy.get('tr').then(($tr) => {
@@ -318,7 +309,7 @@ class SCUCancellazioneClienti {
                         cy.getIFrame()
                         cy.get('@iframe').find('div[class="modal-dialog"]').should('exist').and('be.visible')
                             .and('contain.text', 'Cancellazione clienti completata')
-                        cy.get('@iframe').find('button[class="close"]').click()
+                        cy.get('@iframe').find('button:contains("Chiudi"):visible').click()
                     })
                 })
             }

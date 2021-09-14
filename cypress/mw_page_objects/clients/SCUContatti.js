@@ -365,8 +365,6 @@ class SCUContatti {
               else
                 assert.fail('il contatto non è stato eliminato')
             })
-            // cy.wrap(table).find('app-client-contact-table-row').should('not.contain.text',contatto.tipo)
-            // .and('not.contain.text',contatto.principale).and('not.contain.text', contatto.email)
           });
       } else if (contatto.tipo === "Sito Web") {
         cy.wrap(table)
