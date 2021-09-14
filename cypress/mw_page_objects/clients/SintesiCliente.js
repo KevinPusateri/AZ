@@ -697,7 +697,7 @@ class SintesiCliente {
 
     /**
      * Verifica se la Scheda del Cliente ha presente o meno il Numero o la Mail principale
-     * @param {*} contactType tipo di contatto a scelta tra 'numero' e 'mail'
+     * @param {string} contactType tipo di contatto a scelta tra 'numero' e 'mail'
      * @returns true se presente, false se assente
      */
     static checkContattoPrincipale(contactType) {
@@ -716,7 +716,7 @@ class SintesiCliente {
 
     /**
      * Aggiunge Contatto principale (a scelta tra 'numero' o 'mail') 
-     * @param {*} contactType tipo di contatto a scelta tra 'numero' e 'mail'
+     * @param {string} contactType tipo di contatto a scelta tra 'numero' e 'mail'
      */
     static aggiungiContattoPrincipale(contactType) {
         let missingValue
