@@ -42,10 +42,16 @@ class Portafoglio {
         searchClientWithPolizza()
     }
 
+    /**
+     * Torna indietro 
+     */
     static back() {
         cy.get('a').contains('Clients').click()
     }
 
+    /**
+     * Click Il tab Portafoglio
+     */
     static clickTabPortafoglio() {
         cy.intercept('POST', '**/graphql', (req) => {
             aliasQuery(req, 'contract')
@@ -59,6 +65,9 @@ class Portafoglio {
 
     }
 
+    /**
+     * Verifica presenza dei subTabs di Portafoglio
+     */
     static checkLinksSubTabs() {
         cy.get('nx-tab-header').should('be.visible')
         cy.get('button').should('be.visible')
@@ -74,6 +83,9 @@ class Portafoglio {
         })
     }
 
+    /**
+     * Verifica Se il Cliente possiede delle Pollizze (Polizze attive)
+     */
     static checkPolizzeAttive() {
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Polizze attive")').is(':visible')
@@ -93,6 +105,9 @@ class Portafoglio {
         })
     }
 
+    /**
+     * Verifica la presenza dei preventivi
+     */
     static checkPreventivi() {
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Preventivi")').is(':visible')
@@ -118,6 +133,9 @@ class Portafoglio {
         })
     }
 
+    /**
+     * Verifica la presenza delle proposte
+     */
     static checkProposte() {
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Proposte")').is(':visible')
@@ -156,6 +174,9 @@ class Portafoglio {
 
     }
 
+    /**
+     * Verifica la presenza delle polizze non in vigore
+     */
     static checkNonInVigore() {
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Polizze")').is(':visible')
@@ -176,6 +197,9 @@ class Portafoglio {
         })
     }
 
+    /**
+     * Verifica la presenza dei sinistri
+     */
     static checkSinistri() {
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Sinistri")').is(':visible')
@@ -187,7 +211,7 @@ class Portafoglio {
                 cy.get('app-wallet-claims').find('app-section-title').should('contain.text', 'Sinistri')
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.get('app-claim-card').first()
-                    .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h ellipsis-icon"]').click()
+                    .find('app-contract-context-menu > nx-icon').click()
 
                 cy.get('.cdk-overlay-container').find('button').contains('Consulta sinistro').click()
                 getIFrame().find('a[class="active"]').should('contain.text', 'Dettaglio del Sinistro')
@@ -346,6 +370,10 @@ class Portafoglio {
         }
     }
 
+    /**
+     * Verifica che la polizza specificata sia presente su "Polizze attive"
+     * @param {string} numberPolizza : numero della polizza 
+     */
     static checkPolizzaIsPresentOnPolizzeAttive(numberPolizza) {
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
 
@@ -420,7 +448,7 @@ class Portafoglio {
     }
 
     /**
-     * Verifico che la pollizza sia presente
+     * Verifico che la pollizza sia presente su "Non in Vigore"
      * @param {string} numberPolizza : numero della polizza
      */
     static checkPolizzaIsPresentOnNonInVigore(numberPolizza) {
@@ -498,7 +526,7 @@ class Portafoglio {
 
 
     /**
-     * 
+     * Verifica che la polliza sia in stato di "Sospesa"
      * @param {string} currentCustomerNumber : url del client specifico
      * @param {string} numberPolizza : numero della polizza
      */
@@ -570,6 +598,10 @@ class Portafoglio {
         }
     }
 
+    /**
+     * Esegui "storno Annullamento" della polizza specificata
+     * @param {string} numberPolizza : numero della polliza 
+     */
     static clickStornoAnnullamento(numberPolizza) {
         cy.get('app-contract-card').should('be.visible')
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first()

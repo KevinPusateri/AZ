@@ -567,9 +567,9 @@ class Sales {
                 req.alias = 'gqlSfera'
             }
         })
-        cy.get('app-lob-link').contains(lob).click()
+        cy.get('app-lob-link').should('be.visible').contains(lob).click()
         cy.wait('@gqlSfera')
-        cy.get('app-receipt-manager-footer').find('button:contains("Estrai")').click()
+        cy.get('app-receipt-manager-footer').find('button:contains("Estrai"):visible').click()
         cy.get('app-table-component').should('be.visible')
         cy.get('nx-header-actions').should('contain.text', 'Espandi Pannello')
     }

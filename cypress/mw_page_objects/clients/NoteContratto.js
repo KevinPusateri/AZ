@@ -49,7 +49,7 @@ class NoteContratto {
         //#region Aggiungi una nota di contratto 
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').first().should('exist').then(($contract) => {
             cy.wrap($contract)
-                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h ellipsis-icon"]').click()
+                .find('app-contract-context-menu > nx-icon').click()
             cy.get('.cdk-overlay-container').should('contain.text', 'Note di contratto').within(($overlay) => {
                 cy.get('button').should('be.visible')
                 cy.wrap($overlay).find('button:contains("Note di contratto")').click()
