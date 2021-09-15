@@ -91,7 +91,7 @@ class TopBar extends HomePage {
     static logOutMW() {
         cy.get('lib-user-header').should('be.visible')
         cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]:visible').click();
-        cy.get('lib-user-header-popover-container').should('be.visible').within(()=>{
+        cy.get('lib-user-header-popover-container').should('be.visible').within(() => {
             cy.contains('Logout').click({ force: true })
         })
 
@@ -264,9 +264,15 @@ class TopBar extends HomePage {
         if (page === LinkUtilita.CASELLA_DI_POSTA_ED_AGENZIA ||
             page === LinkUtilita.BANCHE_DATI_ANIA ||
             page === LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS) {
-            cy.contains(page).parents('lib-check-user-permissions').find('a[class="ng-star-inserted"]').invoke('removeAttr', 'target').click()
+            cy.get('lib-switch-button-utility').should('be.visible').within(() => {
+
+                cy.contains(page).should('be.visible').parents('lib-check-user-permissions').find('a[class="ng-star-inserted"]').invoke('removeAttr', 'target').click()
+            })
         } else {
-            cy.contains(page).click()
+            cy.get('lib-switch-button-utility').should('be.visible').within(() => {
+
+                cy.contains(page).click()
+            })
         }
         Common.canaleFromPopup()
         switch (page) {
@@ -430,8 +436,8 @@ class TopBar extends HomePage {
     static clickSecondWindow() {
         if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
             cy.get('a[target="MatrixF2"]').should('exist').invoke('removeAttr', 'target').click()
-        }else{
-            cy.get('lib-header-right').should('be.visible').within(()=>{
+        } else {
+            cy.get('lib-header-right').should('be.visible').within(() => {
                 cy.get('nx-icon[name="launch"]').click()
             })
             Common.canaleFromPopup(true)

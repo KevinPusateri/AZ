@@ -166,7 +166,7 @@ class Portafoglio {
                         expect(interception.response.statusCode).to.be.eq(200);
                     });
 
-                    getIFrame().find('#casella-ricerca').should('be.visible').and('contain.text', 'Cerca')
+                    getIFrame().find('a:contains("Contratto"):visible')
                     this.back()
                 })
             }
@@ -226,7 +226,7 @@ class Portafoglio {
      * ("Polizze attive")
      */
     static clickSubTab(subTab) {
-        cy.get('nx-tab-header').contains(subTab).click({ force: true })
+        cy.get('nx-tab-header').scrollIntoView().contains(subTab).scrollIntoView().click({ force: true })
     }
 
     /**

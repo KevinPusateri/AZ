@@ -171,7 +171,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         } else this.skip()
     })
 
-    it('Verifica aggancio Recupero preventivi e quotazioni', function () {
+    it.only('Verifica aggancio Recupero preventivi e quotazioni', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Recupero preventivi e quotazioni')
         BurgerMenuSales.backToSales()

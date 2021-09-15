@@ -62,9 +62,9 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         BackOffice.clickAppuntamentiFuturi()
     });
 
-    it('Verifica atterraggio VPS Rami Vari("News")', function () {
+    it('Verifica atterraggio IVASS("News")', function () {
         TopBar.clickBackOffice()
-        BackOffice.clickVPSRami()
+        BackOffice.clickNewsLanding()
         BackOffice.backToBackOffice()
     });
 
