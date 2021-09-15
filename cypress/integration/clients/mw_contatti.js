@@ -36,7 +36,7 @@ before(() => {
   cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
     insertedId = results.insertId
   })
-    LoginPage.logInMW(userName, psw)
+  LoginPage.logInMW(userName, psw)
 
 
   cy.task('nuovoContatto').then((object) => {
@@ -46,7 +46,6 @@ before(() => {
     contatto.prefisso = ""
     contatto.orario = ""
   })
-  HomePage.closeIndidentBox()
 })
 
 beforeEach(() => {
@@ -102,11 +101,9 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.checkContatti(contatto)
   })
 
-  //TODO: Da completare
-  // it('Verifica l\'eliminazione del Fisso', function () {
-  //   SCUContatti.eliminaContatto(contatto)
-  //   cy.wait(10000)
-  // })
+  it('Verifica l\'eliminazione del Fisso', function () {
+    SCUContatti.eliminaContatto(contatto)
+  })
 
   it('Verifica l\'operazione di inserimento - tipo: Cellulare', function () {
     LandingRicerca.searchRandomClient(true, "PF", "E")
@@ -141,6 +138,10 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.checkContatti(contatto)
   })
 
+  it('Verifica l\'eliminazione del Cellulare', function () {
+    SCUContatti.eliminaContatto(contatto)
+  })
+
   it('Verifica l\'operazione di inserimento - tipo: Fax', function () {
     LandingRicerca.searchRandomClient(true, "PF", "E")
     LandingRicerca.clickRandomResult('PF')
@@ -172,6 +173,9 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
+  })
+  it('Verifica l\'eliminazione del Fax', function () {
+    SCUContatti.eliminaContatto(contatto)
   })
 
   it('Verifica l\'operazione di inserimento - tipo: Email', function () {
@@ -210,6 +214,11 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
   })
+
+  it('Verifica l\'eliminazione del Email', function () {
+    SCUContatti.eliminaContatto(contatto)
+  })
+
   it('Verifica l\'operazione di inserimento - tipo: Sito Web', function () {
     LandingRicerca.searchRandomClient(true, "PF", "E")
     LandingRicerca.clickRandomResult('PF')
@@ -246,6 +255,11 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
   })
+
+  it('Verifica l\'eliminazione del Sito Web', function () {
+    SCUContatti.eliminaContatto(contatto)
+  })
+
   it('Verifica l\'operazione di inserimento - tipo: Numero Verde', function () {
     LandingRicerca.searchRandomClient(true, "PF", "E")
     LandingRicerca.clickRandomResult('PF')
@@ -270,6 +284,7 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
   })
+
   it('Verifica la modifica: Numero Verde ', function () {
     SCUContatti.modificaContatti(contatto).then(contact => {
       contatto = contact
@@ -280,6 +295,10 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
+  })
+
+  it('Verifica l\'eliminazione del Numero Verde', function () {
+    SCUContatti.eliminaContatto(contatto)
   })
 
   it('Verifica l\'operazione di inserimento - tipo: Fax Verde', function () {
@@ -319,6 +338,10 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.checkContatti(contatto)
   })
 
+  it('Verifica l\'eliminazione del Fax Verde', function () {
+    SCUContatti.eliminaContatto(contatto)
+  })
+
   it('Verifica l\'operazione di inserimento - tipo: Ufficio', function () {
     LandingRicerca.searchRandomClient(true, "PF", "E")
     LandingRicerca.clickRandomResult('PF')
@@ -355,6 +378,11 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
   })
+
+  it('Verifica l\'eliminazione dell\'Ufficio', function () {
+    SCUContatti.eliminaContatto(contatto)
+  })
+
   it('Verifica l\'operazione di inserimento - tipo: PEC', function () {
     LandingRicerca.searchRandomClient(true, "PF", "E")
     LandingRicerca.clickRandomResult('PF')
@@ -387,5 +415,9 @@ describe('Matrix Web : Creazione Contatto', function () {
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
+  })
+
+  it('Verifica l\'eliminazione della PEC', function () {
+    SCUContatti.eliminaContatto(contatto)
   })
 })

@@ -33,27 +33,24 @@ let insertedId
 
 //#region Before After
 before(() => {
-    // cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-    //     insertedId = results.insertId
-    // })
-    //   LoginPage.logInMW(userName, psw)
-
-
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
+        insertedId = results.insertId
+    })
 })
 beforeEach(() => {
     cy.preserveCookies()
 })
 afterEach(function () {
-    // if (this.currentTest.state !== 'passed') {
-    //     TopBar.logOutMW()
-    //     //#region Mysql
-    //     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-    //         let tests = testsInfo
-    //         cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-    //     })
-    //     //#endregion
-    //     Cypress.runner.stop();
-    // }
+    if (this.currentTest.state !== 'passed') {
+        //TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
 })
 after(function () {
     TopBar.logOutMW()
@@ -74,27 +71,6 @@ describe('Matrix Web : Report Profilo Vita', {
         openMode: 0,
     }
 }, () => {
-    it('Accedere a MW con un\'utenza con doppio ruolo\n' +
-        'e ricercare un cliente PF presente solo in un\'agenzia con polizza Vita e da menu azioni\n' +
-        'Verificare che ci sia la voce "Report Profilo Vita"', () => {
-            cy.log('Retriving client PF with polizze vita, please wait...')
-            cy.getClientWithPolizze('TUTF021', '86').then(customerNumber => {
-                currentCustomerNumber = customerNumber
-                SintesiCliente.visitUrlClient(customerNumber, false)
-                SintesiCliente.retriveUrl().then(currentUrl => {
-                    urlClient = currentUrl
-                })
-                SintesiCliente.checkVociSpallaSinistra('Report Profilo Vita')
-            })
-        })
-
-    it('Cliccare su "Report Profilo Vita"\n' +
-        'Verificare che si apra la maschera di disambiguazione con la scelta dei due accuont, sceglierne uno\n' +
-        'Verificare che si apra correttamente il pdf', () => {
-            SintesiCliente.emettiReportProfiloVita()
-            HomePage.reloadMWHomePage()
-            TopBar.logOutMW()
-        })
 
     it('Da Clients ricercare un cliente PG presente su più agenzia dell\'hub con Polizza Vita e da menu azioni premere Report profilo vita\n' +
         'Verificare che si apra la maschera di disambiguazione con le agenzie\n' +
@@ -130,6 +106,9 @@ describe('Matrix Web : Report Profilo Vita', {
                         //Clicchiamo in disambiguazione nell'ag dove NON ha le polizze VI
                         SintesiCliente.emettiReportProfiloVita(currentClient.agencyToVerify, true)
 
+                        HomePage.reloadMWHomePage()
+                        TopBar.logOutMW()
+
                         // //Clicchiamo in disambiguazione nell'ag che ha la polizza VI
                         // SintesiCliente.emettiReportProfiloVita('375000')
                     })
@@ -138,4 +117,26 @@ describe('Matrix Web : Report Profilo Vita', {
 
             loopRetriving()
         });
+
+    it('Accedere a MW con un\'utenza con doppio ruolo\n' +
+        'e ricercare un cliente PF presente solo in un\'agenzia con polizza Vita e da menu azioni\n' +
+        'Verificare che ci sia la voce "Report Profilo Vita"', () => {
+            cy.log('Retriving client PF with polizze vita, please wait...')
+            cy.getClientWithPolizze('TUTF021', '86').then(customerNumber => {
+                currentCustomerNumber = customerNumber
+                LoginPage.logInMW(userName, psw)
+                SintesiCliente.visitUrlClient(customerNumber, false)
+                SintesiCliente.retriveUrl().then(currentUrl => {
+                    urlClient = currentUrl
+                })
+                SintesiCliente.checkVociSpallaSinistra('Report Profilo Vita')
+            })
+        })
+
+    it('Cliccare su "Report Profilo Vita"\n' +
+        'Verificare che si apra la maschera di disambiguazione con la scelta dei due accuont, sceglierne uno\n' +
+        'Verificare che si apra correttamente il pdf', () => {
+            SintesiCliente.emettiReportProfiloVita()
+            HomePage.reloadMWHomePage()
+        })
 })

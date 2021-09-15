@@ -219,12 +219,12 @@ class BackOffice {
     //#endregion
 
     /**
-     * Clicca VPS Rami Vari ("News")
+     * Clicca ("News") da landingPage
      */
-    static clickVPSRami() {
+    static clickNewsLanding() {
         cy.get('lib-news-card').click();
         Common.canaleFromPopup()
-        getIFrame().find('span:contains("VPS Rami Vari: meno è meglio!"):visible')
+        getIFrame().find('span:contains("IVASS"):visible')
     }
 }
 

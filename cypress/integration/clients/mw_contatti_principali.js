@@ -36,7 +36,7 @@ let cliente
 //#region Support
 /**
  * 
- * @param {*} contactType : tipo di contatto a scelta tra 'numero' e 'mail'
+ * @param {string} contactType : tipo di contatto a scelta tra 'numero' e 'mail'
  */
 const searchClientWithoutContattiPrincipali = (contactType) => {
     LandingRicerca.searchRandomClient(true, "PF", "P")

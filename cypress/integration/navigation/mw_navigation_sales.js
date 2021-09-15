@@ -197,7 +197,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanamento" - lob di interesse: Rami Vari', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
-            Sales.lobDiInteresse('Rami Vari')
+            Sales.lobDiInteresse('Rami vari')
             Sales.backToSales()
         } else this.skip()
     })

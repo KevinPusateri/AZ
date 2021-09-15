@@ -27,12 +27,12 @@ class LoginPage {
 
     /**
      * Login in MW
-     * @param {*} userName : TUTF utilizzata per il login
-     * @param {*} psw : PSW della TUTF per effettuare il login
-     * @param {*} performeImpersonification  : default a true, effettua l'impersonificazione che di default è impostata su ARFPULINI2 sulla 010710000
-     * @param {*} agency : default a 010710000, setta l'agenzia sulla quale effettuare l'impersonificazione !! Al momento disponibili 01710000 e 01375000 !!
-     * @param {*} mockedNotifications : default a true, mocka le notifiche in atterraggio su MW
-     * @param {*} mockedNews : default a true, mocka le news in atterraggio su MW
+     * @param {string} userName : TUTF utilizzata per il login
+     * @param {string} psw : PSW della TUTF per effettuare il login
+     * @param {boolean} performeImpersonification  : default a true, effettua l'impersonificazione che di default è impostata su ARFPULINI2 sulla 010710000
+     * @param {string} agency : default a 010710000, setta l'agenzia sulla quale effettuare l'impersonificazione !! Al momento disponibili 01710000 e 01375000 !!
+     * @param {boolean} mockedNotifications : default a true, mocka le notifiche in atterraggio su MW
+     * @param {boolean} mockedNews : default a true, mocka le news in atterraggio su MW
      */
     static logInMW(userName, psw, performeImpersonification = true, agency = '010710000', mockedNotifications = true, mockedNews = true) {
         this.launchMW()
