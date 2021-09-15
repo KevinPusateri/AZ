@@ -116,7 +116,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
     ' Dalla pagina di dettaglio è verificato quanto segue: ' +
     ' (1) Selezionando il danneggiato, si analizza la sezione "PERIZIE" verificando la valorizzazione ' +
-    ' dei seguenti campi (Data incarico, Data scarico, Fiduciario, Tipo incarico, Stato. ' , function () {
+    ' dei seguenti campi (Data incarico, Data scarico, Fiduciario, Tipo incarico, Stato). ' , function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
         // Verifica : Apro la sezione del danneggiato (1)
@@ -281,8 +281,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     ' (2) verificare che le informazioni riferite ai dati di incarico (Data incarico, Data scarico, Tipo incarico, Stato incarico, Esito perizia, Data verifica perizia, Esito verifica perizia)', function () {
     
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        const xpathDettaglioPagamento = "#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > a"
-        csSinObjPage.clickBtn_ById(xpathDettaglioPagamento)
+        const xpathDettaglioPerizia = "#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > a"
+        csSinObjPage.clickBtn_ById(xpathDettaglioPerizia)
 
          // Verifica(1) : la valorizzazione del campo "Fiduciario" nella popup "Dettaglio Incarico Perizia"      
          const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  

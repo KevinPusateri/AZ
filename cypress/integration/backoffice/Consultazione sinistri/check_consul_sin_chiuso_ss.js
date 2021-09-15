@@ -56,42 +56,38 @@ after(function () {
 })
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO SENZA SEGUITO', () => {
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
-    ' Dalla pagina di dettaglio è verificato quanto segue: ' +
-    ' Nella sezione "Pagamenti", cliccando sul pulsante di "Dettagli", si apre la POPUP "Dettaglio Pagamento" ' +
-    ' verificare che le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato CHIUSO SENZA SEGUITO ' +
+    ' Dalla pagina di dettaglio è verificata la sezione INTESTAZIONE ed in particolare quanto segue: ' +
+    ' (1) siano valorizzati i campi Località e CLD/Danneggiato ' , function () {
              
         const mvSinObjPage = Object.create(MovimentazioneSinistriPage)
         mvSinObjPage.clickBtn_ById('#CmddettaglioChiusiSS')
 
-        const locatorRow1 = "#cruscottoDettaglioGridR2_Div"
-        mvSinObjPage.clickRow_ByIdAndRow(locatorRow1)
-
-        
-
-
-        mvSinObjPage.clickBtn_ById('#CmdConsultazione')
-
-        cy.window().then(win => {
-            cy.stub(win, 'open').callsFake((url) => {
-                return win.open.wrappedMethod.call(win, url, '_self');
-            }).as('Open');
-        });
-
-        mvSinObjPage.clickBtn_ById('#torna')
-  /* 
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        const xpathDettaglioPagamento = "#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > a"
-        csSinObjPage.clickBtn_ById(xpathDettaglioPagamento)
-
+        const locatorRow1 = "#cruscottoDettaglioGridR2_Div"        
+        mvSinObjPage.clickRow_ByIdAndRow(locatorRow1) 
        
-              
-          cy.get('@Open').wait(3000) 
-          cy.find('.accordion').should('be.visible').invoke('text')  // for input or textarea, .invoke('val')
-          .then(text => {         
-              cy.log('>> read the value: ' + text)
-          })
-       */
-        mvSinObjPage.clickBtn_ById('#CmdEsci')
+        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
+        // Verifica (2): Valore della località
+        const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer"
+        mvSinObjPage.getPromiseValue_ByCss(csslocalità)
+        // Verifica (2): la valorizzazione del CLD
+        const csscldDanneggiato = '#soggetti_danneggiati > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a'
+        mvSinObjPage.getPromiseValue_ByCss(csscldDanneggiato)
+       
+        
+    });
+  
+
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato CHIUSO SENZA SEGUITO ' +
+    'Analizzando la sezione Perizie e verifica che non sia presente la dicitura : "Non ci sono incarichi di perizia" ' , function () {
+   
+        const mvSinObjPage = Object.create(MovimentazioneSinistriPage)
+        
+        const xpathDettaglio = "#soggetti_danneggiati > div > div:nth-child(1) > a"
+        mvSinObjPage.clickBtn_ById(xpathDettaglio) 
+        
+        const xpathDettaglioPerizia = "#soggetti_danneggiati > div > div:nth-child(1) > div > div:nth-child(1) > div.item_content > p"
+        mvSinObjPage.checkObj_ByLocatorAndText(xpathDettaglioPerizia, "Non ci sono incarichi di perizia")
+
     });
 });

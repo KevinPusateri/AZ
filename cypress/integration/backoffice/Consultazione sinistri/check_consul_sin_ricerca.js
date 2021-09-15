@@ -55,7 +55,7 @@ after(function () {
 
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistri', () => {
-    // DATI DEL TEST
+    // DATI DEL TEST (Per la verifica selezionare un sinistro con controparte)
     const numsin = "927646985"
     const numpol = "528771171"
     const targa_assicurato = "EN813ZW"
@@ -152,6 +152,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
         csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
+
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per denominazione del cliente come persona giuridica ', function () {
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)   

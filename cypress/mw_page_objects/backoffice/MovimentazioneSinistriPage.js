@@ -25,8 +25,10 @@ const getIFrameMovSinistri = () => {
 class MovimentazioneSinistriPage {
     
     
+
    /**
-     * Click button by locator id
+     * Click on object defined by locator id
+     * @param {string} id : locator object id
      */
     static clickBtn_ById(id) {             
         getIFrameMovSinistri().find(id).should('be.visible').then((btn) => {    
@@ -41,10 +43,60 @@ class MovimentazioneSinistriPage {
         cy.wait(2000)
     }
 
-    static clickRow_ByIdAndRow(id) {     
-        let str = id.replace("_Div", "C1_Div")   
-        getIFrameMovSinistri().find(str).should('be.visible').click().log('>> row is clicked')       
+    static clickBtn_LinkByText(locator) {                   
+        getIFrameMovSinistri().find('a[href="javascript:;"]').contains('Chiudi').should('be.visible').click()
+        .log('>> object with label ['+locator+ '] is clicked')
         cy.wait(1000)        
+    }
+  /**
+     * Check if an object identified by locator and its label is displayed
+     * @param {string} locator : class attribute 
+     * @param {string} label : text displayed
+     */
+   static checkObj_ByLocatorAndText(locator, label) {
+    return new Cypress.Promise((resolve, reject) => {
+        getIFrameMovSinistri().find(locator).should('be.visible')
+        .then(($val) => {                                       
+            expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
+            let txt = $val.text().trim()                
+          
+            if (txt.includes(label)) {                   
+                cy.log('>> object with label: "' + label +'" is defined')
+                resolve(txt)    
+            } else
+                assert.fail(' object with label: "' + label +'" is not defined')
+        })
+    });                               
+    cy.wait(1000)            
+}
+/**
+     * Get a text value defined on object identified by its @css
+     * @param {string} css : locator object id
+     */
+ static getPromiseValue_ByCss(css) {
+    return new Cypress.Promise((resolve) => {
+        getIFrameMovSinistri()
+        .find(css)
+        .invoke('text')  // for input or textarea, .invoke('val')
+        .then(text => {         
+            cy.log('>> read the value: ' + text)
+            resolve((text.toString()+"\n"))                
+            });
+    });
+}
+    static clickRow_ByIdAndRow(id) {
+        let str = id.replace("_Div", "C1_Div")
+        getIFrameMovSinistri().find(str).should('be.visible').click().log('>> row is clicked')
+        getIFrameMovSinistri().find('#sinistroSelezionato').invoke('attr', 'value').then(($valueSinistro) => {
+            const sinistro = $valueSinistro
+            getIFrameMovSinistri().find('#compPolizzaSelezionato').invoke('attr', 'value').then(($compPolizza) => {
+                const compPolizza = $compPolizza
+                getIFrameMovSinistri().find('#CmdConsultazione').should('be.visible').invoke('removeAttr', 'onclick')
+                    .invoke('attr', 'href', 'https://portaleagenzie.pp.azi.allianz.it/dasincruscotto/openCons?comId=' + compPolizza + '&numSin=' + sinistro).click()
+            })
+        })
+        cy.wait(2000)
+        cy.wait(1000)
     }
 
     static IdExist(id)
