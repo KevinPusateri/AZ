@@ -510,6 +510,7 @@ class Sales {
             }
         });
         cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
+        cy.wait(5000)
         cy.get('.cards-container').should('be.visible').find('.card').first().click()
         cy.wait(15000)
         cy.wait('@digitalAgencyLink', { requestTimeout: 30000 });
