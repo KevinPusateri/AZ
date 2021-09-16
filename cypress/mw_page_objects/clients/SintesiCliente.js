@@ -530,12 +530,14 @@ class SintesiCliente {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Accedi al servizio di consulenza').click()
         cy.wait(2000)
-        cy.intercept({
-            method: 'GET',
-            url: '**/Vita/**'
-        }).as('getVita');
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('digitalAgencyLink')) {
+                req.alias = 'gqlDigitalAgencyLink'
+            }
+        })
+
         Common.canaleFromPopup()
-        cy.wait('@getVita', { requestTimeout: 60000 })
+        cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 30000 })
         cy.wait(10000)
         getIFrame().find('input[value="Avanti"]:visible').invoke('attr', 'value').should('equal', 'Avanti')
         getIFrame().find('input[value="Indietro"]:visible').invoke('attr', 'value').should('equal', 'Indietro')
@@ -782,8 +784,8 @@ class SintesiCliente {
             })
 
             //Finestra di disambiguazione
-            // cy.get('nx-modal-container').find('.agency-row').contains(agenzia).first().click().wait(3000)
-            cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
+            cy.get('nx-modal-container').find('.agency-row').contains(agenzia).first().click().wait(3000)
+            //cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
             cy.get('@open')
 
             cy.wait('@gqlclientReportLifePdf')

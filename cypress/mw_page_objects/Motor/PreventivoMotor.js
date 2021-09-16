@@ -16,74 +16,44 @@ class PreventivoMotor {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
+            cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click();
+            cy.wait(500)
+            cy.get('input[aria-label="Targa"]').type(targa);
+            cy.wait(500)
 
-            cy.get('input[ng-reflect-name="DataNascitaProprietario"]').should('exist').and('be.visible').type(dataNascita)
-            cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').type(targa);
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click()
+            cy.wait(500)
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(dataNascita)
+            cy.wait(1000)
 
-            cy.get('nx-checkbox[id="informativa"]').should('exist').and('be.visible').within(() => {
-                cy.get('span[class="nx-checkbox__control"]').click()
-            })
-            cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').type(targa);
+            cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
+            cy.wait(500)
 
-        })
+            cy.contains('Calcola').should('be.visible')
+            cy.contains('Calcola').click({ force: true })
 
-        cy.getIFrame()
-        cy.get('@iframe').within(() => {
-            cy.get('motor-root').as('corpo')
+            cy.get('input[aria-label="Indirizzo"]').should('exist').and('be.visible').click()
+            cy.wait(500)
+            cy.get('input[aria-label="Indirizzo"]').type('vittorio veneto');
+            cy.wait(500);
 
-            cy.get('button').as('Calcola')
-            const loopClickCalcola = () => {
+            cy.get('input[aria-label="NumeroCivico"]').should('exist').and('be.visible').click()
+            cy.wait(500)
+            cy.get('input[aria-label="NumeroCivico"]').type('52')
+            cy.wait(500);
 
-                cy.get('@Calcola').then(($calcola) => {
+            cy.get('input[aria-label="Comune"]').should('exist').and('be.visible').click()
+            cy.wait(500)
+            cy.get('input[aria-label="Comune"]').type('Savona')
+            cy.wait(1000);
 
-                    const checkButton = $calcola.find(':contains("Calcola")').is(':visible')
-                    if (checkButton) {
-                        cy.wait(2000);
-                        cy.contains('Calcola').should('be.visible')
-                        cy.contains('Calcola').click({ force: true })
-                        cy.wait(3000);
-                        cy.get('@corpo').then(($corpo) => {
-
-                            const checkNextPage = $corpo.find(':contains("Provenienza")').is(':visible')
-                            if (!checkNextPage) {
-                                cy.get('nx-natural-language-form').then(($container) => {
-                                    const checkContainerChanged = $container.find(':contains("Risiede")').is(':visible')
-                                    if (checkContainerChanged) {
-                                        cy.get('input[ng-reflect-name="Indirizzo"]').should('exist').and('be.visible').clear().type('vittorio veneto{enter}');
-                                        cy.wait(500);
-
-                                        cy.get('input[ng-reflect-name="NumeroCivico"]').should('exist').and('be.visible').clear().type('52{enter}')
-                                        cy.wait(500);
-
-                                        cy.get('input[ng-reflect-name="Comune"]').should('exist').and('be.visible').clear().type('Savona')
-                                        cy.wait(500);
-                                        loopClickCalcola()
-                                    } else
-                                        loopClickCalcola()
-                                })
-                            }
-
-                        })
-
-
-
-                    }
-
-                })
-            }
-
-            loopClickCalcola()
-        })
-        cy.getIFrame()
-
-
-        cy.get('@iframe').within(() => {
+            cy.contains('Calcola').click({ force: true })
+            cy.contains('Calcola').should('be.visible')
+            cy.contains('Calcola').click({ force: true })
 
             cy.contains('OK').should('be.visible')
             cy.contains('OK').click({ force: true })
         })
-
-
 
     }
 

@@ -69,7 +69,7 @@ class Portafoglio {
      * Verifica presenza dei subTabs di Portafoglio
      */
     static checkLinksSubTabs() {
-        cy.get('nx-tab-header').should('be.visible')
+        cy.get('nx-tab-header').first().scrollIntoView().should('exist')
         cy.get('button').should('be.visible')
         const tabPortafoglio = [
             'Polizze attive',

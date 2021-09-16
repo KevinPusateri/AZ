@@ -6,6 +6,7 @@
 	"projectId": "4ypuc8",
 	"numTestsKeptInMemory": 1,
 	"chromeWebSecurity": false,
+	"experimentalSessionSupport": false,
 	"baseUrl": "https://portaleagenzie.pp.azi.allianz.it/matrix/",
 	"env": {
 		"db": {

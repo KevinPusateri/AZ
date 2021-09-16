@@ -51,6 +51,18 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
+afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
+})
+
 after(function () {
     TopBar.logOutMW()
     //#region Mysql
@@ -68,6 +80,7 @@ describe('Matrix Web : Sospensione ', function () {
 
     it('Verifica che la polizza sia ancora presente nel tab Polizze attive ' +
         'ma abbia l’etichetta SOSPESA con tooltip “30 – Sospensione senza integrazione”', function () {
+            cy.log('Retriving client with Polizze for Sospensione, please wait...')
             cy.getClientWithPolizzeAnnullamento('TUTF021', '31', 'sospesa').then(polizzaClient => {
                 currentCustomerNumber = polizzaClient.customerNumber
                 numberPolizza = polizzaClient.numberPolizza

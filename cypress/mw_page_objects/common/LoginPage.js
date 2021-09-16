@@ -35,6 +35,7 @@ class LoginPage {
      * @param {boolean} mockedNews : default a true, mocka le news in atterraggio su MW
      */
     static logInMW(userName, psw, performeImpersonification = true, agency = '010710000', mockedNotifications = true, mockedNews = true) {
+
         this.launchMW()
 
         //Skip this two requests that blocks on homepage
