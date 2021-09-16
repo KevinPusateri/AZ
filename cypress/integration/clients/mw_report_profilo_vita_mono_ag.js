@@ -11,6 +11,7 @@ import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import HomePage from "../../mw_page_objects/common/HomePage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
+import Common from "../../mw_page_objects/common/Common"
 //#endregion import
 
 //#region Configuration
@@ -36,13 +37,15 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
+
+    LoginPage.logInMW(userName, psw)
 })
+
 beforeEach(() => {
     cy.preserveCookies()
 })
 afterEach(function () {
     if (this.currentTest.state !== 'passed') {
-        //TopBar.logOutMW()
         //#region Mysql
         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
             let tests = testsInfo
@@ -71,60 +74,12 @@ describe('Matrix Web : Report Profilo Vita', {
         openMode: 0,
     }
 }, () => {
-
-    it('Da Clients ricercare un cliente PG presente su più agenzia dell\'hub con Polizza Vita e da menu azioni premere Report profilo vita\n' +
-        'Verificare che si apra la maschera di disambiguazione con le agenzie\n' +
-        '- scegliendo l\'agenzia dove non ha polizze vita : Verificare che venga visualizzato il messaggio "il cliente non ha in portafoglio nessuna polizza vita"\n' +
-        '- scegliendo l\'agenzia dove ha le polizze vita :  verificare che si apra correttamente il pdf\n', () => {
-            cy.clearCookies()
-            cy.clearLocalStorage()
-            cy.log('Retriving client PG present in different agencies with polizze vita, please wait...')
-
-            const loopRetriving = (() => {
-                //! Cliente registrato su più agenzie HUB 010375000 con polizza VI solo su una ag -> partita iva 00578020935 
-                cy.getClientInDifferentAgenciesWithPolizze('010375000', 80, false, false, 'PG', '00578020935').then(currentClient => {
-                    cy.impersonification('TUTF008', currentClient.impersonificationToUse.account, currentClient.impersonificationToUse.agency).then(() => {
-                        cy.log('Retrived Client : ' + currentClient.clientToUse.vatIN)
-                        LoginPage.logInMW('TUTF008', psw, false)
-                        TopBar.search(currentClient.clientToUse.vatIN)
-                        cy.get('body').as('body').then(($body) => {
-                            cy.get('lib-clients-container').should('be.visible')
-                            const check = $body.find('span:contains("La ricerca non ha prodotto risultati")').is(':visible')
-                            if (check) {
-                                TopBar.logOutMW()
-                                loopRetriving()
-                            }
-                        })
-
-                        LandingRicerca.clickFirstResult()
-                        SintesiCliente.retriveUrl().then(currentUrl => {
-                            urlClient = currentUrl
-                        })
-
-                        SintesiCliente.checkAtterraggioSintesiCliente(currentClient.clientToUse.name)
-
-                        //Clicchiamo in disambiguazione nell'ag dove NON ha le polizze VI
-                        SintesiCliente.emettiReportProfiloVita(currentClient.agencyToVerify, true)
-
-                        HomePage.reloadMWHomePage()
-                        TopBar.logOutMW()
-
-                        // //Clicchiamo in disambiguazione nell'ag che ha la polizza VI
-                        // SintesiCliente.emettiReportProfiloVita('375000')
-                    })
-                })
-            })
-
-            loopRetriving()
-        });
-
     it('Accedere a MW con un\'utenza con doppio ruolo\n' +
         'e ricercare un cliente PF presente solo in un\'agenzia con polizza Vita e da menu azioni\n' +
         'Verificare che ci sia la voce "Report Profilo Vita"', () => {
             cy.log('Retriving client PF with polizze vita, please wait...')
             cy.getClientWithPolizze('TUTF021', '86').then(customerNumber => {
                 currentCustomerNumber = customerNumber
-                LoginPage.logInMW(userName, psw)
                 SintesiCliente.visitUrlClient(customerNumber, false)
                 SintesiCliente.retriveUrl().then(currentUrl => {
                     urlClient = currentUrl
@@ -136,7 +91,7 @@ describe('Matrix Web : Report Profilo Vita', {
     it('Cliccare su "Report Profilo Vita"\n' +
         'Verificare che si apra la maschera di disambiguazione con la scelta dei due accuont, sceglierne uno\n' +
         'Verificare che si apra correttamente il pdf', () => {
-            SintesiCliente.emettiReportProfiloVita()
+            SintesiCliente.emettiReportProfiloVita('710000')
             HomePage.reloadMWHomePage()
         })
 })

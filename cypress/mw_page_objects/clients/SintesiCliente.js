@@ -782,8 +782,8 @@ class SintesiCliente {
             })
 
             //Finestra di disambiguazione
-            // cy.get('nx-modal-container').find('.agency-row').contains(agenzia).first().click().wait(3000)
-            cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
+            cy.get('nx-modal-container').find('.agency-row').contains(agenzia).first().click().wait(3000)
+            //cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
             cy.get('@open')
 
             cy.wait('@gqlclientReportLifePdf')
