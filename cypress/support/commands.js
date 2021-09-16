@@ -586,7 +586,7 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
       cy.request({
         method: 'GET',
         retryOnStatusCodeFailure: true,
-        timeout: 60000,
+        timeout: 120000,
         log: false,
         url: (clientType === 'PF') ? 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
           : 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
@@ -608,7 +608,7 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
             cy.request({
               method: 'GET',
               retryOnStatusCodeFailure: true,
-              timeout: 60000,
+              timeout: 120000,
               log: false,
               url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
               headers: {
