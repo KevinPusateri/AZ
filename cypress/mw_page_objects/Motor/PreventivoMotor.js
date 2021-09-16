@@ -17,7 +17,7 @@ class PreventivoMotor {
         cy.get('@iframe').within(() => {
 
 
-            cy.get('input[ng-reflect-name="DataNascitaProprietario"]').should('exist').and('be.visible').type(dataNascita)
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').type(dataNascita)
             cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').type(targa);
 
             cy.get('nx-checkbox[id="informativa"]').should('exist').and('be.visible').within(() => {
@@ -49,13 +49,13 @@ class PreventivoMotor {
                                 cy.get('nx-natural-language-form').then(($container) => {
                                     const checkContainerChanged = $container.find(':contains("Risiede")').is(':visible')
                                     if (checkContainerChanged) {
-                                        cy.get('input[ng-reflect-name="Indirizzo"]').should('exist').and('be.visible').clear().type('vittorio veneto{enter}');
+                                        cy.get('input[aria-label="Indirizzo"]').should('exist').and('be.visible').clear().type('vittorio veneto{enter}');
                                         cy.wait(500);
 
-                                        cy.get('input[ng-reflect-name="NumeroCivico"]').should('exist').and('be.visible').clear().type('52{enter}')
+                                        cy.get('input[aria-label="NumeroCivico"]').should('exist').and('be.visible').clear().type('52{enter}')
                                         cy.wait(500);
 
-                                        cy.get('input[ng-reflect-name="Comune"]').should('exist').and('be.visible').clear().type('Savona')
+                                        cy.get('input[aria-label="Comune"]').should('exist').and('be.visible').clear().type('Savona')
                                         cy.wait(500);
                                         loopClickCalcola()
                                     } else
@@ -82,8 +82,6 @@ class PreventivoMotor {
             cy.contains('OK').should('be.visible')
             cy.contains('OK').click({ force: true })
         })
-
-
 
     }
 
