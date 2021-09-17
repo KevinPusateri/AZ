@@ -1,0 +1,17 @@
+{
+    "users" : [
+        {
+            "userName" : "LE00080",
+            "tutf": "TUTF021",
+            "agency": "010710000",
+            "agentId": "ARFPULINI2"
+        },
+        {
+            "userName" : "LE00038",
+            "tutf": "TUTF008",
+            "agency": "010710000",
+            "agentId": "ARFPULINI2"
+        }
+    ],
+    "psw": "P@ssw0rd!"
+}

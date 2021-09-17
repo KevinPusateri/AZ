@@ -90,6 +90,11 @@ function mysqlFinish(dbConfig, rowId, tests) {
 }
 //#endregion
 
+//Retrive logged win user
+function userWinLogged(){
+    return os.userInfo()
+}
+
 //#region Generazione Partita Iva Random
 function reverse(n) {
     let revNum = 0, lastDigit = 0;
@@ -230,6 +235,12 @@ module.exports = (on, config) => {
     on("task", {
         finishMysql({ dbConfig, rowId, tests }) {
             return mysqlFinish(dbConfig, rowId, tests)
+        }
+    });
+
+    on ("task", {
+        getWinUserLogged(){
+            return userWinLogged()
         }
     });
 

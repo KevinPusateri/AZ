@@ -128,6 +128,88 @@ class LoginPage {
             cy.wait('@gqlUserDetails')
         }
     }
+
+    /**
+     * Login in MW Advanced
+     * @param {boolean} mockedNotifications : default a true, mocka le notifiche in atterraggio su MW
+     * @param {boolean} mockedNews : default a true, mocka le news in atterraggio su MW
+     */
+    static logInMWAdvanced(mockedNotifications = true, mockedNews = true) {
+        this.launchMW()
+
+        //Skip this two requests that blocks on homepage
+        cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
+        cy.intercept(/launch-*/, 'ignore').as('launchStaging')
+
+        if (mockedNotifications) {
+
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('notifications')) {
+                    req.reply({ fixture: 'mockNotifications.json' })
+                }
+            })
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('getNotificationCategories')) {
+                    req.reply({ fixture: 'mockGetNotificationCategories.json' })
+                }
+            })
+
+        }
+
+        if (mockedNews) {
+
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('news')) {
+                    req.reply({ fixture: 'mockNews.json' })
+                }
+            })
+        }
+        else {
+            //Wait for news graphQL to be returned
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('news'))
+                    req.alias = 'gqlNews'
+            })
+        }
+
+        //Intecettiamo by default userDetails che serve a tutta una serie di chiamate in MW
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('userDetails'))
+                req.alias = 'gqlUserDetails'
+        })
+
+        //Recuperiamo l'utenza in base alla macchina che è in run da tutf.json
+        cy.task('getWinUserLogged').then((loggedUser) => {
+            cy.fixture("tutf").then(data => {
+                const user = data.users.filter(obj => {
+                    return obj.userName === loggedUser.username
+                })
+                debugger
+                cy.impersonification(user.tutf, user.agentId, user.agency).then(() => {
+                    debugger
+                    cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
+                    cy.get('input[name="Ecom_Password"]').type(data.psw, { log: false })
+                    cy.get('input[type="SUBMIT"]').click()
+
+                    if (!Cypress.env('monoUtenza'))
+                        Common.checkUrlEnv()
+                    if (!mockedNews)
+                        cy.wait('@gqlNews')
+
+                    cy.wait('@gqlUserDetails')
+
+                    if (Cypress.env('isSecondWindow'))
+                        TopBar.clickSecondWindow()
+                })
+            })
+        })
+
+        // //! MONOUTENZA DEDICATA PER EFFETTUARE I TEST SU SECONDA FINESTRA (AG 070004549)
+        // if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
+        //     agency = '070004549'
+        //     agentId = 'ASGNAZZARRO1'
+        // }
+    }
 }
 
 export default LoginPage
