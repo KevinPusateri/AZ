@@ -102,7 +102,7 @@ class SCUContiCorrenti {
                     var validIban = ibantools.isValidIBAN(newIban)
                     if (validIban) {
                         getSCU().find('#iban').clear().type(newIban)
-                        getSCU().find('#submit:contains("Salva")').click().wait(4000);
+                        getSCU().find('#submit:contains("Salva"):visible').click().wait(4000);
                         debugger
                         resolve(newIban);
                     }

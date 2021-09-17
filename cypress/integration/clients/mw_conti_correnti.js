@@ -110,7 +110,6 @@ describe('Matrix Web : Conti Correnti', function () {
 
   it('Verifica Modifica Conto corrente', function () {
     SCUContiCorrenti.modificaConto(contoCorrente).then((newConto) => {
-      debugger
       SintesiCliente.visitUrlClient(urlClient)
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Conti correnti')
