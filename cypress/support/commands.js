@@ -215,19 +215,18 @@ function resolve_index_or_name_to_index(index_or_name) {
   return index;
 }
 
-Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
-  cy.request({
-    method: 'POST',
-    log: false,
-    url: 'https://profilingbe.pp.azi.allianzit/profilingManagement/personation/' + tutf,
-    form: true,
-    body: { persUser: getPersUser, channel: getChannel }
-  }).then(resp => {
-    if (resp.status !== 200)
-      assert.fail('Impersonificazione non effettuata correttamente!')
-    //else
-    //cy.wait(2000)
-  })
+Cypress.Commands.add('impersonification', (user) => {
+    cy.request({
+      method: 'POST',
+      log: false,
+      url: 'https://profilingbe.pp.azi.allianzit/profilingManagement/personation/' + user.tutf,
+      form: true,
+      body: { persUser: user.agentId, channel: user.getChannel }
+    }).then(resp => {
+      if (resp.status !== 200)
+        assert.fail('Impersonificazione non effettuata correttamente!')
+
+    })
 })
 
 Cypress.Commands.add('getPartyRelations', (tutf) => {

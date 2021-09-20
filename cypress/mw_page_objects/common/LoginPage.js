@@ -183,10 +183,8 @@ class LoginPage {
             cy.fixture("tutf").then(data => {
                 const user = data.users.filter(obj => {
                     return obj.userName === loggedUser.username
-                })
-                debugger
-                cy.impersonification(user.tutf, user.agentId, user.agency).then(() => {
-                    debugger
+                })[0]
+                cy.impersonification(user).then(() => {
                     cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                     cy.get('input[name="Ecom_Password"]').type(data.psw, { log: false })
                     cy.get('input[type="SUBMIT"]').click()
