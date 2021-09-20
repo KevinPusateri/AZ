@@ -9,7 +9,6 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import SCU from "../../mw_page_objects/clients/SCU"
 import Folder from "../../mw_page_objects/common/Folder"
-import HomePage from "../../mw_page_objects/common/HomePage"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
@@ -18,12 +17,6 @@ import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafi
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 
-//#endregion
-
-//#region Username Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rd!'
-const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables

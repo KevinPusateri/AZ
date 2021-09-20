@@ -11,12 +11,6 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import HomePage from "../../mw_page_objects/common/HomePage";
 
-//#region Username Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rd!'
-const agency = '010710000'
-//#endregion
-
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')

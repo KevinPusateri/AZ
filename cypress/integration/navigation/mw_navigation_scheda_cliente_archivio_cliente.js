@@ -8,12 +8,6 @@ import ArchivioCliente from "../../mw_page_objects/clients/ArchivioCliente"
 
 Cypress.config('defaultCommandTimeout', 60000)
 
-//#region Username Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rd!'
-const agency = '010710000'
-//#endregion
-
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')

@@ -17,12 +17,6 @@ import SCUSalesNoteContratto from "../../mw_page_objects/sales/SCUSalesNoteContr
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-
-//#endregion
-
-//#region Username Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rd!'
 //#endregion
 
 //#region Mysql DB Variables
