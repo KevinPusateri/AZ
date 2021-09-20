@@ -10,17 +10,18 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
-import HomePage from "../../mw_page_objects/common/HomePage"
 import SCUContiCorrenti from "../../mw_page_objects/clients/SCUContiCorrenti"
 //#endregion import
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -51,6 +52,8 @@ before(() => {
     insertedId = results.insertId
   })
   LoginPage.logInMW(userName, psw)
+
+
   cy.fixture('iban.json').then((data) => {
     var indexScelta = Math.floor(Math.random() * data.iban.length);
     contoCorrente.iban = data.iban[indexScelta]
@@ -79,8 +82,8 @@ after(function () {
   TopBar.logOutMW()
   //#region Mysql
   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-      let tests = testsInfo
-      cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    let tests = testsInfo
+    cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
   })
   //#endregion
 
@@ -106,10 +109,17 @@ describe('Matrix Web : Conti Correnti', function () {
   })
 
   it('Verifica Modifica Conto corrente', function () {
-    SCUContiCorrenti.modificaConto(contoCorrente)
+    SCUContiCorrenti.modificaConto(contoCorrente).then((newConto) => {
+      SintesiCliente.visitUrlClient(urlClient)
+      DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+      DettaglioAnagrafica.clickSubTab('Conti correnti')
+      SCUContiCorrenti.checkContoCorrenteModificato(newConto)
+    })
   })
 
-  it('Verifica Conto corrente eliminato', function () {
-    SCUContiCorrenti.eliminaConto(contoCorrente)
-  })
+
+  //ADD TFS
+  // it('Verifica Conto corrente eliminato', function () {
+  //   SCUContiCorrenti.eliminaConto(contoCorrente)
+  // })
 })

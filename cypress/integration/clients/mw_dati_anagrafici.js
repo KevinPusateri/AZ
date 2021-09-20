@@ -14,11 +14,13 @@ import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafi
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -35,7 +37,9 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-    LoginPage.logInMW(userName, psw)
+      LoginPage.logInMW(userName, psw)
+
+
     LandingRicerca.searchRandomClient(true, "PF", "E")
     LandingRicerca.clickRandomResult()
     SintesiCliente.retriveClientNameAndAddress().then(currentClient => {

@@ -12,6 +12,7 @@ import BackOffice from "../../mw_page_objects/Navigation/BackOffice"
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -23,6 +24,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 
@@ -35,7 +37,7 @@ before(() => {
 
 beforeEach(() => {
     cy.preserveCookies()
-    Common.visitUrlOnEnv()
+    Common.visitUrlOnEnv(false,false)
 })
 
 after(function () {
@@ -60,11 +62,10 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         BackOffice.clickAppuntamentiFuturi()
     });
 
-    it('Verifica atterraggio VPS Rami Vari("News")', function () {
+    it('Verifica atterraggio IVASS("News")', function () {
         TopBar.clickBackOffice()
-        BackOffice.clickVPSRami()
+        BackOffice.clickNewsLanding()
         BackOffice.backToBackOffice()
-
     });
 
     it('Verifica links Sinistri', function () {
@@ -91,9 +92,11 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica apertura disambiguazione: Denuncia BMP', function () {
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Denuncia BMP')
-        BackOffice.backToBackOffice()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickBackOffice()
+            BackOffice.clickCardLink('Denuncia BMP')
+            BackOffice.backToBackOffice()
+        } else this.skip()
     })
 
     it('Verifica apertura disambiguazione: Consultazione sinistri', function () {
@@ -175,24 +178,29 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         BackOffice.backToBackOffice()
     })
 
+    it('Verifica apertura disambiguazione: Convenzioni in trattenuta', function () {
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickBackOffice()
+            BackOffice.clickCardLink('Convenzioni in trattenuta')
+            BackOffice.backToBackOffice()
+        } else this.skip()
+
+    });
+
+    it('Verifica apertura disambiguazione: Monitoraggio Guida Smart', function () {
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickBackOffice()
+            BackOffice.clickCardLink('Monitoraggio Guida Smart')
+            BackOffice.backToBackOffice()
+        } else this.skip()
+    });
+
     it('Verifica apertura disambiguazione: Impostazione contabilità', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Impostazione contabilità')
         BackOffice.backToBackOffice()
     });
 
-    it('Verifica apertura disambiguazione: Convenzioni in trattenuta', function () {
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Convenzioni in trattenuta')
-        BackOffice.backToBackOffice()
-
-    });
-
-    it('Verifica apertura disambiguazione: Monitoraggio Guida Smart', function () {
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Monitoraggio Guida Smart')
-        BackOffice.backToBackOffice()
-    });
 
 })
 

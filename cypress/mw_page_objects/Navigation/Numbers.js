@@ -113,7 +113,7 @@ class Numbers {
      */
     static clickAndCheckAtterraggioPrimoIndiceProdotto() {
         interceptPostAgenziePDF()
-        cy.get('lib-card').first().click()
+        cy.get('lib-card').should('be.visible').first().click()
         cy.wait('@postDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
     }
@@ -133,9 +133,9 @@ class Numbers {
      * Verifica Atterraggio Primo indice digitale
      */
     static clickAndCheckAtterraggioPrimoIndiceDigitale() {
-        interceptPostAgenziePDF()
+        interceptGetAgenziePDF()
         cy.get('app-digital-indexes').find('lib-card').first().click()
-        cy.wait('@postDacommerciale', { requestTimeout: 60000 });
+        cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('a:contains("Apri filtri"):visible')
     }
 

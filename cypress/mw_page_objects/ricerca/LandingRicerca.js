@@ -130,7 +130,7 @@ class LandingRicerca {
         cy.get('input[name="main-search-input"]').click()
         cy.get('input[name="main-search-input"]').type(value).type('{enter}').wait(2000)
 
-        cy.wait('@gqlSearch', { requestTimeout: 30000 });
+        cy.wait('@gqlSearch', { requestTimeout: 60000 });
 
         switch (value) {
             case 'incasso':
@@ -160,11 +160,14 @@ class LandingRicerca {
 
         cy.get('lib-client-item').first().click();
 
-        cy.wait('@client', { requestTimeout: 30000 });
+        cy.wait('@client', { requestTimeout: 60000 });
+        cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
     }
 
     /**
      * Seleziona un Cliente Random dalla lista di ricerca ritornata
+     * @param {string} clientForm a scelta tra PF o PG (default is PG)
+     * @param {string} clientType a scelta tra P,E o C (default is P)
      */
     static clickRandomResult(clientForm = 'PG', clientType = 'P') {
         //Attende il caricamento della scheda cliente
@@ -177,11 +180,11 @@ class LandingRicerca {
             });
 
             cy.get('.ps--active-y').should('be.visible').then(($clienti) => {
-                // let schedeClienti = $clienti.find('lib-client-item')
                 let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
                 let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
                 cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
-                cy.wait(10000)
+
+                cy.wait(5000)
                 cy.get('body').then(($body) => {
                     const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
                     if (check) {
@@ -195,6 +198,8 @@ class LandingRicerca {
 
         searchOtherMember()
         cy.wait('@client', { requestTimeout: 30000 });
+        cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
+
     }
 
     static clickClientName(client, filtri = false, tipoCliente, statoCliente) {
@@ -309,7 +314,9 @@ class LandingRicerca {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
         cy.get('nx-modal-container').find('lib-da-link').contains(link).click()
 
-        Common.canaleFromPopup()
+        if (!Cypress.env('monoUtenza')) {
+            Common.canaleFromPopup()
+        }
 
         if (link === 'Ricerca Polizze proposte' || link === 'Ricerca Preventivi') {
             cy.wait('@danni', { requestTimeout: 30000 })
@@ -626,7 +633,7 @@ class LandingRicerca {
      */
     static checkClienteNotFound(cliente) {
         cy.get('body').as('body').then(($body) => {
-            cy.get('lib-clients-container').should('be.visible')
+            cy.get('[class="lib-clients-container"]').should('be.visible')
             const check = $body.find('span:contains("La ricerca non ha prodotto risultati")').is(':visible')
             if (check) {
                 cy.get('body').should('contain.text', 'La ricerca non ha prodotto risultati')
@@ -650,13 +657,6 @@ class LandingRicerca {
                         assert.fail('Cliente non è stato eliminato -> ' + cliente);
                     }
                 })
-                // cy.get('body').then(() => {
-                //     cy.get('app-client-profile-tabs').should('', { requestTimeout: 20000 })
-                // if(checkScheda){
-                //     cy.get('body').should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari')
-                // }else
-                //     assert.fail('Il seguente cliente non è stato eliminato: '+ cliente)
-                // })
             }
         })
     }

@@ -5,7 +5,6 @@
 /// <reference types="Cypress" />
 
 //#region import
-import HomePage from "../../mw_page_objects/common/HomePage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import SCUContatti from "../../mw_page_objects/clients/SCUContatti"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
@@ -15,11 +14,13 @@ import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -35,7 +36,7 @@ let cliente
 //#region Support
 /**
  * 
- * @param {*} contactType : tipo di contatto a scelta tra 'numero' e 'mail'
+ * @param {string} contactType : tipo di contatto a scelta tra 'numero' e 'mail'
  */
 const searchClientWithoutContattiPrincipali = (contactType) => {
     LandingRicerca.searchRandomClient(true, "PF", "P")
@@ -60,7 +61,9 @@ before(() => {
         contatto = object
     })
 
-    LoginPage.logInMW(userName, psw)
+      LoginPage.logInMW(userName, psw)
+
+
 })
 beforeEach(() => {
     cy.preserveCookies()

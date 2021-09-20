@@ -16,6 +16,7 @@ class SCUGestioneFontePrincipale {
   static eseguiOnPersonaFisica() {
     getIFrame().contains('Persona fisica').click()
 
+    // Loop finchè non trovo un cliente digitando 2 lettere nome cognome finchè non risulta nella tabella
     const searchClients = () => {
       getIFrame().find('[class="k-grid-content k-auto-scrollable"]:visible').first().scrollIntoView().then(($table) => {
         const isTrovato = $table.find(':contains("Nessun record da visualizzare")').is(':visible')
@@ -41,7 +42,10 @@ class SCUGestioneFontePrincipale {
     var indexFonte;
     var nameAgente;
     const listIndex = []
+    // Seleziono un cliente random dalla tabella
     getIFrame().find('[class="k-grid-content k-auto-scrollable"]:visible').first().within(() => {
+
+      // Lista dei clienti trovati
       cy.get('tr').each(($ele, index) => {
         cy.wrap($ele).find('td').eq(5).invoke('text').then((textState) => {
           if (textState.trim() === "P" || textState.trim() === "C" || textState.trim() === "E") {
@@ -50,6 +54,7 @@ class SCUGestioneFontePrincipale {
         })
       })
 
+      // Prende dall'array un cliente random
       cy.get('tr').then(($tr) => {
         indexCliente = listIndex[Math.floor(Math.random() * listIndex.length)]
 
@@ -61,7 +66,7 @@ class SCUGestioneFontePrincipale {
       })
     })
 
-
+    // Seleziono dalla tabella delle fonti una fonte random
     getIFrame().find('#showFonti').scrollIntoView().click().within(() => {
       cy.wait(4000)
       cy.get('table[class="k-selectable"] > tbody').then(($table) => {
@@ -73,8 +78,7 @@ class SCUGestioneFontePrincipale {
             cy.wrap($tr.eq(indexFonte).next().find('td').eq(0)).invoke('text').then((agente) => {
               nameAgente = agente
             })
-            cy.wrap($tr.eq(indexFonte).next().find('td').eq(2)).invoke('text').then((nome) => {
-            })
+
             cy.wrap($tr.eq(indexFonte).next()).click()
           } else {
             cy.wrap($tr.eq(indexFonte).find('td').eq(0)).invoke('text').then((agente) => {
@@ -86,6 +90,7 @@ class SCUGestioneFontePrincipale {
       })
     })
 
+    // Click Imposta Fonte principale
     cy.get('body').within(() => {
 
       getIFrame().find('button[class="k-button assegnafonte"]').scrollIntoView().click().wait(5000)
@@ -97,6 +102,7 @@ class SCUGestioneFontePrincipale {
       getIFrame().find('div:contains("Fonte principale impostata")').parent().find('button:contains("Chiudi")').click()
     })
 
+    // Verifico dalla scheda cliente che la fonte impostata si trovi nei referenti
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
       cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
@@ -118,6 +124,8 @@ class SCUGestioneFontePrincipale {
 
   static eseguiOnPersonaGiuridica() {
     getIFrame().contains('Persona giuridica').click()
+
+    // Loop finchè non trovo un cliente digitando 2 lettere nome cognome finchè non risulta nella tabella
     const searchClients = () => {
       getIFrame().find('[class="k-grid-content k-auto-scrollable"]:visible').first().scrollIntoView().then(($table) => {
         const isTrovato = $table.find(':contains("Nessun record da visualizzare")').is(':visible')
@@ -140,6 +148,7 @@ class SCUGestioneFontePrincipale {
     var indexFonte;
     var nameAgente;
     const listIndex = []
+    // Seleziono un cliente random dalla tabella
     getIFrame().find('[class="k-grid-content k-auto-scrollable"]:visible').first().within(() => {
       cy.get('tr').each(($ele, index) => {
         cy.wrap($ele).find('td').eq(6).invoke('text').then((textState) => {
@@ -160,7 +169,7 @@ class SCUGestioneFontePrincipale {
       })
     })
 
-
+    // Seleziono dalla tabella delle fonti una fonte random
     getIFrame().find('#showFonti').scrollIntoView().click().within(() => {
       cy.wait(4000)
       cy.get('table[class="k-selectable"] > tbody').then(($table) => {
@@ -173,8 +182,6 @@ class SCUGestioneFontePrincipale {
               nameAgente = agente
               cy.log(nameAgente)
             })
-            cy.wrap($tr.eq(indexFonte).next().find('td').eq(2)).invoke('text').then((nome) => {
-            })
             cy.wrap($tr.eq(indexFonte).next()).click()
           } else {
             cy.wrap($tr.eq(indexFonte).find('td').eq(0)).invoke('text').then((agente) => {
@@ -186,6 +193,7 @@ class SCUGestioneFontePrincipale {
       })
     })
 
+    // Click Imposta Fonte principale
     cy.get('body').within(() => {
 
       getIFrame().find('button[class="k-button assegnafonte"]').scrollIntoView().click().wait(5000)
@@ -197,6 +205,7 @@ class SCUGestioneFontePrincipale {
       getIFrame().find('div:contains("Fonte principale impostata")').parent().find('button:contains("Chiudi")').click()
     })
 
+    // Verifico dalla scheda cliente che la fonte impostata si trovi nei referenti
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
       cy.get('input[name="main-search-input"]').type(clienteIVA).type('{enter}')

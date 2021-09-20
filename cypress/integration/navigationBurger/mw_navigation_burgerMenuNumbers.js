@@ -10,6 +10,7 @@ import BurgerMenuNumbers from "../../mw_page_objects/burgerMenu/BurgerMenuNumber
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -19,8 +20,9 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
-//#region  Configuration
+//#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 before(() => {
@@ -28,6 +30,8 @@ before(() => {
         insertedId = results.insertId
     })
     LoginPage.logInMW(userName, psw)
+
+
 })
 
 
@@ -64,7 +68,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Monitoraggio Carico')
         BurgerMenuNumbers.backToNumbers()
-
     })
 
     it('Verifica aggancio Monitoraggio Carico per Fonte', function () {
@@ -109,9 +112,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
     })
 
     it('Verifica aggancio Scarico Dati', function () {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Scarico Dati')
-        BurgerMenuNumbers.backToNumbers()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Scarico Dati')
+            BurgerMenuNumbers.backToNumbers()
+        } else this.skip()
+
     })
 
     it('Verifica aggancio Indici Digitali', function () {

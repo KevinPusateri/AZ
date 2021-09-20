@@ -303,7 +303,7 @@ class SCUContatti {
           this.addEmail(contatto);
 
           //click salva
-          getSCU().find('#submit:contains("Salva")').click();
+          getSCU().find('#submit:contains("Salva")').click().wait(8000);
           resolve(contatto);
         });
     });
@@ -350,19 +350,21 @@ class SCUContatti {
           .find(':contains("' + contatto.email + '")')
           .then((row) => {
             cy.wrap(row)
-              .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+              .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
               .click()
-              .wait(5000);
-            cy.get("button").contains("Elimina contatto").click();
+              .wait(3000);
+            cy.get("button").contains("Elimina contatto").should('be.visible').click();
             cy.get('nx-modal-container').should('be.visible')
             cy.get('nx-modal-container').find('span:contains("Conferma"):visible').click()
-            cy.wait(3000)
-            if (!row.is(':visible'))
-              assert.isTrue(true, 'contatto eliminato')
-            else
-              assert.fail('il contatto non è stato eliminato')
-            // cy.wrap(table).find('app-client-contact-table-row').should('not.contain.text',contatto.tipo)
-            // .and('not.contain.text',contatto.principale).and('not.contain.text', contatto.email)
+            cy.wait(5000)
+            cy.get('body').should('be.visible').then(() => {
+
+              debugger
+              if (!row.is(':visible'))
+                assert.isTrue(true, 'contatto eliminato')
+              else
+                assert.fail('il contatto non è stato eliminato')
+            })
           });
       } else if (contatto.tipo === "Sito Web") {
         cy.wrap(table)
@@ -377,19 +379,21 @@ class SCUContatti {
           .then((row) => {
             cy.wrap(row).as('row')
             cy.wrap(row)
-              .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+              .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
               .click()
               .wait(5000);
             cy.get("button").contains("Elimina contatto").click();
             cy.get('nx-modal-container').should('be.visible')
             cy.get('nx-modal-container').find('span:contains("Conferma"):visible').click()
-            cy.wait(3000)
-            if (!row.is(':visible'))
-              assert.isTrue(true, 'contatto eliminato')
-            else
-              assert.fail('il contatto non è stato eliminato')
-            // cy.wrap(table).find('app-client-contact-table-row').should('not.contain.text',contatto.tipo)
-            // .and('not.contain.text',contatto.principale).and('not.contain.text', contatto.url)
+            cy.wait(5000)
+            cy.get('body').should('be.visible').then(() => {
+
+              debugger
+              if (!row.is(':visible'))
+                assert.isTrue(true, 'contatto eliminato')
+              else
+                assert.fail('il contatto non è stato eliminato')
+            })
           })
       } else {
         cy.wrap(table)
@@ -410,21 +414,26 @@ class SCUContatti {
             '")'
           )
           .then((row) => {
-            console.log('row: '+ row)
-            console.log('wrap: '+ cy.wrap(row))
+            console.log('row: ' + row)
+            console.log('wrap: ' + cy.wrap(row))
             cy.wrap(row)
-              .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+              .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
               .click()
               .wait(5000);
+            debugger
+
             cy.get("button").contains("Elimina contatto").click();
             cy.get('nx-modal-container').should('be.visible')
             cy.get('nx-modal-container').find('span:contains("Conferma"):visible').click()
-            cy.wait(3000)
-            debugger
-            if (!row.is(':visible'))
-              assert.isTrue(true, 'contatto eliminato')
-            else
-              assert.fail('il contatto non è stato eliminato')         
+            cy.wait(5000)
+            cy.get('body').should('be.visible').then(() => {
+
+              debugger
+              if (!row.is(':visible'))
+                assert.isTrue(true, 'contatto eliminato')
+              else
+                assert.fail('il contatto non è stato eliminato')
+            })
           })
       }
     })
@@ -446,17 +455,10 @@ class SCUContatti {
             .find(':contains("' + contatto.email + '")')
             .then((row) => {
               cy.wrap(row)
-                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
                 .click()
                 .wait(5000);
               cy.get("lib-da-link").contains("Modifica contatto").click();
-              // getSCU()
-              //   .find('span[aria-owns="principale_listbox"]')
-              //   .should("include", contatto.principale);
-              // getSCU()
-              //   .find('span[aria-owns="tipoReperibilita_listbox"]')
-              //   .should("include", contatto.tipo);
-              // getSCU().find("#otherKind").should("include", contatto.email);
               cy.then(() => {
                 cy.task("nuovoContatto").then((object) => {
                   contatto.email = object.email;
@@ -478,17 +480,10 @@ class SCUContatti {
             .find(':contains("' + contatto.url + '")')
             .then((row) => {
               cy.wrap(row)
-                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
                 .click()
                 .wait(5000);
               cy.get("lib-da-link").contains("Modifica contatto").click();
-              // getSCU()
-              //   .find('span[aria-owns="principale_listbox"]')
-              //   .should("include", contatto.principale);
-              // getSCU()
-              //   .find('span[aria-owns="tipoReperibilita_listbox"]')
-              //   .should("include", contatto.tipo);
-              // getSCU().find("#otherKind").should("include", contatto.url);
               cy.then(() => {
                 cy.task("nuovoContatto").then((object) => {
                   contatto.url = object.url;
@@ -518,28 +513,10 @@ class SCUContatti {
             )
             .then((row) => {
               cy.wrap(row)
-                .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
                 .click()
                 .wait(5000);
-              //   cy.intercept({
-              //     method: 'GET',
-              //     url: '**/daanagrafe/**'
-              // }).as('danagrafe');
               cy.get("lib-da-link").contains("Modifica contatto").click();
-              // cy.wait('@danagrafe', { requestTimeout: 40000 });
-              // getSCU()
-              //   .find('span[aria-owns="principale_listbox"]')
-              //   .should("include", contatto.principale);
-              // getSCU()
-              //   .find('span[aria-owns="tipoReperibilita_listbox"]')
-              //   .should("include", contatto.tipo);
-              // getSCU()
-              //   .find('span[aria-controls="tel-pref_listbox"]')
-              //   .should("include", contatto.prefisso);
-              // getSCU()
-              //   .find('span[aria-controls="tel-pr-int_listbox"]')
-              //   .should("include", contatto.prefissoInt);
-              // getSCU().find("#tel-num").should("include", contatto.phone);
               const scelta = [
                 "Prefisso",
                 "Numero",

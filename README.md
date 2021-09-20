@@ -8,5 +8,5 @@ By [Andrea Oboe](mailto:andrea.oboe@allianz.it) & [Kevin Pusateri](mailto:kevin.
 
 ```javascript
 npm config set proxy 'http://it000-surf.zone2.proxy.allianz:8080'
-npm i express
+npm i
 ```

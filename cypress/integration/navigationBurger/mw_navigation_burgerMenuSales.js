@@ -10,6 +10,7 @@ import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -19,8 +20,9 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
-//#region  Configuration
+//#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 before(() => {
@@ -28,6 +30,8 @@ before(() => {
         insertedId = results.insertId
     })
     LoginPage.logInMW(userName, psw)
+
+
 })
 
 beforeEach(() => {
@@ -85,12 +89,15 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
         BurgerMenuSales.backToSales()
+
     });
 
     it('Verifica aggancio Allianz Ultra Casa e Patrimonio BMP', function () {
-        TopBar.clickSales()
-        BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
-        BurgerMenuSales.backToSales()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
+            BurgerMenuSales.backToSales()
+        } else this.skip()
     });
 
     it('Verifica aggancio Allianz Ultra Salute', function () {
@@ -143,9 +150,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     //#region Gestione
     it('Verifica aggancio Nuovo Sfera', function () {
-        TopBar.clickSales()
-        BurgerMenuSales.clickLink('Nuovo Sfera')
-        BurgerMenuSales.backToSales()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('Nuovo Sfera')
+            BurgerMenuSales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica aggancio Sfera', function () {
@@ -155,9 +164,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Campagne Commerciali', function () {
-        TopBar.clickSales()
-        BurgerMenuSales.clickLink('Campagne Commerciali')
-        BurgerMenuSales.backToSales()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('Campagne Commerciali')
+            BurgerMenuSales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica aggancio Recupero preventivi e quotazioni', function () {
@@ -279,15 +290,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
-    // Accesso Negato e su excel
-    // it('Verifica aggancio App cumulo terremoti', function () {
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('App cumulo terremoti').click()
-    // canaleFromPopup()
-    //     cy.get('a').contains('Sales').click()
-    // })
-
     it('Verifica aggancio Note di contratto', function () {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Note di contratto')
@@ -295,7 +297,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e excel
-    // it.only('Verifica aggancio ACOM Gestione iniziative', function () {
+    // it('Verifica aggancio ACOM Gestione iniziative', function () {
     //     TopBar.clickSales()
     //     cy.get('lib-burger-icon').click({force:true})
 

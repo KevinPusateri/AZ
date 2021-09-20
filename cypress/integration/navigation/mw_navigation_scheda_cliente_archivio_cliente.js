@@ -11,6 +11,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -20,8 +21,9 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
-//#region  Configuration
+//#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 
@@ -29,15 +31,22 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-    LoginPage.logInMW(userName, psw)
+      LoginPage.logInMW(userName, psw)
+
+
 })
 
 
 beforeEach(() => {
     cy.preserveCookies()
     Common.visitUrlOnEnv()
-    TopBar.search('Pulini Francesco')
-    SintesiCliente.wait()
+    if (!Cypress.env('monoUtenza')) {
+        TopBar.search('Pulini Francesco')
+        SintesiCliente.wait()
+    } else{
+        TopBar.search('Giuseppe Nazzarro')
+        SintesiCliente.wait()
+    }
 })
 
 after(function () {

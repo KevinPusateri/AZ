@@ -4,11 +4,11 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import HomePage from "../../mw_page_objects/common/HomePage"
-import Common from "../../mw_page_objects/common/Common"
 
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -18,21 +18,28 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
-//#region  Configuration
-Cypress.config('defaultCommandTimeout', 50000)
+//#region Configuration
+Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
+
 before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
     LoginPage.logInMW(userName, psw)
+
 })
 
 beforeEach(() => {
     cy.preserveCookies()
     HomePage.reloadMWHomePage()
-    TopBar.search('Pulini Francesco')
-    SintesiCliente.wait()
+    if (!Cypress.env('monoUtenza')) {
+        TopBar.search('Pulini Francesco')
+        SintesiCliente.wait()
+    } else {
+        TopBar.search('SLZNLL54A04H431Q')
+        SintesiCliente.wait()
+    }
 })
 after(function () {
     TopBar.logOutMW()
@@ -70,9 +77,50 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.checkCardsEmissioni()
     })
 
-    // it('Verifica Link Auto', function () {
-    //TODO: completare
-    //     })
+    it('Verifica Link da Card Auto', function () {
+        SintesiCliente.clickAuto()
+        SintesiCliente.checkLinksFromAuto()
+    })
+
+    it('Verifica Link da Card Auto -> Emissione', function () {
+        SintesiCliente.clickAuto()
+        SintesiCliente.checkLinksFromAutoOnEmissione()
+    })
+
+    it('Verifica Link da Card Auto -> Prodotti particolari', function () {
+        SintesiCliente.clickAuto()
+        SintesiCliente.checkLinksFromAutoOnProdottiParticolari()
+    })
+
+    it('Verifica Link da Card Auto -> Prodotti particolari -> Kasko e ARD per Dipendenti in Missione', function () {
+        SintesiCliente.clickAuto()
+        SintesiCliente.checkLinksFromAutoOnProdottiParticolariKasko()
+    })
+
+    it('Verifica Link da Card Auto -> Prodotti particolari -> Polizza aperta', function () {
+        SintesiCliente.clickAuto()
+        SintesiCliente.checkLinksFromAutoOnProdottiParticolariPolizzaAperta()
+    })
+
+    it('Verifica Link da Card Auto -> Passione BLU', function () {
+        SintesiCliente.clickAuto()
+        SintesiCliente.checkLinksFromAutoOnPassioneBlu()
+    })
+
+    it('Verifica Link da Card Rami vari', function () {
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.checkLinksFromRamiVari()
+    })
+
+    it('Verifica Link da Card Rami Vari -> Emissione', function () {
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.checkLinksFromRamiVariOnEmissione()
+    })
+    
+    it('Verifica Link da Card Vita', function () {
+        SintesiCliente.clickVita()
+        SintesiCliente.checkLinksFromVita()
+    })
 
     it('Verifica Card Auto: Emissione -> Preventivo Motor', function () {
         SintesiCliente.clickAuto()
@@ -159,9 +207,11 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio BMP', function () {
-        SintesiCliente.clickRamiVari()
-        SintesiCliente.clickAllianzUltraCasaPatrimonioBMP()
-        SintesiCliente.back()
+        if (!Cypress.env('monoUtenza')) {
+            SintesiCliente.clickRamiVari()
+            SintesiCliente.clickAllianzUltraCasaPatrimonioBMP()
+            SintesiCliente.back()
+        } else this.skip()
     })
 
 

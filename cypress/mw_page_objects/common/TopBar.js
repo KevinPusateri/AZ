@@ -73,8 +73,8 @@ const LandingPage = {
 const LinkUtilita = {
     CRUSCOTTO_RESILIENCE: 'Cruscotto resilience',
     CASELLA_DI_POSTA_ED_AGENZIA: 'Casella di posta agente ed agenzia',
-    QUATTRORUOTE_CALCOLO_VALORE_VEICOLO: 'Quattroruote - Calcolo valore veicolo',
-    REPORT_ALLIANZ_NOW: 'Report Allianz Now',
+    QUATTRORUOTE_CALCOLO_VALORE_VEICOLO: 'Quattroruote - Calcolo valore veicolo', //! seconda finestra
+    REPORT_ALLIANZ_NOW: 'Report Allianz Now', //! seconda finestra
     INTERROGAZIONI_CENTRALIZZATE: 'Interrogazioni centralizzate',
     BANCHE_DATI_ANIA: 'Banche Dati ANIA',
     GESTIONE_MAGAZZINO_OBU: 'Gestione Magazzino OBU',
@@ -89,10 +89,11 @@ class TopBar extends HomePage {
      * Logout
      */
     static logOutMW() {
-
         cy.get('lib-user-header').should('be.visible')
-        cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]').click({force: true});
-        cy.contains('Logout').click({force:true})
+        cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]:visible').click();
+        cy.get('lib-user-header-popover-container').should('be.visible').within(() => {
+            cy.contains('Logout').click({ force: true })
+        })
 
         cy.clearCookies();
     }
@@ -110,8 +111,8 @@ class TopBar extends HomePage {
     * @param {string} value - What to search
     */
     static search(value) {
-        cy.get('input[name="main-search-input"]').should('be.visible').click()
-        cy.get('input[name="main-search-input"]').should('be.visible').type(value).type('{enter}').wait(2000)
+        cy.get('input[name="main-search-input"]').should('exist').and('be.visible').click()
+        cy.get('input[name="main-search-input"]').should('exist').and('be.visible').type(value).type('{enter}').wait(2000)
     }
 
     /**
@@ -168,7 +169,7 @@ class TopBar extends HomePage {
     static clickSales() {
         interceptPageSales()
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        cy.wait('@getSales', { requestTimeout: 50000 })
+        // cy.wait('@getSales', { requestTimeout: 50000 })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
     }
 
@@ -238,11 +239,22 @@ class TopBar extends HomePage {
      * Verifica la presenza di tutti i link su Utility
      */
     static checkLinksUtility() {
+
         const linksUtilita = Object.values(LinkUtilita)
 
-        cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
-            expect($labelCard).to.contain(linksUtilita[i])
-        })
+        if (!Cypress.env('monoUtenza'))
+            cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksUtilita[i])
+            })
+        else {
+            delete LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO
+            delete LinkUtilita.REPORT_ALLIANZ_NOW
+            const linksUtilita = Object.values(LinkUtilita)
+            cy.get('lib-utility').find('lib-utility-label').should('have.length', 8).each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksUtilita[i])
+            })
+        }
+
     }
     /**
      * Click su un link dal menu a tendina di Utilità
@@ -252,9 +264,15 @@ class TopBar extends HomePage {
         if (page === LinkUtilita.CASELLA_DI_POSTA_ED_AGENZIA ||
             page === LinkUtilita.BANCHE_DATI_ANIA ||
             page === LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS) {
-            cy.contains(page).parents('lib-check-user-permissions').find('a[class="ng-star-inserted"]').invoke('removeAttr', 'target').click()
+            cy.get('lib-switch-button-utility').should('be.visible').within(() => {
+
+                cy.contains(page).should('be.visible').parents('lib-check-user-permissions').find('a[class="ng-star-inserted"]').invoke('removeAttr', 'target').click()
+            })
         } else {
-            cy.contains(page).click()
+            cy.get('lib-switch-button-utility').should('be.visible').within(() => {
+
+                cy.contains(page).click()
+            })
         }
         Common.canaleFromPopup()
         switch (page) {
@@ -305,7 +323,8 @@ class TopBar extends HomePage {
         cy.get('lib-user-header').click()
         cy.get('lib-user-name-container').should('be.visible')
         cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
-        cy.contains('Ci sono altri profili collegati')
+        if (!Cypress.env('monoUtenza'))
+            cy.contains('Ci sono altri profili collegati')
         cy.contains('Cambio password')
         cy.contains('Configurazione stampanti')
         cy.contains('Impostazioni di agenzia')
@@ -409,6 +428,20 @@ class TopBar extends HomePage {
      */
     static clickMatrixHome() {
         cy.get('a[href="/matrix/"]').click()
+    }
+
+    /**
+     * Permettere di aprire la seconda finestra di MW
+     */
+    static clickSecondWindow() {
+        if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
+            cy.get('a[target="MatrixF2"]').should('exist').invoke('removeAttr', 'target').click()
+        } else {
+            cy.get('lib-header-right').should('be.visible').within(() => {
+                cy.get('nx-icon[name="launch"]').click()
+            })
+            Common.canaleFromPopup(true)
+        }
     }
 }
 

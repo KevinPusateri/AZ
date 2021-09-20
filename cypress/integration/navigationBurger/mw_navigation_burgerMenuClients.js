@@ -7,10 +7,12 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import BurgerMenuClients from "../../mw_page_objects/burgerMenu/BurgerMenuClients"
 import Clients from "../../mw_page_objects/clients/LandingClients"
+import HomePage from "../../mw_page_objects/common/HomePage"
 
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -20,8 +22,9 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
-//#region  Configuration
+//#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 before(() => {
@@ -29,6 +32,8 @@ before(() => {
         insertedId = results.insertId
     })
     LoginPage.logInMW(userName, psw)
+
+
 })
 
 beforeEach(() => {
@@ -107,17 +112,16 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         BurgerMenuClients.clickLink('Gestione fonte principale')
         BurgerMenuClients.backToClients()
     });
-
+    it('Verifica aggancio Hospital scanner', function () {
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Hospital scanner')
+        HomePage.reloadMWHomePage()
+    });
+    
     it('Verifica aggancio Antiriciclaggio', function () {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Antiriciclaggio')
         BurgerMenuClients.backToClients()
     });
 
-    // TODO ADD TFS  -> mostra canale e non c'è _blank
-    // it.only('Verifica aggancio Hospital scanner', function () {
-    //     TopBar.clickClients()
-    //     BurgerMenuClients.clickLink('Hospital scanner')
-    //     BurgerMenuClients.backToClients()
-    // });
 });

@@ -7,7 +7,6 @@
 //#region import
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Legami from "../../mw_page_objects/clients/Legami"
@@ -15,11 +14,13 @@ import Legami from "../../mw_page_objects/clients/Legami"
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -38,6 +39,8 @@ before(() => {
         insertedId = results.insertId
     })
     LoginPage.logInMW(userName, psw)
+
+
 })
 
 beforeEach(() => {
@@ -108,14 +111,14 @@ describe('Matrix Web : Legami', function () {
             Legami.clickInserisciMembro().then(retrivedMember => {
                 let newMembro = retrivedMember
                 Legami.checkMembroInserito(newMembro, currentClient.name)
-                // Legami.eliminaMembro(newMembro)
+                Legami.eliminaMembro(newMembro)
             })
         })
 
         it('Verifica inserimento massimo 3 membri', function () {
-            // for (let index = 0; index < 2; index++) {
-            Legami.clickInserisciMembro()
-            // }
+            for (let index = 0; index < 2; index++) {
+                Legami.clickInserisciMembro()
+            }
             Legami.checkTerzoMembroNonInseribile()
         })
 
@@ -143,10 +146,14 @@ describe('Matrix Web : Legami', function () {
         })
 
         it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
-            cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000')
-            LoginPage.logInMW('TUTF003', psw)
-            DettaglioAnagrafica.checkClientWithoutLegame()
-            Legami.checkLegameIsNotPresent()
+            if (!Cypress.env('monoUtenza')) {
+                cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000').then(() => {
+                    LoginPage.logInMW('TUTF003', psw, false)
+                    DettaglioAnagrafica.checkClientWithoutLegame()
+                    Legami.checkLegameIsNotPresent()
+                })
+            } else this.skip()
         })
+
     })
 })

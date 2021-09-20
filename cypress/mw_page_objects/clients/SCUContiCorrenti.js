@@ -21,7 +21,7 @@ class SCUContiCorrenti {
         cy.contains("Aggiungi conto corrente").click();
         Common.canaleFromPopup()
 
-        return new Promise((resolve, reject) => {
+        return new Cypress.Promise((resolve, reject) => {
 
 
             getSCU().find('span[aria-owns="tipoCoordinate_listbox"]').click()
@@ -66,47 +66,55 @@ class SCUContiCorrenti {
         })
     }
 
+    static checkContoCorrenteModificato(conto){
+        cy.get('app-client-bank-accounts').find('app-client-bank-account-card').then((list) => {
+            console.log(list.text())
+            expect(list.text()).to.include(conto)
+        })
+    }
+
     /**
     * Verifica contoCorrente modificato
     * @param {string} contoCorrente - Object contoCorrente creato
     */
-    static modificaConto(contoCorrente,client) {
-        cy.get("app-client-bank-accounts").then((table) => {
-            cy.wrap(table)
-                .find(
-                    'app-client-bank-account-card:contains("' +
-                    contoCorrente.iban +
-                    '")'
-                )
-                .then((row) => {
-                    cy.wrap(row)
-                        .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
-                        .click()
-                    cy.get('button[class="nx-context-menu-item context-link"]').should('be.visible')
-                    cy.get("lib-da-link").contains("Modifica conto corrente").click();
+    static modificaConto(contoCorrente) {
+        return new Cypress.Promise((resolve, reject) => {
+            debugger
+            cy.get("app-client-bank-accounts").then((table) => {
+                cy.wrap(table)
+                    .find(
+                        'app-client-bank-account-card:contains("' +
+                        contoCorrente.iban +
+                        '")'
+                    )
+                    .then((row) => {
+                        cy.wrap(row)
+                            .find('nx-icon')
+                            .click()
+                        cy.get('button[class^="nx-context-menu-item context-link"]').should('be.visible')
+                        cy.get("lib-da-link").contains("Modifica conto corrente").click();
 
+                    })
+                cy.fixture('iban.json').then((data) => {
+                    debugger
+                    var indexScelta = Math.floor(Math.random() * data.iban.length);
+                    var newIban = data.iban[indexScelta]
+                    var validIban = ibantools.isValidIBAN(newIban)
+                    if (validIban) {
+                        getSCU().find('#iban').clear().type(newIban)
+                        getSCU().find('#submit:contains("Salva"):visible').click().wait(4000);
+                        debugger
+                        resolve(newIban);
+                    }
+                    else
+                        assert.fail('Iban non valido')
                 })
-            cy.fixture('iban.json').then((data) => {
-                var indexScelta = Math.floor(Math.random() * data.iban.length);
-                contoCorrente.iban = data.iban[indexScelta]
+
+
             })
 
-            var validIban = ibantools.isValidIBAN(contoCorrente.iban)
-            if (validIban)
-                getSCU().find('#iban').type(contoCorrente.iban)
-            else
-                assert.fail('Iban non valido')
+        });
 
-            getSCU().find('#intestatario').type('xx')
-            contoCorrente.intestatario = 'xx'
-
-            getSCU().find('#iban').invoke('attr', 'data-bind').should('equal', contoCorrente.iban)
-            getSCU().find('span[class="k-dropdown-wrap k-state-default"] > span[class="k-input"]').should('contain.text', contoCorrente.coordinate)
-            getSCU().find('#intestatario').invoke('attr', 'data-bind').should('equal', contoCorrente.intestatario)
-        })
-
-
-        // getSCU().find('#codFiscale').should('contain.text', contoCorrente.intestatario)
     }
 
     /**
@@ -123,7 +131,7 @@ class SCUContiCorrenti {
                 )
                 .then((row) => {
                     cy.wrap(row)
-                        .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                        .find('nx-icon')
                         .click()
                         .wait(5000);
                     cy.get("lib-check-user-permissions").contains("Elimina conto corrente").click();

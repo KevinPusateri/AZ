@@ -1,5 +1,6 @@
 /// <reference types="Cypress" />
 import Common from "../../mw_page_objects/common/Common"
+import News from "../Navigation/News";
 
 class HomePage {
 
@@ -41,7 +42,10 @@ class HomePage {
             })
         }
 
-        cy.visit(Common.getBaseUrl())
+        if (Cypress.env('isSecondWindow'))
+            cy.visit(Cypress.env('urlSecondWindow'))
+        else
+            cy.visit(Common.getBaseUrl())
 
         if (!mockedNews)
             cy.wait('@gqlNews')
@@ -49,7 +53,7 @@ class HomePage {
         //Attendiamo caricamento dell'icona utente in alto a dx
         cy.get('.user-icon-container').should('be.visible')
 
-        
+
     }
 
     /**
@@ -66,6 +70,7 @@ class HomePage {
     static clickVediTutte() {
         cy.contains('Vedi tutte').click()
         cy.url().should('eq', Common.getBaseUrl() + 'news/recent')
+        News.checkAtterraggio()
     }
 
     /**
@@ -110,7 +115,7 @@ class HomePage {
         })
     }
 
-    static closeIndidentBox(){
+    static closeIndidentBox() {
         cy.wait(4000)
         cy.get('body').then($body => {
             if ($body.find('.lib-incident-notification').length > 0)

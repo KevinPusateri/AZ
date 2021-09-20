@@ -10,6 +10,7 @@ import Numbers from "../../mw_page_objects/navigation/Numbers"
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -19,8 +20,9 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
-//#region  Configuration
+//#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 before(() => {
@@ -28,6 +30,8 @@ before(() => {
         insertedId = results.insertId
     })
     LoginPage.logInMW(userName, psw)
+
+
 })
 
 beforeEach(() => {
@@ -204,24 +208,39 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.clickAndCheckAtterraggioMonitoraggioCarico()
     })
 
+    it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function () {
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickNumbers()
+            Numbers.clickTab('INCENTIVI', 'incentives')
+            Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178 DAN')
+            Numbers.backToNumbers('incentives')
+        } else this.skip()
+    })
+
+    it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178"', function () {
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickNumbers()
+            Numbers.clickTab('INCENTIVI', 'incentives')
+            Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178')
+            Numbers.backToNumbers('incentives')
+        } else this.skip()
+    })
+
+    it('Verifica su Incentivi aggancio Primo indice dal Panel "AGENZIA 7 - 4549 MONZA"', function () {
+        if (!Cypress.env('monoUtenza')) {
+            this.skip()
+        } else {
+            TopBar.clickNumbers()
+            Numbers.clickTab('INCENTIVI', 'incentives')
+            Numbers.checkAtterraggioPrimoIndiceIncentivi('AGENZIA 7 - 4549 MONZA')
+            Numbers.backToNumbers('incentives')
+        }
+    })
+
     it('Verifica su Indicatori Operativi aggancio Primo indice digitale', function () {
         TopBar.clickNumbers()
         Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
         Numbers.clickAndCheckAtterraggioPrimoIndiceDigitale()
         Numbers.backToNumbers('operational-indicators')
-    })
- 
-    it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('INCENTIVI', 'incentives')
-        Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178 DAN')
-        Numbers.backToNumbers('incentives')
-    })
-
-    it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178"', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('INCENTIVI', 'incentives')
-        Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178')
-        Numbers.backToNumbers('incentives')
     })
 });

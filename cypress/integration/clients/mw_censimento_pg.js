@@ -19,11 +19,13 @@ import ArchivioCliente from "../../mw_page_objects/clients/ArchivioCliente"
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -51,7 +53,9 @@ before(() => {
     nuovoClientePG.citta = "LONIGO"
     nuovoClientePG.provincia = "VI"
   })
-  LoginPage.logInMW(userName, psw)
+    LoginPage.logInMW(userName, psw)
+
+
 })
 beforeEach(() => {
   cy.preserveCookies()

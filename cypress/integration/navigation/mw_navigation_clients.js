@@ -9,16 +9,17 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import Clients from "../../mw_page_objects/clients/LandingClients";
 import HomePage from "../../mw_page_objects/common/HomePage";
 
-//#region Username Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rd!'
-//#endregion
-
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
+//#endregion
+
+//#region Username Variables
+const userName = 'TUTF021'
+const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Configuration
@@ -30,7 +31,7 @@ before(() => {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
         insertedId = results.insertId
     })
-    LoginPage.logInMW(userName, psw)
+    LoginPage.logInMWAdvanced()
 })
 
 beforeEach(() => {
@@ -38,21 +39,21 @@ beforeEach(() => {
     HomePage.reloadMWHomePage()
 })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-    })
-    //#endregion
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+//     })
+//     //#endregion
 
-})
+// })
 
 
 describe('Matrix Web : Navigazioni da Clients', function () {
 
-    it('Verifica aggancio Clients', function () {
+    it.only('Verifica aggancio Clients', function () {
         TopBar.clickClients()
     });
 
@@ -64,7 +65,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     it('Verifica aggancio Analisi dei bisogni', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
-            if (!currentHostName.includes('SM')){
+            if (!currentHostName.includes('SM')) {
                 TopBar.clickClients()
                 Clients.clickLinkRapido('Analisi dei bisogni')
             }

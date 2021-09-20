@@ -10,7 +10,6 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import SCUAltriIndirizzi from "../../mw_page_objects/clients/SCUAltriIndirizzi"
-import HomePage from "../../mw_page_objects/common/HomePage"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
 //#endregion import
 
@@ -21,6 +20,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -48,6 +48,8 @@ before(() => {
     })
 
     LoginPage.logInMW(userName, psw)
+
+
 })
 
 beforeEach(() => {

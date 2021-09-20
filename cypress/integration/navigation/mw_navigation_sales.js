@@ -12,6 +12,7 @@ import Sales from "../../mw_page_objects/Navigation/Sales"
 //#region Username Variables
 const userName = 'TUTF021'
 const psw = 'P@ssw0rd!'
+const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -23,6 +24,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+
 //#endregion
 
 before(() => {
@@ -30,6 +32,8 @@ before(() => {
         insertedId = results.insertId
     })
     LoginPage.logInMW(userName, psw)
+
+
 })
 
 beforeEach(() => {
@@ -61,9 +65,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Nuovo Sfera', function () {
-        TopBar.clickSales()
-        Sales.clickLinkRapido('Nuovo Sfera')
-        Sales.backToSales()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            Sales.clickLinkRapido('Nuovo Sfera')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica aggancio Sfera', function () {
@@ -114,9 +120,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function () {
-        TopBar.clickSales()
-        Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio BMP')
-        Sales.backToSales()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio BMP')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica aggancio Emetti Polizza - Allianz1 Business', function () {
@@ -156,52 +164,65 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica tab "Pezzi"', function () {
-
-        TopBar.clickSales()
-        Sales.checkExistPezzi()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            Sales.checkExistPezzi()
+        } else this.skip()
     })
 
     it('Verifica "Premi"', function () {
-
-        TopBar.clickSales()
-        Sales.checkExistPremi()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            Sales.checkExistPremi()
+        } else this.skip()
     })
 
     it('Verifica aggancio Attività in scadenza - Estrai dettaglio', function () {
         TopBar.clickSales()
-        Sales.clickAttivitaInScadenza()
+        if (!Cypress.env('monoUtenza')) {
+            Sales.clickAttivitaInScadenza()
+        }
         Sales.clickEstraiDettaglio()
         Sales.backToSales()
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Motor', function () {
-        TopBar.clickSales()
-        Sales.lobDiInteresse()
-        Sales.backToSales()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            Sales.lobDiInteresse('Motor')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Rami Vari', function () {
-        TopBar.clickSales()        
-        Sales.lobDiInteresse()
-        Sales.backToSales()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            Sales.lobDiInteresse('Rami vari')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Vita', function () {
-        TopBar.clickSales()
-        Sales.lobDiInteresse()
-        Sales.backToSales()
-
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            Sales.lobDiInteresse('Vita')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica "Quietanamento" - lob di interesse: Tutte', function () {
-        TopBar.clickSales()
-        Sales.lobDiInteresse()
-        Sales.backToSales()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            Sales.lobDiInteresse('Tutte')
+            Sales.backToSales()
+        } else this.skip()
     })
 
     it('Verifica TAB: "Campagne"', function () {
-        TopBar.clickSales()
-        Sales.clickTabCampagne()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            Sales.clickTabCampagne()
+        } else this.skip()
     })
 
     it('Verifica aggancio Appuntamento', function () {

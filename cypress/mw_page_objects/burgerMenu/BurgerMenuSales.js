@@ -6,10 +6,10 @@ const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .iframe();
 
-    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+    let iframe = cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .its('0.contentDocument').should('exist');
 
-    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const LinksBurgerMenu = {
@@ -18,7 +18,7 @@ const LinksBurgerMenu = {
     MINIFLOTTE: 'MiniFlotte',
     TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP', //! second Window
     ALLIANZ_ULTRA_SALUTE: 'Allianz Ultra Salute',
     ALLIANZ1_BUSINESS: 'Allianz1 Business',
     FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE: 'FastQuote Infortuni da circolazione',
@@ -26,9 +26,9 @@ const LinksBurgerMenu = {
     ALLIANZ1_PREMORIENZA: 'Allianz1 premorienza',
     PREVENTIVO_ANONIMO_VITA_INDIVIDUALI: 'Preventivo Anonimo Vita Individuali',
     GESTIONE_RICHIESTE_PER_PA: 'Gestione richieste per PA',
-    NUOVO_SFERA: 'Nuovo Sfera',
+    NUOVO_SFERA: 'Nuovo Sfera', //! second window
     SFERA: 'Sfera',
-    CAMPAGNE_COMMERCIALI: 'Campagne Commerciali',
+    CAMPAGNE_COMMERCIALI: 'Campagne Commerciali', //! second window
     RECUPERO_PREVENTIVI_E_QUOTAZIONI: 'Recupero preventivi e quotazioni',
     DOCUMENTI_DA_FIRMARE: 'Documenti da firmare',
     GESTIONE_ATTIVITA_IN_SCADENZA: 'Gestione attività in scadenza',
@@ -47,7 +47,6 @@ const LinksBurgerMenu = {
     ALLIANZ_GLOBAL_ASSISTANCE: 'Allianz Global Assistance',
     ALLIANZ_PLACEMENT_PLATFORM: 'Allianz placement platform',
     QUALITÀ_PORTAFOGLIO_AUTO: 'Qualità portafoglio auto',
-    APP_CUMULO_TERREMOTI: 'App cumulo terremoti',
     NOTE_DI_CONTRATTO: 'Note di contratto',
     ACOM_GESTIONE_INIZIATIVE: 'ACOM Gestione iniziative',
 
@@ -64,9 +63,19 @@ class BurgerMenuSales extends Sales {
 
         const linksBurger = Object.values(LinksBurgerMenu)
 
-        cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
-            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-        })
+        if (!Cypress.env('monoUtenza'))
+            cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            })
+        else {
+            delete LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
+            delete LinksBurgerMenu.NUOVO_SFERA
+            delete LinksBurgerMenu.CAMPAGNE_COMMERCIALI
+            const linksBurger = Object.values(LinksBurgerMenu)
+            cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            })
+        }
     }
 
     /**
@@ -154,7 +163,7 @@ class BurgerMenuSales extends Sales {
                 cy.wait('@getSalesPremo', { requestTimeout: 40000 });
                 cy.wait(20000)
                 getIFrame().should('be.visible')
-                getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text','Ricerca')
+                getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text', 'Ricerca')
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
                 Common.canaleFromPopup()
@@ -202,14 +211,31 @@ class BurgerMenuSales extends Sales {
                 getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
                 break;
             case LinksBurgerMenu.MANUTENZIONE_PORTAFOGLIO_RV_MIDCO:
-                cy.intercept({
-                    method: 'POST',
-                    url: '**/DirMPTF/**'
-                }).as('danni');
-                Common.canaleFromPopup()
-                cy.wait('@danni', { requestTimeout: 40000 });
-                cy.wait(15000)
-                getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri[value="Applica Filtri"]').invoke('attr', 'value').should('equal', 'Applica Filtri')
+                if (!Cypress.env('monoUtenza')) {
+                    cy.intercept({
+                        method: 'POST',
+                        url: '**/Danni/**'
+                    }).as('postDanni');
+                    cy.intercept({
+                        method: 'GET',
+                        url: '**/Danni/**'
+                    }).as('getDanni');
+                    Common.canaleFromPopup()
+                    cy.wait('@getDanni', { requestTimeout: 40000 })
+                    cy.wait('@postDanni', { requestTimeout: 40000 })
+                    cy.wait(5000)
+                    getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
+                }
+                else {
+                    cy.intercept({
+                        method: 'GET',
+                        url: '**/Danni/**'
+                    }).as('getDanni');
+                    cy.wait('@getDanni', { requestTimeout: 40000 })
+                    cy.wait(10000)
+                    getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
+                }
+
                 break;
             case LinksBurgerMenu.VITA_CORPORATE:
                 cy.intercept({
@@ -247,9 +273,9 @@ class BurgerMenuSales extends Sales {
                     url: '**/Vita/**'
                 }).as('vita');
                 Common.canaleFromPopup()
-                // cy.wait('@vita', { requestTimeout: 30000 });
+                cy.wait('@vita', { requestTimeout: 30000 });
                 cy.wait(6000)
-                getIFrame().find('input[value="Ricerca"]').invoke('attr', 'value').should('equal', 'Ricerca')
+                getIFrame().find('input[value="Ricerca"]:visible')
                 break;
             case LinksBurgerMenu.DOCUMENTI_ANNULLATI:
                 Common.canaleFromPopup()
@@ -282,8 +308,6 @@ class BurgerMenuSales extends Sales {
             case LinksBurgerMenu.QUALITÀ_PORTAFOGLIO_AUTO:
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
-                break;
-            case LinksBurgerMenu.APP_CUMULO_TERREMOTI:
                 break;
             case LinksBurgerMenu.NOTE_DI_CONTRATTO:
                 Common.canaleFromPopup()

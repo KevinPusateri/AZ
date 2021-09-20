@@ -13,9 +13,13 @@ const getIFrame = () => {
 
 const interceptGetAgenziePDF = () => {
     cy.intercept({
+        method: 'GET',
+        url: '**/dacommerciale/**'
+    }).as('getDacommercialeGET');
+    cy.intercept({
         method: 'POST',
         url: '**/dacommerciale/**'
-    }).as('getDacommerciale');
+    }).as('getDacommercialePOST');
 }
 
 const interceptGetPentahoDA = () => {
@@ -39,7 +43,7 @@ const LinksBurgerMenu = {
     INCENTIVAZIONE_RECRUITING: 'Incentivazione Recruiting',
     ANDAMENTI_TECNICI: 'Andamenti Tecnici',
     ESTRAZIONI_AVANZATE: 'Estrazioni Avanzate',
-    SCARICO_DATI: 'Scarico Dati',
+    SCARICO_DATI: 'Scarico Dati', ///SSSS
     INDICI_DIGITALI: 'Indici Digitali',
     NEW_BUSINESS_DANNI: 'New Business Danni',
     NEW_BUSINESS_ULTRA_CASA_PATRIMONIO: 'New Business Ultra Casa e Patrimonio',
@@ -73,9 +77,17 @@ class BurgerMenuNumbers extends Numbers {
         cy.get('lib-burger-icon').click()
         const linksBurger = Object.values(LinksBurgerMenu)
 
-        cy.get('lib-side-menu-link').find('a').should('have.length', 23).each(($checkLinksBurger, i) => {
-            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-        })
+        if (!Cypress.env('monoUtenza'))
+            cy.get('lib-side-menu-link').find('a').should('have.length', 23).each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            })
+        else {
+            delete LinksBurgerMenu.SCARICO_DATI
+            const linksBurger = Object.values(LinksBurgerMenu)
+            cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            }).should('have.length', 22)
+        }
     }
 
     /**
@@ -106,15 +118,15 @@ class BurgerMenuNumbers extends Numbers {
     static checkPage(page) {
         switch (page) {
             case LinksBurgerMenu.MONITORAGGIO_FONTI:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
                 getIFrame().find('a:contains("Filtra")')
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
-                getIFrame().find('#contentPane:contains("Fonti"):visible')
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                getIFrame().find('#btnFonti:contains("Fonti"):visible')
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO_FONTE:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
                 getIFrame().find('#contentPane:contains("Applica filtri"):visible')
                 break;
             case LinksBurgerMenu.X_ADVISOR:
@@ -125,15 +137,19 @@ class BurgerMenuNumbers extends Numbers {
                 Common.visitUrlOnEnv()
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
                 getIFrame().find('button:contains("Incentivazione: Maturato per Fonte"):visible')
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE_RECRUITING:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
-                getIFrame().find('[class="menu-padre"]:contains("Report"):visible')
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                if (!Cypress.env('monoUtenza'))
+                    getIFrame().find('[class="menu-padre"]:contains("Report"):visible')
+                else
+                    getIFrame().find('#likelyCauses').should('be.visible')
+                        .and('contain.text','Non esistono piani di incentivazioni recruiting per l\'agenzia.')
                 break;
             case LinksBurgerMenu.ANDAMENTI_TECNICI:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
                 getIFrame().find('button:contains("Fonti produttive"):visible')
                 break;
             case LinksBurgerMenu.ESTRAZIONI_AVANZATE:
@@ -142,26 +158,26 @@ class BurgerMenuNumbers extends Numbers {
                 getIFrame().find('a:contains("Nuovo Report"):visible')
                 break;
             case LinksBurgerMenu.SCARICO_DATI:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
                 getIFrame().find('form:contains("Esporta tracciato")')
                 break;
             case LinksBurgerMenu.INDICI_DIGITALI:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
                 getIFrame().find('#toggleFilters:contains("Apri filtri")')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_DANNI:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
-                getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                getIFrame().find('#ricerca_cliente').should('be.visible').and('contain.text', 'Filtra')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO:
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_SALUTE:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
-                getIFrame().find('#submit-Mon_PTF:contains("Filtra"):visible')
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                getIFrame().find('#submit-Mon_PTF').should('be.visible').and('contain.text', 'Filtra')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_VITA:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
                 cy.wait(5000)
-                getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
+                getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_ALLIANZ1:
             case LinksBurgerMenu.MONITORAGGIO_RISERVE_VITA:
@@ -171,8 +187,9 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.MONITORAGGIO_ANDAMENTO_PREMI:
             case LinksBurgerMenu.MONITORAGGIO_RICAVI_AGENZIA:
             case LinksBurgerMenu.CAPITALE_VITA_SCADENZA:
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
-                getIFrame().find('[class="page-container"]:contains("Filtra"):visible')
+                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialePOST', { requestTimeout: 120000 });
+                getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 break;
         }
     }

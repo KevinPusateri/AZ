@@ -35,7 +35,7 @@ const getIFrameDenuncia = () => {
 const LinksSinistri = {
     MOVIMENTAZIONE_SINISTRI: 'Movimentazione sinistri',
     DENUNCIA: 'Denuncia',
-    DENUNCIA_BMP: 'Denuncia BMP',
+    DENUNCIA_BMP: 'Denuncia BMP', //! seconda finestra
     CONSULTAZIONE_SINISTRI: 'Consultazione sinistri',
     SINISTRI_INCOMPLETI: 'Sinistri incompleti',
     SINISTRI_CANALIZZATI: 'Sinistri canalizzati'
@@ -52,8 +52,8 @@ const LinksContabilita = {
     INCASSO_MASSIVO: 'Incasso massivo',
     SOLLECITO_TITOLI: 'Sollecito titoli',
     IMPOSTAZIONE_CONTABILITA: 'Impostazione contabilità',
-    CONVENZIONI_IN_TRATTENUTA: 'Convenzioni in trattenuta',
-    MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart'
+    CONVENZIONI_IN_TRATTENUTA: 'Convenzioni in trattenuta', //! seconda finstra 
+    MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart' //! seconda finestra
 }
 
 class BackOffice {
@@ -64,9 +64,17 @@ class BackOffice {
     static checkLinksOnSinistriExist() {
         const linksSinistri = Object.values(LinksSinistri)
 
-        cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
-            expect($labelCard).to.contain(linksSinistri[i])
-        })
+        if (!Cypress.env('monoUtenza'))
+            cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksSinistri[i])
+            })
+        else {
+            delete LinksSinistri.DENUNCIA_BMP
+            const linksSinistri = Object.values(LinksSinistri)
+            cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksSinistri[i])
+            })
+        }
     }
 
     /**
@@ -75,9 +83,18 @@ class BackOffice {
     static checkLinksOnContabilitaExist() {
         const linksContabilita = Object.values(LinksContabilita)
 
-        cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').should('have.length', 12).each(($labelCard, i) => {
-            expect($labelCard).to.contain(linksContabilita[i])
-        })
+        if (!Cypress.env('monoUtenza'))
+            cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').should('have.length', 12).each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksContabilita[i])
+            })
+        else {
+            delete LinksContabilita.CONVENZIONI_IN_TRATTENUTA
+            delete LinksContabilita.MONITORAGGIO_GUIDA_SMART
+            const linksContabilita = Object.values(LinksContabilita)
+            cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksContabilita[i])
+            }).should('have.length', 10)
+        }
     }
 
     /**
@@ -124,7 +141,7 @@ class BackOffice {
                 break;
             case LinksSinistri.DENUNCIA_BMP:
                 getIFrame().find('h4').should('be.visible').then($title => {
-                    expect(['Dettaglio cliente','Customer details']).to.include($title.text().trim())
+                    expect(['Dettaglio cliente', 'Customer details']).to.include($title.text().trim())
                 })
                 break;
             case LinksSinistri.CONSULTAZIONE_SINISTRI:
@@ -155,7 +172,7 @@ class BackOffice {
                 break;
             case LinksContabilita.DELEGHE_SDD:
                 cy.wait(10000)
-                getIFrame().find('input[value="Carica"]').invoke('attr', 'value').should('equal', 'Carica')
+                getIFrame().find('input[value="Carica"]').should('be.visible').invoke('attr', 'value').should('equal', 'Carica')
                 break;
             case LinksContabilita.QUADRATURA_UNIFICATA:
                 getIFrame().find('#quadNavigationBar:contains("Q.U.A.D. - home page"):visible')
@@ -165,7 +182,7 @@ class BackOffice {
                 break;
             case LinksContabilita.INCASSO_PER_CONTO:
                 cy.wait(10000)
-                getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
+                getIFrame().find('input[value="Cerca"]').should('be.visible').invoke('attr', 'value').should('equal', 'Cerca')
                 break;
             case LinksContabilita.INCASSO_MASSIVO:
                 getIFrame().find('a:contains("Apri filtri"):visible')
@@ -202,12 +219,12 @@ class BackOffice {
     //#endregion
 
     /**
-     * Clicca VPS Rami Vari ("News")
+     * Clicca ("News") da landingPage
      */
-    static clickVPSRami() {
+    static clickNewsLanding() {
         cy.get('lib-news-card').click();
         Common.canaleFromPopup()
-        getIFrame().find('span:contains("VPS Rami Vari: meno è meglio!"):visible')
+        getIFrame().find('span:contains("IVASS"):visible')
     }
 }
 

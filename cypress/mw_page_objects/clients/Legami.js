@@ -22,7 +22,7 @@ class Legami {
     static inserisciMembroFromGroup() {
         return new Cypress.Promise((resolve, reject) => {
 
-            cy.get('nx-modal').then(($modal) => {
+            cy.get('nx-modal').should('be.visible').then(($modal) => {
                 const searchOtherMember = () => {
                     cy.generateTwoLetters().then(randomChars => {
                         cy.get('nx-modal').find('div[class="nx-grid"]')
@@ -34,28 +34,27 @@ class Legami {
                                 searchOtherMember()
                         })
                     })
-                    cy.get('nx-modal').then(() => {
+                    cy.get('nx-modal').should('be.visible').then(() => {
                         var listIndex = []
-                        // cy.wait(5000)
                         cy.get('nx-modal').find('div[class="person ng-star-inserted"]').should('be.visible')
                         cy.get('nx-modal').find('div[class="person ng-star-inserted"]').each(($person, index) => {
                             listIndex.push(index)
                         })
                         cy.get('nx-modal').then(() => {
                             var name = ''
-                            console.log(listIndex)
-
                             var indexPerson = listIndex[Math.floor(Math.random() * listIndex.length)]
 
                             cy.wrap($modal).find('div[class="person ng-star-inserted"]').eq(indexPerson)
                                 .find('div[class="name-surname"]').then((textName) => {
                                     name = textName.text()
                                 })
-                            cy.wait(2000)
+                            cy.get('div[class="person ng-star-inserted"]').should('be.visible')
                             cy.wrap($modal).find('div[class="person ng-star-inserted"]').eq(indexPerson).scrollIntoView().click()
-                            cy.wait(2000)
+
+                            cy.get('div[class="selected-person ng-star-inserted"]').should('exist').and('be.visible')
                             cy.wrap($modal).find('span:contains("Aggiungi"):visible').click()
-                            cy.wait(2000)
+
+                            cy.get('nx-message-toast').should('be.visible')
                             cy.get('.cdk-overlay-container').find('nx-message-toast').then($overlay => {
 
                                 const checkIsPresente = $overlay.find(':contains("Aderente già presente in altro Gruppo Aziendale.")').is(':visible')
@@ -90,15 +89,12 @@ class Legami {
     static checkMembroInserito(membro, capogruppo) {
         cy.get('ac-anagrafe-panel')
             .should('be.visible').then((name) => {
-                console.log(name.text().trim())
+                cy.wait(3000)
                 var checkCapogruppo = name.text().trim().split('Membro')[1].split('Ruolo')[0].trim()
                 if (capogruppo.length >= 28) {
-                    debugger
                     expect(checkCapogruppo).to.include(capogruppo.trim().substring(0, 28).split(' ')[0])
                 }
                 else {
-                    debugger
-                    console.log(checkCapogruppo)
                     expect(checkCapogruppo).to.include(capogruppo.trim().split(' ')[0])
                 }
             })
@@ -108,14 +104,12 @@ class Legami {
 
         cy.get('ac-anagrafe-panel')
             .should('be.visible').then((name) => {
+                cy.wait(3000)
                 var checkMembro = name.text().trim().split('Membro')[2].split('Ruolo')[0].trim()
-                console.log(checkMembro)
                 if (membro.length >= 28) {
-                    debugger
                     expect(checkMembro).to.include(membro.trim().substring(0, 28).split(' ')[0])
                 }
                 else {
-                    debugger
                     expect(checkMembro).to.include(membro.trim().split(' ')[0])
                 }
 
@@ -138,17 +132,20 @@ class Legami {
     }
 
     /**
-     * click link membro
+     * Click link membro
      * @param {string} membro - link membro
+     * @param {Boolean} editMembro - default a true, effettuato trim e substring per i test di mw_legami
      */
-    static clickLinkMembro(membro) {
+    static clickLinkMembro(membro, editMembro = true) {
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {
                 req.alias = 'client'
             }
         });
-        cy.get('ac-anagrafe-panel').find('a[class="data"]:contains("' + membro.trim().substring(0, 5) + '")').click()
 
+        let currentMembro = editMembro ? membro.trim().substring(0, 5) : membro
+
+        cy.get('ac-anagrafe-panel').find('a[class="data"]:contains("' + currentMembro + '"):first').click()
 
         cy.wait('@client', { requestTimeout: 30000 });
     }
@@ -182,7 +179,10 @@ class Legami {
      * @param {string} membro - nome del membro 
      */
     static eliminaMembro(membro) {
-        cy.get('div[class^="member"]').find('a:contains("' + membro + '")')
+        cy.get('div[class^="member-name"]').should('exist').and('be.visible')
+        cy.wait(4000)
+        cy.contains('div[class^="member-name"]', membro).parents()
+        cy.contains('div[class^="member-name"]', membro)
             .parents('div[class^="member"]').find('nx-icon[class="trash-icon nx-icon--s ndbx-icon nx-icon--trash"]').click()
         cy.get('.cdk-overlay-container').find('span[class="text"]:visible').should('contain.text', 'Rimuovere')
         cy.contains('Si').click()
@@ -213,7 +213,7 @@ class Legami {
      */
     static checkTerzoMembroNonInseribile() {
         cy.contains('Inserisci membro').click()
-        cy.get('nx-modal').then(($modal) => {
+        cy.get('nx-modal').should('be.visible').then(($modal) => {
             const searchOtherMember = () => {
 
                 cy.generateTwoLetters().then(randomChars => {
@@ -226,10 +226,9 @@ class Legami {
                         searchOtherMember()
                 })
 
-                cy.get('nx-modal').then(() => {
+                cy.get('nx-modal').should('be.visible').then(() => {
                     var listIndex = []
 
-                    // cy.wait(5000)
                     cy.get('nx-modal').find('div[class="person ng-star-inserted"]').should('be.visible')
                     cy.get('nx-modal').find('div[class="person ng-star-inserted"]').each(($person, index) => {
                         listIndex.push(index)
@@ -237,11 +236,13 @@ class Legami {
                     cy.get('nx-modal').then(() => {
 
                         var indexPerson = listIndex[Math.floor(Math.random() * listIndex.length)]
-                        cy.wait(2000)
+                        cy.get('div[class="person ng-star-inserted"]').should('be.visible')
                         cy.wrap($modal).find('div[class="person ng-star-inserted"]').eq(indexPerson).scrollIntoView().click()
-                        cy.wait(2000)
+
+                        cy.get('div[class="selected-person ng-star-inserted"]').should('exist').and('be.visible')
                         cy.wrap($modal).find('span:contains("Aggiungi"):visible').click()
-                        cy.wait(3000)
+
+                        cy.get('nx-message-toast').should('be.visible')
                         cy.get('.cdk-overlay-container').find('nx-message-toast').then($overlay => {
                             const checkIsPresente = $overlay.find(':contains("Aderente già presente in altro Gruppo Aziendale.")').is(':visible')
                             const checkError = $overlay.find(':contains("ERROR")').is(':visible')
@@ -253,15 +254,11 @@ class Legami {
                                     .should('be.visible').and('contain.text', 'E\' stato raggiunto il numero massimo di imprese (3) per Nucleo Aziendale')
                                 cy.get('nx-modal').find('nx-icon[name="close"]:visible').click()
                             }
-
                         })
                     })
                 })
-
             }
-
             searchOtherMember()
-
         })
 
     }
@@ -273,26 +270,25 @@ class Legami {
         cy.contains('Inserisci membro').click()
         return new Cypress.Promise((resolve, reject) => {
 
-            cy.get('nx-modal').then(($modal) => {
+            cy.get('nx-modal').should('be.visible').then(($modal) => {
                 const searchOtherMember = () => {
                     cy.generateTwoLetters().then(randomChars => {
                         cy.get('nx-modal').find('div[class="nx-grid"]')
                             .clear().type(randomChars).type('{enter}')
                         cy.wait(3000)
+
                         const checkSearchIsPresente = $modal.find(':contains("Nessun cliente trovato")').is(':visible')
                         if (checkSearchIsPresente)
                             searchOtherMember()
                     })
-                    cy.get('nx-modal').then(() => {
+                    cy.get('nx-modal').should('be.visible').then(() => {
                         var listIndex = []
                         cy.get('nx-modal').find('div[class="person ng-star-inserted"]').should('be.visible')
                         cy.get('nx-modal').find('div[class="person ng-star-inserted"]').each(($person, index) => {
                             listIndex.push(index)
                         })
-                        cy.get('nx-modal').then(() => {
+                        cy.get('nx-modal').should('be.visible').then(() => {
                             var name = ''
-                            console.log(listIndex)
-
                             var indexPerson = listIndex[Math.floor(Math.random() * listIndex.length)]
                             cy.wait(5000)
 
@@ -300,11 +296,14 @@ class Legami {
                                 .find('div[class="name-surname"]').then((textName) => {
                                     name = textName.text()
                                 })
-                            cy.wait(2000)
+
+                            cy.get('div[class="person ng-star-inserted"]').should('be.visible')
                             cy.wrap($modal).find('div[class="person ng-star-inserted"]').eq(indexPerson).scrollIntoView().click()
-                            cy.wait(2000)
+
+                            cy.get('div[class="selected-person ng-star-inserted"]').should('exist').and('be.visible')
                             cy.wrap($modal).find('span:contains("Aggiungi"):visible').click()
-                            cy.wait(2000)
+
+                            cy.get('nx-message-toast').should('be.visible')
                             cy.get('.cdk-overlay-container').find('nx-message-toast').then($overlay => {
 
                                 const checkIsPresente = $overlay.find(':contains("Aderente già presente in altro Gruppo Aziendale.")').is(':visible')

@@ -36,10 +36,17 @@ class BurgerMenuClients extends Clients {
         cy.get('lib-burger-icon').click({ force: true })
 
         const linksBurger = Object.values(LinksBurgerMenu)
-
-        cy.get('lib-side-menu-link').find('a').should('have.length', 11).each(($checkLinksBurger, i) => {
-            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-        })
+        if (!Cypress.env('monoUtenza'))
+            cy.get('lib-side-menu-link').find('a').should('have.length', 11).each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            })
+        else {
+            delete LinksBurgerMenu.HOSPITAL_SCANNER
+            const linksBurger = Object.values(LinksBurgerMenu)
+            cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            }).should('have.length', 10)
+        }
     }
 
     /**
@@ -114,35 +121,16 @@ class BurgerMenuClients extends Clients {
             case LinksBurgerMenu.HOSPITAL_SCANNER:
                 cy.contains(page).click()
 
-                Common.canaleFromPopup()
-
                 cy.window().then(win => {
-                    cy.stub(win, 'open').as('windowOpen');
-                });
+                    cy.stub(win, 'open').callsFake((url) => {
+                      return win.open.wrappedMethod.call(win, url, '_self');
+                    }).as('Open');
+                  });
 
-                // you can try exclude the 'should' below
-                // in my code it worked without this 'should' first
-                // after merging the latest changes this part failed somehow though no change was made here
-                // after investigation I found that the stub argument was not ready immediately
-                // so I added 'should' here to wait the argument load
-                // before visiting the url contained within it
-
-                cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(stub => {
-                    cy.visit(stub.args[0][0]);
-                    stub.restore;
-                });
-                cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
-
-                // if (Cypress.isBrowser('firefox')) {
-
-                //     cy.get('app-home-right-section').find('app-rapid-link[linkname="Analisi dei bisogni"] > a')
-                //         .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
-                //     cy.url().should('eq', Common.getBaseUrl() + 'clients/new-client')
-                // } else {
-                //     cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
-                //     cy.go('back')
-                // }
-                // cy.contains('CERCA INTERVENTO').should('be.visible')
+                Common.canaleFromPopup()
+                cy.get('@Open')
+                
+                cy.get('app-home').should('exist').and('be.visible').and('contain.text', 'CERCA INTERVENTO')
                 break;
         }
     }

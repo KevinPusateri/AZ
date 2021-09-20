@@ -3,15 +3,63 @@
 class Common {
 
   /**
+   * 
    * dal popup clicca sulla prima agenzia per accedere alla pagina
+   * @param {boolean} chooseUtenza : default a false, effettua l'accesso alla seconda finestra dalla homepage
    */
-  static canaleFromPopup() {
-    cy.get('body').then($body => {
-      if ($body.find('nx-modal-container').length > 0) {
-        cy.wait(2000)
-        cy.get('nx-modal-container').find('.agency-row').first().click()
-      }
-    })
+  static canaleFromPopup(chooseUtenza = false) {
+
+    if (Cypress.env('monoUtenza')) {
+      cy.get('body').then($body => {
+        if ($body.find('nx-modal-container').length > 0) {
+          cy.wait(2000)
+          cy.get('div[ngclass="agency-row"]').should('be.visible')
+          cy.get('div[ngclass="agency-row"]').first().click()
+        }
+      })
+    }
+
+    // Scegli utenza se siamo su finestra principale e procediamo dall'icona sulla seconda finestra
+    if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && chooseUtenza) {
+      cy.get('body').then($body => {
+        if ($body.find('nx-modal-container').length > 0) {
+          cy.wait(2000)
+          cy.get('div[ngclass="agency-row"]').should('be.visible')
+
+          cy.get('div[ngclass="agency-row"]').contains(Cypress.env('Utenza')).click()
+          cy.window().then(win => {
+            cy.stub(win, 'open').as('windowOpen');
+          });
+          cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(stub => {
+            cy.visit(stub.args[0][0]);
+            stub.restore;
+          });
+        }
+      })
+    }
+
+    // Scegli utenza se siamo su finestra principale multiutenza
+    if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && chooseUtenza) {
+      cy.get('body').then($body => {
+        if ($body.find('nx-modal-container').length > 0) {
+          cy.wait(2000)
+          cy.get('div[ngclass="agency-row"]').should('be.visible')
+
+          cy.get('div[ngclass="agency-row"]').contains(Cypress.env('Utenza')).click()
+        }
+      })
+    } 
+    
+    if (!Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && !chooseUtenza) {
+      cy.get('body').then($body => {
+        if ($body.find('nx-modal-container').length > 0) {
+          cy.wait(2000)
+          cy.get('div[ngclass="agency-row"]').should('be.visible')
+          cy.get('div[ngclass="agency-row"]').first().click()
+        }
+      })
+    }
+
   }
 
   /**
@@ -19,25 +67,30 @@ class Common {
    * @returns {string} indirizzo url
    */
   static getBaseUrl() {
-    const url = Cypress.env('currentEnv') === 'TEST' ? Cypress.env('baseUrlTest') : Cypress.env('baseUrlPreprod');
+    let url
+    if (Cypress.env('currentEnv') === 'TEST')
+      url = Cypress.env('baseUrlTest')
+    else
+      if (!Cypress.env('monoUtenza'))
+        url = Cypress.env('baseUrlPreprod')
+      else
+        url = Cypress.env('urlSecondWindow')
+
     return url;
-  }
-
-  /**
-   * Setta il il baseUrl
-   */
-  static setBaseUrl() {
-    Cypress.env('currentEnv') === 'TEST' ? Cypress.config('baseUrl', Cypress.env('baseUrlTest')) : Cypress.config('baseUrl', Cypress.env('baseUrlPreprod'))
-
   }
 
   /**
    * Se Preprod fa should su baseUrlPreprod altrimenti su baseUrlTest
    */
   static checkUrlEnv() {
-    Cypress.env('currentEnv') === 'TEST' ?
-      cy.url().should('include', Cypress.env('baseUrlTest')) :
-      cy.url().should('include', Cypress.env('baseUrlPreprod'))
+    if (Cypress.env('currentEnv') === 'TEST')
+      cy.url().should('include', Cypress.env('baseUrlTest'))
+    else {
+      if (!Cypress.env('monoUtenza'))
+        cy.url().should('include', Cypress.env('baseUrlPreprod'))
+      else
+        cy.url().should('include', Cypress.env('urlSecondWindow'))
+    }
   }
 
   /**
@@ -80,12 +133,18 @@ class Common {
       })
     }
 
-    Cypress.env('currentEnv') === 'TEST' ?
-      cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 }) :
-      cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
+    if (Cypress.env('currentEnv') === 'TEST')
+      cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 })
+    else {
+      if (!Cypress.env('monoUtenza'))
+        cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
+      else
+        cy.visit(Cypress.env('urlSecondWindow'), { responseTimeout: 31000 })
+    }
     if (!mockedNews)
       cy.wait('@gqlNews')
   }
+
 }
 
 

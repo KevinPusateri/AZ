@@ -1,5 +1,5 @@
 /// <reference types="Cypress" />
-
+require('cypress-plugin-tab')
 
 const getSCU = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]').iframe();
@@ -73,7 +73,7 @@ class SCUAltriIndirizzi {
                         indirizzo.address +'")')
                     .then((row) => {
                         cy.wrap(row)
-                            .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                            .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
                             .click()
                             .wait(5000);
                     }).then(() => {
@@ -86,6 +86,7 @@ class SCUAltriIndirizzi {
 
                         //#region Comune
                         getSCU().find('#residenza-comune').clear()
+                        getSCU().find('#residenza-comune').tab()
                         getSCU().find('#residenza-comune').type('MILANO')
                         indirizzo.comune = 'MILANO'
                         getSCU().find('#residenza-comune_listbox > li').first().click()
@@ -109,7 +110,7 @@ class SCUAltriIndirizzi {
        * @param {string} indirizzo - Object contoCorrete creato
        */
     static checkAltriIndirizzi(indirizzo) {
-        cy.then(() => {
+        // cy.then(() => {
             cy.get('app-client-other-addresses').find('app-client-address-table-row').then((list) => {
                 if (list.length > 0) {
                     expect(list.text()).to.include(indirizzo.address)
@@ -118,7 +119,7 @@ class SCUAltriIndirizzi {
                 } else
                     assert.fail('Nessun Indirizzo è stato inserito')
             })
-        })
+        // })
     }
 
 
@@ -131,7 +132,7 @@ class SCUAltriIndirizzi {
                 )
                 .then((row) => {
                     cy.wrap(row)
-                        .find('nx-icon[class="nx-icon--s nx-icon--ellipsis-h icon"]')
+                        .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
                         .click()
                         .wait(5000);
                     cy.get("lib-check-user-permissions").contains("Elimina indirizzo").click();
