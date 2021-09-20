@@ -23,11 +23,12 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-        insertedId = results.insertId
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
     })
-    LoginPage.logInMW(userName, psw)
-
 })
 
 beforeEach(() => {
@@ -116,7 +117,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.clickRamiVari()
         SintesiCliente.checkLinksFromRamiVariOnEmissione()
     })
-    
+
     it('Verifica Link da Card Vita', function () {
         SintesiCliente.clickVita()
         SintesiCliente.checkLinksFromVita()

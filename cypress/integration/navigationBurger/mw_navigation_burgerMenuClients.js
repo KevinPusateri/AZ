@@ -28,12 +28,12 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-        insertedId = results.insertId
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
     })
-    LoginPage.logInMW(userName, psw)
-
-
 })
 
 beforeEach(() => {
@@ -117,7 +117,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         BurgerMenuClients.clickLink('Hospital scanner')
         HomePage.reloadMWHomePage()
     });
-    
+
     it('Verifica aggancio Antiriciclaggio', function () {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Antiriciclaggio')

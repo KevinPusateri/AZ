@@ -27,12 +27,12 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 
 before(() => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-        insertedId = results.insertId
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
     })
-      LoginPage.logInMW(userName, psw)
-
-
 })
 
 beforeEach(() => {
@@ -41,7 +41,7 @@ beforeEach(() => {
     if (!Cypress.env('monoUtenza')) {
         TopBar.search('Pulini Francesco')
         SintesiCliente.wait()
-    } else{
+    } else {
         TopBar.search('SLZNLL54A04H431Q')
         SintesiCliente.wait()
     }

@@ -28,12 +28,12 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-        insertedId = results.insertId
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
     })
-    LoginPage.logInMW(userName, psw)
-
-
 })
 
 beforeEach(() => {
@@ -186,7 +186,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it('Verifica "Quietanamento" - lob di interesse: Motor', function () {
+    it.only('Verifica "Quietanzamento" - lob di interesse: Motor', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Motor')
@@ -194,7 +194,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         } else this.skip()
     })
 
-    it('Verifica "Quietanamento" - lob di interesse: Rami Vari', function () {
+    it.only('Verifica "Quietanzamento" - lob di interesse: Rami Vari', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Rami vari')
@@ -202,7 +202,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         } else this.skip()
     })
 
-    it('Verifica "Quietanamento" - lob di interesse: Vita', function () {
+    it.only('Verifica "Quietanzamento" - lob di interesse: Vita', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Vita')
@@ -210,7 +210,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         } else this.skip()
     })
 
-    it('Verifica "Quietanamento" - lob di interesse: Tutte', function () {
+    it.only('Verifica "Quietanzamento" - lob di interesse: Tutte', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Tutte')

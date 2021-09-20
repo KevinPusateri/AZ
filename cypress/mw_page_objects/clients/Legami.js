@@ -87,36 +87,43 @@ class Legami {
      * @param {string} capogruppo - il capogruppo
      */
     static checkMembroInserito(membro, capogruppo) {
-        cy.get('ac-anagrafe-panel')
-            .should('be.visible').then((name) => {
-                cy.wait(3000)
-                var checkCapogruppo = name.text().trim().split('Membro')[1].split('Ruolo')[0].trim()
-                if (capogruppo.length >= 28) {
-                    expect(checkCapogruppo).to.include(capogruppo.trim().substring(0, 28).split(' ')[0])
-                }
-                else {
-                    expect(checkCapogruppo).to.include(capogruppo.trim().split(' ')[0])
-                }
-            })
-        cy.get('ac-anagrafe-panel').find('div[class="member-name"]').eq(0)
-            .parents('div[class^="member"]')
-            .find('div[class="member-data"] > div[class="data"]').should('contain.text', 'Capogruppo')
+        // cy.get('ac-anagrafe-panel')
+        //     .should('be.visible').then((name) => {
+        //         cy.wait(3000)
+        //         var checkCapogruppo = name.text().trim().split('Membro')[1].split('Ruolo')[0].trim()
+        //         if (capogruppo.length >= 28) {
+        //             expect(checkCapogruppo).to.include(capogruppo.trim().substring(0, 28).split(' ')[0])
+        //         }
+        //         else {
+        //             expect(checkCapogruppo).to.include(capogruppo.trim().split(' ')[0])
+        //         }
+        //     })
+        // cy.get('ac-anagrafe-panel').find('div[class="member-name"]').eq(0)
+        //     .parents('div[class^="member"]')
+        //     .find('div[class="member-data"] > div[class="data"]').should('contain.text', 'Capogruppo')
 
-        cy.get('ac-anagrafe-panel')
-            .should('be.visible').then((name) => {
-                cy.wait(3000)
-                var checkMembro = name.text().trim().split('Membro')[2].split('Ruolo')[0].trim()
-                if (membro.length >= 28) {
-                    expect(checkMembro).to.include(membro.trim().substring(0, 28).split(' ')[0])
-                }
-                else {
-                    expect(checkMembro).to.include(membro.trim().split(' ')[0])
-                }
 
-            })
-        cy.get('ac-anagrafe-panel').find('div[class="member-name"]').eq(1)
-            .parents('div[class^="member"]')
-            .find('div[class="member-data"] > div[class="data"]').should('contain.text', 'Appartenente')
+        cy.get('ac-anagrafe-panel').should('be.visible')
+        .find('div[class="gruppo-panel"]:first:visible').then((name)=>{
+            expect()
+
+        })
+
+        // cy.get('ac-anagrafe-panel')
+        //     .should('be.visible').then((name) => {
+        //         cy.wait(3000)
+        //         var checkMembro = name.text().trim().split('Membro')[2].split('Ruolo')[0].trim()
+        //         if (membro.length >= 28) {
+        //             expect(checkMembro).to.include(membro.trim().substring(0, 28).split(' ')[0])
+        //         }
+        //         else {
+        //             expect(checkMembro).to.include(membro.trim().split(' ')[0])
+        //         }
+
+        //     })
+        // cy.get('ac-anagrafe-panel').find('div[class="member-name"]').eq(1)
+        //     .parents('div[class^="member"]')
+        //     .find('div[class="member-data"] > div[class="data"]').should('contain.text', 'Appartenente')
     }
 
     /**
