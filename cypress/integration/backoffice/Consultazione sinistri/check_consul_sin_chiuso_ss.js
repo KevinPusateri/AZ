@@ -13,10 +13,6 @@ import BackOffice from "../../../mw_page_objects/Navigation/BackOffice"
 import ConsultazioneSinistriPage from "../../../mw_page_objects/backoffice/ConsultazioneSinistriPage"
 import MovimentazioneSinistriPage from "../../../mw_page_objects/backoffice/MovimentazioneSinistriPage"
 
-//#region Username Variables
-const userName = 'TUTF012'
-const psw = 'P@ssw0rd!'
-//#endregion
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
