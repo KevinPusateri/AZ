@@ -31,13 +31,14 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 
 before(() => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-        insertedId = results.insertId
-    })
-    //LoginPage.logInMW(userName, psw, true, '010375000')
-    LoginPage.logInMW(userName, psw, false)
-    TopBar.clickBackOffice()
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
+        TopBar.clickBackOffice()
     BackOffice.clickCardLink('Movimentazione sinistri')
+    })
 })
 
 beforeEach(() => {
