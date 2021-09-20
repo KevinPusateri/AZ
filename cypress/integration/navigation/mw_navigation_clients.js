@@ -16,22 +16,17 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
-//#region Username Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rd!'
-const agency = '010710000'
-//#endregion
-
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
-
 before(() => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-        insertedId = results.insertId
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
     })
-    LoginPage.logInMWAdvanced()
 })
 
 beforeEach(() => {
@@ -39,21 +34,21 @@ beforeEach(() => {
     HomePage.reloadMWHomePage()
 })
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
-//     })
-//     //#endregion
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    })
+    //#endregion
 
-// })
+})
 
 
 describe('Matrix Web : Navigazioni da Clients', function () {
 
-    it.only('Verifica aggancio Clients', function () {
+    it('Verifica aggancio Clients', function () {
         TopBar.clickClients()
     });
 

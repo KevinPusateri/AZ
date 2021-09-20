@@ -11,6 +11,7 @@
 import 'cypress-file-upload'
 const moment = require('moment')
 const os = require('os')
+const CryptoJS = require('crypto-js')
 
 //
 //
@@ -215,18 +216,19 @@ function resolve_index_or_name_to_index(index_or_name) {
   return index;
 }
 
-Cypress.Commands.add('impersonification', (user) => {
-    cy.request({
-      method: 'POST',
-      log: false,
-      url: 'https://profilingbe.pp.azi.allianzit/profilingManagement/personation/' + user.tutf,
-      form: true,
-      body: { persUser: user.agentId, channel: user.getChannel }
-    }).then(resp => {
-      if (resp.status !== 200)
-        assert.fail('Impersonificazione non effettuata correttamente!')
-
-    })
+Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
+  cy.request({
+    method: 'POST',
+    log: false,
+    url: 'https://profilingbe.pp.azi.allianzit/profilingManagement/personation/' + tutf,
+    form: true,
+    body: { persUser: getPersUser, channel: getChannel }
+  }).then(resp => {
+    if (resp.status !== 200)
+      assert.fail('Impersonificazione non effettuata correttamente!')
+    //else
+    //cy.wait(2000)
+  })
 })
 
 Cypress.Commands.add('getPartyRelations', (tutf) => {
@@ -747,10 +749,31 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
   })
 })
 
-Cypress.Commands.add('getHostName', () => {
-  return os.hostname()
+// Cypress.Commands.add('getHostName', () => {
+//   return os.hostname()
+// })
+
+Cypress.Commands.add('getUserWinLogin', () => {
+  cy.task('getUsername').then((username) => {
+
+    cy.fixture("tutf").then(data => {
+      return data.users.filter(obj => {
+        return obj.userName === username
+      })[0]
+    })
+  })
 })
 
+Cypress.Commands.add('decryptLoginPsw', () => {
+  cy.fixture("tutf").then(data => {
+
+    debugger
+    const psw = unescape(Cypress.env('secretKey').replace(/\\/g, "%"));
+
+    const bytes = CryptoJS.AES.decrypt(data.psw, psw);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  })
+})
 
 /**
  * metodo per aprire link nella stessa pagina

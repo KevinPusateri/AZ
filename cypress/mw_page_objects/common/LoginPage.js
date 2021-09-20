@@ -184,20 +184,24 @@ class LoginPage {
                 const user = data.users.filter(obj => {
                     return obj.userName === loggedUser.username
                 })[0]
-                cy.impersonification(user).then(() => {
-                    cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
-                    cy.get('input[name="Ecom_Password"]').type(data.psw, { log: false })
-                    cy.get('input[type="SUBMIT"]').click()
 
-                    if (!Cypress.env('monoUtenza'))
-                        Common.checkUrlEnv()
-                    if (!mockedNews)
-                        cy.wait('@gqlNews')
+                cy.decryptLoginPsw().then(psw => {
+                    cy.impersonification(user.tutf, user.agentId, user.agency).then(() => {
+                        debugger
+                        cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
+                        cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
+                        cy.get('input[type="SUBMIT"]').click()
 
-                    cy.wait('@gqlUserDetails')
+                        if (!Cypress.env('monoUtenza'))
+                            Common.checkUrlEnv()
+                        if (!mockedNews)
+                            cy.wait('@gqlNews')
 
-                    if (Cypress.env('isSecondWindow'))
-                        TopBar.clickSecondWindow()
+                        cy.wait('@gqlUserDetails')
+
+                        if (Cypress.env('isSecondWindow'))
+                            TopBar.clickSecondWindow()
+                    })
                 })
             })
         })
