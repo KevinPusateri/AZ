@@ -81,10 +81,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let statosin = csSinObjPage.getPromiseValue_ByCss(css5)
         const css6 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
         var dtAvvenimento = csSinObjPage.getPromiseValue_ByCss(css6)        
-             
+        
         // Seleziona il sinistro
         csSinObjPage.clickLnk_ByHref(sinistro)
-      
+    
         // Verifica : numero di sinistro in alto alla pagina di dettaglio
         const clssDtl = "pageTitle"
         csSinObjPage.checkObj_ByClassAndText(clssDtl, sinistro)
@@ -271,7 +271,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             csSinObjPage.containValidDate(statoPagamento)                          
         });
 
-        csSinObjPage.clickObj_ByLabel("span", "Close")        
+        csSinObjPage.clickBtn_ByClassAndText("k-icon k-i-close", "Close")        
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
@@ -346,8 +346,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             csSinObjPage.isNullOrEmpty(dtVerificaPerizia)       
             csSinObjPage.containValidDate(dtVerificaPerizia)                                          
         });
-
-        csSinObjPage.clickObj_ByLabel("span", "Close") 
+        // TODO: Implementare la chiusura sul secondo close della pop-up
+        //const closecss= "body > div:nth-child(5) > div.k-window-titlebar.k-header > div > a > span"
+        //csSinObjPage.clickLnk_ByHref("#")        
     });
 
 });

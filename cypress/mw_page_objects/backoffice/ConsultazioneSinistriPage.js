@@ -99,17 +99,16 @@ class ConsultazioneSinistriPage {
      * @param {string} classvalue : class attribute 
      * @param {string} label : text displayed
      */
-    static clickBtn_ByClassAndText(classvalue, label) {            
-        getIFrame().find('[class="'+classvalue+'"]').should('be.visible')
-        getIFrame().find('button:contains('+label+'):visible').click().log('>> object with label ['+label+ '] is clicked')
-        cy.wait(1000)        
+    static clickBtn_ByClassAndText(classvalue, label) {             
+        getIFrame().find('[class="'+classvalue+'"]').contains(label).should('be.visible').click().log('>> object with label ['+label+ '] is clicked')       
+        cy.wait(2000)        
     }
     /**
      * Click on link ('a') element, defined by href attribute value
      * @param {string} value : href attribute value or part of it
      */
     static clickLnk_ByHref(value) {        
-        getIFrame().find('a[href*="'+value+'"]').should('exist').click().log('>> link (a) with href ['+value+ '] is clicked')      
+        getIFrame().find('a[href*="'+value+'"]').should('exist').click({ multiple: true }).log('>> link (a) with href ['+value+ '] is clicked')      
         cy.wait(1000)        
     }
     /**
