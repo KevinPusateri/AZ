@@ -185,7 +185,9 @@ class LoginPage {
                     return obj.userName === loggedUser.username
                 })[0]
 
-                cy.decryptLoginPsw().then(psw => {
+                //Verifichiamo se siamo su TFS oppure no
+                let isTFS = (loggedUser.username === 'TFSSETUP') ? true : false
+                cy.decryptLoginPsw(isTFS).then(psw => {
                     if (loggedUser.username === 'RU18362') {
                         cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                         cy.get('input[name="Ecom_Password"]').type(psw, { log: false })

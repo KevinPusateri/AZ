@@ -35,7 +35,14 @@
             "tutf": "TUTF012",
             "agency": "010375000",
             "agentId": "ARALONGO7"
+        },
+        {
+            "userName" : "TFSSETUP",
+            "tutf": "TUTF077",
+            "agency": "010710000",
+            "agentId": "ARFPULINI2"
         }
     ],
-    "psw": "U2FsdGVkX1+zUYlK5Ayb/ZwQpDR9/1nGNe8tX3/O65s="
+    "psw": "U2FsdGVkX1+zUYlK5Ayb/ZwQpDR9/1nGNe8tX3/O65s=",
+    "psw077": "U2FsdGVkX19kCBc/RS1a+PlMuMjcbQNoHLNRKkNDof0="
 }
