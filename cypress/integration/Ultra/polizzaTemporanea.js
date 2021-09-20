@@ -15,12 +15,27 @@ const delayBetweenTests = 2000
 //#region  variabili iniziali
 var cliente = "ANNA GALLO"
 var clienteUbicazione = "VIA DELL'ACQUARIO 9, 00055 - LADISPOLI (RM)"
-var ambiti = ['Fabbricato', 'Contenuto']
-var frazionamento = "annuale"
+//var ambiti = ['Fabbricato', 'Contenuto']
+//var frazionamento = "annuale"
 let nuovoCliente;
 let iFrameUltra = '[class="iframe-content ng-star-inserted"]'
 let iFrameFirma = '[id="iFrameResizer0"]'
 //#endregion variabili iniziali
+
+//#region Enumerator
+const ultraRV = {
+    CASAPATRIMONIO: "Allianz Ultra Casa e Patrimonio",
+    CASAPATRIMONIO_BMP: "Allianz Ultra Casa e Patrimonio BMP",
+    SALUTE: "Allianz Ultra Salute",
+}
+
+const ambitiUltraSalute = {
+    SPESE_MEDICHE: "health-bag-doctor",
+    DIARIA_DA_RICOVERO: "save",
+    INVALIDITA_PERMANENTE_INFORTUNIO: "injury-plaster",
+    INVALIDITA_PERMANENTE_MALATTIA: "wheelchair",
+}
+//#endregion enum
 
 before(() => {
     //cy.clearCookies();
@@ -43,34 +58,30 @@ before(() => {
     cy.clearCookies();
   })
 
-describe("CASA e PATRIMONIO", ()=>{
-    /* it("Login", ()=>{
-        cy.loginMatrix(ambiente, "TUTF004", "P@ssw0rd!")
-    }) */
-
+describe("Polizza temporanea", ()=>{
     it("Ricerca cliente", ()=>{
         cy.get('[name="main-search-input"]').type(cliente).should('have.value', cliente)
         cy.get('[name="main-search-input"]').type('{enter}')
         cy.wait(1000)
         cy.contains('div', cliente.toUpperCase()).click({force: true})
+        
     })
 
-    it("Selezione ambiti FastQuote", ()=>{
-        cy.get('#nx-tab-content-1-0 > app-ultra-fast-quote > div.content.ng-star-inserted', {timeout: 30000}).should('be.visible')
-
-        for(var i = 0; i<ambiti.length; i++ )
-        {
-            cy.contains('div', ambiti[i]).parent().children('nx-icon').click()
-        }
-
-        cy.get('[class="calculate-btn"]').click({force: true})
-        cy.get('[class="calculate-btn"]', {timeout: 15000}).contains('Ricalcola').should('be.visible')
-        cy.contains('span', 'Configura').parent().click()
-        cy.get('[ngclass="agency-row"]').first().click()
+    it("Emissione Ultra Salute", ()=>{
+        Ultra.emissioneUltra(ultraRV.SALUTE)
+        Ultra.selezionaPrimaAgenzia()
+        
     })
 
-    it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", ()=>{
-        Ultra.verificaAmbitiHome(ambiti)
+    it("Impostazione contratto temporaneo", ()=>{
+        var ambiti = [
+            ambitiUltraSalute.SPESE_MEDICHE,
+            ambitiUltraSalute.DIARIA_DA_RICOVERO,
+            ambitiUltraSalute.INVALIDITA_PERMANENTE_INFORTUNIO
+        ]
+
+        Ultra.contrattoTemporaneo(ambiti)
+        cy.pause()
     })
 
     it("Seleziona fonte", ()=>{
