@@ -9,12 +9,6 @@ import BurgerMenuClients from "../../mw_page_objects/burgerMenu/BurgerMenuClient
 import Clients from "../../mw_page_objects/clients/LandingClients"
 import HomePage from "../../mw_page_objects/common/HomePage"
 
-//#region Username Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rd!'
-const agency = '010710000'
-//#endregion
-
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
@@ -28,12 +22,12 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-        insertedId = results.insertId
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
     })
-    LoginPage.logInMW(userName, psw)
-
-
 })
 
 beforeEach(() => {
@@ -117,7 +111,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         BurgerMenuClients.clickLink('Hospital scanner')
         HomePage.reloadMWHomePage()
     });
-    
+
     it('Verifica aggancio Antiriciclaggio', function () {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Antiriciclaggio')

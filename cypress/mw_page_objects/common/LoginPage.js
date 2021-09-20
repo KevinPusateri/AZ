@@ -186,8 +186,7 @@ class LoginPage {
                 })[0]
 
                 cy.decryptLoginPsw().then(psw => {
-                    cy.impersonification(user.tutf, user.agentId, user.agency).then(() => {
-                        debugger
+                    if (loggedUser.username === 'RU18362') {
                         cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                         cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
                         cy.get('input[type="SUBMIT"]').click()
@@ -201,7 +200,24 @@ class LoginPage {
 
                         if (Cypress.env('isSecondWindow'))
                             TopBar.clickSecondWindow()
-                    })
+                    }
+                    else
+                        cy.impersonification(user.tutf, user.agentId, user.agency).then(() => {
+                            debugger
+                            cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
+                            cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
+                            cy.get('input[type="SUBMIT"]').click()
+
+                            if (!Cypress.env('monoUtenza'))
+                                Common.checkUrlEnv()
+                            if (!mockedNews)
+                                cy.wait('@gqlNews')
+
+                            cy.wait('@gqlUserDetails')
+
+                            if (Cypress.env('isSecondWindow'))
+                                TopBar.clickSecondWindow()
+                        })
                 })
             })
         })

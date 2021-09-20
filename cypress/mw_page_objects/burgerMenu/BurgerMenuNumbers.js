@@ -118,15 +118,15 @@ class BurgerMenuNumbers extends Numbers {
     static checkPage(page) {
         switch (page) {
             case LinksBurgerMenu.MONITORAGGIO_FONTI:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 getIFrame().find('a:contains("Filtra")')
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 getIFrame().find('#btnFonti:contains("Fonti"):visible')
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO_FONTE:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 getIFrame().find('#contentPane:contains("Applica filtri"):visible')
                 break;
             case LinksBurgerMenu.X_ADVISOR:
@@ -137,11 +137,11 @@ class BurgerMenuNumbers extends Numbers {
                 Common.visitUrlOnEnv()
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 getIFrame().find('button:contains("Incentivazione: Maturato per Fonte"):visible')
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE_RECRUITING:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 if (!Cypress.env('monoUtenza'))
                     getIFrame().find('[class="menu-padre"]:contains("Report"):visible')
                 else
@@ -149,7 +149,7 @@ class BurgerMenuNumbers extends Numbers {
                         .and('contain.text','Non esistono piani di incentivazioni recruiting per l\'agenzia.')
                 break;
             case LinksBurgerMenu.ANDAMENTI_TECNICI:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 getIFrame().find('button:contains("Fonti produttive"):visible')
                 break;
             case LinksBurgerMenu.ESTRAZIONI_AVANZATE:
@@ -158,24 +158,24 @@ class BurgerMenuNumbers extends Numbers {
                 getIFrame().find('a:contains("Nuovo Report"):visible')
                 break;
             case LinksBurgerMenu.SCARICO_DATI:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 getIFrame().find('form:contains("Esporta tracciato")')
                 break;
             case LinksBurgerMenu.INDICI_DIGITALI:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 getIFrame().find('#toggleFilters:contains("Apri filtri")')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_DANNI:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 getIFrame().find('#ricerca_cliente').should('be.visible').and('contain.text', 'Filtra')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO:
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_SALUTE:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 getIFrame().find('#submit-Mon_PTF').should('be.visible').and('contain.text', 'Filtra')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_VITA:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 cy.wait(5000)
                 getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 break;
@@ -187,8 +187,8 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.MONITORAGGIO_ANDAMENTO_PREMI:
             case LinksBurgerMenu.MONITORAGGIO_RICAVI_AGENZIA:
             case LinksBurgerMenu.CAPITALE_VITA_SCADENZA:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 120000 });
-                cy.wait('@getDacommercialePOST', { requestTimeout: 120000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@getDacommercialePOST', { requestTimeout: 150000 });
                 getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 break;
         }

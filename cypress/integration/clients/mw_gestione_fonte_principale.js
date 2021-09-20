@@ -10,12 +10,6 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import SCUGestioneFontePrincipale from "../../mw_page_objects/clients/SCUGestioneFontePrincipale"
 
-//#region Username Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rd!'
-const agency = '010710000'
-//#endregion
-
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
@@ -29,12 +23,12 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-  cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-    insertedId = results.insertId
+  cy.getUserWinLogin().then(data => {
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+      insertedId = results.insertId
+    })
+    LoginPage.logInMWAdvanced()
   })
-    LoginPage.logInMW(userName, psw)
-
-
 })
 
 beforeEach(() => {
