@@ -182,11 +182,14 @@ class LoginPage {
         cy.task('getWinUserLogged').then((loggedUser) => {
             cy.fixture("tutf").then(data => {
                 const user = data.users.filter(obj => {
-                    return obj.userName === loggedUser.username
+                    return obj.userName === loggedUser.username.toUpperCase()
                 })[0]
 
+                cy.log('Retrived username : ' + loggedUser.username)
+
                 //Verifichiamo se siamo su TFS oppure no
-                let isTFS = (loggedUser.username === 'TFSSETUP') ? true : false
+                let isTFS = (loggedUser.username.toUpperCase() === 'TFSSETUP') ? true : false
+
                 cy.decryptLoginPsw(isTFS).then(psw => {
                     if (loggedUser.username === 'RU18362') {
                         cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
