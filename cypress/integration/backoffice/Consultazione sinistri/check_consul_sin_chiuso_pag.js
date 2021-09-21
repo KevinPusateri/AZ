@@ -209,63 +209,89 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(1) > td:nth-child(2)"  
         csSinObjPage.getPromiseValue_Bylocator(popUplocator1).then(dtPagamento => {
             csSinObjPage.isNullOrEmpty(dtPagamento)       
-            csSinObjPage.containValidDate(dtPagamento)                          
+            csSinObjPage.containValidDate(dtPagamento).then(dtPagamento => {
+                if (!dtInvioBanca)
+                    assert.fail('Data pagamento field is null or empty')
+                else
+                    assert.isTrue(importo, 'Data pagamento field is defined!');
+            })                                                            
         });
 
         // Verifica : la valorizzazione del campo "Data invio Banca" nella popup "Dettaglio Pagamento"
         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
         csSinObjPage.getPromiseValue_Bylocator(popUplocator2).then(dtInvioBanca => {
             csSinObjPage.isNullOrEmpty(dtInvioBanca)       
-            csSinObjPage.containValidDate(dtInvioBanca)                          
+            csSinObjPage.containValidDate(dtInvioBanca).then(dtInvioBanca => {
+                if (!dtInvioBanca)
+                    assert.fail('Data invio Banca field is null or empty')
+                else
+                    assert.isTrue(importo, 'Data invio Banca field is defined!');
+            })                                   
         });
 
         // Verifica : la valorizzazione del campo "Importo" nella popup "Dettaglio Pagamento"
         const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)" 
         csSinObjPage.getPromiseValue_Bylocator(popUplocator3).then(importo => {
-            csSinObjPage.isNullOrEmpty(importo)       
-            csSinObjPage.containValidDate(importo)                          
+            csSinObjPage.isNullOrEmpty(importo).then(importo => {
+                if (!importo)
+                    assert.fail('Importo field is null or empty')
+                else
+                    assert.isTrue(importo, 'Importo field is defined!');
+            })          
         });
 
         // Verifica : la valorizzazione del campo "Valuta" nella popup "Dettaglio Pagamento"
         const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)" 
         csSinObjPage.getPromiseValue_Bylocator(popUplocator4).then(valuta => {
-            csSinObjPage.isNullOrEmpty(valuta)       
-            csSinObjPage.containValidDate(valuta)                          
+            csSinObjPage.isNullOrEmpty(valuta).then(isValuta => {
+                if (!isValuta)
+                    assert.fail('Valuta field is null')
+                else
+                    assert.isTrue(isValuta, 'Valuta field is defined!');
+            })
+            csSinObjPage.isEuroCurrency(valuta).then(isEuro => {
+                if (!isEuro)
+                    assert.fail('Valuta field is defined as not EURO')
+                else
+                    assert.isTrue(isEuro, 'Valuta field is defined as EURO!');
+            })                             
         });
 
         // Verifica : la valorizzazione del campo "Causale" nella popup "Dettaglio Pagamento"
         const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"       
         csSinObjPage.getPromiseValue_Bylocator(popUplocator5).then(causale => {
-            csSinObjPage.isNullOrEmpty(causale)       
-            csSinObjPage.containValidDate(causale)                          
+            csSinObjPage.isNullOrEmpty(causale)                                         
         });
 
         // Verifica : la valorizzazione del campo "Modalità di pagamento" nella popup "Dettaglio Pagamento"
         const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(6) > td:nth-child(2)"       
         csSinObjPage.getPromiseValue_Bylocator(popUplocator6).then(modPagamento => {
-            csSinObjPage.isNullOrEmpty(modPagamento)       
-            csSinObjPage.containValidDate(modPagamento)                          
+            csSinObjPage.isNullOrEmpty(modPagamento)                                        
         });
 
         // Verifica : la valorizzazione del campo "IBAN" nella popup "Dettaglio Pagamento"
         const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(7) > td:nth-child(2)"       
         csSinObjPage.getPromiseValue_Bylocator(popUplocator7).then(iban => {
             csSinObjPage.isNullOrEmpty(iban)       
-            csSinObjPage.containValidDate(iban)                          
+            csSinObjPage.isValidIBAN(iban).then(isIBAN => {
+                if (!isIBAN)
+                    assert.fail('IBAN field is defined with not correct value')
+                else
+                    assert.isTrue(isValuta, 'IBAN field is defined with correct value!');
+            })                                                       
         });
     
         // Verifica : la valorizzazione del campo "Tipo Proposta" nella popup "Dettaglio Pagamento"
         const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"       
         csSinObjPage.getPromiseValue_Bylocator(popUplocator8).then(tipoProposta => {
             csSinObjPage.isNullOrEmpty(tipoProposta)       
-            csSinObjPage.containValidDate(tipoProposta)                          
+            //csSinObjPage.containValidDate(tipoProposta)                          
         });
 
         // Verifica : la valorizzazione del campo "Stato Pagamento" nella popup "Dettaglio Pagamento"
         const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"       
         csSinObjPage.getPromiseValue_Bylocator(popUplocator9).then(statoPagamento => {
-            csSinObjPage.isNullOrEmpty(statoPagamento)       
-            csSinObjPage.containValidDate(statoPagamento)                          
+            csSinObjPage.isNullOrEmpty(statoPagamento)                                            
         });
 
         csSinObjPage.clickBtn_ByClassAndText("k-icon k-i-close", "Close")        
