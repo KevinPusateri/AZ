@@ -53,10 +53,9 @@ after(function () {
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ' +
-    ' per il quale non siano valorizzate: "Note di sinistro", "Azioni di recupero" e "Soggetti coinvolti".' +
-    ' verificare che siano presenti le seguenti diciture standard: ' +
-    ' "Nessuna nota presente", "Non sono presenti azioni di recupero" e "Nessun soggetto presente" rispettivamente per le sezioni precedenti ', function () {
-        let sinistro = '929538074'
+    ' per il quale siano valorizzate le "Azioni di recupero".' +
+    ' Per tale sinistro verificare che siano valorizzati i seguenti campi: Tipologia, Importo, Soggetto debitore, Data inizio e Stato." ', function () {
+        let sinistro = '929538398'
         let stato_sin = 'CHIUSO PAGATO'
 
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
@@ -68,13 +67,13 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
         var cliente = csSinObjPage.getPromiseValue_ByCss(cssCliente1)
-       
+    
         const cssdtAvv1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
         var dtAvvenimento = csSinObjPage.getPromiseValue_ByCss(cssdtAvv1)        
 
         // Seleziona il sinistro
         csSinObjPage.clickLnk_ByHref(sinistro)
-      
+    
         // Verifica : numero di sinistro in alto alla pagina di dettaglio
         const clssDtl = "pageTitle"
         csSinObjPage.checkObj_ByClassAndText(clssDtl, sinistro)
@@ -89,6 +88,12 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Seleziona il link dati accessori
         csSinObjPage.clickLnk_ByHref("/dasinconfe/DatiAccessoriIngresso")
 
+         // Verifica : la valorizzazione del campo "Data inizio" nella sezione "Azioni di Recupero"
+         const cssDtInizio = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > p'
+         csSinObjPage.getPromiseValue_ByCss(cssDtInizio).then(dtInizio => {
+             csSinObjPage.isNullOrEmpty(dtInizio)       
+             csSinObjPage.containValidDate(dtInizio)  
+         });
         csSinObjPage.checkObj_ByText("Nessuna nota presente")  
         
         csSinObjPage.checkObj_ByText("Non sono presenti azioni di recupero")

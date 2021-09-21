@@ -1,6 +1,7 @@
 /**
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
- *
+ *  const userName = 'TUTF012'
+*  const psw = 'P@ssw0rd!'
  * @description Selezionando 'Sinistri/Movimentazione sinistri'
  *  Lo script esegue una sequenza di test su tale pagina
  */

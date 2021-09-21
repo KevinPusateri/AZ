@@ -201,7 +201,7 @@ class ConsultazioneSinistriPage {
     }
     /**
      * Put a @str value and is verified if its a date value is included in a correct format 
-     * @param {string} dt : string date format
+     * @param {string} str : string date format
      */
     static containValidDate(str) {  
         const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
@@ -210,12 +210,34 @@ class ConsultazioneSinistriPage {
         let validation = pattern.test(str)
         if (!validation)
         {
+            debugger
             cy.log('>> no valid date is included in "'+str+'"')
             return false;
         } else {
             let myString = str.match(pattern)
             cy.log('>> a valid date ('+myString[0]+') is included in "'+str+'"')
             return true;
+        }        
+    }
+    /**
+     * Put a @str value and is verified if its a valid IBAN 
+     * @param {string} str : string date format
+     */
+    static isValidIBAN(str)
+    {
+        const regexExp = /^[A-Z]{2}[0-9A-Z]*$/; //Reg exp. for valid IBAN
+        var pattern = new RegExp(regexExp)
+        //Tests for a match in a string. It returns true or false.
+        let validation = pattern.test(str)
+        if (validation)
+        {
+            let myString = str.match(pattern)
+            cy.log('>> a valid IBAN ('+myString[0]+') is included in "'+str+'"')
+            return true;
+           
+        } else {
+            cy.log('>> no valid IBAN is included in "'+str+'"')
+            return false;
         }        
     }
     /**
@@ -234,12 +256,19 @@ class ConsultazioneSinistriPage {
      * Get a currency correct value by @str (ex.: numStr = "importo: 123,20") 
      * @param {string} str : string value
      */
+    static isEuroCurrency(str) {               
+        const currency = 'EURO';
+        if (regexExp.test(numstr))
+            cy.log('>> Currency value is defined as: '+str)
+        else
+            assert.fail('>> Currency value is not defined as "EURO", but as: '+str)
+    }
+
     static getCurrency(str) {               
         const regexExp = /\d{1,3},\d{2}/;
         var amount = str.match(regexExp)[0]
         ConsultazioneSinistriPage.isCurrency(amount)
     }
-
     //#endregion  Generic function
     static getValueInClaimDetails(index) {
         return new Cypress.Promise((resolve) => {
