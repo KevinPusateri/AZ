@@ -12,6 +12,7 @@ require('cypress-plugin-tab')
 
 class PreventivoMotor {
 
+    //#region Dati quotazione
     static compilaDatiQuotazione(targa, dataNascita) {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
@@ -28,23 +29,64 @@ class PreventivoMotor {
             cy.contains('Calcola').click({ force: true })
 
             cy.get('input[aria-label="Indirizzo"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('input[aria-label="Indirizzo"]').type('vittorio veneto').wait(500);
+            cy.get('input[aria-label="Indirizzo"]').type('roma{enter}').wait(500);
 
             cy.get('input[aria-label="NumeroCivico"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('input[aria-label="NumeroCivico"]').type('52').wait(500);
+            cy.get('input[aria-label="NumeroCivico"]').type('12{enter}').wait(500);
 
             cy.get('input[aria-label="Comune"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('input[aria-label="Comune"]').type('Savona').wait(1000);
+            cy.get('input[aria-label="Comune"]').type('Codogno').wait(1000);
 
-            cy.contains('Calcola').click({ force: true })
+           cy.contains('Calcola').click({ force: true })
             cy.contains('Calcola').should('be.visible')
             cy.contains('Calcola').click({ force: true })
 
-            cy.contains('OK').should('be.visible')
-            cy.contains('OK').click({ force: true })
+            //const check = $body.find('OK').is(':visible')
+           // if (check) {
+           // cy.contains('OK').should('be.visible')
+            //cy.contains('OK').click({ force: true })
+           // }
         })
 
     }
+    #region 
+   
+    //#region Provenienza
+
+    static provenienza(provenienza) {
+        cy.wait(10000)
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+
+            
+            cy.get('nx-dropdown[aria-haspopup="listbox"]').first().click({ force: true })            
+           cy.get('nx-dropdown-item').should('be.visible').contains(provenienza).click();
+
+          
+        })
+
+    }
+
+    //#endregion
+
+//#region Salvataggio quotazione
+
+     static salvaQuotazioneMotorNGA2021()
+     {
+
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+
+            
+           cy.get('nx-icon[name="save-o"]').click({ force: true })            
+           
+
+          
+        })
+
+     }
+
+//#endregion
 
 }
 
