@@ -766,7 +766,6 @@ Cypress.Commands.add('getUserWinLogin', () => {
 
 Cypress.Commands.add('decryptLoginPsw', (isTFS = false) => {
   cy.fixture("tutf").then(data => {
-    debugger
     const psw = unescape(Cypress.env('secretKey').replace(/\\/g, "%"));
     const bytes = CryptoJS.AES.decrypt((!isTFS) ? data.psw : data.psw077, psw);
     return bytes.toString(CryptoJS.enc.Utf8);
