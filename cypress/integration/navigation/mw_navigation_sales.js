@@ -180,7 +180,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it.only('Verifica "Quietanzamento" - lob di interesse: Motor', function () {
+    it('Verifica "Quietanzamento" - lob di interesse: Motor', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Motor')
@@ -188,7 +188,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         } else this.skip()
     })
 
-    it.only('Verifica "Quietanzamento" - lob di interesse: Rami Vari', function () {
+    it('Verifica "Quietanzamento" - lob di interesse: Rami Vari', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Rami vari')
@@ -196,7 +196,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         } else this.skip()
     })
 
-    it.only('Verifica "Quietanzamento" - lob di interesse: Vita', function () {
+    it('Verifica "Quietanzamento" - lob di interesse: Vita', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Vita')
@@ -204,7 +204,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         } else this.skip()
     })
 
-    it.only('Verifica "Quietanzamento" - lob di interesse: Tutte', function () {
+    it('Verifica "Quietanzamento" - lob di interesse: Tutte', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Tutte')
