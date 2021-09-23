@@ -10,6 +10,8 @@ const getIFrame = () => {
 }
 require('cypress-plugin-tab')
 
+
+
 class PreventivoMotor {
 
     //#region Dati quotazione
@@ -56,14 +58,14 @@ class PreventivoMotor {
     static provenienza(provenienza) {
         cy.wait(10000)
         cy.getIFrame()
-        cy.get('@iframe').within(() => {
+        // cy.get('@iframe').within(() => {
 
             
-            cy.get('nx-dropdown[aria-haspopup="listbox"]').first().click({ force: true })            
-           cy.get('nx-dropdown-item').should('be.visible').contains(provenienza).click();
+        //     cy.get('nx-dropdown[aria-haspopup="listbox"]').first().should('be.visible').click()            
+        //     cy.get('nx-dropdown-item').should('be.visible').contains(provenienza).click();
 
           
-        })
+        // })
 
     }
 
@@ -71,23 +73,32 @@ class PreventivoMotor {
 
 //#region Salvataggio quotazione
 
-     static salvaQuotazioneMotorNGA2021()
+     static  salvaQuotazioneMotorNGA2021()
      {
-
         cy.getIFrame()
         cy.get('@iframe').within(() => {
-
             
-           cy.get('nx-icon[name="save-o"]').click({ force: true })            
-           
+           cy.contains('Salva quotazione').should('be.visible').click()            
+            
+           var nomeQuotazione = randomString(10, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 
-          
+           cy.get('input[formcontrolname="nome"]').should('exist').and('be.visible').click().wait(500)
+           cy.get('input[formcontrolname="nome"]').type(nomeQuotazione).wait(1000)
+           cy.get('button[nxbutton="primary medium"]').click()
+           return nomeQuotazione;
+
         })
 
      }
-
+    
 //#endregion
 
 }
+function randomString(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
+}
+
 
 export default PreventivoMotor
