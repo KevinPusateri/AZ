@@ -64,110 +64,122 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     const nome_CTP = "GERALD"
     const cognome_CTP = "VIVAN"
     const cf_CTP = "VVNGLD86A14Z222H"
+    const dt_avv = "11/07/2020"
 
     const lblnumsin = "k-grid-content"
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per numero sinistro  ', function () {
-    
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.setValue_ById('#claim_number', numsin)
+            
+        ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
-        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per polizza assicurato  ', function () {
-        
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Polizza');
-        csSinObjPage.setValue_ById('#policy_number', numpol)
+                
+        ConsultazioneSinistriPage.clickObj_ByLabel('a','Polizza');
+        ConsultazioneSinistriPage.setValue_ById('#policy_number', numpol)
         let classvalue = "search_submit polizza k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa assicurato  ', function () {
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Targa');
-        csSinObjPage.setValue_ById('#plate', targa_assicurato)
+        
+        ConsultazioneSinistriPage.clickObj_ByLabel('a','Targa');
+        ConsultazioneSinistriPage.setValue_ById('#plate', targa_assicurato)
         let classvalue = "search_submit targa k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici del cliente persona fisica ', function () {
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
-        csSinObjPage.setValue_ById('#cognome', cognome_assicurato)
-        csSinObjPage.setValue_ById('#nome', nome_assicurato)
+       
+        ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
+        ConsultazioneSinistriPage.setValue_ById('#cognome', cognome_assicurato)
+        ConsultazioneSinistriPage.setValue_ById('#nome', nome_assicurato)
         let classvalue = "search_submit anagrafica k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per codice fiscale del cliente persona fisica ', function () {
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
-        csSinObjPage.setValue_ById('#cognome','')
-        csSinObjPage.setValue_ById('#nome','')
-        csSinObjPage.setValue_ById('#cf', cf_assicurato)
+       
+        ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
+        ConsultazioneSinistriPage.setValue_ById('#cognome','')
+        ConsultazioneSinistriPage.setValue_ById('#nome','')
+        ConsultazioneSinistriPage.setValue_ById('#cf', cf_assicurato)
         let classvalue = "search_submit anagrafica k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')                
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa controparte  ', function () {
-        
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Targa CTP')
-        csSinObjPage.setValue_ById('#plateCTP', targa_CTP)
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa controparte ', function () {
+               
+        ConsultazioneSinistriPage.clickObj_ByLabel('a','Targa CTP')
+        ConsultazioneSinistriPage.setValue_ById('#plateCTP', targa_CTP)
         let classvalue = "search_submit targaCTP k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')        
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
     });
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici della controparte persona fisica ', function () {
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici CTP')
-        csSinObjPage.setValue_ById('#cognomeCTP', cognome_CTP)
-        csSinObjPage.setValue_ById('#nomeCTP', nome_CTP)
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici della CTP persona fisica ', function () {
+         
+        ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici CTP')
+        ConsultazioneSinistriPage.setValue_ById('#cognomeCTP','')
+        ConsultazioneSinistriPage.setValue_ById('#nomeCTP','')
+        ConsultazioneSinistriPage.setValue_ById('#cognomeCTP', cognome_CTP)
+        ConsultazioneSinistriPage.setValue_ById('#nomeCTP', nome_CTP)
+        ConsultazioneSinistriPage.setValue_ById('#data_daCTP', dt_avv)
+        ConsultazioneSinistriPage.setValue_ById('#data_aCTP', dt_avv)
         let classvalue = "search_submit anagraficaCTP k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        const locatorcf ="#results > div.k-grid-content > table > tbody"
+        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(locatorcf, cf_CTP)
+        
+        const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"
+        ConsultazioneSinistriPage.clickBtn_ById(locRArrow)
+        
+        const locResult = "#results > div.k-grid-content > table > tbody > tr"
+        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(locResult, numsin)
     });
     
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per codice fiscale del CTP persona fisica ', function () {
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
-        csSinObjPage.setValue_ById('#cognomeCTP','')
-        csSinObjPage.setValue_ById('#nomeCTP','')
-        csSinObjPage.setValue_ById('#cfCTP', cf_assicurato)
-        let classvalue = "search_submit anagrafica k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        csSinObjPage.checkObj_ByClassAndText(lblnumsin, numsin)
+      
+        ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici CTP')
+        ConsultazioneSinistriPage.setValue_ById('#cognomeCTP','')
+        ConsultazioneSinistriPage.setValue_ById('#nomeCTP','')
+        ConsultazioneSinistriPage.setValue_ById('#cfCTP', '')
+        ConsultazioneSinistriPage.setValue_ById('#cfCTP', cf_CTP)
+        ConsultazioneSinistriPage.setValue_ById('#data_daCTP', dt_avv)
+        ConsultazioneSinistriPage.setValue_ById('#data_aCTP', dt_avv)
+        let classvalue = "search_submit anagraficaCTP k-button"
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        const locatorcf ="#results > div.k-grid-content > table > tbody"
+        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(locatorcf, cf_CTP)
+        
+        const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"
+        ConsultazioneSinistriPage.clickBtn_ById(locRArrow)
+        
+        const locResult = "#results > div.k-grid-content > table > tbody > tr"
+        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(locResult, numsin)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per denominazione del cliente come persona giuridica ', function () {
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
-        csSinObjPage.setValue_ById('#cf','')
-        csSinObjPage.setValue_ById('#cognome','GIRASOLE INDUSTRIE')
+       
+        ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
+        ConsultazioneSinistriPage.setValue_ById('#cf','')
+        ConsultazioneSinistriPage.setValue_ById('#cognome','GIRASOLE INDUSTRIE')
         let classvalue = "search_submit anagrafica k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per codice fiscale / partita IVA del cliente persona giuridica ', function () {
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)   
-        csSinObjPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
-        csSinObjPage.setValue_ById('#cognome','')
-        csSinObjPage.setValue_ById('#cf','04922730264')
+        
+        ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
+        ConsultazioneSinistriPage.setValue_ById('#cognome','')
+        ConsultazioneSinistriPage.setValue_ById('#cf','04922730264')
         let classvalue = "search_submit anagrafica k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
     });
 });

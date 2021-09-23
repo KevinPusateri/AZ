@@ -11,6 +11,7 @@ import LoginPage from "../../../mw_page_objects/common/LoginPage"
 import TopBar from "../../../mw_page_objects/common/TopBar"
 import BackOffice from "../../../mw_page_objects/Navigation/BackOffice"
 import ConsultazioneSinistriPage from "../../../mw_page_objects/backoffice/ConsultazioneSinistriPage"
+import { isDate } from "lodash"
 
 
 //#region Mysql DB Variables
@@ -118,38 +119,49 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
         // Verifica : Apro la sezione del danneggiato (1)
         const btnDanneggiato = "#soggetti_danneggiati > div > div > a"
-        csSinObjPage.clickBtn_ById(btnDanneggiato)
+        ConsultazioneSinistriPage.clickBtn_ById(btnDanneggiato)
 
         // Verifica : la valorizzazione del campo "Data incarico" in Sezione Perizie
         const cssDtIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > p'
-        csSinObjPage.getPromiseValue_ByCss(cssDtIncarico).then(dtIncarico => {
-            csSinObjPage.isNullOrEmpty(dtIncarico)       
-            csSinObjPage.containValidDate(dtIncarico)  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtIncarico).then(dtIncarico => {
+            ConsultazioneSinistriPage.isNullOrEmpty(dtIncarico)       
+            ConsultazioneSinistriPage.containValidDate(dtIncarico)  
         });
          
          // Verifica : la valorizzazione del campo "Data scarico" in Sezione Perizie
-         const cssDtScarico= '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
-         csSinObjPage.getPromiseValue_ByCss(cssDtScarico).then(dtScarico => {
-             csSinObjPage.isNullOrEmpty(dtScarico)       
-             csSinObjPage.containValidDate(dtScarico)
+         const cssDtScarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
+         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtScarico).then(dtScarico => {
+            ConsultazioneSinistriPage.isNullOrEmpty(dtScarico)       
+            ConsultazioneSinistriPage.containValidDate(dtScarico)
          });
 
           // Verifica : la valorizzazione del campo "Fiduciario" in Sezione Perizie
         const cssFiduciario = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
-        csSinObjPage.getPromiseValue_ByCss(cssFiduciario).then(fiduciario => {
-            csSinObjPage.isNullOrEmpty(fiduciario)     
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssFiduciario).then(fiduciario => {
+            ConsultazioneSinistriPage.isNullOrEmpty(fiduciario)     
         });
 
         // Verifica : la valorizzazione del campo "Tipo incarico" in Sezione Perizie
         const cssTipoIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
-        csSinObjPage.getPromiseValue_ByCss(cssTipoIncarico).then(tipoIncarico => {
-            csSinObjPage.isNullOrEmpty(tipoIncarico)           
-        });
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTipoIncarico).then(tipoIncarico => {
+            ConsultazioneSinistriPage.isNullOrEmpty(tipoIncarico).then(isok => {
+                if (!isnull)
+                    assert.fail('Valore vuoto o nullo')
+                else
+                    assert.isTrue(isok, 'è un valore definito');           
+            });
+            ConsultazioneSinistriPage.containValidDate(tipoIncarico).then(isdate => {
+                if (!isdate)
+                    assert.fail('Data non valida')
+                else
+                    assert.isTrue(isdate, 'è una data valida');           
+            });
+        })
         
         // Verifica : la valorizzazione del campo "Stato" in Sezione Perizie
         const cssStato = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
-        csSinObjPage.getPromiseValue_ByCss(cssStato).then(stato => {
-            csSinObjPage.isNullOrEmpty(stato)  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssStato).then(stato => {
+            ConsultazioneSinistriPage.isNullOrEmpty(stato)  
         });     
     });
 

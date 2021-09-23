@@ -93,7 +93,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
          csSinObjPage.getPromiseValue_ByCss(cssDtInizio).then(dtInizio => {
              csSinObjPage.isNullOrEmpty(dtInizio)       
              csSinObjPage.containValidDate(dtInizio)  
-         });
+        });
+        
         csSinObjPage.checkObj_ByText("Nessuna nota presente")  
         
         csSinObjPage.checkObj_ByText("Non sono presenti azioni di recupero")
@@ -101,5 +102,18 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         csSinObjPage.checkObj_ByText("Nessun soggetto presente")
     });
     
+
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ' +    
+    ' Per tale sinistro verificare che siano valorizzati i seguenti campi: Tipologia, Importo, Soggetto debitore, Data inizio e Stato." ', function () {
+        let sinistro = '929538398'
+        let stato_sin = 'CHIUSO PAGATO'
+
+        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
+        csSinObjPage.setValue_ById('#claim_number', sinistro)
+        let classvalue = "search_submit claim_number k-button"
+        csSinObjPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
+        
+        a
+    });
 
 });
