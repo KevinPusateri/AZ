@@ -749,9 +749,37 @@ Cypress.Commands.add('getTestsInfos', (testsArray) => {
   })
 })
 
-// Cypress.Commands.add('getHostName', () => {
-//   return os.hostname()
-// })
+Cypress.Commands.add('getSSNAndBirthDateFromTarga', (targa) => {
+  cy.request({
+    method: 'GET',
+    log: false,
+    url: 'http://online.azi.allianzit/WebdaniaFES/services/vehicle/' + targa + '/sita/'
+  }).then(respANIA => {
+
+    cy.request({
+      method: 'POST',
+      log: false,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      url: 'https://be2be.pp.azi.allianzit/Anagrafe/AnagrafeWS/AnagrafeSvc.asmx/Normalize',
+      body: { "xmlParameters": "<Normalize><Input action='ReverseCodiceFiscale'><Fields><Field name='COD_FISC'>" + respANIA.body.itemList[0].contractorFiscalCode + "</Field></Fields></Input></Normalize>" }
+    }).then(resp => {
+      cy.wrap(Cypress.$(resp.body))
+        .then(wrappedBody => {
+          debugger
+          let parser = new DOMParser()
+          let xmlDoc = parser.parseFromString(wrappedBody[2].outerText, "text/xml")
+          let currentBirthDate =  xmlDoc.getElementsByTagName("DataNascita")[0].childNodes[0].nodeValue.split(' ')[0]
+
+          return {
+            'ssn' : respANIA.body.itemList[0].contractorFiscalCode,
+            'birthDate' : currentBirthDate
+          }
+        })
+    })
+  })
+})
 
 Cypress.Commands.add('getUserWinLogin', () => {
   cy.task('getUsername').then((username) => {
@@ -766,7 +794,6 @@ Cypress.Commands.add('getUserWinLogin', () => {
 
 Cypress.Commands.add('decryptLoginPsw', (isTFS = false) => {
   cy.fixture("tutf").then(data => {
-    debugger
     const psw = unescape(Cypress.env('secretKey').replace(/\\/g, "%"));
     const bytes = CryptoJS.AES.decrypt((!isTFS) ? data.psw : data.psw077, psw);
     return bytes.toString(CryptoJS.enc.Utf8);

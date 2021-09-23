@@ -8,10 +8,11 @@ class Common {
    * @param {boolean} chooseUtenza : default a false, effettua l'accesso alla seconda finestra dalla homepage
    */
   static canaleFromPopup(chooseUtenza = false) {
+    cy.wait(1000)
 
     if (Cypress.env('monoUtenza')) {
       cy.get('body').then($body => {
-        if ($body.find('nx-modal-container').length > 0) {
+        if ($body.find('div[ngclass="agency-row"]').length > 0) {
           cy.wait(2000)
           cy.get('div[ngclass="agency-row"]').should('be.visible')
           cy.get('div[ngclass="agency-row"]').first().click()
@@ -22,7 +23,7 @@ class Common {
     // Scegli utenza se siamo su finestra principale e procediamo dall'icona sulla seconda finestra
     if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && chooseUtenza) {
       cy.get('body').then($body => {
-        if ($body.find('nx-modal-container').length > 0) {
+        if ($body.find('div[ngclass="agency-row"]').length > 0) {
           cy.wait(2000)
           cy.get('div[ngclass="agency-row"]').should('be.visible')
 
@@ -41,7 +42,7 @@ class Common {
     // Scegli utenza se siamo su finestra principale multiutenza
     if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && chooseUtenza) {
       cy.get('body').then($body => {
-        if ($body.find('nx-modal-container').length > 0) {
+        if ($body.find('div[ngclass="agency-row"]').length > 0) {
           cy.wait(2000)
           cy.get('div[ngclass="agency-row"]').should('be.visible')
 
@@ -52,7 +53,7 @@ class Common {
     
     if (!Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && !chooseUtenza) {
       cy.get('body').then($body => {
-        if ($body.find('nx-modal-container').length > 0) {
+        if ($body.find('div[ngclass="agency-row"]').length > 0) {
           cy.wait(2000)
           cy.get('div[ngclass="agency-row"]').should('be.visible')
           cy.get('div[ngclass="agency-row"]').first().click()

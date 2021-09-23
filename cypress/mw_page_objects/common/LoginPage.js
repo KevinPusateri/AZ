@@ -208,7 +208,6 @@ class LoginPage {
                     }
                     else
                         cy.impersonification(user.tutf, user.agentId, user.agency).then(() => {
-                            debugger
                             cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                             cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
                             cy.get('input[type="SUBMIT"]').click()
