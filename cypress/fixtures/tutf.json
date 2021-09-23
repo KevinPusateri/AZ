@@ -11,7 +11,38 @@
             "tutf": "TUTF008",
             "agency": "010710000",
             "agentId": "ARFPULINI2"
+        },
+        {
+            "userName" : "LE00031",
+            "tutf": "TUTF017",
+            "agency": "010319000",
+            "agentId": "ARCZULIANELLO"
+        },
+        {
+            "userName" : "LE00004",
+            "tutf": "TUTF004",
+            "agency": "010710000",
+            "agentId": "ARFPULINI2"
+        },
+        {
+            "userName" : "LE00022",
+            "tutf": "TUTF014",
+            "agency": "010710000",
+            "agentId": "ARFPULINI2"
+        },
+        {
+            "userName" : "RU18362",
+            "tutf": "TUTF012",
+            "agency": "010375000",
+            "agentId": "ARALONGO7"
+        },
+        {
+            "userName" : "TFSSETUP",
+            "tutf": "TUTF077",
+            "agency": "010710000",
+            "agentId": "ARFPULINI2"
         }
     ],
-    "psw": "P@ssw0rd!"
+    "psw": "U2FsdGVkX1+zUYlK5Ayb/ZwQpDR9/1nGNe8tX3/O65s=",
+    "psw077": "U2FsdGVkX19kCBc/RS1a+PlMuMjcbQNoHLNRKkNDof0="
 }

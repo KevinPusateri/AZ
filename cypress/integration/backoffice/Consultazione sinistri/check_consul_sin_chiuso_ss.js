@@ -13,10 +13,6 @@ import BackOffice from "../../../mw_page_objects/Navigation/BackOffice"
 import ConsultazioneSinistriPage from "../../../mw_page_objects/backoffice/ConsultazioneSinistriPage"
 import MovimentazioneSinistriPage from "../../../mw_page_objects/backoffice/MovimentazioneSinistriPage"
 
-//#region Username Variables
-const userName = 'TUTF012'
-const psw = 'P@ssw0rd!'
-//#endregion
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -31,13 +27,14 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 
 before(() => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-        insertedId = results.insertId
-    })
-    //LoginPage.logInMW(userName, psw, true, '010375000')
-    LoginPage.logInMW(userName, psw, false)
-    TopBar.clickBackOffice()
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
+        TopBar.clickBackOffice()
     BackOffice.clickCardLink('Movimentazione sinistri')
+    })
 })
 
 beforeEach(() => {

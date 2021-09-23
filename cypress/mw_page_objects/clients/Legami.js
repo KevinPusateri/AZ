@@ -82,42 +82,47 @@ class Legami {
     }
 
     /**
-     * Verifica se il membro e il capogruppo sono presenti sulla pagina legami
+     * Verifica che il membro e il capogruppo siano presenti sulla pagina Legami
      * @param {string} membro - uno dei membri
      * @param {string} capogruppo - il capogruppo
+     * @param {boolean} check - default settato a true verifico inserito appartenente dalla scheda cliente del capogruppo,
+     *                          altrimenti false se verifico i legami dalla scheda cliente dell'appartenente 
      */
-    static checkMembroInserito(membro, capogruppo) {
-        cy.get('ac-anagrafe-panel')
-            .should('be.visible').then((name) => {
-                cy.wait(3000)
-                var checkCapogruppo = name.text().trim().split('Membro')[1].split('Ruolo')[0].trim()
-                if (capogruppo.length >= 28) {
-                    expect(checkCapogruppo).to.include(capogruppo.trim().substring(0, 28).split(' ')[0])
-                }
-                else {
-                    expect(checkCapogruppo).to.include(capogruppo.trim().split(' ')[0])
-                }
+    static checkMembroInserito(membro, capogruppo, check = true) {
+        cy.wait(4000)
+        if (check) {
+            // CAPOGRUPPO
+            cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
+                cy.get('div[class="member-name"]:first:visible').find('div[class^="data"]').not(':contains("Membro")').then((name) => {
+                    cy.wrap($panel).should('include.text', capogruppo)
+                    expect(name.text().trim()).to.include(capogruppo)
+                })
             })
-        cy.get('ac-anagrafe-panel').find('div[class="member-name"]').eq(0)
-            .parents('div[class^="member"]')
-            .find('div[class="member-data"] > div[class="data"]').should('contain.text', 'Capogruppo')
-
-        cy.get('ac-anagrafe-panel')
-            .should('be.visible').then((name) => {
-                cy.wait(3000)
-                var checkMembro = name.text().trim().split('Membro')[2].split('Ruolo')[0].trim()
-                if (membro.length >= 28) {
-                    expect(checkMembro).to.include(membro.trim().substring(0, 28).split(' ')[0])
-                }
-                else {
-                    expect(checkMembro).to.include(membro.trim().split(' ')[0])
-                }
-
+            // APPARTENENTE
+            cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
+                cy.get('div[class="member-name"]:visible').eq(1).find('nx-link:first:visible').then((name) => {
+                    cy.wrap($panel).should('include.text', membro)
+                    expect(name.text().trim()).to.include(membro)
+                })
             })
-        cy.get('ac-anagrafe-panel').find('div[class="member-name"]').eq(1)
-            .parents('div[class^="member"]')
-            .find('div[class="member-data"] > div[class="data"]').should('contain.text', 'Appartenente')
-    }
+        }
+        else {
+            // CAPOGRUPPO
+            cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
+                cy.get('div[class="member-name"]:first').find('nx-link:first:visible').then((name) => {
+                    cy.wrap($panel).should('include.text', capogruppo)
+                    expect(name.text().trim()).to.include(capogruppo)
+                })
+            })
+            // APPARTENTENTE
+            cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
+                cy.get('div[class="member-name"]:visible').eq(1).find('div[class^="data"]').not(':contains("Membro")').then((name) => {
+                    cy.wrap($panel).should('include.text', membro)
+                    expect(name.text().trim()).to.include(membro)
+                })
+            })
+        }
+}
 
     /**
      * Click button Elimina gruppo

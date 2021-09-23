@@ -11,11 +11,8 @@ import LoginPage from "../../../mw_page_objects/common/LoginPage"
 import TopBar from "../../../mw_page_objects/common/TopBar"
 import BackOffice from "../../../mw_page_objects/Navigation/BackOffice"
 import ConsultazioneSinistriPage from "../../../mw_page_objects/backoffice/ConsultazioneSinistriPage"
+import { isDate } from "lodash"
 
-//#region Username Variables
-const userName = 'TUTF012'
-const psw = 'P@ssw0rd!'
-//#endregion
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -30,13 +27,14 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 
 before(() => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-        insertedId = results.insertId
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Consultazione sinistri') 
     })
-    //LoginPage.logInMW(userName, psw, true, '010375000')
-    LoginPage.logInMW(userName, psw, false)
-    TopBar.clickBackOffice()
-    BackOffice.clickCardLink('Consultazione sinistri')
 })
 
 beforeEach(() => {
@@ -81,10 +79,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let statosin = csSinObjPage.getPromiseValue_ByCss(css5)
         const css6 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
         var dtAvvenimento = csSinObjPage.getPromiseValue_ByCss(css6)        
-             
+        
         // Seleziona il sinistro
         csSinObjPage.clickLnk_ByHref(sinistro)
-      
+    
         // Verifica : numero di sinistro in alto alla pagina di dettaglio
         const clssDtl = "pageTitle"
         csSinObjPage.checkObj_ByClassAndText(clssDtl, sinistro)
@@ -121,38 +119,49 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
         // Verifica : Apro la sezione del danneggiato (1)
         const btnDanneggiato = "#soggetti_danneggiati > div > div > a"
-        csSinObjPage.clickBtn_ById(btnDanneggiato)
+        ConsultazioneSinistriPage.clickBtn_ById(btnDanneggiato)
 
         // Verifica : la valorizzazione del campo "Data incarico" in Sezione Perizie
         const cssDtIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > p'
-        csSinObjPage.getPromiseValue_ByCss(cssDtIncarico).then(dtIncarico => {
-            csSinObjPage.isNullOrEmpty(dtIncarico)       
-            csSinObjPage.containValidDate(dtIncarico)  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtIncarico).then(dtIncarico => {
+            ConsultazioneSinistriPage.isNullOrEmpty(dtIncarico)       
+            ConsultazioneSinistriPage.containValidDate(dtIncarico)  
         });
          
          // Verifica : la valorizzazione del campo "Data scarico" in Sezione Perizie
-         const cssDtScarico= '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
-         csSinObjPage.getPromiseValue_ByCss(cssDtScarico).then(dtScarico => {
-             csSinObjPage.isNullOrEmpty(dtScarico)       
-             csSinObjPage.containValidDate(dtScarico)
+         const cssDtScarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
+         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtScarico).then(dtScarico => {
+            ConsultazioneSinistriPage.isNullOrEmpty(dtScarico)       
+            ConsultazioneSinistriPage.containValidDate(dtScarico)
          });
 
           // Verifica : la valorizzazione del campo "Fiduciario" in Sezione Perizie
         const cssFiduciario = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
-        csSinObjPage.getPromiseValue_ByCss(cssFiduciario).then(fiduciario => {
-            csSinObjPage.isNullOrEmpty(fiduciario)     
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssFiduciario).then(fiduciario => {
+            ConsultazioneSinistriPage.isNullOrEmpty(fiduciario)     
         });
 
         // Verifica : la valorizzazione del campo "Tipo incarico" in Sezione Perizie
         const cssTipoIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
-        csSinObjPage.getPromiseValue_ByCss(cssTipoIncarico).then(tipoIncarico => {
-            csSinObjPage.isNullOrEmpty(tipoIncarico)           
-        });
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTipoIncarico).then(tipoIncarico => {
+            ConsultazioneSinistriPage.isNullOrEmpty(tipoIncarico).then(isok => {
+                if (!isnull)
+                    assert.fail('Valore vuoto o nullo')
+                else
+                    assert.isTrue(isok, 'è un valore definito');           
+            });
+            ConsultazioneSinistriPage.containValidDate(tipoIncarico).then(isdate => {
+                if (!isdate)
+                    assert.fail('Data non valida')
+                else
+                    assert.isTrue(isdate, 'è una data valida');           
+            });
+        })
         
         // Verifica : la valorizzazione del campo "Stato" in Sezione Perizie
         const cssStato = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
-        csSinObjPage.getPromiseValue_ByCss(cssStato).then(stato => {
-            csSinObjPage.isNullOrEmpty(stato)  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssStato).then(stato => {
+            ConsultazioneSinistriPage.isNullOrEmpty(stato)  
         });     
     });
 
@@ -212,66 +221,92 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(1) > td:nth-child(2)"  
         csSinObjPage.getPromiseValue_Bylocator(popUplocator1).then(dtPagamento => {
             csSinObjPage.isNullOrEmpty(dtPagamento)       
-            csSinObjPage.containValidDate(dtPagamento)                          
+            csSinObjPage.containValidDate(dtPagamento).then(dtPagamento => {
+                if (!dtInvioBanca)
+                    assert.fail('Data pagamento field is null or empty')
+                else
+                    assert.isTrue(importo, 'Data pagamento field is defined!');
+            })                                                            
         });
 
         // Verifica : la valorizzazione del campo "Data invio Banca" nella popup "Dettaglio Pagamento"
         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
         csSinObjPage.getPromiseValue_Bylocator(popUplocator2).then(dtInvioBanca => {
             csSinObjPage.isNullOrEmpty(dtInvioBanca)       
-            csSinObjPage.containValidDate(dtInvioBanca)                          
+            csSinObjPage.containValidDate(dtInvioBanca).then(dtInvioBanca => {
+                if (!dtInvioBanca)
+                    assert.fail('Data invio Banca field is null or empty')
+                else
+                    assert.isTrue(importo, 'Data invio Banca field is defined!');
+            })                                   
         });
 
         // Verifica : la valorizzazione del campo "Importo" nella popup "Dettaglio Pagamento"
         const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)" 
         csSinObjPage.getPromiseValue_Bylocator(popUplocator3).then(importo => {
-            csSinObjPage.isNullOrEmpty(importo)       
-            csSinObjPage.containValidDate(importo)                          
+            csSinObjPage.isNullOrEmpty(importo).then(importo => {
+                if (!importo)
+                    assert.fail('Importo field is null or empty')
+                else
+                    assert.isTrue(importo, 'Importo field is defined!');
+            })          
         });
 
         // Verifica : la valorizzazione del campo "Valuta" nella popup "Dettaglio Pagamento"
         const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)" 
         csSinObjPage.getPromiseValue_Bylocator(popUplocator4).then(valuta => {
-            csSinObjPage.isNullOrEmpty(valuta)       
-            csSinObjPage.containValidDate(valuta)                          
+            csSinObjPage.isNullOrEmpty(valuta).then(isValuta => {
+                if (!isValuta)
+                    assert.fail('Valuta field is null')
+                else
+                    assert.isTrue(isValuta, 'Valuta field is defined!');
+            })
+            csSinObjPage.isEuroCurrency(valuta).then(isEuro => {
+                if (!isEuro)
+                    assert.fail('Valuta field is defined as not EURO')
+                else
+                    assert.isTrue(isEuro, 'Valuta field is defined as EURO!');
+            })                             
         });
 
         // Verifica : la valorizzazione del campo "Causale" nella popup "Dettaglio Pagamento"
         const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"       
         csSinObjPage.getPromiseValue_Bylocator(popUplocator5).then(causale => {
-            csSinObjPage.isNullOrEmpty(causale)       
-            csSinObjPage.containValidDate(causale)                          
+            csSinObjPage.isNullOrEmpty(causale)                                         
         });
 
         // Verifica : la valorizzazione del campo "Modalità di pagamento" nella popup "Dettaglio Pagamento"
         const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(6) > td:nth-child(2)"       
         csSinObjPage.getPromiseValue_Bylocator(popUplocator6).then(modPagamento => {
-            csSinObjPage.isNullOrEmpty(modPagamento)       
-            csSinObjPage.containValidDate(modPagamento)                          
+            csSinObjPage.isNullOrEmpty(modPagamento)                                        
         });
 
         // Verifica : la valorizzazione del campo "IBAN" nella popup "Dettaglio Pagamento"
         const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(7) > td:nth-child(2)"       
         csSinObjPage.getPromiseValue_Bylocator(popUplocator7).then(iban => {
             csSinObjPage.isNullOrEmpty(iban)       
-            csSinObjPage.containValidDate(iban)                          
+            csSinObjPage.isValidIBAN(iban).then(isIBAN => {
+                if (!isIBAN)
+                    assert.fail('IBAN field is defined with not correct value')
+                else
+                    assert.isTrue(isValuta, 'IBAN field is defined with correct value!');
+            })                                                       
         });
     
         // Verifica : la valorizzazione del campo "Tipo Proposta" nella popup "Dettaglio Pagamento"
         const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"       
         csSinObjPage.getPromiseValue_Bylocator(popUplocator8).then(tipoProposta => {
             csSinObjPage.isNullOrEmpty(tipoProposta)       
-            csSinObjPage.containValidDate(tipoProposta)                          
+            //csSinObjPage.containValidDate(tipoProposta)                          
         });
 
         // Verifica : la valorizzazione del campo "Stato Pagamento" nella popup "Dettaglio Pagamento"
         const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"       
         csSinObjPage.getPromiseValue_Bylocator(popUplocator9).then(statoPagamento => {
-            csSinObjPage.isNullOrEmpty(statoPagamento)       
-            csSinObjPage.containValidDate(statoPagamento)                          
+            csSinObjPage.isNullOrEmpty(statoPagamento)                                            
         });
 
-        csSinObjPage.clickObj_ByLabel("span", "Close")        
+        csSinObjPage.clickBtn_ByClassAndText("k-icon k-i-close", "Close")        
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
@@ -346,8 +381,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             csSinObjPage.isNullOrEmpty(dtVerificaPerizia)       
             csSinObjPage.containValidDate(dtVerificaPerizia)                                          
         });
-
-        csSinObjPage.clickObj_ByLabel("span", "Close") 
+        // TODO: Implementare la chiusura sul secondo close della pop-up
+        //const closecss= "body > div:nth-child(5) > div.k-window-titlebar.k-header > div > a > span"
+        //csSinObjPage.clickLnk_ByHref("#")        
     });
 
 });

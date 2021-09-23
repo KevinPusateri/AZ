@@ -61,8 +61,8 @@ function mysqlFinish(dbConfig, rowId, tests) {
         if (tests.test[i].resultOutCome !== 'Passed') {
             resultOutCome = tests.test[i].resultOutCome
             //Also get the error message
-            resultMessage = tests.test[i].resultMessage.length > 1000 ? tests.test[i].resultMessage.substring(0,999) : tests.test[i].resultMessage
-            resultStack = tests.test[i].resultStack.length > 5000 ? tests.test[i].resultStack.substring(0,4999) : tests.test[i].resultStack
+            resultMessage = tests.test[i].resultMessage.length > 1000 ? tests.test[i].resultMessage.substring(0, 999) : tests.test[i].resultMessage
+            resultStack = tests.test[i].resultStack.length > 5000 ? tests.test[i].resultStack.substring(0, 4999) : tests.test[i].resultStack
         }
     }
 
@@ -88,10 +88,31 @@ function mysqlFinish(dbConfig, rowId, tests) {
         })
     })
 }
+
+function retriveTarghe(dbConfig) {
+    const connection = mysql.createConnection(dbConfig)
+    connection.connect((err) => {
+        if (err) throw err;
+    })
+
+    var query = "SELECT Targa FROM NGRA2021_Casi_Assuntivi_Motor WHERE Caso_assuntivo=0"
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error) {
+                console.error(error)
+                reject(error)
+            }
+            else {
+                connection.end()
+                return resolve(results)
+            }
+        })
+    })
+}
 //#endregion
 
 //Retrive logged win user
-function userWinLogged(){
+function userWinLogged() {
     return os.userInfo()
 }
 
@@ -238,9 +259,9 @@ module.exports = (on, config) => {
         }
     });
 
-    on ("task", {
-        getWinUserLogged(){
-            return userWinLogged()
+    on("task", {
+        getTarghe({ dbConfig }) {
+            return retriveTarghe(dbConfig)
         }
     });
 
@@ -274,10 +295,28 @@ module.exports = (on, config) => {
     })
 
     on("task", {
-        getHostName(){
+        getHostName() {
             return new Promise((resolve) => {
                 return resolve(os.hostname().toUpperCase())
             })
+        }
+    })
+
+    on("task", {
+        getWinUserLogged() {
+            return userWinLogged()
+        }
+    });
+
+    on("task", {
+        getUserWinLogin() {
+            return cy.getUserWinLogin()
+        }
+    })
+
+    on("task", {
+        getUsername() {
+            return os.userInfo().username
         }
     })
 };

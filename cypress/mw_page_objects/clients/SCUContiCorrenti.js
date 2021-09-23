@@ -50,7 +50,7 @@ class SCUContiCorrenti {
             contoCorrente.intestatario = client.name
             getSCU().find('label[for="annoApertura"]').then((textAnnoApertura) => contoCorrente.annoApertura = textAnnoApertura.text())
 
-            getSCU().find('#submit:contains("Salva")').click().wait(4000);
+            getSCU().find('#submit:contains("Salva")').click().wait(8000);
             resolve(contoCorrente);
         });
     }
@@ -66,7 +66,7 @@ class SCUContiCorrenti {
         })
     }
 
-    static checkContoCorrenteModificato(conto){
+    static checkContoCorrenteModificato(conto) {
         cy.get('app-client-bank-accounts').find('app-client-bank-account-card').then((list) => {
             console.log(list.text())
             expect(list.text()).to.include(conto)
@@ -79,7 +79,6 @@ class SCUContiCorrenti {
     */
     static modificaConto(contoCorrente) {
         return new Cypress.Promise((resolve, reject) => {
-            debugger
             cy.get("app-client-bank-accounts").then((table) => {
                 cy.wrap(table)
                     .find(
@@ -93,22 +92,26 @@ class SCUContiCorrenti {
                             .click()
                         cy.get('button[class^="nx-context-menu-item context-link"]').should('be.visible')
                         cy.get("lib-da-link").contains("Modifica conto corrente").click();
+                        Common.canaleFromPopup()
+                        cy.fixture('iban.json').then((data) => {
+                            var indexScelta
+                            debugger
+                            do{
+                                indexScelta = Math.floor(Math.random() * data.iban.length);
+                            }while(data.iban[indexScelta] === contoCorrente.iban)
+                            var newIban = data.iban[indexScelta]
+                            var validIban = ibantools.isValidIBAN(newIban)
+                            if (validIban) {
+                                getSCU().find('#iban').clear().type(newIban)
+                                getSCU().find('#submit:contains("Salva"):visible').click()
+                                getSCU().find('#submit:contains("Salva"):visible').click().wait(8000);
+                                resolve(newIban);
+                            }
+                            else
+                                assert.fail('Iban non valido')
+                        })
 
                     })
-                cy.fixture('iban.json').then((data) => {
-                    debugger
-                    var indexScelta = Math.floor(Math.random() * data.iban.length);
-                    var newIban = data.iban[indexScelta]
-                    var validIban = ibantools.isValidIBAN(newIban)
-                    if (validIban) {
-                        getSCU().find('#iban').clear().type(newIban)
-                        getSCU().find('#submit:contains("Salva"):visible').click().wait(4000);
-                        debugger
-                        resolve(newIban);
-                    }
-                    else
-                        assert.fail('Iban non valido')
-                })
 
 
             })

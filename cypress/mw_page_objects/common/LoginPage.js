@@ -182,22 +182,46 @@ class LoginPage {
         cy.task('getWinUserLogged').then((loggedUser) => {
             cy.fixture("tutf").then(data => {
                 const user = data.users.filter(obj => {
-                    return obj.userName === loggedUser.username
+                    return obj.userName === loggedUser.username.toUpperCase()
                 })[0]
-                cy.impersonification(user).then(() => {
-                    cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
-                    cy.get('input[name="Ecom_Password"]').type(data.psw, { log: false })
-                    cy.get('input[type="SUBMIT"]').click()
 
-                    if (!Cypress.env('monoUtenza'))
-                        Common.checkUrlEnv()
-                    if (!mockedNews)
-                        cy.wait('@gqlNews')
+                cy.log('Retrived username : ' + loggedUser.username)
 
-                    cy.wait('@gqlUserDetails')
+                //Verifichiamo se siamo su TFS oppure no
+                let isTFS = (loggedUser.username.toUpperCase() === 'TFSSETUP') ? true : false
 
-                    if (Cypress.env('isSecondWindow'))
-                        TopBar.clickSecondWindow()
+                cy.decryptLoginPsw(isTFS).then(psw => {
+                    if (loggedUser.username === 'RU18362') {
+                        cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
+                        cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
+                        cy.get('input[type="SUBMIT"]').click()
+
+                        if (!Cypress.env('monoUtenza'))
+                            Common.checkUrlEnv()
+                        if (!mockedNews)
+                            cy.wait('@gqlNews')
+
+                        cy.wait('@gqlUserDetails')
+
+                        if (Cypress.env('isSecondWindow'))
+                            TopBar.clickSecondWindow()
+                    }
+                    else
+                        cy.impersonification(user.tutf, user.agentId, user.agency).then(() => {
+                            cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
+                            cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
+                            cy.get('input[type="SUBMIT"]').click()
+
+                            if (!Cypress.env('monoUtenza'))
+                                Common.checkUrlEnv()
+                            if (!mockedNews)
+                                cy.wait('@gqlNews')
+
+                            cy.wait('@gqlUserDetails')
+
+                            if (Cypress.env('isSecondWindow'))
+                                TopBar.clickSecondWindow()
+                        })
                 })
             })
         })

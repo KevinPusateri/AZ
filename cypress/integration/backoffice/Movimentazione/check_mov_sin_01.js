@@ -1,6 +1,7 @@
 /**
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
- *
+ *  const userName = 'TUTF012'
+*  const psw = 'P@ssw0rd!'
  * @description Selezionando 'Sinistri/Movimentazione sinistri'
  *  Lo script esegue una sequenza di test su tale pagina
  */
@@ -11,12 +12,6 @@ import LoginPage from "../../../mw_page_objects/common/LoginPage"
 import TopBar from "../../../mw_page_objects/common/TopBar"
 import BackOffice from "../../../mw_page_objects/Navigation/BackOffice"
 import MovimentazioneSinistriPage from "../../../mw_page_objects/backoffice/MovimentazioneSinistriPage"
-
-//#region Username Variables
-const userName = 'TUTF012'
-const psw = 'P@ssw0rd!'
-//#endregion
-
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -30,11 +25,14 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-        insertedId = results.insertId
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
     })
-    LoginPage.logInMW(userName, psw)
 })
+
 
 beforeEach(() => {
     cy.preserveCookies()
