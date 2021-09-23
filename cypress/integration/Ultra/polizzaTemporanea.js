@@ -38,13 +38,18 @@ const ambitiUltraSalute = {
 //#endregion enum
 
 before(() => {
-    //cy.clearCookies();
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
+    })
   
-    cy.task('cliente').then((object) => {
+    /* cy.task('cliente').then((object) => {
       nuovoCliente = object;
     });
     
-    LoginPage.logInMW('TUTF004', 'P@ssw0rd!')
+    LoginPage.logInMW('TUTF004', 'P@ssw0rd!') */
   })
   
   beforeEach(() => {
