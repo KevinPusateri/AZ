@@ -35,6 +35,13 @@ before(() => {
 })
 
 beforeEach(() => {
+    cy.getUserWinLogin().then(data=> {
+        cy.task(‘startMysql’,  { dbConfig: dbconfig, testCaseName: testName, current 
+            Env: currentEnv, currentUser: data.tutf}).then((results) => {
+                insertedId=results.insertId
+            })
+            LoginPage.logInMWAdvanced()
+        })
     cy.preserveCookies()
     Common.visitUrlOnEnv()
 })
