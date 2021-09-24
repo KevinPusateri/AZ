@@ -27,15 +27,14 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 
+
 before(() => {
-    cy.getUserWinLogin().then(data=> {
-        cy.task('startMysql',  { dbConfig: dbconfig, testCaseName: testName, current 
-            Env: currentEnv, currentUser: data.tutf}).then((results) => {
-                insertedId=results.insertId
-            })
-            LoginPage.logInMWAdvanced()
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
         })
-   // LoginPage.logInMW(userName, psw)
+        LoginPage.logInMWAdvanced()
+    })
 })
 
 beforeEach(() => {
