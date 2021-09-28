@@ -63,16 +63,16 @@ class ConsultazioneSinistriPage {
         return new Cypress.Promise((resolve, reject) => {
             if(value === undefined) {
                 cy.log('>> value "'+value+'" is undefined.');
-                Promise.resolve(false) 
+                resolve(false) 
             } else if(value === null) {
                 cy.log('>> value "'+value+'" is null.');
-                Promise.resolve(false) 
+                resolve(false) 
             } else if(value === '') {
                 cy.log('>> value "'+value+'" is empty.');
-                Promise.resolve(false) 
+                resolve(false) 
             } else {
                 cy.log('>> value "'+value+'" is defined.'); 
-                Promise.resolve(true) 
+                resolve(true) 
             }
         });   
         cy.wait(1000)        
@@ -210,7 +210,7 @@ class ConsultazioneSinistriPage {
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => { 
                 cy.log('>> retrive value "'+text.toString()+'" is defined.'); 
-                Promise.resolve(text.toString()) 
+                resolve(text.toString()) 
             });
         });        
     }
@@ -230,16 +230,16 @@ class ConsultazioneSinistriPage {
                     
                 if(value === undefined) {
                     assert.fail('>> value "'+value+'" is undefined.');
-                    Promise.reject() 
+                    reject() 
                 } else if(value === null) {
                     assert.fail('>> value "'+value+'" is null.');
-                    Promise.reject()
+                    reject()
                 } else if(value === '') {
                     assert.fail('>> value "'+value+'" is empty.');
-                    Promise.reject() 
+                    reject()
                 } else {
                     cy.log('>> value "'+value+'" is defined.'); 
-                    Promise.resolve(value) 
+                    resolve(value) 
                 }
             });      
         });
@@ -270,7 +270,7 @@ class ConsultazioneSinistriPage {
                 } else {
                     let myString = value.match(pattern)
                     cy.log('>> the string: "'+value+'" contain a valid date "'+myString[0]+'"')                
-                    Promise.resolve(value)
+                    resolve(value)
                 }
             });      
         });
@@ -306,12 +306,12 @@ class ConsultazioneSinistriPage {
                 var msg = '>> the value: "'+str+'" not contain a valid date' 
                 cy.log(msg)
                 //assert.fail('Valore vuoto o nullo')      
-                Promise.resolve(false)               
+                resolve(false)               
             } else {
                 let myString = str.match(pattern)
                 cy.log('>> the string: "'+str+'" contain a valid date "'+myString[0]+'"')
                 //assert.isTrue(isok, 'è un valore definito');
-                Promise.resolve(true)
+                resolve(true)
             }
         })                                           
     }
