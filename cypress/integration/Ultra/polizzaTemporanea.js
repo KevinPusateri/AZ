@@ -7,6 +7,13 @@ import Ultra from "../../mw_page_objects/ultra/Ultra"
 import 'cypress-iframe';
 //#endregion
 
+//#region Mysql DB Variables
+const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const currentEnv = Cypress.env('currentEnv')
+const dbConfig = Cypress.env('db')
+let insertedId
+//#endregion
+
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
@@ -55,13 +62,31 @@ before(() => {
   beforeEach(() => {
     cy.preserveCookies()
   })
+
+  /* afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+      TopBar.logOutMW()
+      //#region Mysql
+      cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+      })
+      //#endregion
+      Cypress.runner.stop();
+    }
+  }) */
+
+  after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+      let tests = testsInfo
+      cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    })
+    //#endregion
   
-  after(() => {
-    //cy.get('.user-icon-container').click()
-    //cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
-    cy.clearCookies();
   })
+  //#endregion Before After
 
 describe("Polizza temporanea", ()=>{
     it("Ricerca cliente", ()=>{
@@ -78,14 +103,22 @@ describe("Polizza temporanea", ()=>{
         
     })
 
-    it("Impostazione contratto temporaneo", ()=>{
+    it("Impostazione contratto temporaneo e prosegui", ()=>{
         var ambiti = [
             ambitiUltraSalute.SPESE_MEDICHE,
             ambitiUltraSalute.DIARIA_DA_RICOVERO,
             ambitiUltraSalute.INVALIDITA_PERMANENTE_INFORTUNIO
         ]
 
-        Ultra.contrattoTemporaneo(ambiti)
+        let oggi = Date.now()
+        let dataInizio = new Date(oggi)
+        let dataFine = new Date(oggi); dataFine.setMonth(dataInizio.getMonth()+7)
+        var inizio = ('0'+dataInizio.getDate()).slice(-2) +''+ ('0'+(dataInizio.getMonth()+1)).slice(-2) +'/'+ dataInizio.getFullYear()
+        var fine = ('0'+dataFine.getDate()).slice(-2) +''+ ('0'+(dataFine.getMonth()+1)).slice(-2) +''+ dataFine.getFullYear()
+
+        Ultra.contrattoTemporaneo(ambiti, inizio, fine, "lavoratore-occasionale", "Allianz")
+        
+        Ultra.procediHome()
         cy.pause()
     })
 
