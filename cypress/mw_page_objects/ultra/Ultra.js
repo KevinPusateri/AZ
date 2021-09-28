@@ -67,7 +67,7 @@ class Ultra {
         })
     }
 
-    static contrattoTemporaneo(listaAmbiti) {
+    static contrattoTemporaneo(listaAmbiti, inizio, fine, attivita, societa) {
         ultraIFrame().within(() => {
             //apre il popup Contratto Temporaneo
             cy.get('span').contains('Contratto temporaneo')
@@ -82,14 +82,32 @@ class Ultra {
             //cy.get('h5').focus()
 
             cy.get('label').contains('Temporaneità attiva').click() //Temporaneità attiva
-            cy.get('label').contains('Temporaneità attiva').parent()
+            cy.get('label').contains('Temporaneità attiva').parent().parent()
             .invoke('attr', 'class').should('contain', 'is-checked') //verfica che la temporaneità sia stata attivata
 
-            cy.pause()
             //aggiunge gli ambilti previsti
             for (var i = 0; i < listaAmbiti.length; i++) {
-                cy.get('nx-icon[class*='+listaAmbiti[i]+']').click()
+                cy.get('app-ultra-ambiti-selection-panel').find('nx-icon[ng-reflect-name="product-'+listaAmbiti[i]+'"]').click()
             }
+
+            //polizza valida da > al
+            cy.log("data inizio: " + inizio)
+            cy.log("data fine: " + fine)
+            cy.get('ultra-contratto-temporaneo-modal').find('input[formcontrolname="dataInizio"]').type(inizio)
+            cy.get('ultra-contratto-temporaneo-modal').find('input[formcontrolname="dataFine"]').type(fine)
+
+            //attività
+            cy.get('ultra-contratto-temporaneo-modal').find('nx-dropdown[formcontrolname="attivita"]').click()
+            cy.get('nx-dropdown-item[ng-reflect-value="'+attivita+'"]').click()
+
+            //società
+            cy.get('ultra-contratto-temporaneo-modal').find('input[formcontrolname="societa"]').type(societa)
+
+            //conferma
+            cy.get('ultra-contratto-temporaneo-modal')
+            .find('span').contains('Conferma').parent('button')
+            .should('have.attr', 'aria-disabled', 'false')
+            .click()
         })
     }
 

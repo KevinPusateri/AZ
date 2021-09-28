@@ -129,7 +129,7 @@ class SCUContiCorrenti {
             cy.wrap(table)
                 .find(
                     'app-client-bank-account-card:contains("' +
-                    contoCorrente.iban +
+                    contoCorrente +
                     '")'
                 )
                 .then((row) => {

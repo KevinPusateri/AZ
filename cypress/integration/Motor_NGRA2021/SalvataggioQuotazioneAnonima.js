@@ -10,6 +10,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
+let numeroQuotazione 
 //#endregion
 
 //#region Variables
@@ -52,9 +53,10 @@ describe('Matrix Web : motor Salvataggio quotazione', function () {
                 PreventivoMotor.compilaDatiQuotazione(retrivedTarga, result.birthDate);
             })
         })
-        // PreventivoMotor.compilaDatiQuotazione('FD385AY','01/01/1996');
-        PreventivoMotor.provenienza('Voltura');
-        PreventivoMotor.salvaQuotazioneMotorNGA2021()
+        //PreventivoMotor.compilaDatiQuotazione('FD385AY', '01/01/1996');
+        //PreventivoMotor.provenienza('Voltura');
+        nomeQuotazione = PreventivoMotor.salvaQuotazioneMotorNGA2021()
+        PreventivoMotor.recuperaQuotazione(nomeQuotazione);
     })
 
 
