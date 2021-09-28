@@ -107,9 +107,13 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         BurgerMenuClients.backToClients()
     });
     it('Verifica aggancio Hospital scanner', function () {
-        TopBar.clickClients()
-        BurgerMenuClients.clickLink('Hospital scanner')
-        HomePage.reloadMWHomePage()
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickClients()
+            BurgerMenuClients.clickLink('Hospital scanner')
+            HomePage.reloadMWHomePage()
+        }
+        else
+            this.skip()
     });
 
     it('Verifica aggancio Antiriciclaggio', function () {

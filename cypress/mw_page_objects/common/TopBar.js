@@ -89,6 +89,10 @@ class TopBar extends HomePage {
      * Logout
      */
     static logOutMW() {
+
+        if (Cypress.env('isSecondWindow'))
+            cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
+
         cy.get('lib-user-header').should('be.visible')
         cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]:visible').click();
         cy.get('lib-user-header-popover-container').should('be.visible').within(() => {
