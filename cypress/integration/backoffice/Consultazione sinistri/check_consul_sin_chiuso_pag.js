@@ -52,70 +52,89 @@ after(function () {
     //#endregion
 })
 
+var numsin = '927646985'
+var stato_sin = 'CHIUSO PAGATO'
+var dtAvvenimento = "";
+var cliente = "";
+
+const lblnumsin = "k-grid-content"
+
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
-    'Si entra nella pagina di dettaglio e si verifica l\'intestazione di pagina: ' +
-    ' (1) In alto alla pagina di dettaglio è riportato il numero di sinistro ' +
-    ' (2) Data di avvenimento e Cliente ', function () {
-        let sinistro = '927646985'
-        let stato_sin = 'CHIUSO PAGATO'
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        csSinObjPage.setValue_ById('#claim_number', sinistro)
+    '"pagina di ricerca" si controllano i valori: num sinistro, stato sinistro.', function () {
+                     
         let classvalue = "search_submit claim_number k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
-        csSinObjPage.checkObj_ByText(stato_sin)
-        csSinObjPage.printClaimDetailsValue()
-        const css1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
-        var cliente = csSinObjPage.getPromiseValue_ByCss(css1)
-        const css2 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
-        let polizza = csSinObjPage.getPromiseValue_ByCss(css2)
-        const css3 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
-        let targa = csSinObjPage.getPromiseValue_ByCss(css3)
-        const css4 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(5)"  
-        let tiposin = csSinObjPage.getPromiseValue_ByCss(css4)
-        const css5 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(6)"  
-        let statosin = csSinObjPage.getPromiseValue_ByCss(css5)
-        const css6 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-        var dtAvvenimento = csSinObjPage.getPromiseValue_ByCss(css6)        
-        
-        // Seleziona il sinistro
-        csSinObjPage.clickLnk_ByHref(sinistro)
+
+        ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')       
+
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, stato_sin)       
+    });
+
+    it('"Pagina di ricerca" si controlla il nome associato al cliente assicurato.', function () {
+        const cssCliente = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
+        cliente = ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente).then((cliente)  => {
+           ass = cliente;
+           ConsultazioneSinistriPage.isNullOrEmpty(cliente)  
+           cy.log('ass: '+ass);
+           cy.log('cliente: '+cliente);
+       });
+       cy.log('CLIENTE: '+ cliente)
+    });
+
+    it('"Pagina di ricerca" si controllano i valori: targa e polizza.', function () {                 
+        const cssTarga = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTarga)
     
-        // Verifica : numero di sinistro in alto alla pagina di dettaglio
+        const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssPolizza)      
+    });
+
+    it('"Pagina di ricerca" si controlla il valore della data di avvenimento sinistro.', function () {                
+        const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
+        ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtAvv).then(dtAvvenimento => {
+            cy.log('Dt Avv: '+dtAvvenimento)
+        }); 
+    });
+    
+    it('"Pagina di dettaglio" si controlla che siano riportati numero di sinistro, ' +
+    ' data di avvenimento e il cliente assicurato', function () {
+            
+        ConsultazioneSinistriPage.printClaimDetailsValue()
+    
+        // Seleziona il sinistro dalla pagina di ricerca
+        ConsultazioneSinistriPage.clickLnk_ByHref(numsin)
+        
+        // Verifica (1) : numero di sinistro in alto alla pagina di dettaglio
         const clssDtl = "pageTitle"
-        csSinObjPage.checkObj_ByClassAndText(clssDtl, sinistro)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, numsin)
 
         // Verifica (2): Valore della data avvenimento      
         const cssDtAvv = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
-        csSinObjPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento)
-        // Verifica (2): Cliente
+        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(cssDtAvv, dtAvvenimento)
+        
+        // Verifica (3): Cliente
         const cssCliente = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
-        csSinObjPage.checkObj_ByLocatorAndText(cssCliente, cliente)    
+        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(cssCliente, cliente)
     });
     
-
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
-    ' Dalla pagina di dettaglio è verificata la sezione INTESTAZIONE ed in particolare quanto segue: ' +
-    ' (1) siano valorizzati i campi Località e CLD/Danneggiato ', function () {
-       
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-
-        // Verifica (2): Valore della località
+    it('"Pagina di dettaglio" è verificata la sezione INTESTAZIONE con valorizzazione dei campi ' +
+    ' Località e CLD/Danneggiato ', function () {
+      
+        //(1): Valore della località
         const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer"
-        csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(csslocalità))
-        // Verifica (2): la valorizzazione del CLD
-        const csscldDanneggiato = '#soggetti_danneggiati > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a'
-        csSinObjPage.isNullOrEmpty(csSinObjPage.getPromiseValue_ByCss(csscldDanneggiato))
-    });
-    
-    
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
-    ' Dalla pagina di dettaglio è verificato quanto segue: ' +
-    ' (1) Selezionando il danneggiato, si analizza la sezione "PERIZIE" verificando la valorizzazione ' +
-    ' dei seguenti campi (Data incarico, Data scarico, Fiduciario, Tipo incarico, Stato). ' , function () {
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(csslocalità)
 
+        //(2): la valorizzazione del CLD
+        const csscldDanneggiato = '#soggetti_danneggiati > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a'
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(csscldDanneggiato)
+    });
+
+    it('"Pagina di dettaglio" selezionando il danneggiato si analizza la sezione "PERIZIE" '+
+    ' valorizzazione dei seguenti campi (Data incarico, Data scarico, Fiduciario, Tipo incarico, Stato). ' , function () {
+        
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
         // Verifica : Apro la sezione del danneggiato (1)
         const btnDanneggiato = "#soggetti_danneggiati > div > div > a"
@@ -166,10 +185,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
-    'Dalla pagina di dettaglio è verificato quanto segue: ' +
-    ' (1)  Selezionando il danneggiato, si analizza la sezione "PAGAMENTI" verificando la valorizzazione ' +
-    ' dei seguenti campi (Data pagamento, Data Invio Banca, causale pagamento, Importo, Percepiente). ' , function () {
+    it('"Pagina di dettaglio" selezionando il danneggiato si analizza la sezione "PAGAMENTI" '+
+    ' verificando la valorizzazione dei seguenti campi (Data pagamento, Data Invio Banca, causale pagamento, Importo, Percepiente). ' , function () {
     
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
         
@@ -207,10 +224,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         });
     });
 
-
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
-    ' Dalla pagina di dettaglio è verificato quanto segue: ' +
-    ' Nella sezione "Pagamenti", cliccando sul pulsante di "Dettagli", si apre la POPUP "Dettaglio Pagamento" ' +
+    it('Nella sezione "Pagamenti", cliccando sul pulsante di "Dettagli", si apre la POPUP "Dettaglio Pagamento" ' +
     ' verificare che le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
     
         const csSinObjPage = Object.create(ConsultazioneSinistriPage)
@@ -309,9 +323,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         csSinObjPage.clickBtn_ByClassAndText("k-icon k-i-close", "Close")        
     });
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
-    ' Dalla pagina di dettaglio è verificato quanto segue: ' +
-    ' Nella sezione "Perizie", cliccando sul pulsante di "Dettagli", si apre la POPUP "Dettaglio Incarico Perizia" ' +
+    it(' Nella sezione "Perizie", cliccando sul pulsante di "Dettagli", si apre la POPUP "Dettaglio Incarico Perizia" ' +
     ' (1) verificare che le informazioni riferite all\'anagrafica fiduciario (Fiduciario,Tipo collaborazione, Indirizzo, Telefono ) ' +
     ' (2) verificare che le informazioni riferite ai dati di incarico (Data incarico, Data scarico, Tipo incarico, Stato incarico, Esito perizia, Data verifica perizia, Esito verifica perizia)', function () {
     

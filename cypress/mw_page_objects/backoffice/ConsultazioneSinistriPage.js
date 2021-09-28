@@ -59,7 +59,7 @@ class ConsultazioneSinistriPage {
      * Check if the value is defined
      * @param {string} value : string value to check
      */
-    static isNullOrEmpty(value) {   
+    static isNullOrEmpty(value) {        
         return new Cypress.Promise((resolve, reject) => {
             if(value === undefined) {
                 cy.log('>> value "'+value+'" is undefined.');
@@ -98,7 +98,7 @@ class ConsultazioneSinistriPage {
      * @param {string} label : text displayed
      */
     static clickObj_ByLabel(tag, label) {             
-        getIFrame().contains(tag, label).should('exist').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
+        getIFrame().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(1000)        
     }
     /**
@@ -172,6 +172,7 @@ class ConsultazioneSinistriPage {
      */
      static checkObj_ByLocatorAndText2(locator, label) {
         return new Cypress.Promise((resolve, reject) => {
+            debugger
             getIFrame().find(locator).should('be.visible')
             .then(($val) => {                                       
                 expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
@@ -180,9 +181,9 @@ class ConsultazioneSinistriPage {
                     cy.log('>> object with label: "' + label +'" is defined')
                     resolve(txt)    
                 } else
-                    assert.fail(' object with label: "' + label +'" is not defined')
+                    assert.fail('object with label: "' + label +'" is not defined')
             })
-        });                               
+        });
         cy.wait(1000)            
     }
     /**
@@ -190,31 +191,93 @@ class ConsultazioneSinistriPage {
      * @param {string} id : locator object id
      * @param {string} value : value to be entered
      */
-    static setValue_ById(id, value) {  
-        if (value === '')
-            getIFrame().find(id).should('be.visible').and('exist').clear().log('>> clean object value')        
-        else
-            getIFrame().find(id).should('be.visible').and('exist').type(value).log('>> value: ' + value +' entered')        
-        cy.wait(1000)        
+    static setValue_ById(id, value) {
+        return new Cypress.Promise((resolve) => {
+            cy.wait(2000)  
+            if (value === '')
+                getIFrame().find(id).should('be.visible').and('exist').clear().log('>> clean object value')        
+            else
+                getIFrame().find(id).should('be.visible').and('exist').type(value).log('>> value: ' + value +' entered')        
+            cy.wait(1000)
+            resolve(true)
+        });
+    }
+
+    static retriveValue(css) {
+        return new Cypress.Promise((resolve) => {
+            getIFrame()
+            .find(css)
+            .invoke('text')  // for input or textarea, .invoke('val')
+            .then(text => { 
+                cy.log('>> retrive value "'+text.toString()+'" is defined.'); 
+                Promise.resolve(text.toString()) 
+            });
+        });        
     }
     /**
      * Get a text value defined on object identified by its @css
-     * @param {string} css : locator object id
+     * @param {string} css : id locator object
      */
     static getPromiseValue_ByCss(css) {
-        return new Cypress.Promise((resolve) => {
+        let value = "";        
+        return new Cypress.Promise((resolve, reject) => {
             getIFrame()
             .find(css)
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => {         
                 cy.log('>> read the value: ' + text)
-                resolve((text.toString()))                
-                });
+                value = text.toString()
+                    
+                if(value === undefined) {
+                    assert.fail('>> value "'+value+'" is undefined.');
+                    Promise.reject() 
+                } else if(value === null) {
+                    assert.fail('>> value "'+value+'" is null.');
+                    Promise.reject()
+                } else if(value === '') {
+                    assert.fail('>> value "'+value+'" is empty.');
+                    Promise.reject() 
+                } else {
+                    cy.log('>> value "'+value+'" is defined.'); 
+                    Promise.resolve(value) 
+                }
+            });      
+        });
+    }
+    /**
+         * Get a text value defined on object identified by its @css
+         * @param {string} css : id locator object 
+         */
+    static getPromiseDate_ByCss(css) {
+        let value = "";
+        const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
+
+        return new Cypress.Promise((resolve, reject) => {
+            getIFrame()
+            .find(css)
+            .invoke('text')  // for input or textarea, .invoke('val')
+            .then(text => {         
+                cy.log('>> read the value: ' + text)
+                value = text.toString()
+                var pattern = new RegExp(regexExp)
+                //Tests for a match in a string. It returns true or false.
+                let validation = pattern.test(value)                  
+                if (!validation)
+                {               
+                    var msg = '>> the value: "'+value+'" not contain a valid date' 
+                    cy.log(msg)
+                    assert.fail(msg)                     
+                } else {
+                    let myString = value.match(pattern)
+                    cy.log('>> the string: "'+value+'" contain a valid date "'+myString[0]+'"')                
+                    Promise.resolve(value)
+                }
+            });      
         });
     }
     /**
      * Get a text value defined on object identified by its @locator
-     * @param {string} locator : locator object id
+     * @param {string} locator : id locator object
      */
     static getPromiseValue_Bylocator(locator) {
         cy.log('>> locator value: ' + locator)
@@ -236,20 +299,23 @@ class ConsultazioneSinistriPage {
             const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
             var pattern = new RegExp(regexExp)
             //Tests for a match in a string. It returns true or false.
-            let validation = pattern.test(str)            
+            let validation = pattern.test(str)                  
             if (!validation)
             {
                 debugger
                 var msg = '>> the value: "'+str+'" not contain a valid date' 
-                cy.log(msg)               
+                cy.log(msg)
+                //assert.fail('Valore vuoto o nullo')      
                 Promise.resolve(false)               
             } else {
                 let myString = str.match(pattern)
                 cy.log('>> the string: "'+str+'" contain a valid date "'+myString[0]+'"')
+                //assert.isTrue(isok, 'è un valore definito');
                 Promise.resolve(true)
             }
         })                                           
     }
+   
     /**
      * Put a @str value and is verified if its a valid IBAN 
      * @param {string} str : string date format
