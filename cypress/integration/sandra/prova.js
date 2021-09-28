@@ -11,8 +11,8 @@ import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import DatiPreventivo from "../../mw_page_objects/Motor/DatiPreventivo"
 
 //#region Username Variables
-const userName = 'TUTF021'   // 'TUTF021'
-const psw = 'P@ssw0rd!'
+//const userName = 'TUTF017'   // 'TUTF021'
+//const psw = 'P@ssw0rd!'
 //#endregion
 
 //#region Mysql DB Variables
@@ -27,14 +27,18 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 
+
 before(() => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: userName }).then((results) => {
-        insertedId = results.insertId
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
     })
-    LoginPage.logInMW(userName, psw)
 })
 
 beforeEach(() => {
+   
     cy.preserveCookies()
     Common.visitUrlOnEnv()
 })

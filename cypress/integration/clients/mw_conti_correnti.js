@@ -85,6 +85,7 @@ after(function () {
 })
 //#endregion Before After
 
+var contoModificato
 describe('Matrix Web : Conti Correnti', function () {
 
   it('Verifica Aggiungi Conto corrente', function () {
@@ -105,16 +106,17 @@ describe('Matrix Web : Conti Correnti', function () {
 
   it('Verifica Modifica Conto corrente', function () {
     SCUContiCorrenti.modificaConto(contoCorrente).then((newConto) => {
+      contoModificato = newConto
       SintesiCliente.visitUrlClient(urlClient)
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Conti correnti')
-      SCUContiCorrenti.checkContoCorrenteModificato(newConto)
+      SCUContiCorrenti.checkContoCorrenteModificato(contoModificato)
     })
   })
 
 
   //ADD TFS
-  // it('Verifica Conto corrente eliminato', function () {
-  //   SCUContiCorrenti.eliminaConto(contoCorrente)
-  // })
+  it('Verifica Conto corrente eliminato', function () {
+    SCUContiCorrenti.eliminaConto(contoModificato)
+  })
 })

@@ -27,7 +27,7 @@ class Common {
           cy.wait(2000)
           cy.get('div[ngclass="agency-row"]').should('be.visible')
 
-          cy.get('div[ngclass="agency-row"]').contains(Cypress.env('Utenza')).click()
+          cy.get('div[ngclass="agency-row"]').contains(Cypress.env('multiUtenza')).click()
           cy.window().then(win => {
             cy.stub(win, 'open').as('windowOpen');
           });
@@ -46,7 +46,7 @@ class Common {
           cy.wait(2000)
           cy.get('div[ngclass="agency-row"]').should('be.visible')
 
-          cy.get('div[ngclass="agency-row"]').contains(Cypress.env('Utenza')).click()
+          cy.get('div[ngclass="agency-row"]').contains(Cypress.env('multiUtenza')).click()
         }
       })
     } 

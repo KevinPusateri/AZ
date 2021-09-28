@@ -434,14 +434,23 @@ class TopBar extends HomePage {
      * Permettere di aprire la seconda finestra di MW
      */
     static clickSecondWindow() {
-        if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
-            cy.get('a[target="MatrixF2"]').should('exist').invoke('removeAttr', 'target').click()
-        } else {
-            cy.get('lib-header-right').should('be.visible').within(() => {
+        cy.get('lib-header-right').should('be.visible').within(() => {
+
+            if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
                 cy.get('nx-icon[name="launch"]').click()
-            })
-            Common.canaleFromPopup(true)
-        }
+                cy.window().then(win => {
+                    cy.stub(win, 'open').as('windowOpen');
+                });
+                cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(stub => {
+                    cy.visit(stub.args[0][0]);
+                    stub.restore;
+                });
+            }
+            else {
+                cy.get('nx-icon[name="launch"]').click()
+                Common.canaleFromPopup(true)
+            }
+        })
     }
 }
 
