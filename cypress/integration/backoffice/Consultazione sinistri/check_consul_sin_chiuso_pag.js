@@ -76,10 +76,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('"Pagina di ricerca" si controlla il nome associato al cliente assicurato.', function () {
         const cssCliente = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
         cliente = ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente).then((cliente)  => {
-           ass = cliente;
-           ConsultazioneSinistriPage.isNullOrEmpty(cliente)  
+           let ass = cliente;
+       
            cy.log('ass: '+ass);
-           cy.log('cliente: '+cliente);
+           cy.log('cliente: '+cliente);          
        });
        cy.log('CLIENTE: '+ cliente)
     });
