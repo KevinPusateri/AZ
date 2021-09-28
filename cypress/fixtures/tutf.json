@@ -43,6 +43,10 @@
             "agentId": "ARFPULINI2"
         }
     ],
+    "monoUtenza":{
+        "agency": "070004549",
+        "agentId": "ASGNAZZARRO1"
+    },
     "psw": "U2FsdGVkX1+zUYlK5Ayb/ZwQpDR9/1nGNe8tX3/O65s=",
     "psw077": "U2FsdGVkX19kCBc/RS1a+PlMuMjcbQNoHLNRKkNDof0="
 }

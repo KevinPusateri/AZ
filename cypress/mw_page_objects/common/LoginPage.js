@@ -191,6 +191,7 @@ class LoginPage {
                 let isTFS = (loggedUser.username.toUpperCase() === 'TFSSETUP') ? true : false
 
                 cy.decryptLoginPsw(isTFS).then(psw => {
+                    //Utente attualmente in
                     if (loggedUser.username === 'RU18362') {
                         cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                         cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
@@ -206,8 +207,14 @@ class LoginPage {
                         if (Cypress.env('isSecondWindow'))
                             TopBar.clickSecondWindow()
                     }
-                    else
-                        cy.impersonification(user.tutf, user.agentId, user.agency).then(() => {
+                    else {
+                        //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza
+
+                        let currentImpersonificationToPerform = {
+                            "agentId": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agentId : user.agentId,
+                            "agency": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agency : user.agency,
+                        }
+                        cy.impersonification(user.tutf, currentImpersonificationToPerform.agentId, currentImpersonificationToPerform.agency).then(() => {
                             cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                             cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
                             cy.get('input[type="SUBMIT"]').click()
@@ -222,15 +229,10 @@ class LoginPage {
                             if (Cypress.env('isSecondWindow'))
                                 TopBar.clickSecondWindow()
                         })
+                    }
                 })
             })
         })
-
-        // //! MONOUTENZA DEDICATA PER EFFETTUARE I TEST SU SECONDA FINESTRA (AG 070004549)
-        // if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
-        //     agency = '070004549'
-        //     agentId = 'ASGNAZZARRO1'
-        // }
     }
 }
 
