@@ -38,7 +38,7 @@
         },
         {
             "userName" : "TFSSETUP",
-            "tutf": "TUTF077",
+            "tutf": "TUTF078",
             "agency": "010710000",
             "agentId": "ARFPULINI2"
         }
@@ -48,5 +48,5 @@
         "agentId": "ASGNAZZARRO1"
     },
     "psw": "U2FsdGVkX1+zUYlK5Ayb/ZwQpDR9/1nGNe8tX3/O65s=",
-    "psw077": "U2FsdGVkX19kCBc/RS1a+PlMuMjcbQNoHLNRKkNDof0="
+    "psw078": "U2FsdGVkX1+hFuxYM5JPVtsg3AltJND978kYJ/gjD2I="
 }
