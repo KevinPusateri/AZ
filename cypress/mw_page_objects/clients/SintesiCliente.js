@@ -594,7 +594,7 @@ class SintesiCliente {
         getIFrame().find('li').contains("Contanti").click()
         getIFrame().find('#FiltroTabVarieInserimentoDescrizione').type("TEST AUTOMATICO")
         getIFrame().find('#TabVarieInserimentoCassetto').click()
-        getIFrame().find('li').contains("Cassa principale").click()
+        getIFrame().find('li').contains("Cassa").first().click()
 
         cy.intercept({
             method: 'POST',
