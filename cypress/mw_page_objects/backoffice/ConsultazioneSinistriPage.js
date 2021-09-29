@@ -59,8 +59,9 @@ class ConsultazioneSinistriPage {
      * Check if the value is defined
      * @param {string} value : string value to check
      */
-    static isNullOrEmpty(value) {        
+    static isNullOrEmpty(value) {
         return new Cypress.Promise((resolve, reject) => {
+            debugger
             if(value === undefined) {
                 cy.log('>> value "'+value+'" is undefined.');
                 resolve(false) 
@@ -147,7 +148,7 @@ class ConsultazioneSinistriPage {
      * @param {string} locator : class attribute 
      * @param {string} label : text displayed
      */
-    static checkObj_ByLocatorAndText(locator, label) {
+    static checkObj_ByLocatorAndText2(locator, label) {
         return new Cypress.Promise((resolve, reject) => {
             getIFrame().find(locator).should('be.visible')
             .then(($val) => {                                       
@@ -170,7 +171,7 @@ class ConsultazioneSinistriPage {
      * @param {string} locator : class attribute 
      * @param {string} label : text displayed
      */
-     static checkObj_ByLocatorAndText2(locator, label) {
+     static checkObj_ByLocatorAndText(locator, label) {
         return new Cypress.Promise((resolve, reject) => {
             debugger
             getIFrame().find(locator).should('be.visible')
@@ -227,7 +228,8 @@ class ConsultazioneSinistriPage {
             .then(text => {         
                 cy.log('>> read the value: ' + text)
                 value = text.toString()
-                    
+                resolve(value)  
+                /*
                 if(value === undefined) {
                     assert.fail('>> value "'+value+'" is undefined.');
                     reject() 
@@ -241,6 +243,7 @@ class ConsultazioneSinistriPage {
                     cy.log('>> value "'+value+'" is defined.'); 
                     resolve(value) 
                 }
+                */
             });      
         });
     }
@@ -322,44 +325,58 @@ class ConsultazioneSinistriPage {
      */
     static isValidIBAN(str)
     {
-        const regexExp = /^[A-Z]{2}[0-9A-Z]*$/; //Reg exp. for valid IBAN
-        var pattern = new RegExp(regexExp)
-        //Tests for a match in a string. It returns true or false.
-        let validation = pattern.test(str)
-        if (validation)
-        {
-            let myString = str.match(pattern)
-            cy.log('>> a valid IBAN ('+myString[0]+') is included in "'+str+'"')
-            return true;
-           
-        } else {
-            cy.log('>> no valid IBAN is included in "'+str+'"')
-            return false;
-        }        
+        return new Cypress.Promise((resolve) => { 
+            const regexExp = /^[A-Z]{2}[0-9A-Z]*$/; //Reg exp. for valid IBAN
+            var pattern = new RegExp(regexExp)
+            //Tests for a match in a string. It returns true or false.
+            let validation = pattern.test(str)
+            if (validation)
+            {
+                let myString = str.match(pattern)
+                cy.log('>> a valid IBAN ('+myString[0]+') is included in "'+str+'"')
+                resolve(true)
+            
+            } else {
+                cy.log('>> no valid IBAN is included in "'+str+'"')
+                resolve(false)
+            }
+        });
     }
     /**
      * Put a @numstr (ex.: numStr = "123,20") value and is verified if its a currency correct value 
      * @param {string} numstr : string currency value
      */
     static isCurrency(numstr) {      
-        const regexExp = /^\d+(?:\,\d{0,2})$/;
-        if (regexExp.test(numstr))
-            cy.log('>> Number = "'+numstr+'" is valid currency')
-        else
-            cy.log('>> Number = "'+numstr+'" is not valid currency')
+        return new Cypress.Promise((resolve) => { 
+            const regexExp = /^\d+(?:\,\d{0,2})$/;
+            if (regexExp.test(numstr)) {
+                cy.log('>> Number = "'+numstr+'" is valid currency')
+                resolve(true)
+            }                
+            else {
+                cy.log('>> Number = "'+numstr+'" is not valid currency')
+                resolve(false)
+            }                
+        });
     }
     
     /**
-     * Get a currency correct value by @str (ex.: numStr = "importo: 123,20") 
+     * Put a @str value and is verified if its a valid EURO currency @str (ex.: "EURO") 
      * @param {string} str : string value
      */
-    static isEuroCurrency(str) {               
-        const currency = 'EURO';
-        if (regexExp.test(numstr))
-            cy.log('>> Currency value is defined as: '+str)
-        else
-            assert.fail('>> Currency value is not defined as "EURO", but as: '+str)
-    }
+    static isEuroCurrency(str) {    
+        return new Cypress.Promise((resolve) => {            
+            const currency = 'EURO';
+            if (str.contains(currency)) {
+                cy.log('>> Number = "'+numstr+'" is valid currency')
+                resolve(true)
+            } else {
+                cy.log('>> Currency value is not defined as "EURO", but as: '+str)
+                resolve(false)
+            }                
+        });
+    } 
+
 
     static getCurrency(str) {               
         const regexExp = /\d{1,3},\d{2}/;

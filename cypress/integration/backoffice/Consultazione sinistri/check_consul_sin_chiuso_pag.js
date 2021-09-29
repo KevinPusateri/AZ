@@ -54,16 +54,18 @@ after(function () {
 
 var numsin = '927646985'
 var stato_sin = 'CHIUSO PAGATO'
-var dtAvvenimento = "";
-var cliente = "";
 
 const lblnumsin = "k-grid-content"
+let dtAvvenimento 
+let clienteAssicurato
+let targaAssicurato
+let polizzaAssicurato
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
-
+    var ass = "";
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
     '"pagina di ricerca" si controllano i valori: num sinistro, stato sinistro.', function () {
-                     
+
         let classvalue = "search_submit claim_number k-button"
 
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
@@ -73,29 +75,51 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, stato_sin)       
     });
 
-    it('"Pagina di ricerca" si controlla il nome associato al cliente assicurato.', function () {
+    it('"Pagina di ricerca" è verificato che il nome associato al cliente assicurato non sia nullo.', function () {
         const cssCliente = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
-        cliente = ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente).then((cliente)  => {
-           let ass = cliente;
-       
-           cy.log('ass: '+ass);
-           cy.log('cliente: '+cliente);          
-       });
-       cy.log('CLIENTE: '+ cliente)
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente).then((val) => {          
+        cy.log('[it]>> Cliente: '+val);
+        ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Cliente non definito in pagina ricerca sinistro")
+                else 
+                    clienteAssicurato = val;       
+            });   
+       });      
     });
 
-    it('"Pagina di ricerca" si controllano i valori: targa e polizza.', function () {                 
+    it('"Pagina di ricerca" si controllano i valori: targa e polizza e data di avvenimento del sinistro.', function () {                 
         const cssTarga = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTarga)
-    
-        const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssPolizza)      
-    });
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTarga).then((val) => {          
+            cy.log('[it]>> Targa: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Targa non definita in pagina ricerca sinistro")
+                else 
+                    targaAssicurato = val;         
+            });   
+        });
 
-    it('"Pagina di ricerca" si controlla il valore della data di avvenimento sinistro.', function () {                
+        const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssPolizza).then((val) => {          
+            cy.log('[it]>> Polizza: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("Polizza non definita in pagina ricerca sinistro")
+                else 
+                    polizzaAssicurato = val;        
+            });   
+        });
+        
         const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-        ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtAvv).then(dtAvvenimento => {
-            cy.log('Dt Avv: '+dtAvvenimento)
+        ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtAvv).then((val) => {          
+            cy.log('[it]>> Data avvenimento: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail(" Data avvenimento non definita in pagina ricerca sinistro")
+                else 
+                dtAvvenimento = val;        
+            });
         }); 
     });
     
@@ -112,12 +136,13 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, numsin)
 
         // Verifica (2): Valore della data avvenimento      
-        const cssDtAvv = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(cssDtAvv, dtAvvenimento)
+        const cssDtAvv = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"      
+        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento) 
         
         // Verifica (3): Cliente
         const cssCliente = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(cssCliente, cliente)
+        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssCliente, clienteAssicurato);
+
     });
     
     it('"Pagina di dettaglio" è verificata la sezione INTESTAZIONE con valorizzazione dei campi ' +
@@ -125,274 +150,413 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
       
         //(1): Valore della località
         const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer"
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(csslocalità)
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(csslocalità).then((val) => {          
+            cy.log('[it]>> Località: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Località non definita in pagina dettaglio sinistro");      
+            });   
+        });
 
         //(2): la valorizzazione del CLD
         const csscldDanneggiato = '#soggetti_danneggiati > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(csscldDanneggiato)
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(csscldDanneggiato).then((val) => {          
+            cy.log('[it]>> CLD: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> CLD non definito in pagina dettaglio sinistro");      
+            });                            
+        });   
     });
 
-    it('"Pagina di dettaglio" selezionando il danneggiato si analizza la sezione "PERIZIE" '+
-    ' valorizzazione dei seguenti campi (Data incarico, Data scarico, Fiduciario, Tipo incarico, Stato). ' , function () {
+    it('"Pagina di dettaglio" - sezione "PERIZIE" '+
+    ' Verifica dei seguenti campi (Data incarico, Data scarico, Fiduciario, Tipo incarico, Stato). ' ,
+     function () {
         
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        // Verifica : Apro la sezione del danneggiato (1)
+        // Apro la sezione del danneggiato (1)
         const btnDanneggiato = "#soggetti_danneggiati > div > div > a"
         ConsultazioneSinistriPage.clickBtn_ById(btnDanneggiato)
 
         // Verifica : la valorizzazione del campo "Data incarico" in Sezione Perizie
         const cssDtIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > p'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtIncarico).then(dtIncarico => {
-            ConsultazioneSinistriPage.isNullOrEmpty(dtIncarico)       
-            ConsultazioneSinistriPage.containValidDate(dtIncarico)  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtIncarico).then((val) => {
+            cy.log('[it]>> Data incarico: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Data incarico non definita in pagina dettaglio sinistro"); 
+                else
+                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    if (!isDate)
+                        assert.fail("[it]>> La 'data incarico' non è definita in formato valido in pagina dettaglio sinistro"); 
+                });
+            });            
         });
          
          // Verifica : la valorizzazione del campo "Data scarico" in Sezione Perizie
          const cssDtScarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
-         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtScarico).then(dtScarico => {
-            ConsultazioneSinistriPage.isNullOrEmpty(dtScarico)       
-            ConsultazioneSinistriPage.containValidDate(dtScarico)
+         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtScarico).then((val) => {
+            cy.log('[it]>> Data scarcio: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Data scarico non definita in pagina dettaglio sinistro"); 
+                else
+                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    if (!isDate)
+                        assert.fail("[it]>> La 'data scarico' non è definita in formato valido in pagina dettaglio sinistro"); 
+                });
+            });                 
          });
 
           // Verifica : la valorizzazione del campo "Fiduciario" in Sezione Perizie
         const cssFiduciario = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssFiduciario).then(fiduciario => {
-            ConsultazioneSinistriPage.isNullOrEmpty(fiduciario)     
-        });
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssFiduciario).then((val) => {          
+            cy.log('[it]>> Fiduciario: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Fiduciario non definito in pagina dettaglio sinistro");      
+            });                            
+        });   
 
         // Verifica : la valorizzazione del campo "Tipo incarico" in Sezione Perizie
         const cssTipoIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTipoIncarico).then(tipoIncarico => {
-            ConsultazioneSinistriPage.isNullOrEmpty(tipoIncarico).then(isok => {
-                if (!isnull)
-                    assert.fail('Valore vuoto o nullo')
-                else
-                    assert.isTrue(isok, 'è un valore definito');           
-            });
-            ConsultazioneSinistriPage.containValidDate(tipoIncarico).then(isdate => {
-                if (!isdate)
-                    assert.fail('Data non valida')
-                else
-                    assert.isTrue(isdate, 'è una data valida');           
-            });
-        })
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTipoIncarico).then((val) => {          
+            cy.log('[it]>> Tipo incarico: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Tipo incarico non definito in pagina dettaglio sinistro");      
+            });                            
+        });
         
         // Verifica : la valorizzazione del campo "Stato" in Sezione Perizie
         const cssStato = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssStato).then(stato => {
-            ConsultazioneSinistriPage.isNullOrEmpty(stato)  
-        });     
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssStato).then((val) => {          
+            cy.log('[it]>> Stato: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Stato non definito in pagina dettaglio sinistro");      
+            });                            
+        });
     });
 
-
-    it('"Pagina di dettaglio" selezionando il danneggiato si analizza la sezione "PAGAMENTI" '+
-    ' verificando la valorizzazione dei seguenti campi (Data pagamento, Data Invio Banca, causale pagamento, Importo, Percepiente). ' , function () {
-    
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        
+    it('"Pagina di dettaglio" - sezione "PAGAMENTI" '+
+    ' Verifica della valorizzazione dei seguenti campi (Data pagamento, Data Invio Banca, causale pagamento, Importo, Percepiente). ' , 
+    function () {
+            
         // Verifica : la valorizzazione del campo "Data pagamento" in Sezione Pagamenti
         const cssDtPagamento = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > p'
-        csSinObjPage.getPromiseValue_ByCss(cssDtPagamento).then(dtPagamento => {
-            csSinObjPage.isNullOrEmpty(dtPagamento)       
-            csSinObjPage.containValidDate(dtPagamento)  
-        });     
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtPagamento).then((val) => {
+            cy.log('[it]>> Data pagamento: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Data pagamento non definita nella popUp Pagamenti"); 
+                else
+                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    if (!isDate)
+                        assert.fail("[it]>> La 'data pagamento' non è definita in formato valido nella popUp Pagamenti"); 
+                });
+            });                 
+        });
         
         // Verifica : la valorizzazione del campo "Data invio banca" in Sezione Pagamenti
         const cssDtInvioBanca = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
-        csSinObjPage.getPromiseValue_ByCss(cssDtInvioBanca).then(dtInvioBanca => {
-            csSinObjPage.isNullOrEmpty(dtInvioBanca)       
-            csSinObjPage.containValidDate(dtInvioBanca)                     
-        });      
- 
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtInvioBanca).then((val) => {
+            cy.log('[it]>> Data invio banca: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Data invio banca non definita nella popUp Pagamenti"); 
+                else
+                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    if (!isDate)
+                        assert.fail("[it]>> La 'data invio banca' non è definita in formato valido nella popUp Pagamenti"); 
+                });
+            });                 
+        });
+
        // Verifica : la valorizzazione del campo "Causale" in Sezione Pagamenti
         const cssCausale = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
-        csSinObjPage.getPromiseValue_ByCss(cssCausale).then(causale => {
-            csSinObjPage.isNullOrEmpty(causale) 
-        });        
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCausale).then((val) => {          
+            cy.log('[it]>> Causale: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Causale non definito nella popUp Pagamenti");      
+                });                            
+        });
 
         // Verifica : la valorizzazione del campo "Importo" in Sezione Pagamenti
         const cssImporto = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
-        csSinObjPage.getPromiseValue_ByCss(cssImporto).then(importo => {
-            csSinObjPage.isNullOrEmpty(importo) 
-            csSinObjPage.getCurrency(importo)               
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssImporto).then((val) => {          
+            cy.log('[it]>> Importo: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Importo non definito nella popUp Pagamenti"); 
+            });
+            ConsultazioneSinistriPage.isCurrency(val).then((isCurrency) => {
+                if (!isCurrency)
+                    assert.fail("[it]>> Importo non definito come valore monetario nella popUp Pagamenti"); 
+            });                                         
         });
 
          // Verifica : la valorizzazione del campo "Percepiente pagamento" in Sezione Pagamenti
         const cssPercepiente = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
-        csSinObjPage.getPromiseValue_ByCss(cssPercepiente).then(percepiente => {
-            csSinObjPage.isNullOrEmpty(percepiente)  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssPercepiente).then((val) => {          
+            cy.log('[it]>> Percepiente: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Percepiente non definito nella popUp Pagamenti");                    
+            });                            
         });
     });
 
-    it('Nella sezione "Pagamenti", cliccando sul pulsante di "Dettagli", si apre la POPUP "Dettaglio Pagamento" ' +
+    it('Sezione "Pagamenti", - POPUP "Dettaglio Pagamento" ' +
     ' verificare che le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
-    
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
+        //const csSinObjPage = Object.create(ConsultazioneSinistriPage)
         const xpathDettaglioPagamento = "#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > a"
-        csSinObjPage.clickBtn_ById(xpathDettaglioPagamento)
+        ConsultazioneSinistriPage.clickBtn_ById(xpathDettaglioPagamento)
 
         // Verifica : la valorizzazione del campo "Data pagamento" nella popup "Dettaglio Pagamento"      
         const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(1) > td:nth-child(2)"  
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator1).then(dtPagamento => {
-            csSinObjPage.isNullOrEmpty(dtPagamento)       
-            csSinObjPage.containValidDate(dtPagamento).then(dtPagamento => {
-                if (!dtInvioBanca)
-                    assert.fail('Data pagamento field is null or empty')
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator1).then((val) => {
+            cy.log('[it]>> Data pagamento: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Data pagamento non definita nella popUp Dettaglio Pagamento"); 
                 else
-                    assert.isTrue(importo, 'Data pagamento field is defined!');
-            })                                                            
+                {
+                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                        if (!isDate)
+                            assert.fail("[it]>> La 'data pagamento' non è definita in formato valido nella popUp Pagamenti"); 
+                    });
+                }
+            });                 
         });
-
         // Verifica : la valorizzazione del campo "Data invio Banca" nella popup "Dettaglio Pagamento"
         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator2).then(dtInvioBanca => {
-            csSinObjPage.isNullOrEmpty(dtInvioBanca)       
-            csSinObjPage.containValidDate(dtInvioBanca).then(dtInvioBanca => {
-                if (!dtInvioBanca)
-                    assert.fail('Data invio Banca field is null or empty')
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator2).then((val) => {
+            cy.log('[it]>> Data invio banca: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Data invio banca non definita nella popUp Dettaglio Pagamento"); 
                 else
-                    assert.isTrue(importo, 'Data invio Banca field is defined!');
-            })                                   
-        });
+                {
+                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                        if (!isDate)
+                            assert.fail("[it]>> La 'data invio banca' non è definita in formato valido nella popUp Pagamenti"); 
+                    });
+                }               
+            });
+        });    
 
         // Verifica : la valorizzazione del campo "Importo" nella popup "Dettaglio Pagamento"
         const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)" 
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator3).then(importo => {
-            csSinObjPage.isNullOrEmpty(importo).then(importo => {
-                if (!importo)
-                    assert.fail('Importo field is null or empty')
-                else
-                    assert.isTrue(importo, 'Importo field is defined!');
-            })          
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator3).then((val) => {          
+            cy.log('[it]>> Importo: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Importo non definito nella popUp Dettaglio Pagamento"); 
+            });
+            ConsultazioneSinistriPage.isCurrency(val).then((isCurrency) => {
+                if (!isCurrency)
+                    assert.fail("[it]>> Importo non definito come valore monetario nella popUp Dettaglio Pagamento"); 
+            });                      
         });
 
         // Verifica : la valorizzazione del campo "Valuta" nella popup "Dettaglio Pagamento"
         const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)" 
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator4).then(valuta => {
-            csSinObjPage.isNullOrEmpty(valuta).then(isValuta => {
-                if (!isValuta)
-                    assert.fail('Valuta field is null')
-                else
-                    assert.isTrue(isValuta, 'Valuta field is defined!');
-            })
-            csSinObjPage.isEuroCurrency(valuta).then(isEuro => {
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator4).then((val) => {          
+            cy.log('[it]>> Importo: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Importo non definito nella popUp Dettaglio Pagamento"); 
+            });                   
+            ConsultazioneSinistriPage.isEuroCurrency(valuta).then(isEuro => {
                 if (!isEuro)
-                    assert.fail('Valuta field is defined as not EURO')
-                else
-                    assert.isTrue(isEuro, 'Valuta field is defined as EURO!');
+                    assert.fail('Valuta field is not defined as EURO')              
             })                             
         });
 
         // Verifica : la valorizzazione del campo "Causale" nella popup "Dettaglio Pagamento"
         const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"       
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator5).then(causale => {
-            csSinObjPage.isNullOrEmpty(causale)                                         
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator5).then((val) => {          
+            cy.log('[it]>> Causale: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Causale non definito nella popUp Dettaglio Pagamento");      
+            });                                 
         });
 
         // Verifica : la valorizzazione del campo "Modalità di pagamento" nella popup "Dettaglio Pagamento"
         const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(6) > td:nth-child(2)"       
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator6).then(modPagamento => {
-            csSinObjPage.isNullOrEmpty(modPagamento)                                        
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator6).then((val) => {          
+            cy.log('[it]>> Modalità di pagamento: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Modalità di pagamento non definito nella popUp Dettaglio Pagamento");      
+            });                                                          
         });
 
         // Verifica : la valorizzazione del campo "IBAN" nella popup "Dettaglio Pagamento"
         const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(7) > td:nth-child(2)"       
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator7).then(iban => {
-            csSinObjPage.isNullOrEmpty(iban)       
-            csSinObjPage.isValidIBAN(iban).then(isIBAN => {
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator7).then(val => {
+            cy.log('[it]>> IBAN: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> IBAN non definito nella popUp Dettaglio Pagamento");      
+            });              
+            ConsultazioneSinistriPage.isValidIBAN(iban).then(isIBAN => {
                 if (!isIBAN)
-                    assert.fail('IBAN field is defined with not correct value')
+                    assert.fail('[it]>> IBAN non è corretto ')
                 else
-                    assert.isTrue(isValuta, 'IBAN field is defined with correct value!');
+                    assert.isTrue(isValuta, '[it]>> IBAN OK');
             })                                                       
         });
     
         // Verifica : la valorizzazione del campo "Tipo Proposta" nella popup "Dettaglio Pagamento"
         const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"       
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator8).then(tipoProposta => {
-            csSinObjPage.isNullOrEmpty(tipoProposta)       
-            //csSinObjPage.containValidDate(tipoProposta)                          
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator8).then((val) => {          
+            cy.log('[it]>> Tipo Proposta: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Tipo Proposta non definito nella popUp Dettaglio Pagamento");      
+            });                                                 
         });
 
         // Verifica : la valorizzazione del campo "Stato Pagamento" nella popup "Dettaglio Pagamento"
         const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"       
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator9).then(statoPagamento => {
-            csSinObjPage.isNullOrEmpty(statoPagamento)                                            
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator9).then((val) => {          
+            cy.log('[it]>> Stato Pagamento: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Stato Pagamento non definito nella popUp Dettaglio Pagamento");      
+            });                                                                                 
         });
 
-        csSinObjPage.clickBtn_ByClassAndText("k-icon k-i-close", "Close")        
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText("k-icon k-i-close", "Close")        
+    });
+    it(' Nella sezione "Perizie", - POPUP "Dettaglio Incarico Perizia - anagrafica fiduciario" ' +
+    ' verifiche delle seguenti informazioni: Fiduciario, Tipo collaborazione, Indirizzo, Telefono ', function () {
+       
+        const xpathDettaglioPerizia = "#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > a"
+        ConsultazioneSinistriPage.clickBtn_ById(xpathDettaglioPerizia)
+
+        // Verifica(1) : la valorizzazione del campo "Fiduciario" nella popup "Dettaglio Incarico Perizia"      
+        const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator1).then((val) => {          
+            cy.log('[it]>> Fiduciario: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Fiduciario nella popUp Incarico Perizia - anagrafica fiduciario");      
+            });                            
+        });                                            
+
+       // Verifica(2) : la valorizzazione del campo "Tipo Collaborazione" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)"  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator2).then((val) => {          
+            cy.log('[it]>> Tipo Collaborazione: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Tipo Collaborazione nella popUp Incarico Perizia - anagrafica fiduciario");      
+            });                            
+        });                                      
+
+       // Verifica(3) : la valorizzazione del campo "Indirizzo" nella popup "Dettaglio Incarico Perizia"
+       const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)"  
+       ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator3).then((val) => {          
+            cy.log('[it]>> Indirizzo: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Indirizzo non definito nella popUp Incarico Perizia -anagrafica fiduciario");      
+            });                            
+        });                                    
+
+       // Verifica(4) : la valorizzazione del campo "Telefono" nella popup "Dettaglio Incarico Perizia"
+       const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"  
+       ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator4).then((val) => {          
+            cy.log('[it]>> Telefono: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Telefono non definito nella popUp Incarico Perizia - anagrafica fiduciario");      
+            });                            
+        });                                                      
+
     });
 
-    it(' Nella sezione "Perizie", cliccando sul pulsante di "Dettagli", si apre la POPUP "Dettaglio Incarico Perizia" ' +
-    ' (1) verificare che le informazioni riferite all\'anagrafica fiduciario (Fiduciario,Tipo collaborazione, Indirizzo, Telefono ) ' +
-    ' (2) verificare che le informazioni riferite ai dati di incarico (Data incarico, Data scarico, Tipo incarico, Stato incarico, Esito perizia, Data verifica perizia, Esito verifica perizia)', function () {
+    it(' Nella sezione "Perizie", - POPUP "Dettaglio Incarico Perizia - Dati incarico" ' +    
+    ' verifiche delle seguenti informazioni: Data incarico, Data scarico, Tipo incarico, Stato incarico, Esito perizia, Data verifica perizia, Esito verifica perizia', function () {
     
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        const xpathDettaglioPerizia = "#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > a"
-        csSinObjPage.clickBtn_ById(xpathDettaglioPerizia)
-
-         // Verifica(1) : la valorizzazione del campo "Fiduciario" nella popup "Dettaglio Incarico Perizia"      
-         const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
-         csSinObjPage.getPromiseValue_Bylocator(popUplocator1).then(fiduciario => {
-             csSinObjPage.isNullOrEmpty(fiduciario)                                           
-         });
-
-        // Verifica(1) : la valorizzazione del campo "Tipo Collaborazione" nella popup "Dettaglio Incarico Perizia"
-         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)"  
-         csSinObjPage.getPromiseValue_Bylocator(popUplocator2).then(tipoCollaborazione => {
-             csSinObjPage.isNullOrEmpty(tipoCollaborazione)                                           
-         });
-
-        // Verifica(1) : la valorizzazione del campo "Indirizzo" nella popup "Dettaglio Incarico Perizia"
-        const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)"  
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator3).then(indirizzo => {
-            csSinObjPage.isNullOrEmpty(indirizzo)                                           
-        });
-
-        // Verifica(1) : la valorizzazione del campo "Telefono" nella popup "Dettaglio Incarico Perizia"
-        const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"  
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator4).then(telefono => {
-            csSinObjPage.isNullOrEmpty(telefono)                                           
-        });
-
-        // Verifica(2) : la valorizzazione del campo "Data incarico" nella popup "Dettaglio Incarico Perizia"
+        // Verifica(1) : la valorizzazione del campo "Data incarico" nella popup "Dettaglio Incarico Perizia"
         const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"  
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator5).then(dtIncarico => {
-            csSinObjPage.isNullOrEmpty(dtIncarico)       
-            csSinObjPage.containValidDate(dtIncarico)                                          
-        });
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator5).then((val) => {
+            cy.log('[it]>> Data incarico: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Data incarico non definita nella popUp Incarico Perizia"); 
+                else
+                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    if (!isDate)
+                        assert.fail("[it]>> La 'data incarico' non è definita in formato valido nella popUp Incarico Perizia - Dati incarico"); 
+                });
+            });             
+        }); 
 
         // Verifica(2) : la valorizzazione del campo "Data scarico" nella popup "Dettaglio Incarico Perizia"
         const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"  
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator6).then(dtScarico => {
-            csSinObjPage.isNullOrEmpty(dtScarico)       
-            csSinObjPage.containValidDate(dtScarico)                                          
-        });
-        
-        // Verifica(2) : la valorizzazione del campo "Tipo incarico" nella popup "Dettaglio Incarico Perizia"
-        const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(10) > td:nth-child(2)"  
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator7).then(tipoIncarico => {
-            csSinObjPage.isNullOrEmpty(tipoIncarico)                                           
-        });
-        
-        // Verifica(2) : la valorizzazione del campo "Stato incarico" nella popup "Dettaglio Incarico Perizia"
-        const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(11) > td:nth-child(2)"  
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator8).then(statoIncarico => {
-            csSinObjPage.isNullOrEmpty(statoIncarico)                                           
-        });
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator6).then((val) => {
+            cy.log('[it]>> Data scarico: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Data scarico non definita nella popUp Incarico Perizia"); 
+                else
+                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    if (!isDate)
+                        assert.fail("[it]>> La 'data scarico' non è definita in formato valido nella popUp Incarico Perizia - Dati incarico"); 
+                });
+            });             
+        }); 
 
-        // Verifica(2) : la valorizzazione del campo "Perizia" nella popup "Dettaglio Incarico Perizia"
-        const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(12) > td:nth-child(2)"  
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator9).then(perizia => {
-            csSinObjPage.isNullOrEmpty(perizia)                                           
-        });
+        // Verifica(3) : la valorizzazione del campo "Tipo incarico" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(10) > td:nth-child(2)"  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator7).then((val) => {          
+            cy.log('[it]>> Tipo incarico: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Tipo incarico non definito nella popUp Incarico Perizia");      
+            });                            
+        });     
         
-        // Verifica(2) : la valorizzazione del campo "Data verifica perizia" nella popup "Dettaglio Incarico Perizia"
+        // Verifica(4) : la valorizzazione del campo "Stato incarico" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(11) > td:nth-child(2)"  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator8).then((val) => {          
+            cy.log('[it]>> Stato incarico: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Stato incarico non definito nella popUp Incarico Perizia");      
+            });                            
+        });     
+
+        // Verifica(5) : la valorizzazione del campo "Perizia" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(12) > td:nth-child(2)"  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator9).then((val) => {          
+            cy.log('[it]>> Perizia: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Perizia non definito nella popUp Incarico Perizia");      
+            });                            
+        });     
+        
+        // Verifica(6) : la valorizzazione del campo "Data verifica perizia" nella popup "Dettaglio Incarico Perizia"
         const popUplocator10 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(13) > td:nth-child(2)"  
-        csSinObjPage.getPromiseValue_Bylocator(popUplocator10).then(dtVerificaPerizia => {
-            csSinObjPage.isNullOrEmpty(dtVerificaPerizia)       
-            csSinObjPage.containValidDate(dtVerificaPerizia)                                          
-        });
+        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator10).then((val) => {
+            cy.log('[it]>> Data verifica perizia: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> Data verifica perizia non definita nella popUp Incarico Perizia"); 
+                else
+                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    if (!isDate)
+                        assert.fail("[it]>> La 'data verifica perizia' non è definita in formato valido nella popUp Incarico Perizia - Dati incarico"); 
+                });
+            });             
+        }); 
         // TODO: Implementare la chiusura sul secondo close della pop-up
         //const closecss= "body > div:nth-child(5) > div.k-window-titlebar.k-header > div > a > span"
         //csSinObjPage.clickLnk_ByHref("#")        
