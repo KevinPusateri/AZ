@@ -23,10 +23,10 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
   cy.getUserWinLogin().then(data => {
-      cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-          insertedId = results.insertId
-      })
-      LoginPage.logInMWAdvanced()
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+      insertedId = results.insertId
+    })
+    LoginPage.logInMWAdvanced()
   })
 })
 
@@ -74,22 +74,26 @@ describe('Matrix Ricerca', {
     TopBar.clickMatrixHome()
   })
 
-  it('Verifica Ricerca Da Landing BackOffice', function () {
+  it('Verifica Ricerca Da Landing News', function () {
+    if (!Cypress.env('monoUtenza')) {
+      TopBar.clickNews()
+      LandingRicerca.checkBucaRicercaSuggerrimenti()
+      TopBar.clickMatrixHome()
+    } else this.skip()
+  })
 
+  it('Verifica Ricerca Da Landing Le mie info', function () {
+    if (!Cypress.env('monoUtenza')) {
+      TopBar.clickNews()
+      LandingRicerca.checkBucaRicercaSuggerrimenti()
+      TopBar.clickMatrixHome()
+    } else this.skip()
+  })
+  
+  it('Verifica Ricerca Da Landing BackOffice', function () {
     TopBar.clickBackOffice()
     LandingRicerca.checkBucaRicercaSuggerrimenti()
     TopBar.clickMatrixHome()
   })
 
-  it('Verifica Ricerca Da Landing News', function () {
-    TopBar.clickNews()
-    LandingRicerca.checkBucaRicercaSuggerrimenti()
-    TopBar.clickMatrixHome()
-  })
-
-  it('Verifica Ricerca Da Landing Le mie info', function () {
-    TopBar.clickMieInfo()
-    LandingRicerca.checkBucaRicercaSuggerrimenti()
-    TopBar.clickMatrixHome()
-  })
 })
