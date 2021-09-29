@@ -38,7 +38,6 @@ before(() => {
         cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
             insertedId = results.insertId
         })
-        LoginPage.logInMWAdvanced()
     })
 })
 beforeEach(() => {
@@ -78,6 +77,11 @@ describe('Matrix Web : Convenzioni', {
 }, () => {
 
     it('Come delegato accedere all\'agenzia 01-710000 e cercare un cliente PG e verificare in Dettaglio Anagrafica la presenza del Tab Convenzioni', () => {
+        let customImpersonification = {
+            "agentId": "ARFPULINI2",
+            "agency": "010710000"
+        }
+        LoginPage.logInMWAdvanced(customImpersonification)
         LandingRicerca.searchRandomClient(true, 'PG', 'P')
         LandingRicerca.clickRandomResult()
         SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
@@ -99,14 +103,17 @@ describe('Matrix Web : Convenzioni', {
         'Inserire una Convezione a piacere tra quelli presenti, inserire Matricola e Ruolo "Convenzionato\n' +
         'N.B. Prendersi nota delle convenzioni e del legame\n' +
         'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', () => {
-            cy.impersonification('TUTF003', 'ARGMOLLICA3', '010745000')
+            let customImpersonification = {
+                "agentId": "ARGMOLLICA3",
+                "agency": "010745000"
+            }
+            LoginPage.logInMWAdvanced(customImpersonification)
             cy.log('Retriving client with relations, please wait...')
             cy.getPartyRelations('TUTF003').then(currentClient => {
                 cy.log('Retrived client : ' + currentClient[0].name + ' ' + currentClient[0].firstName)
                 cy.log('Retrived party relation : ' + currentClient[1].name + ' ' + currentClient[1].firstName)
                 retrivedClient = currentClient[0]
                 retrivedPartyRelations = currentClient[1]
-                LoginPage.logInMW('TUTF003', psw, true, '010745000')
                 SintesiCliente.visitUrlClient(currentClient[0].customerNumber, false)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
