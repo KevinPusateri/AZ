@@ -93,7 +93,7 @@ class Portafoglio {
                 assert.isTrue(true, 'Cliente non possiede polizze')
             else {
                 cy.get('app-wallet-active-contracts').should('be.visible').and('contain.text', 'Polizze attive')
-                cy.get('lib-filters-sorting').should('be.visible')
+                cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.wait(3000)
                 cy.get('app-contract-card').should('be.visible').first().click()
@@ -143,7 +143,7 @@ class Portafoglio {
                 assert.isTrue(true, 'Cliente non possiede Proposte')
             else {
                 cy.get('lib-da-link').should('be.visible')
-                cy.get('lib-filters-sorting').should('be.visible')
+                cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.intercept('POST', '**/graphql', (req) => {
                     if (req.body.operationName.includes('contract')) {
                         req.alias = 'gqlcontract'
@@ -184,7 +184,7 @@ class Portafoglio {
                 assert.isTrue(true, 'Cliente non possiede Polizze')
             else {
                 cy.get('lib-da-link').should('be.visible')
-                cy.get('lib-filters-sorting').should('be.visible')
+                cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.get('app-wallet-inactive-contracts').find('app-section-title').should('contain.text', 'Polizze')
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.wait(5000)
@@ -207,7 +207,7 @@ class Portafoglio {
                 assert.isTrue(true, 'Cliente non possiede Sinistri')
             else {
                 cy.get('lib-da-link').should('be.visible')
-                cy.get('lib-filters-sorting').should('be.visible')
+                cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.get('app-wallet-claims').find('app-section-title').should('contain.text', 'Sinistri')
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.get('app-claim-card').first()
@@ -227,6 +227,12 @@ class Portafoglio {
      */
     static clickSubTab(subTab) {
         cy.get('nx-tab-header').scrollIntoView().contains(subTab).scrollIntoView().click({ force: true })
+        // ! Disattivo la visualizzazione elenco lista 
+
+        cy.get('app-wallet-list-toggle-button').should('be.visible').find('div[class^="icon"]').then(($iconList) => {
+            if ($iconList.hasClass('icon open'))
+                cy.get('app-wallet-list-toggle-button').find('nx-icon').click()
+        })
     }
 
     /**
@@ -235,28 +241,28 @@ class Portafoglio {
      * @param {String} stato opzionale, a scelta tra Da incassare, Sostituzione, Annullata, Bloccata, Bloccata Parz., Sospesa
      */
     static filtraPolizze(lob, stato = '') {
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('contract')) {
-                req.alias = 'gqlcontract'
-            }
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('contract')) {
+                    req.alias = 'gqlcontract'
+                }
 
-        })
+            })
 
         cy.get('lib-filter-button-with-modal').find('nx-icon[name="filter"]').click()
         cy.get('lib-modal-container').should('be.visible').within(() => {
-            //Stato della polizza (opzionale)
-            if (stato !== '')
-                cy.contains(stato).click()
+                //Stato della polizza (opzionale)
+                if (stato !== '')
+                    cy.contains(stato).click()
 
-            //Lob della polizza
-            cy.contains(lob).click()
-        })
+                //Lob della polizza
+                cy.contains(lob).click()
+            })
 
         cy.wait(1000)
 
         cy.get('.footer').find('button').contains('applica').click()
         cy.wait('@gqlcontract', { timeout: 30000 })
-    }
+        }
 
     /**
      * 
@@ -264,34 +270,34 @@ class Portafoglio {
      * @param {string} typeAnnullamento : tipo di annullamento("Sospesa",)
      */
     static clickAnnullamento(numberPolizza, typeAnnullamento) {
-        cy.get('app-contract-card').should('be.visible')
+            cy.get('app-contract-card').should('be.visible')
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first()
-            .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+                .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
         cy.log(numberPolizza)
         // Click tre puntini dalla prima polizza
         cy.get('@polizza').should('exist').then(($contract) => {
-            cy.wrap($contract)
-                .find('app-contract-context-menu').find('nx-icon').click()
-        })
+                    cy.wrap($contract)
+                        .find('app-contract-context-menu').find('nx-icon').click()
+                })
 
         // Click Link Annullamento
         cy.get('.cdk-overlay-container').should('contain.text', 'Annullamento').within(($overlay) => {
-            cy.get('button').should('be.visible')
-            cy.wrap($overlay).find('button:contains("Annullamento")').click()
-        })
+                    cy.get('button').should('be.visible')
+                    cy.wrap($overlay).find('button:contains("Annullamento")').click()
+                })
         cy.intercept({
-            method: 'POST',
-            url: '**/Auto/**'
-        }).as('postAuto');
+                    method: 'POST',
+                    url: '**/Auto/**'
+                }).as('postAuto');
 
-        Common.canaleFromPopup()
+            Common.canaleFromPopup()
         cy.wait('@postAuto', { requestTimeout: 60000 });
 
-        cy.getIFrame()
+            cy.getIFrame()
         cy.get('@iframe').within(() => {
-            cy.contains(typeAnnullamento).first().should('be.visible').click()
-        })
-    }
+                cy.contains(typeAnnullamento).first().should('be.visible').click()
+            })
+        }
 
     /**
      * Verifico che la polizza non sia presente
@@ -299,7 +305,7 @@ class Portafoglio {
      */
     static checkPolizzaIsNotPresentOnPolizzeAttive(numberPolizza) {
 
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+            cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
 
         cy.get('@polizza').should('be.visible')
         cy.contains('DETTAGLIO ANAGRAFICA').as('dettaglio')
@@ -307,46 +313,46 @@ class Portafoglio {
 
         var check = true
         const loop = () => {
-            var loopCheck = false
-            cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
-                const container = $container.find(':contains("Il cliente non possiede Polizze attive")').is(':visible')
-                if (container) {
-                    startTime()
-                    loopCheck = false
-                    assert.isTrue(true, 'Cliente non possiede Polizze')
-                }
-                else {
-                    cy.get('@polizza').should('be.visible').then(($card) => {
+                var loopCheck = false
+                cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
+                    const container = $container.find(':contains("Il cliente non possiede Polizze attive")').is(':visible')
+                    if (container) {
+                        startTime()
+                        loopCheck = false
+                        assert.isTrue(true, 'Cliente non possiede Polizze')
+                    }
+                    else {
+                        cy.get('@polizza').should('be.visible').then(($card) => {
 
-                        var checkStatus = $card.find(':contains("' + numberPolizza + '")').is(':visible')
+                            var checkStatus = $card.find(':contains("' + numberPolizza + '")').is(':visible')
 
-                        if (checkStatus == false) {
-                            startTime()
-                            cy.get('@polizza').should('not.include.text', numberPolizza)
-
-                            loopCheck = false
-                        }
-                        else {
-                            if (check)
+                            if (checkStatus == false) {
                                 startTime()
-                            check = false
-                            loopCheck = true
+                                cy.get('@polizza').should('not.include.text', numberPolizza)
 
-                        }
-                    })
+                                loopCheck = false
+                            }
+                            else {
+                                if (check)
+                                    startTime()
+                                check = false
+                                loopCheck = true
 
-                    cy.get('body').then(() => {
-                        if (loopCheck) {
+                            }
+                        })
 
-                            cy.get('@dettaglio').click()
-                            cy.get('@portafoglio').click()
-                            loop()
-                        }
-                    })
-                }
-            })
+                        cy.get('body').then(() => {
+                            if (loopCheck) {
 
-        }
+                                cy.get('@dettaglio').click()
+                                cy.get('@portafoglio').click()
+                                loop()
+                            }
+                        })
+                    }
+                })
+
+            }
         loop()
 
         function startTime() {
@@ -363,11 +369,11 @@ class Portafoglio {
         }
 
         function checkTime(i) {
-            if (i < 10) {
-                i = "0" + i;
+                if (i < 10) {
+                    i = "0" + i;
+                }
+                return i;
             }
-            return i;
-        }
     }
 
     /**
