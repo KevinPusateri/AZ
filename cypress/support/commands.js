@@ -231,67 +231,70 @@ Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
   })
 })
 
-Cypress.Commands.add('getPartyRelations', (tutf) => {
-  cy.generateTwoLetters().then(nameRandom => {
-    cy.generateTwoLetters().then(firstNameRandom => {
-      cy.request({
-        method: 'GET',
-        retryOnStatusCodeFailure: true,
-        timeout: 60000,
-        log: false,
-        url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person',
-        headers: {
-          'x-allianz-user': tutf
-        }
-      }).then(response => {
-        if (response.body.length === 0)
-          cy.getPartyRelations(tutf)
-        else {
-          let clientiPotenziali = response.body.filter(el => {
-            return el.partyCategory[0] === 'P'
-          })
-
-          if (clientiPotenziali.length > 0) {
-            let currentClient = clientiPotenziali[Math.floor(Math.random() * clientiPotenziali.length)]
-            cy.request({
-              method: 'GET',
-              retryOnStatusCodeFailure: true,
-              log: false,
-              timeout: 120000,
-              url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/partyrelations/',
-              headers: {
-                'x-allianz-user': tutf
-              }
-            }).then(responsePartyRelations => {
-              //Verifico che i legami presenti siano almeno 2
-              if (responsePartyRelations.body.length === 0 || responsePartyRelations.body.length === 1)
-                cy.getPartyRelations(tutf)
-              else {
-                let filteredRelations = responsePartyRelations.body.filter(el => {
-                  return (!el.relatedParty.includes(currentClient.customerNumber) && el.extEntity.groupRelationDescription !== 'Aderente')
-                })
-                if (filteredRelations.length === 0)
-                  cy.getPartyRelations(tutf)
-                else {
-                  cy.request({
-                    method: 'GET',
-                    retryOnStatusCodeFailure: true,
-                    log: false,
-                    timeout: 120000,
-                    url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore' + filteredRelations[0].relatedParty,
-                    headers: {
-                      'x-allianz-user': tutf
-                    }
-                  }).then(currentRelatedParty => {
-                    return [currentClient, currentRelatedParty.body]
-                  })
-                }
-              }
-            })
+Cypress.Commands.add('getPartyRelations', () => {
+  cy.getUserWinLogin().then(data => {
+    cy.generateTwoLetters().then(nameRandom => {
+      cy.generateTwoLetters().then(firstNameRandom => {
+        debugger
+        cy.request({
+          method: 'GET',
+          retryOnStatusCodeFailure: true,
+          timeout: 60000,
+          log: false,
+          url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person',
+          headers: {
+            'x-allianz-user': data.tutf
           }
-          else
-            cy.getPartyRelations(tutf)
-        }
+        }).then(response => {
+          if (response.body.length === 0)
+            cy.getPartyRelations()
+          else {
+            let clientiPotenziali = response.body.filter(el => {
+              return el.partyCategory[0] === 'P'
+            })
+  
+            if (clientiPotenziali.length > 0) {
+              let currentClient = clientiPotenziali[Math.floor(Math.random() * clientiPotenziali.length)]
+              cy.request({
+                method: 'GET',
+                retryOnStatusCodeFailure: true,
+                log: false,
+                timeout: 120000,
+                url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/partyrelations/',
+                headers: {
+                  'x-allianz-user': data.tutf
+                }
+              }).then(responsePartyRelations => {
+                //Verifico che i legami presenti siano almeno 2
+                if (responsePartyRelations.body.length === 0 || responsePartyRelations.body.length === 1)
+                  cy.getPartyRelations()
+                else {
+                  let filteredRelations = responsePartyRelations.body.filter(el => {
+                    return (!el.relatedParty.includes(currentClient.customerNumber) && el.extEntity.groupRelationDescription !== 'Aderente')
+                  })
+                  if (filteredRelations.length === 0)
+                    cy.getPartyRelations()
+                  else {
+                    cy.request({
+                      method: 'GET',
+                      retryOnStatusCodeFailure: true,
+                      log: false,
+                      timeout: 120000,
+                      url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore' + filteredRelations[0].relatedParty,
+                      headers: {
+                        'x-allianz-user': data.tutf
+                      }
+                    }).then(currentRelatedParty => {
+                      return [currentClient, currentRelatedParty.body]
+                    })
+                  }
+                }
+              })
+            }
+            else
+              cy.getPartyRelations()
+          }
+        })
       })
     })
   })
@@ -783,10 +786,9 @@ Cypress.Commands.add('getSSNAndBirthDateFromTarga', (targa) => {
 
 Cypress.Commands.add('getUserWinLogin', () => {
   cy.task('getUsername').then((username) => {
-
     cy.fixture("tutf").then(data => {
       return data.users.filter(obj => {
-        return obj.userName === username
+        return obj.userName === username.toUpperCase()
       })[0]
     })
   })

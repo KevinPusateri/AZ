@@ -27,6 +27,7 @@ class LoginPage {
 
     /**
      * Login in MW
+     * @deprecated Please use logInMWAdvanced() instead
      * @param {string} userName : TUTF utilizzata per il login
      * @param {string} psw : PSW della TUTF per effettuare il login
      * @param {boolean} performeImpersonification  : default a true, effettua l'impersonificazione che di default è impostata su ARFPULINI2 sulla 010710000
@@ -131,10 +132,15 @@ class LoginPage {
 
     /**
      * Login in MW Advanced
-     * @param {boolean} mockedNotifications : default a true, mocka le notifiche in atterraggio su MW
-     * @param {boolean} mockedNews : default a true, mocka le news in atterraggio su MW
+     * @param {object} customImpersonification default empty, if specified perform a custom impersonification before login
+     * @example let customImpersonification = {
+            "agentId": "ARFPULINI2",
+            "agency": "010710000"
+        }
+     * @param {boolean} mockedNotifications default a true, mocka le notifiche in atterraggio su MW
+     * @param {boolean} mockedNews default a true, mocka le news in atterraggio su MW
      */
-    static logInMWAdvanced(mockedNotifications = true, mockedNews = true) {
+    static logInMWAdvanced(customImpersonification = {}, mockedNotifications = true, mockedNews = true) {
         this.launchMW()
 
         //Skip this two requests that blocks on homepage
@@ -208,12 +214,20 @@ class LoginPage {
                             TopBar.clickSecondWindow()
                     }
                     else {
-                        //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza
+                        let currentImpersonificationToPerform
+                        //Verifichiamo se ho customImpersonification valorizzato
+                        if (Cypress.$.isEmptyObject(customImpersonification))
+                            //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza
+                            currentImpersonificationToPerform = {
+                                "agentId": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agentId : user.agentId,
+                                "agency": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agency : user.agency,
+                            }
+                        else
+                            currentImpersonificationToPerform = {
+                                "agentId": customImpersonification.agentId,
+                                "agency": customImpersonification.agency,
+                            }
 
-                        let currentImpersonificationToPerform = {
-                            "agentId": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agentId : user.agentId,
-                            "agency": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agency : user.agency,
-                        }
                         cy.impersonification(user.tutf, currentImpersonificationToPerform.agentId, currentImpersonificationToPerform.agency).then(() => {
                             cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                             cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
