@@ -27,6 +27,7 @@ class LoginPage {
 
     /**
      * Login in MW
+     * @deprecated Please use logInMWAdvanced() instead
      * @param {string} userName : TUTF utilizzata per il login
      * @param {string} psw : PSW della TUTF per effettuare il login
      * @param {boolean} performeImpersonification  : default a true, effettua l'impersonificazione che di default è impostata su ARFPULINI2 sulla 010710000
