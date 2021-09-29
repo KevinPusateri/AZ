@@ -23,8 +23,8 @@
 		"baseUrlTest": "https://portaleagenzie.te.azi.allianzit/matrix/",
 		"urlMWTest": "https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=0&option=credential&sid=0&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F",
 		"urlSecondWindow": "https://portaleagenzie2.pp.azi.allianz.it/matrix/",
-		"isSecondWindow": true,
-		"monoUtenza": true,
+		"isSecondWindow": false,
+		"monoUtenza": false,
 		"multiUtenza": "5-851-0-100"
 	}
 }
