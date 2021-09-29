@@ -65,8 +65,17 @@ describe('Buca di Ricerca - Risultati Clients', {
     })
 
     it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function () {
-        TopBar.search('PULINI')
-        LandingRicerca.clickFirstResult()
-        SintesiCliente.checkAtterraggioSintesiCliente('PULINI')
+
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.search('PULINI')
+            LandingRicerca.clickFirstResult()
+            SintesiCliente.checkAtterraggioSintesiCliente('PULINI')
+        } else{
+            TopBar.search('GIUSEPPE NAZZARRO')
+            LandingRicerca.clickFirstResult()
+            SintesiCliente.checkAtterraggioSintesiCliente('GIUSEPPE NAZZARRO')
+        }
+
+
     })
 })
