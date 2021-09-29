@@ -131,9 +131,13 @@ class LoginPage {
 
     /**
      * Login in MW Advanced
-     * @param {object} customImpersonification : default empty, if specified perform a custom impersonification before login
-     * @param {boolean} mockedNotifications : default a true, mocka le notifiche in atterraggio su MW
-     * @param {boolean} mockedNews : default a true, mocka le news in atterraggio su MW
+     * @param {object} customImpersonification default empty, if specified perform a custom impersonification before login
+     * @example let customImpersonification = {
+            "agentId": "ARFPULINI2",
+            "agency": "010710000"
+        }
+     * @param {boolean} mockedNotifications default a true, mocka le notifiche in atterraggio su MW
+     * @param {boolean} mockedNews default a true, mocka le news in atterraggio su MW
      */
     static logInMWAdvanced(customImpersonification = {}, mockedNotifications = true, mockedNews = true) {
         this.launchMW()

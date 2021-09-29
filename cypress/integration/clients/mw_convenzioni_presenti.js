@@ -10,19 +10,11 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
-import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import Legami from "../../mw_page_objects/clients/Legami"
 //#endregion import
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-
-//#endregion
-
-//#region Username Variables
-const userName = 'TUTF021'
-const psw = 'P@ssw0rd!'
-const agency = '010710000'
 //#endregion
 
 //#region Mysql DB Variables
@@ -38,6 +30,12 @@ before(() => {
         cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
             insertedId = results.insertId
         })
+
+        let customImpersonification = {
+            "agentId": "ARGMOLLICA3",
+            "agency": "010745000"
+        }
+        LoginPage.logInMWAdvanced(customImpersonification)
     })
 })
 beforeEach(() => {
@@ -66,7 +64,6 @@ after(function () {
 })
 //#endregion Before After
 
-let urlClient
 let retrivedClient
 let retrivedPartyRelations
 describe('Matrix Web : Convenzioni', {
@@ -75,41 +72,12 @@ describe('Matrix Web : Convenzioni', {
         openMode: 0,
     }
 }, () => {
-
-    it('Come delegato accedere all\'agenzia 01-710000 e cercare un cliente PG e verificare in Dettaglio Anagrafica la presenza del Tab Convenzioni', () => {
-        let customImpersonification = {
-            "agentId": "ARFPULINI2",
-            "agency": "010710000"
-        }
-        LoginPage.logInMWAdvanced(customImpersonification)
-        LandingRicerca.searchRandomClient(true, 'PG', 'P')
-        LandingRicerca.clickRandomResult()
-        SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-            currentClientPG = currentClient
-        })
-
-        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-        DettaglioAnagrafica.clickSubTab('Convenzioni')
-    })
-
-    it('Cliccare su Aggiungi Nuovo e Verificare che : \n' +
-        '- compaia il messaggio "Nessuna convenzione disponibile"\n' +
-        '- non venga creata alcuna convenzione', () => {
-            DettaglioAnagrafica.clickAggiungiConvenzione(false)
-            TopBar.logOutMW()
-        });
-
     it('Come delegato accedere all\'agenzia 01-745000 e cercare un cliente PF che abbia un legame familiare\n' +
         'Inserire una Convezione a piacere tra quelli presenti, inserire Matricola e Ruolo "Convenzionato\n' +
         'N.B. Prendersi nota delle convenzioni e del legame\n' +
         'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', () => {
-            let customImpersonification = {
-                "agentId": "ARGMOLLICA3",
-                "agency": "010745000"
-            }
-            LoginPage.logInMWAdvanced(customImpersonification)
             cy.log('Retriving client with relations, please wait...')
-            cy.getPartyRelations('TUTF003').then(currentClient => {
+            cy.getPartyRelations().then(currentClient => {
                 cy.log('Retrived client : ' + currentClient[0].name + ' ' + currentClient[0].firstName)
                 cy.log('Retrived party relation : ' + currentClient[1].name + ' ' + currentClient[1].firstName)
                 retrivedClient = currentClient[0]
