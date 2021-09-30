@@ -432,6 +432,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         ConsultazioneSinistriPage.clickBtn_ByClassAndText("k-icon k-i-close", "Close")        
     });
+    
     it(' Nella sezione "Perizie", - POPUP "Dettaglio Incarico Perizia - anagrafica fiduciario" ' +
     ' verifiche delle seguenti informazioni: Fiduciario, Tipo collaborazione, Indirizzo, Telefono ', function () {
        
