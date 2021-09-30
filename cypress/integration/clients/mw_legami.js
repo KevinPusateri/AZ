@@ -143,17 +143,5 @@ describe('Matrix Web : Legami', function () {
             TopBar.logOutMW()
         })
 
-        it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
-            if (!Cypress.env('monoUtenza')) {
-                let customImpersonification = {
-                    "agentId": "ARGBERNARDI2",
-                    "agency": "010710000"
-                }
-                LoginPage.logInMWAdvanced(customImpersonification)
-                DettaglioAnagrafica.checkClientWithoutLegame()
-                Legami.checkLegameIsNotPresent()
-            } else this.skip()
-        })
-
     })
 })
