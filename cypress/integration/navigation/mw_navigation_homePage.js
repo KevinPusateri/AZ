@@ -210,7 +210,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         HomePage.clickVaiAlCentroNotifiche()
     });
 
-    it.only('Verifica link: "Vedi tutte"', function () {
+    it('Verifica link: "Vedi tutte"', function () {
         HomePage.clickVediTutte()
     });
 
