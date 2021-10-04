@@ -433,17 +433,40 @@ class LandingRicerca {
                     'Allianz Ultra Casa e Patrimonio BMP',
                     'Allianz Ultra Salute'
                 ]
-                linkLength = 3
+                if (!Cypress.env('monoUtenza')) {
+                    suggLinks = [
+                        'Allianz Ultra Casa e Patrimonio',
+                        'Allianz Ultra Casa e Patrimonio BMP',
+                        'Allianz Ultra Salute'
+                    ]
+                    linkLength = 3
+                } else {
+                    suggLinks = [
+                        'Allianz Ultra Casa e Patrimonio',
+                        'Allianz Ultra Salute'
+                    ]
+                    linkLength = 2
+                }
                 break
             case 'ro':
-                suggLinks = [
-                    'Provvigioni',
-                    'Quattroruote - Calcolo valore Veicolo',
-                    'Interrogazioni Centralizzate',
-                    'Recupero preventivi e quotazioni',
-                    'Monitoraggio Polizze Proposte'
-                ]
-                linkLength = 5
+                if (!Cypress.env('monoUtenza')) {
+                    suggLinks = [
+                        'Provvigioni',
+                        'Quattroruote - Calcolo valore Veicolo',
+                        'Interrogazioni Centralizzate',
+                        'Recupero preventivi e quotazioni',
+                        'Monitoraggio Polizze Proposte'
+                    ]
+                    linkLength = 5
+                } else {
+                    suggLinks = [
+                        'Provvigioni',
+                        'Quattroruote - Calcolo valore Veicolo',
+                        'Recupero preventivi e quotazioni',
+                        'Monitoraggio Polizze Proposte'
+                    ]
+                    linkLength = 4
+                }
                 break
         }
 

@@ -95,7 +95,7 @@ describe('Matrix Web : Legami', function () {
                 Legami.clickLinkMembro(membro)
                 SintesiCliente.checkAtterraggioName(membro)
                 DettaglioAnagrafica.sezioneLegami()
-                Legami.checkMembroInserito(membro, currentClient.name,false)
+                Legami.checkMembroInserito(membro, currentClient.name, false)
                 Legami.checkMembroEliminato(newMembro)
 
                 Legami.clickLinkMembro(currentClient.name)
@@ -133,7 +133,7 @@ describe('Matrix Web : Legami', function () {
                 Legami.clickLinkMembro(newMembro)
                 SintesiCliente.checkAtterraggioName(newMembro)
                 DettaglioAnagrafica.sezioneLegami()
-                Legami.checkMembroInserito(newMembro, currentClient.name,false)
+                Legami.checkMembroInserito(newMembro, currentClient.name, false)
 
                 Legami.clickLinkMembro(currentClient.name)
                 SintesiCliente.checkAtterraggioName(currentClient.name)
@@ -141,16 +141,6 @@ describe('Matrix Web : Legami', function () {
                 Legami.clickEliminaGruppo()
             })
             TopBar.logOutMW()
-        })
-
-        it('Verifica con fonte secondaria il non utilizzo dei legami', function () {
-            if (!Cypress.env('monoUtenza')) {
-                cy.impersonification('TUTF003', 'ARGBERNARDI2', '010710000').then(() => {
-                    LoginPage.logInMW('TUTF003', psw, false)
-                    DettaglioAnagrafica.checkClientWithoutLegame()
-                    Legami.checkLegameIsNotPresent()
-                })
-            } else this.skip()
         })
 
     })

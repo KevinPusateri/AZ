@@ -73,6 +73,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let classvalue = "search_submit claim_number k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per polizza assicurato  ', function () {
@@ -82,6 +85,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let classvalue = "search_submit polizza k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa assicurato  ', function () {
@@ -91,6 +97,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let classvalue = "search_submit targa k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici del cliente persona fisica ', function () {
@@ -101,6 +110,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let classvalue = "search_submit anagrafica k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per codice fiscale del cliente persona fisica ', function () {
@@ -112,6 +124,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let classvalue = "search_submit anagrafica k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')                
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa controparte ', function () {
@@ -121,6 +136,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let classvalue = "search_submit targaCTP k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')        
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici della CTP persona fisica ', function () {
@@ -142,6 +160,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         const locResult = "#results > div.k-grid-content > table > tbody > tr"
         ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(locResult, numsin)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
     });
     
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per codice fiscale del CTP persona fisica ', function () {
@@ -163,6 +184,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         const locResult = "#results > div.k-grid-content > table > tbody > tr"
         ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(locResult, numsin)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
     });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per denominazione del cliente come persona giuridica ', function () {

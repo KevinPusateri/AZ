@@ -44,11 +44,11 @@ after(function () {
 })
 
 describe('Matrix Web : Navigazioni da Home Page - ', function () {
-
     it('Verifica Top Menu Principali', function () {
         TopBar.clickIconCalendar()
         TopBar.clickIconIncident()
-        TopBar.clickIconNotification()
+        //! Disabilitato momentaneamente come da specifiche
+        //TopBar.clickIconNotification()
         TopBar.clickIconUser()
         TopBar.clickIconSwitchPage()
     });
@@ -78,10 +78,11 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickIconUser()
     })
 
-    it('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
-        TopBar.clickIconNotification()
-        TopBar.checkNotificheEvidenza()
-    })
+    //! Disabilitato momentaneamente come da specifiche
+    // it('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
+    //     TopBar.clickIconNotification()
+    //     TopBar.checkNotificheEvidenza()
+    // })
 
     it('Verifica presenza links da Utilità', function () {
         TopBar.clickIconSwitchPage()
