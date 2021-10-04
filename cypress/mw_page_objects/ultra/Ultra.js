@@ -87,7 +87,8 @@ class Ultra {
 
             //aggiunge gli ambilti previsti
             for (var i = 0; i < listaAmbiti.length; i++) {
-                cy.get('app-ultra-ambiti-selection-panel').find('nx-icon[ng-reflect-name="product-'+listaAmbiti[i]+'"]').click()
+                //cy.get('app-ultra-ambiti-selection-panel').find('nx-icon[ng-reflect-name="product-'+listaAmbiti[i]+'"]').click()
+                cy.get('app-ultra-ambiti-selection-panel').find('nx-icon[class*="'+listaAmbiti[i]+'"]').click()
             }
 
             //polizza valida da > al
@@ -98,7 +99,8 @@ class Ultra {
 
             //attività
             cy.get('ultra-contratto-temporaneo-modal').find('nx-dropdown[formcontrolname="attivita"]').click()
-            cy.get('nx-dropdown-item[ng-reflect-value="'+attivita+'"]').click()
+            //cy.get('nx-dropdown-item[ng-reflect-value="'+attivita+'"]').click()
+            cy.get('nx-dropdown-item').find('span').contains(attivita).click()
 
             //società
             cy.get('ultra-contratto-temporaneo-modal').find('input[formcontrolname="societa"]').type(societa)
@@ -203,8 +205,30 @@ class Ultra {
             //apertura menù scelta soluzione
             cy.get('ultra-form-dati-quotazione', { timeout: 30000 }).should('be.visible') //attende la comparsa del form con i dati quotazione
 
-            cy.get('span').contains('CONFERMA').should('be.visible').click() //conferma
+            cy.get('button').contains('CONFERMA').should('be.visible').click() //conferma
             cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+        })
+    }
+
+    static ProfessionePrincipaleDatiQuotazione(professione) {
+        ultraIFrame().within(() => {
+            //apertura menù scelta soluzione
+            cy.get('ultra-form-dati-quotazione', { timeout: 30000 }).should('be.visible') //attende la comparsa del form con i dati quotazione
+            cy.get('div[class*="professioneDrop"]').click() //clicca sulla professione presente
+
+            cy.get('div[class*="search-professioni extended"]', { timeout: 10000 }).should('be.visible') //attende il caricamento del popup
+            cy.get('#search-input-formfield').find('input').should('be.visible').type(professione) //cerca la professione
+
+            //seleziona la professione
+            cy.get('div[class*="search-professioni extended"]')
+                .find('div[class*="result-content"]')
+                .find('span').contains(professione.toUpperCase()).click()
+
+            //conferma
+            cy.get('div[class*="search-professioni extended"]')
+                .find('span').contains('CONFERMA').click()
+            
+            cy.wait(1000)
         })
     }
 
@@ -236,6 +260,56 @@ class Ultra {
                 .parent()
                 .find('select').select(cliente)
 
+            cy.get('[id="btnAvanti"]').click() //avanti
+        })
+    }
+
+    static censimentoAnagraficoSalute(cliente, SpeseMediche, DiariaRicovero, Invalidita) {
+        ultraIFrame().within(() => {
+            cy.get('#tabsAnagrafiche', { timeout: 30000 }).should('be.visible') //attende la comparsa del form con i dati quotazione
+
+            cy.get('div[class="tabs-title"]').contains('Persona').should('be.visible').click() //tab Casa
+
+            cy.get('select').select(cliente)
+            cy.wait(2000)
+
+            //Spese Mediche si/no
+            if(SpeseMediche == true) {
+                cy.get('div[class="domanda"]').contains('Spese mediche')
+                    .parent()
+                    .parent()
+                    .next('div').find('span[class="label-text"]').contains('SI').click()
+            }            
+            else {
+                cy.get('div[class="domanda"]').contains('Spese mediche')
+                    .next('div').find('span[class="label-text"]').contains('NO').click()
+            }
+
+            //Diaria da Ricovero si/no
+            if(DiariaRicovero == true) {
+                cy.get('div[class="domanda"]').contains('Diaria da ricovero')
+                    .parent()
+                    .parent()
+                    .next('div').find('span[class="label-text"]').contains('SI').click()
+            }            
+            else {
+                cy.get('div[class="domanda"]').contains('Diaria da ricovero')
+                    .next('div').find('span[class="label-text"]').contains('NO').click()
+            }
+
+            //Invalidità permanente da infortunio si/no
+            if(Invalidita == true) {
+                cy.get('div[class="domanda"]').contains('Invalidità permanente da infortunio')
+                    .next('div').find('span[class="label-text"]').contains('SI').click()
+            }            
+            else {
+                cy.get('div[class="domanda"]').contains('Invalidità permanente da infortunio')
+                    .parent()
+                    .parent()
+                    .next('div').find('span[class="label-text"]').contains('NO').click()
+            }
+
+            cy.pause()
             cy.get('[id="btnAvanti"]').click() //avanti
         })
     }

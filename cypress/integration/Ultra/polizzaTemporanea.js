@@ -20,8 +20,8 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-var cliente = "ANNA GALLO"
-var clienteUbicazione = "VIA DELL'ACQUARIO 9, 00055 - LADISPOLI (RM)"
+var cliente = "PIERO VERDE"
+var clienteUbicazione = "VIA ROMA 4, 33100 - UDINE (UD)"
 //var ambiti = ['Fabbricato', 'Contenuto']
 //var frazionamento = "annuale"
 let nuovoCliente;
@@ -90,10 +90,26 @@ before(() => {
 
 describe("Polizza temporanea", ()=>{
     it("Ricerca cliente", ()=>{
-        cy.get('[name="main-search-input"]').type(cliente).should('have.value', cliente)
+        cy.get('body').within(() => {
+            cy.get('input[name="main-search-input"]').click()
+            cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
+            cy.get('lib-client-item').first().click()
+          }).then(($body) => {
+            cy.wait(7000)
+            //const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+            const check = cy.get('div[class="client-null-message"]').should('be.visible')
+            cy.log('permessi: ' + check)
+            if (check) {
+              cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
+              cy.get('lib-client-item').first().next().click()
+            }
+          })
+      
+        /* cy.get('[name="main-search-input"]').type(cliente).should('have.value', cliente)
         cy.get('[name="main-search-input"]').type('{enter}')
         cy.wait(1000)
-        cy.contains('div', cliente.toUpperCase()).click({force: true})
+        cy.pause()
+        cy.contains('div', cliente.toUpperCase()).click({force: true}) */
         
     })
 
@@ -113,42 +129,25 @@ describe("Polizza temporanea", ()=>{
         let oggi = Date.now()
         let dataInizio = new Date(oggi)
         let dataFine = new Date(oggi); dataFine.setMonth(dataInizio.getMonth()+7)
-        var inizio = ('0'+dataInizio.getDate()).slice(-2) +''+ ('0'+(dataInizio.getMonth()+1)).slice(-2) +'/'+ dataInizio.getFullYear()
+        var inizio = ('0'+dataInizio.getDate()).slice(-2) +''+ ('0'+(dataInizio.getMonth()+1)).slice(-2) +''+ dataInizio.getFullYear()
         var fine = ('0'+dataFine.getDate()).slice(-2) +''+ ('0'+(dataFine.getMonth()+1)).slice(-2) +''+ dataFine.getFullYear()
 
-        Ultra.contrattoTemporaneo(ambiti, inizio, fine, "lavoratore-occasionale", "Allianz")
+        Ultra.contrattoTemporaneo(ambiti, inizio, fine, "Lavoratore occasionale", "Allianz")
         
-        Ultra.procediHome()
-        cy.pause()
+        Ultra.procediHome()        
     })
 
-    it("Seleziona fonte", ()=>{
-        Ultra.selezionaFonteRandom()
-    })
-
-    it("Seleziona frazionamento", ()=>{
-        Ultra.selezionaFrazionamento(frazionamento)
-    })
-
-    it("Modifica soluzione per Fabbricato", ()=>{
-        Ultra.modificaSoluzioneHome('Fabbricato', 'Top')
-    })
-
-    it("Configurazione Contenuto e procedi", ()=>{
-        Ultra.configuraContenuto()
-        Ultra.procediHome()
-    })
-
-    it("Conferma dati quotazione", ()=>{
+    it("Modifica professione in Conferma Dati Quotazione", ()=>{
+        Ultra.ProfessionePrincipaleDatiQuotazione('barista')
         Ultra.confermaDatiQuotazione()
     })
 
-    it("Riepilogo ed emissione", ()=>{
+    it("Riepilogo e censimento anagrafico", ()=>{
         Ultra.riepilogoEmissione()
     })
 
     it("Censimento anagrafico", ()=>{
-        Ultra.censimentoAnagrafico('GALLO ANNA', clienteUbicazione)
+        Ultra.censimentoAnagraficoSalute('VERDE PIERO', true, true, false)
     })
 
     it("Dati integrativi", ()=>{
