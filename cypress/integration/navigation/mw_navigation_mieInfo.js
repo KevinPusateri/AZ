@@ -52,7 +52,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     TopBar.clickMieInfo()
   })
 
-  it('Verifica presenza links Menu', function () {
+  it.only('Verifica presenza links Menu', function () {
     TopBar.clickMieInfo()
     Mieinfo.checkLinksOnMenuInfo()
   })
@@ -139,20 +139,6 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.clickLinkOnMenu('Circolari')
   });
 
-  //TODO : PAGINA BIANCA DA TESTARE  -- Add TFS
-  // context('Menu New Company Handbook', () => {
-  //   it('Verifica aggancio New Company Handbook', function () {
-  //     TopBar.clickMieInfo()
-  //     Mieinfo.clickLinkOnMenu('New Company Handbook')
-  //     Mieinfo.checkLinksOnSubMenu('New Company Handbook')
-  //   })
-  //   it('Verifica aggancio su tutte le sotto pagine di New Company Handbook', function () {
-  //     TopBar.clickMieInfo()
-  //     Mieinfo.clickLinkOnMenu('New Company Handbook');
-  //     Mieinfo.checkPageOnSubMenu('New Company Handbook')
-  //   })
-  // })
-
   it('Verifica aggancio Company Handbook', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Company Handbook')
@@ -212,4 +198,16 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.clickLinkOnMenu('Il Mondo Allianz');
     Mieinfo.checkPageOnSubMenu('Il Mondo Allianz')
   })
+
+  //TODO : PAGINA BIANCA DA TESTARE  -- Add TFS
+  // it.only('Verifica aggancio New company handbook', function () {
+  //   TopBar.clickMieInfo()
+  //   Mieinfo.clickLinkOnMenu('New company handbook')
+  //   Mieinfo.checkLinksOnSubMenu('New company handbook')
+  // })
+  // it.only('Verifica aggancio su tutte le sotto pagine di New company handbook', function () {
+  //   TopBar.clickMieInfo()
+  //   Mieinfo.clickLinkOnMenu('New company handbook');
+  //   Mieinfo.checkPageOnSubMenu('New company handbook')
+  // })
 })

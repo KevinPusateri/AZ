@@ -31,6 +31,8 @@ class Mieinfo {
      */
     static clickLinkOnMenu(page) {
         getIFrame().contains(page).click().wait(2000)
+        if (page === 'New company handbook') // menu--link_active non c'è (..active_id)
+            this.checkPageOnMenu(page)
         getIFrame().find('a[class~="menu--link_active"]').should('contain', page)
         this.checkPageOnMenu(page)
     }
@@ -95,6 +97,14 @@ class Mieinfo {
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     let checkLinks = Object.values(linksSubMenu.IL_MONDO_ALLIANZ)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 3).each(($link, i) => {
+                        expect($link.text().trim()).to.include(checkLinks[i]);
+                    })
+                })
+                break;
+            case LinksMenu.NEW_COMPANY_HANDBOOK:
+                getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
+                    let checkLinks = Object.values(linksSubMenu.NEW_COMPANY_HANDBOOK)
+                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 2).each(($link, i) => {
                         expect($link.text().trim()).to.include(checkLinks[i]);
                     })
                 })
@@ -303,6 +313,7 @@ class Mieinfo {
                 getIFrame().find('h1:contains("Il Mondo Allianz")').should('be.visible')
                 break;
             case LinksMenu.NEW_COMPANY_HANDBOOK:
+                getIFrame().find('h1:contains("Test Handbook per rilascio")').should('be.visible')
                 break;
         }
     }
@@ -506,7 +517,7 @@ class Mieinfo {
         getIFrame().find('h1:contains("' + linksIniziative.WINBACK_MOTOR + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.DECOMMISSIONING_TELEMATICI).click()
-        getIFrame().find('h1:contains("'+linksIniziative.DECOMMISSIONING_TELEMATICI+'")').should('be.visible')
+        getIFrame().find('h1:contains("' + linksIniziative.DECOMMISSIONING_TELEMATICI + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR).click()
         getIFrame().find('h1:contains("' + linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR + '")').should('be.visible')
