@@ -235,7 +235,6 @@ Cypress.Commands.add('getPartyRelations', () => {
   cy.getUserWinLogin().then(data => {
     cy.generateTwoLetters().then(nameRandom => {
       cy.generateTwoLetters().then(firstNameRandom => {
-        debugger
         cy.request({
           method: 'GET',
           retryOnStatusCodeFailure: true,

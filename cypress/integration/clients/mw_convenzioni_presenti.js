@@ -22,17 +22,18 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
+let customImpersonification
 //#endregion
 
 //#region Before After
-if (!Cypress.env('monoUtenza')) {
+if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è attiva 
     before(() => {
         cy.getUserWinLogin().then(data => {
             cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
                 insertedId = results.insertId
             })
 
-            let customImpersonification = {
+            customImpersonification = {
                 "agentId": "ARGMOLLICA3",
                 "agency": "010745000"
             }
