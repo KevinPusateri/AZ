@@ -171,9 +171,8 @@ class ConsultazioneSinistriPage {
      * @param {string} locator : class attribute 
      * @param {string} label : text displayed
      */
-     static checkObj_ByLocatorAndText(locator, label) {
-        return new Cypress.Promise((resolve, reject) => {
-            debugger
+     static checkObj_ByLocatorAndText(locator, label) {       
+        return new Cypress.Promise((resolve, reject) => {     
             getIFrame().find(locator).should('be.visible')
             .then(($val) => {                                       
                 expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
@@ -224,26 +223,11 @@ class ConsultazioneSinistriPage {
         return new Cypress.Promise((resolve, reject) => {
             getIFrame()
             .find(css)
+            .should('be.visible')
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => {         
-                cy.log('>> read the value: ' + text)
-                value = text.toString()
-                resolve(value)  
-                /*
-                if(value === undefined) {
-                    assert.fail('>> value "'+value+'" is undefined.');
-                    reject() 
-                } else if(value === null) {
-                    assert.fail('>> value "'+value+'" is null.');
-                    reject()
-                } else if(value === '') {
-                    assert.fail('>> value "'+value+'" is empty.');
-                    reject()
-                } else {
-                    cy.log('>> value "'+value+'" is defined.'); 
-                    resolve(value) 
-                }
-                */
+                cy.log('>> read the value: ' + text)              
+                resolve(text.toString())            
             });      
         });
     }

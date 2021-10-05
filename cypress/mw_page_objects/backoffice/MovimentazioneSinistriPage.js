@@ -71,17 +71,20 @@ class MovimentazioneSinistriPage {
 }
 /**
      * Get a text value defined on object identified by its @css
-     * @param {string} css : locator object id
+     * @param {string} css : id locator object
      */
  static getPromiseValue_ByCss(css) {
-    return new Cypress.Promise((resolve) => {
+    let value = "";        
+    return new Cypress.Promise((resolve, reject) => {
         getIFrameMovSinistri()
         .find(css)
+        .should('be.visible')
         .invoke('text')  // for input or textarea, .invoke('val')
         .then(text => {         
             cy.log('>> read the value: ' + text)
-            resolve((text.toString()+"\n"))                
-            });
+            value = text.toString()
+            resolve(value)          
+        });      
     });
 }
     static clickRow_ByIdAndRow(id) {

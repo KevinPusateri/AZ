@@ -50,70 +50,126 @@ after(function () {
     //#endregion
 })
 
+//#region Script Variables
+let numsin = '929538398'
+let stato_sin = 'CHIUSO PAGATO'
+let dtAvvenimento 
+let cliente
+//#endregion
+
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ' +
     ' per il quale siano valorizzate le "Azioni di recupero".' +
-    ' Per tale sinistro verificare che siano valorizzati i seguenti campi: Tipologia, Importo, Soggetto debitore, Data inizio e Stato." ', function () {
-        let sinistro = '929538398'
-        let stato_sin = 'CHIUSO PAGATO'
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        csSinObjPage.setValue_ById('#claim_number', sinistro)
+    ' Nella sezione dati accessori si verifica che siano valorizzati i seguenti campi: Tipologia, Importo, Soggetto debitore, Data inizio e Stato." ', function () {
+      
+        ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
-        csSinObjPage.checkObj_ByText(stato_sin)
-        csSinObjPage.printClaimDetailsValue()
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
+        ConsultazioneSinistriPage.checkObj_ByText(stato_sin)
+        ConsultazioneSinistriPage.printClaimDetailsValue()
 
         const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
-        var cliente = csSinObjPage.getPromiseValue_ByCss(cssCliente1)
+        cliente = ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente1)
     
         const cssdtAvv1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-        var dtAvvenimento = csSinObjPage.getPromiseValue_ByCss(cssdtAvv1)        
+        var dtAvvenimento = ConsultazioneSinistriPage.getPromiseValue_ByCss(cssdtAvv1)        
 
         // Seleziona il sinistro
-        csSinObjPage.clickLnk_ByHref(sinistro)
+        ConsultazioneSinistriPage.clickLnk_ByHref(numsin)
     
         // Verifica : numero di sinistro in alto alla pagina di dettaglio
         const clssDtl = "pageTitle"
-        csSinObjPage.checkObj_ByClassAndText(clssDtl, sinistro)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, numsin)
 
-        // Verifica (2): Valore della data avvenimento      
+        // Verifica (1): Valore della data avvenimento      
         const cssDtAvv2 = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
-        csSinObjPage.checkObj_ByLocatorAndText(cssDtAvv2, dtAvvenimento)
+        ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtAvv2).then((val) => {          
+            cy.log('[it]>> [Data avvenimento]: '+val);
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[Data avvenimento] non definita in pagina ricerca sinistro")
+                else 
+                dtAvvenimento = val;        
+            });
+        }); 
+
         // Verifica (2): Cliente
         const cssCliente2 = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
-        csSinObjPage.checkObj_ByLocatorAndText(cssCliente2, cliente) 
+        //ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssCliente2, cliente) 
 
         // Seleziona il link dati accessori
-        csSinObjPage.clickLnk_ByHref("/dasinconfe/DatiAccessoriIngresso")
+        ConsultazioneSinistriPage.clickLnk_ByHref("/dasinconfe/DatiAccessoriIngresso")
 
-         // Verifica : la valorizzazione del campo "Data inizio" nella sezione "Azioni di Recupero"
-         const cssDtInizio = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > p'
-         csSinObjPage.getPromiseValue_ByCss(cssDtInizio).then(dtInizio => {
-             csSinObjPage.isNullOrEmpty(dtInizio)       
-             csSinObjPage.containValidDate(dtInizio)  
+        // Verifica (3): valorizzazione 'Tipologia' nella sezione 'Azioni di recupero'
+        const cssType = "#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(1) "  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssType).then((val) => {
+            let dscrpt = val.split(':')[1];       
+            cy.log('[it]>> [Tipologia]: '+dscrpt);
+            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[Tipologia] non definita nella sezione 'Azioni di recupero'")                      
+            });
+        });         
+        
+         // Verifica (4) : la valorizzazione del campo "Data inizio" nella sezione "Azioni di Recupero"
+         const cssDtInizio = '#azioni_recupero > div > div > table > tbody > tr:nth-child(2) > td:nth-child(1)'
+         ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtInizio).then(val => {
+            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[it]>> [Data inizio] non definita nella sezione 'Azioni di recupero'"); 
+                else
+                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    if (!isDate)
+                        assert.fail("[Data inizio] non è definita in formato valido nella sezione 'Azioni di recupero'"); 
+                });
+            });                            
         });
         
-        csSinObjPage.checkObj_ByText("Nessuna nota presente")  
+        // Verifica (5): valorizzazione 'Stato' nella sezione 'Azioni di recupero'
+        const cssStato = "#azioni_recupero > div > div > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssStato).then((val) => {   
+            let dscrpt = val.split(':')[1];    
+            cy.log('[it]>> [Stato]: '+dscrpt);
+            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[Stato] non definito nella sezione 'Azioni di recupero'")                     
+            });
+        });  
         
-        csSinObjPage.checkObj_ByText("Non sono presenti azioni di recupero")
-
-        csSinObjPage.checkObj_ByText("Nessun soggetto presente")
+        // Verifica (6): valorizzazione 'Soggetto debitore' nella sezione 'Azioni di recupero'
+        const cssSgtDbt = "#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(3)"  
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssSgtDbt).then((val) => {   
+            let dscrpt = val.split(':')[1];    
+            cy.log('[it]>> [Soggetto debitore]: '+dscrpt);
+            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
+                if (!isNull)
+                    assert.fail("[Soggetto debitore] non definito nella sezione 'Azioni di recupero'")                     
+            });
+        });  
+       // Verifica (7): la valorizzazione del campo 'Importo' nella sezione 'Azioni di recupero'
+       const cssImporto = '#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(2)'
+       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssImporto).then((val) => {  
+            let dscrpt = val.split(':')[1];            
+            cy.log('[it]>> [Importo]: '+dscrptal);
+            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
+               if (!isNull)
+                    assert.fail("[Importo] non definito nella sezione 'Azioni di recupero'"); 
+            });
+            ConsultazioneSinistriPage.isCurrency(dscrpt).then((isCurrency) => {
+               if (!isCurrency)
+                    assert.fail("[Importo] non definito come valore monetario nella sezione 'Azioni di recupero'"); 
+            });                                         
+        });
     });
     
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ' +    
-    ' Per tale sinistro verificare che siano valorizzati i seguenti campi: Tipologia, Importo, Soggetto debitore, Data inizio e Stato." ', function () {
-        let sinistro = '929538398'
-        let stato_sin = 'CHIUSO PAGATO'
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        csSinObjPage.setValue_ById('#claim_number', sinistro)
-        let classvalue = "search_submit claim_number k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
+    it('Dalla sezione "Azioni di recupero" cliccando sul "soggetto debitore" verificare '+
+       'che sia apra la finestra di pop up di dettaglio anagrafico del soggetto', function () {
         
-        a
+        
+        let cssLinkSgt = "#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(3) > a"
+        ConsultazioneSinistriPage.clickObj_ByLabel('a', cliente)        
     });
 
 });
