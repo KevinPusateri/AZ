@@ -61,6 +61,11 @@ let dtAvvenimento
 let clienteAssicurato
 let targaAssicurato
 let polizzaAssicurato
+let dtIncarico
+let dtScarico
+let dtPagamento
+let dtInvioBanca
+let impPagam
 //#endregion
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
@@ -77,55 +82,46 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, stato_sin)       
     });
 
-    it('"Pagina di ricerca" è verificato che il nome associato al cliente assicurato non sia nullo.', function () {
+    it('"Pagina di ricerca" è verificato che il nome associato al cliente assicurato, la targa, la polizza e la data di avvenimento del sinistro non siano nulli.', function () {
         const cssCliente = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente).then((val) => {          
-        cy.log('[it]>> [Cliente]: '+val);
-        ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[it]>> [Cliente] non definito in pagina ricerca sinistro")
-                else 
-                    clienteAssicurato = val;       
+            cy.log('[it]>> [Cliente]: '+val);
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                clienteAssicurato = val; 
+                assert.isTrue(isNull,"[Cliente]: '"+val+"' controllo sul valore null or empty in pagina ricerca sinistro");          
             });   
-       });      
-    });
+        });
 
-    it('"Pagina di ricerca" si controllano i valori: targa e polizza e data di avvenimento del sinistro.', function () {                 
-        const cssTarga = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTarga).then((val) => {          
+       const cssTarga = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
+       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTarga).then((val) => {          
             cy.log('[it]>> [Targa]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Targa] non definita in pagina ricerca sinistro")
-                else 
-                    targaAssicurato = val;         
-            });   
-        });
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                targaAssicurato = val; 
+                assert.isTrue(isNull,"[Targa]: '"+val+"' controllo sul valore null or empty in pagina ricerca sinistro");                           
+            }); 
+       });
 
-        const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssPolizza).then((val) => {          
-            cy.log('[it]>> [Polizza]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Polizza] non definita in pagina ricerca sinistro")
-                else 
-                    polizzaAssicurato = val;        
+       const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
+       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssPolizza).then((val) => {          
+           cy.log('[it]>> [Polizza]: '+val);
+           ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                polizzaAssicurato = val;
+                assert.isTrue(isNull,"[Polizza]: '"+val+"' controllo sul valore null or empty in pagina ricerca sinistro");             
             });   
-        });
-        
-        const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-        ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtAvv).then((val) => {          
+       });
+
+       const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
+       ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtAvv).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Data avvenimento] non definita in pagina ricerca sinistro")
-                else 
-                dtAvvenimento = val;        
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                dtAvvenimento = val.trim(); 
+                assert.isTrue(isNull,"[Data avvenimento]: '"+val+"' controllo sul valore null or empty in pagina ricerca sinistro");                   
             });
-        }); 
+       }); 
     });
+
     
-    it('"Pagina di dettaglio" si controlla che siano riportati numero di sinistro, ' +
+    it('"Pagina di dettaglio" è verificato che in pagina siano riportati numero di sinistro, ' +
     ' data di avvenimento e il cliente assicurato', function () {
             
         ConsultazioneSinistriPage.printClaimDetailsValue()
@@ -155,9 +151,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(csslocalità).then((val) => {
             let dscrpt = val.split(':')[1];            
             cy.log('[it]>> [Località]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Località] non definita in pagina dettaglio sinistro");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                assert.isTrue(isNull,"[Località]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro");                       
             });   
         });
 
@@ -166,15 +161,14 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(csscldDanneggiato).then((val) => {
             let dscrpt = val.split(':')[1];        
             cy.log('[it]>> [CLD]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[it]>> CLD non definito in pagina dettaglio sinistro");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                assert.isTrue(isNull,"[CLD]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro");                            
             });                            
         });   
     });
 
     it('"Pagina di dettaglio" - sezione "PERIZIE" '+
-    ' Verifica dei seguenti campi (Data incarico, Data scarico, Fiduciario, Tipo incarico, Stato). ' ,
+    ' Si verifica che i seguenti campi non siano nulli: Data incarico, Data scarico, Fiduciario, Tipo incarico, Stato. ' ,
      function () {
         
         // Apro la sezione del danneggiato (1)
@@ -186,14 +180,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtIncarico).then((val) => {
             let dscrpt = val.split(':')[1];   
             cy.log('[it]>> [Data incarico]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Data incarico] non definita in pagina dettaglio sinistro"); 
-                else
-                    ConsultazioneSinistriPage.containValidDate(dscrpt).then((isDate) => {
-                    if (!isDate)
-                        assert.fail("[Data incarico] non definita in formato valido in pagina dettaglio sinistro"); 
-                });
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                dtIncarico = dscrpt.trim()  
+                assert.isTrue(isNull,"[Data incarico]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PERIZIE'");                   
             });            
         });
          
@@ -202,14 +191,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
          ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtScarico).then((val) => {
             let dscrpt = val.split(':')[1]; 
             cy.log('[it]>> [Data scarico]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Data scarico] non definita in pagina dettaglio sinistro"); 
-                else
-                    ConsultazioneSinistriPage.containValidDate(dscrpt).then((isDate) => {
-                    if (!isDate)
-                        assert.fail("[Data scarico] non definita in formato valido in pagina dettaglio sinistro"); 
-                });
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                dtScarico = dscrpt.trim() 
+                assert.isTrue(isNull,"[Data scarico]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PERIZIE'");                       
             });                 
          });
 
@@ -218,9 +202,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssFiduciario).then((val) => {
             let dscrpt = val.split(':')[1];        
             cy.log('[it]>> [Fiduciario]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Fiduciario] non definito in pagina dettaglio sinistro");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                assert.isTrue(isNull,"[Fiduciario]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PERIZIE'");      
             });                            
         });   
 
@@ -229,9 +212,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTipoIncarico).then((val) => {
             let dscrpt = val.split(':')[1];         
             cy.log('[it]>> [Tipo incarico]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Tipo incarico] non definito in pagina dettaglio sinistro");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                assert.isTrue(isNull,"[Tipo incarico]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PERIZIE'");     
             });                            
         });
         
@@ -240,15 +222,27 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssStato).then((val) => {
             let dscrpt = val.split(':')[1];       
             cy.log('[it]>> [Stato]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Stato] non definito in pagina dettaglio sinistro");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {               
+                assert.isTrue(isNull,"[Stato]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PERIZIE'");    
             });                            
         });
     });
 
+    it('"Pagina di dettaglio" - sezione "PERIZIE" '+
+    ' Si verifica che le date incarico e Data scarico siano date valide ' ,
+     function () {
+
+        ConsultazioneSinistriPage.containValidDate(dtIncarico).then((isNull) => {                
+            assert.isTrue(isNull,"[Data incarico]: '"+dtIncarico+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PERIZIE'");
+        });
+
+        ConsultazioneSinistriPage.containValidDate(dtScarico).then((isNull) => {            
+            assert.isTrue(isNull,"[Data scarico]: '"+dtScarico+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PERIZIE'");
+        });
+    });
+     
     it('"Pagina di dettaglio" - sezione "PAGAMENTI" '+
-    ' Verifica della valorizzazione dei seguenti campi (Data pagamento, Data Invio Banca, causale pagamento, Importo, Percepiente). ' , 
+    '  Si verifica che i seguenti campi non siano nulli: Data pagamento, Data Invio Banca, causale pagamento, Importo, Percepiente). ' , 
     function () {
             
         // Verifica : la valorizzazione del campo "Data pagamento" in Sezione Pagamenti
@@ -256,14 +250,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtPagamento).then((val) => {
             let dscrpt = val.split(':')[1];  
             cy.log('[it]>> [Data pagamento]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Data pagamento] non definita nella popUp Pagamenti"); 
-                else
-                    ConsultazioneSinistriPage.containValidDate(dscrpt).then((isDate) => {
-                    if (!isDate)
-                        assert.fail("[Data pagamento] non definita in formato valido nella popUp Pagamenti"); 
-                });
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                dtPagamento = dscrpt.trim();
+                assert.isTrue(isNull,"[Data pagamento]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PAGAMENTI'");              
             });                 
         });
         
@@ -272,14 +261,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtInvioBanca).then((val) => {
             let dscrpt = val.split(':')[1]; 
             cy.log('[it]>> [Data invio banca]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Data invio banca] non definita nella popUp Pagamenti"); 
-                else
-                    ConsultazioneSinistriPage.containValidDate(dscrpt).then((isDate) => {
-                    if (!isDate)
-                        assert.fail("[Data invio banca] non definita in formato valido nella popUp Pagamenti"); 
-                });
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                dtInvioBanca = dscrpt.trim();
+                assert.isTrue(isNull,"[Data invio banca]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PAGAMENTI'");               
             });                 
         });
 
@@ -288,10 +272,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCausale).then((val) => {
             let dscrpt = val.split(':')[1];        
             cy.log('[it]>> [Causale]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Causale] non definito nella popUp Pagamenti");      
-                });                            
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                assert.isTrue(isNull,"[Causale]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PAGAMENTI'");      
+            });
         });
 
         // Verifica : la valorizzazione del campo "Importo" in Sezione Pagamenti
@@ -299,14 +282,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssImporto).then((val) => {
             let dscrpt = val.split(':')[1];       
             cy.log('[it]>> [Importo]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Importo] non definito nella popUp Pagamenti"); 
-            });
-            ConsultazioneSinistriPage.isCurrency(dscrpt).then((isCurrency) => {
-                if (!isCurrency)
-                    assert.fail("[Importo] non definito come valore monetario nella popUp Pagamenti"); 
-            });                                         
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                impPagam = dscrpt
+                assert.isTrue(isNull,"[Importo]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PAGAMENTI'");               
+            });                                       
         });
 
          // Verifica : la valorizzazione del campo "Percepiente pagamento" in Sezione Pagamenti
@@ -314,13 +293,29 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssPercepiente).then((val) => {
             let dscrpt = val.split(':')[1];          
             cy.log('[it]>> [Percepiente]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Percepiente] non definito nella popUp Pagamenti");                    
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                assert.isTrue(isNull,"[Percepiente]: '"+dscrpt+"' controllo sul valore null or empty in pagina dettaglio sinistro - sezione 'PAGAMENTI'");                             
             });                            
         });
     });
 
+
+    it('"Pagina di dettaglio" - sezione "PAGAMENTI" Verifica dei dati in formato valido: '+
+    ' data pagamento, data invio banca e importo.' ,
+     function () {
+        ConsultazioneSinistriPage.containValidDate(dtPagamento).then((isdt1) => {
+            assert.isTrue(isdt1, "[Data pagamento]: '"+dtPagamento+"' controllo formale sulla data in pagina dettaglio sinistro - sezione 'PAGAMENTI'")
+        });
+
+        ConsultazioneSinistriPage.containValidDate(dtInvioBanca).then((isdt2) => {
+            assert.isTrue(isdt2,"[Data Invio Banca]: '"+dtInvioBanca+"' controllo formale sulla data in pagina dettaglio sinistro - sezione 'PAGAMENTI'");        
+        });
+
+        ConsultazioneSinistriPage.isCurrency(impPagam.trim()).then((isImp) => {
+            assert.isTrue(isImp,"[Importo]: '"+impPagam+"' controllo formale sul formato monetario valido in pagina dettaglio sinistro - sezione 'PAGAMENTI'");        
+        });                  
+    });
+    
     it('Sezione "Pagamenti", - POPUP "Dettaglio Pagamento" ' +
     ' verificare che le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
         //const csSinObjPage = Object.create(ConsultazioneSinistriPage)
@@ -331,70 +326,55 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(1) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator1).then((val) => {
             cy.log('[it]>> [Data pagamento]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Data pagamento] non definita nella popUp Dettaglio Pagamento"); 
-                else
-                {
-                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
-                        if (!isDate)
-                            assert.fail("[Data pagamento] non definita in formato valido nella popUp Pagamenti"); 
-                    });
-                }
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Data pagamento]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'PAGAMENTI'");               
+                ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    assert.isTrue(isDate,"[Data pagamento]: '"+val+"' controllo formale sulla data in pagina dettaglio sinistro - popUp 'PAGAMENTI'");  
+                });               
             });                 
         });
         // Verifica : la valorizzazione del campo "Data invio Banca" nella popup "Dettaglio Pagamento"
         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator2).then((val) => {
             cy.log('[it]>> [Data invio banca]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Data invio banca] non definita nella popUp Dettaglio Pagamento"); 
-                else
-                {
-                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
-                        if (!isDate)
-                            assert.fail("[Data invio banca] non è definita in formato valido nella popUp Pagamenti"); 
-                    });
-                }               
-            });
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Data invio banca]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'PAGAMENTI'");               
+                ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    assert.isTrue(isDate,"[Data invio banca]: '"+val+"' controllo formale sulla data in pagina dettaglio sinistro - popUp 'PAGAMENTI'");  
+                });               
+            });  
         });    
 
         // Verifica : la valorizzazione del campo "Importo" nella popup "Dettaglio Pagamento"
         const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)" 
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator3).then((val) => {          
             cy.log('[it]>> [Importo]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Importo] non definito nella popUp Dettaglio Pagamento"); 
-            });
-            ConsultazioneSinistriPage.isCurrency(val).then((isCurrency) => {
-                if (!isCurrency)
-                    assert.fail("[Importo] non definito come valore monetario nella popUp Dettaglio Pagamento"); 
-            });                      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Importo]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'PAGAMENTI'"); 
+                ConsultazioneSinistriPage.isCurrency(val).then((isCurrency) => {
+                    assert.isTrue(isCurrency, "[Importo]: '"+val+"' controllo sul valore espresso come monetario nella popUp Dettaglio Pagamento");                         
+                });   
+            });                               
         });
 
         // Verifica : la valorizzazione del campo "Valuta" nella popup "Dettaglio Pagamento"
         const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)" 
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator4).then((val) => {          
             cy.log('[it]>> [Valuta]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Valuta] non definito nella popUp Dettaglio Pagamento"); 
-            });                   
-            ConsultazioneSinistriPage.isEuroCurrency(valuta).then(isEuro => {
-                if (!isEuro)
-                    assert.fail('[Valuta] field is not defined as EURO')              
-            })                             
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Valuta]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'PAGAMENTI'"); 
+                ConsultazioneSinistriPage.isEuroCurrency(val).then(isEuro => {
+                    assert.isTrue(isNull,"[Valuta]: '"+val+"' controllo sul valore espresso come importo monetario in pagina dettaglio sinistro - popUp 'PAGAMENTI'");                                  
+                })     
+            });                                        
         });
 
         // Verifica : la valorizzazione del campo "Causale" nella popup "Dettaglio Pagamento"
         const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"       
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator5).then((val) => {          
             cy.log('[it]>> [Causale]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Causale] non definito nella popUp Dettaglio Pagamento");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Causale]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'PAGAMENTI'");                   
             });                                 
         });
 
@@ -402,9 +382,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(6) > td:nth-child(2)"       
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator6).then((val) => {          
             cy.log('[it]>> [Modalità di pagamento]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Modalità di pagamento] non definito nella popUp Dettaglio Pagamento");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Modalità di pagamento]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'PAGAMENTI'");                       
             });                                                          
         });
 
@@ -412,25 +391,20 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(7) > td:nth-child(2)"       
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator7).then(val => {
             cy.log('[it]>> [IBAN]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[IBAN] non definito nella popUp Dettaglio Pagamento");      
-            });              
-            ConsultazioneSinistriPage.isValidIBAN(iban).then(isIBAN => {
-                if (!isIBAN)
-                    assert.fail('[IBAN] non corretto ')
-                else
-                    assert.isTrue(isValuta, '[it]>> [IBAN] OK');
-            })                                                       
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[IBAN]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'PAGAMENTI'");                       
+                ConsultazioneSinistriPage.isValidIBAN(val).then(isIBAN => {
+                    assert.isTrue(isIBAN, '[it]>> [IBAN]: controllo di validità codice iban');                        
+                })     
+            });                                                                
         });
     
         // Verifica : la valorizzazione del campo "Tipo Proposta" nella popup "Dettaglio Pagamento"
         const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"       
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator8).then((val) => {          
             cy.log('[it]>> [Tipo Proposta]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Tipo Proposta] non definito nella popUp Dettaglio Pagamento");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Tipo Proposta]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'PAGAMENTI'");                        
             });                                                 
         });
 
@@ -438,9 +412,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"       
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator9).then((val) => {          
             cy.log('[it]>> [Stato Pagamento]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Stato Pagamento] non definito nella popUp Dettaglio Pagamento");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Stato Pagamento]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'PAGAMENTI'");                       
             });                                                                                 
         });
 
@@ -457,9 +430,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator1 = ".k-widget.k-window > .popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator1).then((val) => {                  
             cy.log('[it]>> [Fiduciario]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Fiduciario] nella popUp Incarico Perizia - anagrafica fiduciario");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Fiduciario]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'Incarico Perizia - anagrafica fiduciario'");                     
             });                            
         });                                            
 
@@ -467,9 +439,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator2).then((val) => {                     
             cy.log('[it]>> [Tipo Collaborazione]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Tipo Collaborazione] nella popUp Incarico Perizia - anagrafica fiduciario");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Tipo Collaborazione]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'Incarico Perizia - anagrafica fiduciario'");                   
             });                            
         });                                      
 
@@ -477,9 +448,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
        const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)"  
        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator3).then((val) => {          
             cy.log('[it]>> [Indirizzo]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Indirizzo] non definito nella popUp Incarico Perizia -anagrafica fiduciario");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Indirizzo]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'Incarico Perizia - anagrafica fiduciario'");               
             });                            
         });                                    
 
@@ -487,9 +457,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
        const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"  
        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator4).then((val) => {        
             cy.log('[it]>> [Telefono]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Telefono] non definito nella popUp Incarico Perizia - anagrafica fiduciario");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Telefono]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'Incarico Perizia - anagrafica fiduciario'");
             });                            
         });                                                      
 
@@ -502,14 +471,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator5).then((val) => {              
             cy.log('[it]>> [Data incarico]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Data incarico] non definita nella popUp Incarico Perizia"); 
-                else
-                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
-                    if (!isDate)
-                        assert.fail("[Data incarico] non definita in formato valido nella popUp Incarico Perizia - Dati incarico"); 
-                });
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Data incarico]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'Incarico Perizia - Dettaglio Incarico Perizia'");
+                ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    assert.isTrue(isDate, "[Data incarico] controllo formale sulla data in pagina dettaglio sinistro - popUp 'Incarico Perizia - Dettaglio Incarico Perizia'");                       
+                });                   
             });             
         }); 
 
@@ -517,13 +483,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator6).then((val) => {
             cy.log('[it]>> [Data scarico]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Data scarico] non definita nella popUp Incarico Perizia"); 
-                else
-                    ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
-                    if (!isDate)
-                        assert.fail("[Data scarico] non è definita in formato valido nella popUp Incarico Perizia - Dati incarico"); 
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Data scarico]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'Incarico Perizia - Dettaglio Incarico Perizia'");                    
+                ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
+                    assert.isTrue(isDate, "[Data scarico] controllo formale sulla data in pagina dettaglio sinistro - popUp 'Incarico Perizia - Dettaglio Incarico Perizia'");                                          
                 });
             });             
         }); 
@@ -532,9 +495,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(10) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator7).then((val) => {                    
             cy.log('[it]>> [Tipo incarico]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Tipo incarico] non definito nella popUp Incarico Perizia");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Tipo incarico]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'Incarico Perizia - Dettaglio Incarico Perizia'");                       
             });                            
         });     
         
@@ -542,9 +504,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(11) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator8).then((val) => {            
             cy.log('[it]>> [Stato incarico]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Stato incarico] non definito nella popUp Incarico Perizia");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Stato incarico]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'Incarico Perizia - Dettaglio Incarico Perizia'");                        
             });                            
         });     
 
@@ -552,9 +513,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(12) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator9).then((val) => {                  
             cy.log('[it]>> [Perizia]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Perizia] non definito nella popUp Incarico Perizia");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Perizia]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'Incarico Perizia - Dettaglio Incarico Perizia'");                        
             });                            
         });     
         
@@ -562,13 +522,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator10 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(13) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator10).then((val) => {           
             cy.log('[it]>> [Data verifica perizia]: '+val);
-            ConsultazioneSinistriPage.isNullOrEmpty(val).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Data verifica perizia] non definita nella popUp Incarico Perizia"); 
-                else
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
+                assert.isTrue(isNull,"[Data verifica perizia]: '"+val+"' controllo sul valore null or empty in pagina dettaglio sinistro - popUp 'Incarico Perizia - Dettaglio Incarico Perizia'");                                     
                     ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {
-                    if (!isDate)
-                        assert.fail("[Data verifica perizia] non definita in formato valido nella popUp Incarico Perizia - Dati incarico"); 
+                        assert.isTrue(isDate, "[Data verifica perizia] controllo formale sulla data in pagina dettaglio sinistro - popUp 'Incarico Perizia - Dettaglio Incarico Perizia'");                       
                 });
             });             
         }); 

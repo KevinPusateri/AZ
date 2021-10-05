@@ -59,12 +59,11 @@ class ConsultazioneSinistriPage {
      * Check if the value is defined
      * @param {string} value : string value to check
      */
-    static isNullOrEmpty(value) {
-        return new Cypress.Promise((resolve, reject) => {
-            debugger
+    static isNotNullOrEmpty(value) {
+        return new Cypress.Promise((resolve, reject) => {            
             if(value === undefined) {
                 cy.log('>> value "'+value+'" is undefined.');
-                resolve(false) 
+                resolve(false)
             } else if(value === null) {
                 cy.log('>> value "'+value+'" is null.');
                 resolve(false) 
@@ -73,7 +72,7 @@ class ConsultazioneSinistriPage {
                 resolve(false) 
             } else {
                 cy.log('>> value "'+value+'" is defined.'); 
-                resolve(true) 
+                resolve(true)
             }
         });   
         cy.wait(1000)        
@@ -288,16 +287,13 @@ class ConsultazioneSinistriPage {
             //Tests for a match in a string. It returns true or false.
             let validation = pattern.test(str)                  
             if (!validation)
-            {
-                debugger
+            {               
                 var msg = '>> the value: "'+str+'" not contain a valid date' 
-                cy.log(msg)
-                //assert.fail('Valore vuoto o nullo')      
+                cy.log(msg)                     
                 resolve(false)               
             } else {
                 let myString = str.match(pattern)
-                cy.log('>> the string: "'+str+'" contain a valid date "'+myString[0]+'"')
-                //assert.isTrue(isok, 'è un valore definito');
+                cy.log('>> the string: "'+str+'" contain a valid date "'+myString[0]+'"')               
                 resolve(true)
             }
         })                                           
@@ -333,13 +329,16 @@ class ConsultazioneSinistriPage {
     static isCurrency(numstr) {      
         return new Cypress.Promise((resolve) => { 
             const regexExp = /^\d+(?:\,\d{0,2})$/;
-            if (regexExp.test(numstr)) {
-                cy.log('>> Number = "'+numstr+'" is valid currency')
-                resolve(true)
+            var pattern = new RegExp(regexExp)
+            let validation = pattern.test(numstr)                  
+            if (!validation)
+            {
+                cy.log('>> Number = "'+numstr+'" is not valid currency!')
+                resolve(false)              
             }                
             else {
-                cy.log('>> Number = "'+numstr+'" is not valid currency')
-                resolve(false)
+                cy.log('>> Number = "'+numstr+'" is valid currency')
+                resolve(true)
             }                
         });
     }

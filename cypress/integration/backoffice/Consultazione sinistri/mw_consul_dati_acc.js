@@ -73,9 +73,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente1).then((val) => {
             cliente = val;
             cy.log('[it]>> [Cliente]: '+cliente);              
-            ConsultazioneSinistriPage.isNullOrEmpty(cliente).then((isNull) => {                
-                if (!isNull)
-                    assert.fail("[it]>> [Cliente] non definito in pagina ricerca sinistro")               
+            ConsultazioneSinistriPage.isNotNullOrEmpty(cliente).then((isNull) => {                
+                assert.isTrue(isNull,"[Cliente]: '"+cliente+"' controllo sul null or empty in pagina ricerca sinistro");                                     
             });
         });
 
@@ -83,9 +82,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseDate_ByCss(cssdtAvv1).then((val) => {
             dtAvvenimento = val;   
             cy.log('[it]>> [Data avvenimento]: '+dtAvvenimento);
-            ConsultazioneSinistriPage.isNullOrEmpty(dtAvvenimento).then((isNull) => {               
-                if (!isNull)
-                    assert.fail("[Data avvenimento] non definita in pagina ricerca sinistro")                           
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dtAvvenimento).then((isNull) => {               
+                assert.isTrue(isNull,"[Data avvenimento]: '"+dtAvvenimento+"' controllo sul null or empty in pagina ricerca sinistro");                                            
             });
         });             
 

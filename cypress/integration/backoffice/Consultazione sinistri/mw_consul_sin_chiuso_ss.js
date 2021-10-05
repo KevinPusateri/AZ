@@ -67,9 +67,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
          MovimentazioneSinistriPage.getPromiseValue_ByCss(csscldDanneggiato).then((val) => {
              let dscrpt = val.split(':')[1];        
              cy.log('[it]>> [CLD]: '+dscrpt);
-             MovimentazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                 if (!isNull)
-                     assert.fail("[it]>> CLD non definito in pagina dettaglio sinistro");      
+             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                assert.isTrue(isNull,"[CLD]: '"+dscrpt+"' controllo sul null or empty nella sezione 'Dettaglio sinistro'");                         
              });                            
          });
 
@@ -78,14 +77,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         MovimentazioneSinistriPage.getPromiseValue_ByCss(csslocalità).then((val) => {
             let dscrpt = val.split(':')[1];            
             cy.log('[it]>> [Località]: '+dscrpt);
-            MovimentazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                if (!isNull)
-                    assert.fail("[Località] non definita in pagina dettaglio sinistro");      
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
+                assert.isTrue(isNull,"[Località]: '"+dscrpt+"' controllo sul null or empty nella sezione 'Dettaglio sinistro'");    
             });   
         });
-       
-       
-                
+ 
     });
   
 
@@ -97,5 +93,12 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         const xpathDettaglioPerizia = "#soggetti_danneggiati > div > div:nth-child(1) > div > div:nth-child(1) > div.item_content > p"
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText(xpathDettaglioPerizia, "Non ci sono incarichi di perizia")
+    });
+
+    it('Atterraggio su BackOffice >> Dalla pagina di dettaglio di un sinistro in stato CHIUSO SENZA SEGUITO, ' +
+    'Aprendo la sezione Pagamenti  sia riportata la dicitura : "Non sono presenti pagamenti" ' , function () {
+    
+        const xpathDettaglioPerizia = "#soggetti_danneggiati > div > div:nth-child(1) > div > div:nth-child(2) > div.item_content > p"
+        MovimentazioneSinistriPage.checkObj_ByLocatorAndText(xpathDettaglioPerizia, "Non sono presenti pagamenti")
     });
 });
