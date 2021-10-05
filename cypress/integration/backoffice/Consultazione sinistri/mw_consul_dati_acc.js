@@ -50,50 +50,74 @@ after(function () {
     //#endregion
 })
 
+//#region Script Variables
+let sinistro = '929538074'
+let stato_sin = 'CHIUSO PAGATO'
+let dtAvvenimento 
+let cliente
+//#endregion
+
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ' +
-    ' per il quale non siano valorizzate: "Note di sinistro", "Azioni di recupero" e "Soggetti coinvolti".' +
+    ' Recupero e controllo preliminare della valorizzazione delle informazioni del cliente e della data avveninmento sinistro', function () {
+              
+        ConsultazioneSinistriPage.setValue_ById('#claim_number', sinistro)
+        let classvalue = "search_submit claim_number k-button"
+
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
+        ConsultazioneSinistriPage.checkObj_ByText(stato_sin)
+        ConsultazioneSinistriPage.printClaimDetailsValue()
+
+        const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"      
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente1).then((val) => {
+            cliente = val;
+            cy.log('[it]>> [Cliente]: '+cliente);              
+            ConsultazioneSinistriPage.isNullOrEmpty(cliente).then((isNull) => {                
+                if (!isNull)
+                    assert.fail("[it]>> [Cliente] non definito in pagina ricerca sinistro")               
+            });
+        });
+
+        const cssdtAvv1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)" 
+        ConsultazioneSinistriPage.getPromiseDate_ByCss(cssdtAvv1).then((val) => {
+            dtAvvenimento = val;   
+            cy.log('[it]>> [Data avvenimento]: '+dtAvvenimento);
+            ConsultazioneSinistriPage.isNullOrEmpty(dtAvvenimento).then((isNull) => {               
+                if (!isNull)
+                    assert.fail("[Data avvenimento] non definita in pagina ricerca sinistro")                           
+            });
+        });             
+
+    });
+        it('Selezionando dati accessori per il sinistro in stato chiuso/pagato  ' +
     ' verificare che siano presenti le seguenti diciture standard: ' +
     ' "Nessuna nota presente", "Non sono presenti azioni di recupero" e "Nessun soggetto presente" rispettivamente per le sezioni precedenti ', function () {
-        let sinistro = '929538074'
-        let stato_sin = 'CHIUSO PAGATO'
-
-        const csSinObjPage = Object.create(ConsultazioneSinistriPage)
-        csSinObjPage.setValue_ById('#claim_number', sinistro)
-        let classvalue = "search_submit claim_number k-button"
-        csSinObjPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
-        csSinObjPage.checkObj_ByText(stato_sin)
-        csSinObjPage.printClaimDetailsValue()
-
-        const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
-        var cliente = csSinObjPage.getPromiseValue_ByCss(cssCliente1)
-       
-        const cssdtAvv1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-        var dtAvvenimento = csSinObjPage.getPromiseValue_ByCss(cssdtAvv1)        
-
+     
         // Seleziona il sinistro
-        csSinObjPage.clickLnk_ByHref(sinistro)
+        ConsultazioneSinistriPage.clickLnk_ByHref(sinistro)
       
         // Verifica : numero di sinistro in alto alla pagina di dettaglio
         const clssDtl = "pageTitle"
-        csSinObjPage.checkObj_ByClassAndText(clssDtl, sinistro)
+        ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, sinistro)
 
-        // Verifica (2): Valore della data avvenimento      
-        const cssDtAvv2 = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
-        csSinObjPage.checkObj_ByLocatorAndText(cssDtAvv2, dtAvvenimento)
+        cy.log('[it]>> [cliente / Data avvenimento]: '+cliente + "/" + dtAvvenimento);
+        // Verifica (1): Valore della data avvenimento      
+        const cssDtAvv2 = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"      
+        //ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssDtAvv2, dtAvvenimento)
+        
         // Verifica (2): Cliente
         const cssCliente2 = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
-        csSinObjPage.checkObj_ByLocatorAndText(cssCliente2, cliente) 
+        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssCliente2, cliente) 
 
         // Seleziona il link dati accessori
-        csSinObjPage.clickLnk_ByHref("/dasinconfe/DatiAccessoriIngresso")
+        ConsultazioneSinistriPage.clickLnk_ByHref("/dasinconfe/DatiAccessoriIngresso")
 
-        csSinObjPage.checkObj_ByText("Nessuna nota presente")  
+        ConsultazioneSinistriPage.checkObj_ByText("Nessuna nota presente")  
         
-        csSinObjPage.checkObj_ByText("Non sono presenti azioni di recupero")
+        ConsultazioneSinistriPage.checkObj_ByText("Non sono presenti azioni di recupero")
 
-        csSinObjPage.checkObj_ByText("Nessun soggetto presente")
+        ConsultazioneSinistriPage.checkObj_ByText("Nessun soggetto presente")
     });
     
 
