@@ -11,7 +11,6 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
-import Legami from "../../mw_page_objects/clients/Legami"
 //#endregion import
 
 //#region Configuration
@@ -26,20 +25,17 @@ let insertedId
 //#endregion
 
 //#region Before After
-if (!Cypress.env('monoUtenza')) {
+if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è attiva 
     before(() => {
         cy.getUserWinLogin().then(data => {
             cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
                 insertedId = results.insertId
             })
 
-            if (!Cypress.env('monoUtenza'))
-                customImpersonification = {
-                    "agentId": "ARFPULINI2",
-                    "agency": "010710000"
-                }
-            else
-                this.skip()
+            let customImpersonification = {
+                "agentId": "ARFPULINI2",
+                "agency": "010710000"
+            }
 
             LoginPage.logInMWAdvanced(customImpersonification)
         })
@@ -82,30 +78,28 @@ describe('Matrix Web : Convenzioni', {
     }
 }, () => {
 
-    context('Convenzioni', function () {
 
-        it('Come delegato accedere all\'agenzia 01-710000 e cercare un cliente PG e verificare in Dettaglio Anagrafica la presenza del Tab Convenzioni', function () {
-            if (!Cypress.env('monoUtenza')) {
+    it('Come delegato accedere all\'agenzia 01-710000 e cercare un cliente PG e verificare in Dettaglio Anagrafica la presenza del Tab Convenzioni', function () {
+        if (!Cypress.env('monoUtenza')) {
 
-                LandingRicerca.searchRandomClient(true, 'PG', 'P')
-                LandingRicerca.clickRandomResult()
-                SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-                    currentClientPG = currentClient
-                })
+            LandingRicerca.searchRandomClient(true, 'PG', 'P')
+            LandingRicerca.clickRandomResult()
+            SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+                currentClientPG = currentClient
+            })
 
-                DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-                DettaglioAnagrafica.clickSubTab('Convenzioni')
-            }else this.skip()
-        })
-
-        it('Cliccare su Aggiungi Nuovo e Verificare che : \n' +
-            '- compaia il messaggio "Nessuna convenzione disponibile"\n' +
-            '- non venga creata alcuna convenzione', function () {
-                if (!Cypress.env('monoUtenza')) {
-                    DettaglioAnagrafica.clickAggiungiConvenzione(false)
-                } else this.skip()
-            });
-
+            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+            DettaglioAnagrafica.clickSubTab('Convenzioni')
+        } else this.skip()
     })
+
+    it('Cliccare su Aggiungi Nuovo e Verificare che : \n' +
+        '- compaia il messaggio "Nessuna convenzione disponibile"\n' +
+        '- non venga creata alcuna convenzione', function () {
+            if (!Cypress.env('monoUtenza')) {
+                DettaglioAnagrafica.clickAggiungiConvenzione(false)
+            } else this.skip()
+        });
+
 
 })

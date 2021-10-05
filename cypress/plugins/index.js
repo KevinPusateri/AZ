@@ -21,6 +21,81 @@ const os = require('os')
 const mysql = require('mysql')
 const moment = require('moment')
 
+
+const { downloadFile } = require('cypress-downloadfile/lib/addPlugin')
+const tesseract = require("node-tesseract-ocr")
+const fs = require("fs")
+const pdf = require('pdf-parse')
+const path = require('path')
+const Jimp = require("jimp");
+
+const repoRoot = path.join(__dirname, '..', '..') // assumes pdf at project root
+
+const parsePdf = async (pdfName) => {
+    const pdfPathname = path.join(repoRoot, pdfName)
+    let dataBuffer = fs.readFileSync(pdfPathname);
+
+    return await pdf(dataBuffer)  // use async/await since pdf returns a promise 
+}
+
+
+
+
+// const PDFParser = require("pdf2json");
+
+// const parsePdf2 = async (pdfData) => {
+
+//     let pdfParser = new PDFParser();
+//     pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError));
+//     pdfParser.on("pdfParser_dataReady", pdf => {
+//         fs.writeFile("cypress/fixtures/"+pdfData.split('.pdf')[0]+".json", JSON.stringify(pdf));
+//     });
+
+
+//     pdfParser.loadPDF("pdf/"+pdfData);
+//     console.info(pdfParser.getRawTextContent())
+//     return true
+// }
+
+
+const getImageText = async (obj) => {
+    let { fileName, lang, logger } = obj
+    let recognizeResult = null
+    try {
+        if (fs.existsSync(fileName)) {
+            if (logger) {
+                const myLogger = {
+                    logger: m => console.log(m)
+                }
+                recognizeResult = await tesseract.recognize(fileName, lang, myLogger)
+            } else {
+                recognizeResult = await tesseract.recognize(fileName, lang)
+            }
+            if (recognizeResult) {
+                return recognizeResult.data.text
+            }
+        }
+    } catch (error) {
+        return error.message
+    }
+}
+
+const compareImages = async (obj) => {
+    const { fileName1, fileName2 } = obj
+    const example1 = await Jimp.read(fileName1)
+    const example2 = await Jimp.read(fileName2)
+    const example1Hash = example1.hash()
+    const example2Hash = example2.hash()
+    const distance = Jimp.distance(example1, example2)
+    const diff = Jimp.diff(example1, example2)
+
+    if (example1Hash !== example2Hash || distance > 0.15 || diff > 0.15) {
+        return false
+    } else {
+        return true
+    }
+}
+
 //#region Mysql
 function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
     const connection = mysql.createConnection(dbConfig)
@@ -224,6 +299,24 @@ module.exports = (on, config) => {
     //     }
     // })
 
+    on('task', {
+        getPdfContent(pdfName) {
+            return parsePdf2(pdfName)
+        }
+    })
+
+    on('task', {
+        getPdfContentProva(pdfName) {
+            return parsePdf(pdfName)
+        }
+    })
+
+    on('task', {
+        downloadFile: downloadFile,
+        getImageText: getImageText,
+        compareImages: compareImages
+    })
+
     on("task", {
         nuovoClientePersonaFisica() {
             user = {
@@ -318,5 +411,7 @@ module.exports = (on, config) => {
         getUsername() {
             return os.userInfo().username
         }
+
     })
+
 };
