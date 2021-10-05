@@ -10,13 +10,13 @@ const LinksMenu = {
     LE_RELEASE: 'Le release',
     MANUALI_INFORMATICI: 'Manuali Informatici',
     CIRCOLARI: 'Circolari',
-    NEW_COMPANY_HANDBOOK: 'New Company Handbook',
     COMPANY_HANDBOOK: 'Company Handbook',
     ANTIRICICLAGGIO: 'Antiriciclaggio',
     RISORSE_PER_AGENZIA: 'Risorse per l\'Agenzia',
     OPERATIVITA: 'Operatività',
     RISORSE_PER_AGENTE: 'Risorse per l\'Agente',
     IL_MONDO_ALLIANZ: 'Il Mondo Allianz',
+    NEW_COMPANY_HANDBOOK: 'New company handbook',
 }
 
 const LinksSubMenu = {
@@ -59,7 +59,8 @@ const LinksSubMenu = {
         PERCORSI_DI_RUOLO: 'Percorsi di ruolo'
     },
     NEW_COMPANY_HANDBOOK: {
-        ACH: 'ACH'
+        GESTIONE_CONTRATTUALE: 'Gestione Contrattuale',
+        ACH: 'CH Prova',
     },
     ANTIRICICLAGGIO: {
         NORMATIVA: 'Normativa',

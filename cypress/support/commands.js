@@ -252,7 +252,7 @@ Cypress.Commands.add('getPartyRelations', () => {
             let clientiPotenziali = response.body.filter(el => {
               return el.partyCategory[0] === 'P'
             })
-  
+
             if (clientiPotenziali.length > 0) {
               let currentClient = clientiPotenziali[Math.floor(Math.random() * clientiPotenziali.length)]
               cy.request({
@@ -773,11 +773,11 @@ Cypress.Commands.add('getSSNAndBirthDateFromTarga', (targa) => {
           debugger
           let parser = new DOMParser()
           let xmlDoc = parser.parseFromString(wrappedBody[2].outerText, "text/xml")
-          let currentBirthDate =  xmlDoc.getElementsByTagName("DataNascita")[0].childNodes[0].nodeValue.split(' ')[0]
+          let currentBirthDate = xmlDoc.getElementsByTagName("DataNascita")[0].childNodes[0].nodeValue.split(' ')[0]
 
           return {
-            'ssn' : respANIA.body.itemList[0].contractorFiscalCode,
-            'birthDate' : currentBirthDate
+            'ssn': respANIA.body.itemList[0].contractorFiscalCode,
+            'birthDate': currentBirthDate
           }
         })
     })
