@@ -70,21 +70,26 @@ describe('Buca di Ricerca', {
         SCU.checkAggancioPolizzePropostePreventivi()
     })
 
+
+    it('Verifica Click su Rubrica', function () {
+        if (!Cypress.env('monoUtenza')) {
+            LandingRicerca.searchRandomClient(false)
+            LandingRicerca.clickRicercaClassicaLabel('Rubrica')
+            SCU.checkAggancioRubrica()
+        } else this.skip()
+    })
+
+    it('Verifica Click su Ricerca News', function () {
+        if (!Cypress.env('monoUtenza')) {
+            LandingRicerca.searchRandomClient(false)
+            LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
+            News.checkAtterraggio(true)
+        } else this.skip()
+    })
+
     it('Verifica Click su Ricerca Preventivi', function () {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.clickRicercaClassicaLabel('Ricerca Preventivi')
         SCU.checkAggancioPolizzePropostePreventivi()
-    })
-
-    it('Verifica Click su Rubrica', function () {
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.clickRicercaClassicaLabel('Rubrica')
-        SCU.checkAggancioRubrica()
-    })
-
-    it('Verifica Click su Ricerca News', function () {
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
-        News.checkAtterraggio(true)
     })
 })
