@@ -25,6 +25,8 @@
 		"urlSecondWindow": "https://portaleagenzie2.pp.azi.allianz.it/matrix/",
 		"isSecondWindow": false,
 		"monoUtenza": false,
-		"multiUtenza": "5-851-0-100"
+		"multiUtenza": "5-851-0-100",
+		"hostParsr" : "127.0.0.1",
+		"portParsr": "3001"
 	}
 }
