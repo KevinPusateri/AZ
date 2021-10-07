@@ -12,7 +12,7 @@ describe('Download File and Assert the content', () => {
 
     it('tests a pdf', () => {
         cy.parsePdf().then(data => {
-            cy.log(data)
+            cy.log(JSON.stringify(data))
         })
     })
 });

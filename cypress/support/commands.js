@@ -814,61 +814,61 @@ Cypress.Commands.add('selfWindow', () => {
   });
 })
 
-// Performs an XMLHttpRequest instead of a cy.request (able to send data as 
-// FormData - multipart/form-data)
-Cypress.Commands.add('form_request', (method, url, formData, done) => {
-  debugger
-  const xhr = new XMLHttpRequest();
-  xhr.open(method, url, true);
-  xhr.onload = function () {
-    done(xhr);
-  };
-  xhr.onerror = function () {
-    done(xhr);
-  };
-  xhr.send(formData);
-})
-
 Cypress.Commands.add('startMysql', (dbConfig, testName, currentEnv, data) => {
-  if (Cypress.env('enableLogDB'))
+
+  if (Cypress.env('enableLogDB')) {
     cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-      insertedId = results.insertId
+      return results.insertId
     })
+
+  }
 })
 
 Cypress.Commands.add('finishMysql', (dbConfig, insertedId, tests) => {
   if (Cypress.env('enableLogDB'))
-    cy.finishMysql(dbConfig, insertedId, tests)
-
+    cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
 })
 
-/**
- * 
- */
+//#region PDF Parse
 Cypress.Commands.add('parsePdf', () => {
 
-  var formData = new FormData()
-  formData.append('file', 'C:\\TA\\matrix-web-fe-tests\\cypress\\fixtures\\Autocertificazione_Test.pdf')
-  // Display the key/value pairs
+  cy.fixture("Autocertificazione_Test.pdf", 'binary')
+    .then((file) => Cypress.Blob.binaryStringToBlob(file, 'application/pdf'))
+    .then((blob) => {
+      var formdata = new FormData();
+      formdata.append("file", blob);
 
-  const method = 'POST'
-  const url = 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + '/api/v1/document'
+      cy.log('Upload PDF file to parse...')
+      cy.request({
+        url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + '/api/v1/document',
+        method: 'POST',
+        log: false,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        body: formdata
+      }).then(resp => {
+        expect(resp.status).to.eq(202)
+        expect(resp).to.have.property('headers')
+        let location = resp.headers['location']
+        cy.log('Waiting PDF to be parsed...')
 
-  cy.request({
-    method: method,
-    log: true,
-    headers: {
-      "Content-Type": "multipart/form-data"
-    },
-    url: url,
-    body: formData
-  }).then(resp => {
-    console.log(resp)
-    cy.form_request(method, url, formData, function (response) {
-      console.log(response)
-      expect(response.status).to.eq(200);
-      expect(expectedAnswer).to.eq(response.response);
-    });
-  })
-
+        debugger
+        let documentsGenerated = false
+        while (!documentsGenerated) {
+          cy.wait(2000)
+          cy.request({
+            url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + '/' + location,
+            method: 'GET',
+            log: false
+          }).then(respGenerated => {
+            if (respGenerated.status === 201) {
+              cy.log('PDF file processed!')
+              documentsGenerated = true
+            }
+          })
+        }
+      })
+    })
+  //#endregion
 })
