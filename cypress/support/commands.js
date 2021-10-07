@@ -852,35 +852,29 @@ Cypress.Commands.add('parsePdf', () => {
         let location = resp.headers['location']
         cy.log('Waiting PDF to be parsed...')
 
-        let documentsGenerated = false
-        const prova = (documentsGenerated) => {
-          // while (!documentsGenerated) {
-          if (!documentsGenerated) {
-            // cy.wait(2000)
-            cy.request({
-              url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + location,
-              method: 'GET',
-              log: false
-            }).then(respGenerated => {
-              if (respGenerated.status === 200) {
-                documentsGenerated = false
-                prova(documentsGenerated)
-              } else {
-                cy.log('PDF file processed!')
-                // cy.wait(2000)
-                cy.request({
-                  url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + respGenerated.body.markdown,
-                  method: 'GET',
-                  log: false
-                }).then(resp => {
-                  expect(resp.status).to.eq(200)
+        const waitForPdf = () => {
+          cy.request({
+            url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + location,
+            method: 'GET',
+            log: false
+          }).then(respGenerated => {
+            if (respGenerated.status === 200)
+              waitForPdf()
+            else {
+              cy.log('PDF file processed!')
+              cy.request({
+                url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + respGenerated.body.markdown,
+                method: 'GET',
+                log: false
+              }).then(resp => {
+                expect(resp.status).to.eq(200)
 
-                })
-              }
-            })
-          }
+              })
+            }
+          })
         }
-        prova(documentsGenerated)
+        
+        waitForPdf()
       })
     })
   //#endregion
