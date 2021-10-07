@@ -1,5 +1,5 @@
 const LinksMenu = {
-    PRIMO_PIANO: 'Primo Piano',
+    PRIMO_PIANO: 'Primo piano',
     RACCOLTE: 'Raccolte',
     CONTENUTI_SALVATI: 'Contenuti Salvati',
     PRODOTTI: 'Prodotti',
@@ -15,8 +15,8 @@ const LinksMenu = {
     RISORSE_PER_AGENZIA: 'Risorse per l\'Agenzia',
     OPERATIVITA: 'Operatività',
     RISORSE_PER_AGENTE: 'Risorse per l\'Agente',
-    IL_MONDO_ALLIANZ: 'Il Mondo Allianz',
-    NEW_COMPANY_HANDBOOK: 'New company handbook',
+    IL_MONDO_ALLIANZ: 'Il Mondo Allianz'
+    // NEW_COMPANY_HANDBOOK: 'New company handbook',
 }
 
 const LinksSubMenu = {
@@ -39,15 +39,15 @@ const LinksSubMenu = {
         STOPDRIVE: 'Stop&Drive',
         PROPONI_LTC: 'Proponi LTC',
         PROPONI_TCM: 'Proponi TCM',
-        MENSILIZZAZIONE_RAMI_VARI: 'Mensilizzazione Rami Vari',
+        // MENSILIZZAZIONE_RAMI_VARI: 'Mensilizzazione Rami Vari',
         MENSILIZZAZIONE_AUTO: 'Mensilizzazione Auto',
         CLIENTI_VALORE_EXTRA: 'Clienti Valore Extra',
         ALLIANZPAY: 'AllianzPay',
-        BUSTA_ARANCIONE: 'Busta arancione',
+        // BUSTA_ARANCIONE: 'Busta arancione',
         WINBACK_MOTOR: 'Winback Motor',
         DECOMMISSIONING_TELEMATICI: 'Decommissioning telematici',
         DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR: 'Digitalizzazione del certificato assicurativo Motor',
-        ATTESTATO_DI_RISCHIO_DINAMICO: 'Attestato di rischio dinamico',
+        // ATTESTATO_DI_RISCHIO_DINAMICO: 'Attestato di rischio dinamico',
         TEST: 'Test'
     },
     SALES_ACADEMY: {
@@ -58,10 +58,10 @@ const LinksSubMenu = {
         FORMAZIONE_MULTICANALE: 'Formazione Multicanale',
         PERCORSI_DI_RUOLO: 'Percorsi di ruolo'
     },
-    NEW_COMPANY_HANDBOOK: {
-        GESTIONE_CONTRATTUALE: 'Gestione Contrattuale',
-        ACH: 'CH Prova',
-    },
+    // NEW_COMPANY_HANDBOOK: {
+    //     GESTIONE_CONTRATTUALE: 'Gestione Contrattuale',
+    //     ACH: 'CH Prova',
+    // },
     ANTIRICICLAGGIO: {
         NORMATIVA: 'Normativa',
         MODULI_MANUALI_E_PROCEDURE: 'Moduli, manuali e procedure',
@@ -80,7 +80,7 @@ const LinksSubMenu = {
         PACCHETTI_DI_SICUREZZA: 'Pacchetti di sicurezza',
         RIFERIMENTI_AZIENDALI: 'Riferimenti aziendali',
         LINK_UTILI: 'Link utili',
-        MINISITO_IDD: 'Minisito IDD',
+        IDD: 'IDD',
     },
     RISORSE_PER_AGENTE: {
         TRATTAMENTI_PROVVIGIONALI: 'Trattamenti provvigionali',

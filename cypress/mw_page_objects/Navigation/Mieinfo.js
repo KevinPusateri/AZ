@@ -139,23 +139,24 @@ class Mieinfo {
                     expect($link.text().trim()).to.include(linksProdottiIcon[i]);
                 })
                 break
+                //TODO: Finire mie info
             case LinksMenu.INIZIATIVE:
                 const linksIniziativeCard = [
                     'Stop&Drive',
-                    'Proponi LTC',
-                    'Proponi TCM',
-                    'Mensilizzazione Rami Vari',
+                    // 'Mensilizzazione Rami Vari',
                     'Mensilizzazione Auto',
                     'Clienti Valore Extra',
-                    'Allianzpay',
-                    'Busta Arancione',
                     'Winback Motor',
                     'Decommissioning telematici',
                     'Digitalizzazione del certificato',
-                    'Attestato di rischio dinamico'
+                    'AllianzPay',
+                    'Proponi LTC',
+                    'Proponi TCM',
+                    // 'Busta Arancione',
+                    // 'Attestato di rischio dinamico'
                 ]
-                getIFrame().find('[class="container"]').then($card => {
-                    cy.wrap($card).find('[class="grid-item card-container--elements"]').should('have.length', 12).each(($link, i) => {
+                getIFrame().find('[class="product-icons--content"]:visible').then($card => {
+                    cy.wrap($card).find('[class="product-icon--link"]:visible').should('have.length', 9).each(($link, i) => {
                         expect($link.text().trim()).to.include(linksIniziativeCard[i]);
                     })
                 })
@@ -616,8 +617,8 @@ class Mieinfo {
         getIFrame().find('a[href="/lemieinfo/risorse-per-l\'agenzia/link-utili"]').contains(linksRisorseAgenzie.LINK_UTILI).click()
         getIFrame().find('h1:contains("' + linksRisorseAgenzie.LINK_UTILI + '")').should('be.visible')
 
-        getIFrame().contains(linksRisorseAgenzie.MINISITO_IDD).click()
-        getIFrame().find('h1:contains("' + linksRisorseAgenzie.MINISITO_IDD + '")').should('be.visible')
+        getIFrame().contains(linksRisorseAgenzie.IDD).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.IDD + '")').should('be.visible')
     }
 
     /**

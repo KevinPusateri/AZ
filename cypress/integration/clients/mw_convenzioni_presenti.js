@@ -29,9 +29,7 @@ let customImpersonification
 if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è attiva 
     before(() => {
         cy.getUserWinLogin().then(data => {
-            cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-                insertedId = results.insertId
-            })
+            cy.startMysql(dbConfig, testName, currentEnv, data)
 
             customImpersonification = {
                 "agentId": "ARGMOLLICA3",
@@ -49,7 +47,7 @@ if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è at
             //#region Mysql
             cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
                 let tests = testsInfo
-                cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+                cy.finishMysql(dbConfig, insertedId, tests)
             })
             //#endregion
             Cypress.runner.stop();
@@ -60,7 +58,7 @@ if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è at
         //#region Mysql
         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
             let tests = testsInfo
-            cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+            cy.finishMysql(dbConfig, insertedId, tests)
         })
         //#endregion
     })

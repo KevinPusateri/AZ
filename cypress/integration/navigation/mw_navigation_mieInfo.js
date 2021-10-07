@@ -24,9 +24,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
   cy.getUserWinLogin().then(data => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-      insertedId = results.insertId
-    })
+    cy.startMysql(dbConfig, testName, currentEnv, data)
     LoginPage.logInMWAdvanced()
   })
 })
@@ -41,7 +39,7 @@ after(function () {
   //#region Mysql
   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
     let tests = testsInfo
-    cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    cy.finishMysql(dbConfig, insertedId, tests)
   })
   //#endregion
 
@@ -52,14 +50,14 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     TopBar.clickMieInfo()
   })
 
-  it.only('Verifica presenza links Menu', function () {
+  it('Verifica presenza links Menu', function () {
     TopBar.clickMieInfo()
     Mieinfo.checkLinksOnMenuInfo()
   })
 
-  it('Verifica aggancio Primo Piano', function () {
+  it('Verifica aggancio Primo piano', function () {
     TopBar.clickMieInfo()
-    Mieinfo.clickLinkOnMenu('Primo Piano')
+    Mieinfo.clickLinkOnMenu('Primo piano')
   })
 
   it('Verifica aggancio Raccolte', function () {
@@ -85,14 +83,14 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.checkPageOnSubMenu('Prodotti')
   })
 
-  it('Verifica aggancio Iniziative', function () {
+  it.only('Verifica aggancio Iniziative', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Iniziative')
     Mieinfo.checkLinksOnSubMenu('Iniziative')
     Mieinfo.checkLinksOnIcon('Iniziative')
   });
 
-  it('Verifica aggancio su tutte le sotto pagine di Iniziative', function () {
+  it.only('Verifica aggancio su tutte le sotto pagine di Iniziative', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Iniziative');
     Mieinfo.checkPageOnSubMenu('Iniziative')
@@ -157,13 +155,13 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.checkPageOnSubMenu('Antiriciclaggio')
   })
 
-  it('Verifica aggancio Risorse per l\'Agenzia', function () {
+  it.only('Verifica aggancio Risorse per l\'Agenzia', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia')
     Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agenzia')
     Mieinfo.checkLinksOnIcon('Risorse per l\'Agenzia')
   });
-  it('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agenzia', function () {
+  it.only('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agenzia', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia');
     Mieinfo.checkPageOnSubMenu('Risorse per l\'Agenzia')

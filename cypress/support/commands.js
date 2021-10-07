@@ -817,8 +817,9 @@ Cypress.Commands.add('selfWindow', () => {
 // Performs an XMLHttpRequest instead of a cy.request (able to send data as 
 // FormData - multipart/form-data)
 Cypress.Commands.add('form_request', (method, url, formData, done) => {
+  debugger
   const xhr = new XMLHttpRequest();
-  xhr.open(method, url);
+  xhr.open(method, url, true);
   xhr.onload = function () {
     done(xhr);
   };
@@ -828,21 +829,46 @@ Cypress.Commands.add('form_request', (method, url, formData, done) => {
   xhr.send(formData);
 })
 
+Cypress.Commands.add('startMysql', (dbConfig, testName, currentEnv, data) => {
+  if (Cypress.env('enableLogDB'))
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+      insertedId = results.insertId
+    })
+})
 
+Cypress.Commands.add('finishMysql', (dbConfig, insertedId, tests) => {
+  if (Cypress.env('enableLogDB'))
+    cy.finishMysql(dbConfig, insertedId, tests)
+
+})
 
 /**
  * 
  */
 Cypress.Commands.add('parsePdf', () => {
 
-  const formData = new FormData()
-  formData.append('file', 'D:\\TA\\matrix-web-fe-tests\\cypress\\fixtures\\Autocertificazione_Test.pdf')
+  var formData = new FormData()
+  formData.append('file', 'C:\\TA\\matrix-web-fe-tests\\cypress\\fixtures\\Autocertificazione_Test.pdf')
+  // Display the key/value pairs
 
   const method = 'POST'
   const url = 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + '/api/v1/document'
-  cy.form_request(method, url, formData, function (response) {
-    console.log(response)
-    expect(response.status).to.eq(200);
-    expect(expectedAnswer).to.eq(response.response);
-  });
+
+  cy.request({
+    method: method,
+    log: true,
+    headers: {
+      "Content-Type": "multipart/form-data"
+    },
+    url: url,
+    body: formData
+  }).then(resp => {
+    console.log(resp)
+    cy.form_request(method, url, formData, function (response) {
+      console.log(response)
+      expect(response.status).to.eq(200);
+      expect(expectedAnswer).to.eq(response.response);
+    });
+  })
+
 })
