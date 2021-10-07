@@ -83,14 +83,14 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.checkPageOnSubMenu('Prodotti')
   })
 
-  it.only('Verifica aggancio Iniziative', function () {
+  it('Verifica aggancio Iniziative', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Iniziative')
     Mieinfo.checkLinksOnSubMenu('Iniziative')
     Mieinfo.checkLinksOnIcon('Iniziative')
   });
 
-  it.only('Verifica aggancio su tutte le sotto pagine di Iniziative', function () {
+  it('Verifica aggancio su tutte le sotto pagine di Iniziative', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Iniziative');
     Mieinfo.checkPageOnSubMenu('Iniziative')
@@ -155,13 +155,13 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.checkPageOnSubMenu('Antiriciclaggio')
   })
 
-  it.only('Verifica aggancio Risorse per l\'Agenzia', function () {
+  it('Verifica aggancio Risorse per l\'Agenzia', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia')
     Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agenzia')
     Mieinfo.checkLinksOnIcon('Risorse per l\'Agenzia')
   });
-  it.only('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agenzia', function () {
+  it('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agenzia', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia');
     Mieinfo.checkPageOnSubMenu('Risorse per l\'Agenzia')

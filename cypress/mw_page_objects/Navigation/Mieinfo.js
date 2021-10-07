@@ -499,8 +499,8 @@ class Mieinfo {
         getIFrame().contains(linksIniziative.PROPONI_TCM).click()
         getIFrame().find('h1:contains("' + linksIniziative.PROPONI_TCM + '")').should('be.visible')
 
-        getIFrame().contains(linksIniziative.MENSILIZZAZIONE_RAMI_VARI).click()
-        getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_RAMI_VARI + '")').should('be.visible')
+        // getIFrame().contains(linksIniziative.MENSILIZZAZIONE_RAMI_VARI).click()
+        // getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_RAMI_VARI + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.MENSILIZZAZIONE_AUTO).click()
         getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_AUTO + '")').should('be.visible')
@@ -511,8 +511,8 @@ class Mieinfo {
         getIFrame().contains(linksIniziative.ALLIANZPAY).click()
         getIFrame().find('h1:contains("' + linksIniziative.ALLIANZPAY + '")').should('be.visible')
 
-        getIFrame().contains(linksIniziative.BUSTA_ARANCIONE).click()
-        getIFrame().find('h1:contains("' + linksIniziative.BUSTA_ARANCIONE + '")').should('be.visible')
+        // getIFrame().contains(linksIniziative.BUSTA_ARANCIONE).click()
+        // getIFrame().find('h1:contains("' + linksIniziative.BUSTA_ARANCIONE + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.WINBACK_MOTOR).click()
         getIFrame().find('h1:contains("' + linksIniziative.WINBACK_MOTOR + '")').should('be.visible')
@@ -523,8 +523,8 @@ class Mieinfo {
         getIFrame().contains(linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR).click()
         getIFrame().find('h1:contains("' + linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR + '")').should('be.visible')
 
-        getIFrame().contains(linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO).click()
-        getIFrame().find('h1:contains("' + linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO + '")').should('be.visible')
+        // getIFrame().contains(linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO).click()
+        // getIFrame().find('h1:contains("' + linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO + '")').should('be.visible')
 
         getIFrame().find('a[href="/lemieinfo/iniziative/test"]').contains(linksIniziative.TEST).click()
         getIFrame().find('h3:contains("Collettore Hbox 1")').should('be.visible')
