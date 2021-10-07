@@ -837,7 +837,6 @@ Cypress.Commands.add('parsePdf', () => {
     .then((blob) => {
       var formdata = new FormData();
       formdata.append("file", blob);
-
       cy.log('Upload PDF file to parse...')
       cy.request({
         url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + '/api/v1/document',
@@ -853,22 +852,37 @@ Cypress.Commands.add('parsePdf', () => {
         let location = resp.headers['location']
         cy.log('Waiting PDF to be parsed...')
 
-        debugger
         let documentsGenerated = false
-        while (!documentsGenerated) {
-          cy.wait(2000)
-          cy.request({
-            url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + '/' + location,
-            method: 'GET',
-            log: false
-          }).then(respGenerated => {
-            if (respGenerated.status === 201) {
-              cy.log('PDF file processed!')
-              documentsGenerated = true
-            }
-          })
+        const prova = (documentsGenerated) => {
+          // while (!documentsGenerated) {
+          if (!documentsGenerated) {
+            // cy.wait(2000)
+            cy.request({
+              url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + location,
+              method: 'GET',
+              log: false
+            }).then(respGenerated => {
+              if (respGenerated.status === 200) {
+                documentsGenerated = false
+                prova(documentsGenerated)
+              } else {
+                cy.log('PDF file processed!')
+                // cy.wait(2000)
+                cy.request({
+                  url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + respGenerated.body.markdown,
+                  method: 'GET',
+                  log: false
+                }).then(resp => {
+                  expect(resp.status).to.eq(200)
+
+                })
+              }
+            })
+          }
         }
+        prova(documentsGenerated)
       })
     })
   //#endregion
+
 })
