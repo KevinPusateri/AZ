@@ -78,13 +78,13 @@ class HomePage {
      */
     static clickPanelNotifiche() {
         // APERTURA PANNELLO             
-        // cy.intercept('POST', '**/graphql', (req) => {
-        //     if (req.body.operationName.includes('notifications')) {
-        //         req.alias = 'gqlNotifications'
-        //     }
-        // })
-        // cy.get('nx-expansion-panel').click()
-        // cy.wait('@gqlNotifications')
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('notifications')) {
+                req.alias = 'gqlNotifications'
+            }
+        })
+        cy.get('nx-expansion-panel').click()
+        cy.wait('@gqlNotifications')
         cy.get('lib-notification-list').should('be.visible')
 
     }
