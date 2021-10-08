@@ -391,7 +391,8 @@ class DettaglioAnagrafica {
                 cy.get('#nx-dropdown-item-3').should('exist').and('be.visible')
                 cy.get('.cdk-overlay-container').should('be.visible').within(($element) => {
                     console.log($element)
-                    cy.get('[aria-activedescendant="nx-dropdown-item-3"]').should('exist').and('be.visible').within(($tendina) => {
+                    // cy.get('[aria-activedescendant="nx-dropdown-item-2"]').should('exist').and('be.visible').within(($tendina) => {
+                    cy.get('[class="cdk-overlay-connected-position-bounding-box"]').find('div[role="listbox"]').should('exist').and('be.visible').within(($tendina) => {
                         switch (ruolo) {
                             case 'Convenzionato':
                                 cy.wrap($tendina).find('span').contains(/\s*Convenzionato/).click()
@@ -409,7 +410,7 @@ class DettaglioAnagrafica {
                     if (aderente !== undefined) {
                         cy.wait(2000)
                         cy.get('nx-dropdown[formcontrolname="aderente"]').should('be.visible').click()
-                        cy.get('#nx-dropdown-item-6').should('exist').and('be.visible')
+                        cy.get('nx-dropdown-item[class^="nx-dropdown-item"]').should('exist').and('be.visible')
                         cy.contains(aderente.toUpperCase()).should('be.visible').click()
                     }
 

@@ -150,7 +150,7 @@ class Legami {
 
         let currentMembro = editMembro ? membro.trim().substring(0, 5) : membro
 
-        cy.get('ac-anagrafe-panel').find('a[class="data"]:contains("' + currentMembro + '"):first').click()
+        cy.get('ac-anagrafe-panel').should('be.visible').find('a[class="data"]:contains("' + currentMembro + '"):first:visible').click()
 
         cy.wait('@client', { requestTimeout: 30000 });
     }
