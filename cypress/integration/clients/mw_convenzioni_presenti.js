@@ -29,7 +29,7 @@ let customImpersonification
 if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è attiva 
     before(() => {
         cy.getUserWinLogin().then(data => {
-            cy.startMysql(dbConfig, testName, currentEnv, data)
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
 
             customImpersonification = {
                 "agentId": "ARGMOLLICA3",

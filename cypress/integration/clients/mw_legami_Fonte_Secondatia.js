@@ -34,7 +34,7 @@ var membro = ''
 //#region Before After
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data)
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
         let customImpersonification = {
             "agentId": "ARGBERNARDI2",
             "agency": "010710000"
