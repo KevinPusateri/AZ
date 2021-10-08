@@ -214,9 +214,10 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         HomePage.clickVediTutte()
     });
 
-    it('Verifica Click Pannello "Notifiche in evidenza"', function () {
-        HomePage.clickPanelNotifiche()
-    })
+    // ! Commentato per mancanza delle notifiche(Probabilmente temporaneo)
+    // it('Verifica Click Pannello "Notifiche in evidenza"', function () {
+    //     HomePage.clickPanelNotifiche()
+    // })
 
     // ADD TFS
     // it.skip('Verifica testi e link delle notifiche', function () {

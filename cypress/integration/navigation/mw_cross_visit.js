@@ -18,7 +18,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-    cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+    cy.startMysql(dbConfig, testName, currentEnv, 'ANONIMO').then((id)=> insertedId = id )
 })
 
 after(function () {
