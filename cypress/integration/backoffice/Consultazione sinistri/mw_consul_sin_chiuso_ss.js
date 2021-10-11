@@ -67,9 +67,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
          MovimentazioneSinistriPage.getPromiseValue_ByCss(csscldDanneggiato).then((val) => {
              let dscrpt = val.split(':')[1];        
              cy.log('[it]>> [CLD]: '+dscrpt);
-             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
-                assert.isTrue(isNull,"[CLD]: '"+dscrpt+"' controllo sul null or empty nella sezione 'Dettaglio sinistro'");                         
-             });                            
+             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
          });
 
         // Verifica (2): Valore della località
@@ -77,9 +75,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         MovimentazioneSinistriPage.getPromiseValue_ByCss(csslocalità).then((val) => {
             let dscrpt = val.split(':')[1];            
             cy.log('[it]>> [Località]: '+dscrpt);
-            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
-                assert.isTrue(isNull,"[Località]: '"+dscrpt+"' controllo sul null or empty nella sezione 'Dettaglio sinistro'");    
-            });   
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
         });
  
     });

@@ -86,8 +86,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const cssDtAvv2 = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
         ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtAvv2).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
-            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
-                assert.isTrue(isNull, "[Data avvenimento] non definita in pagina ricerca sinistro");                  
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {                               
                 dtAvvenimento = val;        
             });
         }); 
@@ -104,21 +103,15 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssType).then((val) => {
             let dscrpt = val.split(':')[1];       
             cy.log('[it]>> [Tipologia]: '+dscrpt);
-            ConsultazioneSinistriPage.isNullOrEmpty(dscrpt).then((isNull) => {
-                assert.isTrue(isNull, "[Tipologia] non definita nella sezione 'Azioni di recupero'");                     
-            });
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
         });         
         
          // Verifica (4) : la valorizzazione del campo "Data inizio" nella sezione "Azioni di Recupero"
          const cssDtInizio = '#azioni_recupero > div > div > table > tbody > tr:nth-child(2) > td:nth-child(1)'
          ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtInizio).then(val => {
-            ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {
-                cy.log('[it]>> [Data inizio]: '+val);                            
-                assert.isTrue(isNull,"[Data inizio]: '"+val+"' controllo sul null or empty nella sezione 'Azioni di recupero'");                   
-                ConsultazioneSinistriPage.containValidDate(val).then((isDate) => {                   
-                    assert.isTrue(isDate,"[Data inizio] controllo formale sulla data nella sezione 'Azioni di recupero'"); 
-                });                                             
-            });                            
+            cy.log('[it]>> [Data inizio]: '+val); 
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val)
+            ConsultazioneSinistriPage.containValidDate(val)
         });
         
         // Verifica (5): valorizzazione 'Stato' nella sezione 'Azioni di recupero'
@@ -126,9 +119,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssStato).then((val) => {   
             let dscrpt = val.split(':')[1];    
             cy.log('[it]>> [Stato]: '+dscrpt);
-            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
-                assert.isTrue(isNull,"[Stato]: '"+dscrpt+"' controllo sul null or empty nella sezione 'Azioni di recupero'");                                     
-            });
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
         });  
         
         // Verifica (6): valorizzazione 'Soggetto debitore' nella sezione 'Azioni di recupero'
@@ -136,22 +127,23 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssSgtDbt).then((val) => {   
             let dscrpt = val.split(':')[1];    
             cy.log('[it]>> [Soggetto debitore]: '+dscrpt);
-            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
-                assert.isTrue(isNull,"[Soggetto debitore]: '"+dscrpt+"' controllo sul null or empty nella sezione 'Azioni di recupero'");                               
-            });
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
         });  
-       // Verifica (7): la valorizzazione del campo 'Importo' nella sezione 'Azioni di recupero'
-       const cssImporto = '#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(2)'
-       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssImporto).then((val) => {  
-            let dscrpt = val.split(':')[1];            
+
+    // Verifica (7): la valorizzazione del campo 'Importo' nella sezione 'Azioni di recupero'
+    const cssImporto = '#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(2)'
+        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssImporto).then((val) => {  
+            let dscrpt = val.split(':')[1]        
             cy.log('[it]>> [Importo]: '+dscrpt);
-            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt).then((isNull) => {
-                assert.isTrue(isNull,"[Importo]: '"+dscrpt+"' controllo sul null or empty nella sezione 'Azioni di recupero'"); 
-                ConsultazioneSinistriPage.isCurrency(dscrpt).then((isCurrency) => {
-                    assert.isTrue(isCurrency,"[Importo]: '"+dscrpt+"' controllo formale sul valore monetario nella sezione 'Azioni di recupero'"); 
-                });   
-            });                                                 
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
+        })
+      
+       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssImporto).then((val) => {  
+            let dscrpt = val.split(':')[1]        
+            cy.log('[it]>> [Importo]: '+dscrpt);           
+            ConsultazioneSinistriPage.isCurrency(dscrpt)  
         });
+        
     });
     
 
@@ -162,5 +154,5 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let cssLinkSgt = "#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(3) > a"
         ConsultazioneSinistriPage.clickObj_ByLabel('a', cliente)        
     });
-
+    
 });
