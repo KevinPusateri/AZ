@@ -42,7 +42,7 @@ class ConsultazioneSinistriPage {
             cy.wait(500)        
         })
     }
-        /**
+    /**
      * Click on object defined by locator id
      * @param {string} id : locator object id
      */
