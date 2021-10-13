@@ -7,7 +7,7 @@
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import Sales from "../../mw_page_objects/Navigation/Sales"
+import Sales from "../../mw_page_objects/Motor/Sales"   //Navigation/Sales"
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -62,8 +62,15 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             Sales.clickLinkRapido('Nuovo Sfera')
             Sales.backToSales()
         } else this.skip()
-        */
+        
     })
+*/
+    it('Verifica aggancio Sfera', function () {
+        TopBar.clickSales()
+        Sales.clickLinkRapido('Sfera')
+        Sales.backToSales()
+    })
+
 
 
 });
