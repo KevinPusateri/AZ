@@ -1,6 +1,6 @@
 /**
- * @author Kevin Pusateri <kevin.pusateri@allianz.it>
- * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+ * @author Sandra Espeche <sandra.marina.espeche@allianz.it>
+ 
 */
 /// <reference types="Cypress" />
 
@@ -49,6 +49,20 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Sales', function () {
         TopBar.clickSales()
+    })
+
+    it('Verifica presenza dei collegamenti rapidi', function () {
+        TopBar.clickSales()
+        Sales.checkExistLinksCollegamentiRapidi()
+    })
+
+   /* it('Verifica aggancio Nuovo Sfera', function () {
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            Sales.clickLinkRapido('Nuovo Sfera')
+            Sales.backToSales()
+        } else this.skip()
+        */
     })
 
 
