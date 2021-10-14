@@ -7,7 +7,7 @@
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import Sales from "../../mw_page_objects/Motor/Sales"   //Navigation/Sales"
+import Sales from "../../mw_page_objects/sandra_objmw/Sales"   
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()

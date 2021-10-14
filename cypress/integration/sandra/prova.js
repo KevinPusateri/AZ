@@ -8,7 +8,7 @@ import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 //import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
-import DatiPreventivo from "../../mw_page_objects/sandrda_objmw/DatiPreventivo"
+import DatiPreventivo from "../../mw_page_objects/sandra_objmw/DatiPreventivo"
 
 //#region Username Variables
 //const userName = 'TUTF017'   // 'TUTF021'
