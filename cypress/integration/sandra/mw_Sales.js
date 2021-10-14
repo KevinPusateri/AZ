@@ -54,9 +54,9 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica presenza dei collegamenti rapidi', function () {
        TopBar.clickSales()
-       cy.wait(3000)
+       cy.wait(5000)
         Sales.checkExistLinksCollegamentiRapidi()
-      //  cy.wait(3000)
+       cy.wait(5000)
 
     })
 
