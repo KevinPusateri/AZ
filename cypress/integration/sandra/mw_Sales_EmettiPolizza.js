@@ -47,26 +47,25 @@ after(function () {
 
 describe('Matrix Web : Navigazioni da Sales', function () {
 
-    it('Verifica aggancio Sales', function () {
+  /*  it('Verifica aggancio Sales', function () {
         TopBar.clickSales()
         cy.wait(3000)
     })
-
-    it('Verifica presenza dei collegamenti rapidi', function () {
-       // TopBar.clickSales()
-        Sales.checkExistLinksCollegamentiRapidi()
-    })
-
+*/
+  
     it('Verifica la presenza dei link su "Emetti Polizza"', function () {
-       // TopBar.clickSales()
+        TopBar.clickSales()
+        cy.wait(5000)
         Sales.checkLinksOnEmettiPolizza()
-        cy.wait(3000)
+        cy.wait(6000)
 
     })
 
     it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
         TopBar.clickSales()
+        cy.wait(5000)
         Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+        cy.wait(5000)
        // Sales.backToSales()
     })
 
