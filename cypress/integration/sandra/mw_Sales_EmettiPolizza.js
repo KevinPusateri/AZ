@@ -56,21 +56,18 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.checkExistLinksCollegamentiRapidi()
     })
 
-   /* it('Verifica aggancio Nuovo Sfera', function () {
-        if (!Cypress.env('monoUtenza')) {
-            TopBar.clickSales()
-            Sales.clickLinkRapido('Nuovo Sfera')
-            Sales.backToSales()
-        } else this.skip()
+    it('Verifica la presenza dei link su "Emetti Polizza"', function () {
+        TopBar.clickSales()
+        Sales.checkLinksOnEmettiPolizza()
         
     })
-*/
-    it('Verifica aggancio Sfera', function () {
+
+    it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
         TopBar.clickSales()
-        Sales.clickLinkRapido('Sfera')
-        Sales.backToSales()
+        Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+       // Sales.backToSales()
     })
 
 
+})
 
-});
