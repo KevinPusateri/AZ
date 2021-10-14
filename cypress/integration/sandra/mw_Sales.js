@@ -49,28 +49,33 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Sales', function () {
         TopBar.clickSales()
+        cy.wait(6000)
     })
 
     it('Verifica presenza dei collegamenti rapidi', function () {
-        TopBar.clickSales()
+      // TopBar.clickSales()
         Sales.checkExistLinksCollegamentiRapidi()
+        cy.wait(4000)
+
     })
 
-   /* it('Verifica aggancio Nuovo Sfera', function () {
+  /*  it('Verifica aggancio Nuovo Sfera', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.clickLinkRapido('Nuovo Sfera')
             Sales.backToSales()
         } else this.skip()
-        
     })
 */
     it('Verifica aggancio Sfera', function () {
         TopBar.clickSales()
+        cy.wait(5000)
         Sales.clickLinkRapido('Sfera')
+        cy.wait(5000)
         Sales.backToSales()
     })
 
-
+   
+   
 
 });
