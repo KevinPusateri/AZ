@@ -55,17 +55,17 @@ describe('Matrix Web : Navigazioni da Sales', function () {
   
     it('Verifica la presenza dei link su "Emetti Polizza"', function () {
         TopBar.clickSales()
-        cy.wait(5000)
+        cy.wait(10000)
         Sales.checkLinksOnEmettiPolizza()
-        cy.wait(6000)
+        cy.wait(10000)
 
     })
 
     it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
-        TopBar.clickSales()
-        cy.wait(5000)
+       TopBar.clickSales()
+        cy.wait(3000)
         Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
-        cy.wait(5000)
+        cy.wait(6000)
        // Sales.backToSales()
     })
 

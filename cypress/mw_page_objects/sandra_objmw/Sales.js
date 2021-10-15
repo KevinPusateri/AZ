@@ -200,9 +200,11 @@ class Sales {
      * @param {string} page - nome del link
      */
     static clickLinkOnEmettiPolizza(page) {
-        cy.wait(3000)
+        cy.wait(6000)
         cy.contains('Emetti polizza').click({ force: true })
+        cy.wait(10000)
         cy.get('.card-container').find('lib-da-link').contains(page).click()
+        cy.wait(5000)
         switch (page) {
             case LinksOnEmettiPolizza.PREVENTIVO_MOTOR:
                 cy.intercept({
