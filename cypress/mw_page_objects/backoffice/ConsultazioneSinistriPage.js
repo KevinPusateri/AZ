@@ -58,6 +58,14 @@ class ConsultazioneSinistriPage {
         cy.wait(1000)
     }
     /**
+     * Click on all objects defined by locator id
+     * @param {string} id : locator objects id
+     */
+     static clickOnMultiObj_ById(id) {             
+        getIFrame().find(id).click({ multiple: true });
+        cy.wait(1000)
+    }
+    /**
      * Click on object defined by html tag and content text displayed as label
      * @param {string} tag : html element (button, etc...)
      * @param {string} label : text displayed
@@ -129,7 +137,6 @@ class ConsultazioneSinistriPage {
         });                               
         cy.wait(1000)            
     }
-
     /**
      * Check if an object identified by locator and its label is displayed
      * @param {string} locator : class attribute 
@@ -166,17 +173,31 @@ class ConsultazioneSinistriPage {
             resolve(true)
         });
     }
-
-    static retriveValue(css) {
-        return new Cypress.Promise((resolve) => {
-            getIFrame()
-            .find(css)
-            .invoke('text')  // for input or textarea, .invoke('val')
-            .then(text => { 
-                cy.log('>> retrive value "'+text.toString()+'" is defined.'); 
-                resolve(text.toString()) 
-            });
-        });        
+    /**
+     * Defined on object identified by its @css, the function return the
+     * length list
+     * @param {string} css : locator object id
+     */
+    static getCountElements(css) {        
+        return getIFrame().find(css)        
+        .then(listing => {
+          const listingCount = Cypress.$(listing).length;
+          expect(listing).to.have.length(listingCount);
+          cy.log('>> Length :' + listingCount)          
+        });
+        getIFrame().find(css)  
+    }
+    /**
+     * Defined on object identified by its @css, the function check all list values
+     * if are defined or not null
+     * @param {string} css : locator object id
+     */
+    static checkListValues_ById(css) {
+        getIFrame().find(css).each(($el, index, $list) => {
+            const text = $el.text()
+            cy.log('>> Element('+(index)+ ') value: '+text)
+            ConsultazioneSinistriPage.isNotNullOrEmpty(text)           
+        })
     }
     /**
      * Get a text value defined on object identified by its @css
@@ -329,7 +350,6 @@ class ConsultazioneSinistriPage {
                 assert.isTrue(validation,"EURO Currency Check on '"+str+"' value ");                
         });
     } 
-
 
     static getCurrency(str) {               
         const regexExp = /\d{1,3},\d{2}/;

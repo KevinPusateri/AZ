@@ -53,8 +53,8 @@ class MovimentazioneSinistriPage {
      * @param {string} value : href attribute value or part of it
     */
     static clickLnk_ByHref(value) {        
-        getIFrameMovSinistri().find('a[href*="'+value+'"]').should('exist').click({ multiple: true }).log('>> link (a) with href ['+value+ '] is clicked')      
-        cy.wait(2000)
+        getIFrameMovSinistri().find('a[href*="'+value+'"]').should('be.visible').click({ multiple: true }).log('>> link (a) with href ['+value+ '] is clicked')      
+        cy.wait(1000)
     }
      /**
      * Click on object defined by locator id

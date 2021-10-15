@@ -39,11 +39,17 @@ class AcquizioneDocumentiPage {
      * @param {string} id : locator object id
      */
       static clickBtn_ById(id) {                         
-            getIFrameAcqDoc().find(id)
-            .scrollIntoView()
-            .should('have.css', 'opacity', '0')
-            .wait(1000)
-            .click().log('>> object with id ['+id+'] is clicked')
+            getIFrameAcqDoc().find(id).then((btn) => {
+                cy.wrap(btn)
+                .scrollIntoView()
+                //.invoke('removeAttr', 'onchange')
+                .should('have.css', 'opacity', '0')
+                .wait(1000)
+                .click().log('>> object with id ['+id+'] is clicked')
+                //cy.window().then(win => ShowFile(this.value)) 
+            }) 
+            
+           
     }
    /**
      * Click on object defined by locator id
@@ -56,7 +62,7 @@ class AcquizioneDocumentiPage {
             cy.wrap($btn)
             .should('be.visible')
             .wait(1000)
-            .select(text)
+            .select(text).log('>> object with id ['+id+'] and text='+text+' is clicked')
         })       
         cy.wait(2000)
     }
