@@ -47,11 +47,7 @@ after(function () {
 
 describe('Matrix Web : Navigazioni da Sales', function () {
 
-  /*  it('Verifica aggancio Sales', function () {
-        TopBar.clickSales()
-        cy.wait(3000)
-    })
-*/
+  
   
     it('Verifica la presenza dei link su "Emetti Polizza"', function () {
         TopBar.clickSales()
