@@ -38,7 +38,6 @@ after(function () {
     TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        debugger
         let tests = testsInfo
         cy.finishMysql(dbConfig, insertedId, tests)
     })

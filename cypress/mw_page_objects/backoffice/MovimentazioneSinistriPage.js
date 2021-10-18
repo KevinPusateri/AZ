@@ -95,14 +95,14 @@ class MovimentazioneSinistriPage {
     cy.wait(1000)            
 }
 /**
-     * Get a text value defined on object identified by its @css
-     * @param {string} css : id locator object
+     * Get a text value defined on object identified by its @id
+     * @param {string} id : id locator object
      */
- static getPromiseValue_ByCss(css) {
+ static getPromiseValue_ByCss(id) {
     let value = "";        
     return new Cypress.Promise((resolve, reject) => {
         getIFrameMovSinistri()
-        .find(css)
+        .find(id)
         .should('be.visible')
         .invoke('text')  // for input or textarea, .invoke('val')
         .then(text => {         
@@ -198,8 +198,7 @@ class MovimentazioneSinistriPage {
     */
     static compareTotMovimenti() {
         var sum = MovimentazioneSinistriPage.getSumMovimenti()
-        var tot = MovimentazioneSinistriPage.getNumTotaleMovimenti()
-        debugger
+        var tot = MovimentazioneSinistriPage.getNumTotaleMovimenti()        
         if (tot===sum)
             assert.ok('Somma totali movimenti sinistri')
         else

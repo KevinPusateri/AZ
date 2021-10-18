@@ -70,14 +70,20 @@ class DenunciaSinistriPage {
         getIFrameDenuncia().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(1000)        
     }
+    
+    static clickObj_ByIdAndAttr(id, attr, value) {
+        getIFrameDenuncia().find(id).should('have.attr', attr).contains(value).click().log('>> object with label ['+label+ '] is clicked')       
+        cy.wait(2000)
+    }
     /**
      * Click on object defined by class attribute and content text displayed as label
      * @param {string} classvalue : class attribute 
      * @param {string} label : text displayed
      */
-    static clickBtn_ByClassAndText(classvalue, label) {             
-        getIFrameDenuncia().find('[class="'+classvalue+'"]').contains(label).should('be.visible').click().log('>> object with label ['+label+ '] is clicked')       
-        cy.wait(2000)        
+    static clickBtn_ByClassAndText(classvalue, label) {                          
+            getIFrameDenuncia().find('[class="'+classvalue+'"]').contains(label).should('be.visible').click().log('>> object with label ['+label+ '] is clicked')       
+            cy.wait(2000)    
+        
     }
     /**
      * Click on link ('a') element, defined by href attribute value
@@ -177,9 +183,9 @@ class DenunciaSinistriPage {
     static getCountElements(id) {        
         return getIFrameDenuncia().find(id)        
         .then(listing => {
-          const listingCount = Cypress.$(listing).length;
-          expect(listing).to.have.length(listingCount);
-          cy.log('>> Length :' + listingCount)          
+            const listingCount = Cypress.$(listing).length;
+            expect(listing).to.have.length(listingCount);
+            cy.log('>> Length :' + listingCount)          
         });
         getIFrameDenuncia().find(id)  
     }
@@ -201,11 +207,17 @@ class DenunciaSinistriPage {
      * @param {string} id : locator object id
      * @param {string} value : value to be entered
      */
-     static getIdInListValues_ById(id, alue) {
-        getIFrameDenuncia().find(css).each(($el, index, $list) => {
-            if ($el.text().contains(value))
-            cy.log('>> Element('+(index)+ ') value: '+text)
-           return index          
+     static getIdInListValues_ById(id, value) {
+        return new Cypress.Promise((resolve, reject) => {
+            getIFrameDenuncia().find(id).each(($el, index, $list) => {
+                if ($el.text().includes(value)) {
+                    cy.wrap(index).then((value) => {  
+                    cy.log('>> Element('+(index)+ ') value: '+value)
+                    resolve(index)
+                    })
+                }               
+            reject(-1) 
+            })
         })
     }
     /**
@@ -340,8 +352,7 @@ class DenunciaSinistriPage {
        
         const regexExp = /\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/;        
         var pattern = new RegExp(regexExp)       
-        cy.wrap(numstr).then((validation) => {  
-            debugger
+        cy.wrap(numstr).then((validation) => {              
             validation = pattern.test(numstr)
             assert.isTrue(validation,"Currency Check on '"+numstr+"' value ");                
         });

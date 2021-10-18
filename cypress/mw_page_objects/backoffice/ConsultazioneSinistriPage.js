@@ -345,7 +345,6 @@ class ConsultazioneSinistriPage {
     static isEuroCurrency(str) {                
             const currency = 'EURO';
             cy.wrap(str).then((validation) => { 
-                debugger
                 validation = str.includes(currency)
                 assert.isTrue(validation,"EURO Currency Check on '"+str+"' value ");                
         });

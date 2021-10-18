@@ -87,7 +87,7 @@ let dtAvvenimento
 describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2 veicoli ' +
  'coinvolti e di tipo card 1 debitore ', () => {
    
-    it('Atterraggio su BackOffice >> Denuncia --> Ricerca cliente per numero di polizza '+
+    it('Atterraggio su BackOffice >> Denuncia --> Ricerca cliente per numero di polizza: '+ cliente_num_pol+
     '', function () {
 
         // Ricerca cliente per Polizza
@@ -128,12 +128,16 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         // Visualizzazione del dettaglio di polizza 
         DenunciaSinistriPage.clickObj_ByLabel('a', 'Avanti');        
     });
-    it('Elenco coperture - Prodotto Auto: Selezione della garanzia'+
+    it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+copertura_danno+
     '', function () {
 
         // Selezione della copertura
         DenunciaSinistriPage.clickObj_ByLabel('td', copertura_danno)
-        DenunciaSinistriPage.getIdInListValues_ById('#GARANZIE_listaGaranzie > table > tbody > tr', copertura_danno)
+        DenunciaSinistriPage.getIdInListValues_ById('#GARANZIE_listaGaranzie > table > tbody > tr', copertura_danno).then((idx) => {                      
+            cy.log('[it]>> [indice garanzaia: '+idx);    
+            DenunciaSinistriPage.clickObj_ByIdAndAttr('#SelectedCheckBox', 'myindex', idx); 
+        }); 
+        
         DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');
     });
     
