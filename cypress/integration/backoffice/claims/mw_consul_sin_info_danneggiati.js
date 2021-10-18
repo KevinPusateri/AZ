@@ -146,7 +146,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkListValues_ById(cssNomeDanneggiato)
          //Controllo valorizzazione CLD
          let cssCLD = ".dynamic_content > .block > table > tbody > tr:nth-child(1) > td:nth-child(2) > a"
-         ConsultazioneSinistriPage.checkValues(cssCLD)
+         ConsultazioneSinistriPage.checkListValues_ById(cssCLD)
     });
 
 });
