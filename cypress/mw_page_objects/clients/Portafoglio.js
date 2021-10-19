@@ -559,7 +559,7 @@ class Portafoglio {
 
                             cy.get('app-contract-status-badge').should('contain.text', 'SOSPESA')
                             cy.document().its('body').find('#cdk-describedby-message-container')
-                                .should('include.text', '30 - Nuova sospensione (senza integrazione)')
+                                .should('include.text', '30 – Sospensione senza integrazione')
                             loopCheck = false
                         }
                         else {
@@ -634,8 +634,9 @@ class Portafoglio {
         cy.getIFrame()
         cy.get('@iframe').should('be.visible').within(() => {
             cy.wait(5000)
-
+            
             cy.get('#btnStorno').should('exist').and('be.visible').click()
+            cy.wait(5000)
             cy.get('div[role="dialog"]').then(($form) => {
                 const checkFormVisible = $form.find(':contains("Lo storno è stato eseguito ma si è verificato un errore in fase di invio mail della documentazione.")')
                 if (checkFormVisible) {

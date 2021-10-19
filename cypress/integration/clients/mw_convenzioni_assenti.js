@@ -11,7 +11,6 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
-import Legami from "../../mw_page_objects/clients/Legami"
 //#endregion import
 
 //#region Configuration
@@ -26,43 +25,46 @@ let insertedId
 //#endregion
 
 //#region Before After
-before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-            insertedId = results.insertId
-        })
+if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è attiva 
+    before(() => {
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
 
-        let customImpersonification = {
-            "agentId": "ARFPULINI2",
-            "agency": "010710000"
-        }
-        LoginPage.logInMWAdvanced(customImpersonification)
+            let customImpersonification = {
+                "agentId": "ARFPULINI2",
+                "agency": "010710000"
+            }
+
+            LoginPage.logInMWAdvanced(customImpersonification)
+        })
     })
-})
-beforeEach(() => {
-    cy.preserveCookies()
-})
-afterEach(function () {
-    if (this.currentTest.state !== 'passed') {
+    beforeEach(() => {
+        cy.preserveCookies()
+    })
+    afterEach(function () {
+
+        if (this.currentTest.state !== 'passed') {
+            TopBar.logOutMW()
+            //#region Mysql
+            cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+                let tests = testsInfo
+                cy.finishMysql(dbConfig, insertedId, tests)
+            })
+            //#endregion
+            Cypress.runner.stop();
+        }
+    })
+
+    after(function () {
         TopBar.logOutMW()
         //#region Mysql
         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
             let tests = testsInfo
-            cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+            cy.finishMysql(dbConfig, insertedId, tests)
         })
         //#endregion
-        Cypress.runner.stop();
-    }
-})
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
     })
-    //#endregion
-})
+}
 //#endregion Before After
 
 let retrivedClient
@@ -74,20 +76,28 @@ describe('Matrix Web : Convenzioni', {
     }
 }, () => {
 
-    it('Come delegato accedere all\'agenzia 01-710000 e cercare un cliente PG e verificare in Dettaglio Anagrafica la presenza del Tab Convenzioni', () => {
-        LandingRicerca.searchRandomClient(true, 'PG', 'P')
-        LandingRicerca.clickRandomResult()
-        SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-            currentClientPG = currentClient
-        })
 
-        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-        DettaglioAnagrafica.clickSubTab('Convenzioni')
+    it('Come delegato accedere all\'agenzia 01-710000 e cercare un cliente PG e verificare in Dettaglio Anagrafica la presenza del Tab Convenzioni', function () {
+        if (!Cypress.env('monoUtenza')) {
+
+            LandingRicerca.searchRandomClient(true, 'PG', 'P')
+            LandingRicerca.clickRandomResult()
+            SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+                currentClientPG = currentClient
+            })
+
+            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+            DettaglioAnagrafica.clickSubTab('Convenzioni')
+        } else this.skip()
     })
 
     it('Cliccare su Aggiungi Nuovo e Verificare che : \n' +
         '- compaia il messaggio "Nessuna convenzione disponibile"\n' +
-        '- non venga creata alcuna convenzione', () => {
-            DettaglioAnagrafica.clickAggiungiConvenzione(false)
+        '- non venga creata alcuna convenzione', function () {
+            if (!Cypress.env('monoUtenza')) {
+                DettaglioAnagrafica.clickAggiungiConvenzione(false)
+            } else this.skip()
         });
+
+
 })

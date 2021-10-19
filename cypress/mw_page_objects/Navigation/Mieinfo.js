@@ -31,6 +31,8 @@ class Mieinfo {
      */
     static clickLinkOnMenu(page) {
         getIFrame().contains(page).click().wait(2000)
+        if (page === 'New company handbook') // menu--link_active non c'è (..active_id)
+            this.checkPageOnMenu(page)
         getIFrame().find('a[class~="menu--link_active"]').should('contain', page)
         this.checkPageOnMenu(page)
     }
@@ -99,6 +101,14 @@ class Mieinfo {
                     })
                 })
                 break;
+            case LinksMenu.NEW_COMPANY_HANDBOOK:
+                getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
+                    let checkLinks = Object.values(linksSubMenu.NEW_COMPANY_HANDBOOK)
+                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 2).each(($link, i) => {
+                        expect($link.text().trim()).to.include(checkLinks[i]);
+                    })
+                })
+                break;
         }
     }
 
@@ -129,23 +139,24 @@ class Mieinfo {
                     expect($link.text().trim()).to.include(linksProdottiIcon[i]);
                 })
                 break
+                //TODO: Finire mie info
             case LinksMenu.INIZIATIVE:
                 const linksIniziativeCard = [
                     'Stop&Drive',
-                    'Proponi LTC',
-                    'Proponi TCM',
-                    'Mensilizzazione Rami Vari',
+                    // 'Mensilizzazione Rami Vari',
                     'Mensilizzazione Auto',
                     'Clienti Valore Extra',
-                    'Allianzpay',
-                    'Busta Arancione',
                     'Winback Motor',
                     'Decommissioning telematici',
                     'Digitalizzazione del certificato',
-                    'Attestato di rischio dinamico'
+                    'AllianzPay',
+                    'Proponi LTC',
+                    'Proponi TCM',
+                    // 'Busta Arancione',
+                    // 'Attestato di rischio dinamico'
                 ]
-                getIFrame().find('[class="container"]').then($card => {
-                    cy.wrap($card).find('[class="grid-item card-container--elements"]').should('have.length', 12).each(($link, i) => {
+                getIFrame().find('[class="product-icons--content"]:visible').then($card => {
+                    cy.wrap($card).find('[class="product-icon--link"]:visible').should('have.length', 9).each(($link, i) => {
                         expect($link.text().trim()).to.include(linksIniziativeCard[i]);
                     })
                 })
@@ -303,6 +314,7 @@ class Mieinfo {
                 getIFrame().find('h1:contains("Il Mondo Allianz")').should('be.visible')
                 break;
             case LinksMenu.NEW_COMPANY_HANDBOOK:
+                getIFrame().find('h1:contains("Test Handbook per rilascio")').should('be.visible')
                 break;
         }
     }
@@ -487,8 +499,8 @@ class Mieinfo {
         getIFrame().contains(linksIniziative.PROPONI_TCM).click()
         getIFrame().find('h1:contains("' + linksIniziative.PROPONI_TCM + '")').should('be.visible')
 
-        getIFrame().contains(linksIniziative.MENSILIZZAZIONE_RAMI_VARI).click()
-        getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_RAMI_VARI + '")').should('be.visible')
+        // getIFrame().contains(linksIniziative.MENSILIZZAZIONE_RAMI_VARI).click()
+        // getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_RAMI_VARI + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.MENSILIZZAZIONE_AUTO).click()
         getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_AUTO + '")').should('be.visible')
@@ -499,20 +511,20 @@ class Mieinfo {
         getIFrame().contains(linksIniziative.ALLIANZPAY).click()
         getIFrame().find('h1:contains("' + linksIniziative.ALLIANZPAY + '")').should('be.visible')
 
-        getIFrame().contains(linksIniziative.BUSTA_ARANCIONE).click()
-        getIFrame().find('h1:contains("' + linksIniziative.BUSTA_ARANCIONE + '")').should('be.visible')
+        // getIFrame().contains(linksIniziative.BUSTA_ARANCIONE).click()
+        // getIFrame().find('h1:contains("' + linksIniziative.BUSTA_ARANCIONE + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.WINBACK_MOTOR).click()
         getIFrame().find('h1:contains("' + linksIniziative.WINBACK_MOTOR + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.DECOMMISSIONING_TELEMATICI).click()
-        getIFrame().find('h1:contains("'+linksIniziative.DECOMMISSIONING_TELEMATICI+'")').should('be.visible')
+        getIFrame().find('h1:contains("' + linksIniziative.DECOMMISSIONING_TELEMATICI + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR).click()
         getIFrame().find('h1:contains("' + linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR + '")').should('be.visible')
 
-        getIFrame().contains(linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO).click()
-        getIFrame().find('h1:contains("' + linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO + '")').should('be.visible')
+        // getIFrame().contains(linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO).click()
+        // getIFrame().find('h1:contains("' + linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO + '")').should('be.visible')
 
         getIFrame().find('a[href="/lemieinfo/iniziative/test"]').contains(linksIniziative.TEST).click()
         getIFrame().find('h3:contains("Collettore Hbox 1")').should('be.visible')
@@ -605,8 +617,8 @@ class Mieinfo {
         getIFrame().find('a[href="/lemieinfo/risorse-per-l\'agenzia/link-utili"]').contains(linksRisorseAgenzie.LINK_UTILI).click()
         getIFrame().find('h1:contains("' + linksRisorseAgenzie.LINK_UTILI + '")').should('be.visible')
 
-        getIFrame().contains(linksRisorseAgenzie.MINISITO_IDD).click()
-        getIFrame().find('h1:contains("' + linksRisorseAgenzie.MINISITO_IDD + '")').should('be.visible')
+        getIFrame().contains(linksRisorseAgenzie.IDD).click()
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.IDD + '")').should('be.visible')
     }
 
     /**

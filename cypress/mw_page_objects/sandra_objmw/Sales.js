@@ -26,7 +26,7 @@ const getIFrameCampagne = () => {
 //#endregion
 
 const LinksRapidi = {
-    NUOVO_SFERA: 'Nuovo Sfera',  //! seconda finestra
+   // NUOVO_SFERA: 'Nuovo Sfera',  //! seconda finestra
     SFERA: 'Sfera',
     CAMPAGNE_COMMERCIALI: 'Campagne Commerciali', //! seconda finestra
     RECUPERO_PREVENTIVI_E_QUOTAZIONI: 'Recupero preventivi e quotazioni',
@@ -91,12 +91,12 @@ class Sales {
         const linksCollegamentiRapidi = Object.values(LinksRapidi)
 
         if (!Cypress.env('monoUtenza'))
-            cy.get('app-quick-access').find('a').should('have.length', 6).each(($link, i) => {
+            cy.get('app-quick-access').find('a').should('have.length', 5).each(($link, i) => {
                 expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
             })
         else {
 
-            delete LinksRapidi.NUOVO_SFERA
+           // delete LinksRapidi.NUOVO_SFERA
             delete LinksRapidi.CAMPAGNE_COMMERCIALI
             const linksCollegamentiRapidi = Object.values(LinksRapidi)
             cy.get('app-quick-access').find('a').should('have.length', 4).each(($link, i) => {
@@ -200,9 +200,11 @@ class Sales {
      * @param {string} page - nome del link
      */
     static clickLinkOnEmettiPolizza(page) {
-        cy.wait(3000)
+        cy.wait(6000)
         cy.contains('Emetti polizza').click({ force: true })
+        cy.wait(10000)
         cy.get('.card-container').find('lib-da-link').contains(page).click()
+        cy.wait(5000)
         switch (page) {
             case LinksOnEmettiPolizza.PREVENTIVO_MOTOR:
                 cy.intercept({

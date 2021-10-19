@@ -20,9 +20,12 @@ const faker = require('faker')
 const os = require('os')
 const mysql = require('mysql')
 const moment = require('moment')
+const { resolve } = require('path')
+
 
 //#region Mysql
 function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
+
     const connection = mysql.createConnection(dbConfig)
     connection.connect((err) => {
         if (err) throw err;
@@ -318,5 +321,6 @@ module.exports = (on, config) => {
         getUsername() {
             return os.userInfo().username
         }
+
     })
 };

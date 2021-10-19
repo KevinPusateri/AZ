@@ -22,47 +22,48 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
+let customImpersonification
 //#endregion
 
 //#region Before After
-before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-            insertedId = results.insertId
-        })
+if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è attiva 
+    before(() => {
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
 
-        let customImpersonification = {
-            "agentId": "ARGMOLLICA3",
-            "agency": "010745000"
-        }
-        LoginPage.logInMWAdvanced(customImpersonification)
+            customImpersonification = {
+                "agentId": "ARGMOLLICA3",
+                "agency": "010745000"
+            }
+            LoginPage.logInMWAdvanced(customImpersonification)
+        })
     })
-})
-beforeEach(() => {
-    cy.preserveCookies()
-})
-afterEach(function () {
-    if (this.currentTest.state !== 'passed') {
+    beforeEach(() => {
+        cy.preserveCookies()
+    })
+    afterEach(function () {
+        if (this.currentTest.state !== 'passed') {
+            TopBar.logOutMW()
+            //#region Mysql
+            cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+                let tests = testsInfo
+                cy.finishMysql(dbConfig, insertedId, tests)
+            })
+            //#endregion
+            Cypress.runner.stop();
+        }
+    })
+    after(function () {
         TopBar.logOutMW()
         //#region Mysql
         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
             let tests = testsInfo
-            cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+            cy.finishMysql(dbConfig, insertedId, tests)
         })
         //#endregion
-        Cypress.runner.stop();
-    }
-})
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
     })
-    //#endregion
-})
-//#endregion Before After
+    //#endregion Before After
+}
 
 let retrivedClient
 let retrivedPartyRelations
@@ -75,21 +76,24 @@ describe('Matrix Web : Convenzioni', {
     it('Come delegato accedere all\'agenzia 01-745000 e cercare un cliente PF che abbia un legame familiare\n' +
         'Inserire una Convezione a piacere tra quelli presenti, inserire Matricola e Ruolo "Convenzionato\n' +
         'N.B. Prendersi nota delle convenzioni e del legame\n' +
-        'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', () => {
-            cy.log('Retriving client with relations, please wait...')
-            cy.getPartyRelations().then(currentClient => {
-                cy.log('Retrived client : ' + currentClient[0].name + ' ' + currentClient[0].firstName)
-                cy.log('Retrived party relation : ' + currentClient[1].name + ' ' + currentClient[1].firstName)
-                retrivedClient = currentClient[0]
-                retrivedPartyRelations = currentClient[1]
-                SintesiCliente.visitUrlClient(currentClient[0].customerNumber, false)
-                DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-                DettaglioAnagrafica.clickSubTab('Convenzioni')
-                DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
-                DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'FINSEDA', 'Convenzionato').then((retrivedConvenzione) => {
-                    DettaglioAnagrafica.checkConvenzioneInserito(retrivedConvenzione)
+        'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', function () {
+            if (!Cypress.env('monoUtenza')) {
+
+                cy.log('Retriving client with relations, please wait...')
+                cy.getPartyRelations().then(currentClient => {
+                    cy.log('Retrived client : ' + currentClient[0].name + ' ' + currentClient[0].firstName)
+                    cy.log('Retrived party relation : ' + currentClient[1].name + ' ' + currentClient[1].firstName)
+                    retrivedClient = currentClient[0]
+                    retrivedPartyRelations = currentClient[1]
+                    SintesiCliente.visitUrlClient(currentClient[0].customerNumber, false)
+                    DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+                    DettaglioAnagrafica.clickSubTab('Convenzioni')
+                    DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
+                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'BANCO DI NAPOLI', 'Convenzionato').then((retrivedConvenzione) => {
+                        DettaglioAnagrafica.checkConvenzioneInserito(retrivedConvenzione)
+                    })
                 })
-            })
+            } else this.skip()
         });
 
     it('Accedere alla scheda del cliente con cui c\'è il legame\n' +
@@ -98,35 +102,39 @@ describe('Matrix Web : Convenzioni', {
         '- si apra il campo "Aderenti Convenzione" nel cui menu a tendina sia presente il nome del cliente con cui c\'è il legame.\n' +
         'Scegliere conferma e verificare che:\n' +
         '- l\'operazione vada a buon fine\n' +
-        '- sia presente la convenzione\n', () => {
-            DettaglioAnagrafica.clickSubTab('Legami')
-            Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
-            SintesiCliente.checkAtterraggioName(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
-            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-            DettaglioAnagrafica.clickSubTab('Convenzioni')
-            DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
-            //? Se non facevo il wrap, andava in esecuzione come prima istruzione dell'it il checkConvenzioneInserito
-            cy.wrap(null).then(() => {
-                DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'FINSEDA', 'Familiare del Convenzionato', retrivedClient.name + ' ' + retrivedClient.firstName).then((retrivedRelatedConvenzione) => {
-                    DettaglioAnagrafica.checkConvenzioneInserito(retrivedRelatedConvenzione)
+        '- sia presente la convenzione\n', function () {
+            if (!Cypress.env('monoUtenza')) {
+                DettaglioAnagrafica.clickSubTab('Legami')
+                Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
+                SintesiCliente.checkAtterraggioName(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
+                DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+                DettaglioAnagrafica.clickSubTab('Convenzioni')
+                DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
+                //? Se non facevo il wrap, andava in esecuzione come prima istruzione dell'it il checkConvenzioneInserito
+                cy.wrap(null).then(() => {
+                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'BANCO DI NAPOLI', 'Familiare del Convenzionato', retrivedClient.name + ' ' + retrivedClient.firstName).then((retrivedRelatedConvenzione) => {
+                        DettaglioAnagrafica.checkConvenzioneInserito(retrivedRelatedConvenzione)
+                    })
                 })
-            })
+            } else this.skip()
         });
 
     it('Accedere nuovamente alla scheda del convenzionato e da Azioni scegliere Elimina' +
         'Verificare che:' +
         '- l\'operazione vada a buon fine' +
-        '- la convenzione non sia più presente (anche per il familiare)', () => {
-            SintesiCliente.visitUrlClient(retrivedClient.customerNumber, false)
-            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-            DettaglioAnagrafica.clickSubTab('Convenzioni')
-            DettaglioAnagrafica.checkConvenzioniPresenti(true, true)
+        '- la convenzione non sia più presente (anche per il familiare)', function () {
+            if (!Cypress.env('monoUtenza')) {
+                SintesiCliente.visitUrlClient(retrivedClient.customerNumber, false)
+                DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+                DettaglioAnagrafica.clickSubTab('Convenzioni')
+                DettaglioAnagrafica.checkConvenzioniPresenti(true, true)
 
-            DettaglioAnagrafica.clickSubTab('Legami')
-            Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
-            SintesiCliente.checkAtterraggioName(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
-            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-            DettaglioAnagrafica.clickSubTab('Convenzioni')
-            DettaglioAnagrafica.checkConvenzioniPresenti(false)
+                DettaglioAnagrafica.clickSubTab('Legami')
+                Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
+                SintesiCliente.checkAtterraggioName(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
+                DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+                DettaglioAnagrafica.clickSubTab('Convenzioni')
+                DettaglioAnagrafica.checkConvenzioniPresenti(false)
+            } else this.skip()
         });
 })

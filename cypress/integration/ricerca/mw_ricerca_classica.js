@@ -24,9 +24,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-            insertedId = results.insertId
-        })
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
         LoginPage.logInMWAdvanced()
     })
 })
@@ -41,7 +39,7 @@ after(function () {
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
 
@@ -70,21 +68,26 @@ describe('Buca di Ricerca', {
         SCU.checkAggancioPolizzePropostePreventivi()
     })
 
+
+    it('Verifica Click su Rubrica', function () {
+        if (!Cypress.env('monoUtenza')) {
+            LandingRicerca.searchRandomClient(false)
+            LandingRicerca.clickRicercaClassicaLabel('Rubrica')
+            SCU.checkAggancioRubrica()
+        } else this.skip()
+    })
+
+    it('Verifica Click su Ricerca News', function () {
+        if (!Cypress.env('monoUtenza')) {
+            LandingRicerca.searchRandomClient(false)
+            LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
+            News.checkAtterraggio(true)
+        } else this.skip()
+    })
+
     it('Verifica Click su Ricerca Preventivi', function () {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.clickRicercaClassicaLabel('Ricerca Preventivi')
         SCU.checkAggancioPolizzePropostePreventivi()
-    })
-
-    it('Verifica Click su Rubrica', function () {
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.clickRicercaClassicaLabel('Rubrica')
-        SCU.checkAggancioRubrica()
-    })
-
-    it('Verifica Click su Ricerca News', function () {
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
-        News.checkAtterraggio(true)
     })
 })

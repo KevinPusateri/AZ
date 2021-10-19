@@ -1,6 +1,5 @@
 /**
- * @author Kevin Pusateri <kevin.pusateri@allianz.it>
- * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+ * @author Sandra Espeche <Sandra.marina.espeche@allianz.it>
  */
 
 /// <reference types="Cypress" />

@@ -13,6 +13,7 @@ const moment = require('moment')
 const os = require('os')
 const CryptoJS = require('crypto-js')
 
+
 //
 //
 // -- This is a parent command --
@@ -235,7 +236,6 @@ Cypress.Commands.add('getPartyRelations', () => {
   cy.getUserWinLogin().then(data => {
     cy.generateTwoLetters().then(nameRandom => {
       cy.generateTwoLetters().then(firstNameRandom => {
-        debugger
         cy.request({
           method: 'GET',
           retryOnStatusCodeFailure: true,
@@ -252,7 +252,7 @@ Cypress.Commands.add('getPartyRelations', () => {
             let clientiPotenziali = response.body.filter(el => {
               return el.partyCategory[0] === 'P'
             })
-  
+
             if (clientiPotenziali.length > 0) {
               let currentClient = clientiPotenziali[Math.floor(Math.random() * clientiPotenziali.length)]
               cy.request({
@@ -773,11 +773,11 @@ Cypress.Commands.add('getSSNAndBirthDateFromTarga', (targa) => {
           debugger
           let parser = new DOMParser()
           let xmlDoc = parser.parseFromString(wrappedBody[2].outerText, "text/xml")
-          let currentBirthDate =  xmlDoc.getElementsByTagName("DataNascita")[0].childNodes[0].nodeValue.split(' ')[0]
+          let currentBirthDate = xmlDoc.getElementsByTagName("DataNascita")[0].childNodes[0].nodeValue.split(' ')[0]
 
           return {
-            'ssn' : respANIA.body.itemList[0].contractorFiscalCode,
-            'birthDate' : currentBirthDate
+            'ssn': respANIA.body.itemList[0].contractorFiscalCode,
+            'birthDate': currentBirthDate
           }
         })
     })
@@ -814,4 +814,69 @@ Cypress.Commands.add('selfWindow', () => {
   });
 })
 
+Cypress.Commands.add('startMysql', (dbConfig, testName, currentEnv, data) => {
 
+  if (Cypress.env('enableLogDB')) {
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+      return results.insertId
+    })
+
+  }
+})
+
+Cypress.Commands.add('finishMysql', (dbConfig, insertedId, tests) => {
+  if (Cypress.env('enableLogDB'))
+    cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+})
+
+//#region PDF Parse
+Cypress.Commands.add('parsePdf', () => {
+
+  cy.fixture("Autocertificazione_Test.pdf", 'binary')
+    .then((file) => Cypress.Blob.binaryStringToBlob(file, 'application/pdf'))
+    .then((blob) => {
+      var formdata = new FormData();
+      formdata.append("file", blob);
+      cy.log('Upload PDF file to parse...')
+      cy.request({
+        url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + '/api/v1/document',
+        method: 'POST',
+        log: false,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        body: formdata
+      }).then(resp => {
+        expect(resp.status).to.eq(202)
+        expect(resp).to.have.property('headers')
+        let location = resp.headers['location']
+        cy.log('Waiting PDF to be parsed...')
+
+        const waitForPdf = () => {
+          cy.request({
+            url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + location,
+            method: 'GET',
+            log: false
+          }).then(respGenerated => {
+            if (respGenerated.status === 200)
+              waitForPdf()
+            else {
+              cy.log('PDF file processed!')
+              cy.request({
+                url: 'http://' + Cypress.env('hostParsr') + ':' + Cypress.env('portParsr') + respGenerated.body.markdown,
+                method: 'GET',
+                log: false
+              }).then(resp => {
+                expect(resp.status).to.eq(200)
+
+              })
+            }
+          })
+        }
+        
+        waitForPdf()
+      })
+    })
+  //#endregion
+
+})

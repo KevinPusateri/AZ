@@ -24,9 +24,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
   cy.getUserWinLogin().then(data => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-      insertedId = results.insertId
-    })
+    cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
     LoginPage.logInMWAdvanced()
   })
 })
@@ -41,7 +39,7 @@ after(function () {
   //#region Mysql
   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
     let tests = testsInfo
-    cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    cy.finishMysql(dbConfig, insertedId, tests)
   })
   //#endregion
 
@@ -57,9 +55,9 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.checkLinksOnMenuInfo()
   })
 
-  it('Verifica aggancio Primo Piano', function () {
+  it('Verifica aggancio Primo piano', function () {
     TopBar.clickMieInfo()
-    Mieinfo.clickLinkOnMenu('Primo Piano')
+    Mieinfo.clickLinkOnMenu('Primo piano')
   })
 
   it('Verifica aggancio Raccolte', function () {
@@ -139,20 +137,6 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.clickLinkOnMenu('Circolari')
   });
 
-  //TODO : PAGINA BIANCA DA TESTARE  -- Add TFS
-  // context('Menu New Company Handbook', () => {
-  //   it('Verifica aggancio New Company Handbook', function () {
-  //     TopBar.clickMieInfo()
-  //     Mieinfo.clickLinkOnMenu('New Company Handbook')
-  //     Mieinfo.checkLinksOnSubMenu('New Company Handbook')
-  //   })
-  //   it('Verifica aggancio su tutte le sotto pagine di New Company Handbook', function () {
-  //     TopBar.clickMieInfo()
-  //     Mieinfo.clickLinkOnMenu('New Company Handbook');
-  //     Mieinfo.checkPageOnSubMenu('New Company Handbook')
-  //   })
-  // })
-
   it('Verifica aggancio Company Handbook', function () {
     TopBar.clickMieInfo()
     Mieinfo.clickLinkOnMenu('Company Handbook')
@@ -212,4 +196,16 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     Mieinfo.clickLinkOnMenu('Il Mondo Allianz');
     Mieinfo.checkPageOnSubMenu('Il Mondo Allianz')
   })
+
+  //TODO : PAGINA BIANCA DA TESTARE  -- Add TFS
+  // it.only('Verifica aggancio New company handbook', function () {
+  //   TopBar.clickMieInfo()
+  //   Mieinfo.clickLinkOnMenu('New company handbook')
+  //   Mieinfo.checkLinksOnSubMenu('New company handbook')
+  // })
+  // it.only('Verifica aggancio su tutte le sotto pagine di New company handbook', function () {
+  //   TopBar.clickMieInfo()
+  //   Mieinfo.clickLinkOnMenu('New company handbook');
+  //   Mieinfo.checkPageOnSubMenu('New company handbook')
+  // })
 })

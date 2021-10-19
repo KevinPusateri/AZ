@@ -34,9 +34,7 @@ let nuovoClientePG
 //#region Before After
 before(() => {
   cy.getUserWinLogin().then(data => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-      insertedId = results.insertId
-    })
+    cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
     LoginPage.logInMWAdvanced()
   })
   cy.task('nuovoClientePersonaGiuridica').then((object) => {
@@ -62,7 +60,7 @@ afterEach(function () {
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
       let tests = testsInfo
-      cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+      cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
     Cypress.runner.stop();
@@ -73,7 +71,7 @@ after(function () {
   //#region Mysql
   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
     let tests = testsInfo
-    cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+    cy.finishMysql(dbConfig, insertedId, tests)
   })
   //#endregion
 

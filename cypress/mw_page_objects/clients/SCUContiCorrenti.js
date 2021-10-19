@@ -40,7 +40,7 @@ class SCUContiCorrenti {
 
             getSCU().find('#intestatario').type(client.name)
             contoCorrente.intestatario = client.name
-
+            cy.wait(5000)
             var checkCod = this.checkCodiceFISCALE(contoCorrente.vat)
             if (checkCod)
                 getSCU().find('#codFiscale').type(contoCorrente.vat)
@@ -103,6 +103,7 @@ class SCUContiCorrenti {
                             var validIban = ibantools.isValidIBAN(newIban)
                             if (validIban) {
                                 getSCU().find('#iban').clear().type(newIban)
+                                cy.wait(5000)
                                 getSCU().find('#submit:contains("Salva"):visible').click()
                                 getSCU().find('#submit:contains("Salva"):visible').click().wait(8000);
                                 resolve(newIban);
