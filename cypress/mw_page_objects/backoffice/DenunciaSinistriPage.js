@@ -38,6 +38,21 @@ class DenunciaSinistriPage {
             cy.wait(500)        
         })
     }
+     /**
+     * Click on object defined by locator id
+     * @param {string} id : locator object id
+     */
+      static clickSelect_ById(id, text) {             
+        getIFrameDenuncia().find(id).should('be.visible').then((btn) => {    
+            expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
+            const $btn = Cypress.$(btn)
+            cy.wrap($btn)
+            .should('be.visible')
+            .wait(1000)
+            .select(text).log('>> object with id ['+id+'] and text='+text+' is clicked')
+        })       
+        cy.wait(2000)
+    }
     /**
      * Click on object defined by locator id
      * @param {string} id : locator object id
@@ -72,8 +87,9 @@ class DenunciaSinistriPage {
     }
     
     static clickObj_ByIdAndAttr(id, attr, value) {
-        getIFrameDenuncia().find(id).should('have.attr', attr).contains(value).click().log('>> object with label ['+label+ '] is clicked')       
-        cy.wait(2000)
+        debugger
+        getIFrameDenuncia().find(id).should('have.attr', attr, value).click().log('>> object with attr ('+attr+'='+value+') is clicked')       
+        cy.wait(1000)
     }
     /**
      * Click on object defined by class attribute and content text displayed as label
@@ -82,8 +98,7 @@ class DenunciaSinistriPage {
      */
     static clickBtn_ByClassAndText(classvalue, label) {                          
             getIFrameDenuncia().find('[class="'+classvalue+'"]').contains(label).should('be.visible').click().log('>> object with label ['+label+ '] is clicked')       
-            cy.wait(2000)    
-        
+            cy.wait(2000)       
     }
     /**
      * Click on link ('a') element, defined by href attribute value
@@ -170,9 +185,9 @@ class DenunciaSinistriPage {
             if (value === '')
                 getIFrameDenuncia().find(id).should('be.visible').and('exist').clear().log('>> clean object value')        
             else
-                getIFrameDenuncia().find(id).should('be.visible').and('exist').type(value).log('>> value: ' + value +' entered')        
-            cy.wait(1000)
+                getIFrameDenuncia().find(id).should('be.visible').and('exist').type(value).log('>> value: ' + value +' entered')                   
             resolve(true)
+            cy.wait(1000)
         });
     }
     /**
@@ -187,7 +202,8 @@ class DenunciaSinistriPage {
             expect(listing).to.have.length(listingCount);
             cy.log('>> Length :' + listingCount)          
         });
-        getIFrameDenuncia().find(id)  
+        getIFrameDenuncia().find(id)
+        cy.wait(1000)
     }
     /**
      * Defined on object identified by its @id, the function check all list values
@@ -208,17 +224,17 @@ class DenunciaSinistriPage {
      * @param {string} value : value to be entered
      */
      static getIdInListValues_ById(id, value) {
-        return new Cypress.Promise((resolve, reject) => {
-            getIFrameDenuncia().find(id).each(($el, index, $list) => {
-                if ($el.text().includes(value)) {
-                    cy.wrap(index).then((value) => {  
+        
+        getIFrameDenuncia().find(id).each(($el, index, $list) => {            
+            if ($el.text().includes(value)) {                
+                cy.wrap(index).then(value => {         
                     cy.log('>> Element('+(index)+ ') value: '+value)
-                    resolve(index)
-                    })
-                }               
-            reject(-1) 
-            })
-        })
+                    return(index)    
+                });      
+            }
+        })                              
+        return (-1) 
+
     }
     /**
      * Get a text value defined on object identified by its @id
@@ -280,7 +296,7 @@ class DenunciaSinistriPage {
             .then(text => {         
                 cy.log('>> read the value: ' + text)
                 resolve((text.toString()))                
-                });
+            });
         });
     }
    /**
@@ -357,7 +373,6 @@ class DenunciaSinistriPage {
             assert.isTrue(validation,"Currency Check on '"+numstr+"' value ");                
         });
     }
-    
     /**
      * Put a @str value and is verified if its a valid EURO currency @str (ex.: "EURO") 
      * @param {string} str : string value
@@ -370,7 +385,6 @@ class DenunciaSinistriPage {
                 assert.isTrue(validation,"EURO Currency Check on '"+str+"' value ");                
         });
     } 
-
     /**
      * Get a date before or after today's date of +-ndays (in local format)
      * @param {int} ndays : plus or miuns days
@@ -387,7 +401,6 @@ class DenunciaSinistriPage {
             });
         });
     }
-    
     //#endregion  Generic function
     static getValueInClaimDetails(index) {
         return new Cypress.Promise((resolve) => {

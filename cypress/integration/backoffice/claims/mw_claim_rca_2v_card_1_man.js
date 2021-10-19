@@ -55,12 +55,12 @@ after(function () {
 //#region Script Variables
 
 var ramo_pol = '31-Globale Auto'
-var cliente_cognome = 'Marin'
-var cliente_nome = 'Giorgio'
-var cliente_località = 'San Stino Di Livenza'
-var cliente_dt_nascita = '17/04/1957'
-var cliente_num_pol = '79297770'
-var cliente_targa = 'EM825CA'
+var cliente_cognome = 'Toccane'
+var cliente_nome = 'Francesco'
+var cliente_località = 'Conegliano'
+var cliente_dt_nascita = '25/03/1983'
+var cliente_num_pol = '79323432'
+var cliente_targa = 'DS246AT'
 
 var controparte_proprietario_cognome = 'Turco'
 var controparte_proprietario_cognome = 'Monica'
@@ -123,7 +123,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickBtn_ById('#avantiListaPolizze');       
     });
 
-    it('Dettaglio di polizza: visualizzazione'+
+    it('Dettaglio di polizza: visualizzazione e selezione'+
     '', function () {
 
         // Visualizzazione del dettaglio di polizza 
@@ -134,11 +134,25 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
 
         // Selezione della copertura
         DenunciaSinistriPage.clickObj_ByLabel('td', copertura_danno)
-        DenunciaSinistriPage.getIdInListValues_ById('#GARANZIE_listaGaranzie > table > tbody > tr', copertura_danno).then((idx) => {                      
-            cy.log('[it]>> [indice garanzia: '+idx);    
-            DenunciaSinistriPage.clickObj_ByIdAndAttr('#SelectedCheckBox', 'myindex', idx); 
-        }); 
-        
+           
+        let idx = DenunciaSinistriPage.getIdInListValues_ById('#GARANZIE_listaGaranzie > table > tbody > tr', copertura_danno)  
+        DenunciaSinistriPage.clickObj_ByIdAndAttr('#SelectedCheckBox', 'myindex', 0);
+        cy.log('[it]>> [indice garanzia (i): '+idx);
+                
+        DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');
+    });
+
+    it('Inserimento dati per il risarcimento diretto ' +
+    '', function () {
+
+        // Selezione dei veicoli coinvolti
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_numVeicoli',2)
+        // Selezione della dichiarazione di responsabilità
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_dichiarazioneRespons',sinistro_dichiarazione)
+         // Selezione della firma cai
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_flagCAI2firme', sinistro_firma_cai)
+        DenunciaSinistriPage.clickObj_ByIdAndAttr('#GARANZIE_contraente', 'value', 'si');
+              
         DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');
     });
 });

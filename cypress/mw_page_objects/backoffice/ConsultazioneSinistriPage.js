@@ -262,7 +262,7 @@ class ConsultazioneSinistriPage {
                 });
         });
     }
-   /**
+    /**
      * Check if exist id object in body
      */
     static IdExist(id) {
@@ -337,7 +337,6 @@ class ConsultazioneSinistriPage {
             assert.isTrue(validation,"Currency Check on '"+numstr+"' value ");                
         });
     }
-    
     /**
      * Put a @str value and is verified if its a valid EURO currency @str (ex.: "EURO") 
      * @param {string} str : string value
