@@ -332,7 +332,6 @@ class ConsultazioneSinistriPage {
         const regexExp = /\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/;        
         var pattern = new RegExp(regexExp)       
         cy.wrap(numstr).then((validation) => {  
-            debugger
             validation = pattern.test(numstr)
             assert.isTrue(validation,"Currency Check on '"+numstr+"' value ");                
         });

@@ -95,7 +95,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickBtn_ById('#eseguiRicerca');       
     });
 
-    it('Dati cliente (ai fini della gestione del sinistro): inserimento dati obbligatori di denuncia', function () {
+    
+    it('Dati cliente (ai fini della gestione del sinistro): inserimento dati obbligatori di denuncia: '+
+    'data avvenimento, data denuncia, data pervenimento è località dell\'avvenuto sinistro', function () {
         DenunciaSinistriPage.getPlusMinusDate(-2).then((dtAvv) => {          
             cy.log('[it]>> [Data avvenimento sinistro]: '+dtAvv);           
             DenunciaSinistriPage.setValue_ById('#CLIENTE_dataAvvenimentoRisultato', dtAvv)   
@@ -112,7 +114,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.setValue_ById('#CLIENTE_descDinamica', sinistro_descrizione_danno)
         DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
 
-        DenunciaSinistriPage.clickBtn_ById('#CmdAvanti');        
+        DenunciaSinistriPage.clickBtn_ById('#CmdAvanti');
+        
     });
 
     it('Lista polizze: Selezione della polizza'+
@@ -128,30 +131,44 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         // Visualizzazione del dettaglio di polizza 
         DenunciaSinistriPage.clickObj_ByLabel('a', 'Avanti');        
     });
-    it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+copertura_danno+
-    '', function () {
+    it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
+    copertura_danno, function () {
 
         // Selezione della copertura
         DenunciaSinistriPage.clickObj_ByLabel('td', copertura_danno)
+           
         let idx = DenunciaSinistriPage.getIdInListValues_ById('#GARANZIE_listaGaranzie > table > tbody > tr', copertura_danno)  
-        DenunciaSinistriPage.clickObj_ByIdAndAttr('#SelectedCheckBox', 'myindex', idx);
+        DenunciaSinistriPage.clickObj_ByIdAndAttr('#SelectedCheckBox', 'myindex', 0);
         cy.log('[it]>> [indice garanzia (i): '+idx);
-        
-        DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');
+                        
     });
 
-    it('Inserimento dati per il risarcimento diretto ' +
-    '', function () {
-
-        // Selezione dei veicoli coinvolti
-        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_numVeicoli',2)
+    it('Inserimento dati per il risarcimento diretto con 2 veicoli conivolti e con la ' +
+    'seguente dichiarazione di responsabilità del cliente: "'+sinistro_dichiarazione+'"', function () {
+        
         // Selezione della dichiarazione di responsabilità
-        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_dichiarazioneRespons',sinistro_dichiarazione)
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_dichiarazioneRespons', sinistro_dichiarazione)
+        // Selezione dei veicoli coinvolti
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_numVeicoli', '2')        
          // Selezione della firma cai
         DenunciaSinistriPage.clickSelect_ById('#GARANZIE_flagCAI2firme', sinistro_firma_cai)
+    
+        //Il Conducente veicolo cliente è anche il contraente
         DenunciaSinistriPage.clickObj_ByIdAndAttr('#GARANZIE_contraente', 'value', 'si');
-              
+
         DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');
     });
-    
+
+    it('Lista veicolo/soggetti coinvolti --> selezionare "veicolo"' +
+    '', function () {
+        
+        // Nuovo soggetto coinvolto
+        DenunciaSinistriPage.clickBtn_ById('#newSoggettoCoinvolto')
+        // Selezione soggetto/veicolo coinvolto: veicolo
+        DenunciaSinistriPage.checkObj_ByClassAndText('k-window-title',  'soggetto/ veicolo coinvolto')
+        //DenunciaSinistriPage.checkObj_ById('popup') 
+        DenunciaSinistriPage.clickPopUpObj_ByIdAndAttr('#chkRuolo', 'value', 'veicolo');
+        DenunciaSinistriPage.clickPopUpBtn_ById('#CmdOk')
+    });
+
 });

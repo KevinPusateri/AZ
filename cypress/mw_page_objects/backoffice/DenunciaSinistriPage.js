@@ -24,6 +24,16 @@ const getIFrameDenuncia = () => {
     return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+const getIFramePopUp = () => {
+    getIFrameDenuncia().find('iframe[src="popUpSoggettoControparte.jsp"]')
+        .iframe();
+
+    let iframeFolder = getIFrameDenuncia().find('iframe[src="popUpSoggettoControparte.jsp"]')
+        .its('0.contentDocument').should('exist');
+
+    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+}
+
 class DenunciaSinistriPage {
     
     
@@ -38,6 +48,39 @@ class DenunciaSinistriPage {
             cy.wait(500)        
         })
     }
+    /**
+     * Click on popup object identified by locator id, attribute and its value 
+     * @param {string} id : locator object id
+     * @param {string} attr : attribute object 
+     * @param {string} value : attribute value object 
+     */
+     static clickPopUpObj_ByIdAndAttr(id, attr, value) {             
+        getIFramePopUp().find(id).should('have.attr', attr, value).click().log('>> object with attr ('+attr+'='+value+') is clicked')       
+        cy.wait(2000)
+    }
+    /**
+     * Click on object defined by locator id
+     * @param {string} id : locator object id
+     */
+     static clickPopUpBtn_ById(id) {             
+        getIFramePopUp().find(id).should('be.visible').click().log('>> object with (id='+id+') is clicked')        
+        cy.wait(1000)
+    }
+    /**
+     * Click on object defined by locator id
+     * @param {string} id : locator object id
+     */
+     static clickSelect_ById(id, text) {             
+        getIFrameDenuncia().find(id).should('be.visible').then((btn) => {    
+            expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
+            const $btn = Cypress.$(btn)
+            cy.wrap($btn)
+            .should('exist')
+            .wait(1000)
+            .select(text).log('>> object with id ['+id+'] and text='+text+' was selected')
+        })       
+        cy.wait(2000)
+    }
      /**
      * Click on object defined by locator id
      * @param {string} id : locator object id
@@ -47,9 +90,9 @@ class DenunciaSinistriPage {
             expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
             const $btn = Cypress.$(btn)
             cy.wrap($btn)
-            .should('be.visible')
+            .should('exist')
             .wait(1000)
-            .select(text).log('>> object with id ['+id+'] and text='+text+' is clicked')
+            .select(text).log('>> object with id ['+id+'] and text='+text+' was selected')
         })       
         cy.wait(2000)
     }
@@ -85,7 +128,12 @@ class DenunciaSinistriPage {
         getIFrameDenuncia().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(1000)        
     }
-    
+    /**
+     * Click on object identified by locator id, attribute and its value 
+     * @param {string} id : locator object id
+     * @param {string} attr : attribute object 
+     * @param {string} value : attribute value object 
+     */
     static clickObj_ByIdAndAttr(id, attr, value) {
         debugger
         getIFrameDenuncia().find(id).should('have.attr', attr, value).click().log('>> object with attr ('+attr+'='+value+') is clicked')       
@@ -133,6 +181,21 @@ class DenunciaSinistriPage {
         cy.wait(1000)                 
     }
     /**
+     * Check if an object identified by id 
+     * @param {string} id : class attribute 
+     */
+     static checkObj_ById(id) {    
+        return new Cypress.Promise((resolve) => {
+            debugger
+            let $el = getIFrameDenuncia().find(id).should('exist')
+            cy.wrap($el).then(() => {         
+                cy.log('>> object : "' + $el.text() +'" is defined') 
+                resolve($el.text())   
+            });                     
+        });
+        cy.wait(1000)                 
+    }
+    /**
      * Check if an object identified by locator and its label is displayed
      * @param {string} locator : class attribute 
      * @param {string} label : text displayed
@@ -142,8 +205,7 @@ class DenunciaSinistriPage {
             getIFrameDenuncia().find(locator).should('be.visible')
             .then(($val) => {                                       
                 expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
-                let txt = $val.text().trim()                
-                
+                let txt = $val.text().trim()                                
                 let str = label._rejectionHandler0.toString()
                 if (txt.includes(str)) {                   
                     cy.log('>> object with label: "' + str +'" is defined')
@@ -223,8 +285,7 @@ class DenunciaSinistriPage {
      * @param {string} id : locator object id
      * @param {string} value : value to be entered
      */
-     static getIdInListValues_ById(id, value) {
-        
+     static getIdInListValues_ById(id, value) {        
         getIFrameDenuncia().find(id).each(($el, index, $list) => {            
             if ($el.text().includes(value)) {                
                 cy.wrap(index).then(value => {         
@@ -233,8 +294,7 @@ class DenunciaSinistriPage {
                 });      
             }
         })                              
-        return (-1) 
-
+        return (-1)
     }
     /**
      * Get a text value defined on object identified by its @id
@@ -350,8 +410,7 @@ class DenunciaSinistriPage {
      * Put a @str value and is verified if its a date value is included in a correct format 
      * @param {string} str : string date format
      */
-     static containValidDate(str) {
-          
+    static containValidDate(str) {
         const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
         var pattern = new RegExp(regexExp)
         //Tests for a match in a string. It returns true or false.       
@@ -365,7 +424,6 @@ class DenunciaSinistriPage {
      * @param {string} numstr : string currency value
      */
     static isCurrency(numstr) {      
-       
         const regexExp = /\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/;        
         var pattern = new RegExp(regexExp)       
         cy.wrap(numstr).then((validation) => {              
@@ -380,7 +438,6 @@ class DenunciaSinistriPage {
     static isEuroCurrency(str) {                
             const currency = 'EURO';
             cy.wrap(str).then((validation) => { 
-                debugger
                 validation = str.includes(currency)
                 assert.isTrue(validation,"EURO Currency Check on '"+str+"' value ");                
         });
