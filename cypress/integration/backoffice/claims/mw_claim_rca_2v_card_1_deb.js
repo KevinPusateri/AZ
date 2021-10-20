@@ -170,5 +170,17 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickPopUpObj_ByIdAndAttr('#chkRuolo', 'value', 'veicolo');
         DenunciaSinistriPage.clickPopUpBtn_ById('#CmdOk')
     });
+    it('Dati del veicolo controparte (Targa: "' +controparte_targa + '" e compagnia ass.: "' +
+    controparte_compagnia + ") con visualizzazione popUp della lista compagnie e ricerca in base dati Ania", function () {
 
+        DenunciaSinistriPage.setValue_ById('#VEICOLO_targaTarga', controparte_targa);
+        DenunciaSinistriPage.setValue_ById('#VEICOLO_compagnia', controparte_compagnia);
+        DenunciaSinistriPage.clickBtn_ById('#CmdRicercaCompagnia')
+
+        DenunciaSinistriPage.clickPopUpObj_ByLabel('td', controparte_compagnia)       
+        DenunciaSinistriPage.clickPopUpObj_ByIdAndAttr('.field.label-grid > tbody > tr > td:nth-child(2) > .btn', 'onclick', 'closePage(\'OK\')');
+
+        DenunciaSinistriPage.clickBtn_ById('#VEICOLO_datiAnia')
+       // DenunciaSinistriPage.clickBtn_ById('#VEICOLO_soggettoConducenteControparte')        
+    });
 });
