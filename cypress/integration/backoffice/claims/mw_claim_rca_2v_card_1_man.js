@@ -62,11 +62,12 @@ var cliente_dt_nascita = '25/03/1983'
 var cliente_num_pol = '79323432'
 var cliente_targa = 'DS246AT'
 
-var controparte_proprietario_cognome = 'Turco'
-var controparte_proprietario_cognome = 'Monica'
-var controparte_località = 'Zevio'
-var controparte_indirizzo = 'Via Villasbroggia 16B'
-var controparte_proprietario_cod_fis = 'TRCMNC69P44M172E'
+var controparte_conducente_cognome = 'Turco'
+var controparte_conducente_nome = 'Monica'
+var controparte_conducente_sesso = 'F'
+var controparte_conducente_località = 'Zevio'
+var controparte_conducente_indirizzo = 'Via Villasbroggia 16B'
+var controparte_conducente_cod_fis = 'TRCMNC69P44M172E'
 var controparte_compagnia = 'ALLIANZ SPA'
 var controparte_targa = 'EM000AJ'
 var controparte_marca = 'automobiles peugeot'
@@ -169,7 +170,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickPopUpObj_ByIdAndAttr('#chkRuolo', 'value', 'veicolo');
         DenunciaSinistriPage.clickPopUpBtn_ById('#CmdOk')
     });
-    
+
     it('Dati del veicolo controparte (Targa: "' +controparte_targa + '" e compagnia ass.: "' +
     controparte_compagnia + ") con visualizzazione popUp della lista compagnie e ricerca in base dati Ania", function () {
 
@@ -180,7 +181,24 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickPopUpObj_ByLabel('td', controparte_compagnia)       
         DenunciaSinistriPage.clickPopUpObj_ByIdAndAttr('.field.label-grid > tbody > tr > td:nth-child(2) > .btn', 'onclick', 'closePage(\'OK\')');
 
-        DenunciaSinistriPage.clickBtn_ById('#VEICOLO_datiAnia')
-       // DenunciaSinistriPage.clickBtn_ById('#VEICOLO_soggettoConducenteControparte')        
+        DenunciaSinistriPage.clickBtn_ById('#VEICOLO_datiAnia')              
+    });
+
+    it('Dati del conducente di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
+    controparte_conducente_nome + '") ', function () {
+
+        DenunciaSinistriPage.clickBtn_ById('#VEICOLO_soggettoConducenteControparte')
+        DenunciaSinistriPage.setValue_ById('#TxtCognome', controparte_conducente_cognome);
+        DenunciaSinistriPage.setValue_ById('#TxtNome', controparte_conducente_nome);
+        DenunciaSinistriPage.clickSelect_ById('#SOGGETTO_sesso', controparte_conducente_sesso) 
+        DenunciaSinistriPage.setValue_ById('#TxtLocalitaRuo', controparte_conducente_località) 
+        DenunciaSinistriPage.setValue_ById('#TxtIndirizzoRuo', controparte_conducente_indirizzo) 
+        DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita')
+        DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
+        DenunciaSinistriPage.clickBtn_ById('#cercaRuolo')
+        cy.wait(2000)
+        //Salva i dati anagrafici del conducente
+        DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
+        DenunciaSinistriPage.clickBtn_ById('#avantiVeicolo');                   
     });
 });

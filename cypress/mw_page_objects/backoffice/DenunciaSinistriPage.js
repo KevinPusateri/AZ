@@ -115,7 +115,7 @@ class DenunciaSinistriPage {
             .should('be.visible')           
             .click().log('>> object with [locator="'+id+'"] is clicked')
         })
-        cy.wait(1000)
+        cy.wait(2000)
     }
     /**
      * Click on all objects defined by locator id
