@@ -201,4 +201,19 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
         DenunciaSinistriPage.clickBtn_ById('#avantiVeicolo');                   
     });
+
+    it('Verifica dei dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {
+        
+        DenunciaSinistriPage.checkObj_ByText("Conducente Veicolo Controparte");
+        DenunciaSinistriPage.checkObj_ByText(controparte_conducente_cognome)
+        DenunciaSinistriPage.checkObj_ByText(controparte_conducente_nome)
+        DenunciaSinistriPage.checkObj_ByText(controparte_marca)
+        
+        DenunciaSinistriPage.checkObj_ByText("Conducente Veicolo Cliente");
+        DenunciaSinistriPage.checkObj_ByText(cliente_cognome)
+        DenunciaSinistriPage.checkObj_ByText(cliente_nome)
+
+        DenunciaSinistriPage.clickBtn_ById('#avantiListaDanni')    
+        cy.wait(2000)           
+    });
 });
