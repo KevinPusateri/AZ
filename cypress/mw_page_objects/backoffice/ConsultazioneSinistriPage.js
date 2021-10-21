@@ -95,7 +95,7 @@ class ConsultazioneSinistriPage {
      * Check if an object identified by its label is displayed    
      * @param {string} label : text displayed
      */
-    static checkObj_ByText(label) {    
+    static checkObjVisible_ByText(label) {    
         getIFrame().contains(label).should('be.visible').log('>> object with label: "' + label +'" is defined')
         cy.wait(1000)        
     }
@@ -200,10 +200,10 @@ class ConsultazioneSinistriPage {
         })
     }
     /**
-     * Get a text value defined on object identified by its @id
+     * Get a text defined on object identified by its @id
      * @param {string} id : id locator object
      */
-    static getPromiseValue_ByCss(id) {
+    static getPromiseText_ById(id) {
         let value = "";        
         return new Cypress.Promise((resolve, reject) => {
             getIFrame()
@@ -216,11 +216,28 @@ class ConsultazioneSinistriPage {
             });      
         });
     }
+     /**
+     * Get a text defined on object identified by its @id
+     * @param {string} id : id locator object
+     */
+      static getPromiseValue_ById(id) {
+        let value = "";        
+        return new Cypress.Promise((resolve, reject) => {
+            getIFrame()
+            .find(id)
+            .should('be.visible')
+            .invoke('val')  // for input or textarea, .invoke('val')
+            .then(text => {         
+                cy.log('>> read the value: ' + text)              
+                resolve(text.toString())            
+            });      
+        });
+    }
     /**
          * Get a text value defined on object identified by its @id
          * @param {string} id : id locator object 
          */
-    static getPromiseDate_ByCss(id) {
+    static getPromiseDate_ById(id) {
         let value = "";
         const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
 

@@ -140,8 +140,7 @@ class DenunciaSinistriPage {
      * @param {string} attr : attribute object 
      * @param {string} value : attribute value object 
      */
-    static clickObj_ByIdAndAttr(id, attr, value) {
-        debugger
+    static clickObj_ByIdAndAttr(id, attr, value) {        
         getIFrameDenuncia().find(id).should('have.attr', attr, value).click().log('>> object with attr ['+attr+'="'+value+'"] is clicked')       
         cy.wait(1000)
     }
@@ -166,7 +165,7 @@ class DenunciaSinistriPage {
      * Check if an object identified by its label is displayed    
      * @param {string} label : text displayed
      */
-    static checkObj_ByText(label) {    
+    static checkObjVisible_ByText(label) {    
         getIFrameDenuncia().contains(label).should('be.visible').log('>> object with label: "' +label+'" is defined')
         cy.wait(1000)        
     }
@@ -187,18 +186,45 @@ class DenunciaSinistriPage {
         cy.wait(1000)                 
     }
     /**
+     * Check if an object identified by value 
+     * @param {string} value : string value in tag td  
+     */
+    static checkInTbl_ByValue(value) {
+        return new Cypress.Promise((resolve) => {
+            let $el = getIFrameDenuncia().contains('td', value) // gives you the cell 
+            .siblings() // gives you all the other cells in the row                        
+            cy.log('>> object : "' + $el.text() +'" is defined') 
+            resolve($el.text())
+        }); 
+    }
+    /**
      * Check if an object identified by id 
      * @param {string} id : class attribute 
      */
      static checkObj_ById(id) {    
         return new Cypress.Promise((resolve) => {
-            debugger
             let $el = getIFrameDenuncia().find(id).should('exist')
             cy.wrap($el).then(() => {         
                 cy.log('>> object : "' + $el.text() +'" is defined') 
                 resolve($el.text())   
             });                     
         });
+        cy.wait(1000)                 
+    }
+      /**
+     * Check if an object identified by id and value
+     * @param {string} id : class attribute 
+     * @param {string} label : text displayed
+     */
+       static checkObj_ByIdAndLbl(id, label) {              
+        getIFrameDenuncia().find(id).should('exist').then(($input) => {
+            const value = $input.val().toUpperCase();
+            cy.log('>> val: '+ value)
+            if (value.includes(label.toUpperCase())) {                   
+                cy.log('>> object with label: "' +value+ '" is defined')                   
+            } else
+                assert.fail(' object with label: "' +value+ '" is not defined')                
+        })                                                                   
         cy.wait(1000)                 
     }
     /**
@@ -232,8 +258,8 @@ class DenunciaSinistriPage {
             getIFrameDenuncia().find(locator).should('be.visible')
             .then(($val) => {                                       
                 expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
-                let txt = $val.text().trim()                                
-                if (txt.includes(label)) {                   
+                let txt = $val.text().trim().toUpperCase()                              
+                if (txt.includes(label.toUpperCase())) {                   
                     cy.log('>> object with label: "' +label+ '" is defined')
                     resolve(txt)    
                 } else
@@ -291,22 +317,24 @@ class DenunciaSinistriPage {
      * @param {string} id : locator object id
      * @param {string} value : value to be entered
      */
-     static getIdInListValues_ById(id, value) {        
-        getIFrameDenuncia().find(id).each(($el, index, $list) => {            
-            if ($el.text().includes(value)) {                
-                cy.wrap(index).then(value => {         
-                    cy.log('>> Element('+(index)+ ') and value: '+value)
-                    return(index)    
-                });      
-            }
-        })                              
-        return (-1)
+     static getIdInListValues_ById(id, value) {
+        return new Cypress.Promise((resolve, reject) => {     
+            getIFrameDenuncia().find(id).each(($el, index, $list) => {  
+                if ($el.text().includes(value)) {                
+                    cy.wrap(index).then(value => {         
+                        cy.log('>> Element('+(index)+ ') and value: '+value)                              
+                    });
+                    resolve(index)                
+                } else 
+                    resolve (-1)
+            })                              
+        });
     }
     /**
      * Get a text value defined on object identified by its @id
      * @param {string} id : id locator object
      */
-    static getPromiseValue_ByCss(id) {
+    static getPromiseText_ById(id) {
         let value = "";        
         return new Cypress.Promise((resolve, reject) => {
             getIFrameDenuncia()
@@ -320,16 +348,33 @@ class DenunciaSinistriPage {
         });
     }
     /**
+     * Get a text defined on object identified by its @id
+     * @param {string} id : id locator object
+     */
+    static getPromiseValue_ById(id) {
+        let value = "";        
+        return new Cypress.Promise((resolve, reject) => {
+            getIFrameDenuncia()
+            .find(id)
+            .should('be.visible')
+            .invoke('val')  // for input or textarea, .invoke('val')
+            .then(text => {  
+                cy.log('>> read the value: ' + text)              
+                resolve(text.toString())            
+            });      
+        });
+    }
+    /**
      * Get a text value defined on object identified by its @id
      * @param {string} id : id locator object 
      */
-    static getPromiseDate_ByCss(id) {
+    static getPromiseDate_ById(id) {
         let value = "";
         const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
 
         return new Cypress.Promise((resolve, reject) => {
             getIFrameDenuncia()
-            .find(css)
+            .find(id)
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => {         
                 cy.log('>> read the value: ' + text)

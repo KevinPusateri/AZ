@@ -86,28 +86,28 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
     it('"Pagina di ricerca" è verificato che il nome associato al cliente assicurato, la targa, la polizza e la data di avvenimento del sinistro non siano nulli.', function () {
         const cssCliente = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(cssCliente).then((val) => {          
             cy.log('[it]>> [Cliente]: '+val);
             clienteAssicurato = val; 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
         });
 
        const cssTarga = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
-       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTarga).then((val) => {          
+       ConsultazioneSinistriPage.getPromiseText_ById(cssTarga).then((val) => {          
             cy.log('[it]>> [Targa]: '+val);
             targaAssicurato = val; 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
        });
 
        const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
-       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssPolizza).then((val) => {          
+       ConsultazioneSinistriPage.getPromiseText_ById(cssPolizza).then((val) => {          
            cy.log('[it]>> [Polizza]: '+val);
            polizzaAssicurato = val;
            ConsultazioneSinistriPage.isNotNullOrEmpty(val)
        });
 
        const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-       ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtAvv).then((val) => {          
+       ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
             dtAvvenimento = val.trim(); 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)

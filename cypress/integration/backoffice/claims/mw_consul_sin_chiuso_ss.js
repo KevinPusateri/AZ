@@ -64,7 +64,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
          // Verifica (2): la valorizzazione del CLD
          const csscldDanneggiato = '#soggetti_danneggiati > div > div:nth-child(1) > table > tbody > tr:nth-child(1) > td:nth-child(2)'
-         MovimentazioneSinistriPage.getPromiseValue_ByCss(csscldDanneggiato).then((val) => {
+         MovimentazioneSinistriPage.getPromiseText_ById(csscldDanneggiato).then((val) => {
              let dscrpt = val.split(':')[1];        
              cy.log('[it]>> [CLD]: '+dscrpt);
              ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
@@ -72,7 +72,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica (2): Valore della località
         const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer "
-        MovimentazioneSinistriPage.getPromiseValue_ByCss(csslocalità).then((val) => {
+        MovimentazioneSinistriPage.getPromiseText_ById(csslocalità).then((val) => {
             let dscrpt = val.split(':')[1];            
             cy.log('[it]>> [Località]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)

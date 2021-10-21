@@ -84,28 +84,28 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
     it('"Pagina di ricerca" è verificato che il nome associato al cliente assicurato, la targa, la polizza e la data di avvenimento del sinistro non siano nulli.', function () {
         const cssCliente = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(cssCliente).then((val) => {          
             cy.log('[it]>> [Cliente]: '+val);
             clienteAssicurato = val; 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
         });
 
        const cssTarga = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
-       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTarga).then((val) => {          
+       ConsultazioneSinistriPage.getPromiseText_ById(cssTarga).then((val) => {          
             cy.log('[it]>> [Targa]: '+val);
             targaAssicurato = val; 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
        });
 
        const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
-       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssPolizza).then((val) => {          
+       ConsultazioneSinistriPage.getPromiseText_ById(cssPolizza).then((val) => {          
            cy.log('[it]>> [Polizza]: '+val);
            polizzaAssicurato = val;
            ConsultazioneSinistriPage.isNotNullOrEmpty(val)
        });
 
        const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-       ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtAvv).then((val) => {          
+       ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
             dtAvvenimento = val.trim(); 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
@@ -140,7 +140,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
       
         //(1): Valore della località
         const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer"
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(csslocalità).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(csslocalità).then((val) => {
             let dscrpt = val.split(':')[1];            
             cy.log('[it]>> [Località]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
@@ -148,7 +148,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         //(2): la valorizzazione del CLD
         const csscldDanneggiato = '#soggetti_danneggiati > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(csscldDanneggiato).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(csscldDanneggiato).then((val) => {
             let dscrpt = val.split(':')[1];        
             cy.log('[it]>> [CLD]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)                      
@@ -165,7 +165,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica : la valorizzazione del campo "Data incarico" in Sezione Perizie
         const cssDtIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > p'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtIncarico).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(cssDtIncarico).then((val) => {
             let dscrpt = val.split(':')[1];   
             cy.log('[it]>> [Data incarico]: '+dscrpt);
             dtIncarico = dscrpt.trim()  
@@ -174,7 +174,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
          
          // Verifica : la valorizzazione del campo "Data scarico" in Sezione Perizie
          const cssDtScarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
-         ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtScarico).then((val) => {
+         ConsultazioneSinistriPage.getPromiseText_ById(cssDtScarico).then((val) => {
             let dscrpt = val.split(':')[1]; 
             cy.log('[it]>> [Data scarico]: '+dscrpt);
             dtScarico = dscrpt.trim() 
@@ -183,7 +183,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
           // Verifica : la valorizzazione del campo "Fiduciario" in Sezione Perizie
         const cssFiduciario = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssFiduciario).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(cssFiduciario).then((val) => {
             let dscrpt = val.split(':')[1];        
             cy.log('[it]>> [Fiduciario]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)                  
@@ -191,7 +191,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica : la valorizzazione del campo "Tipo incarico" in Sezione Perizie
         const cssTipoIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTipoIncarico).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(cssTipoIncarico).then((val) => {
             let dscrpt = val.split(':')[1];         
             cy.log('[it]>> [Tipo incarico]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)                   
@@ -199,7 +199,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         // Verifica : la valorizzazione del campo "Stato" in Sezione Perizie
         const cssStato = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssStato).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(cssStato).then((val) => {
             let dscrpt = val.split(':')[1];       
             cy.log('[it]>> [Stato]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)                         
@@ -220,7 +220,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             
         // Verifica : la valorizzazione del campo "Data pagamento" in Sezione Pagamenti
         const cssDtPagamento = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > p'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtPagamento).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(cssDtPagamento).then((val) => {
             let dscrpt = val.split(':')[1];  
             cy.log('[it]>> [Data pagamento]: '+dscrpt);
             dtPagamento = dscrpt.trim();
@@ -229,7 +229,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         // Verifica : la valorizzazione del campo "Data invio banca" in Sezione Pagamenti
         const cssDtInvioBanca = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssDtInvioBanca).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(cssDtInvioBanca).then((val) => {
             let dscrpt = val.split(':')[1]; 
             cy.log('[it]>> [Data invio banca]: '+dscrpt);
             dtInvioBanca = dscrpt.trim();
@@ -238,7 +238,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
        // Verifica : la valorizzazione del campo "Causale" in Sezione Pagamenti
         const cssCausale = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCausale).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(cssCausale).then((val) => {
             let dscrpt = val.split(':')[1];        
             cy.log('[it]>> [Causale]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
@@ -246,7 +246,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica : la valorizzazione del campo "Importo" in Sezione Pagamenti
         const cssImporto = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(1)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssImporto).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(cssImporto).then((val) => {
             let dscrpt = val.split(':')[1];
             impPagam = dscrpt;
             cy.log('[it]>> [Importo]: '+dscrpt);
@@ -255,7 +255,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
          // Verifica : la valorizzazione del campo "Percepiente pagamento" in Sezione Pagamenti
         const cssPercepiente = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssPercepiente).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(cssPercepiente).then((val) => {
             let dscrpt = val.split(':')[1];          
             cy.log('[it]>> [Percepiente]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)                          
@@ -357,28 +357,28 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
       
         // Verifica(1) : la valorizzazione del campo "Fiduciario" nella popup "Dettaglio Incarico Perizia"      
         const popUplocator1 = ".k-widget.k-window > .popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator1).then((val) => {                  
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator1).then((val) => {                  
             cy.log('[it]>> [Fiduciario]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                          
         });                                            
 
        // Verifica(2) : la valorizzazione del campo "Tipo Collaborazione" nella popup "Dettaglio Incarico Perizia"
         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator2).then((val) => {                     
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator2).then((val) => {                     
             cy.log('[it]>> [Tipo Collaborazione]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                          
         });                                      
 
        // Verifica(3) : la valorizzazione del campo "Indirizzo" nella popup "Dettaglio Incarico Perizia"
        const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)"  
-       ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator3).then((val) => {          
+       ConsultazioneSinistriPage.getPromiseText_ById(popUplocator3).then((val) => {          
             cy.log('[it]>> [Indirizzo]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                         
         });                                    
 
        // Verifica(4) : la valorizzazione del campo "Telefono" nella popup "Dettaglio Incarico Perizia"
        const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"  
-       ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator4).then((val) => {        
+       ConsultazioneSinistriPage.getPromiseText_ById(popUplocator4).then((val) => {        
             cy.log('[it]>> [Telefono]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                            
         });                                                      
@@ -406,21 +406,21 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica(3) : la valorizzazione del campo "Tipo incarico" nella popup "Dettaglio Incarico Perizia"
         const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(10) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator7).then((val) => {                    
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator7).then((val) => {                    
             cy.log('[it]>> [Tipo incarico]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                           
         });     
         
         // Verifica(4) : la valorizzazione del campo "Stato incarico" nella popup "Dettaglio Incarico Perizia"
         const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(11) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator8).then((val) => {            
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator8).then((val) => {            
             cy.log('[it]>> [Stato incarico]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                           
         });     
 
         // Verifica(5) : la valorizzazione del campo "Perizia" nella popup "Dettaglio Incarico Perizia"
         const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(12) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(popUplocator9).then((val) => {                  
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator9).then((val) => {                  
             cy.log('[it]>> [Perizia]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                         
         });     
