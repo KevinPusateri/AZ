@@ -77,9 +77,9 @@ var sinistro_veicoli_coinvolti = '2'
 var sinistro_descrizione_danno = 'Collisione da Tamponamento'
 var sinistro_località = 'GORIZIA'
 
-var sinistro_firma_cai = '2 Firme'
+var sinistro_firma_cai = '1 Firma'
 var sinistro_dichiarazione = 'Il Cliente Ammette Torto'
-var sinistro_card = 'Card Debitore 2 Firme'
+var sinistro_card = 'Card Debitore 1 Firma'
 
 
 let dtAvvenimento 
@@ -137,6 +137,16 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickObj_ByLabel('a', 'Avanti');        
     });
 
+    it('Sinistri potenzialmente doppi', function () {
+
+        if (!DenunciaSinistriPage.IdExist('LISTADENUNCE_listaDenDoppieSelezione'))
+        {
+            DenunciaSinistriPage.clickObj_ByLabel('td', "DENUNCIATO")
+            DenunciaSinistriPage.clickObj_ByIdAndAttr('#SINISTRI_DOPPI_proseguiDenunciaCorso', 'value', 'si');
+            DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');                        
+        }  
+    });
+    
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
     copertura_danno, function () {
 
@@ -177,7 +187,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickPopUpObj_ByIdAndAttr('#chkRuolo', 'value', 'veicolo');
         DenunciaSinistriPage.clickPopUpBtn_ById('#CmdOk')
     });
-    
+
     it('Dati del veicolo controparte (Targa: "' +controparte_targa + '" e compagnia ass.: "' +
     controparte_compagnia + ") con visualizzazione popUp della lista compagnie e ricerca in base dati Ania", function () {
 
@@ -248,14 +258,6 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
 
         DenunciaSinistriPage.clickBtn_ById('#avantiListaDanni')    
         cy.wait(2000)           
-    });
-
-    it('Pagina CAI', function () {
-        
-        DenunciaSinistriPage.clickBtn_ById('#CAI_A2');
-        DenunciaSinistriPage.clickBtn_ById('#CAI_B1');
-        
-        DenunciaSinistriPage.clickBtn_ById('#CmdAvantiCai');
     });
 
     it('Riepilogo denuncia - verifica dati danneggiato ', function () {

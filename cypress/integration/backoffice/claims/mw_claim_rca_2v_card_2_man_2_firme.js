@@ -2,7 +2,7 @@
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
  *
  * @description Emissione denuncia sinistro rca con 2 veicoli 
- * in completezza base e di tipo card 1 mandatario
+ * in completezza base e di tipo card 2 mandatario
  */
 
 /// <reference types="Cypress" />
@@ -89,7 +89,7 @@ let idx_cop_gar
 //#endregion
 
 describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2 veicoli ' +
- 'coinvolti in completezza base e di tipo card 1 mandatario ', () => {
+ 'coinvolti in completezza base e di tipo card 2 mandatario ', () => {
    
     it('Atterraggio su BackOffice >> Denuncia --> Ricerca cliente per numero di polizza: '+ cliente_num_pol+
     '', function () {
@@ -137,6 +137,15 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickObj_ByLabel('a', 'Avanti');        
     });
 
+    it('Sinistri potenzialmente doppi', function () {
+        if (!DenunciaSinistriPage.IdExist('LISTADENUNCE_listaDenDoppieSelezione'))
+        {
+            DenunciaSinistriPage.clickObj_ByLabel('td', "DENUNCIATO")
+            DenunciaSinistriPage.clickObj_ByIdAndAttr('#SINISTRI_DOPPI_proseguiDenunciaCorso', 'value', 'si');
+            DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');                        
+        }      
+    });
+    
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
     copertura_danno, function () {
 
@@ -277,5 +286,6 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_cognome);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_nome);       
     });
+    
 
 });
