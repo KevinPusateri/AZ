@@ -167,7 +167,6 @@ class DenunciaSinistriPage {
      */
     static checkObjVisible_ByText(label) {    
         getIFrameDenuncia().contains(label).should('be.visible').log('>> object with label: "' +label+'" is defined')
-        cy.wait(1000)        
     }
     /**
      * Check if an object identified by class attribute and its label is displayed
@@ -410,20 +409,27 @@ class DenunciaSinistriPage {
             });
         });
     }
-   /**
+    /**
      * Check if exist id object in body
      */
-    static IdExist(id) {
-        cy.get('body').then(($body) => {
-            if ($body.find(id).length > 0) {
-                cy.log('>>  Element with [locator="' +id+ '"] exists!')
-                return true
-            } else { 
-                cy.log('>>  Element with [locator="' +id+ '"] Not exists!')
-                return false
-            }
-        })
+    static isVisible(id)
+    { 
+        return new Cypress.Promise((resolve, reject) => {
+        debugger
+            getIFrameDenuncia().find(id, { timeout: 5000 }).then(($el) => {
+                if ($el.length > 0){
+                    debugger
+                    //element exists do something
+                    cy.log('>> Element with [locator="' +id+ '"] exists!') 
+                    resolve(true)          
+                } else {
+                    cy.log('>> Element with [locator="' +id+ '"] not exists!') 
+                    resolve(false) 
+                }               
+            })   
+        })    
     }
+          
     /**
      * Check if the value is defined
      * @param {string} value : string value to check

@@ -25,12 +25,22 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
-
+/*
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
             insertedId = results.insertId
         })
+        LoginPage.logInMWAdvanced()
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Denuncia') 
+    })
+})
+*/
+
+before(() => {
+    cy.getUserWinLogin().then(data => {
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
         LoginPage.logInMWAdvanced()
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Denuncia') 
@@ -42,12 +52,26 @@ beforeEach(() => {
     //Common.visitUrlOnEnv()
 })
 
+afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+        TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
+})
+
 after(function () {
     TopBar.logOutMW()
+
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
 })
@@ -57,7 +81,6 @@ after(function () {
 var ramo_pol = '31-Globale Auto'
 var cliente_cognome = 'Toccane'
 var cliente_nome = 'Francesco'
-var cliente_località = 'Conegliano'
 var cliente_dt_nascita = '25/03/1983'
 var cliente_num_pol = '79323432'
 var cliente_targa = 'DS246AT'
@@ -137,14 +160,13 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickObj_ByLabel('a', 'Avanti');        
     });
 
-    it('Sinistri potenzialmente doppi', function () {
-
-        if (!DenunciaSinistriPage.IdExist('LISTADENUNCE_listaDenDoppieSelezione'))
-        {
+    iit('Sinistri potenzialmente doppi', function () {       
+        var  isVisible = DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1')
+        if (isVisible) {
             DenunciaSinistriPage.clickObj_ByLabel('td', "DENUNCIATO")
             DenunciaSinistriPage.clickObj_ByIdAndAttr('#SINISTRI_DOPPI_proseguiDenunciaCorso', 'value', 'si');
-            DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');                        
-        }  
+            DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');
+        } 
     });
     
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
@@ -283,4 +305,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_nome);       
     });
 
+    it('Riepilogo denuncia - salvataggio denuncia ', function () {
+        
+        DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
+    });
 });
