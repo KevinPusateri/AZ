@@ -116,7 +116,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
    
     it('Atterraggio su BackOffice >> Denuncia --> Ricerca cliente per numero di polizza: '+ cliente_num_pol+
     '', function () {
-
+    
         // Ricerca cliente per Polizza
         DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
         DenunciaSinistriPage.clickBtn_ById('#eseguiRicerca');       
@@ -160,7 +160,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickObj_ByLabel('a', 'Avanti');        
     });
 
-    iit('Sinistri potenzialmente doppi', function () {       
+    it('Sinistri potenzialmente doppi', function () {       
         var  isVisible = DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1')
         if (isVisible) {
             DenunciaSinistriPage.clickObj_ByLabel('td', "DENUNCIATO")

@@ -5,6 +5,7 @@
  * in completezza base e di tipo card 1 mandatario
  */
 
+
 /// <reference types="Cypress" />
 import Common from "../../../mw_page_objects/common/Common"
 import LoginPage from "../../../mw_page_objects/common/LoginPage"
@@ -51,7 +52,7 @@ beforeEach(() => {
     cy.preserveCookies()
     //Common.visitUrlOnEnv()
 })
-
+/*
 afterEach(function () {
     if (this.currentTest.state !== 'passed') {
         TopBar.logOutMW()
@@ -64,7 +65,7 @@ afterEach(function () {
         Cypress.runner.stop();
     }
 })
-
+*/
 after(function () {
     TopBar.logOutMW()
 
@@ -119,8 +120,8 @@ let idx_cop_gar
 //#endregion
 
 describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2 veicoli ' +
- 'coinvolti in completezza base e di tipo card 1 mandatario ', () => {
-   
+'coinvolti in completezza base e di tipo card 1 mandatario ', () => {
+
     it('Atterraggio su BackOffice >> Denuncia --> Ricerca cliente per numero di polizza: '+ cliente_num_pol+
     '', function () {
 
@@ -158,8 +159,12 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
     '', function () {
 
         // Selezione della polizza  
-        DenunciaSinistriPage.clickBtn_ById('#avantiListaPolizze');       
+          var  isVisible = DenunciaSinistriPage.isVisible('#avantiListaPolizze')
+        if (isVisible) {         
+            DenunciaSinistriPage.clickBtn_ById('#avantiListaPolizze');
+        } 
     });
+      
 
     it('Dettaglio di polizza: visualizzazione e selezione'+
     '', function () {
