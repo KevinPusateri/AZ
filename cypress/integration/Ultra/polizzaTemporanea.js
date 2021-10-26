@@ -2,6 +2,7 @@
 
 //#region imports
 import Common from "../../mw_page_objects/common/Common"
+import TopBar from "../../mw_page_objects/common/TopBar"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import 'cypress-iframe';
@@ -51,15 +52,9 @@ before(() => {
         })
         LoginPage.logInMWAdvanced()
     })
-  
-    /* cy.task('cliente').then((object) => {
-      nuovoCliente = object;
-    });
-    
-    LoginPage.logInMW('TUTF004', 'P@ssw0rd!') */
   })
   
-  beforeEach(() => {
+beforeEach(() => {
     cy.preserveCookies()
   })
 
@@ -69,7 +64,7 @@ before(() => {
       //#region Mysql
       cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.finishMysql(dbConfig, insertedId, tests)
       })
       //#endregion
       Cypress.runner.stop();
@@ -81,7 +76,7 @@ before(() => {
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
       let tests = testsInfo
-      cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+      cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
   
@@ -133,8 +128,7 @@ describe("Polizza temporanea", ()=>{
         var fine = ('0'+dataFine.getDate()).slice(-2) +''+ ('0'+(dataFine.getMonth()+1)).slice(-2) +''+ dataFine.getFullYear()
 
         Ultra.contrattoTemporaneo(ambiti, inizio, fine, "Lavoratore occasionale", "Allianz")
-        
-        Ultra.procediHome()        
+        Ultra.procediHome()
     })
 
     it("Modifica professione in Conferma Dati Quotazione", ()=>{
@@ -142,134 +136,29 @@ describe("Polizza temporanea", ()=>{
         Ultra.confermaDatiQuotazione()
     })
 
-    it("Riepilogo e censimento anagrafico", ()=>{
+    it("Riepilogo ed emissione", ()=>{
         Ultra.riepilogoEmissione()
     })
 
     it("Censimento anagrafico", ()=>{
-        Ultra.censimentoAnagraficoSalute('VERDE PIERO', true, true, false)
+        Ultra.censimentoAnagraficoSalute('VERDE PIERO', false, false, false)
     })
 
     it("Dati integrativi", ()=>{
-        Ultra.datiIntegrativi()
-    })    
+        Ultra.datiIntegrativiSalute(true, true, false)
+        Ultra.approfondimentoSituazioneAssicurativa(true)
+        Ultra.confermaDichiarazioniContraente()        
+    })
 
     it("Consensi e privacy", ()=>{
-        Ultra.consensiPrivacy()
+      Ultra.consensiPrivacy()
     })
 
-    it("salvataggio Contratto", ()=>{
-        Ultra.salvataggioContratto()  
-    })
-
-    it("Intermediario", ()=>{
-        Ultra.inserimentoIntermediario()     
+    it("Consensi sezione Intermediario", ()=>{        
+        Ultra.consensiSezIntermediario('2060281 BUOSI FRANCESCA', true)
     })
 
     it("Visualizza documenti e prosegui", ()=>{
         Ultra.riepilogoDocumenti()
-        // cy.wait(5000)
     })
-
-    it("Adempimenti precontrattuali e Perfezionamento", ()=>{
-        Ultra.stampaAdempimentiPrecontrattuali()
-    })
-
-    it("Incasso - parte 1", ()=>{
-        //attende caricamento sezione Precontrattuali
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#pnlMainTitoli', {timeout: 15000})
-            .should('be.visible')
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[value="> Incassa"]')
-                .should('be.visible')
-                .click()
-
-        //cy.wait(5000)
-
-        //attende il caricamento
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[class="divAttenderePrego"]').should('be.visible')
-        
-        //cy.wait(1000)
-        //cy.pause()
-    })
-
-    it("Incasso - parte 2", ()=>{
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#TabIncassoPanelBar-2')
-            .should('be.visible')
-
-        //selezione mensilità
-        // cy.frameLoaded(iFrameUltra)
-        //     .iframeCustom().find(iFrameFirma)
-        //     .iframeCustom().find('[aria-owns="TabIncassoTipoMens_listbox"]')
-        //     .should('be.visible')
-        //     .click()
-        
-        // cy.wait(1000)
-        // cy.frameLoaded(iFrameUltra)
-        //     .iframeCustom().find(iFrameFirma)
-        //     .iframeCustom().find('li').contains('SDD')
-        //     .should('be.visible')
-        //     .click()
-
-        //selezione tipo di pagamento
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[aria-owns="TabIncassoModPagCombo_listbox"]')
-            .should('be.visible')
-            .click()
-        
-        cy.wait(1000)
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#TabIncassoModPagCombo_listbox')
-            .find('li').contains('Assegno')
-            .should('be.visible')
-            .click()
-        
-        //cy.wait(1000) tipo di delega
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('button').contains('Incassa')
-            .should('be.visible')
-            .click()
-
-        //cy.pause()
-    })
-
-    it("Esito incasso", ()=>{
-        //attende caricamento sezione Peecontrattuali
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#pnlContrattoIncasso', {timeout: 30000})
-            .should('be.visible')
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[data-bind="foreach: Result.Steps"]')
-            .find('img')//lista esiti
-                .each(($img, index, $list) => {
-                    cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green') //verifica la presenza della spunta verde
-                });
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[value="> CHIUDI"]')
-            .should('be.visible')
-            .click()
-    })
-
-    /* it("Chiusura", ()=>{
-        cy.pause()
-        
-        Ultra.chiudiFinale()
-    }) */
 })
