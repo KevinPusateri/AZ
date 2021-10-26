@@ -23,12 +23,9 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
-
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-            insertedId = results.insertId
-        })
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
         LoginPage.logInMWAdvanced()
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Consultazione sinistri') 
@@ -40,12 +37,26 @@ beforeEach(() => {
     //Common.visitUrlOnEnv()
 })
 
+afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+        TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
+})
+
 after(function () {
     TopBar.logOutMW()
+
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
 })
@@ -66,14 +77,14 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
-        ConsultazioneSinistriPage.checkObj_ByText(stato_sin)
+        ConsultazioneSinistriPage.checkObjVisible_ByText(stato_sin)
         ConsultazioneSinistriPage.printClaimDetailsValue()
 
         const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
-        cliente = ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente1)
+        cliente = ConsultazioneSinistriPage.getPromiseText_ById(cssCliente1)
     
         const cssdtAvv1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-        var dtAvvenimento = ConsultazioneSinistriPage.getPromiseValue_ByCss(cssdtAvv1)        
+        var dtAvvenimento = ConsultazioneSinistriPage.getPromiseText_ById(cssdtAvv1)        
 
         // Seleziona il sinistro
         ConsultazioneSinistriPage.clickLnk_ByHref(numsin)
@@ -84,7 +95,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica (1): Valore della data avvenimento      
         const cssDtAvv2 = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
-        ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtAvv2).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv2).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {                               
                 dtAvvenimento = val;        
@@ -100,15 +111,15 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica (3): valorizzazione 'Tipologia' nella sezione 'Azioni di recupero'
         const cssType = "#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(1) "  
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssType).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(cssType).then((val) => {
             let dscrpt = val.split(':')[1];       
             cy.log('[it]>> [Tipologia]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
         });         
         
-         // Verifica (4) : la valorizzazione del campo "Data inizio" nella sezione "Azioni di Recupero"
-         const cssDtInizio = '#azioni_recupero > div > div > table > tbody > tr:nth-child(2) > td:nth-child(1)'
-         ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtInizio).then(val => {
+        // Verifica (4) : la valorizzazione del campo "Data inizio" nella sezione "Azioni di Recupero"
+        const cssDtInizio = '#azioni_recupero > div > div > table > tbody > tr:nth-child(2) > td:nth-child(1)'
+        ConsultazioneSinistriPage.getPromiseDate_ById(cssDtInizio).then(val => {
             cy.log('[it]>> [Data inizio]: '+val); 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             ConsultazioneSinistriPage.containValidDate(val)
@@ -116,7 +127,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         // Verifica (5): valorizzazione 'Stato' nella sezione 'Azioni di recupero'
         const cssStato = "#azioni_recupero > div > div > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssStato).then((val) => {   
+        ConsultazioneSinistriPage.getPromiseText_ById(cssStato).then((val) => {   
             let dscrpt = val.split(':')[1];    
             cy.log('[it]>> [Stato]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
@@ -124,21 +135,21 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         // Verifica (6): valorizzazione 'Soggetto debitore' nella sezione 'Azioni di recupero'
         const cssSgtDbt = "#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(3)"  
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssSgtDbt).then((val) => {   
+        ConsultazioneSinistriPage.getPromiseText_ById(cssSgtDbt).then((val) => {   
             let dscrpt = val.split(':')[1];    
             cy.log('[it]>> [Soggetto debitore]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
         });  
 
-    // Verifica (7): la valorizzazione del campo 'Importo' nella sezione 'Azioni di recupero'
-    const cssImporto = '#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(2)'
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssImporto).then((val) => {  
+        // Verifica (7): la valorizzazione del campo 'Importo' nella sezione 'Azioni di recupero'
+        const cssImporto = '#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(2)'
+        ConsultazioneSinistriPage.getPromiseText_ById(cssImporto).then((val) => {  
             let dscrpt = val.split(':')[1]        
             cy.log('[it]>> [Importo]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
         })
       
-       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssImporto).then((val) => {  
+       ConsultazioneSinistriPage.getPromiseText_ById(cssImporto).then((val) => {  
             let dscrpt = val.split(':')[1]        
             cy.log('[it]>> [Importo]: '+dscrpt);           
             ConsultazioneSinistriPage.isCurrency(dscrpt)  

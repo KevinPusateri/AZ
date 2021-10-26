@@ -29,9 +29,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-            insertedId = results.insertId
-        })
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
         LoginPage.logInMWAdvanced()
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Consultazione sinistri') 
@@ -43,12 +41,26 @@ beforeEach(() => {
     //Common.visitUrlOnEnv()
 })
 
+afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+        TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
+})
+
 after(function () {
     TopBar.logOutMW()
+
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
 })
@@ -86,28 +98,28 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
     it('"Pagina di ricerca" è verificato che il nome associato al cliente assicurato, la targa, la polizza e la data di avvenimento del sinistro non siano nulli.', function () {
         const cssCliente = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
-        ConsultazioneSinistriPage.getPromiseValue_ByCss(cssCliente).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(cssCliente).then((val) => {          
             cy.log('[it]>> [Cliente]: '+val);
             clienteAssicurato = val; 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
         });
 
        const cssTarga = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
-       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssTarga).then((val) => {          
+       ConsultazioneSinistriPage.getPromiseText_ById(cssTarga).then((val) => {          
             cy.log('[it]>> [Targa]: '+val);
             targaAssicurato = val; 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
        });
 
        const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
-       ConsultazioneSinistriPage.getPromiseValue_ByCss(cssPolizza).then((val) => {          
+       ConsultazioneSinistriPage.getPromiseText_ById(cssPolizza).then((val) => {          
            cy.log('[it]>> [Polizza]: '+val);
            polizzaAssicurato = val;
            ConsultazioneSinistriPage.isNotNullOrEmpty(val)
        });
 
        const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-       ConsultazioneSinistriPage.getPromiseDate_ByCss(cssDtAvv).then((val) => {          
+       ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
             dtAvvenimento = val.trim(); 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)

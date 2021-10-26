@@ -61,7 +61,7 @@ class MovimentazioneSinistriPage {
      * @param {string} id : locator object id
      * @param {int} count : counter object child
      */
-      static clickBtn_ByIdAndConterChild(id, count) {   
+    static clickBtn_ByIdAndConterChild(id, count) {   
         getIFrameMovSinistri().find(id).should('be.visible').eq(1).then((btn) => {
             cy.wrap(btn).invoke('removeAttr', 'onclick')
             .invoke('attr', 'href', 'https://portaleagenzie.pp.azi.allianz.it/dasinconfe/OpenScanner?polBra=13&counter='+count+'&scanType=S3').click()
@@ -73,12 +73,12 @@ class MovimentazioneSinistriPage {
         .log('>> object with label ['+locator+ '] is clicked')
         cy.wait(1000)        
     }
-  /**
+    /**
      * Check if an object identified by locator and its label is displayed
      * @param {string} locator : class attribute 
      * @param {string} label : text displayed
      */
-   static checkObj_ByLocatorAndText(locator, label) {
+    static checkObj_ByLocatorAndText(locator, label) {
     return new Cypress.Promise((resolve, reject) => {
         getIFrameMovSinistri().find(locator).should('be.visible')
         .then(($val) => {                                       
@@ -93,25 +93,25 @@ class MovimentazioneSinistriPage {
         })
     });                               
     cy.wait(1000)            
-}
-/**
+    }
+    /**
      * Get a text value defined on object identified by its @id
      * @param {string} id : id locator object
      */
- static getPromiseValue_ByCss(id) {
-    let value = "";        
-    return new Cypress.Promise((resolve, reject) => {
-        getIFrameMovSinistri()
-        .find(id)
-        .should('be.visible')
-        .invoke('text')  // for input or textarea, .invoke('val')
-        .then(text => {         
-            cy.log('>> read the value: ' + text)
-            value = text.toString()
-            resolve(value)          
-        });      
-    });
-}
+    static getPromiseText_ById(id) {
+        let value = "";        
+        return new Cypress.Promise((resolve, reject) => {
+            getIFrameMovSinistri()
+            .find(id)
+            .should('be.visible')
+            .invoke('text')  // for input or textarea, .invoke('val')
+            .then(text => {         
+                cy.log('>> read the value: ' + text)
+                value = text.toString()
+                resolve(value)          
+            });      
+        });
+    }
     static clickRow_ByIdAndRow(id) {
         let str = id.replace("_Div", "C1_Div")
         getIFrameMovSinistri().find(str).should('be.visible').click().log('>> row is clicked')
