@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 
 
+
 import Common from "../common/Common"
 
 const getIFrame = () => {
@@ -317,16 +318,19 @@ class DenunciaSinistriPage {
      * @param {string} value : value to be entered
      */
      static getIdInListValues_ById(id, value) {
-        return new Cypress.Promise((resolve, reject) => {     
-            getIFrameDenuncia().find(id).each(($el, index, $list) => {  
+        let idx = -1;
+        return new Cypress.Promise((resolve, reject) => {   
+            debugger
+            getIFrameDenuncia().find(id).each(($el, index, $list) => {
+                debugger
                 if ($el.text().includes(value)) {                
                     cy.wrap(index).then(value => {         
                         cy.log('>> Element('+(index)+ ') and value: '+value)                              
                     });
-                    resolve(index)                
-                } else 
-                    resolve (-1)
-            })                              
+                    idx = index             
+                }                   
+            })
+            resolve (idx)                                 
         });
     }
     /**
@@ -414,22 +418,21 @@ class DenunciaSinistriPage {
      */
     static isVisible(id)
     { 
-        return new Cypress.Promise((resolve, reject) => {
-        debugger
-            getIFrameDenuncia().find(id, { timeout: 5000 }).then(($el) => {
-                if ($el.length > 0){
-                    debugger
-                    //element exists do something
-                    cy.log('>> Element with [locator="' +id+ '"] exists!') 
-                    resolve(true)          
-                } else {
-                    cy.log('>> Element with [locator="' +id+ '"] not exists!') 
+        return new Cypress.Promise((resolve) => {  
+            getIFrameDenuncia().find(id, { timeout: 10000 }).then(($el) => {              
+                if ($el === undefined)
                     resolve(false) 
-                }               
-            })   
-        })    
+                const len = $el.length;
+                if (len > 0) {
+                    //element exists do something
+                    cy.log('>> Element with [locator="' +id+ '"] exists!')
+                    resolve(true)   
+                } else 
+                resolve(false)   
+            });
+        });
     }
-          
+    
     /**
      * Check if the value is defined
      * @param {string} value : string value to check
