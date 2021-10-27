@@ -29,7 +29,7 @@ let customImpersonification
 if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è attiva 
     before(() => {
         cy.getUserWinLogin().then(data => {
-            cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
 
             customImpersonification = {
                 "agentId": "ARGMOLLICA3",
@@ -89,7 +89,7 @@ describe('Matrix Web : Convenzioni', {
                     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                     DettaglioAnagrafica.clickSubTab('Convenzioni')
                     DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
-                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'FINSEDA', 'Convenzionato').then((retrivedConvenzione) => {
+                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'BANCO DI NAPOLI', 'Convenzionato').then((retrivedConvenzione) => {
                         DettaglioAnagrafica.checkConvenzioneInserito(retrivedConvenzione)
                     })
                 })
@@ -112,7 +112,7 @@ describe('Matrix Web : Convenzioni', {
                 DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
                 //? Se non facevo il wrap, andava in esecuzione come prima istruzione dell'it il checkConvenzioneInserito
                 cy.wrap(null).then(() => {
-                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'FINSEDA', 'Familiare del Convenzionato', retrivedClient.name + ' ' + retrivedClient.firstName).then((retrivedRelatedConvenzione) => {
+                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'BANCO DI NAPOLI', 'Familiare del Convenzionato', retrivedClient.name + ' ' + retrivedClient.firstName).then((retrivedRelatedConvenzione) => {
                         DettaglioAnagrafica.checkConvenzioneInserito(retrivedRelatedConvenzione)
                     })
                 })
@@ -135,6 +135,6 @@ describe('Matrix Web : Convenzioni', {
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
                 DettaglioAnagrafica.checkConvenzioniPresenti(false)
-            } this.skip()
+            } else this.skip()
         });
 })

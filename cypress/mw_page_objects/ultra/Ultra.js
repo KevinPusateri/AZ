@@ -22,22 +22,24 @@ class Ultra {
             for (var i = 0; i < ambiti.length; i++) {
                 cy.log("Verifica selezione " + ambiti[1])
                 cy.get('[class="ng-star-inserted"]').contains(ambiti[i]).should('be.visible')
-                cy.get('div').contains(ambiti[i]).parent().parent().find('nx-badge').contains('1') //[class="counter"]
+                cy.get('div').contains(ambiti[i]).parent().parent().find('nx-icon[class*="selected"]')//[class="counter"]                
             }
         })
     }
 
     static selezionaFonteRandom() {
         ultraIFrame().within(() => {
+            cy.wait(1000)
             cy.get('span').contains('Fonte').should('be.visible').click() //click su pulsante Fonte
+            cy.wait(500)
             cy.get('[id="fontePopover"]').should('be.visible') //verifica apertura popup fonte
 
             cy.get('[id="fontePopover"]').find('[name="pen"]').click() //click sull'icona della penna
             cy.wait(2000)
-            cy.get('[class="fonti-table ng-star-inserted"]').should('be.visible') //verifica apertura popup per la scelta della fonte
+            cy.get('#fontiModal').should('be.visible') //verifica apertura popup per la scelta della fonte
 
             //seleziona una fonte random
-            cy.get('[class="fonti-table ng-star-inserted"]').find('[class="sottofonte-semplice nx-table-row ng-star-inserted"]') //lista delle fonti
+            cy.get('#fontiModal').find('[class="sottofonte-semplice nx-table-row ng-star-inserted"]') //lista delle fonti
                 .then(($fonti) => {
                     var rndFonte = Math.floor(Math.random() * $fonti.length)
                     cy.get($fonti).eq(rndFonte).first().find('nx-radio').click() //click sul radio button di una fonte random
@@ -63,7 +65,7 @@ class Ultra {
 
             cy.get('[id="pricePopover"]').find('button').click() //conferma
 
-            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento            
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
         })
     }
 
@@ -87,7 +89,8 @@ class Ultra {
 
             //aggiunge gli ambilti previsti
             for (var i = 0; i < listaAmbiti.length; i++) {
-                cy.get('app-ultra-ambiti-selection-panel').find('nx-icon[ng-reflect-name="product-'+listaAmbiti[i]+'"]').click()
+                //cy.get('app-ultra-ambiti-selection-panel').find('nx-icon[ng-reflect-name="product-'+listaAmbiti[i]+'"]').click()
+                cy.get('app-ultra-ambiti-selection-panel').find('nx-icon[class*="'+listaAmbiti[i]+'"]').click()
             }
 
             //polizza valida da > al
@@ -98,7 +101,8 @@ class Ultra {
 
             //attività
             cy.get('ultra-contratto-temporaneo-modal').find('nx-dropdown[formcontrolname="attivita"]').click()
-            cy.get('nx-dropdown-item[ng-reflect-value="'+attivita+'"]').click()
+            //cy.get('nx-dropdown-item[ng-reflect-value="'+attivita+'"]').click()
+            cy.get('nx-dropdown-item').find('span').contains(attivita).click()
 
             //società
             cy.get('ultra-contratto-temporaneo-modal').find('input[formcontrolname="societa"]').type(societa)
@@ -108,6 +112,8 @@ class Ultra {
             .find('span').contains('Conferma').parent('button')
             .should('have.attr', 'aria-disabled', 'false')
             .click()
+
+            cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
         })
     }
 
@@ -194,7 +200,8 @@ class Ultra {
     static procediHome() {
         ultraIFrame().within(() => {
             cy.get('[id="dashTable"]').should('be.visible')
-            cy.get('span').contains('PROCEDI', { timeout: 30000 }).should('be.visible').click()
+            //cy.get('button[aria-disabled="false"]').find('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
+            cy.get('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
         })
     }
 
@@ -203,8 +210,30 @@ class Ultra {
             //apertura menù scelta soluzione
             cy.get('ultra-form-dati-quotazione', { timeout: 30000 }).should('be.visible') //attende la comparsa del form con i dati quotazione
 
-            cy.get('span').contains('CONFERMA').should('be.visible').click() //conferma
+            cy.get('button').contains('CONFERMA').should('be.visible').click() //conferma
             cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+        })
+    }
+
+    static ProfessionePrincipaleDatiQuotazione(professione) {
+        ultraIFrame().within(() => {
+            //apertura menù scelta soluzione
+            cy.get('ultra-form-dati-quotazione', { timeout: 30000 }).should('be.visible') //attende la comparsa del form con i dati quotazione
+            cy.get('div[class*="professioneDrop"]').click() //clicca sulla professione presente
+
+            cy.get('div[class*="search-professioni extended"]', { timeout: 10000 }).should('be.visible') //attende il caricamento del popup
+            cy.get('#search-input-formfield').find('input').should('be.visible').type(professione) //cerca la professione
+
+            //seleziona la professione
+            cy.get('div[class*="search-professioni extended"]')
+                .find('div[class*="result-content"]')
+                .find('span').contains(professione.toUpperCase()).click()
+
+            //conferma
+            cy.get('div[class*="search-professioni extended"]')
+                .find('span').contains('CONFERMA').click()
+            
+            cy.wait(1000)
         })
     }
 
@@ -240,6 +269,58 @@ class Ultra {
         })
     }
 
+    static censimentoAnagraficoSalute(cliente, SpeseMediche, DiariaRicovero, Invalidita) {
+        ultraIFrame().within(() => {
+            cy.get('#tabsAnagrafiche', { timeout: 30000 }).should('be.visible') //attende la comparsa del form con i dati quotazione
+
+            cy.get('div[class="tabs-title"]').contains('Persona').should('be.visible').click() //tab Casa
+
+            cy.get('select').select(cliente)
+            cy.wait(2000)
+
+            //Spese Mediche si/no
+            if(SpeseMediche == true) {
+                cy.get('div[class="domanda"]').contains(/^Spese mediche$/)
+                    .parent()
+                    .parent()
+                    .next('div').find('span[class="label-text"]').contains('SI').click()
+
+                cy.get('textarea[class="has-error"]', { timeout: 5000 }).should('be.visible').type('Lorem ipsum dolor sit amet')
+                cy.get('div[class="domanda"]').contains(/^Spese mediche$/).click()
+                cy.wait(1000)
+            }
+            
+
+            //Diaria da Ricovero si/no
+            if(DiariaRicovero == true) {
+                cy.get('div[class="domanda"]').contains(/^Diaria da ricovero$/)
+                    .parent()
+                    .parent()
+                    .next('div').find('span[class="label-text"]').contains('SI').click()
+
+                cy.get('textarea[class="has-error"]', { timeout: 5000 }).should('be.visible').type('Lorem ipsum dolor sit amet')
+                cy.get('div[class="domanda"]').contains(/^Diaria da ricovero$/).click()
+                cy.wait(1000)
+            }
+
+            //Invalidità permanente da infortunio si/no
+            if(Invalidita == true) {
+                cy.get('div[class="domanda"]').contains(/^Invalidità permanente da infortunio$/)
+                    .parent()
+                    .parent()
+                    .next('div').find('span[class="label-text"]').contains('SI').click()
+
+                cy.get('textarea[class="has-error"]', { timeout: 5000 }).should('be.visible').type('Lorem ipsum dolor sit amet')
+                cy.get('div[class="domanda"]').contains(/^Invalidità permanente da infortunio$/).click()
+                cy.wait(1000)
+            }
+
+            cy.get('[id="btnAvanti"]').click() //avanti
+
+            //cy.get('[class="spinner"]').should('not.be.visible') //attende il caricamento
+        })
+    }
+
     static datiIntegrativi() {
         ultraIFrame().within(() => {
             cy.get('[class="page-title"]').children()
@@ -264,11 +345,124 @@ class Ultra {
         })
     }
 
+    static datiIntegrativiSalute(speseMediche, diariaRicovero, invalidita) {
+        cy.intercept('/Danni/UltraBRE/KoTemplates/tmpl_dati_assicurato_integr.htm', (req) => {
+                req.alias = 'datiAssicurato'
+        })
+        //cy.wait('@datiAssicurato')
+
+        ultraIFrame().within(() => {
+            //Attende il caricamento della pagina
+            //cy.wait('@datiAssicurato', { timeout: 15000 })   
+            cy.get('h1:contains("Dati integrativi")').should('be.visible')
+            
+            //Spese Mediche si/no
+            if(speseMediche == true) {
+                cy.get('label').contains(/^Spese mediche$/)
+                    .parent()
+                    .next('div').find('span').contains('SI').click()
+            }
+            else {
+                cy.get('label').contains(/^Spese mediche$/)
+                    .parent()
+                    .next('div').find('span').contains('NO').click()
+            }
+
+            if(diariaRicovero == true) {
+                cy.get('label').contains(/^Diaria da ricovero$/)
+                    .parent()
+                    .next('div').find('span').contains('SI').click()
+            }
+            else {
+                cy.get('label').contains(/^Diaria da ricovero$/)
+                    .parent()
+                    .next('div').find('span').contains('NO').click()
+            }
+
+            if(invalidita == true) {
+                cy.get('label').contains(/^Invalidita' permanente da infortunio$/)
+                    .parent()
+                    .next('div').find('span').contains('SI').click()
+            }
+            else {
+                cy.get('label').contains(/^Invalidita' permanente da infortunio$/)
+                    .parent()
+                    .next('div').find('span').contains('NO').click()
+            }
+
+            cy.get('[id="btnAvanti"]').click() //avanti
+        })
+    }
+
+    static approfondimentoSituazioneAssicurativa(polizzeStessoRischio, comunqueInteressato = true) {
+        ultraIFrame().within(() => {
+            //cy.get('[class="popupSituazioneAssicurativa"]', { timeout: 10000 })
+            cy.get('#QuestionarioSituazioneAssicurativa', { timeout: 10000 })
+                .should('be.visible') //attende la comparsa del popup
+
+            if(polizzeStessoRischio == true) {
+                cy.get('[class="popupSituazioneAssicurativa"]')
+                .find('span').contains('polizze in essere sullo stesso rischio')
+                .closest('[class="domanda"]').find('span').contains('SI') //Se possiede polizze sullo stesso rischio clicca si
+
+                if(comunqueInteressato == false) {
+                    cy.get('[class="popupSituazioneAssicurativa"]')
+                    .find('span').contains('comunque interessato')
+                    .closest('[class="domanda"]').find('span').contains('NO') //se non è interessato clicca no
+                }
+            }
+
+            cy.get('[class="popupSituazioneAssicurativa"]')
+                .find('button').contains('CONFERMA').click() //conferma il popup
+                cy.wait(1000)
+        })
+    }
+
+    static confermaDichiarazioniContraente() {
+        ultraIFrame().within(() => {
+            //Attende la comparsa del popup 'Dichiarazioni contraente principale' e clicca su Conferma            
+            cy.get('[aria-describedby="PopupDichiarazioni"]', { timeout: 5000 })
+                .should('be.visible') //attende la comparsa del popup
+                .find('button').contains('CONFERMA').click() //conferma
+        })
+
+        
+    }
+
     static consensiPrivacy() {
         ultraIFrame().within(() => {
             //Attende il caricamento della pagina
             cy.get('[class="page-title"]', { timeout: 30000 }).contains('Consensi e privacy').should('be.visible')
             cy.get('a').contains('Avanti').click() //avanti
+        })
+    }
+    
+    static consensiSezIntermediario(intermediario, collaborazione = false, esterno = false) {
+        ultraIFrame0().within(() => {
+            //Attende il caricamento della pagina
+            cy.get('[class="consenso-text has-error"]', { timeout: 30000 })
+                .contains('Intermediario').not('Firma Compagnia')
+                .should('be.visible') //attende che sia visibile la sezione intermediari
+                .parent().find('a').click()
+
+            cy.wait(500)
+
+            cy.get('#select2-drop').should('be.visible').find('input')
+                .type(intermediario).type('{enter}') //seleziona l'intermediario
+
+            //seleziona 'Collaborazione orizzontale' SI se richiesto
+            if(collaborazione == true) {
+                cy.get('#IntermediariContainer')
+                    .find('div[class="consenso"]').contains('Collaborazione orizzontale')
+                    .parent().find('span').contains('SI').click()
+            }
+
+            //seleziona 'All'esterno dell'agenzia / a distanza' SI se richiesto
+            if(esterno == true) {
+                cy.get('#IntermediariContainer')
+                    .find('div[class="consenso"]').contains('distanza')
+                    .parent().find('span').contains('SI').click()
+            }
         })
     }
 
@@ -281,7 +475,7 @@ class Ultra {
 
     static inserimentoIntermediario() {
         ultraIFrame0().within(() => {
-            cy.get('[class="consenso-text has-error"]', { timeout: 5000 })
+            cy.get('[class="consenso-text has-error"]', { timeout: 10000 })
                 .contains('Intermediario').not('Firma Compagnia')
                 .next('div').click()
 

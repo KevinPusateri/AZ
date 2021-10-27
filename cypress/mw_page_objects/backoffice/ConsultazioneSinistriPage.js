@@ -36,46 +36,11 @@ class ConsultazioneSinistriPage {
     /**
      * Write msg in log console
      */
-    static writeInLog(mas) { new Cypress.Promise(() => {
-        cy.log(msg)
-        cy.wait(500)        
+    static writeInLog(msg) { 
+        cy.wrap(msg).then(() => {
+            cy.log(msg)
+            cy.wait(500)        
         })
-    }
-    /**
-     * Check if exist id object in body
-     */
-    static IdExist(id) {
-        cy.get('body').then(($body) => {
-            if ($body.find(id).length > 0) {
-                cy.log('>> ' + id + ' element exists!')
-                return true
-            } else { 
-                cy.log('>> ' + id + ' element not exists!')
-                return false
-            }
-        })
-    }
-    /**
-     * Check if the value is defined
-     * @param {string} value : string value to check
-     */
-    static isNotNullOrEmpty(value) {
-        return new Cypress.Promise((resolve, reject) => {            
-            if(value === undefined) {
-                cy.log('>> value "'+value+'" is undefined.');
-                resolve(false)
-            } else if(value === null) {
-                cy.log('>> value "'+value+'" is null.');
-                resolve(false) 
-            } else if(value === '') {
-                cy.log('>> value "'+value+'" is empty.');
-                resolve(false) 
-            } else {
-                cy.log('>> value "'+value+'" is defined.'); 
-                resolve(true)
-            }
-        });   
-        cy.wait(1000)        
     }
     /**
      * Click on object defined by locator id
@@ -90,6 +55,14 @@ class ConsultazioneSinistriPage {
             .wait(1000)
             .click().log('>> object with id ['+id+'] is clicked')
         })
+        cy.wait(1000)
+    }
+    /**
+     * Click on all objects defined by locator id
+     * @param {string} id : locator objects id
+     */
+     static clickOnMultiObj_ById(id) {             
+        getIFrame().find(id).click({ multiple: true });
         cy.wait(1000)
     }
     /**
@@ -122,7 +95,7 @@ class ConsultazioneSinistriPage {
      * Check if an object identified by its label is displayed    
      * @param {string} label : text displayed
      */
-    static checkObj_ByText(label) {    
+    static checkObjVisible_ByText(label) {    
         getIFrame().contains(label).should('be.visible').log('>> object with label: "' + label +'" is defined')
         cy.wait(1000)        
     }
@@ -164,7 +137,6 @@ class ConsultazioneSinistriPage {
         });                               
         cy.wait(1000)            
     }
-
     /**
      * Check if an object identified by locator and its label is displayed
      * @param {string} locator : class attribute 
@@ -201,27 +173,41 @@ class ConsultazioneSinistriPage {
             resolve(true)
         });
     }
-
-    static retriveValue(css) {
-        return new Cypress.Promise((resolve) => {
-            getIFrame()
-            .find(css)
-            .invoke('text')  // for input or textarea, .invoke('val')
-            .then(text => { 
-                cy.log('>> retrive value "'+text.toString()+'" is defined.'); 
-                resolve(text.toString()) 
-            });
-        });        
+    /**
+     * Defined on object identified by its @id, the function return the
+     * length list
+     * @param {string} id : locator object id
+     */
+    static getCountElements(id) {        
+        return getIFrame().find(id)        
+        .then(listing => {
+          const listingCount = Cypress.$(listing).length;
+          expect(listing).to.have.length(listingCount);
+          cy.log('>> Length :' + listingCount)          
+        });
+        getIFrame().find(id)  
     }
     /**
-     * Get a text value defined on object identified by its @css
-     * @param {string} css : id locator object
+     * Defined on object identified by its @id, the function check all list values
+     * if are defined or not null
+     * @param {string} id : locator object id
      */
-    static getPromiseValue_ByCss(css) {
+    static checkListValues_ById(id) {
+        getIFrame().find(id).each(($el, index, $list) => {
+            const text = $el.text()
+            cy.log('>> Element('+(index)+ ') value: '+text)
+            ConsultazioneSinistriPage.isNotNullOrEmpty(text)           
+        })
+    }
+    /**
+     * Get a text defined on object identified by its @id
+     * @param {string} id : id locator object
+     */
+    static getPromiseText_ById(id) {
         let value = "";        
         return new Cypress.Promise((resolve, reject) => {
             getIFrame()
-            .find(css)
+            .find(id)
             .should('be.visible')
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => {         
@@ -230,17 +216,34 @@ class ConsultazioneSinistriPage {
             });      
         });
     }
+     /**
+     * Get a text defined on object identified by its @id
+     * @param {string} id : id locator object
+     */
+      static getPromiseValue_ById(id) {
+        let value = "";        
+        return new Cypress.Promise((resolve, reject) => {
+            getIFrame()
+            .find(id)
+            .should('be.visible')
+            .invoke('val')  // for input or textarea, .invoke('val')
+            .then(text => {         
+                cy.log('>> read the value: ' + text)              
+                resolve(text.toString())            
+            });      
+        });
+    }
     /**
-         * Get a text value defined on object identified by its @css
-         * @param {string} css : id locator object 
+         * Get a text value defined on object identified by its @id
+         * @param {string} id : id locator object 
          */
-    static getPromiseDate_ByCss(css) {
+    static getPromiseDate_ById(id) {
         let value = "";
         const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
 
         return new Cypress.Promise((resolve, reject) => {
             getIFrame()
-            .find(css)
+            .find(id)
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => {         
                 cy.log('>> read the value: ' + text)
@@ -277,89 +280,90 @@ class ConsultazioneSinistriPage {
         });
     }
     /**
-     * Put a @str value and is verified if its a date value is included in a correct format 
-     * @param {string} str : string date format
+     * Check if exist id object in body
      */
-    static containValidDate(str) {
-        return new Cypress.Promise((resolve, reject) => {      
-            const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
-            var pattern = new RegExp(regexExp)
-            //Tests for a match in a string. It returns true or false.
-            let validation = pattern.test(str)                  
-            if (!validation)
-            {               
-                var msg = '>> the value: "'+str+'" not contain a valid date' 
-                cy.log(msg)                     
-                resolve(false)               
-            } else {
-                let myString = str.match(pattern)
-                cy.log('>> the string: "'+str+'" contain a valid date "'+myString[0]+'"')               
-                resolve(true)
+    static IdExist(id) {
+        cy.get('body').then(($body) => {
+            if ($body.find(id).length > 0) {
+                cy.log('>> ' + id + ' element exists!')
+                return true
+            } else { 
+                cy.log('>> ' + id + ' element not exists!')
+                return false
             }
-        })                                           
+        })
     }
-   
+    /**
+     * Check if the value is defined
+     * @param {string} value : string value to check
+     */
+    static isNotNullOrEmpty(value) {
+        cy.wrap(value).then((validation) => {            
+            if(value === undefined) {
+                validation = false;
+            } else if(value === null) {
+                validation = false;
+            } else if(value === '') {
+                validation = false; 
+            } else {
+                validation = true;           
+            }
+            assert.isTrue(validation,">> the check value '"+value+"' is defined. ")  
+        });
+        cy.wait(1000)        
+    }
     /**
      * Put a @str value and is verified if its a valid IBAN 
      * @param {string} str : string date format
      */
     static isValidIBAN(str)
-    {
-        return new Cypress.Promise((resolve) => { 
-            const regexExp = /^[A-Z]{2}[0-9A-Z]*$/; //Reg exp. for valid IBAN
-            var pattern = new RegExp(regexExp)
-            //Tests for a match in a string. It returns true or false.
-            let validation = pattern.test(str)
-            if (validation)
-            {
-                let myString = str.match(pattern)
-                cy.log('>> a valid IBAN ('+myString[0]+') is included in "'+str+'"')
-                resolve(true)
-            
-            } else {
-                cy.log('>> no valid IBAN is included in "'+str+'"')
-                resolve(false)
-            }
+    {       
+        const regexExp = /^[A-Z]{2}[0-9A-Z]*$/; //Reg exp. for valid IBAN
+        var pattern = new RegExp(regexExp)
+        //Tests for a match in a string. It returns true or false.
+        validation = pattern.test(str)
+        cy.wrap(str).then((validation) => {  
+            assert.isTrue(validation,'>> IBAN Validation on string "'+str+'". (IBAN '+myString[0]+') is included.')                
         });
+    }
+    /**
+     * Put a @str value and is verified if its a date value is included in a correct format 
+     * @param {string} str : string date format
+     */
+     static containValidDate(str) {
+          
+        const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
+        var pattern = new RegExp(regexExp)
+        //Tests for a match in a string. It returns true or false.       
+        cy.wrap(str).then((validation) => {
+            validation = pattern.test(str)                       
+            assert.isTrue(validation,'>> Date Validation on string "'+str+'" (contain a valid date "'+str.match(pattern)[0]+'")')         
+        });                             
     }
     /**
      * Put a @numstr (ex.: numStr = "123,20") value and is verified if its a currency correct value 
      * @param {string} numstr : string currency value
      */
     static isCurrency(numstr) {      
-        return new Cypress.Promise((resolve) => { 
-            const regexExp = /^\d+(?:\,\d{0,2})$/;
-            var pattern = new RegExp(regexExp)
-            let validation = pattern.test(numstr)                  
-            if (!validation)
-            {
-                cy.log('>> Number = "'+numstr+'" is not valid currency!')
-                resolve(false)              
-            }                
-            else {
-                cy.log('>> Number = "'+numstr+'" is valid currency')
-                resolve(true)
-            }                
+       
+        const regexExp = /\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/;        
+        var pattern = new RegExp(regexExp)       
+        cy.wrap(numstr).then((validation) => {  
+            validation = pattern.test(numstr)
+            assert.isTrue(validation,"Currency Check on '"+numstr+"' value ");                
         });
     }
-    
     /**
      * Put a @str value and is verified if its a valid EURO currency @str (ex.: "EURO") 
      * @param {string} str : string value
      */
-    static isEuroCurrency(str) {    
-        return new Cypress.Promise((resolve) => {            
+    static isEuroCurrency(str) {                
             const currency = 'EURO';
-            if (str.contains(currency)) {
-                cy.log('>> Number = "'+numstr+'" is valid currency')
-                resolve(true)
-            } else {
-                cy.log('>> Currency value is not defined as "EURO", but as: '+str)
-                resolve(false)
-            }                
+            cy.wrap(str).then((validation) => { 
+                validation = str.includes(currency)
+                assert.isTrue(validation,"EURO Currency Check on '"+str+"' value ");                
         });
     } 
-
 
     static getCurrency(str) {               
         const regexExp = /\d{1,3},\d{2}/;

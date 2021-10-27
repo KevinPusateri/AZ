@@ -16,15 +16,22 @@ const getIFrameMovSinistri = () => {
     getIFrame().find('iframe[src="/dasincruscotto/cruscotto/cruscotto.jsp"]')
         .iframe();
 
-    let iframeFolder = getIFrame().find('iframe[src="/dasincruscotto/cruscotto/cruscotto.jsp"]')
+    let iframe = getIFrame().find('iframe[src="/dasincruscotto/cruscotto/cruscotto.jsp"]')
         .its('0.contentDocument').should('exist');
 
-    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+const getIFrameAcqDoc = () => {
+    getIFrameMovSinistri().find('#fileFrame')
+        .iframe();
+
+    let iframe = getIFrameMovSinistri().find('#fileFrame')
+        .its('0.contentDocument').should('exist');
+
+    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
+}
 class MovimentazioneSinistriPage {
-    
-    
 
    /**
      * Click on object defined by locator id
@@ -38,22 +45,40 @@ class MovimentazioneSinistriPage {
             .should('be.visible')
             .wait(1000)
             .click()  
-        })
-       
+        })       
         cy.wait(2000)
     }
-
+    /**
+     * Click on link ('a') element, defined by href attribute value
+     * @param {string} value : href attribute value or part of it
+    */
+    static clickLnk_ByHref(value) {        
+        getIFrameMovSinistri().find('a[href*="'+value+'"]').should('be.visible').click({ multiple: true }).log('>> link (a) with href ['+value+ '] is clicked')      
+        cy.wait(1000)
+    }
+     /**
+     * Click on object defined by locator id
+     * @param {string} id : locator object id
+     * @param {int} count : counter object child
+     */
+    static clickBtn_ByIdAndConterChild(id, count) {   
+        getIFrameMovSinistri().find(id).should('be.visible').eq(1).then((btn) => {
+            cy.wrap(btn).invoke('removeAttr', 'onclick')
+            .invoke('attr', 'href', 'https://portaleagenzie.pp.azi.allianz.it/dasinconfe/OpenScanner?polBra=13&counter='+count+'&scanType=S3').click()
+        }) 
+        cy.wait(2000)
+    }
     static clickBtn_LinkByText(locator) {                   
         getIFrameMovSinistri().find('a[href="javascript:;"]').contains('Chiudi').should('be.visible').click()
         .log('>> object with label ['+locator+ '] is clicked')
         cy.wait(1000)        
     }
-  /**
+    /**
      * Check if an object identified by locator and its label is displayed
      * @param {string} locator : class attribute 
      * @param {string} label : text displayed
      */
-   static checkObj_ByLocatorAndText(locator, label) {
+    static checkObj_ByLocatorAndText(locator, label) {
     return new Cypress.Promise((resolve, reject) => {
         getIFrameMovSinistri().find(locator).should('be.visible')
         .then(($val) => {                                       
@@ -68,25 +93,25 @@ class MovimentazioneSinistriPage {
         })
     });                               
     cy.wait(1000)            
-}
-/**
-     * Get a text value defined on object identified by its @css
-     * @param {string} css : id locator object
+    }
+    /**
+     * Get a text value defined on object identified by its @id
+     * @param {string} id : id locator object
      */
- static getPromiseValue_ByCss(css) {
-    let value = "";        
-    return new Cypress.Promise((resolve, reject) => {
-        getIFrameMovSinistri()
-        .find(css)
-        .should('be.visible')
-        .invoke('text')  // for input or textarea, .invoke('val')
-        .then(text => {         
-            cy.log('>> read the value: ' + text)
-            value = text.toString()
-            resolve(value)          
-        });      
-    });
-}
+    static getPromiseText_ById(id) {
+        let value = "";        
+        return new Cypress.Promise((resolve, reject) => {
+            getIFrameMovSinistri()
+            .find(id)
+            .should('be.visible')
+            .invoke('text')  // for input or textarea, .invoke('val')
+            .then(text => {         
+                cy.log('>> read the value: ' + text)
+                value = text.toString()
+                resolve(value)          
+            });      
+        });
+    }
     static clickRow_ByIdAndRow(id) {
         let str = id.replace("_Div", "C1_Div")
         getIFrameMovSinistri().find(str).should('be.visible').click().log('>> row is clicked')
@@ -98,10 +123,26 @@ class MovimentazioneSinistriPage {
                     .invoke('attr', 'href', 'https://portaleagenzie.pp.azi.allianz.it/dasincruscotto/openCons?comId=' + compPolizza + '&numSin=' + sinistro).click()
             })
         })
-        cy.wait(2000)
-        cy.wait(1000)
+        cy.wait(3000)
     }
+    static selectionText(id, text)
+    { 
+        getIFrameAcqDoc().get(id).click()
+        getIFrameAcqDoc().get('option').contains(text).click();
 
+    }
+    static UploadFile()
+    {        
+        const fileName = 'CI_Test.pdf'
+
+        cy.fixture(fileName).then(fileContent => {
+            getIFrameMovSinistri().find('#pdfUpload').attachFile({
+                fileContent,
+                fileName,
+                mimeType: 'application/pdf'
+            }, { subjectType: 'input' })
+        })
+    }
     static IdExist(id)
     {
         cy.get('body').then(($body) => {
@@ -157,8 +198,7 @@ class MovimentazioneSinistriPage {
     */
     static compareTotMovimenti() {
         var sum = MovimentazioneSinistriPage.getSumMovimenti()
-        var tot = MovimentazioneSinistriPage.getNumTotaleMovimenti()
-        debugger
+        var tot = MovimentazioneSinistriPage.getNumTotaleMovimenti()        
         if (tot===sum)
             assert.ok('Somma totali movimenti sinistri')
         else
