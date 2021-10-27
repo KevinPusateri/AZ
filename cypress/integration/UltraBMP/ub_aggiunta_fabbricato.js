@@ -29,7 +29,6 @@ before(() => {
 
 beforeEach(() => {
     cy.preserveCookies()
-    Common.visitUrlOnEnv(false, false)
 })
 
 after(function() {
@@ -44,9 +43,8 @@ after(function() {
 
 describe('Matrix Web : Navigazioni da BackOffice', function() {
 
-    it('dasdasdas', () => {
-
+    it('1', () => {
+        TopBar.clickBackOffice()
     })
-
 
 })
