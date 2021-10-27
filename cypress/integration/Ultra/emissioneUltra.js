@@ -2,9 +2,17 @@
 
 //#region imports
 import Common from "../../mw_page_objects/common/Common"
+import TopBar from "../../mw_page_objects/common/TopBar"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import 'cypress-iframe';
+//#endregion
+
+//#region Mysql DB Variables
+const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const currentEnv = Cypress.env('currentEnv')
+const dbConfig = Cypress.env('db')
+let insertedId
 //#endregion
 
 //#region Configuration
@@ -13,8 +21,8 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-var cliente = "ANNA GALLO"
-var clienteUbicazione = "VIA DELL'ACQUARIO 9, 00055 - LADISPOLI (RM)"
+var cliente = "PIERO VERDE"
+var clienteUbicazione = "VIA ROMA 4, 33100 - UDINE (UD)"
 var ambiti = ['Fabbricato', 'Contenuto']
 var frazionamento = "annuale"
 let nuovoCliente;
@@ -23,25 +31,28 @@ let iFrameFirma = '[id="iFrameResizer0"]'
 //#endregion variabili iniziali
 
 before(() => {
-    //cy.clearCookies();
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
+    })
+})
   
-    cy.task('cliente').then((object) => {
-      nuovoCliente = object;
-    });
-    
-    LoginPage.logInMW('TUTF004', 'P@ssw0rd!')
-  })
-  
-  beforeEach(() => {
+beforeEach(() => {
     cy.preserveCookies()
-  })
+})
   
-  after(() => {
-    //cy.get('.user-icon-container').click()
-    //cy.contains('Logout').click()
-    cy.wait(delayBetweenTests)
-    cy.clearCookies();
-  })
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+      let tests = testsInfo
+      cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+  
+})
 
 describe("CASA e PATRIMONIO", ()=>{
     /* it("Login", ()=>{
@@ -49,10 +60,20 @@ describe("CASA e PATRIMONIO", ()=>{
     }) */
 
     it("Ricerca cliente", ()=>{
-        cy.get('[name="main-search-input"]').type(cliente).should('have.value', cliente)
-        cy.get('[name="main-search-input"]').type('{enter}')
-        cy.wait(1000)
-        cy.contains('div', cliente.toUpperCase()).click({force: true})
+        cy.get('body').within(() => {
+            cy.get('input[name="main-search-input"]').click()
+            cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
+            cy.get('lib-client-item').first().click()
+          }).then(($body) => {
+            cy.wait(7000)
+            //const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+            const check = cy.get('div[class="client-null-message"]').should('be.visible')
+            cy.log('permessi: ' + check)
+            if (check) {
+              cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
+              cy.get('lib-client-item').first().next().click()
+            }
+          })
     })
 
     it("Selezione ambiti FastQuote", ()=>{
@@ -74,6 +95,7 @@ describe("CASA e PATRIMONIO", ()=>{
     })
 
     it("Seleziona fonte", ()=>{
+        cy.pause()
         Ultra.selezionaFonteRandom()
     })
 
@@ -99,7 +121,7 @@ describe("CASA e PATRIMONIO", ()=>{
     })
 
     it("Censimento anagrafico", ()=>{
-        Ultra.censimentoAnagrafico('GALLO ANNA', clienteUbicazione)
+        Ultra.censimentoAnagrafico('VERDE PIERO', clienteUbicazione)
     })
 
     it("Dati integrativi", ()=>{

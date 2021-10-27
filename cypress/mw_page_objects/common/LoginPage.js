@@ -65,8 +65,7 @@ class LoginPage {
                     req.reply({ fixture: 'mockNews.json' })
                 }
             })
-        }
-        else {
+        } else {
             //Wait for news graphQL to be returned
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news'))
@@ -88,8 +87,7 @@ class LoginPage {
             if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
                 agency = '070004549'
                 agentId = 'ASGNAZZARRO1'
-            }
-            else {
+            } else {
                 //TODO Implementare anche altre agenzie che si vogliono
                 switch (agency) {
                     case '010710000':
@@ -115,8 +113,7 @@ class LoginPage {
                 if (Cypress.env('isSecondWindow'))
                     TopBar.clickSecondWindow()
             })
-        }
-        else {
+        } else {
             cy.get('input[name="Ecom_User_ID"]').type(userName)
             cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
             cy.get('input[type="SUBMIT"]').click()
@@ -169,8 +166,7 @@ class LoginPage {
                     req.reply({ fixture: 'mockNews.json' })
                 }
             })
-        }
-        else {
+        } else {
             //Wait for news graphQL to be returned
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news'))
@@ -198,7 +194,7 @@ class LoginPage {
 
                 cy.decryptLoginPsw(isTFS).then(psw => {
                     //Utente attualmente in
-                    if (loggedUser.username === 'RU18362') {
+                    if (loggedUser.username === 'RU18362' || loggedUser.username === 'RU17810') {
                         cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                         cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
                         cy.get('input[type="SUBMIT"]').click()
@@ -212,16 +208,15 @@ class LoginPage {
 
                         if (Cypress.env('isSecondWindow'))
                             TopBar.clickSecondWindow()
-                    }
-                    else {
+                    } else {
                         let currentImpersonificationToPerform
-                        //Verifichiamo se ho customImpersonification valorizzato
+                            //Verifichiamo se ho customImpersonification valorizzato
                         if (Cypress.$.isEmptyObject(customImpersonification))
-                            //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza
+                        //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza
                             currentImpersonificationToPerform = {
-                                "agentId": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agentId : user.agentId,
-                                "agency": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agency : user.agency,
-                            }
+                            "agentId": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agentId : user.agentId,
+                            "agency": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agency : user.agency,
+                        }
                         else
                             currentImpersonificationToPerform = {
                                 "agentId": customImpersonification.agentId,
