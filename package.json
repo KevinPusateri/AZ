@@ -21,7 +21,8 @@
     "pdf2json": "^1.2.5",
     "pdfjs-dist": "^2.9.359",
     "prompt-sync": "^4.2.0",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "ssh2": "^1.4.0"
   },
   "devDependencies": {
     "cypress": "^8.4.0",
