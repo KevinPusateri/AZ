@@ -265,9 +265,9 @@ class Mieinfo {
             case LinksMenu.PRIMO_PIANO:
                 getIFrame().find('h3:contains("Consigliate per te")').should('be.visible')
                 break;
-            case LinksMenu.RACCOLTE:
-                getIFrame().find('h3:contains("Pronti Via")').should('be.visible')
-                break;
+                // case LinksMenu.RACCOLTE:
+                //     getIFrame().find('h3:contains("Pronti Via")').should('be.visible')
+                //     break;
             case LinksMenu.CONTENUTI_SALVATI:
                 getIFrame().find('h1:contains("Contenuti salvati")').should('be.visible')
                 break;
@@ -286,8 +286,8 @@ class Mieinfo {
             case LinksMenu.MOMENTO_DELLA_VERITA:
                 getIFrame().find('h1:contains("Momento della Verità")').should('be.visible')
                 break;
-            case LinksMenu.LE_RELEASE:
-                getIFrame().find('h1:contains("Release")').should('be.visible')
+            case LinksMenu.MANUALI_INFORMATICI:
+                getIFrame().find('h1:contains("Manuali informatici")').should('be.visible')
                 break;
             case LinksMenu.MANUALI_INFORMATICI:
                 getIFrame().find('h1:contains("Manuali Informatici")').should('be.visible')
@@ -416,29 +416,29 @@ class Mieinfo {
 
     /**
      * Verifica che i panel si espandono su "Operatività"
-    */
+     */
     static checkPanelsOnOperativita() {
-        const cardOperativita = [
-            'Cambio sede',
-            'Codici sblocco rami vari',
-            'Contabilità',
-            'Fatturazione elettronica',
-            'Gestione documenti',
-            'Gestione collaboratori',
-            'Iniziativa whatsapp Agenti',
-            'Informativa privacy (tedesco)',
-            'Codice delle assicurazioni private',
-            'Titolo IX - Reg. ISVAP - Registro unico intermediari'
-        ]
-        for (let index = 0; index < cardOperativita.length; index++) {
-            getIFrame().find('#nx-expansion-panel-header-' + index).then(($card) => {
-                expect($card.text().trim()).to.include(cardOperativita[index]);
-                getIFrame().find('nx-expansion-panel-title').contains($card.text().trim()).click()
-                cy.wrap($card).should('have.attr', 'aria-expanded', 'true')
-            })
+            const cardOperativita = [
+                'Cambio sede',
+                'Codici sblocco rami vari',
+                'Contabilità',
+                'Fatturazione elettronica',
+                'Gestione documenti',
+                'Gestione collaboratori',
+                'Iniziativa whatsapp Agenti',
+                'Informativa privacy (tedesco)',
+                'Codice delle assicurazioni private',
+                'Titolo IX - Reg. ISVAP - Registro unico intermediari'
+            ]
+            for (let index = 0; index < cardOperativita.length; index++) {
+                getIFrame().find('#nx-expansion-panel-header-' + index).then(($card) => {
+                    expect($card.text().trim()).to.include(cardOperativita[index]);
+                    getIFrame().find('nx-expansion-panel-title').contains($card.text().trim()).click()
+                    cy.wrap($card).should('have.attr', 'aria-expanded', 'true')
+                })
+            }
         }
-    }
-    //#endregion
+        //#endregion
 
     /**
      * Verifica atterraggio delle sotto pagine di "Prodotti"
@@ -446,10 +446,11 @@ class Mieinfo {
     static checkAllPagesOnProdotti() {
         const linksProdotti = LinkMieInfo.getLinksSubMenu().PRODOTTI
         getIFrame().contains('Allianz Ultra').click()
-        getIFrame().find('h1:contains("Allianz Ultra")').should('be.visible')
+            // :contains("Allianz Ultra")').should('be.visible
 
         getIFrame().contains(linksProdotti.ALLIANZ1_BUSINESS).click()
-        getIFrame().find('h1:contains("Allianz1 Business")').should('be.visible')
+            // getIFrame().find('img').should('have.attr', 'src', '/lemieinfo/cdn/internal/assets/immagini/images-header/prodotti/allianzultra/AllianzUltra_HSP.png')
+        getIFrame().find('h1:contains("Allianz1 Business")').should('not.exist')
 
         getIFrame().contains(linksProdotti.AUTO_E_MOTORI).click()
         getIFrame().find('h1:contains("Auto e Motori")').should('be.visible')
@@ -558,8 +559,7 @@ class Mieinfo {
     /**
      * Verifica atterraggio delle sotto pagine di "New Company Handbook"
      */
-    static checkAllPagesNewCompanyHandbook() {
-    }
+    static checkAllPagesNewCompanyHandbook() {}
 
     /**
      * Verifica atterraggio delle sotto pagine di "Antiriciclaggio"

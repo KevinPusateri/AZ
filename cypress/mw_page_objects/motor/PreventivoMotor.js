@@ -51,14 +51,13 @@ class PreventivoMotor {
         })
 
     }
-    #region
 
     //#region Provenienza
 
     static provenienza(provenienza) {
         cy.wait(10000)
         cy.getIFrame()
-        // cy.get('@iframe').within(() => {
+            // cy.get('@iframe').within(() => {
 
 
         //     cy.get('nx-dropdown[aria-haspopup="listbox"]').first().should('be.visible').click()            
@@ -86,22 +85,22 @@ class PreventivoMotor {
                 cy.get('input[formcontrolname="nome"]').should('exist').and('be.visible').click().wait(500)
                 cy.get('input[formcontrolname="nome"]').type(nomeQuotazione).wait(1000)
                 cy.get('button[nxbutton="primary medium"]').click()
-                
-                cy.get('nx-message').find('div[class=nx-message__content]').then((numQuot)=>{
 
-                  
-                   var testoNumQuot= numQuot.text().split(' ')[6].substring(2)
+                cy.get('nx-message').find('div[class=nx-message__content]').then((numQuot) => {
 
-                   resolve(testoNumQuot)
+
+                    var testoNumQuot = numQuot.text().split(' ')[6].substring(2)
+
+                    resolve(testoNumQuot)
                 })
-                                
-              
+
+
 
             })
         })
-     }
+    }
 
-     
+
 
     static recuperQuotazione(nomeQuotazione) {
         cy.getIFrame()
@@ -117,6 +116,7 @@ class PreventivoMotor {
     //#endregion
 
 }
+
 function randomString(length, chars) {
     var result = '';
     for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];

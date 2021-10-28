@@ -56,7 +56,7 @@ describe('Matrix Web : motor Salvataggio quotazione', function () {
         //PreventivoMotor.compilaDatiQuotazione('FD385AY', '01/01/1996');
         //PreventivoMotor.provenienza('Voltura');
         PreventivoMotor.salvaQuotazioneMotorNGA2021().then((numeroQuotazione)=>{
-            PreventivoMotor.recuperQuotazione(numeroQuotazione)
+        PreventivoMotor.recuperQuotazione(numeroQuotazione)
 
         })
        

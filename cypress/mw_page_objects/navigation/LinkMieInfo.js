@@ -1,33 +1,33 @@
 const LinksMenu = {
     PRIMO_PIANO: 'Primo piano',
-    RACCOLTE: 'Raccolte',
-    CONTENUTI_SALVATI: 'Contenuti Salvati',
+    CONTENUTI_SALVATI: 'Contenuti salvati',
+    // RACCOLTE: 'Raccolte',
     PRODOTTI: 'Prodotti',
     INIZIATIVE: 'Iniziative',
-    EVENTI_E_SPONSORIZZAZIONI: 'Eventi e Sponsorizzazioni',
     MOMENTO_DELLA_VERITA: 'Momento della Verità',
     SALES_ACADEMY: 'Sales Academy',
-    LE_RELEASE: 'Le release',
-    MANUALI_INFORMATICI: 'Manuali Informatici',
+    EVENTI_E_SPONSORIZZAZIONI: 'Eventi e Sponsorizzazioni',
+    RILASCI_INFORMATICI: 'Rilasci informatici',
+    MANUALI_INFORMATICI: 'Manuali informatici',
     CIRCOLARI: 'Circolari',
     COMPANY_HANDBOOK: 'Company Handbook',
     ANTIRICICLAGGIO: 'Antiriciclaggio',
     RISORSE_PER_AGENZIA: 'Risorse per l\'Agenzia',
     OPERATIVITA: 'Operatività',
     RISORSE_PER_AGENTE: 'Risorse per l\'Agente',
-    IL_MONDO_ALLIANZ: 'Il Mondo Allianz'
-    // NEW_COMPANY_HANDBOOK: 'New company handbook',
+    IL_MONDO_ALLIANZ: 'Il mondo Allianz'
+        // NEW_COMPANY_HANDBOOK: 'New company handbook',
 }
 
 const LinksSubMenu = {
     PRODOTTI: {
         ALLIANZ_ULTRA: 'Allianz Ultra',
         ALLIANZ1_BUSINESS: 'Allianz1 Business',
-        AUTO_E_MOTORI: 'Auto e Motori',
+        AUTO_E_MOTORI: 'Auto e motori',
         CASA_CONDOMINIO_E_PETCARE: 'Casa condominio e petcare',
         INFORTUNI_E_SALUTE: 'Infortuni e salute',
         IMPRESA_E_RISCHI_DEDICATI: 'Impresa e rischi dedicati',
-        TUTELA_LEGALE: 'Tutela Legale',
+        TUTELA_LEGALE: 'Tutela legale',
         VITA: 'Vita',
         VITA_CORPORATE: 'Vita Corporate',
         CONVENZIONI_NAZIONALI: 'Convenzioni nazionali',
@@ -85,6 +85,7 @@ const LinksSubMenu = {
     RISORSE_PER_AGENTE: {
         TRATTAMENTI_PROVVIGIONALI: 'Trattamenti provvigionali',
         INCENTIVAZIONE_MISSION_REGOLAMENTI: 'Incentivazione, mission, regolamenti',
+        INCENTIVAZIONE_MISSION_REGOLAMENTI: 'Collaborazioni orrizontali',
         CONVENZIONI_PRODOTTI_ALLIANZ: 'Convenzioni Prodotti Allianz',
         CASSA_PREVIDENZA_AGENTI: 'Cassa Previdenza Agenti',
         LE_SCELTE_DI_INVESTIMENTO: 'Le scelte di investimento',
@@ -229,7 +230,7 @@ class LinkMieInfo {
     }
 
 
-    
+
 
 }
 
