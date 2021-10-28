@@ -3,6 +3,7 @@
  */
 
 /// <reference types="Cypress" />
+import PreventivoMotor from "cypress/mw_page_objects/Motor/PreventivoMotor"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -45,6 +46,9 @@ describe('Matrix Web : Navigazioni da BackOffice', function() {
 
     it('1', () => {
         TopBar.clickBackOffice()
+
+
+        PreventivoMotor.compilaDatiQuotazione()
     })
 
 })
