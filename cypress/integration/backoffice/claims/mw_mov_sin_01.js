@@ -39,14 +39,29 @@ beforeEach(() => {
     //Common.visitUrlOnEnv()
 })
 
+afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+        //TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
+        //Cypress.runner.stop();
+    }
+})
+
 after(function () {
     TopBar.logOutMW()
+
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
-        cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+        cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
+     Cypress.runner.stop();
 })
 
 describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla movimentazione sinistri', () => {

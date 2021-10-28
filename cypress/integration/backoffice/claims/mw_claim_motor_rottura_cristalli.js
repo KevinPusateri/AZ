@@ -26,19 +26,6 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
-/*
-before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-            insertedId = results.insertId
-        })
-        LoginPage.logInMWAdvanced()
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Denuncia') 
-    })
-})
-*/
-
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
@@ -50,19 +37,19 @@ before(() => {
 
 beforeEach(() => {
     cy.preserveCookies()
-    //Common.visitUrlOnEnv()
+    //Common.visitUrlOnEnv()   
 })
 
 afterEach(function () {
     if (this.currentTest.state !== 'passed') {
-        TopBar.logOutMW()
+        //TopBar.logOutMW()
         //#region Mysql
         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
             let tests = testsInfo
             cy.finishMysql(dbConfig, insertedId, tests)
         })
         //#endregion
-        Cypress.runner.stop();
+        //Cypress.runner.stop();
     }
 })
 
@@ -75,6 +62,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
+     Cypress.runner.stop();
 })
 
 //#region Script Variables
@@ -91,7 +79,7 @@ var cliente_cognome = 'Appolonio'
 var cliente_nome = 'Gianluca'
 var cliente_dt_nascita = '23/02/1979'
 var cliente_num_pol = '530053391'
-var cliente_targa = 'FJ103DT'
+var cliente_targa = 'Fj103dt'
 
 
 var copertura_danno = 'ROTTURA CRISTALLI'
@@ -100,9 +88,7 @@ var sinistro_veicoli_coinvolti = '2'
 var sinistro_descrizione_danno = 'Collisione da Tamponamento'
 var sinistro_località = 'GORIZIA'
 
-var sinistro_firma_cai = '1 Firma'
-var sinistro_dichiarazione = 'Il Cliente Dichiara Ragione (Del Tutto O In Parte)'
-var sinistro_card = 'Card Mandatario 1 Firma'
+var tipo_danno = 'Rottura Cristalli'
 
 
 let dtAvvenimento 
@@ -111,8 +97,8 @@ let controparte_marca
 let idx_cop_gar
 //#endregion
 
-describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2 veicoli ' +
-'coinvolti in completezza base e di tipo card 1 mandatario ', () => {
+describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro motor avente come copertura' +
+' di garanzia la "Rottura Cristalli"', () => {
 
     it('Atterraggio su BackOffice >> Denuncia --> Ricerca cliente per numero di polizza: '+ cliente_num_pol+
     '', function () {
@@ -171,42 +157,43 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             // failing the test   
             return false
         })
-
+       var page = DenunciaSinistriPage.isVisibleText('Lista sinistri')
         DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1').then(isVisible => {
             if (isVisible) {
                 DenunciaSinistriPage.clickObj_ByLabel('td', "DENUNCIATO")
                 DenunciaSinistriPage.clickObj_ByIdAndAttr('#SINISTRI_DOPPI_proseguiDenunciaCorso', 'value', 'si');
                 DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');
-            } 
+            }            
         }); 
     });
  
-
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
-    copertura_danno, function () {
-        Cypress.off('fail', (err, runnable) => {
+    copertura_danno, function () {        
+        Cypress.on('fail', (err, runnable) => {
             // returning false here prevents Cypress from
             // failing the test   
-            return true
-        })
+            throw err
+        })    
         // Selezione della copertura
         DenunciaSinistriPage.clickObj_ByLabel('td', copertura_danno)
 
-        DenunciaSinistriPage.getIdInListValues_ById('#GARANZIE_listaGaranzie > table > tbody > tr > td', copertura_danno).then((idx) => {  
-            idx_cop_gar = idx
+        DenunciaSinistriPage.getIdInListValues_ById('#GARANZIE_listaGaranzie > table > tbody > tr ', copertura_danno).then((idx) => {  
+            idx_cop_gar = ""+idx+""
             cy.log('[it]>> indice copertura garanzia: '+idx_cop_gar);  
-            DenunciaSinistriPage.clickObj_ByIdAndAttr('#SelectedCheckBox', 'myindex', idx_cop_gar);
+            if (idx !== undefined) {                
+                DenunciaSinistriPage.clickOnCheck_ByIdAndAttr('.SelectedCheckBox', 'myindex', idx_cop_gar);
+            }
         });
+        DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');       
     });
 
     it('Verifica dei dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {
         
-        DenunciaSinistriPage.checkObjVisible_ByText("Conducente Veicolo Controparte");
-        DenunciaSinistriPage.checkObjVisible_ByText(controparte_conducente_cognome)
-        DenunciaSinistriPage.checkObjVisible_ByText(controparte_conducente_nome)
-        DenunciaSinistriPage.checkObjVisible_ByText(controparte_marca)
-        DenunciaSinistriPage.checkObj_ByLocatorAndText('#DANNI_listaVeicoliSoggetti', controparte_targa)
-
+        DenunciaSinistriPage.checkObjVisible_ByText("Contraente");
+        DenunciaSinistriPage.checkObjVisible_ByText(cliente_cognome)
+        DenunciaSinistriPage.checkObjVisible_ByText(cliente_cognome)
+        DenunciaSinistriPage.checkObjVisible_ByText(cliente_targa)
+       
         DenunciaSinistriPage.clickBtn_ById('#avantiListaDanni')    
         cy.wait(2000)           
     });
@@ -216,11 +203,10 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.checkObjVisible_ByText("Veicolo");
         DenunciaSinistriPage.checkInTbl_ByValue(cliente_cognome + " " + cliente_nome);
         DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
-        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', sinistro_card);        
+        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', tipo_danno);        
     });
 
     it('Riepilogo denuncia - verifica dati di denuncia ', function () {
-        
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataAvvenimento', dtAvvenimento);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataDenuncia', dtDenuncia);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#CLIENTE_LOCALITA', sinistro_località);       
