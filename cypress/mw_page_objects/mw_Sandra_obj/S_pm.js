@@ -11,8 +11,7 @@ const getIFrame = () => {
 require('cypress-plugin-tab')
 
 
-
-class PreventivoMotor {
+class S_pm {
 
     //#region Dati quotazione
     static compilaDatiQuotazione(targa, dataNascita) {
@@ -39,89 +38,65 @@ class PreventivoMotor {
             cy.get('input[aria-label="Comune"]').should('exist').and('be.visible').click().wait(500)
             cy.get('input[aria-label="Comune"]').type('Codogno').wait(1000);
 
-            cy.contains('Calcola').click({ force: true })
+           cy.contains('Calcola').click({ force: true })
             cy.contains('Calcola').should('be.visible')
             cy.contains('Calcola').click({ force: true })
 
             //const check = $body.find('OK').is(':visible')
-            // if (check) {
-            // cy.contains('OK').should('be.visible')
+           // if (check) {
+           // cy.contains('OK').should('be.visible')
             //cy.contains('OK').click({ force: true })
-            // }
+           // }
         })
 
     }
-
+    #region 
+   
     //#region Provenienza
 
     static provenienza(provenienza) {
         cy.wait(10000)
         cy.getIFrame()
-            // cy.get('@iframe').within(() => {
+        // cy.get('@iframe').within(() => {
 
-
+            
         //     cy.get('nx-dropdown[aria-haspopup="listbox"]').first().should('be.visible').click()            
         //     cy.get('nx-dropdown-item').should('be.visible').contains(provenienza).click();
 
-
+          
         // })
 
     }
 
     //#endregion
 
-    //#region Salvataggio quotazione
+//#region Salvataggio quotazione
 
-    static salvaQuotazioneMotorNGA2021() {
-        return new Cypress.Promise((resolve, reject) => {
-            var numQuot
-            cy.getIFrame()
-            cy.get('@iframe').within(() => {
-
-                cy.contains('Salva quotazione').should('be.visible').click()
-
-                var nomeQuotazione = randomString(10, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-
-                cy.get('input[formcontrolname="nome"]').should('exist').and('be.visible').click().wait(500)
-                cy.get('input[formcontrolname="nome"]').type(nomeQuotazione).wait(1000)
-                cy.get('button[nxbutton="primary medium"]').click()
-
-                cy.get('nx-message').find('div[class=nx-message__content]').then((numQuot) => {
-
-
-                    var testoNumQuot = numQuot.text().split(' ')[6].substring(2)
-
-                    resolve(testoNumQuot)
-                })
-
-
-
-            })
-        })
-    }
-
-
-
-    static recuperQuotazione(nomeQuotazione) {
+     static  salvaQuotazioneMotorNGA2021()
+     {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
+            
+           cy.contains('Salva quotazione').should('be.visible').click()            
+            
+           var nomeQuotazione = randomString(10, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 
-
+           cy.get('input[formcontrolname="nome"]').should('exist').and('be.visible').click().wait(500)
+           cy.get('input[formcontrolname="nome"]').type(nomeQuotazione).wait(1000)
+           cy.get('button[nxbutton="primary medium"]').click()
+           return nomeQuotazione;
 
         })
 
-    }
-
-
-    //#endregion
+     }
+    
+//#endregion
 
 }
-
 function randomString(length, chars) {
     var result = '';
     for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
     return result;
 }
 
-
-export default PreventivoMotor
+export default S_pm

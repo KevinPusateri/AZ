@@ -14,8 +14,7 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-
-class DatiPreventivo {
+class S_DatiPreventivo {
 
     static ClickCheckTarga() {
         cy.wait(10000)
@@ -40,7 +39,6 @@ class DatiPreventivo {
     }
 
 
-
     //#region Links Card Auto
     static clickPreventivoMotor() {
         cy.wait(3000)
@@ -54,7 +52,6 @@ class DatiPreventivo {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { requestTimeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
-
 
     }
 
@@ -78,11 +75,9 @@ class DatiPreventivo {
             else
                 assert.fail('Card Auto non è presente')
 
-
         })
 
     }
-
 
     static clickNuovaPolizza() {
         cy.wait(2000)
@@ -98,4 +93,4 @@ class DatiPreventivo {
 
 }
 
-export default DatiPreventivo
+export default S_DatiPreventivo
