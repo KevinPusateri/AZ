@@ -55,14 +55,14 @@ beforeEach(() => {
 
 afterEach(function () {
     if (this.currentTest.state !== 'passed') {
-        TopBar.logOutMW()
+        //TopBar.logOutMW()
         //#region Mysql
         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
             let tests = testsInfo
             cy.finishMysql(dbConfig, insertedId, tests)
         })
         //#endregion
-        Cypress.runner.stop();
+        //Cypress.runner.stop();
     }
 })
 
@@ -75,7 +75,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-
+     Cypress.runner.stop();
 })
 
 //#region Script Variables
@@ -104,7 +104,7 @@ var sinistro_località = 'GORIZIA'
 
 var sinistro_firma_cai = '2 Firme'
 var sinistro_dichiarazione = 'Il Cliente Dichiara Ragione (Del Tutto O In Parte)'
-var sinistro_card = 'Card Mandatario 2 Firme'
+var tipo_danno = 'Card Mandatario 2 Firme'
 
 
 let dtAvvenimento 
@@ -179,16 +179,23 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
     });
     
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
-    copertura_danno, function () {
-
+    copertura_danno, function () {        
+        Cypress.on('fail', (err, runnable) => {
+            // returning false here prevents Cypress from
+            // failing the test   
+            throw err
+        })    
         // Selezione della copertura
         DenunciaSinistriPage.clickObj_ByLabel('td', copertura_danno)
 
-        DenunciaSinistriPage.getIdInListValues_ById('#GARANZIE_listaGaranzie > table > tbody > tr', copertura_danno).then((idx) => {  
-            idx_cop_gar = idx
+        DenunciaSinistriPage.getIdInListValues_ById('#GARANZIE_listaGaranzie > table > tbody > tr ', copertura_danno).then((idx) => {  
+            idx_cop_gar = ""+idx+""
             cy.log('[it]>> indice copertura garanzia: '+idx_cop_gar);  
-            DenunciaSinistriPage.clickObj_ByIdAndAttr('#SelectedCheckBox', 'myindex', idx_cop_gar);
+            if (idx !== undefined) {                
+                DenunciaSinistriPage.clickOnCheck_ByIdAndAttr('.SelectedCheckBox', 'myindex', idx_cop_gar);
+            }
         });
+          // in questo caso non va impostato l'avanti pagina   
     });
 
     it('Inserimento dati per il risarcimento diretto con 2 veicoli conivolti e con la ' +
@@ -301,7 +308,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.checkObjVisible_ByText("Veicolo");
         DenunciaSinistriPage.checkInTbl_ByValue(cliente_cognome + " " + cliente_nome);
         DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
-        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', sinistro_card);        
+        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', tipo_danno);        
     });
 
     it('Riepilogo denuncia - verifica dati di denuncia ', function () {

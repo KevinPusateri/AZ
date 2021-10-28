@@ -40,14 +40,14 @@ beforeEach(() => {
 
 afterEach(function () {
     if (this.currentTest.state !== 'passed') {
-        TopBar.logOutMW()
+        //TopBar.logOutMW()
         //#region Mysql
         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
             let tests = testsInfo
             cy.finishMysql(dbConfig, insertedId, tests)
         })
         //#endregion
-        Cypress.runner.stop();
+        //Cypress.runner.stop();
     }
 })
 
@@ -60,6 +60,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
+     Cypress.runner.stop();
 })
 
 //#region Script Variables

@@ -133,7 +133,7 @@ class DenunciaSinistriPage {
      */
     static clickObj_ByLabel(tag, label) {             
         getIFrameDenuncia().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
-        cy.wait(1000)        
+        cy.wait(2000)        
     }
     /**
      * Click on object identified by locator id, attribute and its value 
@@ -141,9 +141,26 @@ class DenunciaSinistriPage {
      * @param {string} attr : attribute object 
      * @param {string} value : attribute value object 
      */
-    static clickObj_ByIdAndAttr(id, attr, value) {        
-        getIFrameDenuncia().find(id).should('have.attr', attr, value).click().log('>> object with attr ['+attr+'="'+value+'"] is clicked')       
-        cy.wait(1000)
+    static clickObj_ByIdAndAttr(id, attr, value) {           
+        getIFrameDenuncia().find(id, { timeout: 10000 }).should('have.attr', attr, value).click().log('>> object with attr ['+attr+'="'+value+'"] is clicked')       
+        cy.wait(1000)      
+    }
+
+    /**
+     * Click on checkbox obj identified by locator id, attribute and its value 
+     * @param {string} id : locator object id
+     * @param {string} attr : attribute object 
+     * @param {string} value : attribute value object 
+     */
+     static clickOnCheck_ByIdAndAttr(id, attr, value) {           
+        getIFrameDenuncia().find(id, { timeout: 10000 }).should('exist').and('be.visible').each(input => {          
+            let $gar = input.attr(attr)
+            if ($gar === value) {
+                cy.wrap(input).click().log('>> object with attr ['+attr+'="'+value+'"] is checked')
+                cy.wait(2000)
+                return;
+            }
+        })            
     }
     /**
      * Click on object defined by class attribute and content text displayed as label
@@ -275,13 +292,12 @@ class DenunciaSinistriPage {
      */
     static setValue_ById(id, value) {
         return new Cypress.Promise((resolve) => {
-            cy.wait(2000)  
-            if (value === '')
-                getIFrameDenuncia().find(id).should('be.visible').and('exist').clear().log('>> clean object value')        
-            else
-                getIFrameDenuncia().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
-            resolve(true)
+            cy.wait(500)             
+            getIFrameDenuncia().find(id).should('be.visible').and('exist').clear().log('>> clean object value')
+            cy.wait(500)              
+            getIFrameDenuncia().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
             cy.wait(1000)
+            resolve(true)            
         });
     }
     /**
@@ -294,7 +310,7 @@ class DenunciaSinistriPage {
         .then(listing => {
             const listingCount = Cypress.$(listing).length;
             expect(listing).to.have.length(listingCount);
-            cy.log('>> Length :' + listingCount)          
+            cy.log('>> length :' + listingCount)          
         });
         getIFrameDenuncia().find(id)
         cy.wait(1000)
@@ -318,20 +334,16 @@ class DenunciaSinistriPage {
      * @param {string} value : value to be entered
      */
      static getIdInListValues_ById(id, value) {
-        let idx = -1;
-        return new Cypress.Promise((resolve, reject) => {   
-            debugger
+        return new Cypress.Promise((resolve, reject) => {            
             getIFrameDenuncia().find(id).each(($el, index, $list) => {
-                debugger
-                if ($el.text().includes(value)) {                
-                    cy.wrap(index).then(value => {         
-                        cy.log('>> Element('+(index)+ ') and value: '+value)                              
-                    });
-                    idx = index             
+                if ($el.text().includes(value)) {                                                              
+                    cy.log('>> Element('+(index)+ ') and value: '+value) 
+                    cy.wait(2000)
+                    resolve (index)                                                 
                 }                   
-            })
-            resolve (idx)                                 
-        });
+            })                                           
+        }); 
+        cy.wait(2000)     
     }
     /**
      * Get a text value defined on object identified by its @id
@@ -415,24 +427,40 @@ class DenunciaSinistriPage {
     }
     /**
      * Check if exist id object in body
+     * @param {string} locator : id locator object
      */
-    static isVisible(id)
+    static isVisible(locator)
     { 
         return new Cypress.Promise((resolve) => {  
-            getIFrameDenuncia().find(id, { timeout: 10000 }).then(($el) => {              
+            getIFrameDenuncia().find(locator, { timeout: 10000 }).then(($el) => {              
                 if ($el === undefined)
                     resolve(false) 
                 const len = $el.length;
                 if (len > 0) {
                     //element exists do something
-                    cy.log('>> Element with [locator="' +id+ '"] exists!')
+                    cy.log('>> Element with [locator="' +locator+ '"] exists!')
                     resolve(true)   
                 } else 
                 resolve(false)   
             });
         });
     }
-    
+    /**
+     * Check if text exist in body
+     * @param {string} text : text 
+     */
+    static isVisibleText(text)
+    { 
+        let visible = false;
+        cy.log('>> check if the text="' +text+ '" is defined...')
+        getIFrameDenuncia().contains(text, { timeout: 10000 }).should('exist').and('be.visible')
+        .then(() => {       
+            visible =  true;
+            cy.log('>> [text="' +text+ '"] defined!')
+        });        
+        assert.isTrue(visible, ">> is text='"+test+"' visible")   
+        return visible
+    }
     /**
      * Check if the value is defined
      * @param {string} value : string value to check
@@ -447,8 +475,8 @@ class DenunciaSinistriPage {
                 validation = false; 
             } else {
                 validation = true;           
-            }
-            assert.isTrue(validation,">> the check value '" +value+ "' is defined. ")  
+            }           
+            assert.isTrue(validation,">> is check value '" +value+ "' defined. ")  
         });
         cy.wait(1000)        
     }
