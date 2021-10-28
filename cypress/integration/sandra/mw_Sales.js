@@ -60,14 +60,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     })
 
-  /*  it('Verifica aggancio Nuovo Sfera', function () {
-        if (!Cypress.env('monoUtenza')) {
-            TopBar.clickSales()
-            Sales.clickLinkRapido('Nuovo Sfera')
-            Sales.backToSales()
-        } else this.skip()
-    })
-*/
+  
     it('Verifica aggancio Sfera', function () {
         TopBar.clickSales()
         cy.wait(5000)
