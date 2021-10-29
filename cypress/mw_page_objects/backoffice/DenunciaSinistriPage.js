@@ -35,8 +35,17 @@ const getIFramePopUp = () => {
     return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-class DenunciaSinistriPage {
-    
+const getIFramePopUpChiudi = () => {
+    getIFrameDenuncia().find('iframe[src="popUpAvvisoScanner.jsp"]')
+        .iframe();
+
+    let iframeFolder = getIFrameDenuncia().find('iframe[src="popUpAvvisoScanner.jsp"]')
+        .its('0.contentDocument').should('exist');
+
+    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+}
+
+class DenunciaSinistriPage {  
     
     //#region Generic function
     
@@ -54,7 +63,7 @@ class DenunciaSinistriPage {
      * @param {string} tag : html element (button, etc...)
      * @param {string} label : text displayed
      */
-     static clickPopUpObj_ByLabel(tag, label) {             
+    static clickPopUpObj_ByLabel(tag, label) {             
         getIFramePopUp().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(1000)        
     }
@@ -64,7 +73,7 @@ class DenunciaSinistriPage {
      * @param {string} attr : attribute object 
      * @param {string} value : attribute value object 
      */
-     static clickPopUpObj_ByIdAndAttr(id, attr, value) {             
+    static clickPopUpObj_ByIdAndAttr(id, attr, value) {             
         getIFramePopUp().find(id).should('have.attr', attr, value).should('be.visible').click({ multiple: true }).log('>> object with attr ['+attr+'="'+value+'"] is clicked')       
         cy.wait(2000)
     }
@@ -72,7 +81,7 @@ class DenunciaSinistriPage {
      * Click on object defined by locator id
      * @param {string} id : locator object id
      */
-     static clickPopUpBtn_ById(id) {             
+    static clickPopUpBtn_ById(id) {             
         getIFramePopUp().find(id).should('be.visible').click().log('>> object with [id='+id+'] is clicked')        
         cy.wait(1000)
     }
@@ -80,7 +89,7 @@ class DenunciaSinistriPage {
      * Click on object defined by locator id
      * @param {string} id : locator object id
      */
-     static clickSelect_ById(id, text) {             
+    static clickSelect_ById(id, text) {             
         getIFrameDenuncia().find(id).should('be.visible').then((btn) => {    
             expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
             const $btn = Cypress.$(btn)
@@ -90,11 +99,11 @@ class DenunciaSinistriPage {
         })       
         cy.wait(2000)
     }
-     /**
+    /**
      * Click on object defined by locator id
      * @param {string} id : locator object id
      */
-      static clickSelect_ById(id, text) {             
+    static clickSelect_ById(id, text) {             
         getIFrameDenuncia().find(id).should('be.visible').then((btn) => {    
             expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
             const $btn = Cypress.$(btn)
@@ -122,7 +131,7 @@ class DenunciaSinistriPage {
      * Click on all objects defined by locator id
      * @param {string} id : locator objects id
      */
-     static clickOnMultiObj_ById(id) {             
+    static clickOnMultiObj_ById(id) {             
         getIFrameDenuncia().find(id).click({ multiple: true });
         cy.wait(1000)
     }
@@ -133,6 +142,15 @@ class DenunciaSinistriPage {
      */
     static clickObj_ByLabel(tag, label) {             
         getIFrameDenuncia().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
+        cy.wait(2000)        
+    }
+    /**
+     * Click on object defined by html tag and content text displayed as label
+     * @param {string} tag : html element (button, etc...)
+     * @param {string} label : text displayed
+     */
+    static clickObjPopUpChiudi_ByLabel(tag, label) {             
+        getIFramePopUpChiudi().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(2000)        
     }
     /**
@@ -152,7 +170,7 @@ class DenunciaSinistriPage {
      * @param {string} attr : attribute object 
      * @param {string} value : attribute value object 
      */
-     static clickOnCheck_ByIdAndAttr(id, attr, value) {           
+    static clickOnCheck_ByIdAndAttr(id, attr, value) {           
         getIFrameDenuncia().find(id, { timeout: 10000 }).should('exist').and('be.visible').each(input => {          
             let $gar = input.attr(attr)
             if ($gar === value) {
@@ -228,12 +246,12 @@ class DenunciaSinistriPage {
         });
         cy.wait(1000)                 
     }
-      /**
+    /**
      * Check if an object identified by id and value
      * @param {string} id : class attribute 
      * @param {string} label : text displayed
      */
-       static checkObj_ByIdAndLbl(id, label) {              
+    static checkObj_ByIdAndLbl(id, label) {              
         getIFrameDenuncia().find(id).should('exist').then(($input) => {
             const value = $input.val().toUpperCase();
             cy.log('>> val: '+ value)
@@ -270,7 +288,7 @@ class DenunciaSinistriPage {
      * @param {string} locator : class attribute 
      * @param {string} label : text displayed
      */
-     static checkObj_ByLocatorAndText(locator, label) {       
+    static checkObj_ByLocatorAndText(locator, label) {       
         return new Cypress.Promise((resolve, reject) => {     
             getIFrameDenuncia().find(locator).should('be.visible')
             .then(($val) => {                                       
@@ -333,7 +351,7 @@ class DenunciaSinistriPage {
      * @param {string} id : locator object id
      * @param {string} value : value to be entered
      */
-     static getIdInListValues_ById(id, value) {
+    static getIdInListValues_ById(id, value) {
         return new Cypress.Promise((resolve, reject) => {            
             getIFrameDenuncia().find(id).each(($el, index, $list) => {
                 if ($el.text().includes(value)) {                                                              

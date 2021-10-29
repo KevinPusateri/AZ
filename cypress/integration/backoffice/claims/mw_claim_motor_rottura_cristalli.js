@@ -85,7 +85,7 @@ var cliente_targa = 'Fj103dt'
 var copertura_danno = 'ROTTURA CRISTALLI'
 
 var sinistro_veicoli_coinvolti = '2'
-var sinistro_descrizione_danno = 'Collisione da Tamponamento'
+var sinistro_descrizione_danno = 'Danneggiamento parabrezza'
 var sinistro_località = 'GORIZIA'
 
 var tipo_danno = 'Rottura Cristalli'
@@ -157,16 +157,15 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             // failing the test   
             return false
         })
-       var page = DenunciaSinistriPage.isVisibleText('Lista sinistri')
+
         DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1').then(isVisible => {
-            if (isVisible) {
-                DenunciaSinistriPage.clickObj_ByLabel('td', "DENUNCIATO")
+            if (isVisible) {               
                 DenunciaSinistriPage.clickObj_ByIdAndAttr('#SINISTRI_DOPPI_proseguiDenunciaCorso', 'value', 'si');
                 DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');
             }            
         }); 
     });
- 
+
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
     copertura_danno, function () {        
         Cypress.on('fail', (err, runnable) => {
@@ -220,4 +219,33 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_nome);       
     });
 
+    it('Riepilogo denuncia - salvataggio e verifica dati di denuncia denuncia ', function () {
+        
+        DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
+        DenunciaSinistriPage.clickObjPopUpChiudi_ByLabel('a','Chiudi')
+
+        const cssNumSin = "#PRECOMMIT_listaDanneggiatiBUFF > table > tbody > tr > td:nth-child(1)"
+        DenunciaSinistriPage.getPromiseText_ById(cssNumSin).then((numsin) => {                 
+            cy.log('[it]>> numero di sinistro: ' + numsin)
+            numsin = numsin.substring(0,9)
+            DenunciaSinistriPage.isNotNullOrEmpty(numsin)                 
+            DenunciaSinistriPage.isPositiveNumber(numsin) 
+        });
+
+        // il dannegiato 
+        DenunciaSinistriPage.checkObjVisible_ByText("Veicolo");
+        DenunciaSinistriPage.checkInTbl_ByValue(cliente_cognome + " " + cliente_nome);
+        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
+        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', tipo_danno);        
+        // Dati di denuncia
+        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataAvvenimento', dtAvvenimento);
+        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataDenuncia', dtDenuncia);
+        DenunciaSinistriPage.checkObj_ByIdAndLbl('#CLIENTE_LOCALITA', sinistro_località);
+
+         // dati di contraenza
+        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_numeroPolizza', cliente_num_pol);
+        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_targa', cliente_targa);
+        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_cognome);
+        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_nome);
+    });
 });

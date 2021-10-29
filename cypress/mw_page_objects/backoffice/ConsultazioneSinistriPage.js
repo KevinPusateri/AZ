@@ -311,6 +311,16 @@ class ConsultazioneSinistriPage {
         });
         cy.wait(1000)        
     }
+    static isPositiveNumber(str)
+    {
+        const regexExp = /^-?(0|[1-9]\d*)$/;//Reg exp. for valid signed integer
+        var pattern = new RegExp(regexExp)
+        //Tests for a match in a string. It returns true or false.
+        validation = pattern.test(str)
+        cy.wrap(str).then((validation) => {  
+            assert.isTrue(validation,"the data: '"+numstr+"' is valid number");       
+        });
+    }
     /**
      * Put a @str value and is verified if its a valid IBAN 
      * @param {string} str : string date format
@@ -349,7 +359,7 @@ class ConsultazioneSinistriPage {
         var pattern = new RegExp(regexExp)       
         cy.wrap(numstr).then((validation) => {  
             validation = pattern.test(numstr)
-            assert.isTrue(validation,"Currency Check on '"+numstr+"' value ");                
+            assert.isTrue(validation,"the data: '"+numstr+"' is valid currency value");                
         });
     }
     /**
@@ -363,7 +373,6 @@ class ConsultazioneSinistriPage {
                 assert.isTrue(validation,"EURO Currency Check on '"+str+"' value ");                
         });
     } 
-
     static getCurrency(str) {               
         const regexExp = /\d{1,3},\d{2}/;
         var amount = str.match(regexExp)[0]
