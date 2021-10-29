@@ -7,7 +7,7 @@
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import Sales from "../../mw_page_objects/mw_sandra_obj/S_sales"   
+import S_sales from "../../mw_page_objects/mw_sandra_obj/S_sales"   
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -49,18 +49,18 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
   
   
-    it('Verifica la presenza dei link su "Emetti Polizza"', function () {
+  /*  it('Verifica la presenza dei link su "Emetti Polizza"', function () {
         TopBar.clickSales()
         cy.wait(10000)
-        Sales.checkLinksOnEmettiPolizza()
+        S_sales.checkLinksOnEmettiPolizza()
         cy.wait(10000)
 
     })
-
+*/
     it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
        TopBar.clickSales()
         cy.wait(3000)
-        Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+        S_sales.clickLinkOnEmettiPolizza('Preventivo Motor')
         cy.wait(6000)
        // Sales.backToSales()
     })

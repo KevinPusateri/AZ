@@ -7,7 +7,8 @@
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import Sales from "../../mw_page_objects/mw_sandra_obj/S_sales"   
+import S_sales from "../../mw_page_objects/mw_sandra_obj/S_sales"
+
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -52,21 +53,22 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         cy.wait(6000)
     })
 
-    it('Verifica presenza dei collegamenti rapidi', function () {
+/*    it('Verifica presenza dei collegamenti rapidi', function () {
        TopBar.clickSales()
        cy.wait(5000)
-        Sales.checkExistLinksCollegamentiRapidi()
+    
+        S_sales.checkExistLinksCollegamentiRapidi()
        cy.wait(5000)
 
     })
-
+*/
   
     it('Verifica aggancio Sfera', function () {
         TopBar.clickSales()
+        cy.wait(6000)
+        S_sales.clickLinkRapido('Sfera')
         cy.wait(5000)
-        Sales.clickLinkRapido('Sfera')
-        cy.wait(5000)
-        Sales.backToSales()
+        S_sales.backToSales()
     })
 
    
