@@ -8,7 +8,7 @@ import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 //import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
-import DatiPreventivo from "../../mw_page_objects/sandra_objmw/DatiPreventivo"
+import S_DatiPreventivo from "../../mw_page_objects/mw_sandra_obj/S_DatiPreventivo"
 
 //#region Username Variables
 //const userName = 'TUTF017'   // 'TUTF021'
@@ -67,13 +67,13 @@ describe('Ricerca per preventivo', {
        
       
        
-       DatiPreventivo.clickAuto()
+       S_DatiPreventivo.clickAuto()
       //DatiPreventivo.clickPassioneBlu()
-       DatiPreventivo.clickPreventivoMotor()
-       
-       DatiPreventivo.ClickCheckTarga()
       
-       DatiPreventivo.clickAvanti()
+       S_DatiPreventivo.clickPreventivoMotor()
+       S_DatiPreventivo.ClickCheckTarga()
+      
+       S_DatiPreventivo.clickAvanti()
 
        // SintesiCliente.checkAtterraggioSintesiCliente('AUTOMATICI')
     })

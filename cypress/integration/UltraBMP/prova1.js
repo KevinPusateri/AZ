@@ -1,13 +1,13 @@
 /**
- * @author Sandra Espeche <sandra.marina.espeche@allianz.it>
- 
+ * @author Pietro Scocchi <pietro.scocchi@allianz.it>
 */
 /// <reference types="Cypress" />
 
+import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import S_sales from "../../mw_page_objects/mw_sandra_obj/S_sales"   
+import BurgerMenuSales from "../../mw_page_objects/burgermenu/BurgerMenuSales"
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -17,7 +17,7 @@ let insertedId
 //#endregion
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 70000)
+Cypress.config('defaultCommandTimeout', 60000)
 
 //#endregion
 
@@ -47,24 +47,9 @@ after(function () {
 
 describe('Matrix Web : Navigazioni da Sales', function () {
 
-  
-  
-  /*  it('Verifica la presenza dei link su "Emetti Polizza"', function () {
+    it('Seleziona Ultra BMP', () => {
         TopBar.clickSales()
-        cy.wait(10000)
-        S_sales.checkLinksOnEmettiPolizza()
-        cy.wait(10000)
-
-    })
-*/
-    it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
-       TopBar.clickSales()
-        cy.wait(3000)
-        S_sales.clickLinkOnEmettiPolizza('Preventivo Motor')
-        cy.wait(6000)
-       // Sales.backToSales()
+        BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
     })
 
-
-})
-
+});
