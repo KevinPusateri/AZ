@@ -32,8 +32,8 @@ class DettaglioAnagrafica {
 
         if (cliente.isPEC)
             cy.contains('Invio documento via PEC')
-                .parent('div')
-                .get('nx-icon').should('have.class', 'nx-icon--s nx-icon--check-circle color-true')
+            .parent('div')
+            .get('nx-icon').should('have.class', 'nx-icon--s ndbx-icon nx-icon--check-circle color-true')
     }
 
     static aggiungiDocumento() {
@@ -100,7 +100,7 @@ class DettaglioAnagrafica {
         cy.contains('Legami').click({ force: true })
         cy.wait('@getApi', { requestTimeout: 40000 });
         cy.get('body').find('ac-anagrafe-panel:contains("Gruppo aziendale")').should('be.visible')
-        // cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 40000 });
+            // cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 40000 });
 
     }
 
@@ -363,35 +363,34 @@ class DettaglioAnagrafica {
         if (!convenzionePresente) {
             cy.get('h4').should('contain.text', 'Nessuna convenzione disponibile per l\'agenzia selezionata')
             cy.contains('Annulla').click()
-        }
-        else {
+        } else {
             return new Cypress.Promise((resolve, reject) => {
                 const convenzioneInserita = {
-                    agenzia: agenzia,
-                    convenzioneId: convenzione,
-                    matricola: (ruolo === 'Familiare del Convenzionato') ? '' : Math.floor(Math.random() * 1000000000).toString(),
-                    ruolo: ruolo,
-                    aderente: aderente
-                }
-                //Agenzia
-                cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').find('span:visible').invoke('text').then($text => {
-                    if ($text !== agenzia) {
-                        cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').click()
-                        cy.contains(agenzia).should('be.visible').click()
+                        agenzia: agenzia,
+                        convenzioneId: convenzione,
+                        matricola: (ruolo === 'Familiare del Convenzionato') ? '' : Math.floor(Math.random() * 1000000000).toString(),
+                        ruolo: ruolo,
+                        aderente: aderente
                     }
-                })
-                //Convenzione
+                    //Agenzia
+                cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').find('span:visible').invoke('text').then($text => {
+                        if ($text !== agenzia) {
+                            cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').click()
+                            cy.contains(agenzia).should('be.visible').click()
+                        }
+                    })
+                    //Convenzione
                 cy.get('#nx-dropdown-rendered-1').click()
                 cy.contains(convenzione).should('be.visible').click()
-                //Matricola
+                    //Matricola
                 if (convenzioneInserita.matricola !== '')
                     cy.get('input[formcontrolname="matricola"]').should('be.visible').type(convenzioneInserita.matricola)
-                //Ruolo
+                    //Ruolo
                 cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click()
                 cy.get('#nx-dropdown-item-3').should('exist').and('be.visible')
                 cy.get('.cdk-overlay-container').should('be.visible').within(($element) => {
                     console.log($element)
-                    // cy.get('[aria-activedescendant="nx-dropdown-item-2"]').should('exist').and('be.visible').within(($tendina) => {
+                        // cy.get('[aria-activedescendant="nx-dropdown-item-2"]').should('exist').and('be.visible').within(($tendina) => {
                     cy.get('[class="cdk-overlay-connected-position-bounding-box"]').find('div[role="listbox"]').should('exist').and('be.visible').within(($tendina) => {
                         switch (ruolo) {
                             case 'Convenzionato':
