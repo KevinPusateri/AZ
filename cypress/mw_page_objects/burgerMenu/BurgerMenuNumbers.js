@@ -63,9 +63,9 @@ const LinksBurgerMenu = {
 class BurgerMenuNumbers extends Numbers {
 
     /**
-      * Torna indetro su Numbers
-      * @param {string} checkUrl - Verifica url della pagina di atterraggio
-      */
+     * Torna indetro su Numbers
+     * @param {string} checkUrl - Verifica url della pagina di atterraggio
+     */
     static backToNumbers() {
         super.backToNumbers('business-lines')
     }
@@ -127,7 +127,7 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO_FONTE:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                getIFrame().find('#contentPane:contains("Applica filtri"):visible')
+                getIFrame().find('#contentPane:contains("Apri filtri"):visible')
                 break;
             case LinksBurgerMenu.X_ADVISOR:
                 cy.contains('Advisor')
@@ -146,7 +146,7 @@ class BurgerMenuNumbers extends Numbers {
                     getIFrame().find('[class="menu-padre"]:contains("Report"):visible')
                 else
                     getIFrame().find('#likelyCauses').should('be.visible')
-                        .and('contain.text','Non esistono piani di incentivazioni recruiting per l\'agenzia.')
+                    .and('contain.text', 'Non esistono piani di incentivazioni recruiting per l\'agenzia.')
                 break;
             case LinksBurgerMenu.ANDAMENTI_TECNICI:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });

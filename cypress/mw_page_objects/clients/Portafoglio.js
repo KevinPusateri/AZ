@@ -637,7 +637,7 @@ class Portafoglio {
             cy.get('#btnStorno').should('exist').and('be.visible').click()
             cy.wait(5000)
             cy.get('div[role="dialog"]').then(($form) => {
-                const checkFormVisible = $form.find(':contains("Lo storno è stato eseguito ma si è verificato un errore in fase di invio mail della documentazione.")')
+                const checkFormVisible = $form.find(':contains("Lo storno è stato eseguito ma si è verificato un errore in fase di invio mail della documentazione.")').is(':visible')
                 if (checkFormVisible) {
                     cy.contains('Ok').click()
                     cy.wrap($form).should('not.be.visible')
