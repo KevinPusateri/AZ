@@ -414,7 +414,7 @@ class Sales {
         cy.get('.cards-container').find('.card').first().click()
         Common.canaleFromPopup()
         cy.wait(20000)
-        getIFrame().find('#AZBuilder1_ctl08_cmdNote').invoke('attr', 'value').should('equal', 'Note')
+        getIFrame().find('#AZBuilder1_ctl09_cmdNote').invoke('attr', 'value').should('equal', 'Note')
     }
 
     /**
