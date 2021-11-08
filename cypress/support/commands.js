@@ -221,7 +221,7 @@ Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
   cy.request({
     method: 'POST',
     log: false,
-    url: 'https://profilingbe.pp.azi.allianzit/profilingManagement/personation/' + tutf,
+    url: Cypress.env('currentEnv') === 'TEST'? Cypress.env('profilingUrlTest') + '/profilingManagement/personation/' + tutf : Cypress.env('profilingUrlPreprod') + '/profilingManagement/personation/' + tutf,
     form: true,
     body: { persUser: getPersUser, channel: getChannel }
   }).then(resp => {
