@@ -260,6 +260,39 @@ class LandingRicerca {
             .should('not.be.null')
     }
 
+    static clickClientePF(cognome){
+        //Attende il caricamento della scheda cliente
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'client'
+            }
+        });
+
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('searchClient')) {
+                req.alias = 'gqlSearchClient'
+            }
+        });
+
+        //Filtriamo la ricerca in base a tipoCliente
+        cy.get('.icon').find('[name="filter"]').click()
+        cy.get('.filter-group').contains('Persona giuridica').click()
+
+        cy.get('.footer').find('button').contains('applica').click()
+        cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
+
+        cy.get('lib-applied-filters-item').find('span').should('be.visible')
+
+        cy.get('lib-scrollable-container').contains(cognome.toUpperCase()).then((card) => {
+            if (card.length === 1)
+                cy.wrap(card).click()
+        })
+        //Verifica se ci sono problemi nel retrive del cliente per permessi
+        cy.wait('@client', { requestTimeout: 30000 })
+            .its('response.body.data.client')
+            .should('not.be.null')
+    }
+
     /**
      * 
      * @param {string} pageLanding - nome della pagina 
