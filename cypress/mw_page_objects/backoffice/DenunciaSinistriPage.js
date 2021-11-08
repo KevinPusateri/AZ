@@ -163,7 +163,22 @@ class DenunciaSinistriPage {
         getIFrameDenuncia().find(id, { timeout: 10000 }).should('have.attr', attr, value).click().log('>> object with attr ['+attr+'="'+value+'"] is clicked')       
         cy.wait(1000)      
     }
-
+    /**
+     * Click on checkbox obj identified by locator id, and text value 
+     * @param {string} id : locator object id
+     * @param {string} value : attribute value object 
+     */
+    static clickOnRadio_ByIdAndText(id, value) {                   
+        getIFrameDenuncia().find(id, { timeout: 10000 }).should('exist').and('be.visible').each(li => {          
+            let $txt = li.text().trim()              
+            if ($txt.includes(value)) {
+                debugger
+                cy.wrap(li).children('input').check({force: true}).should('be.checked')
+                cy.wait(2000).log('>> object with id ['+id+'="'+value+'"] is checked')
+                return;
+            }
+        })            
+    }
     /**
      * Click on checkbox obj identified by locator id, attribute and its value 
      * @param {string} id : locator object id
@@ -557,8 +572,8 @@ class DenunciaSinistriPage {
         return new Cypress.Promise((resolve) => {
             let dt = new Date();
             cy.wrap(dt).then(()  => {            
-                dt.setDate(dt.getDate() + ndays); 
-                let retval = dt.toLocaleDateString()                
+                dt.setDate(dt.getDate() + ndays);                
+                let retval = dt.toLocaleDateString('en-GB')                
                 cy.log(retval) 
                 resolve(retval)
             });
