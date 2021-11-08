@@ -9,8 +9,7 @@ class LoginPage {
         cy.clearLocalStorage()
         cy.viewport(1920, 1080)
 
-        let url
-        Cypress.env('currentEnv') === 'TEST' ? url = Cypress.env('urlMWTest') : url = Cypress.env('urlMWPreprod')
+        Cypress.env('currentEnv') === 'TEST' ? Cypress.config('baseUrl', Cypress.env('urlMWTest')): Cypress.config('baseUrl', Cypress.env('urlMWPreprod'))
 
         cy.visit('/', { responseTimeout: 31000 }, {
             onBeforeLoad: win => {
