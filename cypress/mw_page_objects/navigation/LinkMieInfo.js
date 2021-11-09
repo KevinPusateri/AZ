@@ -39,24 +39,25 @@ const LinksSubMenu = {
         STOPDRIVE: 'Stop&Drive',
         PROPONI_LTC: 'Proponi LTC',
         PROPONI_TCM: 'Proponi TCM',
-        // MENSILIZZAZIONE_RAMI_VARI: 'Mensilizzazione Rami Vari',
+        MENSILIZZAZIONE_RAMI_VARI: 'Mensilizzazione Rami Vari',
         MENSILIZZAZIONE_AUTO: 'Mensilizzazione Auto',
         CLIENTI_VALORE_EXTRA: 'Clienti Valore Extra',
         ALLIANZPAY: 'AllianzPay',
-        // BUSTA_ARANCIONE: 'Busta arancione',
+        BUSTA_ARANCIONE: 'Busta arancione',
         WINBACK_MOTOR: 'Winback Motor',
         DECOMMISSIONING_TELEMATICI: 'Decommissioning telematici',
         DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR: 'Digitalizzazione del certificato assicurativo Motor',
-        // ATTESTATO_DI_RISCHIO_DINAMICO: 'Attestato di rischio dinamico',
+        ATTESTATO_DI_RISCHIO_DINAMICO: 'Attestato di rischio dinamico',
         TEST: 'Test'
     },
     SALES_ACADEMY: {
-        CHI_SIAMO: 'Chi Siamo',
-        ALLIANZ_BUSINESS_SCHOOL: 'Allianz Business School',
+        CHI_SIAMO: 'Chi siamo',
         MASTER_PROFESSIONE_AGENTE: 'Master Professione Agente',
-        OBBLIGHI_IVASS: 'Obblighi IVASS',
-        FORMAZIONE_MULTICANALE: 'Formazione Multicanale',
-        PERCORSI_DI_RUOLO: 'Percorsi di ruolo'
+        ALLIANZ_BUSINESS_SCHOOL: 'Allianz Business School',
+        PERCORSI_DI_RUOLO: 'Percorsi di ruolo',
+        // OBBLIGHI_IVASS: 'Obblighi IVASS',
+        CAMPUS_IVASS: 'Campus e IVASS',
+        FORMAZIONE_MULTICANALE: 'Formazione Multicanale'
     },
     // NEW_COMPANY_HANDBOOK: {
     //     GESTIONE_CONTRATTUALE: 'Gestione Contrattuale',

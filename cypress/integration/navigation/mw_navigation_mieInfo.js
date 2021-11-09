@@ -46,16 +46,16 @@ after(function() {
 })
 
 describe('Matrix Web : Navigazioni da Le Mie Info', function() {
-    it.skip('Verifica aggancio Le Mie Info', function() {
+    it('Verifica aggancio Le Mie Info', function() {
         TopBar.clickMieInfo()
     })
 
-    it.skip('Verifica presenza links Menu', function() {
+    it('Verifica presenza links Menu', function() {
         TopBar.clickMieInfo()
         Mieinfo.checkLinksOnMenuInfo()
     })
 
-    it.skip('Verifica aggancio Primo piano', function() {
+    it('Verifica aggancio Primo piano', function() {
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Primo piano')
     })
@@ -65,12 +65,12 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function() {
     //     Mieinfo.clickLinkOnMenu('Raccolte')
     // });
 
-    it.skip('Verifica aggancio Contenuti salvati', function() {
+    it('Verifica aggancio Contenuti salvati', function() {
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Contenuti salvati')
     });
 
-    it.skip('Verifica aggancio Prodotti', function() {
+    it('Verifica aggancio Prodotti', function() {
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Prodotti')
         Mieinfo.checkLinksOnSubMenu('Prodotti')
