@@ -28,27 +28,29 @@ before(() => {
     })
 })
 
-// beforeEach(() => {
-//     cy.preserveCookies()
-//     Common.visitUrlOnEnv()
-//     TopBar.clickSales()
-//     Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
-// })
+beforeEach(() => {
+    cy.preserveCookies()
+    Common.visitUrlOnEnv()
+    TopBar.clickSales()
+    Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+})
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+})
 
 describe('Tenuta Tariffa Gennaio 2022 : ', function () {
     tariffaCases.forEach((currentCase,k) => {
         it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, () => {
-            TenutaTariffa.compilaDatiQuotazione(currentCase);
+            TenutaTariffa.compilaDatiQuotazione(currentCase)
+            TenutaTariffa.compilaContraenteProprietario(currentCase)
+            TenutaTariffa.compilaVeicolo(currentCase) 
         });
     });
 })

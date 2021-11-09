@@ -1,3 +1,8 @@
+/**
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it>
+ * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+ */
+
 /// <reference types="Cypress" />
 
 const getIFrame = () => {
@@ -9,161 +14,179 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-require('cypress-plugin-tab')
 
-
+let currentDataNascita
 class TenutaTariffa {
 
-    static calcolaDataDecorrenza(currentCase) {
-        debugger
-        let currentDatePlusTwoMonths = new Date()
-        currentDatePlusTwoMonths.setMonth(currentDatePlusTwoMonths.getMonth() + 2)
-
-        let dataFineTariffa
-        let terminePeriodoTariffazione = currentCase.Periodo_Tariffazione.split('-')[1];
-
-        switch (terminePeriodoTariffazione) {
-            //! Month 0 is January....
-            case "01":
-                dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 0, 31);
-                break;
-            case "02":
-                const date = new Date(currentCase.Anno_Periodo_Tariffazione, 1, 29);
-                if (date.getMonth() === 1)
-                    dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 1, 29);
-                else
-                    dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 1, 28);
-                break;
-            case "03":
-                dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 2, 31);
-                break;
-            case "04":
-                dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 3, 30);
-                break;
-            case "05":
-                dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 4, 31);
-                break;
-            case "06":
-                dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 5, 30);
-                break;
-            case "07":
-                dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 6, 31);
-                break;
-            case "08":
-                dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 7, 31);
-                break;
-            case "09":
-                dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 8, 30);
-                break;
-            case "10":
-                dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 9, 31);
-                break;
-            case "11":
-                dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 10, 30);
-                break;
-            case "12":
-                dataFineTariffa = new Date(currentCase.Anno_Periodo_Tariffazione, 11, 31);
-                break;
-        }
-
-        //Verifichiamo se sto effettuando una previsione futura oltre i due mesi o meno
-        if (DateTime.Compare(dataAttualePiùDueMesi, dataFineTariffa) < 0) {
-            //Se il mese di dataFineTariffa è diverso dal mese di dataAttualePiùDueMesi setto come 
-
-            //la dataFineTariffa essendo proiezione oltre la possibilità di scelta canonica da DA di due mesi
-            if (dataAttualePiùDueMesi.Month == dataFineTariffa.Month)
-                caso_tenuta_tariffa.Data_Decorrenza = dataAttualePiùDueMesi;
-            else
-                caso_tenuta_tariffa.Data_Decorrenza = dataFineTariffa;
-        }
-        else
-            caso_tenuta_tariffa.Data_Decorrenza = dataFineTariffa;
-    }
-
-    //#region Dati quotazione
     static compilaDatiQuotazione(currentCase) {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
-            cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('input[aria-label="Targa"]').type(currentCase.targa).wait(500)
+            //Tipologia Veicolo
+            cy.contains('un\'auto').parent().should('exist').and('be.visible').click().wait(500)
+            cy.contains(currentCase.Tipo_Veicolo).should('exist').and('be.visible').click().wait(500)
 
-            //String dataNascita = caso.Data_Decorrenza.AddYears(-caso.Eta).AddDays(-10).ToString("ddMMyyyy");
+            //Targa
+            cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(500)
+            cy.get('input[aria-label="Targa"]').type(currentCase.Targa).wait(500)
+
+            //Data di Nascita : calcolata in automatico a partire dalla data decorrenza in rapporto all'età del caso
+            let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+            currentDataNascita = new Date(dataDecorrenza.getFullYear() - currentCase.Eta, dataDecorrenza.getMonth(), dataDecorrenza.getDay())
+            let formattedDataNascita = String(currentDataNascita.getDay()).padStart(2, '0') + '/' +
+                String(currentDataNascita.getMonth() + 1).padStart(2, '0') + '/' +
+                currentDataNascita.getFullYear()
             cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(dataNascita).wait(1000)
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(formattedDataNascita).wait(1000)
 
             cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true }).wait(500)
 
             cy.contains('Calcola').should('be.visible')
             cy.contains('Calcola').click({ force: true })
-
-            cy.get('input[aria-label="Indirizzo"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('input[aria-label="Indirizzo"]').type('roma{enter}').wait(500);
-
-            cy.get('input[aria-label="NumeroCivico"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('input[aria-label="NumeroCivico"]').type('12{enter}').wait(500);
-
-            cy.get('input[aria-label="Comune"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('input[aria-label="Comune"]').type('Codogno').wait(1000);
-
-            cy.contains('Calcola').click({ force: true })
-            cy.contains('Calcola').should('be.visible')
-            cy.contains('Calcola').click({ force: true })
-
-            //const check = $body.find('OK').is(':visible')
-            // if (check) {
-            // cy.contains('OK').should('be.visible')
-            //cy.contains('OK').click({ force: true })
-            // }
         })
-
-    }
-    #region
-
-    //#region Provenienza
-
-    static provenienza(provenienza) {
-        cy.wait(10000)
-        cy.getIFrame()
-        // cy.get('@iframe').within(() => {
-
-
-        //     cy.get('nx-dropdown[aria-haspopup="listbox"]').first().should('be.visible').click()            
-        //     cy.get('nx-dropdown-item').should('be.visible').contains(provenienza).click();
-
-
-        // })
-
     }
 
-    //#endregion
-
-    //#region Salvataggio quotazione
-
-    static salvaQuotazioneMotorNGA2021() {
+    static compilaContraenteProprietario(currentCase) {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
+            //TODO E' il proprietario principale del veicolo
 
-            cy.contains('Salva quotazione').should('be.visible').click()
+            //Dati cliente Persona Fisica al momento
+            //Dati generati Random per quanto riguarda nome e cognome
+            cy.task('nuovoClientePersonaFisica').then((currentPersonaFisica) => {
+                let currentCognome = currentPersonaFisica.cognome
+                let currentNome = currentPersonaFisica.nome
 
-            var nomeQuotazione = randomString(10, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                cy.get('input[formcontrolname="nome"]').should('exist').and('be.visible').type(currentPersonaFisica.nome.toUpperCase()).wait(500)
+                cy.get('input[formcontrolname="cognomeRagioneSociale"]').should('exist').and('be.visible').type(currentPersonaFisica.cognome.toUpperCase()).wait(500)
+                cy.get('input[formcontrolname="luogoNascita"]').should('exist').and('be.visible').type(currentCase.Comune).wait(500)
+                cy.get('nx-dropdown[formcontrolname="toponimo"]').should('exist').and('be.visible').click().wait(500)
+                let re = new RegExp("\^ " + currentCase.Toponimo.toLowerCase() + " \$")
+                cy.contains(re).should('exist').and('be.visible').click().wait(500)
+                cy.get('input[formcontrolname="indirizzo"]').should('exist').and('be.visible').type(currentCase.Indirizzo).wait(500)
+                cy.get('input[formcontrolname="civico"]').should('exist').and('be.visible').type(currentCase.Numero_Civico).wait(500)
+                cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune).wait(500)
+                cy.get('input[formcontrolname="provincia"]').should('exist').and('be.visible').type(currentCase.Provincia).wait(500)
+                cy.get('input[formcontrolname="cap"]').should('exist').and('be.visible').type(currentCase.CAP).wait(500)
+                cy.get('nx-dropdown[formcontrolname="professione"]').should('exist').and('be.visible').click().wait(500)
+                re = new RegExp("\^ " + currentCase.Professione + " \$")
+                cy.contains(re).should('exist').and('be.visible').click().wait(500)
 
-            cy.get('input[formcontrolname="nome"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('input[formcontrolname="nome"]').type(nomeQuotazione).wait(1000)
-            cy.get('button[nxbutton="primary medium"]').click()
-            return nomeQuotazione;
+                //Generiamo il codice fiscale
+                let formattedDataNascita = currentDataNascita.getFullYear() + '-' +
+                    String(currentDataNascita.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(currentDataNascita.getDay()).padStart(2, '0')
 
+
+                cy.getSSN(currentCognome, currentNome, currentCase.Comune, currentCase.Cod_Comune, formattedDataNascita, 'M').then(currentSSN => {
+                    cy.get('input[formcontrolname="cfIva"]').should('exist').and('be.visible').type(currentSSN).wait(500)
+                })
+
+                cy.intercept({
+                    method: 'PUT',
+                    url: '**/assuntivomotor/**'
+                }).as('getMotor')
+
+                cy.contains('AVANTI').should('exist').and('be.visible').click().wait(500)
+
+                cy.wait('@getMotor', { requestTimeout: 100000 })
+            })
         })
-
     }
 
-    //#endregion
+    static compilaVeicolo(currentCase) {
+        cy.intercept({
+            method: '+(GET|PUT)',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor')
 
-}
-function randomString(length, chars) {
-    var result = '';
-    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
-    return result;
+        debugger
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            //Data Immatricolazione
+            //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
+            let dataPrimaImmatricolazione
+            if (currentCase.Prima_Immatricolazione.split(' ')[1].includes('ann')) {
+                let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+                dataPrimaImmatricolazione = new Date(dataDecorrenza.getFullYear() - currentCase.Prima_Immatricolazione.split(' ')[0],
+                    dataDecorrenza.getMonth(),
+                    dataDecorrenza.getDay() - 10)
+                let formattedPrimaImmatricolazione = String(dataPrimaImmatricolazione.getDay()).padStart(2, '0') + '/' +
+                    String(dataPrimaImmatricolazione.getMonth() + 1).padStart(2, '0') + '/' +
+                    dataPrimaImmatricolazione.getFullYear()
+
+                cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').clear().wait(500)
+                cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').type(formattedPrimaImmatricolazione).type('{enter}').wait(500)
+
+                cy.wait('@getMotor', { requestTimeout: 30000 })
+            }
+            //Tipo Veicolo
+            cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').click().wait(1000)
+            cy.contains(currentCase.Tipo_Veicolo).should('exist').and('be.visible').click().wait(500)
+            cy.wait('@getMotor', { requestTimeout: 30000 })
+
+            //Marca
+            cy.get('nx-dropdown[formcontrolname="marca"]').should('exist').and('be.visible').click().wait(500)
+            cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Marca).wait(500)
+            let re = new RegExp("\^ " + currentCase.Marca + " \$")
+            cy.contains(re).should('exist').and('be.visible').click().wait(500)
+            cy.wait('@getMotor', { requestTimeout: 30000 })
+
+            //Modello
+            cy.get('nx-dropdown[formcontrolname="modello"]').should('exist').and('be.visible').click().wait(500)
+            cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Modello).wait(500)
+            re = new RegExp("\^ " + currentCase.Modello + " \$")
+            cy.contains(re).should('exist').and('be.visible').click().wait(500)
+            cy.wait('@getMotor', { requestTimeout: 30000 })
+
+            //Allestimento
+            cy.get('nx-dropdown[formcontrolname="versione"]').should('exist').and('be.visible').click().wait(500)
+            cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Version).wait(500)
+            re = new RegExp("\^ " + currentCase.Versione + " \$")
+            cy.contains(re).should('exist').and('be.visible').click().wait(500)
+            cy.wait('@getMotor', { requestTimeout: 30000 })
+
+            debugger
+
+        });
+    }
 }
 
-export default S_pm
+function calcolaDataDecorrenza(currentCase) {
+
+    let terminePeriodoTariffazione = currentCase.Periodo_Tariffazione.split('-')[1];
+
+    switch (terminePeriodoTariffazione) {
+        //! Month 0 is January....
+        case "01":
+            return new Date(currentCase.Anno_Periodo_Tariffazione, 0, 31);
+        case "02":
+            const date = new Date(currentCase.Anno_Periodo_Tariffazione, 1, 29);
+            if (date.getMonth() === 1)
+                return new Date(currentCase.Anno_Periodo_Tariffazione, 1, 29);
+            else
+                return new Date(currentCase.Anno_Periodo_Tariffazione, 1, 28);
+        case "03":
+            return new Date(currentCase.Anno_Periodo_Tariffazione, 2, 31);
+        case "04":
+            return new Date(currentCase.Anno_Periodo_Tariffazione, 3, 30);
+        case "05":
+            return new Date(currentCase.Anno_Periodo_Tariffazione, 4, 31);
+        case "06":
+            return new Date(currentCase.Anno_Periodo_Tariffazione, 5, 30);
+        case "07":
+            return new Date(currentCase.Anno_Periodo_Tariffazione, 6, 31);
+        case "08":
+            return new Date(currentCase.Anno_Periodo_Tariffazione, 7, 31);
+        case "09":
+            return new Date(currentCase.Anno_Periodo_Tariffazione, 8, 30);
+        case "10":
+            return new Date(currentCase.Anno_Periodo_Tariffazione, 9, 31);
+        case "11":
+            return new Date(currentCase.Anno_Periodo_Tariffazione, 10, 30);
+        case "12":
+            return new Date(currentCase.Anno_Periodo_Tariffazione, 11, 31);
+    }
+}
+
+export default TenutaTariffa
