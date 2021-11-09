@@ -321,6 +321,5 @@ module.exports = (on, config) => {
         getUsername() {
             return os.userInfo().username
         }
-
     })
 };

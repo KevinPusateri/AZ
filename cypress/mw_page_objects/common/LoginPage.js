@@ -10,7 +10,7 @@ class LoginPage {
         cy.viewport(1920, 1080)
 
         Cypress.env('currentEnv') === 'TEST' ? Cypress.config('baseUrl', Cypress.env('urlMWTest')) : Cypress.config('baseUrl', Cypress.env('urlMWPreprod'))
-
+        
         cy.visit('/', { responseTimeout: 31000 }, {
             onBeforeLoad: win => {
                 win.sessionStorage.clear();
