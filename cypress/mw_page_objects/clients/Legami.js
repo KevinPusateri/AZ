@@ -93,28 +93,27 @@ class Legami {
         if (check) {
             // CAPOGRUPPO
             cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
-                cy.get('div[class="member-name"]:first:visible').find('div[class^="data"]').not(':contains("Membro")').then((name) => {
-                    cy.wrap($panel).should('include.text', capogruppo)
-                    expect(name.text().trim()).to.include(capogruppo)
+                    cy.get('div[class="member-name"]:first:visible').find('div[class^="data"]').not(':contains("Membro")').then((name) => {
+                        cy.wrap($panel).should('include.text', capogruppo)
+                        expect(name.text().trim()).to.include(capogruppo)
+                    })
                 })
-            })
-            // APPARTENENTE
+                // APPARTENENTE
             cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
                 cy.get('div[class="member-name"]:visible').eq(1).find('nx-link:first:visible').then((name) => {
                     cy.wrap($panel).should('include.text', membro)
                     expect(name.text().trim()).to.include(membro)
                 })
             })
-        }
-        else {
+        } else {
             // CAPOGRUPPO
             cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
-                cy.get('div[class="member-name"]:first').find('nx-link:first:visible').then((name) => {
-                    cy.wrap($panel).should('include.text', capogruppo)
-                    expect(name.text().trim()).to.include(capogruppo)
+                    cy.get('div[class="member-name"]:first').find('nx-link:first:visible').then((name) => {
+                        cy.wrap($panel).should('include.text', capogruppo)
+                        expect(name.text().trim()).to.include(capogruppo)
+                    })
                 })
-            })
-            // APPARTENTENTE
+                // APPARTENTENTE
             cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
                 cy.get('div[class="member-name"]:visible').eq(1).find('div[class^="data"]').not(':contains("Membro")').then((name) => {
                     cy.wrap($panel).should('include.text', membro)
@@ -122,18 +121,18 @@ class Legami {
                 })
             })
         }
-}
+    }
 
     /**
      * Click button Elimina gruppo
      */
     static clickEliminaGruppo() {
         cy.contains('Elimina gruppo').click()
-        cy.get('.cdk-overlay-container').find('span[class="text"]:visible').should('contain.text', 'Eliminare il gruppo aziendale?')
+        cy.get('.cdk-overlay-container').find('span[class="text"]:visible').should('include.text', 'Eliminare il gruppo aziendale?')
         cy.contains('Si').click()
 
         cy.get('.cdk-overlay-container').find('nx-message-toast')
-            .should('be.visible').and('contain.text', 'Gruppo aziendale eliminato')
+            .should('be.visible').and('include.text', 'Gruppo aziendale eliminato')
     }
 
     /**
