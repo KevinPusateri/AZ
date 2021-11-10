@@ -216,6 +216,9 @@ module.exports = (on, config) => {
         config.baseUrl = 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F/';
 
 
+    cy.on('window:confrim', () => true)
+    cy.on('window:alert', () => true)
+
     //TODO da verificare se puo' tornare utile
     // on('before:browser:launch', (browser = {}, launchOptions) => {
     //     console.log('..browser ', launchOptions);
