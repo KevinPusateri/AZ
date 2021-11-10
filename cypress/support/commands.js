@@ -9,6 +9,7 @@
 // ***********************************************
 
 import 'cypress-file-upload'
+import { NOMEM } from 'dns';
 const moment = require('moment')
 const os = require('os')
 const CryptoJS = require('crypto-js')
@@ -221,7 +222,7 @@ Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
   cy.request({
     method: 'POST',
     log: false,
-    url: 'https://profilingbe.pp.azi.allianzit/profilingManagement/personation/' + tutf,
+    url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('profilingUrlTest') + '/profilingManagement/personation/' + tutf : Cypress.env('profilingUrlPreprod') + '/profilingManagement/personation/' + tutf,
     form: true,
     body: { persUser: getPersUser, channel: getChannel }
   }).then(resp => {
@@ -784,6 +785,32 @@ Cypress.Commands.add('getSSNAndBirthDateFromTarga', (targa) => {
   })
 })
 
+Cypress.Commands.add('getSSN', (cognome, nome, comune, codComune, dataNascita, sesso) => {
+  cy.request({
+    method: 'POST',
+    log: false,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    url: 'https://be2be.te.azi.allianzit/Anagrafe/AnagrafeWS/AnagrafeSvc.asmx/CalcolaCF',
+    body: {
+      Cognome: cognome,
+      Nome: nome,
+      Comune: comune,
+      CodComune: codComune,
+      CodProvincia: "",
+      DataNascita: dataNascita,
+      Sesso: sesso
+    }
+  }).then(resp => {
+    cy.wrap(Cypress.$(resp.body))
+      .then(wrappedBody => {
+        return wrappedBody[2].innerText
+      })
+  })
+})
+
+
 Cypress.Commands.add('getUserWinLogin', () => {
   cy.task('getUsername').then((username) => {
     cy.fixture("tutf").then(data => {
@@ -873,7 +900,7 @@ Cypress.Commands.add('parsePdf', () => {
             }
           })
         }
-        
+
         waitForPdf()
       })
     })

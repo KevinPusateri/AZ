@@ -143,23 +143,24 @@ class Mieinfo {
             case LinksMenu.INIZIATIVE:
                 const linksIniziativeCard = [
                     'Stop&Drive',
-                    // 'Mensilizzazione Rami Vari',
+                    'Proponi LTC',
+                    'Proponi TCM',
+                    'Mensilizzazione Rami Vari',
                     'Mensilizzazione Auto',
                     'Clienti Valore Extra',
+                    'Allianzpay',
+                    'Busta Arancione',
                     'Winback Motor',
                     'Decommissioning telematici',
                     'Digitalizzazione del certificato',
-                    'AllianzPay',
-                    'Proponi LTC',
-                    'Proponi TCM',
-                    // 'Busta Arancione',
-                    // 'Attestato di rischio dinamico'
+                    'Attestato di rischio dinamico'
                 ]
-                getIFrame().find('[class="product-icons--content"]:visible').then($card => {
-                    cy.wrap($card).find('[class="product-icon--link"]:visible').should('have.length', 9).each(($link, i) => {
+                getIFrame().find('app-dynamic-list:visible').within(($card) => {
+                    cy.wrap($card).find('h4:visible').each(($link, i) => {
                         expect($link.text().trim()).to.include(linksIniziativeCard[i]);
                     })
                 })
+
                 break;
             case LinksMenu.SALES_ACADEMY:
                 const linksSalesAcademyIcon = [

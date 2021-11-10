@@ -36,17 +36,17 @@ class BurgerMenuClients extends Clients {
         cy.get('lib-burger-icon').click({ force: true })
 
         const linksBurger = Object.values(LinksBurgerMenu)
-        if (!Cypress.env('monoUtenza'))
-            cy.get('lib-side-menu-link').find('a').should('have.length', 11).each(($checkLinksBurger, i) => {
+            // if (!Cypress.env('monoUtenza'))
+        cy.get('lib-side-menu-link').find('a').should('have.length', 11).each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
             })
-        else {
-            delete LinksBurgerMenu.HOSPITAL_SCANNER
-            const linksBurger = Object.values(LinksBurgerMenu)
-            cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
-                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            }).should('have.length', 10)
-        }
+            // else {
+            //     delete LinksBurgerMenu.HOSPITAL_SCANNER
+            //     const linksBurger = Object.values(LinksBurgerMenu)
+            //     cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
+            //         expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            //     }).should('have.length', 10)
+            // }
     }
 
     /**
@@ -55,8 +55,8 @@ class BurgerMenuClients extends Clients {
      */
     static clickLink(page) {
         cy.get('lib-burger-icon').click({ force: true })
-        if (page === LinksBurgerMenu.ANALISI_DEI_BISOGNI
-            || page === LinksBurgerMenu.HOSPITAL_SCANNER) {
+        if (page === LinksBurgerMenu.ANALISI_DEI_BISOGNI ||
+            page === LinksBurgerMenu.HOSPITAL_SCANNER) {
             this.checkPage(page)
         } else {
             cy.contains(page).click()
@@ -123,13 +123,13 @@ class BurgerMenuClients extends Clients {
 
                 cy.window().then(win => {
                     cy.stub(win, 'open').callsFake((url) => {
-                      return win.open.wrappedMethod.call(win, url, '_self');
+                        return win.open.wrappedMethod.call(win, url, '_self');
                     }).as('Open');
-                  });
+                });
 
                 Common.canaleFromPopup()
                 cy.get('@Open')
-                
+
                 cy.get('app-home').should('exist').and('be.visible').and('contain.text', 'CERCA INTERVENTO')
                 break;
         }
