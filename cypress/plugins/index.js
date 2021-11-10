@@ -41,8 +41,7 @@ function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
             if (error) {
                 console.error(error)
                 reject(error)
-            }
-            else {
+            } else {
                 connection.end()
                 return resolve(results)
             }
@@ -63,7 +62,7 @@ function mysqlFinish(dbConfig, rowId, tests) {
     for (let i = 0; i < tests.test.length; i++) {
         if (tests.test[i].resultOutCome !== 'Passed') {
             resultOutCome = tests.test[i].resultOutCome
-            //Also get the error message
+                //Also get the error message
             resultMessage = tests.test[i].resultMessage.length > 1000 ? tests.test[i].resultMessage.substring(0, 999) : tests.test[i].resultMessage
             resultStack = tests.test[i].resultStack.length > 5000 ? tests.test[i].resultStack.substring(0, 4999) : tests.test[i].resultStack
         }
@@ -83,8 +82,7 @@ function mysqlFinish(dbConfig, rowId, tests) {
             if (error) {
                 console.error(error)
                 reject(error)
-            }
-            else {
+            } else {
                 connection.end()
                 return resolve(results)
             }
@@ -104,8 +102,7 @@ function retriveTarghe(dbConfig) {
             if (error) {
                 console.error(error)
                 reject(error)
-            }
-            else {
+            } else {
                 connection.end()
                 return resolve(results)
             }
@@ -121,7 +118,8 @@ function userWinLogged() {
 
 //#region Generazione Partita Iva Random
 function reverse(n) {
-    let revNum = 0, lastDigit = 0;
+    let revNum = 0,
+        lastDigit = 0;
     while (n !== 0) {
         lastDigit = n % 10;
         n = parseInt(n / 10);
@@ -135,7 +133,8 @@ function reverse(n) {
 function getSumEven(n) {
     var nReversed = reverse(n);
 
-    var sumEven = 0, c = 1;
+    var sumEven = 0,
+        c = 1;
     while (nReversed !== 0) {
         // If c is even number then it means 
         // digit extracted is at even place 
@@ -152,7 +151,8 @@ function getSumEven(n) {
 function getSumOddRaddoppiati(n) {
     var nReversed = reverse(n);
 
-    var sumOddRaddoppiati = 0, c = 1;
+    var sumOddRaddoppiati = 0,
+        c = 1;
     while (nReversed !== 0) {
         // If c is even number then it means 
         // digit extracted is at even place 
@@ -209,6 +209,13 @@ function generateRandomVatIn() {
 //#endregion
 
 module.exports = (on, config) => {
+
+    if (config.env.currentEnv === 'PREPROD')
+        config.baseUrl = 'https://portaleagenzie.pp.azi.allianz.it/matrix/';
+    else
+        config.baseUrl = 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F/';
+
+
     //TODO da verificare se puo' tornare utile
     // on('before:browser:launch', (browser = {}, launchOptions) => {
     //     console.log('..browser ', launchOptions);
@@ -322,4 +329,6 @@ module.exports = (on, config) => {
             return os.userInfo().username
         }
     })
+    return config;
+
 };

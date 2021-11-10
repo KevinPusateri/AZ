@@ -9,8 +9,6 @@ class LoginPage {
         cy.clearLocalStorage()
         cy.viewport(1920, 1080)
 
-        Cypress.env('currentEnv') === 'TEST' ? Cypress.config('baseUrl', Cypress.env('urlMWTest')) : Cypress.config('baseUrl', Cypress.env('urlMWPreprod'))
-        
         cy.visit('/', { responseTimeout: 31000 }, {
             onBeforeLoad: win => {
                 win.sessionStorage.clear();
@@ -209,13 +207,13 @@ class LoginPage {
                             TopBar.clickSecondWindow()
                     } else {
                         let currentImpersonificationToPerform
-                        //Verifichiamo se ho customImpersonification valorizzato
+                            //Verifichiamo se ho customImpersonification valorizzato
                         if (Cypress.$.isEmptyObject(customImpersonification))
-                            //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza
+                        //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza
                             currentImpersonificationToPerform = {
-                                "agentId": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agentId : user.agentId,
-                                "agency": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agency : user.agency,
-                            }
+                            "agentId": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agentId : user.agentId,
+                            "agency": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agency : user.agency,
+                        }
                         else
                             currentImpersonificationToPerform = {
                                 "agentId": customImpersonification.agentId,
