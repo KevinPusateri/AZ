@@ -98,7 +98,7 @@ let idx_cop_gar
 //#endregion
 
 describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro motor avente come copertura' +
-' di garanzia la "Smarrimento chiavi"', () => {
+' di garanzia la "'+copertura_danno+'"', () => {
 
     it('Atterraggio su BackOffice >> Denuncia --> Ricerca cliente per numero di polizza: '+ cliente_num_pol+
     '', function () {

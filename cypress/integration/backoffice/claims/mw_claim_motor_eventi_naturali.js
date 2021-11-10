@@ -2,7 +2,7 @@
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
  *
  * @description Emissione denuncia di un sinistro motor avente come copertura 
- * di garanzia la "Rottura Cristalli"
+ * di garanzia la "Eventi Naturali - Grandine"
  */
 
 
@@ -82,13 +82,13 @@ var cliente_num_pol = '530053391'
 var cliente_targa = 'Fj103dt'
 
 
-var copertura_danno = 'ROTTURA CRISTALLI'
+var copertura_danno = 'EVENTI NATURALI'
 
 var sinistro_veicoli_coinvolti = '2'
-var sinistro_descrizione_danno = 'Danneggiamento parabrezza'
+var sinistro_descrizione_danno = 'Danneggiamento da grandine'
 var sinistro_località = 'GORIZIA'
 
-var tipo_danno = 'Rottura Cristalli'
+var tipo_danno = 'Eventi Naturali'
 
 
 let dtAvvenimento 
@@ -158,7 +158,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             return false
         })
 
-        DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1').then(isVisible => {
+        DenunciaSinistriPage.isVisible('#workarea2').then(isVisible => {
             if (isVisible) {                              
                 let cssrdbtn = "#workarea2 > fieldset:nth-child(4) > table > tbody > tr:nth-child(2) > td > ul > li"
                 DenunciaSinistriPage.clickOnRadio_ByIdAndText(cssrdbtn, 'Prosegui denuncia in corso');
@@ -184,7 +184,30 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
                 DenunciaSinistriPage.clickOnCheck_ByIdAndAttr('.SelectedCheckBox', 'myindex', idx_cop_gar);
             }
         });
+        //Evento naturale: Grandine
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_flgGrandine', "Si")
         DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');       
+    });
+
+    it('Ricerca della carrozzeria amica con geolocalizzazione Google', function () {
+        DenunciaSinistriPage.clickObj_ByLabel('a','Altre carroz.')       
+        DenunciaSinistriPage.setValueOnGeo_ById("#indirizzo1", "Trieste")
+        DenunciaSinistriPage.clickSelectOnGeo_ById("#CM", "Tutti");        
+        DenunciaSinistriPage.clickObjGeo_ByIDAndLabel('button', ' › Cerca')
+        cy.wait(2000) 
+        DenunciaSinistriPage.clickObjGeo_ByLabel('SOL-CAR MIANI')
+        //DenunciaSinistriPage.manageDialogWin(true)
+       
+        
+    });
+
+    it('Selezione della carrozzeria amica con geolocalizzazione Google', function () {
+       
+      
+        DenunciaSinistriPage.clickObjGeoModal_ByIDAndLabel('a', 'Seleziona') 
+       
+       
+        cy.wait(2000)           
     });
 
     it('Verifica dei dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {
