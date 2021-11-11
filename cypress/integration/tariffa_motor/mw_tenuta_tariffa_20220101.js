@@ -53,6 +53,8 @@ describe('Tenuta Tariffa Gennaio 2022 : ', function () {
             TenutaTariffa.compilaVeicolo(currentCase)
             TenutaTariffa.compilaProvenienza(currentCase)
             TenutaTariffa.compilaOfferta(currentCase)
+
+            TenutaTariffa.downloadZipLog()
         });
     });
 })
