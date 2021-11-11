@@ -274,6 +274,15 @@ class Common {
             cy.get(id).should('exist').and('be.visible').clear().type(text)
         })
     }
+
+
+    static findByIdOnIframe(id) {
+        return getIframe().find(id)
+    }
+
+    static clickFindByIdOnIframe(id) {
+        return getIframe().find(id).click()
+    }
 }
 
 
