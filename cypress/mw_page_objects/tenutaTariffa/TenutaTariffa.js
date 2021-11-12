@@ -32,7 +32,6 @@ class TenutaTariffa {
             cy.get('input[aria-label="Targa"]').type(currentCase.Targa).wait(500)
 
             //Data di Nascita : calcolata in automatico a partire dalla data decorrenza in rapporto all'età del caso
-            debugger
             let dataDecorrenza = calcolaDataDecorrenza(currentCase)
             currentDataNascita = new Date(dataDecorrenza.getFullYear() - currentCase.Eta, dataDecorrenza.getMonth(), dataDecorrenza.getDate())
             let formattedDataNascita = String(currentDataNascita.getDate()).padStart(2, '0') + '/' +
@@ -79,19 +78,20 @@ class TenutaTariffa {
                     String(currentDataNascita.getMonth() + 1).padStart(2, '0') + '-' +
                     String(currentDataNascita.getDate()).padStart(2, '0')
 
-
                 cy.getSSN(currentCognome, currentNome, currentCase.Comune, currentCase.Cod_Comune, formattedDataNascita, 'M').then(currentSSN => {
                     cy.get('input[formcontrolname="cfIva"]').should('exist').and('be.visible').type(currentSSN).wait(500)
                 })
 
-                cy.intercept({
-                    method: 'PUT',
-                    url: '**/assuntivomotor/**'
-                }).as('getMotor')
-
                 cy.contains('AVANTI').should('exist').and('be.visible').click().wait(500)
 
-                cy.wait('@getMotor', { requestTimeout: 100000 })
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+                //! Riclicchiamo su AVANTI (dopo che i textbox non sono più rossi)
+                cy.get('span[class="page-title"]').invoke('text').then(pageTitle => {
+                    if (!pageTitle.includes('Veicolo'))
+                        cy.contains('AVANTI').should('exist').and('be.visible').click().wait(500)
+                })
             })
         })
     }
@@ -104,6 +104,27 @@ class TenutaTariffa {
 
         cy.getIFrame()
         cy.get('@iframe').within(() => {
+            cy.get('input[formcontrolname="txtTarga"]').should('exist').and('be.visible').invoke('text').then(currentTarga => {
+                cy.log('Targa rilevata in pagina : ' + currentTarga)
+                if (currentTarga === '') {
+                    //! Questi step NON dovrebbero essere necessari
+                    //Ricerca Tipo Targa (by default ora teniamo italiana)
+                    cy.get('nx-dropdown[formcontrolname="tipoTarga"]').should('exist').and('be.visible').click().wait(500)
+                    cy.contains('Italiana').should('exist').and('be.visible').click().wait(500)
+
+                    //Numero di Targa
+                    cy.get('input[formcontrolname="txtTarga"]').should('exist').and('be.visible').type(currentCase.Targa).wait(500)
+
+                    //Clicchiamo su Cerca
+                    cy.contains('Cerca').should('exist').and('be.visible').click().wait(500)
+
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+                    cy.pause()
+                }
+            })
+
             //Data Immatricolazione
             //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
             let dataPrimaImmatricolazione
@@ -314,7 +335,7 @@ class TenutaTariffa {
             cy.get('nx-spinner').should('not.be.visible').wait(500)
 
             //Verifichiamo il premio lordo a video
-            cy.get('strong[class="fontSizeTitle colorBlue ng-star-inserted"]').invoke('text').then(premioLordo =>  {
+            cy.get('strong[class="fontSizeTitle colorBlue ng-star-inserted"]').invoke('text').then(premioLordo => {
                 expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
             })
         })
@@ -323,8 +344,10 @@ class TenutaTariffa {
     static downloadZipLog() {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
-            cy.get('#simpleFooter').last().should('be.visible').click()
+
+            cy.get('motor-footer').should('exist').and('be.visible').find('button').click().wait(500)
             cy.pause()
+
         })
     }
 }
