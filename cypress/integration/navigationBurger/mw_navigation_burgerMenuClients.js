@@ -14,7 +14,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-//#endregion
+    //#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
@@ -23,7 +23,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -33,25 +33,25 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-after(function () {
+after(function() {
     TopBar.logOutMW()
-    //#region Mysql
+        //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
 
 })
 
-describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
+describe('Matrix Web : Navigazioni da Burger Menu in Clients', function() {
 
-    it('Verifica i link da Burger Menu', function () {
+    it('Verifica i link da Burger Menu', function() {
         TopBar.clickClients()
         BurgerMenuClients.checkExistLinks()
     });
 
-    it('Verifica aggancio Analisi dei bisogni', function () {
+    it('Verifica aggancio Analisi dei bisogni', function() {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             cy.log(currentHostName)
@@ -62,59 +62,59 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         })
     });
 
-    it('Verifica aggancio Censimento nuovo cliente', function () {
+    it('Verifica aggancio Censimento nuovo cliente', function() {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Censimento nuovo cliente')
         BurgerMenuClients.backToClients()
     });
 
-    it('Verifica aggancio Digital Me', function () {
+    it('Verifica aggancio Digital Me', function() {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Digital Me')
         Clients.checkDigitalMe()
         BurgerMenuClients.backToClients()
     });
 
-    it('Verifica aggancio Pannello anomalie', function () {
+    it('Verifica aggancio Pannello anomalie', function() {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Pannello anomalie')
         BurgerMenuClients.backToClients()
     });
 
-    it('Verifica aggancio Clienti duplicati', function () {
+    it('Verifica aggancio Clienti duplicati', function() {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Clienti duplicati')
         BurgerMenuClients.backToClients()
     });
 
-    it('Verifica aggancio Cancellazione Clienti', function () {
+    it('Verifica aggancio Cancellazione Clienti', function() {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Cancellazione Clienti')
         BurgerMenuClients.backToClients()
     });
 
-    it('Verifica aggancio Cancellazione Clienti per fonte', function () {
+    it('Verifica aggancio Cancellazione Clienti per fonte', function() {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Cancellazione Clienti per fonte')
         BurgerMenuClients.backToClients()
     });
 
-    it('Verifica aggancio Gestione fonte principale', function () {
+    it('Verifica aggancio Gestione fonte principale', function() {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Gestione fonte principale')
         BurgerMenuClients.backToClients()
     });
-    it('Verifica aggancio Hospital scanner', function () {
-        if (!Cypress.env('monoUtenza')) {
-            TopBar.clickClients()
-            BurgerMenuClients.clickLink('Hospital scanner')
-            HomePage.reloadMWHomePage()
-        }
-        else
-            this.skip()
+    it('Verifica aggancio Hospital scanner', function() {
+        // if (!Cypress.env('monoUtenza')) {
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Hospital scanner')
+        HomePage.reloadMWHomePage()
+            // }
+            // else
+            // this.skip()
     });
 
-    it('Verifica aggancio Antiriciclaggio', function () {
+    it('Verifica aggancio Antiriciclaggio', function() {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Antiriciclaggio')
         BurgerMenuClients.backToClients()

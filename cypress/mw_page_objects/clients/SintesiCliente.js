@@ -687,8 +687,12 @@ class SintesiCliente {
         if (fullUrl)
             cy.visit(param)
         else {
-            if (!Cypress.env('monoUtenza'))
-                cy.visit(Cypress.env('baseUrlPreprod') + 'clients/client/' + param)
+            if (!Cypress.env('monoUtenza')) {
+                if (Cypress.env('currentEnv') === 'TEST')
+                    cy.visit(Cypress.env('baseUrlTest') + 'clients/client/' + param)
+                else
+                    cy.visit(Cypress.env('baseUrlPreprod') + 'clients/client/' + param)
+            }
             else
                 cy.visit(Cypress.env('urlSecondWindow') + 'clients/client/' + param)
         }

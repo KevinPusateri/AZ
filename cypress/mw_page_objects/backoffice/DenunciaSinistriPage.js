@@ -19,34 +19,49 @@ const getIFrameDenuncia = () => {
     getIFrame().find('iframe[src="cliente.jsp"]')
         .iframe();
 
-    let iframeFolder = getIFrame().find('iframe[src="cliente.jsp"]')
+    let iframe = getIFrame().find('iframe[src="cliente.jsp"]')
         .its('0.contentDocument').should('exist');
 
-    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const getIFramePopUp = () => {
     getIFrameDenuncia().find('#popup')
         .iframe();
 
-    let iframeFolder = getIFrameDenuncia().find('#popup')
+    let iframe = getIFrameDenuncia().find('#popup')
         .its('0.contentDocument').should('exist');
 
-    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const getIFramePopUpChiudi = () => {
     getIFrameDenuncia().find('iframe[src="popUpAvvisoScanner.jsp"]')
         .iframe();
 
-    let iframeFolder = getIFrameDenuncia().find('iframe[src="popUpAvvisoScanner.jsp"]')
+    let iframe = getIFrameDenuncia().find('iframe[src="popUpAvvisoScanner.jsp"]')
         .its('0.contentDocument').should('exist');
 
-    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+const getIFrameGeo = () => {
+    getIFrameDenuncia().find('#geoFrame')
+        .iframe();
+
+    let iframe = getIFrameDenuncia().find('#geoFrame')
+        .its('0.contentDocument').should('exist');
+
+    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
+}
 class DenunciaSinistriPage {  
     
+    static manageDialogWin(confirm)
+    {
+        debugger
+        cy.on('window:confirm', () => confirm);
+        debugger
+    }
     //#region Generic function
     
     /**
@@ -114,6 +129,20 @@ class DenunciaSinistriPage {
         cy.wait(2000)
     }
     /**
+     * Click on object defined by locator id on Geo Locator Window
+     * @param {string} id : locator object id
+     */
+     static clickSelectOnGeo_ById(id, text) {             
+        getIFrameGeo().find(id).should('be.visible').then((btn) => {    
+            expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
+            const $btn = Cypress.$(btn)
+            cy.wrap($btn)
+            .should('exist')          
+            .select(text).log('>> object with [locator="'+id+'"] and text="'+text+'" was selected')
+        })       
+        cy.wait(2000)
+    }
+    /**
      * Click on object defined by locator id
      * @param {string} id : locator object id
      */
@@ -125,7 +154,7 @@ class DenunciaSinistriPage {
             .should('be.visible')           
             .click().log('>> object with [locator="'+id+'"] is clicked')
         })
-        cy.wait(2000)
+        cy.wait(3000)
     }
     /**
      * Click on all objects defined by locator id
@@ -154,6 +183,88 @@ class DenunciaSinistriPage {
         cy.wait(2000)        
     }
     /**
+     * Click on object defined by html tag and content text displayed as label on Geo Location window
+     * @param {string} tag : html element (button, etc...)
+     * @param {string} label : text displayed
+     */
+     static clickObjGeo_ByIDAndLabel(tag, label) {         
+        return new Cypress.Promise((resolve) => {     
+            let $el = getIFrameGeo().contains(tag, label).should('exist').should('be.visible')
+            $el.click().log('>> object : "' + $el.text() +'" is clicked')            
+            
+            cy.wait(3000)
+            resolve(true) 
+        })
+    }
+       /**
+     * Click on object defined by html tag and content text displayed as label on Geo Location window
+     * @param {string} tag : html element (button, etc...)
+     * @param {string} label : text displayed
+     */
+        static clickObjGeoModal_ByIDAndLabel(tag, label) {
+           
+            debugger
+            cy.on('window:confirm', () => true )  
+            cy.on('window:alert', () => true )  
+            getIFrameGeo().contains(tag, label).should('exist').click()
+            /*
+            getIFrameGeo().contains(tag, label).should('exist').click().then(() =>                      
+                //cy.on('window:confirm', () => true )                                                
+                cy.on('window:alert', () => true )  
+            )
+            */
+            debugger
+            cy.log('>> object with label : "' +label +'" is clicked')
+            
+            /* in questo caso non preme il tasto di 'seleziona' */
+            /*
+            cy.on('window:confirm', (message) => {
+                debugger
+                getIFrameGeo().contains(tag, label).should('exist').click().then((message) => 
+                {
+                    debugger
+                    expect(message).to.contain('Confermi la selezione della Carrozzeria')            
+                })               
+                debugger                
+                cy.log('>> object with label : "' +label +'" is clicked')         
+            })
+            */
+
+            /* in questo caso preme il tasto 'Seleziona' e l'alert blocca */
+              // test automatically waits for the promise
+              /*
+              getIFrameGeo().contains(tag, label).should('exist').click().then((message) =>   
+                        
+                cy.on('window:confirm', (message) => {
+                    debugger
+                    expect(message).to.contain('Confermi la selezione della Carrozzeria')            
+                })
+            )
+            */
+
+            /* in questo caso non preme il tasto di 'seleziona' */
+              // test automatically waits for the promise
+              /*
+            cy.on('window:confirm', (message) => {
+                debugger
+                expect(message).to.contain('Confermi la selezione della Carrozzeria') 
+                debugger
+                getIFrameGeo().contains(tag, label).should('exist').click() 
+                cy.log('>> object with label : "' +label +'" is clicked')         
+            })
+            */        
+            debugger                                     
+            cy.wait(1000)               
+        }
+     /**
+     * Click object identified by its label is displayed on Geo Location window  
+     * @param {string} label : text displayed
+     */
+      static clickObjGeo_ByLabel(label) {    
+        getIFrameGeo().contains(label).should('exist').click().log('>> object with label: "' +label+'" is clicked')
+        cy.wait(1000)
+    }
+    /**
      * Click on object identified by locator id, attribute and its value 
      * @param {string} id : locator object id
      * @param {string} attr : attribute object 
@@ -163,7 +274,21 @@ class DenunciaSinistriPage {
         getIFrameDenuncia().find(id, { timeout: 10000 }).should('have.attr', attr, value).click().log('>> object with attr ['+attr+'="'+value+'"] is clicked')       
         cy.wait(1000)      
     }
-
+    /**
+     * Click on checkbox obj identified by locator id, and text value 
+     * @param {string} id : locator object id
+     * @param {string} value : attribute value object 
+     */
+    static clickOnRadio_ByIdAndText(id, value) {                   
+        getIFrameDenuncia().find(id, { timeout: 10000 }).should('exist').and('be.visible').each(li => {          
+            let $txt = li.text().trim()              
+            if ($txt.includes(value)) {                
+                cy.wrap(li).children('input').check({force: true}).should('be.checked')
+                cy.wait(2000).log('>> object with id ['+id+'="'+value+'"] is checked')
+                return;
+            }
+        })            
+    }
     /**
      * Click on checkbox obj identified by locator id, attribute and its value 
      * @param {string} id : locator object id
@@ -186,8 +311,8 @@ class DenunciaSinistriPage {
      * @param {string} label : text displayed
      */
     static clickBtn_ByClassAndText(classvalue, label) {                          
-            getIFrameDenuncia().find('[class="'+classvalue+'"]').contains(label).should('be.visible').click().log('>> object with label [' +label+ '] is clicked')       
-            cy.wait(2000)       
+        getIFrameDenuncia().find('[class="'+classvalue+'"]').contains(label).should('be.visible').click().log('>> object with label [' +label+ '] is clicked')       
+        cy.wait(2000)       
     }
     /**
      * Click on link ('a') element, defined by href attribute value
@@ -303,17 +428,32 @@ class DenunciaSinistriPage {
         });
         cy.wait(1000)            
     }
-    /**
-     * Inserts a string @value into the object identified by its @id
+     /**
+     * Inserts a string @value into the object identified by its @id 
      * @param {string} id : locator object id
      * @param {string} value : value to be entered
      */
-    static setValue_ById(id, value) {
+      static setValue_ById(id, value) {
         return new Cypress.Promise((resolve) => {
             cy.wait(500)             
             getIFrameDenuncia().find(id).should('be.visible').and('exist').clear().log('>> clean object value')
-            cy.wait(500)              
+            cy.wait(1000)              
             getIFrameDenuncia().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
+            cy.wait(1000)
+            resolve(true)            
+        });
+    }
+    /**
+     * Inserts a string @value into the object identified by its @id Geo Location window
+     * @param {string} id : locator object id
+     * @param {string} value : value to be entered
+     */
+     static setValueOnGeo_ById(id, value) {
+        return new Cypress.Promise((resolve) => {
+            cy.wait(500)             
+            getIFrameGeo().find(id).should('be.visible').and('exist').clear().log('>> clean object value')
+            cy.wait(500)              
+            getIFrameGeo().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
             cy.wait(1000)
             resolve(true)            
         });
@@ -450,7 +590,7 @@ class DenunciaSinistriPage {
     static isVisible(locator)
     { 
         return new Cypress.Promise((resolve) => {  
-            getIFrameDenuncia().find(locator, { timeout: 10000 }).then(($el) => {              
+            getIFrameDenuncia().find(locator, { timeout: 15000 }).then(($el) => {              
                 if ($el === undefined)
                     resolve(false) 
                 const len = $el.length;
@@ -459,7 +599,7 @@ class DenunciaSinistriPage {
                     cy.log('>> Element with [locator="' +locator+ '"] exists!')
                     resolve(true)   
                 } else 
-                resolve(false)   
+                    resolve(false)   
             });
         });
     }
@@ -557,8 +697,8 @@ class DenunciaSinistriPage {
         return new Cypress.Promise((resolve) => {
             let dt = new Date();
             cy.wrap(dt).then(()  => {            
-                dt.setDate(dt.getDate() + ndays); 
-                let retval = dt.toLocaleDateString()                
+                dt.setDate(dt.getDate() + ndays);                
+                let retval = dt.toLocaleDateString('en-GB')                
                 cy.log(retval) 
                 resolve(retval)
             });
