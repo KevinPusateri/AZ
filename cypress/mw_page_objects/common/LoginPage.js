@@ -207,12 +207,25 @@ class LoginPage {
                             TopBar.clickSecondWindow()
                     } else {
                         let currentImpersonificationToPerform
-                            //Verifichiamo se ho customImpersonification valorizzato
-                        if (Cypress.$.isEmptyObject(customImpersonification))
-                        //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza
-                            currentImpersonificationToPerform = {
-                            "agentId": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agentId : user.agentId,
-                            "agency": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agency : user.agency,
+                        //Verifichiamo se ho customImpersonification valorizzato
+                        debugger
+                        if (Cypress.$.isEmptyObject(customImpersonification)) {
+                            //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza oppure AVIVA
+                            if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza'))
+                                currentImpersonificationToPerform = {
+                                    "agentId": data.monoUtenza.agentId,
+                                    "agency": data.monoUtenza.agency,
+                                }
+                            else if (Cypress.env('isAviva'))
+                                currentImpersonificationToPerform = {
+                                    "agentId": data.aviva.agentId,
+                                    "agency": data.aviva.agency,
+                                }
+                            else
+                                currentImpersonificationToPerform = {
+                                    "agentId": user.agentId,
+                                    "agency": user.agency,
+                                }
                         }
                         else
                             currentImpersonificationToPerform = {

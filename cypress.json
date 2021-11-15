@@ -2,7 +2,7 @@
     "retries": 1,
     "video": true,
     "videoCompression": 25,
-    "trashAssetsBeforeRuns": false,
+    "trashAssetsBeforeRuns": true,
     "projectId": "4ypuc8",
     "numTestsKeptInMemory": 1,
     "chromeWebSecurity": false,
@@ -29,6 +29,7 @@
         "isSecondWindow": false,
         "monoUtenza": false,
         "multiUtenza": "5-851-0-100",
+        "isAviva": false,
         "hostParsr": "H2017LE00038A",
         "portParsr": "3001"
     }
