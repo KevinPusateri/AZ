@@ -26,6 +26,8 @@
         "urlSecondWindow": "https://portaleagenzie2.pp.azi.allianz.it/matrix/",
         "profilingUrlPreprod": "https://profilingbe.pp.azi.allianzit",
         "profilingUrlTest": "https://profilingbe.te.azi.allianzit",
+        "be2beTest" : "https://be2be.te.azi.allianzit",
+        "be2bePreprod" : "https://be2be.pp.azi.allianzit",
         "isSecondWindow": false,
         "monoUtenza": false,
         "multiUtenza": "5-851-0-100",

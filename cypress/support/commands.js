@@ -13,7 +13,7 @@ import { NOMEM } from 'dns';
 const moment = require('moment')
 const os = require('os')
 const CryptoJS = require('crypto-js')
-
+const be2beHost = (Cypress.env('currentEnv') === 'TEST') ? Cypress.env('be2beTest') : Cypress.env('be2bePreprod')
 
 //
 //
@@ -242,7 +242,7 @@ Cypress.Commands.add('getPartyRelations', () => {
           retryOnStatusCodeFailure: true,
           timeout: 60000,
           log: false,
-          url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person',
+          url: be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person',
           headers: {
             'x-allianz-user': data.tutf
           }
@@ -261,7 +261,7 @@ Cypress.Commands.add('getPartyRelations', () => {
                 retryOnStatusCodeFailure: true,
                 log: false,
                 timeout: 120000,
-                url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/partyrelations/',
+                url: be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/partyrelations/',
                 headers: {
                   'x-allianz-user': data.tutf
                 }
@@ -281,7 +281,7 @@ Cypress.Commands.add('getPartyRelations', () => {
                       retryOnStatusCodeFailure: true,
                       log: false,
                       timeout: 120000,
-                      url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore' + filteredRelations[0].relatedParty,
+                      url: be2beHost + '/daanagrafe/CISLCore' + filteredRelations[0].relatedParty,
                       headers: {
                         'x-allianz-user': data.tutf
                       }
@@ -317,8 +317,8 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, i
         retryOnStatusCodeFailure: true,
         timeout: 60000,
         log: false,
-        url: (clientType === 'PF') ? 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
-          : 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
         headers: {
           'x-allianz-user': tutf
         }
@@ -339,7 +339,7 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, i
               retryOnStatusCodeFailure: true,
               timeout: 60000,
               log: false,
-              url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
+              url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
               headers: {
                 'x-allianz-user': tutf
               }
@@ -410,15 +410,15 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
       let mainSearch
       if (clientType === 'PF') {
         if (fixedPIorSSN === '')
-          mainSearch = 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          mainSearch = be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
         else
-          mainSearch = 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?socialSecurityNumber=' + fixedPIorSSN + '&partySign=Person'
+          mainSearch = be2beHost + '/daanagrafe/CISLCore/parties?socialSecurityNumber=' + fixedPIorSSN + '&partySign=Person'
       }
       else {
         if (fixedPIorSSN === '')
-          mainSearch = 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&partySign=Company'
+          mainSearch = be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&partySign=Company'
         else
-          mainSearch = 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?vatIN=' + fixedPIorSSN + '&partySign=Company'
+          mainSearch = be2beHost + '/daanagrafe/CISLCore/parties?vatIN=' + fixedPIorSSN + '&partySign=Company'
       }
 
       cy.request({
@@ -447,7 +447,7 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
               retryOnStatusCodeFailure: true,
               timeout: 60000,
               log: false,
-              url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
+              url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
               headers: {
                 'x-allianz-user': agentId
               }
@@ -489,8 +489,8 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
                     retryOnStatusCodeFailure: true,
                     timeout: 60000,
                     log: false,
-                    url: (clientType === 'PF') ? 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + currentClient.name + '&firstName=' + currentClient.firstName + '&partySign=Person'
-                      : 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?vatIN=' + currentClient.vatIN + '&partySign=Company',
+                    url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + currentClient.name + '&firstName=' + currentClient.firstName + '&partySign=Person'
+                      : be2beHost + '/daanagrafe/CISLCore/parties?vatIN=' + currentClient.vatIN + '&partySign=Company',
                     headers: {
                       'x-allianz-user': possibleImpersonifications[i].account
                     }
@@ -503,7 +503,7 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
                         retryOnStatusCodeFailure: true,
                         timeout: 60000,
                         log: false,
-                        url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + parsedClient + '&contractProcessState=Contract&status=Live',
+                        url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + parsedClient + '&contractProcessState=Contract&status=Live',
                         headers: {
                           'x-allianz-user': possibleImpersonifications[i].account
                         }
@@ -534,7 +534,7 @@ Cypress.Commands.add('getClientInDifferentAgenciesWithPolizze', (agencyMain, bra
                             retryOnStatusCodeFailure: true,
                             timeout: 60000,
                             log: false,
-                            url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties/' + parsedClient + '/accountmanagers/',
+                            url: be2beHost + '/daanagrafe/CISLCore/parties/' + parsedClient + '/accountmanagers/',
                             headers: {
                               'x-allianz-user': possibleImpersonifications[i].account
                             }
@@ -593,8 +593,8 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
         retryOnStatusCodeFailure: true,
         timeout: 60000,
         log: false,
-        url: (clientType === 'PF') ? 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
-          : 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
         headers: {
           'x-allianz-user': tutf
         }
@@ -615,7 +615,7 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
               retryOnStatusCodeFailure: true,
               timeout: 60000,
               log: false,
-              url: 'https://be2be.pp.azi.allianzit/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
+              url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
               headers: {
                 'x-allianz-user': tutf
               }
@@ -766,7 +766,7 @@ Cypress.Commands.add('getSSNAndBirthDateFromTarga', (targa) => {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      url: 'https://be2be.pp.azi.allianzit/Anagrafe/AnagrafeWS/AnagrafeSvc.asmx/Normalize',
+      url: be2beHost + '/Anagrafe/AnagrafeWS/AnagrafeSvc.asmx/Normalize',
       body: { "xmlParameters": "<Normalize><Input action='ReverseCodiceFiscale'><Fields><Field name='COD_FISC'>" + respANIA.body.itemList[0].contractorFiscalCode + "</Field></Fields></Input></Normalize>" }
     }).then(resp => {
       cy.wrap(Cypress.$(resp.body))
