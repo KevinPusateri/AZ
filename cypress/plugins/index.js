@@ -213,7 +213,7 @@ module.exports = (on, config) => {
     if (config.env.currentEnv === 'PREPROD')
         config.baseUrl = 'https://portaleagenzie.pp.azi.allianz.it/matrix/';
     else
-        config.baseUrl = 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F/';
+        config.baseUrl = 'https://portaleagenzie.te.azi.allianzit/matrix/';
 
 
    
