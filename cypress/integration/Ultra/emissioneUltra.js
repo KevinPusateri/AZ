@@ -5,6 +5,7 @@ import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
+import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 //#endregion
 
@@ -21,8 +22,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-var cliente = "PIERO VERDE"
-var clienteUbicazione = "VIA ROMA 4, 33100 - UDINE (UD)"
+let cliente = PersonaFisica.GalileoGalilei()
 var ambiti = ['Fabbricato', 'Contenuto']
 var frazionamento = "annuale"
 let nuovoCliente;
@@ -38,129 +38,128 @@ before(() => {
         LoginPage.logInMWAdvanced()
     })
 })
-  
+
 beforeEach(() => {
     cy.preserveCookies()
 })
-  
+
 after(function () {
     TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-      let tests = testsInfo
-      cy.finishMysql(dbConfig, insertedId, tests)
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-  
+
 })
 
-describe("CASA e PATRIMONIO", ()=>{
+describe("CASA e PATRIMONIO", () => {
     /* it("Login", ()=>{
         cy.loginMatrix(ambiente, "TUTF004", "P@ssw0rd!")
     }) */
 
-    it("Ricerca cliente", ()=>{
+    it("Ricerca cliente", () => {
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
-            cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
+            cy.get('input[name="main-search-input"]').type(cliente.nomeCognome()).type('{enter}')
             cy.get('lib-client-item').first().click()
-          }).then(($body) => {
+        }).then(($body) => {
             cy.wait(7000)
-            //const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
-            const check = cy.get('div[class="client-null-message"]').should('be.visible')
+            const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+            //const check = cy.get('div[class="client-null-message"]').should('be.visible')
             cy.log('permessi: ' + check)
             if (check) {
-              cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
-              cy.get('lib-client-item').first().next().click()
+                cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
+                cy.get('lib-client-item').first().next().click()
             }
-          })
+        })
     })
 
-    it("Selezione ambiti FastQuote", ()=>{
-        cy.get('#nx-tab-content-1-0 > app-ultra-fast-quote > div.content.ng-star-inserted', {timeout: 30000}).should('be.visible')
+    it("Selezione ambiti FastQuote", () => {
+        cy.get('#nx-tab-content-1-0 > app-ultra-fast-quote > div.content.ng-star-inserted', { timeout: 30000 }).should('be.visible')
 
-        for(var i = 0; i<ambiti.length; i++ )
-        {
+        for (var i = 0; i < ambiti.length; i++) {
             cy.contains('div', ambiti[i]).parent().children('nx-icon').click()
         }
 
-        cy.get('[class="calculate-btn"]').click({force: true})
-        cy.get('[class="calculate-btn"]', {timeout: 15000}).contains('Ricalcola').should('be.visible')
+        cy.get('[class="calculate-btn"]').click({ force: true })
+        cy.get('[class="calculate-btn"]', { timeout: 15000 }).contains('Ricalcola').should('be.visible')
         cy.contains('span', 'Configura').parent().click()
         cy.get('[ngclass="agency-row"]').first().click()
+        cy.wait(6000)
     })
 
-    it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", ()=>{
+    it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", () => {
         Ultra.verificaAmbitiHome(ambiti)
     })
 
-    it("Seleziona fonte", ()=>{
-        cy.pause()
+    it("Seleziona fonte", () => {
         Ultra.selezionaFonteRandom()
     })
 
-    it("Seleziona frazionamento", ()=>{
+    it("Seleziona frazionamento", () => {
         Ultra.selezionaFrazionamento(frazionamento)
     })
 
-    it("Modifica soluzione per Fabbricato", ()=>{
+    it("Modifica soluzione per Fabbricato", () => {
         Ultra.modificaSoluzioneHome('Fabbricato', 'Top')
     })
 
-    it("Configurazione Contenuto e procedi", ()=>{
+    it("Configurazione Contenuto e procedi", () => {
         Ultra.configuraContenuto()
         Ultra.procediHome()
     })
 
-    it("Conferma dati quotazione", ()=>{
+    it("Conferma dati quotazione", () => {
         Ultra.confermaDatiQuotazione()
     })
 
-    it("Riepilogo ed emissione", ()=>{
+    it("Riepilogo ed emissione", () => {
         Ultra.riepilogoEmissione()
     })
 
-    it("Censimento anagrafico", ()=>{
-        Ultra.censimentoAnagrafico('VERDE PIERO', clienteUbicazione)
+    it("Censimento anagrafico", () => {
+        Ultra.censimentoAnagrafico(cliente.cognomeNome(), cliente.ubicazione())
     })
 
-    it("Dati integrativi", ()=>{
+    it("Dati integrativi", () => {
         Ultra.datiIntegrativi()
-    })    
+    })
 
-    it("Consensi e privacy", ()=>{
+    it("Consensi e privacy", () => {
         Ultra.consensiPrivacy()
     })
 
-    it("salvataggio Contratto", ()=>{
-        Ultra.salvataggioContratto()  
+    it("salvataggio Contratto", () => {
+        Ultra.salvataggioContratto()
     })
 
-    it("Intermediario", ()=>{
-        Ultra.inserimentoIntermediario()     
+    it("Intermediario", () => {
+        Ultra.inserimentoIntermediario()
     })
 
-    it("Visualizza documenti e prosegui", ()=>{
+    it("Visualizza documenti e prosegui", () => {
         Ultra.riepilogoDocumenti()
         // cy.wait(5000)
     })
 
-    it("Adempimenti precontrattuali e Perfezionamento", ()=>{
+    it("Adempimenti precontrattuali e Perfezionamento", () => {
         Ultra.stampaAdempimentiPrecontrattuali()
     })
 
-    it("Incasso - parte 1", ()=>{
+    it("Incasso - parte 1", () => {
         //attende caricamento sezione Precontrattuali
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#pnlMainTitoli', {timeout: 15000})
+            .iframeCustom().find('#pnlMainTitoli', { timeout: 15000 })
             .should('be.visible')
 
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)
             .iframeCustom().find('[value="> Incassa"]')
-                .should('be.visible')
-                .click()
+            .should('be.visible')
+            .click()
 
         //cy.wait(5000)
 
@@ -168,12 +167,12 @@ describe("CASA e PATRIMONIO", ()=>{
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)
             .iframeCustom().find('[class="divAttenderePrego"]').should('be.visible')
-        
+
         //cy.wait(1000)
         //cy.pause()
     })
 
-    it("Incasso - parte 2", ()=>{
+    it("Incasso - parte 2", () => {
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)
             .iframeCustom().find('#TabIncassoPanelBar-2')
@@ -185,7 +184,7 @@ describe("CASA e PATRIMONIO", ()=>{
         //     .iframeCustom().find('[aria-owns="TabIncassoTipoMens_listbox"]')
         //     .should('be.visible')
         //     .click()
-        
+
         // cy.wait(1000)
         // cy.frameLoaded(iFrameUltra)
         //     .iframeCustom().find(iFrameFirma)
@@ -199,7 +198,7 @@ describe("CASA e PATRIMONIO", ()=>{
             .iframeCustom().find('[aria-owns="TabIncassoModPagCombo_listbox"]')
             .should('be.visible')
             .click()
-        
+
         cy.wait(1000)
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)
@@ -207,7 +206,7 @@ describe("CASA e PATRIMONIO", ()=>{
             .find('li').contains('Assegno')
             .should('be.visible')
             .click()
-        
+
         //cy.wait(1000) tipo di delega
 
         cy.frameLoaded(iFrameUltra)
@@ -219,20 +218,20 @@ describe("CASA e PATRIMONIO", ()=>{
         //cy.pause()
     })
 
-    it("Esito incasso", ()=>{
+    it("Esito incasso", () => {
         //attende caricamento sezione Peecontrattuali
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#pnlContrattoIncasso', {timeout: 30000})
+            .iframeCustom().find('#pnlContrattoIncasso', { timeout: 30000 })
             .should('be.visible')
 
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)
             .iframeCustom().find('[data-bind="foreach: Result.Steps"]')
             .find('img')//lista esiti
-                .each(($img, index, $list) => {
-                    cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green') //verifica la presenza della spunta verde
-                });
+            .each(($img, index, $list) => {
+                cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green') //verifica la presenza della spunta verde
+            });
 
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)

@@ -5,6 +5,7 @@ import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
+import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 //#endregion
 
@@ -21,13 +22,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-var cliente = "PIERO VERDE"
-var clienteUbicazione = "VIA ROMA 4, 33100 - UDINE (UD)"
-//var ambiti = ['Fabbricato', 'Contenuto']
-//var frazionamento = "annuale"
-let nuovoCliente;
-let iFrameUltra = '[class="iframe-content ng-star-inserted"]'
-let iFrameFirma = '[id="iFrameResizer0"]'
+let cliente = PersonaFisica.GalileoGalilei()
 //#endregion variabili iniziali
 
 //#region Enumerator
@@ -87,31 +82,23 @@ describe("Polizza temporanea", ()=>{
     it("Ricerca cliente", ()=>{
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
-            cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
+            cy.get('input[name="main-search-input"]').type(cliente.nomeCognome()).type('{enter}')
             cy.get('lib-client-item').first().click()
           }).then(($body) => {
             cy.wait(7000)
-            //const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
-            const check = cy.get('div[class="client-null-message"]').should('be.visible')
+            const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+            //const check = cy.get('div[class="client-null-message"]').should('be.visible')
             cy.log('permessi: ' + check)
             if (check) {
               cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
               cy.get('lib-client-item').first().next().click()
             }
           })
-      
-        /* cy.get('[name="main-search-input"]').type(cliente).should('have.value', cliente)
-        cy.get('[name="main-search-input"]').type('{enter}')
-        cy.wait(1000)
-        cy.pause()
-        cy.contains('div', cliente.toUpperCase()).click({force: true}) */
-        
     })
 
     it("Emissione Ultra Salute", ()=>{
         Ultra.emissioneUltra(ultraRV.SALUTE)
-        Ultra.selezionaPrimaAgenzia()
-        
+        Ultra.selezionaPrimaAgenzia()        
     })
 
     it("Impostazione contratto temporaneo e prosegui", ()=>{
@@ -141,7 +128,7 @@ describe("Polizza temporanea", ()=>{
     })
 
     it("Censimento anagrafico", ()=>{
-        Ultra.censimentoAnagraficoSalute('VERDE PIERO', false, false, false)
+        Ultra.censimentoAnagraficoSalute(cliente.cognome + ' ' + cliente.nome, false, false, false)
     })
 
     it("Dati integrativi", ()=>{
