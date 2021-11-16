@@ -156,14 +156,14 @@ class LoginPage {
 
         }
 
-        if (mockedNews) {
+        if (mockedNews && !Cypress.env('isAviva')) {
 
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news')) {
                     req.reply({ fixture: 'mockNews.json' })
                 }
             })
-        } else {
+        } else if (!Cypress.env('isAviva')){
             //Wait for news graphQL to be returned
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news'))
@@ -198,7 +198,7 @@ class LoginPage {
 
                         if (!Cypress.env('monoUtenza'))
                             Common.checkUrlEnv()
-                        if (!mockedNews)
+                        if (!mockedNews && !Cypress.env('isAviva'))
                             cy.wait('@gqlNews')
 
                         cy.wait('@gqlUserDetails')
@@ -240,7 +240,7 @@ class LoginPage {
 
                             if (!Cypress.env('monoUtenza'))
                                 Common.checkUrlEnv()
-                            if (!mockedNews)
+                            if (!mockedNews && !Cypress.env('isAviva'))
                                 cy.wait('@gqlNews')
 
                             cy.wait('@gqlUserDetails')
