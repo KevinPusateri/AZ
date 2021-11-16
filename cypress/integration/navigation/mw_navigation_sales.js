@@ -235,7 +235,7 @@ describe('Matrix Web : Navigazioni da Sales', function() {
         Sales.backToSales()
     })
 
-    it.only('Verifica aggancio Preventivi e quotazioni - Card Vita', function() {
+    it('Verifica aggancio Preventivi e quotazioni - Card Vita', function() {
         TopBar.clickSales()
         Sales.clickPreventiviQuotazioniOnTabVita()
         Sales.clickPrimACardVitaOnPreventivo()
@@ -263,7 +263,7 @@ describe('Matrix Web : Navigazioni da Sales', function() {
         Sales.backToSales()
     })
 
-    it.only('Verifica aggancio Proposte Vita - Card Vita', function() {
+    it('Verifica aggancio Proposte Vita - Card Vita', function() {
         TopBar.clickSales()
         Sales.clickTabVitaOnProposte()
         Sales.clickPrimaCardVitaOnProposte()
