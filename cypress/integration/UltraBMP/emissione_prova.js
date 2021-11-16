@@ -4,6 +4,8 @@
 
 /// <reference types="Cypress" />
 import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
+import Convenzioni from "../../mw_page_objects/UltraBMP/UltraBMP"
+import AreaRiservata from "../../mw_page_objects/UltraBMP/UltraBMP"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
@@ -68,18 +70,24 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
 
     it('Seleziona Ultra BMP', () => {
         TopBar.clickSales()
+        //cy.pause()
         BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
+        //BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
     })
      
     it("Verifica valori default FQ", () => {
         //cy.pause()
         UltraBMP.VerificaDefaultFQ(defaultFQ)
+        UltraBMP.ClickButtonContains('SCOPRI LA PROTEZIONE')
     })
 
+    /*
     it("Modifica valori FQ", () => {
         //cy.pause()
         UltraBMP.ModificaValoriFQ(valoriIns)
+        UltraBMP.getButtonContains('SCOPRI LA PROTEZIONE')
     })
+    */
     
     it("Seleziona ambiti", () => {
         cy.log('Seleziona ambito')
@@ -91,6 +99,39 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
         }
     })
     
+    
+    it("Aggiungi Ambito 'Fabbricato'", () => {
+        cy.log("AGGIUNGI AMBITO - 'Fabbricato'")
+        //cy.pause()
+        UltraBMP.AggiungiAmbito('Fabbricato')
+    })
+
+    it("Aggiungi Ambito 'Fabbricato'", () => { 
+        cy.log("AGGIUNGI AMBITO - 'Fabbricato'")
+        //cy.pause()
+        UltraBMP.AggiungiAmbito('Fabbricato')
+    })
+
+    it("Aggiungi Ambito 'Contenuto'", () => { 
+        cy.log("AGGIUNGI AMBITO - 'Contenuto'")
+        //cy.pause()
+        UltraBMP.AggiungiAmbito('Contenuto')
+    })
+    
+    it("Accesso Area Riservata - Applica sconto ", ()=>{
+        cy.pause()
+        UltraBMP.SelezionaVoceMenuPagAmbiti('Area riservata')
+        AreaRiservata.ApplicaSconto()
+    })
+
+    it("Accesso Convenzioni - Seleziona convenzione ", ()=>{
+        cy.pause()
+        UltraBMP.SelezionaVoceMenuPagAmbiti('Convenzioni')
+        Convenzioni.ClickTab('Codici speciali')
+        Convenzioni.ClickTab('Convenzioni')
+        Convenzioni.ChiudiFinestra()
+    })
+
     /*
     it("Seleziona fonte", ()=>{
         cy.pause()

@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 
 //import { exit } from "cypress/lib/util"
+//import { DefaultCMapReaderFactory } from "pdfjs-dist/types/display/api"
 import Common from "../common/Common"
 
 const ultraIFrame = () => {
@@ -11,10 +12,43 @@ const ultraIFrame = () => {
 }
 class UltraBMP {
 
+    //#region Click
+    /**
+      * ClickButtonContains 
+      * @param {string} strButton - testo del button 
+      */
+     static ClickButtonContains(strButton) {
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+
+            cy.get('button').contains(strButton).should('be.visible').click()
+            
+        })
+
+    }
+    //#endregion
+
+    //#region Click
+    /**
+      * SelezionaVoceMenuPagAmbiti
+      * @param {string} strmenu - testo del menù 
+      */
+     static SelezionaVoceMenuPagAmbiti(strMenu) {
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+
+            cy.contains('span', strMenu).should('be.visible').click()
+            
+        })
+
+    }
+    //#endregion
+
     //#region Dati quotazione
     /**
       * Modifica dati quotazione 
       */
+     /*
     static compilaDatiQuotazione() {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
@@ -32,6 +66,7 @@ class UltraBMP {
         })
 
     }
+    */
     //#endregion
 
     //#region Verifica default FQ
@@ -141,22 +176,147 @@ class UltraBMP {
                 cy.log('NIENTE MODIFICHE. NON INSERISCO ' + valoriIns.CapAbitazione)
 
 
-            cy.get('button').contains('SCOPRI LA PROTEZIONE').should('be.visible').click()
+            //cy.get('button').contains('SCOPRI LA PROTEZIONE').should('be.visible').click()
 
         })
 
     }
     //#endregion
 
+    //#region Seleziona ambiti
     /**
       * Seleziona un ambito
       * @param {string} ambito - Nome dell'ambito 
       */
-    //#region Seleziona ambiti
     static SelezionaAmbito(ambito) {    
         cy.getIFrame()
         cy.get('@iframe').within(() => {
             cy.contains(ambito).should('be.visible').click()
+        })    
+            
+    }
+    //#endregion
+
+    //#region Aggiunge un ambito già selezionato
+    /**
+      * Aggiunge un ambito già selezionato
+      * @param {string} ambito - Nome dell'ambito 
+      */
+    static AggiungiAmbito(ambito) {    
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+
+            /*
+            //Righe della tabella degli ambiti selezionati prima dell'inserimento
+            cy.pause()
+            var listingCount = 0
+            cy.get('table[class="nx-table ng-star-inserted"] > tbody > tr').then(listing => {
+                listingCount = Cypress.$(listing).length
+                cy.log("Numero righe tabella ambiti inseriti: " + listingCount)
+            })
+            //
+            */
+
+            cy.contains('div.ng-star-inserted', ambito).children('span').should('be.visible').click()
+
+            /*
+            //Righe della tabella degli ambiti selezionati dopo l'inserimento
+            cy.get('table[class="nx-table ng-star-inserted"] > tbody > tr').each(($riga, indice) => {
+                //cy.wrap($riga).within(() => {
+                    cy.log('Dentro il ciclo')
+                    //cy.log('')
+                    //cy.get('td > div', {timeout: 4000}).eq(1).should('contain.text', ambito)
+                    //const checkAmbito = cy.get('td > div', {timeout: 4000}).eq(1).is(':visible')
+                    cy.log('Ambito cercato: ' + ambito)
+                    cy.log('indice: ' + indice)
+
+                    //$riga.find('td > div', {timeout: 4000}).eq(1).invoke('text').then(($text) => {
+                    //    cy.log('tipo selezionato: ', $text)
+                        //expect($text).to.equal(defaultFQ.TipoAbitazione)
+                    //}) 
+
+                    //const checkAmbito = $riga.find(':contains(ambito)').is(':visible')
+                    //$riga.find('td > div').eq(1).its('textContent').then(($textContent) => {
+                    //    cy.log('$textContent: ', $textContent)
+                    //    //expect($text).to.equal(defaultFQ.TipoAbitazione)
+                    //}) 
+                    //const valore = $riga.find('td > div').eq(1).value
+                    //cy.log('checkAmbito: ' + checkAmbito)
+                    //cy.log('testo: ' + testo)
+                //})
+            })
+            */
+
+            /*
+            cy.get('table[class="nx-table ng-star-inserted"] > tbody > tr').each(($el, index) => {
+                cy.log('$el: ' + $el)
+                cy.log('index: ' + index)
+            })
+            */
+
+            /*
+            cy.get('table[class="nx-table ng-star-inserted"] > tbody > tr').then(listing => {
+                listingCount = Cypress.$(listing).length
+                cy.log("Numero righe tabella ambiti inseriti: " + listingCount)
+                Cypress.$(listing).each((index, $el, $list) => {
+                    cy.log('Dentro il ciclo')
+                    //const testo = $el.text()
+                    //cy.log('$el.text: ' + testo)
+                    cy.log('$el: '+ $el)
+                    cy.log('index: '+ index)
+                    cy.log('$list: '+ $list)
+                    
+                    $el.find('td > div', {timeout: 4000}).eq(1)
+                    //cy.wrap($el).find('dir').should('be.visible')
+                    //const checkSearchIsPresente = cy.wrap($el).find('dir').should('be.visible')
+                    //cy.log('checkSearchIsPresente: ' + checkSearchIsPresente)
+                    //cy.log('**** find dir *****')    //.contains('ambito', {timeout: 4000} ).should('be.visible')
+                })
+            })
+            //
+            */
+
+
+            /*
+            cy.wait(3000)
+            //cy.get('table[class="nx-table ng-star-inserted"] > tbody > tr').each(($el, index, $list) => {
+            //    cy.log("Index: " + index)
+            //    const checkSearchIsPresente = $el.find('div:contains(ambito)').is(':visible')
+            cy.get('table[class="nx-table ng-star-inserted"]').should('be.visible').then(($table) => {
+                cy.wrap($table).each(($el, index, $list) => {
+                    $el.find('dir').is(':visible')
+                    cy.log('**** find dir *****')    //.contains('ambito', {timeout: 4000} ).should('be.visible')
+                })
+                //const isTrovato = $table.find('tr:contains(ambito)').is(':visible')
+                //if (isTrovato)
+                //    cy.log("trovato ambito " + "ambito")
+                //else
+                //    cy.log("NON TROVATO AMBITO " + ambito)
+            })
+            */
+            /*
+            cy.get('nx-modal').then(($modalSearch) => {
+                const checkSearchIsPresente = $modalSearch.find(':contains("Nessun cliente trovato")').is(':visible')
+                if (checkSearchIsPresente)
+                    searchOtherMember()
+            })
+            */
+        })    
+            
+    }
+    //#endregion
+
+    //#region Applica Sconto da Area Riservata
+    /**
+      * Applica sconto da Area Riservata
+      */
+     static ApplicaSconto() {    
+        //cy.getIFrame()
+        //cy.get('@iframe').within(() => {
+        ultraIFrame().within(() => {
+            //cy.contains('span', 'Area riservata').should('be.visible').click()
+            cy.pause()
+            cy.contains('span', ' Attiva ').should('be.visible').click()
         })    
             
     }
