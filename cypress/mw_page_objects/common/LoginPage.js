@@ -156,14 +156,14 @@ class LoginPage {
 
         }
 
-        if (mockedNews) {
+        if (mockedNews && !Cypress.env('isAviva')) {
 
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news')) {
                     req.reply({ fixture: 'mockNews.json' })
                 }
             })
-        } else {
+        } else if (!Cypress.env('isAviva')){
             //Wait for news graphQL to be returned
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news'))
@@ -198,7 +198,7 @@ class LoginPage {
 
                         if (!Cypress.env('monoUtenza'))
                             Common.checkUrlEnv()
-                        if (!mockedNews)
+                        if (!mockedNews && !Cypress.env('isAviva'))
                             cy.wait('@gqlNews')
 
                         cy.wait('@gqlUserDetails')
@@ -207,12 +207,25 @@ class LoginPage {
                             TopBar.clickSecondWindow()
                     } else {
                         let currentImpersonificationToPerform
-                            //Verifichiamo se ho customImpersonification valorizzato
-                        if (Cypress.$.isEmptyObject(customImpersonification))
-                        //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza
-                            currentImpersonificationToPerform = {
-                            "agentId": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agentId : user.agentId,
-                            "agency": (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) ? data.monoUtenza.agency : user.agency,
+                        //Verifichiamo se ho customImpersonification valorizzato
+                        debugger
+                        if (Cypress.$.isEmptyObject(customImpersonification)) {
+                            //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza oppure AVIVA
+                            if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza'))
+                                currentImpersonificationToPerform = {
+                                    "agentId": data.monoUtenza.agentId,
+                                    "agency": data.monoUtenza.agency,
+                                }
+                            else if (Cypress.env('isAviva'))
+                                currentImpersonificationToPerform = {
+                                    "agentId": data.aviva.agentId,
+                                    "agency": data.aviva.agency,
+                                }
+                            else
+                                currentImpersonificationToPerform = {
+                                    "agentId": user.agentId,
+                                    "agency": user.agency,
+                                }
                         }
                         else
                             currentImpersonificationToPerform = {
@@ -227,7 +240,7 @@ class LoginPage {
 
                             if (!Cypress.env('monoUtenza'))
                                 Common.checkUrlEnv()
-                            if (!mockedNews)
+                            if (!mockedNews && !Cypress.env('isAviva'))
                                 cy.wait('@gqlNews')
 
                             cy.wait('@gqlUserDetails')

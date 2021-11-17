@@ -246,8 +246,12 @@ class TopBar extends HomePage {
 
         const linksUtilita = Object.values(LinkUtilita)
 
-        if (!Cypress.env('monoUtenza'))
+        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
             cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksUtilita[i])
+            })
+        else if (Cypress.env('isAviva'))
+            cy.get('lib-utility').find('lib-utility-label').should('have.length', 5).each(($labelCard, i) => {
                 expect($labelCard).to.contain(linksUtilita[i])
             })
         else {
@@ -327,7 +331,7 @@ class TopBar extends HomePage {
         cy.get('lib-user-header').click()
         cy.get('lib-user-name-container').should('be.visible')
         cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
-        if (!Cypress.env('monoUtenza'))
+        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
             cy.contains('Ci sono altri profili collegati')
         cy.contains('Cambio password')
         cy.contains('Configurazione stampanti')
@@ -343,7 +347,7 @@ class TopBar extends HomePage {
      */
     static clickIconSwitchPage(page) {
         cy.get('lib-switch-button').click().wait(500)
-        cy.get('.lib-switch-button-list-column').should('have.length', 6)
+        cy.get('.lib-switch-button-list-column').should('have.length', !(Cypress.env('isAviva')) ? 6 : 4)
         switch (page) {
             case LandingPage.CLIENTS:
                 interceptPageClients()

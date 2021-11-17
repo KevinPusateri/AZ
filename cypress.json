@@ -2,7 +2,7 @@
     "retries": 1,
     "video": true,
     "videoCompression": 25,
-    "trashAssetsBeforeRuns": false,
+    "trashAssetsBeforeRuns": true,
     "projectId": "4ypuc8",
     "numTestsKeptInMemory": 1,
     "chromeWebSecurity": false,
@@ -26,9 +26,12 @@
         "urlSecondWindow": "https://portaleagenzie2.pp.azi.allianz.it/matrix/",
         "profilingUrlPreprod": "https://profilingbe.pp.azi.allianzit",
         "profilingUrlTest": "https://profilingbe.te.azi.allianzit",
+        "be2beTest" : "https://be2be.te.azi.allianzit",
+        "be2bePreprod" : "https://be2be.pp.azi.allianzit",
         "isSecondWindow": false,
         "monoUtenza": false,
         "multiUtenza": "5-851-0-100",
+        "isAviva": false,
         "hostParsr": "H2017LE00038A",
         "portParsr": "3001"
     }

@@ -64,11 +64,17 @@ describe('Buca di Ricerca - Risultati Clients', {
 
     it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function () {
 
-        if (!Cypress.env('monoUtenza')) {
+        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
             TopBar.search('PULINI')
             LandingRicerca.clickFirstResult()
             SintesiCliente.checkAtterraggioSintesiCliente('PULINI')
-        } else{
+        } 
+        else if(Cypress.env('isAviva')){
+            TopBar.search('LUCIANO FASCE')
+            LandingRicerca.clickFirstResult()
+            SintesiCliente.checkAtterraggioSintesiCliente('LUCIANO FASC')
+        }
+        else{
             TopBar.search('GIUSEPPE NAZZARRO')
             LandingRicerca.clickFirstResult()
             SintesiCliente.checkAtterraggioSintesiCliente('GIUSEPPE NAZZARRO')

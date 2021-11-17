@@ -24,7 +24,7 @@ class HomePage {
 
         }
 
-        if (mockedNews) {
+        if (mockedNews && !Cypress.env('isAviva')) {
 
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news')) {
@@ -32,7 +32,7 @@ class HomePage {
                 }
             })
         }
-        else {
+        else if(!Cypress.env('isAviva')){
             //Wait for news graphQL to be returned
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news')) {
@@ -47,7 +47,7 @@ class HomePage {
         else
             cy.visit(Common.getBaseUrl())
 
-        if (!mockedNews)
+        if (!mockedNews && !Cypress.env('isAviva'))
             cy.wait('@gqlNews')
 
         //Attendiamo caricamento dell'icona utente in alto a dx

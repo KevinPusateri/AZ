@@ -2,8 +2,8 @@
     "users": [{
             "userName": "LE00080",
             "tutf": "TUTF021",
-            "agency": "010375000",
-            "agentId": "ARALONGO7"
+            "agency": "010710000",
+            "agentId": "ARFPULINI2"
         },
         {
             "userName": "LE00038",
@@ -51,6 +51,10 @@
     "monoUtenza": {
         "agency": "070004549",
         "agentId": "ASGNAZZARRO1"
+    },
+    "aviva": {
+        "agency": "140001589",
+        "agentId": "AVAGENTE1"
     },
     "psw": "U2FsdGVkX1+zUYlK5Ayb/ZwQpDR9/1nGNe8tX3/O65s=",
     "psw078": "U2FsdGVkX1+hFuxYM5JPVtsg3AltJND978kYJ/gjD2I="

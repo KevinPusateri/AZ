@@ -1,6 +1,6 @@
 /**
- * @author Kevin Pusateri <kevin.pusateri@allianz.it>
  * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it>
  */
 
 /// <reference types="Cypress" />
@@ -50,7 +50,10 @@ describe('Tenuta Tariffa Gennaio 2022 : ', function () {
         it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, () => {
             TenutaTariffa.compilaDatiQuotazione(currentCase)
             TenutaTariffa.compilaContraenteProprietario(currentCase)
-            TenutaTariffa.compilaVeicolo(currentCase) 
+            TenutaTariffa.downloadZipLog()
+            TenutaTariffa.compilaVeicolo(currentCase)
+            TenutaTariffa.compilaProvenienza(currentCase)
+            TenutaTariffa.compilaOfferta(currentCase)
         });
     });
 })
