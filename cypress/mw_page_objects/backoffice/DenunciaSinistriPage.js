@@ -3,7 +3,24 @@
 
 
 import Common from "../common/Common"
+import 'cypress-iframe';
 
+/*
+const getBaseIframe = (iframe) => {
+    
+    let ifr = cy.frameLoaded(iframe)
+    .iframe(iframe)
+
+    return ifr.should('not.be.undefined').and('exist').then(cy.wrap)
+}
+
+const getSecondaryIframe = (baseIframe, childIframe) => {
+
+     let ifrmchld =  getBaseIframe(baseIframe).find(childIframe)
+     .iframe()
+     return ifrmchld.its('0.contentDocument').should('exist').then(cy.wrap)   
+} 
+*/
 const getIFrame = () => {
     
     cy.get('#matrixIframe')
@@ -16,6 +33,7 @@ const getIFrame = () => {
 }
 
 const getIFrameDenuncia = () => {
+   
     getIFrame().find('iframe[src="cliente.jsp"]')
         .iframe();
 
@@ -23,6 +41,7 @@ const getIFrameDenuncia = () => {
         .its('0.contentDocument').should('exist');
 
     return iframe.its('body').should('not.be.undefined').then(cy.wrap)
+    
 }
 
 const getIFramePopUp = () => {
@@ -436,9 +455,9 @@ class DenunciaSinistriPage {
       static setValue_ById(id, value) {
         return new Cypress.Promise((resolve) => {
             cy.wait(500)             
-            getIFrameDenuncia().find(id).should('be.visible').and('exist').clear().log('>> clean object value')
+            getIFrameDenuncia().find(id).should('exist').clear().log('>> clean object value')
             cy.wait(1000)              
-            getIFrameDenuncia().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
+            getIFrameDenuncia().find(id).should('exist').type(value).log('>> value: [' + value +'] entered')                   
             cy.wait(1000)
             resolve(true)            
         });
