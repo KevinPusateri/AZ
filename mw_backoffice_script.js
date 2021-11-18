@@ -52,7 +52,7 @@ const pMap = require('p-map');
 const prompt = require('prompt-sync')()
 require('events').EventEmitter.defaultMaxListeners = 15
 let PARALLEL_RUN_COUNT = process.argv.slice(2)[0]
-const integrationDirectory = path.join(__dirname, String("./cypress/integration/backoffice/claims"))
+const integrationDirectory = path.join(__dirname, String("./cypress/integration/backoffice/claims/"))
 //#endregion DO NOT EDIT
 
 //#region Chooser Type run all or single collections
