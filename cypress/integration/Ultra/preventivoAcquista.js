@@ -111,6 +111,7 @@ describe("Preventivo e Acquisto Polizza", () => {
   })
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
+    Ultra.caricamentoUltraHome()
     Ultra.selezionaAmbitiHome(ambiti)
   })
 
@@ -164,10 +165,10 @@ describe("Preventivo e Acquisto Polizza", () => {
 
   it("Consensi e privacy", () => {
     Ultra.riepilogoDocumenti()
-    Ultra.consensiPrivacy()
+    Ultra.avantiConsensi()
   })
 
   it("Fine", () => {
-    cy.pause()
+    Ultra.verificaInvioMail()
   })
 })

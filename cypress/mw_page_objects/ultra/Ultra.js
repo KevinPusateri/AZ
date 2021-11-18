@@ -34,6 +34,15 @@ class Ultra {
         })
     }
 
+    static caricamentoUltraHome(ambiti) {
+        cy.intercept({
+            method: 'GET',
+            url: '**/ambiti-disponibili'
+        }).as('ambiti')
+
+        cy.wait('@ambiti', { requestTimeout: 60000 });
+    }
+
     //#region Persona Fisica
     static verificaAmbitiHome(ambiti) {
         ultraIFrame().within(() => {
@@ -341,9 +350,23 @@ class Ultra {
     static censimentoAnagraficoAvanti() {
         ultraIFrame().within(() => {
             cy.get('[id="btnAvanti"]').should('be.visible').click() //avanti
-            cy.wait(3000)
+            cy.wait(5000)
         })
     }
+
+    // static caricamentoCensimentoAnagrafico(cliente, ubicazione) {
+    //     cy.intercept({
+    //         method: 'GET',
+    //         url: '**/consensi/**'
+    //     }).as('consensiPrivacy')
+
+    //     cy.wait('@consensiPrivacy', { requestTimeout: 60000 })
+
+    //     ultraIFrame().within(() => {
+    //         //Attende il caricamento della pagina            
+    //         cy.get('[class="page-title"]', { timeout: 15000 }).contains('Consensi e privacy').should('be.visible')
+    //     })
+    // }
 
     static censimentoAnagrafico(cliente, ubicazione) {
         ultraIFrame().within(() => {
@@ -462,6 +485,17 @@ class Ultra {
         })
     }
 
+    static caricaDatiIntegrativi() {
+        cy.intercept({
+            method: 'GET',
+            url: '**/datiintegrativi/getDati'
+        }).as('datiIntegrativi')
+
+        cy.wait('@datiIntegrativi', { requestTimeout: 60000 })
+
+        cy.wait(3000)
+    }
+
     static datiIntegrativi() {
         ultraIFrame().within(() => {
             cy.get('[class="page-title"]').should('be.visible')
@@ -469,9 +503,18 @@ class Ultra {
                     cy.log('page-title', text)
                 })
 
+
+            // cy.intercept({
+            //     method: 'GET',
+            //     url: '**/getDatiQuotazione'
+            // }).as('datiIntegrativi')
+
+            // cy.wait('@datiIntegrativi', { requestTimeout: 60000 })
+
+
             //Attende il caricamento della pagina        
             cy.get('h1:contains("Dati integrativi")').should('be.visible')
-            //cy.pause()
+            cy.wait(2000)
 
             cy.get('label').contains('Seleziona tutti NO').should('be.visible').click() //Dati integrativi oggetti assicurati tutti NO
 
@@ -486,14 +529,8 @@ class Ultra {
     }
 
     static datiIntegrativiSalute(speseMediche, diariaRicovero, invalidita) {
-        cy.intercept('/Danni/UltraBRE/KoTemplates/tmpl_dati_assicurato_integr.htm', (req) => {
-            req.alias = 'datiAssicurato'
-        })
-        //cy.wait('@datiAssicurato')
-
         ultraIFrame().within(() => {
             //Attende il caricamento della pagina
-            //cy.wait('@datiAssicurato', { timeout: 15000 })   
             cy.get('h1:contains("Dati integrativi")').should('be.visible')
 
             //Spese Mediche si/no
@@ -586,15 +623,34 @@ class Ultra {
         cy.wait(5000)
     }
 
-    static consensiPrivacy() {
+    static caricamentoConsensi() {
+        cy.intercept({
+            method: 'GET',
+            url: '**/consensi/**'
+        }).as('consensiPrivacy')
+
+        cy.wait('@consensiPrivacy', { requestTimeout: 60000 })
+
         ultraIFrame().within(() => {
-            //Attende il caricamento della pagina
+            //Attende il caricamento della pagina            
             cy.get('[class="page-title"]', { timeout: 15000 }).contains('Consensi e privacy').should('be.visible')
+        })
+    }
+
+    static avantiConsensi() {
+        ultraIFrame().within(() => {
             cy.get('a').contains('Avanti').click() //avanti
         })
     }
 
     static consensiSezIntermediario(intermediario, collaborazione = false, esterno = false) {
+        cy.intercept({
+            method: 'GET',
+            url: '**/GetIntermediari'
+        }).as('intermediari')
+
+        cy.wait('@intermediari', { requestTimeout: 60000 })
+
         ultraIFrame().within(() => {
             ultraIFrame0().within(() => {
                 //Attende il caricamento della pagina
@@ -626,6 +682,13 @@ class Ultra {
     }
 
     static salvataggioContratto() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/SalvaPerStep'
+        }).as('contratto')
+
+        cy.wait('@contratto', { requestTimeout: 60000 })
+
         ultraIFrame().within(() => {
             cy.get('[class="step last success"]').contains('è stato salvato con successo').should('be.visible')
             cy.log("Contratto salvato con successo")
@@ -635,6 +698,13 @@ class Ultra {
     static inserimentoIntermediario() {
         var checkFrame0 = false
         var checkIntermediarioError = false
+
+        cy.intercept({
+            method: 'GET',
+            url: '**/GetIntermediari'
+        }).as('intermediari')
+
+        cy.wait('@intermediari', { requestTimeout: 60000 })
 
         ultraIFrame().then(($body) => {
             checkFrame0 = $body.find('#iFrameResizer0').is(':visible') //verifica la presenza dell'iframe0 annidato
@@ -669,7 +739,15 @@ class Ultra {
     }
 
     static riepilogoDocumenti() {
+        //GetRiepilogoDocumenti
         var check = true
+
+        // cy.intercept({
+        //     method: 'GET',
+        //     url: '**/GetRiepilogoDocumenti'
+        // }).as('riepilogoDocumenti')
+
+        // cy.wait('@riepilogoDocumenti', { requestTimeout: 60000 })
 
         ultraIFrame().then(($body) => {
             check = $body.find('#iFrameResizer0').is(':visible') //verifica la presenza dell'iframe0 annidato
@@ -678,24 +756,24 @@ class Ultra {
                 ultraIFrame0().within(() => {
                     //Attende la comparsa della sezione 'Riepilogo documenti'
                     cy.get('#RiepilogoDocumentiContainer').should('be.visible')
-    
+
                     cy.get('#RiepilogoDocumentiContainer')
                         .find('button').not('[disabled]')//lista dei pulsanti
                         .each(($button, index, $list) => {
                             cy.log("index" + index)
                             cy.wrap($button).click() //click su Visualizza
-    
+
                             //conferma popup
                             cy.get('button').contains('Conferma').should('be.visible').click()
                         });
-    
+
                     cy.get('button').contains('Avanti').click() //avanti
                 })
             }
             else {
                 //Attende la comparsa della sezione 'Riepilogo documenti'
                 cy.get('[class="table-documenti"]').should('be.visible')
-    
+
                 cy.get('[class="table-documenti"]')
                     .find('button').not('[disabled]')//lista dei pulsanti
                     .each(($button, index, $list) => {
@@ -711,6 +789,13 @@ class Ultra {
     }
 
     static stampaAdempimentiPrecontrattuali() {
+        cy.intercept({
+            method: 'GET',
+            url: '**/GetSezionePrecontrattuale'
+        }).as('precontrattuale')
+
+        cy.wait('@precontrattuale', { requestTimeout: 60000 })
+
         ultraIFrame().within(() => {
             ultraIFrame0().within(() => {
                 cy.log('titolo tab: ', cy.title())
@@ -769,6 +854,20 @@ class Ultra {
             .first().click()
 
         cy.wait(2000)
+    }
+
+    static verificaInvioMail() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/InviaMail'
+        }).as('invioMail')
+
+        cy.wait('@invioMail', { requestTimeout: 60000 });
+
+        ultraIFrame().within(() => {
+            cy.get('[class="dialog-small dialog-content"]')
+                .should('be.visible').contains('La documentazione è stata inviata con successo')
+        })
     }
 
     //#endregion Matrix
