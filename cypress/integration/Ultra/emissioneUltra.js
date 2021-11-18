@@ -91,6 +91,8 @@ describe("CASA e PATRIMONIO", () => {
     })
 
     it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", () => {
+        //Ultra.caricamentoUltraHome()
+        cy.pause()
         Ultra.verificaAmbitiHome(ambiti)
     })
 
@@ -124,14 +126,16 @@ describe("CASA e PATRIMONIO", () => {
     })
 
     it("Dati integrativi", () => {
+        //Ultra.caricaDatiIntegrativi()
         Ultra.datiIntegrativi()
     })
 
     it("Consensi e privacy", () => {
-        Ultra.consensiPrivacy()
+        Ultra.caricamentoConsensi()
+        Ultra.avantiConsensi()        
     })
 
-    it("salvataggio Contratto", () => {
+    it("salvataggio Contratto", () => {        
         Ultra.salvataggioContratto()
     })
 
@@ -139,9 +143,8 @@ describe("CASA e PATRIMONIO", () => {
         Ultra.inserimentoIntermediario()
     })
 
-    it("Visualizza documenti e prosegui", () => {
+    it("Visualizza documenti e prosegui", () => {        
         Ultra.riepilogoDocumenti()
-        // cy.wait(5000)
     })
 
     it("Adempimenti precontrattuali e Perfezionamento", () => {
