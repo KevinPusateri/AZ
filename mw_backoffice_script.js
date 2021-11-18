@@ -163,7 +163,7 @@ async function main() {
 	console.log('Total Test Failed : ' + totalFailed)
 	console.log('Total Test Skipped : ' + totalSkipped)
 	console.log('********************************************************')
-	console.log('Test MW Navigation FE Cypress Completed!');
+	console.log('Test MW BackOffice Claims FE Cypress Completed!');
 	process.exit(0)
 }
 
