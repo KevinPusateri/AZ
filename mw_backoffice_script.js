@@ -1,252 +1,170 @@
-/**
- * @author Michele Delle Donne <michele.delledonne@allianz.it>
- *
- * @description Emissione denuncia di un sinistro motor avente come copertura 
- * di garanzia la "Rottura Cristalli"
- */
+//Created by Andrea 'Bobo' Oboe 2021
+//www.andreaoboe.com
 
-
-/// <reference types="Cypress" />
-import Common from "../../../mw_page_objects/common/Common"
-import LoginPage from "../../../mw_page_objects/common/LoginPage"
-import TopBar from "../../../mw_page_objects/common/TopBar"
-import BackOffice from "../../../mw_page_objects/Navigation/BackOffice"
-import DenunciaSinistriPage from "../../../mw_page_objects/backoffice/DenunciaSinistriPage"
-import { isDate } from "lodash"
-
-
-//#region Mysql DB Variables
-const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
-const currentEnv = Cypress.env('currentEnv')
-const dbConfig = Cypress.env('db')
-let insertedId
-//#endregion
-
-//#region Configuration
-Cypress.config('defaultCommandTimeout', 60000)
-//#endregion
-
-before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-        LoginPage.logInMWAdvanced()
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Denuncia') 
-    })
-})
-
-beforeEach(() => {
-    cy.preserveCookies()
-    //Common.visitUrlOnEnv()   
-})
-
-afterEach(function () {
-    if (this.currentTest.state !== 'passed') {
-        //TopBar.logOutMW()
-        //#region Mysql
-        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-            let tests = testsInfo
-            cy.finishMysql(dbConfig, insertedId, tests)
-        })
-        //#endregion
-        //Cypress.runner.stop();
-    }
-})
-
-after(function () {
-    TopBar.logOutMW()
-
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
-     Cypress.runner.stop();
-})
-
-//#region Script Variables
-/*
-var ramo_pol = '31-Globale Auto'
-var cliente_cognome = 'Toccane'
-var cliente_nome = 'Francesco'
-var cliente_dt_nascita = '25/03/1983'
-var cliente_num_pol = '79323432'
-var cliente_targa = 'DS246AT'
+/* Args input sequence
+slice(2)[0] -> level of parallelism (if 1, tests are executed sequential)
+slice(2)[1] -> headed (true or false)
+slice(2)[2] -> scheduled (true or false)
 */
-var ramo_pol = '31' //601 - BONUS/MALUS
-var cliente_cognome = 'Appolonio'
-var cliente_nome = 'Gianluca'
-var cliente_dt_nascita = '23/02/1979'
-var cliente_num_pol = '530053391'
-var cliente_targa = 'Fj103dt'
 
+if (process.argv.slice(2).length < 1) {
+	console.log('\nMissing arguments. Please Use like this:\n');
+	console.log("\x1b[33m%s\x1b[0m", '[0] -> level of parallelism (if 1, specs are executed sequential); MAX is 4\n');
+	console.log("\x1b[35m%s\x1b[0m", '[1] -> headed (true or false) [OPTIONAL, default is false]\n');
+	console.log("\x1b[34m%s\x1b[0m", '[2] -> scheduled (true or false) [OPTIONAL, default is false]\n');
 
-var copertura_danno = 'ROTTURA CRISTALLI'
+	process.exit(0);
+}
+else {
+	//Verify first arg is a number
+	if (isNaN(process.argv.slice(2)[0])) {
+		console.log("\x1b[31m%s\x1b[0m", 'Please specify a number for parallelism (Max is 4)\n');
+		process.exit(0);
+	}
+}
 
-var sinistro_veicoli_coinvolti = '2'
-var sinistro_descrizione_danno = 'Danneggiamento parabrezza'
-var sinistro_località = 'GORIZIA'
+if (process.argv.slice(2)[0] > 4) {
+	console.log("\x1b[31m%s\x1b[0m", 'Max Level of parallelism for this kind of tests is 4!\n');
+	process.exit(0);
+}
 
-var tipo_danno = 'Rottura Cristalli'
+let headed = false
+if (process.argv.slice(2).length >= 2 && process.argv.slice(2)[1] === 'true') {
+	headed = true
+	console.log('\nHeaded is ON\n')
+}
 
+let scheduled = false
+if (process.argv.slice(2).length >= 2 && process.argv.slice(2)[2] === 'true') {
+	scheduled = true
+	console.log('Scheduled is ON\n')
+}
 
-let dtAvvenimento 
-let dtDenuncia
-let controparte_marca
-let idx_cop_gar
+//#region DO NOT EDIT
+const path = require('path')
+const async = require('async')
+const fs = require('fs')
+const cypress = require('cypress')
+const { addListener, exit } = require('process')
+const { resolve } = require('path');
+const { clear } = require('console');
+const pMap = require('p-map');
+const prompt = require('prompt-sync')()
+require('events').EventEmitter.defaultMaxListeners = 15
+let PARALLEL_RUN_COUNT = process.argv.slice(2)[0]
+const integrationDirectory = path.join(__dirname, String("./cypress/integration/backoffice/claims"))
+//#endregion DO NOT EDIT
+
+//#region Chooser Type run all or single collections
+var filenames = fs.readdirSync(integrationDirectory);
+var indexCollection = 0;
+let option = '';
+if (!scheduled) {
+	console.log("\x1b[35m%s\x1b[0m", '\n1. Test all Specs\n');
+	console.log("\x1b[36m%s\x1b[0m", '2. Test a Single Spec\n');
+	var runChooser = -1;
+	do {
+		runChooser = parseInt(prompt('Enter your choice : '), 10);
+	} while (isNaN(runChooser) || runChooser > 2 || runChooser < 1);
+
+	switch (runChooser) {
+		case 1:
+			option = 1;
+			break;
+		case 2:
+			option = 2;
+			break;
+	}
+	if (option == 2) {
+		showAllCollectionToDecide();
+		var specName = getCollectionName(filenames);
+	}
+}
+else
+	option = 1;
 //#endregion
 
-describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro motor avente come copertura' +
-' di garanzia la "'+copertura_danno+'"', () => {
+function showAllCollectionToDecide() {
 
-    it('Atterraggio su BackOffice >> Denuncia --> Ricerca cliente per numero di polizza: '+ cliente_num_pol+
-    '', function () {
+	// Function to get current filenames 
+	// in directory 
 
-        // Ricerca cliente per Polizza
-        DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
-        DenunciaSinistriPage.clickBtn_ById('#eseguiRicerca');       
-    });
+	console.log("\nFilenames in directory:");
+	filenames.forEach((file) => {
+		console.log(indexCollection + " - File:", file);
+		indexCollection++;
+	});
 
-    it('Dati cliente (ai fini della gestione del sinistro): inserimento dati obbligatori di denuncia: '+
-    'data avvenimento, data denuncia, data pervenimento è località dell\'avvenuto sinistro', function () {
-        DenunciaSinistriPage.getPlusMinusDate(-2).then((dtAvv) => { 
-            dtAvvenimento =  dtAvv      
-            cy.log('[it]>> [Data avvenimento sinistro]: '+dtAvvenimento);           
-            DenunciaSinistriPage.setValue_ById('#CLIENTE_dataAvvenimentoRisultato', dtAvvenimento)   
-        });
-        DenunciaSinistriPage.getPlusMinusDate(-2).then((dtDen) => {
-            dtDenuncia = dtDen
-            cy.log('[it]>> [Data denuncia sinistro]: '+dtDenuncia);           
-            DenunciaSinistriPage.setValue_ById('#CLIENTE_dataDenuncia', dtDenuncia)   
-        });       
-        DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {          
-            cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
-            DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
-        }); 
 
-        DenunciaSinistriPage.setValue_ById('#CLIENTE_descDinamica', sinistro_descrizione_danno)
-        DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
-        DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita2');
-        cy.wait(2000)
-        DenunciaSinistriPage.clickBtn_ById('#CmdAvanti');        
-    });
+}
 
-    /*
-    it('Lista polizze: Selezione della polizza'+
-    '', function () {
+function getCollectionName() {
+	var collectionChooser = -1;
+	do {
+		collectionChooser = parseInt(prompt('Enter your choice : '), 10);
+	} while (isNaN(collectionChooser) || collectionChooser > indexCollection - 1 || collectionChooser < 0);
 
-        // Selezione della polizza  
-          var  isVisible = DenunciaSinistriPage.isVisible('#avantiListaPolizze')
-        if (isVisible) {         
-            DenunciaSinistriPage.clickBtn_ById('#avantiListaPolizze');
-        } 
-    });
-      
+	return filenames[collectionChooser];
+}
 
-    it('Dettaglio di polizza: visualizzazione e selezione'+
-    '', function () {
+async function main() {
 
-        // Visualizzazione del dettaglio di polizza 
-        DenunciaSinistriPage.clickObj_ByLabel('a', 'Avanti');        
-    });
-*/
-    it('Sinistri potenzialmente doppi', function () {
-        Cypress.on('fail', (err, runnable) => {
-            // returning false here prevents Cypress from
-            // failing the test   
-            return false
-        })
+	var fullTests = [];
+	if (option == '1') {
+		let specs = fs.readdirSync(integrationDirectory);
 
-        DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1').then(isVisible => {
-            if (isVisible) {                              
-                let cssrdbtn = "#workarea2 > fieldset:nth-child(4) > table > tbody > tr:nth-child(2) > td > ul > li"
-                DenunciaSinistriPage.clickOnRadio_ByIdAndText(cssrdbtn, 'Prosegui denuncia in corso');
-                DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');
-            }            
-        }); 
-    });
+		specs.forEach((spec) => {
+			fullTests.push(integrationDirectory + spec);
+		});
+	} else
+		fullTests.push(integrationDirectory + specName);
 
-    it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
-    copertura_danno, function () {        
-        Cypress.on('fail', (err, runnable) => {
-            // returning false here prevents Cypress from
-            // failing the test   
-            throw err
-        })    
-        // Selezione della copertura
-        DenunciaSinistriPage.clickObj_ByLabel('td', copertura_danno)
+	const paramsRun = []
+	for (let i = 0; i < fullTests.length; i++) {
+		let specName = String(fullTests[i]).replace(/^.*[\\\/]/, '').replace('.js', '')
+		paramsRun.push({
+			specName: specName,
+			cypressParams: {
+				quiet: true,
+				spec: fullTests[i],
+				headed: headed,
+				reporter: 'junit',
+				reporterOptions: {
+					"mochaFile": "./results//Report_" + specName.toUpperCase() + ".xml",
+					"toConsole": false
+				},
+				config: {
+					video: false
+				}
+			}
+		})
+	}
 
-        DenunciaSinistriPage.getIdInListValues_ById('#GARANZIE_listaGaranzie > table > tbody > tr ', copertura_danno).then((idx) => {  
-            idx_cop_gar = ""+idx+""
-            cy.log('[it]>> indice copertura garanzia: '+idx_cop_gar);  
-            if (idx !== undefined) {                
-                DenunciaSinistriPage.clickOnCheck_ByIdAndAttr('.SelectedCheckBox', 'myindex', idx_cop_gar);
-            }
-        });
-        DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');       
-    });
+	const mapper = async paramRun => {
+		console.log("Start run for " + paramRun.specName + "...")
+		return await cypress.run(paramRun.cypressParams)
+	}
 
-    it('Verifica dei dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {
-        
-        DenunciaSinistriPage.checkObjVisible_ByText("Contraente");
-        DenunciaSinistriPage.checkObjVisible_ByText(cliente_cognome)
-        DenunciaSinistriPage.checkObjVisible_ByText(cliente_cognome)
-        DenunciaSinistriPage.checkObjVisible_ByText(cliente_targa)
-       
-        DenunciaSinistriPage.clickBtn_ById('#avantiListaDanni')    
-        cy.wait(2000)           
-    });
-   
-    it('Riepilogo denuncia - verifica dati danneggiato ', function () {
-        // il Mandatario
-        DenunciaSinistriPage.checkObjVisible_ByText("Veicolo");
-        DenunciaSinistriPage.checkInTbl_ByValue(cliente_cognome + " " + cliente_nome);
-        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
-        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', tipo_danno);        
-    });
+	const results = await pMap(paramsRun, mapper, { concurrency: parseInt(PARALLEL_RUN_COUNT) })
 
-    it('Riepilogo denuncia - verifica dati di denuncia ', function () {
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataAvvenimento', dtAvvenimento);
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataDenuncia', dtDenuncia);
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#CLIENTE_LOCALITA', sinistro_località);       
-    });
+	let totalTests = 0
+	let totalPassed = 0
+	let totalFailed = 0
+	let totalSkipped = 0
+	for (let i = 0; i < results.length; i++) {
+		totalTests += results[i].totalTests
+		totalPassed += results[i].totalPassed
+		totalFailed += results[i].totalFailed
+		totalSkipped += results[i].totalSkipped
+	}
+	console.log('********************************************************')
+	console.log('\nTotal Test Executed : ' + totalTests)
+	console.log('Total Test Passed : ' + totalPassed)
+	console.log('Total Test Failed : ' + totalFailed)
+	console.log('Total Test Skipped : ' + totalSkipped)
+	console.log('********************************************************')
+	console.log('Test MW Navigation FE Cypress Completed!');
+	process.exit(0)
+}
 
-    it('Riepilogo denuncia - verifica dati di contraenza polizza ', function () {
-        
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_numeroPolizza', cliente_num_pol);
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_targa', cliente_targa);
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_cognome);
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_nome);       
-    });
-
-    it('Riepilogo denuncia - salvataggio e verifica dati di denuncia denuncia ', function () {
-        
-        DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
-        DenunciaSinistriPage.clickObjPopUpChiudi_ByLabel('a','Chiudi')
-
-        const cssNumSin = "#PRECOMMIT_listaDanneggiatiBUFF > table > tbody > tr > td:nth-child(1)"
-        DenunciaSinistriPage.getPromiseText_ById(cssNumSin).then((numsin) => {                 
-            cy.log('[it]>> numero di sinistro: ' + numsin)
-            numsin = numsin.substring(0,9)
-            DenunciaSinistriPage.isNotNullOrEmpty(numsin)                 
-            DenunciaSinistriPage.isPositiveNumber(numsin) 
-        });
-
-        // il dannegiato 
-        DenunciaSinistriPage.checkObjVisible_ByText("Veicolo");
-        DenunciaSinistriPage.checkInTbl_ByValue(cliente_cognome + " " + cliente_nome);
-        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
-        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', tipo_danno);        
-        // Dati di denuncia
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataAvvenimento', dtAvvenimento);
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataDenuncia', dtDenuncia);
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#CLIENTE_LOCALITA', sinistro_località);
-
-         // dati di contraenza
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_numeroPolizza', cliente_num_pol);
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_targa', cliente_targa);
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_cognome);
-        DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_nome);
-    });
-});
+main()
