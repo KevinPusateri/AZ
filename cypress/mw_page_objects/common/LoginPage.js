@@ -163,7 +163,7 @@ class LoginPage {
                     req.reply({ fixture: 'mockNews.json' })
                 }
             })
-        } else if (!Cypress.env('isAviva')){
+        } else if (!Cypress.env('isAviva')) {
             //Wait for news graphQL to be returned
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news'))
@@ -243,7 +243,8 @@ class LoginPage {
                             if (!mockedNews && !Cypress.env('isAviva'))
                                 cy.wait('@gqlNews')
 
-                            cy.wait('@gqlUserDetails')
+                            if (Cypress.env('currentEnv') !== 'TEST')
+                                cy.wait('@gqlUserDetails')
 
                             if (Cypress.env('isSecondWindow'))
                                 TopBar.clickSecondWindow()
