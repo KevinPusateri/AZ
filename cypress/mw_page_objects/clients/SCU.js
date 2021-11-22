@@ -96,6 +96,7 @@ class SCU {
 
     static modificaClientePGDatiAnagrafici(clientePG) {
         cy.wait(4000)
+        getSCU().find('#headingAnagrafica').click().wait(1000)
         getSCU().find('#partita-iva').clear().wait(1000).type(clientePG.partitaIva)
         getSCU().find('#codice-fiscale-impresa').clear().type(clientePG.partitaIva)
         getSCU().find('span[aria-owns="settore-attivita_listbox"]').click();
@@ -143,7 +144,7 @@ class SCU {
 
     static modificaClientePGModificaContatti(clientePG) {
         getSCU().find('a:contains("Contatti")').click().wait(1000)
-        getSCU().find('#pec').clear().type(clientePG.pec)
+        //getSCU().find('#pec').clear().type(clientePG.pec)
         getSCU().find('#email').clear().type(clientePG.mail)
     }
 
