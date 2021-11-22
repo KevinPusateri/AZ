@@ -104,7 +104,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function() {
         BurgerMenuClients.clickLink('Gestione fonte principale')
         BurgerMenuClients.backToClients()
     });
-    it('Verifica aggancio Hospital scanner', function() {
+    it.only('Verifica aggancio Hospital scanner', function() {
         // if (!Cypress.env('monoUtenza')) {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Hospital scanner')

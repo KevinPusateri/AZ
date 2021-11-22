@@ -115,8 +115,17 @@ class TopBar extends HomePage {
     * @param {string} value - What to search
     */
     static search(value) {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('searchClient')) {
+                req.alias = 'gqlSearchClient'
+            }
+        });
+
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').click()
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').type(value).type('{enter}').wait(2000)
+
+        cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
+        cy.get('lib-client-item').should('be.visible')
     }
 
     /**
@@ -144,9 +153,10 @@ class TopBar extends HomePage {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.wait('@getClients', { requestTimeout: 30000 })
         cy.url().should('eq', Common.getBaseUrl() + 'clients/')
-        cy.get('app-donut-chart').should('be.visible')
-        cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
-
+        if (!Cypress.env('isAviva')) {
+            cy.get('app-donut-chart').should('be.visible')
+            cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
+        }
     }
 
     /**
