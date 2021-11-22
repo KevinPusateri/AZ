@@ -146,7 +146,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a New business', function () {
-        if (Cypress.env('isAviva') !== true) {
+        if (!Cypress.env('isAviva')) {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('MIDCO', 'New business')
@@ -157,7 +157,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Incassi', function () {
-        if (Cypress.env('isAviva') !== true) {
+        if (!Cypress.env('isAviva')) {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('MIDCO', 'Incassi')
@@ -168,7 +168,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Portafoglio', function () {
-        if (Cypress.env('isAviva') !== true) {
+        if (!Cypress.env('isAviva')) {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('MIDCO', 'Portafoglio')
@@ -180,7 +180,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a New business', function () {
-        if (Cypress.env('isAviva') !== true) {
+        if (!Cypress.env('isAviva')) {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('ALTRO', 'New business')
@@ -191,7 +191,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Incassi', function () {
-        if (Cypress.env('isAviva') !== true) {
+        if (!Cypress.env('isAviva')) {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('ALTRO', 'Incassi')
@@ -202,7 +202,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Portafoglio', function () {
-        if (Cypress.env('isAviva') !== true) {
+        if (!Cypress.env('isAviva')) {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('ALTRO', 'Portafoglio')
@@ -235,7 +235,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178"', function () {
-        if (!Cypress.env('monoUtenza')) {
+        if (!Cypress.env('monoUtenza') || !Cypress.env('isAviva')) {
             TopBar.clickNumbers()
             Numbers.clickTab('INCENTIVI', 'incentives')
             Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178')
@@ -244,7 +244,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Incentivi aggancio Primo indice dal Panel "AGENZIA 7 - 4549 MONZA"', function () {
-        if (!Cypress.env('monoUtenza')) {
+        if (!Cypress.env('monoUtenza') || !Cypress.env('isAviva')) {
             this.skip()
         } else {
             TopBar.clickNumbers()
