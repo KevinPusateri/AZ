@@ -21,7 +21,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -146,45 +146,70 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a New business', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('MIDCO', 'New business')
-        Numbers.backToNumbers('business-lines')
+        if (Cypress.env('isAviva') !== true) {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('MIDCO', 'New business')
+            Numbers.backToNumbers('business-lines')
+        }
+        else
+            this.skip()
     })
 
     it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Incassi', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('MIDCO', 'Incassi')
-        Numbers.backToNumbers('business-lines')
+        if (Cypress.env('isAviva') !== true) {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('MIDCO', 'Incassi')
+            Numbers.backToNumbers('business-lines')
+        }
+        else
+            this.skip()
     })
 
     it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Portafoglio', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('MIDCO', 'Portafoglio')
-        Numbers.backToNumbers('business-lines')
+        if (Cypress.env('isAviva') !== true) {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('MIDCO', 'Portafoglio')
+            Numbers.backToNumbers('business-lines')
+        }
+        else
+            this.skip()
+
     })
 
     it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a New business', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('ALTRO', 'New business')
-        Numbers.backToNumbers('business-lines')
+        if (Cypress.env('isAviva') !== true) {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('ALTRO', 'New business')
+            Numbers.backToNumbers('business-lines')
+        }
+        else
+            this.skip()
     })
 
     it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Incassi', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('ALTRO', 'Incassi')
-        Numbers.backToNumbers('business-lines')
+        if (Cypress.env('isAviva') !== true) {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('ALTRO', 'Incassi')
+            Numbers.backToNumbers('business-lines')
+        }
+        else
+            this.skip()
     })
 
     it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Portafoglio', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('ALTRO', 'Portafoglio')
-        Numbers.backToNumbers('business-lines')
+        if (Cypress.env('isAviva') !== true) {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('ALTRO', 'Portafoglio')
+            Numbers.backToNumbers('business-lines')
+        }
+        else
+            this.skip()
     })
 
     it('Verifica su Prodotti aggancio Primo indice prodotto', function () {

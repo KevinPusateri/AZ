@@ -173,18 +173,19 @@ class Numbers {
             })
 
         })
-        cy.contains('VITA').click().then(() => {
-            cy.get('app-kpi-card').each((link) => {
-                cy.wrap(link).find('[class="title"]').then((title) => {
-                    const titleCardTitle = [
-                        'New business',
-                        'Incassi',
-                        'Riserve'
-                    ]
-                    expect(titleCardTitle).include(title.text())
+        if (Cypress.env('isAviva') !== true)
+            cy.contains('VITA').click().then(() => {
+                cy.get('app-kpi-card').each((link) => {
+                    cy.wrap(link).find('[class="title"]').then((title) => {
+                        const titleCardTitle = [
+                            'New business',
+                            'Incassi',
+                            'Riserve'
+                        ]
+                        expect(titleCardTitle).include(title.text())
+                    })
                 })
             })
-        })
 
         cy.contains('DANNI').click()
         cy.get('app-border-card').find('app-lob-title').each((titleLobCard) => {
