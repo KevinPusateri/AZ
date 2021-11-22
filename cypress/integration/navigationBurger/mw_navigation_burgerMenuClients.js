@@ -106,8 +106,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function() {
             BurgerMenuClients.clickLink('Hospital scanner')
             HomePage.reloadMWHomePage()
         }
-    });
-
+    })
     it('Verifica aggancio Antiriciclaggio', function() {
         if (!Cypress.env('isAviva')) {
             TopBar.clickClients()

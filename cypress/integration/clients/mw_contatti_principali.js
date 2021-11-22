@@ -111,7 +111,8 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
     })
 
     it('Verifica Numero Principale inserito', () => {
-        SintesiCliente.visitUrlClient(urlClient)
+        TopBar.search(cliente.name) 
+        LandingRicerca.clickClientePF(cliente.name)
         SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
         SintesiCliente.checkContattoPrincipale('numero').then(contactIsPresent => {
             if (!contactIsPresent)
@@ -135,7 +136,8 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
     })
 
     it('Verifica Mail Principale inserita', () => {
-        SintesiCliente.visitUrlClient(urlClient)
+        TopBar.search(cliente.name) 
+        LandingRicerca.clickClientePF(cliente.name)
         SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
         SintesiCliente.checkContattoPrincipale('mail').then(contactIsPresent => {
             if (!contactIsPresent)

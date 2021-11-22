@@ -3,6 +3,7 @@ require('cypress-plugin-tab')
 
 import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 import Common from '../common/Common.js'
+import ToBar from '../common/TopBar.js'
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
