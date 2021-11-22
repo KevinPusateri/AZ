@@ -79,7 +79,8 @@ describe('Matrix Web : Creazione Contatto', function () {
   })
 
   it('Verifica telefono Fisso sia inserito nella tabella', function () {
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
@@ -89,7 +90,8 @@ describe('Matrix Web : Creazione Contatto', function () {
     SCUContatti.modificaContatti(contatto).then(contact => {
       contatto = contact
     })
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
@@ -116,7 +118,8 @@ describe('Matrix Web : Creazione Contatto', function () {
   })
 
   it('Verifica telefono Cellulare sia inserito nella tabella', function () {
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
@@ -126,7 +129,8 @@ describe('Matrix Web : Creazione Contatto', function () {
     SCUContatti.modificaContatti(contatto).then(contact => {
       contatto = contact
     })
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
@@ -153,7 +157,8 @@ describe('Matrix Web : Creazione Contatto', function () {
   })
 
   it('Verifica Fax sia inserito nella tabella', function () {
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
@@ -163,7 +168,8 @@ describe('Matrix Web : Creazione Contatto', function () {
     SCUContatti.modificaContatti(contatto).then(contact => {
       contatto = contact
     })
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
@@ -189,7 +195,8 @@ describe('Matrix Web : Creazione Contatto', function () {
   })
 
   it('Verifica Email sia inserito nella tabella', function () {
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
 
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
@@ -201,7 +208,8 @@ describe('Matrix Web : Creazione Contatto', function () {
     SCUContatti.modificaContatti(contatto).then(contact => {
       contatto = contact
     })
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
 
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
@@ -230,7 +238,8 @@ describe('Matrix Web : Creazione Contatto', function () {
   })
 
   it('Verifica Sito Web sia inserito nella tabella', function () {
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
 
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
@@ -242,7 +251,8 @@ describe('Matrix Web : Creazione Contatto', function () {
     SCUContatti.modificaContatti(contatto).then(contact => {
       contatto = contact
     })
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
 
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
@@ -271,7 +281,8 @@ describe('Matrix Web : Creazione Contatto', function () {
   })
 
   it('Verifica Numero Verde sia inserito nella tabella', function () {
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
 
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
@@ -283,7 +294,8 @@ describe('Matrix Web : Creazione Contatto', function () {
     SCUContatti.modificaContatti(contatto).then(contact => {
       contatto = contact
     })
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
 
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
@@ -312,7 +324,8 @@ describe('Matrix Web : Creazione Contatto', function () {
   })
 
   it('Verifica Fax Verde sia inserito nella tabella', function () {
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
 
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
@@ -324,7 +337,8 @@ describe('Matrix Web : Creazione Contatto', function () {
     SCUContatti.modificaContatti(contatto).then(contact => {
       contatto = contact
     })
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
 
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
@@ -353,7 +367,8 @@ describe('Matrix Web : Creazione Contatto', function () {
   })
 
   it('Verifica Ufficio sia inserito nella tabella', function () {
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
 
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
@@ -365,7 +380,8 @@ describe('Matrix Web : Creazione Contatto', function () {
     SCUContatti.modificaContatti(contatto).then(contact => {
       contatto = contact
     })
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
 
 
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
@@ -395,7 +411,8 @@ describe('Matrix Web : Creazione Contatto', function () {
   })
 
   it('Verifica PEC sia inserito nella tabella', function () {
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)
@@ -405,7 +422,8 @@ describe('Matrix Web : Creazione Contatto', function () {
     SCUContatti.modificaContatti(contatto).then(contact => {
       contatto = contact
     })
-    SintesiCliente.visitUrlClient(urlClient)
+    TopBar.search(client.name) 
+    LandingRicerca.clickClientePF(client.name)
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Contatti')
     DettaglioAnagrafica.checkContatti(contatto)

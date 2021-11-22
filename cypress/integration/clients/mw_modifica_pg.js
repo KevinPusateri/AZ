@@ -130,7 +130,8 @@ describe('Matrix Web : Modifica PG', {
     })
 
     it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
-        SintesiCliente.visitUrlClient(urlClient)
+        TopBar.search(currentClientPG.name) 
+        LandingRicerca.clickClientePF(currentClientPG.name)
         SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
         DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)
         SintesiCliente.verificaInFolder([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel])
