@@ -112,10 +112,13 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a Retention', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('MOTOR', 'Retention')
-        Numbers.backToNumbers('business-lines')
+        if (!Cypress.env('isAviva'))
+        {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('MOTOR', 'Retention')
+            Numbers.backToNumbers('business-lines')
+        }
     })
 
     it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a New business', function () {
@@ -139,10 +142,13 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.backToNumbers('business-lines')
     })
     it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a Retention', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('RAMI VARI RETAIL', 'Retention')
-        Numbers.backToNumbers('business-lines')
+        if (!Cypress.env('isAviva'))
+        {            
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('RAMI VARI RETAIL', 'Retention')
+            Numbers.backToNumbers('business-lines')
+        }
     })
 
     it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a New business', function () {
@@ -220,9 +226,12 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Indicatori Operativi aggancio  Monitoraggio carico', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
-        Numbers.clickAndCheckAtterraggioMonitoraggioCarico()
+        if (!Cypress.env('isAviva'))
+        {            
+            TopBar.clickNumbers()
+            Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
+            Numbers.clickAndCheckAtterraggioMonitoraggioCarico()
+        }
     })
 
     it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function () {
@@ -255,9 +264,12 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
     })
 
     it('Verifica su Indicatori Operativi aggancio Primo indice digitale', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
-        Numbers.clickAndCheckAtterraggioPrimoIndiceDigitale()
-        Numbers.backToNumbers('operational-indicators')
+        if (!Cypress.env('isAviva'))
+        {            
+            TopBar.clickNumbers()
+            Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
+            Numbers.clickAndCheckAtterraggioPrimoIndiceDigitale()
+            Numbers.backToNumbers('operational-indicators')
+        }
     })
 });
