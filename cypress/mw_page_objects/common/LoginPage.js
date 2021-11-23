@@ -208,7 +208,6 @@ class LoginPage {
                     } else {
                         let currentImpersonificationToPerform
                         //Verifichiamo se ho customImpersonification valorizzato
-                        debugger
                         if (Cypress.$.isEmptyObject(customImpersonification)) {
                             //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza oppure AVIVA
                             if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza'))

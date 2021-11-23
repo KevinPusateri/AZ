@@ -339,6 +339,24 @@ class LandingRicerca {
             .should('not.be.null')
     }
 
+    static clickClientePG(fullName) {
+        //Attende il caricamento della scheda cliente
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'client'
+            }
+        });
+
+        cy.get('lib-scrollable-container').contains(fullName.toUpperCase()).then((card) => {
+            if (card.length === 1)
+                cy.wrap(card).click()
+        })
+        //Verifica se ci sono problemi nel retrive del cliente per permessi
+        cy.wait('@client', { requestTimeout: 30000 })
+            .its('response.body.data.client')
+            .should('not.be.null')
+    }
+
     /**
      * 
      * @param {string} pageLanding - nome della pagina 
