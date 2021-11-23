@@ -88,6 +88,7 @@ class SCUAltriIndirizzi {
                         getSCU().find('#residenza-comune').clear()
                         getSCU().find('#residenza-comune').tab()
                         getSCU().find('#residenza-comune').type('MILANO')
+                        cy.wait(2000)
                         indirizzo.comune = 'MILANO'
                         getSCU().find('#residenza-comune_listbox > li').first().click()
                         //#endregion
@@ -98,7 +99,7 @@ class SCUAltriIndirizzi {
                         indirizzo.cap = '20123'
                         //#endregion
 
-                        getSCU().find('#submit:contains("Salva")').click().wait(30000);
+                        getSCU().find('#submit:contains("Salva")').click().wait(120000);
                         resolve(indirizzo);
                     })
             })
