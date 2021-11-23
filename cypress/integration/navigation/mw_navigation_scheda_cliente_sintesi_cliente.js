@@ -33,7 +33,7 @@ beforeEach(() => {
         TopBar.search('SLZNLL54A04H431Q')
         SintesiCliente.wait()
     } else {
-        TopBar.search('FNTLND75D68L781I')
+        TopBar.search('DRNBRN44D25F537J')
         SintesiCliente.wait()
     }
 })
@@ -62,7 +62,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function() {
     })
 
     //! DA VEDERE ASSENTE AGENZIA SELECT
-    it.skip('Verifica FastQuote: Tab Auto', function() {
+    it('Verifica FastQuote: Tab Auto', function() {
         SintesiCliente.checkFastQuoteAuto()
     })
 
@@ -114,9 +114,11 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function() {
         } else this.skip()
     })
 
-    it('Verifica Link da Card Auto -> Natanti', function() {
-        SintesiCliente.clickAuto()
-        SintesiCliente.checkLinksFromAutoOnNatanti()
+    it('Verifica Link da Card Auto -> Natanti(AVIVA)', function() {
+        if (Cypress.env('isAviva')) {
+            SintesiCliente.clickAuto()
+            SintesiCliente.checkLinksFromAutoOnNatanti()
+        } else this.skip()
     })
 
     it('Verifica Link da Card Rami vari', function() {
@@ -221,17 +223,15 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function() {
             SintesiCliente.clickAuto()
             SintesiCliente.clickNuovaPolizza()
             SintesiCliente.back()
-        }
-        this.skip()
+        } else this.skip()
     })
 
-    it('Verifica Card Auto: Natanti -> Nuova polizza', function() {
+    it('Verifica Card Auto: Natanti(AVIVA) -> Nuova polizza', function() {
         if (Cypress.env('isAviva')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickNuovaPolizza()
             SintesiCliente.back()
-        }
-        this.skip()
+        } else this.skip()
     })
 
     it('Verifica Card Auto: Passione Blu -> Nuova polizza guidata', function() {
@@ -242,8 +242,8 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function() {
         } else this.skip()
     })
 
-    it('Verifica Card Auto: Natanti -> Nuova polizza Coassicurazione', function() {
-        if (!Cypress.env('isAviva')) {
+    it('Verifica Card Auto: Natanti(AVIVA) -> Nuova polizza Coassicurazione', function() {
+        if (Cypress.env('isAviva')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickNuovaPolizzaCoassicurazione()
             SintesiCliente.back()
@@ -251,7 +251,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function() {
     })
 
     it('Verifica Card Auto: Passione Blu -> Nuova polizza Coassicurazione', function() {
-        if (Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickNuovaPolizzaCoassicurazione()
             SintesiCliente.back()

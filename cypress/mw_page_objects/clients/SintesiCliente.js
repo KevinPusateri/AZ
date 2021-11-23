@@ -283,7 +283,7 @@ class SintesiCliente {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
         cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Flotte e Convenzioni').click()
+        cy.get('.cdk-overlay-container').find('button').contains('Flotte e convenzioni').click()
         Common.canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
@@ -410,7 +410,6 @@ class SintesiCliente {
             cy.wait(2000)
             cy.get('.cdk-overlay-container').find('button').contains('Nuova polizza Coassicurazione').click()
             Common.canaleFromPopup()
-            getIFrame().find('button:contains("Annulla"):visible').click()
             getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
             getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
         }
@@ -565,7 +564,7 @@ class SintesiCliente {
 
             Common.canaleFromPopup()
             cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 30000 })
-            cy.wait(10000)
+            cy.wait(15000)
             getIFrame().find('input[value="Avanti"]:visible').invoke('attr', 'value').should('equal', 'Avanti')
             getIFrame().find('input[value="Indietro"]:visible').invoke('attr', 'value').should('equal', 'Indietro')
         }

@@ -35,6 +35,7 @@ const getIFrameDenuncia = () => {
 const LinksSinistri = {
     MOVIMENTAZIONE_SINISTRI: 'Movimentazione sinistri',
     DENUNCIA: 'Denuncia',
+    GESTIONE_CONTATTO_CARD: 'Gestione Contatto Card',
     DENUNCIA_BMP: 'Denuncia BMP', //! seconda finestra
     CONSULTAZIONE_SINISTRI: 'Consultazione sinistri',
     SINISTRI_INCOMPLETI: 'Sinistri incompleti',
@@ -59,8 +60,8 @@ const LinksContabilita = {
 class BackOffice {
 
     /**
-      * Verifica che tutti i link su Sinistri siano presenti
-      */
+     * Verifica che tutti i link su Sinistri siano presenti
+     */
     static checkLinksOnSinistriExist() {
         const linksSinistri = Object.values(LinksSinistri)
 
@@ -121,9 +122,9 @@ class BackOffice {
     }
 
     /**
-      * Verifica atterraggio alla pagina
-      * @param {string} page - Nome della pagina 
-      */
+     * Verifica atterraggio alla pagina
+     * @param {string} page - Nome della pagina 
+     */
     static checkPage(page) {
         switch (page) {
             case LinksSinistri.MOVIMENTAZIONE_SINISTRI:
@@ -209,8 +210,8 @@ class BackOffice {
     }
 
     /**
-    * Torna indietro su Backoffice
-    */
+     * Torna indietro su Backoffice
+     */
     static backToBackOffice() {
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', Common.getBaseUrl() + 'back-office')

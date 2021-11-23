@@ -13,7 +13,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-//#endregion
+    //#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
@@ -23,7 +23,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -32,34 +32,37 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
     Common.visitUrlOnEnv()
-    if (!Cypress.env('monoUtenza')) {
+    if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
         TopBar.search('Pulini Francesco')
         SintesiCliente.wait()
+    } else if (!Cypress.env('isAviva')) {
+        TopBar.search('SLZNLL54A04H431Q')
+        SintesiCliente.wait()
     } else {
-        TopBar.search('Giuseppe Nazzarro')
+        TopBar.search('DRNBRN44D25F537J')
         SintesiCliente.wait()
     }
 })
 
-after(function () {
+after(function() {
     TopBar.logOutMW()
-    //#region Mysql
+        //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
 
 })
 
-describe('MW: Navigazioni da Scheda Cliente - Tab Archivio Cliente', function () {
+describe('MW: Navigazioni da Scheda Cliente - Tab Archivio Cliente', function() {
 
-    it('Verifica Subtab Archivio Cliente', function () {
+    it('Verifica Subtab Archivio Cliente', function() {
         ArchivioCliente.clickTabArchivioCliente()
         ArchivioCliente.checkLinksSubTabs()
     })
 
-    it('Verifica subTab Note', function () {
+    it('Verifica subTab Note', function() {
         ArchivioCliente.clickTabArchivioCliente()
         ArchivioCliente.clickSubTab('Note')
         ArchivioCliente.checkNote()
@@ -72,14 +75,14 @@ describe('MW: Navigazioni da Scheda Cliente - Tab Archivio Cliente', function ()
     // ArchivioCliente.checkAttivita()
     // })
 
-    it('Verifica subTab Comunicazioni', function () {
+    it('Verifica subTab Comunicazioni', function() {
         ArchivioCliente.clickTabArchivioCliente()
         ArchivioCliente.clickSubTab('Comunicazioni')
         ArchivioCliente.checkComunicazioni()
     })
 
     // TODO: Apri PDF in failed
-    it('Verifica subTab Unico', function () {
+    it('Verifica subTab Unico', function() {
         ArchivioCliente.clickTabArchivioCliente()
         ArchivioCliente.clickSubTab('Unico')
         ArchivioCliente.checkUnico()

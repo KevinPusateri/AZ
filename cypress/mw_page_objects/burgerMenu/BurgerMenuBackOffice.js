@@ -6,6 +6,7 @@ const LinksBurgerMenu = {
     HOME_BACKOFFICE: 'Home Backoffice',
     MOVIMENTAZIONE_SINISTRI: 'Movimentazione sinistri',
     DENUNCIA: 'Denuncia',
+    GESTIONE_CONTATTO_CARD: 'Gestione Contatto Card',
     DENUNCIA_BMP: 'Denuncia BMP',
     CONSULTAZIONE_SINISTRI: 'Consultazione sinistri',
     SINISTRI_INCOMPLETI: 'Sinistri incompleti',
@@ -36,7 +37,7 @@ class BurgerMenuBackOffice extends BackOffice {
         if (!Cypress.env('monoUtenza'))
             cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            }).should('have.length', 19)
+            }).should('have.length', 20)
         else {
 
             delete LinksBurgerMenu.DENUNCIA_BMP
