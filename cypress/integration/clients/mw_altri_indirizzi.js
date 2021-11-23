@@ -47,30 +47,30 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// afterEach(function () {
-//     if (this.currentTest.state !== 'passed') {
-//         TopBar.logOutMW()
-//         //#region Mysql
-//         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//             let tests = testsInfo
-//             cy.finishMysql(dbConfig, insertedId, tests)
-//         })
-//         //#endregion
-//         Cypress.runner.stop();
-//     }
-// })
+afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+        TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
+})
 
-// after(function () {
-//     TopBar.logOutMW()
+after(function () {
+    TopBar.logOutMW()
 
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
 
-// })
+})
 //#endregion Before After
 
 let urlClient
@@ -93,7 +93,10 @@ describe('Matrix Web : Creazione Indirizzo', function () {
     })
 
     it('Verifica Indirizzo sia inserito nella tabella', function () {
-        SintesiCliente.visitUrlClient(urlClient)
+        cy.log('Wait obbligato siccome il sistema ci mette molto a riportare il risultato...')
+        cy.wait(120000)
+        TopBar.search(client.name) 
+        LandingRicerca.clickClientePF(client.name)
         DettaglioAnagrafica.clickTabDettaglioAnagrafica()
         DettaglioAnagrafica.clickSubTab('Altri indirizzi')
         SCUAltriIndirizzi.checkAltriIndirizzi(indirizzo)
@@ -105,7 +108,8 @@ describe('Matrix Web : Creazione Indirizzo', function () {
         SCUAltriIndirizzi.modificaIndirizzo(indirizzo).then(address => {
             indirizzo = address
         })
-        SintesiCliente.visitUrlClient(urlClient)
+        TopBar.search(client.name) 
+        LandingRicerca.clickClientePF(client.name)
         DettaglioAnagrafica.clickTabDettaglioAnagrafica()
         DettaglioAnagrafica.clickSubTab('Altri indirizzi')
         SCUAltriIndirizzi.checkAltriIndirizzi(indirizzo)
