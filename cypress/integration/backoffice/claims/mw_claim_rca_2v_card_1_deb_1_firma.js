@@ -141,6 +141,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         }); 
 
         DenunciaSinistriPage.setValue_ById('#CLIENTE_descDinamica', sinistro_descrizione_danno)
+        cy.wait(1000)
         DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
         DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita2');
         cy.wait(2000)
@@ -255,7 +256,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita')
         DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
         DenunciaSinistriPage.clickBtn_ById('#cercaRuolo')
-        cy.wait(2000)
+        cy.wait(3000)
         //Salva i dati anagrafici del conducente
         DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
         cy.wait(1000)               
@@ -273,7 +274,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita')
         DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
         DenunciaSinistriPage.clickBtn_ById('#cercaRuolo')
-        cy.wait(2000)
+        cy.wait(3000)
         //Salva i dati anagrafici del conducente
         DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
         cy.wait(1000)

@@ -165,9 +165,9 @@ class ConsultazioneSinistriPage {
      static setValue_ById(id, value) {
         return new Cypress.Promise((resolve) => {
             cy.wait(500)             
-            getIFrameDenuncia().find(id).should('be.visible').and('exist').clear().log('>> clean object value')
+            getIFrame().find(id).should('be.visible').and('exist').clear().log('>> clean object value')
             cy.wait(500)              
-            getIFrameDenuncia().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
+            getIFrame().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
             cy.wait(500)
             resolve(true)            
         });
