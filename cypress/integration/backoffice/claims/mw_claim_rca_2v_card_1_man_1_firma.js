@@ -222,7 +222,7 @@ it('Sinistri potenzialmente doppi', function () {
     
         //Il Conducente veicolo cliente è anche il contraente
         DenunciaSinistriPage.clickObj_ByIdAndAttr('#GARANZIE_contraente', 'value', 'si');
-
+        cy.wait(1000)
         DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');
     });
 

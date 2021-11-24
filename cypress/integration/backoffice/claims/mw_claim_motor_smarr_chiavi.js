@@ -124,7 +124,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
             DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
         }); 
-
+        cy.wait(1000)
         DenunciaSinistriPage.setValue_ById('#CLIENTE_descDinamica', sinistro_descrizione_danno)
         DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
         DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita2');
