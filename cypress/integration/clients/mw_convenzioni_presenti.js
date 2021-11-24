@@ -130,6 +130,7 @@ describe('Matrix Web : Convenzioni', {
                 DettaglioAnagrafica.checkConvenzioniPresenti(true, true)
 
                 DettaglioAnagrafica.clickSubTab('Legami')
+                cy.wait(5000)
                 Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
                 SintesiCliente.checkAtterraggioName(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()

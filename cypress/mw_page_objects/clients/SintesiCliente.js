@@ -798,7 +798,7 @@ class SintesiCliente {
         })
 
         debugger
-        cy.get('nx-icon[aria-label="Open menu"]').click().wait(500)
+        cy.get('nx-icon[aria-label="Open menu"]').click().wait(1000)
         cy.contains('Report Profilo Vita').should('exist').and('be.visible').click()
 
         //NON DEVE COMPARIRE L'ERRORE
