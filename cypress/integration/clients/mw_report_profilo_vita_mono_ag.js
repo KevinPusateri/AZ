@@ -10,6 +10,7 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import HomePage from "../../mw_page_objects/common/HomePage"
 import TopBar from "../../mw_page_objects/common/TopBar"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 //#endregion import
 
 //#region Configuration
@@ -24,9 +25,11 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
+let currentTutf
 //#region Before After
 before(() => {
     cy.getUserWinLogin().then(data => {
+        currentTutf = data.tutf
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
         LoginPage.logInMWAdvanced()
     })
@@ -57,7 +60,7 @@ after(function () {
 })
 //#endregion Before After
 
-let currentCustomerNumber
+let currentCustomerFullName
 let urlClient
 describe('Matrix Web : Report Profilo Vita', {
     retries: {
@@ -69,9 +72,10 @@ describe('Matrix Web : Report Profilo Vita', {
         'e ricercare un cliente PF presente solo in un\'agenzia con polizza Vita e da menu azioni\n' +
         'Verificare che ci sia la voce "Report Profilo Vita"', () => {
             cy.log('Retriving client PF with polizze vita, please wait...')
-            cy.getClientWithPolizze('TUTF021', '86').then(customerNumber => {
-                currentCustomerNumber = customerNumber
-                SintesiCliente.visitUrlClient(customerNumber, false)
+            cy.getClientWithPolizze(currentTutf, '86').then(customerFullName => {
+                currentCustomerFullName = customerFullName
+                TopBar.search(currentCustomerFullName)
+                LandingRicerca.clickClientePF(currentCustomerFullName)
                 SintesiCliente.retriveUrl().then(currentUrl => {
                     urlClient = currentUrl
                 })
