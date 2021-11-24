@@ -16,7 +16,7 @@ import { isDate } from "lodash"
 
 
 //#region Mysql DB Variables
-const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const testName = Cypress.spec.name.split('/')[2].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
@@ -27,7 +27,7 @@ Cypress.config('defaultCommandTimeout', 60000)
     //#endregion
 
 before(() => {
-    cy.getUserWinLogin().then(data => {
+    cy.getUserWinLogin().then(data => {        
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
         TopBar.clickBackOffice()
@@ -103,7 +103,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         it('Atterraggio su BackOffice >> Denuncia --> Ricerca cliente per numero di polizza: ' + cliente_num_pol +
             '',
             function() {
-
+                debugger
+                var x = testName
+                var y = Cypress.spec.name.split('/')[2].split('.')[0].toUpperCase()
                 // Ricerca cliente per Polizza
                 DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
                 DenunciaSinistriPage.clickBtn_ById('#eseguiRicerca');
