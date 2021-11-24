@@ -25,6 +25,7 @@ import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
 import Annullamento from "../../mw_page_objects/polizza/Annullamento"
 import TopBar from "../../mw_page_objects/common/TopBar"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 //#endregion import
 
 //#region Configuration
@@ -39,9 +40,11 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
+let currentTutf
 //#region Before After
 before(() => {
     cy.getUserWinLogin().then(data => {
+        currentTutf = data.tutf
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
         LoginPage.logInMWAdvanced()
     })
@@ -72,17 +75,21 @@ after(function () {
 })
 //#endregion Before After
 
+let currentCustomerFullName
 let currentCustomerNumber
 let numberPolizza
+
 describe('Matrix Web : Annullamento + Storno Annullamento', function () {
 
     it('Verifica che la polizza non sia più presente nel tab Polizze attive e ' +
         'sia presente sul tab polizze non in vigore', function () {
             cy.log('Retriving client with Polizze for Annullamento, please wait...')
-            cy.getClientWithPolizzeAnnullamento('TUTF021', '31').then(polizzaClient => {
+            cy.getClientWithPolizzeAnnullamento(currentTutf, '31').then(polizzaClient => {
                 currentCustomerNumber = polizzaClient.customerNumber
                 numberPolizza = polizzaClient.numberPolizza
-                SintesiCliente.visitUrlClient(currentCustomerNumber, false)
+                currentCustomerFullName = polizzaClient.customerName
+                TopBar.search(currentCustomerFullName)
+                LandingRicerca.clickClientePF(currentCustomerFullName)
                 SintesiCliente.retriveUrl().then(currentUrl => {
                     urlClient = currentUrl
                 })
@@ -91,7 +98,8 @@ describe('Matrix Web : Annullamento + Storno Annullamento', function () {
                 Portafoglio.filtraPolizze('Motor')
                 Portafoglio.clickAnnullamento(numberPolizza, 'Vendita')
                 Annullamento.annullaContratto()
-                SintesiCliente.visitUrlClient(currentCustomerNumber, false)
+                TopBar.search(currentCustomerFullName)
+                LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.checkPolizzaIsNotPresentOnPolizzeAttive(numberPolizza)
             })

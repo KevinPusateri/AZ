@@ -673,6 +673,7 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
                   if (datePolizzaScadenza.length > 0) {
                     var polizza = {
                       customerNumber: currentClient.customerNumber,
+                      customerName :  currentClient.firstName + ' ' + currentClient.name,
                       numberPolizza: datePolizzaScadenza[0].bundleNumber
                     }
                     return polizza
