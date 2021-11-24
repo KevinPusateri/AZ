@@ -47,6 +47,7 @@ after(function() {
 describe('Matrix Web : Navigazioni da Burger Menu in Clients', function() {
 
     it('Verifica i link da Burger Menu', function() {
+
         TopBar.clickClients()
         BurgerMenuClients.checkExistLinks()
     });
@@ -105,19 +106,19 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function() {
         BurgerMenuClients.backToClients()
     });
     it('Verifica aggancio Hospital scanner', function() {
-        // if (!Cypress.env('monoUtenza')) {
-        TopBar.clickClients()
-        BurgerMenuClients.clickLink('Hospital scanner')
-        HomePage.reloadMWHomePage()
-            // }
-            // else
-            // this.skip()
+        if (!Cypress.env('isAviva')) {
+            TopBar.clickClients()
+            BurgerMenuClients.clickLink('Hospital scanner')
+            HomePage.reloadMWHomePage()
+        } else this.skip()
     });
 
     it('Verifica aggancio Antiriciclaggio', function() {
-        TopBar.clickClients()
-        BurgerMenuClients.clickLink('Antiriciclaggio')
-        BurgerMenuClients.backToClients()
+        if (!Cypress.env('isAviva')) {
+            TopBar.clickClients()
+            BurgerMenuClients.clickLink('Antiriciclaggio')
+            BurgerMenuClients.backToClients()
+        } else this.skip()
     });
 
 });

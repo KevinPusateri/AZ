@@ -83,9 +83,8 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Carta D\'Identità inserita', () => {
-        HomePage.reloadMWHomePage()
-        TopBar.search(currentClient.name)
-        LandingRicerca.clickClientName(currentClient)
+        TopBar.search(currentClient.name) 
+        LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
             if (!documentIsPresent)
@@ -110,9 +109,8 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Patente', () => {
-        HomePage.reloadMWHomePage()
-        TopBar.search(currentClient.name)
-        LandingRicerca.clickClientName(currentClient)
+        TopBar.search(currentClient.name) 
+        LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
             if (!documentIsPresent)
@@ -137,9 +135,8 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Passaporto', () => {
-        HomePage.reloadMWHomePage()
-        TopBar.search(currentClient.name)
-        LandingRicerca.clickClientName(currentClient)
+        TopBar.search(currentClient.name) 
+        LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
             if (!documentIsPresent)
@@ -164,9 +161,8 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Porto D\'Armi', () => {
-        HomePage.reloadMWHomePage()
-        TopBar.search(currentClient.name)
-        LandingRicerca.clickClientName(currentClient)
+        TopBar.search(currentClient.name) 
+        LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
             if (!documentIsPresent)
@@ -191,9 +187,8 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Tessera Postale', () => {
-        HomePage.reloadMWHomePage()
-        TopBar.search(currentClient.name)
-        LandingRicerca.clickClientName(currentClient)
+        TopBar.search(currentClient.name) 
+        LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
             if (!documentIsPresent)
@@ -218,9 +213,8 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Altro Documento', () => {
-        HomePage.reloadMWHomePage()
-        TopBar.search(currentClient.name)
-        LandingRicerca.clickClientName(currentClient)
+        TopBar.search(currentClient.name) 
+        LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
             if (!documentIsPresent)

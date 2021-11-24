@@ -102,10 +102,8 @@ class SCUContiCorrenti {
                             var newIban = data.iban[indexScelta]
                             var validIban = ibantools.isValidIBAN(newIban)
                             if (validIban) {
-                                getSCU().find('#iban').clear().type(newIban)
-                                cy.wait(5000)
-                                getSCU().find('#submit:contains("Salva"):visible').click()
-                                getSCU().find('#submit:contains("Salva"):visible').click().wait(8000);
+                                getSCU().find('#iban').clear().type(newIban).type('{enter}').wait(3000)
+                                getSCU().find('#submit:contains("Salva"):visible').click().wait(8000)
                                 resolve(newIban);
                             }
                             else

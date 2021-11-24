@@ -90,7 +90,16 @@ class Portafoglio {
             if (container)
                 assert.isTrue(true, 'Cliente non possiede polizze')
             else {
-                cy.get('app-wallet-active-contracts').should('be.visible').and('contain.text', 'Polizze attive')
+                cy.get('app-wallet-active-contracts').should('be.visible').then(($contract) => {
+
+                    var firstCheck = $contract.find(':contains("Polizze attive")').is(':visible')
+                    var secondCheck = $contract.find(':contains("Polizza attiva")').is(':visible')
+                    if (firstCheck || secondCheck) {
+                        assert.isTrue(true, 'corretto')
+                        cy.log(firstCheck)
+                        cy.log(secondCheck)
+                    }
+                })
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.wait(3000)

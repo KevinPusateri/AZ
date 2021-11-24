@@ -54,6 +54,8 @@ class Legami {
                             cy.get('div[class="selected-person ng-star-inserted"]').should('exist').and('be.visible')
                             cy.wrap($modal).find('span:contains("Aggiungi"):visible').click()
 
+                            cy.wait(3000)
+
                             cy.get('nx-message-toast').should('be.visible')
                             cy.get('.cdk-overlay-container').find('nx-message-toast').then($overlay => {
 

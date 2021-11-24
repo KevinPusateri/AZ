@@ -360,7 +360,7 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, i
                 })
 
               if (contractsWithBranchId.length > 0) {
-                return currentClient.customerNumber
+                return currentClient.firstName + ' ' + currentClient.name
               }
               else
                 cy.getClientWithPolizze(tutf, branchId, isUltra, isAZ1, clientType)

@@ -179,21 +179,49 @@ class LandingRicerca {
                 }
             });
 
-            cy.get('.ps--active-y').should('be.visible').then(($clienti) => {
-                let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
-                let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
-                cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
+            cy.get('body').as('body').then(($body) => {
 
-                cy.wait(5000)
-                cy.get('body').then(($body) => {
-                    const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
-                    if (check) {
-                        this.searchRandomClient(true, clientForm, clientType)
-                        searchOtherMember()
-                    }
+                const scrollableNotPresent = $body.find('div[class= "scrollable-container ps"]').is(':visible')
 
-                })
+                //Risultati SENZA la scrool bar
+                if (scrollableNotPresent) {
+                    cy.get('div[class= "scrollable-container ps"]').then(($clienti) => {
+                        let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
+                        let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
+                        cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
+
+                        cy.wait(5000)
+                        cy.get('body').then(($body) => {
+                            const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
+                            if (check) {
+                                this.searchRandomClient(true, clientForm, clientType)
+                                searchOtherMember()
+                            }
+
+                        })
+                    })
+                }
+                //Risultati con presenza di scrool bar
+                else {
+                    cy.get('.ps--active-y').should('be.visible').then(($clienti) => {
+                        let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
+                        let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
+                        cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
+
+                        cy.wait(5000)
+                        cy.get('body').then(($body) => {
+                            const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
+                            if (check) {
+                                this.searchRandomClient(true, clientForm, clientType)
+                                searchOtherMember()
+                            }
+
+                        })
+                    })
+                }
             })
+
+
         }
 
         searchOtherMember()
@@ -260,7 +288,7 @@ class LandingRicerca {
             .should('not.be.null')
     }
 
-    static clickClientePF(cognome){
+    static searchAndClickClientePF(cognome) {
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {
@@ -284,6 +312,42 @@ class LandingRicerca {
         cy.get('lib-applied-filters-item').find('span').should('be.visible')
 
         cy.get('lib-scrollable-container').contains(cognome.toUpperCase()).then((card) => {
+            if (card.length === 1)
+                cy.wrap(card).click()
+        })
+        //Verifica se ci sono problemi nel retrive del cliente per permessi
+        cy.wait('@client', { requestTimeout: 30000 })
+            .its('response.body.data.client')
+            .should('not.be.null')
+    }
+
+    static clickClientePF(fullName) {
+        //Attende il caricamento della scheda cliente
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'client'
+            }
+        });
+
+        cy.get('lib-scrollable-container').contains(fullName.toUpperCase()).then((card) => {
+            if (card.length === 1)
+                cy.wrap(card).click()
+        })
+        //Verifica se ci sono problemi nel retrive del cliente per permessi
+        cy.wait('@client', { requestTimeout: 30000 })
+            .its('response.body.data.client')
+            .should('not.be.null')
+    }
+
+    static clickClientePG(fullName) {
+        //Attende il caricamento della scheda cliente
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'client'
+            }
+        });
+
+        cy.get('lib-scrollable-container').contains(fullName.toUpperCase()).then((card) => {
             if (card.length === 1)
                 cy.wrap(card).click()
         })

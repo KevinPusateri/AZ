@@ -104,8 +104,8 @@ describe('Matrix Web : Modifica PG', {
 }, () => {
 
     it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
-        LandingRicerca.searchRandomClient(true, "PG", "E")
-        LandingRicerca.clickRandomResult('E')
+        LandingRicerca.searchRandomClient(true, "PG", "P")
+        LandingRicerca.clickRandomResult('P')
         SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
             currentClientPG = currentClient
         })
@@ -130,7 +130,8 @@ describe('Matrix Web : Modifica PG', {
     })
 
     it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
-        SintesiCliente.visitUrlClient(urlClient)
+        TopBar.search(currentClientPG.name) 
+        LandingRicerca.clickClientePG(currentClientPG.name)
         SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
         DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)
         SintesiCliente.verificaInFolder([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel])

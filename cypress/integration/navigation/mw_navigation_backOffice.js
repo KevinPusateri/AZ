@@ -56,11 +56,11 @@ describe('Matrix Web : Navigazioni da BackOffice', function() {
         BackOffice.clickAppuntamentiFuturi()
     });
 
-    // it('Verifica atterraggio IVASS("News")', function () {
-    //     TopBar.clickBackOffice()
-    //     BackOffice.clickNewsLanding()
-    //     BackOffice.backToBackOffice()
-    // });
+    it('Verifica atterraggio IVASS("News")', function() {
+        TopBar.clickBackOffice()
+        BackOffice.clickNewsLanding()
+        BackOffice.backToBackOffice()
+    });
 
     it('Verifica links Sinistri', function() {
         TopBar.clickBackOffice()
