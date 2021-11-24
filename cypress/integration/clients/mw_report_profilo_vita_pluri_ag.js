@@ -76,8 +76,9 @@ describe('Matrix Web : Report Profilo Vita', {
         '- scegliendo l\'agenzia dove ha le polizze vita :  verificare che si apra correttamente il pdf\n', () => {
             cy.log('Retriving client PG present in different agencies with polizze vita, please wait...')
             //! Cliente registrato su più agenzie HUB 010375000 con polizza VI solo su una ag -> partita iva 00578020935 
-            cy.getClientInDifferentAgenciesWithPolizze('010375000', 80, false, false, 'PG', '00578020935').then(currentClient => {
+            cy.getClientInDifferentAgenciesWithPolizze('010375000', 80, false, false, 'PG', '').then(currentClient => {
 
+                debugger
                 let customImpersonification = {
                     "agentId": currentClient.impersonificationToUse.account,
                     "agency": currentClient.impersonificationToUse.agency
