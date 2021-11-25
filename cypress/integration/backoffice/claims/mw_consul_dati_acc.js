@@ -72,8 +72,7 @@ let cliente
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ' +
-    ' Recupero e controllo preliminare della valorizzazione delle informazioni del cliente e della data avveninmento sinistro', function () {
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ', function () {
               
         ConsultazioneSinistriPage.setValue_ById('#claim_number', sinistro)
         let classvalue = "search_submit claim_number k-button"
@@ -81,7 +80,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
         ConsultazioneSinistriPage.checkObjVisible_ByText(stato_sin)
         ConsultazioneSinistriPage.printClaimDetailsValue()
-
+      
+    });
+    
+    it(' Recupero e controllo preliminare della valorizzazione delle informazioni del cliente e della data avveninmento sinistro', function () {
         const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"      
         ConsultazioneSinistriPage.getPromiseText_ById(cssCliente1).then((val) => {
             cliente = val;
@@ -97,7 +99,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         });             
 
     });
-        it('Selezionando dati accessori per il sinistro in stato chiuso/pagato  ' +
+
+    it('Selezionando dati accessori per il sinistro in stato chiuso/pagato  ' +
     ' verificare che siano presenti le seguenti diciture standard: ' +
     ' "Nessuna nota presente", "Non sono presenti azioni di recupero" e "Nessun soggetto presente" rispettivamente per le sezioni precedenti ', function () {
      

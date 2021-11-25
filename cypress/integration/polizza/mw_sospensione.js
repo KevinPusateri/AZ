@@ -20,6 +20,7 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
 import Sospensione from "../../mw_page_objects/polizza/Sospensione"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 //#endregion import
 
 //#region Configuration
@@ -34,9 +35,12 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
+let currentTutf
 //#region Before After
 before(() => {
     cy.getUserWinLogin().then(data => {
+        currentTutf = data.tutf
+
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
         LoginPage.logInMWAdvanced()
     })
@@ -68,6 +72,7 @@ after(function () {
 })
 //#endregion Before After
 
+let currentCustomerFullName
 let currentCustomerNumber
 let numberPolizza
 describe('Matrix Web : Sospensione ', function () {
@@ -75,10 +80,12 @@ describe('Matrix Web : Sospensione ', function () {
     it('Verifica che la polizza sia ancora presente nel tab Polizze attive ' +
         'ma abbia l’etichetta SOSPESA con tooltip “30 – Sospensione senza integrazione”', function () {
             cy.log('Retriving client with Polizze for Sospensione, please wait...')
-            cy.getClientWithPolizzeAnnullamento('TUTF021', '31', 'sospesa').then(polizzaClient => {
+            cy.getClientWithPolizzeAnnullamento(currentTutf, '31', 'sospesa').then(polizzaClient => {
                 currentCustomerNumber = polizzaClient.customerNumber
                 numberPolizza = polizzaClient.numberPolizza
-                SintesiCliente.visitUrlClient(currentCustomerNumber, false)
+                currentCustomerFullName = polizzaClient.customerName
+                TopBar.search(currentCustomerFullName)
+                LandingRicerca.clickClientePF(currentCustomerFullName)
                 SintesiCliente.retriveUrl().then(currentUrl => {
                     urlClient = currentUrl
                 })
@@ -87,7 +94,8 @@ describe('Matrix Web : Sospensione ', function () {
                 Portafoglio.filtraPolizze('Motor')
                 Portafoglio.clickAnnullamento(numberPolizza, 'Sospensione')
                 Sospensione.sospendiPolizza()
-                SintesiCliente.visitUrlClient(currentCustomerNumber, false)
+                TopBar.search(currentCustomerFullName)
+                LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.checkPolizzaIsSospesa(numberPolizza)
             })

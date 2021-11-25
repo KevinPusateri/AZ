@@ -70,9 +70,7 @@ let cliente
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ' +
-    ' per il quale siano valorizzate le "Azioni di recupero".' +
-    ' Nella sezione dati accessori si verifica che siano valorizzati i seguenti campi: Tipologia, Importo, Soggetto debitore, Data inizio e Stato." ', function () {
+    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ',  function () {
       
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
@@ -88,7 +86,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Seleziona il sinistro
         ConsultazioneSinistriPage.clickLnk_ByHref(numsin)
-    
+    }); 
+
+    it('Dove sono valorizzate le "Azioni di recupero".' +
+    ' Nella sezione dati accessori si verifica che siano valorizzati i seguenti campi: Tipologia, Importo, Soggetto debitore, Data inizio e Stato." ', function () {
+        
         // Verifica : numero di sinistro in alto alla pagina di dettaglio
         const clssDtl = "pageTitle"
         ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, numsin)
