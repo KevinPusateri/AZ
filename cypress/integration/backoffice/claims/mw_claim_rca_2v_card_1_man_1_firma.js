@@ -266,9 +266,10 @@ it('Sinistri potenzialmente doppi', function () {
         DenunciaSinistriPage.setValue_ById('#TxtLocalitaRuo', controparte_conducente_località) 
         DenunciaSinistriPage.setValue_ById('#TxtIndirizzoRuo', controparte_conducente_indirizzo) 
         DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita')
+        cy.wait(3000)
         DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
         DenunciaSinistriPage.clickBtn_ById('#cercaRuolo')
-        cy.wait(3000)
+        cy.wait(4000)
         //Salva i dati anagrafici del conducente
         DenunciaSinistriPage.clickBtn_ById('#CmdSalva');                       
     });
@@ -283,9 +284,10 @@ it('Sinistri potenzialmente doppi', function () {
         DenunciaSinistriPage.setValue_ById('#TxtLocalitaRuo', controparte_conducente_località) 
         DenunciaSinistriPage.setValue_ById('#TxtIndirizzoRuo', controparte_conducente_indirizzo) 
         DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita')
+        cy.wait(4000)
         DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
         DenunciaSinistriPage.clickBtn_ById('#cercaRuolo')
-        cy.wait(3000)
+        cy.wait(4000)
         //Salva i dati anagrafici del conducente
         DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
         cy.wait(1000)
@@ -331,11 +333,15 @@ it('Sinistri potenzialmente doppi', function () {
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_nome);       
     });
 
-    
-    it('Riepilogo denuncia - salvataggio e verifica dati di denuncia denuncia ', function () {
+    it('Riepilogo denuncia - salvataggio e chiusura di denuncia ', function () {
         
         DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
+        cy.wait(3000)  
         DenunciaSinistriPage.clickObjPopUpChiudi_ByLabel('a','Chiudi')
+        cy.wait(1000)  
+    });
+
+    it('Riepilogo - Verifica dati di sinistro ', function () {      
 
         const cssNumSin = "#PRECOMMIT_listaDanneggiatiBUFF > table > tbody > tr > td:nth-child(1)"
         DenunciaSinistriPage.getPromiseText_ById(cssNumSin).then((numsin) => {                 
