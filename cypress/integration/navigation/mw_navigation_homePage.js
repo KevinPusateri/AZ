@@ -132,8 +132,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function() {
         if (!Cypress.env('isAviva')) {
             TopBar.clickIconSwitchPage()
             TopBar.clickLinkOnUtilita('Gestione Magazzino OBU')
-        }
-        this.skip()
+        } else this.skip()
     })
 
     // Accesso non autorizzato --add excel

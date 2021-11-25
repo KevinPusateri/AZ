@@ -16,7 +16,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-//#endregion
+    //#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
@@ -24,7 +24,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -34,14 +34,14 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-after(function () {
+after(function() {
     TopBar.logOutMW()
-    //#region Mysql
+        //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
 
 })
 
@@ -50,42 +50,38 @@ describe('Buca di Ricerca', {
         runMode: 1,
         openMode: 0,
     }
-}, function () {
-    it('Verifica Click su Ricerca Classica', function () {
+}, function() {
+    it('Verifica Click su Ricerca Classica', function() {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.checkRicercaClassica()
     })
 
-    it('Verifica Click su Ricerca Cliente', function () {
+    it('Verifica Click su Ricerca Cliente', function() {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.clickRicercaClassicaLabel('Ricerca Cliente')
         SCU.checkAggancioRicerca()
     })
 
-    it('Verifica Click su Ricerca Polizze proposte', function () {
+    it('Verifica Click su Ricerca Polizze proposte', function() {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.clickRicercaClassicaLabel('Ricerca Polizze proposte')
         SCU.checkAggancioPolizzePropostePreventivi()
     })
 
 
-    it('Verifica Click su Rubrica', function () {
-        if (!Cypress.env('monoUtenza')) {
-            LandingRicerca.searchRandomClient(false)
-            LandingRicerca.clickRicercaClassicaLabel('Rubrica')
-            SCU.checkAggancioRubrica()
-        } else this.skip()
+    it('Verifica Click su Rubrica', function() {
+        LandingRicerca.searchRandomClient(false)
+        LandingRicerca.clickRicercaClassicaLabel('Rubrica')
+        SCU.checkAggancioRubrica()
     })
 
-    it('Verifica Click su Ricerca News', function () {
-        if (!Cypress.env('monoUtenza')) {
-            LandingRicerca.searchRandomClient(false)
-            LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
-            News.checkAtterraggio(true)
-        } else this.skip()
+    it('Verifica Click su Ricerca News', function() {
+        LandingRicerca.searchRandomClient(false)
+        LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
+        News.checkAtterraggio(true)
     })
 
-    it('Verifica Click su Ricerca Preventivi', function () {
+    it('Verifica Click su Ricerca Preventivi', function() {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.clickRicercaClassicaLabel('Ricerca Preventivi')
         SCU.checkAggancioPolizzePropostePreventivi()

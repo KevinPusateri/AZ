@@ -1,6 +1,6 @@
 /**
-* @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
-*/
+ * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+ */
 
 /// <reference types="Cypress" />
 
@@ -24,29 +24,29 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-//#endregion
+    //#endregion
 
 let currentClient = ''
 let documentType = ''
 
 //#region Support
 const searchClientWithoutDoc = (documentType) => {
-    LandingRicerca.searchRandomClient(true, "PF", "P")
-    LandingRicerca.clickRandomResult('PF')
-    DettaglioAnagrafica.sezioneDocumenti()
-    DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
-        if (documentIsPresent)
-            searchClientWithoutDoc(documentType)
-        else
-            return
-    })
-}
-//#endregion
+        LandingRicerca.searchRandomClient(true, "PF", "P")
+        LandingRicerca.clickRandomResult('PF')
+        DettaglioAnagrafica.sezioneDocumenti()
+        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+            if (documentIsPresent)
+                searchClientWithoutDoc(documentType)
+            else
+                return
+        })
+    }
+    //#endregion
 
 //#region Before After
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -55,19 +55,19 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
+after(function() {
+        TopBar.logOutMW()
+            //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+                let tests = testsInfo
+                cy.finishMysql(dbConfig, insertedId, tests)
+            })
+            //#endregion
+
     })
-    //#endregion
+    //#endregion Before After
 
-})
-//#endregion Before After
-
-describe('Matrix Web : Documenti', function () {
+describe('Matrix Web : Documenti', function() {
     it('Cerca Cliente senza Carta D\'Identità', () => {
         documentType = 'identita'
         searchClientWithoutDoc(documentType)
@@ -83,7 +83,7 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Carta D\'Identità inserita', () => {
-        TopBar.search(currentClient.name) 
+        TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
@@ -109,7 +109,7 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Patente', () => {
-        TopBar.search(currentClient.name) 
+        TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
@@ -135,7 +135,7 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Passaporto', () => {
-        TopBar.search(currentClient.name) 
+        TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
@@ -161,7 +161,7 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Porto D\'Armi', () => {
-        TopBar.search(currentClient.name) 
+        TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
@@ -187,7 +187,7 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Tessera Postale', () => {
-        TopBar.search(currentClient.name) 
+        TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
@@ -213,7 +213,7 @@ describe('Matrix Web : Documenti', function () {
     })
 
     it('Verifica Altro Documento', () => {
-        TopBar.search(currentClient.name) 
+        TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {

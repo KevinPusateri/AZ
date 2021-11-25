@@ -81,7 +81,8 @@ class BurgerMenuClients extends Clients {
                     // cy.contains(page).invoke('removeAttr', 'target').click()
                     cy.get('lib-burger-sidebar').find('a[href="https://www.ageallianz.it/analisideibisogni/app"]').invoke('removeAttr').invoke('removeAttr', 'target').click()
                         // cy.url().should('eq', 'https://www.ageallianz.it/analisideibisogni/app/login')
-                    cy.wait(10000)
+                    cy.log('Attesa apertui')
+                    cy.wait(20000)
                     cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
                     cy.go('back')
                 }
