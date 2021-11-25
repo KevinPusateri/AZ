@@ -46,7 +46,7 @@ class BurgerMenuBackOffice extends BackOffice {
             const linksBurger = Object.values(LinksBurgerMenu)
             cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            }).should('have.length', 16)
+            }).should('have.length', 17)
         }
     }
 

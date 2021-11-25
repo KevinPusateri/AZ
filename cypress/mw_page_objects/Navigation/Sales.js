@@ -15,15 +15,15 @@ const getIFrame = () => {
 
 const getIFrameCampagne = () => {
 
-    cy.get('iframe[class="iframe-container"]')
-        .iframe();
+        cy.get('iframe[class="iframe-container"]')
+            .iframe();
 
-    let iframeSCU = cy.get('iframe[class="iframe-container"]')
-        .its('0.contentDocument').should('exist');
+        let iframeSCU = cy.get('iframe[class="iframe-container"]')
+            .its('0.contentDocument').should('exist');
 
-    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
-}
-//#endregion
+        return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+    }
+    //#endregion
 
 const LinksRapidi = {
     NUOVO_SFERA: 'Nuovo Sfera', //! seconda finestra
@@ -243,7 +243,7 @@ class Sales {
                 //     url: '/ultra2/**'
                 // }).as('getUltra2');
                 Common.canaleFromPopup()
-                // cy.wait('@getUltra2', { requestTimeout: 30000 });
+                    // cy.wait('@getUltra2', { requestTimeout: 30000 });
                 cy.wait(15000)
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
                 break;
@@ -418,7 +418,7 @@ class Sales {
         cy.get('.cards-container').find('.card').first().click()
         Common.canaleFromPopup()
         cy.wait(20000)
-        getIFrame().find('#AZBuilder1_ctl13_cmdEsci').invoke('attr', 'value').should('equal', '  Esci  ')
+        getIFrame().find('#AZBuilder1_ctl14_cmdEsci').invoke('attr', 'value').should('equal', '  Esci  ')
     }
 
     /**
@@ -426,24 +426,24 @@ class Sales {
      * click sul button "Vedi tutti"
      */
     static clickButtonVediTutti() {
-        cy.get('app-quotations-section').find('button:contains("Vedi tutti")').click()
-        cy.intercept({
-            method: 'POST',
-            url: '**/Danni/**'
-        }).as('getDanni');
-        cy.intercept({
-            method: 'GET',
-            url: '**/Danni/**'
-        }).as('getDanniG');
-        Common.canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 40000 });
-        cy.wait('@getDanniG', { requestTimeout: 40000 });
-        cy.wait(10000)
-        cy.get('#iframe-container').within(() => {
-            getIFrame().find('form:contains("Cerca"):visible')
-        })
-    }
-    //#endregion
+            cy.get('app-quotations-section').find('button:contains("Vedi tutti")').click()
+            cy.intercept({
+                method: 'POST',
+                url: '**/Danni/**'
+            }).as('getDanni');
+            cy.intercept({
+                method: 'GET',
+                url: '**/Danni/**'
+            }).as('getDanniG');
+            Common.canaleFromPopup()
+            cy.wait('@getDanni', { requestTimeout: 40000 });
+            cy.wait('@getDanniG', { requestTimeout: 40000 });
+            cy.wait(10000)
+            cy.get('#iframe-container').within(() => {
+                getIFrame().find('form:contains("Cerca"):visible')
+            })
+        }
+        //#endregion
 
     //#region Proposte Danni
     /**
@@ -494,58 +494,58 @@ class Sales {
         // }).as('getAuto');
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
         cy.get('div[class="damages prop-card ng-star-inserted"]').first().find('lib-da-link').first().click()
-        // cy.wait(10000)
-        // cy.wait('@getAuto', { requestTimeout: 40000 });
+            // cy.wait(10000)
+            // cy.wait('@getAuto', { requestTimeout: 40000 });
         getIFrame().within(() => {
-            cy.get('#menuContainer').should('be.visible')
-            cy.get('#menuContainer').find('a').should('be.visible').and('contain.text', '« Uscita')
-        })
-        // .find('#menuContainer > a').should('be.visible').and('contain.text','« Uscita')
-        // getIFrame().find('a:contains("« Uscita"):visible')
+                cy.get('#menuContainer').should('be.visible')
+                cy.get('#menuContainer').find('a').should('be.visible').and('contain.text', '« Uscita')
+            })
+            // .find('#menuContainer > a').should('be.visible').and('contain.text','« Uscita')
+            // getIFrame().find('a:contains("« Uscita"):visible')
     }
 
     /**
      * Click sulla prima card Vita 
      */
     static clickPrimaCardVitaOnProposte() {
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('digitalAgencyLink')) {
-                req.alias = 'digitalAgencyLink'
-            }
-        });
-        cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
-        cy.wait(5000)
-        cy.get('.cards-container').should('be.visible').find('.card').first().click()
-        cy.wait(15000)
-        cy.wait('@digitalAgencyLink', { requestTimeout: 30000 });
-        getIFrame().within(() => {
-            cy.get('#AZBuilder1_ctl14_cmdEsci').should('be.visible').invoke('attr', 'value').should('equal', '  Esci  ')
-        })
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('digitalAgencyLink')) {
+                    req.alias = 'digitalAgencyLink'
+                }
+            });
+            cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
+            cy.wait(5000)
+            cy.get('.cards-container').should('be.visible').find('.card').first().click()
+            cy.wait(15000)
+            cy.wait('@digitalAgencyLink', { requestTimeout: 30000 });
+            getIFrame().within(() => {
+                cy.get('#AZBuilder1_ctl13_cmdEsci').should('be.visible').invoke('attr', 'value').should('equal', '  Esci  ')
+            })
 
-    }
-    /**
-     * Sul pannello "Proposte Danni", all'apertura del pannello
-     * click sul button "Vedi tutte"
-     */
+        }
+        /**
+         * Sul pannello "Proposte Danni", all'apertura del pannello
+         * click sul button "Vedi tutte"
+         */
     static clickButtonVediTutte() {
-        cy.get('app-proposals-section').find('button:contains("Vedi tutte")').click()
-        cy.intercept({
-            method: 'POST',
-            url: '**/Danni/**'
-        }).as('getDanni');
-        cy.intercept({
-            method: 'GET',
-            url: '**/Danni/**'
-        }).as('getDanniG');
-        Common.canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 40000 });
-        cy.wait('@getDanniG', { requestTimeout: 40000 });
-        cy.wait(5000)
-        cy.get('#iframe-container').within(() => {
-            getIFrame().find('form:contains("Cerca"):visible')
-        })
-    }
-    //#endregion
+            cy.get('app-proposals-section').find('button:contains("Vedi tutte")').click()
+            cy.intercept({
+                method: 'POST',
+                url: '**/Danni/**'
+            }).as('getDanni');
+            cy.intercept({
+                method: 'GET',
+                url: '**/Danni/**'
+            }).as('getDanniG');
+            Common.canaleFromPopup()
+            cy.wait('@getDanni', { requestTimeout: 40000 });
+            cy.wait('@getDanniG', { requestTimeout: 40000 });
+            cy.wait(5000)
+            cy.get('#iframe-container').within(() => {
+                getIFrame().find('form:contains("Cerca"):visible')
+            })
+        }
+        //#endregion
 
     // Click tab "CAMPAGNE"
     static clickTabCampagne() {

@@ -12,7 +12,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-//#endregion
+    //#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
@@ -21,7 +21,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -31,60 +31,59 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function () {
+after(function() {
     TopBar.logOutMW()
-    //#region Mysql
+        //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
 
 })
-describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
+describe('Matrix Web : Navigazioni da Burger Menu in Sales', function() {
 
-    it('Verifica i link da Burger Menu', function () {
+    it('Verifica i link da Burger Menu', function() {
         TopBar.clickSales()
         BurgerMenuSales.checkExistLinks()
     });
 
     //#region New Business
     //#region Motor
-    it('Verifica aggancio Preventivo Motor', function () {
+    it('Verifica aggancio Preventivo Motor', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Preventivo Motor')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Flotte e Convenzioni', function () {
+    it('Verifica aggancio Flotte e Convenzioni', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Flotte e Convenzioni')
         BurgerMenuSales.backToSales()
 
     });
 
-    it('Verifica aggancio MiniFlotte', function () {
+    it('Verifica aggancio MiniFlotte', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('MiniFlotte')
         BurgerMenuSales.backToSales()
     });
 
-    it('Verifica aggancio Trattative Auto Corporate', function () {
-        TopBar.clickSales()
-        BurgerMenuSales.clickLink('Trattative Auto Corporate')
-        BurgerMenuSales.backToSales()
-    })
-    //#endregion
+    it('Verifica aggancio Trattative Auto Corporate', function() {
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('Trattative Auto Corporate')
+            BurgerMenuSales.backToSales()
+        })
+        // #endregion
 
-    //#region  Rami Vari
-    it('Verifica aggancio Allianz Ultra Casa e Patrimonio', function () {
+    // #region  Rami Vari
+    it('Verifica aggancio Allianz Ultra Casa e Patrimonio', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
         BurgerMenuSales.backToSales()
-
     });
 
-    it('Verifica aggancio Allianz Ultra Casa e Patrimonio BMP', function () {
+    it('Verifica aggancio Allianz Ultra Casa e Patrimonio BMP', function() {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
@@ -92,56 +91,56 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         } else this.skip()
     });
 
-    it('Verifica aggancio Allianz Ultra Salute', function () {
+    it('Verifica aggancio Allianz Ultra Salute', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz Ultra Salute')
         BurgerMenuSales.backToSales()
     });
 
-    it('Verifica aggancio Allianz1 Business', function () {
+    it('Verifica aggancio Allianz1 Business', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz1 Business')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
+    it('Verifica aggancio FastQuote Infortuni da circolazione', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('FastQuote Infortuni da circolazione')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio FastQuote Impresa e Albergo', function () {
-        TopBar.clickSales()
-        BurgerMenuSales.clickLink('FastQuote Impresa e Albergo')
-        BurgerMenuSales.backToSales()
-    })
-    //#endregion
+    it('Verifica aggancio FastQuote Impresa e Albergo', function() {
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('FastQuote Impresa e Albergo')
+            BurgerMenuSales.backToSales()
+        })
+        // #endregion
 
-    //#region Vita
-    it('Verifica aggancio Allianz1 premorienza', function () {
+    // #region Vita
+    it('Verifica aggancio Allianz1 premorienza', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz1 premorienza')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Preventivo Anonimo Vita Individuali', function () {
-        TopBar.clickSales()
-        BurgerMenuSales.clickLink('Preventivo Anonimo Vita Individuali')
-        BurgerMenuSales.backToSales()
-    })
-    //#endregion
+    it('Verifica aggancio Preventivo Anonimo Vita Individuali', function() {
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('Preventivo Anonimo Vita Individuali')
+            BurgerMenuSales.backToSales()
+        })
+        // #endregion
 
-    //#region Mid Corporate
-    it('Verifica aggancio Gestione richieste per PA', function () {
-        TopBar.clickSales()
-        BurgerMenuSales.clickLink('Gestione richieste per PA')
-        BurgerMenuSales.backToSales()
-    })
-    //#endregion
-    //#endregion
+    // #region Mid Corporate
+    it('Verifica aggancio Gestione richieste per PA', function() {
+            TopBar.clickSales()
+            BurgerMenuSales.clickLink('Gestione richieste per PA')
+            BurgerMenuSales.backToSales()
+        })
+        // #endregion
+        // #endregion
 
     //#region Gestione
-    it('Verifica aggancio Nuovo Sfera', function () {
+    it('Verifica aggancio Nuovo Sfera', function() {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             BurgerMenuSales.clickLink('Nuovo Sfera')
@@ -149,13 +148,13 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         } else this.skip()
     })
 
-    it('Verifica aggancio Sfera', function () {
+    it('Verifica aggancio Sfera', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Sfera')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Campagne Commerciali', function () {
+    it('Verifica aggancio Campagne Commerciali', function() {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             BurgerMenuSales.clickLink('Campagne Commerciali')
@@ -163,73 +162,73 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         } else this.skip()
     })
 
-    it('Verifica aggancio Recupero preventivi e quotazioni', function () {
+    it('Verifica aggancio Recupero preventivi e quotazioni', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Recupero preventivi e quotazioni')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Documenti da firmare', function () {
+    it('Verifica aggancio Documenti da firmare', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Documenti da firmare')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Gestione attività in scadenza', function () {
+    it('Verifica aggancio Gestione attività in scadenza', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Gestione attività in scadenza')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Manutenzione portafoglio RV Midco', function () {
+    it('Verifica aggancio Manutenzione portafoglio RV Midco', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Manutenzione portafoglio RV Midco')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Vita Corporate', function () {
+    it('Verifica aggancio Vita Corporate', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Vita Corporate')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Monitoraggio Polizze Proposte', function () {
+    it('Verifica aggancio Monitoraggio Polizze Proposte', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Monitoraggio Polizze Proposte')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Certificazione fiscale', function () {
+    it('Verifica aggancio Certificazione fiscale', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Certificazione fiscale')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Manutenzione Portafoglio Auto', function () {
+    it('Verifica aggancio Manutenzione Portafoglio Auto', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Manutenzione Portafoglio Auto')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Cruscotto certificati applicazioni', function () {
+    it('Verifica aggancio Cruscotto certificati applicazioni', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Cruscotto certificati applicazioni')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Cruscotto riepiloghi polizze abb.', function () {
+    it('Verifica aggancio Cruscotto riepiloghi polizze abb.', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Cruscotto riepiloghi polizze abb.')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Report Cliente T4L', function () {
+    it('Verifica aggancio Report Cliente T4L', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Report Cliente T4L')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Documenti annullati', function () {
+    it('Verifica aggancio Documenti annullati', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Documenti annullati')
         BurgerMenuSales.backToSales()
@@ -247,19 +246,19 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //     cy.get('a').contains('Sales').click()
     // })
 
-    it('Verifica aggancio Documenti da gestire', function () {
+    it('Verifica aggancio Documenti da gestire', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Documenti da gestire')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Folder', function () {
+    it('Verifica aggancio Folder', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Folder')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Allianz Global Assistance', function () {
+    it('Verifica aggancio Allianz Global Assistance', function() {
 
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
@@ -276,13 +275,13 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     //     BurgerMenuSales.clickLink('Allianz placement platform')
     // })
 
-    it('Verifica aggancio Qualità portafoglio auto', function () {
+    it('Verifica aggancio Qualità portafoglio auto', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Qualità portafoglio auto')
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Note di contratto', function () {
+    it('Verifica aggancio Note di contratto', function() {
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Note di contratto')
         BurgerMenuSales.backToSales()
