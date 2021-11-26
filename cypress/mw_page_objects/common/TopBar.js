@@ -207,6 +207,11 @@ class TopBar extends HomePage {
         cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo?info=1')
     }
 
+    static checkNotExistLanding(page) {
+        cy.get('app-product-button-list').find('a').should('not.contain.text', page)
+
+    }
+
     /**
      * Click sull'icona calendario
      */
