@@ -31,7 +31,7 @@ before(() => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
         LoginPage.logInMWAdvanced()
         TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Consultazione sinistri') 
+        BackOffice.clickCardLink('Movimentazione sinistri') 
     })
 })
 
