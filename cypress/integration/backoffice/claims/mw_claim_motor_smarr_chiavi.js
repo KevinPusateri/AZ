@@ -151,21 +151,23 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         DenunciaSinistriPage.clickObj_ByLabel('a', 'Avanti');        
     });
 */
-it('Sinistri potenzialmente doppi', function () {
-    Cypress.on('fail', (err, runnable) => {
-        // returning false here prevents Cypress from
-        // failing the test   
-        return false
-    })
-
-    DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1').then(isVisible => {
-        if (isVisible) {                              
-            let cssrdbtn = "#workarea2 > fieldset:nth-child(4) > table > tbody > tr:nth-child(2) > td > ul > li"
-            DenunciaSinistriPage.clickOnRadio_ByIdAndText(cssrdbtn, 'Prosegui denuncia in corso');
-            DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');
-        }            
-    }); 
-});
+    it('Sinistri potenzialmente doppi', function () {
+        Cypress.on('fail', (err, runnable) => {
+            // returning false here prevents Cypress from
+            // failing the test   
+            return false
+        })
+        cy.wait(3000)
+        DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1').then(isVisible => {
+            if (isVisible) {                              
+                let cssrdbtn = "#workarea2 > fieldset:nth-child(4) > table > tbody > tr:nth-child(2) > td > ul > li"
+                DenunciaSinistriPage.clickOnRadio_ByIdAndText(cssrdbtn, 'Prosegui denuncia in corso');
+                cy.wait(1000)
+                DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');
+                cy.wait(1000)
+            }            
+        }); 
+    });
  
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
     copertura_danno, function () {        

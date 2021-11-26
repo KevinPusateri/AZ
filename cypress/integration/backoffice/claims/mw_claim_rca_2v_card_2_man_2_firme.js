@@ -168,12 +168,14 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             // failing the test   
             return false
         })
-
+        cy.wait(3000)
         DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1').then(isVisible => {
             if (isVisible) {                              
                 let cssrdbtn = "#workarea2 > fieldset:nth-child(4) > table > tbody > tr:nth-child(2) > td > ul > li"
                 DenunciaSinistriPage.clickOnRadio_ByIdAndText(cssrdbtn, 'Prosegui denuncia in corso');
+                cy.wait(1000)
                 DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');
+                cy.wait(1000)
             }            
         }); 
     });
@@ -210,8 +212,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
     
         //Il Conducente veicolo cliente è anche il contraente
         DenunciaSinistriPage.clickObj_ByIdAndAttr('#GARANZIE_contraente', 'value', 'si');
-        cy.wait(1000)
+        cy.wait(3000)
         DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');
+        cy.wait(2000)
     });
 
     it('Lista veicolo/soggetti coinvolti --> selezionare "veicolo"' +
