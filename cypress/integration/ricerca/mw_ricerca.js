@@ -20,7 +20,9 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 60000)
 
 //#endregion
-
+let notExist = ''
+if (Cypress.env('isAviva'))
+    notExist = 'ASSENTE '
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
@@ -72,21 +74,19 @@ describe('Matrix Ricerca', {
         TopBar.clickMatrixHome()
     })
 
-    it('Verifica Ricerca Da Landing News', function() {
-        if (Cypress.env('monoUtenza')) {
+    if (!Cypress.env('isAviva')) {
+        it(notExist + 'Verifica Ricerca Da Landing News', function() {
             TopBar.clickNews()
             LandingRicerca.checkBucaRicercaSuggerrimenti()
             TopBar.clickMatrixHome()
-        } else this.skip()
-    })
+        })
 
-    it('Verifica Ricerca Da Landing Le mie info', function() {
-        if (Cypress.env('monoUtenza')) {
+        it(notExist + 'Verifica Ricerca Da Landing Le mie info', function() {
             TopBar.clickMieInfo()
             LandingRicerca.checkBucaRicercaSuggerrimenti()
             TopBar.clickMatrixHome()
-        } else this.skip()
-    })
+        })
+    }
 
     it('Verifica Ricerca Da Landing BackOffice', function() {
         TopBar.clickBackOffice()
@@ -95,3 +95,24 @@ describe('Matrix Ricerca', {
     })
 
 })
+
+if (Cypress.env('isAviva')) {
+    describe('Matrix Ricerca - AVIVA', {
+        retries: {
+            runMode: 1,
+            openMode: 0,
+        }
+    }, function() {
+
+
+        it(notExist + 'Verifica Ricerca Da Landing News', function() {
+            TopBar.checkNotExistLanding('News')
+        })
+
+        it(notExist + 'Verifica Ricerca Da Landing Le mie info', function() {
+            TopBar.checkNotExistLanding('Le mie info')
+        })
+
+
+    })
+}
