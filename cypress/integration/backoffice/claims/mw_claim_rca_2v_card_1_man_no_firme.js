@@ -28,35 +28,16 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-            insertedId = results.insertId
-        })
-        LoginPage.logInMWAdvanced()
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Denuncia') 
-    })
-})
-
-/*
-before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-            insertedId = results.insertId
-        })
-        LoginPage.logInMWAdvanced()
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Denuncia') 
-    })
-})
-*/
-
-before(() => {
-    cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
         LoginPage.logInMWAdvanced()
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Denuncia') 
     })
+})
+
+beforeEach(() => {
+    cy.preserveCookies()
+    //Common.visitUrlOnEnv()
 })
 
 afterEach(function () {
@@ -145,12 +126,13 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
             DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
         }); 
-
+        cy.wait(1000)
         DenunciaSinistriPage.setValue_ById('#CLIENTE_descDinamica', sinistro_descrizione_danno)
         DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
         DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita2');
-        cy.wait(2000)
-        DenunciaSinistriPage.clickBtn_ById('#CmdAvanti');        
+        cy.wait(4000)
+        DenunciaSinistriPage.clickBtn_ById('#CmdAvanti');     
+        cy.wait(2000)   
     });
 
     it('Lista polizze: Selezione della polizza'+
@@ -287,7 +269,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         //Salva i dati anagrafici del conducente
         DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
         cy.wait(1000)
-        DenunciaSinistriPage.clickBtn_ById('#avantiVeicolo');                   
+        DenunciaSinistriPage.clickBtn_ById('#avantiVeicolo');
+        cy.wait(2000)              
     });
     
     it('Verifica dei dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {
