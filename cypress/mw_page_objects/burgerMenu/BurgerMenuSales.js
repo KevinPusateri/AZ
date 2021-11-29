@@ -19,7 +19,7 @@ const LinksBurgerMenu = {
     TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP', //! second Window
-    ALLIANZ_ULTRA_SALUTE: 'Allianz Ultra Salute',
+    ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
     ALLIANZ1_BUSINESS: 'Allianz1 Business',
     FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE: 'FastQuote Infortuni da circolazione',
     FASTQUOTE_IMPRESA_E_ALBERGO: 'FastQuote Impresa e Albergo',
@@ -61,16 +61,36 @@ class BurgerMenuSales extends Sales {
 
         cy.get('lib-burger-icon').click({ force: true })
 
-        const linksBurger = Object.values(LinksBurgerMenu)
 
-        if (!Cypress.env('monoUtenza'))
+        if (Cypress.env('isAviva')) {
+            const linksBurger = [
+                LinksBurgerMenu.PREVENTIVO_MOTOR,
+                LinksBurgerMenu.ALLIANZ_ULTRA_SALUTE,
+                LinksBurgerMenu.NUOVO_SFERA,
+                LinksBurgerMenu.CAMPAGNE_COMMERCIALI,
+                LinksBurgerMenu.RECUPERO_PREVENTIVI_E_QUOTAZIONI,
+                LinksBurgerMenu.DOCUMENTI_DA_FIRMARE,
+                LinksBurgerMenu.MONITORAGGIO_POLIZZE_PROPOSTE,
+                LinksBurgerMenu.CERTIFICAZIONE_FISCALE,
+                LinksBurgerMenu.MANUTENZIONE_PORTAFOGLIO_AUTO,
+                LinksBurgerMenu.DOCUMENTI_ANNULLATI,
+                LinksBurgerMenu.DOCUMENTI_DA_GESTIRE,
+                LinksBurgerMenu.FOLDER,
+                LinksBurgerMenu.QUALITÀ_PORTAFOGLIO_AUTO,
+                LinksBurgerMenu.NOTE_DI_CONTRATTO
+            ]
             cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
             })
-        else {
+        } else if (Cypress.env('monoUtenza')) {
             delete LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
             delete LinksBurgerMenu.NUOVO_SFERA
             delete LinksBurgerMenu.CAMPAGNE_COMMERCIALI
+            const linksBurger = Object.values(LinksBurgerMenu)
+            cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            })
+        } else {
             const linksBurger = Object.values(LinksBurgerMenu)
             cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
@@ -225,8 +245,7 @@ class BurgerMenuSales extends Sales {
                     cy.wait('@postDanni', { requestTimeout: 40000 })
                     cy.wait(5000)
                     getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
-                }
-                else {
+                } else {
                     cy.intercept({
                         method: 'GET',
                         url: '**/Danni/**'

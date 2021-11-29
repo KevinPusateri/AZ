@@ -75,18 +75,31 @@ class BurgerMenuNumbers extends Numbers {
      */
     static checkExistLinks() {
         cy.get('lib-burger-icon').click()
-        const linksBurger = Object.values(LinksBurgerMenu)
 
-        if (!Cypress.env('monoUtenza'))
-            cy.get('lib-side-menu-link').find('a').should('have.length', 23).each(($checkLinksBurger, i) => {
+        if (Cypress.env('isAviva')) {
+            const linksBurger = [
+                LinksBurgerMenu.HOME_NUMBERS,
+                LinksBurgerMenu.MONITORAGGIO_FONTI,
+                LinksBurgerMenu.NEW_BUSINESS_DANNI,
+                LinksBurgerMenu.NEW_BUSINESS_ULTRA_SALUTE,
+                LinksBurgerMenu.MONITORAGGIO_PTF_DANNI,
+                LinksBurgerMenu.MONITORAGGIO_ANDAMENTO_PREMI,
+                LinksBurgerMenu.MONITORAGGIO_RICAVI_AGENZIA
+            ]
+            cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            })
-        else {
+            }).should('have.length', 7)
+        } else if (Cypress.env('monoUtenza')) {
             delete LinksBurgerMenu.SCARICO_DATI
             const linksBurger = Object.values(LinksBurgerMenu)
             cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
             }).should('have.length', 22)
+        } else {
+            const linksBurger = Object.values(LinksBurgerMenu)
+            cy.get('lib-side-menu-link').find('a').should('have.length', 23).each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            })
         }
     }
 

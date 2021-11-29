@@ -43,150 +43,194 @@ after(function() {
 
 })
 
-describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function() {
+if (Cypress.env('isAviva'))
+    describe(' AVIVA Matrix Web : Navigazioni da Burger Menu in Numbers', function() {
+        it('AVIVA - Verifica i link da Burger Menu', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.checkExistLinks()
+        })
 
-    it('Verifica i link da Burger Menu', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.checkExistLinks()
-    })
+        it('AVIVA - Verifica aggancio Monitoraggio Fonti', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Monitoraggio Fonti')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio Monitoraggio Fonti', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Monitoraggio Fonti')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('AVIVA - Verifica aggancio New Business Danni', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('New Business Danni')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio Monitoraggio Carico', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Monitoraggio Carico')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('AVIVA - Verifica aggancio New Business Ultra Salute', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('New Business Ultra Salute')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio Monitoraggio Carico per Fonte', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Monitoraggio Carico per Fonte')
-        BurgerMenuNumbers.backToNumbers()
+        it('AVIVA - Verifica aggancio Monitoraggio PTF Danni', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Monitoraggio PTF Danni')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    })
+        it('AVIVA - Verifica aggancio Monitoraggio Andamento Premi', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Monitoraggio Andamento Premi')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio X - Advisor', function() {
-        cy.task('getHostName').then(hostName => {
-            let currentHostName = hostName
-            if (!currentHostName.includes('SM')) {
-                TopBar.clickNumbers()
-                BurgerMenuNumbers.clickLink('X - Advisor')
-            }
+        it('AVIVA - Verifica aggancio Monitoraggio Ricavi d\'Agenzia', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Monitoraggio Ricavi d\'Agenzia')
+            BurgerMenuNumbers.backToNumbers()
         })
     })
+else
+    describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function() {
 
-    it('Verifica aggancio Incentivazione', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Incentivazione')
-        BurgerMenuNumbers.backToNumbers()
-    })
-
-    it('Verifica aggancio Incentivazione Recruiting', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Incentivazione Recruiting')
-        BurgerMenuNumbers.backToNumbers()
-    })
-
-    it('Verifica aggancio Andamenti Tecnici', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Andamenti Tecnici')
-        BurgerMenuNumbers.backToNumbers()
-    })
-
-    it('Verifica aggancio Estrazioni Avanzate', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Estrazioni Avanzate')
-        BurgerMenuNumbers.backToNumbers()
-    })
-
-    it('Verifica aggancio Scarico Dati', function() {
-        if (!Cypress.env('monoUtenza')) {
+        it('Verifica i link da Burger Menu', function() {
             TopBar.clickNumbers()
-            BurgerMenuNumbers.clickLink('Scarico Dati')
+            BurgerMenuNumbers.checkExistLinks()
+        })
+
+        it('Verifica aggancio Monitoraggio Fonti', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Monitoraggio Fonti')
             BurgerMenuNumbers.backToNumbers()
-        } else this.skip()
+        })
 
-    })
+        it('Verifica aggancio Monitoraggio Carico', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Monitoraggio Carico')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio Indici Digitali', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Indici Digitali')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('Verifica aggancio Monitoraggio Carico per Fonte', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Monitoraggio Carico per Fonte')
+            BurgerMenuNumbers.backToNumbers()
 
-    it('Verifica aggancio New Business Danni', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('New Business Danni')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        })
 
-    it('Verifica aggancio New Business Ultra Casa e Patrimonio', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('New Business Ultra Casa e Patrimonio')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('Verifica aggancio X - Advisor', function() {
+            cy.task('getHostName').then(hostName => {
+                let currentHostName = hostName
+                if (!currentHostName.includes('SM')) {
+                    TopBar.clickNumbers()
+                    BurgerMenuNumbers.clickLink('X - Advisor')
+                }
+            })
+        })
 
-    it('Verifica aggancio New Business Ultra Salute', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('New Business Ultra Salute')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('Verifica aggancio Incentivazione', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Incentivazione')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio New Business Vita', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('New Business Vita')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('Verifica aggancio Incentivazione Recruiting', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Incentivazione Recruiting')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio New Business Allianz1', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('New Business Allianz1')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('Verifica aggancio Andamenti Tecnici', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Andamenti Tecnici')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio Monitoraggio PTF Danni', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Monitoraggio PTF Danni')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('Verifica aggancio Estrazioni Avanzate', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Estrazioni Avanzate')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio Monitoraggio Riserve Vita', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Monitoraggio Riserve Vita')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('Verifica aggancio Scarico Dati', function() {
+            if (!Cypress.env('monoUtenza')) {
+                TopBar.clickNumbers()
+                BurgerMenuNumbers.clickLink('Scarico Dati')
+                BurgerMenuNumbers.backToNumbers()
+            } else this.skip()
 
-    it('Verifica aggancio Retention Motor', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Retention Motor')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        })
 
-    it('Verifica aggancio Retention Rami Vari', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Retention Rami Vari')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('Verifica aggancio Indici Digitali', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Indici Digitali')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio Monitoraggio Andamento Premi', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Monitoraggio Andamento Premi')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('Verifica aggancio New Business Danni', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('New Business Danni')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio Monitoraggio Ricavi d\'Agenzia', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Monitoraggio Ricavi d\'Agenzia')
-        BurgerMenuNumbers.backToNumbers()
-    })
+        it('Verifica aggancio New Business Ultra Casa e Patrimonio', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('New Business Ultra Casa e Patrimonio')
+            BurgerMenuNumbers.backToNumbers()
+        })
 
-    it('Verifica aggancio Capitale Vita Scadenza', function() {
-        TopBar.clickNumbers()
-        BurgerMenuNumbers.clickLink('Capitale Vita Scadenza')
-        BurgerMenuNumbers.backToNumbers()
+        it('Verifica aggancio New Business Ultra Salute', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('New Business Ultra Salute')
+            BurgerMenuNumbers.backToNumbers()
+        })
+
+        it('Verifica aggancio New Business Vita', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('New Business Vita')
+            BurgerMenuNumbers.backToNumbers()
+        })
+
+        it('Verifica aggancio New Business Allianz1', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('New Business Allianz1')
+            BurgerMenuNumbers.backToNumbers()
+        })
+
+        it('Verifica aggancio Monitoraggio PTF Danni', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Monitoraggio PTF Danni')
+            BurgerMenuNumbers.backToNumbers()
+        })
+
+        it('Verifica aggancio Monitoraggio Riserve Vita', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Monitoraggio Riserve Vita')
+            BurgerMenuNumbers.backToNumbers()
+        })
+
+        it('Verifica aggancio Retention Motor', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Retention Motor')
+            BurgerMenuNumbers.backToNumbers()
+        })
+
+        it('Verifica aggancio Retention Rami Vari', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Retention Rami Vari')
+            BurgerMenuNumbers.backToNumbers()
+        })
+
+        it('Verifica aggancio Monitoraggio Andamento Premi', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Monitoraggio Andamento Premi')
+            BurgerMenuNumbers.backToNumbers()
+        })
+
+        it('Verifica aggancio Monitoraggio Ricavi d\'Agenzia', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Monitoraggio Ricavi d\'Agenzia')
+            BurgerMenuNumbers.backToNumbers()
+        })
+
+        it('Verifica aggancio Capitale Vita Scadenza', function() {
+            TopBar.clickNumbers()
+            BurgerMenuNumbers.clickLink('Capitale Vita Scadenza')
+            BurgerMenuNumbers.backToNumbers()
+        })
     })
-})

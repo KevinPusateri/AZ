@@ -82,11 +82,10 @@ describe('Matrix Web : Navigazioni da Home Page - ', function() {
         TopBar.clickIconUser()
     })
 
-    //! Disabilitato momentaneamente come da specifiche
-    // it('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
-    //     TopBar.clickIconNotification()
-    //     TopBar.checkNotificheEvidenza()
-    // })
+    it('Verifica Top Menu notifiche - Verifica presenza dei link', function() {
+        TopBar.clickIconNotification()
+        TopBar.checkNotificheEvidenza()
+    })
 
     it('Verifica presenza links da Utilità', function() {
         TopBar.clickIconSwitchPage()

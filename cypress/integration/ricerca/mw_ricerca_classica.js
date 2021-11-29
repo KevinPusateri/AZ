@@ -51,39 +51,46 @@ describe('Buca di Ricerca', {
         openMode: 0,
     }
 }, function() {
-    it('Verifica Click su Ricerca Classica', function() {
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.checkRicercaClassica()
-    })
+    if (Cypress.env('isAviva'))
+        it('Verifica che sia assente "Ricerca Classica"', function() {
+            LandingRicerca.searchRandomClient(false)
+            LandingRicerca.checkNotExistRicercaClassica()
+        })
+    else {
+        it('Verifica Click su Ricerca Classica', function() {
+            LandingRicerca.searchRandomClient(false)
+            LandingRicerca.checkRicercaClassica()
+        })
 
-    it('Verifica Click su Ricerca Cliente', function() {
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.clickRicercaClassicaLabel('Ricerca Cliente')
-        SCU.checkAggancioRicerca()
-    })
+        it('Verifica Click su Ricerca Cliente', function() {
+            LandingRicerca.searchRandomClient(false)
+            LandingRicerca.clickRicercaClassicaLabel('Ricerca Cliente')
+            SCU.checkAggancioRicerca()
+        })
 
-    it('Verifica Click su Ricerca Polizze proposte', function() {
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.clickRicercaClassicaLabel('Ricerca Polizze proposte')
-        SCU.checkAggancioPolizzePropostePreventivi()
-    })
+        it('Verifica Click su Ricerca Polizze proposte', function() {
+            LandingRicerca.searchRandomClient(false)
+            LandingRicerca.clickRicercaClassicaLabel('Ricerca Polizze proposte')
+            SCU.checkAggancioPolizzePropostePreventivi()
+        })
 
 
-    it('Verifica Click su Rubrica', function() {
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.clickRicercaClassicaLabel('Rubrica')
-        SCU.checkAggancioRubrica()
-    })
+        it('Verifica Click su Rubrica', function() {
+            LandingRicerca.searchRandomClient(false)
+            LandingRicerca.clickRicercaClassicaLabel('Rubrica')
+            SCU.checkAggancioRubrica()
+        })
 
-    it('Verifica Click su Ricerca News', function() {
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
-        News.checkAtterraggio(true)
-    })
+        it('Verifica Click su Ricerca News', function() {
+            LandingRicerca.searchRandomClient(false)
+            LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
+            News.checkAtterraggio(true)
+        })
 
-    it('Verifica Click su Ricerca Preventivi', function() {
-        LandingRicerca.searchRandomClient(false)
-        LandingRicerca.clickRicercaClassicaLabel('Ricerca Preventivi')
-        SCU.checkAggancioPolizzePropostePreventivi()
-    })
+        it('Verifica Click su Ricerca Preventivi', function() {
+            LandingRicerca.searchRandomClient(false)
+            LandingRicerca.clickRicercaClassicaLabel('Ricerca Preventivi')
+            SCU.checkAggancioPolizzePropostePreventivi()
+        })
+    }
 })

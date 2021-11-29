@@ -298,7 +298,7 @@ class Portafoglio {
         }).as('postAuto');
 
         Common.canaleFromPopup()
-        cy.wait('@postAuto', { requestTimeout: 60000 });
+        cy.wait('@postAuto', { requestTimeout: 120000 });
 
         cy.getIFrame()
         cy.get('@iframe').within(() => {
