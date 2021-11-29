@@ -175,33 +175,3 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
 
     //#endregion
 })
-
-if (Cypress.env('isAviva')) {
-    describe('Matrix Navigazioni da Burger Menu in Backoffice - AVIVA', {
-        retries: {
-            runMode: 1,
-            openMode: 0,
-        }
-    }, function () {
-
-        it('Verifica ASSENZA aggancio Denuncia', function () {
-            TopBar.clickBackOffice()
-            BurgerMenuBackOffice.checkNotExistLink('Denuncia')
-        })
-
-        it('Verifica ASSENZA aggancio Denuncia BMP', function () {
-                TopBar.clickBackOffice()
-                BurgerMenuBackOffice.checkNotExistLink('Denuncia BMP')
-        })
-
-        it('Verifica ASSENZA aggancio Sinistri incompleti', function () {
-            TopBar.clickBackOffice()
-            BurgerMenuBackOffice.checkNotExistLink('Sinistri incompleti')
-        })
-
-        it('Verifica ASSENZA aggancio Sinistri canalizzati', function () {
-            TopBar.clickBackOffice()
-            BurgerMenuBackOffice.checkNotExistLink('Sinistri canalizzati')
-        })
-    })
-}
