@@ -117,11 +117,13 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             cy.log('[it]>> [Data avvenimento sinistro]: '+dtAvvenimento);           
             DenunciaSinistriPage.setValue_ById('#CLIENTE_dataAvvenimentoRisultato', dtAvvenimento)   
         });
+        cy.wait(1000)
         DenunciaSinistriPage.getPlusMinusDate(-2).then((dtDen) => {
             dtDenuncia = dtDen
             cy.log('[it]>> [Data denuncia sinistro]: '+dtDenuncia);           
             DenunciaSinistriPage.setValue_ById('#CLIENTE_dataDenuncia', dtDenuncia)   
-        });       
+        }); 
+        cy.wait(1000)
         DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {          
             cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
             DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
