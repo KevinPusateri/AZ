@@ -150,14 +150,18 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Convenzioni in trattenuta', function () {
-        if (!Cypress.env('monoUtenza')) {
-            TopBar.clickBackOffice()
-            BurgerMenuBackOffice.clickLink('Convenzioni in trattenuta')
-            BurgerMenuBackOffice.backToBackOffice()
-        } else this.skip()
-    })
+    //! su AVIVA necessaria abilitazione pilota
+    if (!Cypress.env('isAviva'))
+        it('Verifica aggancio Convenzioni in trattenuta', function () {
+            if (!Cypress.env('monoUtenza')) {
+                TopBar.clickBackOffice()
+                BurgerMenuBackOffice.clickLink('Convenzioni in trattenuta')
+                BurgerMenuBackOffice.backToBackOffice()
+            } else this.skip()
+        })
 
+    //! su AVIVA necessaria abilitazione pilota
+    if (!Cypress.env('isAviva'))
     it('Verifica aggancio Monitoraggio Guida Smart', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickBackOffice()
