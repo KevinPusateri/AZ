@@ -111,14 +111,14 @@ describe('Matrix Web : Navigazioni da Numbers - ', function() {
         Numbers.backToNumbers('business-lines')
     })
 
-    it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a Retention', function() {
-        if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva')) {
+        it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a Retention', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('MOTOR', 'Retention')
             Numbers.backToNumbers('business-lines')
-        }
-    })
+        })
+    }
 
     it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a New business', function() {
         TopBar.clickNumbers()
@@ -140,75 +140,59 @@ describe('Matrix Web : Navigazioni da Numbers - ', function() {
         Numbers.clickAndCheckAtterraggio('RAMI VARI RETAIL', 'Portafoglio')
         Numbers.backToNumbers('business-lines')
     })
-    it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a Retention', function() {
-        if (!Cypress.env('isAviva')) {
+
+    if (!Cypress.env('isAviva')) {
+        it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a Retention', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('RAMI VARI RETAIL', 'Retention')
             Numbers.backToNumbers('business-lines')
-        }
-    })
+        })
+    }
 
-    it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a New business', function() {
-        if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva')) {
+        it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a New business', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('MIDCO', 'New business')
             Numbers.backToNumbers('business-lines')
-        } else
-            this.skip()
-    })
+        })
 
-    it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Incassi', function() {
-        if (!Cypress.env('isAviva')) {
+        it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Incassi', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('MIDCO', 'Incassi')
             Numbers.backToNumbers('business-lines')
-        } else
-            this.skip()
-    })
+        })
 
-    it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Portafoglio', function() {
-        if (!Cypress.env('isAviva')) {
+        it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Portafoglio', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('MIDCO', 'Portafoglio')
             Numbers.backToNumbers('business-lines')
-        } else
-            this.skip()
+        })
 
-    })
-
-    it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a New business', function() {
-        if (!Cypress.env('isAviva')) {
+        it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a New business', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('ALTRO', 'New business')
             Numbers.backToNumbers('business-lines')
-        } else
-            this.skip()
-    })
+        })
 
-    it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Incassi', function() {
-        if (!Cypress.env('isAviva')) {
+        it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Incassi', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('ALTRO', 'Incassi')
             Numbers.backToNumbers('business-lines')
-        } else
-            this.skip()
-    })
+        })
 
-    it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Portafoglio', function() {
-        if (!Cypress.env('isAviva')) {
+        it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Portafoglio', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('ALTRO', 'Portafoglio')
             Numbers.backToNumbers('business-lines')
-        } else
-            this.skip()
-    })
+        })
+    }
 
     it('Verifica su Prodotti aggancio Primo indice prodotto', function() {
         TopBar.clickNumbers()
@@ -217,49 +201,45 @@ describe('Matrix Web : Navigazioni da Numbers - ', function() {
         Numbers.backToNumbers('products')
     })
 
-    it('Verifica su Indicatori Operativi aggancio  Monitoraggio carico', function() {
-        if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva')) {
+        it('Verifica su Indicatori Operativi aggancio  Monitoraggio carico', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
             Numbers.clickAndCheckAtterraggioMonitoraggioCarico()
-        }
-    })
+        })
 
-    it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function() {
-        if (!Cypress.env('monoUtenza')) {
+        it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('INCENTIVI', 'incentives')
             Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178 DAN')
             Numbers.backToNumbers('incentives')
-        } else this.skip()
-    })
+        })
 
-    it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178"', function() {
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
-            TopBar.clickNumbers()
-            Numbers.clickTab('INCENTIVI', 'incentives')
-            Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178')
-            Numbers.backToNumbers('incentives')
-        } else this.skip()
-    })
+        it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178"', function() {
+            if (!Cypress.env('monoUtenza')) {
+                TopBar.clickNumbers()
+                Numbers.clickTab('INCENTIVI', 'incentives')
+                Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178')
+                Numbers.backToNumbers('incentives')
+            } else this.skip()
+        })
 
-    it('Verifica su Incentivi aggancio Primo indice dal Panel "AGENZIA 7 - 4549 MONZA"', function() {
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
-            this.skip()
-        } else {
-            TopBar.clickNumbers()
-            Numbers.clickTab('INCENTIVI', 'incentives')
-            Numbers.checkAtterraggioPrimoIndiceIncentivi('AGENZIA 7 - 4549 MONZA')
-            Numbers.backToNumbers('incentives')
-        }
-    })
+        it('Verifica su Incentivi aggancio Primo indice dal Panel "AGENZIA 7 - 4549 MONZA"', function() {
+            if (!Cypress.env('monoUtenza')) {
+                this.skip()
+            } else {
+                TopBar.clickNumbers()
+                Numbers.clickTab('INCENTIVI', 'incentives')
+                Numbers.checkAtterraggioPrimoIndiceIncentivi('AGENZIA 7 - 4549 MONZA')
+                Numbers.backToNumbers('incentives')
+            }
+        })
 
-    it('Verifica su Indicatori Operativi aggancio Primo indice digitale', function() {
-        if (!Cypress.env('isAviva')) {
+        it('Verifica su Indicatori Operativi aggancio Primo indice digitale', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
             Numbers.clickAndCheckAtterraggioPrimoIndiceDigitale()
             Numbers.backToNumbers('operational-indicators')
-        }
-    })
+        })
+    }
 });
