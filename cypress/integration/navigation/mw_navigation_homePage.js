@@ -45,8 +45,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function() {
     it('Verifica Top Menu Principali', function() {
         TopBar.clickIconCalendar()
         TopBar.clickIconIncident()
-            //! Disabilitato momentaneamente come da specifiche
-            //TopBar.clickIconNotification()
+        TopBar.clickIconNotification()
         TopBar.clickIconUser()
         TopBar.clickIconSwitchPage()
     });
@@ -56,17 +55,17 @@ describe('Matrix Web : Navigazioni da Home Page - ', function() {
         TopBar.checkLinksIncident()
     })
 
-    it('Verifica Top Menu incident - Verifica atterraggio SRM Online', function() {
-        if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva')) {
+        it('Verifica Top Menu incident - Verifica atterraggio SRM Online', function() {
             TopBar.clickLinkOnIconIncident('SRM Online')
-        } else this.skip()
-    })
+        })
 
-    it('Verifica Top Menu incident - Verifica atterraggio SisCo', function() {
-        if (!Cypress.env('isAviva')) {
-            TopBar.clickLinkOnIconIncident('SisCo')
-        } else this.skip()
-    })
+        it('Verifica Top Menu incident - Verifica atterraggio SisCo', function() {
+            if (!Cypress.env('isAviva')) {
+                TopBar.clickLinkOnIconIncident('SisCo')
+            } else this.skip()
+        })
+    }
 
     it('Verifica Top Menu incident - Verifica atterraggio Elenco telefonico', function() {
         if (!Cypress.env('monoUtenza')) {
@@ -82,11 +81,10 @@ describe('Matrix Web : Navigazioni da Home Page - ', function() {
         TopBar.clickIconUser()
     })
 
-    //! Disabilitato momentaneamente come da specifiche
-    // it('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
-    //     TopBar.clickIconNotification()
-    //     TopBar.checkNotificheEvidenza()
-    // })
+    it('Verifica Top Menu notifiche - Verifica presenza dei link', function() {
+        TopBar.clickIconNotification()
+        TopBar.checkNotificheEvidenza()
+    })
 
     it('Verifica presenza links da Utilità', function() {
         TopBar.clickIconSwitchPage()
@@ -128,32 +126,35 @@ describe('Matrix Web : Navigazioni da Home Page - ', function() {
         TopBar.clickLinkOnUtilita('Banche Dati ANIA')
     })
 
-    it('Verifica atterraggio da Utilità - Gestione Magazzino OBU', function() {
-        if (!Cypress.env('isAviva')) {
-            TopBar.clickIconSwitchPage()
-            TopBar.clickLinkOnUtilita('Gestione Magazzino OBU')
-        } else this.skip()
-    })
+    if (!Cypress.env('isAviva')) {
 
-    // Accesso non autorizzato --add excel
-    // it.skip('Verifica atterraggio da Utilità - Piattaforma contratti AZ Telematics', function () {
-    //     TopBar.clickIconSwitchPage()
-    //     TopBar.clickLinkOnUtilita('Piattaforma contratti AZ Telematics')
-    // })
+        it('Verifica atterraggio da Utilità - Gestione Magazzino OBU', function() {
+            if (!Cypress.env('isAviva')) {
+                TopBar.clickIconSwitchPage()
+                TopBar.clickLinkOnUtilita('Gestione Magazzino OBU')
+            } else this.skip()
+        })
 
-    it('Verifica atterraggio da Utilità - Cruscotto Installazione Dispositivo Satellitare', function() {
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
-            TopBar.clickIconSwitchPage()
-            TopBar.clickLinkOnUtilita('Cruscotto Installazione Dispositivo Satellitare')
-        } else this.skip()
-    })
+        // Accesso non autorizzato --add excel
+        // it.skip('Verifica atterraggio da Utilità - Piattaforma contratti AZ Telematics', function () {
+        //     TopBar.clickIconSwitchPage()
+        //     TopBar.clickLinkOnUtilita('Piattaforma contratti AZ Telematics')
+        // })
 
-    it('Verifica atterraggio da Utilità - Monitor Scoring AZ Bonus Drive', function() {
-        if (!Cypress.env('isAviva')) {
-            TopBar.clickIconSwitchPage()
-            TopBar.clickLinkOnUtilita('Monitor Scoring AZ Bonus Drive')
-        }
-    })
+        it('Verifica atterraggio da Utilità - Cruscotto Installazione Dispositivo Satellitare', function() {
+            if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+                TopBar.clickIconSwitchPage()
+                TopBar.clickLinkOnUtilita('Cruscotto Installazione Dispositivo Satellitare')
+            } else this.skip()
+        })
+
+        it('Verifica atterraggio da Utilità - Monitor Scoring AZ Bonus Drive', function() {
+            if (!Cypress.env('isAviva')) {
+                TopBar.clickIconSwitchPage()
+                TopBar.clickLinkOnUtilita('Monitor Scoring AZ Bonus Drive')
+            }
+        })
+    }
 
     it('Verifica Top Menu Clients', function() {
         TopBar.clickIconSwitchPage('Clients')
@@ -171,17 +172,16 @@ describe('Matrix Web : Navigazioni da Home Page - ', function() {
         TopBar.clickIconSwitchPage('Backoffice')
     });
 
-    it('Verifica Top Menu News', function() {
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
-            TopBar.clickIconSwitchPage('News')
-        } else this.skip()
-    });
+    if (!Cypress.env('isAviva')) {
 
-    it('Verifica Top Menu Le mie info', function() {
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+        it('Verifica Top Menu News', function() {
+            TopBar.clickIconSwitchPage('News')
+        });
+
+        it('Verifica Top Menu Le mie info', function() {
             TopBar.clickIconSwitchPage('Le mie info')
-        } else this.skip()
-    });
+        });
+    }
 
     it('Verica buca di ricerca', function() {
         TopBar.clickBucaRicerca()
@@ -203,25 +203,39 @@ describe('Matrix Web : Navigazioni da Home Page - ', function() {
         TopBar.clickBackOffice()
     });
 
-    it('Verifica Button News', function() {
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva')) {
+
+        it('Verifica Button News', function() {
             TopBar.clickNews()
-        } else this.skip()
-    });
+        });
 
-    it('Verifica Button Le mie info', function() {
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+        it('Verifica Button Le mie info', function() {
             TopBar.clickMieInfo()
-        } else this.skip()
+        });
+    } else {
+        it('Verifica assenza Button News', function() {
+            TopBar.checkNotExistLanding('News')
+        });
 
-    });
+        it('Verifica assenza Button Le mie info', function() {
+            TopBar.checkNotExistLanding('Le mie info')
+        });
+
+    }
+
     it('Verifica link "Vai al Centro notifiche"', function() {
         HomePage.clickVaiAlCentroNotifiche()
     });
 
-    it('Verifica link: "Vedi tutte"', function() {
-        HomePage.clickVediTutte()
-    });
+    if (!Cypress.env('isAviva')) {
+        it('Verifica link: "Vedi tutte"', function() {
+            HomePage.clickVediTutte()
+        });
+    } else {
+        it('Verifica assenza link: "Vedi tutte"', function() {
+            HomePage.checkNotExistVediTutte()
+        });
+    }
 
     it('Verifica Click Pannello "Notifiche in evidenza"', function() {
         HomePage.clickPanelNotifiche()

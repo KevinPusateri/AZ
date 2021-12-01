@@ -150,14 +150,18 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Convenzioni in trattenuta', function () {
-        if (!Cypress.env('monoUtenza')) {
-            TopBar.clickBackOffice()
-            BurgerMenuBackOffice.clickLink('Convenzioni in trattenuta')
-            BurgerMenuBackOffice.backToBackOffice()
-        } else this.skip()
-    })
+    //! su AVIVA necessaria abilitazione pilota
+    if (!Cypress.env('isAviva'))
+        it('Verifica aggancio Convenzioni in trattenuta', function () {
+            if (!Cypress.env('monoUtenza')) {
+                TopBar.clickBackOffice()
+                BurgerMenuBackOffice.clickLink('Convenzioni in trattenuta')
+                BurgerMenuBackOffice.backToBackOffice()
+            } else this.skip()
+        })
 
+    //! su AVIVA necessaria abilitazione pilota
+    if (!Cypress.env('isAviva'))
     it('Verifica aggancio Monitoraggio Guida Smart', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickBackOffice()
@@ -175,33 +179,3 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
 
     //#endregion
 })
-
-if (Cypress.env('isAviva')) {
-    describe('Matrix Navigazioni da Burger Menu in Backoffice - AVIVA', {
-        retries: {
-            runMode: 1,
-            openMode: 0,
-        }
-    }, function () {
-
-        it('Verifica ASSENZA aggancio Denuncia', function () {
-            TopBar.clickBackOffice()
-            BurgerMenuBackOffice.checkNotExistLink('Denuncia')
-        })
-
-        it('Verifica ASSENZA aggancio Denuncia BMP', function () {
-                TopBar.clickBackOffice()
-                BurgerMenuBackOffice.checkNotExistLink('Denuncia BMP')
-        })
-
-        it('Verifica ASSENZA aggancio Sinistri incompleti', function () {
-            TopBar.clickBackOffice()
-            BurgerMenuBackOffice.checkNotExistLink('Sinistri incompleti')
-        })
-
-        it('Verifica ASSENZA aggancio Sinistri canalizzati', function () {
-            TopBar.clickBackOffice()
-            BurgerMenuBackOffice.checkNotExistLink('Sinistri canalizzati')
-        })
-    })
-}

@@ -36,17 +36,18 @@ class BurgerMenuClients extends Clients {
         cy.get('lib-burger-icon').click({ force: true })
 
         const linksBurger = Object.values(LinksBurgerMenu)
-            // if (!Cypress.env('monoUtenza'))
-        cy.get('lib-side-menu-link').find('a').should('have.length', 11).each(($checkLinksBurger, i) => {
+        if (!Cypress.env('isAviva'))
+            cy.get('lib-side-menu-link').find('a').should('have.length', 11).each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
             })
-            // else {
-            //     delete LinksBurgerMenu.HOSPITAL_SCANNER
-            //     const linksBurger = Object.values(LinksBurgerMenu)
-            //     cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
-            //         expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            //     }).should('have.length', 10)
-            // }
+        else {
+            delete LinksBurgerMenu.ANTIRICICLAGGIO
+            delete LinksBurgerMenu.HOSPITAL_SCANNER
+            const linksBurger = Object.values(LinksBurgerMenu)
+            cy.get('lib-side-menu-link').find('a').should('have.length', 9).each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            })
+        }
     }
 
     /**
@@ -79,14 +80,14 @@ class BurgerMenuClients extends Clients {
                         .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
                 } else {
                     // cy.contains(page).invoke('removeAttr', 'target').click()
-                    cy.get('lib-burger-sidebar').find('a[href="https://www.ageallianz.it/analisideibisogni/app"]').invoke('removeAttr').invoke('removeAttr', 'target').click()
+                    cy.get('lib-burger-sidebar').find('a[href="https://www.ageallianz.it/analisideibisogni/app"]').invoke('removeAttr', 'target').click()
+                        // cy.wait('@analisiBisogni', { requestTimeout: 80000 });
                         // cy.url().should('eq', 'https://www.ageallianz.it/analisideibisogni/app/login')
-                    cy.log('Attesa apertui')
-                    cy.wait(20000)
-                    cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
-                    cy.go('back')
+                        // cy.wait(60000)
+                        // cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
+                        // cy.go('back')
                 }
-                cy.url().should('include', Common.getBaseUrl())
+                // cy.url().should('include', Common.getBaseUrl())
                 break;
             case LinksBurgerMenu.CENSIMENTO_NUOVO_CLIENTE:
                 Common.canaleFromPopup()

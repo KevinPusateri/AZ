@@ -86,6 +86,10 @@ class HomePage {
         News.checkAtterraggio()
     }
 
+    static checkNotExistVediTutte() {
+        cy.get('nx-link[routerlink="/news/recent"]').should('not.exist')
+    }
+
     /**
      * Click Pannello "Notifiche in evidenza"
      */

@@ -73,8 +73,8 @@ const LandingPage = {
 const LinkUtilita = {
     CRUSCOTTO_RESILIENCE: 'Cruscotto resilience',
     CASELLA_DI_POSTA_ED_AGENZIA: 'Casella di posta agente ed agenzia',
-    QUATTRORUOTE_CALCOLO_VALORE_VEICOLO: 'Quattroruote - Calcolo valore veicolo', //! seconda finestra
-    REPORT_ALLIANZ_NOW: 'Report Allianz Now', //! seconda finestra
+    QUATTRORUOTE_CALCOLO_VALORE_VEICOLO: 'Quattroruote - Calcolo valore veicolo',
+    REPORT_ALLIANZ_NOW: 'Report Allianz Now',
     INTERROGAZIONI_CENTRALIZZATE: 'Interrogazioni centralizzate',
     BANCHE_DATI_ANIA: 'Banche Dati ANIA',
     GESTIONE_MAGAZZINO_OBU: 'Gestione Magazzino OBU',
@@ -261,11 +261,14 @@ class TopBar extends HomePage {
 
             const linksUtilita = Object.values(LinkUtilita)
 
-            if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
-                cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
+            if (Cypress.env('monoUtenza')) {
+                delete LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO
+                delete LinkUtilita.REPORT_ALLIANZ_NOW
+                const linksUtilita = Object.values(LinkUtilita)
+                cy.get('lib-utility').find('lib-utility-label').should('have.length', 8).each(($labelCard, i) => {
                     expect($labelCard).to.contain(linksUtilita[i])
                 })
-            else if (Cypress.env('isAviva')) {
+            } else if (Cypress.env('isAviva')) {
                 delete LinkUtilita.REPORT_ALLIANZ_NOW
                 delete LinkUtilita.GESTIONE_MAGAZZINO_OBU
                 delete LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS
@@ -275,11 +278,8 @@ class TopBar extends HomePage {
                 cy.get('lib-utility').find('lib-utility-label').should('have.length', 5).each(($labelCard, i) => {
                     expect($labelCard).to.contain(linksUtilita[i])
                 })
-            } else {
-                delete LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO
-                delete LinkUtilita.REPORT_ALLIANZ_NOW
-                const linksUtilita = Object.values(LinkUtilita)
-                cy.get('lib-utility').find('lib-utility-label').should('have.length', 8).each(($labelCard, i) => {
+            } else if (Cypress.env('monoUtenza')) {
+                cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
                     expect($labelCard).to.contain(linksUtilita[i])
                 })
             }
