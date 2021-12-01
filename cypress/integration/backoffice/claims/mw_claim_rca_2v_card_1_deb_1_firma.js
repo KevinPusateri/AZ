@@ -115,39 +115,43 @@ let idx_cop_gar
 describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2 veicoli ' +
  'coinvolti in completezza base e di tipo card 1 debitore ', () => {
    
-    it('Atterraggio su BackOffice >> Denuncia --> Ricerca cliente per numero di polizza: '+ cliente_num_pol+
-    '', function () {
-    
+    it('Denuncia --> Ricerca cliente per numero di polizza: ' + cliente_num_pol, function() {               
         // Ricerca cliente per Polizza
         DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
-        DenunciaSinistriPage.clickBtn_ById('#eseguiRicerca');       
+        DenunciaSinistriPage.clickBtn_ById('#eseguiRicerca');
     });
-    
-    it('Dati cliente (ai fini della gestione del sinistro): inserimento dati obbligatori di denuncia: '+
-    'data avvenimento, data denuncia, data pervenimento è località dell\'avvenuto sinistro', function () {
-        DenunciaSinistriPage.getPlusMinusDate(-2).then((dtAvv) => { 
-            dtAvvenimento =  dtAvv      
-            cy.log('[it]>> [Data avvenimento sinistro]: '+dtAvvenimento);           
-            DenunciaSinistriPage.setValue_ById('#CLIENTE_dataAvvenimentoRisultato', dtAvvenimento)   
-        });
-        cy.wait(1000)
-        DenunciaSinistriPage.getPlusMinusDate(-2).then((dtDen) => {
-            dtDenuncia = dtDen
-            cy.log('[it]>> [Data denuncia sinistro]: '+dtDenuncia);           
-            DenunciaSinistriPage.setValue_ById('#CLIENTE_dataDenuncia', dtDenuncia)   
-        }); 
-        cy.wait(1000)
-        DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {          
-            cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
-            DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
-        }); 
-        cy.wait(1000)
-        DenunciaSinistriPage.setValue_ById('#CLIENTE_descDinamica', sinistro_descrizione_danno)
-        cy.wait(1000)
-        DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
-        DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita2');
-        cy.wait(2000)
-        DenunciaSinistriPage.clickBtn_ById('#CmdAvanti');        
+
+    it('Dati cliente (ai fini della gestione del sinistro): inserimento dati obbligatori di denuncia: ' +
+        'data avvenimento, data denuncia, data pervenimento è località dell\'avvenuto sinistro',
+        function() {
+            DenunciaSinistriPage.getPlusMinusDate(-2).then((dtAvv) => {
+                dtAvvenimento = dtAvv
+                cy.log('[it]>> [Data avvenimento sinistro]: ' + dtAvvenimento);
+                DenunciaSinistriPage.setValue_ById('#CLIENTE_dataAvvenimentoRisultato', dtAvvenimento)
+            });
+            cy.wait(1000)
+            DenunciaSinistriPage.getPlusMinusDate(-2).then((dtDen) => {
+                dtDenuncia = dtDen
+                cy.log('[it]>> [Data denuncia sinistro]: '+dtDenuncia);           
+                DenunciaSinistriPage.setValue_ById('#CLIENTE_dataDenuncia', dtDenuncia)   
+            }); 
+            cy.wait(1000)
+            DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {          
+                cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
+                DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
+            }); 
+            cy.wait(1000)
+
+    });
+
+    it('Dati cliente Altri dati di denuncia: ' +
+            'Descrizione della dinamica è località dell\'avvenuto sinistro', function() {
+            DenunciaSinistriPage.setValue_ById('#CLIENTE_descDinamica', sinistro_descrizione_danno)
+            DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
+            DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita2');
+            cy.wait(2000)
+            DenunciaSinistriPage.clickBtn_ById('#CmdAvanti');
+            cy.wait(2000)
     });
 
     it('Lista polizze: Selezione della polizza', function () {
