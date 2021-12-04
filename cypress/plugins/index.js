@@ -20,7 +20,23 @@ const faker = require('faker')
 const os = require('os')
 const mysql = require('mysql')
 const moment = require('moment')
-const { resolve } = require('path')
+const fs = require('fs')
+const path = require('path')
+const unzipper = require('unzipper')
+
+//#region Support Functions
+const getMostRecentFile = (dir) => {
+    const files = orderReccentFiles(dir);
+    return files.length ? files[0] : undefined;
+};
+
+const orderReccentFiles = (dir) => {
+    return fs.readdirSync(dir)
+        .filter((file) => fs.lstatSync(path.join(dir, file)).isFile())
+        .map((file) => ({ file, mtime: fs.lstatSync(path.join(dir, file)).mtime }))
+        .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
+};
+//#endregion
 
 
 //#region Mysql
@@ -62,7 +78,7 @@ function mysqlFinish(dbConfig, rowId, tests) {
     for (let i = 0; i < tests.test.length; i++) {
         if (tests.test[i].resultOutCome !== 'Passed') {
             resultOutCome = tests.test[i].resultOutCome
-                //Also get the error message
+            //Also get the error message
             resultMessage = tests.test[i].resultMessage.length > 1000 ? tests.test[i].resultMessage.substring(0, 999) : tests.test[i].resultMessage
             resultStack = tests.test[i].resultStack.length > 5000 ? tests.test[i].resultStack.substring(0, 4999) : tests.test[i].resultStack
         }
@@ -217,18 +233,44 @@ module.exports = (on, config) => {
 
 
     //TODO da verificare se puo' tornare utile
+    //! Lato Firefox sembra non accettare in input questi parametri di lancio
     // on('before:browser:launch', (browser = {}, launchOptions) => {
-    //     console.log('..browser ', launchOptions);
-    //     if (browser.name === 'chrome') {
-    //         launchOptions.args.push('--disable-site-isolation-trials');
-    //         launchOptions.args.push('--reduce-security-for-testing');
-    //         launchOptions.args.push('--out-of-blink-cors');
 
-    //         return launchOptions;
-    //     }
+    //     const downloadDirectory = process.cwd() + "\\cypress\\downloads"
+    //     if (browser.family === 'firefox') {
 
-    //     if (browser.name === 'electron') {
-    //         launchOptions.preferences.webPreferences.webSecurity = false;
+    //         launchOptions.preferences['browser.download.folderList'] = 2
+    //         launchOptions.preferences['browser.download.dir'] = downloadDirectory
+    //         launchOptions.preferences['browser.download.useDownloadDir'] = true
+    //         launchOptions.preferences['browser.helperApps.neverAsk.openFile'] = ''
+    //         launchOptions.preferences['browser.download.alertOnEXEOpen'] = false
+    //         launchOptions.preferences['browser.helperApps.alwaysAsk.force'] = false
+    //         launchOptions.preferences['browser.download.manager.closeWhenDon'] = true
+    //         launchOptions.preferences['browser.helperApps.neverAsk.saveToDisk'] = 'application/force-download', 
+    //         'application/pdf', 
+    //         'application/x-download', 
+    //         'application/x-pdf', 
+    //         'pdf/adobe', 
+    //         'text/xml', 
+    //         'text/plain', 
+    //         'text/html', 
+    //         'application/octet-stream',
+    //         'application/xls', 
+    //         'text/csv',
+    //         'application/X_SI',
+    //         'application/xls', 
+    //         'application/ms-excel',
+    //         'application/x-msexcel',
+    //         'application/excel',
+    //         'application/x-excel',
+    //         'application/vnd.ms-excel',
+    //         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
+    //         launchOptions.preferences['browser.download.panel.shown'] = true
+    //         launchOptions.preferences['browser.download.manager.focusWhenStarting'] = false
+    //         launchOptions.preferences['browser.download.manager.useWindow'] = false
+    //         launchOptions.preferences['pdfjs.disabled'] = true
+    //         launchOptions.preferences['devtools.console.stdout.content'] = true
 
     //         return launchOptions;
     //     }
@@ -329,6 +371,23 @@ module.exports = (on, config) => {
             return os.userInfo().username
         }
     })
-    return config;
 
+    on("task", {
+        getLatestDownloadedFile() {
+            let downloadUserFolder = os.userInfo().homedir.toString() + '\\Downloads\\'
+            let mostRecentFile = getMostRecentFile(downloadUserFolder)
+            return path.join(downloadUserFolder, mostRecentFile.file)
+        }
+    })
+
+    on("task", {
+        unzipLatestLogTariffa({ filePath, currentCase, specName }) {
+            const screenshotFolderCurrentCase = process.cwd() + "\\cypress\\screenshots\\" + specName + "\\" + currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + "\\logs\\"
+            fs.createReadStream(filePath)
+                .pipe(unzipper.Extract({ path: screenshotFolderCurrentCase }))
+            return screenshotFolderCurrentCase
+        }
+    })
+
+    return config;
 };

@@ -30,9 +30,6 @@ before(() => {
 
 beforeEach(() => {
     cy.preserveCookies()
-    Common.visitUrlOnEnv()
-    TopBar.clickSales()
-    Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
 })
 
 after(function () {
@@ -46,14 +43,24 @@ after(function () {
 })
 
 describe('Tenuta Tariffa Gennaio 2022 : ', function () {
-    tariffaCases.forEach((currentCase,k) => {
-        it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, () => {
-            TenutaTariffa.compilaDatiQuotazione(currentCase)
-            TenutaTariffa.compilaContraenteProprietario(currentCase)
-            TenutaTariffa.downloadZipLog()
-            TenutaTariffa.compilaVeicolo(currentCase)
-            TenutaTariffa.compilaProvenienza(currentCase)
-            TenutaTariffa.compilaOfferta(currentCase)
+    tariffaCases.forEach((currentCase, k) => {
+        it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function() {
+            if (currentCase.Identificativo_Caso !== 'SKIP') {
+
+                Common.visitUrlOnEnv()
+                TopBar.clickSales()
+                Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+
+                TenutaTariffa.compilaDatiQuotazione(currentCase)
+                TenutaTariffa.compilaContraenteProprietario(currentCase)
+                TenutaTariffa.compilaVeicolo(currentCase)
+                TenutaTariffa.compilaProvenienza(currentCase)
+                TenutaTariffa.compilaOfferta(currentCase)
+                TenutaTariffa.checkTariffa(currentCase)
+                cy.pause()
+            }
+            else
+                this.skip()
         });
     });
 })
