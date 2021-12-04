@@ -88,7 +88,7 @@ class Mieinfo {
             case LinksMenu.RISORSE_PER_AGENTE:
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     let checkLinks = Object.values(linksSubMenu.RISORSE_PER_AGENTE)
-                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 6).each(($link, i) => {
+                    cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 7).each(($link, i) => {
                         expect($link.text().trim()).to.include(checkLinks[i]);
                     })
                 })
@@ -266,9 +266,9 @@ class Mieinfo {
             case LinksMenu.PRIMO_PIANO:
                 getIFrame().find('h3:contains("Consigliate per te")').should('be.visible')
                 break;
-                // case LinksMenu.RACCOLTE:
-                //     getIFrame().find('h3:contains("Pronti Via")').should('be.visible')
-                //     break;
+            case LinksMenu.RACCOLTE:
+                getIFrame().find('h3:contains("Pronti via")').should('be.visible')
+                break;
             case LinksMenu.CONTENUTI_SALVATI:
                 getIFrame().find('h1:contains("Contenuti salvati")').should('be.visible')
                 break;
@@ -287,8 +287,8 @@ class Mieinfo {
             case LinksMenu.MOMENTO_DELLA_VERITA:
                 getIFrame().find('h1:contains("Momento della Verità")').should('be.visible')
                 break;
-            case LinksMenu.MANUALI_INFORMATICI:
-                getIFrame().find('h1:contains("Manuali informatici")').should('be.visible')
+            case LinksMenu.RILASCI_INFORMATICI:
+                getIFrame().find('h1:contains("Release")').should('be.visible')
                 break;
             case LinksMenu.MANUALI_INFORMATICI:
                 getIFrame().find('h1:contains("Manuali Informatici")').should('be.visible')
@@ -538,16 +538,16 @@ class Mieinfo {
     static checkAllPagesOnSalesAcademy() {
         const linksSalesAcademy = LinkMieInfo.getLinksSubMenu().SALES_ACADEMY
         getIFrame().contains(linksSalesAcademy.CHI_SIAMO).click()
-        getIFrame().find('h1:contains("Sales Academy")').should('be.visible') // errore
+        getIFrame().find('div[class="text--wrapper html-text article-typography"]').should('be.visible') // errore
 
         getIFrame().contains(linksSalesAcademy.ALLIANZ_BUSINESS_SCHOOL).click()
-        getIFrame().find('h1:contains("' + linksSalesAcademy.ALLIANZ_BUSINESS_SCHOOL + '")').should('be.visible')
+        getIFrame().find(':contains("Università")').should('be.visible')
 
         // getIFrame().contains(linksSalesAcademy.MASTER_PROFESSIONE_AGENTE).click()
         // getIFrame().find('h1:contains("' + linksSalesAcademy.MASTER_PROFESSIONE_AGENTE + '")').should('be.visible') // MOSTRA OBBLIGI IVASS
 
-        getIFrame().contains(linksSalesAcademy.OBBLIGHI_IVASS).click()
-        getIFrame().find('h1:contains("' + linksSalesAcademy.OBBLIGHI_IVASS + '")').should('be.visible')
+        getIFrame().contains(linksSalesAcademy.CAMPUS_IVASS).click()
+        getIFrame().find(':contains("Informazioni sugli obblighi formativi")').should('be.visible')
 
         getIFrame().contains(linksSalesAcademy.FORMAZIONE_MULTICANALE).click()
         getIFrame().find('h1:contains("' + linksSalesAcademy.FORMAZIONE_MULTICANALE + '")').should('be.visible')
@@ -600,7 +600,7 @@ class Mieinfo {
         getIFrame().contains(linksRisorseAgenzie.ORDINI_DI_TONER_E_CARTA).click()
         getIFrame().find('h1:contains("' + linksRisorseAgenzie.ORDINI_DI_TONER_E_CARTA + '")').should('be.visible')
 
-        getIFrame().contains(linksRisorseAgenzie.CATALOGHI_PRODOTTI_TECNOLOGICI).click()
+        getIFrame().contains(linksRisorseAgenzie.CATALOGO_PRODOTTI_TECNOLOGICI).click()
         getIFrame().find('h1:contains("Catalogo prodotti tecnologici")').should('be.visible')
 
         getIFrame().contains(linksRisorseAgenzie.SICUREZZA_IT).click()
@@ -630,8 +630,11 @@ class Mieinfo {
         getIFrame().contains(linksRisorseAgente.TRATTAMENTI_PROVVIGIONALI).click()
         getIFrame().find('h1:contains("' + linksRisorseAgente.TRATTAMENTI_PROVVIGIONALI + '")').should('be.visible')
 
-        getIFrame().contains(linksRisorseAgente.INCENTIVAZIONE_MISSION_REGOLAMENTI).click()
+        getIFrame().contains(linksRisorseAgente.INCENTIVAZIONI_MISSION_REGOLAMENTI).click()
         getIFrame().find('h1:contains("Incentivazioni, mission, regolamenti")').should('be.visible')
+
+        // !CONTENUTO VUOTO
+        getIFrame().contains(linksRisorseAgente.COLLABORAZIONI_ORIZZONTALI).click()
 
         getIFrame().contains(linksRisorseAgente.CONVENZIONI_PRODOTTI_ALLIANZ).click()
         getIFrame().find('h1:contains("' + linksRisorseAgente.CONVENZIONI_PRODOTTI_ALLIANZ + '")').should('be.visible')
