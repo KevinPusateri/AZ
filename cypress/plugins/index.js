@@ -22,6 +22,7 @@ const mysql = require('mysql')
 const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
+const rimraf = require('../../node_modules/rimraf')
 const unzipper = require('unzipper')
 
 //#region Support Functions
@@ -386,6 +387,14 @@ module.exports = (on, config) => {
             fs.createReadStream(filePath)
                 .pipe(unzipper.Extract({ path: screenshotFolderCurrentCase }))
             return screenshotFolderCurrentCase
+        }
+    })
+
+    on("task", {
+        cleanScreenshotLog(specName) {
+            let folderToDelete = process.cwd() + "\\cypress\\screenshots\\" + specName.replace('/','\\')
+            rimraf.sync(folderToDelete)
+            return folderToDelete
         }
     })
 

@@ -13,6 +13,7 @@
     "express": "^4.17.1",
     "faker": "^5.5.3",
     "fast-xml-parser": "^4.0.0-beta.3",
+    "fs": "0.0.1-security",
     "ftp-deploy": "^2.4.1",
     "ibantools": "^3.3.0",
     "moment": "^2.29.1",

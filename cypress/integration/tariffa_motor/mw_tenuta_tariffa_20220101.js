@@ -22,9 +22,12 @@ Cypress.config('defaultCommandTimeout', 60000)
 import { tariffaCases } from '../../fixtures/tariffaCases_20220101.json'
 //#endregion
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+        })
     })
 })
 
@@ -32,19 +35,19 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
-})
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
+// })
 
 describe('Tenuta Tariffa Gennaio 2022 : ', function () {
     tariffaCases.forEach((currentCase, k) => {
-        it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function() {
+        it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             if (currentCase.Identificativo_Caso !== 'SKIP') {
 
                 Common.visitUrlOnEnv()

@@ -11,7 +11,7 @@
 import 'cypress-file-upload'
 const moment = require('moment')
 const CryptoJS = require('crypto-js')
-const path = require('path')
+
 
 const be2beHost = (Cypress.env('currentEnv') === 'TEST') ? Cypress.env('be2beTest') : Cypress.env('be2bePreprod')
 
