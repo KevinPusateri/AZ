@@ -5,14 +5,47 @@
 
 /// <reference types="Cypress" />
 
-const getIFrame = () => {
-    cy.get('iframe[class="iframe-content ng-star-inserted"]')
-        .iframe();
+const { XMLParser } = require('fast-xml-parser')
+let parsedLogTariffa
+let parsedRadarUW
 
-    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
-        .its('0.contentDocument').should('exist');
+function findKeyLogTariffa(key, logTariffa = parsedLogTariffa) {
+    var result;
 
-    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+    for (var property in logTariffa) {
+        if (logTariffa.hasOwnProperty(property)) {
+            if (property === key) {
+                return logTariffa[key]; // returns the value
+            }
+            else if (typeof logTariffa[property] === "object") {
+                // in case it is an object
+                result = findKeyLogTariffa(key, logTariffa[property]);
+
+                if (typeof result !== "undefined") {
+                    return result;
+                }
+            }
+        }
+    }
+}
+function findKeyRadarUW(key, logRadarUW = parsedRadarUW) {
+    var result;
+
+    for (var property in logRadarUW) {
+        if (logRadarUW.hasOwnProperty(property)) {
+            if (property === key) {
+                return logRadarUW[key]; // returns the value
+            }
+            else if (typeof logRadarUW[property] === "object") {
+                // in case it is an object
+                result = findKeyRadarUW(key, logRadarUW[property]);
+
+                if (typeof result !== "undefined") {
+                    return result;
+                }
+            }
+        }
+    }
 }
 
 let currentDataNascita
@@ -23,9 +56,11 @@ class TenutaTariffa {
         cy.get('@iframe').within(() => {
 
             //Tipologia Veicolo
-            cy.contains('un\'auto').parent().should('exist').and('be.visible').click().wait(500)
-            cy.contains(currentCase.Tipo_Veicolo).should('exist').and('be.visible').click().wait(2000)
-
+            // * auto è già selezionato di default quindi lo skippo
+            if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada') {
+                cy.contains('un\'auto').parent().should('exist').and('be.visible').click().wait(500)
+                cy.contains(currentCase.Tipo_Veicolo).should('exist').and('be.visible').click().wait(2000)
+            }
 
             //Targa
             cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(500)
@@ -41,6 +76,8 @@ class TenutaTariffa {
             cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(formattedDataNascita).wait(1000)
 
             cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true }).wait(500)
+
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '01_Dati_Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             cy.contains('Calcola').should('be.visible')
             cy.contains('Calcola').click({ force: true })
@@ -70,8 +107,12 @@ class TenutaTariffa {
                 cy.get('input[formcontrolname="provincia"]').should('exist').and('be.visible').type(currentCase.Provincia).wait(500)
                 cy.get('input[formcontrolname="cap"]').should('exist').and('be.visible').type(currentCase.CAP).wait(500)
                 cy.get('nx-dropdown[formcontrolname="professione"]').should('exist').and('be.visible').click().wait(500)
-                re = new RegExp("\^ " + currentCase.Professione + " \$")
-                cy.contains(re).should('exist').and('be.visible').click().wait(500)
+                if (currentCase.Professione.includes('('))
+                    cy.contains(currentCase.Professione).should('exist').click().wait(500)
+                else {
+                    re = new RegExp("\^ " + currentCase.Professione + " \$")
+                    cy.contains(re).should('exist').click().wait(500)
+                }
 
                 //Generiamo il codice fiscale
                 let formattedDataNascita = currentDataNascita.getFullYear() + '-' +
@@ -82,6 +123,8 @@ class TenutaTariffa {
                     cy.get('input[formcontrolname="cfIva"]').should('exist').and('be.visible').type(currentSSN).wait(500)
                 })
 
+                cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '02_Contraente_Proprietario', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
                 cy.contains('AVANTI').should('exist').and('be.visible').click().wait(500)
 
                 //Attendiamo che il caricamento non sia più visibile
@@ -89,8 +132,11 @@ class TenutaTariffa {
 
                 //! Riclicchiamo su AVANTI (dopo che i textbox non sono più rossi)
                 cy.get('span[class="page-title"]').invoke('text').then(pageTitle => {
-                    if (!pageTitle.includes('Veicolo'))
+                    if (!pageTitle.includes('Veicolo')) {
                         cy.contains('AVANTI').should('exist').and('be.visible').click().wait(500)
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible').wait(500)
+                    }
                 })
             })
         })
@@ -103,27 +149,9 @@ class TenutaTariffa {
         }).as('getMotor')
 
         cy.getIFrame()
+
         cy.get('@iframe').within(() => {
-            cy.get('input[formcontrolname="txtTarga"]').should('exist').and('be.visible').invoke('text').then(currentTarga => {
-                cy.log('Targa rilevata in pagina : ' + currentTarga)
-                if (currentTarga === '') {
-                    //! Questi step NON dovrebbero essere necessari
-                    //Ricerca Tipo Targa (by default ora teniamo italiana)
-                    cy.get('nx-dropdown[formcontrolname="tipoTarga"]').should('exist').and('be.visible').click().wait(500)
-                    cy.contains('Italiana').should('exist').and('be.visible').click().wait(500)
-
-                    //Numero di Targa
-                    cy.get('input[formcontrolname="txtTarga"]').should('exist').and('be.visible').type(currentCase.Targa).wait(500)
-
-                    //Clicchiamo su Cerca
-                    cy.contains('Cerca').should('exist').and('be.visible').click().wait(500)
-
-                    //Attendiamo che il caricamento non sia più visibile
-                    cy.get('nx-spinner').should('not.be.visible').wait(500)
-
-                    cy.pause()
-                }
-            })
+            //#region Informazioni Generali
 
             //Data Immatricolazione
             //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
@@ -142,6 +170,7 @@ class TenutaTariffa {
 
                 cy.wait('@getMotor', { requestTimeout: 30000 })
             }
+
             //Tipo Veicolo
             cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').click().wait(1000)
             cy.contains(currentCase.Tipo_Veicolo).should('exist').and('be.visible').click().wait(500)
@@ -166,13 +195,25 @@ class TenutaTariffa {
             cy.contains(currentCase.Versione).should('exist').and('be.visible').click().wait(500)
             cy.wait('@getMotor', { requestTimeout: 30000 })
 
+            cy.contains('Informazioni Generali').click().wait(500)
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+            //#endregion
+
+            //#region Dati Veicolo Tecnici
             //Posti
-            cy.get('input[formcontrolname="posti"]').should('exist').and('be.visible').type(currentCase.Posti).type('{enter}').wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+            if (currentCase.Posti !== "") {
+                cy.get('input[formcontrolname="posti"]').should('exist').and('be.visible').type(currentCase.Posti).type('{enter}').wait(500)
+                cy.wait('@getMotor', { requestTimeout: 30000 })
+            }
+
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            //#endregion
 
             cy.contains('AVANTI').should('exist').and('be.visible').click().wait(500)
             cy.wait('@getMotor', { requestTimeout: 30000 })
-
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible').wait(500)
         });
     }
 
@@ -184,33 +225,78 @@ class TenutaTariffa {
 
         cy.getIFrame()
         cy.get('@iframe').within(() => {
-            cy.wait(2000)
-            //Provenienza
+
+            //#region Provenienza
             cy.get('nx-dropdown[aria-haspopup="listbox"]').first().should('be.visible').click().wait(500)
             cy.get('nx-dropdown-item').should('be.visible').contains(currentCase.Provenienza).click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
 
-            //Nel Dettaglio
-            cy.get('nx-dropdown[aria-haspopup="listbox"]').last().should('be.visible').click().wait(500)
-            cy.get('nx-dropdown-item').should('be.visible').contains(currentCase.Nel_Dettaglio).click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible').wait(500)
 
+            switch (currentCase.Provenienza) {
+                case "Precedentemente assicurato altra compagnia":
+                    //Nel Dettaglio
+                    cy.get('nx-dropdown[aria-haspopup="listbox"]').last().should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').should('be.visible').contains(currentCase.Nel_Dettaglio).click().wait(500)
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
 
-            cy.contains('INSERISCI').should('exist').and('be.visible').click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+                    cy.contains('INSERISCI').should('exist').and('be.visible').click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
 
+                    //!Popup di dichiarazione di non circolazione a SI (non più presente?)
+                    // cy.contains('Si').should('exist').and('be.visible').parent().click().wait(500)
+                    // cy.contains('CONTINUA').should('exist').and('be.visible').click().wait(500)
+                    // cy.wait('@getMotor', { requestTimeout: 30000 })
+                    // cy.wait(1000)
+                    break
+                case "Voltura":
+                    //Veicolo aggiuntivo o trasferimento classe per cessazione di rischio
+                    cy.get('nx-checkbox[formcontrolname="isVeicoloAggiuntivoTraferimentoRischio"]').should('exist').and('be.visible').click()
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
 
-            //Popup di dichiarazione di non circolazione a SI
-            cy.contains('Si').should('exist').and('be.visible').parent().click().wait(500)
-            cy.contains('CONTINUA').should('exist').and('be.visible').click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
-            cy.wait(1000)
+                    //Data Voltura
+                    if (currentCase.Data_Voltura === 'DATA DECORRENZA') {
+                        let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+
+                        let formattedDataVoltura = String(dataDecorrenza.getDate()).padStart(2, '0') + '/' +
+                            String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
+                            dataDecorrenza.getFullYear()
+
+                        cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').clear().wait(500)
+                        cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').type(formattedDataVoltura).type('{enter}').wait(500)
+
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                    }
+                    else
+                        throw new Error('Data Voltura non riconosciuta')
+
+                    //Provenienza
+                    cy.get('nx-dropdown[aria-haspopup="listbox"]').last().should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').should('be.visible').contains(currentCase.Sotto_Provenienza).click().wait(500)
+
+                    //Targa di Provenienza
+                    cy.contains('targa').should('exist').and('be.visible').parents('div[class="nx-formfield__input"]').find('input').first().type(currentCase.Targa_Provenienza).wait(500)
+
+                    cy.contains('CERCA IN ANIA').click()
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+                    break
+            }
 
             //Nessuna attestazione trovata in BDA
             cy.contains('Si').should('exist').and('be.visible').parent().click().wait(500)
             cy.contains('CONTINUA').should('exist').and('be.visible').click().wait(500)
             cy.wait('@getMotor', { requestTimeout: 30000 })
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible').wait(500)
 
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '05_Provenienza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            //#endregion
+
+            //#region Dettagli
             //Scadenza precedente contratto
             let dataScadenzaPrecedenteContratto
             let dataDecorrenza = calcolaDataDecorrenza(currentCase)
@@ -227,8 +313,8 @@ class TenutaTariffa {
                 String(dataScadenzaPrecedenteContratto.getMonth() + 1).padStart(2, '0') + '/' +
                 dataScadenzaPrecedenteContratto.getFullYear()
 
-            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').clear().wait(500)
-            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').type(formattedDataScadenzaPrecedenteContratto).type('{enter}').wait(500)
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').clear().wait(500)
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').type(formattedDataScadenzaPrecedenteContratto).type('{enter}').wait(500)
 
             cy.wait('@getMotor', { requestTimeout: 30000 })
 
@@ -242,6 +328,16 @@ class TenutaTariffa {
             cy.get('nx-dropdown-item').contains(currentCase.Formula_Provenienza).click().wait(500)
             cy.wait('@getMotor', { requestTimeout: 30000 })
 
+            cy.get('h3:contains("Dettagli")').click().wait(500)
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '06_Dettagli', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            //#endregion
+
+            //#region Sinistri
+            cy.contains('Sinistri').click().wait(500)
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '07_Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            //#endregion
+
+            //#region CL
             //CL B. provenienza
             cy.contains('CL. B/ M provenienza').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Provenienza).wait(500)
             //CL B. assegnazione
@@ -252,6 +348,9 @@ class TenutaTariffa {
             //CL assegnazione CU
             cy.contains('Cl. assegnazione cu').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click().wait(500)
             cy.get('nx-dropdown-item').contains(currentCase.Cl_Assegnazione_CU).click().wait(500)
+
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '08_CL', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            //#endregion
 
             //TODO Attestato conforme all'articolo 134, comma 4 bis, del Codice assicurazioni ?
 
@@ -268,6 +367,7 @@ class TenutaTariffa {
 
         cy.getIFrame()
         cy.get('@iframe').within(() => {
+
             //Data Decorrenza
             let dataDecorrenza = calcolaDataDecorrenza(currentCase)
             let formattedDataDecorrenza = String(dataDecorrenza.getDate()).padStart(2, '0') + '/' +
@@ -279,9 +379,8 @@ class TenutaTariffa {
 
             cy.wait('@getMotor', { requestTimeout: 30000 })
 
-            //La data di decorrenza non permetterà il salvataggio del preventivo
-            cy.contains('Conferma').should('exist').and('be.visible').click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible').wait(500)
 
             cy.intercept({
                 method: 'GET',
@@ -301,6 +400,11 @@ class TenutaTariffa {
             cy.wait('@getOptionalPacchetti', { requestTimeout: 30000 })
             cy.wait('@getImpostazioniGenerali', { requestTimeout: 30000 })
 
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '09_Offerta_Recap_Top', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
             //Massimale
             cy.contains('Massimale').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
             cy.get('nx-dropdown-item').contains(currentCase.Massimale).click().wait(500)
@@ -309,30 +413,94 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible').wait(500)
 
-            //Conducente/Tipo Guida
-            cy.contains('Tipo Guida').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
-            cy.get('nx-dropdown-item').contains(currentCase.Tipo_Guida).click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+            //Dividiamo per tipologia di veicolo
+            switch (currentCase.Settore) {
+                case '1':
+                    //Conducente/Tipo Guida -> per il caso autocarro è pre-impostato
+                    cy.contains('Tipo Guida').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Tipo_Guida).click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
 
-            //Protezione Rivalsa
-            cy.contains('Rivalsa').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
-            cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+                    //TODO Protezione Rivalsa è già settata come garanzia in automatico; implementa verficia di presenza
 
-            //Protezione Bonus
-            cy.contains('Protezione Bonus').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
-            cy.get('nx-dropdown-item').contains(currentCase.Protezione_Bonus).click().wait(500)
+                    //Indennita' danno totale RCA
+                    if (currentCase.Indennita_Danno_Totale !== '') {
+                        cy.contains("Indennita' danno totale RCA").parents('tr').find('button').click()
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible').wait(500)
+                    }
 
-            //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible').wait(500)
+                    break
+                case '4':
+                    //? Conducente/Tipo Guida -> per il caso autocarro è pre-impostato
+                    // cy.contains('Tipo Guida').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    // cy.get('nx-dropdown-item').contains(currentCase.Tipo_Guida).click().wait(500)
+                    // cy.wait('@getMotor', { requestTimeout: 30000 })
 
-            //Opzione di sospendibilità
-            cy.contains('sospendibilità').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
-            cy.get('nx-dropdown-item').contains(currentCase.Opzione_Spospendibilita).click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+                    //? Protezione Rivalsa -> per autocarro è settato in automatico
+                    // cy.contains('Rivalsa').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    // cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click().wait(500)
+                    // cy.wait('@getMotor', { requestTimeout: 30000 })
 
-            //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible').wait(500)
+                    //Carico e scarico
+                    cy.contains('Carico e scarico').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Carico_Scarico).click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+                    //Estensione Sgombero Neve
+                    cy.contains('Estensione Sgombero Neve').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Sgombero_Neve).click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+                    //Trasporto merci pericolose
+                    cy.contains('Trasporto merci pericolose').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Merci_Pericolose).click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+                    //Clausola Trasporti Eccezionali
+                    cy.contains('Clausola Trasporti Eccezionali').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Trasporti_Eccezionali).click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+                    break
+                case '5':
+                    //Conducente/Tipo Guida
+                    cy.contains('Tipo Guida').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Tipo_Guida).click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+
+                    //Protezione Rivalsa
+                    cy.contains('Rivalsa').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+
+                    //Protezione Bonus
+                    cy.contains('Protezione Bonus').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Protezione_Bonus).click().wait(500)
+
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+                    //Opzione di sospendibilità
+                    cy.contains('sospendibilità').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Opzione_Spospendibilita).click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+                    break
+            }
+
+            cy.get('strong:contains("Rc Auto")').click().wait(500)
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il premio lordo a video
             cy.get('strong[class="fontSizeTitle colorBlue ng-star-inserted"]').invoke('text').then(premioLordo => {
@@ -341,13 +509,43 @@ class TenutaTariffa {
         })
     }
 
-    static downloadZipLog() {
+    static checkTariffa(currentCase) {
+
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
-            cy.get('motor-footer').should('exist').and('be.visible').find('button').click().wait(500)
-            cy.pause()
+            cy.get('motor-footer').should('exist').and('be.visible').find('button').click().wait(5000)
+            cy.getTariffaLog(currentCase).then(logFolder => {
+                //#region LogTariffa
+                cy.readFile(logFolder + "\\logTariffa.xml").then(fileContent => {
+                    const options = {
+                        ignoreAttributes: false
+                    }
+                    const parser = new XMLParser(options)
+                    parsedLogTariffa = parser.parse(fileContent)
 
+                    //Radar_KeyID
+                    expect(JSON.stringify(findKeyLogTariffa('Radar_KeyID'))).to.contain(currentCase.Versione_Tariffa_Radar)
+                    //CMC PUNTA FLEX
+                    expect(JSON.stringify(findKeyLogTariffa('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
+                })
+                //#endregion
+
+                //#region Radaruw
+                cy.readFile(logFolder + "\\radaruw.xml").then(fileContent => {
+                    const options = {
+                        ignoreAttributes: false
+                    }
+                    const parser = new XMLParser(options)
+                    parsedRadarUW = parser.parse(fileContent)
+
+                    //Radar_KeyID
+                    expect(JSON.stringify(findKeyRadarUW('Versione_Radar'))).to.contain(currentCase.Versione_Radar_UW)
+
+                })
+
+                //#endregion
+            })
         })
     }
 }

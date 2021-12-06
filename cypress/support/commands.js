@@ -9,10 +9,10 @@
 // ***********************************************
 
 import 'cypress-file-upload'
-import { NOMEM } from 'dns';
 const moment = require('moment')
-const os = require('os')
 const CryptoJS = require('crypto-js')
+const path = require('path')
+
 const be2beHost = (Cypress.env('currentEnv') === 'TEST') ? Cypress.env('be2beTest') : Cypress.env('be2bePreprod')
 
 //
@@ -673,7 +673,7 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
                   if (datePolizzaScadenza.length > 0) {
                     var polizza = {
                       customerNumber: currentClient.customerNumber,
-                      customerName :  currentClient.firstName + ' ' + currentClient.name,
+                      customerName: currentClient.firstName + ' ' + currentClient.name,
                       numberPolizza: datePolizzaScadenza[0].bundleNumber
                     }
                     return polizza
@@ -855,6 +855,14 @@ Cypress.Commands.add('startMysql', (dbConfig, testName, currentEnv, data) => {
 Cypress.Commands.add('finishMysql', (dbConfig, insertedId, tests) => {
   if (Cypress.env('enableLogDB'))
     cy.task('finishMysql', { dbConfig: dbConfig, rowId: insertedId, tests })
+})
+
+Cypress.Commands.add('getTariffaLog', (currentCase) => {
+  cy.task('getLatestDownloadedFile').then(latestDownload => {
+    cy.task('unzipLatestLogTariffa', { filePath: latestDownload, currentCase: currentCase, specName: Cypress.spec.name }).then(logFolder => {
+      return logFolder
+    })
+  })
 })
 
 //#region PDF Parse
