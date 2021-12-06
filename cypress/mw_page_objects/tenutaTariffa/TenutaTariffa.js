@@ -328,7 +328,7 @@ class TenutaTariffa {
             cy.get('nx-dropdown-item').contains(currentCase.Formula_Provenienza).click().wait(500)
             cy.wait('@getMotor', { requestTimeout: 30000 })
 
-            cy.get('h3:contains("Dettagli")').click().wait(500)
+            cy.get('h3:contains("Dettagli")').first().click().wait(500)
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '06_Dettagli', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             //#endregion
 
@@ -508,7 +508,7 @@ class TenutaTariffa {
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il premio lordo a video
-            cy.get('strong[class="fontSizeTitle colorBlue ng-star-inserted"]').invoke('text').then(premioLordo => {
+            cy.contains('BONUS/MALUS').parent('div').find('div[class="ng-star-inserted"]').invoke('text').then(premioLordo => {
                 expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
             })
         })

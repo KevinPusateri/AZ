@@ -858,7 +858,7 @@ Cypress.Commands.add('finishMysql', (dbConfig, insertedId, tests) => {
 })
 
 Cypress.Commands.add('getTariffaLog', (currentCase) => {
-  cy.task('getLatestDownloadedFile').then(latestDownload => {
+  cy.task('getLatestDownloadedFile', Cypress.browser.name).then(latestDownload => {
     cy.task('unzipLatestLogTariffa', { filePath: latestDownload, currentCase: currentCase, specName: Cypress.spec.name }).then(logFolder => {
       return logFolder
     })

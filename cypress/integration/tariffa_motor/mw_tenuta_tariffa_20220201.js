@@ -19,7 +19,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe/tariffaCases_20220101.json'
+import { tariffaCases } from '../../fixtures//tariffe/tariffaCases_20220201.json'
 //#endregion
 before(() => {
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
@@ -35,15 +35,15 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
-})
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
+// })
 
 describe('Tenuta Tariffa Gennaio 2022 : ', function () {
     tariffaCases.forEach((currentCase, k) => {
