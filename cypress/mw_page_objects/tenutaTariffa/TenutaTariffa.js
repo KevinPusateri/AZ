@@ -382,6 +382,11 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible').wait(500)
 
+            //Verifichiamo che sia stata settata correttamente la data
+            cy.get('input[formcontrolname="dataDecorrenza"]').should('exist').and('be.visible').invoke('val').then(currentDataDecorrenza =>{
+                expect(currentDataDecorrenza).to.include(formattedDataDecorrenza)
+            })
+
             cy.intercept({
                 method: 'GET',
                 url: '**/optional-pacchetti'
