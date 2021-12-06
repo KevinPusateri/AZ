@@ -145,7 +145,12 @@ class Ultra {
             cy.log("data inizio: " + inizio)
             cy.log("data fine: " + fine)
             cy.get('ultra-contratto-temporaneo-modal').find('input[formcontrolname="dataInizio"]').type(inizio)
+                .invoke('val')
+                .then(text => cy.log(text))
+
             cy.get('ultra-contratto-temporaneo-modal').find('input[formcontrolname="dataFine"]').type(fine)
+                .invoke('val')
+                .then(text => cy.log(text))
 
             //attività
             cy.get('ultra-contratto-temporaneo-modal').find('nx-dropdown[formcontrolname="attivita"]').click()
@@ -354,19 +359,19 @@ class Ultra {
         })
     }
 
-    // static caricamentoCensimentoAnagrafico(cliente, ubicazione) {
-    //     cy.intercept({
-    //         method: 'GET',
-    //         url: '**/consensi/**'
-    //     }).as('consensiPrivacy')
+    static caricamentoCensimentoAnagrafico(cliente, ubicazione) {
+        cy.intercept({
+            method: 'GET',
+            url: '**/tmpl_anag_container.htm'
+        }).as('consensiPrivacy')
 
-    //     cy.wait('@consensiPrivacy', { requestTimeout: 60000 })
+        cy.wait('@consensiPrivacy', { requestTimeout: 60000 })
 
-    //     ultraIFrame().within(() => {
-    //         //Attende il caricamento della pagina            
-    //         cy.get('[class="page-title"]', { timeout: 15000 }).contains('Consensi e privacy').should('be.visible')
-    //     })
-    // }
+        ultraIFrame().within(() => {
+            //Attende il caricamento della pagina            
+            cy.get('[class="page-title"]', { timeout: 15000 }).contains('Censimento anagrafico').should('be.visible')
+        })
+    }
 
     static censimentoAnagrafico(cliente, ubicazione) {
         ultraIFrame().within(() => {
@@ -488,7 +493,7 @@ class Ultra {
     static caricaDatiIntegrativi() {
         cy.intercept({
             method: 'GET',
-            url: '**/datiintegrativi/getDati'
+            url: '**/tmpl_dati_ambito_integr.htm'
         }).as('datiIntegrativi')
 
         cy.wait('@datiIntegrativi', { requestTimeout: 60000 })
@@ -630,6 +635,7 @@ class Ultra {
         }).as('consensiPrivacy')
 
         cy.wait('@consensiPrivacy', { requestTimeout: 60000 })
+        cy.wait(1000)
 
         ultraIFrame().within(() => {
             //Attende il caricamento della pagina            

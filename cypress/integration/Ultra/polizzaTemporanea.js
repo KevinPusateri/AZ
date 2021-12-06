@@ -78,7 +78,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe("Polizza temporanea", () => {
+describe("POLIZZA TEMPORANEA", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
@@ -129,6 +129,7 @@ describe("Polizza temporanea", () => {
   })
 
   it("Censimento anagrafico", () => {
+    Ultra.caricamentoCensimentoAnagrafico()
     Ultra.censimentoAnagraficoSalute(cliente.cognome + ' ' + cliente.nome, false, false, false)
   })
 

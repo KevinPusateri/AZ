@@ -51,10 +51,22 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-
 })
 
-describe("CASA e PATRIMONIO", () => {
+afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+        TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
+})
+
+describe("FABBRICATO E CONTENUTO", () => {
     /* it("Login", ()=>{
         cy.loginMatrix(ambiente, "TUTF004", "P@ssw0rd!")
     }) */
@@ -92,7 +104,6 @@ describe("CASA e PATRIMONIO", () => {
 
     it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", () => {
         //Ultra.caricamentoUltraHome()
-        cy.pause()
         Ultra.verificaAmbitiHome(ambiti)
     })
 
@@ -122,6 +133,7 @@ describe("CASA e PATRIMONIO", () => {
     })
 
     it("Censimento anagrafico", () => {
+        Ultra.caricamentoCensimentoAnagrafico()
         Ultra.censimentoAnagrafico(cliente.cognomeNome(), cliente.ubicazione())
     })
 
@@ -132,10 +144,10 @@ describe("CASA e PATRIMONIO", () => {
 
     it("Consensi e privacy", () => {
         Ultra.caricamentoConsensi()
-        Ultra.avantiConsensi()        
+        Ultra.avantiConsensi()
     })
 
-    it("salvataggio Contratto", () => {        
+    it("salvataggio Contratto", () => {
         Ultra.salvataggioContratto()
     })
 
@@ -143,7 +155,7 @@ describe("CASA e PATRIMONIO", () => {
         Ultra.inserimentoIntermediario()
     })
 
-    it("Visualizza documenti e prosegui", () => {        
+    it("Visualizza documenti e prosegui", () => {
         Ultra.riepilogoDocumenti()
     })
 
@@ -153,6 +165,13 @@ describe("CASA e PATRIMONIO", () => {
 
     it("Incasso - parte 1", () => {
         //attende caricamento sezione Precontrattuali
+        cy.intercept({
+            method: 'POST',
+            url: '**/InitMezziPagam'
+        }).as('pagamento')
+
+        cy.wait('@pagamento', { requestTimeout: 60000 })
+
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)
             .iframeCustom().find('#pnlMainTitoli', { timeout: 15000 })
@@ -176,6 +195,13 @@ describe("CASA e PATRIMONIO", () => {
     })
 
     it("Incasso - parte 2", () => {
+        cy.intercept({
+            method: 'GET',
+            url: '**/GetListaCassettiIncassoCompleto'
+        }).as('incassoCompleto')
+
+        cy.wait('@incassoCompleto', { requestTimeout: 60000 })
+
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)
             .iframeCustom().find('#TabIncassoPanelBar-2')
@@ -222,7 +248,14 @@ describe("CASA e PATRIMONIO", () => {
     })
 
     it("Esito incasso", () => {
-        //attende caricamento sezione Peecontrattuali
+        //attende caricamento sezione Peecontrattuali etPostIncassoData
+        cy.intercept({
+            method: 'POST',
+            url: '**/GetPostIncassoData'
+        }).as('postIncasso')
+
+        cy.wait('@postIncasso', { requestTimeout: 60000 })
+
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)
             .iframeCustom().find('#pnlContrattoIncasso', { timeout: 30000 })

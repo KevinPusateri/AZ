@@ -88,7 +88,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe("Preventivo e Acquisto Polizza", () => {
+describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
@@ -134,7 +134,7 @@ describe("Preventivo e Acquisto Polizza", () => {
 
   })
 
-  it("Riepilogo ed emissione preventivos", () => {
+  it("Riepilogo ed emissione preventivo", () => {
     Ultra.selezionaFrazionamento(frazionamento)
     Ultra.emettiPreventivo()
     cy.wait(3000)
@@ -168,7 +168,7 @@ describe("Preventivo e Acquisto Polizza", () => {
     Ultra.avantiConsensi()
   })
 
-  it("Fine", () => {
+  it("Verifica invio mail", () => {
     Ultra.verificaInvioMail()
   })
 })
