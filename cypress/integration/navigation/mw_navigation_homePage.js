@@ -10,7 +10,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-//#endregion
+    //#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
@@ -20,7 +20,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -30,41 +30,44 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-after(function () {
+after(function() {
     TopBar.logOutMW()
-    //#region Mysql
+        //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
 
 })
 
-describe('Matrix Web : Navigazioni da Home Page - ', function () {
-    it('Verifica Top Menu Principali', function () {
+describe('Matrix Web : Navigazioni da Home Page - ', function() {
+    it('Verifica Top Menu Principali', function() {
         TopBar.clickIconCalendar()
         TopBar.clickIconIncident()
-        //! Disabilitato momentaneamente come da specifiche
-        //TopBar.clickIconNotification()
+        TopBar.clickIconNotification()
         TopBar.clickIconUser()
         TopBar.clickIconSwitchPage()
     });
 
-    it('Verifica Top Menu incident - Verifica presenza dei link', function () {
+    it('Verifica Top Menu incident - Verifica presenza dei link', function() {
         TopBar.clickIconIncident()
         TopBar.checkLinksIncident()
     })
 
-    it('Verifica Top Menu incident - Verifica atterraggio SRM Online', function () {
-        TopBar.clickLinkOnIconIncident('SRM Online')
-    })
+    if (!Cypress.env('isAviva')) {
+        it('Verifica Top Menu incident - Verifica atterraggio SRM Online', function() {
+            TopBar.clickLinkOnIconIncident('SRM Online')
+        })
 
-    it('Verifica Top Menu incident - Verifica atterraggio SisCo', function () {
-        TopBar.clickLinkOnIconIncident('SisCo')
-    })
+        it('Verifica Top Menu incident - Verifica atterraggio SisCo', function() {
+            if (!Cypress.env('isAviva')) {
+                TopBar.clickLinkOnIconIncident('SisCo')
+            } else this.skip()
+        })
+    }
 
-    it('Verifica Top Menu incident - Verifica atterraggio Elenco telefonico', function () {
+    it('Verifica Top Menu incident - Verifica atterraggio Elenco telefonico', function() {
         if (!Cypress.env('monoUtenza')) {
             cy.task('getHostName').then(hostName => {
                 let currentHostName = hostName
@@ -74,22 +77,21 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         } else this.skip()
     })
 
-    it('Verifica Top Menu User - Verifica apertura icona User', function () {
+    it('Verifica Top Menu User - Verifica apertura icona User', function() {
         TopBar.clickIconUser()
     })
 
-    //! Disabilitato momentaneamente come da specifiche
-    // it('Verifica Top Menu notifiche - Verifica presenza dei link', function () {
-    //     TopBar.clickIconNotification()
-    //     TopBar.checkNotificheEvidenza()
-    // })
+    it('Verifica Top Menu notifiche - Verifica presenza dei link', function() {
+        TopBar.clickIconNotification()
+        TopBar.checkNotificheEvidenza()
+    })
 
-    it('Verifica presenza links da Utilità', function () {
+    it('Verifica presenza links da Utilità', function() {
         TopBar.clickIconSwitchPage()
         TopBar.checkLinksUtility()
     })
 
-    it('Verifica atterraggio da Utilità - Cruscotto resilience', function () {
+    it('Verifica atterraggio da Utilità - Cruscotto resilience', function() {
         TopBar.clickIconSwitchPage()
         TopBar.clickLinkOnUtilita('Cruscotto resilience')
     })
@@ -100,7 +102,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     //     TopBar.clickLinkOnUtilita('Casella di posta agente ed agenzia')
     // })
 
-    it('Verifica atterraggio da Utilità - Quattroruote - Calcolo valore veicolo', function () {
+    it('Verifica atterraggio da Utilità - Quattroruote - Calcolo valore veicolo', function() {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickIconSwitchPage()
             TopBar.clickLinkOnUtilita('Quattroruote - Calcolo valore veicolo')
@@ -113,108 +115,129 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     //     TopBar.clickLinkOnUtilita('Report Allianz Now')
     // })
 
-    it('Verifica atterraggio da Utilità - Interrogazioni centralizzate', function () {
+    //!DA SEGNALARE BUG
+    it('Verifica atterraggio da Utilità - Interrogazioni centralizzate', function() {
         TopBar.clickIconSwitchPage()
         TopBar.clickLinkOnUtilita('Interrogazioni centralizzate')
     })
 
-    it('Verifica atterraggio da Utilità - Banche Dati ANIA', function () {
+    it('Verifica atterraggio da Utilità - Banche Dati ANIA', function() {
         TopBar.clickIconSwitchPage()
         TopBar.clickLinkOnUtilita('Banche Dati ANIA')
     })
 
-    it('Verifica atterraggio da Utilità - Gestione Magazzino OBU', function () {
-        TopBar.clickIconSwitchPage()
-        TopBar.clickLinkOnUtilita('Gestione Magazzino OBU')
-    })
+    if (!Cypress.env('isAviva')) {
 
-    // Accesso non autorizzato --add excel
-    // it.skip('Verifica atterraggio da Utilità - Piattaforma contratti AZ Telematics', function () {
-    //     TopBar.clickIconSwitchPage()
-    //     TopBar.clickLinkOnUtilita('Piattaforma contratti AZ Telematics')
-    // })
+        it('Verifica atterraggio da Utilità - Gestione Magazzino OBU', function() {
+            if (!Cypress.env('isAviva')) {
+                TopBar.clickIconSwitchPage()
+                TopBar.clickLinkOnUtilita('Gestione Magazzino OBU')
+            } else this.skip()
+        })
 
-    it('Verifica atterraggio da Utilità - Cruscotto Installazione Dispositivo Satellitare', function () {
-        if (!Cypress.env('monoUtenza')) {
-            TopBar.clickIconSwitchPage()
-            TopBar.clickLinkOnUtilita('Cruscotto Installazione Dispositivo Satellitare')
-        } else this.skip()
-    })
+        // Accesso non autorizzato --add excel
+        // it.skip('Verifica atterraggio da Utilità - Piattaforma contratti AZ Telematics', function () {
+        //     TopBar.clickIconSwitchPage()
+        //     TopBar.clickLinkOnUtilita('Piattaforma contratti AZ Telematics')
+        // })
 
-    it('Verifica atterraggio da Utilità - Monitor Scoring AZ Bonus Drive', function () {
-        TopBar.clickIconSwitchPage()
-        TopBar.clickLinkOnUtilita('Monitor Scoring AZ Bonus Drive')
-    })
+        it('Verifica atterraggio da Utilità - Cruscotto Installazione Dispositivo Satellitare', function() {
+            if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+                TopBar.clickIconSwitchPage()
+                TopBar.clickLinkOnUtilita('Cruscotto Installazione Dispositivo Satellitare')
+            } else this.skip()
+        })
 
-    it('Verifica Top Menu Clients', function () {
+        it('Verifica atterraggio da Utilità - Monitor Scoring AZ Bonus Drive', function() {
+            if (!Cypress.env('isAviva')) {
+                TopBar.clickIconSwitchPage()
+                TopBar.clickLinkOnUtilita('Monitor Scoring AZ Bonus Drive')
+            }
+        })
+    }
+
+    it('Verifica Top Menu Clients', function() {
         TopBar.clickIconSwitchPage('Clients')
     })
 
-    it('Verifica Top Menu Sales', function () {
+    it('Verifica Top Menu Sales', function() {
         TopBar.clickIconSwitchPage('Sales')
     })
 
-    it('Verifica Top Menu Numbers', function () {
+    it('Verifica Top Menu Numbers', function() {
         TopBar.clickIconSwitchPage('Numbers')
     });
 
-    it('Verifica Top Menu Backoffice', function () {
+    it('Verifica Top Menu Backoffice', function() {
         TopBar.clickIconSwitchPage('Backoffice')
     });
 
-    it('Verifica Top Menu News', function () {
-        if (!Cypress.env('monoUtenza')) {
+    if (!Cypress.env('isAviva')) {
+
+        it('Verifica Top Menu News', function() {
             TopBar.clickIconSwitchPage('News')
-        } else this.skip()
-    });
+        });
 
-    it('Verifica Top Menu Le mie info', function () {
-        if (!Cypress.env('monoUtenza')) {
+        it('Verifica Top Menu Le mie info', function() {
             TopBar.clickIconSwitchPage('Le mie info')
-        } else this.skip()
-    });
+        });
+    }
 
-    it('Verica buca di ricerca', function () {
+    it('Verica buca di ricerca', function() {
         TopBar.clickBucaRicerca()
     });
 
-    it('Verifica Button Clients', function () {
+    it('Verifica Button Clients', function() {
         TopBar.clickClients()
     });
 
-    it('Verifica Button Sales', function () {
+    it('Verifica Button Sales', function() {
         TopBar.clickSales()
     });
 
-    it('Verifica Button Numbers', function () {
+    it('Verifica Button Numbers', function() {
         TopBar.clickNumbers()
     });
 
-    it('Verifica Button Backoffice', function () {
+    it('Verifica Button Backoffice', function() {
         TopBar.clickBackOffice()
     });
 
-    it('Verifica Button News', function () {
-        if (!Cypress.env('monoUtenza')) {
+    if (!Cypress.env('isAviva')) {
+
+        it('Verifica Button News', function() {
             TopBar.clickNews()
-        } else this.skip()
-    });
+        });
 
-    it('Verifica Button Le mie info', function () {
-        if (!Cypress.env('monoUtenza')) {
+        it('Verifica Button Le mie info', function() {
             TopBar.clickMieInfo()
-        } else this.skip()
+        });
+    } else {
+        it('Verifica assenza Button News', function() {
+            TopBar.checkNotExistLanding('News')
+        });
 
-    });
-    it('Verifica link "Vai al Centro notifiche"', function () {
+        it('Verifica assenza Button Le mie info', function() {
+            TopBar.checkNotExistLanding('Le mie info')
+        });
+
+    }
+
+    it('Verifica link "Vai al Centro notifiche"', function() {
         HomePage.clickVaiAlCentroNotifiche()
     });
 
-    it('Verifica link: "Vedi tutte"', function () {
-        HomePage.clickVediTutte()
-    });
+    if (!Cypress.env('isAviva')) {
+        it('Verifica link: "Vedi tutte"', function() {
+            HomePage.clickVediTutte()
+        });
+    } else {
+        it('Verifica assenza link: "Vedi tutte"', function() {
+            HomePage.checkNotExistVediTutte()
+        });
+    }
 
-    it('Verifica Click Pannello "Notifiche in evidenza"', function () {
+    it('Verifica Click Pannello "Notifiche in evidenza"', function() {
         HomePage.clickPanelNotifiche()
     })
 

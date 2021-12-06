@@ -31,8 +31,7 @@ class HomePage {
                     req.reply({ fixture: 'mockNews.json' })
                 }
             })
-        }
-        else if(!Cypress.env('isAviva')){
+        } else if (!Cypress.env('isAviva')) {
             //Wait for news graphQL to be returned
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news')) {
@@ -42,10 +41,24 @@ class HomePage {
             })
         }
 
-        if (Cypress.env('isSecondWindow'))
-            cy.visit(Cypress.env('urlSecondWindow'))
-        else
-            cy.visit(Common.getBaseUrl())
+        // if (Cypress.env('isSecondWindow'))
+        //     cy.visit(Cypress.env('urlSecondWindow'))
+        // else if (Cypress.env('currentEnv') === 'TEST')
+        //     cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 })
+        // else {
+        //     if (!Cypress.env('monoUtenza'))
+        //         cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
+        //     else
+        //         cy.visit(Cypress.env('urlSecondWindow'), { responseTimeout: 31000 })
+        // }
+        if (Cypress.env('currentEnv') === 'TEST')
+            cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 })
+        else {
+            if (!Cypress.env('monoUtenza'))
+                cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
+            else
+                cy.visit(Cypress.env('urlSecondWindow'), { responseTimeout: 31000 })
+        }
 
         if (!mockedNews && !Cypress.env('isAviva'))
             cy.wait('@gqlNews')
@@ -71,6 +84,10 @@ class HomePage {
         cy.contains('Vedi tutte').click()
         cy.url().should('eq', Common.getBaseUrl() + 'news/recent')
         News.checkAtterraggio()
+    }
+
+    static checkNotExistVediTutte() {
+        cy.get('nx-link[routerlink="/news/recent"]').should('not.exist')
     }
 
     /**
@@ -108,7 +125,8 @@ class HomePage {
             cy.wrap($checkTendina).click({ force: true })
             cy.get('[class^="nx-context-menu__content"]').find('button').each($button => {
                 expect(['Disattiva notifiche di questo tipo', 'Attiva notifiche di questo tipo',
-                    'Segna come da leggere', 'Segna come già letta', 'Segna come da leggere'])
+                        'Segna come da leggere', 'Segna come già letta', 'Segna come da leggere'
+                    ])
                     .to.include($button.text().trim())
             })
 

@@ -35,6 +35,7 @@ const getIFrameDenuncia = () => {
 const LinksSinistri = {
     MOVIMENTAZIONE_SINISTRI: 'Movimentazione sinistri',
     DENUNCIA: 'Denuncia',
+    GESTIONE_CONTATTO_CARD: 'Gestione Contatto Card',
     DENUNCIA_BMP: 'Denuncia BMP', //! seconda finestra
     CONSULTAZIONE_SINISTRI: 'Consultazione sinistri',
     SINISTRI_INCOMPLETI: 'Sinistri incompleti',
@@ -59,17 +60,27 @@ const LinksContabilita = {
 class BackOffice {
 
     /**
-      * Verifica che tutti i link su Sinistri siano presenti
-      */
+     * Verifica che tutti i link su Sinistri siano presenti
+     */
     static checkLinksOnSinistriExist() {
-        const linksSinistri = Object.values(LinksSinistri)
 
-        if (!Cypress.env('monoUtenza'))
+        if (Cypress.env('monoUtenza')) {
+            delete LinksSinistri.DENUNCIA_BMP
+            const linksSinistri = Object.values(LinksSinistri)
             cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
                 expect($labelCard).to.contain(linksSinistri[i])
             })
-        else {
+        } else if (Cypress.env('isAviva')) {
+            delete LinksSinistri.DENUNCIA
             delete LinksSinistri.DENUNCIA_BMP
+            delete LinksSinistri.SINISTRI_INCOMPLETI
+            delete LinksSinistri.SINISTRI_CANALIZZATI
+            delete LinksSinistri.GESTIONE_CONTATTO_CARD
+            const linksSinistri = Object.values(LinksSinistri)
+            cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksSinistri[i])
+            })
+        } else {
             const linksSinistri = Object.values(LinksSinistri)
             cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
                 expect($labelCard).to.contain(linksSinistri[i])
@@ -81,19 +92,24 @@ class BackOffice {
      * Verifica che tutti i link su Contabilita siano presenti
      */
     static checkLinksOnContabilitaExist() {
-        const linksContabilita = Object.values(LinksContabilita)
 
-        if (!Cypress.env('monoUtenza'))
-            cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').should('have.length', 12).each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksContabilita[i])
-            })
-        else {
+        if (Cypress.env('monoUtenza')) {
             delete LinksContabilita.CONVENZIONI_IN_TRATTENUTA
             delete LinksContabilita.MONITORAGGIO_GUIDA_SMART
             const linksContabilita = Object.values(LinksContabilita)
             cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').each(($labelCard, i) => {
                 expect($labelCard).to.contain(linksContabilita[i])
             }).should('have.length', 10)
+        } else if (Cypress.env('isAviva')) {
+            const linksContabilita = Object.values(LinksContabilita)
+            cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').should('have.length', 10).each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksContabilita[i])
+            })
+        } else {
+            const linksContabilita = Object.values(LinksContabilita)
+            cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').should('have.length', 12).each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksContabilita[i])
+            })
         }
     }
 
@@ -121,9 +137,9 @@ class BackOffice {
     }
 
     /**
-      * Verifica atterraggio alla pagina
-      * @param {string} page - Nome della pagina 
-      */
+     * Verifica atterraggio alla pagina
+     * @param {string} page - Nome della pagina 
+     */
     static checkPage(page) {
         switch (page) {
             case LinksSinistri.MOVIMENTAZIONE_SINISTRI:
@@ -159,7 +175,7 @@ class BackOffice {
                 break;
             case LinksContabilita.GIORNATA_CONTABILE:
                 getIFrame().find('span:contains("Calendario"):visible')
-                getIFrame().find('button:contains("Chiudi giornata contabile"):visible')
+                getIFrame().find('#statoGiornaleDiCassa').should('be.visible')
                 break;
             case LinksContabilita.CONSULTAZIONE_MOVIMENTI:
                 getIFrame().find('button:contains("Cerca"):visible')
@@ -192,10 +208,11 @@ class BackOffice {
                 getIFrame().find('#buttonCerca:contains("Cerca"):visible')
                 break;
             case LinksContabilita.IMPOSTAZIONE_CONTABILITA:
-                getIFrame().find('ul > li > span:contains("Gestione dispositivi POS"):visible')
-                getIFrame().find('ul > li > span:contains("Prenotazione POS"):visible')
-                getIFrame().find('ul > li > span:contains("Retrocessioni Provv."):visible')
-                getIFrame().find('ul > li > span:contains("Impostazioni DAS"):visible')
+                getIFrame().find('#tabGiornataContabile').should('be.visible')
+                    // getIFrame().find('ul > li > span:contains("Gestione dispositivi POS"):visible')
+                    // getIFrame().find('ul > li > span:contains("Prenotazione POS"):visible')
+                    // getIFrame().find('ul > li > span:contains("Retrocessioni Provv."):visible')
+                    // getIFrame().find('ul > li > span:contains("Impostazioni DAS"):visible')
                 break;
             case LinksContabilita.CONVENZIONI_IN_TRATTENUTA:
                 cy.wait(10000)
@@ -209,8 +226,8 @@ class BackOffice {
     }
 
     /**
-    * Torna indietro su Backoffice
-    */
+     * Torna indietro su Backoffice
+     */
     static backToBackOffice() {
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', Common.getBaseUrl() + 'back-office')
@@ -224,7 +241,10 @@ class BackOffice {
     static clickNewsLanding() {
         cy.get('lib-news-card').click();
         Common.canaleFromPopup()
-        getIFrame().find('span:contains("IVASS"):visible')
+        if (Cypress.env('isAviva'))
+            getIFrame().find('span:contains("Nuova incentivazione Vita"):visible')
+        else
+            getIFrame().find('span:contains("IVASS"):visible')
     }
 }
 

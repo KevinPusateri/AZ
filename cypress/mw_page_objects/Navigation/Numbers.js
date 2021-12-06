@@ -61,8 +61,8 @@ class Numbers {
     }
 
     /**
-    * Verifica che il button PDF sia cliccato  
-    */
+     * Verifica che il button PDF sia cliccato  
+     */
     static verificaPDF() {
         cy.get('lib-container').find('a[class="circle icon-glossary btn-icon"]')
             .should('have.attr', 'href', 'https://portaleagenzie.pp.azi.allianz.it/dacommerciale/DSB/Content/PDF/Regole_Classificazione_Reportistica.pdf')
@@ -90,7 +90,7 @@ class Numbers {
                 // interceptPostAgenziePDF()
                 interceptGetAgenziePDF()
                 cy.get('app-kpi-card').contains(link).click()
-                cy.wait('@getDacommerciale', { requestTimeout: 60000 });
+                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
                 break;
             case 'MOTOR':
             case 'RAMI VARI RETAIL':
@@ -99,7 +99,7 @@ class Numbers {
                 interceptPostAgenziePDF()
                 cy.get('app-lob-title').contains(tab).parents('app-border-card')
                     .find('lib-da-link:contains("' + link + '")').click()
-                cy.wait('@postDacommerciale', { requestTimeout: 60000 });
+                cy.wait('@postDacommerciale', { requestTimeout: 120000 });
                 break;
 
         }
@@ -173,18 +173,19 @@ class Numbers {
             })
 
         })
-        cy.contains('VITA').click().then(() => {
-            cy.get('app-kpi-card').each((link) => {
-                cy.wrap(link).find('[class="title"]').then((title) => {
-                    const titleCardTitle = [
-                        'New business',
-                        'Incassi',
-                        'Riserve'
-                    ]
-                    expect(titleCardTitle).include(title.text())
+        if (Cypress.env('isAviva') !== true)
+            cy.contains('VITA').click().then(() => {
+                cy.get('app-kpi-card').each((link) => {
+                    cy.wrap(link).find('[class="title"]').then((title) => {
+                        const titleCardTitle = [
+                            'New business',
+                            'Incassi',
+                            'Riserve'
+                        ]
+                        expect(titleCardTitle).include(title.text())
+                    })
                 })
             })
-        })
 
         cy.contains('DANNI').click()
         cy.get('app-border-card').find('app-lob-title').each((titleLobCard) => {

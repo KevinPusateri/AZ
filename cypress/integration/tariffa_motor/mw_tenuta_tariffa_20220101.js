@@ -22,17 +22,17 @@ Cypress.config('defaultCommandTimeout', 60000)
 import { tariffaCases } from '../../fixtures/tariffaCases_20220101.json'
 //#endregion
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+        })
     })
 })
 
 beforeEach(() => {
     cy.preserveCookies()
-    Common.visitUrlOnEnv()
-    TopBar.clickSales()
-    Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
 })
 
 after(function () {
@@ -46,14 +46,23 @@ after(function () {
 })
 
 describe('Tenuta Tariffa Gennaio 2022 : ', function () {
-    tariffaCases.forEach((currentCase,k) => {
-        it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, () => {
-            TenutaTariffa.compilaDatiQuotazione(currentCase)
-            TenutaTariffa.compilaContraenteProprietario(currentCase)
-            TenutaTariffa.downloadZipLog()
-            TenutaTariffa.compilaVeicolo(currentCase)
-            TenutaTariffa.compilaProvenienza(currentCase)
-            TenutaTariffa.compilaOfferta(currentCase)
+    tariffaCases.forEach((currentCase, k) => {
+        it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
+            if (currentCase.Identificativo_Caso !== 'SKIP') {
+
+                Common.visitUrlOnEnv()
+                TopBar.clickSales()
+                Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+
+                TenutaTariffa.compilaDatiQuotazione(currentCase)
+                TenutaTariffa.compilaContraenteProprietario(currentCase)
+                TenutaTariffa.compilaVeicolo(currentCase)
+                TenutaTariffa.compilaProvenienza(currentCase)
+                TenutaTariffa.compilaOfferta(currentCase)
+                TenutaTariffa.checkTariffa(currentCase)
+            }
+            else
+                this.skip()
         });
     });
 })

@@ -6,6 +6,7 @@ const LinksBurgerMenu = {
     HOME_BACKOFFICE: 'Home Backoffice',
     MOVIMENTAZIONE_SINISTRI: 'Movimentazione sinistri',
     DENUNCIA: 'Denuncia',
+    GESTIONE_CONTATTO_CARD: 'Gestione Contatto Card',
     DENUNCIA_BMP: 'Denuncia BMP',
     CONSULTAZIONE_SINISTRI: 'Consultazione sinistri',
     SINISTRI_INCOMPLETI: 'Sinistri incompleti',
@@ -33,10 +34,21 @@ class BurgerMenuBackOffice extends BackOffice {
         cy.get('lib-burger-icon').click()
         const linksBurger = Object.values(LinksBurgerMenu)
 
-        if (!Cypress.env('monoUtenza'))
+        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
             cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            }).should('have.length', 19)
+            }).should('have.length', 20)
+        else if (Cypress.env('isAviva')) {
+            delete LinksBurgerMenu.DENUNCIA
+            delete LinksBurgerMenu.DENUNCIA_BMP
+            delete LinksBurgerMenu.SINISTRI_INCOMPLETI
+            delete LinksBurgerMenu.SINISTRI_CANALIZZATI
+            delete LinksBurgerMenu.GESTIONE_CONTATTO_CARD
+            const linksBurger = Object.values(LinksBurgerMenu)
+            cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
+                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            }).should('have.length', 13)
+        }
         else {
 
             delete LinksBurgerMenu.DENUNCIA_BMP
@@ -45,7 +57,7 @@ class BurgerMenuBackOffice extends BackOffice {
             const linksBurger = Object.values(LinksBurgerMenu)
             cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            }).should('have.length', 16)
+            }).should('have.length', 17)
         }
     }
 
@@ -61,7 +73,15 @@ class BurgerMenuBackOffice extends BackOffice {
         super.checkPage(page)
     }
 
+    /**
+     * Verifica assenza link in Burger Menu BackOffice
+     * @param {String} link : verifica il link che non deve essere presente
+     */
+    static checkNotExistLink(link) {
+        cy.get('lib-burger-icon').click()
+        cy.get('lib-side-menu').find('a').should('not.contain.text', link)
 
+    }
 }
 
 export default BurgerMenuBackOffice

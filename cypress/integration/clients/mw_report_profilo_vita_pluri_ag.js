@@ -72,17 +72,18 @@ describe('Matrix Web : Report Profilo Vita', {
 }, () => {
     it('Da Clients ricercare un cliente PG presente su più agenzia dell\'hub con Polizza Vita e da menu azioni premere Report profilo vita\n' +
         'Verificare che si apra la maschera di disambiguazione con le agenzie\n' +
-        '- scegliendo l\'agenzia dove non ha polizze vita : Verificare che venga visualizzato il messaggio "il cliente non ha in portafoglio nessuna polizza vita"\n' +
         '- scegliendo l\'agenzia dove ha le polizze vita :  verificare che si apra correttamente il pdf\n', () => {
             cy.log('Retriving client PG present in different agencies with polizze vita, please wait...')
             //! Cliente registrato su più agenzie HUB 010375000 con polizza VI solo su una ag -> partita iva 00578020935 
             cy.getClientInDifferentAgenciesWithPolizze('010375000', 80, false, false, 'PG', '00578020935').then(currentClient => {
 
+                debugger
                 let customImpersonification = {
                     "agentId": currentClient.impersonificationToUse.account,
                     "agency": currentClient.impersonificationToUse.agency
                 }
                 cy.log('Retrived Client : ' + currentClient.clientToUse.vatIN)
+                debugger
                 LoginPage.logInMWAdvanced(customImpersonification)
                 TopBar.search(currentClient.clientToUse.vatIN)
                 cy.get('body').as('body').then(($body) => {
@@ -101,8 +102,9 @@ describe('Matrix Web : Report Profilo Vita', {
 
                 SintesiCliente.checkAtterraggioSintesiCliente(currentClient.clientToUse.name)
 
+                //! Commentato per cambiamento comportamento
                 //Clicchiamo in disambiguazione nell'ag dove NON ha le polizze VI
-                SintesiCliente.emettiReportProfiloVita(currentClient.agencyToVerify, true)
+                //SintesiCliente.emettiReportProfiloVita(currentClient.agencyToVerify, true)
 
                 //Clicchiamo in disambiguazione nell'ag che ha la polizza VI
                 SintesiCliente.emettiReportProfiloVita('375000')

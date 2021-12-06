@@ -44,38 +44,38 @@ class NoteContratto {
         }
         loopDeleteNotes()
         cy.get('nx-icon[name="product-board-paper-note"]').should('not.exist')
-        //#endregion
+            //#endregion
 
         //#region Aggiungi una nota di contratto 
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').first().should('exist').then(($contract) => {
-            cy.wrap($contract)
-                .find('app-contract-context-menu > nx-icon').click()
-            cy.get('.cdk-overlay-container').should('contain.text', 'Note di contratto').within(($overlay) => {
-                cy.get('button').should('be.visible')
-                cy.wrap($overlay).find('button:contains("Note di contratto")').click()
-            })
-            cy.get('nx-modal-container').should('be.visible').within(() => {
-                cy.get('button').find('span:contains("Aggiungi nota")').click()
-            })
-
-            cy.get('.cdk-overlay-container').should('be.visible')
-            cy.get('lib-note-action-modal').should('be.visible').within(() => {
-                cy.get('span').should('be.visible').and('contain.text', 'Salva')
-                cy.get('input[name="title"]').should('be.visible').type('Test Nota')
-
-                cy.fixture('Nota.json').then((data) => {
-                    cy.get('textarea[name="description"]').should('be.visible').type(JSON.stringify(data.nota))
-                    cy.get('button').find('span:contains("Salva")').first().click()
+                cy.wrap($contract)
+                    .find('app-contract-context-menu > nx-icon').click()
+                cy.get('.cdk-overlay-container').should('contain.text', 'Note di contratto').within(($overlay) => {
+                    cy.get('button').should('be.visible')
+                    cy.wrap($overlay).find('button:contains("Note di contratto")').click()
+                })
+                cy.get('nx-modal-container').should('be.visible').within(() => {
+                    cy.get('button').find('span:contains("Aggiungi nota")').click()
                 })
 
+                cy.get('.cdk-overlay-container').should('be.visible')
+                cy.get('lib-note-action-modal').should('be.visible').within(() => {
+                    cy.get('span').should('be.visible').and('contain.text', 'Salva')
+                    cy.get('input[name="title"]').should('be.visible').type('Test Nota')
+
+                    cy.fixture('Nota.json').then((data) => {
+                        cy.get('textarea[name="description"]').should('be.visible').type(JSON.stringify(data.nota))
+                        cy.get('button').find('span:contains("Salva")').first().click().wait(2000)
+                    })
+
+                })
+                Common.canaleFromPopup()
+
+                cy.get('lib-contract-notes-badge').should('exist').and('be.visible')
+                    .find('[class="badge-label"]:contains("Note")').should('be.visible')
+
             })
-            Common.canaleFromPopup()
-
-            cy.get('lib-contract-notes-badge').should('exist').and('be.visible')
-                .find('[class="badge-label"]:contains("Note")').should('be.visible')
-
-        })
-        //#endregion
+            //#endregion
     }
 
     /**

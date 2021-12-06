@@ -73,8 +73,8 @@ const LandingPage = {
 const LinkUtilita = {
     CRUSCOTTO_RESILIENCE: 'Cruscotto resilience',
     CASELLA_DI_POSTA_ED_AGENZIA: 'Casella di posta agente ed agenzia',
-    QUATTRORUOTE_CALCOLO_VALORE_VEICOLO: 'Quattroruote - Calcolo valore veicolo', //! seconda finestra
-    REPORT_ALLIANZ_NOW: 'Report Allianz Now', //! seconda finestra
+    QUATTRORUOTE_CALCOLO_VALORE_VEICOLO: 'Quattroruote - Calcolo valore veicolo',
+    REPORT_ALLIANZ_NOW: 'Report Allianz Now',
     INTERROGAZIONI_CENTRALIZZATE: 'Interrogazioni centralizzate',
     BANCHE_DATI_ANIA: 'Banche Dati ANIA',
     GESTIONE_MAGAZZINO_OBU: 'Gestione Magazzino OBU',
@@ -112,16 +112,25 @@ class TopBar extends HomePage {
     }
 
     /**
-    * @param {string} value - What to search
-    */
+     * @param {string} value - What to search
+     */
     static search(value) {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('searchClient')) {
+                req.alias = 'gqlSearchClient'
+            }
+        });
+
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').click()
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').type(value).type('{enter}').wait(2000)
+
+        cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
+        cy.get('lib-client-item').should('be.visible')
     }
 
     /**
      * Click link dai suggerimenti
-    */
+     */
     static searchClickLinkSuggest() {
         cy.get('input[name="main-search-input"]').should('be.visible').click()
         cy.get('lib-shortcut-section-item').should('be.visible')
@@ -144,9 +153,10 @@ class TopBar extends HomePage {
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.wait('@getClients', { requestTimeout: 30000 })
         cy.url().should('eq', Common.getBaseUrl() + 'clients/')
-        cy.get('app-donut-chart').should('be.visible')
-        cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
-
+        if (!Cypress.env('isAviva')) {
+            cy.get('app-donut-chart').should('be.visible')
+            cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
+        }
     }
 
     /**
@@ -173,7 +183,7 @@ class TopBar extends HomePage {
     static clickSales() {
         interceptPageSales()
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        // cy.wait('@getSales', { requestTimeout: 50000 })
+            // cy.wait('@getSales', { requestTimeout: 50000 })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
     }
 
@@ -195,6 +205,11 @@ class TopBar extends HomePage {
         cy.get('app-product-button-list').find('a').contains('Le mie info').click()
         cy.wait('@getMieInfo', { requestTimeout: 50000 })
         cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo?info=1')
+    }
+
+    static checkNotExistLanding(page) {
+        cy.get('app-product-button-list').find('a').should('not.contain.text', page)
+
     }
 
     /**
@@ -244,30 +259,36 @@ class TopBar extends HomePage {
      */
     static checkLinksUtility() {
 
-        const linksUtilita = Object.values(LinkUtilita)
-
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
-            cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksUtilita[i])
-            })
-        else if (Cypress.env('isAviva'))
-            cy.get('lib-utility').find('lib-utility-label').should('have.length', 5).each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksUtilita[i])
-            })
-        else {
-            delete LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO
-            delete LinkUtilita.REPORT_ALLIANZ_NOW
             const linksUtilita = Object.values(LinkUtilita)
-            cy.get('lib-utility').find('lib-utility-label').should('have.length', 8).each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksUtilita[i])
-            })
-        }
 
-    }
-    /**
-     * Click su un link dal menu a tendina di Utilità
-     * @param {string} page - nome del link 
-     */
+            if (Cypress.env('monoUtenza')) {
+                delete LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO
+                delete LinkUtilita.REPORT_ALLIANZ_NOW
+                const linksUtilita = Object.values(LinkUtilita)
+                cy.get('lib-utility').find('lib-utility-label').should('have.length', 8).each(($labelCard, i) => {
+                    expect($labelCard).to.contain(linksUtilita[i])
+                })
+            } else if (Cypress.env('isAviva')) {
+                delete LinkUtilita.REPORT_ALLIANZ_NOW
+                delete LinkUtilita.GESTIONE_MAGAZZINO_OBU
+                delete LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS
+                delete LinkUtilita.CRUSCOTTO_INSTALLAZIONE_DISPOSITIVO_SATELLITARE
+                delete LinkUtilita.MONITOR_SCORING_AZ_BONUS_DRIVE
+                const linksUtilita = Object.values(LinkUtilita)
+                cy.get('lib-utility').find('lib-utility-label').should('have.length', 5).each(($labelCard, i) => {
+                    expect($labelCard).to.contain(linksUtilita[i])
+                })
+            } else if (Cypress.env('monoUtenza')) {
+                cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
+                    expect($labelCard).to.contain(linksUtilita[i])
+                })
+            }
+
+        }
+        /**
+         * Click su un link dal menu a tendina di Utilità
+         * @param {string} page - nome del link 
+         */
     static clickLinkOnUtilita(page) {
         if (page === LinkUtilita.CASELLA_DI_POSTA_ED_AGENZIA ||
             page === LinkUtilita.BANCHE_DATI_ANIA ||
@@ -394,14 +415,24 @@ class TopBar extends HomePage {
      * Verifica la presenza dei link sull'icona incident
      */
     static checkLinksIncident() {
-        const linksIncident = [
-            'SRM',
-            'SisCo',
-            'Elenco telefonico'
-        ]
-        cy.get('lib-utility-label').find('a').each(($link, i) => {
-            expect($link.text().trim()).to.include(linksIncident[i]);
-        })
+        if (!Cypress.env('isAviva')) {
+            const linksIncident = [
+                'SRM',
+                'SisCo',
+                'Elenco telefonico'
+            ]
+            cy.get('lib-utility-label').find('a').each(($link, i) => {
+                expect($link.text().trim()).to.include(linksIncident[i]);
+            })
+        } else {
+            const linksIncident = [
+                'Elenco telefonico'
+            ]
+            cy.get('lib-utility-label').find('a').each(($link, i) => {
+                expect($link.text().trim()).to.include(linksIncident[i]);
+            })
+        }
+
     }
 
     /**
@@ -453,8 +484,7 @@ class TopBar extends HomePage {
                     cy.visit(stub.args[0][0]);
                     stub.restore;
                 });
-            }
-            else {
+            } else {
                 cy.get('nx-icon[name="launch"]').click()
                 Common.canaleFromPopup(true)
             }

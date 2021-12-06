@@ -11,7 +11,7 @@ class LoginPage {
 
         cy.visit('/', { responseTimeout: 31000 }, {
             onBeforeLoad: win => {
-                win.sessionStorage.clear();
+                // win.sessionStorage.clear();
                 Object.defineProperty(win.navigator, 'language', { value: 'it-IT' });
                 Object.defineProperty(win.navigator, 'languages', { value: ['it'] });
                 Object.defineProperty(win.navigator, 'accept_languages', { value: ['it'] });
@@ -140,6 +140,8 @@ class LoginPage {
         //Skip this two requests that blocks on homepage
         cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
         cy.intercept(/launch-*/, 'ignore').as('launchStaging')
+        cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
+        cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
 
         if (mockedNotifications) {
 
@@ -207,8 +209,7 @@ class LoginPage {
                             TopBar.clickSecondWindow()
                     } else {
                         let currentImpersonificationToPerform
-                        //Verifichiamo se ho customImpersonification valorizzato
-                        debugger
+                            //Verifichiamo se ho customImpersonification valorizzato
                         if (Cypress.$.isEmptyObject(customImpersonification)) {
                             //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza oppure AVIVA
                             if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza'))
@@ -226,8 +227,7 @@ class LoginPage {
                                     "agentId": user.agentId,
                                     "agency": user.agency,
                                 }
-                        }
-                        else
+                        } else
                             currentImpersonificationToPerform = {
                                 "agentId": customImpersonification.agentId,
                                 "agency": customImpersonification.agency,

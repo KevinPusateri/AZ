@@ -220,13 +220,29 @@ class DenunciaSinistriPage {
      * @param {string} tag : html element (button, etc...)
      * @param {string} label : text displayed
      */
-        static clickObjGeoModal_ByIDAndLabel(tag, label) {
+        static clickObjGeoModal_ByIDAndLabel(tag, label, carrozzeria) {
            
             debugger
-            cy.on('window:confirm', () => true )  
-            cy.on('window:alert', () => true )  
-            getIFrameGeo().contains(tag, label).should('exist').click()
+            getIFrameGeo().contains(carrozzeria).should('exist').click().log('>> object with label: "' +label+'" is clicked')
+            getIFrameGeo().contains(tag, label).should('be.visible').click()
+            cy.on("window:confirm", (str) => {
+                expect(str).to.include(carrozzeria);
+              });
+            debugger
+            cy.window().then(win => {
+                debugger
+                const el = win.$('carrozzeria')
+                cy.wrap(el)
+                  .find('button')
+                  .contains('Confirm')
+                  .click()
+              })
             /*
+            cy.on('window:confirm', () => true);
+             
+            
+            
+            */ /*
             getIFrameGeo().contains(tag, label).should('exist').click().then(() =>                      
                 //cy.on('window:confirm', () => true )                                                
                 cy.on('window:alert', () => true )  
@@ -455,13 +471,16 @@ class DenunciaSinistriPage {
       static setValue_ById(id, value) {
         return new Cypress.Promise((resolve) => {
             cy.wait(500)             
-            getIFrameDenuncia().find(id).should('exist').clear().log('>> clean object value')
-            cy.wait(1000)              
-            getIFrameDenuncia().find(id).should('exist').type(value).log('>> value: [' + value +'] entered')                   
+            getIFrameDenuncia().find(id).should('exist').clear()
+            cy.log('>> clean object value')
+            cy.wait(1000)
+            getIFrameDenuncia().find(id).should('exist').type(value)
+            cy.log('>> value: [' + value +'] entered')                   
             cy.wait(1000)
             resolve(true)            
         });
     }
+    
     /**
      * Inserts a string @value into the object identified by its @id Geo Location window
      * @param {string} id : locator object id

@@ -15,7 +15,7 @@ import MovimentazioneSinistriPage from "../../../mw_page_objects/backoffice/Movi
 import AcquizioneDocumentiPage from "../../../mw_page_objects/backoffice/AcquizioneDocumentiPage"
 
 //#region Mysql DB Variables
-const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const testName = Cypress.spec.name.split('/')[2].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
@@ -31,7 +31,7 @@ before(() => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
         LoginPage.logInMWAdvanced()
         TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Consultazione sinistri') 
+        BackOffice.clickCardLink('Movimentazione sinistri') 
     })
 })
 

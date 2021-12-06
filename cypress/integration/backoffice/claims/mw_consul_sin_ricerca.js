@@ -14,7 +14,7 @@ import ConsultazioneSinistriPage from "../../../mw_page_objects/backoffice/Consu
 
 
 //#region Mysql DB Variables
-const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
+const testName = Cypress.spec.name.split('/')[2].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
@@ -142,65 +142,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
     });
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa controparte ', function () {
-               
-        ConsultazioneSinistriPage.clickObj_ByLabel('a','Targa CTP')
-        ConsultazioneSinistriPage.setValue_ById('#plateCTP', targa_CTP)
-        let classvalue = "search_submit targaCTP k-button"
-        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')        
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
-    });
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici della CTP persona fisica ', function () {
-         
-        ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici CTP')
-        ConsultazioneSinistriPage.setValue_ById('#cognomeCTP','')
-        ConsultazioneSinistriPage.setValue_ById('#nomeCTP','')
-        ConsultazioneSinistriPage.setValue_ById('#cognomeCTP', cognome_CTP)
-        ConsultazioneSinistriPage.setValue_ById('#nomeCTP', nome_CTP)
-        ConsultazioneSinistriPage.setValue_ById('#data_daCTP', dt_avv)
-        ConsultazioneSinistriPage.setValue_ById('#data_aCTP', dt_avv)
-        let classvalue = "search_submit anagraficaCTP k-button"
-        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        const locatorcf ="#results > div.k-grid-content > table > tbody"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(locatorcf, cf_CTP)
-        
-        const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"
-        ConsultazioneSinistriPage.clickBtn_ById(locRArrow)
-        
-        const locResult = "#results > div.k-grid-content > table > tbody > tr"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(locResult, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
-    });
-    
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per codice fiscale del CTP persona fisica ', function () {
-      
-        ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici CTP')
-        ConsultazioneSinistriPage.setValue_ById('#cognomeCTP','')
-        ConsultazioneSinistriPage.setValue_ById('#nomeCTP','')
-        ConsultazioneSinistriPage.setValue_ById('#cfCTP', '')
-        ConsultazioneSinistriPage.setValue_ById('#cfCTP', cf_CTP)
-        ConsultazioneSinistriPage.setValue_ById('#data_daCTP', dt_avv)
-        ConsultazioneSinistriPage.setValue_ById('#data_aCTP', dt_avv)
-        let classvalue = "search_submit anagraficaCTP k-button"
-        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        const locatorcf ="#results > div.k-grid-content > table > tbody"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(locatorcf, cf_CTP)
-        
-        const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"
-        ConsultazioneSinistriPage.clickBtn_ById(locRArrow)
-        
-        const locResult = "#results > div.k-grid-content > table > tbody > tr"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText2(locResult, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
-    });
 
     it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per denominazione del cliente come persona giuridica ', function () {
        

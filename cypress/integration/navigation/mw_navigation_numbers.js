@@ -12,7 +12,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-//#endregion
+    //#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
@@ -21,7 +21,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -31,52 +31,52 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-after(function () {
+after(function() {
     TopBar.logOutMW()
-    //#region Mysql
+        //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
 
 })
 
 
-describe('Matrix Web : Navigazioni da Numbers - ', function () {
-    it('Verifica aggancio Numbers', function () {
+describe('Matrix Web : Navigazioni da Numbers - ', function() {
+    it('Verifica aggancio Numbers', function() {
         TopBar.clickNumbers()
     })
 
-    it('Verifica dati scritti siano corretti nella pagina Linee di Business', function () {
+    it('Verifica dati scritti siano corretti nella pagina Linee di Business', function() {
         TopBar.clickNumbers()
         Numbers.checkCards()
     })
 
-    it('Verifica Filtro', function () {
+    it('Verifica Filtro', function() {
         TopBar.clickNumbers()
         Numbers.verificaFiltro()
     })
 
-    it('Verifica PDF', function () {
+    it('Verifica PDF', function() {
         TopBar.clickNumbers()
         Numbers.verificaFiltro()
     })
 
-    it('Verifica aggancio Ricavi di Agenzia', function () {
+    it('Verifica aggancio Ricavi di Agenzia', function() {
         TopBar.clickNumbers()
         Numbers.checkAtterraggioRicaviDiAgenzia()
         Numbers.backToNumbers('business-lines')
     })
 
-    it('Verifica su Linee di Business - dal Tab DANNI l\'aggancio a New business', function () {
+    it('Verifica su Linee di Business - dal Tab DANNI l\'aggancio a New business', function() {
         TopBar.clickNumbers()
         Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
         Numbers.clickAndCheckAtterraggio('DANNI', 'New business')
         Numbers.backToNumbers('business-lines')
     })
 
-    it('Verifica su Linee di Business - dal Tab DANNI l\'aggancio a Incassi', function () {
+    it('Verifica su Linee di Business - dal Tab DANNI l\'aggancio a Incassi', function() {
         TopBar.clickNumbers()
         Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
         Numbers.clickAndCheckAtterraggio('DANNI', 'Incassi')
@@ -84,155 +84,162 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
 
     })
 
-    it('Verifica su Linee di Business - dal Tab DANNI l\'aggancio a Portafoglio', function () {
+    it('Verifica su Linee di Business - dal Tab DANNI l\'aggancio a Portafoglio', function() {
         TopBar.clickNumbers()
         Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
         Numbers.clickAndCheckAtterraggio('DANNI', 'Portafoglio')
         Numbers.backToNumbers('business-lines')
     })
-    it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a New business', function () {
+    it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a New business', function() {
         TopBar.clickNumbers()
         Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
         Numbers.clickAndCheckAtterraggio('MOTOR', 'New business')
         Numbers.backToNumbers('business-lines')
     })
 
-    it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a Incassi', function () {
+    it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a Incassi', function() {
         TopBar.clickNumbers()
         Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
         Numbers.clickAndCheckAtterraggio('MOTOR', 'Incassi')
         Numbers.backToNumbers('business-lines')
     })
 
-    it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a Portafoglio', function () {
+    it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a Portafoglio', function() {
         TopBar.clickNumbers()
         Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
         Numbers.clickAndCheckAtterraggio('MOTOR', 'Portafoglio')
         Numbers.backToNumbers('business-lines')
     })
 
-    it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a Retention', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('MOTOR', 'Retention')
-        Numbers.backToNumbers('business-lines')
-    })
+    if (!Cypress.env('isAviva')) {
+        it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a Retention', function() {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('MOTOR', 'Retention')
+            Numbers.backToNumbers('business-lines')
+        })
+    }
 
-    it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a New business', function () {
+    it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a New business', function() {
         TopBar.clickNumbers()
         Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
         Numbers.clickAndCheckAtterraggio('RAMI VARI RETAIL', 'New business')
         Numbers.backToNumbers('business-lines')
     })
 
-    it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a Incassi', function () {
+    it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a Incassi', function() {
         TopBar.clickNumbers()
         Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
         Numbers.clickAndCheckAtterraggio('RAMI VARI RETAIL', 'Incassi')
         Numbers.backToNumbers('business-lines')
     })
 
-    it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a Portafoglio', function () {
+    it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a Portafoglio', function() {
         TopBar.clickNumbers()
         Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
         Numbers.clickAndCheckAtterraggio('RAMI VARI RETAIL', 'Portafoglio')
         Numbers.backToNumbers('business-lines')
     })
-    it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a Retention', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('RAMI VARI RETAIL', 'Retention')
-        Numbers.backToNumbers('business-lines')
-    })
 
-    it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a New business', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('MIDCO', 'New business')
-        Numbers.backToNumbers('business-lines')
-    })
+    if (!Cypress.env('isAviva')) {
+        it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a Retention', function() {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('RAMI VARI RETAIL', 'Retention')
+            Numbers.backToNumbers('business-lines')
+        })
+    }
 
-    it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Incassi', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('MIDCO', 'Incassi')
-        Numbers.backToNumbers('business-lines')
-    })
+    if (!Cypress.env('isAviva')) {
+        it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a New business', function() {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('MIDCO', 'New business')
+            Numbers.backToNumbers('business-lines')
+        })
 
-    it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Portafoglio', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('MIDCO', 'Portafoglio')
-        Numbers.backToNumbers('business-lines')
-    })
+        it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Incassi', function() {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('MIDCO', 'Incassi')
+            Numbers.backToNumbers('business-lines')
+        })
 
-    it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a New business', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('ALTRO', 'New business')
-        Numbers.backToNumbers('business-lines')
-    })
+        it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a Portafoglio', function() {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('MIDCO', 'Portafoglio')
+            Numbers.backToNumbers('business-lines')
+        })
 
-    it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Incassi', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('ALTRO', 'Incassi')
-        Numbers.backToNumbers('business-lines')
-    })
+        it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a New business', function() {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('ALTRO', 'New business')
+            Numbers.backToNumbers('business-lines')
+        })
 
-    it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Portafoglio', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
-        Numbers.clickAndCheckAtterraggio('ALTRO', 'Portafoglio')
-        Numbers.backToNumbers('business-lines')
-    })
+        it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Incassi', function() {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('ALTRO', 'Incassi')
+            Numbers.backToNumbers('business-lines')
+        })
 
-    it('Verifica su Prodotti aggancio Primo indice prodotto', function () {
+        it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a Portafoglio', function() {
+            TopBar.clickNumbers()
+            Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
+            Numbers.clickAndCheckAtterraggio('ALTRO', 'Portafoglio')
+            Numbers.backToNumbers('business-lines')
+        })
+    }
+
+    it('Verifica su Prodotti aggancio Primo indice prodotto', function() {
         TopBar.clickNumbers()
         Numbers.clickTab('PRODOTTI', 'products')
         Numbers.clickAndCheckAtterraggioPrimoIndiceProdotto()
         Numbers.backToNumbers('products')
     })
 
-    it('Verifica su Indicatori Operativi aggancio  Monitoraggio carico', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
-        Numbers.clickAndCheckAtterraggioMonitoraggioCarico()
-    })
+    if (!Cypress.env('isAviva')) {
+        it('Verifica su Indicatori Operativi aggancio  Monitoraggio carico', function() {
+            TopBar.clickNumbers()
+            Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
+            Numbers.clickAndCheckAtterraggioMonitoraggioCarico()
+        })
 
-    it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function () {
-        if (!Cypress.env('monoUtenza')) {
+        it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function() {
             TopBar.clickNumbers()
             Numbers.clickTab('INCENTIVI', 'incentives')
             Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178 DAN')
             Numbers.backToNumbers('incentives')
-        } else this.skip()
-    })
+        })
 
-    it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178"', function () {
-        if (!Cypress.env('monoUtenza')) {
+        it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178"', function() {
+            if (!Cypress.env('monoUtenza')) {
+                TopBar.clickNumbers()
+                Numbers.clickTab('INCENTIVI', 'incentives')
+                Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178')
+                Numbers.backToNumbers('incentives')
+            } else this.skip()
+        })
+
+        it('Verifica su Incentivi aggancio Primo indice dal Panel "AGENZIA 7 - 4549 MONZA"', function() {
+            if (!Cypress.env('monoUtenza')) {
+                this.skip()
+            } else {
+                TopBar.clickNumbers()
+                Numbers.clickTab('INCENTIVI', 'incentives')
+                Numbers.checkAtterraggioPrimoIndiceIncentivi('AGENZIA 7 - 4549 MONZA')
+                Numbers.backToNumbers('incentives')
+            }
+        })
+
+        it('Verifica su Indicatori Operativi aggancio Primo indice digitale', function() {
             TopBar.clickNumbers()
-            Numbers.clickTab('INCENTIVI', 'incentives')
-            Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178')
-            Numbers.backToNumbers('incentives')
-        } else this.skip()
-    })
-
-    it('Verifica su Incentivi aggancio Primo indice dal Panel "AGENZIA 7 - 4549 MONZA"', function () {
-        if (!Cypress.env('monoUtenza')) {
-            this.skip()
-        } else {
-            TopBar.clickNumbers()
-            Numbers.clickTab('INCENTIVI', 'incentives')
-            Numbers.checkAtterraggioPrimoIndiceIncentivi('AGENZIA 7 - 4549 MONZA')
-            Numbers.backToNumbers('incentives')
-        }
-    })
-
-    it('Verifica su Indicatori Operativi aggancio Primo indice digitale', function () {
-        TopBar.clickNumbers()
-        Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
-        Numbers.clickAndCheckAtterraggioPrimoIndiceDigitale()
-        Numbers.backToNumbers('operational-indicators')
-    })
+            Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
+            Numbers.clickAndCheckAtterraggioPrimoIndiceDigitale()
+            Numbers.backToNumbers('operational-indicators')
+        })
+    }
 });

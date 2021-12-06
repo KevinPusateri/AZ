@@ -15,7 +15,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-//#endregion
+    //#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
@@ -23,46 +23,45 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-  cy.getUserWinLogin().then(data => {
-    cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-    LoginPage.logInMWAdvanced()
-  })
+    cy.getUserWinLogin().then(data => {
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+        LoginPage.logInMWAdvanced()
+    })
 })
 
 beforeEach(() => {
-  cy.preserveCookies()
-  Common.visitUrlOnEnv()
+    cy.preserveCookies()
+    Common.visitUrlOnEnv()
 })
 
-after(function () {
-  TopBar.logOutMW()
-  //#region Mysql
-  cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-    let tests = testsInfo
-    cy.finishMysql(dbConfig, insertedId, tests)
-  })
-  //#endregion
+after(function() {
+        TopBar.logOutMW()
+            //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+                let tests = testsInfo
+                cy.finishMysql(dbConfig, insertedId, tests)
+            })
+            //#endregion
 
-})
-//#endregion
-
-
-describe('Matrix Web : Gestione fonte principale', function () {
-
-  Cypress._.times(1, () => {
-
-    it('Verifica aggancio Gestione fonte principale - Persona Fisica -i referenti siano corretti', function () {
-      TopBar.clickClients()
-      BurgerMenuClients.clickLink('Gestione fonte principale')
-      SCUGestioneFontePrincipale.eseguiOnPersonaFisica()
     })
+    //#endregion
 
-    it('Verifica aggancio Gestione fonte principale - Persona Giuridica -i referenti siano corretti', function () {
-      TopBar.clickClients()
-      BurgerMenuClients.clickLink('Gestione fonte principale')
-      SCUGestioneFontePrincipale.eseguiOnPersonaGiuridica()
+
+describe('Matrix Web : Gestione fonte principale', function() {
+
+    Cypress._.times(1, () => {
+
+        it('Verifica aggancio Gestione fonte principale - Persona Fisica -i referenti siano corretti', function() {
+            TopBar.clickClients()
+            BurgerMenuClients.clickLink('Gestione fonte principale')
+            SCUGestioneFontePrincipale.eseguiOnPersonaFisica()
+        })
+
+        it('Verifica aggancio Gestione fonte principale - Persona Giuridica -i referenti siano corretti', function() {
+            TopBar.clickClients()
+            BurgerMenuClients.clickLink('Gestione fonte principale')
+            SCUGestioneFontePrincipale.eseguiOnPersonaGiuridica()
+        })
+
     })
-
-  })
 })
-

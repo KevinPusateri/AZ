@@ -5,6 +5,7 @@
 
 /// <reference types="Cypress" />
 import Common from "../../mw_page_objects/common/Common"
+
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
@@ -15,7 +16,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-//#endregion
+    //#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
@@ -25,7 +26,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -35,51 +36,54 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-after(function () {
+after(function() {
     TopBar.logOutMW()
-    //#region Mysql
+        //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
 
 })
 
-describe('Buca di Ricerca - Risultati Clients', {
-    retries: {
-        runMode: 1,
-        openMode: 0,
-    }
-}, function () {
-    it('Verifica Ricerca Cliente: nome o cognome ', function () {
+describe('Buca di Ricerca - Risultati Clients', function() {
+
+    it('Verifica Ricerca Cliente: nome o cognome ', function() {
         LandingRicerca.searchRandomClient(true, 'PF', 'E')
         LandingRicerca.checkRisultatiRicerca()
     })
 
-    it('Verifica Modifica filtri', function () {
+    it('Verifica Modifica filtri', function() {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.filtraRicerca("P")
     })
 
-    it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function () {
 
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
-            TopBar.search('PULINI')
-            LandingRicerca.clickFirstResult()
-            SintesiCliente.checkAtterraggioSintesiCliente('PULINI')
-        } 
-        else if(Cypress.env('isAviva')){
-            TopBar.search('LUCIANO FASCE')
-            LandingRicerca.clickFirstResult()
-            SintesiCliente.checkAtterraggioSintesiCliente('LUCIANO FASC')
-        }
-        else{
-            TopBar.search('GIUSEPPE NAZZARRO')
-            LandingRicerca.clickFirstResult()
-            SintesiCliente.checkAtterraggioSintesiCliente('GIUSEPPE NAZZARRO')
-        }
+    if (Cypress.env('isAviva')) {
+
+        describe('Buca di Ricerca - Risultati Clients - AVIVA', function() {
+
+            it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function() {
+                TopBar.search('MASSIMO CASALEGNO')
+                LandingRicerca.clickFirstResult()
+                SintesiCliente.checkAtterraggioSintesiCliente('MASSIMO CASALEGNO')
+            })
+        })
+    } else {
+        it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function() {
+
+            if (!Cypress.env('monoUtenza')) {
+                TopBar.search('PULINI')
+                LandingRicerca.clickFirstResult()
+                SintesiCliente.checkAtterraggioSintesiCliente('PULINI')
+            } else {
+                TopBar.search('GIUSEPPE NAZZARRO')
+                LandingRicerca.clickFirstResult()
+                SintesiCliente.checkAtterraggioSintesiCliente('GIUSEPPE NAZZARRO')
+            }
 
 
-    })
+        })
+    }
 })

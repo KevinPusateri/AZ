@@ -47,9 +47,19 @@ class LandingClients {
 
         const linksCollegamentiRapidi = Object.values(LinksRapidi)
         cy.get('app-home-right-section').should('be.visible')
-        cy.get('app-home-right-section').find('app-rapid-link').should('have.length', 5).each(($checkLinksRapidi, i) => {
-            expect($checkLinksRapidi.text().trim()).to.include(linksCollegamentiRapidi[i]);
-        })
+
+        if (!Cypress.env('isAviva'))
+            cy.get('app-home-right-section').find('app-rapid-link').should('have.length', 5).each(($checkLinksRapidi, i) => {
+                expect($checkLinksRapidi.text().trim()).to.include(linksCollegamentiRapidi[i]);
+            })
+        else {
+            // AVIVA NON compare link Antiriciclaggio
+            cy.get('app-home-right-section').find('app-rapid-link').not('[linkname="Antiriciclaggio"]').should('have.length', 4).each(($checkLinksRapidi, i) => {
+                expect($checkLinksRapidi.text().trim()).to.include(linksCollegamentiRapidi[i]);
+            })
+        }
+
+
     }
 
     /**
@@ -161,7 +171,7 @@ class LandingClients {
      * che il contenuto non sia vuoto e che i dati corrispondano
      */
     static verificaRichiesteDigitalMe() {
-        // cy.wait(5000)
+        cy.wait(3000)
 
         cy.get('app-dm-requests').first().should('exist').and('be.visible').then($request => {
             const checkDatiIsPresent = $request.find(':contains("Non ci sono dati da mostrare")').is(':visible')

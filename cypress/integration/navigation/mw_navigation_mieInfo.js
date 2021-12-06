@@ -60,10 +60,10 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function() {
         Mieinfo.clickLinkOnMenu('Primo piano')
     })
 
-    // it('Verifica aggancio Raccolte', function() {
-    //     TopBar.clickMieInfo()
-    //     Mieinfo.clickLinkOnMenu('Raccolte')
-    // });
+    it('Verifica aggancio Raccolte', function() {
+        TopBar.clickMieInfo()
+        Mieinfo.clickLinkOnMenu('Raccolte')
+    });
 
     it('Verifica aggancio Contenuti salvati', function() {
         TopBar.clickMieInfo()
@@ -120,20 +120,21 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function() {
         Mieinfo.checkLinksOnIcon('Momento della Verità')
     });
 
-    // it('Verifica aggancio Le release', function() {
-    //     TopBar.clickMieInfo()
-    //     Mieinfo.clickLinkOnMenu('Le release')
-    //     Mieinfo.checkPanelsOnRelease()
-    // });
+    it('Verifica aggancio Le release', function() {
+        TopBar.clickMieInfo()
+        Mieinfo.clickLinkOnMenu('Le release')
+        Mieinfo.checkPanelsOnRelease()
+    });
+
     it('Verifica aggancio Rilasci informatici', function() {
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Rilasci informatici')
             // Mieinfo.checkPanelsOnRelease()
     });
 
-    it('Verifica aggancio Manuali Informatici', function() {
+    it('Verifica aggancio Manuali informatici', function() {
         TopBar.clickMieInfo()
-        Mieinfo.clickLinkOnMenu('Manuali Informatici')
+        Mieinfo.clickLinkOnMenu('Manuali informatici')
         Mieinfo.checkPanelsOnManualiInformatici()
     });
 

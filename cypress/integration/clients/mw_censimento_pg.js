@@ -34,7 +34,7 @@ let nuovoClientePG
 //#region Before After
 before(() => {
   cy.getUserWinLogin().then(data => {
-    cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+    cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
     LoginPage.logInMWAdvanced()
   })
   cy.task('nuovoClientePersonaGiuridica').then((object) => {
@@ -133,8 +133,12 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', {
 
 
   it('Emettere una Plein Air e verifica presenza in Folder', () => {
-    SintesiCliente.emettiPleinAir()
-    SintesiCliente.visitUrlClient(urlClient)
-    SintesiCliente.verificaInFolder(["PleinAir"])
+    if (!Cypress.env('isAviva')) {
+      SintesiCliente.emettiPleinAir()
+      SintesiCliente.visitUrlClient(urlClient)
+      SintesiCliente.verificaInFolder(["PleinAir"])
+    }
+    else
+      this.skip()
   })
 })
