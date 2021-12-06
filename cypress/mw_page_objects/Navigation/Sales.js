@@ -37,7 +37,7 @@ const LinksRapidi = {
 const LinksOnEmettiPolizza = {
     PREVENTIVO_MOTOR: 'Preventivo Motor',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
-    ALLIANZ_ULTRA_SALUTE: 'Allianz Ultra Salute',
+    ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP', //! seconda finestra
     ALLIANZ1_BUSINESS: 'Allianz1 Business',
     FASTQUOTE_IMPRESA_E_ALBERGO: 'FastQuote Impresa e Albergo',
@@ -88,22 +88,24 @@ class Sales {
      * Verifica che i link dei collegamenti rapidi siano presenti nella pagina
      */
     static checkExistLinksCollegamentiRapidi() {
-        const linksCollegamentiRapidi = Object.values(LinksRapidi)
 
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
-            cy.get('app-quick-access').find('a').should('have.length', 6).each(($link, i) => {
-                expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
-            })
-        else if (Cypress.env('isAviva'))
-            cy.get('app-quick-access').find('a').should('have.length', 4).each(($link, i) => {
-                expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
-            })
-        else {
-
+        if (Cypress.env('monoUtenza')) {
             delete LinksRapidi.NUOVO_SFERA
             delete LinksRapidi.CAMPAGNE_COMMERCIALI
             const linksCollegamentiRapidi = Object.values(LinksRapidi)
             cy.get('app-quick-access').find('a').should('have.length', 4).each(($link, i) => {
+                expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
+            })
+        } else if (Cypress.env('isAviva')) {
+            delete LinksRapidi.GED_GESTIONE_DOCUMENTALE
+            delete LinksRapidi.SFERA
+            const linksCollegamentiRapidi = Object.values(LinksRapidi)
+            cy.get('app-quick-access').find('a').should('have.length', 4).each(($link, i) => {
+                expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
+            })
+        } else {
+            const linksCollegamentiRapidi = Object.values(LinksRapidi)
+            cy.get('app-quick-access').find('a').should('have.length', 6).each(($link, i) => {
                 expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
             })
         }
@@ -184,15 +186,22 @@ class Sales {
         cy.contains('Emetti polizza').click({ force: true })
         const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
 
-        if (!Cypress.env('monoUtenza'))
-            cy.get('.card-container').find('lib-da-link').each(($link, i) => {
-                expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
-            })
-        else {
-
+        if (Cypress.env('monoUtenza')) {
             delete LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
             delete LinksOnEmettiPolizza.GESTIONE_RICHIESTE_PER_PA
             const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
+            cy.get('.card-container').find('lib-da-link').each(($link, i) => {
+                expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
+            })
+        } else if (Cypress.env('isAviva')) {
+            const linksEmettiPolizza = [
+                LinksOnEmettiPolizza.PREVENTIVO_MOTOR,
+                LinksOnEmettiPolizza.ALLIANZ_ULTRA_SALUTE
+            ]
+            cy.get('.card-container').find('lib-da-link').each(($link, i) => {
+                expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
+            })
+        } else {
             cy.get('.card-container').find('lib-da-link').each(($link, i) => {
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
@@ -395,6 +404,17 @@ class Sales {
         cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
         cy.wait('@gqlLife')
         cy.get('app-paginated-cards').find('button:contains("Vita")').click().wait(3000)
+    }
+
+    // Verifica che non sia presente il tab vita 
+    // nel pannello "Preventivi e Quotazioni"
+    static checkNotExistTabVitaOnPreventiviQuot() {
+        cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
+        cy.get('app-quotations-section').find('nx-tab-header:visible').should('not.contain.text', 'Vita')
+    }
+    static checkNotExistTabVitaOnProposte() {
+        cy.get('app-proposals-section').contains('Proposte').click()
+        cy.get('app-proposals-section').find('nx-tab-header:visible').should('not.contain.text', 'Vita')
     }
 
     /**
