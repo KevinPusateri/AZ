@@ -18,8 +18,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-
-//#endregion
+    //#endregion
 
 
 before(() => {
