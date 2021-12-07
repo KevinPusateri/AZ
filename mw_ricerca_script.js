@@ -5,6 +5,10 @@
 slice(2)[0] -> level of parallelism (if 1, tests are executed sequential)
 slice(2)[1] -> headed (true or false)
 slice(2)[2] -> scheduled (true or false)
+slice(2)[3] -> currentEnv (PREPROD or TEST)
+slice(2)[4] -> isAviva (true or false)
+slice(2)[5] -> isSecondWindow (true or false)
+slice(2)[6] -> monoUtenza (true or false)
 */
 
 if (process.argv.slice(2).length < 1) {
