@@ -22,6 +22,9 @@ Cypress.config('defaultCommandTimeout', 60000)
 import { tariffaCases } from '../../fixtures//tariffe/tariffaCases_20220101.json'
 //#endregion
 before(() => {
+    //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
+    expect(Cypress.browser.name).to.contain('chrome')
+
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
