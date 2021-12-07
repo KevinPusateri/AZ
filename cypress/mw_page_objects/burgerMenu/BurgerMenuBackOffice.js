@@ -32,13 +32,16 @@ class BurgerMenuBackOffice extends BackOffice {
      */
     static checkExistLinks() {
         cy.get('lib-burger-icon').click()
-        const linksBurger = Object.values(LinksBurgerMenu)
 
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
+        if (Cypress.env('monoUtenza')) {
+            delete LinksBurgerMenu.DENUNCIA_BMP
+            delete LinksBurgerMenu.CONVENZIONI_IN_TRATTENUTA
+            delete LinksBurgerMenu.MONITORAGGIO_GUIDA_SMART
+            const linksBurger = Object.values(LinksBurgerMenu)
             cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            }).should('have.length', 20)
-        else if (Cypress.env('isAviva')) {
+            }).should('have.length', 17)
+        } else if (Cypress.env('isAviva')) {
             delete LinksBurgerMenu.DENUNCIA
             delete LinksBurgerMenu.DENUNCIA_BMP
             delete LinksBurgerMenu.SINISTRI_INCOMPLETI
@@ -47,17 +50,13 @@ class BurgerMenuBackOffice extends BackOffice {
             const linksBurger = Object.values(LinksBurgerMenu)
             cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            }).should('have.length', 13)
-        }
-        else {
-
-            delete LinksBurgerMenu.DENUNCIA_BMP
-            delete LinksBurgerMenu.CONVENZIONI_IN_TRATTENUTA
-            delete LinksBurgerMenu.MONITORAGGIO_GUIDA_SMART
+            }).should('have.length', 15)
+        } else {
             const linksBurger = Object.values(LinksBurgerMenu)
+
             cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            }).should('have.length', 17)
+            }).should('have.length', 20)
         }
     }
 
