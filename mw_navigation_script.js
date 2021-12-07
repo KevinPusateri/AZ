@@ -56,19 +56,19 @@ if (process.argv.slice(2).length >= 3 && process.argv.slice(2)[3] === 'TEST') {
 let isAviva = false
 if (process.argv.slice(2).length >= 4 && process.argv.slice(2)[4] === 'true') {
     isAviva = true
-    console.log('isAviva is ON\n')
+    console.log('Aviva is ON\n')
 }
 
 let isSecondWindow = false
 if (process.argv.slice(2).length >= 5 && process.argv.slice(2)[5] === 'true') {
     isSecondWindow = true
-    console.log('isSecondWindow is ON\n')
+    console.log('SecondWindow is ON\n')
 }
 
 let monoUtenza = false
 if (process.argv.slice(2).length >= 6 && process.argv.slice(2)[6] === 'true') {
     monoUtenza = true
-    console.log('monoUtenza is ON\n')
+    console.log('MonoUtenza is ON\n')
 }
 
 //#region DO NOT EDIT
