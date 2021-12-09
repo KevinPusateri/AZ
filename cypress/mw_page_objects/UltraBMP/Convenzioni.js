@@ -12,6 +12,23 @@ const ultraIFrame = () => {
 }
 class Convenzioni {
 
+    //#region ClickButton
+    /**
+      * ClickButton 
+      * @param {string} azione - testo del button 
+      */
+     static ClickButton(azione) {
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.pause()
+            //cy.get('span').contains(strButton).should('be.visible').click()
+            cy.contains('span', azione).scrollIntoView().should('be.visible').click()
+            
+        })
+
+    }
+    //#endregion
+
     //#region ClickTab
     /**
       * Clicktab
@@ -20,7 +37,46 @@ class Convenzioni {
      static ClickTab(tab) {    
         ultraIFrame().within(() => {
             cy.pause()
-            cy.contains('div', ' tab ').should('be.visible').click()
+            cy.contains('div[class="nx-margin-bottom-m ng-star-inserted"]', tab).should('be.visible').click()
+        })    
+            
+    }
+    //#endregion
+
+    //#region Seleziona Convenzione
+    /**
+      * Seleziona Convenzione
+      * @param {string} conv - Convenzione che si vuole selezionare
+      */
+     static SelezionaConvenzione(conv) {    
+        ultraIFrame().within(() => { 
+            /*
+            cy.pause()
+            cy.log("Ricerca convenzione: " + conv )
+            cy.get('div[class="scrollable"] > div > div > div > span').each(($el) => {
+                cy.log('$el.text: ' + $el.text())
+            })
+            */
+            cy.pause()
+            cy.contains('span', conv).parent('div').should('be.visible')
+              .find('input[type="radio"]')
+              .should('not.be.visible')
+              .check({force: true})
+              .should('be.checked')
+
+        })    
+            
+    }
+    //#endregion
+
+    //#region Rimuovi Convenzione
+    /**
+      * Seleziona Convenzione
+      */
+     static RimuoviConvenzione() {    
+        ultraIFrame().within(() => { 
+            cy.pause()
+            cy.get('span[class="rimuovi ng-star-inserted"]').should('be.visible').click()
         })    
             
     }
@@ -33,26 +89,7 @@ class Convenzioni {
      static ChiudiFinestra() {    
         ultraIFrame().within(() => {
             cy.pause()
-            cy.contains('nx-icon.close').parent('button').should('be.visible').click()
-        })    
-            
-    }
-    //#endregion
-
-    //#region Seleziona Convenzione
-    /**
-      * Seleziona Convenzione
-      * @param {string} conv - Nome della convenzione che si vuole selezionare
-      */
-     static SelezionaConvenzione(conv) {    
-        //cy.getIFrame()
-        //cy.get('@iframe').within(() => {
-        ultraIFrame().within(() => {
-            //cy.contains('span', 'Area riservata').should('be.visible').click()
-            cy.pause()
-            cy.contains('span', ' Attiva ').should('be.visible').click()
-
-            cy.contains('span', ' Torna ').should('be.visible').click()
+            cy.contains('nx-icon[name="close"]').parent('button').should('be.visible').click()
         })    
             
     }

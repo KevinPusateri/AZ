@@ -4,9 +4,9 @@
 
 /// <reference types="Cypress" />
 import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
-import Convenzioni from "../../mw_page_objects/UltraBMP/Convenzioni"
-import AreaRiservata from "../../mw_page_objects/UltraBMP/AreaRiservata"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
+import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
+import AreaRiservata from "../../mw_page_objects/UltraBMP/AreaRiservata"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -20,8 +20,36 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
+//#region enum
+const ultraRV = {
+  CASAPATRIMONIO: "Allianz Ultra Casa e Patrimonio",
+  CASAPATRIMONIO_BMP: "Allianz Ultra Casa e Patrimonio BMP",
+  SALUTE: "Allianz Ultra Salute",
+}
+
+const ambitoUltra = {
+  FABBRICATO: "Fabbricato",
+  CONTENUTO: "Contenuto",
+  CATASTROFI_NATURALI: "Catastrofi naturali",
+  RESPONSABILITA_CIVILE: "Responsabilità civile",
+  TUTELA_LEGALE: "Tutela legale",
+  ANIMALI_DOMESTICI: "Animali domestici",
+}
+
+const soluzione = {
+  ESSENTIAL: "Essential",
+  PLUS: "Plus",
+  PREMIUM: "Premium",
+  TOP: "Top",
+}
+
+  
+//#endregion
+
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+import { modificheCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { modificheAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
 
 //#endregion
 
@@ -29,7 +57,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 var cliente = ""
 var clienteUbicazione = ""
 var frazionamento = "annuale"
-var ambiti = ['Fabbricato', 'Contenuto', 'Animali domestici']
+var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
 var defaultFQ = {
     "TipoAbitazione"    : "appartamento",
     "MqAbitazione"      : "100",
@@ -66,12 +94,12 @@ after(function() {
         //#endregion
 })
 
-describe('Ultra BMP : Aggiunta fabbricato', function() {
+describe('Ultra BMP : Emissione BMP Caso1', function() {
 
     it('Seleziona Ultra BMP', () => {
         TopBar.clickSales()
         //cy.pause()
-        BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
+        BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO_BMP)
         //BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
     })
      
@@ -81,14 +109,6 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
         UltraBMP.ClickButton('SCOPRI LA PROTEZIONE')
     })
 
-    /*
-    it("Modifica valori FQ", () => {
-        //cy.pause()
-        UltraBMP.ModificaValoriFQ(valoriIns)
-        UltraBMP.getButton('SCOPRI LA PROTEZIONE')
-    })
-    */
-    
     it("Seleziona ambiti", () => {
         cy.log('Seleziona ambito')
         for(var i = 0; i<ambiti.length; i++ )
@@ -100,66 +120,22 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
     })
     
     
-    it("Aggiungi Ambito 'Fabbricato'", () => {
-        cy.log("AGGIUNGI AMBITO - 'Fabbricato'")
-        //cy.pause()
-        UltraBMP.AggiungiAmbito('Fabbricato')
-    })
-
-    it("Aggiungi Ambito 'Fabbricato'", () => { 
-        cy.log("AGGIUNGI AMBITO - 'Fabbricato'")
-        //cy.pause()
-        UltraBMP.AggiungiAmbito('Fabbricato')
-    })
-
-    it("Aggiungi Ambito 'Contenuto'", () => { 
-        cy.log("AGGIUNGI AMBITO - 'Contenuto'")
-        //cy.pause()
-        UltraBMP.AggiungiAmbito('Contenuto')
+    it("Cambia Soluzioni", () => {
+    //cy.pause()
+    Ultra.modificaSoluzioneHome(ambitoUltra.FABBRICATO, soluzione.TOP)
+    Ultra.modificaSoluzioneHome(ambitoUltra.RESPONSABILITA_CIVILE, soluzione.PREMIUM)
+    Ultra.modificaSoluzioneHome(ambitoUltra.ANIMALI_DOMESTICI, soluzione.ESSENTIAL)
     })
     
-    /*
-    it("Accesso Area Riservata - Applica sconto ", ()=>{
-        cy.pause()
-        UltraBMP.SelezionaVoceMenuPagAmbiti('Area riservata')
-        AreaRiservata.ApplicaSconto()
-    })
-    */
 
-    it("Accesso Convenzioni - Seleziona convenzione ", ()=>{
+    it("Accesso Dati Quotazione da menù", ()=>{
+        UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
+        DatiQuotazione.VerificaDefaultCasa()
+        DatiQuotazione.VerificaDefaultAnimaleDomestico()
+        //cy.pause()
+        DatiQuotazione.ModificaValoriCasa(modificheCasa)
         cy.pause()
-        UltraBMP.SelezionaVoceMenuPagAmbiti('Convenzioni')
-        //Convenzioni.ClickTab('Codici speciali')
-        //Convenzioni.ClickTab('Convenzioni')
-        //Convenzioni.ChiudiFinestra()
-        Convenzioni.SelezionaConvenzione("Sky")
-        Convenzioni.RimuoviConvenzione()
-        Convenzioni.ClickButton('Annulla')
-        //Convenzioni.ClickButton('Conferma')
+        DatiQuotazione.ModificaValoriAnimaleDomestico(modificheAnimale)
     })
 
-    it("Accesso Configurazione Ambito da matita", ()=>{
-        cy.pause()
-        UltraBMP.ClickMatita('Fabbricato', 'Casa 2')
-    })
-
-    /*
-    it("Seleziona fonte", ()=>{
-        cy.pause()
-        Ultra.selezionaFonteRandom()
-    })
-    */
-
-    it("Seleziona frazionamento", ()=>{
-        Ultra.selezionaFrazionamento(frazionamento)
-    })
-
-    it("Modifica soluzione per Fabbricato", ()=>{
-        Ultra.modificaSoluzioneHome('Fabbricato', 'Top')
-    })
-    
-    it("Modifica soluzione per Contenuto", ()=>{
-        Ultra.modificaSoluzioneHome('Contenuto', 'Essential')
-        cy.pause()
-    })
 })

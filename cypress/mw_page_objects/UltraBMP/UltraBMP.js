@@ -14,14 +14,63 @@ class UltraBMP {
 
     //#region Click
     /**
-      * ClickButtonContains 
+      * ClickButton 
       * @param {string} strButton - testo del button 
       */
-     static ClickButtonContains(strButton) {
+     static ClickButton(strButton) {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
             cy.get('button').contains(strButton).should('be.visible').click()
+            cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+            cy.wait(2000)
+            
+        })
+
+    }
+    //#endregion
+
+    //#region DataOggiMenounAnno
+    /**
+     * Data odierna meno un anno nel formato gg/mm/aaaa 
+     */
+     static dataOggiMenoUnAnno()
+     { 
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear() - 1;
+        
+        if (dd < 10) {
+          dd = '0' + dd;
+        }
+        
+        if (mm < 10) {
+          mm = '0' + mm;
+        }
+        
+        today = dd + '/' + mm + '/' + yyyy;
+        cy.log('Oggi: ' + today)
+        return today
+     }
+     /**
+    //#endregion
+
+    //#region ClickMatita
+    /**
+      * ClickButton 
+      * @param {string} ambito - ambito di cui si vuole selezionare la matita 
+      * @param {string} oggetto - oggetto assicurato che si vuole selezionare
+      */
+     static ClickMatita(ambito, oggetto) {
+        ultraIFrame().within(() => {
+            cy.log('ambito: ' + ambito)
+            cy.log('oggetto: ' + oggetto)
+            cy.get('tr').contains(ambito).should('contain', oggetto)
+                .parent().parent()
+                .find('nx-icon[name="pen"]').click()
+
+            cy.get('#caGaranzie').should('be.visible')
             
         })
 
@@ -34,40 +83,47 @@ class UltraBMP {
       * @param {string} strmenu - testo del menù 
       */
      static SelezionaVoceMenuPagAmbiti(strMenu) {
-        cy.getIFrame()
-        cy.get('@iframe').within(() => {
-
-            cy.contains('span', strMenu).should('be.visible').click()
-            
+        //cy.log('strMenu: '+ strMenu.ToString())
+        //cy.getIFrame()
+        //cy.get('@iframe').within(() => {
+        ultraIFrame().within(() => {
+            //if (strMenu.ToString().contains("Dati quotazione"))
+                //cy.contains('div', strMenu).should('be.visible').click()
+            //else
+                cy.get('div[id="ambitiHeader"]')
+                  .contains(strMenu).should('be.visible').click() 
+                cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+                cy.wait(2000)
         })
 
     }
     //#endregion
 
-    //#region Dati quotazione
-    /**
-      * Modifica dati quotazione 
-      */
-     /*
-    static compilaDatiQuotazione() {
-        cy.getIFrame()
-        cy.get('@iframe').within(() => {
-            
-            cy.get('div[class="nx-dropdown__container"]').first().then(($div)=>{
-                //cy.pause()
-                cy.get('span').contains('appartamento').click()
-                cy.get('span').contains('villa indipendente').click()
-                //cy.get('input[id="nx-input-0"]').should('exist').type('250')
-            })
+    static modificaSoluzioneHome(ambito, soluzione) {
+        ultraIFrame().within(() => {
+            cy.get('table[class="nx-table ng-star-inserted"]')
+              .contains('div', ambito)
+              .should('be.visible')
+              .parent('td')
+              .parent('tr')
+              .find('nx-dropdown nx-icon')
+              .should('be.visible')
+              .click()
+            /*  
+            cy.get('tr')
+                .contains(ambito)
+                .parent()
+                .parent()
+                .find('nx-dropdown')
+                .click()
+            */
 
-            cy.get('button').contains('SCOPRI LA PROTEZIONE').should('be.visible').click()
-            //cy.get('div[class="nx-dropdown__container"]').first().find('span').contains('appartamento').should(be.visible)
-            
+            cy.wait(500)
+            cy.get('nx-dropdown-item').contains(soluzione).should('be.visible').click() 
+
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
         })
-
     }
-    */
-    //#endregion
 
     //#region Verifica default FQ
     /**
@@ -192,6 +248,8 @@ class UltraBMP {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
             cy.contains(ambito).should('be.visible').click()
+            cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+            cy.wait(2000)
         })    
             
     }
@@ -306,22 +364,7 @@ class UltraBMP {
     }
     //#endregion
 
-    //#region Applica Sconto da Area Riservata
-    /**
-      * Applica sconto da Area Riservata
-      */
-     static ApplicaSconto() {    
-        //cy.getIFrame()
-        //cy.get('@iframe').within(() => {
-        ultraIFrame().within(() => {
-            //cy.contains('span', 'Area riservata').should('be.visible').click()
-            cy.pause()
-            cy.contains('span', ' Attiva ').should('be.visible').click()
-        })    
-            
-    }
-    //#endregion
-
+    
 }
 
 export default UltraBMP
