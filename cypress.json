@@ -12,7 +12,7 @@
             "host": "PALZMSQDBPRLV01.srv.allianz",
             "port": 5551,
             "user": "MY_taut_VeeC9",
-            "password": "vC4DwAHxznfGl8XywsoohZkbdmL6cf",
+            "password": "BtG4VXvfuaj5kX3cDONqHBpyt0sLcE",
             "database": "applogs"
         },
         "enableLogDB": true,
