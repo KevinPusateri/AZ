@@ -23,6 +23,11 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 //#endregion
 before(() => {
+    console.log(Cypress.env('isAviva'))
+    console.log(Cypress.env('isSecondWindow'))
+    console.log(Cypress.env('monoUtenza'))
+    console.log(Cypress.env('currentEnv'))
+
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
@@ -53,11 +58,13 @@ describe('Buca di Ricerca', {
 }, function() {
     if (Cypress.env('isAviva'))
         it('Verifica che sia assente "Ricerca Classica"', function() {
+            console.log('PASSATOOOOOOO')
             LandingRicerca.searchRandomClient(false)
             LandingRicerca.checkNotExistRicercaClassica()
         })
     else {
         it('Verifica Click su Ricerca Classica', function() {
+            console.log('AIAAAAAAAAAAAAAAAAAAA')
             LandingRicerca.searchRandomClient(false)
             LandingRicerca.checkRicercaClassica()
         })
