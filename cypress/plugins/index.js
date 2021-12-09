@@ -374,8 +374,9 @@ module.exports = (on, config) => {
     })
 
     on("task", {
-        getLatestDownloadedFile() {
-            let downloadUserFolder = os.userInfo().homedir.toString() + '\\Downloads\\'
+        getLatestDownloadedFile(broswerType) {
+
+            let downloadUserFolder = (broswerType === 'chrome') ? process.cwd() + "\\cypress\\\downloads" : os.userInfo().homedir.toString() + '\\Downloads\\'
             let mostRecentFile = getMostRecentFile(downloadUserFolder)
             return path.join(downloadUserFolder, mostRecentFile.file)
         }
@@ -392,8 +393,11 @@ module.exports = (on, config) => {
 
     on("task", {
         cleanScreenshotLog(specName) {
-            let folderToDelete = process.cwd() + "\\cypress\\screenshots\\" + specName.replace('/','\\')
+            let folderToDelete = process.cwd() + "\\cypress\\screenshots\\" + specName.replace('/', '\\')
             rimraf.sync(folderToDelete)
+
+            //Also clean downloads folder
+            rimraf.sync(process.cwd() + "\\cypress\\downloads\\*")
             return folderToDelete
         }
     })

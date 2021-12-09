@@ -5,6 +5,10 @@
 slice(2)[0] -> level of parallelism (if 1, tests are executed sequential)
 slice(2)[1] -> headed (true or false)
 slice(2)[2] -> scheduled (true or false)
+slice(2)[3] -> currentEnv (PREPROD or TEST)
+slice(2)[4] -> isAviva (true or false)
+slice(2)[5] -> isSecondWindow (true or false)
+slice(2)[6] -> monoUtenza (true or false)						 
 */
 
 if (process.argv.slice(2).length < 1) {
@@ -12,10 +16,13 @@ if (process.argv.slice(2).length < 1) {
 	console.log("\x1b[33m%s\x1b[0m", '[0] -> level of parallelism (if 1, specs are executed sequential); MAX is 4\n');
 	console.log("\x1b[35m%s\x1b[0m", '[1] -> headed (true or false) [OPTIONAL, default is false]\n');
 	console.log("\x1b[34m%s\x1b[0m", '[2] -> scheduled (true or false) [OPTIONAL, default is false]\n');
+	console.log("\x1b[32m%s\x1b[0m", '[3] -> currentEnv (PREPROD or TEST) [OPTIONAL, default is PREPROD]\n');
+    console.log("\x1b[33m%s\x1b[0m", '[4] -> isAviva (true or false) [OPTIONAL, default is false]\n');
+    console.log("\x1b[35m%s\x1b[0m", '[5] -> isSecondWindow (true or false) [OPTIONAL, default is false]\n');
+    console.log("\x1b[31m%s\x1b[0m", '[6] -> monoUtenza (true or false) [OPTIONAL, default is false]\n');
 
 	process.exit(0);
-}
-else {
+} else {
 	//Verify first arg is a number
 	if (isNaN(process.argv.slice(2)[0])) {
 		console.log("\x1b[31m%s\x1b[0m", 'Please specify a number for parallelism (Max is 4)\n');
@@ -29,6 +36,7 @@ if (process.argv.slice(2)[0] > 4) {
 }
 
 let headed = false
+console.log(process.argv.slice(2)[2])
 if (process.argv.slice(2).length >= 2 && process.argv.slice(2)[1] === 'true') {
 	headed = true
 	console.log('\nHeaded is ON\n')
@@ -38,6 +46,29 @@ let scheduled = false
 if (process.argv.slice(2).length >= 2 && process.argv.slice(2)[2] === 'true') {
 	scheduled = true
 	console.log('Scheduled is ON\n')
+}
+let currentEnv = 'PREPROD'
+if (process.argv.slice(2).length >= 3 && process.argv.slice(2)[3] === 'TEST') {
+    currentEnv = 'TEST'
+    console.log('Environment is TEST\n')
+}
+
+let isAviva = false
+if (process.argv.slice(2).length >= 4 && process.argv.slice(2)[4] === 'true') {
+    isAviva = true
+    console.log('Aviva is ON\n')
+}
+
+let isSecondWindow = false
+if (process.argv.slice(2).length >= 5 && process.argv.slice(2)[5] === 'true') {
+    isSecondWindow = true
+    console.log('SecondWindow is ON\n')
+}
+
+let monoUtenza = false
+if (process.argv.slice(2).length >= 6 && process.argv.slice(2)[6] === 'true') {
+    monoUtenza = true
+    console.log('MonoUtenza is ON\n')
 }
 
 //#region DO NOT EDIT
@@ -134,7 +165,13 @@ async function main() {
 					"toConsole": false
 				},
 				config: {
-					video: false
+					video: false,
+                    env: {
+                        isAviva: isAviva,
+                        currentEnv: currentEnv,
+                        isSecondWindow: isSecondWindow,
+                        monoUtenza: monoUtenza
+                    }
 				}
 			}
 		})

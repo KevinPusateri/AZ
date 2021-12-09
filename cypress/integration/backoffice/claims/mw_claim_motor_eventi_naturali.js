@@ -20,16 +20,19 @@ const testName = Cypress.spec.name.split('/')[2].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-    //#endregion
+//#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-    //#endregion
+//#endregion
 
 before(() => {
-    cy.getUserWinLogin().then(data => {        
+    cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+        LoginPage.logInMWAdvanced({
+            "agentId": "ARALONGO7",
+            "agency": "010375000"
+        })
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Denuncia')
     })
@@ -37,31 +40,31 @@ before(() => {
 
 beforeEach(() => {
     cy.preserveCookies()
-        //Common.visitUrlOnEnv()   
+    //Common.visitUrlOnEnv()   
 })
 
-afterEach(function() {
+afterEach(function () {
     if (this.currentTest.state !== 'passed') {
         //TopBar.logOutMW()
         //#region Mysql
         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-                let tests = testsInfo
-                cy.finishMysql(dbConfig, insertedId, tests)
-            })
-            //#endregion
-            //Cypress.runner.stop();
-    }
-})
-
-after(function() {
-    TopBar.logOutMW()
-
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
             let tests = testsInfo
             cy.finishMysql(dbConfig, insertedId, tests)
         })
         //#endregion
+        //Cypress.runner.stop();
+    }
+})
+
+after(function () {
+    TopBar.logOutMW()
+
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
     Cypress.runner.stop();
 })
 
@@ -95,50 +98,50 @@ let dtAvvenimento
 let dtDenuncia
 let controparte_marca
 let idx_cop_gar
-    //#endregion
+//#endregion
 
 describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro motor avente come copertura' +
     ' di garanzia la "' + copertura_danno + '"', () => {
 
-    it('Denuncia --> Ricerca cliente per numero di polizza: ' + cliente_num_pol +
-        '',
-        function() {               
-            // Ricerca cliente per Polizza
-            DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
-            DenunciaSinistriPage.clickBtn_ById('#eseguiRicerca');
-    });
-
-    it('Dati cliente (ai fini della gestione del sinistro): inserimento dati obbligatori di denuncia: ' +
-        'data avvenimento, data denuncia, data pervenimento è località dell\'avvenuto sinistro',
-        function() {
-            DenunciaSinistriPage.getPlusMinusDate(-2).then((dtAvv) => {
-                dtAvvenimento = dtAvv
-                cy.log('[it]>> [Data avvenimento sinistro]: ' + dtAvvenimento);
-                DenunciaSinistriPage.setValue_ById('#CLIENTE_dataAvvenimentoRisultato', dtAvvenimento)
+        it('Denuncia --> Ricerca cliente per numero di polizza: ' + cliente_num_pol +
+            '',
+            function () {
+                // Ricerca cliente per Polizza
+                DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
+                DenunciaSinistriPage.clickBtn_ById('#eseguiRicerca');
             });
-            cy.wait(1000)
-            DenunciaSinistriPage.getPlusMinusDate(-2).then((dtDen) => {
-                dtDenuncia = dtDen
-                cy.log('[it]>> [Data denuncia sinistro]: '+dtDenuncia);           
-                DenunciaSinistriPage.setValue_ById('#CLIENTE_dataDenuncia', dtDenuncia)   
-            }); 
-            cy.wait(1000)
-            DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {          
-                cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
-                DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
-            }); 
-            cy.wait(1000)
 
-    });
-    it('Dati cliente Altri dati di denuncia: ' +
-        'Descrizione della dinamica è località dell\'avvenuto sinistro', function() {
-        DenunciaSinistriPage.setValue_ById('#CLIENTE_descDinamica', sinistro_descrizione_danno)
-        DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
-        DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita2');
-        cy.wait(2000)
-        DenunciaSinistriPage.clickBtn_ById('#CmdAvanti');
-        cy.wait(2000)
-    });
+        it('Dati cliente (ai fini della gestione del sinistro): inserimento dati obbligatori di denuncia: ' +
+            'data avvenimento, data denuncia, data pervenimento è località dell\'avvenuto sinistro',
+            function () {
+                DenunciaSinistriPage.getPlusMinusDate(-2).then((dtAvv) => {
+                    dtAvvenimento = dtAvv
+                    cy.log('[it]>> [Data avvenimento sinistro]: ' + dtAvvenimento);
+                    DenunciaSinistriPage.setValue_ById('#CLIENTE_dataAvvenimentoRisultato', dtAvvenimento)
+                });
+                cy.wait(1000)
+                DenunciaSinistriPage.getPlusMinusDate(-2).then((dtDen) => {
+                    dtDenuncia = dtDen
+                    cy.log('[it]>> [Data denuncia sinistro]: ' + dtDenuncia);
+                    DenunciaSinistriPage.setValue_ById('#CLIENTE_dataDenuncia', dtDenuncia)
+                });
+                cy.wait(1000)
+                DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {
+                    cy.log('[it]>> [Data pervenimento sinistro]: ' + dtPer);
+                    DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)
+                });
+                cy.wait(1000)
+
+            });
+        it('Dati cliente Altri dati di denuncia: ' +
+            'Descrizione della dinamica è località dell\'avvenuto sinistro', function () {
+                DenunciaSinistriPage.setValue_ById('#CLIENTE_descDinamica', sinistro_descrizione_danno)
+                DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
+                DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita2');
+                cy.wait(2000)
+                DenunciaSinistriPage.clickBtn_ById('#CmdAvanti');
+                cy.wait(2000)
+            });
 
 
 
@@ -161,7 +164,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         DenunciaSinistriPage.clickObj_ByLabel('a', 'Avanti');        
     });
 */
-        it('Sinistri potenzialmente doppi', function() {
+        it('Sinistri potenzialmente doppi', function () {
             Cypress.on('fail', (err, runnable) => {
                 // returning false here prevents Cypress from
                 // failing the test   
@@ -179,13 +182,13 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
 
         it('Elenco coperture - Prodotto Auto. Selezione della garanzia: ' +
             copertura_danno,
-            function() {
+            function () {
                 Cypress.on('fail', (err, runnable) => {
-                        // returning false here prevents Cypress from
-                        // failing the test   
-                        throw err
-                    })
-                    // Selezione della copertura
+                    // returning false here prevents Cypress from
+                    // failing the test   
+                    throw err
+                })
+                // Selezione della copertura
                 DenunciaSinistriPage.clickObj_ByLabel('td', copertura_danno)
 
                 DenunciaSinistriPage.getIdInListValues_ById('#GARANZIE_listaGaranzie > table > tbody > tr ', copertura_danno).then((idx) => {
@@ -198,19 +201,19 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
                 //Evento naturale: Grandine
                 DenunciaSinistriPage.clickSelect_ById('#GARANZIE_flgGrandine', "Si")
                 DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');
-                 cy.wait(2000);
+                cy.wait(2000);
             });
 
-        it('Ricerca della carrozzeria amica con geolocalizzazione Google', function() {
+        it('Ricerca della carrozzeria amica con geolocalizzazione Google', function () {
             DenunciaSinistriPage.clickObj_ByLabel('a', 'Altre carroz.')
             DenunciaSinistriPage.setValueOnGeo_ById("#indirizzo1", "Trieste")
             DenunciaSinistriPage.clickSelectOnGeo_ById("#CM", "Tutti");
             DenunciaSinistriPage.clickObjGeo_ByIDAndLabel('button', ' › Cerca')
             cy.wait(2000)
-           
+
         });
 
-        it('Selezione della carrozzeria amica con geolocalizzazione Google', function() {
+        it('Selezione della carrozzeria amica con geolocalizzazione Google', function () {
             //DenunciaSinistriPage.clickObjGeo_ByLabel('SOL-CAR MIANI')
             cy.wait(1000)
             DenunciaSinistriPage.clickObjGeoModal_ByIDAndLabel('a', 'Seleziona', 'SOL-CAR MIANI')
@@ -219,7 +222,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             cy.wait(2000)
         });
 
-        it('Verifica dei dati dei soggetti coinvolti nella lista riproposta in tabella ', function() {
+        it('Verifica dei dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {
 
             DenunciaSinistriPage.checkObjVisible_ByText("Contraente");
             DenunciaSinistriPage.checkObjVisible_ByText(cliente_cognome)
@@ -230,7 +233,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             cy.wait(2000)
         });
 
-        it('Riepilogo denuncia - verifica dati danneggiato ', function() {
+        it('Riepilogo denuncia - verifica dati danneggiato ', function () {
             // il Mandatario
             DenunciaSinistriPage.checkObjVisible_ByText("Veicolo");
             DenunciaSinistriPage.checkInTbl_ByValue(cliente_cognome + " " + cliente_nome);
@@ -238,13 +241,13 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', tipo_danno);
         });
 
-        it('Riepilogo denuncia - verifica dati di denuncia ', function() {
+        it('Riepilogo denuncia - verifica dati di denuncia ', function () {
             DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataAvvenimento', dtAvvenimento);
             DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataDenuncia', dtDenuncia);
             DenunciaSinistriPage.checkObj_ByIdAndLbl('#CLIENTE_LOCALITA', sinistro_località);
         });
 
-        it('Riepilogo denuncia - verifica dati di contraenza polizza ', function() {
+        it('Riepilogo denuncia - verifica dati di contraenza polizza ', function () {
 
             DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_numeroPolizza', cliente_num_pol);
             DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_targa', cliente_targa);
@@ -252,7 +255,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_nome);
         });
 
-        it('Riepilogo denuncia - salvataggio e verifica dati di denuncia denuncia ', function() {
+        it('Riepilogo denuncia - salvataggio e verifica dati di denuncia denuncia ', function () {
 
             DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
             DenunciaSinistriPage.clickObjPopUpChiudi_ByLabel('a', 'Chiudi')

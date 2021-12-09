@@ -535,24 +535,24 @@ class LandingRicerca {
                 linkLength = 2
                 break
             case 'ultra':
-                suggLinks = [
-                    'Allianz Ultra Casa e Patrimonio',
-                    'Allianz Ultra Casa e Patrimonio BMP',
-                    'Allianz Ultra Salute'
-                ]
-                if (!Cypress.env('monoUtenza')) {
+                if (Cypress.env('monoUtenza')) {
+                    suggLinks = [
+                        'Allianz Ultra Casa e Patrimonio',
+                        'Allianz Ultra Salute'
+                    ]
+                    linkLength = 2
+                } else if (Cypress.env('isAviva')) {
+                    suggLinks = [
+                        'Ultra Salute'
+                    ]
+                    linkLength = 1
+                } else {
                     suggLinks = [
                         'Allianz Ultra Casa e Patrimonio',
                         'Allianz Ultra Casa e Patrimonio BMP',
                         'Allianz Ultra Salute'
                     ]
                     linkLength = 3
-                } else {
-                    suggLinks = [
-                        'Allianz Ultra Casa e Patrimonio',
-                        'Allianz Ultra Salute'
-                    ]
-                    linkLength = 2
                 }
                 break
             case 'ro':
@@ -590,6 +590,11 @@ class LandingRicerca {
                 expect($suggerimenti.text()).to.include(suggLinks[i]);
             })
         cy.get('lib-advice-navigation-section').contains('Suggerimenti di navigazione').should('exist').and('be.visible')
+    }
+
+    static checkNotExistSuggestLinks(suggestLink) {
+        if (suggestLink === 'fastquote')
+            cy.get('lib-navigation-item-link').should('not.exist')
     }
 
     static checkLeMieInfo() {
@@ -640,44 +645,44 @@ class LandingRicerca {
                     })
                     //#region Company Handbook(attualmente rimosso)
                     /*
-                            cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
-                
-                            for(var i = 0; i <10; i++){
-                                cy.get('#lib-handbook-container').scrollTo('bottom').wait(1000)
-                            }
-                            cy.get('lib-handbooks-item').then($hanbooks =>{
-                
-                                cy.wrap($hanbooks).find('[class="date"]').each($date =>{
-                                    if($date.text().trim().length > 0){
-                                        cy.wrap($date).should('contain',$date.text().trim())
-                                    }else{
-                                        assert.fail('Manca data su un elemento della pagina handbook')
-                                    }
-                                }) 
-                                cy.wrap($hanbooks).find('[class="lib-badge handbook"]').contains('handbook').each($badge =>{
-                                    if($badge.text().trim().length > 0){
-                                        cy.wrap($badge).should('contain',$badge.text().trim())
-                                    }else{
-                                        assert.fail('Manca badge su un elemento della handbook')
-                                    }
-                                })
-                                cy.wrap($hanbooks).find('[class="title"]').each($title =>{
-                                    if($title.text().trim().length > 0){
-                                        cy.wrap($title).should('contain', $title.text().trim())
-                                    }else{
-                                        assert.fail('Manca titolo su un elemento della su pagina handbook')
-                                    }
-                                })
-                                Verifica Testo skippato 
-                                cy.wrap($hanbooks).find('[class="text"]').each($text =>{
-                                    if($text.text().substring(0,5).trim().length > 0){
-                                        cy.wrap($text).should('contain', $text.text().trim().substring(0,5))
-                                    }else{
-                                        assert.fail('Manca un\'anteprima del testo su un elemento della pagina handbook')
-                                    }
-                                }) 
-                
-                            })*/
+                        cy.get('[class="lib-tab-info nx-grid"]').contains('Company Handbook').click()
+            
+                        for(var i = 0; i <10; i++){
+                            cy.get('#lib-handbook-container').scrollTo('bottom').wait(1000)
+                        }
+                        cy.get('lib-handbooks-item').then($hanbooks =>{
+            
+                            cy.wrap($hanbooks).find('[class="date"]').each($date =>{
+                                if($date.text().trim().length > 0){
+                                    cy.wrap($date).should('contain',$date.text().trim())
+                                }else{
+                                    assert.fail('Manca data su un elemento della pagina handbook')
+                                }
+                            }) 
+                            cy.wrap($hanbooks).find('[class="lib-badge handbook"]').contains('handbook').each($badge =>{
+                                if($badge.text().trim().length > 0){
+                                    cy.wrap($badge).should('contain',$badge.text().trim())
+                                }else{
+                                    assert.fail('Manca badge su un elemento della handbook')
+                                }
+                            })
+                            cy.wrap($hanbooks).find('[class="title"]').each($title =>{
+                                if($title.text().trim().length > 0){
+                                    cy.wrap($title).should('contain', $title.text().trim())
+                                }else{
+                                    assert.fail('Manca titolo su un elemento della su pagina handbook')
+                                }
+                            })
+                            Verifica Testo skippato 
+                            cy.wrap($hanbooks).find('[class="text"]').each($text =>{
+                                if($text.text().substring(0,5).trim().length > 0){
+                                    cy.wrap($text).should('contain', $text.text().trim().substring(0,5))
+                                }else{
+                                    assert.fail('Manca un\'anteprima del testo su un elemento della pagina handbook')
+                                }
+                            }) 
+            
+                        })*/
                     //#endregion Company Handbook
             }
         })

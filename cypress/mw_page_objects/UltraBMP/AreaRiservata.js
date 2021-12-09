@@ -25,7 +25,7 @@ class AreaRiservata {
             cy.get('div[class="nx-spinner__spin-block"]').should('not.be.visible') //attende il caricamento
             //cy.contains('span', 'Attiva').should('be.visible').click()
             //cy.pause()
-            cy.contains('span', 'Torna').should('be.visible').its('innerText').then(($testo) => {
+            cy.contains('span', 'Torna').should('be.visible').invoke('text').then(($testo) => {
                 cy.log('testo: ' + $testo)
             })
             cy.contains('span', 'Torna').should('be.visible').click()

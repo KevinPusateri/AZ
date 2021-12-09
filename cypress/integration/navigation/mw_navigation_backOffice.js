@@ -18,8 +18,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-
-//#endregion
+    //#endregion
 
 
 before(() => {
@@ -48,11 +47,11 @@ after(function() {
 if (Cypress.env('isAviva'))
     describe('AVIVA - Matrix Web : Navigazioni da BackOffice', function() {
 
-        it('Verifica atterraggio su BackOffice', function() {
+        it('AVIVA - Verifica atterraggio su BackOffice', function() {
             TopBar.clickBackOffice()
         });
 
-        it('Verifica atterraggio Appuntamenti Futuri', function() {
+        it('AVIVA - Verifica atterraggio Appuntamenti Futuri', function() {
             TopBar.clickBackOffice()
             BackOffice.clickAppuntamentiFuturi()
         });
