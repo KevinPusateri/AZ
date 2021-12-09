@@ -29,7 +29,10 @@ Cypress.config('defaultCommandTimeout', 60000)
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-        LoginPage.logInMWAdvanced()
+        LoginPage.logInMWAdvanced({
+            "agentId": "ARALONGO7",
+            "agency": "010375000"
+        })
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Movimentazione sinistri') 
     })

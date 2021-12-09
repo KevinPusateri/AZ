@@ -29,7 +29,10 @@ before(() => {
         cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
             insertedId = results.insertId
         })
-        LoginPage.logInMWAdvanced()
+        LoginPage.logInMWAdvanced({
+            "agentId": "ARALONGO7",
+            "agency": "010375000"
+        })
     })
 })
 

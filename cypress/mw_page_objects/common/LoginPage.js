@@ -192,7 +192,7 @@ class LoginPage {
                 let isTFS = (loggedUser.username.toUpperCase() === 'TFSSETUP') ? true : false
 
                 cy.decryptLoginPsw(isTFS).then(psw => {
-                    //Utente attualmente in
+                    //Utenze attualmente in VPN che non riescono ad accedere ai servizi di personificazione
                     if (loggedUser.username === 'RU18362' || loggedUser.username === 'RU17810') {
                         cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                         cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
