@@ -1,7 +1,7 @@
 {
   "tariffaCases" :[
   {
-    "Identificativo_Caso": "1",
+    "Identificativo_Caso": "SKIP",
     "Settore": "5",
     "Descrizione_Settore": "MOTOCICLO_PERSONA_FISICA",
     "Periodo_Tariffazione": "02-02",
@@ -125,7 +125,7 @@
     "Totale_Premio_Lordo": "1.299,00"
   },
   {
-    "Identificativo_Caso": "2",
+    "Identificativo_Caso": "SKIP",
     "Settore": "4",
     "Descrizione_Settore": "AUTOCARRO_INF60_PERSONA_FISICA",
     "Periodo_Tariffazione": "02-02",
@@ -247,7 +247,7 @@
     "Totale_Premio_Lordo": "1.047,00"
   },
   {
-    "Identificativo_Caso": "SKIP",
+    "Identificativo_Caso": "3",
     "Settore": "5",
     "Descrizione_Settore": "CICLOMOTORE PERSONA FISICA",
     "Periodo_Tariffazione": "02-02",
@@ -260,12 +260,13 @@
     "Professione": "COMMERCIANTE",
     "Scelta_Per_CAP": "true",
     "CAP": "34137",
-    "Provincia": "",
+    "Provincia": "TS",
     "Comune": "TRIESTE",
+    "Cod_Comune": "32002",
     "Toponimo": "VIA",
     "Indirizzo": "DELLE LODOLE",
     "Numero_Civico": "9",
-    "Tipo_Veicolo": "CICLOMOTORE TARGATO",
+    "Tipo_Veicolo": "ciclomotore",
     "Tipo_Veicolo_Altro_Dettaglio_1": "",
     "Tipo_Veicolo_Altro_Dettaglio_2": "",
     "Tipo_Veicolo_Altro_Dettaglio_3": "",
@@ -303,6 +304,7 @@
     "Veicolo_Aggiuntivo_Trasferimento": "",
     "Provenienza": "Precedentemente assicurato altra compagnia",
     "Sotto_Provenienza": "Con attestazione",
+    "Nel_Dettaglio": "Caso generico",
     "Dettaglio_Sotto_Provenienza": "",
     "Data_Voltura": "",
     "Primo_Proprietario": "",
@@ -324,12 +326,12 @@
     "Franchigia": "",
     "Danni_Terzi_Trasportati": "",
     "Tipo_Guida": "Esperta",
-    "Rinuncia_Rivalsa": "true",
+    "Rinuncia_Rivalsa": "Protezione rivalsa: Sì",
     "Carico_Scarico": "",
     "Sgombero_Neve": "",
     "Merci_Pericolose": "",
     "Trasporti_Eccezionali": "",
-    "Protezione_Bonus": "true",
+    "Protezione_Bonus": "SI",
     "Accordo_Risarcimento": "",
     "Opzione_Spospendibilita": "Includi la Sospendibilità",
     "Indennita_Danno_Totale": "",
@@ -356,7 +358,7 @@
     "RC_Commerciale": "19200,5484",
     "RC_Commerciale_Pre_Premio_Massimo": "",
     "RC_Tecnico": "",
-    "Versione_Tariffa_Radar": "20220101_000001",
+    "Versione_Tariffa_Radar": "t_3001_500000_20220201_000000000000_000001",
     "Versione_Punta_Flex": "radar_cmc_20200501_000037",
     "Versione_Radar_UW": "radar_uw_20190501_000034",
     "Applicazione_Radar_Commerciale": "true",
@@ -364,7 +366,7 @@
     "Radar_Nuova_Tenica": "true",
     "Digital_ID": "18200,5484",
     "Coeff_Digital_ID": "1000",
-    "Totale_Premio_Lordo": "224,00"
+    "Totale_Premio_Lordo": "241,50"
   },
   {
     "Identificativo_Caso": "4",
@@ -848,7 +850,7 @@
     "Totale_Premio_Lordo": "4.351,00"
   },
   {
-    "Identificativo_Caso": "SKIP",
+    "Identificativo_Caso": "8",
     "Settore": "4",
     "Descrizione_Settore": "AUTOCARRO SUP60 PERSONA GIURIDICA",
     "Periodo_Tariffazione": "02-02",
@@ -863,10 +865,11 @@
     "CAP": "33075",
     "Provincia": "PORDENONE",
     "Comune": "CORDOVADO",
+    "Cod_Comune": "93033",
     "Toponimo": "",
     "Indirizzo": "",
     "Numero_Civico": "",
-    "Tipo_Veicolo": "ALTRO",
+    "Tipo_Veicolo": "autocarro",
     "Tipo_Veicolo_Altro_Dettaglio_1": "AUTOCARRI - TRASPORTO COSE O PERSONE",
     "Tipo_Veicolo_Altro_Dettaglio_2": "AUTOCARRO/AUTOFURGONE/FURGONE SENZA RIMORCHIO",
     "Tipo_Veicolo_Altro_Dettaglio_3": "AUTOCARRO",
@@ -904,6 +907,7 @@
     "Veicolo_Aggiuntivo_Trasferimento": "",
     "Provenienza": "Precedentemente assicurato altra compagnia",
     "Sotto_Provenienza": "Con attestazione",
+    "Nel_Dettaglio": "Caso generico",
     "Dettaglio_Sotto_Provenienza": "",
     "Data_Voltura": "",
     "Primo_Proprietario": "",
@@ -957,7 +961,7 @@
     "RC_Commerciale": "151928,7",
     "RC_Commerciale_Pre_Premio_Massimo": "",
     "RC_Tecnico": "",
-    "Versione_Tariffa_Radar": "20220101_000001",
+    "Versione_Tariffa_Radar": "t_3001_400000_20220201_000000000000_000001",
     "Versione_Punta_Flex": "radar_cmc_20200501_000037",
     "Versione_Radar_UW": "radar_uw_20190501_000034",
     "Applicazione_Radar_Commerciale": "true",

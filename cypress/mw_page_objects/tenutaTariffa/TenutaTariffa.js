@@ -518,7 +518,6 @@ class TenutaTariffa {
 
                     //Carico e scarico
                     cy.contains('Carico e scarico').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
-                    cy.pause()
                     cy.get('nx-dropdown-item').contains(currentCase.Carico_Scarico).click().wait(500)
                     cy.wait('@getMotor', { requestTimeout: 30000 })
                     //Attendiamo che il caricamento non sia più visibile
