@@ -497,12 +497,13 @@ class TenutaTariffa {
 
                     //TODO Protezione Rivalsa è già settata come garanzia in automatico; implementa verficia di presenza
 
-                    //Indennita' danno totale RCA
-                    if (currentCase.Indennita_Danno_Totale !== '') {
-                        cy.contains("Indennita' danno totale RCA").parents('tr').find('button').click()
-                        //Attendiamo che il caricamento non sia più visibile
-                        cy.get('nx-spinner').should('not.be.visible').wait(500)
-                    }
+                    if (!Cypress.env('isAviva'))
+                        //Indennita' danno totale RCA
+                        if (currentCase.Indennita_Danno_Totale !== '') {
+                            cy.contains("Indennita' danno totale RCA").parents('tr').find('button').click()
+                            //Attendiamo che il caricamento non sia più visibile
+                            cy.get('nx-spinner').should('not.be.visible').wait(500)
+                        }
 
                     break
                 case '4':
@@ -516,30 +517,33 @@ class TenutaTariffa {
                     // cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click().wait(500)
                     // cy.wait('@getMotor', { requestTimeout: 30000 })
 
-                    //Carico e scarico
-                    cy.contains('Carico e scarico').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
-                    cy.get('nx-dropdown-item').contains(currentCase.Carico_Scarico).click().wait(500)
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
-                    //Attendiamo che il caricamento non sia più visibile
-                    cy.get('nx-spinner').should('not.be.visible').wait(500)
 
-                    //Estensione Sgombero Neve
-                    cy.contains('Estensione Sgombero Neve').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
-                    cy.get('nx-dropdown-item').contains(currentCase.Sgombero_Neve).click().wait(500)
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
-                    //Attendiamo che il caricamento non sia più visibile
-                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+                    if (!Cypress.env('isAviva')) {
+                        //Carico e scarico
+                        cy.contains('Carico e scarico').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                        cy.get('nx-dropdown-item').contains(currentCase.Carico_Scarico).click().wait(500)
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+                        //Estensione Sgombero Neve
+                        cy.contains('Estensione Sgombero Neve').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                        cy.get('nx-dropdown-item').contains(currentCase.Sgombero_Neve).click().wait(500)
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+                        //Clausola Trasporti Eccezionali
+                        cy.contains('Clausola Trasporti Eccezionali').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                        cy.get('nx-dropdown-item').contains(currentCase.Trasporti_Eccezionali).click().wait(500)
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible').wait(500)
+                    }
 
                     //Trasporto merci pericolose
                     cy.contains('Trasporto merci pericolose').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
                     cy.get('nx-dropdown-item').contains(currentCase.Merci_Pericolose).click().wait(500)
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
-                    //Attendiamo che il caricamento non sia più visibile
-                    cy.get('nx-spinner').should('not.be.visible').wait(500)
-
-                    //Clausola Trasporti Eccezionali
-                    cy.contains('Clausola Trasporti Eccezionali').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
-                    cy.get('nx-dropdown-item').contains(currentCase.Trasporti_Eccezionali).click().wait(500)
                     cy.wait('@getMotor', { requestTimeout: 30000 })
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible').wait(500)
@@ -554,21 +558,31 @@ class TenutaTariffa {
                     cy.wait('@getMotor', { requestTimeout: 30000 })
 
                     //Protezione Rivalsa
-                    cy.contains('Rivalsa').parents('motor-form-controllo').should('be.visible').find('nx-dropdown').click().wait(500)
-                    cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click().wait(500)
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                    if (!Cypress.env('isAviva')) {
+                        cy.contains('Rivalsa').parents('motor-form-controllo').should('be.visible').find('nx-dropdown').click().wait(500)
+                        cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click().wait(500)
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
 
-                    //Protezione Bonus
-                    cy.contains('Protezione Bonus').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
-                    cy.get('nx-dropdown-item').contains(currentCase.Protezione_Bonus).click().wait(500)
+                        //Protezione Bonus
+                        cy.contains('Protezione Bonus').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                        cy.get('nx-dropdown-item').contains(currentCase.Protezione_Bonus).click().wait(500)
+                    }
+
 
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible').wait(500)
 
                     //Opzione di sospendibilità
-                    cy.contains('sospendibilità').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
-                    cy.get('nx-dropdown-item').contains(currentCase.Opzione_Spospendibilita).click().wait(500)
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                    if (Cypress.env('isAviva')) {
+                        cy.contains('Sospensione').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                        cy.get('nx-dropdown-item').contains(currentCase.Opzione_Spospendibilita).click().wait(500)
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                    }
+                    else {
+                        cy.contains('sospendibilità').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                        cy.get('nx-dropdown-item').contains(currentCase.Opzione_Spospendibilita).click().wait(500)
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                    }
 
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible').wait(500)
@@ -578,6 +592,7 @@ class TenutaTariffa {
             cy.get('strong:contains("Rc Auto")').click().wait(500)
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
+            //cy.pause()
             //Verifichiamo il premio lordo a video
             cy.contains('BONUS/MALUS').parent('div').find('div[class="ng-star-inserted"]').invoke('text').then(premioLordo => {
                 expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
