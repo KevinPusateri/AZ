@@ -1,7 +1,7 @@
 {
   "tariffaCases" :[
   {
-    "Identificativo_Caso": "1",
+    "Identificativo_Caso": "SKIP",
     "Settore": "5",
     "Descrizione_Settore": "MOTOCICLO_PERSONA_FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -125,7 +125,7 @@
     "Totale_Premio_Lordo": "868,00"
   },
   {
-    "Identificativo_Caso": "2",
+    "Identificativo_Caso": "SKIP",
     "Settore": "4",
     "Descrizione_Settore": "AUTOCARRO_INF60_PERSONA_FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -247,7 +247,7 @@
     "Totale_Premio_Lordo": "1.369,50"
   },
   {
-    "Identificativo_Caso": "3",
+    "Identificativo_Caso": "SKIP",
     "Settore": "5",
     "Descrizione_Settore": "CICLOMOTORE PERSONA FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -369,7 +369,7 @@
     "Totale_Premio_Lordo": "218,50"
   },
   {
-    "Identificativo_Caso": "4",
+    "Identificativo_Caso": "SKIP",
     "Settore": "1",
     "Descrizione_Settore": "FUORISTRADA_PERSONA_FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -730,7 +730,7 @@
     "Totale_Premio_Lordo": "476,00"
   },
   {
-    "Identificativo_Caso": "SKIP",
+    "Identificativo_Caso": "7",
     "Settore": "3",
     "Descrizione_Settore": "AUTOBUS URBANO PERSONA GIURIDICA",
     "Periodo_Tariffazione": "01-01",
@@ -743,12 +743,13 @@
     "Professione": "",
     "Scelta_Per_CAP": "false",
     "CAP": "31040",
-    "Provincia": "TREVISO",
+    "Provincia": "TV",
     "Comune": "GIAVERA DEL MONTELLO",
-    "Toponimo": "",
-    "Indirizzo": "",
-    "Numero_Civico": "",
-    "Tipo_Veicolo": "ALTRO",
+    "Cod_Comune": "26032",
+    "Toponimo": "VIA",
+    "Indirizzo": "SCHIAVONESCA",
+    "Numero_Civico": "118",
+    "Tipo_Veicolo": "autobus",
     "Tipo_Veicolo_Altro_Dettaglio_1": "AUTOBUS - TRASPORTO PERSONE OLTRE 9 POSTI",
     "Tipo_Veicolo_Altro_Dettaglio_2": "AUTOBUS URBANO",
     "Tipo_Veicolo_Altro_Dettaglio_3": "IN SERVIZIO PUBBLICO",
@@ -786,6 +787,7 @@
     "Veicolo_Aggiuntivo_Trasferimento": "",
     "Provenienza": "Prima immatricolazione",
     "Sotto_Provenienza": "Non dispone di documentazione",
+    "Nel_Dettaglio": "Caso generico",
     "Dettaglio_Sotto_Provenienza": "",
     "Data_Voltura": "",
     "Primo_Proprietario": "",

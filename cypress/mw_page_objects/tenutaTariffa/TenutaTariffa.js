@@ -59,7 +59,7 @@ class TenutaTariffa {
             // * auto è già selezionato di default quindi lo skippo
             if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada') {
                 cy.contains('un\'auto').parent().should('exist').and('be.visible').click().wait(500)
-                if (currentCase.Tipo_Veicolo === 'ciclomotore')
+                if (currentCase.Tipo_Veicolo === 'ciclomotore' || currentCase.Tipo_Veicolo === 'autobus')
                     cy.contains('altro').should('exist').and('be.visible').click().wait(2000)
                 else
                     cy.contains(currentCase.Tipo_Veicolo).should('exist').and('be.visible').click().wait(2000)
@@ -74,15 +74,16 @@ class TenutaTariffa {
                 //Attendiamo che il caricamento non sia più visibile
                 cy.get('nx-spinner').should('not.be.visible').wait(500)
 
-                //? Di default per le persone giuridiche per i casi che abbiamo settiamo 'Il veicolo è già assicurato'
-                cy.contains('Il veicolo non è già assicurato').should('exist').and('be.visible').click().wait(500)
-                cy.contains(' Il veicolo è già assicurato').should('exist').and('be.visible').click().wait(500)
-                //Attendiamo che il caricamento non sia più visibile
-                cy.get('nx-spinner').should('not.be.visible').wait(500)
+                if (currentCase.Provenienza !== "Prima immatricolazione") {
+                    cy.contains('Il veicolo non è già assicurato').should('exist').and('be.visible').click().wait(500)
+                    cy.contains(' Il veicolo è già assicurato').should('exist').and('be.visible').click().wait(500)
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+                }
 
                 //Settore di attività
                 cy.contains('Il suo settore di attività è').should('exist').and('be.visible').parents('div[nxrowalignitems="center"]').first().find('nx-dropdown').click().wait(500)
-                cy.contains(currentCase.Settore_Attivita.toUpperCase()).should('exist').and('be.visible').click().wait(500)
+                cy.contains(currentCase.Settore_Attivita.toUpperCase()).should('exist').click().wait(500)
             }
             else {
                 //Data di Nascita : calcolata in automatico a partire dalla data decorrenza in rapporto all'età del caso
@@ -160,7 +161,7 @@ class TenutaTariffa {
                     cy.get('input[formcontrolname="cognomeRagioneSociale"]').should('exist').and('be.visible').type(currentRagioneSociale.toUpperCase()).wait(500)
 
                     cy.get('nx-dropdown[formcontrolname="settoreAttivita"]').should('exist').and('be.visible').click().wait(500)
-                    cy.contains(currentCase.Settore_Attivita.toUpperCase()).should('exist').and('be.visible').click().wait(500)
+                    cy.contains(currentCase.Settore_Attivita.toUpperCase()).should('exist').click().wait(500)
 
                     cy.get('nx-dropdown[formcontrolname="toponimo"]').should('exist').and('be.visible').click().wait(500)
                     let re = new RegExp("\^ " + currentCase.Toponimo.toLowerCase() + " \$")
@@ -236,10 +237,11 @@ class TenutaTariffa {
                 debugger
                 if (tipVeicolo.toLocaleLowerCase() !== currentCase.Tipo_Veicolo) {
                     cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').click().wait(1000)
-                    cy.contains(currentCase.Tipo_Veicolo).should('exist').and('be.visible').click().wait(500)
+                    cy.contains((currentCase.Tipo_Veicolo === 'autobus') ? 'altro' : currentCase.Tipo_Veicolo).should('exist').click().wait(500)
                     cy.wait('@getMotor', { requestTimeout: 30000 })
                 }
             })
+            cy.pause()
 
             //Marca
             cy.get('nx-dropdown[formcontrolname="marca"]').should('exist').and('be.visible').click().wait(500)
