@@ -48,24 +48,33 @@ after(function () {
     //#endregion
 })
 
-describe('Tenuta Tariffa Gennaio 2022 : ', function () {
+describe('Tenuta Tariffa Febbraio 2022 : ', function () {
     tariffaCases.forEach((currentCase, k) => {
-        it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
-            if (currentCase.Identificativo_Caso !== 'SKIP') {
+        describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function(){
+            it("Flusso", function () {
+                if (currentCase.Identificativo_Caso !== 'SKIP') {
+    
+                    Common.visitUrlOnEnv()
+                    TopBar.clickSales()
+                    Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+    
+                    TenutaTariffa.compilaDatiQuotazione(currentCase)
+                    TenutaTariffa.compilaContraenteProprietario(currentCase)
+                    TenutaTariffa.compilaVeicolo(currentCase)
+                    TenutaTariffa.compilaProvenienza(currentCase)
+                    TenutaTariffa.compilaOfferta(currentCase)
+                }
+                else
+                    this.skip()
+            })
 
-                Common.visitUrlOnEnv()
-                TopBar.clickSales()
-                Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+            it("LogTariffa", function(){
+                if (currentCase.Identificativo_Caso !== 'SKIP')
+                    TenutaTariffa.checkTariffa(currentCase)
+                else
+                    this.skip()
 
-                TenutaTariffa.compilaDatiQuotazione(currentCase)
-                TenutaTariffa.compilaContraenteProprietario(currentCase)
-                TenutaTariffa.compilaVeicolo(currentCase)
-                TenutaTariffa.compilaProvenienza(currentCase)
-                TenutaTariffa.compilaOfferta(currentCase)
-                TenutaTariffa.checkTariffa(currentCase)
-            }
-            else
-                this.skip()
-        });
+            })
+        })
     });
 })
