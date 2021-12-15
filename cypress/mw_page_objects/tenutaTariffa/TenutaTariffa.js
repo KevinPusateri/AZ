@@ -57,7 +57,7 @@ class TenutaTariffa {
 
             //Tipologia Veicolo
             // * auto è già selezionato di default quindi lo skippo
-            if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada') {
+            if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada' && currentCase.Tipo_Veicolo !== 'taxi') {
                 cy.contains('un\'auto').parent().should('exist').and('be.visible').click().wait(500)
                 if (currentCase.Tipo_Veicolo === 'ciclomotore' || currentCase.Tipo_Veicolo === 'autobus')
                     cy.contains('altro').should('exist').and('be.visible').click().wait(2000)
@@ -234,14 +234,29 @@ class TenutaTariffa {
 
             //Tipo Veicolo
             cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').invoke('text').then(tipVeicolo => {
-                debugger
                 if (tipVeicolo.toLocaleLowerCase() !== currentCase.Tipo_Veicolo) {
                     cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').click().wait(1000)
-                    cy.contains((currentCase.Tipo_Veicolo === 'autobus') ? 'altro' : currentCase.Tipo_Veicolo).should('exist').click().wait(500)
+                    if (currentCase.Tipo_Veicolo === 'autobus' || currentCase.Tipo_Veicolo === 'taxi') {
+                        cy.contains('altro').should('exist').click().wait(500)
+
+                        //In caso di autobus o taxi, compilo il form pop-up
+                        let fullDetails = (currentCase.Tipo_Veicolo_Altro_Dettaglio_1 + ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_2 + ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_3).toUpperCase()
+                        if(currentCase.Tipo_Veicolo_Altro_Dettaglio_4 !== "")
+                            fullDetails += ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_4.toUpperCase()
+
+                        cy.get('nx-formfield[nxlabel="Veicolo"]').find('input').should('exist').and('be.visible').type((currentCase.Tipo_Veicolo_Altro_Dettaglio_1 + ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_2).toUpperCase()).wait(500)
+                        cy.contains(fullDetails).click().wait(500)
+
+                        cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Tipo_Veicolo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+                        cy.contains('Conferma').click().wait(500)
+                    }
+                    else
+                        cy.contains(currentCase.Tipo_Veicolo).should('exist').click().wait(500)
+
                     cy.wait('@getMotor', { requestTimeout: 30000 })
                 }
             })
-            cy.pause()
 
             //Marca
             cy.get('nx-dropdown[formcontrolname="marca"]').should('exist').and('be.visible').click().wait(500)
