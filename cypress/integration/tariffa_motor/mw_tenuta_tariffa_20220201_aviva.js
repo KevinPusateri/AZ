@@ -19,12 +19,12 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe/tariffaCases_20220201.json'
+import { tariffaCases } from '../../fixtures/tariffe/tariffaCases_20220201_aviva.json'
 //#endregion
 before(() => {
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
-
+    
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
@@ -48,33 +48,24 @@ after(function () {
     //#endregion
 })
 
-describe('Tenuta Tariffa Febbraio 2022 : ', function () {
+describe('Tenuta Tariffa Febbraio 2022 AVIVA: ', function () {
     tariffaCases.forEach((currentCase, k) => {
-        describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function(){
-            it("Flusso", function () {
-                if (currentCase.Identificativo_Caso !== 'SKIP') {
-    
-                    Common.visitUrlOnEnv()
-                    TopBar.clickSales()
-                    Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
-    
-                    TenutaTariffa.compilaDatiQuotazione(currentCase)
-                    TenutaTariffa.compilaContraenteProprietario(currentCase)
-                    TenutaTariffa.compilaVeicolo(currentCase)
-                    TenutaTariffa.compilaProvenienza(currentCase)
-                    TenutaTariffa.compilaOfferta(currentCase)
-                }
-                else
-                    this.skip()
-            })
+        it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
+            if (currentCase.Identificativo_Caso !== 'SKIP') {
 
-            it("LogTariffa", function(){
-                if (currentCase.Identificativo_Caso !== 'SKIP')
-                    TenutaTariffa.checkTariffa(currentCase)
-                else
-                    this.skip()
+                Common.visitUrlOnEnv()
+                TopBar.clickSales()
+                Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
 
-            })
-        })
+                TenutaTariffa.compilaDatiQuotazione(currentCase)
+                TenutaTariffa.compilaContraenteProprietario(currentCase)
+                TenutaTariffa.compilaVeicolo(currentCase)
+                TenutaTariffa.compilaProvenienza(currentCase)
+                TenutaTariffa.compilaOfferta(currentCase)
+                TenutaTariffa.checkTariffa(currentCase)
+            }
+            else
+                this.skip()
+        });
     });
 })
