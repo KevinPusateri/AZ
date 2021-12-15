@@ -103,7 +103,7 @@ describe("FABBRICATO E CONTENUTO", () => {
     })
 
     it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", () => {
-        //Ultra.caricamentoUltraHome()
+        Ultra.caricamentoUltraHome()
         Ultra.verificaAmbitiHome(ambiti)
     })
 

@@ -34,6 +34,29 @@ class Ultra {
         })
     }
 
+    //ricerca la professione e seleziona il primo risultato
+    static startModificaProfessione(professione) {
+        ultraIFrame().within(() => {
+            cy.get('span').contains('professione').should('be.visible')
+                .next('a').click() //apre il popup per la ricerca professioni
+
+            cy.get('#professioni-modal').find('input')
+                .type(professione) //ricerca professione
+
+            cy.wait(1000);
+
+            cy.get('#list-one').find('span').first().click() //seleziona il primo risultato
+            cy.get('#list-one').find('span').first().prev('nx-icon[name="check"]')
+                .should('be.visible') //verifica che compaia il segno di spunta
+
+            cy.get('button[aria-disabled="false"]')
+                .children('span').contains('CONFERMA').click() //conferma il popup
+
+            cy.get('span').contains('professione').should('be.visible')
+                .next('a').contains(professione).should('be.visible') //verifica che la professione sia stata modificata nella pagina start
+        })
+    }
+
     static caricamentoUltraHome(ambiti) {
         cy.intercept({
             method: 'GET',
@@ -270,6 +293,75 @@ class Ultra {
 
             cy.get('span').contains('CONFERMA').should('be.visible').click()
             cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+        })
+    }
+
+    static areaRiservata(prezzoRiservato) {
+        ultraIFrame().within(() => {
+            cy.get('span').contains('Area riservata')
+                .should('be.visible').click() //apre l'area riservata
+
+            cy.get('#popover-range').should('be.visible') //attende il caricamento dell'area riservata
+
+            //inserisce il prezzo riservato
+            cy.get('#popover-range')
+                .find('input').clear()
+                .type(prezzoRiservato).type('{enter}')
+
+            //applica il prezzo riservato
+            cy.get('span').contains('Applica')
+                .should('be.visible').click()
+
+            cy.wait(500)
+
+            //verifica che il prezzo riservato sia stato applicato
+            //(il pulsante 'applica' cambia la dicitura in 'rimuovi sconto')
+            cy.get('#firstCard').find('button')
+                .children().first()
+                .contains('Rimuovi sconto').should('be.visible')
+
+            //conferma
+            cy.get('#arBody')
+                .find('span').contains('CONFERMA').click()
+
+            cy.get('[id="alz-spinner"]').should('not.be.visible')
+        })
+    }
+
+    static condividi(nomeQuotazione, ambiti) {
+        ultraIFrame().within(() => {
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //verifica che la pagina non sia in caricamento
+
+            cy.get('span').contains('Condividi')
+                .should('be.visible').click() //apre la sezione Condividi (salva quotazione)
+
+            cy.get('#salvaForm').should('be.visible') //attende il caricamento del popup
+
+            //inserisce il nome per salvare la quotazione
+            cy.get('#salvaForm')
+                .find('input[formcontrolname="name"]').click()
+
+            cy.wait(500)
+
+            cy.get('#salvaForm')
+                .find('input[formcontrolname="name"]').type(nomeQuotazione)
+
+            //salva la quotazione
+            cy.get('#salvaForm')
+                .find('span').contains('Salva').click()
+
+            cy.get('#condividiModal').should('be.visible') //attende il caricamento del popup 'condividi l'offerta'
+
+            if(ambiti.length == 4)
+            {
+                cy.get('div').contains('Seleziona tutti')
+                .should('be.visible').click() //seleziona tutte le schede
+            }
+
+            cy.get('button[aria-label="Close dialog"]').click() //chiude popup
+
+            cy.get('#warning-switch-solution').should('be.visible') //attende il caricamento del popup 'attenzione'
+            cy.get('button').children('span').contains('Ok').click() //chiude il popup
         })
     }
 
