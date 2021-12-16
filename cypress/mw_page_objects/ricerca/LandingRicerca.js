@@ -409,7 +409,7 @@ class LandingRicerca {
 
     // Verifica che non sia presente il button "Ricerca Classica"
     static checkNotExistRicercaClassica() {
-        cy.get('lib-advice-navigation-section').find('button').should('not.be.visible').and('not.contain.text', 'Ricerca classica')
+        cy.get('lib-advice-navigation-section').should('not.contain.text', 'Ricerca classica')
     }
 
     static clickRicercaClassicaLabel(link) {

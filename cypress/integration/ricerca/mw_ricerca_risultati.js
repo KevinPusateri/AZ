@@ -55,7 +55,7 @@ if (Cypress.env('isAviva')) {
             LandingRicerca.search('RO')
             LandingRicerca.checkNotExistMieInfo()
             LandingRicerca.checkSuggestedLinks('RO')
-            LandingRicerca.checkButtonRicercaClassica()
+            LandingRicerca.checkNotExistRicercaClassica()
         })
 
 
