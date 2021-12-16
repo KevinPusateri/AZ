@@ -13,7 +13,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-    //#endregion
+//#endregion
 
 
 //#region Configuration
@@ -33,10 +33,10 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-after(function() {
+after(function () {
     //#endregion
     TopBar.logOutMW()
-        //#region Mysql
+    //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
         cy.finishMysql(dbConfig, insertedId, tests)
@@ -45,34 +45,34 @@ after(function() {
 })
 
 
-describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function() {
+describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
 
-    it('Verifica link da Burger Menu', function() {
+    it('Verifica link da Burger Menu', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.checkExistLinks()
     });
 
     //#region Sinistri
-    it('Verifica aggancio Movimentazione sinistri', function() {
+    it('Verifica aggancio Movimentazione sinistri', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Movimentazione sinistri')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Consultazione sinistri', function() {
+    it('Verifica aggancio Consultazione sinistri', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Consultazione sinistri')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
     if (!Cypress.env('isAviva')) {
-        it('Verifica aggancio Denuncia', function() {
+        it('Verifica aggancio Denuncia', function () {
             TopBar.clickBackOffice()
             BurgerMenuBackOffice.clickLink('Denuncia')
             BurgerMenuBackOffice.backToBackOffice()
         })
 
-        it('Verifica aggancio Denuncia BMP', function() {
+        it('Verifica aggancio Denuncia BMP', function () {
             if (!Cypress.env('monoUtenza')) {
                 TopBar.clickBackOffice()
                 BurgerMenuBackOffice.clickLink('Denuncia BMP')
@@ -81,13 +81,13 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function() {
 
         })
 
-        it('Verifica aggancio Sinistri incompleti', function() {
+        it('Verifica aggancio Sinistri incompleti', function () {
             TopBar.clickBackOffice()
             BurgerMenuBackOffice.clickLink('Sinistri incompleti')
             BurgerMenuBackOffice.backToBackOffice()
         })
 
-        it('Verifica aggancio Sinistri canalizzati', function() {
+        it('Verifica aggancio Sinistri canalizzati', function () {
             TopBar.clickBackOffice()
             BurgerMenuBackOffice.clickLink('Sinistri canalizzati')
             BurgerMenuBackOffice.backToBackOffice()
@@ -96,63 +96,65 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function() {
     //#endregion
 
     //#region Contabilità
-    it('Verifica aggancio Sintesi Contabilità', function() {
+    it('Verifica aggancio Sintesi Contabilità', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Sintesi Contabilità')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Giornata contabile', function() {
+    it('Verifica aggancio Giornata contabile', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Giornata contabile')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Consultazione Movimenti', function() {
+    it('Verifica aggancio Consultazione Movimenti', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Consultazione Movimenti')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Estrazione Contabilità', function() {
+    it('Verifica aggancio Estrazione Contabilità', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Estrazione Contabilità')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Deleghe SDD', function() {
+    it('Verifica aggancio Deleghe SDD', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Deleghe SDD')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Quadratura unificata', function() {
+    it('Verifica aggancio Quadratura unificata', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Quadratura unificata')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Incasso per conto', function() {
+    it('Verifica aggancio Incasso per conto', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Incasso per conto')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Incasso massivo', function() {
+    it('Verifica aggancio Incasso massivo', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Incasso massivo')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Sollecito titoli', function() {
+    it('Verifica aggancio Sollecito titoli', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Sollecito titoli')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
     //! su AVIVA necessaria abilitazione pilota
-    it('Verifica aggancio Convenzioni in trattenuta', function() {
-        if (!Cypress.env('monoUtenza')) {
+    it('Verifica aggancio Convenzioni in trattenuta', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
+        else if (!Cypress.env('monoUtenza')) {
             TopBar.clickBackOffice()
             BurgerMenuBackOffice.clickLink('Convenzioni in trattenuta')
             BurgerMenuBackOffice.backToBackOffice()
@@ -160,8 +162,10 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function() {
     })
 
     //! su AVIVA necessaria abilitazione pilota
-    it('Verifica aggancio Monitoraggio Guida Smart', function() {
-        if (!Cypress.env('monoUtenza')) {
+    it('Verifica aggancio Monitoraggio Guida Smart', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
+        else if (!Cypress.env('monoUtenza')) {
             TopBar.clickBackOffice()
             BurgerMenuBackOffice.clickLink('Monitoraggio Guida Smart')
         } else {
@@ -169,7 +173,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function() {
         }
     })
 
-    it('Verifica aggancio Impostazione contabilità', function() {
+    it('Verifica aggancio Impostazione contabilità', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Impostazione contabilità')
         BurgerMenuBackOffice.backToBackOffice()
