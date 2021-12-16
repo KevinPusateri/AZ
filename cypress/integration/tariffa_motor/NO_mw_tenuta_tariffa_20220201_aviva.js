@@ -19,7 +19,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures/tariffe/tariffaCases_20220101_aviva.json'
+import { tariffaCases } from '../../fixtures/tariffe/tariffaCases_20220201_aviva.json'
 //#endregion
 before(() => {
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
@@ -38,17 +38,17 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+})
 
-describe('Tenuta Tariffa Gennaio 2022 : ', function () {
+describe('Tenuta Tariffa Febbraio 2022 AVIVA: ', function () {
     tariffaCases.forEach((currentCase, k) => {
         it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             if (currentCase.Identificativo_Caso !== 'SKIP') {

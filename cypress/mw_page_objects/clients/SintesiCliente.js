@@ -265,6 +265,10 @@ class SintesiCliente {
         })
     }
 
+    /**
+     * Emissione Preventivo Motor
+     * ! DEVE ESSERE PRIMA UTILIZZATO IL METODO clickAuto()
+     */
     static clickPreventivoMotor() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()

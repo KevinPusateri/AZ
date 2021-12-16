@@ -6,6 +6,7 @@
 import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
+import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
 import AreaRiservata from "../../mw_page_objects/UltraBMP/AreaRiservata"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
@@ -50,6 +51,8 @@ const soluzione = {
 Cypress.config('defaultCommandTimeout', 60000)
 import { modificheCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { modificheAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { defaultCasa } from '../../fixtures//Ultra/BMP_Comune.json'
+import { defaultAnimale } from '../../fixtures//Ultra/BMP_Comune.json'
 
 //#endregion
 
@@ -130,12 +133,20 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
 
     it("Accesso Dati Quotazione da menù", ()=>{
         UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
-        DatiQuotazione.VerificaDefaultCasa()
-        DatiQuotazione.VerificaDefaultAnimaleDomestico()
+        cy.pause()
+        DatiQuotazione.VerificaDefaultCasa(defaultCasa)
+        DatiQuotazione.VerificaDefaultAnimaleDomestico(defaultAnimale)
         //cy.pause()
         DatiQuotazione.ModificaValoriCasa(modificheCasa)
-        cy.pause()
+        //cy.pause()
         DatiQuotazione.ModificaValoriAnimaleDomestico(modificheAnimale)
+        DatiQuotazione.ClickButton("CONFERMA")
+    })
+
+    it("Accesso Configurazione ambito 'Fabbricato'", ()=>{
+        cy.pause()
+        UltraBMP.ClickMatita("Fabbricato", "Casa 1")
+        
     })
 
 })

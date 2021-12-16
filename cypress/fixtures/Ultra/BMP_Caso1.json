@@ -1,4 +1,5 @@
-{"modificheCasa" : {
+{
+  "modificheCasa" : {
     "Assicurato"        : "",
     "Nome"              : "",
     "Cap"               : "",
@@ -6,7 +7,7 @@
     "Tipo"              : "una villa indipendente",
     "Mq"                : "250",
     "Piano"             : "",
-    "Valore"            : "",
+    "Valore"            : "250000",
     "Classe"            : "",
     "Anno"              : "",
     "Estensione"        : "",
@@ -16,9 +17,9 @@
 
   "modificheAnimale" : {
     "Nome"              : "Felix",
-    "Tipo"              : "gatto",
+    "Tipo"              : "",
     "Sesso"             : "",
-    "Razza"             : "siamese",
+    "Razza"             : "pit bull",
     "DataNascita"       : "",
     "Residenza"         : "",
     "Cap"               : ""

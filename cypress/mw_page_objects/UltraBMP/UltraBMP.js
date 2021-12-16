@@ -62,15 +62,29 @@ class UltraBMP {
       * @param {string} ambito - ambito di cui si vuole selezionare la matita 
       * @param {string} oggetto - oggetto assicurato che si vuole selezionare
       */
-     static ClickMatita(ambito, oggetto) {
-        ultraIFrame().within(() => {
-            cy.log('ambito: ' + ambito)
-            cy.log('oggetto: ' + oggetto)
-            cy.get('tr').contains(ambito).should('contain', oggetto)
-                .parent().parent()
-                .find('nx-icon[name="pen"]').click()
+     static ClickMatita(ambito) {
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.get('tr')
+                .contains(ambito)
+                .parent()
+                .parent()
+                .find('[name="pen"]')
+                .click()
+            //attende il caricamento della pagina Configurazione Contenuto
+            cy.get('[id="caSoluzioni"]', { timeout: 30000 })
+                .should('be.visible')
 
-            cy.get('#caGaranzie').should('be.visible')
+            //cy.log('ambito: ' + ambito)
+            //cy.log('oggetto: ' + oggetto)
+            //cy.pause()
+            //cy.get('tr').contains(ambito)
+            
+            //.should('contain', oggetto)
+            //    .parent().parent()
+            //    .find('nx-icon[name="pen"]').click()
+
+            //cy.get('#caGaranzie').should('be.visible')
             
         })
 

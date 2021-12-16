@@ -1,7 +1,7 @@
 {
   "tariffaCases" :[
   {
-    "Identificativo_Caso": "1",
+    "Identificativo_Caso": "SKIP",
     "Settore": "5",
     "Descrizione_Settore": "MOTOCICLO_PERSONA_FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -125,7 +125,7 @@
     "Totale_Premio_Lordo": "1.091,00"
   },
   {
-    "Identificativo_Caso": "2",
+    "Identificativo_Caso": "SKIP",
     "Settore": "4",
     "Descrizione_Settore": "AUTOCARRO_INF60_PERSONA_FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -247,7 +247,7 @@
     "Totale_Premio_Lordo": "1.054,50"
   },
   {
-    "Identificativo_Caso": "3",
+    "Identificativo_Caso": "SKIP",
     "Settore": "5",
     "Descrizione_Settore": "CICLOMOTORE PERSONA FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -369,7 +369,7 @@
     "Totale_Premio_Lordo": "229,50"
   },
   {
-    "Identificativo_Caso": "4",
+    "Identificativo_Caso": "SKIP",
     "Settore": "1",
     "Descrizione_Settore": "FUORISTRADA_PERSONA_FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -490,7 +490,7 @@
     "Totale_Premio_Lordo": "615,00"
   },
   {
-    "Identificativo_Caso": "SKIP",
+    "Identificativo_Caso": "5",
     "Settore": "2",
     "Descrizione_Settore": "TAXI PERSONA FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -503,12 +503,13 @@
     "Professione": "AVVOCATO",
     "Scelta_Per_CAP": "false",
     "CAP": "15121",
-    "Provincia": "ALESSANDRIA",
+    "Provincia": "AL",
     "Comune": "ALESSANDRIA",
-    "Toponimo": "",
-    "Indirizzo": "",
-    "Numero_Civico": "",
-    "Tipo_Veicolo": "ALTRO",
+    "Cod_Comune": "6003",
+    "Toponimo": "VIA",
+    "Indirizzo": "BRUNO BUOZZI",
+    "Numero_Civico": "11",
+    "Tipo_Veicolo": "taxi",
     "Tipo_Veicolo_Altro_Dettaglio_1": "ALTRE AUTOVETTURE - FUORISTRADA",
     "Tipo_Veicolo_Altro_Dettaglio_2": "TAXI",
     "Tipo_Veicolo_Altro_Dettaglio_3": "AUTOVETTURA USO PUBBLICO (TAXI) SENZA TRAINO",
@@ -546,6 +547,7 @@
     "Veicolo_Aggiuntivo_Trasferimento": "",
     "Provenienza": "Precedentemente assicurato altra compagnia",
     "Sotto_Provenienza": "Con attestazione",
+    "Nel_Dettaglio": "Caso generico",
     "Dettaglio_Sotto_Provenienza": "",
     "Data_Voltura": "",
     "Primo_Proprietario": "",
@@ -567,7 +569,7 @@
     "Franchigia": "",
     "Danni_Terzi_Trasportati": "",
     "Tipo_Guida": "Libera",
-    "Rinuncia_Rivalsa": "true",
+    "Rinuncia_Rivalsa": "Protezione rivalsa: Sì",
     "Carico_Scarico": "",
     "Sgombero_Neve": "",
     "Merci_Pericolose": "",
@@ -599,7 +601,7 @@
     "RC_Commerciale": "103455,04",
     "RC_Commerciale_Pre_Premio_Massimo": "",
     "RC_Tecnico": "125253,44",
-    "Versione_Tariffa_Radar": "20210701_000016",
+    "Versione_Tariffa_Radar": "t_3001_010000_20220101_000000000000_000008",
     "Versione_Punta_Flex": "radar_cmc_20200501_000037",
     "Versione_Radar_UW": "radar_uw_20190501_000034",
     "Applicazione_Radar_Commerciale": "true",
@@ -607,7 +609,7 @@
     "Radar_Nuova_Tenica": "true",
     "Digital_ID": "99476,0559",
     "Coeff_Digital_ID": "1000",
-    "Totale_Premio_Lordo": "1.116,00"
+    "Totale_Premio_Lordo": "1.024,00"
   },
   {
     "Identificativo_Caso": "SKIP",

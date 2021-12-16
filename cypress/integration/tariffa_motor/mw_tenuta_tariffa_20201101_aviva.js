@@ -21,9 +21,10 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe/tariffaCases_20220101.json'
+import { tariffaCases } from '../../fixtures/tariffe/tariffaCases_20201101_aviva.json'
 //#endregion
 before(() => {
+    Cypress.env('isAviva', true)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
 
@@ -52,7 +53,9 @@ after(function () {
 
 //Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
-describe('Tenuta Tariffa Gennaio 2022: ', function () {
+describe('Tenuta Tariffa Novembre 2020 AVIVA: ', function () {
+
+
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
