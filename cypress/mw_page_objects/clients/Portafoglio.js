@@ -234,7 +234,7 @@ class Portafoglio {
      */
     static clickSubTab(subTab) {
         cy.get('nx-tab-header').scrollIntoView().contains(subTab).scrollIntoView().click({ force: true })
-            // ! Disattivo la visualizzazione elenco lista 
+        // ! Disattivo la visualizzazione elenco lista 
 
         cy.get('app-wallet-list-toggle-button').should('be.visible').find('div[class^="icon"]').then(($iconList) => {
             if ($iconList.hasClass('icon open'))
@@ -281,7 +281,7 @@ class Portafoglio {
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first()
             .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
         cy.log(numberPolizza)
-            // Click tre puntini dalla prima polizza
+        // Click tre puntini dalla prima polizza
         cy.get('@polizza').should('exist').then(($contract) => {
             cy.wrap($contract)
                 .find('app-contract-context-menu').find('nx-icon').click()
@@ -620,7 +620,7 @@ class Portafoglio {
         cy.get('app-contract-card').should('be.visible')
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first()
             .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
-            // Click tre puntini dalla prima polizza
+        // Click tre puntini dalla prima polizza
         cy.get('@polizza').should('exist').then(($contract) => {
             cy.wrap($contract)
                 .find('app-contract-context-menu').find('nx-icon').click()
@@ -652,7 +652,7 @@ class Portafoglio {
                     cy.wrap($form).should('not.be.visible')
                 } else
                     cy.get('div[class="messaggioAnnullamenti"]').should('exist').and('be.visible')
-                    .and('contain.text', 'Storno eseguito correttamente.')
+                        .and('contain.text', 'Storno eseguito correttamente.')
 
             })
 
@@ -661,6 +661,29 @@ class Portafoglio {
             cy.wait(10000)
         })
     }
-}
 
-export default Portafoglio
+    static checkTooltipStopDrive(numberPolizza) {
+        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').contains(numberPolizza).first().as('polizza')
+
+        cy.get('@polizza').should('be.visible')
+        cy.contains('DETTAGLIO ANAGRAFICA').as('dettaglio')
+        cy.contains('PORTAFOGLIO').as('portafoglio')
+
+        // Faccio il loop finchè non riaggiorna la pagina mostrando il tooltip SOSPESa
+        cy.get('@polizza')
+            .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').should('be.visible').within(() => {
+                cy.get('[ngclass="top-card-grid"]').as('stato')
+                cy.get('@stato').then(($stato) => {
+
+                    cy.get('app-contract-status-badge').should('contain.text', 'IN ANNULLAMENTO')
+                    cy.document().its('body').find('#cdk-describedby-message-container').then((textStop) => {
+                        if (textStop.text().includes('30 - Sospensione stop and drive'))
+                            assert.isTrue(true, 'tooltip corretto')
+                        else
+                            assert.fail(textSospesa.text() + ' ERRORE')
+                    })
+
+                })
+            })
+    }
+} export default Portafoglio
