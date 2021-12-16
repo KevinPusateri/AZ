@@ -103,16 +103,26 @@ class TopBar extends HomePage {
     }
 
     /**
-     * fa la Ricerca di due lettere random 
+     * Ricerca di due lettere random e verifica atterraggio in Landing Ricerca
      */
     static searchRandom() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('searchClient')) {
+                req.alias = 'gqlSearchClient'
+            }
+        });
+
         cy.generateTwoLetters().then(randomChars => {
-            cy.get('input[name="main-search-input"]').clear().type(randomChars).click()
+            cy.get('input[name="main-search-input"]').should('exist').and('be.visible').click()
+            cy.get('input[name="main-search-input"]').should('exist').and('be.visible').type(randomChars).type('{enter}').wait(2000)
+
+            cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
+            cy.get('lib-client-item').should('be.visible')
         })
     }
 
     /**
-     * @param {string} value - What to search
+     * @param {string} value - Cosa cercare nella barra di ricerca in TopBar
      */
     static search(value) {
         cy.intercept('POST', '**/graphql', (req) => {
@@ -183,7 +193,7 @@ class TopBar extends HomePage {
     static clickSales() {
         interceptPageSales()
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-            // cy.wait('@getSales', { requestTimeout: 50000 })
+        // cy.wait('@getSales', { requestTimeout: 50000 })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
     }
 
@@ -259,36 +269,36 @@ class TopBar extends HomePage {
      */
     static checkLinksUtility() {
 
+        const linksUtilita = Object.values(LinkUtilita)
+
+        if (Cypress.env('monoUtenza')) {
+            delete LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO
+            delete LinkUtilita.REPORT_ALLIANZ_NOW
             const linksUtilita = Object.values(LinkUtilita)
-
-            if (Cypress.env('monoUtenza')) {
-                delete LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO
-                delete LinkUtilita.REPORT_ALLIANZ_NOW
-                const linksUtilita = Object.values(LinkUtilita)
-                cy.get('lib-utility').find('lib-utility-label').should('have.length', 8).each(($labelCard, i) => {
-                    expect($labelCard).to.contain(linksUtilita[i])
-                })
-            } else if (Cypress.env('isAviva')) {
-                delete LinkUtilita.REPORT_ALLIANZ_NOW
-                delete LinkUtilita.GESTIONE_MAGAZZINO_OBU
-                delete LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS
-                delete LinkUtilita.CRUSCOTTO_INSTALLAZIONE_DISPOSITIVO_SATELLITARE
-                delete LinkUtilita.MONITOR_SCORING_AZ_BONUS_DRIVE
-                const linksUtilita = Object.values(LinkUtilita)
-                cy.get('lib-utility').find('lib-utility-label').should('have.length', 5).each(($labelCard, i) => {
-                    expect($labelCard).to.contain(linksUtilita[i])
-                })
-            } else if (Cypress.env('monoUtenza')) {
-                cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
-                    expect($labelCard).to.contain(linksUtilita[i])
-                })
-            }
-
+            cy.get('lib-utility').find('lib-utility-label').should('have.length', 8).each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksUtilita[i])
+            })
+        } else if (Cypress.env('isAviva')) {
+            delete LinkUtilita.REPORT_ALLIANZ_NOW
+            delete LinkUtilita.GESTIONE_MAGAZZINO_OBU
+            delete LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS
+            delete LinkUtilita.CRUSCOTTO_INSTALLAZIONE_DISPOSITIVO_SATELLITARE
+            delete LinkUtilita.MONITOR_SCORING_AZ_BONUS_DRIVE
+            const linksUtilita = Object.values(LinkUtilita)
+            cy.get('lib-utility').find('lib-utility-label').should('have.length', 5).each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksUtilita[i])
+            })
+        } else if (Cypress.env('monoUtenza')) {
+            cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
+                expect($labelCard).to.contain(linksUtilita[i])
+            })
         }
-        /**
-         * Click su un link dal menu a tendina di Utilità
-         * @param {string} page - nome del link 
-         */
+
+    }
+    /**
+     * Click su un link dal menu a tendina di Utilità
+     * @param {string} page - nome del link 
+     */
     static clickLinkOnUtilita(page) {
         if (page === LinkUtilita.CASELLA_DI_POSTA_ED_AGENZIA ||
             page === LinkUtilita.BANCHE_DATI_ANIA ||
