@@ -98,11 +98,15 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     });
 
     it('Verifica che il contenuto di Visione globale cliente sia presente', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickClients()
         Clients.checkVisioneGlobaleCliente()
     })
 
     it('Verifica aggancio Vai a visione globale', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickClients()
         Clients.clickVisioneGlobale()
         Clients.backToClients()
