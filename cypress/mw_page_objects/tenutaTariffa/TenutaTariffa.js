@@ -87,8 +87,7 @@ class TenutaTariffa {
             }
             else {
                 //Data di Nascita : calcolata in automatico a partire dalla data decorrenza in rapporto all'età del caso
-                if(!flowClients)
-                {
+                if (!flowClients) {
                     let dataDecorrenza = calcolaDataDecorrenza(currentCase)
                     currentDataNascita = new Date(dataDecorrenza.getFullYear() - currentCase.Eta, dataDecorrenza.getMonth(), dataDecorrenza.getDate())
                     let formattedDataNascita = String(currentDataNascita.getDate()).padStart(2, '0') + '/' +
@@ -120,15 +119,16 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
             //TODO E' il proprietario principale del veicolo
-            if(!flowClients)
-            {
+            if (!flowClients) {
                 if (currentCase.Tipologia_Entita === 'Persona')
                     cy.task('nuovoClientePersonaFisica').then((currentPersonaFisica) => {
                         let currentCognome = currentPersonaFisica.cognome
                         let currentNome = currentPersonaFisica.nome
-    
+
                         cy.get('input[formcontrolname="nome"]').should('exist').and('be.visible').type(currentPersonaFisica.nome.toUpperCase()).wait(500)
                         cy.get('input[formcontrolname="cognomeRagioneSociale"]').should('exist').and('be.visible').type(currentPersonaFisica.cognome.toUpperCase()).wait(500)
+                        cy.get('nx-dropdown[formcontrolname="sesso"]').should('exist').and('be.visible').click().wait(500)
+                        cy.contains('Maschio').should('exist').and('be.visible').click().wait(500)
                         cy.get('input[formcontrolname="luogoNascita"]').should('exist').and('be.visible').type(currentCase.Comune).wait(500)
                         cy.get('nx-dropdown[formcontrolname="toponimo"]').should('exist').and('be.visible').click().wait(500)
                         let re = new RegExp("\^ " + currentCase.Toponimo.toLowerCase() + " \$")
@@ -145,28 +145,28 @@ class TenutaTariffa {
                             re = new RegExp("\^ " + currentCase.Professione + " \$")
                             cy.contains(re).should('exist').click().wait(500)
                         }
-    
+
                         //Generiamo il codice fiscale
                         let formattedDataNascita = currentDataNascita.getFullYear() + '-' +
                             String(currentDataNascita.getMonth() + 1).padStart(2, '0') + '-' +
                             String(currentDataNascita.getDate()).padStart(2, '0')
-    
+
                         cy.getSSN(currentCognome, currentNome, currentCase.Comune, currentCase.Cod_Comune, formattedDataNascita, 'M').then(currentSSN => {
                             cy.get('input[formcontrolname="cfIva"]').should('exist').and('be.visible').type(currentSSN).wait(500)
                         })
-    
-    
+
+
                     })
                 else
                     cy.task('nuovoClientePersonaGiuridica').then((currentPersonaGiuridica) => {
                         let currentRagioneSociale = currentPersonaGiuridica.ragioneSociale
                         let currentPartitaIva = currentPersonaGiuridica.partitaIva
-    
+
                         cy.get('input[formcontrolname="cognomeRagioneSociale"]').should('exist').and('be.visible').type(currentRagioneSociale.toUpperCase()).wait(500)
-    
+
                         cy.get('nx-dropdown[formcontrolname="settoreAttivita"]').should('exist').and('be.visible').click().wait(500)
                         cy.contains(currentCase.Settore_Attivita.toUpperCase()).should('exist').click().wait(500)
-    
+
                         cy.get('nx-dropdown[formcontrolname="toponimo"]').should('exist').and('be.visible').click().wait(500)
                         let re = new RegExp("\^ " + currentCase.Toponimo.toLowerCase() + " \$")
                         cy.contains(re).should('exist').and('be.visible').click().wait(500)
@@ -175,9 +175,9 @@ class TenutaTariffa {
                         cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune).wait(500)
                         cy.get('input[formcontrolname="provincia"]').should('exist').and('be.visible').type(currentCase.Provincia).wait(500)
                         cy.get('input[formcontrolname="cap"]').should('exist').and('be.visible').type(currentCase.CAP).wait(500)
-    
+
                         cy.get('input[formcontrolname="cfIva"]').should('exist').and('be.visible').type(currentPartitaIva).wait(500)
-    
+
                     })
             }
 
@@ -246,7 +246,7 @@ class TenutaTariffa {
 
                         //In caso di autobus o taxi, compilo il form pop-up
                         let fullDetails = (currentCase.Tipo_Veicolo_Altro_Dettaglio_1 + ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_2 + ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_3).toUpperCase()
-                        if(currentCase.Tipo_Veicolo_Altro_Dettaglio_4 !== "")
+                        if (currentCase.Tipo_Veicolo_Altro_Dettaglio_4 !== "")
                             fullDetails += ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_4.toUpperCase()
 
                         cy.get('nx-formfield[nxlabel="Veicolo"]').find('input').should('exist').and('be.visible').type((currentCase.Tipo_Veicolo_Altro_Dettaglio_1 + ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_2).toUpperCase()).wait(500)
@@ -268,23 +268,37 @@ class TenutaTariffa {
             cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Marca).wait(500)
             let re = new RegExp("\^ " + currentCase.Marca + " \$")
             cy.contains(re).should('exist').and('be.visible').click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible').wait(500)
 
-            //Modello
-            cy.get('nx-dropdown[formcontrolname="modello"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Modello).wait(500)
-            cy.contains(currentCase.Modello).should('exist').and('be.visible').click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+            //Per i modelli fuori catalogo, da compilare a mano; altrimenti utilizzo i dropdown
+            cy.contains('Modello fuori catalogo').parents('nx-checkbox[formcontrolname="modelloFuoriCatalogo"]').find('input').then(checkBoxFuoriCatalogo => {
+                let isChecked = checkBoxFuoriCatalogo.val()
+                debugger
+                if (isChecked === 'true') {
+                    //Modello fuori catalogo
+                    cy.get('input[formcontrolname="descModelloFuoriCatalogo"]').should('exist').type(currentCase.Modello).wait(500)
+                    //Allestimento fuori catalogo
+                    cy.get('input[formcontrolname="descAllestimentoFuoriCatalogo"]').should('exist').type(currentCase.Versione).wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                }
+                else {
+                    //Modello
+                    cy.get('nx-dropdown[formcontrolname="modello"]').should('exist').and('be.visible').click().wait(500)
+                    cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Modello).wait(500)
+                    cy.contains(currentCase.Modello).should('exist').and('be.visible').click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
 
-            //Allestimento
-            cy.get('nx-dropdown[formcontrolname="versione"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Versione).wait(500)
-            cy.contains(currentCase.Versione).should('exist').and('be.visible').click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+                    //Allestimento
+                    cy.get('nx-dropdown[formcontrolname="versione"]').should('exist').and('be.visible').click().wait(500)
+                    cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Versione).wait(500)
+                    cy.contains(currentCase.Versione).should('exist').and('be.visible').click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                }
+            })
 
             currentCase.Targa !== '' ? cy.contains('Informazioni Generali').click().wait(500) : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click().wait(500)
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
             //#endregion
 
             //#region Dati Veicolo Tecnici
@@ -292,6 +306,22 @@ class TenutaTariffa {
             if (currentCase.Posti !== "") {
                 cy.get('input[formcontrolname="posti"]').should('exist').and('be.visible').clear().type(currentCase.Posti).type('{enter}').wait(500)
                 cy.wait('@getMotor', { requestTimeout: 30000 })
+            }
+
+            //Alimentazione
+            if(currentCase.Alimentazione !== ""){
+                cy.get('nx-dropdown[formcontrolname="alimentazione"]').should('exist').and('be.visible').click().wait(500)
+                cy.contains(currentCase.Alimentazione).should('exist').and('be.visible').click().wait(500)
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible').wait(500)
+            }
+
+            //Antifurto
+            if(currentCase.Antifurto !== ""){
+                cy.get('nx-dropdown[formcontrolname="antifurto"]').should('exist').and('be.visible').click().wait(500)
+                cy.contains(currentCase.Antifurto).should('exist').and('be.visible').click().wait(500)
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible').wait(500)
             }
 
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
