@@ -1,7 +1,7 @@
 {
   "tariffaCases" :[
   {
-    "Identificativo_Caso": "SKIP",
+    "Identificativo_Caso": "1",
     "Settore": "5",
     "Descrizione_Settore": "MOTOCICLO_PERSONA_FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -125,7 +125,7 @@
     "Totale_Premio_Lordo": "1.091,00"
   },
   {
-    "Identificativo_Caso": "SKIP",
+    "Identificativo_Caso": "2",
     "Settore": "4",
     "Descrizione_Settore": "AUTOCARRO_INF60_PERSONA_FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -247,7 +247,7 @@
     "Totale_Premio_Lordo": "1.054,50"
   },
   {
-    "Identificativo_Caso": "SKIP",
+    "Identificativo_Caso": "3",
     "Settore": "5",
     "Descrizione_Settore": "CICLOMOTORE PERSONA FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -369,7 +369,7 @@
     "Totale_Premio_Lordo": "229,50"
   },
   {
-    "Identificativo_Caso": "SKIP",
+    "Identificativo_Caso": "4",
     "Settore": "1",
     "Descrizione_Settore": "FUORISTRADA_PERSONA_FISICA",
     "Periodo_Tariffazione": "01-01",
@@ -732,7 +732,7 @@
     "Totale_Premio_Lordo": "476,00"
   },
   {
-    "Identificativo_Caso": "SKIP",
+    "Identificativo_Caso": "7",
     "Settore": "3",
     "Descrizione_Settore": "AUTOBUS URBANO PERSONA GIURIDICA",
     "Periodo_Tariffazione": "01-01",
@@ -757,9 +757,9 @@
     "Tipo_Veicolo_Altro_Dettaglio_4": "CIRCOLANTE IN COMUNI FINO A 80.000 ABITANTI",
     "Tipo_Veicolo_Altro_Dettaglio_5": "",
     "Tipo_Veicolo_Altro_Dettaglio_6": "",
-    "Marca": "MERCEDES",
-    "Modello": "",
-    "Versione": "",
+    "Marca": "MERCEDES-BENZ",
+    "Modello": "CITARO",
+    "Versione": "C2",
     "Posti": "50",
     "Peso_Pieno_Carico": "",
     "Alimentazione": "Esclusivamente Benzina",
