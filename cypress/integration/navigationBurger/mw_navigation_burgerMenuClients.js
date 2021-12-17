@@ -57,7 +57,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function() {
             cy.log(currentHostName)
             if (!currentHostName.includes('SM')) {
                 TopBar.clickClients()
-                    //! DA VERIFCARE 
                 BurgerMenuClients.clickLink('Analisi dei bisogni')
             }
         })

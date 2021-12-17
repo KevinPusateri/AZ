@@ -79,13 +79,11 @@ class BurgerMenuClients extends Clients {
                     cy.get('app-home-right-section').find('app-rapid-link[linkname="Analisi dei bisogni"] > a')
                         .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
                 } else {
-                    // cy.contains(page).invoke('removeAttr', 'target').click()
                     cy.get('lib-burger-sidebar').find('a[href="https://www.ageallianz.it/analisideibisogni/app"]').invoke('removeAttr', 'target').click()
                         // cy.wait('@analisiBisogni', { requestTimeout: 80000 });
-                        // cy.url().should('eq', 'https://www.ageallianz.it/analisideibisogni/app/login')
-                        // cy.wait(60000)
-                        // cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
-                        // cy.go('back')
+                        cy.url().should('eq', 'https://www.ageallianz.it/analisideibisogni/app/login')
+                        cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
+                        cy.go('back')
                 }
                 // cy.url().should('include', Common.getBaseUrl())
                 break;
