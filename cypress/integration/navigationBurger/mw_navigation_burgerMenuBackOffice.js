@@ -65,6 +65,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         BurgerMenuBackOffice.backToBackOffice()
     })
 
+    it.skip('Verifica aggancio Gestione Contatto Card', function () {
+        TopBar.clickBackOffice()
+        BurgerMenuBackOffice.clickLink('Gestione Contatto Card')
+        BurgerMenuBackOffice.backToBackOffice()
+    })
+
     if (!Cypress.env('isAviva')) {
         it('Verifica aggancio Denuncia', function () {
             TopBar.clickBackOffice()
@@ -72,7 +78,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
             BurgerMenuBackOffice.backToBackOffice()
         })
 
-        it('Verifica aggancio Denuncia BMP', function () {
+        it.only('Verifica aggancio Denuncia BMP', function () {
             if (!Cypress.env('monoUtenza')) {
                 TopBar.clickBackOffice()
                 BurgerMenuBackOffice.clickLink('Denuncia BMP')

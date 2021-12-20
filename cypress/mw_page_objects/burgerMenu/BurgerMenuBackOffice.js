@@ -66,7 +66,7 @@ class BurgerMenuBackOffice extends BackOffice {
      */
     static clickLink(page) {
         cy.get('lib-burger-icon').click()
-        cy.contains(page).click()
+        cy.contains(page,{timeout:5000}).click()
 
         Common.canaleFromPopup()
         super.checkPage(page)

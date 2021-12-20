@@ -118,7 +118,7 @@ class BurgerMenuNumbers extends Numbers {
         if (page === LinksBurgerMenu.X_ADVISOR)
             cy.contains('X - Advisor').invoke('removeAttr', 'target').click()
         else
-            cy.contains(page).click()
+            cy.contains(page,{timeout:5000}).click()
 
         Common.canaleFromPopup()
         this.checkPage(page)
@@ -136,7 +136,7 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                getIFrame().find('#btnFonti:contains("Fonti"):visible')
+                getIFrame().find('#btnFonti').should('be.visible')
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO_FONTE:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
@@ -146,7 +146,6 @@ class BurgerMenuNumbers extends Numbers {
                 cy.contains('Advisor')
                 cy.contains('Dashboard')
                 cy.get('textarea').should('be.visible')
-                debugger
                 Common.visitUrlOnEnv()
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE:
