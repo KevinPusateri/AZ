@@ -723,8 +723,13 @@ class SintesiCliente {
                     cy.visit(Cypress.env('baseUrlTest') + 'clients/client/' + param)
                 else
                     cy.visit(Cypress.env('baseUrlPreprod') + 'clients/client/' + param)
-            } else
-                cy.visit(Cypress.env('urlSecondWindow') + 'clients/client/' + param)
+            } else {
+                if (Cypress.env('currentEnv') === 'TEST')
+                    cy.visit(Cypress.env('urlSecondWindowTest') + 'clients/client/' + param)
+                else
+                    cy.visit(Cypress.env('urlSecondWindowPreprod') + 'clients/client/' + param)
+
+            }
         }
 
         cy.wait('@pageClient', { requestTimeout: 60000 });

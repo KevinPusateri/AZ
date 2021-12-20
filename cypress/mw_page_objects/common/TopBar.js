@@ -90,8 +90,12 @@ class TopBar extends HomePage {
      */
     static logOutMW() {
 
-        if (Cypress.env('isSecondWindow'))
-            cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
+        if (Cypress.env('isSecondWindow')) {
+            if (Cypress.env('currentEnv') === 'PREPROD')
+                cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
+            else
+                cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 })
+        }
 
         cy.get('lib-user-header').should('be.visible')
         cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]:visible').click();
@@ -135,7 +139,7 @@ class TopBar extends HomePage {
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').type(value).type('{enter}').wait(2000)
 
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
-        cy.get('lib-client-item').should('be.visible')
+        //cy.get('lib-client-item').should('be.visible')
     }
 
     /**

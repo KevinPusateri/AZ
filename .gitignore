@@ -7,6 +7,7 @@ screenshots/
 downloads/
 videos/
 results/
+reports/
 parallel-weights*
 !.env
 
