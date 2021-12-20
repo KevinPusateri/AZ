@@ -21,10 +21,13 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 //#endregion
 
+let currentProfiling
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
+        
+        cy.getProfiling(data.tutf).then(profiling => currentProfiling = profiling)
     })
 })
 
@@ -78,13 +81,16 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
             BurgerMenuBackOffice.backToBackOffice()
         })
 
-        it.only('Verifica aggancio Denuncia BMP', function () {
-            if (!Cypress.env('monoUtenza')) {
-                TopBar.clickBackOffice()
-                BurgerMenuBackOffice.clickLink('Denuncia BMP')
-                BurgerMenuBackOffice.backToBackOffice()
-            } else this.skip()
-
+        it('Verifica aggancio Denuncia BMP', function () {
+            cy.filterProfile(currentProfiling, 'COMMON_ULTRA_BMP').then(profiled => {
+                if (profiled) {
+                    TopBar.clickBackOffice()
+                    BurgerMenuBackOffice.clickLink('Denuncia BMP')
+                    BurgerMenuBackOffice.backToBackOffice()
+                }
+                else
+                    this.skip()
+            })
         })
 
         it('Verifica aggancio Sinistri incompleti', function () {
@@ -156,27 +162,27 @@ describe('Matrix Web : Navigazioni da Burger Menu in Backoffice', function () {
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    //! su AVIVA necessaria abilitazione pilota
     it('Verifica aggancio Convenzioni in trattenuta', function () {
-        if (Cypress.env('isAviva'))
-            this.skip()
-        else if (!Cypress.env('monoUtenza')) {
-            TopBar.clickBackOffice()
-            BurgerMenuBackOffice.clickLink('Convenzioni in trattenuta')
-            BurgerMenuBackOffice.backToBackOffice()
-        } else this.skip()
+        cy.filterProfile(currentProfiling, 'COMMON_CAD_CONVENZIONI_IN_TRATTENUTA').then(profiled => {
+            if (profiled) {
+                TopBar.clickBackOffice()
+                BurgerMenuBackOffice.clickLink('Convenzioni in trattenuta')
+                BurgerMenuBackOffice.backToBackOffice()
+            }
+            else
+                this.skip()
+        })
     })
 
-    //! su AVIVA necessaria abilitazione pilota
     it('Verifica aggancio Monitoraggio Guida Smart', function () {
-        if (Cypress.env('isAviva'))
-            this.skip()
-        else if (!Cypress.env('monoUtenza')) {
-            TopBar.clickBackOffice()
-            BurgerMenuBackOffice.clickLink('Monitoraggio Guida Smart')
-        } else {
-            this.skip()
-        }
+        cy.filterProfile(currentProfiling, 'MONITORAGGIO_CDF').then(profiled => {
+            if (profiled) {
+                TopBar.clickBackOffice()
+                BurgerMenuBackOffice.clickLink('Monitoraggio Guida Smart')
+            }
+            else
+                this.skip()
+        })
     })
 
     it('Verifica aggancio Impostazione contabilità', function () {
