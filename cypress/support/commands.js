@@ -233,6 +233,30 @@ Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
   })
 })
 
+//Permettere di ritornare le chiavi di profilazioni in base all'utente passato
+Cypress.Commands.add('getProfiling', (tutf) => {
+  cy.request({
+    method: 'GET',
+    log: false,
+    url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('profilingUrlTest') + '/daprofiling/profile/' + tutf : Cypress.env('profilingUrlPreprod') + '/daprofiling/profile/' + tutf,
+  }).then(resp => {
+    if (resp.status !== 200)
+      throw new Error('Recupero Profiling fallito')
+    else
+      return resp.body
+  })
+})
+
+Cypress.Commands.add('filterProfile', (profileArray,key) => {
+  let filtered = profileArray.filter(el => {
+    return el.name === key
+  })
+
+  return (filtered.length > 0) ?  true : false
+})
+
+
+
 Cypress.Commands.add('getPartyRelations', () => {
   cy.getUserWinLogin().then(data => {
     cy.generateTwoLetters().then(nameRandom => {
