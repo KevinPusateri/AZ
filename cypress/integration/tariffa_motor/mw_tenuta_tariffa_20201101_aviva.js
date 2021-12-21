@@ -42,7 +42,6 @@ beforeEach(() => {
 })
 
 after(function () {
-    TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
@@ -53,13 +52,15 @@ after(function () {
 
 //Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
+//Se specificato, esegue l'identificativo caso specifico
+let caseToExecute = ''
 describe('Tenuta Tariffa Novembre 2020 AVIVA: ', function () {
 
 
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
-                if (currentCase.Identificativo_Caso !== 'SKIP') {
+                if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso) {
                     Common.visitUrlOnEnv()
 
                     if (flowClients) {
@@ -85,7 +86,7 @@ describe('Tenuta Tariffa Novembre 2020 AVIVA: ', function () {
             })
 
             it("LogTariffa", function () {
-                if (currentCase.Identificativo_Caso !== 'SKIP')
+                if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
                     TenutaTariffa.checkTariffa(currentCase)
                 else
                     this.skip()
