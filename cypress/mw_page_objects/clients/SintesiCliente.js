@@ -15,6 +15,62 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+
+const RamiVari = {
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
+    ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
+    ALLIANZ_ULTRA_IMPRESA: 'Allianz Ultra Impresa',
+    ALLIANZ1_BUSINESS: 'Allianz1 Business',
+    FASQUOTE_UNIVERSO_PERSONA: 'Fastquote Universo Persona',
+    FASTQUOTE_UNIVERSO_SALUTE: 'FastQuote Universo Salute',
+    FASTQUOTE_INFORTUNI_CIRCOLAZIONE: 'FastQuote Infortuni Da Circolazione',
+    FASQUOTE_IMPRESA_SICURA: 'FastQuote Impresa Sicura',
+    FASQUOTE_ALBERGO: 'FastQuote Albergo',
+    GESTIONE_GRANDINE: 'Gestione Grandine',
+    EMISSIONE: 'Emissione',
+    deleteKey: function (keys) {
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
+        if (!keys.ALLIANZ_ULTRA_SALUTE) delete this.ALLIANZ_ULTRA_SALUTE
+        if (!keys.ALLIANZ_ULTRA_IMPRESA) delete this.ALLIANZ_ULTRA_IMPRESA
+        if (!keys.ALLIANZ1_BUSINESS) delete this.ALLIANZ1_BUSINESS
+        if (!keys.FASQUOTE_UNIVERSO_PERSONA) delete this.FASQUOTE_UNIVERSO_PERSONA
+        if (!keys.FASTQUOTE_UNIVERSO_SALUTE) delete this.FASTQUOTE_UNIVERSO_SALUTE
+        if (!keys.FASTQUOTE_INFORTUNI_CIRCOLAZIONE) delete this.FASTQUOTE_INFORTUNI_CIRCOLAZIONE
+        if (!keys.FASQUOTE_IMPRESA_SICURA) delete this.FASQUOTE_IMPRESA_SICURA
+        if (!keys.FASQUOTE_ALBERGO) delete this.FASQUOTE_ALBERGO
+        if (!keys.GESTIONE_GRANDINE) delete this.GESTIONE_GRANDINE
+    }
+}
+
+const Auto = {
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
+    ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
+    ALLIANZ_ULTRA_IMPRESA: 'Allianz Ultra Impresa',
+    ALLIANZ1_BUSINESS: 'Allianz1 Business',
+    FASQUOTE_UNIVERSO_PERSONA: 'Fastquote Universo Persona',
+    FASTQUOTE_UNIVERSO_SALUTE: 'FastQuote Universo Salute',
+    FASTQUOTE_INFORTUNI_CIRCOLAZIONE: 'FastQuote Infortuni Da Circolazione',
+    FASQUOTE_IMPRESA_SICURA: 'FastQuote Impresa Sicura',
+    FASQUOTE_ALBERGO: 'FastQuote Albergo',
+    GESTIONE_GRANDINE: 'Gestione Grandine',
+    EMISSIONE: 'Emissione',
+    deleteKey: function (keys) {
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
+        if (!keys.ALLIANZ_ULTRA_SALUTE) delete this.ALLIANZ_ULTRA_SALUTE
+        if (!keys.ALLIANZ_ULTRA_IMPRESA) delete this.ALLIANZ_ULTRA_IMPRESA
+        if (!keys.ALLIANZ1_BUSINESS) delete this.ALLIANZ1_BUSINESS
+        if (!keys.FASQUOTE_UNIVERSO_PERSONA) delete this.FASQUOTE_UNIVERSO_PERSONA
+        if (!keys.FASTQUOTE_UNIVERSO_SALUTE) delete this.FASTQUOTE_UNIVERSO_SALUTE
+        if (!keys.FASTQUOTE_INFORTUNI_CIRCOLAZIONE) delete this.FASTQUOTE_INFORTUNI_CIRCOLAZIONE
+        if (!keys.FASQUOTE_IMPRESA_SICURA) delete this.FASQUOTE_IMPRESA_SICURA
+        if (!keys.FASQUOTE_ALBERGO) delete this.FASQUOTE_ALBERGO
+        if (!keys.GESTIONE_GRANDINE) delete this.GESTIONE_GRANDINE
+    }
+}
 class SintesiCliente {
 
     /**
@@ -569,8 +625,8 @@ class SintesiCliente {
 
         Common.canaleFromPopup()
         cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 30000 })
-        cy.wait(15000)
-        getIFrame().find('input[value="Avanti"]:visible').invoke('attr', 'value').should('equal', 'Avanti')
+        cy.wait(20000)
+        getIFrame().find('input[value="Avanti"]').should('be.visible').invoke('attr', 'value').should('equal', 'Avanti')
         getIFrame().find('input[value="Indietro"]:visible').invoke('attr', 'value').should('equal', 'Indietro')
     }
     //#endregion
@@ -865,37 +921,15 @@ class SintesiCliente {
 
     }
 
-    static checkLinksFromRamiVari() {
-        if (!Cypress.env('isAviva')) {
-            cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
-                const linksRamiVari = [
-                    'Allianz Ultra Casa e Patrimonio',
-                    'Allianz Ultra Casa e Patrimonio BMP',
-                    'Allianz Ultra Salute',
-                    'Allianz1 Business',
-                    'FastQuote Universo Salute',
-                    'FastQuote Infortuni Da Circolazione',
-                    'FastQuote Impresa Sicura',
-                    'FastQuote Albergo',
-                    'Gestione Grandine',
-                    'Emissione'
-                ]
-                cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-                    expect($buttonLinks).to.contain(linksRamiVari[i])
-                })
-            })
-        } else {
+    static checkLinksFromRamiVari(keys) {
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
 
-            cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
-                const linksRamiVari = [
-                    'Ultra Salute',
-                    'Emissione'
-                ]
-                cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-                    expect($buttonLinks).to.contain(linksRamiVari[i])
-                })
+            RamiVari.deleteKey(keys)
+            const linksRamiVari = Object.values(RamiVari)
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksRamiVari[i])
             })
-        }
+        })
     }
 
     static checkLinksFromVita() {
@@ -914,7 +948,7 @@ class SintesiCliente {
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
             const linksEmissione = [
                 'Preventivo Motor',
-                'Flotte e Convenzioni'
+                'Flotte e convenzioni'
             ]
             if (Cypress.env('isAviva'))
                 linksEmissione.pop()
