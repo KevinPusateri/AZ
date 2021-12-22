@@ -238,7 +238,7 @@ Cypress.Commands.add('getProfiling', (tutf) => {
   cy.request({
     method: 'GET',
     log: false,
-    url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('profilingUrlTest') + '/daprofiling/profile/' + tutf : Cypress.env('profilingUrlPreprod') + '/daprofiling/profile/' + tutf,
+    url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('profilingUrlTest') + '/daprofiling/profile/' + tutf : Cypress.env('profilingUrlPreprod') + '/daprofiling/profile/' + tutf
   }).then(resp => {
     if (resp.status !== 200)
       throw new Error('Recupero Profiling fallito')
@@ -247,15 +247,37 @@ Cypress.Commands.add('getProfiling', (tutf) => {
   })
 })
 
-Cypress.Commands.add('filterProfile', (profileArray,key) => {
+Cypress.Commands.add('filterProfile', (profileArray, key) => {
   let filtered = profileArray.filter(el => {
     return el.name === key
   })
 
-  return (filtered.length > 0) ?  true : false
+  return (filtered.length > 0) ? true : false
 })
 
 
+//Permettere di verificare se una sezione delle mie info è presente o meno
+Cypress.Commands.add('slugMieInfo', (tutf, section) => {
+  cy.request({
+    method: 'POST',
+    log: false,
+    url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('mieInfoCloudTE') + '/lemieinfo/middleware/api/v1/query-entities/slug' : Cypress.env('mieInfoCloudPP') + '/lemieinfo/middleware/api/v1/query-entities/slug',
+    headers: {
+      'Portaluser': tutf,
+      'Content-Type': 'application/json',
+      'Accept': '*/*'
+    },
+    body: '["' + section + '"]'
+  }).then(resp => {
+    debugger
+    if (resp.status === 200)
+      return true
+    else if (resp.status === 404)
+      return false
+    else
+      throw new Error('Errore durante la chiamata slug mie info')
+  })
+})
 
 Cypress.Commands.add('getPartyRelations', () => {
   cy.getUserWinLogin().then(data => {

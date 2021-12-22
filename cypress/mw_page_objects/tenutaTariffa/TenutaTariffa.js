@@ -309,7 +309,7 @@ class TenutaTariffa {
             }
 
             //Alimentazione
-            if(currentCase.Alimentazione !== ""){
+            if (currentCase.Alimentazione !== "") {
                 cy.get('nx-dropdown[formcontrolname="alimentazione"]').should('exist').and('be.visible').click().wait(500)
                 cy.contains(currentCase.Alimentazione).should('exist').and('be.visible').click().wait(500)
                 //Attendiamo che il caricamento non sia più visibile
@@ -317,7 +317,7 @@ class TenutaTariffa {
             }
 
             //Antifurto
-            if(currentCase.Antifurto !== ""){
+            if (currentCase.Antifurto !== "") {
                 cy.get('nx-dropdown[formcontrolname="antifurto"]').should('exist').and('be.visible').click().wait(500)
                 cy.contains(currentCase.Antifurto).should('exist').and('be.visible').click().wait(500)
                 //Attendiamo che il caricamento non sia più visibile
@@ -360,12 +360,6 @@ class TenutaTariffa {
 
                     cy.contains('INSERISCI').should('exist').and('be.visible').click().wait(500)
                     cy.wait('@getMotor', { requestTimeout: 30000 })
-
-                    //!Popup di dichiarazione di non circolazione a SI (non più presente?)
-                    // cy.contains('Si').should('exist').and('be.visible').parent().click().wait(500)
-                    // cy.contains('CONTINUA').should('exist').and('be.visible').click().wait(500)
-                    // cy.wait('@getMotor', { requestTimeout: 30000 })
-                    // cy.wait(1000)
                     break
                 case "Voltura":
                     //Veicolo aggiuntivo o trasferimento classe per cessazione di rischio
@@ -472,6 +466,13 @@ class TenutaTariffa {
             //TODO Attestato conforme all'articolo 134, comma 4 bis, del Codice assicurazioni ?
 
             cy.contains('AVANTI').should('exist').and('be.visible').click().wait(500)
+
+            //Popup di dichiarazione di non circolazione a SI
+            cy.contains('Il proprietario presenta la dichiarazione di non circolazione?').should('exist').and('be.visible').parents('form').find('span:contains("Si")').click()
+            cy.contains('CONTINUA').should('exist').and('be.visible').click().wait(500)
+            cy.wait('@getMotor', { requestTimeout: 30000 })
+            cy.wait(1000)
+
             cy.wait('@getMotor', { requestTimeout: 100000 })
         })
     }
