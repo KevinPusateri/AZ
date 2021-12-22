@@ -258,9 +258,11 @@ Cypress.Commands.add('filterProfile', (profileArray, key) => {
 
 //Permettere di verificare se una sezione delle mie info è presente o meno
 Cypress.Commands.add('slugMieInfo', (tutf, section) => {
+  let a =  '["' + section + '"]'
+  console.log(a)
   cy.request({
     method: 'POST',
-    log: false,
+    log: true,
     url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('mieInfoCloudTE') + '/lemieinfo/middleware/api/v1/query-entities/slug' : Cypress.env('mieInfoCloudPP') + '/lemieinfo/middleware/api/v1/query-entities/slug',
     headers: {
       'Portaluser': tutf,
