@@ -166,7 +166,7 @@ if (Cypress.env('isAviva'))
             BackOffice.backToBackOffice()
         });
 
-})
+    })
 else
     describe('Matrix Web : Navigazioni da BackOffice', function () {
 
@@ -202,18 +202,27 @@ else
         })
 
         it('Verifica apertura disambiguazione: Denuncia', function () {
-            TopBar.clickBackOffice()
-            BackOffice.clickCardLink('Denuncia')
-            BackOffice.backToBackOffice()
-
+            cy.filterProfile(currentProfiling, 'SINISTRI_DENUNCIA_STD').then(profiled => {
+                if (profiled) {
+                    TopBar.clickBackOffice()
+                    BackOffice.clickCardLink('Denuncia')
+                    BackOffice.backToBackOffice()
+                }
+                else
+                    this.skip()
+            })
         })
 
         it('Verifica apertura disambiguazione: Denuncia BMP', function () {
-            if (!Cypress.env('monoUtenza')) {
-                TopBar.clickBackOffice()
-                BackOffice.clickCardLink('Denuncia BMP')
-                BackOffice.backToBackOffice()
-            } else this.skip()
+            cy.filterProfile(currentProfiling, 'COMMON_ULTRA_BMP').then(profiled => {
+                if (profiled) {
+                    TopBar.clickBackOffice()
+                    BackOffice.clickCardLink('Denuncia BMP')
+                    BackOffice.backToBackOffice()
+                }
+                else
+                    this.skip()
+            })
         })
 
         it('Verifica apertura disambiguazione: Consultazione sinistri', function () {
@@ -295,20 +304,28 @@ else
         })
 
         it('Verifica apertura disambiguazione: Convenzioni in trattenuta', function () {
-            if (!Cypress.env('monoUtenza')) {
-                TopBar.clickBackOffice()
-                BackOffice.clickCardLink('Convenzioni in trattenuta')
-                BackOffice.backToBackOffice()
-            } else this.skip()
+            cy.filterProfile(currentProfiling, 'COMMON_CAD_CONVENZIONI_IN_TRATTENUTA').then(profiled => {
+                if (profiled) {
+                    TopBar.clickBackOffice()
+                    BackOffice.clickCardLink('Convenzioni in trattenuta')
+                    BackOffice.backToBackOffice()
+                }
+                else
+                    this.skip()
+            })
 
         });
 
         it('Verifica apertura disambiguazione: Monitoraggio Guida Smart', function () {
-            if (!Cypress.env('monoUtenza')) {
-                TopBar.clickBackOffice()
-                BackOffice.clickCardLink('Monitoraggio Guida Smart')
-                BackOffice.backToBackOffice()
-            } else this.skip()
+            cy.filterProfile(currentProfiling, 'MONITORAGGIO_CDF').then(profiled => {
+                if (profiled) {
+                    TopBar.clickBackOffice()
+                    BackOffice.clickCardLink('Monitoraggio Guida Smart')
+                    BackOffice.backToBackOffice()
+                }
+                else
+                    this.skip()
+            })
         });
 
         it('Verifica apertura disambiguazione: Impostazione contabilità', function () {

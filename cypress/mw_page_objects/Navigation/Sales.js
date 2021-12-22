@@ -198,10 +198,8 @@ class Sales {
     static checkLinksOnEmettiPolizza(keys) {
         cy.contains('Emetti polizza').click({ force: true })
 
-        debugger
         LinksOnEmettiPolizza.deleteKey(keys)
         const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
-        debugger
 
         if (Cypress.env('monoUtenza')) {
             delete LinksOnEmettiPolizza.GESTIONE_RICHIESTE_PER_PA
@@ -210,10 +208,7 @@ class Sales {
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
         } else if (Cypress.env('isAviva')) {
-            // const linksEmettiPolizza = [
-            //     LinksOnEmettiPolizza.PREVENTIVO_MOTOR,
-            //     LinksOnEmettiPolizza.ALLIANZ_ULTRA_SALUTE
-            // ]
+         //!DA PROVARE SENZA
             cy.get('.card-container').find('lib-da-link').each(($link, i) => {
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
