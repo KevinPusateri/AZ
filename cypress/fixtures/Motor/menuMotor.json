@@ -1,0 +1,72 @@
+{
+  "emissione": {
+    "preventivo": [
+      "Emissione",
+      "Preventivo Motor"
+    ],
+    "flotte": [
+      "Emissione",
+      "Flotte e conversioni"
+    ]
+  },
+  "prodottiParticolari": {
+    "AssunzioneGuidata": [
+      "Prodotti particolari",
+      "Assunzione guidata"
+    ],
+    "veicoliEpoca": [
+      "Prodotti particolari",
+      "Veicoli d/'epoca durata 10 giorni"
+    ],
+    "libriMatricola": [
+      "Prodotti particolari",
+      "Libri matricola"
+    ],
+    "kaskoARDdipendenti": {
+      "chilometro": [
+        "Prodotti particolari",
+        "Kasko e ARD per 'Dipendenti in Missione'",
+        "Kasko e ARD a Chilometro"
+      ],
+      "giornata": [
+        "Prodotti particolari",
+        "Kasko e ARD per 'Dipendenti in Missione'",
+        "Kasko e ARD a Giornata"
+      ],
+      "veicolo": [
+        "Prodotti particolari",
+        "Kasko e ARD per 'Dipendenti in Missione'",
+        "Kasko e ARD a Veicolo"
+      ]
+    },
+    "polizaAperta": {
+      "polizzaBase": [
+        "Prodotti particolari",
+        "Ploizza aperta",
+        "Polizza base"
+      ]
+    },
+    "offertaMiniflotte": [
+      "Prodotti particolari",
+      "Offerta miniflotte"
+    ],
+    "coassicurazione": [
+      "Prodotti particolari",
+      "Coassicurazione"
+    ]
+  },
+  "passioneBlu": {
+    "nuovaPolizza": [
+      "Passione BLU",
+      "Nuova polizza"
+    ],
+    "polizzaGuidata": [
+      "Passione BLU",
+      "Nuova polizza guidata"
+    ],
+    "coassicurazione": [
+      "Passione BLU",
+      "Nuova polizza Coassicurazione"
+    ]
+  }
+}

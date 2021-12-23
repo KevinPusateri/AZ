@@ -1,0 +1,17 @@
+{
+    "ambitiUltraSalute" : {
+        "spese_mediche": "health-bag-doctor",
+        "diaria_da_ricovero": "save",
+        "invalidita_permanente_infortunio": "injury-plaster",
+        "invalidita_permanente_malattia": "wheelchair"
+      },
+
+    "ambitiUltraCasaPatrimonio" : {
+        "casa": "house ",
+        "contenuto": "couch",
+        "catastrofi_naturali": "house-water-damage",
+        "responsabilita_civile": "shield",
+        "tutela_legale": "balance-scale",
+        "animali_domestici": "animal-paw"
+      }
+}

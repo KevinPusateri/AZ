@@ -25,6 +25,17 @@ const ultraIFrameAnagrafica = () => {
 }
 //#endregion iFrame
 
+//#region enum
+const ambitiUltraCasaPatrimonio = {
+    casa: "house ",
+    contenuto: "couch",
+    catastrofi_naturali: "house-water-damage",
+    responsabilita_civile: "shield",
+    tutela_legale: "balance-scale",
+    animali_domestici: "animal-paw"
+}
+//#endregion enum
+
 class Ultra {
 
     static startScopriProtezione() {
@@ -209,6 +220,14 @@ class Ultra {
         })
     }
 
+    static procediHome() {
+        ultraIFrame().within(() => {
+            cy.get('[id="dashTable"]').should('be.visible')
+            //cy.get('button[aria-disabled="false"]').find('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
+            cy.get('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
+        })
+    }
+
     static GaranzieAggiuntiveAmbito(ambito, garanzia) {
         ultraIFrame().within(() => {
             cy.get('tr').contains(ambito)
@@ -352,24 +371,15 @@ class Ultra {
 
             cy.get('#condividiModal').should('be.visible') //attende il caricamento del popup 'condividi l'offerta'
 
-            if(ambiti.length == 4)
-            {
+            if (ambiti.length == 4) {
                 cy.get('div').contains('Seleziona tutti')
-                .should('be.visible').click() //seleziona tutte le schede
+                    .should('be.visible').click() //seleziona tutte le schede
             }
 
             cy.get('button[aria-label="Close dialog"]').click() //chiude popup
 
             cy.get('#warning-switch-solution').should('be.visible') //attende il caricamento del popup 'attenzione'
             cy.get('button').children('span').contains('Ok').click() //chiude il popup
-        })
-    }
-
-    static procediHome() {
-        ultraIFrame().within(() => {
-            cy.get('[id="dashTable"]').should('be.visible')
-            //cy.get('button[aria-disabled="false"]').find('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
-            cy.get('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
         })
     }
 
