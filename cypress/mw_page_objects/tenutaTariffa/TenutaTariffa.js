@@ -465,13 +465,17 @@ class TenutaTariffa {
 
             //TODO Attestato conforme all'articolo 134, comma 4 bis, del Codice assicurazioni ?
 
-            cy.contains('AVANTI').should('exist').and('be.visible').click().wait(500)
+            cy.contains('AVANTI').should('exist').and('be.visible').click().wait(2000)
 
             //Popup di dichiarazione di non circolazione a SI
-            cy.contains('Il proprietario presenta la dichiarazione di non circolazione?').should('exist').and('be.visible').parents('form').find('span:contains("Si")').click()
-            cy.contains('CONTINUA').should('exist').and('be.visible').click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
-            cy.wait(1000)
+            cy.get('@iframe').then((iframe) => {
+                if (iframe.find(':contains("Il proprietario presenta la dichiarazione di non circolazione?")').length > 0) {
+                    cy.contains('Il proprietario presenta la dichiarazione di non circolazione?').should('exist').and('be.visible').parents('form').find('span:contains("Si")').click()
+                    cy.contains('CONTINUA').should('exist').and('be.visible').click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                    cy.wait(1000)
+                }
+            })
 
             cy.wait('@getMotor', { requestTimeout: 100000 })
         })
