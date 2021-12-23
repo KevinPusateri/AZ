@@ -56,8 +56,12 @@ class HomePage {
         else {
             if (!Cypress.env('monoUtenza'))
                 cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
-            else
-                cy.visit(Cypress.env('urlSecondWindow'), { responseTimeout: 31000 })
+            else {
+                if (Cypress.env('currentEnv') === 'TEST')
+                    cy.visit(Cypress.env('urlSecondWindowTest'), { responseTimeout: 31000 })
+                else
+                    cy.visit(Cypress.env('urlSecondWindowPreprod'), { responseTimeout: 31000 })
+            }
         }
 
         if (!mockedNews && !Cypress.env('isAviva'))
@@ -125,8 +129,8 @@ class HomePage {
             cy.wrap($checkTendina).click({ force: true })
             cy.get('[class^="nx-context-menu__content"]').find('button').each($button => {
                 expect(['Disattiva notifiche di questo tipo', 'Attiva notifiche di questo tipo',
-                        'Segna come da leggere', 'Segna come già letta', 'Segna come da leggere'
-                    ])
+                    'Segna come da leggere', 'Segna come già letta', 'Segna come da leggere'
+                ])
                     .to.include($button.text().trim())
             })
 

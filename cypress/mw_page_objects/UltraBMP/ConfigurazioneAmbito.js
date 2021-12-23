@@ -4,6 +4,8 @@
 //import { DefaultCMapReaderFactory } from "pdfjs-dist/types/display/api"
 import Common from "../common/Common"
 import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
+import { defaultCasa } from '../../fixtures//Ultra/BMP_Comune.json'
+import { defaultAnimale } from '../../fixtures//Ultra/BMP_Comune.json'
 
 const ultraIFrame = () => {
     let iframeSCU = cy.get('#matrixIframe')
@@ -36,111 +38,110 @@ class DatiQuotazione {
     /**
       * Verifica valori di default Casa 
       */
-     static VerificaDefaultCasa(valoriDefault) {
+     static VerificaDefaultCasa() {
         //cy.getIFrame()
         //cy.get('@iframe').within(() => {
         ultraIFrame().within(() => {
              
             //Verifica default "Assicurato"
-            cy.log("Verifica default 'Assicurato': " + valoriDefault.Assicurato)
-            if (valoriDefault.Assicurato.length > 0)
-            {
-              cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-                .find('[class="ca-dropdown ng-star-inserted"]').eq(0)
-                .find('[class="ng-star-inserted"]')
-                .invoke('text').then(($text) => {
-                  cy.log('Assicurato: ', $text)
-                  expect($text).to.equal(valoriDefault.Assicurato)
-              }) 
-            }
-            else
-              cy.log("NON verifico campo 'Assicurato")
+            cy.log("Verifica default 'Assicurato': " + defaultCasa.Assicurato)
+            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
+              .find('[class="ca-dropdown ng-star-inserted"]').eq(0)
+              .find('[class="ng-star-inserted"]')
+              .invoke('text').then(($text) => {
+                cy.log('Assicurato: ', $text)
+                expect($text).to.equal(defaultCasa.Assicurato)
+            }) 
+
+            //Verifica default Nome abitazione
+            cy.log("Verifica default Nome abitazione: " + defaultCasa.Nome)
+            cy.get('#nx-input-2', {timeout: 4000}).should('have.value', defaultCasa.Nome)
 
             //Verifica default Cap abitazione
-            cy.log("Verifica default Cap abitazione: " + valoriDefault.Cap)
-            cy.get('#nx-input-3', {timeout: 4000}).should('have.value', valoriDefault.Cap)
+            cy.log("Verifica default Cap abitazione: " + defaultCasa.Cap)
+            cy.get('#nx-input-3', {timeout: 4000}).should('have.value', defaultCasa.Cap)
 
             //Verifica default "Uso"
-            cy.log("Verifica default 'Uso': " + valoriDefault.Uso)
+            cy.log("Verifica default 'Uso': " + defaultCasa.Uso)
             cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
               .find('[class="ca-dropdown ng-star-inserted"]').eq(1)
               .find('[class="ng-star-inserted"]')
               .invoke('text').then(($text) => {
                 cy.log('Uso: ', $text)
-                expect($text).to.equal(valoriDefault.Uso)
+                expect($text).to.equal(defaultCasa.Uso)
             }) 
 
             //Verifica default "Tipo"
-            cy.log("Verifica default 'Tipo': " + valoriDefault.Tipo)
+            cy.log("Verifica default 'Tipo': " + defaultCasa.Tipo)
             cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
               .find('[class="ca-dropdown ng-star-inserted"]').eq(2)
               .find('[class="ng-star-inserted"]')
               .invoke('text').then(($text) => {
                 cy.log('Tipo: ', $text)
-                expect($text).to.equal(valoriDefault.Tipo)
+                expect($text).to.equal(defaultCasa.Tipo)
             }) 
             
             //Verifica default Metri Quadri abitazione
-            cy.log("Verifica default Metri Quadri abitazione: " + valoriDefault.Mq)
-            cy.get('#nx-input-4', {timeout: 4000}).should('have.value', valoriDefault.Mq)
+            cy.log("Verifica default Metri Quadri abitazione: " + defaultCasa.Mq)
+            cy.get('#nx-input-4', {timeout: 4000}).should('have.value', defaultCasa.Mq)
 
             //Verifica default "Piano"
-            cy.log("Verifica default 'Piano': " + valoriDefault.Piano)
+            cy.log("Verifica default 'Piano': " + defaultCasa.Piano)
             cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
               .find('[class="ca-dropdown ng-star-inserted"]').eq(3)
               .find('[class="ng-star-inserted"]')
               .invoke('text').then(($text) => {
                 cy.log('Piano: ', $text)
-                expect($text).to.equal(valoriDefault.Piano)
+                expect($text).to.equal(defaultCasa.Piano)
             }) 
 
             //Verifica default Valore abitazione
-            cy.log("Verifica default Valore abitazione: " + valoriDefault.Valore)
-            cy.get('#nx-input-5', {timeout: 4000}).should('have.value', valoriDefault.Valore)
+            cy.log("Verifica default Valore abitazione: " + defaultCasa.Valore)
+            cy.get('#nx-input-5', {timeout: 4000}).should('have.value', defaultCasa.Valore)
 
             //Verifica default "Classe"
-            cy.log("Verifica default 'Classe': " + valoriDefault.Classe)
+            cy.log("Verifica default 'Classe': " + defaultCasa.Classe)
             cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
               .find('[class="ca-dropdown ng-star-inserted"]').eq(4)
               .find('[class="ng-star-inserted"]')
               .invoke('text').then(($text) => {
                 cy.log('Classe: ', $text)
-                expect($text).to.equal(valoriDefault.Classe)
+                expect($text).to.equal(defaultCasa.Classe)
             }) 
 
             //Verifica default "Anno"
-            cy.log("Verifica default 'Anno': " + valoriDefault.Anno)
+            cy.log("Verifica default 'Anno': " + defaultCasa.Anno)
             cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
               .find('[class="ca-dropdown ng-star-inserted"]').eq(5)
               .find('[class="ng-star-inserted"]')
               .invoke('text').then(($text) => {
                 cy.log('Anno: ', $text)
-                expect($text).to.equal(valoriDefault.Anno)
+                expect($text).to.equal(defaultCasa.Anno)
             }) 
 
             //Verifica default "Estensione"
-            cy.log("Verifica default 'Estensione': " + valoriDefault.Estensione)
+            cy.log("Verifica default 'Estensione': " + defaultCasa.Estensione)
             cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
               .find('[class="ca-dropdown ng-star-inserted"]').eq(6)
               .find('[class="ng-star-inserted"]')
               .invoke('text').then(($text) => {
                 cy.log('Estensione: ', $text)
-                expect($text).to.equal(valoriDefault.Estensione)
+                expect($text).to.equal(defaultCasa.Estensione)
             }) 
 
             //Verifica default "Residenza Assicurato"
-            cy.log("Verifica default 'Residenza Assicurato': " + valoriDefault.ResidenzaAss)
+            cy.log("Verifica default 'Residenza Assicurato': " + defaultCasa.ResidenzaAss)
             cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
               .find('[class="ca-dropdown ng-star-inserted"]').eq(7)
               .find('[class="ng-star-inserted"]')
               .invoke('text').then(($text) => {
                 cy.log('Residenza Assicurato: ', $text)
-                expect($text).to.equal(valoriDefault.ResidenzaAss)
+                expect($text).to.equal(defaultCasa.ResidenzaAss)
             }) 
 
             //Verifica default Cap Assicurato
-            cy.log("Verifica default Cap Assicurato: " + valoriDefault.CapAss)
-            cy.get('#nx-input-6', {timeout: 4000}).should('have.value', valoriDefault.CapAss)
+            cy.log("Verifica default Cap Assicurato: " + defaultCasa.CapAss)
+            cy.get('#nx-input-6', {timeout: 4000}).should('have.value', defaultCasa.CapAss)
             
         })
 
@@ -151,63 +152,64 @@ class DatiQuotazione {
     /**
       * Verifica valori di default Animale Domestico 
       */
-     static VerificaDefaultAnimaleDomestico(valoriDefault) {
+     static VerificaDefaultAnimaleDomestico() {
         //cy.getIFrame()
         //cy.get('@iframe').within(() => {
         ultraIFrame().within(() => {
 
             //Verifica default Nome animale
-            cy.log("Verifica default Nome animale: " + valoriDefault.Nome)
-            cy.get('#nx-input-7', {timeout: 4000}).should('have.value', valoriDefault.Nome)
+            cy.log("Verifica default Nome animale: " + defaultAnimale.Nome)
+            cy.get('#nx-input-7', {timeout: 4000}).should('have.value', defaultAnimale.Nome)
              
             //Verifica default "Tipo"
-            cy.log("Verifica default 'Tipo': " + valoriDefault.Tipo)
+            cy.log("Verifica default 'Tipo': " + defaultAnimale.Tipo)
             cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(1)
               .find('[class="ca-dropdown ng-star-inserted"]').eq(0)
               .find('[class="ng-star-inserted"]')
               .invoke('text').then(($text) => {
                 cy.log('Tipo: ', $text)
-                expect($text).to.equal(valoriDefault.Tipo)
+                expect($text).to.equal(defaultAnimale.Tipo)
             }) 
 
             //Verifica default "Sesso"
-            cy.log("Verifica default 'Sesso': " + valoriDefault.Sesso)
+            cy.log("Verifica default 'Sesso': " + defaultAnimale.Sesso)
             cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(1)
               .find('[class="ca-dropdown ng-star-inserted"]').eq(1)
               .find('[class="ng-star-inserted"]')
               .invoke('text').then(($text) => {
                 cy.log('Sesso: ', $text)
-                expect($text).to.equal(valoriDefault.Sesso)
+                expect($text).to.equal(defaultAnimale.Sesso)
             }) 
 
             //Verifica default "Razza"
-            cy.log("Verifica default 'Razza': " + valoriDefault.Razza)
+            cy.log("Verifica default 'Razza': " + defaultAnimale.Razza)
             cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(1)
               .find('[class="ca-dropdown ng-star-inserted"]').eq(2)
               .find('[class="ng-star-inserted"]')
               .invoke('text').then(($text) => {
                 cy.log('Razza: ', $text)
-                expect($text).to.equal(valoriDefault.Razza)
+                expect($text).to.equal(defaultAnimale.Razza)
             }) 
+
             //Verifica default Data di nascita (data odierna meno un anno)
             //cy.pause()
-            valoriDefault.DataNascita = UltraBMP.dataOggiMenoUnAnno()
-            cy.log("Verifica default Data di nascita: " + valoriDefault.DataNascita)
-            cy.get('#nx-input-8', {timeout: 4000}).should('have.value', valoriDefault.DataNascita)
+            defaultAnimale.DataNascita = UltraBMP.dataOggiMenoUnAnno()
+            cy.log("Verifica default Data di nascita: " + defaultAnimale.DataNascita)
+            cy.get('#nx-input-8', {timeout: 4000}).should('have.value', defaultAnimale.DataNascita)
 
             //Verifica default "Residenza"
-            cy.log("Verifica default 'Residenza': " + valoriDefault.Residenza)
+            cy.log("Verifica default 'Residenza': " + defaultAnimale.Residenza)
             cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(1)
               .find('[class="ca-dropdown ng-star-inserted"]').eq(3)
               .find('[class="ng-star-inserted"]')
               .invoke('text').then(($text) => {
                 cy.log('Residenza: ', $text)
-                expect($text).to.equal(valoriDefault.Residenza)
+                expect($text).to.equal(defaultAnimale.Residenza)
             }) 
 
             //Verifica default Cap
-            cy.log("Verifica default Cap: " + valoriDefault.Cap)
-            cy.get('#nx-input-9', {timeout: 4000}).should('have.value', valoriDefault.Cap)
+            cy.log("Verifica default Cap: " + defaultAnimale.Cap)
+            cy.get('#nx-input-9', {timeout: 4000}).should('have.value', defaultAnimale.Cap)
 
                         
         })

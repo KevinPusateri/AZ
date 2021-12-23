@@ -1,0 +1,28 @@
+{
+    "defaultCasa" : {
+      "Assicurato"        : "Proprietario",
+      "Nome"              : "Casa 1",
+      "Cap"               : "34124",
+      "Uso"               : "principale",
+      "Tipo"              : "un appartamento",
+      "Mq"                : "100",
+      "Piano"             : "primo piano o superiore",
+      "Valore"            : "170.000,00 €",
+      "Classe"            : "classe 1",
+      "Anno"              : "prima del 1984",
+      "Estensione"        : "Non è necessario",
+      "ResidenzaAss"      : "in Italia",
+      "CapAss"            : "34124"
+    },
+  
+    "defaultAnimale" : {
+      "Nome"              : "Animale domestico 1",
+      "Tipo"              : "cane",
+      "Sesso"             : "un maschio",
+      "Razza"             : "meticcio",
+      "DataNascita"       : "",
+      "Residenza"         : "in Italia",
+      "Cap"               : "34124"
+    }
+    
+  }

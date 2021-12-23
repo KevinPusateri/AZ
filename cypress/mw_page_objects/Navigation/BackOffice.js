@@ -160,6 +160,9 @@ class BackOffice {
                     expect(['Dettaglio cliente', 'Customer details']).to.include($title.text().trim())
                 })
                 break;
+            case LinksSinistri.GESTIONE_CONTATTO_CARD:
+                getIFrame().find('button:contains("Cerca"):visible')
+                break;
             case LinksSinistri.CONSULTAZIONE_SINISTRI:
                 getIFrame().find('button:contains("Cerca"):visible')
                 break;

@@ -109,7 +109,7 @@ class BurgerMenuSales extends Sales {
             this.checkPage(page)
         } else {
             let pageRegex = new RegExp("\^" + page + "\$")
-            cy.contains(pageRegex).click()
+            cy.contains(pageRegex, { timeout: 5000 }).click()
             this.checkPage(page)
         }
     }
@@ -188,7 +188,7 @@ class BurgerMenuSales extends Sales {
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
                 Common.canaleFromPopup()
                 cy.wait(20000)
-                getIFrame().find('input[value="Home"]').invoke('attr', 'value').should('equal', 'Home')
+                getIFrame().find('input[value="Home"]').should('be.visible').invoke('attr', 'value').should('equal', 'Home')
                 getIFrame().find('input[value="Indietro"]').invoke('attr', 'value').should('equal', 'Indietro')
                 getIFrame().find('input[value="Avanti"]').invoke('attr', 'value').should('equal', 'Avanti')
                 break;
@@ -241,8 +241,12 @@ class BurgerMenuSales extends Sales {
                         url: '**/Danni/**'
                     }).as('getDanni');
                     Common.canaleFromPopup()
-                    cy.wait('@getDanni', { requestTimeout: 40000 })
-                    cy.wait('@postDanni', { requestTimeout: 40000 })
+                    if (Cypress.env('currentEnv') === 'TEST')
+                        cy.wait('@getDanni', { requestTimeout: 40000 })
+                    else {
+                        cy.wait('@getDanni', { requestTimeout: 40000 })
+                        cy.wait('@postDanni', { requestTimeout: 40000 })
+                    }
                     cy.wait(5000)
                     getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
                 } else {

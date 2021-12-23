@@ -16,8 +16,13 @@ const LinksMenu = {
     RISORSE_PER_AGENZIA: 'Risorse per l\'Agenzia',
     OPERATIVITA: 'Operatività',
     RISORSE_PER_AGENTE: 'Risorse per l\'Agente',
-    IL_MONDO_ALLIANZ: 'Il mondo Allianz'
-        // NEW_COMPANY_HANDBOOK: 'New company handbook',
+    IL_MONDO_ALLIANZ: 'Il mondo Allianz',
+    deleteKey: function (keys) {
+        if (!keys['primo-piano']) delete this.PRIMO_PIANO
+        if (!keys['raccolte']) delete this.RACCOLTE
+        if (!keys['tutte-le-notizie']) delete this.RACCOLTE
+    }
+    // NEW_COMPANY_HANDBOOK: 'New company handbook',
 }
 
 const LinksSubMenu = {
@@ -221,6 +226,31 @@ const LinksSubMenu = {
 //     STUDI_PROFESSIONALI: 'Studi Professionali',
 // }
 
+let keysLinksMenu = {
+    'primo-piano': true,
+    'raccolte': true,
+    'tutte-le-notizie': true,
+    // PRIMO_PIANO: true,
+    // RACCOLTE: true,
+    // TUTTE_LE_NOTIZIE: true,
+    // CONTENUTI_SALVATI: true,
+    // PRODOTTI: true,
+    // INIZIATIVE: true,
+    // MOMENTO_DELLA_VERITA: true,
+    // SALES_ACADEMY: true,
+    // EVENTI_E_SPONSORIZZAZIONI: true,
+    // RILASCI_INFORMATICI: true,
+    // MANUALI_INFORMATICI: true,
+    // CIRCOLARI: true,
+    // COMPANY_HANDBOOK: true,
+    // ANTIRICICLAGGIO: true,
+    // RISORSE_PER_AGENZIA: true,
+    // OPERATIVITA: true,
+    // RISORSE_PER_AGENTE: true,
+    // IL_MONDO_ALLIANZ: true,
+}
+
+
 class LinkMieInfo {
 
     static getLinksMenu() {
@@ -231,9 +261,16 @@ class LinkMieInfo {
         return LinksSubMenu
     }
 
+    static profilingLinksMenu(tutf) {
+        for (let key in keysLinksMenu) {
+            cy.slugMieInfo(tutf, key).then((stateKey) => {
+                if (!stateKey) {
+                    debugger
+                    keysLinksMenu[key] = false
+                    LinksMenu.deleteKey(keysLinksMenu)
+                }
+            })
+        }
+    }
 
-
-
-}
-
-export default LinkMieInfo
+}export default LinkMieInfo

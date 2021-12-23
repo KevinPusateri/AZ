@@ -7,6 +7,7 @@ import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
 import Convenzioni from "../../mw_page_objects/UltraBMP/Convenzioni"
 import AreaRiservata from "../../mw_page_objects/UltraBMP/AreaRiservata"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
+import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -73,13 +74,16 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
         //cy.pause()
         BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
         //BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
+        UltraBMP.ClickButton('SCOPRI LA PROTEZIONE')
     })
      
+    /*
     it("Verifica valori default FQ", () => {
         //cy.pause()
         UltraBMP.VerificaDefaultFQ(defaultFQ)
         UltraBMP.ClickButton('SCOPRI LA PROTEZIONE')
     })
+    */
 
     /*
     it("Modifica valori FQ", () => {
@@ -110,13 +114,16 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
         cy.log("AGGIUNGI AMBITO - 'Fabbricato'")
         //cy.pause()
         UltraBMP.AggiungiAmbito('Fabbricato')
+        ConfigurazioneAmbito.
     })
 
+    /*
     it("Aggiungi Ambito 'Contenuto'", () => { 
         cy.log("AGGIUNGI AMBITO - 'Contenuto'")
         //cy.pause()
         UltraBMP.AggiungiAmbito('Contenuto')
     })
+    */
     
     /*
     it("Accesso Area Riservata - Applica sconto ", ()=>{
@@ -126,6 +133,7 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
     })
     */
 
+    /*
     it("Accesso Convenzioni - Seleziona convenzione ", ()=>{
         cy.pause()
         UltraBMP.SelezionaVoceMenuPagAmbiti('Convenzioni')
@@ -137,10 +145,12 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
         Convenzioni.ClickButton('Annulla')
         //Convenzioni.ClickButton('Conferma')
     })
+    */
 
     it("Accesso Configurazione Ambito da matita", ()=>{
         cy.pause()
-        UltraBMP.ClickMatita('Fabbricato', 'Casa 2')
+        UltraBMP.ClickMatita('Fabbricato')
+        //UltraBMP.ClickMatita('Fabbricato', 'Casa 2')
     })
 
     /*

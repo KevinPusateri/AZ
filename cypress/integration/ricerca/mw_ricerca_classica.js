@@ -58,13 +58,11 @@ describe('Buca di Ricerca', {
 }, function() {
     if (Cypress.env('isAviva'))
         it('Verifica che sia assente "Ricerca Classica"', function() {
-            console.log('PASSATOOOOOOO')
             LandingRicerca.searchRandomClient(false)
             LandingRicerca.checkNotExistRicercaClassica()
         })
     else {
         it('Verifica Click su Ricerca Classica', function() {
-            console.log('AIAAAAAAAAAAAAAAAAAAA')
             LandingRicerca.searchRandomClient(false)
             LandingRicerca.checkRicercaClassica()
         })
@@ -80,7 +78,6 @@ describe('Buca di Ricerca', {
             LandingRicerca.clickRicercaClassicaLabel('Ricerca Polizze proposte')
             SCU.checkAggancioPolizzePropostePreventivi()
         })
-
 
         it('Verifica Click su Rubrica', function() {
             LandingRicerca.searchRandomClient(false)

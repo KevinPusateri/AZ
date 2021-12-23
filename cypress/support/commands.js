@@ -233,6 +233,54 @@ Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
   })
 })
 
+//Permettere di ritornare le chiavi di profilazioni in base all'utente passato
+Cypress.Commands.add('getProfiling', (tutf) => {
+  cy.request({
+    method: 'GET',
+    log: false,
+    url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('profilingUrlTest') + '/daprofiling/profile/' + tutf : Cypress.env('profilingUrlPreprod') + '/daprofiling/profile/' + tutf
+  }).then(resp => {
+    if (resp.status !== 200)
+      throw new Error('Recupero Profiling fallito')
+    else
+      return resp.body
+  })
+})
+
+Cypress.Commands.add('filterProfile', (profileArray, key) => {
+  let filtered = profileArray.filter(el => {
+    return el.name === key
+  })
+
+  return (filtered.length > 0) ? true : false
+})
+
+
+//Permettere di verificare se una sezione delle mie info è presente o meno
+Cypress.Commands.add('slugMieInfo', (tutf, section) => {
+  let a =  '["' + section + '"]'
+  console.log(a)
+  cy.request({
+    method: 'POST',
+    log: true,
+    url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('mieInfoCloudTE') + '/lemieinfo/middleware/api/v1/query-entities/slug' : Cypress.env('mieInfoCloudPP') + '/lemieinfo/middleware/api/v1/query-entities/slug',
+    headers: {
+      'Portaluser': tutf,
+      'Content-Type': 'application/json',
+      'Accept': '*/*'
+    },
+    body: '["' + section + '"]'
+  }).then(resp => {
+    debugger
+    if (resp.status === 200)
+      return true
+    else if (resp.status === 404)
+      return false
+    else
+      throw new Error('Errore durante la chiamata slug mie info')
+  })
+})
+
 Cypress.Commands.add('getPartyRelations', () => {
   cy.getUserWinLogin().then(data => {
     cy.generateTwoLetters().then(nameRandom => {
@@ -694,6 +742,121 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
   })
 })
 
+Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clientType = 'PF') => {
+  cy.generateTwoLetters().then(nameRandom => {
+    cy.generateTwoLetters().then(firstNameRandom => {
+      cy.request({
+        method: 'GET',
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
+        log: false,
+        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+        headers: {
+          'x-allianz-user': tutf
+        }
+      }).then(response => {
+        if (response.body.length === 0)
+          cy.getClientWithConsensoOTP(tutf, clientType)
+        else {
+          //Verifichiamo solo clienti in stato EFFETTIVO
+          let clientiEffettivi = response.body.filter(el => {
+            return el.partyCategory[0] === 'E'
+          })
+
+          if (clientiEffettivi.length > 0) {
+            let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+
+            //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+            cy.request({
+              method: 'GET',
+              retryOnStatusCodeFailure: true,
+              timeout: 60000,
+              log: false,
+              url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
+              headers: {
+                'x-allianz-user': tutf
+              }
+            }).then(responseContracts => {
+              //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
+              let contractsWithBranchId
+              contractsWithBranchId = responseContracts.body.filter(el => {
+                return el.branchId.includes('31')
+              })
+              if (contractsWithBranchId.length > 0) {
+                var options = {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: '2-digit'
+                }
+                let contractsWithScadenza = contractsWithBranchId.filter(el => {
+                  return el.paymentFrequency.includes('Annuale')// && (formatDate > currentDate)
+                })
+                if (contractsWithScadenza.length > 0) {
+                  var datePolizzaScadenza = contractsWithScadenza.filter(el => {
+
+                    //trovo p
+                    var date = el._meta.metaInfoEntries[0].messages[3].message
+                    var dateSplited = date.replaceAll('-', '/').split('/')
+                    var newdate = dateSplited[1] + '/' + dateSplited[0] + '/' + dateSplited[2];
+                    let formatDate = new Date(newdate)
+                    let currentDate = new Date()
+
+                    // Verifico che la polizza non sia già sospesa
+                    if (state === 'sospesa') {
+                      var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
+                      if ((formatDate > currentDate) && stato == false)
+                        return el
+                    }
+                    else {
+                      var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
+                      if (stato == false && (formatDate > currentDate))
+                        return el
+                      else
+                        cy.getClientWithConsensoOTP(tutf, clientType)
+                    }
+                  })
+                  if (datePolizzaScadenza.length > 0) {
+                    var polizza = {
+                      customerNumber: currentClient.customerNumber,
+                      customerName: currentClient.firstName + ' ' + currentClient.name,
+                      numberPolizza: datePolizzaScadenza[0].bundleNumber
+                    }
+                    cy.request({
+                      method: 'GET',
+                      retryOnStatusCodeFailure: true,
+                      timeout: 60000,
+                      log: false,
+                      url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements/ConsensoOTP_Allianz'
+                        : be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements/ConsensoOTP_Allianz',
+                      headers: {
+                        'x-allianz-user': tutf
+                      }
+                    }).then(responseConsenso => {
+                      let consensoOtpActive = responseConsenso.body.rejectionReason.includes('1')
+                      if (consensoOtpActive)
+                        return polizza
+                      else
+                        cy.getClientWithConsensoOTP(tutf, clientType)
+                    })
+                  } else {
+                    cy.getClientWithConsensoOTP(tutf, clientType)
+                  }
+                } else {
+                  cy.getClientWithConsensoOTP(tutf, clientType)
+                }
+              } else
+                cy.getClientWithConsensoOTP(tutf, clientType)
+            })
+          }
+          else
+            cy.getClientWithConsensoOTP(tutf, clientType)
+        }
+      })
+    })
+  })
+})
+
 Cypress.Commands.add('getTestsInfos', (testsArray) => {
   return new Cypress.Promise((resolve) => {
 
@@ -772,7 +935,6 @@ Cypress.Commands.add('getSSNAndBirthDateFromTarga', (targa) => {
     }).then(resp => {
       cy.wrap(Cypress.$(resp.body))
         .then(wrappedBody => {
-          debugger
           let parser = new DOMParser()
           let xmlDoc = parser.parseFromString(wrappedBody[2].outerText, "text/xml")
           let currentBirthDate = xmlDoc.getElementsByTagName("DataNascita")[0].childNodes[0].nodeValue.split(' ')[0]
@@ -915,4 +1077,12 @@ Cypress.Commands.add('parsePdf', () => {
     })
   //#endregion
 
+})
+Cypress.Commands.add('getCurrentDate', (dd = 0) => {
+
+  let currentDate = new Date()
+  let formattedDate = String(currentDate.getDate() + dd).padStart(2, '0') + '/' +
+    String(currentDate.getMonth() + 1).padStart(2, '0') + '/' +
+    currentDate.getFullYear()
+  return formattedDate
 })

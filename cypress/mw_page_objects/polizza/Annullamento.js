@@ -59,5 +59,98 @@ class Annullamento {
         })
     }
 
+
+    /**
+   * Pagina Stop&Drive 
+   */
+    static stopDrive() {
+
+        //#region Fase Integrazione
+        cy.getIFrame()
+        cy.get('@iframe').should('be.visible').within(() => {
+
+
+                cy.get('[class="ui-datepicker-trigger"]').first().click()
+                cy.get('#ui-datepicker-div').should('be.visible')
+                cy.get('#ui-datepicker-div:visible').within(() => {
+                    cy.contains('Succ').click()
+                    cy.get('tbody').find('td').contains('1').click()
+                })
+                cy.get('[class="ui-datepicker-trigger"]').eq(1).click()
+                cy.get('#ui-datepicker-div').should('be.visible')
+                cy.get('#ui-datepicker-div:visible').within(() => {
+                    cy.contains('Succ').click()
+                    cy.get('tbody').find('td').contains('25').click()
+                })
+
+                //Click Sospendi
+                cy.get('#btnSospendiContratto').click().wait(3000)
+
+                // Verifica Popup Sospendi 
+                cy.get('div[class="inputLabel inputAvviso derogaAvviso"]').should('be.visible')
+                cy.get('div[class="inputLabel inputAvviso derogaAvviso"]')
+                    .find('label')
+                    .should('contain.text', 'Si sta procedendo alla sospensione della copertura per il veicolo targato')
+                // Click Ok Popup
+                cy.get('div[class="inputLabel inputAvviso derogaAvviso"]').should('be.visible')
+                cy.get('div[class="inputLabel inputAvviso derogaAvviso"]').parents('div[class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable"]').within(() => {
+                    cy.get('span[class="ui-button-text"]').contains('Ok').click().wait(20000)
+                })
+        })
+        //#endregion
+
+        //#region Fase Consensi
+        cy.getIFrame()
+        cy.get('@iframe').should('be.visible').within(() => {
+            //Visualizza Allegato 3-Informativa sul distributore
+            cy.contains('Allegato 3-Informativa sul distributore').parents('tr').within(() => {
+                cy.get('input[title="Visualizza"]:visible').click().wait(4000)
+            })
+            cy.get('div[role="dialog"]:visible').should('be.visible').within(() => {
+                cy.get('#AnteprimaPDF').should('be.visible')
+                cy.contains('Conferma').should('be.visible').click()
+            })
+
+            cy.get('div[role="dialog"]').should('not.be.visible')
+
+            //Visualizza Allegato 4-Informazioni sulla distribuzione
+            cy.contains('Allegato 4-Informazioni sulla distribuzione del prodotto assicurativo non-IBIP').parents('tr').within(() => {
+                cy.get('input[title="Visualizza"]:visible').click().wait(4000)
+            })
+            cy.get('div[role="dialog"]:visible').should('be.visible').within(() => {
+                cy.get('#AnteprimaPDF').should('be.visible')
+                cy.contains('Conferma').click()
+            })
+            cy.get('div[role="dialog"]').should('not.be.visible')
+
+            //  Visualizza Adeguatezza
+            cy.get('#btnVisualizzaAdeguatezza').click().wait(4000)
+            cy.get('div[role="dialog"]:visible').should('be.visible').within(() => {
+                cy.get('#AnteprimaPDF').should('be.visible')
+                cy.contains('Conferma').click()
+            })
+
+            cy.get('div[role="dialog"]').should('not.be.visible')
+            cy.get('#btnAvanti').click().wait(20000)
+        })
+
+
+
+        // cy.getIFrame()
+        // cy.get('@iframe').should('be.visible').within(() => {
+        //     cy.get('input[value="› Prosegui"]').should('be.visible').click()
+        // })
+        cy.getIFrame()
+        cy.get('@iframe').should('be.visible').within(() => {
+            cy.get('div[role="dialog"]').should('be.visible')
+
+            cy.get('div[role="dialog"]:visible').within(() => {
+                cy.get('#pnlDialog').should('be.visible')
+                    .and('include.text', 'permesso solamente agli indirizzi email ALLIANZ (blocco applicato solamente per gli ambienti di test fino a preprod')
+                cy.get('span[class="ui-button-text"]:contains("Ok")').click().wait(4000)
+            })
+        })
+        //#endregion
+    }
 }
 export default Annullamento

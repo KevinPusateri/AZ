@@ -38,7 +38,7 @@ beforeEach(() => {
         TopBar.search('SLZNLL54A04H431Q')
         SintesiCliente.wait()
     } else {
-        TopBar.search('DRNBRN44D25F537J')
+        TopBar.search('FRNLCU72L07D969V')
         SintesiCliente.wait()
     }
 

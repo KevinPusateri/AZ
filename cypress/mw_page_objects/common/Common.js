@@ -75,18 +75,21 @@ class Common {
         if (Cypress.env('currentEnv') === 'TEST')
             url = Cypress.env('baseUrlTest')
         else
-        if (!Cypress.env('monoUtenza'))
-            url = Cypress.env('baseUrlPreprod')
-        else
-            url = Cypress.env('urlSecondWindow')
+            if (!Cypress.env('monoUtenza'))
+                url = Cypress.env('baseUrlPreprod')
+            else {
+                if (Cypress.env('currentEnv') === 'TEST')
+                    url = Cypress.env('urlSecondWindowTest')
+                else
+                    url = Cypress.env('urlSecondWindowPreprod')
 
+            }
         return url;
     }
 
     static checkUrlEnv() {
         //TODO In ambiente di TEST il check non viene fatto correttamente
-        if (Cypress.env('currentEnv') !== 'TEST')
-        {
+        if (Cypress.env('currentEnv') !== 'TEST') {
             if (!Cypress.env('monoUtenza'))
                 cy.url().should('include', Cypress.env('baseUrlPreprod'))
             else
@@ -135,13 +138,17 @@ class Common {
             })
         }
 
-        if (Cypress.env('currentEnv') === 'TEST')
-            cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 })
+        if (Cypress.env('currentEnv') === 'TEST') {
+            if (!Cypress.env('monoUtenza'))
+                cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 })
+            else
+                cy.visit(Cypress.env('urlSecondWindowTest'), { responseTimeout: 31000 })
+        }
         else {
             if (!Cypress.env('monoUtenza'))
                 cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
             else
-                cy.visit(Cypress.env('urlSecondWindow'), { responseTimeout: 31000 })
+                cy.visit(Cypress.env('urlSecondWindowPreprod'), { responseTimeout: 31000 })
         }
         if (!mockedNews && !Cypress.env('isAviva'))
             cy.wait('@gqlNews')

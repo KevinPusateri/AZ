@@ -24,6 +24,17 @@ const LinksBurgerMenu = {
     GESTIONE_FONTE_PRINCIPALE: 'Gestione fonte principale',
     ANTIRICICLAGGIO: 'Antiriciclaggio',
     HOSPITAL_SCANNER: 'Hospital scanner',
+    deleteKey: function(keys) {  
+        if(!keys.CENSIMENTO_NUOVO_CLIENTE) delete this.CENSIMENTO_NUOVO_CLIENTE
+        if(!keys.PANNELLO_ANOMALIE) delete this.PANNELLO_ANOMALIE
+        if(!keys.CLIENTI_DUPLICATI) delete this.CLIENTI_DUPLICATI
+        if(!keys.CANCELLAZIONE_CLIENTI) delete this.CANCELLAZIONE_CLIENTI
+        if(!keys.CANCELLAZIONE_CLIENTI_PER_FONTE) delete this.CANCELLAZIONE_CLIENTI_PER_FONTE
+        if(!keys.GESTIONE_FONTE_PRINCIPALE) delete this.GESTIONE_FONTE_PRINCIPALE
+        if(!keys.ANTIRICICLAGGIO) delete this.ANTIRICICLAGGIO
+        if(!keys.HOSPITAL_SCANNER) delete this.HOSPITAL_SCANNER
+        if(Cypress.env('isAviva')) delete this.ANALISI_DEI_BISOGNI
+    }
 }
 
 class BurgerMenuClients extends Clients {
@@ -31,23 +42,25 @@ class BurgerMenuClients extends Clients {
     /**
      * Verifica che i link nel burgerMenu siano presenti
      */
-    static checkExistLinks() {
+    static checkExistLinks(keys) {
 
         cy.get('lib-burger-icon').click({ force: true })
-
+        LinksBurgerMenu.deleteKey(keys)
         const linksBurger = Object.values(LinksBurgerMenu)
-        if (!Cypress.env('isAviva'))
-            cy.get('lib-side-menu-link').find('a').should('have.length', 11).each(($checkLinksBurger, i) => {
+
+        // const linksBurger = Object.values(LinksBurgerMenu)
+        // if (!Cypress.env('isAviva'))
+        //     cy.get('lib-side-menu-link').find('a').should('have.length', 11).each(($checkLinksBurger, i) => {
+        //         expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+        //     })
+        // else {
+        //     delete LinksBurgerMenu.ANTIRICICLAGGIO
+        //     delete LinksBurgerMenu.HOSPITAL_SCANNER
+        //     const linksBurger = Object.values(LinksBurgerMenu)
+            cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
                 expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
             })
-        else {
-            delete LinksBurgerMenu.ANTIRICICLAGGIO
-            delete LinksBurgerMenu.HOSPITAL_SCANNER
-            const linksBurger = Object.values(LinksBurgerMenu)
-            cy.get('lib-side-menu-link').find('a').should('have.length', 9).each(($checkLinksBurger, i) => {
-                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            })
-        }
+        // }
     }
 
     /**
@@ -79,13 +92,11 @@ class BurgerMenuClients extends Clients {
                     cy.get('app-home-right-section').find('app-rapid-link[linkname="Analisi dei bisogni"] > a')
                         .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
                 } else {
-                    // cy.contains(page).invoke('removeAttr', 'target').click()
                     cy.get('lib-burger-sidebar').find('a[href="https://www.ageallianz.it/analisideibisogni/app"]').invoke('removeAttr', 'target').click()
                         // cy.wait('@analisiBisogni', { requestTimeout: 80000 });
-                        // cy.url().should('eq', 'https://www.ageallianz.it/analisideibisogni/app/login')
-                        // cy.wait(60000)
-                        // cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
-                        // cy.go('back')
+                        cy.url().should('eq', 'https://www.ageallianz.it/analisideibisogni/app/login')
+                        cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
+                        cy.go('back')
                 }
                 // cy.url().should('include', Common.getBaseUrl())
                 break;

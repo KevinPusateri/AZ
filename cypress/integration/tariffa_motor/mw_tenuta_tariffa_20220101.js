@@ -8,6 +8,8 @@ import Sales from "../../mw_page_objects/navigation/Sales"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import TenutaTariffa from "../../mw_page_objects/tenutaTariffa/TenutaTariffa"
 
 //#region Mysql DB Variables
@@ -39,7 +41,6 @@ beforeEach(() => {
 })
 
 after(function () {
-    TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
@@ -48,24 +49,45 @@ after(function () {
     //#endregion
 })
 
-describe('Tenuta Tariffa Gennaio 2022 : ', function () {
+//Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
+let flowClients = false
+//Se specificato, esegue l'identificativo caso specifico
+let caseToExecute = ''
+describe('Tenuta Tariffa Gennaio 2022: ', function () {
     tariffaCases.forEach((currentCase, k) => {
-        it(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
-            if (currentCase.Identificativo_Caso !== 'SKIP') {
+        describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
+            it("Flusso", function () {
+                if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso) {
+                    Common.visitUrlOnEnv()
 
-                Common.visitUrlOnEnv()
-                TopBar.clickSales()
-                Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+                    if (flowClients) {
+                        TopBar.searchRandom()
+                        LandingRicerca.searchRandomClient(true, (currentCase.Tipologia_Entita === 'Persona' ? 'PF' : 'PG'), 'P')
+                        LandingRicerca.clickRandomResult('PF')
+                        SintesiCliente.clickAuto()
+                        SintesiCliente.clickPreventivoMotor()
+                    }
+                    else {
+                        TopBar.clickSales()
+                        Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+                    }
 
-                TenutaTariffa.compilaDatiQuotazione(currentCase)
-                TenutaTariffa.compilaContraenteProprietario(currentCase)
-                TenutaTariffa.compilaVeicolo(currentCase)
-                TenutaTariffa.compilaProvenienza(currentCase)
-                TenutaTariffa.compilaOfferta(currentCase)
-                TenutaTariffa.checkTariffa(currentCase)
-            }
-            else
-                this.skip()
-        });
-    });
+                    TenutaTariffa.compilaDatiQuotazione(currentCase, flowClients)
+                    TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
+                    TenutaTariffa.compilaVeicolo(currentCase)
+                    TenutaTariffa.compilaProvenienza(currentCase)
+                    TenutaTariffa.compilaOfferta(currentCase)
+                }
+                else
+                    this.skip()
+            })
+
+            it("LogTariffa", function () {
+                if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
+                    TenutaTariffa.checkTariffa(currentCase)
+                else
+                    this.skip()
+            })
+        })
+    })
 })
