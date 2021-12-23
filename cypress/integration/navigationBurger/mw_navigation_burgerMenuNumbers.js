@@ -19,10 +19,61 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 //#endregion
 
+let keys = {
+    MONITORAGGIO_FONTI: true,
+    MONITORAGGIO_CARICO: true,
+    MONITORAGGIO_CARICO_FONTE: true,
+    X_ADVISOR: true,
+    INCENTIVAZIONE: true,
+    INCENTIVAZIONE_RECRUITING: true,
+    ANDAMENTI_TECNICI: true,
+    ESTRAZIONI_AVANZATE: true,
+    SCARICO_DATI: true, 
+    INDICI_DIGITALI: true,
+    NEW_BUSINESS_DANNI: true,
+    NEW_BUSINESS_ULTRA_CASA_PATRIMONIO: true,
+    NEW_BUSINESS_ULTRA_SALUTE: true,
+    NEW_BUSINESS_VITA: true,
+    NEW_BUSINESS_ALLIANZ1: true,
+    MONITORAGGIO_PTF_DANNI: true,
+    MONITORAGGIO_RISERVE_VITA: true,
+    RETENTION_MOTOR: true,
+    RETENTION_RAMI_VARI: true,
+    MONITORAGGIO_ANDAMENTO_PREMI: true,
+    MONITORAGGIO_RICAVI_AGENZIA: true,
+    CAPITALE_VITA_SCADENZA: true
+}
+
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
+        cy.getProfiling(data.tutf).then(profiling => {
+            cy.filterProfile(profiling, 'COMMON_MONITOR_FONTI').then(profiled => { keys.MONITORAGGIO_FONTI = profiled })
+            cy.filterProfile(profiling, 'SCAD_MONITORA_CARICO').then(profiled => { keys.MONITORAGGIO_CARICO = profiled })
+            cy.filterProfile(profiling, 'SCAD_MONITORA_CARICO_FONTE').then(profiled => { keys.MONITORAGGIO_CARICO_FONTE = profiled })
+            cy.filterProfile(profiling, 'COMMON_CRYSTAL').then(profiled => { keys.X_ADVISOR = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_INCENTIVAZIONE').then(profiled => { keys.INCENTIVAZIONE = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_INCENTIVAZIONE_RECRUITING').then(profiled => { keys.INCENTIVAZIONE_RECRUITING = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_INCENTIVAZIONE_RECRUITING').then(profiled => { keys.INCENTIVAZIONE_RECRUITING = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_ANDAMENTI_TECNICI').then(profiled => { keys.ANDAMENTI_TECNICI = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_ESTRAZIONI_AVANZATE').then(profiled => { keys.ESTRAZIONI_AVANZATE = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_SCARICO_AGENZIA').then(profiled => { keys.SCARICO_DATI = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_INDICEDIGITALE').then(profiled => { keys.INDICI_DIGITALI = profiled })
+            cy.filterProfile(profiling, 'REPORTING_NB_DANNI').then(profiled => { keys.NEW_BUSINESS_DANNI = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.NEW_BUSINESS_ULTRA_SALUTE = profiled })
+            cy.filterProfile(profiling, 'REPORTING_NB_VITA').then(profiled => { keys.NEW_BUSINESS_VITA = profiled })
+            cy.filterProfile(profiling, 'REPORTING_NB_A1').then(profiled => { keys.NEW_BUSINESS_ALLIANZ1 = profiled })
+            cy.filterProfile(profiling, 'REPORTING_MONITOR_PTF_DANNI').then(profiled => { keys.MONITORAGGIO_PTF_DANNI = profiled })
+            cy.filterProfile(profiling, 'REPORTING_MONITOR_PTF_VITA').then(profiled => { keys.MONITORAGGIO_RISERVE_VITA = profiled })
+            cy.filterProfile(profiling, 'REPORTING_RETENTION_MOTOR').then(profiled => { keys.RETENTION_MOTOR = profiled })
+            cy.filterProfile(profiling, 'REPORTING_RETENTION_MOTOR').then(profiled => { keys.RETENTION_MOTOR = profiled })
+            cy.filterProfile(profiling, 'REPORTING_RETENTION_RV').then(profiled => { keys.RETENTION_RAMI_VARI = profiled })
+            cy.filterProfile(profiling, 'REPORTING_INCASSI_AGENZIA').then(profiled => { keys.MONITORAGGIO_RICAVI_AGENZIA = profiled })
+            cy.filterProfile(profiling, 'REPORTING_CAPITALI_VITA_SCAD').then(profiled => { keys.CAPITALE_VITA_SCADENZA = profiled })
+            cy.filterProfile(profiling, 'REPORTING_CAPITALI_VITA_SCAD').then(profiled => { keys.CAPITALE_VITA_SCADENZA = profiled })
+        })
     })
 })
 
@@ -47,7 +98,7 @@ if (Cypress.env('isAviva'))
     describe(' AVIVA Matrix Web : Navigazioni da Burger Menu in Numbers', function() {
         it('AVIVA - Verifica i link da Burger Menu', function() {
             TopBar.clickNumbers()
-            BurgerMenuNumbers.checkExistLinks()
+            BurgerMenuNumbers.checkExistLinks(keys)
         })
 
         it('AVIVA - Verifica aggancio Monitoraggio Fonti', function() {

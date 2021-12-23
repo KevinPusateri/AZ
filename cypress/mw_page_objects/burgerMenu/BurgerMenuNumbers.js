@@ -56,7 +56,31 @@ const LinksBurgerMenu = {
     RETENTION_RAMI_VARI: 'Retention Rami Vari',
     MONITORAGGIO_ANDAMENTO_PREMI: 'Monitoraggio Andamento Premi',
     MONITORAGGIO_RICAVI_AGENZIA: 'Monitoraggio Ricavi d\'Agenzia',
-    CAPITALE_VITA_SCADENZA: 'Capitale Vita Scadenza'
+    CAPITALE_VITA_SCADENZA: 'Capitale Vita Scadenza',
+    deleteKey: function(keys) {  
+        if(!keys.MONITORAGGIO_FONTI) delete this.MONITORAGGIO_FONTI
+        if(!keys.MONITORAGGIO_CARICO) delete this.MONITORAGGIO_CARICO
+        if(!keys.MONITORAGGIO_CARICO_FONTE) delete this.MONITORAGGIO_CARICO_FONTE
+        if(!keys.X_ADVISOR) delete this.X_ADVISOR
+        if(!keys.INCENTIVAZIONE) delete this.INCENTIVAZIONE
+        if(!keys.INCENTIVAZIONE_RECRUITING) delete this.INCENTIVAZIONE_RECRUITING
+        if(!keys.ANDAMENTI_TECNICI) delete this.ANDAMENTI_TECNICI
+        if(!keys.ESTRAZIONI_AVANZATE) delete this.ESTRAZIONI_AVANZATE
+        if(!keys.SCARICO_DATI) delete this.SCARICO_DATI
+        if(!keys.INDICI_DIGITALI) delete this.INDICI_DIGITALI
+        if(!keys.NEW_BUSINESS_DANNI) delete this.NEW_BUSINESS_DANNI
+        if(!keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO) delete this.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO
+        if(!keys.NEW_BUSINESS_ULTRA_SALUTE) delete this.NEW_BUSINESS_ULTRA_SALUTE
+        if(!keys.NEW_BUSINESS_VITA) delete this.NEW_BUSINESS_VITA
+        if(!keys.NEW_BUSINESS_ALLIANZ1) delete this.NEW_BUSINESS_ALLIANZ1
+        if(!keys.MONITORAGGIO_PTF_DANNI) delete this.MONITORAGGIO_PTF_DANNI
+        if(!keys.MONITORAGGIO_RISERVE_VITA) delete this.MONITORAGGIO_RISERVE_VITA
+        if(!keys.RETENTION_MOTOR) delete this.RETENTION_MOTOR
+        if(!keys.RETENTION_RAMI_VARI) delete this.RETENTION_RAMI_VARI
+        if(!keys.MONITORAGGIO_ANDAMENTO_PREMI) delete this.MONITORAGGIO_ANDAMENTO_PREMI
+        if(!keys.MONITORAGGIO_RICAVI_AGENZIA) delete this.MONITORAGGIO_RICAVI_AGENZIA
+        if(!keys.CAPITALE_VITA_SCADENZA) delete this.CAPITALE_VITA_SCADENZA
+    }
 }
 
 
