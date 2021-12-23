@@ -207,9 +207,11 @@ class NoteContratto {
             })
         })
 
+        cy.wait(2000)
+
         cy.get('@polizza').first().should('exist').then(() => {
 
-            cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
+            cy.get('lib-contract-notes-badge').first().should('exist').and('be.visible').then(($note) => {
                 cy.wait(1000)
                 if ($note.find("nx-icon").length > 0) {
                     cy.get('lib-contract-notes-badge').should('be.visible')
