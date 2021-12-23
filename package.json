@@ -30,6 +30,7 @@
   "devDependencies": {
     "cypress": "^8.6.0",
     "cypress-iframe": "^1.0.1",
+    "cypress-mochawesome-reporter": "^2.3.0",
     "cypress-plugin-tab": "^1.0.5",
     "npm-run-all": "^4.1.5"
   },
@@ -101,7 +102,8 @@
     "cypress:f:run:navigations": "npm-run-all -s -c f:nav_backOffice f:nav_news f:nav_numbers f:nav_clients f:nav_sales f:nav_homePage f:nav_mieInfo",
     "cypress:f:run:ricerca": "npm-run-all -s -c f:rc_classica f:rc_ris_clients f:rc_ris_mieInfo f:rc_risultati f:ricerca",
     "cypress:f:run:burgerMenu": "npm-run-all -s -c f:nav_burgerMenuClients f:nav_burgerMenuNumbers f:nav_burgerMenuSales f:nav_burgerMenuBackOffice",
-    "cypress:f:run:censimenti": "npm-run-all -s -c f:censimento_pf f:censimento_pg"
+    "cypress:f:run:censimenti": "npm-run-all -s -c f:censimento_pf f:censimento_pg",
+    "tenuta_tariffa_gen_2022": "./node_modules/.bin/cypress run --browser chrome --env --spec cypress/integration/tariffa_motor/mw_tenuta_tariffa_20220101.js"
   },
   "repository": {
     "type": "git",
