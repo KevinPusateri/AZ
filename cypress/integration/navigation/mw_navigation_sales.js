@@ -116,7 +116,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it.only('Verifica la presenza dei link su "Emetti Polizza"', function () {
+    it('Verifica la presenza dei link su "Emetti Polizza"', function () {
         TopBar.clickSales()
         Sales.checkLinksOnEmettiPolizza(keys)
     })

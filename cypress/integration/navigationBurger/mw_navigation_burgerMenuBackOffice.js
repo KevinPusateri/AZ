@@ -92,7 +92,7 @@ after(function () {
 
 describe('Matrix Web :Navigazioni da Burger Menu in Backoffice', function () {
 
-    it.only('Verifica link da Burger Menu', function () {
+    it('Verifica link da Burger Menu', function () {
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.checkExistLinks(keys)
     });

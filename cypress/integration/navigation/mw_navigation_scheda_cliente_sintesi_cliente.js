@@ -150,7 +150,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         })
     }
 
-    it.only('Verifica Link da Card Rami vari', function () {
+    it('Verifica Link da Card Rami vari', function () {
         SintesiCliente.clickRamiVari()
         SintesiCliente.checkLinksFromRamiVari(keys)
     })
