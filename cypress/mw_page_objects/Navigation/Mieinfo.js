@@ -49,7 +49,7 @@ class Mieinfo {
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     let checkLinks = Object.values(linksSubMenu.PRODOTTI)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
-                        expect($link.text().trim()).to.include(checkLinks[i]);
+                        expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break
@@ -57,7 +57,7 @@ class Mieinfo {
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     let checkLinks = Object.values(linksSubMenu.INIZIATIVE)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
-                        expect($link.text().trim()).to.include(checkLinks[i]);
+                        expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
@@ -65,7 +65,7 @@ class Mieinfo {
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     let checkLinks = Object.values(linksSubMenu.SALES_ACADEMY)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
-                        expect($link.text().trim()).to.include(checkLinks[i]);
+                        expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
@@ -73,7 +73,7 @@ class Mieinfo {
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     let checkLinks = Object.values(linksSubMenu.ANTIRICICLAGGIO)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
-                        expect($link.text().trim()).to.include(checkLinks[i]);
+                        expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
@@ -81,7 +81,7 @@ class Mieinfo {
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     let checkLinks = Object.values(linksSubMenu.RISORSE_PER_AGENZIA)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
-                        expect($link.text().trim()).to.include(checkLinks[i]);
+                        expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
@@ -89,7 +89,7 @@ class Mieinfo {
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     let checkLinks = Object.values(linksSubMenu.RISORSE_PER_AGENTE)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 7).each(($link, i) => {
-                        expect($link.text().trim()).to.include(checkLinks[i]);
+                        expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
@@ -97,7 +97,7 @@ class Mieinfo {
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     let checkLinks = Object.values(linksSubMenu.IL_MONDO_ALLIANZ)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 3).each(($link, i) => {
-                        expect($link.text().trim()).to.include(checkLinks[i]);
+                        expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
@@ -105,7 +105,7 @@ class Mieinfo {
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
                     let checkLinks = Object.values(linksSubMenu.NEW_COMPANY_HANDBOOK)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 2).each(($link, i) => {
-                        expect($link.text().trim()).to.include(checkLinks[i]);
+                        expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
@@ -136,10 +136,10 @@ class Mieinfo {
                     'Finanziamenti Compass'
                 ]
                 getIFrame().find('.product-icon--name').each(($link, i) => {
-                    expect($link.text().trim()).to.include(linksProdottiIcon[i]);
+                    expect($link.text().trim().toLowerCase()).to.include(linksProdottiIcon[i].toLowerCase());
                 })
                 break
-                //TODO: Finire mie info
+            //TODO: Finire mie info
             case LinksMenu.INIZIATIVE:
                 const linksIniziativeCard = [
                     'Stop&Drive',
@@ -166,12 +166,15 @@ class Mieinfo {
                 const linksSalesAcademyIcon = [
                     'Chi siamo',
                     'Allianz Business School',
-                    'Obblighi IVASS',
+                    'Campus e IVASS',
                     'Percorsi di ruolo',
-                    'Formazione Multicanale',
+                    'Formazione multicanale',
                 ]
+                let currentIconsSalesAcademy = []
                 getIFrame().find('.product-icon--name').each(($link, i) => {
-                    expect($link.text().trim()).to.include(linksSalesAcademyIcon[i]);
+                    currentIconsSalesAcademy.push($link.text().trim())
+                }).then(() => {
+                    expect(currentIconsSalesAcademy.sort()).to.deep.eq(linksSalesAcademyIcon.sort());
                 })
                 break;
             case LinksMenu.NEW_COMPANY_HANDBOOK:
@@ -214,43 +217,55 @@ class Mieinfo {
                     'Reclutamento',
                     'Arredare l\'agenzia',
                     'Digital marketing e social media',
-                    'Materiali di comunicazione istituzionale',
+                    'Materiali di comunicazione',
                     'Richiesta stampati',
                     'Ordini di toner e carta',
                     'Catalogo prodotti tecnologici',
                     'Sicurezza IT',
                     'L\'app ADAM',
-                    'Pacchetti di sicurezza',
+                    //'Pacchetti di sicurezza',   
+                    'Riferimenti aziendali',
                     'Link utili',
-                    'Manuali di travaso MISA',
-                    'Minisito IDD',
+                    'IDD',
                 ]
+                let currentLinksRisorseAgenziaIcon = []
+                
                 getIFrame().find('.product-icon--name').each(($link, i) => {
-                    expect($link.text().trim()).to.include(linksRisorseAgenziaIcon[i]);
+                    currentLinksRisorseAgenziaIcon.push($link.text().trim())
+                }).then(() => {
+                    expect(currentLinksRisorseAgenziaIcon.sort()).to.deep.eq(linksRisorseAgenziaIcon.sort());
                 })
                 break;
             case LinksMenu.RISORSE_PER_AGENTE:
                 const linksRisorseAgenteIcon = [
                     'Trattamenti provvigionali',
                     'Incentivazioni, mission, regolamenti',
+                    'Casa Allianz',
                     'Convenzioni Prodotti Allianz',
                     'Cassa Previdenza Agenti',
-                    'Le scelte di investimento',
+                    //'Le scelte di investimento',
                     'Catalogo idee'
                 ]
+                let currentlinksRisorseAgenteIcon = []
                 getIFrame().find('.product-icon--name').each(($link, i) => {
-                    expect($link.text().trim()).to.include(linksRisorseAgenteIcon[i]);
+                    currentlinksRisorseAgenteIcon.push($link.text().trim())
+                }).then(() => {
+                    expect(currentlinksRisorseAgenteIcon.sort()).to.deep.eq(linksRisorseAgenteIcon.sort());
                 })
                 break;
             case LinksMenu.IL_MONDO_ALLIANZ:
                 const linksMondoAllianzIcon = [
-                    'I codici del Gruppo Allianz SpA',
+                    'I codici di Allianz SpA',
                     'La rassegna stampa',
                     'Agricola San Felice'
                 ]
+                let currentlinksMondoAllianzIcon = []
                 getIFrame().find('.product-icon--name').each(($link, i) => {
-                    expect($link.text().trim()).to.include(linksMondoAllianzIcon[i]);
+                    currentlinksMondoAllianzIcon.push($link.text().trim())
+                }).then(() => {
+                    expect(currentlinksMondoAllianzIcon.sort()).to.deep.eq(linksMondoAllianzIcon.sort());
                 })
+
                 break;
         }
     }
@@ -288,10 +303,10 @@ class Mieinfo {
                 getIFrame().find('h1:contains("Momento della Verità")').should('be.visible')
                 break;
             case LinksMenu.RILASCI_INFORMATICI:
-                getIFrame().find('h1:contains("Release")').should('be.visible')
+                getIFrame().find('h1:contains("Rilasci informatici")').should('be.visible')
                 break;
             case LinksMenu.MANUALI_INFORMATICI:
-                getIFrame().find('h1:contains("Manuali Informatici")').should('be.visible')
+                getIFrame().find('h1:contains("Manuali informatici")').should('be.visible')
                 break;
             case LinksMenu.CIRCOLARI:
                 getIFrame().find('h1:contains("Circolari")').should('be.visible')
@@ -309,10 +324,10 @@ class Mieinfo {
                 getIFrame().find('h1:contains("Operatività")').should('be.visible')
                 break;
             case LinksMenu.RISORSE_PER_AGENTE:
-                getIFrame().find('h1:contains("Risorse per l\'agente")').should('be.visible')
+                getIFrame().find('h1:contains("Risorse per l\'Agente")').should('be.visible')
                 break;
             case LinksMenu.IL_MONDO_ALLIANZ:
-                getIFrame().find('h1:contains("Il Mondo Allianz")').should('be.visible')
+                getIFrame().find('h1:contains("Il mondo Allianz")').should('be.visible')
                 break;
             case LinksMenu.NEW_COMPANY_HANDBOOK:
                 getIFrame().find('h1:contains("Test Handbook per rilascio")').should('be.visible')
@@ -392,6 +407,7 @@ class Mieinfo {
             'Media Library',
             'MidCo',
             'Modello Generico',
+            'Portale Digital Agency',
             'Pubblica Amministrazione',
             'Quadratura Unificata Digital Agency',
             'Rami Vari',
@@ -419,27 +435,27 @@ class Mieinfo {
      * Verifica che i panel si espandono su "Operatività"
      */
     static checkPanelsOnOperativita() {
-            const cardOperativita = [
-                'Cambio sede',
-                'Codici sblocco rami vari',
-                'Contabilità',
-                'Fatturazione elettronica',
-                'Gestione documenti',
-                'Gestione collaboratori',
-                'Iniziativa whatsapp Agenti',
-                'Informativa privacy (tedesco)',
-                'Codice delle assicurazioni private',
-                'Titolo IX - Reg. ISVAP - Registro unico intermediari'
-            ]
-            for (let index = 0; index < cardOperativita.length; index++) {
-                getIFrame().find('#nx-expansion-panel-header-' + index).then(($card) => {
-                    expect($card.text().trim()).to.include(cardOperativita[index]);
-                    getIFrame().find('nx-expansion-panel-title').contains($card.text().trim()).click()
-                    cy.wrap($card).should('have.attr', 'aria-expanded', 'true')
-                })
-            }
+        const cardOperativita = [
+            'Cambio sede',
+            'Codici sblocco rami vari',
+            'Contabilità',
+            'Fatturazione elettronica',
+            'Gestione documenti',
+            'Gestione collaboratori',
+            'Iniziativa whatsapp Agenti',
+            'Informativa privacy (tedesco)',
+            'Codice delle assicurazioni private',
+            'Titolo IX - Reg. ISVAP - Registro unico intermediari'
+        ]
+        for (let index = 0; index < cardOperativita.length; index++) {
+            getIFrame().find('#nx-expansion-panel-header-' + index).then(($card) => {
+                expect($card.text().trim()).to.include(cardOperativita[index]);
+                getIFrame().find('nx-expansion-panel-title').contains($card.text().trim()).click()
+                cy.wrap($card).should('have.attr', 'aria-expanded', 'true')
+            })
         }
-        //#endregion
+    }
+    //#endregion
 
     /**
      * Verifica atterraggio delle sotto pagine di "Prodotti"
@@ -447,26 +463,26 @@ class Mieinfo {
     static checkAllPagesOnProdotti() {
         const linksProdotti = LinkMieInfo.getLinksSubMenu().PRODOTTI
         getIFrame().contains('Allianz Ultra').click()
-            // :contains("Allianz Ultra")').should('be.visible
+        // :contains("Allianz Ultra")').should('be.visible
 
         getIFrame().contains(linksProdotti.ALLIANZ1_BUSINESS).click()
-            // getIFrame().find('img').should('have.attr', 'src', '/lemieinfo/cdn/internal/assets/immagini/images-header/prodotti/allianzultra/AllianzUltra_HSP.png')
+        // getIFrame().find('img').should('have.attr', 'src', '/lemieinfo/cdn/internal/assets/immagini/images-header/prodotti/allianzultra/AllianzUltra_HSP.png')
         getIFrame().find('h1:contains("Allianz1 Business")').should('not.exist')
 
         getIFrame().contains(linksProdotti.AUTO_E_MOTORI).click()
-        getIFrame().find('h1:contains("Auto e Motori")').should('be.visible')
+        getIFrame().find('h1:contains("Auto e motori")').should('be.visible')
 
         getIFrame().contains(linksProdotti.CASA_CONDOMINIO_E_PETCARE).click()
         getIFrame().find('h1:contains("Casa")').should('be.visible')
 
         getIFrame().contains(linksProdotti.INFORTUNI_E_SALUTE).click()
-        getIFrame().find('h1:contains("Infortuni e Salute")').should('be.visible')
+        getIFrame().find('h1:contains("Infortuni e salute")').should('be.visible')
 
         getIFrame().contains(linksProdotti.IMPRESA_E_RISCHI_DEDICATI).click()
         getIFrame().find('h1:contains("Impresa e rischi dedicati")').should('be.visible').wait(3000)
 
         getIFrame().find('a[href="/lemieinfo/prodotti/tutela-legale"]').contains(linksProdotti.TUTELA_LEGALE).click()
-        getIFrame().find('h1:contains("Tutela Legale")').should('be.visible')
+        getIFrame().find('h1:contains("Tutela legale")').should('be.visible')
 
         getIFrame().contains(linksProdotti.VITA).click()
         getIFrame().find('h1:contains("Vita")').should('be.visible')
@@ -478,7 +494,7 @@ class Mieinfo {
         getIFrame().find('h1:contains("Convenzioni nazionali")').should('be.visible')
 
         getIFrame().contains(linksProdotti.CONVENZIONI_LOCALI_E_OFFERTE_DEDICATE).click()
-        getIFrame().find('h1:contains("Convenzioni locali e Offerte dedicate")').should('be.visible')
+        getIFrame().find('h1:contains("Convenzioni locali e offerte dedicate")').should('be.visible')
 
         getIFrame().contains(linksProdotti.AGCS_ITALIA).click()
         getIFrame().find('h1:contains("AGCS")').should('be.visible')
@@ -501,8 +517,8 @@ class Mieinfo {
         getIFrame().contains(linksIniziative.PROPONI_TCM).click()
         getIFrame().find('h1:contains("' + linksIniziative.PROPONI_TCM + '")').should('be.visible')
 
-        // getIFrame().contains(linksIniziative.MENSILIZZAZIONE_RAMI_VARI).click()
-        // getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_RAMI_VARI + '")').should('be.visible')
+        getIFrame().contains(linksIniziative.MENSILIZZAZIONE_RAMI_VARI).click()
+        getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_RAMI_VARI + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.MENSILIZZAZIONE_AUTO).click()
         getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_AUTO + '")').should('be.visible')
@@ -513,8 +529,8 @@ class Mieinfo {
         getIFrame().contains(linksIniziative.ALLIANZPAY).click()
         getIFrame().find('h1:contains("' + linksIniziative.ALLIANZPAY + '")').should('be.visible')
 
-        // getIFrame().contains(linksIniziative.BUSTA_ARANCIONE).click()
-        // getIFrame().find('h1:contains("' + linksIniziative.BUSTA_ARANCIONE + '")').should('be.visible')
+        getIFrame().contains(linksIniziative.BUSTA_ARANCIONE).click()
+        getIFrame().find('h1:contains("' + linksIniziative.BUSTA_ARANCIONE + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.WINBACK_MOTOR).click()
         getIFrame().find('h1:contains("' + linksIniziative.WINBACK_MOTOR + '")').should('be.visible')
@@ -525,11 +541,8 @@ class Mieinfo {
         getIFrame().contains(linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR).click()
         getIFrame().find('h1:contains("' + linksIniziative.DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR + '")').should('be.visible')
 
-        // getIFrame().contains(linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO).click()
-        // getIFrame().find('h1:contains("' + linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO + '")').should('be.visible')
-
-        getIFrame().find('a[href="/lemieinfo/iniziative/test"]').contains(linksIniziative.TEST).click()
-        getIFrame().find('h3:contains("Collettore Hbox 1")').should('be.visible')
+        getIFrame().contains(linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO).click()
+        getIFrame().find('h1:contains("' + linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO + '")').should('be.visible')
     }
 
     /**
@@ -543,24 +556,20 @@ class Mieinfo {
         getIFrame().contains(linksSalesAcademy.ALLIANZ_BUSINESS_SCHOOL).click()
         getIFrame().find(':contains("Università")').should('be.visible')
 
-        // getIFrame().contains(linksSalesAcademy.MASTER_PROFESSIONE_AGENTE).click()
-        // getIFrame().find('h1:contains("' + linksSalesAcademy.MASTER_PROFESSIONE_AGENTE + '")').should('be.visible') // MOSTRA OBBLIGI IVASS
-
-        getIFrame().contains(linksSalesAcademy.CAMPUS_IVASS).click()
-        getIFrame().find(':contains("Informazioni sugli obblighi formativi")').should('be.visible')
-
-        getIFrame().contains(linksSalesAcademy.FORMAZIONE_MULTICANALE).click()
-        getIFrame().find('h1:contains("' + linksSalesAcademy.FORMAZIONE_MULTICANALE + '")').should('be.visible')
-
         getIFrame().contains(linksSalesAcademy.PERCORSI_DI_RUOLO).click()
         getIFrame().find('h1:contains("Oltre l’offerta: Percorsi di sviluppo dedicati")').should('be.visible')
 
+        getIFrame().contains(linksSalesAcademy.CAMPUS_IVASS).click()
+        getIFrame().find(':contains("Campus e IVASS")').should('be.visible')
+
+        getIFrame().contains(linksSalesAcademy.FORMAZIONE_MULTICANALE).click()
+        getIFrame().find('h1:contains("Formazione multicanale")').should('be.visible')
     }
 
     /**
      * Verifica atterraggio delle sotto pagine di "New Company Handbook"
      */
-    static checkAllPagesNewCompanyHandbook() {}
+    static checkAllPagesNewCompanyHandbook() { }
 
     /**
      * Verifica atterraggio delle sotto pagine di "Antiriciclaggio"
@@ -592,7 +601,7 @@ class Mieinfo {
         getIFrame().find('h1:contains("Digital marketing e social media")').should('be.visible')
 
         getIFrame().contains(linksRisorseAgenzie.MATERIALI_DI_COMUNICAZIONE).click()
-        getIFrame().find('h1:contains("' + linksRisorseAgenzie.MATERIALI_DI_COMUNICAZIONE + ' istituzionale")').should('be.visible')
+        getIFrame().find('h1:contains("' + linksRisorseAgenzie.MATERIALI_DI_COMUNICAZIONE + '")').should('be.visible')
 
         getIFrame().contains(linksRisorseAgenzie.RICHIESTA_STAMPATI).click()
         getIFrame().find('h1:contains("' + linksRisorseAgenzie.RICHIESTA_STAMPATI + '")').should('be.visible')
@@ -642,8 +651,8 @@ class Mieinfo {
         getIFrame().contains(linksRisorseAgente.CASSA_PREVIDENZA_AGENTI).click()
         getIFrame().find('h1:contains("' + linksRisorseAgente.CASSA_PREVIDENZA_AGENTI + '")').should('be.visible')
 
-        getIFrame().contains(linksRisorseAgente.LE_SCELTE_DI_INVESTIMENTO).click()
-        getIFrame().find('h1:contains("' + linksRisorseAgente.LE_SCELTE_DI_INVESTIMENTO + '")').should('be.visible')
+        // getIFrame().contains(linksRisorseAgente.LE_SCELTE_DI_INVESTIMENTO).click()
+        // getIFrame().find('h1:contains("' + linksRisorseAgente.LE_SCELTE_DI_INVESTIMENTO + '")').should('be.visible')
 
         getIFrame().contains(linksRisorseAgente.CATALOGO_IDEE).click()
         getIFrame().find('h1:contains("' + linksRisorseAgente.CATALOGO_IDEE + '")').should('be.visible')
