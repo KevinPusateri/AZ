@@ -281,6 +281,24 @@ class SintesiCliente {
         })
     }
 
+    //Selezione emissione Auto da scheda Emissioni
+    static emissioneAuto(menuAuto) {
+        cy.get('app-kpi-dropdown-card[lob="motor"]').click() //apre il menù Motor
+
+        cy.log('Array menù auto: ' + menuAuto.length)
+        //scorre i sottomenù fino aselezionare l'opzione richiesta
+        for (var i = 0; i < menuAuto.length; i++) {
+            cy.log(menuAuto[i])
+            cy.get('button[role="menuitem"]').contains(menuAuto[i])
+                .should('be.visible').click()
+        }
+
+        //seleziona la prima agenzia dal poup "canale con cui vuoi procedere"
+        cy.get('[ngclass="agency-row"]')
+            .should('be.visible')
+            .first().click()
+    }
+
     //#region Links Card Auto
     static clickAuto() {
         cy.get('lib-container').find('app-client-resume-emissions:visible').then(($fastquote) => {
@@ -289,8 +307,6 @@ class SintesiCliente {
                 cy.get('.card-container').find('app-kpi-dropdown-card').contains('Auto').click()
             else
                 assert.fail('Card Auto non è presente')
-
-
         })
     }
 

@@ -86,6 +86,8 @@ describe("FABBRICATO E CONTENUTO", () => {
                 cy.get('lib-client-item').first().next().click()
             }
         })
+
+        cy.pause()
     })
 
     it("Selezione ambiti FastQuote", () => {

@@ -6,7 +6,6 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 //#endregion
 
@@ -23,12 +22,6 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region enum
-const ultraRV = {
-  CASAPATRIMONIO: "Allianz Ultra Casa e Patrimonio",
-  CASAPATRIMONIO_BMP: "Allianz Ultra Casa e Patrimonio BMP",
-  SALUTE: "Allianz Ultra Salute",
-}
-
 const ambitiUltraSalute = {
   SPESE_MEDICHE: "health-bag-doctor",
   DIARIA_DA_RICOVERO: "save",
@@ -38,11 +31,8 @@ const ambitiUltraSalute = {
 //#endregion enum
 
 //#region  variabili iniziali
-let personaGiuridica = "Sinopoli"
-let personaFisica = PersonaFisica.GalileoGalilei()
 var frazionamento = "semestrale"
 var prezzoRiservato = '455,00'
-var copertura = "extra-professionale"
 var ambiti = [
   ambitiUltraSalute.SPESE_MEDICHE,
   ambitiUltraSalute.DIARIA_DA_RICOVERO,
