@@ -20,7 +20,7 @@ const LinksBurgerMenu = {
     INCASSO_PER_CONTO: 'Incasso per conto',
     INCASSO_MASSIVO: 'Incasso massivo',
     SOLLECITO_TITOLI: 'Sollecito titoli',
-    IMPOSTAZIONE_CONTABILITÀ: 'Impostazione contabilità',
+    IMPOSTAZIONE_CONTABILITA: 'Impostazione contabilità',
     CONVENZIONI_IN_TRATTENUTA: 'Convenzioni in trattenuta',
     MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart',
     deleteKey: function(keys) {  
@@ -41,7 +41,7 @@ const LinksBurgerMenu = {
         if(!keys.INCASSO_PER_CONTO) delete this.INCASSO_PER_CONTO
         if(!keys.INCASSO_MASSIVO) delete this.INCASSO_MASSIVO
         if(!keys.SOLLECITO_TITOLI) delete this.SOLLECITO_TITOLI
-        if(!keys.IMPOSTAZIONE_CONTABILITÀ) delete this.IMPOSTAZIONE_CONTABILITÀ
+        if(!keys.IMPOSTAZIONE_CONTABILITA) delete this.IMPOSTAZIONE_CONTABILITA
         if(!keys.CONVENZIONI_IN_TRATTENUTA) delete this.CONVENZIONI_IN_TRATTENUTA
         if(!keys.MONITORAGGIO_GUIDA_SMART) delete this.MONITORAGGIO_GUIDA_SMART
     }
@@ -55,32 +55,11 @@ class BurgerMenuBackOffice extends BackOffice {
     static checkExistLinks(keys) {
         cy.get('lib-burger-icon').click()
 
-        // if (Cypress.env('monoUtenza')) {
-        //     delete LinksBurgerMenu.DENUNCIA_BMP
-        //     delete LinksBurgerMenu.CONVENZIONI_IN_TRATTENUTA
-        //     delete LinksBurgerMenu.MONITORAGGIO_GUIDA_SMART
-        //     const linksBurger = Object.values(LinksBurgerMenu)
-        //     cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
-        //         expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-        //     }).should('have.length', 17)
-        // } else if (Cypress.env('isAviva')) {
-        //     delete LinksBurgerMenu.DENUNCIA
-        //     delete LinksBurgerMenu.DENUNCIA_BMP
-        //     delete LinksBurgerMenu.SINISTRI_INCOMPLETI
-        //     delete LinksBurgerMenu.SINISTRI_CANALIZZATI
-        //     delete LinksBurgerMenu.GESTIONE_CONTATTO_CARD
-        //     const linksBurger = Object.values(LinksBurgerMenu)
-        //     cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
-        //         expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-        //     }).should('have.length.gte', 13).and('have.length.lte', 15)
-        // } else {
-        //     const linksBurger = Object.values(LinksBurgerMenu)
         LinksBurgerMenu.deleteKey(keys)
         const linksBurger = Object.values(LinksBurgerMenu)
         cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
         })
-        // }
     }
 
     /**
