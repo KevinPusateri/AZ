@@ -40,14 +40,14 @@ const LinksSinistri = {
     CONSULTAZIONE_SINISTRI: 'Consultazione sinistri',
     SINISTRI_INCOMPLETI: 'Sinistri incompleti',
     SINISTRI_CANALIZZATI: 'Sinistri canalizzati',
-    deleteKey: function(keys) {  
-        if(!keys.MOVIMENTAZIONE_SINISTRI) delete this.MOVIMENTAZIONE_SINISTRI
-        if(!keys.DENUNCIA) delete this.DENUNCIA
-        if(Cypress.env('isAviva')) delete this.GESTIONE_CONTATTO_CARD
-        if(!keys.DENUNCIA_BMP) delete this.DENUNCIA_BMP
-        if(!keys.CONSULTAZIONE_SINISTRI) delete this.CONSULTAZIONE_SINISTRI
-        if(!keys.SINISTRI_INCOMPLETI) delete this.SINISTRI_INCOMPLETI
-        if(!keys.SINISTRI_CANALIZZATI) delete this.SINISTRI_CANALIZZATI
+    deleteKey: function (keys) {
+        if (!keys.MOVIMENTAZIONE_SINISTRI) delete this.MOVIMENTAZIONE_SINISTRI
+        if (!keys.DENUNCIA) delete this.DENUNCIA
+        if (Cypress.env('isAviva')) delete this.GESTIONE_CONTATTO_CARD
+        if (!keys.DENUNCIA_BMP) delete this.DENUNCIA_BMP
+        if (!keys.CONSULTAZIONE_SINISTRI) delete this.CONSULTAZIONE_SINISTRI
+        if (!keys.SINISTRI_INCOMPLETI) delete this.SINISTRI_INCOMPLETI
+        if (!keys.SINISTRI_CANALIZZATI) delete this.SINISTRI_CANALIZZATI
     }
 }
 
@@ -63,20 +63,20 @@ const LinksContabilita = {
     SOLLECITO_TITOLI: 'Sollecito titoli',
     IMPOSTAZIONE_CONTABILITA: 'Impostazione contabilità',
     CONVENZIONI_IN_TRATTENUTA: 'Convenzioni in trattenuta',
-    MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart', 
-    deleteKey: function(keys) {  
-        if(!keys.SINTESI_CONTABILITA) delete this.SINTESI_CONTABILITA
-        if(!keys.GIORNATA_CONTABILE) delete this.GIORNATA_CONTABILE
-        if(!keys.CONSULTAZIONE_MOVIMENTI) delete this.CONSULTAZIONE_MOVIMENTI
-        if(!keys.ESTRAZIONE_CONTABILITA) delete this.ESTRAZIONE_CONTABILITA
-        if(!keys.DELEGHE_SDD) delete this.DELEGHE_SDD
-        if(!keys.QUADRATURA_UNIFICATA) delete this.QUADRATURA_UNIFICATA
-        if(!keys.INCASSO_PER_CONTO) delete this.INCASSO_PER_CONTO
-        if(!keys.INCASSO_MASSIVO) delete this.INCASSO_MASSIVO
-        if(!keys.SOLLECITO_TITOLI) delete this.SOLLECITO_TITOLI
-        if(!keys.IMPOSTAZIONE_CONTABILITA) delete this.IMPOSTAZIONE_CONTABILITA
-        if(!keys.CONVENZIONI_IN_TRATTENUTA) delete this.CONVENZIONI_IN_TRATTENUTA
-        if(!keys.MONITORAGGIO_GUIDA_SMART) delete this.MONITORAGGIO_GUIDA_SMART
+    MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart',
+    deleteKey: function (keys) {
+        if (!keys.SINTESI_CONTABILITA) delete this.SINTESI_CONTABILITA
+        if (!keys.GIORNATA_CONTABILE) delete this.GIORNATA_CONTABILE
+        if (!keys.CONSULTAZIONE_MOVIMENTI) delete this.CONSULTAZIONE_MOVIMENTI
+        if (!keys.ESTRAZIONE_CONTABILITA) delete this.ESTRAZIONE_CONTABILITA
+        if (!keys.DELEGHE_SDD) delete this.DELEGHE_SDD
+        if (!keys.QUADRATURA_UNIFICATA) delete this.QUADRATURA_UNIFICATA
+        if (!keys.INCASSO_PER_CONTO) delete this.INCASSO_PER_CONTO
+        if (!keys.INCASSO_MASSIVO) delete this.INCASSO_MASSIVO
+        if (!keys.SOLLECITO_TITOLI) delete this.SOLLECITO_TITOLI
+        if (!keys.IMPOSTAZIONE_CONTABILITA) delete this.IMPOSTAZIONE_CONTABILITA
+        if (!keys.CONVENZIONI_IN_TRATTENUTA) delete this.CONVENZIONI_IN_TRATTENUTA
+        if (!keys.MONITORAGGIO_GUIDA_SMART) delete this.MONITORAGGIO_GUIDA_SMART
     }
 }
 
@@ -89,19 +89,9 @@ class BackOffice {
 
         LinksSinistri.deleteKey(keys)
         const linksSinistri = Object.values(LinksSinistri)
-
-
-        // if (Cypress.env('isAviva')) {
-        //     delete LinksSinistri.GESTIONE_CONTATTO_CARD
-        //     const linksSinistri = Object.values(LinksSinistri)
-        //     cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
-        //         expect($labelCard).to.contain(linksSinistri[i])
-        //     })
-        // } else {
-            cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksSinistri[i])
-            })
-        // }
+        cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
+            expect($labelCard).to.contain(linksSinistri[i])
+        })
     }
 
     /**
@@ -251,7 +241,7 @@ class BackOffice {
         // if (Cypress.env('isAviva'))
         //     getIFrame().find('span:contains("Nuova incentivazione Vita"):visible')
         // else
-            getIFrame().find('span:contains("Nuova incentivazione Vita"):visible')
+        getIFrame().find('span:contains("Nuova incentivazione Vita"):visible')
     }
 }
 
