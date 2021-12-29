@@ -103,7 +103,7 @@
     "cypress:f:run:ricerca": "npm-run-all -s -c f:rc_classica f:rc_ris_clients f:rc_ris_mieInfo f:rc_risultati f:ricerca",
     "cypress:f:run:burgerMenu": "npm-run-all -s -c f:nav_burgerMenuClients f:nav_burgerMenuNumbers f:nav_burgerMenuSales f:nav_burgerMenuBackOffice",
     "cypress:f:run:censimenti": "npm-run-all -s -c f:censimento_pf f:censimento_pg",
-    "tenuta_tariffa_gen_2022": "./node_modules/.bin/cypress run --browser chrome --env --spec cypress/integration/tariffa_motor/mw_tenuta_tariffa_20220101.js"
+    "tenuta_tariffa_gen_2022": "./node_modules/.bin/cypress run --browser chrome --spec cypress/integration/tariffa_motor/mw_tenuta_tariffa_20220101.js"
   },
   "repository": {
     "type": "git",
