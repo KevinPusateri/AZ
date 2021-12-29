@@ -1,0 +1,82 @@
+{
+    "primaImmatricolazione": {
+        "documentazione": [
+            "Prima immatricolazione",
+            "Dispone di documentazione"
+        ],
+        "noDocumentazione": [
+            "Prima immatricolazione",
+            "Non dispone di documentazione"
+        ],
+        "dicSostitutiva": [
+            "Prima immatricolazione",
+            "Rilascia dichiarazione sostitutiva"
+        ]
+    },
+    "voltura": {
+        "documentazione": [
+            "Voltura",
+            "Dispone di documentazione"
+        ],
+        "noDocumentazione": [
+            "Voltura",
+            "Non dispone di documentazione"
+        ],
+        "dicSostitutiva": [
+            "Voltura",
+            "Rilascia dichiarazione sostitutiva"
+        ]
+    },
+    "precAssAltraCompagnia": {
+        "noAttestazione": [
+            "Precedentemente assicurato altra compagnia",
+            "Senza attestazione"
+        ],
+        "polizzaTemporanea": [
+            "Precedentemente assicurato altra compagnia",
+            "Con polizza temporanea"
+        ],
+        "noPolizzaTemporanea": [
+            "Precedentemente assicurato altra compagnia",
+            "Senza polizza temporanea"
+        ],
+        "appendiceCessione": [
+            "Precedentemente assicurato altra compagnia",
+            "Con appendice di cessione"
+        ],
+        "noAppendiceCessione": [
+            "Precedentemente assicurato altra compagnia",
+            "Senza appendice di cessione"
+        ],
+        "estero": {
+            "dichiarazioni": [
+                "Precedentemente assicurato altra compagnia",
+                "All'estero",
+                "Consegna dichiarazione del precedente assicuratore"
+            ],
+            "noDichiarazioni": [
+                "Precedentemente assicurato altra compagnia",
+                "All'estero",
+                "Non consegna dichiarazione del precedente assicuratore"
+            ]
+        },
+        "liquidazione": {
+            "attestazione": [
+                "Precedentemente assicurato altra compagnia",
+                "In liquidazione coatta",
+                "Con regolare attestazione"
+            ],
+            "richiestaAttestazione": [
+                "Precedentemente assicurato altra compagnia",
+                "In liquidazione coatta",
+                "Con richiesta di attestazione"
+            ],
+            "noRichiestaAttestazione": [
+                "Precedentemente assicurato altra compagnia",
+                "In liquidazione coatta",
+                "Senza richiesta di attestazione"
+            ]
+        }
+    },
+    "precAssAllianz": "Precedentemente assicurato Allianz"
+}
