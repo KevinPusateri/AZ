@@ -268,6 +268,7 @@ class TenutaTariffa {
                 cy.get('input[formcontrolname="marcaModelloVersione"]').should('exist').type(currentCase.Marca + ' ' + currentCase.Modello + ' ' + currentCase.Versione)
             }
             else {
+                //Su AVIVA
                 //Marca
                 cy.get('nx-dropdown[formcontrolname="marca"]').should('exist').and('be.visible').click()
                 cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Marca)
@@ -275,31 +276,9 @@ class TenutaTariffa {
                 cy.contains(re).should('exist').and('be.visible').click()
                 //Attendiamo che il caricamento non sia più visibile
                 cy.get('nx-spinner').should('not.be.visible')
-
-                //Per i modelli fuori catalogo, da compilare a mano; altrimenti utilizzo i dropdown
-                cy.contains('Modello fuori catalogo').parents('nx-checkbox[formcontrolname="modelloFuoriCatalogo"]').find('input').then(checkBoxFuoriCatalogo => {
-                    let isChecked = checkBoxFuoriCatalogo.val()
-                    if (isChecked === 'true') {
-                        //Modello fuori catalogo
-                        cy.get('input[formcontrolname="descModelloFuoriCatalogo"]').should('exist').type(currentCase.Modello)
-                        //Allestimento fuori catalogo
-                        cy.get('input[formcontrolname="descAllestimentoFuoriCatalogo"]').should('exist').type(currentCase.Versione)
-                        cy.wait('@getMotor', { requestTimeout: 30000 })
-                    }
-                    else {
-                        //Modello
-                        cy.get('nx-dropdown[formcontrolname="modello"]').should('exist').and('be.visible').click()
-                        cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Modello)
-                        cy.contains(currentCase.Modello).should('exist').and('be.visible').click()
-                        cy.wait('@getMotor', { requestTimeout: 30000 })
-
-                        //Allestimento
-                        cy.get('nx-dropdown[formcontrolname="versione"]').should('exist').and('be.visible').click()
-                        cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Versione)
-                        cy.contains(currentCase.Versione).should('exist').and('be.visible').click()
-                        cy.wait('@getMotor', { requestTimeout: 30000 })
-                    }
-                })
+                
+                //Modello Versione testo libero
+                cy.get('input[formcontrolname="marcaModelloVersione"]').should('exist').type(currentCase.Marca + ' ' + currentCase.Modello + ' ' + currentCase.Versione)
             }
 
             currentCase.Targa !== '' ? cy.contains('Informazioni Generali').click() : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click()
@@ -576,25 +555,34 @@ class TenutaTariffa {
                     break
                 case '3':
                     //Franchigia
-                    cy.get(':contains("Franchigia"):last').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
-                    cy.get('nx-dropdown-item').contains(currentCase.Franchigia).click()
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
-                    //Attendiamo che il caricamento non sia più visibile
-                    cy.get('nx-spinner').should('not.be.visible')
+                    if(currentCase.Franchigia !== '')
+                    {
+                        cy.get(':contains("Franchigia"):last').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
+                        cy.get('nx-dropdown-item').contains(currentCase.Franchigia).click()
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible')
+                    }
 
                     //? Conducente/Tipo Guida è presettato
 
                     //Danni alle cose dei terzi trasportati
-                    cy.contains('Danni alle cose dei terzi trasportati').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
-                    cy.get('nx-dropdown-item').contains(currentCase.Danni_Terzi_Trasportati).click()
-                    //Attendiamo che il caricamento non sia più visibile
-                    cy.get('nx-spinner').should('not.be.visible')
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                    if(currentCase.Danni_Terzi_Trasportati !== '')
+                    {
+                        cy.contains('Danni alle cose dei terzi trasportati').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
+                        cy.get('nx-dropdown-item').contains(currentCase.Danni_Terzi_Trasportati).click()
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible')
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                    }
 
                     //Rinuncia rilvalsa
-                    cy.contains('Rivalsa').parents('motor-form-controllo').should('be.visible').find('nx-dropdown').click()
-                    cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click()
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                    if(currentCase.Rinuncia_Rivalsa !== '')
+                    {
+                        cy.contains('Rivalsa').parents('motor-form-controllo').should('be.visible').find('nx-dropdown').click()
+                        cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click()
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                    }
 
                     break
                 case '4':
