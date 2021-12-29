@@ -8,7 +8,9 @@ import 'cypress-iframe';
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente";
 import LibriMatricolaDA from "../../mw_page_objects/motor/LibriMatricolaDA";
 import menuAuto from '../../fixtures/Motor/menuMotor.json'
-import cypress from "cypress";
+import menuProvenienza from '../../fixtures/Motor/ProdottoProvenienza.json'
+import Auto from '../../mw_page_objects/motor/ListaAuto'
+//import cypress from "cypress";
 //#endregion
 
 //#region Mysql DB Variables
@@ -26,13 +28,19 @@ const delayBetweenTests = 2000
 
 //#region  variabili iniziali
 const personaGiuridica = "Sinopoli"
-
+var nPreventivo = null
+var nPreventivoApp = null
+let veicolo = Auto.WW745FF()
+let garanzie = [
+  "Furto"
+]
 //#endregion variabili iniziali
 
 before(() => {
   cy.getUserWinLogin().then(data => {
-    currentTutf = data.tutf
-    cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+      insertedId = results.insertId
+    })
     LoginPage.logInMWAdvanced()
   })
 })
@@ -66,8 +74,7 @@ after(function () {
 })
 //#endregion Before After
 
-var nPreventivo
-describe("LIBRI MATRICOLA", () => {
+describe("LIBRI MATRICOLA - PREVENTIVO APPLICAZIONE", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
@@ -89,20 +96,48 @@ describe("LIBRI MATRICOLA", () => {
     LibriMatricolaDA.caricamentoLibriMatricolaDA()
   })
 
-  it("Nuovo preventivo madre", () => {
-    LibriMatricolaDA.nuovoPreventivoMadre('SALA TEST LM AUTOMATICI')
+  it("Elenco applicazioni", () => {
+    LibriMatricolaDA.AperturaTabPreventivi()
+    LibriMatricolaDA.AperturaElencoApplicazioni(nPreventivo)
+
+    cy.get('@nPrevMadre').then(val => {
+      nPreventivo = val
+      cy.log("nPreventivo: " + nPreventivo)
+    })
+
+    LibriMatricolaDA.caricamentoElencoApplicazioni()
   })
 
-  it("Dati integrativi", () => {
-    LibriMatricolaDA.datiIntegrativi(true)
+  it("Nuovo preventivo applicazione", () => {
+    LibriMatricolaDA.NuovoPreventivoApplicazione(true)
+    LibriMatricolaDA.caricamentoDatiAmministrativi()
   })
 
-  it("Contraente", () => {
-    LibriMatricolaDA.Contraente()
+  it("Dati Amministrativi", () => {
+    LibriMatricolaDA.Avanti()
+    LibriMatricolaDA.caricamentoContraenteProprietario()
+  })
+
+  it("Contraente/Proprietario", () => {
+    LibriMatricolaDA.Avanti()
+    LibriMatricolaDA.caricamentoVeicolo()
+  })
+
+  it("Veicolo", () => {
+    LibriMatricolaDA.NuovoVeicolo(veicolo)
+    LibriMatricolaDA.Avanti()
+    LibriMatricolaDA.caricamentoProdottoProvenienza()
+  })
+
+  it("Selezione provenienza", () => {
+    LibriMatricolaDA.ProvenienzaVeicolo(menuProvenienza.primaImmatricolazione.documentazione)
+    LibriMatricolaDA.Avanti()
+    LibriMatricolaDA.caricamentoRiepilogo()
   })
 
   it("Riepilogo", () => {
-    LibriMatricolaDA.Riepilogo(false)
+    LibriMatricolaDA.RiepilogoGaranzie(garanzie)
+    LibriMatricolaDA.Avanti()
   })
 
   it("Integrazione", () => {
@@ -110,25 +145,20 @@ describe("LIBRI MATRICOLA", () => {
   })
 
   it("Finale", () => {
-    LibriMatricolaDA.Finale()
+    LibriMatricolaDA.ContrattoFinale()
+    LibriMatricolaDA.FinaleGoHome()
+    LibriMatricolaDA.caricamentoElencoApplicazioni()
 
     cy.get('@contratto').then(val => {
-      cy.log("nContratto a " + val)
-      nPreventivo = val
-      cy.log("nContratto b " + nPreventivo)
+      nPreventivoApp = val
+      cy.log("Preventivo Applicazione n. " + nPreventivoApp)
     })
-
-    cy.log("nContratto c " + nPreventivo)
-    //expect(nPreventivo).to.not.be.undefined
-    //expect(nPreventivo).to.not.be.equal("000000")
   })
+  
+  it("Verifica presenza preventivo applicazione", () => {
+    expect(nPreventivoApp).to.not.be.undefined
+    expect(nPreventivoApp).to.not.be.null
 
-  /////////////////////////////////////
-  it("Fine", () => {
-    cy.log("nContratto c " + nPreventivo)
-    cy.get('@contratto').then(val => {
-      cy.log("nContratto a " + val)
-    })
-    cy.pause()
+    LibriMatricolaDA.VerificaPresenzaPrevApp(nPreventivoApp)
   })
 })

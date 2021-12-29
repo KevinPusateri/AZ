@@ -12,7 +12,21 @@ const matrixFrame = () => {
 }
 //#endregion iFrame
 
+const clickAvanti = () => {
+    cy.get('[value="› Avanti"]')
+        .should('be.visible').click()
+}
+
 class LibriMatricolaDA {
+
+    /**
+     * metodo generico per cliccare sul pulsante Avanti
+     */
+    static Avanti() {
+        matrixFrame().within(() => {
+            clickAvanti()
+        })
+    }
 
     /**
      * Attende il caricamento di Libri Matricola su DA
@@ -101,15 +115,6 @@ class LibriMatricolaDA {
      * @param {bool} altreCoperture 
      */
     static Riepilogo(altreCoperture) {
-
-        //attende caricamento Riepilogo
-        cy.intercept({
-            method: 'POST',
-            url: '**/GetRiepilogoGaranzie'
-        }).as('loadRiepilogo')
-
-        cy.wait('@loadRiepilogo', { requestTimeout: 60000 });
-
         matrixFrame().within(() => {
             var copertureValue = "1" //default altre coperture: si
 
@@ -126,6 +131,37 @@ class LibriMatricolaDA {
             //click su avanti
             cy.get('[value="› Avanti"]')
                 .should('be.visible').click()
+        })
+    }
+
+    static Riepilogo(altreCoperture) {
+        matrixFrame().within(() => {
+            var copertureValue = "1" //default altre coperture: si
+
+            //se non sono presenti altre coperture
+            //modifica il value per 'no'
+            if (!altreCoperture) {
+                copertureValue = "2"
+            }
+
+            //Questionario adeguatezza: altre coperture
+            cy.get('input[name="adegAltreCopRB"][value="' + copertureValue + '"]')
+                .should('be.visible').click()
+
+            //click su avanti
+            cy.get('[value="› Avanti"]')
+                .should('be.visible').click()
+        })
+    }
+
+    static RiepilogoGaranzie(garanzie) {
+        matrixFrame().within(() => {
+            //scorre l'array e seleziona la garanzia
+            //[non verifica se la garanzia è già stata selezionata]
+            for (var i = 0; i < garanzie.length; i++) {
+                cy.get('label').contains(garanzie[i])
+                    .parents('.subtableBlock').find('input').click()
+            }
         })
     }
 
@@ -149,8 +185,12 @@ class LibriMatricolaDA {
         })
     }
 
-    static Finale() {
-        //attende il completamento del salvataggio preventivo 608601
+    /**
+     * Verifica che venga salvato il contratto e restituisce l'alias
+     * con il numero del contratto
+     */
+    static ContrattoFinale() {
+        //attende il completamento del salvataggio contratto
         cy.intercept({
             method: 'POST',
             url: '**/GeneraPDF'
@@ -167,151 +207,248 @@ class LibriMatricolaDA {
     }
 
     /**
-     * Seleziona gli ambiti indicati e verifica che vengano selezionati corretamente
-     * @param {array} ambiti
+     * ritorna alla Home dalla pagina finale di salvataggio contratto
      */
-    static selezionaAmbiti(ambiti) {
+    static FinaleGoHome() {
         matrixFrame().within(() => {
-            for (var i = 0; i < ambiti.length; i++) {
-                cy.log("selezione ambito " + ambiti[1])
+            cy.get('input[value="› Home"]').click() //click su Home
+            cy.get('#pnlDialog').contains('Si è sicuri di voler uscire?')
+                .next('div').find('span').contains('Si').click() //Risponde SI al popup di attenzione
+        })
+    }
 
-                //seleziona ambito
-                cy.get('#ambitiRischio', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
-                    .should('be.visible').click()
+    //#region Preventivi Applicazione
+    /**
+     * Apre la scheda Preventivi
+     * (se non è già aperta)
+     */
+    static AperturaTabPreventivi() {
+        var tabActive = false
 
-                cy.wait(500)
+        matrixFrame().then(($element) => {
+            //verifica se la tab Preventivi è già attiva
+            tabActive = $element.find('[id="tab_preventivi_polizze_madre"][class*="ui-state-active"]')
+                .is(':visible')
+        }).within(() => {
+            cy.log("TabActive: " + tabActive)
+            //se la tab non è già attiva, la apre
+            if (!tabActive) {
+                cy.get('#tab_preventivi_polizze_madre').children().click() //click su tab Preventivi
 
-                //verifica che sia selezionato
-                cy.get('#ambitiRischio').find('nx-icon[class*="' + ambiti[i] + '"]')
-                    .next('nx-indicator')
-                    .should('be.visible')
+                //attende il caricamento della lista preventivi
+                cy.intercept({
+                    method: 'GET',
+                    url: '**/PreventiviMadri.aspx/**'
+                }).as('listaPreventivi')
+                cy.wait('@listaPreventivi', { requestTimeout: 30000 });
             }
         })
     }
 
     /**
-     * seleziona una fonte casuale
+     * verifica che il Preventivo Madre compaia nella lista dei preventivi
+     * [23/12/2021 non considera la presenza di più pagine]
+     * @param {string} nPreventivo 
      */
-    static selezionaFonteRandom() {
+    static VerificaPresenzaPrevMadre(nPreventivo) {
+        var tabActive = false
+
+        this.AperturaTabPreventivi()
+
+        //ricarica l'iframe e verifica la presenza del preventivo
         matrixFrame().within(() => {
-            cy.get('span ').contains('Fonte').should('be.visible')
-                .next('nx-icon').dblclick() //click su pulsante Fonte
-            cy.wait(500)
-            cy.get('[id="fontePopover"]').should('be.visible') //verifica apertura popup fonte
-                .find('[name="pen"]').click() //click sull'icona della penna
-            cy.wait(2000)
-
-            cy.get('[class*="fonti-table"]').should('exist') //verifica apertura popup per la scelta della fonte
-
-            //seleziona una fonte random
-            cy.get('[class*="fonti-table"]').find('[class*="sottofonte-semplice"]') //lista delle fonti
-                .then(($fonti) => {
-                    var rndFonte = Math.floor(Math.random() * $fonti.length)
-                    cy.get($fonti).eq(rndFonte).first().find('nx-radio').click() //click sul radio button di una fonte random
-
-                    cy.get($fonti).eq(rndFonte).first().invoke('text').then(($text) => {
-                        cy.log('fonte selezionata: ', $text)
-                    })
-                });
-
-            cy.get('button').contains('CONFERMA').should('exist').click()
-
-            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+            cy.get('#table_preventivi_madre', { timeout: 10000 }).find('#' + nPreventivo)
+                .should('be.visible')
         })
     }
 
-    static selezionaFrazionamento(frazionamento) {
+    static AperturaElencoApplicazioni(nPreventivo) {
         matrixFrame().within(() => {
-            cy.get('ultra-popover-frazionamento').find('nx-icon').click() //click su pulsante frazionamento
-            cy.get('[id="pricePopover"]').should('be.visible') //verifica apertura popup frazionamento
+            //tasto destro sul preventivo passato come parametro, altrimenti ne sceglie uno casualmente
+            //e restituisce il numero del preventivo scelto
+            cy.get('#table_preventivi_madre', { timeout: 10000 }).within(() => {
+                if (nPreventivo == null) {
+                    cy.get('[class*="ui-row-ltr"]', { timeout: 10000 }).should('be.visible')
+                        .then(($rows) => {
+                            const items = $rows.toArray()
+                            return Cypress._.sample(items)
+                        }).rightclick().then(($rows) => {
+                            cy.wrap($rows.find('[aria-describedby="table_preventivi_madre_NumeroPreventivo"]').text())
+                                .as('nPrevMadre')
+                        })
+                }
+                else {
+                    cy.get('#' + nPreventivo).should('be.visible').rightclick()
+                }
+            })
+        })
 
-            cy.get('[id="frazionamentoDropdown"]').click() //apertura menù scelta frazionamento
-            cy.get('[id="frazionamentoDropdown"]').find('[class="custom-popup ng-star-inserted"]').should('be.visible') //verifica apertura popup scelta frazionamento
-
-            cy.get('[class="option-label"]').contains(frazionamento).click() //scelta frazionamento
-
-            cy.get('[id="pricePopover"]').find('button').click() //conferma
-
-            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+        matrixFrame().within(() => {
+            cy.log('inside contex menu')
+            cy.get('[id="jqContextMenu"]', { timeout: 5000 })
+                .find('#visualizzaPreventiviFiglie')
+                .should('be.visible').click()
         })
     }
 
-    static contrattoTemporaneo(listaAmbiti, inizio, fine, attivita, societa) {
+    static caricamentoElencoApplicazioni() {
+        cy.intercept({
+            method: 'GET',
+            url: '**/PolizzeFiglie.aspx/**'
+        }).as('PolizzeFiglie')
+
+        cy.wait('@PolizzeFiglie', { requestTimeout: 30000 });
+    }
+
+    /**
+     * Verifica la presenza del preventivo applicazione passato come parametro
+     * @param {string} nPreventivo 
+     */
+    static VerificaPresenzaPrevApp(nPreventivo) {
+        //verifica la presenza del preventivo
         matrixFrame().within(() => {
-            //apre il popup Contratto Temporaneo
-            cy.get('span').contains('Contratto temporaneo')
+            cy.get('#table_preventivi_figlie', { timeout: 10000 })
+                .find('[title="' + nPreventivo + '"]').contains(nPreventivo)
                 .should('be.visible')
-                .click()
+        })
+    }
 
-            cy.wait(1000)
+    /**
+     * Clicca sul pusante 'Nuovo' nella sezione Preventivi Applicazioni
+     */
+    static NuovoPreventivoApplicazione() {
+        matrixFrame().within(() => {
+            cy.get('#ButtonChiamaTarga').should('be.visible').click() //clicca sul pusalnte 'nuovo'
+        })
+    }
 
-            //verifica che il popup sia visibile e lo inquadra
-            cy.get('ultra-contratto-temporaneo-modal').contains('Gestione contratto temporaneo')
-                .should('be.visible')
-            //cy.get('h5').focus()
+    //#endregion Preventivi applicazioni
 
-            cy.get('label').contains('Temporaneità attiva').click() //Temporaneità attiva
-            cy.get('label').contains('Temporaneità attiva').parent().parent()
-                .invoke('attr', 'class').should('contain', 'is-checked') //verfica che la temporaneità sia stata attivata
+    /**
+     * Attende il caricamento della pagina Dati Amministrativi
+     */
+    static caricamentoDatiAmministrativi() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/GetDatiAggiuntiviConvenzione'
+        }).as('Convenzione')
 
-            //aggiunge gli ambilti previsti
-            for (var i = 0; i < listaAmbiti.length; i++) {
-                //cy.get('app-ultra-ambiti-selection-panel').find('nx-icon[ng-reflect-name="product-'+listaAmbiti[i]+'"]').click()
-                cy.get('app-ultra-ambiti-selection-panel').find('nx-icon[class*="' + listaAmbiti[i] + '"]').click()
+        cy.wait('@Convenzione', { requestTimeout: 60000 });
+    }
+
+    /**
+     * Attende il caricamento della pagina Contraente/Proprietario
+     */
+    static caricamentoContraenteProprietario() {
+        cy.intercept({
+            method: 'GET',
+            url: '**/ContraeAnag.aspx'
+        }).as('ContraeAnag')
+
+        cy.wait('@ContraeAnag', { requestTimeout: 30000 });
+    }
+
+    static caricamentoVeicolo() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/GetAlberoVeicoli'
+        }).as('Veicoli')
+
+        cy.wait('@Veicoli', { requestTimeout: 60000 });
+    }
+
+    static caricamentoRiepilogo() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/GetRiepilogoGaranzie'
+        }).as('Riepilogo')
+
+        cy.wait('@Riepilogo', { requestTimeout: 60000 });
+    }
+
+    static caricamentoProdottoProvenienza() {
+        cy.intercept({
+            method: 'GET',
+            url: '**/TipoProProveni.aspx'
+        }).as('ProdottoProvenienza')
+
+        cy.wait('@ProdottoProvenienza', { requestTimeout: 60000 });
+    }
+
+    static RicercaVeicolo(targa) {
+        matrixFrame().within(() => {
+            cy.get('[data-bind*="targaRicercaArchivio"]', { timeout: 10000 }).should('be.visible')
+                .type(targa)
+            cy.get('[data-bind*="RicercaTargaArchivio"]').should('be.visible').click()
+        })
+
+        matrixFrame().within(() => {
+            cy.get('[aria-describedby="tblVeicoli_txtTarga"]').contains(targa)
+                .should('be.visible').click()
+        })
+    }
+
+    /**
+     * Inserisce un nuovo veicolo
+     * @param {ListaAuto} veicolo 
+     */
+    static NuovoVeicolo(veicolo) {
+        matrixFrame().within(() => {
+            //apre la sezione 'inserimento nuovo veicolo' 
+            cy.get('#selezioneRicerca').find('[name="veicoloNuovoEsist"][value="true"]')
+                .should('be.visible').click()
+        })
+
+        //attende che venga caricata la sezione 'inserimento nuovo veicolo'
+        cy.intercept({
+            method: 'POST',
+            url: '**/GetAllMarche'
+        }).as('Marche')
+        cy.wait('@Marche', { requestTimeout: 60000 });
+
+
+        matrixFrame().within(() => {
+            //inserisce la targa
+            cy.get('input[data-bind*="targaRicercaANIANumero"]').first()
+                .should('be.visible').type(veicolo.targa)
+
+            //seleziona la marca
+            cy.get('div[title="Seleziona la marca del veicolo"]')
+                .find('input').type(veicolo.marca)
+                .wait(1000).type('{downarrow}{enter}')
+
+            //seleziona il modello
+            cy.get('#cbModello').find('input').type(veicolo.modello)
+                .wait(1000).type('{downarrow}{enter}')
+
+            //seleziona la versione
+            cy.get('#cbVersione').find('input').type(veicolo.versione)
+                .wait(1000).type('{downarrow}{enter}')
+
+            //inserisce la data di immatricolazione
+            cy.get('input[data-bind*="dpDataImmatricolazioneN"]')
+                .type(veicolo.dataImmatricolazione)
+
+            //inserisce il numero dei posti
+            cy.get('input[title*="numero di posti"]').filter(':visible').type(veicolo.nPosti)
+        })
+    }
+
+    /**
+     * seleziona la provenienza del veicolo nella tab Prodotto/Provenienza
+     * @param {json ProdottoProvenienza} provenienza 
+     */
+    static ProvenienzaVeicolo(provenienza) {
+        matrixFrame().within(() => {
+            cy.log('Array menù provenienza: ' + provenienza.length)
+            //scorre i sottomenù fino aselezionare l'opzione richiesta
+            for (var i = 0; i < provenienza.length; i++) {
+                cy.log(provenienza[i])
+                cy.get('a[role="menuitem"]').contains(provenienza[i])
+                    .should('be.visible').click()
             }
-
-            //polizza valida da > al
-            cy.log("data inizio: " + inizio)
-            cy.log("data fine: " + fine)
-            cy.get('ultra-contratto-temporaneo-modal').find('input[formcontrolname="dataInizio"]').type(inizio)
-                .invoke('val')
-                .then(text => cy.log(text))
-
-            cy.get('ultra-contratto-temporaneo-modal').find('input[formcontrolname="dataFine"]').type(fine)
-                .invoke('val')
-                .then(text => cy.log(text))
-
-            //attività
-            cy.get('ultra-contratto-temporaneo-modal').find('nx-dropdown[formcontrolname="attivita"]').click()
-            //cy.get('nx-dropdown-item[ng-reflect-value="'+attivita+'"]').click()
-            cy.get('nx-dropdown-item').find('span').contains(attivita).click()
-
-            //società
-            cy.get('ultra-contratto-temporaneo-modal').find('input[formcontrolname="societa"]').type(societa)
-
-            //conferma
-            cy.get('ultra-contratto-temporaneo-modal')
-                .find('span').contains('Conferma').parent('button')
-                .should('have.attr', 'aria-disabled', 'false')
-                .click()
-
-            cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-        })
-    }
-
-    static modificaSoluzioneHome(ambito, soluzione) {
-        matrixFrame().within(() => {
-            cy.get('tr')
-                .contains(ambito)
-                .parent()
-                .parent()
-                .find('nx-dropdown')
-                .click()
-
-            cy.wait(500)
-            cy.get('nx-dropdown-item').contains(soluzione).should('be.visible').click() //seleziona Top
-
-            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
-        })
-    }
-
-    static procediHome() {
-        matrixFrame().within(() => {
-            cy.get('[id="dashTable"]').should('be.visible')
-            //cy.get('button[aria-disabled="false"]').find('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
-            cy.get('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
         })
     }
 }
-
 export default LibriMatricolaDA
+//VOLVO C70 2.4 20V 170 CV MOMENTUM (DAL 2005/09)
