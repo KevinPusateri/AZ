@@ -55,8 +55,6 @@ let flowClients = false
 //Se specificato, esegue l'identificativo caso specifico
 let caseToExecute = ''
 describe('Tenuta Tariffa Novembre 2020 AVIVA: ', function () {
-
-
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
@@ -87,7 +85,10 @@ describe('Tenuta Tariffa Novembre 2020 AVIVA: ', function () {
 
             it("LogTariffa", function () {
                 if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
-                    TenutaTariffa.checkTariffa(currentCase)
+                    if (currentCase.Settore !== '3')
+                        TenutaTariffa.checkTariffa(currentCase)
+                    else
+                        this.skip()
                 else
                     this.skip()
             })
