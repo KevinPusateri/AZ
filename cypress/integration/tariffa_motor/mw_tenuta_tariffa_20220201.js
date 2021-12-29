@@ -53,6 +53,8 @@ after(function () {
 let flowClients = false
 //Se specificato, esegue l'identificativo caso specifico
 let caseToExecute = ''
+//Verifica se sono arrivato in pagina di offerta, per eventualmente scaricare il file di log (inutile negli step precedenti)
+let inOfferta = false
 describe('Tenuta Tariffa Febbraio 2022: ', function () {
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
@@ -76,6 +78,7 @@ describe('Tenuta Tariffa Febbraio 2022: ', function () {
                     TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
                     TenutaTariffa.compilaVeicolo(currentCase)
                     TenutaTariffa.compilaProvenienza(currentCase)
+                    inOfferta = true
                     TenutaTariffa.compilaOfferta(currentCase)
                 }
                 else
@@ -83,8 +86,15 @@ describe('Tenuta Tariffa Febbraio 2022: ', function () {
             })
 
             it("LogTariffa", function () {
-                if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
-                    TenutaTariffa.checkTariffa(currentCase)
+                if (inOfferta) {
+                    if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
+                        if (currentCase.Settore !== '3')
+                            TenutaTariffa.checkTariffa(currentCase)
+                        else
+                            this.skip()
+                    else
+                        this.skip()
+                }
                 else
                     this.skip()
             })

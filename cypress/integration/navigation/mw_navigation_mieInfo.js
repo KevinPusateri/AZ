@@ -21,12 +21,13 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
-
+let keysLinksMenu
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
         LinkMieInfo.profilingLinksMenu(data.tutf)
+        keysLinksMenu = LinkMieInfo.getKeysLinksMenu()
     })
 })
 
@@ -35,19 +36,19 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
 
-// })
+})
 
 describe('Matrix Web : Navigazioni da Le Mie Info', function () {
-    it.only('Verifica aggancio Le Mie Info', function () {
+    it('Verifica aggancio Le Mie Info', function () {
         TopBar.clickMieInfo()
     })
 
@@ -57,13 +58,21 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     })
 
     it('Verifica aggancio Primo piano', function () {
-        TopBar.clickMieInfo()
-        Mieinfo.clickLinkOnMenu('Primo piano')
+        if (keysLinksMenu['primo-piano']) {
+            TopBar.clickMieInfo()
+            Mieinfo.clickLinkOnMenu('Primo piano')
+        }
+        else
+            this.skip()
     })
 
     it('Verifica aggancio Raccolte', function () {
-        TopBar.clickMieInfo()
-        Mieinfo.clickLinkOnMenu('Raccolte')
+        if (keysLinksMenu['raccolte']) {
+            TopBar.clickMieInfo()
+            Mieinfo.clickLinkOnMenu('Raccolte')
+        }
+        else
+            this.skip()
     });
 
     it('Verifica aggancio Contenuti salvati', function () {
@@ -121,6 +130,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
         Mieinfo.checkLinksOnIcon('Momento della Verità')
     });
 
+    //! DA VERIFICARE
     it('Verifica aggancio Le release', function () {
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Le release')

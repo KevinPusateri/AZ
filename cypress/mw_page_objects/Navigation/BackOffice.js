@@ -36,10 +36,19 @@ const LinksSinistri = {
     MOVIMENTAZIONE_SINISTRI: 'Movimentazione sinistri',
     DENUNCIA: 'Denuncia',
     GESTIONE_CONTATTO_CARD: 'Gestione Contatto Card',
-    DENUNCIA_BMP: 'Denuncia BMP', //! seconda finestra
+    DENUNCIA_BMP: 'Denuncia BMP',
     CONSULTAZIONE_SINISTRI: 'Consultazione sinistri',
     SINISTRI_INCOMPLETI: 'Sinistri incompleti',
-    SINISTRI_CANALIZZATI: 'Sinistri canalizzati'
+    SINISTRI_CANALIZZATI: 'Sinistri canalizzati',
+    deleteKey: function (keys) {
+        if (!keys.MOVIMENTAZIONE_SINISTRI) delete this.MOVIMENTAZIONE_SINISTRI
+        if (!keys.DENUNCIA) delete this.DENUNCIA
+        if (Cypress.env('isAviva')) delete this.GESTIONE_CONTATTO_CARD
+        if (!keys.DENUNCIA_BMP) delete this.DENUNCIA_BMP
+        if (!keys.CONSULTAZIONE_SINISTRI) delete this.CONSULTAZIONE_SINISTRI
+        if (!keys.SINISTRI_INCOMPLETI) delete this.SINISTRI_INCOMPLETI
+        if (!keys.SINISTRI_CANALIZZATI) delete this.SINISTRI_CANALIZZATI
+    }
 }
 
 const LinksContabilita = {
@@ -53,8 +62,22 @@ const LinksContabilita = {
     INCASSO_MASSIVO: 'Incasso massivo',
     SOLLECITO_TITOLI: 'Sollecito titoli',
     IMPOSTAZIONE_CONTABILITA: 'Impostazione contabilità',
-    CONVENZIONI_IN_TRATTENUTA: 'Convenzioni in trattenuta', //! seconda finstra 
-    MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart' //! seconda finestra
+    CONVENZIONI_IN_TRATTENUTA: 'Convenzioni in trattenuta',
+    MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart',
+    deleteKey: function (keys) {
+        if (!keys.SINTESI_CONTABILITA) delete this.SINTESI_CONTABILITA
+        if (!keys.GIORNATA_CONTABILE) delete this.GIORNATA_CONTABILE
+        if (!keys.CONSULTAZIONE_MOVIMENTI) delete this.CONSULTAZIONE_MOVIMENTI
+        if (!keys.ESTRAZIONE_CONTABILITA) delete this.ESTRAZIONE_CONTABILITA
+        if (!keys.DELEGHE_SDD) delete this.DELEGHE_SDD
+        if (!keys.QUADRATURA_UNIFICATA) delete this.QUADRATURA_UNIFICATA
+        if (!keys.INCASSO_PER_CONTO) delete this.INCASSO_PER_CONTO
+        if (!keys.INCASSO_MASSIVO) delete this.INCASSO_MASSIVO
+        if (!keys.SOLLECITO_TITOLI) delete this.SOLLECITO_TITOLI
+        if (!keys.IMPOSTAZIONE_CONTABILITA) delete this.IMPOSTAZIONE_CONTABILITA
+        if (!keys.CONVENZIONI_IN_TRATTENUTA) delete this.CONVENZIONI_IN_TRATTENUTA
+        if (!keys.MONITORAGGIO_GUIDA_SMART) delete this.MONITORAGGIO_GUIDA_SMART
+    }
 }
 
 class BackOffice {
@@ -62,55 +85,26 @@ class BackOffice {
     /**
      * Verifica che tutti i link su Sinistri siano presenti
      */
-    static checkLinksOnSinistriExist() {
+    static checkLinksOnSinistriExist(keys) {
 
-        if (Cypress.env('monoUtenza')) {
-            delete LinksSinistri.DENUNCIA_BMP
-            const linksSinistri = Object.values(LinksSinistri)
-            cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksSinistri[i])
-            })
-        } else if (Cypress.env('isAviva')) {
-            delete LinksSinistri.DENUNCIA
-            delete LinksSinistri.DENUNCIA_BMP
-            delete LinksSinistri.SINISTRI_INCOMPLETI
-            delete LinksSinistri.SINISTRI_CANALIZZATI
-            delete LinksSinistri.GESTIONE_CONTATTO_CARD
-            const linksSinistri = Object.values(LinksSinistri)
-            cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksSinistri[i])
-            })
-        } else {
-            const linksSinistri = Object.values(LinksSinistri)
-            cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksSinistri[i])
-            })
-        }
+        LinksSinistri.deleteKey(keys)
+        const linksSinistri = Object.values(LinksSinistri)
+        cy.get('app-backoffice-cards-list').first().find('a').each(($labelCard, i) => {
+            expect($labelCard).to.contain(linksSinistri[i])
+        })
     }
 
     /**
      * Verifica che tutti i link su Contabilita siano presenti
      */
-    static checkLinksOnContabilitaExist() {
+    static checkLinksOnContabilitaExist(keys) {
 
-        if (Cypress.env('monoUtenza')) {
-            delete LinksContabilita.CONVENZIONI_IN_TRATTENUTA
-            delete LinksContabilita.MONITORAGGIO_GUIDA_SMART
-            const linksContabilita = Object.values(LinksContabilita)
-            cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksContabilita[i])
-            }).should('have.length', 10)
-        } else if (Cypress.env('isAviva')) {
-            const linksContabilita = Object.values(LinksContabilita)
-            cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').should('have.length', 10).each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksContabilita[i])
-            })
-        } else {
-            const linksContabilita = Object.values(LinksContabilita)
-            cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').should('have.length', 12).each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksContabilita[i])
-            })
-        }
+        LinksContabilita.deleteKey(keys)
+        const linksContabilita = Object.values(LinksContabilita)
+
+        cy.get('app-backoffice-cards-list').eq(1).find('a[class="backoffice-label-text"]').each(($labelCard, i) => {
+            expect($labelCard).to.contain(linksContabilita[i])
+        })
     }
 
     /**
@@ -161,7 +155,7 @@ class BackOffice {
                 })
                 break;
             case LinksSinistri.GESTIONE_CONTATTO_CARD:
-                getIFrame().find('button:contains("Cerca"):visible')
+                getIFrame().find('div:contains("Nessun sinistro trovato"):visible')
                 break;
             case LinksSinistri.CONSULTAZIONE_SINISTRI:
                 getIFrame().find('button:contains("Cerca"):visible')
@@ -212,10 +206,10 @@ class BackOffice {
                 break;
             case LinksContabilita.IMPOSTAZIONE_CONTABILITA:
                 getIFrame().find('#tabGiornataContabile').should('be.visible')
-                    // getIFrame().find('ul > li > span:contains("Gestione dispositivi POS"):visible')
-                    // getIFrame().find('ul > li > span:contains("Prenotazione POS"):visible')
-                    // getIFrame().find('ul > li > span:contains("Retrocessioni Provv."):visible')
-                    // getIFrame().find('ul > li > span:contains("Impostazioni DAS"):visible')
+                // getIFrame().find('ul > li > span:contains("Gestione dispositivi POS"):visible')
+                // getIFrame().find('ul > li > span:contains("Prenotazione POS"):visible')
+                // getIFrame().find('ul > li > span:contains("Retrocessioni Provv."):visible')
+                // getIFrame().find('ul > li > span:contains("Impostazioni DAS"):visible')
                 break;
             case LinksContabilita.CONVENZIONI_IN_TRATTENUTA:
                 cy.wait(10000)
@@ -244,10 +238,10 @@ class BackOffice {
     static clickNewsLanding() {
         cy.get('lib-news-card').click();
         Common.canaleFromPopup()
-        if (Cypress.env('isAviva'))
-            getIFrame().find('span:contains("Nuova incentivazione Vita"):visible')
-        else
-            getIFrame().find('span:contains("IVASS"):visible')
+        // if (Cypress.env('isAviva'))
+        //     getIFrame().find('span:contains("Nuova incentivazione Vita"):visible')
+        // else
+        getIFrame().find('span:contains("Nuova incentivazione Vita"):visible')
     }
 }
 

@@ -11,6 +11,7 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
 import Legami from "../../mw_page_objects/clients/Legami"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 //#endregion import
 
 //#region Configuration
@@ -85,7 +86,8 @@ describe('Matrix Web : Convenzioni', {
                     cy.log('Retrived party relation : ' + currentClient[1].name + ' ' + currentClient[1].firstName)
                     retrivedClient = currentClient[0]
                     retrivedPartyRelations = currentClient[1]
-                    SintesiCliente.visitUrlClient(currentClient[0].customerNumber, false)
+                    TopBar.search(currentClient[0].name + ' ' + currentClient[0].firstName)
+                    LandingRicerca.clickClientePF(currentClient[0].name + ' ' + currentClient[0].firstName)
                     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                     DettaglioAnagrafica.clickSubTab('Convenzioni')
                     DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
@@ -124,7 +126,8 @@ describe('Matrix Web : Convenzioni', {
         '- l\'operazione vada a buon fine' +
         '- la convenzione non sia più presente (anche per il familiare)', function () {
             if (!Cypress.env('monoUtenza')) {
-                SintesiCliente.visitUrlClient(retrivedClient.customerNumber, false)
+                TopBar.search(currentClient[0].name + ' ' + currentClient[0].firstName)
+                LandingRicerca.clickClientePF(currentClient[0].name + ' ' + currentClient[0].firstName)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
                 DettaglioAnagrafica.checkConvenzioniPresenti(true, true)

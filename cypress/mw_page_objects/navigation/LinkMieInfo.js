@@ -20,7 +20,7 @@ const LinksMenu = {
     deleteKey: function (keys) {
         if (!keys['primo-piano']) delete this.PRIMO_PIANO
         if (!keys['raccolte']) delete this.RACCOLTE
-        if (!keys['tutte-le-notizie']) delete this.RACCOLTE
+        if (!keys['tutte-le-notizie']) delete this.TUTTE_LE_NOTIZIE
     }
     // NEW_COMPANY_HANDBOOK: 'New company handbook',
 }
@@ -53,12 +53,11 @@ const LinksSubMenu = {
         WINBACK_MOTOR: 'Winback Motor',
         DECOMMISSIONING_TELEMATICI: 'Decommissioning telematici',
         DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR: 'Digitalizzazione del certificato assicurativo Motor',
-        ATTESTATO_DI_RISCHIO_DINAMICO: 'Attestato di rischio dinamico',
-        TEST: 'Test'
+        ATTESTATO_DI_RISCHIO_DINAMICO: 'Attestato di rischio dinamico'
     },
     SALES_ACADEMY: {
         CHI_SIAMO: 'Chi siamo',
-        MASTER_PROFESSIONE_AGENTE: 'Master Professione Agente',
+        //MASTER_PROFESSIONE_AGENTE: 'Master Professione Agente',
         ALLIANZ_BUSINESS_SCHOOL: 'Allianz Business School',
         PERCORSI_DI_RUOLO: 'Percorsi di ruolo',
         // OBBLIGHI_IVASS: 'Obblighi IVASS',
@@ -92,10 +91,11 @@ const LinksSubMenu = {
     RISORSE_PER_AGENTE: {
         TRATTAMENTI_PROVVIGIONALI: 'Trattamenti provvigionali',
         INCENTIVAZIONI_MISSION_REGOLAMENTI: 'Incentivazioni, mission, regolamenti',
+        CASA_ALLIANZ: 'Casa Allianz',
         COLLABORAZIONI_ORIZZONTALI: 'Collaborazioni orizzontali',
         CONVENZIONI_PRODOTTI_ALLIANZ: 'Convenzioni Prodotti Allianz',
         CASSA_PREVIDENZA_AGENTI: 'Cassa Previdenza Agenti',
-        LE_SCELTE_DI_INVESTIMENTO: 'Le scelte di investimento',
+        //LE_SCELTE_DI_INVESTIMENTO: 'Le scelte di investimento',
         CATALOGO_IDEE: 'Catalogo idee'
     },
     IL_MONDO_ALLIANZ: {
@@ -263,9 +263,8 @@ class LinkMieInfo {
 
     static profilingLinksMenu(tutf) {
         for (let key in keysLinksMenu) {
-            cy.slugMieInfo(tutf, key).then((stateKey) => {
+            cy.slugMieInfo(tutf, key.toString()).then((stateKey) => {
                 if (!stateKey) {
-                    debugger
                     keysLinksMenu[key] = false
                     LinksMenu.deleteKey(keysLinksMenu)
                 }
@@ -273,4 +272,8 @@ class LinkMieInfo {
         }
     }
 
-}export default LinkMieInfo
+    static getKeysLinksMenu() {
+        return keysLinksMenu
+    }
+
+} export default LinkMieInfo

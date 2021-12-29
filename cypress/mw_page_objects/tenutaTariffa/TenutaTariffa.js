@@ -263,39 +263,44 @@ class TenutaTariffa {
                 }
             })
 
-            //Marca
-            cy.get('nx-dropdown[formcontrolname="marca"]').should('exist').and('be.visible').click().wait(500)
-            cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Marca).wait(500)
-            let re = new RegExp("\^ " + currentCase.Marca + " \$")
-            cy.contains(re).should('exist').and('be.visible').click().wait(500)
-            //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible').wait(500)
+            //? La differenza tra Allianz e AVIVA è che AVIVA per i veicoli senza catalogo ha la drop down con le marche, mentre Allianz ha solo la textbox.
+            if (currentCase.Tipo_Veicolo === 'autobus' && !Cypress.env('isAviva')) {
+                cy.get('input[formcontrolname="marcaModelloVersione"]').should('exist').type(currentCase.Marca + ' ' + currentCase.Modello + ' ' + currentCase.Versione).wait(500)
+            }
+            else {
+                //Marca
+                cy.get('nx-dropdown[formcontrolname="marca"]').should('exist').and('be.visible').click().wait(500)
+                cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Marca).wait(500)
+                let re = new RegExp("\^ " + currentCase.Marca + " \$")
+                cy.contains(re).should('exist').and('be.visible').click().wait(500)
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible').wait(500)
 
-            //Per i modelli fuori catalogo, da compilare a mano; altrimenti utilizzo i dropdown
-            cy.contains('Modello fuori catalogo').parents('nx-checkbox[formcontrolname="modelloFuoriCatalogo"]').find('input').then(checkBoxFuoriCatalogo => {
-                let isChecked = checkBoxFuoriCatalogo.val()
-                debugger
-                if (isChecked === 'true') {
-                    //Modello fuori catalogo
-                    cy.get('input[formcontrolname="descModelloFuoriCatalogo"]').should('exist').type(currentCase.Modello).wait(500)
-                    //Allestimento fuori catalogo
-                    cy.get('input[formcontrolname="descAllestimentoFuoriCatalogo"]').should('exist').type(currentCase.Versione).wait(500)
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
-                }
-                else {
-                    //Modello
-                    cy.get('nx-dropdown[formcontrolname="modello"]').should('exist').and('be.visible').click().wait(500)
-                    cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Modello).wait(500)
-                    cy.contains(currentCase.Modello).should('exist').and('be.visible').click().wait(500)
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                //Per i modelli fuori catalogo, da compilare a mano; altrimenti utilizzo i dropdown
+                cy.contains('Modello fuori catalogo').parents('nx-checkbox[formcontrolname="modelloFuoriCatalogo"]').find('input').then(checkBoxFuoriCatalogo => {
+                    let isChecked = checkBoxFuoriCatalogo.val()
+                    if (isChecked === 'true') {
+                        //Modello fuori catalogo
+                        cy.get('input[formcontrolname="descModelloFuoriCatalogo"]').should('exist').type(currentCase.Modello).wait(500)
+                        //Allestimento fuori catalogo
+                        cy.get('input[formcontrolname="descAllestimentoFuoriCatalogo"]').should('exist').type(currentCase.Versione).wait(500)
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                    }
+                    else {
+                        //Modello
+                        cy.get('nx-dropdown[formcontrolname="modello"]').should('exist').and('be.visible').click().wait(500)
+                        cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Modello).wait(500)
+                        cy.contains(currentCase.Modello).should('exist').and('be.visible').click().wait(500)
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
 
-                    //Allestimento
-                    cy.get('nx-dropdown[formcontrolname="versione"]').should('exist').and('be.visible').click().wait(500)
-                    cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Versione).wait(500)
-                    cy.contains(currentCase.Versione).should('exist').and('be.visible').click().wait(500)
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
-                }
-            })
+                        //Allestimento
+                        cy.get('nx-dropdown[formcontrolname="versione"]').should('exist').and('be.visible').click().wait(500)
+                        cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Versione).wait(500)
+                        cy.contains(currentCase.Versione).should('exist').and('be.visible').click().wait(500)
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                    }
+                })
+            }
 
             currentCase.Targa !== '' ? cy.contains('Informazioni Generali').click().wait(500) : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click().wait(500)
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -398,80 +403,89 @@ class TenutaTariffa {
             }
 
             //Nessuna attestazione trovata in BDA
-            cy.contains('Si').should('exist').and('be.visible').parent().click().wait(500)
-            cy.contains('CONTINUA').should('exist').and('be.visible').click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
-            //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible').wait(500)
+            if (currentCase.Provenienza !== "Prima immatricolazione") {
+                cy.contains('Si').should('exist').and('be.visible').parent().click().wait(500)
+                cy.contains('CONTINUA').should('exist').and('be.visible').click().wait(500)
+                cy.wait('@getMotor', { requestTimeout: 30000 })
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible').wait(500)
+            }
 
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '05_Provenienza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             //#endregion
 
             //#region Dettagli
-            //Scadenza precedente contratto
-            let dataScadenzaPrecedenteContratto
-            let dataDecorrenza = calcolaDataDecorrenza(currentCase)
-            if (currentCase.Data_Scadenza.split(' ')[1].includes('giorn'))
-                dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
-                    dataDecorrenza.getMonth(),
-                    dataDecorrenza.getDate() - currentCase.Data_Scadenza.split(' ')[0])
-            else if (currentCase.Data_Scadenza.split(' ')[1].includes('mes'))
-                dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
-                    dataDecorrenza.getMonth() - currentCase.Data_Scadenza.split(' ')[0],
-                    dataDecorrenza.getDate())
+            //? su Prima immatricolazione non servono i dettagli aggiuntivi
+            if (currentCase.Provenienza !== "Prima immatricolazione") {
+                //Scadenza precedente contratto
+                let dataScadenzaPrecedenteContratto
+                let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+                if (currentCase.Data_Scadenza.split(' ')[1].includes('giorn'))
+                    dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
+                        dataDecorrenza.getMonth(),
+                        dataDecorrenza.getDate() - currentCase.Data_Scadenza.split(' ')[0])
+                else if (currentCase.Data_Scadenza.split(' ')[1].includes('mes'))
+                    dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
+                        dataDecorrenza.getMonth() - currentCase.Data_Scadenza.split(' ')[0],
+                        dataDecorrenza.getDate())
 
-            let formattedDataScadenzaPrecedenteContratto = String(dataScadenzaPrecedenteContratto.getDate()).padStart(2, '0') + '/' +
-                String(dataScadenzaPrecedenteContratto.getMonth() + 1).padStart(2, '0') + '/' +
-                dataScadenzaPrecedenteContratto.getFullYear()
+                let formattedDataScadenzaPrecedenteContratto = String(dataScadenzaPrecedenteContratto.getDate()).padStart(2, '0') + '/' +
+                    String(dataScadenzaPrecedenteContratto.getMonth() + 1).padStart(2, '0') + '/' +
+                    dataScadenzaPrecedenteContratto.getFullYear()
 
-            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').clear().wait(500)
-            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').type(formattedDataScadenzaPrecedenteContratto).type('{enter}').wait(500)
+                cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').clear().wait(500)
+                cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').type(formattedDataScadenzaPrecedenteContratto).type('{enter}').wait(500)
 
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+                cy.wait('@getMotor', { requestTimeout: 30000 })
 
-            //Compagnia di provenienza
-            cy.contains('COMPAGNIA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click().wait(500)
-            cy.get('nx-dropdown-item').contains(currentCase.Compagnia_Provenienza).click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+                //Compagnia di provenienza
+                cy.contains('COMPAGNIA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click().wait(500)
+                cy.get('nx-dropdown-item').contains(currentCase.Compagnia_Provenienza).click().wait(500)
+                cy.wait('@getMotor', { requestTimeout: 30000 })
 
-            //Formula di provenienza
-            cy.contains('FORMULA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click().wait(500)
-            cy.get('nx-dropdown-item').contains(currentCase.Formula_Provenienza).click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
+                //Formula di provenienza
+                cy.contains('FORMULA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click().wait(500)
+                cy.get('nx-dropdown-item').contains(currentCase.Formula_Provenienza).click().wait(500)
+                cy.wait('@getMotor', { requestTimeout: 30000 })
 
-            cy.get('h3:contains("Dettagli")').first().click().wait(500)
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '06_Dettagli', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-            //#endregion
+                cy.get('h3:contains("Dettagli")').first().click().wait(500)
+                cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '06_Dettagli', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                //#endregion
 
-            //#region Sinistri
-            cy.contains('Sinistri').click().wait(500)
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '07_Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-            //#endregion
+                //#region Sinistri
+                cy.contains('Sinistri').click().wait(500)
+                cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '07_Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                //#endregion
 
-            //#region CL
-            //CL B. provenienza
-            cy.contains('CL. B/ M provenienza').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Provenienza).wait(500)
-            //CL B. assegnazione
-            cy.contains('Cl. B/ M assegnazione').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Assegnazione).wait(500)
-            //CL provenienza CU
-            cy.contains('Cl. provenienza cu').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click().wait(500)
-            cy.get('nx-dropdown-item').contains(currentCase.Cl_Provenienza_CU).click().wait(500)
-            //CL assegnazione CU
-            cy.contains('Cl. assegnazione cu').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click().wait(500)
-            cy.get('nx-dropdown-item').contains(currentCase.Cl_Assegnazione_CU).click().wait(500)
+                //#region CL
+                //CL B. provenienza
+                cy.contains('CL. B/ M provenienza').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Provenienza).wait(500)
+                //CL B. assegnazione
+                cy.contains('Cl. B/ M assegnazione').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Assegnazione).wait(500)
+                //CL provenienza CU
+                cy.contains('Cl. provenienza cu').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click().wait(500)
+                cy.get('nx-dropdown-item').contains(currentCase.Cl_Provenienza_CU).click().wait(500)
+                //CL assegnazione CU
+                cy.contains('Cl. assegnazione cu').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click().wait(500)
+                cy.get('nx-dropdown-item').contains(currentCase.Cl_Assegnazione_CU).click().wait(500)
 
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '08_CL', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-            //#endregion
+                cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '08_CL', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                //#endregion
+            }
 
             //TODO Attestato conforme all'articolo 134, comma 4 bis, del Codice assicurazioni ?
 
-            cy.contains('AVANTI').should('exist').and('be.visible').click().wait(500)
+            cy.contains('AVANTI').should('exist').and('be.visible').click().wait(2000)
 
             //Popup di dichiarazione di non circolazione a SI
-            cy.contains('Il proprietario presenta la dichiarazione di non circolazione?').should('exist').and('be.visible').parents('form').find('span:contains("Si")').click()
-            cy.contains('CONTINUA').should('exist').and('be.visible').click().wait(500)
-            cy.wait('@getMotor', { requestTimeout: 30000 })
-            cy.wait(1000)
+            cy.get('@iframe').then((iframe) => {
+                if (iframe.find(':contains("Il proprietario presenta la dichiarazione di non circolazione?")').length > 0) {
+                    cy.contains('Il proprietario presenta la dichiarazione di non circolazione?').should('exist').and('be.visible').parents('form').find('span:contains("Si")').click()
+                    cy.contains('CONTINUA').should('exist').and('be.visible').click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                    cy.wait(1000)
+                }
+            })
 
             cy.wait('@getMotor', { requestTimeout: 100000 })
         })
@@ -557,6 +571,29 @@ class TenutaTariffa {
                             //Attendiamo che il caricamento non sia più visibile
                             cy.get('nx-spinner').should('not.be.visible').wait(500)
                         }
+
+                    break
+                case '3':
+                    //Franchigia
+                    cy.get(':contains("Franchigia"):last').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Franchigia).click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+
+                    //? Conducente/Tipo Guida è presettato
+
+                    //Danni alle cose dei terzi trasportati
+                    cy.contains('Danni alle cose dei terzi trasportati').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Danni_Terzi_Trasportati).click().wait(500)
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible').wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+
+                    //Rinuncia rilvalsa
+                    cy.contains('Rivalsa').parents('motor-form-controllo').should('be.visible').find('nx-dropdown').click().wait(500)
+                    cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click().wait(500)
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
 
                     break
                 case '4':

@@ -258,7 +258,7 @@ Cypress.Commands.add('filterProfile', (profileArray, key) => {
 
 //Permettere di verificare se una sezione delle mie info è presente o meno
 Cypress.Commands.add('slugMieInfo', (tutf, section) => {
-  let a =  '["' + section + '"]'
+  let a = '["' + section + '"]'
   console.log(a)
   cy.request({
     method: 'POST',
@@ -271,13 +271,16 @@ Cypress.Commands.add('slugMieInfo', (tutf, section) => {
     },
     body: '["' + section + '"]'
   }).then(resp => {
-    debugger
-    if (resp.status === 200)
-      return true
-    else if (resp.status === 404)
-      return false
-    else
+    if (resp.status !== 200)
       throw new Error('Errore durante la chiamata slug mie info')
+    else
+    {
+      let jsonReponse = JSON.parse(resp.body)
+      if (jsonReponse[0].area === '')
+        return false
+      else
+        true
+    }
   })
 })
 

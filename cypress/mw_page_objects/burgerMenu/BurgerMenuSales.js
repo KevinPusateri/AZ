@@ -17,18 +17,22 @@ const LinksBurgerMenu = {
     FLOTTE_E_CONVENZIONI: 'Flotte e Convenzioni',
     MINIFLOTTE: 'MiniFlotte',
     TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP', //! second Window
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: Cypress.env('isAviva') ? ' Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio BMP' : 'Allianz Ultra Casa e Patrimonio BMP',
     ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
+    ALLIANZ_ULTRA_IMPRESA: Cypress.env('isAviva') ? 'Ultra Impresa' : 'Allianz Ultra Impresa',
     ALLIANZ1_BUSINESS: 'Allianz1 Business',
     FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE: 'FastQuote Infortuni da circolazione',
+    FASTQUOTE_UNIVERSO_PERSONA: 'FastQuote Universo Persona',
+    FASTQUOTE_UNIVERSO_SALUTE: 'FastQuote Universo Salute',
+    FASTQUOTE_UNIVERSO_PERSONA_MALATTIE_GRAVI: 'FastQuote Universo Persona Malattie Gravi',
     FASTQUOTE_IMPRESA_E_ALBERGO: 'FastQuote Impresa e Albergo',
     ALLIANZ1_PREMORIENZA: 'Allianz1 premorienza',
     PREVENTIVO_ANONIMO_VITA_INDIVIDUALI: 'Preventivo Anonimo Vita Individuali',
     GESTIONE_RICHIESTE_PER_PA: 'Gestione richieste per PA',
-    NUOVO_SFERA: 'Nuovo Sfera', //! second window
+    NUOVO_SFERA: 'Nuovo Sfera',
     SFERA: 'Sfera',
-    CAMPAGNE_COMMERCIALI: 'Campagne Commerciali', //! second window
+    CAMPAGNE_COMMERCIALI: 'Campagne Commerciali',
     RECUPERO_PREVENTIVI_E_QUOTAZIONI: 'Recupero preventivi e quotazioni',
     DOCUMENTI_DA_FIRMARE: 'Documenti da firmare',
     GESTIONE_ATTIVITA_IN_SCADENZA: 'Gestione attività in scadenza',
@@ -47,55 +51,114 @@ const LinksBurgerMenu = {
     ALLIANZ_GLOBAL_ASSISTANCE: 'Allianz Global Assistance',
     ALLIANZ_PLACEMENT_PLATFORM: 'Allianz placement platform',
     QUALITÀ_PORTAFOGLIO_AUTO: 'Qualità portafoglio auto',
+    APP_CUMULO_TERREMOTI: 'App cumulo terremoti',
     NOTE_DI_CONTRATTO: 'Note di contratto',
     ACOM_GESTIONE_INIZIATIVE: 'ACOM Gestione iniziative',
-
+    deleteKey: function (keys) {
+        if (!keys.PREVENTIVO_MOTOR) delete this.PREVENTIVO_MOTOR
+        if ((!keys.FLOTTE_E_CONVENZIONI || Cypress.env('isAviva'))) delete this.FLOTTE_E_CONVENZIONI
+        if (!keys.MINIFLOTTE) delete this.MINIFLOTTE
+        if (!keys.TRATTATIVE_AUTO_CORPORATE) delete this.TRATTATIVE_AUTO_CORPORATE
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
+        if (!keys.ALLIANZ_ULTRA_SALUTE) delete this.ALLIANZ_ULTRA_SALUTE
+        if (!keys.ALLIANZ1_BUSINESS) delete this.ALLIANZ1_BUSINESS
+        if (!keys.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE) delete this.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE
+        if (!keys.FASTQUOTE_UNIVERSO_PERSONA) delete this.FASTQUOTE_UNIVERSO_PERSONA
+        if (!keys.FASTQUOTE_UNIVERSO_SALUTE) delete this.FASTQUOTE_UNIVERSO_SALUTE
+        if (!keys.ALLIANZ_ULTRA_IMPRESA) delete this.ALLIANZ_ULTRA_IMPRESA
+        if (!keys.FASTQUOTE_UNIVERSO_PERSONA_MALATTIE_GRAVI) delete this.FASTQUOTE_UNIVERSO_PERSONA_MALATTIE_GRAVI
+        if (!keys.FASTQUOTE_IMPRESA_E_ALBERGO) delete this.FASTQUOTE_IMPRESA_E_ALBERGO
+        if (!keys.ALLIANZ1_PREMORIENZA) delete this.ALLIANZ1_PREMORIENZA
+        if (!keys.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI) delete this.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI
+        if (!keys.GESTIONE_RICHIESTE_PER_PA) delete this.GESTIONE_RICHIESTE_PER_PA
+        if (!keys.NUOVO_SFERA) delete this.NUOVO_SFERA
+        if (!keys.SFERA || Cypress.env('isAviva')) delete this.SFERA
+        if (!keys.CAMPAGNE_COMMERCIALI) delete this.CAMPAGNE_COMMERCIALI
+        if (!keys.RECUPERO_PREVENTIVI_E_QUOTAZIONI) delete this.RECUPERO_PREVENTIVI_E_QUOTAZIONI
+        if (!keys.DOCUMENTI_DA_FIRMARE) delete this.DOCUMENTI_DA_FIRMARE
+        if (!keys.GESTIONE_ATTIVITA_IN_SCADENZA) delete this.GESTIONE_ATTIVITA_IN_SCADENZA
+        if (!keys.MANUTENZIONE_PORTAFOGLIO_RV_MIDCO) delete this.MANUTENZIONE_PORTAFOGLIO_RV_MIDCO
+        if (!keys.VITA_CORPORATE) delete this.VITA_CORPORATE
+        if (!keys.MONITORAGGIO_POLIZZE_PROPOSTE) delete this.MONITORAGGIO_POLIZZE_PROPOSTE
+        if (!keys.CERTIFICAZIONE_FISCALE) delete this.CERTIFICAZIONE_FISCALE
+        if (!keys.MANUTENZIONE_PORTAFOGLIO_AUTO) delete this.MANUTENZIONE_PORTAFOGLIO_AUTO
+        if (!keys.CRUSCOTTO_CERTIFICATI_APPLICAZIONI) delete this.CRUSCOTTO_CERTIFICATI_APPLICAZIONI
+        if (!keys.CRUSCOTTO_RIEPILOGHI_POLIZZE_ABB) delete this.CRUSCOTTO_RIEPILOGHI_POLIZZE_ABB
+        if (!keys.REPORT_CLIENTE_T4L) delete this.REPORT_CLIENTE_T4L
+        if (!keys.DOCUMENTI_ANNULLATI) delete this.DOCUMENTI_ANNULLATI
+        if (!keys.GED_GESTIONE_DOCUMENTALE) delete this.GED_GESTIONE_DOCUMENTALE
+        if (!keys.DOCUMENTI_DA_GESTIRE) delete this.DOCUMENTI_DA_GESTIRE
+        if (!keys.FOLDER) delete this.FOLDER
+        if (!keys.ALLIANZ_GLOBAL_ASSISTANCE ) delete this.ALLIANZ_GLOBAL_ASSISTANCE
+        if (!keys.ALLIANZ_PLACEMENT_PLATFORM) delete this.ALLIANZ_PLACEMENT_PLATFORM
+        if (!keys.QUALITÀ_PORTAFOGLIO_AUTO) delete this.QUALITÀ_PORTAFOGLIO_AUTO
+        if (!keys.APP_CUMULO_TERREMOTI) delete this.APP_CUMULO_TERREMOTI
+        if (!keys.NOTE_DI_CONTRATTO) delete this.NOTE_DI_CONTRATTO
+        if (!keys.ACOM_GESTIONE_INIZIATIVE) delete this.ACOM_GESTIONE_INIZIATIVE
+    }
 }
 
+
 class BurgerMenuSales extends Sales {
+
+    static getProfiling(tutf, keys) {
+        cy.getProfiling(tutf).then(profiling => {
+            cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keys.PREVENTIVO_MOTOR = profiled })
+            cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keys.FLOTTE_E_CONVENZIONI = profiled })
+            cy.filterProfile(profiling, 'COMMON_MINIFLOTTE').then(profiled => { keys.MINIFLOTTE = profiled })
+            cy.filterProfile(profiling, 'COMMON_TOOL_TRATTATIVE').then(profiled => { keys.TRATTATIVE_AUTO_CORPORATE = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.ALLIANZ_ULTRA_SALUTE = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.ALLIANZ_ULTRA_IMPRESA = profiled })
+            cy.filterProfile(profiling, 'COMMON_ALLIANZ1_BUSINESS').then(profiled => { keys.ALLIANZ1_BUSINESS = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRAS_OLDPROD').then(profiled => { keys.FASTQUOTE_UNIVERSO_PERSONA = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRAS_OLDPROD').then(profiled => { keys.FASTQUOTE_UNIVERSO_SALUTE = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRAS_OLDPROD').then(profiled => { keys.FASTQUOTE_UNIVERSO_PERSONA_MALATTIE_GRAVI = profiled })
+            cy.filterProfile(profiling, 'COMMON_FASTQUOTE_IMPRESA_SICURA').then(profiled => { keys.FASTQUOTE_IMPRESA_E_ALBERGO = profiled })
+            cy.filterProfile(profiling, 'VITA_EMISSIONE_LEAN').then(profiled => { keys.ALLIANZ1_PREMORIENZA = profiled })
+            cy.filterProfile(profiling, 'VITA_PREVENTIVAZIONE_ANONIMA').then(profiled => { keys.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI = profiled })
+            cy.filterProfile(profiling, 'RV_GARE').then(profiled => { keys.GESTIONE_RICHIESTE_PER_PA = profiled })
+            cy.filterProfile(profiling, 'COMMON_SFERA_MATRIX').then(profiled => { keys.SFERA = profiled })
+            cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keys.NUOVO_SFERA = profiled })
+            cy.filterProfile(profiling, 'RUOLO_CAMPAIGN').then(profiled => { keys.CAMPAGNE_COMMERCIALI = profiled })
+            cy.filterProfile(profiling, 'COMMON_OFFERTA_PREVENTIVI').then(profiled => { keys.RECUPERO_PREVENTIVI_E_QUOTAZIONI = profiled })
+            cy.filterProfile(profiling, 'COMMON_GESTIONE_DOCUMENTI_SOSPESI').then(profiled => { keys.DOCUMENTI_DA_FIRMARE = profiled })
+            cy.filterProfile(profiling, 'COMMON_MOKA_AGENZIA').then(profiled => { keys.GESTIONE_ATTIVITA_IN_SCADENZA = profiled })
+            cy.filterProfile(profiling, 'COMMON_GESTIONE_MANUT_PORTAF_RV_MID_CO').then(profiled => { keys.MANUTENZIONE_PORTAFOGLIO_RV_MIDCO = profiled })
+            cy.filterProfile(profiling, 'VITA_CORPORATE').then(profiled => { keys.VITA_CORPORATE = profiled })
+            cy.filterProfile(profiling, 'COMMON_GESTIONE_MONITORAGGIO_PROPOSTE').then(profiled => { keys.MONITORAGGIO_POLIZZE_PROPOSTE = profiled })
+            cy.filterProfile(profiling, 'COMMON_CERTIFICAZIONI_FISCALI').then(profiled => { keys.CERTIFICAZIONE_FISCALE = profiled })
+            cy.filterProfile(profiling, 'COMMON_RISANAMENTO').then(profiled => { keys.MANUTENZIONE_PORTAFOGLIO_AUTO = profiled })
+            cy.filterProfile(profiling, 'COMMON_CERTIFICATI_ONLINE').then(profiled => { keys.CRUSCOTTO_CERTIFICATI_APPLICAZIONI = profiled })
+            cy.filterProfile(profiling, 'COMMON_CERTIFICATI_ONLINE').then(profiled => { keys.CRUSCOTTO_RIEPILOGHI_POLIZZE_ABB = profiled })
+            cy.filterProfile(profiling, 'PO_PULSANTE_AGL').then(profiled => { keys.REPORT_CLIENTE_T4L = profiled })
+            cy.filterProfile(profiling, 'COMMON_DANNI_DOCUMENTI_ANNULLATI').then(profiled => { keys.DOCUMENTI_ANNULLATI = profiled })
+            cy.filterProfile(profiling, 'COMMON_GED').then(profiled => { keys.GED_GESTIONE_DOCUMENTALE = profiled })
+            cy.filterProfile(profiling, 'COMMON_GESTIONE_DOCUMENTALE').then(profiled => { keys.DOCUMENTI_DA_GESTIRE = profiled })
+            cy.filterProfile(profiling, 'COMMON_SERVIZI_FOLDERDA').then(profiled => { keys.FOLDER = profiled })
+            cy.filterProfile(profiling, 'PO_PULSANTE_AGA').then(profiled => { keys.ALLIANZ_GLOBAL_ASSISTANCE = profiled })
+            cy.filterProfile(profiling, 'PO_PULSANTE_APP').then(profiled => { keys.ALLIANZ_PLACEMENT_PLATFORM = profiled })
+            cy.filterProfile(profiling, 'COMMON_MONITOR_QUALITA_DATI').then(profiled => { keys.QUALITÀ_PORTAFOGLIO_AUTO = profiled })
+            // cy.filterProfile(profiling, 'COMMON_GESTIONE_APP_CUMULI_PRODOTTO_TERREMOTO').then(profiled => { keys.APP_CUMULO_TERREMOTI = profiled })
+            cy.filterProfile(profiling, 'PO_CLIENTE_SCHEDA_CLIENTE').then(profiled => { keys.NOTE_DI_CONTRATTO = profiled })
+            cy.filterProfile(profiling, 'COMMON_CLIENTE_ACOM').then(profiled => { keys.ACOM_GESTIONE_INIZIATIVE = profiled })
+        })
+    }
 
     /**
      * Verifica che i link nel burgerMenu siano presenti
      */
-    static checkExistLinks() {
+    static checkExistLinks(keys) {
 
         cy.get('lib-burger-icon').click({ force: true })
-
-
-        if (Cypress.env('isAviva')) {
-            const linksBurger = [
-                LinksBurgerMenu.PREVENTIVO_MOTOR,
-                LinksBurgerMenu.ALLIANZ_ULTRA_SALUTE,
-                LinksBurgerMenu.NUOVO_SFERA,
-                LinksBurgerMenu.CAMPAGNE_COMMERCIALI,
-                LinksBurgerMenu.RECUPERO_PREVENTIVI_E_QUOTAZIONI,
-                LinksBurgerMenu.DOCUMENTI_DA_FIRMARE,
-                LinksBurgerMenu.MONITORAGGIO_POLIZZE_PROPOSTE,
-                LinksBurgerMenu.CERTIFICAZIONE_FISCALE,
-                LinksBurgerMenu.MANUTENZIONE_PORTAFOGLIO_AUTO,
-                LinksBurgerMenu.DOCUMENTI_ANNULLATI,
-                LinksBurgerMenu.DOCUMENTI_DA_GESTIRE,
-                LinksBurgerMenu.FOLDER,
-                LinksBurgerMenu.QUALITÀ_PORTAFOGLIO_AUTO,
-                LinksBurgerMenu.NOTE_DI_CONTRATTO
-            ]
-            cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
-                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            })
-        } else if (Cypress.env('monoUtenza')) {
-            delete LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
-            delete LinksBurgerMenu.NUOVO_SFERA
-            delete LinksBurgerMenu.CAMPAGNE_COMMERCIALI
-            const linksBurger = Object.values(LinksBurgerMenu)
-            cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
-                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            })
-        } else {
-            const linksBurger = Object.values(LinksBurgerMenu)
-            cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
-                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            })
-        }
+        LinksBurgerMenu.deleteKey(keys)
+        const linksBurger = Object.values(LinksBurgerMenu)
+        cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
+            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+        })
     }
 
     /**
@@ -181,7 +244,7 @@ class BurgerMenuSales extends Sales {
                 // cy.wait(5000)
                 Common.canaleFromPopup()
                 cy.wait('@getSalesPremo', { requestTimeout: 40000 });
-                cy.wait(20000)
+                cy.wait(30000)
                 getIFrame().should('be.visible')
                 getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text', 'Ricerca')
                 break;

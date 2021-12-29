@@ -56,11 +56,70 @@ const LinksBurgerMenu = {
     RETENTION_RAMI_VARI: 'Retention Rami Vari',
     MONITORAGGIO_ANDAMENTO_PREMI: 'Monitoraggio Andamento Premi',
     MONITORAGGIO_RICAVI_AGENZIA: 'Monitoraggio Ricavi d\'Agenzia',
-    CAPITALE_VITA_SCADENZA: 'Capitale Vita Scadenza'
+    CAPITALE_VITA_SCADENZA: 'Capitale Vita Scadenza',
+    deleteKey: function (keys) {
+        if (!keys.MONITORAGGIO_FONTI) delete this.MONITORAGGIO_FONTI
+        if (!keys.MONITORAGGIO_CARICO) delete this.MONITORAGGIO_CARICO
+        if (!keys.MONITORAGGIO_CARICO_FONTE) delete this.MONITORAGGIO_CARICO_FONTE
+        if (!keys.X_ADVISOR) delete this.X_ADVISOR
+        if (!keys.INCENTIVAZIONE) delete this.INCENTIVAZIONE
+        if (!keys.INCENTIVAZIONE_RECRUITING) delete this.INCENTIVAZIONE_RECRUITING
+        if (!keys.ANDAMENTI_TECNICI) delete this.ANDAMENTI_TECNICI
+        if (!keys.ESTRAZIONI_AVANZATE) delete this.ESTRAZIONI_AVANZATE
+        if (!keys.SCARICO_DATI) delete this.SCARICO_DATI
+        if (!keys.INDICI_DIGITALI) delete this.INDICI_DIGITALI
+        if (!keys.NEW_BUSINESS_DANNI) delete this.NEW_BUSINESS_DANNI
+        if (!keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO) delete this.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO
+        if (!keys.NEW_BUSINESS_ULTRA_SALUTE) delete this.NEW_BUSINESS_ULTRA_SALUTE
+        if (!keys.NEW_BUSINESS_VITA) delete this.NEW_BUSINESS_VITA
+        if (!keys.NEW_BUSINESS_ALLIANZ1) delete this.NEW_BUSINESS_ALLIANZ1
+        if (!keys.MONITORAGGIO_PTF_DANNI) delete this.MONITORAGGIO_PTF_DANNI
+        if (!keys.MONITORAGGIO_RISERVE_VITA) delete this.MONITORAGGIO_RISERVE_VITA
+        if (!keys.RETENTION_MOTOR) delete this.RETENTION_MOTOR
+        if (!keys.RETENTION_RAMI_VARI) delete this.RETENTION_RAMI_VARI
+        if (!keys.MONITORAGGIO_ANDAMENTO_PREMI) delete this.MONITORAGGIO_ANDAMENTO_PREMI
+        if (!keys.MONITORAGGIO_RICAVI_AGENZIA) delete this.MONITORAGGIO_RICAVI_AGENZIA
+        if (!keys.CAPITALE_VITA_SCADENZA) delete this.CAPITALE_VITA_SCADENZA
+    }
 }
 
 
 class BurgerMenuNumbers extends Numbers {
+
+    /**
+     * Otteniamo i link in base alle chiavi di profilzazioni settate
+     * @param {string} tutf - utenza impersonificata 
+     * @param {Object} keys  - Chiavi di profilazione 
+     */
+    static getProfiling(tutf, keys) {
+        cy.getProfiling(tutf).then(profiling => {
+            cy.filterProfile(profiling, 'COMMON_MONITOR_FONTI').then(profiled => { keys.MONITORAGGIO_FONTI = profiled })
+            cy.filterProfile(profiling, 'SCAD_MONITORA_CARICO').then(profiled => { keys.MONITORAGGIO_CARICO = profiled })
+            cy.filterProfile(profiling, 'SCAD_MONITORA_CARICO_FONTE').then(profiled => { keys.MONITORAGGIO_CARICO_FONTE = profiled })
+            cy.filterProfile(profiling, 'COMMON_CRYSTAL').then(profiled => { keys.X_ADVISOR = profiled })
+
+            cy.filterProfile(profiling, 'COMMON_REPORTING_INCENTIVAZIONE').then(profiled => { keys.INCENTIVAZIONE = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_INCENTIVAZIONE_RECRUITING').then(profiled => { keys.INCENTIVAZIONE_RECRUITING = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_ANDAMENTI_TECNICI').then(profiled => { keys.ANDAMENTI_TECNICI = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_ESTRAZIONI_AVANZATE').then(profiled => { keys.ESTRAZIONI_AVANZATE = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_SCARICO_AGENZIA').then(profiled => { keys.SCARICO_DATI = profiled })
+            cy.filterProfile(profiling, 'COMMON_REPORTING_INDICEDIGITALE').then(profiled => { keys.INDICI_DIGITALI = profiled })
+            cy.filterProfile(profiling, 'REPORTING_NB_DANNI').then(profiled => { keys.NEW_BUSINESS_DANNI = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.NEW_BUSINESS_ULTRA_SALUTE = profiled })
+            cy.filterProfile(profiling, 'REPORTING_NB_VITA').then(profiled => { keys.NEW_BUSINESS_VITA = profiled })
+            cy.filterProfile(profiling, 'REPORTING_NB_A1').then(profiled => { keys.NEW_BUSINESS_ALLIANZ1 = profiled })
+            cy.filterProfile(profiling, 'REPORTING_MONITOR_PTF_DANNI').then(profiled => { keys.MONITORAGGIO_PTF_DANNI = profiled })
+            cy.filterProfile(profiling, 'REPORTING_MONITOR_PTF_VITA').then(profiled => { keys.MONITORAGGIO_RISERVE_VITA = profiled })
+            cy.filterProfile(profiling, 'REPORTING_RETENTION_MOTOR').then(profiled => { keys.RETENTION_MOTOR = profiled })
+            cy.filterProfile(profiling, 'REPORTING_RETENTION_RV').then(profiled => { keys.RETENTION_RAMI_VARI = profiled })
+            cy.filterProfile(profiling, 'REPORTING_INCASSI_AGENZIA').then(profiled => { keys.MONITORAGGIO_ANDAMENTO_PREMI = profiled })
+            cy.filterProfile(profiling, 'REPORTING_RICAVI_AGENZIA').then(profiled => { keys.MONITORAGGIO_RICAVI_AGENZIA = profiled })
+            cy.filterProfile(profiling, 'REPORTING_CAPITALI_VITA_SCAD').then(profiled => { keys.CAPITALE_VITA_SCADENZA = profiled })
+        })
+    }
+
+
 
     /**
      * Torna indetro su Numbers
@@ -73,34 +132,15 @@ class BurgerMenuNumbers extends Numbers {
     /**
      * Verifica che i link nel burgerMenu siano presenti
      */
-    static checkExistLinks() {
+    static checkExistLinks(keys) {
         cy.get('lib-burger-icon').click()
 
-        if (Cypress.env('isAviva')) {
-            const linksBurger = [
-                LinksBurgerMenu.HOME_NUMBERS,
-                LinksBurgerMenu.MONITORAGGIO_FONTI,
-                LinksBurgerMenu.NEW_BUSINESS_DANNI,
-                LinksBurgerMenu.NEW_BUSINESS_ULTRA_SALUTE,
-                LinksBurgerMenu.MONITORAGGIO_PTF_DANNI,
-                LinksBurgerMenu.MONITORAGGIO_ANDAMENTO_PREMI,
-                LinksBurgerMenu.MONITORAGGIO_RICAVI_AGENZIA
-            ]
-            cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
-                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            }).should('have.length', 7)
-        } else if (Cypress.env('monoUtenza')) {
-            delete LinksBurgerMenu.SCARICO_DATI
-            const linksBurger = Object.values(LinksBurgerMenu)
-            cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
-                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            }).should('have.length', 22)
-        } else {
-            const linksBurger = Object.values(LinksBurgerMenu)
-            cy.get('lib-side-menu-link').find('a').should('have.length', 23).each(($checkLinksBurger, i) => {
-                expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
-            })
-        }
+        LinksBurgerMenu.deleteKey(keys)
+        const linksBurger = Object.values(LinksBurgerMenu)
+        cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
+            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+        })
+
     }
 
     /**
@@ -118,7 +158,7 @@ class BurgerMenuNumbers extends Numbers {
         if (page === LinksBurgerMenu.X_ADVISOR)
             cy.contains('X - Advisor').invoke('removeAttr', 'target').click()
         else
-            cy.contains(page,{timeout:5000}).click()
+            cy.contains(page, { timeout: 5000 }).click()
 
         Common.canaleFromPopup()
         this.checkPage(page)
@@ -158,7 +198,7 @@ class BurgerMenuNumbers extends Numbers {
                     getIFrame().find('[class="menu-padre"]:contains("Report"):visible')
                 else
                     getIFrame().find('#likelyCauses').should('be.visible')
-                    .and('contain.text', 'Non esistono piani di incentivazioni recruiting per l\'agenzia.')
+                        .and('contain.text', 'Non esistono piani di incentivazioni recruiting per l\'agenzia.')
                 break;
             case LinksBurgerMenu.ANDAMENTI_TECNICI:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
