@@ -1,15 +1,16 @@
 {
-    "include": [
-      "node_modules/cypress",
-      "cypress/**/*.js",
-      "src/**/*"
-, "mw_navigation_script.js"    ],
-    "compilerOptions": {
-      "baseUrl": ".",
-      "paths": {
-        "@/*": [
-          "src/*"
-        ]
-      }
+  "include": [
+    "node_modules/cypress",
+    "cypress/**/*.js",
+    "src/**/*",
+    "mw_navigation_script.js"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
     }
+  }
 }

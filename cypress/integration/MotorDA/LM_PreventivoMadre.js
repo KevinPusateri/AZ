@@ -1,3 +1,9 @@
+/**
+ * @author Elio Cossu <elio.cossu@allianz.it>
+ *
+ * @description Emissione preventivo madre per Libri Matricola
+ */
+
 ///<reference types="cypress"/>
 
 //#region imports
@@ -15,7 +21,7 @@ import menuAuto from '../../fixtures/Motor/menuMotor.json'
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
-//const dbConfig_da = Cypress.env('db_da')
+const dbConfig_da = Cypress.env('db_da')
 let insertedId
 //#endregion
 
@@ -31,9 +37,7 @@ var nPreventivo
 
 before(() => {
   cy.getUserWinLogin().then(data => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-      insertedId = results.insertId
-    })
+    cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
     LoginPage.logInMWAdvanced()
   })
 })
@@ -42,18 +46,18 @@ beforeEach(() => {
   cy.preserveCookies()
 })
 
-/* afterEach(function () {
+afterEach(function () {
   if (this.currentTest.state !== 'passed') {
-    TopBar.logOutMW()
+    //TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
       let tests = testsInfo
       cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-    Cypress.runner.stop();
+    //Cypress.runner.stop();
   }
-}) */
+})
 
 after(function () {
   TopBar.logOutMW()
@@ -119,7 +123,7 @@ describe("LIBRI MATRICOLA - PREVENTIVO MADRE", () => {
       cy.log("nContratto b " + nPreventivo)
     })
   })
-  
+
   it("Verifica presenza preventivo", () => {
     cy.log("nContratto c " + nPreventivo)
     expect(nPreventivo).to.not.be.undefined

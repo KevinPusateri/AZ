@@ -1,3 +1,9 @@
+/**
+ * @author Elio Cossu <elio.cossu@allianz.it>
+ *
+ * @description Emissione preventivo applicazione auto da preventivo madre 
+ */
+
 ///<reference types="cypress"/>
 
 //#region imports
@@ -9,7 +15,7 @@ import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente";
 import LibriMatricolaDA from "../../mw_page_objects/motor/LibriMatricolaDA";
 import menuAuto from '../../fixtures/Motor/menuMotor.json'
 import menuProvenienza from '../../fixtures/Motor/ProdottoProvenienza.json'
-import Auto from '../../mw_page_objects/motor/ListaAuto'
+import Veicoli from '../../mw_page_objects/motor/ListaVeicoli'
 //import cypress from "cypress";
 //#endregion
 
@@ -30,7 +36,7 @@ const delayBetweenTests = 2000
 const personaGiuridica = "Sinopoli"
 var nPreventivo = null
 var nPreventivoApp = null
-let veicolo = Auto.WW745FF()
+let auto = Veicoli.Auto_WW745FF()
 let garanzie = [
   "Furto"
 ]
@@ -38,9 +44,7 @@ let garanzie = [
 
 before(() => {
   cy.getUserWinLogin().then(data => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-      insertedId = results.insertId
-    })
+    cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
     LoginPage.logInMWAdvanced()
   })
 })
@@ -49,18 +53,18 @@ beforeEach(() => {
   cy.preserveCookies()
 })
 
-/* afterEach(function () {
+afterEach(function () {
   if (this.currentTest.state !== 'passed') {
-    TopBar.logOutMW()
+    //TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
       let tests = testsInfo
       cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-    Cypress.runner.stop();
+    //Cypress.runner.stop();
   }
-}) */
+})
 
 after(function () {
   TopBar.logOutMW()
@@ -124,7 +128,7 @@ describe("LIBRI MATRICOLA - PREVENTIVO APPLICAZIONE", () => {
   })
 
   it("Veicolo", () => {
-    LibriMatricolaDA.NuovoVeicolo(veicolo)
+    LibriMatricolaDA.NuovoVeicolo(auto)
     LibriMatricolaDA.Avanti()
     LibriMatricolaDA.caricamentoProdottoProvenienza()
   })

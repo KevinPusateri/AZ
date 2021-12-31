@@ -1,3 +1,9 @@
+/**
+ * @author Elio Cossu <elio.cossu@allianz.it>
+ *
+ * @description 
+ */
+
 ///<reference types="cypress"/>
 
 //#region imports
@@ -52,9 +58,7 @@ var ambiti = [
 
 before(() => {
   cy.getUserWinLogin().then(data => {
-    cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-      insertedId = results.insertId
-    })
+    cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
     LoginPage.logInMWAdvanced()
   })
 })
@@ -63,18 +67,18 @@ beforeEach(() => {
   cy.preserveCookies()
 })
 
-/* afterEach(function () {
+afterEach(function () {
   if (this.currentTest.state !== 'passed') {
-    TopBar.logOutMW()
+    //TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
       let tests = testsInfo
       cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-    Cypress.runner.stop();
+    //Cypress.runner.stop();
   }
-}) */
+})
 
 after(function () {
   TopBar.logOutMW()

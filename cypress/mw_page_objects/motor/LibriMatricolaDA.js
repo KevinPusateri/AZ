@@ -155,14 +155,44 @@ class LibriMatricolaDA {
     }
 
     static RiepilogoGaranzie(garanzie) {
-        matrixFrame().within(() => {
-            //scorre l'array e seleziona la garanzia
-            //[non verifica se la garanzia è già stata selezionata]
-            for (var i = 0; i < garanzie.length; i++) {
-                cy.get('label').contains(garanzie[i])
+        
+        for (var i = 0; i < garanzie.length; i++) {
+            cy.log('var i outside: ' + i)
+            var a= i
+            matrixFrame().within(() => {
+                cy.log('var a inside: ' + a)
+                //scorre l'array e seleziona la garanzia
+                //[non verifica se la garanzia è già stata selezionata]
+                cy.get('label').contains(garanzie[a])
                     .parents('.subtableBlock').find('input').click()
+            })
+
+            cy.wait(1000)
+            var popupCheck = false
+            matrixFrame().within(() => {
+                cy.get('#pnlDialog').should('be.visible')
+                cy.get('#pnlDialog').then(($popup) => {
+                    popupCheck = $popup.is(':visible')
+                    cy.log("popup: " + popupCheck)
+                    popupCheck.as('boolPopup')
+                })                
+            })
+
+            //se il popup è presente clicca su ok
+            if (popupCheck) {
+                do {
+                    matrixFrame().within(() => {
+                        cy.get('div[id="pnlDialog"]').next('div')
+                            .find('span').contains('OK').click() //click su OK
+                    })
+
+                } while (
+                    matrixFrame().within(() => {
+                        cy.get('div[id="pnlDialog"]').is(':visible')
+                    })
+                )
             }
-        })
+        }
     }
 
     /**
@@ -372,7 +402,7 @@ class LibriMatricolaDA {
             url: '**/TipoProProveni.aspx'
         }).as('ProdottoProvenienza')
 
-        cy.wait('@ProdottoProvenienza', { requestTimeout: 60000 });
+        cy.wait('@ProdottoProvenienza', { requestTimeout: 80000 });
     }
 
     static RicercaVeicolo(targa) {
@@ -406,6 +436,19 @@ class LibriMatricolaDA {
         }).as('Marche')
         cy.wait('@Marche', { requestTimeout: 60000 });
 
+        matrixFrame().within(() => {
+            //se il tipo di veicolo è diverso da Auto, apre la sezione relativa
+            if (veicolo.tipo != "Auto") {
+                cy.get('[for="radio' + veicolo.tipo + '"]').click() //click su tab tipo di veicolo
+
+                //attende il caricamento della lista veicoli
+                cy.intercept({
+                    method: 'POST',
+                    url: '**/GetAllMarche'
+                }).as('Marche')
+                cy.wait('@Marche', { requestTimeout: 60000 });
+            }
+        })
 
         matrixFrame().within(() => {
             //inserisce la targa
@@ -431,6 +474,35 @@ class LibriMatricolaDA {
 
             //inserisce il numero dei posti
             cy.get('input[title*="numero di posti"]').filter(':visible').type(veicolo.nPosti)
+        })
+    }
+
+    /**
+     * Seleziona la presenza o meno della copertura RCA
+     * @param {bool} copertura 
+     */
+    static CoperturaRCA(copertura) {
+        if (copertura == true) {
+            copertura = "Con copertura"
+        }
+        else {
+            copertura = "Senza copertura"
+        }
+
+        cy.log('Copertura RCA: ' + copertura)
+
+        var coperturaCheck = false
+
+        matrixFrame().then(($element) => {
+            //verifica il tipo di copertura è già attivo
+            coperturaCheck = $element.find('[type="radio"][value*="' + copertura + '"]')
+                .is(':checked')
+        }).within(() => {
+            cy.log("Checked: " + coperturaCheck)
+            //se la tab non è già attiva, la apre
+            if (!coperturaCheck) {
+                cy.get('[type="radio"][value*="' + copertura + '"]').click() //click sull'elemento scelto
+            }
         })
     }
 
