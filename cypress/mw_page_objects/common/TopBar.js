@@ -80,7 +80,13 @@ const LinkUtilita = {
     GESTIONE_MAGAZZINO_OBU: 'Gestione Magazzino OBU',
     PIATTAFORMA_CONTRATTI_AZ_TELEMATICS: 'Piattaforma contratti AZ Telematics',
     CRUSCOTTO_INSTALLAZIONE_DISPOSITIVO_SATELLITARE: 'Cruscotto Installazione Dispositivo Satellitare',
-    MONITOR_SCORING_AZ_BONUS_DRIVE: 'Monitor Scoring AZ Bonus Drive'
+    MONITOR_SCORING_AZ_BONUS_DRIVE: 'Monitor Scoring AZ Bonus Drive',
+    deleteKey: function (keys) {
+        if (!keys.interrogazioniCentralizzateEnabled) delete this.INTERROGAZIONI_CENTRALIZZATE
+        if (!keys.obuEnabled) delete this.GESTIONE_MAGAZZINO_OBU
+        if (!keys.satellitareEnabled) delete this.CRUSCOTTO_INSTALLAZIONE_DISPOSITIVO_SATELLITARE
+        if (!keys.monitorScoringAZBonusDrive) delete this.monitor
+    }
 }
 
 class TopBar extends HomePage {
@@ -188,7 +194,7 @@ class TopBar extends HomePage {
         interceptPageNumbers()
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.wait('@getNumbers', { requestTimeout: 50000 })
-        cy.url().should('eq', Common.getBaseUrl() + 'numbers/business-lines')
+        cy.url().should('include', Common.getBaseUrl() + 'numbers')
     }
 
     /**
@@ -271,7 +277,7 @@ class TopBar extends HomePage {
     /**
      * Verifica la presenza di tutti i link su Utility
      */
-    static checkLinksUtility() {
+    static checkLinksUtility(keys) {
 
         const linksUtilita = Object.values(LinkUtilita)
 
@@ -428,24 +434,43 @@ class TopBar extends HomePage {
     /**
      * Verifica la presenza dei link sull'icona incident
      */
-    static checkLinksIncident() {
-        if (!Cypress.env('isAviva')) {
-            const linksIncident = [
-                'SRM',
-                'SisCo',
-                'Elenco telefonico'
-            ]
-            cy.get('lib-utility-label').find('a').each(($link, i) => {
-                expect($link.text().trim()).to.include(linksIncident[i]);
-            })
-        } else {
-            const linksIncident = [
-                'Elenco telefonico'
-            ]
-            cy.get('lib-utility-label').find('a').each(($link, i) => {
-                expect($link.text().trim()).to.include(linksIncident[i]);
-            })
+    static checkLinksIncident(keys) {
+
+        const LinksIncident = {
+            SRM: 'SRM',
+            SISCO: 'SisCo',
+            ELENCO_TELEFONICO: 'Elenco telefonico',
+            deleteKey: function (keys) {
+                if (!keys.SRM) delete this.SRM
+                if (!keys.SISCO) delete this.SISCO
+                if (Cypress.env('isAviva')) delete this.ELENCO_TELEFONICO
+            }
         }
+        LinksIncident.deleteKey(keys)
+        const linksIncident = Object.values(LinksIncident)
+
+        if (linksIncident.length > 1)
+            cy.get('lib-utility-label').find('a').each(($link, i) => {
+                expect($link.text().trim()).to.include(linksIncident[i]);
+            })
+
+        // if (!Cypress.env('isAviva')) {
+        //     const linksIncident = [
+        //         'SRM',
+        //         'SisCo',
+        //         'Elenco telefonico'
+        //     ]
+        //     cy.get('lib-utility-label').find('a').each(($link, i) => {
+        //         expect($link.text().trim()).to.include(linksIncident[i]);
+        //     })
+        // } else {
+        //     const linksIncident = [
+        //         'Elenco telefonico'
+        //     ]
+        //     cy.get('lib-utility-label').find('a').each(($link, i) => {
+        //         expect($link.text().trim()).to.include(linksIncident[i]);
+        //     })
+        // }
 
     }
 

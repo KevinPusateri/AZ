@@ -20,10 +20,23 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
+let keys = {
+    ANALISI_DEI_BISOGNI: true,
+    PANNELLO_ANOMALIE: true,
+    CLIENTI_DUPLICATI: true,
+    ANTIRICICLAGGIO: true,
+    HOSPITAL_SCANNER: true,
+}
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
+        cy.getProfiling(data.tutf).then(profiling => {
+            cy.filterProfile(profiling, 'PO_DATA_QUALITY').then(profiled => { keys.PANNELLO_ANOMALIE = profiled })
+            cy.filterProfile(profiling, 'COMMON_CLIENTE_SOGGETTI_DUPLICATI').then(profiled => { keys.CLIENTI_DUPLICATI = profiled })
+            cy.filterProfile(profiling, 'PO_ANTIRICICLAGGIO').then(profiled => { keys.ANTIRICICLAGGIO = profiled })
+            cy.filterProfile(profiling, 'HOSPITAL_SCANNER').then(profiled => { keys.HOSPITAL_SCANNER = profiled })
+        })
     })
 })
 
@@ -52,7 +65,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
 
     it('Verifica presenza dei collegamenti rapidi', function () {
         TopBar.clickClients()
-        Clients.checkExistLinksCollegamentiRapidi()
+        Clients.checkExistLinksCollegamentiRapidi(keys)
     })
 
     it('Verifica aggancio Analisi dei bisogni', function () {
@@ -73,23 +86,28 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     });
 
     it('Verifica aggancio Pannello anomalie', function () {
+        if (!keys.PANNELLO_ANOMALIE)
+            this.skip()
         TopBar.clickClients()
         Clients.clickLinkRapido('Pannello anomalie')
         Clients.backToClients()
     });
 
     it('Verifica aggancio Clienti duplicati', function () {
+        if (!keys.CLIENTI_DUPLICATI)
+            this.skip()
         TopBar.clickClients()
         Clients.clickLinkRapido('Clienti duplicati')
         Clients.backToClients()
     });
 
-    if (!Cypress.env('isAviva'))
-        it('Verifica aggancio Antiriciclaggio', function () {
-            TopBar.clickClients()
-            Clients.clickLinkRapido('Antiriciclaggio')
-            Clients.backToClients()
-        });
+    it('Verifica aggancio Antiriciclaggio', function () {
+        if (!keys.ANTIRICICLAGGIO)
+            this.skip()
+        TopBar.clickClients()
+        Clients.clickLinkRapido('Antiriciclaggio')
+        Clients.backToClients()
+    });
 
     it('Verifica aggancio Nuovo cliente', function () {
         TopBar.clickClients()

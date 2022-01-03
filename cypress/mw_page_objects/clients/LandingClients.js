@@ -18,6 +18,12 @@ const LinksRapidi = {
     PANNELLO_ANOMALIE: 'Pannello anomalie',
     CLIENTI_DUPLICATI: 'Clienti duplicati',
     ANTIRICICLAGGIO: 'Antiriciclaggio',
+    deleteKey: function (keys) {
+        if (!keys.PANNELLO_ANOMALIE) delete this.PANNELLO_ANOMALIE
+        if (!keys.CLIENTI_DUPLICATI) delete this.CLIENTI_DUPLICATI
+        if (!keys.ANTIRICICLAGGIO) delete this.ANTIRICICLAGGIO
+        if (Cypress.env('isAviva')) delete this.ANALISI_DEI_BISOGNI
+    }
 }
 
 
@@ -43,23 +49,16 @@ class LandingClients {
     /**
      * Verifica la presenza dei collegamenti rapidi
      */
-    static checkExistLinksCollegamentiRapidi() {
+    static checkExistLinksCollegamentiRapidi(keys) {
 
+        LinksRapidi.deleteKey(keys)
         const linksCollegamentiRapidi = Object.values(LinksRapidi)
+
         cy.get('app-home-right-section').should('be.visible')
-
-        if (!Cypress.env('isAviva'))
-            cy.get('app-home-right-section').find('app-rapid-link').should('have.length', 5).each(($checkLinksRapidi, i) => {
-                expect($checkLinksRapidi.text().trim()).to.include(linksCollegamentiRapidi[i]);
-            })
-        else {
-            // AVIVA NON compare link Antiriciclaggio
-            cy.get('app-home-right-section').find('app-rapid-link').not('[linkname="Antiriciclaggio"]').should('have.length', 4).each(($checkLinksRapidi, i) => {
-                expect($checkLinksRapidi.text().trim()).to.include(linksCollegamentiRapidi[i]);
-            })
-        }
-
-
+        
+        cy.get('app-home-right-section').find('app-rapid-link:visible').each(($checkLinksRapidi, i) => {
+            expect($checkLinksRapidi.text().trim()).to.include(linksCollegamentiRapidi[i]);
+        })
     }
 
     /**

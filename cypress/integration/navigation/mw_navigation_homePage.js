@@ -43,7 +43,7 @@ before(() => {
             })
             cy.filterProfile(profiling, 'COMMON_CRUSCOTTO_SCORING_ABD').then(profiled => { keys.monitorScoringAZBonusDrive = profiled })
 
-            if (Cypress.env('isAviva')) 
+            if (Cypress.env('isAviva'))
                 keys.newsMieInfo = false
             else
                 keys.newsMieInfo = true
@@ -78,7 +78,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
 
     it('Verifica Top Menu incident - Verifica presenza dei link', function () {
         TopBar.clickIconIncident()
-        TopBar.checkLinksIncident()
+        TopBar.checkLinksIncident(keys)
     })
 
     it('Verifica Top Menu incident - Verifica atterraggio SRM Online', function () {
@@ -95,7 +95,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     })
 
     it('Verifica Top Menu incident - Verifica atterraggio Elenco telefonico', function () {
-        if (!Cypress.env('monoUtenza')) {
+        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
             cy.task('getHostName').then(hostName => {
                 let currentHostName = hostName
                 if (!currentHostName.includes('SM'))
@@ -115,7 +115,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
 
     it('Verifica presenza links da Utilità', function () {
         TopBar.clickIconSwitchPage()
-        TopBar.checkLinksUtility()
+        TopBar.checkLinksUtility(keys)
     })
 
     it('Verifica atterraggio da Utilità - Cruscotto resilience', function () {
@@ -201,16 +201,19 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickIconSwitchPage('Backoffice')
     });
 
-    if (keys.newsMieInfo) {
-
-        it('Verifica Top Menu News', function () {
+    it('Verifica Top Menu News', function () {
+        if (!keys.newsMieInfo)
+            this.skip()
+        else
             TopBar.clickIconSwitchPage('News')
-        });
+    });
 
-        it('Verifica Top Menu Le mie info', function () {
+    it('Verifica Top Menu Le mie info', function () {
+        if (!keys.newsMieInfo)
+            this.skip()
+        else
             TopBar.clickIconSwitchPage('Le mie info')
-        });
-    }
+    });
 
     it('Verica buca di ricerca', function () {
         TopBar.clickBucaRicerca()
@@ -232,16 +235,22 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickBackOffice()
     });
 
-    if (keys.newsMieInfo) {
 
-        it('Verifica Button News', function () {
+    it('Verifica Button News', function () {
+        if (!keys.newsMieInfo)
+            this.skip()
+        else
             TopBar.clickNews()
-        });
+    });
 
-        it('Verifica Button Le mie info', function () {
+    it('Verifica Button Le mie info', function () {
+        if (!keys.newsMieInfo)
+            this.skip()
+        else
             TopBar.clickMieInfo()
-        });
-    } else {
+    });
+
+    if (Cypress.env('isAviva')) {
         it('Verifica assenza Button News', function () {
             TopBar.checkNotExistLanding('News')
         });
@@ -249,7 +258,6 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         it('Verifica assenza Button Le mie info', function () {
             TopBar.checkNotExistLanding('Le mie info')
         });
-
     }
 
     it('Verifica link "Vai al Centro notifiche"', function () {

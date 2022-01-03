@@ -574,11 +574,10 @@ class LandingRicerca {
                 } else if (Cypress.env('isAviva')) {
                     suggLinks = [
                         'Quattroruote - Calcolo valore Veicolo',
-                        'Interrogazioni Centralizzate',
                         'Recupero preventivi e quotazioni',
                         'Monitoraggio Polizze Proposte'
                     ]
-                    linkLength = 4
+                    linkLength = 3
                 } else {
                     suggLinks = [
                         'Provvigioni',

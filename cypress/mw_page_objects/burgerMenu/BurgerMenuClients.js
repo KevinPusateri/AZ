@@ -62,7 +62,7 @@ class BurgerMenuClients extends Clients {
             page === LinksBurgerMenu.HOSPITAL_SCANNER) {
             this.checkPage(page)
         } else {
-            cy.contains(page).click()
+            cy.contains(page,{timeout:5000}).click()
             this.checkPage(page)
         }
 

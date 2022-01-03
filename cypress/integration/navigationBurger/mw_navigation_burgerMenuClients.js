@@ -71,19 +71,21 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
     });
 
     it('Verifica aggancio Analisi dei bisogni', function () {
-        if (!Cypress.env('isAviva'))
-            cy.task('getHostName').then(hostName => {
-                let currentHostName = hostName
-                cy.log(currentHostName)
-                if (!currentHostName.includes('SM')) {
-                    TopBar.clickClients()
-                    BurgerMenuClients.clickLink('Analisi dei bisogni')
-                }
-            })
-        else this.skip()
+        // if (!Cypress.env('isAviva'))
+        cy.task('getHostName').then(hostName => {
+            let currentHostName = hostName
+            cy.log(currentHostName)
+            if (!currentHostName.includes('SM')) {
+                TopBar.clickClients()
+                BurgerMenuClients.clickLink('Analisi dei bisogni')
+            }
+        })
+        // else this.skip()
     });
 
     it('Verifica aggancio Censimento nuovo cliente', function () {
+        if (!keys.CENSIMENTO_NUOVO_CLIENTE)
+            this.skip()
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Censimento nuovo cliente')
         BurgerMenuClients.backToClients()
@@ -97,49 +99,59 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
     });
 
     it('Verifica aggancio Pannello anomalie', function () {
+        if (!keys.PANNELLO_ANOMALIE)
+            this.skip()
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Pannello anomalie')
         BurgerMenuClients.backToClients()
     });
 
     it('Verifica aggancio Clienti duplicati', function () {
+        if (!keys.CLIENTI_DUPLICATI)
+            this.skip()
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Clienti duplicati')
         BurgerMenuClients.backToClients()
     });
 
     it('Verifica aggancio Cancellazione Clienti', function () {
+        if (!keys.CANCELLAZIONE_CLIENTI)
+            this.skip()
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Cancellazione Clienti')
         BurgerMenuClients.backToClients()
     });
 
     it('Verifica aggancio Cancellazione Clienti per fonte', function () {
+        if (!keys.CANCELLAZIONE_CLIENTI_PER_FONTE)
+            this.skip()
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Cancellazione Clienti per fonte')
         BurgerMenuClients.backToClients()
     });
 
+    it('Verifica aggancio Hospital scanner', function () {
+        if (!keys.HOSPITAL_SCANNER)
+            this.skip()
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Hospital scanner')
+        HomePage.reloadMWHomePage()
+    });
+
+    it('Verifica aggancio Antiriciclaggio', function () {
+        if (!keys.ANTIRICICLAGGIO)
+            this.skip()
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Antiriciclaggio')
+        BurgerMenuClients.backToClients()
+    });
     it('Verifica aggancio Gestione fonte principale', function () {
+        if (!keys.GESTIONE_FONTE_PRINCIPALE)
+            this.skip()
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Gestione fonte principale')
         BurgerMenuClients.backToClients()
     });
-
-    if (!Cypress.env('isAviva')) {
-
-        it('Verifica aggancio Hospital scanner', function () {
-            TopBar.clickClients()
-            BurgerMenuClients.clickLink('Hospital scanner')
-            HomePage.reloadMWHomePage()
-        });
-
-        it('Verifica aggancio Antiriciclaggio', function () {
-            TopBar.clickClients()
-            BurgerMenuClients.clickLink('Antiriciclaggio')
-            BurgerMenuClients.backToClients()
-        });
-    }
 
 
 });
