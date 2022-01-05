@@ -87,7 +87,7 @@ describe('Matrix Web : Convenzioni', {
                     retrivedClient = currentClient[0]
                     retrivedPartyRelations = currentClient[1]
                     TopBar.search(currentClient[0].name + ' ' + currentClient[0].firstName)
-                    LandingRicerca.clickClientePF(currentClient[0].name + ' ' + currentClient[0].firstName)
+                    LandingRicerca.clickClientePF(currentClient[0].firstName+ ' ' + currentClient[0].name)
                     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                     DettaglioAnagrafica.clickSubTab('Convenzioni')
                     DettaglioAnagrafica.checkConvenzioniPresenti(false, true)

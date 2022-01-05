@@ -33,8 +33,8 @@ let cliente
  * @param {string} contactType : tipo di contatto a scelta tra 'numero' e 'mail'
  */
 const searchClientWithoutContattiPrincipali = (contactType) => {
-    LandingRicerca.searchRandomClient(true, "PF", "P")
-    LandingRicerca.clickRandomResult("PF", "P")
+    LandingRicerca.searchRandomClient(true, "PF", Cypress.env('isAviva') ? "E" : "P")
+    LandingRicerca.clickRandomResult("PF",Cypress.env('isAviva') ? "E" : "P")
 
     SintesiCliente.checkContattoPrincipale(contactType).then(contactIsPresent => {
         if (!contactIsPresent)

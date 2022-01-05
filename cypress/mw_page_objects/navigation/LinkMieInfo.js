@@ -1,7 +1,7 @@
 const LinksMenu = {
     PRIMO_PIANO: 'Primo piano',
     RACCOLTE: 'Raccolte',
-    TUTTE_LE_NOTIZIE: 'Tutte le Notizie',
+    TUTTE_LE_NOTIZIE: 'Tutte le notizie',
     CONTENUTI_SALVATI: 'Contenuti salvati',
     PRODOTTI: 'Prodotti',
     INIZIATIVE: 'Iniziative',
@@ -21,6 +21,8 @@ const LinksMenu = {
         if (!keys['primo-piano']) delete this.PRIMO_PIANO
         if (!keys['raccolte']) delete this.RACCOLTE
         if (!keys['tutte-le-notizie']) delete this.TUTTE_LE_NOTIZIE
+        if (!keys['prodotti']) delete this.PRODOTTI
+        if (!keys['iniziative']) delete this.INIZIATIVE
     }
     // NEW_COMPANY_HANDBOOK: 'New company handbook',
 }
@@ -53,11 +55,12 @@ const LinksSubMenu = {
         WINBACK_MOTOR: 'Winback Motor',
         DECOMMISSIONING_TELEMATICI: 'Decommissioning telematici',
         DIGITALIZZAZIONE_DEL_CERTIFICATO_ASSICURAZTIVO_MOTOR: 'Digitalizzazione del certificato assicurativo Motor',
-        ATTESTATO_DI_RISCHIO_DINAMICO: 'Attestato di rischio dinamico'
+        ATTESTATO_DI_RISCHIO_DINAMICO: 'Attestato di rischio dinamico',
+        TEXT: 'Test'
     },
     SALES_ACADEMY: {
         CHI_SIAMO: 'Chi siamo',
-        //MASTER_PROFESSIONE_AGENTE: 'Master Professione Agente',
+        MASTER_PROFESSIONE_AGENTE: 'Master Professione Agente',
         ALLIANZ_BUSINESS_SCHOOL: 'Allianz Business School',
         PERCORSI_DI_RUOLO: 'Percorsi di ruolo',
         // OBBLIGHI_IVASS: 'Obblighi IVASS',
@@ -91,11 +94,11 @@ const LinksSubMenu = {
     RISORSE_PER_AGENTE: {
         TRATTAMENTI_PROVVIGIONALI: 'Trattamenti provvigionali',
         INCENTIVAZIONI_MISSION_REGOLAMENTI: 'Incentivazioni, mission, regolamenti',
-        CASA_ALLIANZ: 'Casa Allianz',
+        // CASA_ALLIANZ: 'Casa Allianz',
         COLLABORAZIONI_ORIZZONTALI: 'Collaborazioni orizzontali',
         CONVENZIONI_PRODOTTI_ALLIANZ: 'Convenzioni Prodotti Allianz',
         CASSA_PREVIDENZA_AGENTI: 'Cassa Previdenza Agenti',
-        //LE_SCELTE_DI_INVESTIMENTO: 'Le scelte di investimento',
+        LE_SCELTE_DI_INVESTIMENTO: 'Le scelte di investimento',
         CATALOGO_IDEE: 'Catalogo idee'
     },
     IL_MONDO_ALLIANZ: {
@@ -230,6 +233,8 @@ let keysLinksMenu = {
     'primo-piano': true,
     'raccolte': true,
     'tutte-le-notizie': true,
+    'prodotti': true,
+    'iniziative':true,
     // PRIMO_PIANO: true,
     // RACCOLTE: true,
     // TUTTE_LE_NOTIZIE: true,

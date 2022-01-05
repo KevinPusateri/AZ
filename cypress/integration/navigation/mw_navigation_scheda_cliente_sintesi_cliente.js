@@ -297,13 +297,11 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         } else this.skip()
     })
     it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio BMP', function () {
-        if (BMPenabled) {
-            SintesiCliente.clickRamiVari()
-            SintesiCliente.clickAllianzUltraCasaPatrimonioBMP()
-            SintesiCliente.back()
-        }
-        else
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP)
             this.skip()
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.clickAllianzUltraCasaPatrimonioBMP()
+        SintesiCliente.back()
     })
 
 

@@ -30,7 +30,7 @@ class Mieinfo {
      * @param {string} page - nome del link nel Menu
      */
     static clickLinkOnMenu(page) {
-        getIFrame().contains(page).click().wait(2000)
+        getIFrame().find('span:visible').contains(page,{timeout:5000}).click().wait(2000)
         if (page === 'New company handbook') // menu--link_active non c'è (..active_id)
             this.checkPageOnMenu(page)
         getIFrame().find('a[class~="menu--link_active"]').should('contain', page)
@@ -118,6 +118,7 @@ class Mieinfo {
      */
     static checkLinksOnIcon(page) {
         const LinksMenu = LinkMieInfo.getLinksMenu()
+        cy.wait(4000)
         switch (page) {
             case LinksMenu.PRODOTTI:
                 const linksProdottiIcon = [
@@ -166,9 +167,9 @@ class Mieinfo {
                 const linksSalesAcademyIcon = [
                     'Chi siamo',
                     'Allianz Business School',
-                    'Campus e IVASS',
+                    'Obblighi IVASS',
                     'Percorsi di ruolo',
-                    'Formazione multicanale',
+                    'Formazione Multicanale',
                 ]
                 let currentIconsSalesAcademy = []
                 getIFrame().find('.product-icon--name').each(($link, i) => {
@@ -223,10 +224,11 @@ class Mieinfo {
                     'Catalogo prodotti tecnologici',
                     'Sicurezza IT',
                     'L\'app ADAM',
-                    //'Pacchetti di sicurezza',   
-                    'Riferimenti aziendali',
+                    'Pacchetti di sicurezza',   
+                    // 'Riferimenti aziendali',
+                    'Manuali di travaso MISA',
                     'Link utili',
-                    'IDD',
+                    'Minisito IDD',
                 ]
                 let currentLinksRisorseAgenziaIcon = []
                 
@@ -240,14 +242,14 @@ class Mieinfo {
                 const linksRisorseAgenteIcon = [
                     'Trattamenti provvigionali',
                     'Incentivazioni, mission, regolamenti',
-                    'Casa Allianz',
+                    // 'Casa Allianz',
                     'Convenzioni Prodotti Allianz',
                     'Cassa Previdenza Agenti',
-                    //'Le scelte di investimento',
+                    'Le scelte di investimento',
                     'Catalogo idee'
                 ]
                 let currentlinksRisorseAgenteIcon = []
-                getIFrame().find('.product-icon--name').each(($link, i) => {
+                getIFrame().find('.product-icon--name:visible').each(($link, i) => {
                     currentlinksRisorseAgenteIcon.push($link.text().trim())
                 }).then(() => {
                     expect(currentlinksRisorseAgenteIcon.sort()).to.deep.eq(linksRisorseAgenteIcon.sort());
@@ -255,12 +257,12 @@ class Mieinfo {
                 break;
             case LinksMenu.IL_MONDO_ALLIANZ:
                 const linksMondoAllianzIcon = [
-                    'I codici di Allianz SpA',
+                    'I codici del Gruppo Allianz SpA',
                     'La rassegna stampa',
                     'Agricola San Felice'
                 ]
                 let currentlinksMondoAllianzIcon = []
-                getIFrame().find('.product-icon--name').each(($link, i) => {
+                getIFrame().find('.product-icon--name:visible').each(($link, i) => {
                     currentlinksMondoAllianzIcon.push($link.text().trim())
                 }).then(() => {
                     expect(currentlinksMondoAllianzIcon.sort()).to.deep.eq(linksMondoAllianzIcon.sort());
@@ -303,10 +305,10 @@ class Mieinfo {
                 getIFrame().find('h1:contains("Momento della Verità")').should('be.visible')
                 break;
             case LinksMenu.RILASCI_INFORMATICI:
-                getIFrame().find('h1:contains("Rilasci informatici")').should('be.visible')
+                getIFrame().find('h1:contains("Release")').should('be.visible')
                 break;
             case LinksMenu.MANUALI_INFORMATICI:
-                getIFrame().find('h1:contains("Manuali informatici")').should('be.visible')
+                getIFrame().find('h1:contains("Manuali Informatici")').should('be.visible')
                 break;
             case LinksMenu.CIRCOLARI:
                 getIFrame().find('h1:contains("Circolari")').should('be.visible')
@@ -324,10 +326,10 @@ class Mieinfo {
                 getIFrame().find('h1:contains("Operatività")').should('be.visible')
                 break;
             case LinksMenu.RISORSE_PER_AGENTE:
-                getIFrame().find('h1:contains("Risorse per l\'Agente")').should('be.visible')
+                getIFrame().find('h1:contains("Risorse per l\'agente")').should('be.visible')
                 break;
             case LinksMenu.IL_MONDO_ALLIANZ:
-                getIFrame().find('h1:contains("Il mondo Allianz")').should('be.visible')
+                getIFrame().find('h1:contains("Il Mondo Allianz")').should('be.visible')
                 break;
             case LinksMenu.NEW_COMPANY_HANDBOOK:
                 getIFrame().find('h1:contains("Test Handbook per rilascio")').should('be.visible')
@@ -407,7 +409,7 @@ class Mieinfo {
             'Media Library',
             'MidCo',
             'Modello Generico',
-            'Portale Digital Agency',
+            // 'Portale Digital Agency',
             'Pubblica Amministrazione',
             'Quadratura Unificata Digital Agency',
             'Rami Vari',
@@ -470,19 +472,19 @@ class Mieinfo {
         getIFrame().find('h1:contains("Allianz1 Business")').should('not.exist')
 
         getIFrame().contains(linksProdotti.AUTO_E_MOTORI).click()
-        getIFrame().find('h1:contains("Auto e motori")').should('be.visible')
+        getIFrame().find('h1:contains("Auto e Motori")').should('be.visible')
 
         getIFrame().contains(linksProdotti.CASA_CONDOMINIO_E_PETCARE).click()
         getIFrame().find('h1:contains("Casa")').should('be.visible')
 
         getIFrame().contains(linksProdotti.INFORTUNI_E_SALUTE).click()
-        getIFrame().find('h1:contains("Infortuni e salute")').should('be.visible')
+        getIFrame().find('h1:contains("Infortuni e Salute")').should('be.visible')
 
         getIFrame().contains(linksProdotti.IMPRESA_E_RISCHI_DEDICATI).click()
         getIFrame().find('h1:contains("Impresa e rischi dedicati")').should('be.visible').wait(3000)
 
         getIFrame().find('a[href="/lemieinfo/prodotti/tutela-legale"]').contains(linksProdotti.TUTELA_LEGALE).click()
-        getIFrame().find('h1:contains("Tutela legale")').should('be.visible')
+        getIFrame().find('h1:contains("Tutela Legale")').should('be.visible')
 
         getIFrame().contains(linksProdotti.VITA).click()
         getIFrame().find('h1:contains("Vita")').should('be.visible')
@@ -494,7 +496,7 @@ class Mieinfo {
         getIFrame().find('h1:contains("Convenzioni nazionali")').should('be.visible')
 
         getIFrame().contains(linksProdotti.CONVENZIONI_LOCALI_E_OFFERTE_DEDICATE).click()
-        getIFrame().find('h1:contains("Convenzioni locali e offerte dedicate")').should('be.visible')
+        getIFrame().find('h1:contains("Convenzioni locali e Offerte dedicate")').should('be.visible')
 
         getIFrame().contains(linksProdotti.AGCS_ITALIA).click()
         getIFrame().find('h1:contains("AGCS")').should('be.visible')
@@ -518,7 +520,7 @@ class Mieinfo {
         getIFrame().find('h1:contains("' + linksIniziative.PROPONI_TCM + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.MENSILIZZAZIONE_RAMI_VARI).click()
-        getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_RAMI_VARI + '")').should('be.visible')
+        // getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_RAMI_VARI + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.MENSILIZZAZIONE_AUTO).click()
         getIFrame().find('h1:contains("' + linksIniziative.MENSILIZZAZIONE_AUTO + '")').should('be.visible')
@@ -530,7 +532,7 @@ class Mieinfo {
         getIFrame().find('h1:contains("' + linksIniziative.ALLIANZPAY + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.BUSTA_ARANCIONE).click()
-        getIFrame().find('h1:contains("' + linksIniziative.BUSTA_ARANCIONE + '")').should('be.visible')
+        // getIFrame().find('h1:contains("' + linksIniziative.BUSTA_ARANCIONE + '")').should('be.visible')
 
         getIFrame().contains(linksIniziative.WINBACK_MOTOR).click()
         getIFrame().find('h1:contains("' + linksIniziative.WINBACK_MOTOR + '")').should('be.visible')
@@ -557,13 +559,13 @@ class Mieinfo {
         getIFrame().find(':contains("Università")').should('be.visible')
 
         getIFrame().contains(linksSalesAcademy.PERCORSI_DI_RUOLO).click()
-        getIFrame().find('h1:contains("Oltre l’offerta: Percorsi di sviluppo dedicati")').should('be.visible')
+        getIFrame().find('h3:contains("Sheet Percorsi di ruolo")').should('be.visible')
 
         getIFrame().contains(linksSalesAcademy.CAMPUS_IVASS).click()
-        getIFrame().find(':contains("Campus e IVASS")').should('be.visible')
+        getIFrame().find(':contains("Sheet Obblighi IVASS")').should('be.visible')
 
         getIFrame().contains(linksSalesAcademy.FORMAZIONE_MULTICANALE).click()
-        getIFrame().find('h1:contains("Formazione multicanale")').should('be.visible')
+        getIFrame().find('h1:contains("Formazione Multicanale")').should('be.visible')
     }
 
     /**
@@ -577,13 +579,13 @@ class Mieinfo {
     static checkAllPagesAntiriciclaggio() {
         const linksSalesAcademy = LinkMieInfo.getLinksSubMenu().ANTIRICICLAGGIO
         getIFrame().contains(linksSalesAcademy.NORMATIVA).click()
-        getIFrame().find('h1:contains("' + linksSalesAcademy.NORMATIVA + '")').should('be.visible')
+        // getIFrame().find('h1:contains("' + linksSalesAcademy.NORMATIVA + '")').should('be.visible')
 
         getIFrame().contains(linksSalesAcademy.MODULI_MANUALI_E_PROCEDURE).click()
-        getIFrame().find('h1:contains("' + linksSalesAcademy.MODULI_MANUALI_E_PROCEDURE + '")').should('be.visible')
+        // getIFrame().find('h1:contains("' + linksSalesAcademy.MODULI_MANUALI_E_PROCEDURE + '")').should('be.visible')
 
         getIFrame().contains(linksSalesAcademy.LINK_UTILI).click()
-        getIFrame().find('h1:contains("' + linksSalesAcademy.LINK_UTILI + '")').should('be.visible')
+        getIFrame().find('h1:contains("Antiriciclaggio link utili")').should('be.visible')
     }
 
     /**

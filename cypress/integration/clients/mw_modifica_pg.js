@@ -24,7 +24,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-    //#endregion
+//#endregion
 
 let clientePGNewData
 let currentClientPG
@@ -71,29 +71,29 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
 })
-afterEach(function() {
+afterEach(function () {
     if (this.currentTest.state !== 'passed') {
         TopBar.logOutMW()
-            //#region Mysql
+        //#region Mysql
         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-                let tests = testsInfo
-                cy.finishMysql(dbConfig, insertedId, tests)
-            })
-            //#endregion
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
         Cypress.runner.stop();
     }
 })
-after(function() {
-        TopBar.logOutMW()
-            //#region Mysql
-        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-                let tests = testsInfo
-                cy.finishMysql(dbConfig, insertedId, tests)
-            })
-            //#endregion
-
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
     })
-    //#endregion Before After
+    //#endregion
+
+})
+//#endregion Before After
 
 let urlClient
 describe('Matrix Web : Modifica PG', {
@@ -104,8 +104,8 @@ describe('Matrix Web : Modifica PG', {
 }, () => {
 
     it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
-        LandingRicerca.searchRandomClient(true, "PG", "P")
-        LandingRicerca.clickRandomResult('P')
+        LandingRicerca.searchRandomClient(true, "PG", Cypress.env('isAviva') ? 'E' : 'P')
+        LandingRicerca.clickRandomResult(Cypress.env('isAviva') ? 'E' : 'P')
         SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
             currentClientPG = currentClient
         })
@@ -130,7 +130,7 @@ describe('Matrix Web : Modifica PG', {
     })
 
     it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
-        TopBar.search(currentClientPG.name) 
+        TopBar.search(currentClientPG.name)
         LandingRicerca.clickClientePG(currentClientPG.name)
         SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
         DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)

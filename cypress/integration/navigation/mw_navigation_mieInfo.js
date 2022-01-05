@@ -130,12 +130,13 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
         Mieinfo.checkLinksOnIcon('Momento della Verità')
     });
 
+
     //! DA VERIFICARE
-    it('Verifica aggancio Le release', function () {
-        TopBar.clickMieInfo()
-        Mieinfo.clickLinkOnMenu('Le release')
-        Mieinfo.checkPanelsOnRelease()
-    });
+    // it('Verifica aggancio Le release', function () {
+    //     TopBar.clickMieInfo()
+    //     Mieinfo.clickLinkOnMenu('Le release')
+    //     Mieinfo.checkPanelsOnRelease()
+    // });
 
     it('Verifica aggancio Rilasci informatici', function () {
         TopBar.clickMieInfo()
@@ -225,4 +226,4 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     //   Mieinfo.clickLinkOnMenu('New company handbook');
     //   Mieinfo.checkPageOnSubMenu('New company handbook')
     // })
-})
+});
