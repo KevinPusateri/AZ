@@ -241,7 +241,7 @@ class BackOffice {
         // if (Cypress.env('isAviva'))
         //     getIFrame().find('span:contains("Nuova incentivazione Vita"):visible')
         // else
-        getIFrame().find('span:contains("Nuova incentivazione Vita"):visible')
+        getIFrame().find('span:contains("IVASS"):visible')
     }
 }
 

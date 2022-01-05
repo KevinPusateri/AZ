@@ -26,12 +26,20 @@ const getIFrameCampagne = () => {
 //#endregion
 
 const LinksRapidi = {
-    NUOVO_SFERA: 'Nuovo Sfera', //! seconda finestra
+    NUOVO_SFERA: 'Nuovo Sfera',
     SFERA: 'Sfera',
-    CAMPAGNE_COMMERCIALI: 'Campagne Commerciali', //! seconda finestra
+    CAMPAGNE_COMMERCIALI: 'Campagne Commerciali',
     RECUPERO_PREVENTIVI_E_QUOTAZIONI: 'Recupero preventivi e quotazioni',
     MONITORAGGIO_POLIZZE_PROPOSTE: 'Monitoraggio Polizze Proposte',
-    GED_GESTIONE_DOCUMENTALE: 'GED – Gestione Documentale'
+    GED_GESTIONE_DOCUMENTALE: 'GED – Gestione Documentale',
+    deleteKey: function (keys) {
+        if (!keys.NUOVO_SFERA) delete this.NUOVO_SFERA
+        if (!keys.SFERA || Cypress.env('isAviva')) delete this.SFERA
+        if (!keys.CAMPAGNE_COMMERCIALI || Cypress.env('isAviva')) delete this.CAMPAGNE_COMMERCIALI
+        if (!keys.RECUPERO_PREVENTIVI_E_QUOTAZIONI) delete this.RECUPERO_PREVENTIVI_E_QUOTAZIONI
+        if (!keys.MONITORAGGIO_POLIZZE_PROPOSTE) delete this.MONITORAGGIO_POLIZZE_PROPOSTE
+        if (!keys.GED_GESTIONE_DOCUMENTALE || Cypress.env('isAviva')) delete this.GED_GESTIONE_DOCUMENTALE
+    }
 }
 
 const LinksOnEmettiPolizza = {
@@ -46,18 +54,18 @@ const LinksOnEmettiPolizza = {
     PREVENTIVO_ANONIMO_VITA_INDIVIDUALI: 'Preventivo anonimo Vita Individuali',
     MINIFLOTTE: 'MiniFlotte',
     TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
-    deleteKey: function(keys) {  
-        if(!keys.PreventivoMotorEnabled) delete this.PREVENTIVO_MOTOR
-        if(!keys.UltraUltraCasaPatrimonioEnabled) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
-        if(!keys.UltraSaluteEnabled) delete this.ALLIANZ_ULTRA_SALUTE
-        if(!keys.BMPenabled) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
-        if(!keys.UltraImpresaEnabled) delete this.ALLIANZ_ULTRA_IMPRESA
-        if(!keys.Allianz1BusinessEnabled) delete this.ALLIANZ1_BUSINESS
-        if(!keys.FasquoteImpresaAlbergoEnabled) delete this.FASTQUOTE_IMPRESA_E_ALBERGO
-        if(!keys.FlotteConvenzioniEnabled) delete this.FLOTTE_E_CONVENZIONI
-        if(!keys.PreventivoAnonimoVitaenabled) delete this.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI
-        if(!keys.MiniflotteEnabled) delete this.MINIFLOTTE
-        if(!keys.TrattativeAutoCorporateEnabled && !Cypress.env('isAviva')) delete this.TRATTATIVE_AUTO_CORPORATE
+    deleteKey: function (keys) {
+        if (!keys.PreventivoMotorEnabled) delete this.PREVENTIVO_MOTOR
+        if (!keys.UltraUltraCasaPatrimonioEnabled) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
+        if (!keys.UltraSaluteEnabled) delete this.ALLIANZ_ULTRA_SALUTE
+        if (!keys.BMPenabled) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
+        if (!keys.UltraImpresaEnabled) delete this.ALLIANZ_ULTRA_IMPRESA
+        if (!keys.Allianz1BusinessEnabled) delete this.ALLIANZ1_BUSINESS
+        if (!keys.FasquoteImpresaAlbergoEnabled) delete this.FASTQUOTE_IMPRESA_E_ALBERGO
+        if (!keys.FlotteConvenzioniEnabled) delete this.FLOTTE_E_CONVENZIONI
+        if (!keys.PreventivoAnonimoVitaenabled) delete this.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI
+        if (!keys.MiniflotteEnabled) delete this.MINIFLOTTE
+        if (!keys.TrattativeAutoCorporateEnabled && !Cypress.env('isAviva')) delete this.TRATTATIVE_AUTO_CORPORATE
     }
 }
 
@@ -75,7 +83,7 @@ class Sales {
      * Verifica se i "pz" sono presenti 
      */
     static checkExistPezzi() {
-        cy.get('app-lob-link').each((lob) => {
+        cy.get('app-lob-link').find('div[class="app-lob-link ng-star-inserted"]:visible').each((lob) => {
             cy.wrap(lob).find('span:contains("' + lob.text() + '")').click()
             cy.get('app-receipt-header').find('span:contains("Pezzi")').click()
             cy.get('app-receipt-header').find('span[class="value ng-star-inserted"]').invoke('text').should('not.include', '€')
@@ -88,7 +96,7 @@ class Sales {
      * Verifica se i "pz" sono presenti 
      */
     static checkExistPremi() {
-        cy.get('app-lob-link').each((lob) => {
+        cy.get('app-lob-link').find('div[class="app-lob-link ng-star-inserted"]:visible').each((lob) => {
             cy.wrap(lob).find('span:contains("' + lob.text() + '")').click()
             cy.get('app-receipt-header').find('span:contains("Pezzi")').click()
             cy.get('app-receipt-header').find('span[class="value ng-star-inserted"]').invoke('text').should('not.include', '€')
@@ -100,28 +108,17 @@ class Sales {
     /**
      * Verifica che i link dei collegamenti rapidi siano presenti nella pagina
      */
-    static checkExistLinksCollegamentiRapidi() {
+    static checkExistLinksCollegamentiRapidi(keys) {
 
-        if (Cypress.env('monoUtenza')) {
-            delete LinksRapidi.NUOVO_SFERA
-            delete LinksRapidi.CAMPAGNE_COMMERCIALI
-            const linksCollegamentiRapidi = Object.values(LinksRapidi)
-            cy.get('app-quick-access').find('a').should('have.length', 4).each(($link, i) => {
-                expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
-            })
-        } else if (Cypress.env('isAviva')) {
-            delete LinksRapidi.GED_GESTIONE_DOCUMENTALE
-            delete LinksRapidi.SFERA
-            const linksCollegamentiRapidi = Object.values(LinksRapidi)
-            cy.get('app-quick-access').find('a').should('have.length', 4).each(($link, i) => {
-                expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
-            })
-        } else {
-            const linksCollegamentiRapidi = Object.values(LinksRapidi)
-            cy.get('app-quick-access').find('a').should('have.length', 6).each(($link, i) => {
-                expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
-            })
-        }
+
+
+        LinksRapidi.deleteKey(keys)
+        const linksCollegamentiRapidi = Object.values(LinksRapidi)
+
+        cy.get('app-quick-access').find('a').each(($link, i) => {
+            expect($link.text().trim()).to.include(linksCollegamentiRapidi[i]);
+        })
+
     }
 
     /**
@@ -208,7 +205,7 @@ class Sales {
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
         } else if (Cypress.env('isAviva')) {
-         //!DA PROVARE SENZA
+            //!DA PROVARE SENZA
             cy.get('.card-container').find('lib-da-link').each(($link, i) => {
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
@@ -449,7 +446,7 @@ class Sales {
         cy.get('.cards-container').find('.card').first().click()
         Common.canaleFromPopup()
         cy.wait(20000)
-        getIFrame().find('#AZBuilder1_ctl14_cmdEsci').invoke('attr', 'value').should('equal', '  Esci  ')
+        getIFrame().find('#AZBuilder1_ctl13_cmdEsci').invoke('attr', 'value').should('equal', '  Esci  ')
     }
 
     /**

@@ -90,8 +90,14 @@ class Numbers {
                 // interceptPostAgenziePDF()
                 interceptGetAgenziePDF()
                 cy.get('app-kpi-card').contains(link).click()
-                if (link.includes('Portafoglio'))
-                    cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
+                // if (link.includes('Portafoglio'))
+                //     cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
+                cy.get('div[class="cdk-overlay-container"]').then(($popup) => {
+                    cy.wait(1000)
+                    const checkPopup = $popup.find(':contains(OK)').is(':visible')
+                    if (checkPopup)
+                        cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
+                })
                 cy.wait('@getDacommerciale', { requestTimeout: 120000 });
                 break;
             case 'MOTOR':
@@ -101,13 +107,19 @@ class Numbers {
                 interceptPostAgenziePDF()
                 cy.get('app-lob-title').contains(tab).parents('app-border-card')
                     .find('lib-da-link:contains("' + link + '")').click()
-                if (link.includes('Portafoglio') || link.includes('Retention'))
-                    cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
+                cy.get('div[class="cdk-overlay-container"]').then(($popup) => {
+                    cy.wait(1000)
+                    const checkPopup = $popup.find(':contains(OK)').is(':visible')
+                    if (checkPopup)
+                        cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
+                })
+                // if ((link.includes('Portafoglio') || link.includes('Retention')) && Cypress.env('isAviva'))
+                //     cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
                 cy.wait('@postDacommerciale', { requestTimeout: 120000 });
                 break;
 
         }
-        getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
+        getIFrame().find('#ricerca_cliente').should('be.visible').and('contain.text', 'Filtra')
 
     }
 

@@ -35,13 +35,23 @@ let keys = {
     TrattativeAutoCorporateEnabled: true
 }
 
+let keysRapidi = {
+    MONITORAGGIO_POLIZZE_PROPOSTE: true,
+    RECUPERO_PREVENTIVI_E_QUOTAZIONI: true,
+    NUOVO_SFERA: true,
+    SFERA: true,
+    CAMPAGNE_COMMERCIALI: true,
+    GED_GESTIONE_DOCUMENTALE: true
+}
+
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
+        // Profiling Emetti polizza
         cy.getProfiling(data.tutf).then(profiling => {
             cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.BMPenabled = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => {keys.UltraImpresaEnabled = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.UltraImpresaEnabled = profiled })
             cy.filterProfile(profiling, 'AUTO_PREVENTIVO').then(profiled => { keys.PreventivoMotorEnabled = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.UltraSaluteEnabled = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.UltraUltraCasaPatrimonioEnabled = profiled })
@@ -51,6 +61,17 @@ before(() => {
             cy.filterProfile(profiling, 'VITA_PREVENTIVAZIONE_ANONIMA').then(profiled => { keys.PreventivoAnonimoVitaenabled = profiled })
             cy.filterProfile(profiling, 'COMMON_MINIFLOTTE').then(profiled => { keys.MiniflotteEnabled = profiled })
             cy.filterProfile(profiling, 'COMMON_TOOL_TRATTATIVE').then(profiled => { keys.TrattativeAutoCorporateEnabled = profiled })
+        })
+
+        //Profiling collegamenti rapidi
+        cy.getProfiling(data.tutf).then(profiling => {
+            cy.filterProfile(profiling, 'COMMON_GESTIONE_MONITORAGGIO_PROPOSTE').then(profiled => { keys.MONITORAGGIO_POLIZZE_PROPOSTE = profiled })
+            cy.filterProfile(profiling, 'COMMON_OFFERTA_PREVENTIVI').then(profiled => { keys.RECUPERO_PREVENTIVI_QUOTAZIONI = profiled })
+            cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keys.NUOVO_SFERA = profiled })
+            cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keys.SFERA = profiled })
+            cy.filterProfile(profiling, 'RUOLO_CAMPAIGN').then(profiled => { keys.CAMPAGNE_COMMERCIALI = profiled })
+            cy.filterProfile(profiling, 'COMMON_GED').then(profiled => { keys.GED_GESTIONE_DOCUMENTALE = profiled })
+
         })
     })
 })
@@ -80,7 +101,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica presenza dei collegamenti rapidi', function () {
         TopBar.clickSales()
-        Sales.checkExistLinksCollegamentiRapidi()
+        Sales.checkExistLinksCollegamentiRapidi(keysRapidi)
     })
 
     it('Verifica aggancio Nuovo Sfera', function () {
@@ -149,13 +170,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
 
         it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function () {
-            if (BMPenabled) {
-                TopBar.clickSales()
-                Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio BMP')
-                Sales.backToSales()
-            }
-            else
+            if (!keys.BMPenabled)
                 this.skip()
+            TopBar.clickSales()
+            Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio BMP')
+            Sales.backToSales()
         })
 
         it('Verifica aggancio Emetti Polizza - Allianz1 Business', function () {
@@ -331,7 +350,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             Sales.backToSales()
         })
     } else
-        it('Verifica Tab Vita su Proposte non sia presente', function () { /// DA FARE
+        it('Verifica Tab Vita su Proposte non sia presente', function () {
             TopBar.clickSales()
             Sales.checkNotExistTabVitaOnProposte()
         })

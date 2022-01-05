@@ -124,7 +124,7 @@ class SCUAltriIndirizzi {
     }
 
 
-    static eliminaIndirizzo() {
+    static eliminaIndirizzo(indirizzo) {
         cy.get("app-client-other-addresses").then((table) => {
             cy.wrap(table)
                 .find('app-client-address-table-row:contains("' + indirizzo.address + '")'

@@ -194,7 +194,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         })
     }
 
-    it.skip('Verifica su Prodotti aggancio Primo indice prodotto', function () {
+    it('Verifica su Prodotti aggancio Primo indice prodotto', function () {
         TopBar.clickNumbers()
         Numbers.clickTab('PRODOTTI', 'products')
         Numbers.clickAndCheckAtterraggioPrimoIndiceProdotto()
@@ -207,7 +207,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
             Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
             Numbers.clickAndCheckAtterraggioMonitoraggioCarico()
         })
-
+        
         it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function () {
             TopBar.clickNumbers()
             Numbers.clickTab('INCENTIVI', 'incentives')

@@ -24,24 +24,24 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-    //#endregion
+//#endregion
 
 let currentClient = ''
 let documentType = ''
 
 //#region Support
 const searchClientWithoutDoc = (documentType) => {
-        LandingRicerca.searchRandomClient(true, "PF", "P")
-        LandingRicerca.clickRandomResult('PF')
-        DettaglioAnagrafica.sezioneDocumenti()
-        DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
-            if (documentIsPresent)
-                searchClientWithoutDoc(documentType)
-            else
-                return
-        })
-    }
-    //#endregion
+    LandingRicerca.searchRandomClient(true, "PF", "P")
+    LandingRicerca.clickRandomResult('PF')
+    DettaglioAnagrafica.sezioneDocumenti()
+    DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+        if (documentIsPresent)
+            searchClientWithoutDoc(documentType)
+        else
+            return
+    })
+}
+//#endregion
 
 //#region Before After
 before(() => {
@@ -56,16 +56,16 @@ beforeEach(() => {
 })
 
 after(function() {
-        TopBar.logOutMW()
-            //#region Mysql
-        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-                let tests = testsInfo
-                cy.finishMysql(dbConfig, insertedId, tests)
-            })
-            //#endregion
-
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
     })
-    //#endregion Before After
+    //#endregion
+
+})
+//#endregion Before After
 
 describe('Matrix Web : Documenti', function() {
     it('Cerca Cliente senza Carta D\'Identità', () => {

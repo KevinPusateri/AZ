@@ -90,7 +90,7 @@ class LandingRicerca {
             cy.get('input[name="main-search-input"]').clear().type(randomChars).type('{enter}')
         })
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
-        cy.get('lib-client-item').should('be.visible')
+        // cy.get('lib-client-item').should('be.visible')
         if (filtri) {
             //Filtriamo la ricerca in base a tipoCliente
             cy.get('lib-clients-container').find('nx-icon[name="filter"]').click()
@@ -118,7 +118,7 @@ class LandingRicerca {
             cy.get('.footer').find('button').contains('applica').click()
             cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
 
-            cy.get('lib-applied-filters-item').find('span').should('be.visible')
+            cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
         }
     }
 
@@ -184,17 +184,45 @@ class LandingRicerca {
                 }
             });
 
-            cy.get('body').as('body').then(($body) => {
+            // cy.get('body').as('body').then(($body) => {
 
-                const scrollableNotPresent = $body.find('div[class= "scrollable-container ps"]').is(':visible')
+            // const scrollableNotPresent = $body.find('div[class="scrollabe-conltainer ps"]').is(':visible')
 
-                //Risultati SENZA la scrool bar
-                if (scrollableNotPresent) {
-                    cy.get('div[class= "scrollable-container ps"]').then(($clienti) => {
+            //Risultati SENZA la scrool bar
+            // if (scrollableNotPresent) {
+            //     cy.get('div[class="scrollable-container ps"]').then(($clienti) => {
+            //         let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
+            //         let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
+            //         cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
+
+            //         cy.wait(5000)
+            //         cy.get('body').then(($body) => {
+            //             const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
+            //             if (check) {
+            //                 this.searchRandomClient(true, clientForm, clientType)
+            //                 searchOtherMember()
+            //             }
+
+            //         })
+            //     })
+            // }
+            //Risultati con presenza di scrool bar
+            // else {
+            cy.get('lib-subsection[class="ng-star-inserted"]').should('be.visible').then($container => {
+                cy.wait(3000)
+                debugger
+                console.log($container)
+                const checkResultsEmpty = $container.find(':contains("La ricerca non ha prodotto risultati")').is(':visible')
+                cy.log(checkResultsEmpty)
+                if (checkResultsEmpty) {
+                    this.searchRandomClient(false, clientForm, clientType)
+                    searchOtherMember()
+                }else{
+                    cy.get('lib-scrollable-container').should('be.visible').then(($clienti) => {
                         let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
                         let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
                         cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
-
+        
                         cy.wait(5000)
                         cy.get('body').then(($body) => {
                             const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
@@ -202,29 +230,28 @@ class LandingRicerca {
                                 this.searchRandomClient(true, clientForm, clientType)
                                 searchOtherMember()
                             }
-
-                        })
-                    })
-                }
-                //Risultati con presenza di scrool bar
-                else {
-                    cy.get('.ps--active-y').should('be.visible').then(($clienti) => {
-                        let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
-                        let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
-                        cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
-
-                        cy.wait(5000)
-                        cy.get('body').then(($body) => {
-                            const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
-                            if (check) {
-                                this.searchRandomClient(true, clientForm, clientType)
-                                searchOtherMember()
-                            }
-
+        
                         })
                     })
                 }
             })
+            // cy.get('lib-scrollable-container').should('be.visible').then(($clienti) => {
+            //     let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
+            //     let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
+            //     cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
+
+            //     cy.wait(5000)
+            //     cy.get('body').then(($body) => {
+            //         const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
+            //         if (check) {
+            //             this.searchRandomClient(true, clientForm, clientType)
+            //             searchOtherMember()
+            //         }
+
+            //     })
+            // })
+            // }
+            // })
 
 
         }
@@ -276,7 +303,7 @@ class LandingRicerca {
             cy.get('.footer').find('button').contains('applica').click()
             cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
 
-            cy.get('lib-applied-filters-item').find('span').should('be.visible')
+            cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
         }
 
         // cy.get('lib-client-item:contains(' + client.name + '")').then((card) => {
@@ -314,7 +341,7 @@ class LandingRicerca {
         cy.get('.footer').find('button').contains('applica').click()
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
 
-        cy.get('lib-applied-filters-item').find('span').should('be.visible')
+        cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
 
         cy.get('lib-scrollable-container').contains(cognome.toUpperCase()).then((card) => {
             if (card.length === 1)
@@ -508,7 +535,7 @@ class LandingRicerca {
 
         cy.get('.footer').find('button').contains('applica').click()
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
-        cy.get('lib-applied-filters-item').find('span').should('be.visible')
+        cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
     }
 
 
