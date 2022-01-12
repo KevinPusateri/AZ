@@ -383,7 +383,7 @@ class DettaglioAnagrafica {
                     cy.get('input[formcontrolname="matricola"]').should('be.visible').type(convenzioneInserita.matricola)
                 //Ruolo
                 cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click()
-                
+
                 cy.get('.cdk-overlay-container').should('be.visible').within(($element) => {
                     console.log($element)
                     // cy.get('[aria-activedescendant="nx-dropdown-item-2"]').should('exist').and('be.visible').within(($tendina) => {
@@ -459,6 +459,17 @@ class DettaglioAnagrafica {
             })
         })
     }
-}
 
+    static getCFClient() {
+        return new Cypress.Promise((resolve, reject) => {
+
+            cy.contains('Codice fiscale')
+                .parents('app-client-data-label')
+                .find('div[class="value"]:first').invoke('text').then((CF) => {
+                    resolve(CF)
+                })
+
+        })
+    }
+}
 export default DettaglioAnagrafica

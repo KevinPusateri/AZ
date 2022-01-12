@@ -66,11 +66,11 @@ class SCUAltriIndirizzi {
     static modificaIndirizzo(indirizzo) {
         return new Promise((resolve, reject) => {
 
-            cy.get("app-client-other-addresses").then((table) => {
+            cy.get("app-client-other-addresses").should('be.visible').then((table) => {
                 cy.wrap(table)
                     .find(
                         'app-client-address-table-row:contains("' +
-                        indirizzo.address +'")')
+                        indirizzo.address + '")')
                     .then((row) => {
                         cy.wrap(row)
                             .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
@@ -112,25 +112,22 @@ class SCUAltriIndirizzi {
        */
     static checkAltriIndirizzi(indirizzo) {
         // cy.then(() => {
-            cy.get('app-client-other-addresses').find('app-client-address-table-row').then((list) => {
-                if (list.length > 0) {
-                    expect(list.text()).to.include(indirizzo.address)
-                    expect(list.text()).to.include(indirizzo.comune)
-                    expect(list.text()).to.include(indirizzo.cap)
-                } else
-                    assert.fail('Nessun Indirizzo è stato inserito')
-            })
+        cy.get('app-client-other-addresses').should('be.visible').find('app-client-address-table-row').then((list) => {
+            if (list.length > 0) {
+                expect(list.text()).to.include(indirizzo.address)
+                expect(list.text()).to.include(indirizzo.comune)
+                expect(list.text()).to.include(indirizzo.cap)
+            } else
+                assert.fail('Nessun Indirizzo è stato inserito')
+        })
         // })
     }
 
 
     static eliminaIndirizzo(indirizzo) {
-        cy.get("app-client-other-addresses").then((table) => {
+        cy.get("app-client-other-addresses").should('be.visible').then((table) => {
             cy.wrap(table)
-                .find('app-client-address-table-row:contains("' + indirizzo.address + '")'
-                    .find(':contains("' + indirizzo.comune + '")')
-                    .find(':contains("' + indirizzo.cap + '")')
-                )
+                .find('app-client-address-table-row:contains("' + indirizzo.address + '")')
                 .then((row) => {
                     cy.wrap(row)
                         .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')

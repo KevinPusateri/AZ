@@ -38,7 +38,7 @@ var indirizzo = {
 //#region Before After
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -74,6 +74,7 @@ after(function () {
 //#endregion Before After
 
 let urlClient
+let codFiscale
 describe('Matrix Web : Creazione Indirizzo', function () {
 
     it('Verifica l\'operazione di inserimento Indirizzo', function () {
@@ -86,6 +87,9 @@ describe('Matrix Web : Creazione Indirizzo', function () {
             urlClient = currentUrl
         })
         DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+        DettaglioAnagrafica.getCFClient().then((CF) => {
+            codFiscale = CF
+        })
         DettaglioAnagrafica.clickSubTab('Altri indirizzi')
         SCUAltriIndirizzi.aggiungiInidirizzo(indirizzo).then((address) => {
             indirizzo = address
@@ -95,7 +99,7 @@ describe('Matrix Web : Creazione Indirizzo', function () {
     it('Verifica Indirizzo sia inserito nella tabella', function () {
         cy.log('Wait obbligato siccome il sistema ci mette molto a riportare il risultato...')
         cy.wait(120000)
-        TopBar.search(client.name) 
+        TopBar.search(codFiscale)
         LandingRicerca.clickClientePF(client.name)
         DettaglioAnagrafica.clickTabDettaglioAnagrafica()
         DettaglioAnagrafica.clickSubTab('Altri indirizzi')
@@ -108,7 +112,7 @@ describe('Matrix Web : Creazione Indirizzo', function () {
         SCUAltriIndirizzi.modificaIndirizzo(indirizzo).then(address => {
             indirizzo = address
         })
-        TopBar.search(client.name) 
+        TopBar.search(codFiscale)
         LandingRicerca.clickClientePF(client.name)
         DettaglioAnagrafica.clickTabDettaglioAnagrafica()
         DettaglioAnagrafica.clickSubTab('Altri indirizzi')
