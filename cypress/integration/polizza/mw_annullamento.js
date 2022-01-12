@@ -45,7 +45,7 @@ let currentTutf
 before(() => {
     cy.getUserWinLogin().then(data => {
         currentTutf = data.tutf
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -90,9 +90,6 @@ describe('Matrix Web : Annullamento + Storno Annullamento', function () {
                 currentCustomerFullName = polizzaClient.customerName
                 TopBar.search(currentCustomerFullName)
                 LandingRicerca.clickClientePF(currentCustomerFullName)
-                SintesiCliente.retriveUrl().then(currentUrl => {
-                    urlClient = currentUrl
-                })
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')
                 Portafoglio.filtraPolizze('Motor')

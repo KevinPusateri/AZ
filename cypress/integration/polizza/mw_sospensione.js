@@ -75,6 +75,7 @@ after(function () {
 let currentCustomerFullName
 let currentCustomerNumber
 let numberPolizza
+let urlClient
 describe('Matrix Web : Sospensione ', function () {
 
     it('Verifica che la polizza sia ancora presente nel tab Polizze attive ' +
