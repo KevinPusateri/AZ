@@ -193,7 +193,7 @@ class LoginPage {
 
                 cy.decryptLoginPsw(isTFS).then(psw => {
                     //Utenze attualmente in VPN che non riescono ad accedere ai servizi di personificazione
-                    if (loggedUser.username === 'RU18362' || loggedUser.username === 'RU17810') {
+                    if (loggedUser.username === 'RU18362' || loggedUser.username === 'RU17810' || loggedUser.username === 'LE00004') {
                         cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                         cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
                         cy.get('input[type="SUBMIT"]').click()
