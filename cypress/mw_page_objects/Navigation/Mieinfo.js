@@ -17,11 +17,13 @@ class Mieinfo {
     /**
      * Verifica che tutti i link nel menu MieInfo siano presenti
      */
-    static checkLinksOnMenuInfo() {
-        const linksMenu = Object.values(LinkMieInfo.getLinksMenu())
+    static checkLinksOnMenuInfo(keys) {
+        LinkMieInfo.getLinksMenu().deleteKey(keys)
+
+        const linksMenuProfiled = Object.values(LinkMieInfo.getLinksMenu())
 
         getIFrame().find('[class="menu--link menu_padding-0"]').each(($link, i) => {
-            expect($link.text().trim()).to.include(linksMenu[i + 1]);
+            expect($link.text().trim()).to.include(linksMenuProfiled[i + 1]);
         })
     }
 
@@ -30,9 +32,11 @@ class Mieinfo {
      * @param {string} page - nome del link nel Menu
      */
     static clickLinkOnMenu(page) {
-        getIFrame().find('span:visible').contains(page,{timeout:5000}).click().wait(2000)
-        if (page === 'New company handbook') // menu--link_active non c'è (..active_id)
-            this.checkPageOnMenu(page)
+        // wait forzato altrimenti non trova Antiriciclaggio
+        // if (page === 'Antiriciclaggio')
+        getIFrame().find('span:visible').contains(page).click()
+        // else
+        // getIFrame().find('span[class="menu--link--text"]:visible').should('be.visible').contains(page, { timeout: 5000 }).click().wait(2000)
         getIFrame().find('a[class~="menu--link_active"]').should('contain', page)
         this.checkPageOnMenu(page)
     }
@@ -41,61 +45,72 @@ class Mieinfo {
      * Verifica che i sotto link del menu della pagina corrispondano
      * @param {page} page - nome della pagina 
      */
-    static checkLinksOnSubMenu(page) {
+    static checkLinksOnSubMenu(page, keys) {
+        debugger
         const LinksMenu = LinkMieInfo.getLinksMenu()
-        const linksSubMenu = LinkMieInfo.getLinksSubMenu()
+        // const linksSubMenu = LinkMieInfo.getLinksSubMenu()
         switch (page) {
             case LinksMenu.PRODOTTI:
+                LinkMieInfo.getLinksSubMenu().PRODOTTI.deleteKey(keys.PRODOTTI)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    let checkLinks = Object.values(linksSubMenu.PRODOTTI)
+                    const checkLinks = Object.values(LinkMieInfo.getLinksSubMenu().PRODOTTI)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
                         expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break
             case LinksMenu.INIZIATIVE:
+                LinkMieInfo.getLinksSubMenu().INIZIATIVE.deleteKey(keys.INIZIATIVE)
+
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    let checkLinks = Object.values(linksSubMenu.INIZIATIVE)
+                    const checkLinks = Object.values(LinkMieInfo.getLinksSubMenu().INIZIATIVE)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
                         expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
             case LinksMenu.SALES_ACADEMY:
+                LinkMieInfo.getLinksSubMenu().SALES_ACADEMY.deleteKey(keys.SALES_ACADEMY)
+
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    let checkLinks = Object.values(linksSubMenu.SALES_ACADEMY)
+                    const checkLinks = Object.values(LinkMieInfo.getLinksSubMenu().SALES_ACADEMY)
+
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
                         expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
             case LinksMenu.ANTIRICICLAGGIO:
+                LinkMieInfo.getLinksSubMenu().ANTIRICICLAGGIO.deleteKey(keys.ANTIRICICLAGGIO)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    let checkLinks = Object.values(linksSubMenu.ANTIRICICLAGGIO)
+                    const checkLinks = Object.values(LinkMieInfo.getLinksSubMenu().ANTIRICICLAGGIO)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
                         expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
             case LinksMenu.RISORSE_PER_AGENZIA:
+                LinkMieInfo.getLinksSubMenu().RISORSE_PER_AGENZIA.deleteKey(keys.RISORSE_PER_AGENZIA)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    let checkLinks = Object.values(linksSubMenu.RISORSE_PER_AGENZIA)
+                    const checkLinks = Object.values(LinkMieInfo.getLinksSubMenu().RISORSE_PER_AGENZIA)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
                         expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
             case LinksMenu.RISORSE_PER_AGENTE:
+                LinkMieInfo.getLinksSubMenu().RISORSE_PER_AGENTE.deleteKey(keys.RISORSE_PER_AGENTE)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    let checkLinks = Object.values(linksSubMenu.RISORSE_PER_AGENTE)
+                    const checkLinks = Object.values(LinkMieInfo.getLinksSubMenu().RISORSE_PER_AGENTE)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 7).each(($link, i) => {
                         expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
                 })
                 break;
             case LinksMenu.IL_MONDO_ALLIANZ:
+                LinkMieInfo.getLinksSubMenu().IL_MONDO_ALLIANZ.deleteKey(keys.IL_MONDO_ALLIANZ)
                 getIFrame().find('[class="menu--submenu menu--submenu_open"]').then($subMenu => {
-                    let checkLinks = Object.values(linksSubMenu.IL_MONDO_ALLIANZ)
+                    const checkLinks = Object.values(LinkMieInfo.getLinksSubMenu().IL_MONDO_ALLIANZ)
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').should('have.length', 3).each(($link, i) => {
                         expect($link.text().trim().toLowerCase()).to.include(checkLinks[i].toLowerCase());
                     })
@@ -218,24 +233,25 @@ class Mieinfo {
                     'Reclutamento',
                     'Arredare l\'agenzia',
                     'Digital marketing e social media',
-                    'Materiali di comunicazione',
+                    'Materiali di comunicazione istituzionale',
                     'Richiesta stampati',
                     'Ordini di toner e carta',
                     'Catalogo prodotti tecnologici',
                     'Sicurezza IT',
                     'L\'app ADAM',
-                    'Pacchetti di sicurezza',   
+                    'Pacchetti di sicurezza',
                     // 'Riferimenti aziendali',
                     'Manuali di travaso MISA',
                     'Link utili',
                     'Minisito IDD',
                 ]
                 let currentLinksRisorseAgenziaIcon = []
-                
+
                 getIFrame().find('.product-icon--name').each(($link, i) => {
                     currentLinksRisorseAgenziaIcon.push($link.text().trim())
                 }).then(() => {
                     expect(currentLinksRisorseAgenziaIcon.sort()).to.deep.eq(linksRisorseAgenziaIcon.sort());
+
                 })
                 break;
             case LinksMenu.RISORSE_PER_AGENTE:
@@ -427,8 +443,8 @@ class Mieinfo {
         for (let index = 0; index < cardManuali.length; index++) {
             getIFrame().find('#nx-expansion-panel-header-' + index).then(($card) => {
                 expect($card.text().trim()).to.include(cardManuali[index]);
-                getIFrame().find('nx-expansion-panel-title').contains($card.text().trim()).click()
-                cy.wrap($card).should('have.attr', 'aria-expanded', 'true')
+                // getIFrame().find('nx-expansion-panel-title').contains($card.text().trim()).click()
+                // cy.wrap($card).should('have.attr', 'aria-expanded', 'true')
             })
         }
     }
@@ -578,14 +594,17 @@ class Mieinfo {
      */
     static checkAllPagesAntiriciclaggio() {
         const linksSalesAcademy = LinkMieInfo.getLinksSubMenu().ANTIRICICLAGGIO
-        getIFrame().contains(linksSalesAcademy.NORMATIVA).click()
+        // cy.wait(20000)
+        getIFrame().find('span:visible').contains(linksSalesAcademy.NORMATIVA).click()
+        getIFrame().find('nx-expansion-panel-title').should('be.visible')
         // getIFrame().find('h1:contains("' + linksSalesAcademy.NORMATIVA + '")').should('be.visible')
 
         getIFrame().contains(linksSalesAcademy.MODULI_MANUALI_E_PROCEDURE).click()
+        getIFrame().find('nx-expansion-panel-title').should('be.visible')
         // getIFrame().find('h1:contains("' + linksSalesAcademy.MODULI_MANUALI_E_PROCEDURE + '")').should('be.visible')
 
         getIFrame().contains(linksSalesAcademy.LINK_UTILI).click()
-        getIFrame().find('h1:contains("Antiriciclaggio link utili")').should('be.visible')
+        getIFrame().find('app-section-title:contains("Antiriciclaggio link utili")').should('be.visible')
     }
 
     /**
