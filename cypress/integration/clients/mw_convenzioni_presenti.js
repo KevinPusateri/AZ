@@ -91,7 +91,7 @@ describe('Matrix Web : Convenzioni', {
                     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                     DettaglioAnagrafica.clickSubTab('Convenzioni')
                     DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
-                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'BANCO DI NAPOLI', 'Convenzionato').then((retrivedConvenzione) => {
+                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'FINSEDA', 'Convenzionato').then((retrivedConvenzione) => {
                         DettaglioAnagrafica.checkConvenzioneInserito(retrivedConvenzione)
                     })
                 })
@@ -114,7 +114,7 @@ describe('Matrix Web : Convenzioni', {
                 DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
                 //? Se non facevo il wrap, andava in esecuzione come prima istruzione dell'it il checkConvenzioneInserito
                 cy.wrap(null).then(() => {
-                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'BANCO DI NAPOLI', 'Familiare del Convenzionato', retrivedClient.name + ' ' + retrivedClient.firstName).then((retrivedRelatedConvenzione) => {
+                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'FINSEDA', 'Familiare del Convenzionato', retrivedClient.name + ' ' + retrivedClient.firstName).then((retrivedRelatedConvenzione) => {
                         DettaglioAnagrafica.checkConvenzioneInserito(retrivedRelatedConvenzione)
                     })
                 })
@@ -126,8 +126,8 @@ describe('Matrix Web : Convenzioni', {
         '- l\'operazione vada a buon fine' +
         '- la convenzione non sia più presente (anche per il familiare)', function () {
             if (!Cypress.env('monoUtenza')) {
-                TopBar.search(currentClient[0].name + ' ' + currentClient[0].firstName)
-                LandingRicerca.clickClientePF(currentClient[0].name + ' ' + currentClient[0].firstName)
+                TopBar.search(retrivedClient.name + ' ' + retrivedClient.firstName)
+                LandingRicerca.clickClientePF(retrivedClient.firstName + ' ' + retrivedClient.name)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
                 DettaglioAnagrafica.checkConvenzioniPresenti(true, true)
