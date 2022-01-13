@@ -192,9 +192,15 @@ class DettaglioAnagrafica {
                 expect(label.text().trim()).to.include('Titolo');
                 expect(label.text().trim()).to.include('Cittadinanza');
                 expect(label.text().trim()).to.include('Nome*');
-                expect(label.text().trim()).to.include('Professione*');
+                if (Cypress.env('isAviva'))
+                    expect(label.text().trim()).to.include('Professione');
+                else
+                    expect(label.text().trim()).to.include('Professione*');
                 expect(label.text().trim()).to.include('Cognome*');
-                expect(label.text().trim()).to.include('Unità di mercato*');
+                if (Cypress.env('isAviva'))
+                    expect(label.text().trim()).to.include('Unità di mercato');
+                else
+                    expect(label.text().trim()).to.include('Unità di mercato*');
                 expect(label.text().trim()).to.include('Sesso*');
                 expect(label.text().trim()).to.include('Residenza fiscale');
                 expect(label.text().trim()).to.include('Data di nascita*');
@@ -218,10 +224,11 @@ class DettaglioAnagrafica {
     static checkCampiIdentificazioneAdeguataVerifica() {
         cy.get('app-client-risk-profiles').then((box) => {
             cy.wrap(box).find('app-section-title').should('contain.text', 'Identificazione e adeguata verifica')
-            cy.get('app-client-risk-profiles').find('[class^="label"]').should('have.length', 4).then((label) => {
+            cy.get('app-client-risk-profiles').find('[class^="label"]').then((label) => {
                 expect(label.text().trim()).to.include('Profilo rischio riciclaggio');
                 expect(label.text().trim()).to.include('Profilo FATCA');
-                expect(label.text().trim()).to.include('Stato operativo Vita');
+                if (!Cypress.env('isAviva'))
+                    expect(label.text().trim()).to.include('Stato operativo Vita');
                 expect(label.text().trim()).to.include('Profilo CRS');
             })
 
@@ -256,7 +263,10 @@ class DettaglioAnagrafica {
                                 expect(label.text().trim()).to.include('Questionario adeguatezza cliente - Prodotti IBIPs');
                                 expect(label.text().trim()).to.include('Profilo di esperienza & conoscenza');
                                 expect(label.text().trim()).to.include('Attività promozionali relative al gruppo Allianz');
-                                expect(label.text().trim()).to.include('Attività di profilazione realizzate da Allianz S.p.A.');
+                                if (!Cypress.env('isAviva'))
+                                    expect(label.text().trim()).to.include('Attività di profilazione realizzate da Allianz S.p.A.');
+                                else
+                                    expect(label.text().trim()).to.include('Attività di profilazione realizzate da Allianz Viva S.p.A.');
                                 expect(label.text().trim()).to.include('Attività promozionali relative a società terze partner');
                                 expect(label.text().trim()).to.include('Indagini di mercato');
                             })

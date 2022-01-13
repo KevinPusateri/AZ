@@ -116,8 +116,6 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     });
 
     it('Verifica che il contenuto di Visione globale cliente sia presente', function () {
-        if (Cypress.env('isAviva'))
-            this.skip()
         TopBar.clickClients()
         Clients.checkVisioneGlobaleCliente()
     })
@@ -127,8 +125,14 @@ describe('Matrix Web : Navigazioni da Clients', function () {
             this.skip()
         TopBar.clickClients()
         Clients.clickVisioneGlobale()
-        Clients.backToClients()
     });
+
+    if (Cypress.env('isvAviva'))
+        it('Verifica Assenza "Vai a visione globale"', function () {
+            TopBar.clickClients()
+            Clients.checkAssenzaVisioneGlobale()
+            Clients.backToClients()
+        });
 
     it('Verifica aggancio Appuntamenti', function () {
         TopBar.clickClients()

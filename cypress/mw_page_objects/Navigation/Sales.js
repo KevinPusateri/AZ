@@ -232,7 +232,7 @@ class Sales {
                 }).as('getMotor');
                 Common.canaleFromPopup()
                 cy.wait('@getMotor', { requestTimeout: 100000 });
-                getIFrame().find('button:contains("Calcola"):visible')
+                getIFrame().find('button:contains("Calcola"):visible',{timeout:10000})
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO:
                 cy.intercept({
@@ -242,7 +242,7 @@ class Sales {
                 Common.canaleFromPopup()
                 cy.wait('@getUltra', { requestTimeout: 30000 });
                 cy.wait(5000)
-                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
+                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible',{timeout:10000})
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_SALUTE:
                 cy.intercept({
@@ -252,7 +252,7 @@ class Sales {
                 Common.canaleFromPopup()
                 cy.wait('@getUltra', { requestTimeout: 50000 });
                 cy.wait(5000)
-                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
+                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible',{timeout:10000})
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP:
                 // cy.intercept({
@@ -262,7 +262,7 @@ class Sales {
                 Common.canaleFromPopup()
                 // cy.wait('@getUltra2', { requestTimeout: 30000 });
                 cy.wait(15000)
-                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible')
+                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible',{timeout:10000})
                 break;
             case LinksOnEmettiPolizza.ALLIANZ1_BUSINESS:
                 cy.intercept({
@@ -271,7 +271,7 @@ class Sales {
                 }).as('getDanni');
                 Common.canaleFromPopup()
                 cy.wait('@getDanni', { requestTimeout: 30000 });
-                getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
+                getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible',{timeout:10000})
                 break;
             case LinksOnEmettiPolizza.FASTQUOTE_IMPRESA_E_ALBERGO:
                 cy.intercept({
@@ -280,7 +280,7 @@ class Sales {
                 }).as('getAuto');
                 Common.canaleFromPopup()
                 cy.wait('@getAuto', { requestTimeout: 30000 });
-                getIFrame().find('form input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
+                getIFrame().find('form input[value="Cerca"]',{timeout:10000}).invoke('attr', 'value').should('equal', 'Cerca')
                 break;
             case LinksOnEmettiPolizza.FLOTTE_E_CONVENZIONI:
                 Common.canaleFromPopup()
@@ -289,7 +289,7 @@ class Sales {
             case LinksOnEmettiPolizza.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
                 Common.canaleFromPopup()
                 cy.wait(20000)
-                getIFrame().find('#AZBuilder1_ctl15_cmdIndietro[value="Indietro"]').invoke('attr', 'value').should('equal', 'Indietro')
+                getIFrame().find('#AZBuilder1_ctl15_cmdIndietro[value="Indietro"]',{timeout:10000}).invoke('attr', 'value').should('equal', 'Indietro')
 
                 break;
             case LinksOnEmettiPolizza.MINIFLOTTE:
@@ -299,7 +299,7 @@ class Sales {
                 }).as('getAuto');
                 Common.canaleFromPopup()
                 cy.wait('@getAuto', { requestTimeout: 30000 });
-                getIFrame().find('span:contains("Nuova Trattativa"):visible')
+                getIFrame().find('span:contains("Nuova Trattativa"):visible',{timeout:10000})
                 break;
             case LinksOnEmettiPolizza.TRATTATIVE_AUTO_CORPORATE:
                 cy.intercept({
@@ -308,7 +308,7 @@ class Sales {
                 }).as('getAuto');
                 Common.canaleFromPopup()
                 cy.wait('@getAuto', { requestTimeout: 30000 });
-                getIFrame().find('span:contains("Nuova Trattativa"):visible')
+                getIFrame().find('span:contains("Nuova Trattativa"):visible',{timeout:10000})
                 break;
             case LinksOnEmettiPolizza.GESTIONE_RICHIESTE_PER_PA:
                 cy.intercept({
@@ -317,7 +317,7 @@ class Sales {
                 }).as('getDanni');
                 Common.canaleFromPopup()
                 cy.wait('@getDanni', { requestTimeout: 40000 });
-                getIFrame().find('#main-wrapper input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
+                getIFrame().find('#main-wrapper input[value="Cerca"]',{timeout:10000}).invoke('attr', 'value').should('equal', 'Cerca')
                 break;
 
         }

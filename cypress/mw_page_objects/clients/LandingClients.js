@@ -156,6 +156,10 @@ class LandingClients {
         getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
     }
 
+    static checkAssenzaVisioneGlobale(){
+        cy.get('.actions-box').contains('Vai a visione globale').should('not.be.visible')
+    }
+
     /**
      * Click button "Appuntamento"
      */

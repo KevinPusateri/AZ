@@ -278,31 +278,34 @@ class TopBar extends HomePage {
      * Verifica la presenza di tutti i link su Utility
      */
     static checkLinksUtility(keys) {
-
+        LinkUtilita.deleteKey(keys)
         const linksUtilita = Object.values(LinkUtilita)
 
-        if (Cypress.env('monoUtenza')) {
-            delete LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO
-            delete LinkUtilita.REPORT_ALLIANZ_NOW
-            const linksUtilita = Object.values(LinkUtilita)
-            cy.get('lib-utility').find('lib-utility-label').should('have.length', 8).each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksUtilita[i])
-            })
-        } else if (Cypress.env('isAviva')) {
-            delete LinkUtilita.REPORT_ALLIANZ_NOW
-            delete LinkUtilita.GESTIONE_MAGAZZINO_OBU
-            delete LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS
-            delete LinkUtilita.CRUSCOTTO_INSTALLAZIONE_DISPOSITIVO_SATELLITARE
-            delete LinkUtilita.MONITOR_SCORING_AZ_BONUS_DRIVE
-            const linksUtilita = Object.values(LinkUtilita)
-            cy.get('lib-utility').find('lib-utility-label').should('have.length', 5).each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksUtilita[i])
-            })
-        } else if (Cypress.env('monoUtenza')) {
-            cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
-                expect($labelCard).to.contain(linksUtilita[i])
-            })
-        }
+        cy.get('lib-utility').find('lib-utility-label').each(($labelCard, i) => {
+            expect($labelCard).to.contain(linksUtilita[i])
+        })
+        // if (Cypress.env('monoUtenza')) {
+        //     delete LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO
+        //     delete LinkUtilita.REPORT_ALLIANZ_NOW
+        //     const linksUtilita = Object.values(LinkUtilita)
+        //     cy.get('lib-utility').find('lib-utility-label').should('have.length', 8).each(($labelCard, i) => {
+        //         expect($labelCard).to.contain(linksUtilita[i])
+        //     })
+        // } else if (Cypress.env('isAviva')) {
+        //     delete LinkUtilita.REPORT_ALLIANZ_NOW
+        //     delete LinkUtilita.GESTIONE_MAGAZZINO_OBU
+        //     delete LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS
+        //     delete LinkUtilita.CRUSCOTTO_INSTALLAZIONE_DISPOSITIVO_SATELLITARE
+        //     delete LinkUtilita.MONITOR_SCORING_AZ_BONUS_DRIVE
+        //     const linksUtilita = Object.values(LinkUtilita)
+        //     cy.get('lib-utility').find('lib-utility-label').should('have.length', 5).each(($labelCard, i) => {
+        //         expect($labelCard).to.contain(linksUtilita[i])
+        //     })
+        // } else if (Cypress.env('monoUtenza')) {
+        //     cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
+        //         expect($labelCard).to.contain(linksUtilita[i])
+        //     })
+        // }
 
     }
     /**
@@ -441,14 +444,14 @@ class TopBar extends HomePage {
             SISCO: 'SisCo',
             ELENCO_TELEFONICO: 'Elenco telefonico',
             deleteKey: function (keys) {
-                if (!keys.SRM) delete this.SRM
-                if (!keys.SISCO) delete this.SISCO
+                if (!keys.srmOnlineEnabled) delete this.SRM
+                if (!keys.srmOnlineEnabled) delete this.SISCO
                 if (Cypress.env('isAviva')) delete this.ELENCO_TELEFONICO
             }
         }
         LinksIncident.deleteKey(keys)
         const linksIncident = Object.values(LinksIncident)
-
+        debugger
         if (linksIncident.length > 1)
             cy.get('lib-utility-label').find('a').each(($link, i) => {
                 expect($link.text().trim()).to.include(linksIncident[i]);

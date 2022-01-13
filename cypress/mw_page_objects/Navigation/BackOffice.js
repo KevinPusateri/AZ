@@ -195,7 +195,7 @@ class BackOffice {
                 break;
             case LinksContabilita.INCASSO_PER_CONTO:
                 cy.wait(10000)
-                getIFrame().find('input[value="Cerca"]').should('be.visible').invoke('attr', 'value').should('equal', 'Cerca')
+                getIFrame().find('#ctl00_pHolderMain1_btnRicercaTitoli').should('be.visible').invoke('attr', 'value').should('equal', 'Cerca')
                 break;
             case LinksContabilita.INCASSO_MASSIVO:
                 getIFrame().find('a:contains("Apri filtri"):visible')

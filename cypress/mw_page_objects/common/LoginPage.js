@@ -11,7 +11,7 @@ class LoginPage {
 
         cy.visit('/', { responseTimeout: 31000 }, {
             onBeforeLoad: win => {
-                // win.sessionStorage.clear();
+                win.sessionStorage.clear();
                 Object.defineProperty(win.navigator, 'language', { value: 'it-IT' });
                 Object.defineProperty(win.navigator, 'languages', { value: ['it'] });
                 Object.defineProperty(win.navigator, 'accept_languages', { value: ['it'] });

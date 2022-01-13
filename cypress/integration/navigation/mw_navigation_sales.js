@@ -229,7 +229,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Attività in scadenza - Estrai dettaglio', function () {
-        //! AVIVA finchè non ci sono cluster non si puo fare l'Estrai 
         if (Cypress.env('isAviva'))
             this.skip()
         TopBar.clickSales()
@@ -242,7 +241,9 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
 
     it('Verifica "Quietanzamento" - lob di interesse: Motor', function () {
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+        if (!Cypress.env('monoUtenza')) {
+            if (Cypress.env('isAviva'))
+                this.skip()
             TopBar.clickSales()
             Sales.lobDiInteresse('Motor')
             Sales.backToSales()
@@ -250,24 +251,27 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica "Quietanzamento" - lob di interesse: Rami Vari', function () {
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+        if (!Cypress.env('monoUtenza')) {
+            if (Cypress.env('isAviva'))
+                this.skip()
             TopBar.clickSales()
             Sales.lobDiInteresse('Rami vari')
             Sales.backToSales()
         } else this.skip()
     })
 
-    if (!Cypress.env('isAviva'))
-        it('Verifica "Quietanzamento" - lob di interesse: Vita', function () {
-            if (!Cypress.env('monoUtenza')) {
-                TopBar.clickSales()
-                Sales.lobDiInteresse('Vita')
-                Sales.backToSales()
-            } else this.skip()
-        })
+    it('Verifica "Quietanzamento" - lob di interesse: Vita', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Vita')
+        Sales.backToSales()
+    })
 
     it('Verifica "Quietanzamento" - lob di interesse: Tutte', function () {
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+        if (Cypress.env('isAviva'))
+            this.skip()
+        if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.lobDiInteresse('Tutte')
             Sales.backToSales()
@@ -276,6 +280,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
 
     it('Verifica TAB: "Campagne"', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.clickTabCampagne()

@@ -71,7 +71,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
     });
 
     it('Verifica aggancio Analisi dei bisogni', function () {
-        // if (!Cypress.env('isAviva'))
+        if (Cypress.env('isAviva'))
+            this.skip()
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             cy.log(currentHostName)
@@ -80,7 +81,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
                 BurgerMenuClients.clickLink('Analisi dei bisogni')
             }
         })
-        // else this.skip()
     });
 
     it('Verifica aggancio Censimento nuovo cliente', function () {

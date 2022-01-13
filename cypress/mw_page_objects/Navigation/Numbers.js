@@ -119,8 +119,7 @@ class Numbers {
                 break;
 
         }
-        getIFrame().find('#ricerca_cliente').should('be.visible').and('contain.text', 'Filtra')
-
+        getIFrame().find('#ricerca_cliente', { timeout: 15000 }).should('be.visible').and('contain.text', 'Filtra')
     }
 
 

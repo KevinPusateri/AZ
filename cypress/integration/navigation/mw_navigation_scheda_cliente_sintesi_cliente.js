@@ -62,7 +62,7 @@ beforeEach(() => {
         TopBar.search('SLZNLL54A04H431Q')
         SintesiCliente.wait()
     } else {
-        TopBar.search('FRNLCU72L07D969V')
+        TopBar.search('DRLTMS95L21F257R')
         SintesiCliente.wait()
     }
 })
@@ -143,6 +143,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         } else this.skip()
     })
 
+    // TODO !INSERIRE SU TFS AVIVA 
     if (Cypress.env('isAviva')) {
         it('Verifica Link da Card Auto -> Natanti(AVIVA)', function () {
             SintesiCliente.clickAuto()
