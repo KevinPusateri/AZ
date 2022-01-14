@@ -169,14 +169,14 @@ class LibriMatricolaDA {
 
             cy.wait(1000)
             var popupCheck = false
-            matrixFrame().within(() => {
-                cy.get('#pnlDialog').should('be.visible')
+            /* matrixFrame().within(() => {
+                //cy.get('#pnlDialog').should('be.visible')
                 cy.get('#pnlDialog').then(($popup) => {
                     popupCheck = $popup.is(':visible')
                     cy.log("popup: " + popupCheck)
                     popupCheck.as('boolPopup')
                 })                
-            })
+            }) */
 
             //se il popup è presente clicca su ok
             if (popupCheck) {

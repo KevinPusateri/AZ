@@ -736,7 +736,7 @@ class Ultra {
             url: '**/consensi/**'
         }).as('consensiPrivacy')
 
-        cy.wait('@consensiPrivacy', { requestTimeout: 60000 })
+        cy.wait('@consensiPrivacy', { requestTimeout: 100000 })
         cy.wait(1000)
 
         ultraIFrame().within(() => {

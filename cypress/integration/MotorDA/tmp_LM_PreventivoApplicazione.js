@@ -145,12 +145,12 @@ export function PrevApplicazione(veicolo, garanzie, coperturaRCA = true) {
 
     it("Riepilogo", () => {
       LibriMatricolaDA.RiepilogoGaranzie(garanzie)
-      cy.pause()
+      //cy.pause()
       LibriMatricolaDA.Avanti()
     })
 
     it("Integrazione", () => {
-      cy.pause()
+      //cy.pause()
       LibriMatricolaDA.Integrazione()
     })
 
