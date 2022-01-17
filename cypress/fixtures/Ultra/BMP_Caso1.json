@@ -1,28 +1,78 @@
 {
+  "daVerificareCasa" : {
+    "Assicurato"        : true,
+    "Nome"              : true,
+    "Cap"               : true,
+    "Uso"               : true,
+    "Tipo"              : true,
+    "Mq"                : true,
+    "Piano"             : true,
+    "Valore"            : true,
+    "Classe"            : true,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : true,
+    "Estensione"        : true,
+    "ResidenzaAss"      : true,
+    "CapAss"            : true
+  },
+
+
+  "daModificareCasa" : {
+    "Assicurato"        : true,
+    "Nome"              : false,
+    "Cap"               : true,
+    "Uso"               : true,
+    "Tipo"              : true,
+    "Mq"                : true,
+    "Piano"             : false,
+    "Valore"            : true,
+    "Classe"            : false,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : false,
+    "Estensione"        : false,
+    "ResidenzaAss"      : false,
+    "CapAss"            : true
+  },
+
   "modificheCasa" : {
-    "Assicurato"        : "",
+    "Assicurato"        : "affittuario",
     "Nome"              : "",
-    "Cap"               : "",
-    "Uso"               : "",
+    "Cap"               : "34074",
+    "Uso"               : "saltuaria",
     "Tipo"              : "una villa indipendente",
     "Mq"                : "250",
     "Piano"             : "",
     "Valore"            : "250000",
     "Classe"            : "",
+    "ClasseProtezione"  : "",
+    "Allarme"           : "",
     "Anno"              : "",
     "Estensione"        : "",
     "ResidenzaAss"      : "",
-    "CapAss"            : ""
+    "CapAss"            : "34074"
+  },
+
+
+  "daModificareAnimale" : {
+    "Nome"              : true,
+    "Tipo"              : true,
+    "Sesso"             : false,
+    "Razza"             : true,
+    "DataNascita"       : false,
+    "Residenza"         : false,
+    "Cap"               : true
   },
 
   "modificheAnimale" : {
     "Nome"              : "Felix",
-    "Tipo"              : "",
+    "Tipo"              : "gatto",
     "Sesso"             : "",
-    "Razza"             : "pit bull",
+    "Razza"             : "siamese",
     "DataNascita"       : "",
     "Residenza"         : "",
-    "Cap"               : ""
+    "Cap"               : "34074"
   }
 
 }

@@ -32,7 +32,7 @@ const ambitoUltra = {
   FABBRICATO: "Fabbricato",
   CONTENUTO: "Contenuto",
   CATASTROFI_NATURALI: "Catastrofi naturali",
-  RESPONSABILITA_CIVILE: "Responsabilità civile",
+  RESPONSABILITA_CIVILE: "Responsabilit",       // Responsabilità civile
   TUTELA_LEGALE: "Tutela legale",
   ANIMALI_DOMESTICI: "Animali domestici",
 }
@@ -51,6 +51,9 @@ const soluzione = {
 Cypress.config('defaultCommandTimeout', 60000)
 import { modificheCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { modificheAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daVerificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daModificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daModificareAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { defaultCasa } from '../../fixtures//Ultra/BMP_Comune.json'
 import { defaultAnimale } from '../../fixtures//Ultra/BMP_Comune.json'
 
@@ -102,8 +105,8 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
     it('Seleziona Ultra BMP', () => {
         TopBar.clickSales()
         //cy.pause()
-        BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO_BMP)
-        //BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
+        //BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO_BMP)
+        BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO)
     })
      
     it("Verifica valori default FQ", () => {
@@ -131,15 +134,29 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
     })
     
 
+    /*
     it("Accesso Dati Quotazione da menù", ()=>{
         UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
+        //cy.pause()
+        DatiQuotazione.VerificaDefaultCasa('Casa 1', daVerificareCasa, defaultCasa)
+        DatiQuotazione.VerificaDefaultAnimaleDomestico('Animale domestico 1', defaultAnimale)
         cy.pause()
-        DatiQuotazione.VerificaDefaultCasa(defaultCasa)
-        DatiQuotazione.VerificaDefaultAnimaleDomestico(defaultAnimale)
+        DatiQuotazione.ModificaValoriCasa('Casa 1', modificheCasa)
         //cy.pause()
-        DatiQuotazione.ModificaValoriCasa(modificheCasa)
+        DatiQuotazione.ModificaValoriAnimaleDomestico('Animale domestico 1', modificheAnimale)
+        DatiQuotazione.ClickButton("CONFERMA")
+    })
+    */
+    it("Accesso Dati Quotazione da menù", ()=>{
+        cy.pause()
+        UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
         //cy.pause()
-        DatiQuotazione.ModificaValoriAnimaleDomestico(modificheAnimale)
+        DatiQuotazione.VerificaDefaultCasa('Casa 1', daVerificareCasa, defaultCasa)
+        DatiQuotazione.VerificaDefaultAnimaleDomestico('Animale domestico 1', defaultAnimale)
+        cy.pause()
+        DatiQuotazione.ModificaValoriCasa('Casa 1', daModificareCasa, modificheCasa)
+        cy.pause()
+        DatiQuotazione.ModificaValoriAnimaleDomestico('Animale domestico 1', daModificareAnimale, modificheAnimale)
         DatiQuotazione.ClickButton("CONFERMA")
     })
 

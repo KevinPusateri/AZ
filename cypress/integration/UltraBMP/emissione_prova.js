@@ -7,6 +7,7 @@ import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
 import Convenzioni from "../../mw_page_objects/UltraBMP/Convenzioni"
 import AreaRiservata from "../../mw_page_objects/UltraBMP/AreaRiservata"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
+import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
 import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
@@ -23,6 +24,14 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+import { modificheCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { modificheAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daVerificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daModificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daModificareAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { defaultCasa } from '../../fixtures//Ultra/BMP_Comune.json'
+import { defaultAnimale } from '../../fixtures//Ultra/BMP_Comune.json'
+
 
 //#endregion
 
@@ -72,8 +81,8 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
     it('Seleziona Ultra BMP', () => {
         TopBar.clickSales()
         //cy.pause()
-        BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
-        //BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
+        //BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
+        BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
         UltraBMP.ClickButton('SCOPRI LA PROTEZIONE')
     })
      
@@ -103,18 +112,34 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
         }
     })
     
-    
+    /*
     it("Aggiungi Ambito 'Fabbricato'", () => {
         cy.log("AGGIUNGI AMBITO - 'Fabbricato'")
         //cy.pause()
         UltraBMP.AggiungiAmbito('Fabbricato')
     })
+    */
 
+    /*
     it("Aggiungi Ambito 'Fabbricato'", () => { 
         cy.log("AGGIUNGI AMBITO - 'Fabbricato'")
         //cy.pause()
         UltraBMP.AggiungiAmbito('Fabbricato')
-        ConfigurazioneAmbito.
+        //ConfigurazioneAmbito.
+    })
+    */
+
+    it("Accesso Dati Quotazione da menù", ()=>{
+        cy.pause()
+        UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
+        //cy.pause()
+        DatiQuotazione.VerificaDefaultCasa('Casa 1', daVerificareCasa, defaultCasa)
+        DatiQuotazione.VerificaDefaultAnimaleDomestico('Animale domestico 1', defaultAnimale)
+        cy.pause()
+        DatiQuotazione.ModificaValoriCasa('Casa 1', daModificareCasa, modificheCasa)
+        cy.pause()
+        DatiQuotazione.ModificaValoriAnimaleDomestico('Animale domestico 1', daModificareAnimale, modificheAnimale)
+        DatiQuotazione.ClickButton("CONFERMA")
     })
 
     /*
