@@ -426,7 +426,7 @@
     "Veicolo_Aggiuntivo_Trasferimento": "true",
     "Provenienza": "Voltura",
     "Sotto_Provenienza": "Altra compagnia contratto non in corso",
-    "Dettaglio_Sotto_Provenienza": "",
+    "Nel_Dettaglio": "",
     "Data_Voltura": "DATA DECORRENZA",
     "Primo_Proprietario": "",
     "Secondo_Proprietario": "",
