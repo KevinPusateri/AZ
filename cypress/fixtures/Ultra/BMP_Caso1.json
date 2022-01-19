@@ -1,4 +1,41 @@
 {
+  "daVerificareCasa" : {
+    "Assicurato"        : true,
+    "Nome"              : true,
+    "Cap"               : true,
+    "Uso"               : true,
+    "Tipo"              : true,
+    "Mq"                : true,
+    "Piano"             : true,
+    "Valore"            : true,
+    "Classe"            : true,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : true,
+    "Estensione"        : true,
+    "ResidenzaAss"      : true,
+    "CapAss"            : true
+  },
+
+
+  "daModificareCasa" : {
+    "Assicurato"        : false,
+    "Nome"              : false,
+    "Cap"               : false,
+    "Uso"               : false,
+    "Tipo"              : true,
+    "Mq"                : true,
+    "Piano"             : false,
+    "Valore"            : true,
+    "Classe"            : false,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : false,
+    "Estensione"        : false,
+    "ResidenzaAss"      : false,
+    "CapAss"            : false
+  },
+
   "modificheCasa" : {
     "Assicurato"        : "",
     "Nome"              : "",
@@ -7,22 +44,117 @@
     "Tipo"              : "una villa indipendente",
     "Mq"                : "250",
     "Piano"             : "",
-    "Valore"            : "250000",
+    "Valore"            : "250.000,00 €",
     "Classe"            : "",
+    "ClasseProtezione"  : "",
+    "Allarme"           : "",
     "Anno"              : "",
     "Estensione"        : "",
     "ResidenzaAss"      : "",
     "CapAss"            : ""
   },
 
+
+  "daVerificareAnimale" : {
+    "Nome"              : true,
+    "Tipo"              : true,
+    "Sesso"             : true,
+    "Razza"             : true,
+    "DataNascita"       : true,
+    "Residenza"         : true,
+    "Cap"               : true
+  },
+
+  "daModificareAnimale" : {
+    "Nome"              : true,
+    "Tipo"              : true,
+    "Sesso"             : false,
+    "Razza"             : true,
+    "DataNascita"       : false,
+    "Residenza"         : false,
+    "Cap"               : false
+  },
+
   "modificheAnimale" : {
     "Nome"              : "Felix",
-    "Tipo"              : "",
+    "Tipo"              : "gatto",
     "Sesso"             : "",
-    "Razza"             : "pit bull",
+    "Razza"             : "siamese",
     "DataNascita"       : "",
     "Residenza"         : "",
     "Cap"               : ""
+  },
+
+  "daVerificareFAMod" : {
+    "Assicurato"        : false,
+    "Nome"              : false,
+    "Cap"               : false,
+    "Uso"               : false,
+    "Tipo"              : true,
+    "Mq"                : true,
+    "Piano"             : false,
+    "Valore"            : true,
+    "Classe"            : false,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : false,
+    "Estensione"        : false,
+    "ResidenzaAss"      : false,
+    "CapAss"            : false
+  },
+
+  "daVerificareFADef" : {
+    "Assicurato"        : true,
+    "Nome"              : true,
+    "Cap"               : true,
+    "Uso"               : true,
+    "Tipo"              : false,
+    "Mq"                : false,
+    "Piano"             : false,
+    "Valore"            : false,
+    "Classe"            : true,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : true,
+    "Estensione"        : true,
+    "ResidenzaAss"      : false,
+    "CapAss"            : false
+  },
+
+  "daVerificareRCMod" : {
+    "Assicurato"        : false,
+    "Nome"              : false,
+    "Cap"               : false,
+    "Uso"               : false,
+    "Tipo"              : true,
+    "Mq"                : true,
+    "Piano"             : false,
+    "Valore"            : false,
+    "Classe"            : false,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : false,
+    "Estensione"        : false,
+    "ResidenzaAss"      : false,
+    "CapAss"            : false
+  },
+
+  "daVerificareRCDef" : {
+    "Assicurato"        : true,
+    "Nome"              : true,
+    "Cap"               : true,
+    "Uso"               : false,
+    "Tipo"              : false,
+    "Mq"                : false,
+    "Piano"             : false,
+    "Valore"            : false,
+    "Classe"            : false,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : true,
+    "Estensione"        : true,
+    "ResidenzaAss"      : true,
+    "CapAss"            : true
   }
 
 }

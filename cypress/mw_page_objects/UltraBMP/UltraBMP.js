@@ -74,6 +74,7 @@ class UltraBMP {
             //attende il caricamento della pagina Configurazione Contenuto
             cy.get('[id="caSoluzioni"]', { timeout: 30000 })
                 .should('be.visible')
+                .wait(1000)
 
             //cy.log('ambito: ' + ambito)
             //cy.log('oggetto: ' + oggetto)
@@ -104,10 +105,11 @@ class UltraBMP {
             //if (strMenu.ToString().contains("Dati quotazione"))
                 //cy.contains('div', strMenu).should('be.visible').click()
             //else
-                cy.get('div[id="ambitiHeader"]')
-                  .contains(strMenu).should('be.visible').click() 
-                cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-                cy.wait(2000)
+            //cy.pause()
+            cy.get('div[id="ambitiHeader"]')
+                .contains(strMenu).should('be.visible').click() 
+            cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+            cy.wait(2000)
         })
 
     }
@@ -263,7 +265,7 @@ class UltraBMP {
         cy.get('@iframe').within(() => {
             cy.contains(ambito).should('be.visible').click()
             cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-            cy.wait(2000)
+            cy.wait(4000)
         })    
             
     }

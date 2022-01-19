@@ -86,15 +86,25 @@ class TenutaTariffa {
                 cy.contains(currentCase.Settore_Attivita.toUpperCase()).should('exist').click()
             }
             else {
-                //Data di Nascita : calcolata in automatico a partire dalla data decorrenza in rapporto all'età del caso
+                //Data di Nascita : calcolata in automatico (se Data_Nascita non è popolato) a partire dalla data decorrenza in rapporto all'età del caso
                 if (!flowClients) {
-                    let dataDecorrenza = calcolaDataDecorrenza(currentCase)
-                    currentDataNascita = new Date(dataDecorrenza.getFullYear() - currentCase.Eta, dataDecorrenza.getMonth(), dataDecorrenza.getDate())
-                    let formattedDataNascita = String(currentDataNascita.getDate()).padStart(2, '0') + '/' +
-                        String(currentDataNascita.getMonth() + 1).padStart(2, '0') + '/' +
-                        currentDataNascita.getFullYear()
-                    cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click()
-                    cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(formattedDataNascita).wait(1000)
+                    if (currentCase.Data_Nascita !== "") {
+                        var dateParts = currentCase.Data_Nascita.split("/")
+                        currentDataNascita = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+
+                        cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click()
+                        cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(currentCase.Data_Nascita).wait(1000)
+                    }
+                    else {
+                        let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+                        currentDataNascita = new Date(dataDecorrenza.getFullYear() - currentCase.Eta, dataDecorrenza.getMonth(), dataDecorrenza.getDate())
+                        let formattedDataNascita = String(currentDataNascita.getDate()).padStart(2, '0') + '/' +
+                            String(currentDataNascita.getMonth() + 1).padStart(2, '0') + '/' +
+                            currentDataNascita.getFullYear()
+                        cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click()
+                        cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(formattedDataNascita).wait(1000)
+                    }
+
                 }
             }
 
@@ -217,25 +227,35 @@ class TenutaTariffa {
 
             //Data Immatricolazione
             //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
+            //Differenziamo se Prima Immatricolazione è calcolata in automatico oppure è in formato data
             let dataPrimaImmatricolazione
-            if (currentCase.Prima_Immatricolazione.split(' ')[1].includes('ann')) {
-                let dataDecorrenza = calcolaDataDecorrenza(currentCase)
-                dataPrimaImmatricolazione = new Date(dataDecorrenza.getFullYear() - currentCase.Prima_Immatricolazione.split(' ')[0],
-                    dataDecorrenza.getMonth(),
-                    dataDecorrenza.getDate() - 10)
-                let formattedPrimaImmatricolazione = String(dataPrimaImmatricolazione.getDate()).padStart(2, '0') + '/' +
-                    String(dataPrimaImmatricolazione.getMonth() + 1).padStart(2, '0') + '/' +
-                    dataPrimaImmatricolazione.getFullYear()
-
-                cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').clear().wait(500)
-                cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').type(formattedPrimaImmatricolazione).type('{enter}').wait(500)
-
-                cy.wait('@getMotor', { requestTimeout: 30000 })
-
-                cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').invoke('val').then(currentDataPrimaImmatricolazione => {
-                    expect(currentDataPrimaImmatricolazione).to.include(formattedPrimaImmatricolazione)
-                })
+            if (!currentCase.Prima_Immatricolazione.includes('ann')) {
+                var dateParts = currentCase.Prima_Immatricolazione.split("/")
+                dataPrimaImmatricolazione = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
             }
+            else {
+                if (currentCase.Prima_Immatricolazione.split(' ')[1].includes('ann')) {
+                    let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+                    dataPrimaImmatricolazione = new Date(dataDecorrenza.getFullYear() - currentCase.Prima_Immatricolazione.split(' ')[0],
+                        dataDecorrenza.getMonth(),
+                        dataDecorrenza.getDate() - 10)
+
+                }
+            }
+
+            let formattedPrimaImmatricolazione = String(dataPrimaImmatricolazione.getDate()).padStart(2, '0') + '/' +
+                String(dataPrimaImmatricolazione.getMonth() + 1).padStart(2, '0') + '/' +
+                dataPrimaImmatricolazione.getFullYear()
+
+            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').clear().wait(500)
+            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').type(formattedPrimaImmatricolazione).type('{enter}').wait(500)
+
+            cy.wait('@getMotor', { requestTimeout: 30000 })
+
+            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').invoke('val').then(currentDataPrimaImmatricolazione => {
+                expect(currentDataPrimaImmatricolazione).to.include(formattedPrimaImmatricolazione)
+            })
+
 
             //Tipo Veicolo
             cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').invoke('text').then(tipVeicolo => {
@@ -362,10 +382,12 @@ class TenutaTariffa {
                     cy.wait('@getMotor', { requestTimeout: 30000 })
                     break
                 case "Voltura":
-                    //Veicolo aggiuntivo o trasferimento classe per cessazione di rischio
-                    cy.get('nx-checkbox[formcontrolname="isVeicoloAggiuntivoTraferimentoRischio"]').should('exist').and('be.visible').click()
-                    //Attendiamo che il caricamento non sia più visibile
-                    cy.get('nx-spinner').should('not.be.visible')
+                    //Veicolo aggiuntivo o trasferimento classe per cessazione di rischio (solo se Targa_Provenienza popolato)
+                    if (currentCase.Targa_Provenienza !== "") {
+                        cy.get('nx-checkbox[formcontrolname="isVeicoloAggiuntivoTraferimentoRischio"]').should('exist').and('be.visible').click()
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible')
+                    }
 
                     //Data Voltura
                     if (currentCase.Data_Voltura === 'DATA DECORRENZA') {
@@ -384,21 +406,22 @@ class TenutaTariffa {
                         throw new Error('Data Voltura non riconosciuta')
 
                     //Provenienza
-                    cy.get('nx-dropdown[aria-haspopup="listbox"]').last().should('be.visible').click()
-                    cy.get('nx-dropdown-item').should('be.visible').contains(currentCase.Sotto_Provenienza).click()
+                    if (currentCase.Sotto_Provenienza !== "") {
+                        cy.get('nx-dropdown[aria-haspopup="listbox"]').last().should('be.visible').click()
+                        cy.get('nx-dropdown-item').should('be.visible').contains(currentCase.Sotto_Provenienza).click()
+                        //Targa di Provenienza
+                        cy.contains('targa').should('exist').and('be.visible').parents('div[class="nx-formfield__input"]').find('input').first().type(currentCase.Targa_Provenienza)
 
-                    //Targa di Provenienza
-                    cy.contains('targa').should('exist').and('be.visible').parents('div[class="nx-formfield__input"]').find('input').first().type(currentCase.Targa_Provenienza)
-
-                    cy.contains('CERCA IN ANIA').click()
-                    //Attendiamo che il caricamento non sia più visibile
-                    cy.get('nx-spinner').should('not.be.visible')
+                        cy.contains('CERCA IN ANIA').click()
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible')
+                    }
 
                     break
             }
 
             //Nessuna attestazione trovata in BDA
-            if (currentCase.Provenienza !== "Prima immatricolazione") {
+            if (currentCase.Provenienza !== "Prima immatricolazione" && currentCase.Sotto_Provenienza !== "") {
                 cy.contains('Si').should('exist').and('be.visible').parent().click()
                 cy.contains('CONTINUA').should('exist').and('be.visible').click()
                 cy.wait('@getMotor', { requestTimeout: 30000 })
@@ -412,60 +435,65 @@ class TenutaTariffa {
             //#region Dettagli
             //? su Prima immatricolazione non servono i dettagli aggiuntivi
             if (currentCase.Provenienza !== "Prima immatricolazione") {
-                //Scadenza precedente contratto
-                let dataScadenzaPrecedenteContratto
-                let dataDecorrenza = calcolaDataDecorrenza(currentCase)
-                if (currentCase.Data_Scadenza.split(' ')[1].includes('giorn'))
-                    dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
-                        dataDecorrenza.getMonth(),
-                        dataDecorrenza.getDate() - currentCase.Data_Scadenza.split(' ')[0])
-                else if (currentCase.Data_Scadenza.split(' ')[1].includes('mes'))
-                    dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
-                        dataDecorrenza.getMonth() - currentCase.Data_Scadenza.split(' ')[0],
-                        dataDecorrenza.getDate())
+                if (currentCase.Data_Scadenza !== "") {
+                    //Scadenza precedente contratto
+                    let dataScadenzaPrecedenteContratto
+                    let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+                    if (currentCase.Data_Scadenza.split(' ')[1].includes('giorn'))
+                        dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
+                            dataDecorrenza.getMonth(),
+                            dataDecorrenza.getDate() - currentCase.Data_Scadenza.split(' ')[0])
+                    else if (currentCase.Data_Scadenza.split(' ')[1].includes('mes'))
+                        dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
+                            dataDecorrenza.getMonth() - currentCase.Data_Scadenza.split(' ')[0],
+                            dataDecorrenza.getDate())
 
-                let formattedDataScadenzaPrecedenteContratto = String(dataScadenzaPrecedenteContratto.getDate()).padStart(2, '0') + '/' +
-                    String(dataScadenzaPrecedenteContratto.getMonth() + 1).padStart(2, '0') + '/' +
-                    dataScadenzaPrecedenteContratto.getFullYear()
+                    let formattedDataScadenzaPrecedenteContratto = String(dataScadenzaPrecedenteContratto.getDate()).padStart(2, '0') + '/' +
+                        String(dataScadenzaPrecedenteContratto.getMonth() + 1).padStart(2, '0') + '/' +
+                        dataScadenzaPrecedenteContratto.getFullYear()
 
-                cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').clear()
-                cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').type(formattedDataScadenzaPrecedenteContratto).type('{enter}')
+                    cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').clear()
+                    cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').type(formattedDataScadenzaPrecedenteContratto).type('{enter}')
 
-                cy.wait('@getMotor', { requestTimeout: 30000 })
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
+                }
 
                 //Compagnia di provenienza
-                cy.contains('COMPAGNIA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click()
-                cy.get('nx-dropdown-item').contains(currentCase.Compagnia_Provenienza).click()
-                cy.wait('@getMotor', { requestTimeout: 30000 })
+                if (currentCase.Compagnia_Provenienza !== "") {
+                    cy.contains('COMPAGNIA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click()
+                    cy.get('nx-dropdown-item').contains(currentCase.Compagnia_Provenienza).click()
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
 
-                //Formula di provenienza
-                cy.contains('FORMULA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click()
-                cy.get('nx-dropdown-item').contains(currentCase.Formula_Provenienza).click()
-                cy.wait('@getMotor', { requestTimeout: 30000 })
+                    //Formula di provenienza
+                    cy.contains('FORMULA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click()
+                    cy.get('nx-dropdown-item').contains(currentCase.Formula_Provenienza).click()
+                    cy.wait('@getMotor', { requestTimeout: 30000 })
 
-                cy.get('h3:contains("Dettagli")').first().click()
-                cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '06_Dettagli', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                //#endregion
+                    cy.get('h3:contains("Dettagli")').first().click()
+                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '06_Dettagli', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    //#endregion
 
-                //#region Sinistri
-                cy.contains('Sinistri').click()
-                cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '07_Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                //#endregion
+                    //#region Sinistri
+                    cy.contains('Sinistri').click()
+                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '07_Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    //#endregion
 
-                //#region CL
-                //CL B. provenienza
-                cy.contains('CL. B/ M provenienza').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Provenienza)
-                //CL B. assegnazione
-                cy.contains('Cl. B/ M assegnazione').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Assegnazione)
-                //CL provenienza CU
-                cy.contains('Cl. provenienza cu').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click()
-                cy.get('nx-dropdown-item').contains(currentCase.Cl_Provenienza_CU).click()
-                //CL assegnazione CU
-                cy.contains('Cl. assegnazione cu').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click()
-                cy.get('nx-dropdown-item').contains(currentCase.Cl_Assegnazione_CU).click()
+                    //#region CL
+                    //CL B. provenienza
+                    cy.contains('CL. B/ M provenienza').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Provenienza)
+                    //CL B. assegnazione
+                    cy.contains('Cl. B/ M assegnazione').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Assegnazione)
+                    //CL provenienza CU
+                    cy.contains('Cl. provenienza cu').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click()
+                    cy.get('nx-dropdown-item').contains(currentCase.Cl_Provenienza_CU).click()
+                    //CL assegnazione CU
+                    cy.contains('Cl. assegnazione cu').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click()
+                    cy.get('nx-dropdown-item').contains(currentCase.Cl_Assegnazione_CU).click()
 
-                cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '08_CL', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                //#endregion
+
+                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '08_CL', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    //#endregion
+                }
             }
 
             //TODO Attestato conforme all'articolo 134, comma 4 bis, del Codice assicurazioni ?
@@ -486,7 +514,7 @@ class TenutaTariffa {
         })
     }
 
-    static compilaOfferta(currentCase) {
+    static compilaOffertaRCA(currentCase) {
         cy.intercept({
             method: '+(GET|PUT)',
             url: '**/assuntivomotor/**'
@@ -494,7 +522,6 @@ class TenutaTariffa {
 
         cy.getIFrame()
         cy.get('@iframe').within(() => {
-
             //Data Decorrenza
             let dataDecorrenza = calcolaDataDecorrenza(currentCase)
             let formattedDataDecorrenza = String(dataDecorrenza.getDate()).padStart(2, '0') + '/' +
@@ -694,12 +721,121 @@ class TenutaTariffa {
         })
     }
 
-    static checkTariffa(currentCase) {
+    static compilaOffertaARD(currentCase) {
+        cy.intercept({
+            method: '+(GET|PUT)',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor')
+
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            //Data Decorrenza
+            let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+            let formattedDataDecorrenza = String(dataDecorrenza.getDate()).padStart(2, '0') + '/' +
+                String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
+                dataDecorrenza.getFullYear()
+
+            cy.get('input[formcontrolname="dataDecorrenza"]').should('exist').and('be.visible').clear()
+            cy.get('input[formcontrolname="dataDecorrenza"]').should('exist').and('be.visible').type(formattedDataDecorrenza).type('{enter}')
+
+            cy.wait('@getMotor', { requestTimeout: 30000 })
+
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+
+            //Verifichiamo che sia stata settata correttamente la data
+            cy.get('input[formcontrolname="dataDecorrenza"]').should('exist').and('be.visible').invoke('val').then(currentDataDecorrenza => {
+                expect(currentDataDecorrenza).to.include(formattedDataDecorrenza)
+            })
+
+            cy.intercept({
+                method: 'GET',
+                url: '**/optional-pacchetti'
+            }).as('getOptionalPacchetti')
+
+            cy.intercept({
+                method: 'GET',
+                url: '**/impostazioni-generali'
+            }).as('getImpostazioniGenerali')
+
+            //#region Effettuiamo un full deselect di tutte le ARD selezionate di default
+            //Incendio senza scoperto
+            cy.contains("Incendio senza scoperto").parents('tr').find('button:first').click()
+            cy.get('nx-spinner').should('not.be.visible')
+            //Assistenza Auto
+            cy.contains("Assistenza Auto").parents('tr').find('button:first').click()
+            cy.get('nx-spinner').should('not.be.visible')
+            //#endregion
+
+            switch (currentCase.Descrizione_Settore) {
+                case "GARANZIE AGGIUNTIVE : PACCHETTO 1":
+                    cy.contains("Garanzie Aggiuntive").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    cy.contains('Rottura cristalli con limite massimo').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
+                    cy.get('nx-dropdown-item').contains(currentCase.Massimale_Rottura_Cristalli).click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+            }
+
+            cy.get('strong:contains("Auto Rischi Diversi"):last').click().wait(500)
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_Impostazioni_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.contains('Annulla').should('exist').click().wait(500)
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '11_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+            //Verifichiamo il totale relativo alla ARD
+            cy.get('strong:contains("Auto Rischi Diversi"):last').parents('div').find('div:last').find('strong:last').invoke('text').then(value => {
+                expect(value).contains(currentCase.Totale_Premio)
+            })
+        })
+    }
+
+    static checkTariffaRCA(currentCase) {
 
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
             cy.get('motor-footer').should('exist').find('button').click().wait(5000)
+            cy.getTariffaLog(currentCase).then(logFolder => {
+                //#region LogTariffa
+                cy.readFile(logFolder + "\\logTariffa.xml").then(fileContent => {
+                    const options = {
+                        ignoreAttributes: false
+                    }
+                    const parser = new XMLParser(options)
+                    parsedLogTariffa = parser.parse(fileContent)
+
+                    //Radar_KeyID
+                    expect(JSON.stringify(findKeyLogTariffa('Radar_KeyID'))).to.contain(currentCase.Versione_Tariffa_Radar)
+                    //CMC PUNTA FLEX
+                    expect(JSON.stringify(findKeyLogTariffa('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
+                })
+                //#endregion
+
+                //#region Radaruw
+                cy.readFile(logFolder + "\\radaruw.xml").then(fileContent => {
+                    const options = {
+                        ignoreAttributes: false
+                    }
+                    const parser = new XMLParser(options)
+                    parsedRadarUW = parser.parse(fileContent)
+
+                    //Radar_KeyID
+                    expect(JSON.stringify(findKeyRadarUW('Versione_Radar'))).to.contain(currentCase.Versione_Radar_UW)
+
+                })
+
+                //#endregion
+            })
+        })
+    }
+
+    static checkTariffaARD(currentCase) {
+
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+
+            cy.get('motor-footer').should('exist').find('button').click().wait(5000)
+            cy.pause()
             cy.getTariffaLog(currentCase).then(logFolder => {
                 //#region LogTariffa
                 cy.readFile(logFolder + "\\logTariffa.xml").then(fileContent => {

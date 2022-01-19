@@ -1,6 +1,6 @@
 {
     "defaultCasa" : {
-      "Assicurato"        : "Proprietario",
+      "Assicurato"        : "il proprietario",     
       "Nome"              : "Casa 1",
       "Cap"               : "34124",
       "Uso"               : "principale",
@@ -9,6 +9,8 @@
       "Piano"             : "primo piano o superiore",
       "Valore"            : "170.000,00 €",
       "Classe"            : "classe 1",
+      "ClasseProtezione"  : "classe B",
+      "Allarme"           : "non ha",
       "Anno"              : "prima del 1984",
       "Estensione"        : "Non è necessario",
       "ResidenzaAss"      : "in Italia",
@@ -23,6 +25,24 @@
       "DataNascita"       : "",
       "Residenza"         : "in Italia",
       "Cap"               : "34124"
+    },
+
+    "soluzione" : {
+      "ESSENTIAL"         : "Essential",
+      "PLUS"              : "Plus",
+      "PREMIUM"           : "Premium",
+      "TOP"               : "Top"
+    },
+
+    "ambitoUltra" : {
+      "FABBRICATO"            : "Fabbricato",
+      "CONTENUTO"             : "Contenuto",
+      "CATASTROFI_NATURALI"   : "Catastrofi naturali",
+      "RESPONSABILITA_CIVILE" : "Responsabilit",       
+      "TUTELA_LEGALE"         : "Tutela legale",
+      "ANIMALI_DOMESTICI"     : "Animali domestici"
     }
     
   }
+
+  

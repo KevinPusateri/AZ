@@ -20,9 +20,12 @@ let insertedId
 //#endregion
 
 //#region Configuration
+//? Per implementazione, recuperare le casistiche da
+//? http://alm.azi.allianzit/tfs/AlmAllianz/Test%20Factory/_versionControl?path=%24%2FTest%20Factory%2FTenuta_Tariffa_Motor%2FARD%2FResources%2FArd_Cases.xml&_a=contents
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe/tariffaCases_20220201.json'
+import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_20220201.json'
 //#endregion
+
 before(() => {
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
@@ -53,7 +56,12 @@ after(function () {
 let flowClients = false
 //Se specificato, esegue l'identificativo caso specifico
 let caseToExecute = ''
-describe('Tenuta Tariffa Febbraio 2022: ', function () {
+describe('ARD Febbraio 2022: ', {
+    retries: {
+        runMode: 0,
+        openMode: 0,
+    }
+}, function () {
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
@@ -76,7 +84,7 @@ describe('Tenuta Tariffa Febbraio 2022: ', function () {
                     TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
                     TenutaTariffa.compilaVeicolo(currentCase)
                     TenutaTariffa.compilaProvenienza(currentCase)
-                    TenutaTariffa.compilaOfferta(currentCase)
+                    TenutaTariffa.compilaOffertaARD(currentCase)
                 }
                 else
                     this.skip()
@@ -84,10 +92,7 @@ describe('Tenuta Tariffa Febbraio 2022: ', function () {
 
             it("LogTariffa", function () {
                 if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
-                    if (currentCase.Settore !== '3')
-                        TenutaTariffa.checkTariffa(currentCase)
-                    else
-                        this.skip()
+                        TenutaTariffa.checkTariffaARD(currentCase)
                 else
                     this.skip()
             })
