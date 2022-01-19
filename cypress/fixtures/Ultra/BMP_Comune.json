@@ -25,6 +25,24 @@
       "DataNascita"       : "",
       "Residenza"         : "in Italia",
       "Cap"               : "34124"
+    },
+
+    "soluzione" : {
+      "ESSENTIAL"         : "Essential",
+      "PLUS"              : "Plus",
+      "PREMIUM"           : "Premium",
+      "TOP"               : "Top"
+    },
+
+    "ambitoUltra" : {
+      "FABBRICATO"            : "Fabbricato",
+      "CONTENUTO"             : "Contenuto",
+      "CATASTROFI_NATURALI"   : "Catastrofi naturali",
+      "RESPONSABILITA_CIVILE" : "Responsabilit",       
+      "TUTELA_LEGALE"         : "Tutela legale",
+      "ANIMALI_DOMESTICI"     : "Animali domestici"
     }
     
   }
+
+  

@@ -19,10 +19,10 @@
 
 
   "daModificareCasa" : {
-    "Assicurato"        : true,
+    "Assicurato"        : false,
     "Nome"              : false,
-    "Cap"               : true,
-    "Uso"               : true,
+    "Cap"               : false,
+    "Uso"               : false,
     "Tipo"              : true,
     "Mq"                : true,
     "Piano"             : false,
@@ -33,27 +33,37 @@
     "Anno"              : false,
     "Estensione"        : false,
     "ResidenzaAss"      : false,
-    "CapAss"            : true
+    "CapAss"            : false
   },
 
   "modificheCasa" : {
-    "Assicurato"        : "affittuario",
+    "Assicurato"        : "",
     "Nome"              : "",
-    "Cap"               : "34074",
-    "Uso"               : "saltuaria",
+    "Cap"               : "",
+    "Uso"               : "",
     "Tipo"              : "una villa indipendente",
     "Mq"                : "250",
     "Piano"             : "",
-    "Valore"            : "250000",
+    "Valore"            : "250.000,00 €",
     "Classe"            : "",
     "ClasseProtezione"  : "",
     "Allarme"           : "",
     "Anno"              : "",
     "Estensione"        : "",
     "ResidenzaAss"      : "",
-    "CapAss"            : "34074"
+    "CapAss"            : ""
   },
 
+
+  "daVerificareAnimale" : {
+    "Nome"              : true,
+    "Tipo"              : true,
+    "Sesso"             : true,
+    "Razza"             : true,
+    "DataNascita"       : true,
+    "Residenza"         : true,
+    "Cap"               : true
+  },
 
   "daModificareAnimale" : {
     "Nome"              : true,
@@ -62,7 +72,7 @@
     "Razza"             : true,
     "DataNascita"       : false,
     "Residenza"         : false,
-    "Cap"               : true
+    "Cap"               : false
   },
 
   "modificheAnimale" : {
@@ -72,7 +82,79 @@
     "Razza"             : "siamese",
     "DataNascita"       : "",
     "Residenza"         : "",
-    "Cap"               : "34074"
+    "Cap"               : ""
+  },
+
+  "daVerificareFAMod" : {
+    "Assicurato"        : false,
+    "Nome"              : false,
+    "Cap"               : false,
+    "Uso"               : false,
+    "Tipo"              : true,
+    "Mq"                : true,
+    "Piano"             : false,
+    "Valore"            : true,
+    "Classe"            : false,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : false,
+    "Estensione"        : false,
+    "ResidenzaAss"      : false,
+    "CapAss"            : false
+  },
+
+  "daVerificareFADef" : {
+    "Assicurato"        : true,
+    "Nome"              : true,
+    "Cap"               : true,
+    "Uso"               : true,
+    "Tipo"              : false,
+    "Mq"                : false,
+    "Piano"             : false,
+    "Valore"            : false,
+    "Classe"            : true,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : true,
+    "Estensione"        : true,
+    "ResidenzaAss"      : false,
+    "CapAss"            : false
+  },
+
+  "daVerificareRCMod" : {
+    "Assicurato"        : false,
+    "Nome"              : false,
+    "Cap"               : false,
+    "Uso"               : false,
+    "Tipo"              : true,
+    "Mq"                : true,
+    "Piano"             : false,
+    "Valore"            : false,
+    "Classe"            : false,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : false,
+    "Estensione"        : false,
+    "ResidenzaAss"      : false,
+    "CapAss"            : false
+  },
+
+  "daVerificareRCDef" : {
+    "Assicurato"        : true,
+    "Nome"              : true,
+    "Cap"               : true,
+    "Uso"               : false,
+    "Tipo"              : false,
+    "Mq"                : false,
+    "Piano"             : false,
+    "Valore"            : false,
+    "Classe"            : false,
+    "ClasseProtezione"  : false,
+    "Allarme"           : false,
+    "Anno"              : true,
+    "Estensione"        : true,
+    "ResidenzaAss"      : true,
+    "CapAss"            : true
   }
 
 }

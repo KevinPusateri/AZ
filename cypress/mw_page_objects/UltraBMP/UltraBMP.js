@@ -74,6 +74,7 @@ class UltraBMP {
             //attende il caricamento della pagina Configurazione Contenuto
             cy.get('[id="caSoluzioni"]', { timeout: 30000 })
                 .should('be.visible')
+                .wait(1000)
 
             //cy.log('ambito: ' + ambito)
             //cy.log('oggetto: ' + oggetto)

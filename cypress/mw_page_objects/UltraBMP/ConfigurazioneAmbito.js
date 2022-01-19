@@ -21,129 +21,297 @@ class DatiQuotazione {
       * ClickButton 
       * @param {string} azione - testo del button 
       */
-      static ClickButton(azione) {
-        cy.getIFrame()
-        cy.get('@iframe').within(() => {
+    static ClickButton(azione) {
+      //cy.getIFrame()
+      //cy.get('@iframe').within(() => {
           //cy.pause()
           //cy.get('span').contains(strButton).should('be.visible').click()
-          cy.contains('span', azione).scrollIntoView().should('be.visible').click() 
-          cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-          cy.wait(2000)   
+      ultraIFrame().within(() => {
+        cy.contains('span', azione).scrollIntoView().should('be.visible').click() 
+        cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+        cy.wait(2000)   
       })
 
     }
     //#endregion
 
+    static verificaSoluzioneSelezionata(soluzioneSel) {
+      ultraIFrame().within(() => {
+        cy.get('div[class="ca-col-soluzione selected"]').should('exist')
+          .contains(soluzioneSel).should('exist')
+          //.contains('h3', soluzioneSel).should('exist')
+      })
+
+    }
+
+    static aggiungiGaranzia(garanziaAgg) {
+      ultraIFrame().within(() => {
+        cy.contains('span', garanziaAgg).should('exist')
+          .parent('div')
+          .parent('div')
+          .find('button').should('be.enabled').click()
+          //.contains('Aggiungi').should('be.enabled').click()
+
+        cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+        cy.wait(2000)   
+
+      })
+
+    }
+
+    static leggiPremio(garanzia) {
+      let pr = 0
+      ultraIFrame().within(() => {
+        cy.pause()
+        if (garanzia == 'totale')
+        {
+          cy.get('div[class="header-price-frazionamento ng-tns-c122-6"]').should('exist')
+            .children('div[class="header-price-euro ng-tns-c122-6 ng-star-inserted"]').should('exist').as('divPremio')  
+            .should('be.visible')
+          let ciccio = cy.get('@divPremio').invoke("text")
+          cy.log('premio: ' + ciccio)
+
+        }
+        else
+        {
+
+        }
+        return pr
+        /*
+        cy.contains('span', garanziaAgg).should('exist')
+          .parent('div')
+          .parent('div')
+          .find('button').should('be.enabled').click()
+          //.contains('Aggiungi').should('be.enabled').click()
+        */
+      })
+
+    }
+
+    static verificaDropDown(testoRiga, ind, testoDaVerificare) {
+      //cy.contains('h2', oggetto).should('exist')
+      //  .parent('div').should('exist')
+      cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
+        .find('form').should('exist')
+        .contains(testoRiga)
+        .parent().should('have.class', 'ca-question ng-star-inserted')
+        .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
+        .children('div').should('have.length.gt', 0)
+        .eq(ind).should('have.text' , testoDaVerificare)
+    }
+
+    static verificaInput(testoRiga, ind, testoDaVerificare) {
+      //cy.contains('h2', oggetto).should('exist')
+      //  .parent('div').should('exist')
+      cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
+        .find('form').should('exist')
+        .contains(testoRiga)
+        .parent().should('have.class', 'ca-question ng-star-inserted')
+        .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
+        .children('div').should('have.length.gt', 0)
+        .eq(ind).find('input').should('have.value' , testoDaVerificare)
+    }
+
+    static modificaDropDown(testoRiga, ind, testoDaInserire) {
+      //cy.contains('h2', oggetto).should('exist')
+      //  .parent('div').should('exist')
+      cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
+        .find('form').should('exist')
+        .contains(testoRiga)
+        .parent().should('have.class', 'ca-question ng-star-inserted')
+        .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
+        .children('div').should('have.length.gt', 0)
+        .eq(ind).should('be.visible')
+        .find('[class="ng-star-inserted"]').should('be.visible').click()
+
+      cy.get('.nx-dropdown__panel-body').should('be.visible')
+        .find('span').contains(testoDaInserire).click()
+          
+      cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+      cy.wait(2000)
+    }
+
+    static modificaInput(testoRiga, ind, testoDaInserire) {
+      //cy.contains('h2', oggetto).should('exist')
+      //  .parent('div').should('exist')
+      cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
+        .find('form').should('exist')
+        .contains(testoRiga)
+        .parent().should('have.class', 'ca-question ng-star-inserted')
+        .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
+        .children('div').should('have.length.gt', 0)
+        .eq(ind).should('be.visible')
+        .click().wait(500)
+        .clear().wait(500)
+        .type(testoDaInserire).wait(2000)
+        .type('{enter}')
+            
+      cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+      cy.wait(1000)
+
+    }
+    
+
     //#region Verifica default Casa
     /**
       * Verifica valori di default Casa 
       */
-     static VerificaDefaultCasa() {
-        //cy.getIFrame()
-        //cy.get('@iframe').within(() => {
-        ultraIFrame().within(() => {
-             
-            //Verifica default "Assicurato"
-            cy.log("Verifica default 'Assicurato': " + defaultCasa.Assicurato)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(0)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Assicurato: ', $text)
-                expect($text).to.equal(defaultCasa.Assicurato)
-            }) 
+    static VerificaDefaultCasa(daVerificare, valoriDefault) {
 
-            //Verifica default Nome abitazione
-            cy.log("Verifica default Nome abitazione: " + defaultCasa.Nome)
-            cy.get('#nx-input-2', {timeout: 4000}).should('have.value', defaultCasa.Nome)
+      ultraIFrame().within(() => {
+      
+      // *** RIGA ASSICURATO ***
 
-            //Verifica default Cap abitazione
-            cy.log("Verifica default Cap abitazione: " + defaultCasa.Cap)
-            cy.get('#nx-input-3', {timeout: 4000}).should('have.value', defaultCasa.Cap)
+        //Verifica default "Assicurato"
+        if (daVerificare.Assicurato)
+        {
+          cy.log("Verifica default 'Assicurato - atteso': " + valoriDefault.Assicurato)
+          DatiQuotazione.verificaDropDown('assicurato è', 1, valoriDefault.Assicurato)
+        }
+        else
+          cy.log("NON verifico campo 'Assicurato")
 
-            //Verifica default "Uso"
-            cy.log("Verifica default 'Uso': " + defaultCasa.Uso)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(1)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Uso: ', $text)
-                expect($text).to.equal(defaultCasa.Uso)
-            }) 
+        //Verifica default "Nome abitazione"
+        if (daVerificare.Nome)
+        {
+          cy.log("Verifica default 'Nome abitazione - atteso': " + valoriDefault.Nome)
+          DatiQuotazione.verificaInput('assicurato è', 3, valoriDefault.Nome)
+        }
+        else
+          cy.log("NON verifico campo 'Nome abitazione")
+      
+        //Verifica default "Cap abitazione"
+        if (daVerificare.Cap)
+        {
+          cy.log("Verifica default 'Cap - atteso': " + valoriDefault.Cap)
+          DatiQuotazione.verificaInput('assicurato è', 5, valoriDefault.Cap)
+        }
+        else
+          cy.log("NON verifico campo 'Cap")
 
-            //Verifica default "Tipo"
-            cy.log("Verifica default 'Tipo': " + defaultCasa.Tipo)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(2)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Tipo: ', $text)
-                expect($text).to.equal(defaultCasa.Tipo)
-            }) 
-            
-            //Verifica default Metri Quadri abitazione
-            cy.log("Verifica default Metri Quadri abitazione: " + defaultCasa.Mq)
-            cy.get('#nx-input-4', {timeout: 4000}).should('have.value', defaultCasa.Mq)
+      // *** RIGA ABITAZIONE ***
 
-            //Verifica default "Piano"
-            cy.log("Verifica default 'Piano': " + defaultCasa.Piano)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(3)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Piano: ', $text)
-                expect($text).to.equal(defaultCasa.Piano)
-            }) 
+        //Verifica default "Uso abitazione"
+        if (daVerificare.Uso)
+        {
+          cy.log("Verifica default 'Uso - atteso': " + valoriDefault.Uso)
+          DatiQuotazione.verificaDropDown('È la casa', 1, valoriDefault.Uso)
+        }
+        else
+          cy.log("NON verifico campo 'Uso") 
+      
+        //Verifica default "Tipo abitazione"
+        if (daVerificare.Tipo)
+        {
+          cy.log("Verifica default 'Tipo - atteso': " + valoriDefault.Tipo)
+          DatiQuotazione.verificaDropDown('È la casa', 4, valoriDefault.Tipo)
+        }
+        else
+          cy.log("NON verifico campo 'Tipo")
 
-            //Verifica default Valore abitazione
-            cy.log("Verifica default Valore abitazione: " + defaultCasa.Valore)
-            cy.get('#nx-input-5', {timeout: 4000}).should('have.value', defaultCasa.Valore)
+        //Verifica default "Metri Quadri abitazione"
+        if (daVerificare.Mq)
+        {
+          cy.log("Verifica default 'Metri quadri abitazione - atteso': " + valoriDefault.Mq)
+          DatiQuotazione.verificaInput('È la casa', 6, valoriDefault.Mq)
+        }
+        else
+          cy.log("NON verifico campo 'Metri quadri abitazione")
 
-            //Verifica default "Classe"
-            cy.log("Verifica default 'Classe': " + defaultCasa.Classe)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(4)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Classe: ', $text)
-                expect($text).to.equal(defaultCasa.Classe)
-            }) 
+        //Verifica default "Piano abitazione"
+        if (daVerificare.Piano)
+        {
+          cy.log("Verifica default 'Piano - atteso': " + valoriDefault.Piano)
+          DatiQuotazione.verificaDropDown('È la casa', 9, valoriDefault.Piano)
+        }
+        else
+          cy.log("NON verifico campo 'Piano")
 
-            //Verifica default "Anno"
-            cy.log("Verifica default 'Anno': " + defaultCasa.Anno)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(5)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Anno: ', $text)
-                expect($text).to.equal(defaultCasa.Anno)
-            }) 
+      // *** RIGA VALORE RICOSTRUZIONE ***
 
-            //Verifica default "Estensione"
-            cy.log("Verifica default 'Estensione': " + defaultCasa.Estensione)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(6)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Estensione: ', $text)
-                expect($text).to.equal(defaultCasa.Estensione)
-            }) 
+        //Verifica default "Valore abitazione"
+        if (daVerificare.Valore)
+        {
+          cy.log("Verifica default 'Valore abitazione - atteso': " + valoriDefault.Valore)
+          DatiQuotazione.verificaInput('Il valore di ricostruzione', 1, valoriDefault.Valore)
+        }
+        else
+          cy.log("NON verifico campo 'Valore abitazione")
 
-            //Verifica default "Residenza Assicurato"
-            cy.log("Verifica default 'Residenza Assicurato': " + defaultCasa.ResidenzaAss)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(7)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Residenza Assicurato: ', $text)
-                expect($text).to.equal(defaultCasa.ResidenzaAss)
-            }) 
+      // *** RIGA CARATTERISTICHE COSTRUTTIVE ***
 
-            //Verifica default Cap Assicurato
-            cy.log("Verifica default Cap Assicurato: " + defaultCasa.CapAss)
-            cy.get('#nx-input-6', {timeout: 4000}).should('have.value', defaultCasa.CapAss)
-            
-        })
+        //Verifica default "Classe abitazione"
+        if (daVerificare.Classe)
+        {
+          cy.log("Verifica default 'Classe - atteso': " + valoriDefault.Classe)
+          DatiQuotazione.verificaDropDown('Le caratteristiche costruttive', 1, valoriDefault.Classe)
+        }
+        else
+          cy.log("NON verifico campo 'Classe")
+
+      // *** RIGA MEZZI DI PROTEZIONE ***
+
+        //Verifica default "Classe protezione"
+        if (daVerificare.ClasseProtezione)
+        {
+          cy.log("Verifica default 'Classe Protezione - atteso': " + valoriDefault.ClasseProtezione)
+          DatiQuotazione.verificaDropDown('Ha mezzi di protezione', 1, valoriDefault.ClasseProtezione)
+        }
+        else
+          cy.log("NON verifico campo 'Classe Protezione")
+
+        //Verifica default "Presenza allarme"
+        if (daVerificare.Allarme)
+        {
+          cy.log("Verifica default 'Allarme - atteso': " + valoriDefault.Allarme)
+          DatiQuotazione.verificaDropDown('Ha mezzi di protezione', 3, valoriDefault.Allarme)
+        }
+        else
+          cy.log("NON verifico campo 'Allarme")
+
+      // *** RIGA ANNO DI COSTRUZIONE ***
+
+        //Verifica default "Anno di costruzione"
+        if (daVerificare.Anno)
+        {
+          cy.log("Verifica default 'Anno costruzione - atteso': " + valoriDefault.Anno)
+          DatiQuotazione.verificaDropDown('Lo stabile è stato costruito', 1, valoriDefault.Anno)
+        }
+        else
+          cy.log("NON verifico campo 'Anno costruzione")
+
+      // *** RIGA ESTENSIONE PROTEZIONE ***
+
+        //Verifica default "E"stensione protezione"
+        if (daVerificare.Estensione)
+        {
+          cy.log("Verifica default 'Estensione protezione - atteso': " + valoriDefault.Estensione)
+          DatiQuotazione.verificaDropDown('estendere la protezione', 0, valoriDefault.Estensione)
+        }
+        else
+          cy.log("NON verifico campo 'Estensione protezione")
+
+      // *** RIGA ASSICURATO ***
+
+        //Verifica default "Residenza assicurato"
+        if (daVerificare.ResidenzaAss)
+        {
+          cy.log("Verifica default 'Residenza assicurato - atteso': " + valoriDefault.ResidenzaAss)
+          DatiQuotazione.verificaDropDown('assicurato ha la residenza', 1, valoriDefault.ResidenzaAss)
+        }
+        else
+          cy.log("NON verifico campo 'Residenza assicurato")
+
+        //Verifica default "Cap assicurato"
+        if (daVerificare.CapAss)
+        {
+          cy.log("Verifica default 'Cap assicurato - atteso': " + valoriDefault.CapAss)
+          DatiQuotazione.verificaInput('assicurato ha la residenza', 3, valoriDefault.CapAss)
+        }
+        else
+          cy.log("NON verifico campo 'Cap assicurato")
+
+      })
 
     }
     //#endregion
@@ -152,184 +320,296 @@ class DatiQuotazione {
     /**
       * Verifica valori di default Animale Domestico 
       */
-     static VerificaDefaultAnimaleDomestico() {
-        //cy.getIFrame()
-        //cy.get('@iframe').within(() => {
-        ultraIFrame().within(() => {
+     static VerificaDefaultAnimaleDomestico(daVerificare, valoriDefault) {
 
-            //Verifica default Nome animale
-            cy.log("Verifica default Nome animale: " + defaultAnimale.Nome)
-            cy.get('#nx-input-7', {timeout: 4000}).should('have.value', defaultAnimale.Nome)
-             
-            //Verifica default "Tipo"
-            cy.log("Verifica default 'Tipo': " + defaultAnimale.Tipo)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(1)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(0)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Tipo: ', $text)
-                expect($text).to.equal(defaultAnimale.Tipo)
-            }) 
+      ultraIFrame().within(() => {
 
-            //Verifica default "Sesso"
-            cy.log("Verifica default 'Sesso': " + defaultAnimale.Sesso)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(1)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(1)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Sesso: ', $text)
-                expect($text).to.equal(defaultAnimale.Sesso)
-            }) 
+        //Verifica default "Nome animale"
+        if (daVerificare.Nome)
+        {
+        cy.log("Verifica default 'Nome animale - atteso': " + valoriDefault.Nome)
+        DatiQuotazione.verificaInput('è un', 1, valoriDefault.Nome)
+        }
+        else
+          cy.log("NON verifico campo 'Nome")
+          
+        //Verifica default "Tipo"
+        if (daVerificare.Tipo)
+        {
+        cy.log("Verifica default 'Tipo - atteso': " + valoriDefault.Tipo)
+        DatiQuotazione.verificaDropDown('è un', 3, valoriDefault.Tipo)
+        }
+        else
+          cy.log("NON verifico campo 'Tipo")
 
-            //Verifica default "Razza"
-            cy.log("Verifica default 'Razza': " + defaultAnimale.Razza)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(1)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(2)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Razza: ', $text)
-                expect($text).to.equal(defaultAnimale.Razza)
-            }) 
+        //Verifica default "Sesso"
+        if (daVerificare.Sesso)
+        {
+        cy.log("Verifica default 'Sesso - atteso': " + valoriDefault.Sesso)
+        DatiQuotazione.verificaDropDown('è un', 6, valoriDefault.Sesso)
+        }
+        else
+          cy.log("NON verifico campo 'Sesso")
 
-            //Verifica default Data di nascita (data odierna meno un anno)
-            //cy.pause()
-            defaultAnimale.DataNascita = UltraBMP.dataOggiMenoUnAnno()
-            cy.log("Verifica default Data di nascita: " + defaultAnimale.DataNascita)
-            cy.get('#nx-input-8', {timeout: 4000}).should('have.value', defaultAnimale.DataNascita)
+        //Verifica default "Razza"
+        if (daVerificare.Razza)
+        {
+        cy.log("Verifica default 'Razza - atteso': " + valoriDefault.Razza)
+        DatiQuotazione.verificaDropDown('di razza', 1, valoriDefault.Razza)
+        }
+        else
+          cy.log("NON verifico campo 'Razza")
 
-            //Verifica default "Residenza"
-            cy.log("Verifica default 'Residenza': " + defaultAnimale.Residenza)
-            cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(1)
-              .find('[class="ca-dropdown ng-star-inserted"]').eq(3)
-              .find('[class="ng-star-inserted"]')
-              .invoke('text').then(($text) => {
-                cy.log('Residenza: ', $text)
-                expect($text).to.equal(defaultAnimale.Residenza)
-            }) 
+        //Verifica default "Data di nascita" (data odierna meno un anno)
+        if (daVerificare.DataNascita)
+        {
+        valoriDefault.DataNascita = UltraBMP.dataOggiMenoUnAnno()
+        cy.log("Verifica default 'Data di nascita - atteso': " + valoriDefault.DataNascita)
+        DatiQuotazione.verificaInput('La sua data di nascita', 4, valoriDefault.DataNascita)
+        }
+        else
+          cy.log("NON verifico campo 'DataNascita")
 
-            //Verifica default Cap
-            cy.log("Verifica default Cap: " + defaultAnimale.Cap)
-            cy.get('#nx-input-9', {timeout: 4000}).should('have.value', defaultAnimale.Cap)
+        //Verifica default "Residenza"
+        if (daVerificare.Residenza)
+        {
+        cy.log("Verifica default 'Residenza - atteso': " + valoriDefault.Residenza)
+        DatiQuotazione.verificaDropDown('Il proprietario ha la residenza', 1, valoriDefault.Residenza)
+        }
+        else
+          cy.log("NON verifico campo 'Residenza")
 
+        //Verifica default "Cap"
+        if (daVerificare.Cap)
+        {
+        cy.log("Verifica default 'Cap residenza - atteso': " + valoriDefault.Cap)
+        DatiQuotazione.verificaInput('Il proprietario ha la residenza', 3, valoriDefault.Cap)
+        }
+        else
+          cy.log("NON verifico campo 'Cap")
                         
-        })
+      })
 
     }
     //#endregion
+
 
     //#region Modifica Valori Casa 
     /**
       * Modifica valori Casa
       * @param {JSON} modificheCasa - Valori da modificare
       */
-    static ModificaValoriCasa(modificheCasa) {
+    static ModificaValoriCasa(daModificare, modificheCasa) {
       ultraIFrame().within(() => {
         cy.log("MODIFICHE VALORI QUOTAZIONE - CASA")
 
-        //Modifica tipo abitazione
-        cy.log("Modifica tipo abitazione: " + modificheCasa.Tipo)
-        if (modificheCasa.Tipo.length > 0)
+        // *** RIGA ASSICURATO ***
+
+        //Modifica "Assicurato"
+        if (daModificare.Assicurato)
         {
-          cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-            .find('[class="ca-dropdown ng-star-inserted"]').eq(2)
+          cy.log("Modifica 'Assicurato - da inserire': " + modificheCasa.Assicurato)
+          //cy.pause()
+          DatiQuotazione.modificaDropDown('assicurato è', 1, modificheCasa.Assicurato)
+          /*
+          cy.contains('h2', casa).should('exist')
+            .parent('div').should('exist')
+            .find('form').should('exist')
+            .contains("assicurato è")
+            .parent().should('have.class', 'ca-question ng-star-inserted')
+            .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
+            .children('div').should('have.length.gt', 0)
+            .eq(1).should('be.visible')
             .find('[class="ng-star-inserted"]').click()
-            
+
           cy.get('.nx-dropdown__panel-body').should('be.visible')
-            .find('span').contains(modificheCasa.Tipo).click()
-          cy.get('div[id="warning-switch-solution"]')
-            .find('span').contains('Ok').should('be.visible').click()
+            .find('span').contains(modificheCasa.Assicurato).click()
+          
           cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
           cy.wait(2000)
+          */
         }
-        else
-            cy.log('NIENTE MODIFICHE "Tipo Abitazione" ' + modificheCasa.Tipo)
 
-        /*
-        //Modifica Nome abitazione
-        cy.log("Modifica Nome abitazione: " + modificheCasa.Nome)
-        //cy.pause()
-        if (modificheCasa.Nome.length > 0)
+        //Modifica "Nome abitazione"
+        if (daModificare.Nome)
         {
+          cy.log("Modifica 'Nome abitazione - da inserire': " + modificheCasa.Nome)
           //cy.pause()
-          cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-            .find('[class="nx-word__inner-wrapper ng-star-inserted"]', {timeout: 4000}).eq(0)
+          DatiQuotazione.modificaInput('assicurato è', 3, modificheCasa.Nome)
+          
+          cy.get('div[id="warning-switch-solution"]')
+            .find('span').contains('Ok').should('be.visible').click()
+          cy.wait(1000)
+
+          cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+          cy.wait(1000)
+
+
+          /*
+          cy.contains('h2', casa).should('exist')
+            .parent('div').should('exist')
+            .find('form').should('exist')
+            .contains("assicurato è")
+            .parent().should('have.class', 'ca-question ng-star-inserted')
+            .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
+            .children('div').should('have.length.gt', 0)
+            .eq(3).should('be.visible')
             .click().wait(500)
             .clear().wait(500)
             .type(modificheCasa.Nome).wait(2000)
-            .type({enter})
-          cy.get('div[id="warning-switch-solution"]')
-            .find('span').contains('Ok').should('be.visible').click()
+            //.find('[class="ng-star-inserted"]').click()
+
           cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
           cy.wait(2000)
+          */
+         //casa = modificheCasa.Nome
         }
-        else
-            cy.log('NIENTE MODIFICHE "Nome abitazione" ' + modificheCasa.Nome)
-        */
-
-        /*
-        //Modifica Cap abitazione
-        cy.log("Modifica Cap abitazione: " + modificheCasa.Cap)
-        if (modificheCasa.Cap.length > 0)
-        {
-          cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-            .find('[class="nx-word__inner-wrapper ng-star-inserted"]', {timeout: 4000}).eq(1)
-            .click().wait(500)
-            .clear().wait(500)
-            .type(modificheCasa.Cap).wait(500)
-          cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-          cy.wait(2000)
-        }
-        else
-            cy.log('NIENTE MODIFICHE "Cap abitazione" ' + modificheCasa.Cap)
-        */
-
         
-        //Modifica Metri quadri abitazione
-        cy.log("Modifica Metri quadri abitazione: " + modificheCasa.Mq)
-        if (modificheCasa.Mq.length > 0)
+        //Modifica "Cap abitazione"
+        if (daModificare.Cap)
         {
-          cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-            .find('[class="nx-word__inner-wrapper ng-star-inserted"]', {timeout: 4000}).eq(2)
-          //cy.get('#nx-input-4', {timeout: 4000}).should('exist').and('be.visible')
+          cy.log("Modifica 'Cap - da inserire': " + modificheCasa.Cap)
+          //DatiQuotazione.modificaInput(casa, 'assicurato è', 5, modificheCasa.Cap)
+          //cy.contains('h2', casa).should('exist')
+          //  .parent('div').should('exist')
+          cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
+            .find('form').should('exist')
+            .contains("che si trova al CAP")
+            .parent().should('have.class', 'ca-question ng-star-inserted')
+            .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
+            .children('div').should('have.length.gt', 0)
+            .eq(5).should('be.visible').as('cap1')
             .click().wait(500)
             .clear().wait(500)
-            .type(modificheCasa.Mq).wait(2000)
-          //Click su cap per far apparire il warning
-          cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-            .find('[class="nx-word__inner-wrapper ng-star-inserted"]', {timeout: 4000}).eq(1)
-            .click().wait(500)
-          //*
-          cy.get('div[id="warning-switch-solution"]')
-            .find('span').contains('Ok').should('be.visible').click()
-          cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-          cy.wait(2000)
-        }
-        else
-            cy.log('NIENTE MODIFICHE "Metri Quadri abitazione" ' + modificheCasa.Mq)
-        
-        //Modifica Valore abitazione
-        cy.log("Modifica Valore abitazione: " + modificheCasa.Valore)
-        if (modificheCasa.Valore.length > 0)
-        {
-          cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-            .find('[class="nx-word__inner-wrapper ng-star-inserted"]', {timeout: 4000}).eq(3)
-          //cy.get('#nx-input-4', {timeout: 4000}).should('exist').and('be.visible')
-            .click().wait(500)
-            .clear().wait(500)
-            .type(modificheCasa.Valore).wait(2000)
-          //Click su cap per far apparire il warning
-          cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(0)
-            .find('[class="nx-word__inner-wrapper ng-star-inserted"]', {timeout: 4000}).eq(1)
-            .click().wait(500)
-          //*
-          cy.get('div[id="warning-switch-solution"]')
-            .find('span').contains('Ok').should('be.visible').click()
-          cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-          cy.wait(2000)
-        }
-        else
-            cy.log('NIENTE MODIFICHE "Valore abitazione" ' + modificheCasa.Valore)
+            .type(modificheCasa.Cap).wait(1000)
 
+          cy.contains(modificheCasa.Cap).should('have.length', 1).dblclick()
+          cy.wait(1000)
+          
+          cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+          cy.wait(1000)
+        }
+        
+      // *** RIGA ABITAZIONE ***
+
+        //Modifica "Uso abitazione"
+        if (daModificare.Uso)
+        {
+          cy.log("Modifica 'Uso - da inserire': " + modificheCasa.Uso)
+          DatiQuotazione.modificaDropDown(casa, 'È la casa', 1, modificheCasa.Uso)
+        }
+        
+        //cy.pause()
+
+
+        //Modifica "Tipo abitazione"
+        if (daModificare.Tipo)
+        {
+          cy.log("Modifica 'Tipo - da inserire': " + modificheCasa.Tipo)
+          DatiQuotazione.modificaDropDown(casa, 'È la casa', 4, modificheCasa.Tipo)
+        }
+        
+        //Modifica "Metri Quadri abitazione"
+        if (daModificare.Mq)
+        {
+          cy.log("Modifica 'Metri quadri abitazione - da inserire': " + modificheCasa.Mq)
+          DatiQuotazione.modificaInput(casa, 'È la casa', 6, modificheCasa.Mq)
+        }
+        
+        //Modifica "Piano abitazione"
+        if (daModificare.Piano)
+        {
+          cy.log("Modifica 'Piano - da inserire': " + modificheCasa.Piano)
+          DatiQuotazione.modificaDropDown(casa, 'È la casa', 9, modificheCasa.Piano)
+        }
+        
+      // *** RIGA VALORE RICOSTRUZIONE ***
+
+        //Modifica "Valore abitazione"
+        if (daModificare.Valore)
+        {
+          cy.log("Modifica 'Valore abitazione - da inserire': " + modificheCasa.Valore)
+          DatiQuotazione.modificaInput(casa, 'Il valore di ricostruzione', 1, modificheCasa.Valore)
+        }
+        
+      // *** RIGA CARATTERISTICHE COSTRUTTIVE ***
+
+        //Modifica "Classe abitazione"
+        if (daModificare.Classe)
+        {
+          cy.log("Modifica 'Classe - da inserire': " + modificheCasa.Classe)
+          DatiQuotazione.modificaDropDown(casa, 'Le caratteristiche costruttive', 1, modificheCasa.Classe)
+        }
+        
+      // *** RIGA MEZZI DI PROTEZIONE ***
+
+        //Modifica "Classe protezione"
+        if (daModificare.ClasseProtezione)
+        {
+          cy.log("Modifica 'Classe Protezione - da inserire': " + modificheCasa.ClasseProtezione)
+          DatiQuotazione.modificaDropDown(casa, 'Ha mezzi di protezione', 1, modificheCasa.ClasseProtezione)
+        }
+        
+        //Modifica "Presenza allarme"
+        if (daModificare.Allarme)
+        {
+          cy.log("Modifica 'Allarme - da inserire': " + modificheCasa.Allarme)
+          DatiQuotazione.modificaDropDown(casa, 'Ha mezzi di protezione', 3, modificheCasa.Allarme)
+        }
+        
+      // *** RIGA ANNO DI COSTRUZIONE ***
+
+        //Modifica "Anno di costruzione"
+        if (daModificare.Anno)
+        {
+          cy.log("Modifica 'Anno costruzione - da inserire': " + modificheCasa.Anno)
+          DatiQuotazione.modificaDropDown(casa, 'Lo stabile è stato costruito', 1, modificheCasa.Anno)
+        }
+        
+      // *** RIGA ESTENSIONE PROTEZIONE ***
+
+        //Modifica "E"stensione protezione"
+        if (daModificare.Estensione)
+        {
+          cy.log("Modifica 'Estensione protezione - da inserire': " + modificheCasa.Estensione)
+          DatiQuotazione.modificaDropDown(casa, 'estendere la protezione', 0, modificheCasa.Estensione)
+        }
+        
+      // *** RIGA ASSICURATO ***
+
+        //Modifica "Residenza assicurato"
+        if (daModificare.ResidenzaAss)
+        {
+          cy.log("Modifica 'Residenza assicurato - da inserire': " + modificheCasa.ResidenzaAss)
+          DatiQuotazione.modificaDropDown(casa, 'assicurato ha la residenza', 1, modificheCasa.ResidenzaAss)
+        }
+        
+        //Modifica "Cap assicurato"
+        if (daModificare.CapAss)
+        {
+          cy.log("Modifica 'Cap assicurato - da inserire': " + modificheCasa.CapAss)
+          //DatiQuotazione.modificaInput(casa, 'assicurato ha la residenza', 3, modificheCasa.CapAss)
+          //cy.contains('h2', casa).should('exist')
+          //  .parent('div').should('exist')
+          cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
+            .find('form').should('exist')
+            .contains("assicurato ha la residenza")
+            .parent().should('have.class', 'ca-question ng-star-inserted')
+            .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
+            .children('div').should('have.length.gt', 0)
+            .eq(3).should('be.visible').as('cap2')
+            .click().wait(500)
+            .clear().wait(500)
+            .type(modificheCasa.CapAss).wait(1000)
+
+          cy.contains(modificheCasa.CapAss).should('have.length', 1).dblclick()
+          cy.wait(1000)
+          
+          cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+          cy.wait(1000)
+        }
+        
+        cy.pause()
       })
 
     }
@@ -340,68 +620,83 @@ class DatiQuotazione {
       * Modifica valori Animale Domestico
       * @param {JSON} modificheAnimale - Valori da modificare
       */
-     static ModificaValoriAnimaleDomestico(modificheAnimale) {
+     static ModificaValoriAnimaleDomestico(daModificare, modificheAnimale) {
       ultraIFrame().within(() => {
         
         cy.log("MODIFICHE VALORI QUOTAZIONE - ANIMALE DOMESTICO")
 
-        /*
-        //Modifica Nome animale
-        cy.log("Modifica Nome animale: " + modificheAnimale.Nome)
-        //cy.pause()
-        if (modificheAnimale.Nome.length > 0)
+        //Modifica "Nome animale"
+        if (daModificare.Nome)
         {
-          //cy.pause()
-          cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(1)
-            .find('[class="nx-word__inner-wrapper ng-star-inserted"]', {timeout: 4000}).eq(0)
+          cy.log("Modifica 'Nome animale' - da inserire: " + modificheAnimale.Nome)
+          DatiQuotazione.modificaInput('è un', 1, modificheAnimale.Nome)
+
+          animale = modificheAnimale.Nome
+        }
+          
+        //Modifica "Tipo"
+        if (daModificare.Tipo)
+        {
+          cy.log("Modifica 'Tipo' - da inserire: " + modificheAnimale.Tipo)
+          DatiQuotazione.modificaDropDown('è un', 3, modificheAnimale.Tipo)
+        }
+
+        //Modifica "Sesso"
+        if (daModificare.Sesso)
+        {
+          cy.log("Modifica 'Sesso' - da inserire: " + modificheAnimale.Sesso)
+          DatiQuotazione.modificaDropDown('è un', 6, modificheAnimale.Sesso)
+        }
+
+        //Modifica "Razza"
+        if (daModificare.Razza)
+        {
+          cy.log("Modifica 'Razza' - da inserire: " + modificheAnimale.Razza)
+          DatiQuotazione.modificaDropDown('di razza', 1, modificheAnimale.Razza)
+        }
+
+        //Modifica "Data di nascita"
+        if (daModificare.DataNascita)
+        {
+          cy.log("Modifica 'Data di nascita' - da inserire: " + modificheAnimale.DataNascita)
+          DatiQuotazione.modificaInput('La sua data di nascita', 4, modificheAnimale.DataNascita)
+        }
+
+        //Modifica "Residenza"
+        if (daModificare.Residenza)
+        {
+          cy.log("Modifica'Residenza' - da inserire: " + modificheAnimale.Residenza)
+          DatiQuotazione.modificaDropDown('Il proprietario ha la residenza', 1, modificheAnimale.Residenza)
+        }
+
+        //Modifica "Cap"
+        if (daModificare.Cap)
+        {
+          cy.log("Modifica 'Cap residenza' - da inserire: " + modificheAnimale.Cap)
+          //DatiQuotazione.modificaInput(animale, 'Il proprietario ha la residenza', 3, modificheAnimale.Cap)
+          //cy.contains('h2', animale).should('exist')
+          //  .parent('div').should('exist')
+          cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
+            .find('form').should('exist')
+            .contains("Il proprietario ha la residenza")
+            .parent().should('have.class', 'ca-question ng-star-inserted')
+            .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
+            .children('div').should('have.length.gt', 0)
+            .eq(3).should('be.visible').as('cap2')
             .click().wait(500)
             .clear().wait(500)
-            .type(modificheAnimale.Nome).wait(500)
-          //cy.get('div[id="warning-switch-solution"]')
-          //  .find('span').contains('Ok').should('be.visible').click()
-          cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-          cy.wait(2000)
-        }
-        else
-            cy.log('NIENTE MODIFICHE "Nome animale" ' + modificheAnimale.Nome)
-        */
+            .type(modificheAnimale.Cap).wait(1000)
 
-        //Modifica tipo animale
-        cy.log("Modifica tipo animale: " + modificheAnimale.Tipo)
-        //cy.pause()
-        if (modificheAnimale.Tipo.length > 0)
-        {
-          cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(1)
-            .find('[class="ca-dropdown ng-star-inserted"]').eq(0)
-            .find('[class="ng-star-inserted"]').click()
-            
-          cy.get('.nx-dropdown__panel-body').should('be.visible')
-            .find('span').contains(modificheAnimale.Tipo).click()
-          //cy.get('div[id="warning-switch-solution"]')
-          //  .find('span').contains('Ok').should('be.visible').click()
+          cy.contains(modificheAnimale.Cap).should('have.length', 1).dblclick()
+          cy.wait(1000)
+          
           cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-          cy.wait(2000)
-        }
-        else
-            cy.log('NIENTE MODIFICHE "Tipo Animale" ' + modificheAnimale.Tipo)
+          cy.wait(1000)
 
-        //Modifica razza animale
-        cy.log("Modifica razza animale: " + modificheAnimale.Razza)
-        if (modificheAnimale.Razza.length > 0)
-        {
-          cy.get('form[class="ng-untouched ng-pristine ng-valid ng-star-inserted"]').eq(1)
-            .find('[class="ca-dropdown ng-star-inserted"]').eq(2)
-            .find('[class="ng-star-inserted"]').click()
-            
-          cy.get('.nx-dropdown__panel-body').should('be.visible')
-            .find('span').contains(modificheAnimale.Razza).click()
-          //cy.get('div[id="warning-switch-solution"]')
-          //  .find('span').contains('Ok').should('be.visible').click()
-          cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-          cy.wait(2000)
+
+          cy.pause()
         }
-        else
-            cy.log('NIENTE MODIFICHE "Razza Animale" ' + modificheAnimale.Razza)
+
 
       })
 

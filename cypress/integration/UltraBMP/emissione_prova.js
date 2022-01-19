@@ -27,10 +27,16 @@ Cypress.config('defaultCommandTimeout', 60000)
 import { modificheCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { modificheAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daVerificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daVerificareAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { defaultCasa } from '../../fixtures//Ultra/BMP_Comune.json'
 import { defaultAnimale } from '../../fixtures//Ultra/BMP_Comune.json'
+import { soluzione } from '../../fixtures//Ultra/BMP_Comune.json'
+import { ambitoUltra } from '../../fixtures//Ultra/BMP_Comune.json'
+import { daVerificareFAMod } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daVerificareFADef } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daVerificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
 
 
 //#endregion
@@ -39,7 +45,7 @@ import { defaultAnimale } from '../../fixtures//Ultra/BMP_Comune.json'
 var cliente = ""
 var clienteUbicazione = ""
 var frazionamento = "annuale"
-var ambiti = ['Fabbricato', 'Contenuto', 'Animali domestici']
+var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
 var defaultFQ = {
     "TipoAbitazione"    : "appartamento",
     "MqAbitazione"      : "100",
@@ -129,17 +135,43 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
     })
     */
 
+    it("Cambia Soluzioni", () => {
+        //cy.pause()
+        Ultra.modificaSoluzioneHome(ambitoUltra.FABBRICATO, soluzione.TOP)
+        Ultra.modificaSoluzioneHome(ambitoUltra.RESPONSABILITA_CIVILE, soluzione.PREMIUM)
+        Ultra.modificaSoluzioneHome(ambitoUltra.ANIMALI_DOMESTICI, soluzione.ESSENTIAL)
+    })
+    
     it("Accesso Dati Quotazione da menù", ()=>{
         cy.pause()
         UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
         //cy.pause()
         DatiQuotazione.VerificaDefaultCasa('Casa 1', daVerificareCasa, defaultCasa)
-        DatiQuotazione.VerificaDefaultAnimaleDomestico('Animale domestico 1', defaultAnimale)
+        DatiQuotazione.VerificaDefaultAnimaleDomestico('Animale domestico 1', daVerificareAnimale, defaultAnimale)
         cy.pause()
         DatiQuotazione.ModificaValoriCasa('Casa 1', daModificareCasa, modificheCasa)
         cy.pause()
         DatiQuotazione.ModificaValoriAnimaleDomestico('Animale domestico 1', daModificareAnimale, modificheAnimale)
         DatiQuotazione.ClickButton("CONFERMA")
+    })
+    
+
+    it("Accesso Configurazione ambito 'Fabbricato'", ()=>{
+        cy.pause()
+        UltraBMP.ClickMatita("Fabbricato", "Casa 1")
+
+        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareFAMod, modificheCasa)
+        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareFADef, defaultCasa)
+        //ConfigurazioneAmbito.VerificaDefaultAnimaleDomestico(daModificareAnimale, modificheAnimale)
+        ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.TOP)
+        //cy.pause()
+        //ConfigurazioneAmbito.leggiPremio('totale')     <=== DA FARE VERIFICA PREMI
+        cy.pause()
+        ConfigurazioneAmbito.aggiungiGaranzia('Danni da fenomeno elettrico')
+        ConfigurazioneAmbito.ClickButton("CONFERMA")
+
+        cy.pause()
+        
     })
 
     /*
@@ -172,11 +204,13 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
     })
     */
 
+    /*
     it("Accesso Configurazione Ambito da matita", ()=>{
         cy.pause()
         UltraBMP.ClickMatita('Fabbricato')
         //UltraBMP.ClickMatita('Fabbricato', 'Casa 2')
     })
+    */
 
     /*
     it("Seleziona fonte", ()=>{

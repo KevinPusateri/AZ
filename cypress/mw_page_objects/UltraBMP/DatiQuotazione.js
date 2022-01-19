@@ -256,38 +256,73 @@ class DatiQuotazione {
     /**
       * Verifica valori di default Animale Domestico 
       */
-     static VerificaDefaultAnimaleDomestico(animale, valoriDefault) {
+     static VerificaDefaultAnimaleDomestico(animale, daVerificare, valoriDefault) {
 
       ultraIFrame().within(() => {
 
         //Verifica default "Nome animale"
+        if (daVerificare.Nome)
+        {
         cy.log("Verifica default 'Nome animale - atteso': " + valoriDefault.Nome)
         DatiQuotazione.verificaInput(animale, 'è un', 1, valoriDefault.Nome)
+        }
+        else
+          cy.log("NON verifico campo 'Nome")
           
         //Verifica default "Tipo"
+        if (daVerificare.Tipo)
+        {
         cy.log("Verifica default 'Tipo - atteso': " + valoriDefault.Tipo)
         DatiQuotazione.verificaDropDown(animale, 'è un', 3, valoriDefault.Tipo)
+        }
+        else
+          cy.log("NON verifico campo 'Tipo")
 
         //Verifica default "Sesso"
+        if (daVerificare.Sesso)
+        {
         cy.log("Verifica default 'Sesso - atteso': " + valoriDefault.Sesso)
         DatiQuotazione.verificaDropDown(animale, 'è un', 6, valoriDefault.Sesso)
+        }
+        else
+          cy.log("NON verifico campo 'Sesso")
 
         //Verifica default "Razza"
+        if (daVerificare.Razza)
+        {
         cy.log("Verifica default 'Razza - atteso': " + valoriDefault.Razza)
         DatiQuotazione.verificaDropDown(animale, 'di razza', 1, valoriDefault.Razza)
+        }
+        else
+          cy.log("NON verifico campo 'Razza")
 
         //Verifica default "Data di nascita" (data odierna meno un anno)
+        if (daVerificare.DataNascita)
+        {
         valoriDefault.DataNascita = UltraBMP.dataOggiMenoUnAnno()
         cy.log("Verifica default 'Data di nascita - atteso': " + valoriDefault.DataNascita)
         DatiQuotazione.verificaInput(animale, 'La sua data di nascita', 4, valoriDefault.DataNascita)
+        }
+        else
+          cy.log("NON verifico campo 'DataNascita")
 
         //Verifica default "Residenza"
+        if (daVerificare.Residenza)
+        {
         cy.log("Verifica default 'Residenza - atteso': " + valoriDefault.Residenza)
         DatiQuotazione.verificaDropDown(animale, 'Il proprietario ha la residenza', 1, valoriDefault.Residenza)
+        }
+        else
+          cy.log("NON verifico campo 'Residenza")
 
         //Verifica default "Cap"
+        if (daVerificare.Cap)
+        {
         cy.log("Verifica default 'Cap residenza - atteso': " + valoriDefault.Cap)
         DatiQuotazione.verificaInput(animale, 'Il proprietario ha la residenza', 3, valoriDefault.Cap)
+        }
+        else
+          cy.log("NON verifico campo 'Cap")
                         
       })
 
