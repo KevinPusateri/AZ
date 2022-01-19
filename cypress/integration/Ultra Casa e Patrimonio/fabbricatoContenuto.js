@@ -32,9 +32,7 @@ let iFrameFirma = '[id="iFrameResizer0"]'
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
-            insertedId = results.insertId
-        })
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
     })
 })
@@ -86,8 +84,6 @@ describe("FABBRICATO E CONTENUTO", () => {
                 cy.get('lib-client-item').first().next().click()
             }
         })
-
-        cy.pause()
     })
 
     it("Selezione ambiti FastQuote", () => {
@@ -142,10 +138,10 @@ describe("FABBRICATO E CONTENUTO", () => {
     it("Dati integrativi", () => {
         //Ultra.caricaDatiIntegrativi()
         Ultra.datiIntegrativi()
+        Ultra.caricamentoConsensi()
     })
 
     it("Consensi e privacy", () => {
-        Ultra.caricamentoConsensi()
         Ultra.avantiConsensi()
     })
 

@@ -155,10 +155,10 @@ class LibriMatricolaDA {
     }
 
     static RiepilogoGaranzie(garanzie) {
-        
+
         for (var i = 0; i < garanzie.length; i++) {
             cy.log('var i outside: ' + i)
-            var a= i
+            var a = i
             matrixFrame().within(() => {
                 cy.log('var a inside: ' + a)
                 //scorre l'array e seleziona la garanzia
@@ -169,17 +169,18 @@ class LibriMatricolaDA {
 
             cy.wait(1000)
             var popupCheck = false
-            /* matrixFrame().within(() => {
+            matrixFrame().within(() => {
                 //cy.get('#pnlDialog').should('be.visible')
                 cy.get('#pnlDialog').then(($popup) => {
                     popupCheck = $popup.is(':visible')
                     cy.log("popup: " + popupCheck)
                     popupCheck.as('boolPopup')
-                })                
-            }) */
+                })
+            })
 
+            cy.log("popup out: " + '@boolPopup')
             //se il popup è presente clicca su ok
-            if (popupCheck) {
+            if ('popupCheck') {
                 do {
                     matrixFrame().within(() => {
                         cy.get('div[id="pnlDialog"]').next('div')
@@ -192,6 +193,56 @@ class LibriMatricolaDA {
                     })
                 )
             }
+        }
+    }
+
+    static RiepilogoGaranzie2(garanzie, nPopup) {
+
+        for (var i = 0; i < garanzie.length; i++) {
+            cy.log('var i outside: ' + i)
+            var a = i
+            matrixFrame().within(() => {
+                cy.log('var a inside: ' + a)
+                //scorre l'array e seleziona la garanzia
+                //[non verifica se la garanzia è già stata selezionata]
+                cy.get('label').contains(garanzie[a])
+                    .parents('.subtableBlock').find('input').click()
+            })
+
+            /*------*/
+
+            cy.wait(1000)
+            matrixFrame().within(() => {
+                //cy.get('#pnlDialog').should('be.visible')
+                cy.get('#pnlDialog').then(($popup) => {
+                    var popupCheck = $popup.is(':visible')
+                    cy.log("popup: " + popupCheck)
+                    cy.wrap(popupCheck).as('boolPopup')
+
+                    /* if (popupCheck) {
+                        do {
+                            cy.get('div[id="pnlDialog"]').next('div')
+                                .find('span').contains('OK').click() //click su OK
+                        } while ($popup.is(':visible'))
+                    } */
+                })
+            })
+
+            //se il popup è presente clicca su ok
+            cy.get('@boolPopup').then(($popupIsVisible) => {
+                if ($popupIsVisible) {
+                    cy.log("inside if")
+
+                    for (var y = 0; y < nPopup; y++) {
+                        matrixFrame().within(() => {
+                            cy.get('div[id="pnlDialog"]').next('div')
+                                .find('span').contains('OK').click() //click su OK
+
+                            cy.wait(300)
+                        })
+                    }
+                }
+            })
         }
     }
 

@@ -7,7 +7,7 @@
 ///<reference types="cypress"/>
 
 //region import
-import { PrevApplicazione } from './tmp_LM_PreventivoApplicazione.js'
+import { PrevApplicazione } from './LM_PreventivoApplicazione.js'
 import Veicoli from '../../mw_page_objects/motor/ListaVeicoli'
 //endregion import
 
@@ -17,7 +17,7 @@ let garanzie = []
 //endregion params
 
 describe('MOTO', () => {
-    context('tmp_LM_PreventivoApplicazione.js', function() {
+    context('LM_PreventivoApplicazione.js', function() {
         PrevApplicazione(moto, garanzie)
     })
 })
