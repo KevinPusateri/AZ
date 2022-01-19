@@ -60,7 +60,7 @@ describe('Matrix Web : Note di contratto', function () {
 
         it('Verifica Aggiungi Nota', function () {
             //('Retriving client with polizze auto, please wait...')
-            cy.getClientWithPolizze(currentTutf, '31').then(customerFullName => {
+            cy.getClientWithPolizze(currentTutf, '31', false, false, 'PF', true).then(customerFullName => {
                 currentCustomerFullName = customerFullName
                 TopBar.search(currentCustomerFullName)
                 LandingRicerca.clickClientePF(currentCustomerFullName)
@@ -130,80 +130,80 @@ describe('Matrix Web : Note di contratto', function () {
         })
     })
 
-    //! SKIP -> Al momento non sono presenti rami vari e ultra DA TESTARE PER AVIVA
-    context('Polizza Rami Vari', function () {
-        it('Verifica Aggiungi Nota', function () {
-            //('Retriving client with polizze rami vari, please wait...')
-            cy.getClientWithPolizze(currentTutf, '11').then(customerFullName => {
-                currentCustomerFullName = customerFullName
+    if (!Cypress.env('isAviva'))
+        context('Polizza Rami Vari', function () {
+            it('Verifica Aggiungi Nota', function () {
+                //('Retriving client with polizze rami vari, please wait...')
+                cy.getClientWithPolizze(currentTutf, '11').then(customerFullName => {
+                    currentCustomerFullName = customerFullName
+                    TopBar.search(currentCustomerFullName)
+                    LandingRicerca.clickClientePF(currentCustomerFullName)
+                    Portafoglio.clickTabPortafoglio()
+                    Portafoglio.clickSubTab('Polizze attive')
+                    Portafoglio.filtraPolizze('Rami vari')
+                    NoteContratto.inserisciNotaContratto()
+                })
+            })
+
+            it('Verifica Tooltip numero di note presenti(1 nota)', function () {
+                NoteContratto.checkTooltipNote('1')
+            })
+
+            it('Verifica Badge Nota', function () {
+                NoteContratto.checkBadgeNota()
+            })
+
+            it('Verifica Modifica di una nota', function () {
+                NoteContratto.modificaNota()
+            })
+
+            it('Verifica "Aggiungi nota" dal badge Note', function () {
+                NoteContratto.inserisciNotaFromBadge()
+            })
+
+            it('Verifica Tooltip numero di note presenti(2 note)', function () {
+                NoteContratto.checkTooltipNote('2')
+            })
+
+            it('Verifica Flag Importante', function () {
+                NoteContratto.checkImportante()
+            })
+
+            it('Verifica Tooltip numero di note presenti(2 note) di cui 1 importante', function () {
+                NoteContratto.checkTooltipNote('3')
+            })
+
+            it('Verifica Da Sales La presenza delle note di contratto', function () {
+                NoteContratto.getPolizza().then((polizza) => {
+                    HomePage.reloadMWHomePage()
+                    TopBar.clickSales()
+                    BurgerMenuSales.clickLink('Note di contratto')
+                    SCUSalesNoteContratto.searchPolizza(polizza)
+                })
+            })
+
+            it('Verifica modifica nota da Sales', function () {
+                SCUSalesNoteContratto.modificaNota()
+            })
+
+            it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
                 TopBar.search(currentCustomerFullName)
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')
                 Portafoglio.filtraPolizze('Rami vari')
-                NoteContratto.inserisciNotaContratto()
+                NoteContratto.checkNotaModificata('TEST DESCRIZIONE MODIFICATO DA SALES')
+            })
+
+            it('Verifica l\'eliminazione delle note', function () {
+                NoteContratto.cancellaNote()
             })
         })
-
-        it('Verifica Tooltip numero di note presenti(1 nota)', function () {
-            NoteContratto.checkTooltipNote('1')
-        })
-
-        it('Verifica Badge Nota', function () {
-            NoteContratto.checkBadgeNota()
-        })
-
-        it('Verifica Modifica di una nota', function () {
-            NoteContratto.modificaNota()
-        })
-
-        it('Verifica "Aggiungi nota" dal badge Note', function () {
-            NoteContratto.inserisciNotaFromBadge()
-        })
-
-        it('Verifica Tooltip numero di note presenti(2 note)', function () {
-            NoteContratto.checkTooltipNote('2')
-        })
-
-        it('Verifica Flag Importante', function () {
-            NoteContratto.checkImportante()
-        })
-
-        it('Verifica Tooltip numero di note presenti(2 note) di cui 1 importante', function () {
-            NoteContratto.checkTooltipNote('3')
-        })
-
-        it('Verifica Da Sales La presenza delle note di contratto', function () {
-            NoteContratto.getPolizza().then((polizza) => {
-                HomePage.reloadMWHomePage()
-                TopBar.clickSales()
-                BurgerMenuSales.clickLink('Note di contratto')
-                SCUSalesNoteContratto.searchPolizza(polizza)
-            })
-        })
-
-        it('Verifica modifica nota da Sales', function () {
-            SCUSalesNoteContratto.modificaNota()
-        })
-
-        it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
-            TopBar.search(currentCustomerFullName)
-            LandingRicerca.clickClientePF(currentCustomerFullName)
-            Portafoglio.clickTabPortafoglio()
-            Portafoglio.clickSubTab('Polizze attive')
-            Portafoglio.filtraPolizze('Rami vari')
-            NoteContratto.checkNotaModificata('TEST DESCRIZIONE MODIFICATO DA SALES')
-        })
-
-        it('Verifica l\'eliminazione delle note', function () {
-            NoteContratto.cancellaNote()
-        })
-    })
 
     context('Polizza Ultra', function () {
         it('Verifica Aggiungi Nota', function () {
             //('Retriving client with polizze ultra, please wait...')
-            cy.getClientWithPolizze((currentTutf), '42', true).then(customerFullName => {
+            cy.getClientWithPolizze(currentTutf, '42', true, false, 'PF', true).then(customerFullName => {
                 currentCustomerFullName = customerFullName
                 TopBar.search(currentCustomerFullName)
                 LandingRicerca.clickClientePF(currentCustomerFullName)
@@ -268,8 +268,6 @@ describe('Matrix Web : Note di contratto', function () {
             NoteContratto.cancellaNote()
         })
     })
-
-
 
     context('Polizza Vita', function () {
         it('Verifica Aggiungi Nota', function () {
@@ -483,6 +481,4 @@ describe('Matrix Web : Note di contratto', function () {
                 this.skip()
         })
     })
-
-
 })
