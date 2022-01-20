@@ -10,7 +10,7 @@ let parsedLogTariffa
 let parsedRadarUW
 
 function findKeyLogTariffa(key, logTariffa = parsedLogTariffa) {
-    var result;
+    var result
 
     for (var property in logTariffa) {
         if (logTariffa.hasOwnProperty(property)) {
@@ -29,7 +29,7 @@ function findKeyLogTariffa(key, logTariffa = parsedLogTariffa) {
     }
 }
 function findKeyRadarUW(key, logRadarUW = parsedRadarUW) {
-    var result;
+    var result
 
     for (var property in logRadarUW) {
         if (logRadarUW.hasOwnProperty(property)) {
@@ -39,6 +39,30 @@ function findKeyRadarUW(key, logRadarUW = parsedRadarUW) {
             else if (typeof logRadarUW[property] === "object") {
                 // in case it is an object
                 result = findKeyRadarUW(key, logRadarUW[property]);
+
+                if (typeof result !== "undefined") {
+                    return result;
+                }
+            }
+        }
+    }
+}
+function findKeyGaranziaARD(key, currentGaranziaARD = null) {
+    var result 
+    let garanziaARD
+    if (currentGaranziaARD === null)
+        //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA, la seconda alla ARD
+        garanziaARD = findKeyLogTariffa('Garanzia')[1]
+    else
+        garanziaARD = currentGaranziaARD
+
+    for (var property in garanziaARD) {
+        if (garanziaARD.hasOwnProperty(property)) {
+            if (property === key)
+                return garanziaARD[key]; // returns the value
+            else if (typeof garanziaARD[property] === "object") {
+                // in case it is an object
+                result = findKeyGaranziaARD(key, garanziaARD[property]);
 
                 if (typeof result !== "undefined") {
                     return result;
@@ -851,19 +875,16 @@ class TenutaTariffa {
                     }
                     const parser = new XMLParser(options)
                     parsedLogTariffa = parser.parse(fileContent)
-
                     switch (currentCase.Descrizione_Settore) {
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_2":
                             //Radar_KeyID
-                            expect(JSON.stringify(findKeyLogTariffa('Radar_KeyID'))).to.contain(currentCase.Versione_Garanzie_Aggiuntive)
+                            expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Garanzie_Aggiuntive)
                             break
                     }
                 })
                 //#endregion
             })
-
-            cy.pause()
         })
     }
 }
