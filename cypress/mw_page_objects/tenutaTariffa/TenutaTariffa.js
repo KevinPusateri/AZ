@@ -768,9 +768,16 @@ class TenutaTariffa {
             //#endregion
 
             switch (currentCase.Descrizione_Settore) {
-                case "GARANZIE AGGIUNTIVE : PACCHETTO 1":
+                case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
+                case "GARANZIE_AGGIUNTIVE_PACCHETTO_2":
                     cy.contains("Garanzie Aggiuntive").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
+                    //Tipo pacchetto
+                    let re = new RegExp("\^Tipo\$")
+                    cy.contains(re).parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
+                    cy.get('nx-dropdown-item').contains(currentCase.Tipo_Pacchetto_Garanzie_Aggiuntive).click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    //Limite rottura cristalli
                     cy.contains('Rottura cristalli con limite massimo').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
                     cy.get('nx-dropdown-item').contains(currentCase.Massimale_Rottura_Cristalli).click()
                     cy.get('nx-spinner').should('not.be.visible')
@@ -783,6 +790,7 @@ class TenutaTariffa {
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '11_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il totale relativo alla ARD
+            cy.pause()
             cy.get('strong:contains("Auto Rischi Diversi"):last').parents('div').find('div:last').find('strong:last').invoke('text').then(value => {
                 expect(value).contains(currentCase.Totale_Premio)
             })
@@ -835,7 +843,6 @@ class TenutaTariffa {
         cy.get('@iframe').within(() => {
 
             cy.get('motor-footer').should('exist').find('button').click().wait(5000)
-            cy.pause()
             cy.getTariffaLog(currentCase).then(logFolder => {
                 //#region LogTariffa
                 cy.readFile(logFolder + "\\logTariffa.xml").then(fileContent => {
@@ -845,28 +852,18 @@ class TenutaTariffa {
                     const parser = new XMLParser(options)
                     parsedLogTariffa = parser.parse(fileContent)
 
-                    //Radar_KeyID
-                    expect(JSON.stringify(findKeyLogTariffa('Radar_KeyID'))).to.contain(currentCase.Versione_Tariffa_Radar)
-                    //CMC PUNTA FLEX
-                    expect(JSON.stringify(findKeyLogTariffa('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
-                })
-                //#endregion
-
-                //#region Radaruw
-                cy.readFile(logFolder + "\\radaruw.xml").then(fileContent => {
-                    const options = {
-                        ignoreAttributes: false
+                    switch (currentCase.Descrizione_Settore) {
+                        case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
+                        case "GARANZIE_AGGIUNTIVE_PACCHETTO_2":
+                            //Radar_KeyID
+                            expect(JSON.stringify(findKeyLogTariffa('Radar_KeyID'))).to.contain(currentCase.Versione_Garanzie_Aggiuntive)
+                            break
                     }
-                    const parser = new XMLParser(options)
-                    parsedRadarUW = parser.parse(fileContent)
-
-                    //Radar_KeyID
-                    expect(JSON.stringify(findKeyRadarUW('Versione_Radar'))).to.contain(currentCase.Versione_Radar_UW)
-
                 })
-
                 //#endregion
             })
+
+            cy.pause()
         })
     }
 }
