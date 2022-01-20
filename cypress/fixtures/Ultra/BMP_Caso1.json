@@ -85,33 +85,15 @@
     "Cap"               : ""
   },
 
-  "daVerificareFAMod" : {
-    "Assicurato"        : false,
+  "daVerificareFabbricato" : {
+    "Assicurato"        : true,
     "Nome"              : false,
     "Cap"               : false,
-    "Uso"               : false,
+    "Uso"               : true,
     "Tipo"              : true,
     "Mq"                : true,
     "Piano"             : false,
     "Valore"            : true,
-    "Classe"            : false,
-    "ClasseProtezione"  : false,
-    "Allarme"           : false,
-    "Anno"              : false,
-    "Estensione"        : false,
-    "ResidenzaAss"      : false,
-    "CapAss"            : false
-  },
-
-  "daVerificareFADef" : {
-    "Assicurato"        : true,
-    "Nome"              : true,
-    "Cap"               : true,
-    "Uso"               : true,
-    "Tipo"              : false,
-    "Mq"                : false,
-    "Piano"             : false,
-    "Valore"            : false,
     "Classe"            : true,
     "ClasseProtezione"  : false,
     "Allarme"           : false,
@@ -121,31 +103,13 @@
     "CapAss"            : false
   },
 
-  "daVerificareRCMod" : {
-    "Assicurato"        : false,
+  "daVerificareRC" : {
+    "Assicurato"        : true,
     "Nome"              : false,
     "Cap"               : false,
-    "Uso"               : false,
+    "Uso"               : true,
     "Tipo"              : true,
     "Mq"                : true,
-    "Piano"             : false,
-    "Valore"            : false,
-    "Classe"            : false,
-    "ClasseProtezione"  : false,
-    "Allarme"           : false,
-    "Anno"              : false,
-    "Estensione"        : false,
-    "ResidenzaAss"      : false,
-    "CapAss"            : false
-  },
-
-  "daVerificareRCDef" : {
-    "Assicurato"        : true,
-    "Nome"              : true,
-    "Cap"               : true,
-    "Uso"               : false,
-    "Tipo"              : false,
-    "Mq"                : false,
     "Piano"             : false,
     "Valore"            : false,
     "Classe"            : false,
@@ -154,7 +118,7 @@
     "Anno"              : true,
     "Estensione"        : true,
     "ResidenzaAss"      : true,
-    "CapAss"            : true
+    "CapAss"            : false
   }
 
 }

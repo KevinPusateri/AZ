@@ -60,32 +60,47 @@ class DatiQuotazione {
     }
 
     static leggiPremio(garanzia) {
-      let pr = 0
+      //let pr = 0
       ultraIFrame().within(() => {
         cy.pause()
-        if (garanzia == 'totale')
+        if (garanzia.toUpperCase() == 'TOTALE')    // Premio totale
         {
-          cy.get('div[class="header-price-frazionamento ng-tns-c122-6"]').should('exist')
-            .children('div[class="header-price-euro ng-tns-c122-6 ng-star-inserted"]').should('exist').as('divPremio')  
-            .should('be.visible')
-          let ciccio = cy.get('@divPremio').invoke("text")
-          cy.log('premio: ' + ciccio)
+          cy.get('div[id="ambitiHeader"]').should('exist')
+            .find('div[class ^="header-price-euro"]').should('have.length.gt', 0)
+            .eq(0).should('be.visible').invoke('text').then(val => {
+              cy.wrap(val).as('premioTot')
+            })
+        }
+        else if (garanzia.toUpperCase() == 'AMBITO')    // Premio dell'ambito
+        {
+          cy.get('div[id="ambitiHeader"]').should('exist')
+            .find('div[class ^="header-price-euro"]').should('have.length.gt', 0)
+            .eq(1).should('be.visible').invoke('text').then(val => {
+              cy.wrap(val).as('premioAmbito')
+            })
 
         }
         else
         {
 
         }
-        return pr
-        /*
+      })
+
+    }
+
+    static leggiPremioGaranziaAggiuntiva(garanziaAgg) {
+      //let pr = 0
+      ultraIFrame().within(() => {
+        cy.pause()
         cy.contains('span', garanziaAgg).should('exist')
           .parent('div')
           .parent('div')
-          .find('button').should('be.enabled').click()
-          //.contains('Aggiungi').should('be.enabled').click()
-        */
+          .find('div[class="nx-grid__row"]').should('have.length.gt', 0)
+          .eq(0).find('span').should('be.visible').invoke('text').then(val => {
+            cy.wrap(val).as('premioGarAgg')
+          })
       })
-
+  
     }
 
     static verificaDropDown(testoRiga, ind, testoDaVerificare) {
@@ -156,7 +171,7 @@ class DatiQuotazione {
     /**
       * Verifica valori di default Casa 
       */
-    static VerificaDefaultCasa(daVerificare, valoriDefault) {
+    static VerificaDefaultCasa(daVerificare, valoriDaVerificare) {
 
       ultraIFrame().within(() => {
       
@@ -165,8 +180,16 @@ class DatiQuotazione {
         //Verifica default "Assicurato"
         if (daVerificare.Assicurato)
         {
-          cy.log("Verifica default 'Assicurato - atteso': " + valoriDefault.Assicurato)
-          DatiQuotazione.verificaDropDown('assicurato è', 1, valoriDefault.Assicurato)
+          if (valoriDaVerificare.Assicurato.length > 0)
+          {
+            cy.log("Verifica 'Assicurato' - atteso: " + valoriDaVerificare.Assicurato)
+            DatiQuotazione.verificaDropDown('assicurato è', 1, valoriDaVerificare.Assicurato)
+          }
+          else
+          {
+            cy.log("Verifica default 'Assicurato' - atteso: " + defaultCasa.Assicurato)
+            DatiQuotazione.verificaDropDown('assicurato è', 1, defaultCasa.Assicurato)
+          }
         }
         else
           cy.log("NON verifico campo 'Assicurato")
@@ -174,8 +197,16 @@ class DatiQuotazione {
         //Verifica default "Nome abitazione"
         if (daVerificare.Nome)
         {
-          cy.log("Verifica default 'Nome abitazione - atteso': " + valoriDefault.Nome)
-          DatiQuotazione.verificaInput('assicurato è', 3, valoriDefault.Nome)
+          if (valoriDaVerificare.Nome.length > 0)
+          {
+            cy.log("Verifica 'Nome abitazione' - atteso: " + valoriDaVerificare.Nome)
+            DatiQuotazione.verificaInput('assicurato è', 3, valoriDaVerificare.Nome)
+          }
+          else
+          {
+            cy.log("Verifica default 'Nome abitazione' - atteso: " + defaultCasa.Nome)
+            DatiQuotazione.verificaDropDown('assicurato è', 3, defaultCasa.Nome)
+          }
         }
         else
           cy.log("NON verifico campo 'Nome abitazione")
@@ -183,8 +214,16 @@ class DatiQuotazione {
         //Verifica default "Cap abitazione"
         if (daVerificare.Cap)
         {
-          cy.log("Verifica default 'Cap - atteso': " + valoriDefault.Cap)
-          DatiQuotazione.verificaInput('assicurato è', 5, valoriDefault.Cap)
+          if (valoriDaVerificare.Cap.length > 0)
+          {
+            cy.log("Verifica 'Cap' - atteso: " + valoriDaVerificare.Cap)
+            DatiQuotazione.verificaInput('assicurato è', 5, valoriDaVerificare.Cap)
+          }
+          else
+          {
+            cy.log("Verifica default 'Cap' - atteso: " + defaultCasa.Cap)
+            DatiQuotazione.verificaDropDown('assicurato è', 5, defaultCasa.Cap)
+          }
         }
         else
           cy.log("NON verifico campo 'Cap")
@@ -194,8 +233,16 @@ class DatiQuotazione {
         //Verifica default "Uso abitazione"
         if (daVerificare.Uso)
         {
-          cy.log("Verifica default 'Uso - atteso': " + valoriDefault.Uso)
-          DatiQuotazione.verificaDropDown('È la casa', 1, valoriDefault.Uso)
+          if (valoriDaVerificare.Uso.length > 0)
+          {
+            cy.log("Verifica 'Uso' - atteso: " + valoriDaVerificare.Uso)
+            DatiQuotazione.verificaDropDown('È la casa', 1, valoriDaVerificare.Uso)
+          }
+          else
+          {
+            cy.log("Verifica default 'Uso' - atteso: " + defaultCasa.Uso)
+            DatiQuotazione.verificaDropDown('È la casa', 1, defaultCasa.Uso)
+          }
         }
         else
           cy.log("NON verifico campo 'Uso") 
@@ -203,8 +250,16 @@ class DatiQuotazione {
         //Verifica default "Tipo abitazione"
         if (daVerificare.Tipo)
         {
-          cy.log("Verifica default 'Tipo - atteso': " + valoriDefault.Tipo)
-          DatiQuotazione.verificaDropDown('È la casa', 4, valoriDefault.Tipo)
+          if (valoriDaVerificare.Tipo.length > 0)
+          {
+            cy.log("Verifica 'Tipo' - atteso: " + valoriDaVerificare.Tipo)
+            DatiQuotazione.verificaDropDown('È la casa', 4, valoriDaVerificare.Tipo)
+          }
+          else
+          {
+            cy.log("Verifica default 'Tipo' - atteso: " + defaultCasa.Tipo)
+            DatiQuotazione.verificaDropDown('È la casa', 4, defaultCasa.Tipo)
+          }
         }
         else
           cy.log("NON verifico campo 'Tipo")
@@ -212,8 +267,16 @@ class DatiQuotazione {
         //Verifica default "Metri Quadri abitazione"
         if (daVerificare.Mq)
         {
-          cy.log("Verifica default 'Metri quadri abitazione - atteso': " + valoriDefault.Mq)
-          DatiQuotazione.verificaInput('È la casa', 6, valoriDefault.Mq)
+          if (valoriDaVerificare.Mq.length > 0)
+          {
+            cy.log("Verifica 'Metri quadri abitazione' - atteso: " + valoriDaVerificare.Mq)
+            DatiQuotazione.verificaInput('È la casa', 6, valoriDaVerificare.Mq)
+          }
+          else
+          {
+            cy.log("Verifica default 'Metri quadri abitazione' - atteso: " + defaultCasa.Mq)
+            DatiQuotazione.verificaDropDown('È la casa', 6, defaultCasa.Mq)
+          }
         }
         else
           cy.log("NON verifico campo 'Metri quadri abitazione")
@@ -221,8 +284,16 @@ class DatiQuotazione {
         //Verifica default "Piano abitazione"
         if (daVerificare.Piano)
         {
-          cy.log("Verifica default 'Piano - atteso': " + valoriDefault.Piano)
-          DatiQuotazione.verificaDropDown('È la casa', 9, valoriDefault.Piano)
+          if (valoriDaVerificare.Piano.length > 0)
+          {
+            cy.log("Verifica 'Piano' - atteso': " + valoriDaVerificare.Piano)
+            DatiQuotazione.verificaDropDown('È la casa', 9, valoriDaVerificare.Piano)
+          }
+          else
+          {
+            cy.log("Verifica default 'Piano' - atteso: " + defaultCasa.Piano)
+            DatiQuotazione.verificaDropDown('È la casa', 9, defaultCasa.Piano)
+          }
         }
         else
           cy.log("NON verifico campo 'Piano")
@@ -232,8 +303,16 @@ class DatiQuotazione {
         //Verifica default "Valore abitazione"
         if (daVerificare.Valore)
         {
-          cy.log("Verifica default 'Valore abitazione - atteso': " + valoriDefault.Valore)
-          DatiQuotazione.verificaInput('Il valore di ricostruzione', 1, valoriDefault.Valore)
+          if (valoriDaVerificare.Valore.length > 0)
+          {
+            cy.log("Verifica 'Valore abitazione' - atteso: " + valoriDaVerificare.Valore)
+            DatiQuotazione.verificaInput('Il valore di ricostruzione', 1, valoriDaVerificare.Valore)
+          }
+          else
+          {
+            cy.log("Verifica default 'Valore abitazione' - atteso: " + defaultCasa.Valore)
+            DatiQuotazione.verificaDropDown('Il valore di ricostruzione', 1, defaultCasa.Valore)
+          }
         }
         else
           cy.log("NON verifico campo 'Valore abitazione")
@@ -243,8 +322,16 @@ class DatiQuotazione {
         //Verifica default "Classe abitazione"
         if (daVerificare.Classe)
         {
-          cy.log("Verifica default 'Classe - atteso': " + valoriDefault.Classe)
-          DatiQuotazione.verificaDropDown('Le caratteristiche costruttive', 1, valoriDefault.Classe)
+          if (valoriDaVerificare.Classe.length > 0)
+          {
+            cy.log("Verifica 'Classe' - atteso: " + valoriDaVerificare.Classe)
+            DatiQuotazione.verificaDropDown('Le caratteristiche costruttive', 1, valoriDaVerificare.Classe)
+          }
+          else
+          {
+            cy.log("Verifica default 'Classe' - atteso: " + defaultCasa.Classe)
+            DatiQuotazione.verificaDropDown('Le caratteristiche costruttive', 1, defaultCasa.Classe)
+          }
         }
         else
           cy.log("NON verifico campo 'Classe")
@@ -254,8 +341,16 @@ class DatiQuotazione {
         //Verifica default "Classe protezione"
         if (daVerificare.ClasseProtezione)
         {
-          cy.log("Verifica default 'Classe Protezione - atteso': " + valoriDefault.ClasseProtezione)
-          DatiQuotazione.verificaDropDown('Ha mezzi di protezione', 1, valoriDefault.ClasseProtezione)
+          if (valoriDaVerificare.ClasseProtezione.length > 0)
+          {
+            cy.log("Verifica 'Classe Protezione' - atteso: " + valoriDaVerificare.ClasseProtezione)
+            DatiQuotazione.verificaDropDown('Ha mezzi di protezione', 1, valoriDaVerificare.ClasseProtezione)
+          }
+          else
+          {
+            cy.log("Verifica default 'Classe Protezione' - atteso: " + defaultCasa.ClasseProtezione)
+            DatiQuotazione.verificaDropDown('Ha mezzi di protezione', 1, defaultCasa.ClasseProtezione)
+          }
         }
         else
           cy.log("NON verifico campo 'Classe Protezione")
@@ -263,8 +358,16 @@ class DatiQuotazione {
         //Verifica default "Presenza allarme"
         if (daVerificare.Allarme)
         {
-          cy.log("Verifica default 'Allarme - atteso': " + valoriDefault.Allarme)
-          DatiQuotazione.verificaDropDown('Ha mezzi di protezione', 3, valoriDefault.Allarme)
+          if (valoriDaVerificare.Allarme.length > 0)
+          {
+            cy.log("Verifica 'Allarme' - atteso: " + valoriDaVerificare.Allarme)
+            DatiQuotazione.verificaDropDown('Ha mezzi di protezione', 3, valoriDaVerificare.Allarme)
+          }
+          else
+          {
+            cy.log("Verifica default 'Allarme' - atteso: " + defaultCasa.Allarme)
+            DatiQuotazione.verificaDropDown('Ha mezzi di protezione', 3, defaultCasa.Allarme)
+          }
         }
         else
           cy.log("NON verifico campo 'Allarme")
@@ -274,8 +377,16 @@ class DatiQuotazione {
         //Verifica default "Anno di costruzione"
         if (daVerificare.Anno)
         {
-          cy.log("Verifica default 'Anno costruzione - atteso': " + valoriDefault.Anno)
-          DatiQuotazione.verificaDropDown('Lo stabile è stato costruito', 1, valoriDefault.Anno)
+          if (valoriDaVerificare.Anno.length > 0)
+          {
+            cy.log("Verifica 'Anno costruzione' - atteso: " + valoriDaVerificare.Anno)
+            DatiQuotazione.verificaDropDown('Lo stabile è stato costruito', 1, valoriDaVerificare.Anno)
+          }
+          else
+          {
+            cy.log("Verifica default 'Anno costruzione' - atteso: " + defaultCasa.Anno)
+            DatiQuotazione.verificaDropDown('Lo stabile è stato costruito', 1, defaultCasa.Anno)
+          }
         }
         else
           cy.log("NON verifico campo 'Anno costruzione")
@@ -285,8 +396,16 @@ class DatiQuotazione {
         //Verifica default "E"stensione protezione"
         if (daVerificare.Estensione)
         {
-          cy.log("Verifica default 'Estensione protezione - atteso': " + valoriDefault.Estensione)
-          DatiQuotazione.verificaDropDown('estendere la protezione', 0, valoriDefault.Estensione)
+          if (valoriDaVerificare.Estensione.length > 0)
+          {
+            cy.log("Verifica 'Estensione protezione' - atteso: " + valoriDaVerificare.Estensione)
+            DatiQuotazione.verificaDropDown('estendere la protezione', 0, valoriDaVerificare.Estensione)
+          }
+          else
+          {
+            cy.log("Verifica default 'Estensione protezione' - atteso: " + defaultCasa.Estensione)
+            DatiQuotazione.verificaDropDown('estendere la protezione', 0, defaultCasa.Estensione)
+          }
         }
         else
           cy.log("NON verifico campo 'Estensione protezione")
@@ -296,8 +415,16 @@ class DatiQuotazione {
         //Verifica default "Residenza assicurato"
         if (daVerificare.ResidenzaAss)
         {
-          cy.log("Verifica default 'Residenza assicurato - atteso': " + valoriDefault.ResidenzaAss)
-          DatiQuotazione.verificaDropDown('assicurato ha la residenza', 1, valoriDefault.ResidenzaAss)
+          if (valoriDaVerificare.ResidenzaAss.length > 0)
+          {
+            cy.log("Verifica 'Residenza assicurato' - atteso: " + valoriDaVerificare.ResidenzaAss)
+            DatiQuotazione.verificaDropDown('assicurato ha la residenza', 1, valoriDaVerificare.ResidenzaAss)
+          }
+          else
+          {
+            cy.log("Verifica default 'Residenza assicurato' - atteso: " + defaultCasa.ResidenzaAss)
+            DatiQuotazione.verificaDropDown('assicurato ha la residenza', 1, defaultCasa.ResidenzaAss)
+          }
         }
         else
           cy.log("NON verifico campo 'Residenza assicurato")
@@ -305,8 +432,16 @@ class DatiQuotazione {
         //Verifica default "Cap assicurato"
         if (daVerificare.CapAss)
         {
-          cy.log("Verifica default 'Cap assicurato - atteso': " + valoriDefault.CapAss)
-          DatiQuotazione.verificaInput('assicurato ha la residenza', 3, valoriDefault.CapAss)
+          if (valoriDaVerificare.CapAss.length > 0)
+          {
+            cy.log("Verifica 'Cap assicurato' - atteso: " + valoriDaVerificare.CapAss)
+            DatiQuotazione.verificaInput('assicurato ha la residenza', 3, valoriDaVerificare.CapAss)
+          }
+          else
+          {
+            cy.log("Verifica default 'Cap assicurato' - atteso: " + defaultCasa.CapAss)
+            DatiQuotazione.verificaDropDown('assicurato ha la residenza', 3, defaultCasa.CapAss)
+          }
         }
         else
           cy.log("NON verifico campo 'Cap assicurato")
@@ -320,15 +455,23 @@ class DatiQuotazione {
     /**
       * Verifica valori di default Animale Domestico 
       */
-     static VerificaDefaultAnimaleDomestico(daVerificare, valoriDefault) {
+     static VerificaDefaultAnimaleDomestico(daVerificare, valoriDaVerificare) {
 
       ultraIFrame().within(() => {
 
         //Verifica default "Nome animale"
         if (daVerificare.Nome)
         {
-        cy.log("Verifica default 'Nome animale - atteso': " + valoriDefault.Nome)
-        DatiQuotazione.verificaInput('è un', 1, valoriDefault.Nome)
+          if (valoriDaVerificare.Nome.length > 0)
+          {
+            cy.log("Verifica 'Nome animale' - atteso: " + valoriDaVerificare.Nome)
+            DatiQuotazione.verificaInput('è un', 1, valoriDaVerificare.Nome)
+          }
+          else
+          {
+            cy.log("Verifica default 'Nome animale' - atteso: " + defaultAnimale.Nome)
+            DatiQuotazione.verificaDropDown('è un', 1, defaultAnimale.Nome)
+          }
         }
         else
           cy.log("NON verifico campo 'Nome")
@@ -336,8 +479,16 @@ class DatiQuotazione {
         //Verifica default "Tipo"
         if (daVerificare.Tipo)
         {
-        cy.log("Verifica default 'Tipo - atteso': " + valoriDefault.Tipo)
-        DatiQuotazione.verificaDropDown('è un', 3, valoriDefault.Tipo)
+          if (valoriDaVerificare.Tipo.length > 0)
+          {
+            cy.log("Verifica 'Tipo' - atteso: " + valoriDaVerificare.Tipo)
+            DatiQuotazione.verificaDropDown('è un', 3, valoriDaVerificare.Tipo)
+          }
+          else
+          {
+            cy.log("Verifica default 'Tipo' - atteso: " + defaultAnimale.Tipo)
+            DatiQuotazione.verificaDropDown('è un', 3, defaultAnimale.Tipo)
+          }
         }
         else
           cy.log("NON verifico campo 'Tipo")
@@ -345,8 +496,16 @@ class DatiQuotazione {
         //Verifica default "Sesso"
         if (daVerificare.Sesso)
         {
-        cy.log("Verifica default 'Sesso - atteso': " + valoriDefault.Sesso)
-        DatiQuotazione.verificaDropDown('è un', 6, valoriDefault.Sesso)
+          if (valoriDaVerificare.Sesso.length > 0)
+          {
+            cy.log("Verifica 'Sesso' - atteso: " + valoriDaVerificare.Sesso)
+            DatiQuotazione.verificaDropDown('è un', 6, valoriDaVerificare.Sesso)
+          }
+          else
+          {
+            cy.log("Verifica default 'Sesso' - atteso: " + defaultAnimale.Sesso)
+            DatiQuotazione.verificaDropDown('è un', 6, defaultAnimale.Sesso)
+          }
         }
         else
           cy.log("NON verifico campo 'Sesso")
@@ -354,8 +513,16 @@ class DatiQuotazione {
         //Verifica default "Razza"
         if (daVerificare.Razza)
         {
-        cy.log("Verifica default 'Razza - atteso': " + valoriDefault.Razza)
-        DatiQuotazione.verificaDropDown('di razza', 1, valoriDefault.Razza)
+          if (valoriDaVerificare.Razza.length > 0)
+          {
+            cy.log("Verifica 'Razza' - atteso: " + valoriDaVerificare.Razza)
+            DatiQuotazione.verificaDropDown('di razza', 1, valoriDaVerificare.Razza)
+          }
+          else
+          {
+            cy.log("Verifica 'Razza' - atteso: " + defaultAnimale.Razza)
+            DatiQuotazione.verificaDropDown('di razza', 1, defaultAnimale.Razza)
+          }
         }
         else
           cy.log("NON verifico campo 'Razza")
@@ -363,9 +530,17 @@ class DatiQuotazione {
         //Verifica default "Data di nascita" (data odierna meno un anno)
         if (daVerificare.DataNascita)
         {
-        valoriDefault.DataNascita = UltraBMP.dataOggiMenoUnAnno()
-        cy.log("Verifica default 'Data di nascita - atteso': " + valoriDefault.DataNascita)
-        DatiQuotazione.verificaInput('La sua data di nascita', 4, valoriDefault.DataNascita)
+          if (valoriDaVerificare.DataNascita.length > 0)
+          {
+            cy.log("Verifica 'Data di nascita' - atteso: " + valoriDaVerificare.DataNascita)
+            DatiQuotazione.verificaInput('La sua data di nascita', 4, valoriDaVerificare.DataNascita)
+          }
+          else
+          {
+            valoriDefault.DataNascita = UltraBMP.dataOggiMenoUnAnno()
+            cy.log("Verifica default 'Data Nascita' - atteso: " + valoriDefault.DataNascita)
+            DatiQuotazione.verificaDropDown('La sua data di nascita', 4, valoriDefault.DataNascita)
+          }
         }
         else
           cy.log("NON verifico campo 'DataNascita")
@@ -373,8 +548,16 @@ class DatiQuotazione {
         //Verifica default "Residenza"
         if (daVerificare.Residenza)
         {
-        cy.log("Verifica default 'Residenza - atteso': " + valoriDefault.Residenza)
-        DatiQuotazione.verificaDropDown('Il proprietario ha la residenza', 1, valoriDefault.Residenza)
+          if (valoriDaVerificare.Residenza.length > 0)
+          {
+            cy.log("Verifica 'Residenza' - atteso: " + valoriDaVerificare.Residenza)
+            DatiQuotazione.verificaDropDown('Il proprietario ha la residenza', 1, valoriDaVerificare.Residenza)
+          }
+          else
+          {
+            cy.log("Verifica default 'Residenza' - atteso: " + defaultAnimale.Residenza)
+            DatiQuotazione.verificaDropDown('Il proprietario ha la residenza', 1, defaultAnimale.Residenza)
+          }
         }
         else
           cy.log("NON verifico campo 'Residenza")
@@ -382,8 +565,16 @@ class DatiQuotazione {
         //Verifica default "Cap"
         if (daVerificare.Cap)
         {
-        cy.log("Verifica default 'Cap residenza - atteso': " + valoriDefault.Cap)
-        DatiQuotazione.verificaInput('Il proprietario ha la residenza', 3, valoriDefault.Cap)
+          if (valoriDaVerificare.Cap.length > 0)
+          {
+            cy.log("Verifica 'Cap residenza' - atteso: " + valoriDaVerificare.Cap)
+            DatiQuotazione.verificaInput('Il proprietario ha la residenza', 3, valoriDaVerificare.Cap)
+          }
+          else
+          {
+            cy.log("Verifica default 'Cap' - atteso: " + defaultAnimale.Cap)
+            DatiQuotazione.verificaDropDown('Il proprietario ha la residenza', 3, defaultAnimale.Cap)
+          }
         }
         else
           cy.log("NON verifico campo 'Cap")
