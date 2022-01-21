@@ -48,7 +48,7 @@ function findKeyRadarUW(key, logRadarUW = parsedRadarUW) {
     }
 }
 function findKeyGaranziaARD(key, currentGaranziaARD = null) {
-    var result 
+    var result
     let garanziaARD
     if (currentGaranziaARD === null)
         //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA, la seconda alla ARD
@@ -300,8 +300,11 @@ class TenutaTariffa {
 
                         cy.contains('Conferma').click()
                     }
-                    else
-                        cy.contains(currentCase.Tipo_Veicolo).should('exist').click()
+                    else {
+                        let re = new RegExp("\^ " + currentCase.Tipo_Veicolo + " \$")
+                        cy.contains(re).should('exist').click({ force: true })
+                    }
+
 
                     cy.wait('@getMotor', { requestTimeout: 30000 })
                 }
@@ -791,6 +794,7 @@ class TenutaTariffa {
             cy.get('nx-spinner').should('not.be.visible')
             //#endregion
 
+            cy.pause()
             switch (currentCase.Descrizione_Settore) {
                 case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
                 case "GARANZIE_AGGIUNTIVE_PACCHETTO_2":
@@ -804,6 +808,10 @@ class TenutaTariffa {
                     //Limite rottura cristalli
                     cy.contains('Rottura cristalli con limite massimo').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
                     cy.get('nx-dropdown-item').contains(currentCase.Massimale_Rottura_Cristalli).click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                case "INCENDIO":
+                    cy.contains("Incendio").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
             }
@@ -878,8 +886,11 @@ class TenutaTariffa {
                     switch (currentCase.Descrizione_Settore) {
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_2":
-                            //Radar_KeyID
+
                             expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Garanzie_Aggiuntive)
+                            break
+                        case "INCENDIO":
+                            expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Incendio)
                             break
                     }
                 })
