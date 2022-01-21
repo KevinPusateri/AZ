@@ -58,10 +58,10 @@ import { modificheCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { modificheAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daVerificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daVerificareAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
-import { daVerificareFAMod } from '../../fixtures//Ultra/BMP_Caso1.json'
-import { daVerificareFADef } from '../../fixtures//Ultra/BMP_Caso1.json'
-import { daVerificareRCMod } from '../../fixtures//Ultra/BMP_Caso1.json'
-import { daVerificareRCDef } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daVerificareFabbricato } from '../../fixtures//Ultra/BMP_Caso1.json'
+//import { daVerificareFADef } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daVerificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
+//import { daVerificareRCDef } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { defaultCasa } from '../../fixtures//Ultra/BMP_Comune.json'
@@ -72,6 +72,13 @@ import { ambitoUltra } from '../../fixtures//Ultra/BMP_Comune.json'
 //#endregion
 
 //#region  variabili iniziali
+var premioTotPrima = 0
+var premioTotDopo = 0
+var premioFabbricato = 0
+var premioGarAgg = 0
+var impMin = 0
+var impMax = 0
+
 var cliente = ""
 var clienteUbicazione = ""
 var frazionamento = "annuale"
@@ -161,16 +168,41 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
 
     it("Accesso Configurazione ambito 'Fabbricato'", ()=>{
         //cy.pause()
+        
         UltraBMP.ClickMatita("Fabbricato", "Casa 1")
 
-        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareFAMod, modificheCasa)
-        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareFADef, defaultCasa)
-        //ConfigurazioneAmbito.VerificaDefaultAnimaleDomestico(daModificareAnimale, modificheAnimale)
+        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareFabbricato, modificheCasa)
         ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.TOP)
-        //cy.pause()
-        //ConfigurazioneAmbito.leggiPremio('totale')     <=== DA FARE VERIFICA PREMI
-        //cy.pause()
+        cy.pause()
+        ConfigurazioneAmbito.leggiPremio('totale')
+        ConfigurazioneAmbito.leggiPremio('Ambito')
+        ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('Danni da fenomeno elettrico')
+
+        cy.get('@premioTot').then(premioTotale => {
+            premioTotPrima = parseFloat(premioTotale.replace(/,/,"."))
+            cy.log('Premio totale prima di aggiungere la garanzia: ' + premioTotPrima)
+        })
+        cy.get('@premioAmbito').then(premioAmbito => {
+            premioFabbricato = parseFloat(premioAmbito.replace(/,/,"."))
+            cy.log('Premio Ambito Fabbricato: ' + premioFabbricato)
+        })
+        cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
+            premioGarAgg = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
+            cy.log('Premio Garanzia Aggiuntiva: ' + premioGarAgg)
+        })
+        cy.pause()
         ConfigurazioneAmbito.aggiungiGaranzia('Danni da fenomeno elettrico')
+        ConfigurazioneAmbito.leggiPremio('totale')
+        cy.get('@premioTot').then(premioTotale => {
+            premioTotDopo = parseFloat(premioTotale.replace(/,/,"."))
+            cy.log('Premio totale dopo aver aggiunto la garanzia: ' + premioTotDopo)
+            impMin = premioTotDopo - 0.01
+            impMax = premioTotDopo + 0.01
+            cy.log('Il premio deve essere tra: ' + impMin + ' - ' + impMax) 
+            expect(premioTotDopo).to.be.gte(impMin).and.be.lte(impMax)
+
+        })
+
         ConfigurazioneAmbito.ClickButton("CONFERMA")
 
         //cy.pause()
@@ -185,8 +217,8 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         //cy.pause()
         UltraBMP.ClickMatita("Responsabilit", "Casa 1")
 
-        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareRCMod, modificheCasa)
-        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareRCDef, defaultCasa)
+        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareRC, modificheCasa)
+        //ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareRCDef, defaultCasa)
         //ConfigurazioneAmbito.VerificaDefaultAnimaleDomestico(daModificareAnimale, modificheAnimale)
         ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.PREMIUM)
         //cy.pause()
