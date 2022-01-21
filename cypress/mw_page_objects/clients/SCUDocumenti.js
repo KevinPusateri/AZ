@@ -61,13 +61,11 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#pupload').click()
 
         const fileName = 'CI_Test.pdf'
-
-        cy.fixture(fileName).then(fileContent => {
-            getDocumentoPersonale().find('#pdfUpload').attachFile({
-                fileContent,
-                fileName,
-                mimeType: 'application/pdf'
-            }, { subjectType: 'input' })
+        getDocumentoPersonale().find('#pdfUpload').attachFile({
+            filePath: fileName,
+            fileName: fileName,
+            mimeType: 'application/pdf',
+            encoding: 'base64'
         })
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
@@ -117,13 +115,11 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#pupload').click()
 
         const fileName = 'CI_Test.pdf'
-
-        cy.fixture(fileName).then(fileContent => {
-            getDocumentoPersonale().find('#pdfUpload').attachFile({
-                fileContent,
-                fileName,
-                mimeType: 'application/pdf'
-            }, { subjectType: 'input' })
+        getDocumentoPersonale().find('#pdfUpload').attachFile({
+            filePath: fileName,
+            fileName: fileName,
+            mimeType: 'application/pdf',
+            encoding: 'base64'
         })
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
@@ -173,13 +169,11 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#pupload').click()
 
         const fileName = 'CI_Test.pdf'
-
-        cy.fixture(fileName).then(fileContent => {
-            getDocumentoPersonale().find('#pdfUpload').attachFile({
-                fileContent,
-                fileName,
-                mimeType: 'application/pdf'
-            }, { subjectType: 'input' })
+        getDocumentoPersonale().find('#pdfUpload').attachFile({
+            filePath: fileName,
+            fileName: fileName,
+            mimeType: 'application/pdf',
+            encoding: 'base64'
         })
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
@@ -229,13 +223,11 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#pupload').click()
 
         const fileName = 'CI_Test.pdf'
-
-        cy.fixture(fileName).then(fileContent => {
-            getDocumentoPersonale().find('#pdfUpload').attachFile({
-                fileContent,
-                fileName,
-                mimeType: 'application/pdf'
-            }, { subjectType: 'input' })
+        getDocumentoPersonale().find('#pdfUpload').attachFile({
+            filePath: fileName,
+            fileName: fileName,
+            mimeType: 'application/pdf',
+            encoding: 'base64'
         })
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
@@ -285,13 +277,11 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#pupload').click()
 
         const fileName = 'CI_Test.pdf'
-
-        cy.fixture(fileName).then(fileContent => {
-            getDocumentoPersonale().find('#pdfUpload').attachFile({
-                fileContent,
-                fileName,
-                mimeType: 'application/pdf'
-            }, { subjectType: 'input' })
+        getDocumentoPersonale().find('#pdfUpload').attachFile({
+            filePath: fileName,
+            fileName: fileName,
+            mimeType: 'application/pdf',
+            encoding: 'base64'
         })
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
@@ -343,13 +333,11 @@ class SCUDocumenti {
         getDocumentoPersonale().find('#pupload').click()
 
         const fileName = 'CI_Test.pdf'
-
-        cy.fixture(fileName).then(fileContent => {
-            getDocumentoPersonale().find('#pdfUpload').attachFile({
-                fileContent,
-                fileName,
-                mimeType: 'application/pdf'
-            }, { subjectType: 'input' })
+        getDocumentoPersonale().find('#pdfUpload').attachFile({
+            filePath: fileName,
+            fileName: fileName,
+            mimeType: 'application/pdf',
+            encoding: 'base64'
         })
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
