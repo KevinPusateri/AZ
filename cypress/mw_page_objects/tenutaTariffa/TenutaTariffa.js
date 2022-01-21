@@ -56,6 +56,7 @@ function findKeyGaranziaARD(key, currentGaranziaARD = null) {
     else
         garanziaARD = currentGaranziaARD
 
+    debugger
     for (var property in garanziaARD) {
         if (garanziaARD.hasOwnProperty(property)) {
             if (property === key)
@@ -794,7 +795,6 @@ class TenutaTariffa {
             cy.get('nx-spinner').should('not.be.visible')
             //#endregion
 
-            cy.pause()
             switch (currentCase.Descrizione_Settore) {
                 case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
                 case "GARANZIE_AGGIUNTIVE_PACCHETTO_2":
@@ -812,6 +812,10 @@ class TenutaTariffa {
                     break
                 case "INCENDIO":
                     cy.contains("Incendio").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                case "FURTO":
+                    cy.contains("Furto").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
             }
@@ -890,6 +894,9 @@ class TenutaTariffa {
                             expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Garanzie_Aggiuntive)
                             break
                         case "INCENDIO":
+                            expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Incendio)
+                            break
+                        case "FURTO":
                             expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Incendio)
                             break
                     }

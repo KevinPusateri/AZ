@@ -24,6 +24,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 import { tariffaCases } from '../../fixtures//tariffe_RCA/tariffaCases_RCA_20220201.json'
 //#endregion
 before(() => {
+    Cypress.env('isAviva', false)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
 

@@ -27,6 +27,7 @@ import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_20220
 //#endregion
 
 before(() => {
+    Cypress.env('isAviva', false)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
 
@@ -55,7 +56,7 @@ after(function () {
 //Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //Se specificato, esegue l'identificativo caso specifico
-let caseToExecute = '3'
+let caseToExecute = '4'
 describe('ARD Febbraio 2022: ', {
     retries: {
         runMode: 0,
