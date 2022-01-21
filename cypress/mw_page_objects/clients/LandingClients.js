@@ -55,7 +55,7 @@ class LandingClients {
         const linksCollegamentiRapidi = Object.values(LinksRapidi)
 
         cy.get('app-home-right-section').should('be.visible')
-        
+
         cy.get('app-home-right-section').find('app-rapid-link:visible').each(($checkLinksRapidi, i) => {
             expect($checkLinksRapidi.text().trim()).to.include(linksCollegamentiRapidi[i]);
         })
@@ -156,7 +156,7 @@ class LandingClients {
         getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
     }
 
-    static checkAssenzaVisioneGlobale(){
+    static checkAssenzaVisioneGlobale() {
         cy.get('.actions-box').contains('Vai a visione globale').should('not.be.visible')
     }
 
@@ -232,14 +232,12 @@ class LandingClients {
                 cy.get('tr[class="nx-table-row ng-star-inserted"]').first().find('button[class="row-more-icon-button"]').click()
                 switch (checkAttivita) {
                     case 'Firma Digital Me':
-                        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
-                        cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
-                        break;
                     case 'Firma e Pagamento DM':
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Apri dettaglio polizza')
                         cy.get('app-digital-me-context-menu').find('lib-da-link').should('contain', 'Accedi a folder cliente');
                         break;
                     case 'Attivazione Consensi Digital Me':
+                    case 'Modifica anagrafica':
                         cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').first().invoke('text')
                             .should('include', '+');
                         cy.get('app-digital-me-context-menu').find('nx-icon[name^="mail"]').parent().invoke('text').should('include', '@');
