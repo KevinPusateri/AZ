@@ -25,6 +25,17 @@ class Dashboard {
         cy.wait('@ambiti', { requestTimeout: 60000 });
     }
 
+    static stringaRandom(lunghezza) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < lunghezza; i++ ) {
+           result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+     }
+     
+
     /**
      * Verifica che siano selezionati gli ambiti indicati
      * @param {array} ambiti 
@@ -175,6 +186,52 @@ class Dashboard {
             cy.get('nx-dropdown-item').contains(soluzione).should('be.visible').click() //seleziona Top
 
             cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+        })
+    }
+
+    static salvaQuotazione() {
+        ultraIFrame().within(() => {
+            const nomeQ = Dashboard.stringaRandom(10)
+            cy.log('stringa generata: ' + nomeQ)
+            cy.get('div[id="ambitiHeader"]')
+                .contains('Salva').should('be.visible').click() 
+            
+            cy.get('div[id="salvaBody"]').should('exist')
+              //.find('div[id="salvaBody"]').should('exist')
+              .find('div[class="nx-formfield__input"]').should('be.visible')
+              .eq(0).should('be.visible')
+              .click().wait(500)
+              .clear().wait(500)
+              .type(nomeQ).wait(2000)
+              //.type('{tab}')
+
+            cy.get('div[id="salvaBody"]').should('exist')
+              //.find('div[id="salvaBody"]').should('exist')
+              .find('div[class="nx-formfield__input"]').should('be.visible')
+              .eq(1).should('be.visible')
+              .click().wait(500)
+              .clear().wait(500)
+              .type('Note alla quotazione di prova 1').wait(2000)
+              
+                  
+            cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+            cy.wait(1000)
+
+            cy.pause()
+
+            /*
+            cy.get('tr')
+                .contains(ambito)
+                .parent()
+                .parent()
+                .find('nx-dropdown')
+                .click()
+
+            cy.wait(500)
+            cy.get('nx-dropdown-item').contains(soluzione).should('be.visible').click() //seleziona Top
+
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+            */
         })
     }
 

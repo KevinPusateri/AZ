@@ -56,6 +56,7 @@ const soluzione = {
 Cypress.config('defaultCommandTimeout', 60000)
 import { modificheCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { modificheAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { modificheRC } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daVerificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daVerificareAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daVerificareFabbricato } from '../../fixtures//Ultra/BMP_Caso1.json'
@@ -64,6 +65,7 @@ import { daVerificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
 //import { daVerificareRCDef } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { daModificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { defaultCasa } from '../../fixtures//Ultra/BMP_Comune.json'
 import { defaultAnimale } from '../../fixtures//Ultra/BMP_Comune.json'
 import { soluzione } from '../../fixtures//Ultra/BMP_Comune.json'
@@ -204,11 +206,6 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         })
 
         ConfigurazioneAmbito.ClickButton("CONFERMA")
-
-        //cy.pause()
-        //ConfigurazioneAmbito.VerificaDefaultCasa(daModificareCasa, modificheCasa)
-        //ConfigurazioneAmbito.VerificaDefaultAnimaleDomestico(daModificareAnimale, modificheAnimale)
-
         cy.pause()
         
     })
@@ -218,21 +215,13 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         UltraBMP.ClickMatita("Responsabilit", "Casa 1")
 
         ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareRC, modificheCasa)
-        //ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareRCDef, defaultCasa)
-        //ConfigurazioneAmbito.VerificaDefaultAnimaleDomestico(daModificareAnimale, modificheAnimale)
         ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.PREMIUM)
-        //cy.pause()
-        //ConfigurazioneAmbito.leggiPremio('totale')     <=== DA FARE VERIFICA PREMI
-        //cy.pause()
-        ConfigurazioneAmbito.aggiungiGaranzia('attività di affittacamere e Bed & Breakfast')
-        //cy.pause()
-        ConfigurazioneAmbito.aggiungiGaranzia('proprietà di cavalli ed altri animali da sella')
-        //cy.pause()
-        ConfigurazioneAmbito.ClickButton("CONFERMA")
+        
+        ConfigurazioneAmbito.ModificaConfigurazioneAmbito(daModificareRC, modificheRC)
 
-        //cy.pause()
-        //ConfigurazioneAmbito.VerificaDefaultCasa(daModificareCasa, modificheCasa)
-        //ConfigurazioneAmbito.VerificaDefaultAnimaleDomestico(daModificareAnimale, modificheAnimale)
+        ConfigurazioneAmbito.aggiungiGaranzia('attività di affittacamere e Bed & Breakfast')
+        ConfigurazioneAmbito.aggiungiGaranzia('proprietà di cavalli ed altri animali da sella')
+        ConfigurazioneAmbito.ClickButton("CONFERMA")
 
         cy.pause()
         
