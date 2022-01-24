@@ -250,7 +250,9 @@ class Ultra {
         })
     }
 
-    //configurazione specifica per l'ambito contenuto, per test emissione Ultra Fabbricato e Contenuto
+    /**
+     * configurazione specifica per l'ambito contenuto, per test emissione Ultra Fabbricato e Contenuto
+     */
     static configuraContenuto() {
         ultraIFrame().within(() => {
             //click su pulsante Penna
@@ -461,7 +463,7 @@ class Ultra {
         })
     }
 
-    static caricamentoCensimentoAnagrafico(cliente, ubicazione) {
+    static caricamentoCensimentoAnagrafico() {
         cy.intercept({
             method: 'GET',
             url: '**/tmpl_anag_container.htm'
@@ -508,6 +510,7 @@ class Ultra {
 
             cy.get('#divPopupAnagrafica', { timeout: 30000 }).should('be.visible') //attende la comparsa popup di ricerca anagrafiche
             cy.wait(5000)
+            //cy.pause()
 
             //popup anagrafico
             ultraIFrameAnagrafica().within(() => {

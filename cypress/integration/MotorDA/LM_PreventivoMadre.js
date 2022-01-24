@@ -122,13 +122,13 @@ describe("LIBRI MATRICOLA - PREVENTIVO MADRE", () => {
       nPreventivo = val
       cy.log("nContratto b " + nPreventivo)
     })
+    
   })
 
   it("Verifica presenza preventivo", () => {
     cy.log("nContratto c " + nPreventivo)
     expect(nPreventivo).to.not.be.undefined
     expect(nPreventivo).to.not.be.equal("000000")
-
     LibriMatricolaDA.caricamentoLibriMatricolaDA()
     LibriMatricolaDA.VerificaPresenzaPrevMadre(nPreventivo)
   })

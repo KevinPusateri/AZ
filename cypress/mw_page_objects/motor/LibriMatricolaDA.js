@@ -218,13 +218,6 @@ class LibriMatricolaDA {
                     var popupCheck = $popup.is(':visible')
                     cy.log("popup: " + popupCheck)
                     cy.wrap(popupCheck).as('boolPopup')
-
-                    /* if (popupCheck) {
-                        do {
-                            cy.get('div[id="pnlDialog"]').next('div')
-                                .find('span').contains('OK').click() //click su OK
-                        } while ($popup.is(':visible'))
-                    } */
                 })
             })
 
