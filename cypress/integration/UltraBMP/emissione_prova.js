@@ -9,6 +9,7 @@ import AreaRiservata from "../../mw_page_objects/UltraBMP/AreaRiservata"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
 import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
+import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -141,7 +142,16 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
         Ultra.modificaSoluzioneHome(ambitoUltra.RESPONSABILITA_CIVILE, soluzione.PREMIUM)
         Ultra.modificaSoluzioneHome(ambitoUltra.ANIMALI_DOMESTICI, soluzione.ESSENTIAL)
     })
+
+    it("Salva Quotazione", () => {
+        cy.pause()
+        Dashboard.salvaQuotazione()
+        cy.pause()
+    })
     
+
+
+
     it("Accesso Dati Quotazione da menù", ()=>{
         cy.pause()
         UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')

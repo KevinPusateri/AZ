@@ -119,6 +119,16 @@
     "Estensione"        : true,
     "ResidenzaAss"      : true,
     "CapAss"            : false
+  },
+
+  "daModificareRC" : {
+    "RC_Casa"        : true,
+    "RC_Famiglia"    : false
+  },
+
+  "modificheRC" : {
+    "RC_Casa"        : "2.000.000,00 €",
+    "RC_Famiglia"    : ""
   }
 
 }
