@@ -1042,6 +1042,15 @@ class Ultra {
                 .click()
         })
     }
+
+    /**
+     * Clicca sul pulsante Avanti
+     */
+    static Avanti() {
+        ultraIFrame().within(() => {
+            cy.get('[id="btnAvanti"]').should('be.visible').click()
+        })
+    }
     //#endregion Helper
 
 }

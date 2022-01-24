@@ -4,12 +4,17 @@
 import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
+import Ultra from "../../mw_page_objects/ultra/Ultra"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import Preferiti from "../../mw_page_objects/UltraBMP/Preferiti"
 import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
+import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
+import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
+import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
-
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import 'cypress-iframe';
 //#endregion
@@ -126,10 +131,163 @@ describe("FABBRICATO E CONTENUTO", () => {
 
     it("Conferma dati quotazione", () => {
         DatiQuotazione.confermaDatiQuotazione()
+        Riepilogo.caricamentoRiepilogo()
     })
 
-    it("Riepilogo", () => {
+    it("Riepilogo ed emissione", () => {
+        Riepilogo.salvaQuotazione()
+        Riepilogo.EmissionePolizza()
+        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
+    })
+
+    it("Censimento anagrafico", () => {
+        CensimentoAnagrafico.censimentoAnagrafico(cliente.cognomeNome(), cliente.ubicazione())
+        Ultra.Avanti()
+        DatiIntegrativi.caricamentoPagina()
+    })
+
+    it("Dati integrativi", () => {
+        DatiIntegrativi.selezionaTuttiNo()
+        Ultra.Avanti()
+        DatiIntegrativi.popupDichiarazioni()
+        ConsensiPrivacy.caricamentoPagina()
+    })
+
+    it("Consensi e privacy", () => {
+        ConsensiPrivacy.Avanti()
+        ControlliProtocollazione.caricamentoPagina()
+    })
+
+    it("salvataggio Contratto", () => {
+        ControlliProtocollazione.salvataggioContratto()
+    })
+
+    it("Intermediario", () => {
+        ControlliProtocollazione.inserimentoIntermediario()
+    })
+
+    it("Visualizza documenti e prosegui", () => {
+        ControlliProtocollazione.riepilogoDocumenti()
+        ControlliProtocollazione.Avanti()
+    })
+
+    it("Adempimenti precontrattuali e Perfezionamento", () => {
+        ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
+        ControlliProtocollazione.Incassa()
         cy.pause()
+    })
+
+    it("Incasso - parte 1", () => {
+        //attende caricamento sezione Precontrattuali
+        cy.intercept({
+            method: 'POST',
+            url: '**/InitMezziPagam'
+        }).as('pagamento')
+
+        cy.wait('@pagamento', { requestTimeout: 60000 })
+
+        cy.frameLoaded(iFrameUltra)
+            .iframeCustom().find(iFrameFirma)
+            .iframeCustom().find('#pnlMainTitoli', { timeout: 15000 })
+            .should('be.visible')
+
+        cy.frameLoaded(iFrameUltra)
+            .iframeCustom().find(iFrameFirma)
+            .iframeCustom().find('[value="> Incassa"]')
+            .should('be.visible')
+            .click()
+
+        //cy.wait(5000)
+
+        //attende il caricamento
+        cy.frameLoaded(iFrameUltra)
+            .iframeCustom().find(iFrameFirma)
+            .iframeCustom().find('[class="divAttenderePrego"]').should('be.visible')
+
+        //cy.wait(1000)
+        //cy.pause()
+    })
+
+    it("Incasso - parte 2", () => {
+        cy.intercept({
+            method: 'GET',
+            url: '**/GetListaCassettiIncassoCompleto'
+        }).as('incassoCompleto')
+
+        cy.wait('@incassoCompleto', { requestTimeout: 60000 })
+
+        cy.frameLoaded(iFrameUltra)
+            .iframeCustom().find(iFrameFirma)
+            .iframeCustom().find('#TabIncassoPanelBar-2')
+            .should('be.visible')
+
+        //selezione mensilità
+        // cy.frameLoaded(iFrameUltra)
+        //     .iframeCustom().find(iFrameFirma)
+        //     .iframeCustom().find('[aria-owns="TabIncassoTipoMens_listbox"]')
+        //     .should('be.visible')
+        //     .click()
+
+        // cy.wait(1000)
+        // cy.frameLoaded(iFrameUltra)
+        //     .iframeCustom().find(iFrameFirma)
+        //     .iframeCustom().find('li').contains('SDD')
+        //     .should('be.visible')
+        //     .click()
+
+        //selezione tipo di pagamento
+        cy.frameLoaded(iFrameUltra)
+            .iframeCustom().find(iFrameFirma)
+            .iframeCustom().find('[aria-owns="TabIncassoModPagCombo_listbox"]')
+            .should('be.visible')
+            .click()
+
+        cy.wait(1000)
+        cy.frameLoaded(iFrameUltra)
+            .iframeCustom().find(iFrameFirma)
+            .iframeCustom().find('#TabIncassoModPagCombo_listbox')
+            .find('li').contains('Assegno')
+            .should('be.visible')
+            .click()
+
+        //cy.wait(1000) tipo di delega
+
+        cy.frameLoaded(iFrameUltra)
+            .iframeCustom().find(iFrameFirma)
+            .iframeCustom().find('button').contains('Incassa')
+            .should('be.visible')
+            .click()
+
+        //cy.pause()
+    })
+
+    it("Esito incasso", () => {
+        //attende caricamento sezione Peecontrattuali etPostIncassoData
+        cy.intercept({
+            method: 'POST',
+            url: '**/GetPostIncassoData'
+        }).as('postIncasso')
+
+        cy.wait('@postIncasso', { requestTimeout: 60000 })
+
+        cy.frameLoaded(iFrameUltra)
+            .iframeCustom().find(iFrameFirma)
+            .iframeCustom().find('#pnlContrattoIncasso', { timeout: 30000 })
+            .should('be.visible')
+
+        cy.frameLoaded(iFrameUltra)
+            .iframeCustom().find(iFrameFirma)
+            .iframeCustom().find('[data-bind="foreach: Result.Steps"]')
+            .find('img')//lista esiti
+            .each(($img, index, $list) => {
+                cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green') //verifica la presenza della spunta verde
+            });
+
+        cy.frameLoaded(iFrameUltra)
+            .iframeCustom().find(iFrameFirma)
+            .iframeCustom().find('[value="> CHIUDI"]')
+            .should('be.visible')
+            .click()
     })
 
     /*--old-- */

@@ -34,7 +34,7 @@ class DatiQuotazione {
       cy.get('ultra-form-dati-quotazione', { timeout: 30000 }).should('be.visible') //attende la comparsa del form con i dati quotazione
 
       cy.get('button').contains('CONFERMA').should('be.visible').click() //conferma
-      cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+      //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
     })
   }
   //#endregion
