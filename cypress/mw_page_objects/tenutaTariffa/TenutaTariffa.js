@@ -741,7 +741,6 @@ class TenutaTariffa {
             cy.get('strong:contains("Rc Auto")').click()
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-            //cy.pause()
             //Verifichiamo il premio lordo a video
             cy.contains('BONUS/MALUS').parent('div').find('div[class="ng-star-inserted"]').invoke('text').then(premioLordo => {
                 expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
@@ -818,6 +817,9 @@ class TenutaTariffa {
                     cy.contains("Furto").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
+                case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
+                    cy.pause()
+                    break
             }
 
             cy.get('strong:contains("Auto Rischi Diversi"):last').click().wait(500)
@@ -826,7 +828,6 @@ class TenutaTariffa {
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '11_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il totale relativo alla ARD
-            cy.pause()
             cy.get('strong:contains("Auto Rischi Diversi"):last').parents('div').find('div:last').find('strong:last').invoke('text').then(value => {
                 expect(value).contains(currentCase.Totale_Premio)
             })
@@ -890,14 +891,13 @@ class TenutaTariffa {
                     switch (currentCase.Descrizione_Settore) {
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_2":
-
                             expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Garanzie_Aggiuntive)
                             break
                         case "INCENDIO":
                             expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Incendio)
                             break
                         case "FURTO":
-                            expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Incendio)
+                            expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Furto)
                             break
                     }
                 })
