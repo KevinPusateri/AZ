@@ -83,6 +83,7 @@ const LinkUtilita = {
     MONITOR_SCORING_AZ_BONUS_DRIVE: 'Monitor Scoring AZ Bonus Drive',
     deleteKey: function (keys) {
         if (!keys.interrogazioniCentralizzateEnabled) delete this.INTERROGAZIONI_CENTRALIZZATE
+        if (!keys.REPORT_ALLIANZ_NOW) delete this.REPORT_ALLIANZ_NOW
         if (!keys.obuEnabled) delete this.GESTIONE_MAGAZZINO_OBU
         if (!keys.satellitareEnabled) delete this.CRUSCOTTO_INSTALLAZIONE_DISPOSITIVO_SATELLITARE
         if (!keys.monitorScoringAZBonusDrive) delete this.monitor

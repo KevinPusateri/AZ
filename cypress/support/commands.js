@@ -263,6 +263,7 @@ Cypress.Commands.add('slugMieInfo', (tutf, section) => {
   cy.request({
     method: 'POST',
     log: true,
+    failOnStatusCode: false,
     url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('mieInfoCloudTE') + '/lemieinfo/middleware/api/v1/query-entities/slug' : Cypress.env('mieInfoCloudPP') + '/lemieinfo/middleware/api/v1/query-entities/slug',
     headers: {
       'Portaluser': tutf,
@@ -271,15 +272,17 @@ Cypress.Commands.add('slugMieInfo', (tutf, section) => {
     },
     body: '["' + section + '"]'
   }).then(resp => {
-    if (resp.status !== 200)
-      throw new Error('Errore durante la chiamata slug mie info')
-    else {
+    if (resp.status === 404)
+      return false
+    else if (resp.status === 200) {
       let jsonReponse = JSON.parse(resp.body)
       if (jsonReponse[0].area === '')
         return false
       else
         true
     }
+    else
+      throw new Error('Errore durante la chiamata slug mie info')
   })
 })
 

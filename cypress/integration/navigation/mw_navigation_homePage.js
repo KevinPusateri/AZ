@@ -19,6 +19,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 let keys = {
     interrogazioniCentralizzateEnabled: true,
+    REPORT_ALLIANZ_NOW: true,
     srmOnlineEnabled: true,
     siscoEnabled: true,
     obuEnabled: true,
@@ -37,6 +38,7 @@ before(() => {
             cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiled => { keys.interrogazioniCentralizzateEnabled = profiled })
             cy.filterProfile(profiling, 'COMMON_SERVIZI_SOL').then(profiled => { keys.srmOnlineEnabled = profiled })
             cy.filterProfile(profiling, 'VITA_SISCO').then(profiled => { keys.siscoEnabled = profiled })
+            cy.filterProfile(profiling, 'PO_REPORT_ALLIANZNOW').then(profiled => { keys.REPORT_ALLIANZ_NOW = profiled })
             cy.filterProfile(profiling, 'COMMON_MICROSTOCK').then(profiled => {
                 keys.obuEnabled = profiled
                 keys.satellitareEnabled = profiled
@@ -136,6 +138,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         } else this.skip()
     })
 
+    // ! NON SEI AUTORIZZATO AD ACCEDERE ALLA PAGINA DI BACKOFFICE
     // Mostra non sei autorizzato ad accedere alla pagina backoffice --add excel
     // it.skip('Verifica atterraggio da Utilità - Report Allianz Now', function () {
     //     TopBar.clickIconSwitchPage()
@@ -143,6 +146,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     // })
 
     it('Verifica atterraggio da Utilità - Interrogazioni centralizzate', function () {
+        //! HTML ancora Vuoto Aspettare per AVIVA Febbraio
         if (keys.interrogazioniCentralizzateEnabled) {
             TopBar.clickIconSwitchPage()
             TopBar.clickLinkOnUtilita('Interrogazioni centralizzate')
@@ -164,6 +168,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     })
 
     // Accesso non autorizzato --add excel
+    // ! IMPOSSIBILE Pagina inesistente
     // it.skip('Verifica atterraggio da Utilità - Piattaforma contratti AZ Telematics', function () {
     //     TopBar.clickIconSwitchPage()
     //     TopBar.clickLinkOnUtilita('Piattaforma contratti AZ Telematics')

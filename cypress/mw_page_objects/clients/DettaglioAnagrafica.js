@@ -439,6 +439,7 @@ class DettaglioAnagrafica {
             url: '**/getclientagreements/**'
         }).as('getClientAgreements');
 
+        cy.wait(3000)
         cy.get('h3').should('be.visible').and('exist').invoke('text').then($text => {
             let numberOfConvenzioni = Number.parseInt($text.trim(), 10)
             switch (numberOfConvenzioni) {

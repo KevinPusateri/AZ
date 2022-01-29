@@ -740,6 +740,10 @@ class SintesiCliente {
         cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
     }
 
+    static clickClientsBriciolaPane(){
+        cy.contains("Clients").should('exist').click({force: true})
+    }
+
     static checkAtterraggioName(cliente) {
         cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class', 'active')
         cy.get('.client-name').should('contain.text', cliente)
