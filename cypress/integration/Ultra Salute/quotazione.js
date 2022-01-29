@@ -114,7 +114,7 @@ describe("QUOTAZIONE", () => {
     Ultra.areaRiservata(prezzoRiservato)
   })
 
-  it("Condividi", () => {
+  it("Condividi", () => {    
     Ultra.condividi('Quotazione Test', ambiti)
     cy.log("FINE")
   })

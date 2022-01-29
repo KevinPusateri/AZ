@@ -110,7 +110,7 @@ class Ultra {
     static selezionaFonteRandom() {
         ultraIFrame().within(() => {
             cy.get('span').contains('Fonte').should('be.visible')
-                .next('nx-icon').dblclick() //click su pulsante Fonte
+                .next('nx-icon').click() //dblclick() //click su pulsante Fonte
             cy.wait(500)
             cy.get('[id="fontePopover"]').should('be.visible') //verifica apertura popup fonte
                 .find('[name="pen"]').click() //click sull'icona della penna
@@ -366,10 +366,12 @@ class Ultra {
 
             cy.get('#salvaForm')
                 .find('input[formcontrolname="name"]').type(nomeQuotazione)
-
             //salva la quotazione
             cy.get('#salvaForm')
                 .find('span').contains('Salva').click()
+
+            cy.get('#warning-switch-solution').should('be.visible') //attende il caricamento del popup 'attenzione'
+            cy.get('button').children('span').contains('Ok').click() //chiude il popup
 
             cy.get('#condividiModal').should('be.visible') //attende il caricamento del popup 'condividi l'offerta'
 
@@ -378,10 +380,7 @@ class Ultra {
                     .should('be.visible').click() //seleziona tutte le schede
             }
 
-            cy.get('button[aria-label="Close dialog"]').click() //chiude popup
-
-            cy.get('#warning-switch-solution').should('be.visible') //attende il caricamento del popup 'attenzione'
-            cy.get('button').children('span').contains('Ok').click() //chiude il popup
+            cy.get('button[aria-label="Close dialog"]').click() //chiude popup            
         })
     }
 
@@ -591,7 +590,6 @@ class Ultra {
                 .should('be.visible').click() //avanti
             cy.get('[id="alz-spinner"]').should('not.be.visible')
             cy.get('button').contains('Avanti').click() //avanti
-            cy.wait(3000)
         })
     }
 
@@ -715,6 +713,16 @@ class Ultra {
         })
     }
 
+    //#region Condividi
+    static caricamentoCondividi() {
+        cy.intercept({
+            method: 'GET',
+            url: '**/getInfo'
+        }).as('consensi')
+
+        cy.wait('@consensi', { requestTimeout: 60000 })
+    }
+
     //seleziona tutte le schede degli ambiti nella sezione Condividi il Preventivo
     static condividiPreventivoSelTutti() {
         ultraIFrame().within(() => {
@@ -722,16 +730,18 @@ class Ultra {
                 .should('be.visible')
                 .children('span').click()
         })
+        //cy.wait(1000)
     }
 
     static condividiPreventivoConferma() {
         ultraIFrame().within(() => {
-            cy.get('button').contains('Conferma')
+            cy.get('.page-footer').children('button').contains('Conferma')
                 .should('be.visible').click()
         })
 
-        cy.wait(5000)
+        //cy.wait(5000)
     }
+    //#endregion Condividi
 
     static caricamentoConsensi() {
         cy.intercept({

@@ -14,6 +14,7 @@ import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagr
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
 import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import 'cypress-iframe';
@@ -127,6 +128,8 @@ describe("FABBRICATO E CONTENUTO", () => {
 
     it("Procedi", () => {
         Dashboard.procediHome()
+        DatiQuotazione.CaricamentoPagina()
+        //Riepilogo.caricamentoRiepilogo()
     })
 
     it("Conferma dati quotazione", () => {
@@ -174,314 +177,27 @@ describe("FABBRICATO E CONTENUTO", () => {
     it("Adempimenti precontrattuali e Perfezionamento", () => {
         ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
         ControlliProtocollazione.Incassa()
-        cy.pause()
+        Incasso.caricamentoPagina()
     })
 
     it("Incasso - parte 1", () => {
-        //attende caricamento sezione Precontrattuali
-        cy.intercept({
-            method: 'POST',
-            url: '**/InitMezziPagam'
-        }).as('pagamento')
-
-        cy.wait('@pagamento', { requestTimeout: 60000 })
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#pnlMainTitoli', { timeout: 15000 })
-            .should('be.visible')
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[value="> Incassa"]')
-            .should('be.visible')
-            .click()
-
-        //cy.wait(5000)
-
-        //attende il caricamento
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[class="divAttenderePrego"]').should('be.visible')
-
-        //cy.wait(1000)
-        //cy.pause()
+        Incasso.ClickIncassa()
+        Incasso.caricamentoModPagamento()
     })
 
     it("Incasso - parte 2", () => {
-        cy.intercept({
-            method: 'GET',
-            url: '**/GetListaCassettiIncassoCompleto'
-        }).as('incassoCompleto')
-
-        cy.wait('@incassoCompleto', { requestTimeout: 60000 })
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#TabIncassoPanelBar-2')
-            .should('be.visible')
-
-        //selezione mensilità
-        // cy.frameLoaded(iFrameUltra)
-        //     .iframeCustom().find(iFrameFirma)
-        //     .iframeCustom().find('[aria-owns="TabIncassoTipoMens_listbox"]')
-        //     .should('be.visible')
-        //     .click()
-
-        // cy.wait(1000)
-        // cy.frameLoaded(iFrameUltra)
-        //     .iframeCustom().find(iFrameFirma)
-        //     .iframeCustom().find('li').contains('SDD')
-        //     .should('be.visible')
-        //     .click()
-
-        //selezione tipo di pagamento
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[aria-owns="TabIncassoModPagCombo_listbox"]')
-            .should('be.visible')
-            .click()
-
-        cy.wait(1000)
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#TabIncassoModPagCombo_listbox')
-            .find('li').contains('Assegno')
-            .should('be.visible')
-            .click()
-
-        //cy.wait(1000) tipo di delega
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('button').contains('Incassa')
-            .should('be.visible')
-            .click()
-
-        //cy.pause()
+        Incasso.SelezionaMetodoPagamento('Assegno')
+        Incasso.ConfermaIncasso()
+        Incasso.caricamentoEsito()
     })
 
     it("Esito incasso", () => {
-        //attende caricamento sezione Peecontrattuali etPostIncassoData
-        cy.intercept({
-            method: 'POST',
-            url: '**/GetPostIncassoData'
-        }).as('postIncasso')
-
-        cy.wait('@postIncasso', { requestTimeout: 60000 })
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#pnlContrattoIncasso', { timeout: 30000 })
-            .should('be.visible')
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[data-bind="foreach: Result.Steps"]')
-            .find('img')//lista esiti
-            .each(($img, index, $list) => {
-                cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green') //verifica la presenza della spunta verde
-            });
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[value="> CHIUDI"]')
-            .should('be.visible')
-            .click()
+        Incasso.EsitoIncasso()
+        Incasso.Chiudi()        
     })
 
-    /*--old-- */
-    it("Selezione ambiti FastQuote", () => {
-        cy.get('#nx-tab-content-1-0 > app-ultra-fast-quote > div.content.ng-star-inserted', { timeout: 30000 }).should('be.visible')
-
-        for (var i = 0; i < ambiti.length; i++) {
-            cy.contains('div', ambiti[i]).parent().children('nx-icon').click()
-        }
-
-        cy.get('[class="calculate-btn"]').click({ force: true })
-        cy.get('[class="calculate-btn"]', { timeout: 15000 }).contains('Ricalcola').should('be.visible')
-        cy.contains('span', 'Configura').parent().click()
-        cy.get('[ngclass="agency-row"]').first().click()
-        cy.wait(6000)
-    })
-
-    it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", () => {
-        Ultra.caricamentoUltraHome()
-        Ultra.verificaAmbitiHome(ambiti)
-    })
-
-    it("Seleziona fonte", () => {
-        Ultra.selezionaFonteRandom()
-    })
-
-    it("Seleziona frazionamento", () => {
-        Ultra.selezionaFrazionamento(frazionamento)
-    })
-
-    it("Modifica soluzione per Fabbricato", () => {
-        Ultra.modificaSoluzioneHome('Fabbricato', 'Top')
-    })
-
-    it("Configurazione Contenuto e procedi", () => {
-        Ultra.configuraContenuto()
-        Ultra.procediHome()
-    })
-
-    it("Conferma dati quotazione", () => {
-        Ultra.confermaDatiQuotazione()
-    })
-
-    it("Riepilogo ed emissione", () => {
-        Ultra.riepilogoEmissione()
-    })
-
-    it("Censimento anagrafico", () => {
-        Ultra.caricamentoCensimentoAnagrafico()
-        Ultra.censimentoAnagrafico(cliente.cognomeNome(), cliente.ubicazione())
-    })
-
-    it("Dati integrativi", () => {
-        //Ultra.caricaDatiIntegrativi()
-        Ultra.datiIntegrativi()
-        Ultra.caricamentoConsensi()
-    })
-
-    it("Consensi e privacy", () => {
-        Ultra.avantiConsensi()
-    })
-
-    it("salvataggio Contratto", () => {
-        Ultra.salvataggioContratto()
-    })
-
-    it("Intermediario", () => {
-        Ultra.inserimentoIntermediario()
-    })
-
-    it("Visualizza documenti e prosegui", () => {
-        Ultra.riepilogoDocumenti()
-    })
-
-    it("Adempimenti precontrattuali e Perfezionamento", () => {
-        Ultra.stampaAdempimentiPrecontrattuali()
-    })
-
-    it("Incasso - parte 1", () => {
-        //attende caricamento sezione Precontrattuali
-        cy.intercept({
-            method: 'POST',
-            url: '**/InitMezziPagam'
-        }).as('pagamento')
-
-        cy.wait('@pagamento', { requestTimeout: 60000 })
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#pnlMainTitoli', { timeout: 15000 })
-            .should('be.visible')
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[value="> Incassa"]')
-            .should('be.visible')
-            .click()
-
-        //cy.wait(5000)
-
-        //attende il caricamento
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[class="divAttenderePrego"]').should('be.visible')
-
-        //cy.wait(1000)
-        //cy.pause()
-    })
-
-    it("Incasso - parte 2", () => {
-        cy.intercept({
-            method: 'GET',
-            url: '**/GetListaCassettiIncassoCompleto'
-        }).as('incassoCompleto')
-
-        cy.wait('@incassoCompleto', { requestTimeout: 60000 })
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#TabIncassoPanelBar-2')
-            .should('be.visible')
-
-        //selezione mensilità
-        // cy.frameLoaded(iFrameUltra)
-        //     .iframeCustom().find(iFrameFirma)
-        //     .iframeCustom().find('[aria-owns="TabIncassoTipoMens_listbox"]')
-        //     .should('be.visible')
-        //     .click()
-
-        // cy.wait(1000)
-        // cy.frameLoaded(iFrameUltra)
-        //     .iframeCustom().find(iFrameFirma)
-        //     .iframeCustom().find('li').contains('SDD')
-        //     .should('be.visible')
-        //     .click()
-
-        //selezione tipo di pagamento
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[aria-owns="TabIncassoModPagCombo_listbox"]')
-            .should('be.visible')
-            .click()
-
-        cy.wait(1000)
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#TabIncassoModPagCombo_listbox')
-            .find('li').contains('Assegno')
-            .should('be.visible')
-            .click()
-
-        //cy.wait(1000) tipo di delega
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('button').contains('Incassa')
-            .should('be.visible')
-            .click()
-
-        //cy.pause()
-    })
-
-    it("Esito incasso", () => {
-        //attende caricamento sezione Peecontrattuali etPostIncassoData
-        cy.intercept({
-            method: 'POST',
-            url: '**/GetPostIncassoData'
-        }).as('postIncasso')
-
-        cy.wait('@postIncasso', { requestTimeout: 60000 })
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('#pnlContrattoIncasso', { timeout: 30000 })
-            .should('be.visible')
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[data-bind="foreach: Result.Steps"]')
-            .find('img')//lista esiti
-            .each(($img, index, $list) => {
-                cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green') //verifica la presenza della spunta verde
-            });
-
-        cy.frameLoaded(iFrameUltra)
-            .iframeCustom().find(iFrameFirma)
-            .iframeCustom().find('[value="> CHIUDI"]')
-            .should('be.visible')
-            .click()
-    })
-
-    /* it("Chiusura", ()=>{
-        cy.pause()
-        
+    it("Chiusura", ()=>{        
         Ultra.chiudiFinale()
-    }) */
+        cy.pause()
+    })
 })

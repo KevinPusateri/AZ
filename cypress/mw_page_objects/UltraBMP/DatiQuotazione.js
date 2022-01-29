@@ -11,6 +11,15 @@ const ultraIFrame = () => {
 
 class DatiQuotazione {
 
+  static CaricamentoPagina() {
+    cy.intercept({
+        method: 'GET',
+        url: '**/conferma-dati/**'
+    }).as('datiQuotazione')
+
+    cy.wait('@datiQuotazione', { requestTimeout: 60000 });
+}
+
   //#region ClickButton
   /**
     * ClickButton 
@@ -597,13 +606,9 @@ class DatiQuotazione {
 
         cy.pause()
       }
-
-
     })
-
   }
   //#endregion
-
 }
 
 export default DatiQuotazione

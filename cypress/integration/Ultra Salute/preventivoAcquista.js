@@ -13,6 +13,8 @@ import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
+import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 //#endregion
@@ -157,6 +159,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Beneficiari", () => {
     Ultra.beneficiariAvanti()
+    DatiIntegrativi.caricamentoPagina()
   })
   it("Dati integrativi", () => {
     Ultra.datiIntegrativiSalute(true, true, true)
@@ -165,8 +168,11 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Condividi il Preventivo", () => {
+    //Ultra.caricamentoCondividi()
+    //cy.pause()
     Ultra.condividiPreventivoSelTutti()
     Ultra.condividiPreventivoConferma()
+    ConsensiPrivacy.caricamentoPagina()
   })
 
   it("Consensi e privacy", () => {
