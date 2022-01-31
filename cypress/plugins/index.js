@@ -231,8 +231,6 @@ module.exports = (on, config) => {
         config.baseUrl = 'https://portaleagenzie.pp.azi.allianz.it/matrix/';
     else
         config.baseUrl = 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F/';
-
-    require('cypress-mochawesome-reporter/plugin')(on)
     
     //TODO da verificare se puo' tornare utile
     //! Lato Firefox sembra non accettare in input questi parametri di lancio
