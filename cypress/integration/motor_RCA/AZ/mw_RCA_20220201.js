@@ -4,13 +4,13 @@
  */
 
 /// <reference types="Cypress" />
-import Sales from "../../mw_page_objects/navigation/Sales"
-import Common from "../../mw_page_objects/common/Common"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import TenutaTariffa from "../../mw_page_objects/tenutaTariffa/TenutaTariffa"
+import Sales from "../../../mw_page_objects/navigation/Sales"
+import Common from "../../../mw_page_objects/common/Common"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import TenutaTariffa from "../../../mw_page_objects/tenutaTariffa/TenutaTariffa"
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
