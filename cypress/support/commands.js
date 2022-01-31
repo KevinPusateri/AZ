@@ -819,116 +819,161 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
   })
 })
 
-Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clientType = 'PF') => {
-  cy.generateTwoLetters().then(nameRandom => {
-    cy.generateTwoLetters().then(firstNameRandom => {
-      cy.request({
-        method: 'GET',
-        retryOnStatusCodeFailure: true,
-        timeout: 60000,
-        log: false,
-        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
-          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
-        headers: {
-          'x-allianz-user': tutf
-        }
-      }).then(response => {
-        if (response.body.length === 0)
-          cy.getClientWithConsensoOTP(tutf, clientType)
-        else {
-          //Verifichiamo solo clienti in stato EFFETTIVO
-          let clientiEffettivi = response.body.filter(el => {
-            return el.partyCategory[0] === 'E'
-          })
+Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clientType = 'PF', agenciesToAnalize = null, currentAgency = null, trial = 20) => {
 
-          if (clientiEffettivi.length > 0) {
-            let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+  //cy.wait(750)
+  cy.fixture("agencies").then(agenciesFromFixture => {
+    if (agenciesToAnalize === null) {
+      currentAgency = agenciesFromFixture.shift()
+      cy.log('Perform impersonification on ' + currentAgency.agency)
+      cy.impersonification(tutf, currentAgency.agentId, currentAgency.agency)
+    }
+    else if (trial === 0) {
+      if (agenciesToAnalize.length > 0) {
+        currentAgency = agenciesToAnalize.shift()
+        cy.log('Get next agency : ' + currentAgency.agency)
+        cy.log('Perform impersonification on ' + currentAgency.agency)
+        cy.impersonification(tutf, currentAgency.agentId, currentAgency.agency)
+        cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesToAnalize, currentAgency)
+      }
+      else {
+        cy.log("--------- RIPROVIAMO ---------")
+        cy.getClientWithConsensoOTP(tutf)
+      }
+    }
+    else
+      agenciesFromFixture = agenciesToAnalize
 
-            //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
-            cy.request({
-              method: 'GET',
-              retryOnStatusCodeFailure: true,
-              timeout: 60000,
-              log: false,
-              url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
-              headers: {
-                'x-allianz-user': tutf
-              }
-            }).then(responseContracts => {
-              //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
-              let contractsWithBranchId
-              contractsWithBranchId = responseContracts.body.filter(el => {
-                return el.branchId.includes('31')
-              })
-              if (contractsWithBranchId.length > 0) {
-                var options = {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: '2-digit'
+    cy.log('Trial ' + trial + ' for agency ' + currentAgency.agency)
+    if (trial === 0) {
+      debugger
+    }
+    let newTrial = trial - 1
+
+    cy.generateTwoLetters().then(nameRandom => {
+      cy.generateTwoLetters().then(firstNameRandom => {
+        cy.request({
+          method: 'GET',
+          retryOnStatusCodeFailure: true,
+          timeout: 60000,
+          log: false,
+          url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+            : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+          headers: {
+            'x-allianz-user': tutf
+          }
+        }).then(response => {
+          debugger
+          if (response.status !== 200)
+            cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+          if (response.body.length === 0) {
+            cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+          }
+          else {
+            //Verifichiamo solo clienti in stato EFFETTIVO
+            let clientiEffettivi = response.body.filter(el => {
+              return el.partyCategory[0] === 'E'
+            })
+
+            if (clientiEffettivi.length > 0) {
+              let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+
+              //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+              cy.request({
+                method: 'GET',
+                retryOnStatusCodeFailure: true,
+                timeout: 60000,
+                log: false,
+                url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
+                headers: {
+                  'x-allianz-user': tutf
                 }
-                let contractsWithScadenza = contractsWithBranchId.filter(el => {
-                  return el.paymentFrequency.includes('Annuale')// && (formatDate > currentDate)
+              }).then(responseContracts => {
+                if (responseContracts.status !== 200)
+                  cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
+                let contractsWithBranchId
+                contractsWithBranchId = responseContracts.body.filter(el => {
+                  return el.branchId.includes('31')
                 })
-                if (contractsWithScadenza.length > 0) {
-                  var datePolizzaScadenza = contractsWithScadenza.filter(el => {
-
-                    //trovo p
-                    var date = el._meta.metaInfoEntries[0].messages[3].message
-                    var dateSplited = date.replaceAll('-', '/').split('/')
-                    var newdate = dateSplited[1] + '/' + dateSplited[0] + '/' + dateSplited[2];
-                    let formatDate = new Date(newdate)
-                    let currentDate = new Date()
-
-                    // Verifico che la polizza non sia già sospesa
-                    if (state === 'sospesa') {
-                      var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
-                      if ((formatDate > currentDate) && stato == false)
-                        return el
-                    }
-                    else {
-                      var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
-                      if (stato == false && (formatDate > currentDate))
-                        return el
-                      else
-                        cy.getClientWithConsensoOTP(tutf, clientType)
-                    }
+                if (contractsWithBranchId.length > 0) {
+                  var options = {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: '2-digit'
+                  }
+                  let contractsWithScadenza = contractsWithBranchId.filter(el => {
+                    return el.paymentFrequency.includes('Annuale')// && (formatDate > currentDate)
                   })
-                  if (datePolizzaScadenza.length > 0) {
-                    var polizza = {
-                      customerNumber: currentClient.customerNumber,
-                      customerName: currentClient.firstName + ' ' + currentClient.name,
-                      numberPolizza: datePolizzaScadenza[0].bundleNumber
-                    }
-                    cy.request({
-                      method: 'GET',
-                      retryOnStatusCodeFailure: true,
-                      timeout: 60000,
-                      log: false,
-                      url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements/ConsensoOTP_Allianz'
-                        : be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements/ConsensoOTP_Allianz',
-                      headers: {
-                        'x-allianz-user': tutf
+                  if (contractsWithScadenza.length > 0) {
+                    var datePolizzaScadenza = contractsWithScadenza.filter(el => {
+
+                      //trovo p
+                      var date = el._meta.metaInfoEntries[0].messages[3].message
+                      var dateSplited = date.replaceAll('-', '/').split('/')
+                      var newdate = dateSplited[1] + '/' + dateSplited[0] + '/' + dateSplited[2];
+                      let formatDate = new Date(newdate)
+                      let currentDate = new Date()
+
+                      // Verifico che la polizza non sia già sospesa
+                      if (state === 'sospesa') {
+                        var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
+                        if ((formatDate > currentDate) && stato == false)
+                          return el
                       }
-                    }).then(responseConsenso => {
-                      let consensoOtpActive = responseConsenso.body.rejectionReason.includes('1')
-                      if (consensoOtpActive)
-                        return polizza
-                      else
-                        cy.getClientWithConsensoOTP(tutf, clientType)
+                      else {
+                        var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
+                        if (stato == false && (formatDate > currentDate))
+                          return el
+                        else {
+                          cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                        }
+                      }
                     })
+                    if (datePolizzaScadenza.length > 0) {
+                      var polizza = {
+                        customerNumber: currentClient.customerNumber,
+                        customerName: currentClient.firstName + ' ' + currentClient.name,
+                        numberPolizza: datePolizzaScadenza[0].bundleNumber,
+                        agentId: currentAgency.agentId,
+                        agency: currentAgency.agency
+                      }
+                      cy.request({
+                        method: 'GET',
+                        retryOnStatusCodeFailure: true,
+                        timeout: 60000,
+                        log: false,
+                        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements/ConsensoOTP_Allianz'
+                          : be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements/ConsensoOTP_Allianz',
+                        headers: {
+                          'x-allianz-user': tutf
+                        }
+                      }).then(responseConsenso => {
+                        if (responseConsenso.status !== 200)
+                          cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                        let consensoOtpActive = responseConsenso.body.rejectionReason.includes('1')
+                        if (consensoOtpActive)
+                          return polizza
+                        else {
+                          cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                        }
+                      })
+                    } else {
+                      cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                    }
                   } else {
-                    cy.getClientWithConsensoOTP(tutf, clientType)
+                    cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
                   }
                 } else {
-                  cy.getClientWithConsensoOTP(tutf, clientType)
+                  cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
                 }
-              } else
-                cy.getClientWithConsensoOTP(tutf, clientType)
-            })
+              })
+            }
+            else {
+              cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+            }
           }
-          else
-            cy.getClientWithConsensoOTP(tutf, clientType)
-        }
+        })
       })
     })
   })
