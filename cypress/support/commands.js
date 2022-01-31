@@ -247,6 +247,17 @@ Cypress.Commands.add('getProfiling', (tutf) => {
   })
 })
 
+Cypress.Commands.add('profilingLinksMenu', (tutf, keysLinks) => {
+
+  for (let key in keysLinks) {
+    cy.slugMieInfo(tutf, key.toString()).then((stateKey) => {
+      if (!stateKey) {
+        keysLinks[key] = false
+      }
+    })
+  }
+})
+
 Cypress.Commands.add('filterProfile', (profileArray, key) => {
   let filtered = profileArray.filter(el => {
     return el.name === key
@@ -258,8 +269,6 @@ Cypress.Commands.add('filterProfile', (profileArray, key) => {
 
 //Permettere di verificare se una sezione delle mie info è presente o meno
 Cypress.Commands.add('slugMieInfo', (tutf, section) => {
-  let a = '["' + section + '"]'
-  console.log(a)
   cy.request({
     method: 'POST',
     log: true,
@@ -276,10 +285,12 @@ Cypress.Commands.add('slugMieInfo', (tutf, section) => {
       return false
     else if (resp.status === 200) {
       let jsonReponse = JSON.parse(resp.body)
-      if (jsonReponse[0].area === '')
-        return false
-      else
-        true
+      // if (jsonReponse[0].area === '') {
+      //   debugger
+      //   return false
+      // }
+      // else
+      //   true
     }
     else
       throw new Error('Errore durante la chiamata slug mie info')

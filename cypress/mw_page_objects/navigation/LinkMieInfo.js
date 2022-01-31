@@ -333,78 +333,81 @@ let keysLinksMenu = {
     'il-mondo-allianz': true,
 }
 
-let keysLinksSubMenu = {
-    PRODOTTI: {
-        'prodotti/allianz-ultra': true,
-        'prodotti/allianz1-business': true,
-        'prodotti/auto-e-motori': true,
-        'prodotti/casa-condominio-e-petcare': true,
-        'prodotti/impresa-e-rischi-dedicati': true,
-        'prodotti/tutela-legale': true,
-        'prodotti/vita': true,
-        'prodotti/vita-corporate': true,
-        'prodotti/convenzioni-nazionali': true,
-        'prodotti/convenzioni-locali-e-offerte-dedicate': true,
-        'prodotti/agcs-italia': true,
-        'prodotti/finanziamenti-compass': true
-    },
-    INIZIATIVE: {
-        'iniziative/stop&drive': true,
-        'iniziative/proponi-ltc': true,
-        'iniziative/proponi-tcm': true,
-        'iniziative/mensilizzazione-rami-vari': true,
-        'iniziative/mensilizzazione-auto': true,
-        'iniziative/clienti-valore-extra': true,
-        'iniziative/allianzpay': true,
-        'iniziative/busta-arancione': true,
-        'iniziative/winback-motor': true,
-        'iniziative/decommissioning-telematici': true,
-        'iniziative/digitalizzazione-del-certificato-assicurativo-motor': true,
-        'iniziative/attestato-di-rischio-dinamico': true,
-        'iniziative/test': true
-    },
-    SALES_ACADEMY: {
-        'sales-academy/chi-siamo': true,
-        'sales-academy/master-professione-agente': true,
-        'sales-academy/allianz-business-school': true,
-        'sales-academy/percorsi-di-ruolo': true,
-        'sales-academy/obblighi-ivass': true,
-        'sales-academy/canali': true,
-    },
-    ANTIRICICLAGGIO: {
-        'antiriciclaggio/normative': true,
-        'antiriciclaggio/moduli,-manuali-e-procedure': true,
-        'antiriciclaggio/link-utili': true,
-    },
-    RISORSE_PER_AGENZIA: {
-        'risorse-per-l\'agenzia/reclutamento': true,
-        'risorse-per-l\'agenzia/arredare-l\'agenzia': true,
-        'risorse-per-l\'agenzia/digital-marketing-e-social-media': true,
-        'risorse-per-l\'agenzia/materiali-di-comunicazione': true,
-        'risorse-per-l\'agenzia/richiesta-stampati': true,
-        'risorse-per-l\'agenzia/ordini-di-toner-e-carta': true,
-        'risorse-per-l\'agenzia/cataloghi-prodotti-tecnologici': true,
-        'risorse-per-l\'agenzia/sicurezza-it': true,
-        'risorse-per-l\'agenzia/l\'app-adam': true,
-        'risorse-per-l\'agenzia/pacchetti-di-sicurezza': true,
-        'risorse-per-l\'agenzia/riferimenti-aziendali': true,
-        'risorse-per-l\'agenzia/link-utili': true,
-        'risorse-per-l\'agenzia/minisito-idd': true
-    },
-    RISORSE_PER_AGENTE: {
-        'risorse-per-l\'agente/trattamenti-provvigionali': true,
-        'risorse-per-l\'agente/incentivazione,-mission,-regolamenti': true,
-        'risorse-per-l\'agente/collaborazioni-orizzontali': true,
-        'risorse-per-l\'agente/convenzioni-prodotti-allianz': true,
-        'risorse-per-l\'agente/cassa-previdenza-agenti': true,
-        'risorse-per-l\'agente/le-scelte-di-investimento': true,
-        'risorse-per-l\'agente/catalogo-idee': true,
-    },
-    IL_MONDO_ALLIANZ: {
-        'il-mondo-allianz/i-codici-di-allianz-spa': true,
-        'il-mondo-allianz/la-rassegna-stampa': true,
-        'il-mondo-allianz/agricola-san-felice': true,
-    }
+let PRODOTTI = {
+    'prodotti/allianz-ultra': true,
+    'prodotti/allianz1-business': true,
+    'prodotti/auto-e-motori': true,
+    'prodotti/casa-condominio-e-petcare': true,
+    'prodotti/infortuni-e-salute':true,
+    'prodotti/impresa-e-rischi-dedicati': true,
+    'prodotti/tutela-legale': true,
+    'prodotti/vita': true,
+    'prodotti/vita-corporate': true,
+    'prodotti/convenzioni-nazionali': true,
+    'prodotti/convenzioni-locali-e-offerte-dedicate': true,
+    'prodotti/agcs-italia': true,
+    'prodotti/finanziamenti-compass': true
+}
+
+let INIZIATIVE = {
+    'iniziative/stop&drive': true,
+    'iniziative/proponi-ltc': true,
+    'iniziative/proponi-tcm': true,
+    'iniziative/mensilizzazione-rami-vari': true,
+    'iniziative/mensilizzazione-auto': true,
+    'iniziative/clienti-valore-extra': true,
+    'iniziative/allianzpay': true,
+    'iniziative/busta-arancione': true,
+    'iniziative/winback-motor': true,
+    'iniziative/decommissioning-telematici': true,
+    'iniziative/digitalizzazione-del-certificato-assicurativo-motor': true,
+    'iniziative/attestato-di-rischio-dinamico': true,
+    'iniziative/test': true
+}
+
+let SALES_ACADEMY = {
+    'sales-academy/chi-siamo': true,
+    'sales-academy/master-professione-agente': true,
+    'sales-academy/allianz-business-school': true,
+    'sales-academy/percorsi-di-ruolo': true,
+    'sales-academy/obblighi-ivass': true,
+    'sales-academy/canali': true,
+}
+let ANTIRICICLAGGIO = {
+    'antiriciclaggio/normative': true,
+    'antiriciclaggio/moduli,-manuali-e-procedure': true,
+    'antiriciclaggio/link-utili': true,
+}
+
+let RISORSE_PER_AGENZIA = {
+    'risorse-per-l\'agenzia/reclutamento': true,
+    'risorse-per-l\'agenzia/arredare-l\'agenzia': true,
+    'risorse-per-l\'agenzia/digital-marketing-e-social-media': true,
+    'risorse-per-l\'agenzia/materiali-di-comunicazione': true,
+    'risorse-per-l\'agenzia/richiesta-stampati': true,
+    'risorse-per-l\'agenzia/ordini-di-toner-e-carta': true,
+    'risorse-per-l\'agenzia/cataloghi-prodotti-tecnologici': true,
+    'risorse-per-l\'agenzia/sicurezza-it': true,
+    'risorse-per-l\'agenzia/l\'app-adam': true,
+    'risorse-per-l\'agenzia/pacchetti-di-sicurezza': true,
+    'risorse-per-l\'agenzia/riferimenti-aziendali': true,
+    'risorse-per-l\'agenzia/link-utili': true,
+    'risorse-per-l\'agenzia/minisito-idd': true
+}
+let RISORSE_PER_AGENTE = {
+    'risorse-per-l\'agente/trattamenti-provvigionali': true,
+    'risorse-per-l\'agente/incentivazione,-mission,-regolamenti': true,
+    'risorse-per-l\'agente/collaborazioni-orizzontali': true,
+    'risorse-per-l\'agente/convenzioni-prodotti-allianz': true,
+    'risorse-per-l\'agente/cassa-previdenza-agenti': true,
+    'risorse-per-l\'agente/le-scelte-di-investimento': true,
+    'risorse-per-l\'agente/catalogo-idee': true,
+}
+
+let IL_MONDO_ALLIANZ = {
+    'il-mondo-allianz/i-codici-di-allianz-spa': true,
+    'il-mondo-allianz/la-rassegna-stampa': true,
+    'il-mondo-allianz/agricola-san-felice': true,
 }
 
 
@@ -419,34 +422,44 @@ class LinkMieInfo {
         return LinksSubMenu
     }
 
-    static profilingLinksMenu(tutf) {
-        for (let key in keysLinksMenu) {
+    static profilingLinksMenu(tutf, keysLinks) {
+
+
+        for (let key in keysLinks) {
             cy.slugMieInfo(tutf, key.toString()).then((stateKey) => {
                 if (!stateKey) {
-                    keysLinksMenu[key] = false
+                    debugger
+                    keysLinks[key] = false
                 }
             })
         }
-    }
 
-    static profilingLinksSubMenu(tutf) {
-
-        for (let key in keysLinksSubMenu) {
-            for (let subKey in keysLinksSubMenu[key]) {
-                cy.slugMieInfo(tutf, subKey.toString()).then((stateKey) => {
-                    if (!stateKey) {
-                        keysLinksSubMenu[subKey] = false
-                    }
-                })
-            }
-        }
     }
 
     static getKeysLinksMenu() {
         return keysLinksMenu
     }
-    static getKeysLinksSubMenu() {
-        return keysLinksSubMenu
+    static getKeysLinksProdotti() {
+        return PRODOTTI
     }
+    static getKeysLinksIniziative() {
+        return INIZIATIVE
+    }
+    static getKeysLinksSalesAcademy() {
+        return SALES_ACADEMY
+    }
+    static getKeysLinksAntiriciclaggio() {
+        return ANTIRICICLAGGIO
+    }
+    static getKeysLinksRisorsePerAgenzia() {
+        return RISORSE_PER_AGENZIA
+    }
+    static getKeysLinksRisorsePerAgente() {
+        return RISORSE_PER_AGENTE
+    }
+    static getKeysLinksIlMondoAllianz() {
+        return IL_MONDO_ALLIANZ
+    }
+
 
 } export default LinkMieInfo
