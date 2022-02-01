@@ -820,7 +820,6 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
 })
 
 Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clientType = 'PF', agenciesToAnalize = null, currentAgency = null, trial = 20) => {
-
   cy.fixture("agencies").then(agenciesFromFixture => {
     if (agenciesToAnalize === null) {
       currentAgency = agenciesFromFixture.shift()
@@ -834,10 +833,12 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
         cy.log('Perform impersonification on ' + currentAgency.agency)
         cy.impersonification(tutf, currentAgency.agentId, currentAgency.agency)
         cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesToAnalize, currentAgency)
+        return
       }
       else {
         cy.log("--------- RIPROVIAMO ---------")
         cy.getClientWithConsensoOTP(tutf)
+        return
       }
     }
     else
@@ -939,10 +940,10 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
                       }).then(responseConsenso => {
                         if (responseConsenso.status !== 200)
                           cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
-                          debugger
                         let consensoOtpActive = responseConsenso.body.rejectionReason.includes('1')
-                        if (consensoOtpActive)
+                        if (consensoOtpActive) {
                           return polizza
+                        }
                         else {
                           cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
                         }
@@ -965,6 +966,9 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
         })
       })
     })
+  }).then(() => {
+    debugger
+    return polizza
   })
 })
 
