@@ -37,6 +37,8 @@
     "be2bePreprod": "https://be2be.pp.azi.allianzit",
     "mieInfoCloudTE": "https://lemieinfo-fe-test.azit-eks-no-prod.ew3.aws.aztec.cloud.allianz",
     "mieInfoCloudPP": "https://lemieinfo-fe-pp.azit-eks-no-prod.ew3.aws.aztec.cloud.allianz",
+    "loginUrlGraphQLPreprod": "https://matrix.pp.azi.allianz.it/",
+    "loginUrlGraphQLTest": "https://matrix.te.azi.allianzit/",
     "isSecondWindow": false,
     "monoUtenza": false,
     "multiUtenza": "5-851-0-100",
