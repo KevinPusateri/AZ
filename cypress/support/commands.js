@@ -821,7 +821,6 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
 
 Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clientType = 'PF', agenciesToAnalize = null, currentAgency = null, trial = 20) => {
 
-  //cy.wait(750)
   cy.fixture("agencies").then(agenciesFromFixture => {
     if (agenciesToAnalize === null) {
       currentAgency = agenciesFromFixture.shift()
@@ -845,9 +844,6 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
       agenciesFromFixture = agenciesToAnalize
 
     cy.log('Trial ' + trial + ' for agency ' + currentAgency.agency)
-    if (trial === 0) {
-      debugger
-    }
     let newTrial = trial - 1
 
     cy.generateTwoLetters().then(nameRandom => {
@@ -863,7 +859,6 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
             'x-allianz-user': tutf
           }
         }).then(response => {
-          debugger
           if (response.status !== 200)
             cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
           if (response.body.length === 0) {
@@ -897,13 +892,8 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
                   return el.branchId.includes('31')
                 })
                 if (contractsWithBranchId.length > 0) {
-                  var options = {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: '2-digit'
-                  }
                   let contractsWithScadenza = contractsWithBranchId.filter(el => {
-                    return el.paymentFrequency.includes('Annuale')// && (formatDate > currentDate)
+                    return el.paymentFrequency.includes('Annuale')
                   })
                   if (contractsWithScadenza.length > 0) {
                     var datePolizzaScadenza = contractsWithScadenza.filter(el => {
@@ -925,11 +915,9 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
                         var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
                         if (stato == false && (formatDate > currentDate))
                           return el
-                        else {
-                          cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
-                        }
                       }
                     })
+
                     if (datePolizzaScadenza.length > 0) {
                       var polizza = {
                         customerNumber: currentClient.customerNumber,
@@ -951,6 +939,7 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
                       }).then(responseConsenso => {
                         if (responseConsenso.status !== 200)
                           cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                          debugger
                         let consensoOtpActive = responseConsenso.body.rejectionReason.includes('1')
                         if (consensoOtpActive)
                           return polizza
