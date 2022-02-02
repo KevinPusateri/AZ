@@ -62,16 +62,18 @@ after(function () {
     //#endregion
 })
 
-describe('Matrix Web : Navigazioni da Le Mie Info', {
-    retries: {
-        runMode: 0,
-        openMode: 0,
-    }
-}, () => {
+describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
-    it('Verifica aggancio Le Mie Info', function () {
+    it('Verifica aggancio Le Mie Info',  {
+        // Settato in caso di FAILED nel Before(Mostra l'errore)
+        retries: {
+            runMode: 0,
+            openMode: 0,
+        }
+    }, function()  {
         TopBar.clickMieInfo()
     })
+    
 
     it('Verifica presenza links Menu', function () {
         TopBar.clickMieInfo()

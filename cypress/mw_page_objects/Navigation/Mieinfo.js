@@ -34,7 +34,7 @@ class Mieinfo {
     static clickLinkOnMenu(page) {
         // wait forzato altrimenti non trova Antiriciclaggio
         // if (page === 'Antiriciclaggio')
-        getIFrame().find('span:visible').contains(page).click()
+        getIFrame().find('span:visible').contains(page,{timeout:8000}).click()
         // else
         // getIFrame().find('span[class="menu--link--text"]:visible').should('be.visible').contains(page, { timeout: 5000 }).click().wait(2000)
         getIFrame().find('a[class~="menu--link_active"]').should('contain', page)
@@ -73,6 +73,7 @@ class Mieinfo {
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
                         currentLinks.push($link.text().trim())
                     }).then(() => {
+
                         expect(currentLinks.sort()).to.deep.eq(checkLinks.sort());
 
                     })

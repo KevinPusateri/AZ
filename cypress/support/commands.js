@@ -282,19 +282,20 @@ Cypress.Commands.add('slugMieInfo', (tutf, section) => {
     body: '["' + section + '"]'
   }).then(resp => {
     if (resp.status === 404)
-      return false
-    else if (resp.status === 200) {
-      let jsonReponse = JSON.parse(resp.body)
-      // if (jsonReponse[0].area === '') {
-      //   debugger
-      //   return false
-      // }
-      // else
-      //   true
-    }
-    else
-      throw new Error('Errore durante la chiamata slug mie info')
-  })
+    return false
+  else if (resp.status === 200) {
+    let jsonReponse = JSON.parse(resp.body)
+    return true
+  }
+  else {
+    cy.on('uncaught:exception', (e, runnable) => {
+      console.log('error is', e)
+      console.log('runnable', runnable)
+        throw new Error('Errore durante la chiamata slug mie info (Slug: ' + section + ')')
+
+    })
+  }
+})
 })
 
 Cypress.Commands.add('getPartyRelations', () => {
