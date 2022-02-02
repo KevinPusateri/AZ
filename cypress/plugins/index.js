@@ -37,6 +37,31 @@ const orderReccentFiles = (dir) => {
         .map((file) => ({ file, mtime: fs.lstatSync(path.join(dir, file)).mtime }))
         .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
 };
+
+const sendEmail = (currentSubject, currentMessage, additionalEmail = null) => {
+
+    const nodemailer = require('nodemailer')
+
+    let transporter = nodemailer.createTransport({
+        host: 'techuser.mail.allianz',
+        port: 25,
+        secure: false,
+        tls: {
+            rejectUnauthorized: false
+        }
+    })
+
+    const email = {
+        from: '"Test Automatici MW" <noreply@allianz.it>',
+        to: (additionalEmail === null) ? 'test.factory.test@allianz.it' : 'test.factory.test@allianz.it,' + additionalEmail,
+        subject: currentSubject,
+        text: currentMessage,
+        html: '<b>' + currentMessage + '/b></br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>',
+    };
+    transporter.sendMail(email, function (err, info) {
+        return err ? err.message : 'Message sent: ' + info.response;
+    });
+}
 //#endregion
 
 
@@ -231,7 +256,7 @@ module.exports = (on, config) => {
         config.baseUrl = 'https://portaleagenzie.pp.azi.allianz.it/matrix/';
     else
         config.baseUrl = 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F/';
-    
+
     //TODO da verificare se puo' tornare utile
     //! Lato Firefox sembra non accettare in input questi parametri di lancio
     // on('before:browser:launch', (browser = {}, launchOptions) => {
@@ -398,6 +423,12 @@ module.exports = (on, config) => {
             //Also clean downloads folder
             rimraf.sync(process.cwd() + "\\cypress\\downloads\\*")
             return folderToDelete
+        }
+    })
+
+    on("task", {
+        sendMail({ currentSubject, currentMessage, additionalEmail }) {
+            return sendEmail(currentSubject, currentMessage, additionalEmail)
         }
     })
 

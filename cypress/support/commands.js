@@ -282,20 +282,20 @@ Cypress.Commands.add('slugMieInfo', (tutf, section) => {
     body: '["' + section + '"]'
   }).then(resp => {
     if (resp.status === 404)
-    return false
-  else if (resp.status === 200) {
-    let jsonReponse = JSON.parse(resp.body)
-    return true
-  }
-  else {
-    cy.on('uncaught:exception', (e, runnable) => {
-      console.log('error is', e)
-      console.log('runnable', runnable)
+      return false
+    else if (resp.status === 200) {
+      let jsonReponse = JSON.parse(resp.body)
+      return true
+    }
+    else {
+      cy.on('uncaught:exception', (e, runnable) => {
+        console.log('error is', e)
+        console.log('runnable', runnable)
         throw new Error('Errore durante la chiamata slug mie info (Slug: ' + section + ')')
 
-    })
-  }
-})
+      })
+    }
+  })
 })
 
 Cypress.Commands.add('getPartyRelations', () => {
@@ -945,9 +945,18 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
                           cy.getUserProfileToken(tutf).then(userProfileToken => {
                             //Verifichiamo se il cliente è in buca di ricerca di MW
                             cy.isClientInBuca(userProfileToken, currentAgency.agencies, polizza.customerName).then(isInBuca => {
-                              debugger
                               if (isInBuca)
-                                return polizza
+                                cy.isClientAccessible(userProfileToken, currentAgency.agentId, polizza.customerNumber).then(isAccessible => {
+                                  if (isAccessible)
+                                    cy.isClientEffettivo(userProfileToken, currentAgency.agentId, polizza.customerNumber).then(isEffettivo => {
+                                      if (isEffettivo)
+                                        return polizza
+                                      else
+                                        cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                                    })
+                                  else
+                                    cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                                })
                               else
                                 cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
                             })
@@ -1102,6 +1111,235 @@ Cypress.Commands.add('isClientInBuca', (userProfileToken, agencies, searchValue)
     })
 
     return (filteredResults.length > 0) ? true : false
+  })
+})
+
+/**
+ * Funzione che permette di verificare se l'accountId specificato ha visibilità sul clientId
+ * ? Si necessita di aver precedentemente chiamato la funzione getUserProfileToken per ottenere lo userProfileToken
+ * @author Andrea 'Bobo' Oboe
+ */
+Cypress.Commands.add('isClientAccessible', (userProfileToken, accountId, clientId) => {
+  const clientQuery = `query client($filter: ClientRequestInput!) {
+    client(filter: $filter) {
+      id
+      accounts(filter: $filter)
+      accountsVisibility(filter: $filter) {
+        account
+        agencyCode
+        companyCode
+        sourceCode
+        subAgencyCode
+        roleCode
+        fromRole
+        ageDescription
+      }
+      type {
+        key
+        value
+      }
+      gender {
+        value
+      }
+      birthDate
+      fiscalCode
+      vatNumber
+      title
+      image
+      intermediary
+      employee
+      name
+      surname
+      age
+      birthDate
+      deathDate
+      contacts(filter: $filter) {
+        principalPhone {
+          id
+          email
+          countryPrefix
+          prefix
+          phoneNumber
+          additionalInformation
+          mobile
+          preferred
+          status
+          preferredDayPart
+          preferredYearlyPart
+          type
+          isPrivate
+        }
+        principalMail {
+          id
+          email
+          countryPrefix
+          prefix
+          phoneNumber
+          additionalInformation
+          mobile
+          preferred
+          status
+          preferredDayPart
+          preferredYearlyPart
+          type
+          isPrivate
+          checked
+        }
+        otp {
+          id
+          countryPrefix
+          prefix
+          phoneNumber
+          additionalInformation
+          mobile
+          preferred
+          status
+          preferredDayPart
+          preferredYearlyPart
+          type
+          isPrivate
+        }
+      }
+      addresses(filter: $filter) {
+        principal {
+          id
+          countryCode
+          street
+          streetNumber
+          stairwayNumber
+          streetType {
+            key
+            value
+          }
+          type
+          city {
+            key
+            value
+          }
+          district
+          districtCode
+          area
+          areaCode
+          postCode
+          districtId
+        }
+        domicile {
+          id
+          countryCode
+          street
+          streetNumber
+          stairwayNumber
+          streetType {
+            key
+            value
+          }
+          type
+          city {
+            key
+            value
+          }
+          district
+          districtCode
+          area
+          postCode
+        }
+      }
+      consents(filter: $filter) {
+        sendMailConsents
+        signatureGraphConsents
+        signatureOtpConsents
+        allianzPromoConsents
+        sidebarSignatureGraphConsents(filter: $filter) {
+          status
+          message
+        }
+        sidebarSignatureOtpConsents(filter: $filter) {
+          status
+          message
+        }
+        sidebarSendMailConsents(filter: $filter) {
+          status
+          message
+        }
+      }
+      companyName
+      businessForm {
+        key
+        value
+      }
+      businessType {
+        key
+        value
+      }
+      traceable
+      publicAuthorithy
+    }
+  }
+  `
+
+  const filter = `{
+    "filter": {
+    "userToken": "${userProfileToken}",
+    "accountId": "${accountId}",
+    "clientId": "${clientId}"
+    }
+  }`
+
+  cy.request({
+    method: 'POST',
+    url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('baseUrlTest') : Cypress.env('baseUrlPreprod')) + 'clients/api/graphql',
+    headers: { 'Content-Type': 'application/json' },
+    body: { query: clientQuery, variables: JSON.parse(filter) },
+    log: false
+  }).then(clientResponse => {
+    return (clientResponse.body.data.client !== null) ? true : false
+  })
+})
+
+/**
+ * Funzione che permette di verificare se il clinetId in MW è EFFETTIVO (SICCOME VIDIEMME A VOLTE....)
+ * ? Si necessita di aver precedentemente chiamato la funzione getUserProfileToken per ottenere lo userProfileToken
+ * @author Andrea 'Bobo' Oboe
+ */
+Cypress.Commands.add('isClientEffettivo', (userProfileToken, accountId, clientId) => {
+  const clientQuery = `query client($filter: ClientRequestInput!) {
+    client(filter: $filter) {
+      status(filter: $filter) {
+        clientStatus {
+          key
+          value
+        }
+        clientSince {
+          year
+          month
+        }
+        viewReportLife
+      }
+    }
+  }  
+  `
+
+  const filter = `{
+    "filter": {
+    "userToken": "${userProfileToken}",
+    "accountId": "${accountId}",
+    "clientId": "${clientId}"
+    }
+  }`
+
+  cy.request({
+    method: 'POST',
+    url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('baseUrlTest') : Cypress.env('baseUrlPreprod')) + 'clients/api/graphql',
+    headers: { 'Content-Type': 'application/json' },
+    body: { query: clientQuery, variables: JSON.parse(filter) },
+    log: false
+  }).then(clientResponse => {
+    debugger
+    if (clientResponse.body.data.client !== null) {
+      return (clientResponse.body.data.client.status.clientStatus.key === 'E') ? true : false
+    }
+    else
+      return false
   })
 })
 
