@@ -899,7 +899,6 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
                   if (contractsWithScadenza.length > 0) {
                     var datePolizzaScadenza = contractsWithScadenza.filter(el => {
 
-                      //trovo p
                       var date = el._meta.metaInfoEntries[0].messages[3].message
                       var dateSplited = date.replaceAll('-', '/').split('/')
                       var newdate = dateSplited[1] + '/' + dateSplited[0] + '/' + dateSplited[2];
@@ -942,7 +941,16 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
                           cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
                         let consensoOtpActive = responseConsenso.body.rejectionReason.includes('1')
                         if (consensoOtpActive) {
-                          return polizza
+                          cy.getUserProfileToken(tutf).then(userProfileToken => {
+                            //Verifichiamo se il cliente è in buca di ricerca di MW
+                            cy.isClientInBuca(userProfileToken, currentAgency.agencies, polizza.customerName).then(isInBuca => {
+                              debugger
+                              if (isInBuca)
+                                return polizza
+                              else
+                                cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                            })
+                          })
                         }
                         else {
                           cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
@@ -966,9 +974,133 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
         })
       })
     })
-  }).then(() => {
-    debugger
-    return polizza
+  })
+})
+
+Cypress.Commands.add('getUserProfileToken', (tutf) => {
+  cy.clearCookies()
+  cy.clearLocalStorage()
+  //Open MW
+  cy.request({
+    method: 'GET',
+    log: false,
+    url: (Cypress.env('currentEnv') === 'TEST') ? Cypress.env('loginUrlGraphQLTest') : Cypress.env('loginUrlGraphQLPreprod')
+  }).its('body').then(html => {
+    let el = document.createElement('html')
+    el.innerHTML = html
+    let nidp = el.getElementsByTagName('form')[0].getAttribute('action')
+
+    //Login Step 1
+    cy.request({
+      method: 'POST',
+      log: false,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('loginUrlGraphQLTest') : Cypress.env('loginUrlGraphQLPreprod')) + nidp
+    }).then(() => {
+      //Login Step 2
+      cy.decryptLoginPsw().then(psw => {
+        cy.request({
+          method: 'POST',
+          log: false,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: {
+            Ecom_User_ID: tutf,
+            Ecom_Password: psw
+          },
+          url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('hostAMTest') : Cypress.env('hostAMPreprod')) + '/nidp/idff/sso?sid=0&sid=0'
+        }).then(() => {
+
+          //Get the userProfileToken
+          const userDetailsQuery = `query userDetails($filter: UserDetailsRequestInput!) {
+            userDetails(filter: $filter) { 
+            userProfileToken
+            }
+            }`
+
+          cy.request({
+            method: 'POST',
+            url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('baseUrlTest') : Cypress.env('baseUrlPreprod')) + 'api/graphql',
+            headers: { 'Content-Type': 'application/json' },
+            body: { query: userDetailsQuery },
+            log: false
+          }).then(userDetails => {
+            return userDetails.body.data.userDetails.userProfileToken
+          })
+        })
+      })
+    })
+  })
+})
+
+/**
+ * Funzione che permette di utilizzare la graphQL searchClient di MW per verificare se un cliente è presente in buca di ricerca o meno
+ * ? Si necessita di aver precedentemente chiamato la funzione getUserProfileToken per ottenere lo userProfileToken
+ * @author Andrea 'Bobo' Oboe
+ */
+Cypress.Commands.add('isClientInBuca', (userProfileToken, agencies, searchValue) => {
+
+  const searchQuery = `query searchClient($filter: SearchRequestInput!) {
+    searchClient(filter: $filter) {
+      total
+      afterKey
+      results {
+        agencies {
+          agency
+          company
+          office
+        }
+        idClient
+        name
+        address
+        age
+        status
+        legal
+        company
+        office
+        taxCode
+        vatNumber
+        birthDate
+      }
+    }
+  }`
+
+  const currentAgenciesInSearch = JSON.stringify(agencies)
+
+  const filter = `{
+    "filter": {
+      "userToken": "${userProfileToken}",
+      "afterKey": null,
+      "size": 30,
+      "search": "${searchValue}",
+      "agencies": ${currentAgenciesInSearch},
+      "clientsType": [
+        "individual",
+        "legal"
+      ],
+      "state": [
+        "actual",
+        "potential",
+        "ceased"
+      ]
+    }
+  }`
+
+  cy.request({
+    method: 'POST',
+    url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('baseUrlTest') : Cypress.env('baseUrlPreprod')) + 'api/graphql',
+    headers: { 'Content-Type': 'application/json' },
+    body: { query: searchQuery, variables: JSON.parse(filter) },
+    log: false
+  }).then(searchResults => {
+    let filteredResults = searchResults.body.data.searchClient.results.filter(el => {
+      return el.name === searchValue.toUpperCase()
+    })
+
+    return (filteredResults.length > 0) ? true : false
   })
 })
 
