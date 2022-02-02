@@ -4,13 +4,13 @@
  */
 
 /// <reference types="Cypress" />
-import Sales from "../../mw_page_objects/navigation/Sales"
-import Common from "../../mw_page_objects/common/Common"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import TenutaTariffa from "../../mw_page_objects/tenutaTariffa/TenutaTariffa"
+import Sales from "../../../mw_page_objects/navigation/Sales"
+import Common from "../../../mw_page_objects/common/Common"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import TenutaTariffa from "../../../mw_page_objects/tenutaTariffa/TenutaTariffa"
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -21,9 +21,10 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe_RCA/tariffaCases_RCA_20220201.json'
+import { tariffaCases } from '../../fixtures//tariffe_RCA/tariffaCases_RCA_20220101.json'
 //#endregion
 before(() => {
+    Cypress.env('isAviva', false)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
 
@@ -53,7 +54,7 @@ after(function () {
 let flowClients = false
 //Se specificato, esegue l'identificativo caso specifico
 let caseToExecute = ''
-describe('RCA Febbraio 2022: ', {
+describe('RCA Gennaio 2022: ', {
     retries: {
         runMode: 0,
         openMode: 0,

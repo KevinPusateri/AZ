@@ -10,7 +10,7 @@ let parsedLogTariffa
 let parsedRadarUW
 
 function findKeyLogTariffa(key, logTariffa = parsedLogTariffa) {
-    var result;
+    var result
 
     for (var property in logTariffa) {
         if (logTariffa.hasOwnProperty(property)) {
@@ -29,7 +29,7 @@ function findKeyLogTariffa(key, logTariffa = parsedLogTariffa) {
     }
 }
 function findKeyRadarUW(key, logRadarUW = parsedRadarUW) {
-    var result;
+    var result
 
     for (var property in logRadarUW) {
         if (logRadarUW.hasOwnProperty(property)) {
@@ -39,6 +39,31 @@ function findKeyRadarUW(key, logRadarUW = parsedRadarUW) {
             else if (typeof logRadarUW[property] === "object") {
                 // in case it is an object
                 result = findKeyRadarUW(key, logRadarUW[property]);
+
+                if (typeof result !== "undefined") {
+                    return result;
+                }
+            }
+        }
+    }
+}
+function findKeyGaranziaARD(key, currentGaranziaARD = null) {
+    var result
+    let garanziaARD
+    if (currentGaranziaARD === null)
+        //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA, la seconda alla ARD
+        garanziaARD = findKeyLogTariffa('Garanzia')[1]
+    else
+        garanziaARD = currentGaranziaARD
+
+    debugger
+    for (var property in garanziaARD) {
+        if (garanziaARD.hasOwnProperty(property)) {
+            if (property === key)
+                return garanziaARD[key]; // returns the value
+            else if (typeof garanziaARD[property] === "object") {
+                // in case it is an object
+                result = findKeyGaranziaARD(key, garanziaARD[property]);
 
                 if (typeof result !== "undefined") {
                     return result;
@@ -276,8 +301,11 @@ class TenutaTariffa {
 
                         cy.contains('Conferma').click()
                     }
-                    else
-                        cy.contains(currentCase.Tipo_Veicolo).should('exist').click()
+                    else {
+                        let re = new RegExp("\^ " + currentCase.Tipo_Veicolo + " \$")
+                        cy.contains(re).should('exist').click({ force: true })
+                    }
+
 
                     cy.wait('@getMotor', { requestTimeout: 30000 })
                 }
@@ -713,7 +741,6 @@ class TenutaTariffa {
             cy.get('strong:contains("Rc Auto")').click()
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-            //cy.pause()
             //Verifichiamo il premio lordo a video
             cy.contains('BONUS/MALUS').parent('div').find('div[class="ng-star-inserted"]').invoke('text').then(premioLordo => {
                 expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
@@ -782,6 +809,17 @@ class TenutaTariffa {
                     cy.get('nx-dropdown-item').contains(currentCase.Massimale_Rottura_Cristalli).click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
+                case "INCENDIO":
+                    cy.contains("Incendio").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                case "FURTO":
+                    cy.contains("Furto").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
+                    cy.pause()
+                    break
             }
 
             cy.get('strong:contains("Auto Rischi Diversi"):last').click().wait(500)
@@ -790,7 +828,6 @@ class TenutaTariffa {
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '11_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il totale relativo alla ARD
-            cy.pause()
             cy.get('strong:contains("Auto Rischi Diversi"):last').parents('div').find('div:last').find('strong:last').invoke('text').then(value => {
                 expect(value).contains(currentCase.Totale_Premio)
             })
@@ -851,19 +888,21 @@ class TenutaTariffa {
                     }
                     const parser = new XMLParser(options)
                     parsedLogTariffa = parser.parse(fileContent)
-
                     switch (currentCase.Descrizione_Settore) {
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_2":
-                            //Radar_KeyID
-                            expect(JSON.stringify(findKeyLogTariffa('Radar_KeyID'))).to.contain(currentCase.Versione_Garanzie_Aggiuntive)
+                            expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Garanzie_Aggiuntive)
+                            break
+                        case "INCENDIO":
+                            expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Incendio)
+                            break
+                        case "FURTO":
+                            expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Furto)
                             break
                     }
                 })
                 //#endregion
             })
-
-            cy.pause()
         })
     }
 }

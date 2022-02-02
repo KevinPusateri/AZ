@@ -275,6 +275,7 @@ class SCU {
         }
         //Se sono in Modifica
         else {
+            cy.wait(5000)
             //Popup Risulta un UNICO...
             getSCU().then($body => {
                 if ($body.find('button:contains("NO")').length > 0) {
@@ -296,6 +297,8 @@ class SCU {
             if ($body.find('#endWorkflowButton').length > 0)
                 getSCU().find('#endWorkflowButton').click()
         });
+
+        cy.wait(8000)
 
     }
 

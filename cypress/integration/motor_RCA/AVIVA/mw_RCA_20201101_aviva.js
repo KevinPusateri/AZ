@@ -4,13 +4,13 @@
  */
 
 /// <reference types="Cypress" />
-import Sales from "../../mw_page_objects/navigation/Sales"
-import Common from "../../mw_page_objects/common/Common"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import TenutaTariffa from "../../mw_page_objects/tenutaTariffa/TenutaTariffa"
+import Sales from "../../../mw_page_objects/navigation/Sales"
+import Common from "../../../mw_page_objects/common/Common"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import TenutaTariffa from "../../../mw_page_objects/tenutaTariffa/TenutaTariffa"
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -20,14 +20,11 @@ let insertedId
 //#endregion
 
 //#region Configuration
-//? Per implementazione, recuperare le casistiche da
-//? http://alm.azi.allianzit/tfs/AlmAllianz/Test%20Factory/_versionControl?path=%24%2FTest%20Factory%2FTenuta_Tariffa_Motor%2FARD%2FResources%2FArd_Cases.xml&_a=contents
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_20220201.json'
+import { tariffaCases } from '../../fixtures/tariffe_RCA/tariffaCases_RCA_20201101_aviva.json'
 //#endregion
-
 before(() => {
-    Cypress.env('isAviva', false)
+    Cypress.env('isAviva', true)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
 
@@ -56,8 +53,8 @@ after(function () {
 //Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //Se specificato, esegue l'identificativo caso specifico
-let caseToExecute = '5'
-describe('ARD Febbraio 2022: ', {
+let caseToExecute = ''
+describe('RCA Novembre 2020 AVIVA: ', {
     retries: {
         runMode: 0,
         openMode: 0,
@@ -85,7 +82,7 @@ describe('ARD Febbraio 2022: ', {
                     TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
                     TenutaTariffa.compilaVeicolo(currentCase)
                     TenutaTariffa.compilaProvenienza(currentCase)
-                    TenutaTariffa.compilaOffertaARD(currentCase)
+                    TenutaTariffa.compilaOffertaRCA(currentCase)
                 }
                 else
                     this.skip()
@@ -93,7 +90,10 @@ describe('ARD Febbraio 2022: ', {
 
             it("LogTariffa", function () {
                 if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
-                        TenutaTariffa.checkTariffaARD(currentCase)
+                    if (currentCase.Settore !== '3')
+                        TenutaTariffa.checkTariffaRCA(currentCase)
+                    else
+                        this.skip()
                 else
                     this.skip()
             })

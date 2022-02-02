@@ -23,59 +23,75 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 let currentTutf
-
-before(() => {
-    cy.getUserWinLogin().then(data => {
-        currentTutf = data.tutf
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
-    })
-})
-
-beforeEach(() => {
-    cy.preserveCookies()
-    HomePage.reloadMWHomePage()
-})
-
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
-
-})
-
-
-let currentCustomerFullName
 let currentCustomerNumber
 let numberPolizza
+let currentCustomerFullName
+// let currentAgency
+// before(() => {
+//     cy.getUserWinLogin().then(data => {
+//         currentTutf = data.tutf
+//         cy.log('Retriving client with Polizze for Stop&Drive, please wait...')
+//         cy.getClientWithConsensoOTP(currentTutf).then(polizzaClient => {
+//             currentCustomerNumber = polizzaClient.customerNumber
+//             numberPolizza = polizzaClient.numberPolizza
+//             currentCustomerFullName = polizzaClient.customerName
+//             let customImpersonification = {
+//                 agentId: polizzaClient.agentId,
+//                 agency: polizzaClient.agency
+//             }
+//             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+//             LoginPage.logInMWAdvanced(customImpersonification)
+//             currentAgency = polizzaClient.agency
+//         })
+//     })
+// })
+
+// beforeEach(() => {
+//     cy.preserveCookies()
+//     HomePage.reloadMWHomePage()
+// })
+
+// after(function () {
+
+//     let messageToSend = `Dati relativi all'ultima Stop & Drive completata : 
+//         AGENZIA : ${currentAgency}
+//         AMBIENTE : ${currentEnv}
+//         NOME CLIENTE : ${currentCustomerFullName}
+//         NUMERO POLIZZA : ${numberPolizza}
+//     `
+//     // //Send Report mail
+//     // cy.task('sendMail', { currentSubject: "MW Stop&Drive Automatic Test", currentMessage: messageToSend, additionalEmail: "andrea.oboe@allianz.it" })
+//     //     .then(result => console.log(result));
+
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
+// })
+
 let urlClient
 describe('Matrix Web : Annullamento -> Stop&Drive', function () {
 
     it('Verifica Stato della polizza in "Sospensione stop and drive"', function () {
-        cy.log('Retriving client with Polizze for Stop&Drive, please wait...')
-        cy.getClientWithConsensoOTP(currentTutf).then(polizzaClient => {
-            currentCustomerNumber = polizzaClient.customerNumber
-            numberPolizza = polizzaClient.numberPolizza
-            currentCustomerFullName = polizzaClient.customerName
-            TopBar.search(currentCustomerFullName)
-            LandingRicerca.clickClientePF(currentCustomerFullName)
-            SintesiCliente.retriveUrl().then(currentUrl => {
-                urlClient = currentUrl
-            })
-            Portafoglio.clickTabPortafoglio()
-            Portafoglio.clickSubTab('Polizze attive')
-            Portafoglio.filtraPolizze('Motor')
-            Portafoglio.clickAnnullamento(numberPolizza, 'Sospensione stop and drive')
-            Annullamento.stopDrive()
-            TopBar.search(currentCustomerFullName)
-            LandingRicerca.clickClientePF(currentCustomerFullName)
-            Portafoglio.clickTabPortafoglio()
-            Portafoglio.checkTooltipStopDrive(numberPolizza)
-        })
+        
+        cy.task('sendMail', { currentSubject: "MW Stop&Drive Automatic Test", currentMessage: "PROVA", additionalEmail: "andrea.oboe@allianz.it" })
+        // debugger
+        // TopBar.search(currentCustomerFullName)
+        // LandingRicerca.clickClientePF(currentCustomerFullName)
+        // SintesiCliente.retriveUrl().then(currentUrl => {
+        //     urlClient = currentUrl
+        // })
+        // Portafoglio.clickTabPortafoglio()
+        // Portafoglio.clickSubTab('Polizze attive')
+        // Portafoglio.filtraPolizze('Motor')
+        // Portafoglio.clickAnnullamento(numberPolizza, 'Sospensione stop and drive')
+        // Annullamento.stopDrive()
+        // TopBar.search(currentCustomerFullName)
+        // LandingRicerca.clickClientePF(currentCustomerFullName)
+        // Portafoglio.clickTabPortafoglio()
+        // Portafoglio.checkTooltipStopDrive(numberPolizza)
     })
-
 })

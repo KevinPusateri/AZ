@@ -127,6 +127,7 @@ describe('Matrix Web : Modifica PG', {
         Folder.caricaVisuraCamerale(true)
         Folder.clickTornaIndietro(true)
         SCU.generazioneStampe(true)
+        SintesiCliente.clickClientsBriciolaPane()
     })
 
     it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {

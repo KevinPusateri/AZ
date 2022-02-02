@@ -110,7 +110,7 @@ class Ultra {
     static selezionaFonteRandom() {
         ultraIFrame().within(() => {
             cy.get('span').contains('Fonte').should('be.visible')
-                .next('nx-icon').dblclick() //click su pulsante Fonte
+                .next('nx-icon').click() //dblclick() //click su pulsante Fonte
             cy.wait(500)
             cy.get('[id="fontePopover"]').should('be.visible') //verifica apertura popup fonte
                 .find('[name="pen"]').click() //click sull'icona della penna
@@ -250,7 +250,9 @@ class Ultra {
         })
     }
 
-    //configurazione specifica per l'ambito contenuto, per test emissione Ultra Fabbricato e Contenuto
+    /**
+     * configurazione specifica per l'ambito contenuto, per test emissione Ultra Fabbricato e Contenuto
+     */
     static configuraContenuto() {
         ultraIFrame().within(() => {
             //click su pulsante Penna
@@ -364,10 +366,12 @@ class Ultra {
 
             cy.get('#salvaForm')
                 .find('input[formcontrolname="name"]').type(nomeQuotazione)
-
             //salva la quotazione
             cy.get('#salvaForm')
                 .find('span').contains('Salva').click()
+
+            cy.get('#warning-switch-solution').should('be.visible') //attende il caricamento del popup 'attenzione'
+            cy.get('button').children('span').contains('Ok').click() //chiude il popup
 
             cy.get('#condividiModal').should('be.visible') //attende il caricamento del popup 'condividi l'offerta'
 
@@ -376,10 +380,7 @@ class Ultra {
                     .should('be.visible').click() //seleziona tutte le schede
             }
 
-            cy.get('button[aria-label="Close dialog"]').click() //chiude popup
-
-            cy.get('#warning-switch-solution').should('be.visible') //attende il caricamento del popup 'attenzione'
-            cy.get('button').children('span').contains('Ok').click() //chiude il popup
+            cy.get('button[aria-label="Close dialog"]').click() //chiude popup            
         })
     }
 
@@ -461,7 +462,7 @@ class Ultra {
         })
     }
 
-    static caricamentoCensimentoAnagrafico(cliente, ubicazione) {
+    static caricamentoCensimentoAnagrafico() {
         cy.intercept({
             method: 'GET',
             url: '**/tmpl_anag_container.htm'
@@ -508,6 +509,7 @@ class Ultra {
 
             cy.get('#divPopupAnagrafica', { timeout: 30000 }).should('be.visible') //attende la comparsa popup di ricerca anagrafiche
             cy.wait(5000)
+            //cy.pause()
 
             //popup anagrafico
             ultraIFrameAnagrafica().within(() => {
@@ -588,7 +590,6 @@ class Ultra {
                 .should('be.visible').click() //avanti
             cy.get('[id="alz-spinner"]').should('not.be.visible')
             cy.get('button').contains('Avanti').click() //avanti
-            cy.wait(3000)
         })
     }
 
@@ -712,6 +713,16 @@ class Ultra {
         })
     }
 
+    //#region Condividi
+    static caricamentoCondividi() {
+        cy.intercept({
+            method: 'GET',
+            url: '**/getInfo'
+        }).as('consensi')
+
+        cy.wait('@consensi', { requestTimeout: 60000 })
+    }
+
     //seleziona tutte le schede degli ambiti nella sezione Condividi il Preventivo
     static condividiPreventivoSelTutti() {
         ultraIFrame().within(() => {
@@ -719,16 +730,18 @@ class Ultra {
                 .should('be.visible')
                 .children('span').click()
         })
+        //cy.wait(1000)
     }
 
     static condividiPreventivoConferma() {
         ultraIFrame().within(() => {
-            cy.get('button').contains('Conferma')
+            cy.get('.page-footer').children('button').contains('Conferma')
                 .should('be.visible').click()
         })
 
-        cy.wait(5000)
+        //cy.wait(5000)
     }
+    //#endregion Condividi
 
     static caricamentoConsensi() {
         cy.intercept({
@@ -1037,6 +1050,15 @@ class Ultra {
                 .parent().parent()
                 .find('label').contains(risposta.toUpperCase())
                 .click()
+        })
+    }
+
+    /**
+     * Clicca sul pulsante Avanti
+     */
+    static Avanti() {
+        ultraIFrame().within(() => {
+            cy.get('[id="btnAvanti"]').should('be.visible').click()
         })
     }
     //#endregion Helper

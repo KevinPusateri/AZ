@@ -247,6 +247,17 @@ Cypress.Commands.add('getProfiling', (tutf) => {
   })
 })
 
+Cypress.Commands.add('profilingLinksMenu', (tutf, keysLinks) => {
+
+  for (let key in keysLinks) {
+    cy.slugMieInfo(tutf, key.toString()).then((stateKey) => {
+      if (!stateKey) {
+        keysLinks[key] = false
+      }
+    })
+  }
+})
+
 Cypress.Commands.add('filterProfile', (profileArray, key) => {
   let filtered = profileArray.filter(el => {
     return el.name === key
@@ -258,11 +269,10 @@ Cypress.Commands.add('filterProfile', (profileArray, key) => {
 
 //Permettere di verificare se una sezione delle mie info è presente o meno
 Cypress.Commands.add('slugMieInfo', (tutf, section) => {
-  let a = '["' + section + '"]'
-  console.log(a)
   cy.request({
     method: 'POST',
     log: true,
+    failOnStatusCode: false,
     url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('mieInfoCloudTE') + '/lemieinfo/middleware/api/v1/query-entities/slug' : Cypress.env('mieInfoCloudPP') + '/lemieinfo/middleware/api/v1/query-entities/slug',
     headers: {
       'Portaluser': tutf,
@@ -271,14 +281,19 @@ Cypress.Commands.add('slugMieInfo', (tutf, section) => {
     },
     body: '["' + section + '"]'
   }).then(resp => {
-    if (resp.status !== 200)
-      throw new Error('Errore durante la chiamata slug mie info')
-    else {
+    if (resp.status === 404)
+      return false
+    else if (resp.status === 200) {
       let jsonReponse = JSON.parse(resp.body)
-      if (jsonReponse[0].area === '')
-        return false
-      else
-        true
+      return true
+    }
+    else {
+      cy.on('uncaught:exception', (e, runnable) => {
+        console.log('error is', e)
+        console.log('runnable', runnable)
+        throw new Error('Errore durante la chiamata slug mie info (Slug: ' + section + ')')
+
+      })
     }
   })
 })
@@ -805,118 +820,526 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
   })
 })
 
-Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clientType = 'PF') => {
-  cy.generateTwoLetters().then(nameRandom => {
-    cy.generateTwoLetters().then(firstNameRandom => {
-      cy.request({
-        method: 'GET',
-        retryOnStatusCodeFailure: true,
-        timeout: 60000,
-        log: false,
-        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
-          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
-        headers: {
-          'x-allianz-user': tutf
-        }
-      }).then(response => {
-        if (response.body.length === 0)
-          cy.getClientWithConsensoOTP(tutf, clientType)
-        else {
-          //Verifichiamo solo clienti in stato EFFETTIVO
-          let clientiEffettivi = response.body.filter(el => {
-            return el.partyCategory[0] === 'E'
-          })
+Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clientType = 'PF', agenciesToAnalize = null, currentAgency = null, trial = 20) => {
+  cy.fixture("agencies").then(agenciesFromFixture => {
+    if (agenciesToAnalize === null) {
+      currentAgency = agenciesFromFixture.shift()
+      cy.log('Perform impersonification on ' + currentAgency.agency)
+      cy.impersonification(tutf, currentAgency.agentId, currentAgency.agency)
+    }
+    else if (trial === 0) {
+      if (agenciesToAnalize.length > 0) {
+        currentAgency = agenciesToAnalize.shift()
+        cy.log('Get next agency : ' + currentAgency.agency)
+        cy.log('Perform impersonification on ' + currentAgency.agency)
+        cy.impersonification(tutf, currentAgency.agentId, currentAgency.agency)
+        cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesToAnalize, currentAgency)
+        return
+      }
+      else {
+        cy.log("--------- RIPROVIAMO ---------")
+        cy.getClientWithConsensoOTP(tutf)
+        return
+      }
+    }
+    else
+      agenciesFromFixture = agenciesToAnalize
 
-          if (clientiEffettivi.length > 0) {
-            let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+    cy.log('Trial ' + trial + ' for agency ' + currentAgency.agency)
+    let newTrial = trial - 1
 
-            //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
-            cy.request({
-              method: 'GET',
-              retryOnStatusCodeFailure: true,
-              timeout: 60000,
-              log: false,
-              url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
-              headers: {
-                'x-allianz-user': tutf
-              }
-            }).then(responseContracts => {
-              //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
-              let contractsWithBranchId
-              contractsWithBranchId = responseContracts.body.filter(el => {
-                return el.branchId.includes('31')
-              })
-              if (contractsWithBranchId.length > 0) {
-                var options = {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: '2-digit'
+    cy.generateTwoLetters().then(nameRandom => {
+      cy.generateTwoLetters().then(firstNameRandom => {
+        cy.request({
+          method: 'GET',
+          retryOnStatusCodeFailure: true,
+          timeout: 60000,
+          log: false,
+          url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+            : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+          headers: {
+            'x-allianz-user': tutf
+          }
+        }).then(response => {
+          if (response.status !== 200)
+            cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+          if (response.body.length === 0) {
+            cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+          }
+          else {
+            //Verifichiamo solo clienti in stato EFFETTIVO
+            let clientiEffettivi = response.body.filter(el => {
+              return el.partyCategory[0] === 'E'
+            })
+
+            if (clientiEffettivi.length > 0) {
+              let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+
+              //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+              cy.request({
+                method: 'GET',
+                retryOnStatusCodeFailure: true,
+                timeout: 60000,
+                log: false,
+                url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
+                headers: {
+                  'x-allianz-user': tutf
                 }
-                let contractsWithScadenza = contractsWithBranchId.filter(el => {
-                  return el.paymentFrequency.includes('Annuale')// && (formatDate > currentDate)
+              }).then(responseContracts => {
+                if (responseContracts.status !== 200)
+                  cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
+                let contractsWithBranchId
+                contractsWithBranchId = responseContracts.body.filter(el => {
+                  return el.branchId.includes('31')
                 })
-                if (contractsWithScadenza.length > 0) {
-                  var datePolizzaScadenza = contractsWithScadenza.filter(el => {
-
-                    //trovo p
-                    var date = el._meta.metaInfoEntries[0].messages[3].message
-                    var dateSplited = date.replaceAll('-', '/').split('/')
-                    var newdate = dateSplited[1] + '/' + dateSplited[0] + '/' + dateSplited[2];
-                    let formatDate = new Date(newdate)
-                    let currentDate = new Date()
-
-                    // Verifico che la polizza non sia già sospesa
-                    if (state === 'sospesa') {
-                      var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
-                      if ((formatDate > currentDate) && stato == false)
-                        return el
-                    }
-                    else {
-                      var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
-                      if (stato == false && (formatDate > currentDate))
-                        return el
-                      else
-                        cy.getClientWithConsensoOTP(tutf, clientType)
-                    }
+                if (contractsWithBranchId.length > 0) {
+                  let contractsWithScadenza = contractsWithBranchId.filter(el => {
+                    return el.paymentFrequency.includes('Annuale')
                   })
-                  if (datePolizzaScadenza.length > 0) {
-                    var polizza = {
-                      customerNumber: currentClient.customerNumber,
-                      customerName: currentClient.firstName + ' ' + currentClient.name,
-                      numberPolizza: datePolizzaScadenza[0].bundleNumber
-                    }
-                    cy.request({
-                      method: 'GET',
-                      retryOnStatusCodeFailure: true,
-                      timeout: 60000,
-                      log: false,
-                      url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements/ConsensoOTP_Allianz'
-                        : be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements/ConsensoOTP_Allianz',
-                      headers: {
-                        'x-allianz-user': tutf
+                  if (contractsWithScadenza.length > 0) {
+                    var datePolizzaScadenza = contractsWithScadenza.filter(el => {
+
+                      var date = el._meta.metaInfoEntries[0].messages[3].message
+                      var dateSplited = date.replaceAll('-', '/').split('/')
+                      var newdate = dateSplited[1] + '/' + dateSplited[0] + '/' + dateSplited[2];
+                      let formatDate = new Date(newdate)
+                      let currentDate = new Date()
+
+                      // Verifico che la polizza non sia già sospesa
+                      if (state === 'sospesa') {
+                        var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
+                        if ((formatDate > currentDate) && stato == false)
+                          return el
                       }
-                    }).then(responseConsenso => {
-                      let consensoOtpActive = responseConsenso.body.rejectionReason.includes('1')
-                      if (consensoOtpActive)
-                        return polizza
-                      else
-                        cy.getClientWithConsensoOTP(tutf, clientType)
+                      else {
+                        var stato = el.amendments[0].reason.toLowerCase().includes('sospensione')
+                        if (stato == false && (formatDate > currentDate))
+                          return el
+                      }
                     })
+
+                    if (datePolizzaScadenza.length > 0) {
+                      var polizza = {
+                        customerNumber: currentClient.customerNumber,
+                        customerName: currentClient.firstName + ' ' + currentClient.name,
+                        numberPolizza: datePolizzaScadenza[0].bundleNumber,
+                        agentId: currentAgency.agentId,
+                        agency: currentAgency.agency
+                      }
+                      cy.request({
+                        method: 'GET',
+                        retryOnStatusCodeFailure: true,
+                        timeout: 60000,
+                        log: false,
+                        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements/ConsensoOTP_Allianz'
+                          : be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements/ConsensoOTP_Allianz',
+                        headers: {
+                          'x-allianz-user': tutf
+                        }
+                      }).then(responseConsenso => {
+                        if (responseConsenso.status !== 200)
+                          cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                        let consensoOtpActive = responseConsenso.body.rejectionReason.includes('1')
+                        if (consensoOtpActive) {
+                          cy.getUserProfileToken(tutf).then(userProfileToken => {
+                            //Verifichiamo se il cliente è in buca di ricerca di MW
+                            cy.isClientInBuca(userProfileToken, currentAgency.agencies, polizza.customerName).then(isInBuca => {
+                              if (isInBuca)
+                                cy.isClientAccessible(userProfileToken, currentAgency.agentId, polizza.customerNumber).then(isAccessible => {
+                                  if (isAccessible)
+                                    cy.isClientEffettivo(userProfileToken, currentAgency.agentId, polizza.customerNumber).then(isEffettivo => {
+                                      if (isEffettivo)
+                                        return polizza
+                                      else
+                                        cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                                    })
+                                  else
+                                    cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                                })
+                              else
+                                cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                            })
+                          })
+                        }
+                        else {
+                          cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                        }
+                      })
+                    } else {
+                      cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+                    }
                   } else {
-                    cy.getClientWithConsensoOTP(tutf, clientType)
+                    cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
                   }
                 } else {
-                  cy.getClientWithConsensoOTP(tutf, clientType)
+                  cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
                 }
-              } else
-                cy.getClientWithConsensoOTP(tutf, clientType)
-            })
+              })
+            }
+            else {
+              cy.getClientWithConsensoOTP(tutf, state, clientType, agenciesFromFixture, currentAgency, newTrial)
+            }
           }
-          else
-            cy.getClientWithConsensoOTP(tutf, clientType)
-        }
+        })
       })
     })
+  })
+})
+
+Cypress.Commands.add('getUserProfileToken', (tutf) => {
+  cy.clearCookies()
+  cy.clearLocalStorage()
+  //Open MW
+  cy.request({
+    method: 'GET',
+    log: false,
+    url: (Cypress.env('currentEnv') === 'TEST') ? Cypress.env('loginUrlGraphQLTest') : Cypress.env('loginUrlGraphQLPreprod')
+  }).its('body').then(html => {
+    let el = document.createElement('html')
+    el.innerHTML = html
+    let nidp = el.getElementsByTagName('form')[0].getAttribute('action')
+
+    //Login Step 1
+    cy.request({
+      method: 'POST',
+      log: false,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('loginUrlGraphQLTest') : Cypress.env('loginUrlGraphQLPreprod')) + nidp
+    }).then(() => {
+      //Login Step 2
+      cy.decryptLoginPsw().then(psw => {
+        cy.request({
+          method: 'POST',
+          log: false,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: {
+            Ecom_User_ID: tutf,
+            Ecom_Password: psw
+          },
+          url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('hostAMTest') : Cypress.env('hostAMPreprod')) + '/nidp/idff/sso?sid=0&sid=0'
+        }).then(() => {
+
+          //Get the userProfileToken
+          const userDetailsQuery = `query userDetails($filter: UserDetailsRequestInput!) {
+            userDetails(filter: $filter) { 
+            userProfileToken
+            }
+            }`
+
+          cy.request({
+            method: 'POST',
+            url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('baseUrlTest') : Cypress.env('baseUrlPreprod')) + 'api/graphql',
+            headers: { 'Content-Type': 'application/json' },
+            body: { query: userDetailsQuery },
+            log: false
+          }).then(userDetails => {
+            return userDetails.body.data.userDetails.userProfileToken
+          })
+        })
+      })
+    })
+  })
+})
+
+/**
+ * Funzione che permette di utilizzare la graphQL searchClient di MW per verificare se un cliente è presente in buca di ricerca o meno
+ * ? Si necessita di aver precedentemente chiamato la funzione getUserProfileToken per ottenere lo userProfileToken
+ * @author Andrea 'Bobo' Oboe
+ */
+Cypress.Commands.add('isClientInBuca', (userProfileToken, agencies, searchValue) => {
+
+  const searchQuery = `query searchClient($filter: SearchRequestInput!) {
+    searchClient(filter: $filter) {
+      total
+      afterKey
+      results {
+        agencies {
+          agency
+          company
+          office
+        }
+        idClient
+        name
+        address
+        age
+        status
+        legal
+        company
+        office
+        taxCode
+        vatNumber
+        birthDate
+      }
+    }
+  }`
+
+  const currentAgenciesInSearch = JSON.stringify(agencies)
+
+  const filter = `{
+    "filter": {
+      "userToken": "${userProfileToken}",
+      "afterKey": null,
+      "size": 30,
+      "search": "${searchValue}",
+      "agencies": ${currentAgenciesInSearch},
+      "clientsType": [
+        "individual",
+        "legal"
+      ],
+      "state": [
+        "actual",
+        "potential",
+        "ceased"
+      ]
+    }
+  }`
+
+  cy.request({
+    method: 'POST',
+    url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('baseUrlTest') : Cypress.env('baseUrlPreprod')) + 'api/graphql',
+    headers: { 'Content-Type': 'application/json' },
+    body: { query: searchQuery, variables: JSON.parse(filter) },
+    log: false
+  }).then(searchResults => {
+    let filteredResults = searchResults.body.data.searchClient.results.filter(el => {
+      return el.name === searchValue.toUpperCase()
+    })
+
+    return (filteredResults.length > 0) ? true : false
+  })
+})
+
+/**
+ * Funzione che permette di verificare se l'accountId specificato ha visibilità sul clientId
+ * ? Si necessita di aver precedentemente chiamato la funzione getUserProfileToken per ottenere lo userProfileToken
+ * @author Andrea 'Bobo' Oboe
+ */
+Cypress.Commands.add('isClientAccessible', (userProfileToken, accountId, clientId) => {
+  const clientQuery = `query client($filter: ClientRequestInput!) {
+    client(filter: $filter) {
+      id
+      accounts(filter: $filter)
+      accountsVisibility(filter: $filter) {
+        account
+        agencyCode
+        companyCode
+        sourceCode
+        subAgencyCode
+        roleCode
+        fromRole
+        ageDescription
+      }
+      type {
+        key
+        value
+      }
+      gender {
+        value
+      }
+      birthDate
+      fiscalCode
+      vatNumber
+      title
+      image
+      intermediary
+      employee
+      name
+      surname
+      age
+      birthDate
+      deathDate
+      contacts(filter: $filter) {
+        principalPhone {
+          id
+          email
+          countryPrefix
+          prefix
+          phoneNumber
+          additionalInformation
+          mobile
+          preferred
+          status
+          preferredDayPart
+          preferredYearlyPart
+          type
+          isPrivate
+        }
+        principalMail {
+          id
+          email
+          countryPrefix
+          prefix
+          phoneNumber
+          additionalInformation
+          mobile
+          preferred
+          status
+          preferredDayPart
+          preferredYearlyPart
+          type
+          isPrivate
+          checked
+        }
+        otp {
+          id
+          countryPrefix
+          prefix
+          phoneNumber
+          additionalInformation
+          mobile
+          preferred
+          status
+          preferredDayPart
+          preferredYearlyPart
+          type
+          isPrivate
+        }
+      }
+      addresses(filter: $filter) {
+        principal {
+          id
+          countryCode
+          street
+          streetNumber
+          stairwayNumber
+          streetType {
+            key
+            value
+          }
+          type
+          city {
+            key
+            value
+          }
+          district
+          districtCode
+          area
+          areaCode
+          postCode
+          districtId
+        }
+        domicile {
+          id
+          countryCode
+          street
+          streetNumber
+          stairwayNumber
+          streetType {
+            key
+            value
+          }
+          type
+          city {
+            key
+            value
+          }
+          district
+          districtCode
+          area
+          postCode
+        }
+      }
+      consents(filter: $filter) {
+        sendMailConsents
+        signatureGraphConsents
+        signatureOtpConsents
+        allianzPromoConsents
+        sidebarSignatureGraphConsents(filter: $filter) {
+          status
+          message
+        }
+        sidebarSignatureOtpConsents(filter: $filter) {
+          status
+          message
+        }
+        sidebarSendMailConsents(filter: $filter) {
+          status
+          message
+        }
+      }
+      companyName
+      businessForm {
+        key
+        value
+      }
+      businessType {
+        key
+        value
+      }
+      traceable
+      publicAuthorithy
+    }
+  }
+  `
+
+  const filter = `{
+    "filter": {
+    "userToken": "${userProfileToken}",
+    "accountId": "${accountId}",
+    "clientId": "${clientId}"
+    }
+  }`
+
+  cy.request({
+    method: 'POST',
+    url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('baseUrlTest') : Cypress.env('baseUrlPreprod')) + 'clients/api/graphql',
+    headers: { 'Content-Type': 'application/json' },
+    body: { query: clientQuery, variables: JSON.parse(filter) },
+    log: false
+  }).then(clientResponse => {
+    return (clientResponse.body.data.client !== null) ? true : false
+  })
+})
+
+/**
+ * Funzione che permette di verificare se il clinetId in MW è EFFETTIVO (SICCOME VIDIEMME A VOLTE....)
+ * ? Si necessita di aver precedentemente chiamato la funzione getUserProfileToken per ottenere lo userProfileToken
+ * @author Andrea 'Bobo' Oboe
+ */
+Cypress.Commands.add('isClientEffettivo', (userProfileToken, accountId, clientId) => {
+  const clientQuery = `query client($filter: ClientRequestInput!) {
+    client(filter: $filter) {
+      status(filter: $filter) {
+        clientStatus {
+          key
+          value
+        }
+        clientSince {
+          year
+          month
+        }
+        viewReportLife
+      }
+    }
+  }  
+  `
+
+  const filter = `{
+    "filter": {
+    "userToken": "${userProfileToken}",
+    "accountId": "${accountId}",
+    "clientId": "${clientId}"
+    }
+  }`
+
+  cy.request({
+    method: 'POST',
+    url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('baseUrlTest') : Cypress.env('baseUrlPreprod')) + 'clients/api/graphql',
+    headers: { 'Content-Type': 'application/json' },
+    body: { query: clientQuery, variables: JSON.parse(filter) },
+    log: false
+  }).then(clientResponse => {
+    debugger
+    if (clientResponse.body.data.client !== null) {
+      return (clientResponse.body.data.client.status.clientStatus.key === 'E') ? true : false
+    }
+    else
+      return false
   })
 })
 

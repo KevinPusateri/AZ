@@ -7,7 +7,7 @@
       },
 
     "ambitiUltraCasaPatrimonio" : {
-        "casa": "house ",
+        "fabbricato": "house ",
         "contenuto": "couch",
         "catastrofi_naturali": "house-water-damage",
         "responsabilita_civile": "shield",

@@ -101,16 +101,13 @@ class AcquizioneDocumentiPage {
     static UploadFile()
     {        
         const fileName = 'CI_Test.pdf'
-
-        cy.fixture(fileName).then(fileContent => {
-            getIFrameAcqDoc().find('#pdfUpload').attachFile({
-                fileContent,
-                fileName,
-                mimeType: 'application/pdf'
-            }, { subjectType: 'input' })
+        getIFrameAcqDoc().find('#pdfUpload').attachFile({
+            filePath: fileName,
+            fileName: fileName,
+            mimeType: 'application/pdf',
+            encoding: 'base64'
         })
     }
-    
 }
 
 export default AcquizioneDocumentiPage

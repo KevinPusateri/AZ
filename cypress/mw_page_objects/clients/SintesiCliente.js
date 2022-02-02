@@ -262,6 +262,13 @@ class SintesiCliente {
 
         })
     }
+
+    /**
+     * Clicca sul pulsante 'Vai a Preferiti' nella scheda Fastquote
+     */
+     static VaiPreferiti() {
+        cy.get('div').contains('Vai a Preferiti').click()        
+    }
     //#endregion
 
     //#region Emissioni
@@ -281,7 +288,10 @@ class SintesiCliente {
         })
     }
 
-    //Selezione emissione Auto da scheda Emissioni
+    /**
+     * Selezione emissione Auto da scheda Emissioni
+     * @param {json menu auto} menuAuto 
+     */
     static emissioneAuto(menuAuto) {
         cy.get('app-kpi-dropdown-card[lob="motor"]').click() //apre il menù Motor
 
@@ -297,6 +307,17 @@ class SintesiCliente {
         cy.get('[ngclass="agency-row"]')
             .should('be.visible')
             .first().click()
+    }
+
+    /**
+     * seleziona la prima agenzia dal popup "seleziona il canale" in Matrix
+     */
+    static selezionaPrimaAgenzia() {
+        cy.get('[ngclass="agency-row"]')
+            .should('be.visible')
+            .first().click()
+
+        cy.wait(2000)
     }
 
     //#region Links Card Auto
@@ -717,6 +738,10 @@ class SintesiCliente {
     static checkAtterraggioSintesiCliente(cliente) {
         cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class', 'active')
         cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
+    }
+
+    static clickClientsBriciolaPane(){
+        cy.contains("Clients").should('exist').click({force: true})
     }
 
     static checkAtterraggioName(cliente) {

@@ -192,9 +192,32 @@ class LoginPage {
                 let isTFS = (loggedUser.username.toUpperCase() === 'TFSSETUP') ? true : false
 
                 cy.decryptLoginPsw(isTFS).then(psw => {
-                    //Utenze attualmente in VPN che non riescono ad accedere ai servizi di personificazione
+                    let currentImpersonificationToPerform
+                    //Verifichiamo se ho customImpersonification valorizzato
+                    if (Cypress.$.isEmptyObject(customImpersonification)) {
+                        //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza oppure AVIVA
+                        if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza'))
+                            currentImpersonificationToPerform = {
+                                "agentId": data.monoUtenza.agentId,
+                                "agency": data.monoUtenza.agency,
+                            }
+                        else if (Cypress.env('isAviva'))
+                            currentImpersonificationToPerform = {
+                                "agentId": data.aviva.agentId,
+                                "agency": data.aviva.agency,
+                            }
+                        else
+                            currentImpersonificationToPerform = {
+                                "agentId": user.agentId,
+                                "agency": user.agency,
+                            }
+                    } else
+                        currentImpersonificationToPerform = {
+                            "agentId": customImpersonification.agentId,
+                            "agency": customImpersonification.agency,
+                        }
 
-                    if (loggedUser.username === 'RU18362' || loggedUser.username === 'RU17810' || loggedUser.username === 'LE00022' || loggedUser.username === 'LE00004') {
+                    cy.impersonification(user.tutf, currentImpersonificationToPerform.agentId, currentImpersonificationToPerform.agency).then(() => {
                         cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                         cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
                         cy.get('input[type="SUBMIT"]').click()
@@ -204,53 +227,12 @@ class LoginPage {
                         if (!mockedNews && !Cypress.env('isAviva'))
                             cy.wait('@gqlNews')
 
-                        cy.wait('@gqlUserDetails')
+                        if (Cypress.env('currentEnv') !== 'TEST')
+                            cy.wait('@gqlUserDetails')
 
                         if (Cypress.env('isSecondWindow'))
                             TopBar.clickSecondWindow()
-                    } else {
-                        let currentImpersonificationToPerform
-                            //Verifichiamo se ho customImpersonification valorizzato
-                        if (Cypress.$.isEmptyObject(customImpersonification)) {
-                            //Verifichiamo inoltre se effettuare check su seconda finestra in monoUtenza oppure AVIVA
-                            if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza'))
-                                currentImpersonificationToPerform = {
-                                    "agentId": data.monoUtenza.agentId,
-                                    "agency": data.monoUtenza.agency,
-                                }
-                            else if (Cypress.env('isAviva'))
-                                currentImpersonificationToPerform = {
-                                    "agentId": data.aviva.agentId,
-                                    "agency": data.aviva.agency,
-                                }
-                            else
-                                currentImpersonificationToPerform = {
-                                    "agentId": user.agentId,
-                                    "agency": user.agency,
-                                }
-                        } else
-                            currentImpersonificationToPerform = {
-                                "agentId": customImpersonification.agentId,
-                                "agency": customImpersonification.agency,
-                            }
-
-                        cy.impersonification(user.tutf, currentImpersonificationToPerform.agentId, currentImpersonificationToPerform.agency).then(() => {
-                            cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
-                            cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
-                            cy.get('input[type="SUBMIT"]').click()
-
-                            if (!Cypress.env('monoUtenza'))
-                                Common.checkUrlEnv()
-                            if (!mockedNews && !Cypress.env('isAviva'))
-                                cy.wait('@gqlNews')
-
-                            if (Cypress.env('currentEnv') !== 'TEST')
-                                cy.wait('@gqlUserDetails')
-
-                            if (Cypress.env('isSecondWindow'))
-                                TopBar.clickSecondWindow()
-                        })
-                    }
+                    })
                 })
             })
         })

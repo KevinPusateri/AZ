@@ -242,20 +242,22 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica "Quietanzamento" - lob di interesse: Motor', function () {
         if (!Cypress.env('monoUtenza')) {
-            if (Cypress.env('isAviva'))
-                this.skip()
             TopBar.clickSales()
-            Sales.lobDiInteresse('Motor')
+            Sales.lobDiInteresse('Motor').then((checkEnabled) => {
+                if (!checkEnabled)
+                    this.skip()
+            })
             Sales.backToSales()
         } else this.skip()
     })
 
     it('Verifica "Quietanzamento" - lob di interesse: Rami Vari', function () {
         if (!Cypress.env('monoUtenza')) {
-            if (Cypress.env('isAviva'))
-                this.skip()
             TopBar.clickSales()
-            Sales.lobDiInteresse('Rami vari')
+            Sales.lobDiInteresse('Rami vari').then((checkEnabled) => {
+                if (!checkEnabled)
+                    this.skip()
+            })
             Sales.backToSales()
         } else this.skip()
     })
@@ -264,16 +266,20 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         if (Cypress.env('isAviva'))
             this.skip()
         TopBar.clickSales()
-        Sales.lobDiInteresse('Vita')
+        Sales.lobDiInteresse('Vita').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+        })
         Sales.backToSales()
     })
 
     it('Verifica "Quietanzamento" - lob di interesse: Tutte', function () {
-        if (Cypress.env('isAviva'))
-            this.skip()
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
-            Sales.lobDiInteresse('Tutte')
+            Sales.lobDiInteresse('Tutte').then((checkEnabled) => {
+                if (!checkEnabled)
+                    this.skip()
+            })
             Sales.backToSales()
         } else this.skip()
     })

@@ -21,7 +21,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures/tariffe_RCA/tariffaCases_RCA_20201101_aviva.json'
+import { tariffaCases } from '../../fixtures/tariffe_RCA/tariffaCases_RCA_20220401_aviva.json'
 //#endregion
 before(() => {
     Cypress.env('isAviva', true)
@@ -53,8 +53,8 @@ after(function () {
 //Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //Se specificato, esegue l'identificativo caso specifico
-let caseToExecute = ''
-describe('RCA Novembre 2020 AVIVA: ', {
+let caseToExecute = '5'
+describe('RCA Aprile 2022 AVIVA: ', {
     retries: {
         runMode: 0,
         openMode: 0,

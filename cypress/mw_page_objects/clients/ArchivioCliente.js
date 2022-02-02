@@ -56,20 +56,20 @@ class ArchivioCliente {
 
     static checkComunicazioni() {
         cy.get('app-client-archive-communications').find('app-section-title').should('contain.text', 'Comunicazioni')
-        cy.get('app-client-archive-communications').find('app-search').should('be.visible')
-        cy.get('app-client-archive-communications')
-            .find('div[class="documents--list-item nx-grid ng-star-inserted"]').should('be.visible')
+        cy.get('app-client-archive-communications').find('app-search').should('be.visible').wait(3000)
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('comunicationDetail')) {
                 req.alias = 'gqlComunicationDetail'
             }
         })
-        cy.get('app-client-archive-communications')
-            .find('div[class="documents--list-item nx-grid ng-star-inserted"]').first()
-            .find('nx-icon[name="password-show"]').click()
-        cy.wait('@gqlComunicationDetail')
-        cy.get('app-client-archive-communications-details').should('be.visible')
-        cy.get('button[aria-label="Close dialog"]').click()
+        cy.get('app-client-archive-communications').then(($doc) => {
+            if ($doc.find('div[class="documents--list-item nx-grid ng-star-inserted"]').first().length > 0) {
+                cy.wrap($doc).first().find('nx-icon[name="password-show"]:first').click()
+                cy.wait('@gqlComunicationDetail')
+                cy.get('app-client-archive-communications-details').should('be.visible')
+                cy.get('button[aria-label="Close dialog"]').click()
+            }
+        })
     }
 
     static checkUnico() {
@@ -80,8 +80,8 @@ class ArchivioCliente {
         cy.get('app-client-archive-unique').find('div[class="nx-grid__column-2"]').should('contain.text', 'Modifiche')
         cy.get('app-client-archive-unique').find('div[class="nx-grid__column-3"]').should('contain.text', 'Consensi accettati')
         cy.get('app-client-archive-unique').find('div[class="nx-grid__column-3"]').should('contain.text', 'Consensi rifiutati')
-            // cy.get('app-client-archive-unique').find('app-client-archive-unique-change-card').first()
-            //     .find('nx-icon[class="nx-icon--s nx-icon--password-show"]').click()
+        // cy.get('app-client-archive-unique').find('app-client-archive-unique-change-card').first()
+        //     .find('nx-icon[class="nx-icon--s nx-icon--password-show"]').click()
     }
 
     static checkDigitalMe() {
@@ -120,7 +120,7 @@ class ArchivioCliente {
 
     static verificaUnico() {
         cy.contains('Unico').click()
-            //TODO" 1 Aggiornamento unico"
+        //TODO" 1 Aggiornamento unico"
     }
 }
 

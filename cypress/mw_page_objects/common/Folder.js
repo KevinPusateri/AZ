@@ -69,13 +69,11 @@ class Folder {
         getDocumentoPersonale().find('#pupload').click()
 
         const fileName = 'CI_Test.pdf'
-
-        cy.fixture(fileName).then(fileContent => {
-            getDocumentoPersonale().find('#pdfUpload').attachFile({
-                fileContent,
-                fileName,
-                mimeType: 'application/pdf'
-            }, { subjectType: 'input' })
+        getDocumentoPersonale().find('#pdfUpload').attachFile({
+            filePath: fileName,
+            fileName: fileName,
+            mimeType: 'application/pdf',
+            encoding: 'base64'
         })
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
@@ -99,13 +97,13 @@ class Folder {
             url: /uploadCustomerDocument/
         }).as('uploadCustomerDoc')
 
+
         const fileName = 'Autocertificazione_Test.pdf'
-        cy.fixture(fileName).then(fileContent => {
-            getFolder().find('#file').attachFile({
-                fileContent,
-                fileName,
-                mimeType: 'application/pdf'
-            }, { subjectType: 'input' })
+        getFolder().find('#file').attachFile({
+            filePath: fileName,
+            fileName: fileName,
+            mimeType: 'application/pdf',
+            encoding: 'base64'
         })
 
         getFolder().contains('Upload dei file selezionati').click()
@@ -118,8 +116,7 @@ class Folder {
     * @param {boolean} isModifica - se in fase di modifica e non censimento, l'iframe è diffrente
     */
     static caricaVisuraCamerale(isModifica = false) {
-        if(!isModifica)
-        {
+        if (!isModifica) {
             getFolder().find('span[class="k-icon k-plus"]:visible').click()
             getFolder().find('span[class="k-icon k-plus"]:first').click()
             getFolder().find('#UploadDocument').click()
@@ -130,21 +127,19 @@ class Folder {
                 method: 'POST',
                 url: /uploadCustomerDocument/
             }).as('uploadCustomerDoc')
-    
+
             const fileName = 'Autocertificazione_Test.pdf';
-            cy.fixture(fileName).then(fileContent => {
-                getFolder().find('#file').attachFile({
-                    fileContent,
-                    fileName,
-                    mimeType: 'application/pdf'
-                }, { subjectType: 'input' })
+            getFolder().find('#file').attachFile({
+                filePath: fileName,
+                fileName: fileName,
+                mimeType: 'application/pdf',
+                encoding: 'base64'
             })
-    
+
             getFolder().contains('Upload dei file selezionati').click()
             cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
         }
-        else
-        {
+        else {
             getIframe().find('span[class="k-icon k-plus"]:visible').click()
             getIframe().find('span[class="k-icon k-plus"]:first').click()
             getIframe().find('#UploadDocument').click()
@@ -155,16 +150,15 @@ class Folder {
                 method: 'POST',
                 url: /uploadCustomerDocument/
             }).as('uploadCustomerDoc')
-    
+
             const fileName = 'Autocertificazione_Test.pdf';
-            cy.fixture(fileName).then(fileContent => {
-                getIframe().find('#file').attachFile({
-                    fileContent,
-                    fileName,
-                    mimeType: 'application/pdf'
-                }, { subjectType: 'input' })
+            getIframe().find('#file').attachFile({
+                filePath: fileName,
+                fileName: fileName,
+                mimeType: 'application/pdf',
+                encoding: 'base64'
             })
-    
+
             getIframe().contains('Upload dei file selezionati').click()
             cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
         }
