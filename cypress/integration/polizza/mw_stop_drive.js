@@ -26,72 +26,77 @@ let currentTutf
 let currentCustomerNumber
 let numberPolizza
 let currentCustomerFullName
-// let currentAgency
-// before(() => {
-//     cy.getUserWinLogin().then(data => {
-//         currentTutf = data.tutf
-//         cy.log('Retriving client with Polizze for Stop&Drive, please wait...')
-//         cy.getClientWithConsensoOTP(currentTutf).then(polizzaClient => {
-//             currentCustomerNumber = polizzaClient.customerNumber
-//             numberPolizza = polizzaClient.numberPolizza
-//             currentCustomerFullName = polizzaClient.customerName
-//             let customImpersonification = {
-//                 agentId: polizzaClient.agentId,
-//                 agency: polizzaClient.agency
-//             }
-//             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-//             LoginPage.logInMWAdvanced(customImpersonification)
-//             currentAgency = polizzaClient.agency
-//         })
-//     })
-// })
+let currentAgency
+before(() => {
+    cy.getUserWinLogin().then(data => {
+        currentTutf = data.tutf
+        cy.log('Retriving client with Polizze for Stop&Drive, please wait...')
+        cy.getClientWithConsensoOTP(currentTutf).then(polizzaClient => {
+            currentCustomerNumber = polizzaClient.customerNumber
+            numberPolizza = polizzaClient.numberPolizza
+            currentCustomerFullName = polizzaClient.customerName
+            let customImpersonification = {
+                agentId: polizzaClient.agentId,
+                agency: polizzaClient.agency
+            }
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced(customImpersonification)
+            currentAgency = polizzaClient.agency
+        })
+    })
+})
 
-// beforeEach(() => {
-//     cy.preserveCookies()
-//     HomePage.reloadMWHomePage()
-// })
+beforeEach(() => {
+    cy.preserveCookies()
+    HomePage.reloadMWHomePage()
+})
 
-// after(function () {
+afterEach(function () {
+    if (this.currentTest.state === 'passed') {
+        let messageToSend = `Dati relativi all'ultima Stop & Drive completata : </br></br>
+        <b>AGENZIA</b> : ${currentAgency}</br>
+        <b>AMBIENTE</b> : ${currentEnv}</br>
+        <b>NOME CLIENTE</b> : ${currentCustomerFullName}</br>
+        <b>NUMERO POLIZZA</b> : ${numberPolizza}</br>
+    `
+        //Send Report mail
+        cy.task('sendMail', { currentSubject: "MW Stop&Drive Automatic Test", currentMessage: messageToSend, additionalEmail: "codia.carlotta@allianz.it" })
+    }
+})
 
-//     let messageToSend = `Dati relativi all'ultima Stop & Drive completata : 
-//         AGENZIA : ${currentAgency}
-//         AMBIENTE : ${currentEnv}
-//         NOME CLIENTE : ${currentCustomerFullName}
-//         NUMERO POLIZZA : ${numberPolizza}
-//     `
-//     // //Send Report mail
-//     // cy.task('sendMail', { currentSubject: "MW Stop&Drive Automatic Test", currentMessage: messageToSend, additionalEmail: "andrea.oboe@allianz.it" })
-//     //     .then(result => console.log(result));
+after(function () {
 
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+})
 
 let urlClient
-describe('Matrix Web : Annullamento -> Stop&Drive', function () {
+describe('Matrix Web : Annullamento -> Stop&Drive', {
+    retries: {
+        runMode: 0,
+        openMode: 0,
+    }
+}, function () {
 
     it('Verifica Stato della polizza in "Sospensione stop and drive"', function () {
-        
-        cy.task('sendMail', { currentSubject: "MW Stop&Drive Automatic Test", currentMessage: "PROVA", additionalEmail: "andrea.oboe@allianz.it" })
-        // debugger
-        // TopBar.search(currentCustomerFullName)
-        // LandingRicerca.clickClientePF(currentCustomerFullName)
-        // SintesiCliente.retriveUrl().then(currentUrl => {
-        //     urlClient = currentUrl
-        // })
-        // Portafoglio.clickTabPortafoglio()
-        // Portafoglio.clickSubTab('Polizze attive')
-        // Portafoglio.filtraPolizze('Motor')
-        // Portafoglio.clickAnnullamento(numberPolizza, 'Sospensione stop and drive')
-        // Annullamento.stopDrive()
-        // TopBar.search(currentCustomerFullName)
-        // LandingRicerca.clickClientePF(currentCustomerFullName)
-        // Portafoglio.clickTabPortafoglio()
-        // Portafoglio.checkTooltipStopDrive(numberPolizza)
+        TopBar.search(currentCustomerFullName)
+        LandingRicerca.clickClientePF(currentCustomerFullName)
+        SintesiCliente.retriveUrl().then(currentUrl => {
+            urlClient = currentUrl
+        })
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Polizze attive')
+        Portafoglio.filtraPolizze('Motor')
+        Portafoglio.clickAnnullamento(numberPolizza, 'Sospensione stop and drive')
+        Annullamento.stopDrive()
+        TopBar.search(currentCustomerFullName)
+        LandingRicerca.clickClientePF(currentCustomerFullName)
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.checkTooltipStopDrive(numberPolizza)
     })
 })
