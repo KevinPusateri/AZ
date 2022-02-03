@@ -21,18 +21,30 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 20000)
 //#endregion
 
-let keysLinksMenu
-let keysLinksSubMenu
+let keysLinksMenu = LinkMieInfo.getKeysLinksMenu()
+let keysLinksSubMenuProdotti = LinkMieInfo.getKeysLinksProdotti()
+let keysLinksSubMenuIniziative = LinkMieInfo.getKeysLinksIniziative()
+let keysLinksSubMenuSalesAccademy = LinkMieInfo.getKeysLinksSalesAcademy()
+let keysLinksSubMenuIlMondoAllianz = LinkMieInfo.getKeysLinksIlMondoAllianz()
+let keysLinksSubMenuAntiriciclaggio = LinkMieInfo.getKeysLinksAntiriciclaggio()
+let keysLinksSubMenuRisorsePerAgenzia = LinkMieInfo.getKeysLinksRisorsePerAgenzia()
+let keysLinksSubMenuRisorsePerAgente = LinkMieInfo.getKeysLinksRisorsePerAgente()
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
-        LinkMieInfo.profilingLinksMenu(data.tutf)
-        keysLinksMenu = LinkMieInfo.getKeysLinksMenu()
-        keysLinksSubMenu = LinkMieInfo.getKeysLinksSubMenu()
-        LinkMieInfo.profilingLinksMenu(data.tutf)
-        LinkMieInfo.profilingLinksSubMenu(data.tutf)
+        cy.profilingLinksMenu(data.tutf, keysLinksMenu)
+        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuProdotti)
+        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuIniziative)
+        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuSalesAccademy)
+        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuIlMondoAllianz)
+        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuAntiriciclaggio)
+        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuRisorsePerAgenzia)
+        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuRisorsePerAgente)
     })
+
+
+
 })
 
 beforeEach(() => {
@@ -48,19 +60,20 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-
 })
 
-describe('Matrix Web : Navigazioni da Le Mie Info', {
-    retries: {
-        runMode: 0,
-        openMode: 0,
-    }
-}, () => {
+describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
-    it('Verifica aggancio Le Mie Info', function () {
+    it('Verifica aggancio Le Mie Info',  {
+        // Settato in caso di FAILED nel Before(Mostra l'errore)
+        retries: {
+            runMode: 0,
+            openMode: 0,
+        }
+    }, function()  {
         TopBar.clickMieInfo()
     })
+    
 
     it('Verifica presenza links Menu', function () {
         TopBar.clickMieInfo()
@@ -91,7 +104,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Prodotti')
-        Mieinfo.checkLinksOnSubMenu('Prodotti', keysLinksSubMenu)
+        Mieinfo.checkLinksOnSubMenu('Prodotti', keysLinksSubMenuProdotti)
         Mieinfo.checkLinksOnIcon('Prodotti')
     });
 
@@ -100,7 +113,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Prodotti');
-        Mieinfo.checkPageOnSubMenu('Prodotti')
+        Mieinfo.checkPageOnSubMenu('Prodotti', keysLinksSubMenuProdotti)
     })
 
     it('Verifica aggancio Iniziative', function () {
@@ -108,7 +121,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Iniziative')
-        Mieinfo.checkLinksOnSubMenu('Iniziative', keysLinksSubMenu)
+        Mieinfo.checkLinksOnSubMenu('Iniziative', keysLinksSubMenuIniziative)
         Mieinfo.checkLinksOnIcon('Iniziative')
     });
 
@@ -117,7 +130,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Iniziative');
-        Mieinfo.checkPageOnSubMenu('Iniziative')
+        Mieinfo.checkPageOnSubMenu('Iniziative', keysLinksSubMenuIniziative)
     })
 
     it('Verifica aggancio Eventi e Sponsorizzazioni', function () {
@@ -130,7 +143,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Sales Academy')
-        Mieinfo.checkLinksOnSubMenu('Sales Academy', keysLinksSubMenu)
+        Mieinfo.checkLinksOnSubMenu('Sales Academy', keysLinksSubMenuSalesAccademy)
         Mieinfo.checkLinksOnIcon('Sales Academy')
     });
 
@@ -139,14 +152,14 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Sales Academy');
-        Mieinfo.checkPageOnSubMenu('Sales Academy')
+        Mieinfo.checkPageOnSubMenu('Sales Academy', keysLinksSubMenuSalesAccademy)
     })
 
     it('Verifica aggancio Momento della Verità', function () {
         if (!keysLinksMenu['sinistri'])
             this.skip()
         TopBar.clickMieInfo()
-        Mieinfo.clickLinkOnMenu('Momento della Verità', keysLinksSubMenu)
+        Mieinfo.clickLinkOnMenu('Momento della Verità')
         Mieinfo.checkLinksOnIcon('Momento della Verità')
     });
 
@@ -193,7 +206,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Antiriciclaggio')
-        Mieinfo.checkLinksOnSubMenu('Antiriciclaggio', keysLinksSubMenu)
+        Mieinfo.checkLinksOnSubMenu('Antiriciclaggio', keysLinksSubMenuAntiriciclaggio)
         Mieinfo.checkLinksOnIcon('Antiriciclaggio')
     })
 
@@ -202,7 +215,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Antiriciclaggio');
-        Mieinfo.checkPageOnSubMenu('Antiriciclaggio')
+        Mieinfo.checkPageOnSubMenu('Antiriciclaggio', keysLinksSubMenuAntiriciclaggio)
     })
 
     it('Verifica aggancio Risorse per l\'Agenzia', function () {
@@ -210,7 +223,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia')
-        Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agenzia', keysLinksSubMenu)
+        Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agenzia', keysLinksSubMenuRisorsePerAgenzia)
         Mieinfo.checkLinksOnIcon('Risorse per l\'Agenzia')
     });
     it('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agenzia', function () {
@@ -218,7 +231,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia');
-        Mieinfo.checkPageOnSubMenu('Risorse per l\'Agenzia')
+        Mieinfo.checkPageOnSubMenu('Risorse per l\'Agenzia', keysLinksSubMenuRisorsePerAgenzia)
     })
 
     it('Verifica aggancio Operatività', function () {
@@ -234,13 +247,13 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Risorse per l\'Agente')
-        Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agente', keysLinksSubMenu)
+        Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agente', keysLinksSubMenuRisorsePerAgente)
         Mieinfo.checkLinksOnIcon('Risorse per l\'Agente')
     });
     it('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agente', function () {
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Risorse per l\'Agente');
-        Mieinfo.checkPageOnSubMenu('Risorse per l\'Agente')
+        Mieinfo.checkPageOnSubMenu('Risorse per l\'Agente', keysLinksSubMenuRisorsePerAgente)
     })
 
     it('Verifica aggancio Il mondo Allianz', function () {
@@ -248,7 +261,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Il mondo Allianz')
-        Mieinfo.checkLinksOnSubMenu('Il mondo Allianz', keysLinksSubMenu)
+        Mieinfo.checkLinksOnSubMenu('Il mondo Allianz', keysLinksSubMenuIlMondoAllianz)
         Mieinfo.checkLinksOnIcon('Il mondo Allianz')
     })
     it('Verifica aggancio su tutte le sotto pagine di Il mondo Allianz', function () {
@@ -256,7 +269,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', {
             this.skip()
         TopBar.clickMieInfo()
         Mieinfo.clickLinkOnMenu('Il mondo Allianz');
-        Mieinfo.checkPageOnSubMenu('Il mondo Allianz')
+        Mieinfo.checkPageOnSubMenu('Il mondo Allianz', keysLinksSubMenuIlMondoAllianz)
     })
 });
 

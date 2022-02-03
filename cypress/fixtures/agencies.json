@@ -1,0 +1,85 @@
+[
+  {
+    "agency": "010710000",
+    "agentId": "ARFPULINI2",
+    "agencies": [
+      {
+        "agencyCode": 552,
+        "companyCode": 73,
+        "subAgencyCode": 0
+      },
+      {
+        "agencyCode": 710000,
+        "companyCode": 1,
+        "subAgencyCode": 120
+      },
+      {
+        "agencyCode": 710000,
+        "companyCode": 1,
+        "subAgencyCode": 0
+      },
+      {
+        "agencyCode": 748000,
+        "companyCode": 1,
+        "subAgencyCode": 0
+      },
+      {
+        "agencyCode": 4266,
+        "companyCode": 7,
+        "subAgencyCode": 0
+      },
+      {
+        "agencyCode": 851,
+        "companyCode": 5,
+        "subAgencyCode": 0
+      }
+    ]
+  },
+  {
+    "agency": "010375000",
+    "agentId": "ARALONGO7",
+    "agencies": [
+      {
+        "agencyCode": 523000,
+        "companyCode": 1,
+        "subAgencyCode": 0
+      },
+      {
+        "agencyCode": 2002,
+        "companyCode": 2,
+        "subAgencyCode": 0
+      },
+      {
+        "agencyCode": 375000,
+        "companyCode": 1,
+        "subAgencyCode": 155
+      },
+      {
+        "agencyCode": 375000,
+        "companyCode": 1,
+        "subAgencyCode": 0
+      },
+      {
+        "agencyCode": 395,
+        "companyCode": 73,
+        "subAgencyCode": 0
+      }
+    ]
+  },
+  {
+    "agency": "010319000",
+    "agentId": "ARCZULIANELLO",
+    "agencies": [
+      {
+        "agencyCode": 319000,
+        "companyCode": 1,
+        "subAgencyCode": 0
+      },
+      {
+        "agencyCode": 319000,
+        "companyCode": 1,
+        "subAgencyCode": 7
+      }
+    ]
+  }
+]

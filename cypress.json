@@ -2,19 +2,11 @@
   "retries": 1,
   "video": false,
   "videoCompression": 25,
-  "trashAssetsBeforeRuns": true,
+  "trashAssetsBeforeRuns": false,
   "projectId": "4ypuc8",
   "numTestsKeptInMemory": 1,
   "chromeWebSecurity": false,
   "experimentalSessionSupport": false,
-  "reporter": "cypress-mochawesome-reporter",
-  "reporterOptions": {
-    "reportDir": "cypress/reports",
-    "charts": true,
-    "reportPageTitle": "Matrix Web",
-    "embeddedScreenshots": true,
-    "inlineAssets": true
-  },
   "env": {
     "db": {
       "host": "PALZMSQDBPRLV01.srv.allianz",
@@ -45,6 +37,10 @@
     "be2bePreprod": "https://be2be.pp.azi.allianzit",
     "mieInfoCloudTE": "https://lemieinfo-fe-test.azit-eks-no-prod.ew3.aws.aztec.cloud.allianz",
     "mieInfoCloudPP": "https://lemieinfo-fe-pp.azit-eks-no-prod.ew3.aws.aztec.cloud.allianz",
+    "loginUrlGraphQLPreprod": "https://matrix.pp.azi.allianz.it",
+    "hostAMPreprod": "https://amlogin-pp.allianz.it",
+    "loginUrlGraphQLTest": "https://matrix.te.azi.allianzit",
+    "hostAMTest": "https://amlogin-dev.servizi.allianzit",
     "isSecondWindow": false,
     "monoUtenza": false,
     "multiUtenza": "5-851-0-100",

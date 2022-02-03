@@ -576,9 +576,10 @@ class LandingRicerca {
                 } else {
                     suggLinks = [
                         'Allianz Ultra Casa e Patrimonio',
+                        'Allianz Ultra Casa e Patrimonio BMP',
                         'Allianz Ultra Salute'
                     ]
-                    linkLength = 2
+                    linkLength = 3
                 }
                 break
             case 'bmp':

@@ -2,7 +2,7 @@
   "daVerificareCasa" : {
     "Assicurato"        : true,
     "Nome"              : true,
-    "Cap"               : true,
+    "Cap"               : false,
     "Uso"               : true,
     "Tipo"              : true,
     "Mq"                : true,
@@ -14,7 +14,7 @@
     "Anno"              : true,
     "Estensione"        : true,
     "ResidenzaAss"      : true,
-    "CapAss"            : true
+    "CapAss"            : false
   },
 
 
@@ -62,7 +62,7 @@
     "Razza"             : true,
     "DataNascita"       : true,
     "Residenza"         : true,
-    "Cap"               : true
+    "Cap"               : false
   },
 
   "daModificareAnimale" : {

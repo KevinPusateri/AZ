@@ -105,7 +105,7 @@ class TopBar extends HomePage {
         }
 
         cy.get('lib-user-header').should('be.visible')
-        cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]:visible').click();
+        cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]:visible').click({force:true});
         cy.get('lib-user-header-popover-container').should('be.visible').within(() => {
             cy.contains('Logout').click({ force: true })
         })

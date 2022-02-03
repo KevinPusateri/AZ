@@ -7,6 +7,8 @@ import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
 import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
+import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
+import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
 import AreaRiservata from "../../mw_page_objects/UltraBMP/AreaRiservata"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
@@ -76,10 +78,12 @@ import { ambitoUltra } from '../../fixtures//Ultra/BMP_Comune.json'
 //#region  variabili iniziali
 var premioTotPrima = 0
 var premioTotDopo = 0
-var premioFabbricato = 0
-var premioGarAgg = 0
-var impMin = 0
-var impMax = 0
+var premioFA = 0
+var premioFA_FenomenoElettrico = 0
+var premioRC_Prima = 0
+var premioRC_Dopo = 0
+var premioRC_Affittacamere = 0
+var premioRC_ProprietàAnimali = 0
 
 var cliente = ""
 var clienteUbicazione = ""
@@ -169,66 +173,145 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
     })
 
     it("Accesso Configurazione ambito 'Fabbricato'", ()=>{
-        //cy.pause()
         
+        Dashboard.leggiPremioTot()     //>> premioTotDashboard    
+        cy.get('@premioTotDashboard').then(premioTot => {
+            premioTotPrima = parseFloat(premioTot.replace(/,/,"."))
+            cy.log('Premio totale prima di aggiungere la garanzia: ' + premioTotPrima)
+        })
+
         UltraBMP.ClickMatita("Fabbricato", "Casa 1")
 
         ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareFabbricato, modificheCasa)
         ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.TOP)
-        cy.pause()
-        ConfigurazioneAmbito.leggiPremio('totale')
-        ConfigurazioneAmbito.leggiPremio('Ambito')
-        ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('Danni da fenomeno elettrico')
-
-        cy.get('@premioTot').then(premioTotale => {
-            premioTotPrima = parseFloat(premioTotale.replace(/,/,"."))
-            cy.log('Premio totale prima di aggiungere la garanzia: ' + premioTotPrima)
-        })
-        cy.get('@premioAmbito').then(premioAmbito => {
-            premioFabbricato = parseFloat(premioAmbito.replace(/,/,"."))
-            cy.log('Premio Ambito Fabbricato: ' + premioFabbricato)
-        })
-        cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
-            premioGarAgg = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
-            cy.log('Premio Garanzia Aggiuntiva: ' + premioGarAgg)
-        })
-        cy.pause()
-        ConfigurazioneAmbito.aggiungiGaranzia('Danni da fenomeno elettrico')
-        ConfigurazioneAmbito.leggiPremio('totale')
-        cy.get('@premioTot').then(premioTotale => {
-            premioTotDopo = parseFloat(premioTotale.replace(/,/,"."))
-            cy.log('Premio totale dopo aver aggiunto la garanzia: ' + premioTotDopo)
-            impMin = premioTotDopo - 0.01
-            impMax = premioTotDopo + 0.01
-            cy.log('Il premio deve essere tra: ' + impMin + ' - ' + impMax) 
-            expect(premioTotDopo).to.be.gte(impMin).and.be.lte(impMax)
-
-        })
-
-        ConfigurazioneAmbito.ClickButton("CONFERMA")
-        cy.pause()
         
+        ConfigurazioneAmbito.leggiPremio('Ambito')   //>> premioAmbito
+        cy.get('@premioAmbito').then(premioAmbito => {
+            premioFA = parseFloat(premioAmbito.replace(/,/,"."))
+            cy.log('Premio Ambito Fabbricato: ' + premioFA)
+        })
+
+        ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('Danni da fenomeno elettrico')    //>> premioGarAgg
+        cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
+            premioFA_FenomenoElettrico = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
+            cy.log('Premio Garanzia Aggiuntiva: ' + premioFA_FenomenoElettrico)
+        })
+
+        ConfigurazioneAmbito.aggiungiGaranzia('Danni da fenomeno elettrico')
+        ConfigurazioneAmbito.ClickButton("CONFERMA")
+        //cy.pause()
+
+        Dashboard.leggiPremioTot()     //>> premioTotDashboard    
+        cy.get('@premioTotDashboard').then(premioTot => {
+            premioTotDopo = parseFloat(premioTot.replace(/,/,"."))
+            cy.log('Premio totale dopo aver aggiunto la garanzia: ' + premioTotDopo)
+        })
+
+        //Dashboard.verificaPremio(premioTotPrima, premioTotDopo, premioFA_FenomenoElettrico)
+        cy.pause()
+    })
+
+    it("Verifica premio totale in Dashboard dopo variazioni ambito 'Fabbricato'", ()=>{
+        cy.log('********* VERIFICA PREMIO **************')
+        cy.log('premioTotPrima: ' + premioTotPrima)
+        cy.log('premioTotDopo: ' + premioTotDopo)
+        cy.log('premioFA_FenomenoElettrico: ' + premioFA_FenomenoElettrico)
+        Dashboard.verificaPremio(premioTotPrima, premioTotDopo, premioFA_FenomenoElettrico)
+        cy.pause()
     })
 
     it("Accesso Configurazione ambito 'Responsabilità civile'", ()=>{
-        //cy.pause()
+
+        Dashboard.leggiPremioTot()     //>> premioTotDashboard    
+        cy.get('@premioTotDashboard').then(premioTot => {
+            premioTotPrima = parseFloat(premioTot.replace(/,/,"."))
+            cy.log('Premio totale prima di aggiungere la garanzia: ' + premioTotPrima)
+        })
+
         UltraBMP.ClickMatita("Responsabilit", "Casa 1")
 
         ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareRC, modificheCasa)
         ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.PREMIUM)
-        
+
+        ConfigurazioneAmbito.leggiPremio('Ambito')   //>> premioAmbito
+        cy.get('@premioAmbito').then(premioAmbito => {
+            premioRC_Prima = parseFloat(premioAmbito.replace(/,/,"."))
+            cy.log('Premio Ambito Responsabilità Civile - Prima delle modifiche: ' + premioRC_Prima)
+        })
+
         ConfigurazioneAmbito.ModificaConfigurazioneAmbito(daModificareRC, modificheRC)
+        
+        ConfigurazioneAmbito.leggiPremio('Ambito')   //>> premioAmbito
+        cy.get('@premioAmbito').then(premioAmbito => {
+            premioRC_Dopo = parseFloat(premioAmbito.replace(/,/,"."))
+            cy.log('Premio Ambito Responsabilità Civile - Dopo le modifiche: ' + premioRC_Dopo)
+        })
+
+        ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('attività di affittacamere e Bed & Breakfast')    //>> premioGarAgg
+        cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
+            premioRC_Affittacamere = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
+            cy.log('Premio Garanzia Aggiuntiva Affittacamere: ' + premioRC_Affittacamere)
+        })
+
+        ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('proprietà di cavalli ed altri animali da sella')    //>> premioGarAgg
+        cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
+            premioRC_ProprietàAnimali = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
+            cy.log('Premio Garanzia Aggiuntiva Cavalli: ' + premioRC_ProprietàAnimali)
+        })
 
         ConfigurazioneAmbito.aggiungiGaranzia('attività di affittacamere e Bed & Breakfast')
         ConfigurazioneAmbito.aggiungiGaranzia('proprietà di cavalli ed altri animali da sella')
         ConfigurazioneAmbito.ClickButton("CONFERMA")
 
+        Dashboard.leggiPremioTot()     //>> premioTotDashboard    
+        cy.get('@premioTotDashboard').then(premioTot => {
+            premioTotDopo = parseFloat(premioTot.replace(/,/,"."))
+            cy.log('Premio totale dopo aver aggiunto le garanzie: ' + premioTotDopo)
+        })
+
         cy.pause()
         
     })
 
+    it("Verifica premio totale in Dashboard dopo variazioni ambito 'Responsabilità Civile'", ()=>{
+        var deltaPremio = (premioRC_Dopo - premioRC_Prima) + premioRC_Affittacamere + premioRC_ProprietàAnimali
+        Dashboard.verificaPremio(premioTotPrima, premioTotDopo, deltaPremio)
+        cy.pause()
+    })
+
     it("Seleziona frazionamento", ()=>{
         Ultra.selezionaFrazionamento(frazionamento)
+        cy.pause()
+    })
+
+    it("Salva Quotazione e Condividi", () => {
+        //cy.pause()
+        Dashboard.salvaQuotazione()
+        Dashboard.condividiQuotazione('Catastrofi naturali')
+        //Dashboard.ClickButton('PROCEDI')
+        //cy.pause()
+    })
+
+    it("Procedi", () => {
+        Dashboard.procediHome()
+        DatiQuotazione.CaricamentoPagina()
+        //Riepilogo.caricamentoRiepilogo()
+        cy.pause()
+    })
+
+    it("Verifica presenza Oggetti in Dati Quotazione", () => {
+        DatiQuotazione.verificaPresenzaOggetto(defaultCasa.Nome)
+        DatiQuotazione.verificaPresenzaOggetto(modificheAnimale.Nome)
+        DatiQuotazione.confermaDatiQuotazione()
+        Riepilogo.caricamentoRiepilogo()
+        cy.pause()
+    })
+
+    it("Verifica ambiti in Riepilogo", () => {
+        ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI
+        Riepilogo.verificaAmbito(ambitoUltra.FABBRICATO, defaultCasa.Nome, soluzione.TOP, '1', '')
+        Riepilogo.verificaAmbito(ambitoUltra.RESPONSABILITA_CIVILE, defaultCasa.Nome, soluzione.PREMIUM, '1', '')
+        Riepilogo.verificaAmbito(ambitoUltra.ANIMALI_DOMESTICI, modificheAnimale.Nome, soluzione.ESSENTIAL, '1', '')
         cy.pause()
     })
 

@@ -62,6 +62,29 @@ class Riepilogo {
     }
 
     /**
+     * Verifica che sia presente un ambito con relativi oggetto, soluzione, durata e prezzo
+     */
+     static verificaAmbito(ambito, oggetto, soluzione, durata, prezzo) {
+        ultraIFrame().within(() => {
+            cy.pause()
+            cy.get('span').contains(ambito).should('be.visible')
+              .parent('td')
+              .parent('tr').should('have.class', 'nx-table-row ng-star-inserted')
+              .children('td').should('have.length.gt', 0).then(colonne => {
+                cy.wrap(colonne)
+                .eq(1).should('contain.text', oggetto)
+                cy.wrap(colonne)
+                .eq(2).should('contain.text', soluzione)
+                cy.wrap(colonne)
+                .eq(3).should('contain.text', durata)
+                cy.wrap(colonne)
+                .eq(4).should('contain.text', prezzo)
+              })
+        })
+    }
+
+
+    /**
      * Clicca sul pulsante Emetti Polizza
      */
     static EmissionePolizza() {

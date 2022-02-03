@@ -1,7 +1,5 @@
 /// <reference types="Cypress" />
 
-//import { exit } from "cypress/lib/util"
-//import { DefaultCMapReaderFactory } from "pdfjs-dist/types/display/api"
 import Common from "../common/Common"
 import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
 import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
@@ -24,10 +22,6 @@ class ConfigurazioneAmbito {
       * @param {string} azione - testo del button 
       */
     static ClickButton(azione) {
-      //cy.getIFrame()
-      //cy.get('@iframe').within(() => {
-          //cy.pause()
-          //cy.get('span').contains(strButton).should('be.visible').click()
       ultraIFrame().within(() => {
         cy.contains('span', azione).scrollIntoView().should('be.visible').click() 
         cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
@@ -41,7 +35,6 @@ class ConfigurazioneAmbito {
       ultraIFrame().within(() => {
         cy.get('div[class="ca-col-soluzione selected"]').should('exist')
           .contains(soluzioneSel).should('exist')
-          //.contains('h3', soluzioneSel).should('exist')
       })
 
     }
@@ -52,7 +45,6 @@ class ConfigurazioneAmbito {
           .parent('div')
           .parent('div')
           .find('button').should('be.enabled').click()
-          //.contains('Aggiungi').should('be.enabled').click()
 
         cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
         cy.wait(2000)   
@@ -91,7 +83,6 @@ class ConfigurazioneAmbito {
     }
 
     static leggiPremioGaranziaAggiuntiva(garanziaAgg) {
-      //let pr = 0
       ultraIFrame().within(() => {
         cy.pause()
         cy.contains('span', garanziaAgg).should('exist')
@@ -107,8 +98,6 @@ class ConfigurazioneAmbito {
 
     
     static verificaDropDown(testoRiga, ind, testoDaVerificare) {
-      //cy.contains('h2', oggetto).should('exist')
-      //  .parent('div').should('exist')
       cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
         .find('form').should('exist')
         .contains(testoRiga)
@@ -119,8 +108,6 @@ class ConfigurazioneAmbito {
     }
 
     static verificaInput(testoRiga, ind, testoDaVerificare) {
-      //cy.contains('h2', oggetto).should('exist')
-      //  .parent('div').should('exist')
       cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
         .find('form').should('exist')
         .contains(testoRiga)
@@ -131,8 +118,6 @@ class ConfigurazioneAmbito {
     }
 
     static modificaDropDown(testoRiga, ind, testoDaInserire) {
-      //cy.contains('h2', oggetto).should('exist')
-      //  .parent('div').should('exist')
       cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
         .find('form').should('exist')
         .contains(testoRiga)
@@ -150,8 +135,6 @@ class ConfigurazioneAmbito {
     }
 
     static modificaInput(testoRiga, ind, testoDaInserire) {
-      //cy.contains('h2', oggetto).should('exist')
-      //  .parent('div').should('exist')
       cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
         .find('form').should('exist')
         .contains(testoRiga)
@@ -186,27 +169,7 @@ class ConfigurazioneAmbito {
       cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
       cy.wait(2000)
 
-
-
-      /*
-      cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
-        .find('form').should('exist')
-        .contains(testoRiga)
-        .parent().should('have.class', 'ca-question ng-star-inserted')
-        .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
-        .children('div').should('have.length.gt', 0)
-        .eq(ind).should('be.visible')
-        .find('[class="ng-star-inserted"]').should('be.visible').click()
-
-      cy.get('.nx-dropdown__panel-body').should('be.visible')
-        .find('span').contains(testoDaInserire).click()
-          
-      cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-      cy.wait(2000)
-      */
     }
-
-    
 
     //#region Verifica default Casa
     /**
@@ -781,9 +744,6 @@ class ConfigurazioneAmbito {
         if (daModificare.CapAss)
         {
           cy.log("Modifica 'Cap assicurato - da inserire': " + modificheCasa.CapAss)
-          //DatiQuotazione.modificaInput(casa, 'assicurato ha la residenza', 3, modificheCasa.CapAss)
-          //cy.contains('h2', casa).should('exist')
-          //  .parent('div').should('exist')
           cy.get('div[id="accordionDatiQuotazioneBody"]').should('exist')
             .find('form').should('exist')
             .contains("assicurato ha la residenza")
@@ -892,12 +852,6 @@ class ConfigurazioneAmbito {
 
     }
     //#endregion
-
-
-
-    /////////////
-    /////////////
-
 
     //#region Modifica Valori Configurazione Ambito 
     /**
