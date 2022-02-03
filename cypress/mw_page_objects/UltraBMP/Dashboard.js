@@ -26,15 +26,15 @@ class Dashboard {
     }
 
     static stringaRandom(lunghezza) {
-        var result           = '';
-        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         var charactersLength = characters.length;
-        for ( var i = 0; i < lunghezza; i++ ) {
-           result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        for (var i = 0; i < lunghezza; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         return result;
-     }
-     
+    }
+
 
     /**
      * Attende il caricamento della sezione preferiti su dashboard
@@ -211,26 +211,26 @@ class Dashboard {
             const nomeQ = Dashboard.stringaRandom(10)
             cy.log('stringa generata: ' + nomeQ)
             cy.get('div[id="ambitiHeader"]')
-                .contains('Salva').should('be.visible').click() 
-            
-            cy.get('div[id="salvaBody"]').should('exist')
-              //.find('div[id="salvaBody"]').should('exist')
-              .find('div[class="nx-formfield__input"]').should('be.visible')
-              .eq(0).should('be.visible')
-              .click().wait(500)
-              .clear().wait(500)
-              .type(nomeQ).wait(2000)
-              //.type('{tab}')
+                .contains('Salva').should('be.visible').click()
 
             cy.get('div[id="salvaBody"]').should('exist')
-              //.find('div[id="salvaBody"]').should('exist')
-              .find('div[class="nx-formfield__input"]').should('be.visible')
-              .eq(1).should('be.visible')
-              .click().wait(500)
-              .clear().wait(500)
-              .type('Note alla quotazione di prova 1').wait(2000)
-              
-                  
+                //.find('div[id="salvaBody"]').should('exist')
+                .find('div[class="nx-formfield__input"]').should('be.visible')
+                .eq(0).should('be.visible')
+                .click().wait(500)
+                .clear().wait(500)
+                .type(nomeQ).wait(2000)
+            //.type('{tab}')
+
+            cy.get('div[id="salvaBody"]').should('exist')
+                //.find('div[id="salvaBody"]').should('exist')
+                .find('div[class="nx-formfield__input"]').should('be.visible')
+                .eq(1).should('be.visible')
+                .click().wait(500)
+                .clear().wait(500)
+                .type('Note alla quotazione di prova 1').wait(2000)
+
+
             cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
             cy.wait(1000)
 
@@ -334,17 +334,65 @@ class Dashboard {
             }) */
         })
     }
+    //#endregion preferiti
 
+    //#region Vincoli
     /**
-     * Modifica il massimale per garanzia indicata dell'ambito passato come parametro
-     * @param {string} ambito 
-     * @param {string} garanzia 
+     * Inserisce un vincolo per il contratto
+     * @param {bool} pagamentoAnticipato 
+     * @param {array} casa 
+     * @param {string} scadenza 
      */
-    static ModificaMassimaleDettagli(ambito, garanzia, massimale) {
+    static Vincolo(pagamentoAnticipato, casa, scadenza) {
         ultraIFrame().within(() => {
+            //apre il popup per l'inserimento dei vincoli
+            cy.get('span').contains('Contratto vincolato')
+                .should('be.visible').click()
+
+            //verifica che il popup sia aperto
+            cy.get('ultra-contratto-vincolato-modal')
+                .find('h1').contains('Gestione Vincoli')
+                .should('be.visible')
+
+            //imposta l'opzione dal selezionare in base alla modalità di pagamento indicata
+            var pagamentoStr
+
+            if (pagamentoAnticipato) {
+                pagamentoStr = "con pagamento"
+            }
+            else {
+                pagamentoStr = "senza pagamento"
+            }
+
+            cy.get('span').contains(pagamentoStr).click() //seleziona la modalità di pagamento indicata
+
+            //verifica che venga aperta la sezione ambiti
+            cy.get('#oggetto-assicurato-ambiti').should('be.visible')
+
+            //Seleziona tutte le case indicate
+            for (var i = 0; i < casa.length; i++) {
+                cy.get('div').contains(casa[i])
+                    .parent('div').find('nx-checkbox').click()
+            }
+
+            //clicca sulla textbox per la data di scadenza e
+            //chiude il popup per la scelta della data prima di scrivere la data
+            cy.get('input[placeholder="GG/MM/AAAA"]').click()
+            cy.wait(500)
+            cy.get('[class*="nx-datepicker-popup"]').find('.nx-datepicker-close')
+                .children('nx-icon').click()
+
+            cy.get('input[placeholder="GG/MM/AAAA"]')
+                .type(scadenza).invoke('val')
+                .then(text => cy.log(text))
+
+            //conferma il vincolo
+            cy.get('span').contains('CONFERMA')
+                .should('be.visible').click()
+
         })
     }
-    //#endregion preferiti
+    //#endregion Vincoli
 }
 
 export default Dashboard

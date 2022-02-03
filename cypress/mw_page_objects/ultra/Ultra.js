@@ -169,7 +169,7 @@ class Ultra {
             cy.get('label').contains('Temporaneità attiva').parent().parent()
                 .invoke('attr', 'class').should('contain', 'is-checked') //verfica che la temporaneità sia stata attivata
 
-            //aggiunge gli ambilti previsti
+            //aggiunge gli ambiti previsti
             for (var i = 0; i < listaAmbiti.length; i++) {
                 //cy.get('app-ultra-ambiti-selection-panel').find('nx-icon[ng-reflect-name="product-'+listaAmbiti[i]+'"]').click()
                 cy.get('app-ultra-ambiti-selection-panel').find('nx-icon[class*="' + listaAmbiti[i] + '"]').click()
@@ -943,8 +943,7 @@ class Ultra {
 
     static chiudiFinale() {
         ultraIFrame().within(() => {
-            cy.wait(1000)
-            cy.get('a').contains('Conferma').click()
+            cy.get('a').contains('Conferma').should('be.visible').click()
         })
     }
 
