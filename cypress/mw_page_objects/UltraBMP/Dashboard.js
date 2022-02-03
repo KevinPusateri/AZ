@@ -223,33 +223,103 @@ class Dashboard {
               //.type('{tab}')
 
             cy.get('div[id="salvaBody"]').should('exist')
-              //.find('div[id="salvaBody"]').should('exist')
               .find('div[class="nx-formfield__input"]').should('be.visible')
               .eq(1).should('be.visible')
               .click().wait(500)
               .clear().wait(500)
-              .type('Note alla quotazione di prova 1').wait(2000)
-              
-                  
+              .type('Note alla quotazione di prova').wait(2000)
+
+            // Verifica notifica verde quotazione salvata
+            cy.get('div[id="salvaBody"]').should('exist')
+              .find('span').contains('Salva').should('be.visible').click()
+
+            // Verifica circoletto con spunta 
+            cy.get('nx-message[class="header-title context-success"]').should('exist')
+              .find('nx-icon[class="nx-message__icon nx-icon--s ndbx-icon nx-icon--check-circle ng-star-inserted"]').should('be.visible')
+
+            // Verifica quotazione salvata 
+            cy.get('nx-message[class="header-title context-success"]').should('exist')
+              .find('span[class="quotazione-salvata"]').should('be.visible').invoke('text').then(val => {
+                cy.wrap(val)
+                cy.log('testo1: ' + val)
+              })
+            cy.get('nx-message[class="header-title context-success"]').should('exist')
+              .find('span[class="nr-quotazione"]').should('be.visible').invoke('text').then(val => {
+                cy.wrap(val)
+                cy.log('testo2: ' + val)
+              })
+
+            cy.get('button[class="close-button"]').should('exist').click()
+  
             cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
             cy.wait(1000)
 
             cy.pause()
 
-            /*
-            cy.get('tr')
-                .contains(ambito)
-                .parent()
-                .parent()
-                .find('nx-dropdown')
-                .click()
-
-            cy.wait(500)
-            cy.get('nx-dropdown-item').contains(soluzione).should('be.visible').click() //seleziona Top
-
-            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
-            */
         })
+    }
+
+    static condividiQuotazione(daSelezionare) {
+        ultraIFrame().within(() => {
+            //const nomeQ = Dashboard.stringaRandom(10)
+            //cy.log('stringa generata: ' + nomeQ)
+            cy.get('div[id="ambitiHeader"]')
+                .contains('Condividi').should('be.visible').click() 
+            
+            cy.get('div[id="seleziona-copertina"]').should('exist')
+              .find('p').contains('Allianz Ultra').should('have.class', 'titolo-copertina selected')
+            cy.get('div[id="seleziona-copertina"]').should('exist')
+              .find('p').contains('Animali domestici').should('have.class', 'titolo-copertina')
+            cy.get('div[id="seleziona-copertina"]').should('exist')
+              .find('p').contains('Catastrofi naturali').should('have.class', 'titolo-copertina')
+            cy.get('div[id="seleziona-copertina"]').should('exist')
+              .find('p').contains('Rc e Tutela legale').should('have.class', 'titolo-copertina')
+            cy.get('div[id="seleziona-copertina"]').should('exist')
+              .find('p').contains('Casa').should('have.class', 'titolo-copertina')
+
+            // Selezione copertina
+            cy.get('div[id="seleziona-copertina"]').should('exist')
+              .find('p').contains(daSelezionare).should('have.class', 'titolo-copertina').click()
+
+              // Consenso privacy
+            cy.pause()
+            cy.get('span').contains('Salva PDF').should('exist')
+              .parent('button').should('have.attr', 'aria-disabled', 'true')
+            
+            cy.get('div[id="privacy-section"]').should('exist')
+              .find('input[class="nx-switcher__input"]').should('have.attr', 'aria-checked', 'false').click({force: true})
+              
+            cy.get('span').contains('Salva PDF').should('exist')
+              .parent('button').should('have.attr', 'aria-disabled', 'false').click()
+
+            cy.pause()
+
+        })
+    }
+
+    static leggiPremioTot() {
+        //let pr = 0
+        ultraIFrame().within(() => {
+            cy.get('div[class="header-price-euro ng-star-inserted"]').should('be.visible')
+              .invoke('text').then(val => {
+                cy.wrap(val).as('premioTotDashboard')
+                //cy.log('leggi premio tot: ' + val)
+              })
+        })
+    }
+
+    static verificaPremio(premioOld, premioNew, variazionePremio) {
+        cy.pause()
+        cy.log('********* VERIFICA PREMIO **************')
+        var impMin = 0
+        var impMax = 0 
+        var premio = premioOld + variazionePremio
+        impMin = premio.toFixed(2) - 0.01
+        impMax = premio.toFixed(2) + 0.01
+        
+        cy.log("** Verifica premio **")
+        cy.log('PremioOld: ' + premioOld + ' - PremioNew: ' + premioNew + ' - Delta: ' + variazionePremio)
+        expect(premioNew).to.be.gte(impMin).and.be.lte(impMax)
     }
 
     static procediHome() {
@@ -262,9 +332,9 @@ class Dashboard {
 
     //#region preferiti
     /**
-     * Seleziona il preferto passato come parametro
+     * Seleziona il preferito passato come parametro
      * @param {string} tab >Allianz/Di agenzia/Personali
-     * @param {string} nome > nome del preferito da selzionare
+     * @param {string} nome > nome del preferito da selezionare
      */
     static SelezionaPreferiti(tab = "Allianz", nome) {
         cy.log("preferiti?")

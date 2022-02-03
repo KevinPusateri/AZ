@@ -108,6 +108,12 @@ class DatiQuotazione {
 
   }
 
+  static verificaPresenzaOggetto(oggetto) {
+    ultraIFrame().within(() => {
+      cy.contains('h2', oggetto).should('exist')
+    })
+  }
+
 
   //#region Verifica default Casa
   /**

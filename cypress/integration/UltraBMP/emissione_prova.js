@@ -10,6 +10,7 @@ import Ultra from "../../mw_page_objects/ultra/Ultra"
 import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
 import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
+import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -143,102 +144,35 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
         Ultra.modificaSoluzioneHome(ambitoUltra.ANIMALI_DOMESTICI, soluzione.ESSENTIAL)
     })
 
-    it("Salva Quotazione", () => {
-        cy.pause()
+    /*
+    it("Salva Quotazione e Condividi", () => {
+        //cy.pause()
         Dashboard.salvaQuotazione()
-        cy.pause()
-    })
-    
-
-
-
-    it("Accesso Dati Quotazione da menù", ()=>{
-        cy.pause()
-        UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
+        Dashboard.condividiQuotazione('Catastrofi naturali')
+        //Dashboard.ClickButton('PROCEDI')
         //cy.pause()
-        DatiQuotazione.VerificaDefaultCasa('Casa 1', daVerificareCasa, defaultCasa)
-        DatiQuotazione.VerificaDefaultAnimaleDomestico('Animale domestico 1', daVerificareAnimale, defaultAnimale)
-        cy.pause()
-        DatiQuotazione.ModificaValoriCasa('Casa 1', daModificareCasa, modificheCasa)
-        cy.pause()
-        DatiQuotazione.ModificaValoriAnimaleDomestico('Animale domestico 1', daModificareAnimale, modificheAnimale)
-        DatiQuotazione.ClickButton("CONFERMA")
     })
-    
+    */
 
-    it("Accesso Configurazione ambito 'Fabbricato'", ()=>{
-        cy.pause()
-        UltraBMP.ClickMatita("Fabbricato", "Casa 1")
-
-        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareFAMod, modificheCasa)
-        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareFADef, defaultCasa)
-        //ConfigurazioneAmbito.VerificaDefaultAnimaleDomestico(daModificareAnimale, modificheAnimale)
-        ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.TOP)
+    it("Procedi", () => {
+        Dashboard.procediHome()
+        DatiQuotazione.CaricamentoPagina()
+        //Riepilogo.caricamentoRiepilogo()
         //cy.pause()
-        //ConfigurazioneAmbito.leggiPremio('totale')     <=== DA FARE VERIFICA PREMI
-        cy.pause()
-        ConfigurazioneAmbito.aggiungiGaranzia('Danni da fenomeno elettrico')
-        ConfigurazioneAmbito.ClickButton("CONFERMA")
-
-        cy.pause()
-        
     })
 
-    /*
-    it("Aggiungi Ambito 'Contenuto'", () => { 
-        cy.log("AGGIUNGI AMBITO - 'Contenuto'")
-        //cy.pause()
-        UltraBMP.AggiungiAmbito('Contenuto')
+    it("Verifica presenza Oggetti in Dati Quotazione", () => {
+        DatiQuotazione.verificaPresenzaOggetto(defaultCasa.Nome)
+        DatiQuotazione.verificaPresenzaOggetto(defaultAnimale.Nome)
+        DatiQuotazione.confermaDatiQuotazione()
+        Riepilogo.caricamentoRiepilogo()
+        cy.pause()
     })
-    */
+
+    it("Verifica ambiti in Riepilogo", () => {
+        Riepilogo.verificaAmbito('Fabbricato', 'Casa 1', 'Top', '1', '')
+        cy.pause()
+    })
+
     
-    /*
-    it("Accesso Area Riservata - Applica sconto ", ()=>{
-        cy.pause()
-        UltraBMP.SelezionaVoceMenuPagAmbiti('Area riservata')
-        AreaRiservata.ApplicaSconto()
-    })
-    */
-
-    /*
-    it("Accesso Convenzioni - Seleziona convenzione ", ()=>{
-        cy.pause()
-        UltraBMP.SelezionaVoceMenuPagAmbiti('Convenzioni')
-        //Convenzioni.ClickTab('Codici speciali')
-        //Convenzioni.ClickTab('Convenzioni')
-        //Convenzioni.ChiudiFinestra()
-        Convenzioni.SelezionaConvenzione("Sky")
-        Convenzioni.RimuoviConvenzione()
-        Convenzioni.ClickButton('Annulla')
-        //Convenzioni.ClickButton('Conferma')
-    })
-    */
-
-    /*
-    it("Accesso Configurazione Ambito da matita", ()=>{
-        cy.pause()
-        UltraBMP.ClickMatita('Fabbricato')
-        //UltraBMP.ClickMatita('Fabbricato', 'Casa 2')
-    })
-    */
-
-    /*
-    it("Seleziona fonte", ()=>{
-        cy.pause()
-        Ultra.selezionaFonteRandom()
-    })
-    */
-
-    it("Seleziona frazionamento", ()=>{
-        Ultra.selezionaFrazionamento(frazionamento)
-    })
-
-    it("Modifica soluzione per Fabbricato", ()=>{
-        Ultra.modificaSoluzioneHome('Fabbricato', 'Top')
-    })
-    
-    it("Modifica soluzione per Contenuto", ()=>{
-        Ultra.modificaSoluzioneHome('Contenuto', 'Essential')
-        cy.pause()
-    })
 })

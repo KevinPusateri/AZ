@@ -1334,7 +1334,6 @@ Cypress.Commands.add('isClientEffettivo', (userProfileToken, accountId, clientId
     body: { query: clientQuery, variables: JSON.parse(filter) },
     log: false
   }).then(clientResponse => {
-    debugger
     if (clientResponse.body.data.client !== null) {
       return (clientResponse.body.data.client.status.clientStatus.key === 'E') ? true : false
     }

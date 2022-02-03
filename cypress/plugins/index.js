@@ -55,15 +55,13 @@ const sendEmail = (currentSubject, currentMessage, additionalEmail = null) => {
             from: '"Test Automatici MW" <noreply@allianz.it>',
             to: (additionalEmail === null) ? 'test.factory.test@allianz.it' : 'test.factory.test@allianz.it,' + additionalEmail,
             subject: currentSubject,
-            text: currentMessage,
-            html: '<b>' + currentMessage + '/b></br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>',
+            html:  currentMessage + '</br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>',
         };
         transporter.sendMail(email, function (err, info) {
             return err ? err.message : 'Message sent: ' + info.response;
         });
         resolve(true)
     })
-
 }
 //#endregion
 
