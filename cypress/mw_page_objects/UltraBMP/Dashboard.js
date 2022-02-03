@@ -214,13 +214,11 @@ class Dashboard {
                 .contains('Salva').should('be.visible').click() 
             
             cy.get('div[id="salvaBody"]').should('exist')
-              //.find('div[id="salvaBody"]').should('exist')
               .find('div[class="nx-formfield__input"]').should('be.visible')
               .eq(0).should('be.visible')
               .click().wait(500)
               .clear().wait(500)
               .type(nomeQ).wait(2000)
-              //.type('{tab}')
 
             cy.get('div[id="salvaBody"]').should('exist')
               .find('div[class="nx-formfield__input"]').should('be.visible')
@@ -261,8 +259,6 @@ class Dashboard {
 
     static condividiQuotazione(daSelezionare) {
         ultraIFrame().within(() => {
-            //const nomeQ = Dashboard.stringaRandom(10)
-            //cy.log('stringa generata: ' + nomeQ)
             cy.get('div[id="ambitiHeader"]')
                 .contains('Condividi').should('be.visible').click() 
             
@@ -298,24 +294,21 @@ class Dashboard {
     }
 
     static leggiPremioTot() {
-        //let pr = 0
         ultraIFrame().within(() => {
             cy.get('div[class="header-price-euro ng-star-inserted"]').should('be.visible')
               .invoke('text').then(val => {
                 cy.wrap(val).as('premioTotDashboard')
-                //cy.log('leggi premio tot: ' + val)
               })
         })
     }
 
     static verificaPremio(premioOld, premioNew, variazionePremio) {
         cy.pause()
-        cy.log('********* VERIFICA PREMIO **************')
         var impMin = 0
         var impMax = 0 
         var premio = premioOld + variazionePremio
-        impMin = premio.toFixed(2) - 0.01
-        impMax = premio.toFixed(2) + 0.01
+        impMin = (premio - 0.01)
+        impMax = (premio + 0.01)
         
         cy.log("** Verifica premio **")
         cy.log('PremioOld: ' + premioOld + ' - PremioNew: ' + premioNew + ' - Delta: ' + variazionePremio)
@@ -325,7 +318,6 @@ class Dashboard {
     static procediHome() {
         ultraIFrame().within(() => {
             cy.get('[id="dashTable"]').should('be.visible')
-            //cy.get('button[aria-disabled="false"]').find('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
             cy.get('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
         })
     }

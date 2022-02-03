@@ -80,7 +80,8 @@ var premioTotPrima = 0
 var premioTotDopo = 0
 var premioFA = 0
 var premioFA_FenomenoElettrico = 0
-var premioRC = 0
+var premioRC_Prima = 0
+var premioRC_Dopo = 0
 var premioRC_Affittacamere = 0
 var premioRC_ProprietàAnimali = 0
 
@@ -211,6 +212,10 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
     })
 
     it("Verifica premio totale in Dashboard dopo variazioni ambito 'Fabbricato'", ()=>{
+        cy.log('********* VERIFICA PREMIO **************')
+        cy.log('premioTotPrima: ' + premioTotPrima)
+        cy.log('premioTotDopo: ' + premioTotDopo)
+        cy.log('premioFA_FenomenoElettrico: ' + premioFA_FenomenoElettrico)
         Dashboard.verificaPremio(premioTotPrima, premioTotDopo, premioFA_FenomenoElettrico)
         cy.pause()
     })
@@ -228,24 +233,30 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareRC, modificheCasa)
         ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.PREMIUM)
 
+        ConfigurazioneAmbito.leggiPremio('Ambito')   //>> premioAmbito
+        cy.get('@premioAmbito').then(premioAmbito => {
+            premioRC_Prima = parseFloat(premioAmbito.replace(/,/,"."))
+            cy.log('Premio Ambito Responsabilità Civile - Prima delle modifiche: ' + premioRC_Prima)
+        })
+
         ConfigurazioneAmbito.ModificaConfigurazioneAmbito(daModificareRC, modificheRC)
         
         ConfigurazioneAmbito.leggiPremio('Ambito')   //>> premioAmbito
         cy.get('@premioAmbito').then(premioAmbito => {
-            premioRC = parseFloat(premioAmbito.replace(/,/,"."))
-            cy.log('Premio Ambito Fabbricato: ' + premioRC)
+            premioRC_Dopo = parseFloat(premioAmbito.replace(/,/,"."))
+            cy.log('Premio Ambito Responsabilità Civile - Dopo le modifiche: ' + premioRC_Dopo)
         })
 
         ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('attività di affittacamere e Bed & Breakfast')    //>> premioGarAgg
         cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
             premioRC_Affittacamere = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
-            cy.log('Premio Garanzia Aggiuntiva: ' + premioRC_Affittacamere)
+            cy.log('Premio Garanzia Aggiuntiva Affittacamere: ' + premioRC_Affittacamere)
         })
 
         ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('proprietà di cavalli ed altri animali da sella')    //>> premioGarAgg
         cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
             premioRC_ProprietàAnimali = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
-            cy.log('Premio Garanzia Aggiuntiva: ' + premioRC_ProprietàAnimali)
+            cy.log('Premio Garanzia Aggiuntiva Cavalli: ' + premioRC_ProprietàAnimali)
         })
 
         ConfigurazioneAmbito.aggiungiGaranzia('attività di affittacamere e Bed & Breakfast')
@@ -263,7 +274,8 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
     })
 
     it("Verifica premio totale in Dashboard dopo variazioni ambito 'Responsabilità Civile'", ()=>{
-        Dashboard.verificaPremio(premioTotPrima, premioTotDopo, premioRC_Affittacamere + premioRC_ProprietàAnimali)
+        var deltaPremio = (premioRC_Dopo - premioRC_Prima) + premioRC_Affittacamere + premioRC_ProprietàAnimali
+        Dashboard.verificaPremio(premioTotPrima, premioTotDopo, deltaPremio)
         cy.pause()
     })
 

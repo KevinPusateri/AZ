@@ -351,23 +351,6 @@ class DatiQuotazione {
         cy.log("Modifica 'Assicurato - da inserire': " + modificheCasa.Assicurato)
         //cy.pause()
         DatiQuotazione.modificaDropDown(casa, 'assicurato è', 1, modificheCasa.Assicurato)
-        /*
-        cy.contains('h2', casa).should('exist')
-          .parent('div').should('exist')
-          .find('form').should('exist')
-          .contains("assicurato è")
-          .parent().should('have.class', 'ca-question ng-star-inserted')
-          .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
-          .children('div').should('have.length.gt', 0)
-          .eq(1).should('be.visible')
-          .find('[class="ng-star-inserted"]').click()
-
-        cy.get('.nx-dropdown__panel-body').should('be.visible')
-          .find('span').contains(modificheCasa.Assicurato).click()
-        
-        cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-        cy.wait(2000)
-        */
       }
 
       //Modifica "Nome abitazione"
@@ -383,31 +366,12 @@ class DatiQuotazione {
         cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
         cy.wait(1000)
 
-
-        /*
-        cy.contains('h2', casa).should('exist')
-          .parent('div').should('exist')
-          .find('form').should('exist')
-          .contains("assicurato è")
-          .parent().should('have.class', 'ca-question ng-star-inserted')
-          .parent().should('have.class', 'ca-questions-row ng-star-inserted')     //riga
-          .children('div').should('have.length.gt', 0)
-          .eq(3).should('be.visible')
-          .click().wait(500)
-          .clear().wait(500)
-          .type(modificheCasa.Nome).wait(2000)
-          //.find('[class="ng-star-inserted"]').click()
-
-        cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-        cy.wait(2000)
-        */
         casa = modificheCasa.Nome
       }
 
       //Modifica "Cap abitazione"
       if (daModificare.Cap) {
         cy.log("Modifica 'Cap - da inserire': " + modificheCasa.Cap)
-        //DatiQuotazione.modificaInput(casa, 'assicurato è', 5, modificheCasa.Cap)
         cy.contains('h2', casa).should('exist')
           .parent('div').should('exist')
           .find('form').should('exist')
@@ -513,7 +477,6 @@ class DatiQuotazione {
       //Modifica "Cap assicurato"
       if (daModificare.CapAss) {
         cy.log("Modifica 'Cap assicurato - da inserire': " + modificheCasa.CapAss)
-        //DatiQuotazione.modificaInput(casa, 'assicurato ha la residenza', 3, modificheCasa.CapAss)
         cy.contains('h2', casa).should('exist')
           .parent('div').should('exist')
           .find('form').should('exist')
@@ -590,7 +553,6 @@ class DatiQuotazione {
       //Modifica "Cap"
       if (daModificare.Cap) {
         cy.log("Modifica 'Cap residenza' - da inserire: " + modificheAnimale.Cap)
-        //DatiQuotazione.modificaInput(animale, 'Il proprietario ha la residenza', 3, modificheAnimale.Cap)
         cy.contains('h2', animale).should('exist')
           .parent('div').should('exist')
           .find('form').should('exist')
