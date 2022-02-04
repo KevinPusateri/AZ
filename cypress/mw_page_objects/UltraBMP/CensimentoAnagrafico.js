@@ -12,7 +12,7 @@ const ultraIFrame = () => {
 
 
 const ultraIFrameAnagrafica = () => {
-    let iframeAnag = cy.get('#divPopUpACAnagrafica')
+    let iframeAnag = cy.get('#divPopupAnagrafica').find('#divPopUpACAnagrafica')
         .its('0.contentDocument').should('exist')
 
     return iframeAnag.its('body').should('not.be.undefined').then(cy.wrap)
@@ -25,7 +25,7 @@ class CensimentoAnagrafico {
     /**
      * Attende il caricamento della pagina Censimento Anagrafico
      */
-     static caricamentoCensimentoAnagrafico() {
+    static caricamentoCensimentoAnagrafico() {
         //cy.intercept({
         //    method: 'GET',
         //    url: '**/tmpl_anag_persona_riepilogo.htm'
@@ -40,7 +40,7 @@ class CensimentoAnagrafico {
         }).as('anagrafica')
 
         cy.wait('@anagrafica', { requestTimeout: 60000 })
-        
+
     }
     //#endregion caricamenti
 
@@ -116,14 +116,17 @@ class CensimentoAnagrafico {
 
             cy.get('#divPopupAnagrafica', { timeout: 30000 }).should('be.visible')  //attende la comparsa popup di ricerca anagrafiche
             cy.wait(5000)
-            //cy.pause()
 
             cy.get('div[id="divPopupAnagrafica"]').should('exist')
 
             //popup anagrafico
             ultraIFrameAnagrafica().within(() => {
-                cy.get('input[value="Persona Fisica"]').should('be.visible').click()  //seleziona Persona Fisica
+                cy.get('#AZBuilder1_GroupStdPersonaImpresa__Pop').should('be.visible')
+                    .find(('input[value="Persona Fisica"]')).click()  //seleziona Persona Fisica
+                    cy.wait(2000)
+            })
 
+            ultraIFrameAnagrafica().within(() => {
                 cy.get('#f-cognome').should('be.visible').type(cliente.cognome)
                 cy.get('#f-nome').should('be.visible').type(cliente.nome)
 

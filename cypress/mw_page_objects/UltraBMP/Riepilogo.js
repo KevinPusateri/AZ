@@ -66,7 +66,7 @@ class Riepilogo {
      */
      static verificaAmbito(ambito, oggetto, soluzione, durata, prezzo) {
         ultraIFrame().within(() => {
-            cy.pause()
+            //cy.pause()
             cy.get('span').contains(ambito).should('be.visible')
               .parent('td')
               .parent('tr').should('have.class', 'nx-table-row ng-star-inserted')
