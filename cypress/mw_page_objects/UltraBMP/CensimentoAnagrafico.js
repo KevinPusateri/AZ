@@ -10,12 +10,14 @@ const ultraIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+
 const ultraIFrameAnagrafica = () => {
     let iframeAnag = cy.get('#divPopUpACAnagrafica')
         .its('0.contentDocument').should('exist')
 
     return iframeAnag.its('body').should('not.be.undefined').then(cy.wrap)
 }
+
 //#endregion iFrame
 
 class CensimentoAnagrafico {
@@ -85,6 +87,47 @@ class CensimentoAnagrafico {
                 cy.get('#f-nome').should('be.visible').type(cliente.nome)
 
                 cy.get('#cerca-pers-forinsert').should('be.visible').click() //avvia ricerca
+                cy.wait(1000)
+                cy.get('span').contains(cliente.cognomeNome()).click()
+                cy.wait(2000)
+            })
+
+            //popup attenzione CAP
+            cy.get('#popupConfermaCambioParamTariffari', { timeout: 15000 })
+                .should('be.visible')
+                .find('button').contains('AGGIORNA')
+                .click()
+
+            //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento  nx-spinner__spin-block
+        })
+    }
+
+    /**
+     * Seleziona un contraente già esistente
+     * @param {*} cliente  (persona fisica)
+     */
+    static selezionaContraentePF(cliente) {
+        ultraIFrame().within(() => {
+            cy.get('#tabsAnagrafiche', { timeout: 30000 }).should('be.visible')  //attende la comparsa del form con i dati quotazione
+
+            cy.get('div').contains('Contraente Principale').should('be.visible').click()  //tab Contraente Principale
+
+            cy.get('button').contains('CERCA').should('be.visible').click()  //cerca cliente
+
+            cy.get('#divPopupAnagrafica', { timeout: 30000 }).should('be.visible')  //attende la comparsa popup di ricerca anagrafiche
+            cy.wait(5000)
+            //cy.pause()
+
+            cy.get('div[id="divPopupAnagrafica"]').should('exist')
+
+            //popup anagrafico
+            ultraIFrameAnagrafica().within(() => {
+                cy.get('input[value="Persona Fisica"]').should('be.visible').click()  //seleziona Persona Fisica
+
+                cy.get('#f-cognome').should('be.visible').type(cliente.cognome)
+                cy.get('#f-nome').should('be.visible').type(cliente.nome)
+
+                cy.get('#cerca-pers-forinsert').should('be.visible').click()  //avvia ricerca
                 cy.wait(1000)
                 cy.get('span').contains(cliente.cognomeNome()).click()
                 cy.wait(2000)

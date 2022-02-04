@@ -179,7 +179,8 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
     })
     
     it("Censimento anagrafico", () => {
-        CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica)
+        CensimentoAnagrafico.selezionaContraentePF(personaFisica)
+        cy.pause()
         Ultra.Avanti()
         DatiIntegrativi.caricamentoPagina()
         cy.pause()
