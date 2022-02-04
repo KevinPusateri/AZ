@@ -56,7 +56,6 @@ class ConfigurazioneAmbito {
     static leggiPremio(garanzia) {
       //let pr = 0
       ultraIFrame().within(() => {
-        cy.pause()
         if (garanzia.toUpperCase() == 'TOTALE')    // Premio totale
         {
           cy.get('div[id="ambitiHeader"]').should('exist')
@@ -84,7 +83,6 @@ class ConfigurazioneAmbito {
 
     static leggiPremioGaranziaAggiuntiva(garanziaAgg) {
       ultraIFrame().within(() => {
-        cy.pause()
         cy.contains('span', garanziaAgg).should('exist')
           .parent('div')
           .parent('div')
@@ -153,7 +151,6 @@ class ConfigurazioneAmbito {
     }
     
     static modificaDropDownConf(testoRiga, ind, testoDaInserire) {
-      cy.pause()
       cy.get('div[class="ca-col-soluzione selected"]').should('exist')
         .contains(testoRiga)
         .parent().should('have.class', 'garanzia-name')
@@ -604,7 +601,6 @@ class ConfigurazioneAmbito {
         if (daModificare.Assicurato)
         {
           cy.log("Modifica 'Assicurato - da inserire': " + modificheCasa.Assicurato)
-          //cy.pause()
           ConfigurazioneAmbito.modificaDropDown('assicurato è', 1, modificheCasa.Assicurato)
         }
 
@@ -612,7 +608,6 @@ class ConfigurazioneAmbito {
         if (daModificare.Nome)
         {
           cy.log("Modifica 'Nome abitazione - da inserire': " + modificheCasa.Nome)
-          //cy.pause()
           ConfigurazioneAmbito.modificaInput('assicurato è', 3, modificheCasa.Nome)
           
           cy.get('div[id="warning-switch-solution"]')
@@ -655,9 +650,6 @@ class ConfigurazioneAmbito {
           ConfigurazioneAmbito.modificaDropDown(casa, 'È la casa', 1, modificheCasa.Uso)
         }
         
-        //cy.pause()
-
-
         //Modifica "Tipo abitazione"
         if (daModificare.Tipo)
         {
@@ -762,7 +754,6 @@ class ConfigurazioneAmbito {
           cy.wait(1000)
         }
         
-        cy.pause()
       })
 
     }
@@ -843,8 +834,6 @@ class ConfigurazioneAmbito {
           cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
           cy.wait(1000)
 
-
-          cy.pause()
         }
 
 
@@ -871,7 +860,6 @@ class ConfigurazioneAmbito {
           ConfigurazioneAmbito.modificaDropDownConf('Responsabilità civile della casa', 1, modificheAmbito.RC_Casa)
         }
           
-        cy.pause()
       })
 
     }

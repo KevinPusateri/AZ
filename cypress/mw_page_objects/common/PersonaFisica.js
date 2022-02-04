@@ -38,5 +38,16 @@ export default class PersonaFisica {
 
         return GalileoGalilei
     }
+
+    static MassimoRoagna() {
+        let MassimoRoagna = new PersonaFisica("MASSIMO", "ROAGNA")
+        MassimoRoagna.via = "VITTORIO ALFIERI"
+        MassimoRoagna.numero = "3"
+        MassimoRoagna.cap = "10022"
+        MassimoRoagna.citta = "CARMAGNOLA"
+        MassimoRoagna.provincia = "TO"
+
+        return MassimoRoagna
+    }
 }
 

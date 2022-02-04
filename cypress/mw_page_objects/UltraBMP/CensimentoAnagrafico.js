@@ -9,6 +9,13 @@ const ultraIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
+
+const ultraIFrameAnagrafica = () => {
+    let iframeAnag = cy.get('#divPopUpACAnagrafica')
+        .its('0.contentDocument').should('exist')
+
+    return iframeAnag.its('body').should('not.be.undefined').then(cy.wrap)
+}
 //#endregion iFrame
 
 class CensimentoAnagrafico {
@@ -17,12 +24,21 @@ class CensimentoAnagrafico {
      * Attende il caricamento della pagina Censimento Anagrafico
      */
      static caricamentoCensimentoAnagrafico() {
+        //cy.intercept({
+        //    method: 'GET',
+        //    url: '**/tmpl_anag_persona_riepilogo.htm'
+        //}).as('anagrafica')
+        //
+        //cy.wait('@anagrafica', { requestTimeout: 60000 })
+
+
         cy.intercept({
             method: 'GET',
-            url: '**/tmpl_anag_persona_riepilogo.htm'
+            url: '**/Danni/UltraBRE/prismapsapi/completamento/getDatiQuotazione'
         }).as('anagrafica')
 
         cy.wait('@anagrafica', { requestTimeout: 60000 })
+        
     }
     //#endregion caricamenti
 

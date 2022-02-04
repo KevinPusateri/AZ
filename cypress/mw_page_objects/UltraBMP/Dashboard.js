@@ -252,8 +252,6 @@ class Dashboard {
             cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
             cy.wait(1000)
 
-            cy.pause()
-
         })
     }
 
@@ -287,8 +285,6 @@ class Dashboard {
               
             cy.get('span').contains('Salva PDF').should('exist')
               .parent('button').should('have.attr', 'aria-disabled', 'false').click()
-
-            cy.pause()
 
         })
     }

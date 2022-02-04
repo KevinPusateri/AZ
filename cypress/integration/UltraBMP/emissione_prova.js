@@ -11,7 +11,10 @@ import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
 import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
+import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
+import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import Common from "../../mw_page_objects/common/Common"
+import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import BurgerMenuSales from "../../mw_page_objects/burgermenu/BurgerMenuSales"
@@ -44,9 +47,10 @@ import { daVerificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
 //#endregion
 
 //#region  variabili iniziali
-var cliente = ""
-var clienteUbicazione = ""
-var frazionamento = "annuale"
+//var cliente = ""
+//var clienteUbicazione = ""
+let personaFisica = PersonaFisica.MassimoRoagna()
+//var frazionamento = "annuale"
 var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
 var defaultFQ = {
     "TipoAbitazione"    : "appartamento",
@@ -162,17 +166,23 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
     })
 
     it("Verifica presenza Oggetti in Dati Quotazione", () => {
-        DatiQuotazione.verificaPresenzaOggetto(defaultCasa.Nome)
-        DatiQuotazione.verificaPresenzaOggetto(defaultAnimale.Nome)
+        //DatiQuotazione.verificaPresenzaOggetto(defaultCasa.Nome)
+        //DatiQuotazione.verificaPresenzaOggetto(defaultAnimale.Nome)
         DatiQuotazione.confermaDatiQuotazione()
         Riepilogo.caricamentoRiepilogo()
-        cy.pause()
     })
 
     it("Verifica ambiti in Riepilogo", () => {
         Riepilogo.verificaAmbito('Fabbricato', 'Casa 1', 'Top', '1', '')
+        Riepilogo.EmissionePolizza()
+        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
+    })
+    
+    it("Censimento anagrafico", () => {
+        CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica)
+        Ultra.Avanti()
+        DatiIntegrativi.caricamentoPagina()
         cy.pause()
     })
-
     
 })
