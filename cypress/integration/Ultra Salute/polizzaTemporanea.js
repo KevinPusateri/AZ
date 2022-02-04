@@ -133,6 +133,7 @@ describe("POLIZZA TEMPORANEA", () => {
   })
 
   it("Censimento anagrafico", () => {
+    cy.pause()
     Ultra.caricamentoCensimentoAnagrafico()
     Ultra.censimentoAnagraficoSalute(cliente.cognome + ' ' + cliente.nome, false, false, false)
   })
