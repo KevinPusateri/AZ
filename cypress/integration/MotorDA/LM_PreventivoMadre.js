@@ -121,8 +121,7 @@ describe("LIBRI MATRICOLA - PREVENTIVO MADRE", () => {
     cy.get('@contratto').then(val => {
       nPreventivo = val
       cy.log("nContratto b " + nPreventivo)
-    })
-    
+    })    
   })
 
   it("Verifica presenza preventivo", () => {

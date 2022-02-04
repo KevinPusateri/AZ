@@ -29,7 +29,7 @@ class ControlliProtocollazione {
             url: '**/GetRiepilogoDocumenti'
         }).as('documenti')
 
-        cy.wait('@documenti', { timeout: 60000 })
+        cy.wait('@documenti', { timeout: 100000 })
     }
 
     /**
@@ -103,7 +103,7 @@ class ControlliProtocollazione {
 
                             //conferma popup
                             cy.get('button').contains('Conferma').should('be.visible').click()
-                        });                    
+                        });
                 })
             }
             else {
@@ -127,7 +127,7 @@ class ControlliProtocollazione {
     /**
      * Clicca sul pulsante Avanti
      */
-     static Avanti() {
+    static Avanti() {
         ultraIFrame().within(() => {
             ultraIFrame0().within(() => {
                 cy.get('button').contains('Avanti').click() //avanti
@@ -161,6 +161,16 @@ class ControlliProtocollazione {
                     .should('be.visible')
                     .click()
             })
+        })
+    }
+
+    static salvaNContratto() {
+        ultraIFrame().within(() => {
+            cy.get('[class="step last success"]').find('span').contains('contratto')
+                .children('b').invoke('text').then(val => {
+                    cy.wrap(val).as('contratto')
+                    cy.log("return " + '@contratto')
+                })
         })
     }
 

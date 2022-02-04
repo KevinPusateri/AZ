@@ -686,4 +686,56 @@ class Portafoglio {
                 })
             })
     }
-} export default Portafoglio
+
+    /**
+     * Apre il menù opzioni del contratto e seleziona la voce indicata 
+     * @param {string} nContratto 
+     * @param {json} voce 
+     */
+    static menuContratto(nContratto, voce) {
+        //cerca il riquadro del contratto e apre il menù contestuale
+        cy.get('.contract-number').contains(nContratto)
+            .parents('.top-card-grid').find('app-contract-context-menu')
+            .children('nx-icon').click()
+
+        cy.wait(1000)
+
+        cy.get('[class*="transformContextMenu"]').should('be.visible')
+            .contains(voce).click() //seleziona la voce dal menù
+    }
+
+    /**
+     * Ordina ordina la lista delle polizze secondo il criterio indicato
+     * @param {string} ordinaPer 
+     */
+    static ordinaPolizze(ordinaPer) {
+        cy.get('.sorting-button').click() //apre il menù per l'ordine delle polizze
+        cy.wait(1000)
+
+        cy.get('.cdk-overlay-pane').should('be.visible')
+            .find('div').contains(ordinaPer).click() //seleziona la voce dal menù
+    }
+
+    /**
+     * apre il menù contestuale nella sezione 'ambiti del contratto'
+     * @param {string} ambito 
+     * @param {string} voce 
+     */
+    static menuContestualeAmbiti(ambito, voce) {
+        //verifica che sia aperto il popup 'Ambiti del contratto'
+        cy.get('.modal-title').children().contains('Ambiti del contratto')
+
+        //cerca il riquadro dell'ambito indicato e apre il menù contestuale
+        cy.get('nx-modal-container').should('be.visible')
+            .find('.category').contains(ambito.toUpperCase())
+            .parents('[class*="card"]').find('app-module-context-menu')
+            .find('nx-icon').click()
+
+        cy.wait(1000)
+
+        cy.get('[class*="context-menu"]').should('be.visible')
+            .find('button').contains(voce).click() //seleziona la voce dal menù
+    }
+}
+export default Portafoglio
+//<img _ngcontent-yoe-c287="" class="loading-spinner" src="assets/images/spinner.gif" alt="Caricamento...">

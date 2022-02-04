@@ -16,7 +16,9 @@ import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
 import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
 import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
+import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
 import 'cypress-iframe';
 //#endregion
 
@@ -36,14 +38,14 @@ const delayBetweenTests = 2000
 let cliente = PersonaFisica.GalileoGalilei()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato]
 var frazionamento = "semestrale"
-let iFrameUltra = '[class="iframe-content ng-star-inserted"]'
-let iFrameFirma = '[id="iFrameResizer0"]'
+var nContratto = "000"
 //#endregion variabili iniziali
 
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
+
     })
 })
 
@@ -176,6 +178,12 @@ describe("FABBRICATO E CONTENUTO", () => {
 
     it("Adempimenti precontrattuali e Perfezionamento", () => {
         ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
+        ControlliProtocollazione.salvaNContratto()
+
+        cy.get('@contratto').then(val => {
+            nContratto = val
+        })
+
         ControlliProtocollazione.Incassa()
         Incasso.caricamentoPagina()
     })
@@ -193,11 +201,26 @@ describe("FABBRICATO E CONTENUTO", () => {
 
     it("Esito incasso", () => {
         Incasso.EsitoIncasso()
-        Incasso.Chiudi()        
+        Incasso.Chiudi()
     })
 
-    it("Chiusura", ()=>{        
+    it("Chiusura e apertura sezione Clients", () => {
         Ultra.chiudiFinale()
+        cy.get('.nx-breadcrumb-item__text').contains('Clients').click()
+
+        cy.intercept({
+            method: 'POST',
+            url: '**/clients/**'
+        }).as('clients')
+
+        cy.wait('@clients', { requestTimeout: 60000 })
+    })
+
+    it("Portafoglio", () => {
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.ordinaPolizze("Numero contratto")
+        Portafoglio.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
+        Portafoglio.menuContestualeAmbiti("tutela legale")
         cy.pause()
     })
 })
