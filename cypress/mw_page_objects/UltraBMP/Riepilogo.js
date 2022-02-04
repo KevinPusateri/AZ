@@ -83,6 +83,14 @@ class Riepilogo {
         })
     }
 
+    static verificaFrazionamento(fraz) {
+        ultraIFrame().within(() => {
+            cy.get('div[class="header-price-frazionam"]').should('exist')
+            .children('div').should('have.length.gt', 0)
+            .eq(1).should('contain.text', fraz)
+        })
+    }
+
 
     /**
      * Clicca sul pulsante Emetti Polizza

@@ -356,7 +356,6 @@ class DatiQuotazione {
       //Modifica "Nome abitazione"
       if (daModificare.Nome) {
         cy.log("Modifica 'Nome abitazione - da inserire': " + modificheCasa.Nome)
-        //cy.pause()
         DatiQuotazione.modificaInput(casa, 'assicurato è', 3, modificheCasa.Nome)
 
         cy.get('div[id="warning-switch-solution"]')
@@ -398,9 +397,6 @@ class DatiQuotazione {
         cy.log("Modifica 'Uso - da inserire': " + modificheCasa.Uso)
         DatiQuotazione.modificaDropDown(casa, 'È la casa', 1, modificheCasa.Uso)
       }
-
-      //cy.pause()
-
 
       //Modifica "Tipo abitazione"
       if (daModificare.Tipo) {
@@ -496,7 +492,6 @@ class DatiQuotazione {
         cy.wait(1000)
       }
 
-      cy.pause()
     })
 
   }
@@ -571,8 +566,6 @@ class DatiQuotazione {
         cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
         cy.wait(1000)
 
-
-        cy.pause()
       }
     })
   }
