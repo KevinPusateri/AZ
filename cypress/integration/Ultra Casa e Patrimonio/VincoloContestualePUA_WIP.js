@@ -111,6 +111,11 @@ describe("Vincolo contestuale PUA ", () => {
     Dashboard.Vincolo(true, casa, scadenza)
   })
 
+  it("Modifica durata per Fabbricato", () => {
+    Dashboard.dotMenu(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, "Modifica la durata")
+    Dashboard.modificaDurata(30)
+  })
+
   it("Cambia Soluzioni", () => {
     cy.pause()
     Ultra.modificaSoluzioneHome('Diaria da ricovero', 'Top')

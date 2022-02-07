@@ -21,7 +21,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe_RCA/tariffaCases_RCA_20220201.json'
+import { tariffaCases } from '../../../fixtures//tariffe_RCA/tariffaCases_RCA_20220201.json'
 //#endregion
 before(() => {
     Cypress.env('isAviva', false)
@@ -53,7 +53,7 @@ after(function () {
 //Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //Se specificato, esegue l'identificativo caso specifico
-let caseToExecute = ''
+let caseToExecute = '11'
 describe('RCA Febbraio 2022: ', {
     retries: {
         runMode: 0,
@@ -90,7 +90,7 @@ describe('RCA Febbraio 2022: ', {
 
             it("LogTariffa", function () {
                 if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
-                    if (currentCase.Settore !== '3')
+                    if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
                         TenutaTariffa.checkTariffaRCA(currentCase)
                     else
                         this.skip()
