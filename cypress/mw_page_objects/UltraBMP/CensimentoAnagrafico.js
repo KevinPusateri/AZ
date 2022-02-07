@@ -45,6 +45,15 @@ class CensimentoAnagrafico {
     //#endregion caricamenti
 
     /**
+     * Clicca sul pulsante Avanti
+     */
+     static Avanti() {
+        ultraIFrame().within(() => {
+            cy.get('[id="btnAvanti"]').should('be.visible').click()
+        })
+    }
+
+    /**
      * Completa la sezione Casa della pagina Censimento Anagrafico
      * @param {*} cliente 
      * @param {*} ubicazione 
@@ -123,7 +132,7 @@ class CensimentoAnagrafico {
             ultraIFrameAnagrafica().within(() => {
                 cy.get('#AZBuilder1_GroupStdPersonaImpresa__Pop').should('be.visible')
                     .find(('input[value="Persona Fisica"]')).click()  //seleziona Persona Fisica
-                    cy.wait(2000)
+                    cy.wait(10000)
             })
 
             ultraIFrameAnagrafica().within(() => {
@@ -136,13 +145,96 @@ class CensimentoAnagrafico {
                 cy.wait(2000)
             })
 
+            /*
             //popup attenzione CAP
             cy.get('#popupConfermaCambioParamTariffari', { timeout: 15000 })
                 .should('be.visible')
                 .find('button').contains('AGGIORNA')
                 .click()
+            */
 
             //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento  nx-spinner__spin-block
+        })
+    }
+
+    /**
+     * Seleziona un contraente già esistente
+     * @param {*} cliente  (persona fisica)
+     * @param {*} capDifferente (flag per indicare se il cap è differente da quello di default)
+     */
+     static selezionaCasa(cliente, capDifferente = false) {
+        ultraIFrame().within(() => {
+            //cy.log('*** seleziona Casa ***')
+            //cy.log('ubicazione: ' + cliente.ubicazione() + ' - cliente: ' + cliente.cognomeNome())
+            
+            cy.get('#tabsAnagrafiche', { timeout: 30000 }).should('be.visible')  //attende la comparsa del form con i dati quotazione
+            cy.get('div').contains('Casa').should('be.visible').click()  //tab Casa
+
+            cy.get('span')
+                .contains('Ubicazione').should('be.visible')
+                .parent()
+                .parent()
+                .find('select').select(cliente.ubicazione())
+            
+            if (capDifferente)
+            {
+                //popup attenzione CAP
+                cy.get('#popupConfermaCambioParamTariffari', { timeout: 15000 })
+                    .should('be.visible')
+                    .find('button').contains('AGGIORNA')
+                    .click()
+            }
+
+            cy.get('span')
+                .contains('Assicurato associato').should('be.visible')
+                .parent()
+                .parent()
+                .find('select').select(cliente.cognomeNome())
+
+            if (capDifferente)
+            {
+                //popup attenzione CAP
+                cy.get('#popupConfermaCambioParamTariffari', { timeout: 15000 })
+                    .should('be.visible')
+                    .find('button').contains('AGGIORNA')
+                    .click()
+            }
+
+        })
+    }
+
+    /**
+     * Seleziona un animale
+     * @param {*} cliente  (persona fisica)
+     * @param {*} microchip (numero di 15 cifre)
+     * @param {*} capDifferente (flag per indicare se il cap è differente da quello di default)
+     */
+     static selezionaAnimale(animale, cliente, microchip, capDifferente = false) {
+        ultraIFrame().within(() => {
+            cy.get('#tabsAnagrafiche', { timeout: 30000 }).should('be.visible')  //attende la comparsa del form con i dati quotazione
+            cy.get('div').contains('Animali domestici').should('be.visible').click()  //tab Anumali Domestici
+
+            cy.get('input[id="lblNomeAnimale"]').should('be.visible')
+                .clear()
+                .wait(1000)
+                .type(animale)
+
+            cy.get('#lblAnimalemicrochip').should('be.visible').type(microchip)
+
+            cy.get('div')
+                .contains('Proprietario').should('be.visible')
+                .parent()
+                .find('select').select(cliente.cognomeNome())
+
+            if (capDifferente)
+            {
+                //popup attenzione CAP
+                cy.get('#popupConfermaCambioParamTariffari', { timeout: 15000 })
+                    .should('be.visible')
+                    .find('button').contains('AGGIORNA')
+                    .click()
+            }
+
         })
     }
 }

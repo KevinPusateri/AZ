@@ -41,7 +41,7 @@ export default class PersonaFisica {
 
     static MassimoRoagna() {
         let MassimoRoagna = new PersonaFisica("MASSIMO", "ROAGNA")
-        MassimoRoagna.via = "VITTORIO ALFIERI"
+        MassimoRoagna.via = "VIA VITTORIO ALFIERI"
         MassimoRoagna.numero = "3"
         MassimoRoagna.cap = "10022"
         MassimoRoagna.citta = "CARMAGNOLA"

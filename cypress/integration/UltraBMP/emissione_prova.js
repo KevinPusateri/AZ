@@ -13,6 +13,9 @@ import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
 import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 import Common from "../../mw_page_objects/common/Common"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
@@ -51,7 +54,8 @@ import { daVerificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
 //var clienteUbicazione = ""
 let personaFisica = PersonaFisica.MassimoRoagna()
 //var frazionamento = "annuale"
-var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
+//var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
+var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE]
 var defaultFQ = {
     "TipoAbitazione"    : "appartamento",
     "MqAbitazione"      : "100",
@@ -145,7 +149,17 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
         //cy.pause()
         Ultra.modificaSoluzioneHome(ambitoUltra.FABBRICATO, soluzione.TOP)
         Ultra.modificaSoluzioneHome(ambitoUltra.RESPONSABILITA_CIVILE, soluzione.PREMIUM)
-        Ultra.modificaSoluzioneHome(ambitoUltra.ANIMALI_DOMESTICI, soluzione.ESSENTIAL)
+        //Ultra.modificaSoluzioneHome(ambitoUltra.ANIMALI_DOMESTICI, soluzione.ESSENTIAL)
+    })
+
+    it("Accesso Dati Quotazione da menù", ()=>{
+        UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
+        //DatiQuotazione.VerificaDefaultCasa('Casa 1', daVerificareCasa, defaultCasa)
+        //DatiQuotazione.VerificaDefaultAnimaleDomestico('Animale domestico 1', daVerificareAnimale, defaultAnimale)
+        //DatiQuotazione.ModificaValoriCasa('Casa 1', daModificareCasa, modificheCasa)
+        //DatiQuotazione.ModificaValoriAnimaleDomestico('Animale domestico 1', daModificareAnimale, modificheAnimale)
+        DatiQuotazione.ClickButton("CONFERMA")
+        //Dashboard.caricamentoDashboardUltra()  <<< non trova 
     })
 
     /*
@@ -180,9 +194,73 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
     
     it("Censimento anagrafico", () => {
         CensimentoAnagrafico.selezionaContraentePF(personaFisica)
-        cy.pause()
-        Ultra.Avanti()
+        CensimentoAnagrafico.selezionaCasa(personaFisica, true)
+        //CensimentoAnagrafico.selezionaAnimale(modificheAnimale.Nome, personaFisica, '380260000279818', true)
+        CensimentoAnagrafico.Avanti()
         DatiIntegrativi.caricamentoPagina()
+        cy.pause()
+    })
+
+    it("Dati integrativi", () => {
+        DatiIntegrativi.selezionaTuttiNo()
+        Ultra.Avanti()
+        DatiIntegrativi.popupDichiarazioni()
+        ConsensiPrivacy.caricamentoPagina()
+        cy.pause()
+    })
+
+    it("Consensi e privacy", () => {
+        ConsensiPrivacy.Avanti()
+        ControlliProtocollazione.caricamentoPagina()
+        cy.pause()
+    })
+
+    it("salvataggio Contratto", () => {
+        ControlliProtocollazione.salvataggioContratto()
+        cy.pause()
+    })
+
+    it("Intermediario", () => {
+        ControlliProtocollazione.inserimentoIntermediario()
+        cy.pause()
+    })
+
+    it("Visualizza documenti e prosegui", () => {
+        ControlliProtocollazione.riepilogoDocumenti()
+        ControlliProtocollazione.Avanti()
+        cy.pause()
+    })
+
+    it("Adempimenti precontrattuali e Perfezionamento", () => {
+        ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
+        ControlliProtocollazione.salvaNContratto()
+        cy.pause()
+
+        cy.get('@contratto').then(val => {
+            nContratto = val
+        })
+
+        ControlliProtocollazione.Incassa()
+        Incasso.caricamentoPagina()
+        cy.pause()
+    })
+
+    it("Incasso - parte 1", () => {
+        Incasso.ClickIncassa()
+        Incasso.caricamentoModPagamento()
+        cy.pause()
+    })
+
+    it("Incasso - parte 2", () => {
+        Incasso.SelezionaMetodoPagamento('Assegno')
+        Incasso.ConfermaIncasso()
+        Incasso.caricamentoEsito()
+        cy.pause()
+    })
+
+    it("Esito incasso", () => {
+        Incasso.EsitoIncasso()
+        Incasso.Chiudi()
         cy.pause()
     })
     
