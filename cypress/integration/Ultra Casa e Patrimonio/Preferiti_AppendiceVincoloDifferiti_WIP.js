@@ -17,6 +17,7 @@ import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliPr
 import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
+import Appendici from "../../mw_page_objects/polizza/Appendici"
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
 import 'cypress-iframe';
@@ -39,13 +40,13 @@ let cliente = PersonaFisica.GalileoGalilei()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato]
 var frazionamento = "semestrale"
 var nContratto = "000"
+var appendice = "Presenza Altra copertura medesimo rischio - Patrimonio"
 //#endregion variabili iniziali
 
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
-
     })
 })
 
@@ -220,7 +221,23 @@ describe("FABBRICATO E CONTENUTO", () => {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.ordinaPolizze("Numero contratto")
         Portafoglio.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
-        Portafoglio.menuContestualeAmbiti("tutela legale")
+        Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
+        Ultra.selezionaPrimaAgenzia()
+    })
+
+    it("Seleziona Appendici", () => {
+        Appendici.caricamentoPagina()
+        Appendici.SelezionaAppendice(appendice)
+        Appendici.Avanti()
+    })
+
+    it("Compila Appendici", () => {
+        cy.pause()        
+        Appendici.CompilazioneAppendice("Generali", "123456789")
+        Appendici.Conferma()
+    })
+
+    it("next", () => {
         cy.pause()
     })
 })
