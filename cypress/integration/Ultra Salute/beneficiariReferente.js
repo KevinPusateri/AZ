@@ -13,6 +13,8 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
+//import Dashboard from "cypress/mw_page_objects/UltraBMP/Dashboard"
+import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 //#endregion
 
 //#region Mysql DB Variables
@@ -46,7 +48,7 @@ const ambitiUltraSalute = {
   INVALIDITA_PERMANENTE_MALATTIA: "wheelchair",
 }
 //#endregion enum
-
+var ambiti = [ambitiUltra.ambitiUltraSalute.DIARIA_DA_RICOVERO,ambitiUltra.ambitiUltraSalute.INVALIDITA_PERMANENTE_INFORTUNIO]
 before(() => {
   cy.getUserWinLogin().then(data => {
     cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
@@ -119,7 +121,7 @@ describe("POLIZZA BENEFICIARI REFERENTE", () => {
    
 
     Ultra.caricamentoUltraHome()
-   
+    //Dashboard.selezionaAmbiti(ambiti)
     Ultra.procediHome()
   })
 
