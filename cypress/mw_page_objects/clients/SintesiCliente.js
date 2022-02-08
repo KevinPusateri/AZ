@@ -266,8 +266,8 @@ class SintesiCliente {
     /**
      * Clicca sul pulsante 'Vai a Preferiti' nella scheda Fastquote
      */
-     static VaiPreferiti() {
-        cy.get('div').contains('Vai a Preferiti').click()        
+    static VaiPreferiti() {
+        cy.get('div').contains('Vai a Preferiti').click()
     }
     //#endregion
 
@@ -293,6 +293,10 @@ class SintesiCliente {
      * @param {json menu auto} menuAuto 
      */
     static emissioneAuto(menuAuto) {
+        cy.intercept({
+            method: 'POST',
+            url: '**/Auto/GestioneLibriMatricolaDA/**'
+        }).as('LibriMatricolaDA')
         cy.get('app-kpi-dropdown-card[lob="motor"]').click() //apre il menù Motor
 
         cy.log('Array menù auto: ' + menuAuto.length)
@@ -304,9 +308,8 @@ class SintesiCliente {
         }
 
         //seleziona la prima agenzia dal poup "canale con cui vuoi procedere"
-        cy.get('[ngclass="agency-row"]')
-            .should('be.visible')
-            .first().click()
+        Common.canaleFromPopup()
+        cy.wait('@LibriMatricolaDA', { requestTimeout: 50000 });
     }
 
     /**
@@ -740,8 +743,8 @@ class SintesiCliente {
         cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
     }
 
-    static clickClientsBriciolaPane(){
-        cy.contains("Clients").should('exist').click({force: true})
+    static clickClientsBriciolaPane() {
+        cy.contains("Clients").should('exist').click({ force: true })
     }
 
     static checkAtterraggioName(cliente) {
