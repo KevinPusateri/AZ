@@ -39,6 +39,17 @@ export default class PersonaFisica {
         return GalileoGalilei
     }
 
+    static SabrinaTonon() {
+        let SabrinaTonon = new PersonaFisica("SABRINA", "TONON")
+        SabrinaTonon.via = "VIA DELL'AEROPORTO"
+        SabrinaTonon.numero = "2/C"
+        SabrinaTonon.cap = "34077"
+        SabrinaTonon.citta = "RONCHI DEI LEGIONARI"
+        SabrinaTonon.provincia = "go"
+
+        return SabrinaTonon
+    }
+
     static MassimoRoagna() {
         let MassimoRoagna = new PersonaFisica("MASSIMO", "ROAGNA")
         MassimoRoagna.via = "VITTORIO ALFIERI"

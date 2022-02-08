@@ -1,5 +1,5 @@
 /**
- * @author Chiara Costa <chiara.costa@allianz.it>
+ * @author Chiara Costa <chiara.costaallianz.it>
  *
  * @description 
  */
@@ -23,7 +23,7 @@ let insertedId
 //#endregion
 
 //#region Configuration
-Cypress.config('defaultCommandTimeout', 600000)
+Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 //#endregion
 
@@ -82,7 +82,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe("POLIZZA TEMPORANEA", () => {
+describe("POLIZZA BENEFICIARI REFERENTE", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
@@ -102,10 +102,10 @@ describe("POLIZZA TEMPORANEA", () => {
 
   it("Emissione Ultra Salute", () => {
     Ultra.emissioneUltra(ultraRV.SALUTE)
-    Ultra.selezionaPrimaAgenzia()
+   // Ultra.selezionaPrimaAgenzia()
   })
 
-  it("Impostazione contratto temporaneo e prosegui", () => {
+  it("Prosegui", () => {
     var ambiti = [
       ambitiUltraSalute.SPESE_MEDICHE,
       ambitiUltraSalute.DIARIA_DA_RICOVERO,
@@ -115,11 +115,10 @@ describe("POLIZZA TEMPORANEA", () => {
     let oggi = Date.now()
     let dataInizio = new Date(oggi)
     let dataFine = new Date(oggi); dataFine.setMonth(dataInizio.getMonth() + 7)
-    var inizio = ('0' + dataInizio.getDate()).slice(-2) + '' + ('0' + (dataInizio.getMonth() + 1)).slice(-2) + '' + dataInizio.getFullYear()
-    var fine = ('0' + dataFine.getDate()).slice(-2) + '' + ('0' + (dataFine.getMonth() + 1)).slice(-2) + '' + dataFine.getFullYear()
+   
 
     Ultra.caricamentoUltraHome()
-    Ultra.contrattoTemporaneo(ambiti, inizio, fine, "Lavoratore occasionale", "Allianz")
+   
     Ultra.procediHome()
   })
 
@@ -133,6 +132,7 @@ describe("POLIZZA TEMPORANEA", () => {
   })
 
   it("Censimento anagrafico", () => {
+    cy.pause()
     Ultra.caricamentoCensimentoAnagrafico()
     Ultra.censimentoAnagraficoSalute(cliente.cognome + ' ' + cliente.nome, false, false, false)
   })

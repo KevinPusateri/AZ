@@ -954,6 +954,7 @@ class Ultra {
     //a partire dal menù Rami vari nella pagina di cliente su Matrix
     static emissioneUltra(prodotto) {
         //apre il menù 'Rami vari'
+        
         cy.get('div[class="label"]').contains('Rami vari')
             .should('be.visible')
             .click()
@@ -969,9 +970,9 @@ class Ultra {
     //seleziona la prima agenzia dal popup "seleziona il canale" in Matrix
     static selezionaPrimaAgenzia(prodotto) {
         //apre il menù 'Rami vari'
-        cy.get('[ngclass="agency-row"]')
-            .should('be.visible')
-            .first().click()
+        //cy.get('[ngclass="agency-row"]')
+          //  .should('be.visible')
+          //  .first().click()
 
         cy.wait(2000)
     }
