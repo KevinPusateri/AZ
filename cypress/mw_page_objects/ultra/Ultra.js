@@ -970,9 +970,9 @@ class Ultra {
     //seleziona la prima agenzia dal popup "seleziona il canale" in Matrix
     static selezionaPrimaAgenzia(prodotto) {
         //apre il menù 'Rami vari'
-        //cy.get('[ngclass="agency-row"]')
-          //  .should('be.visible')
-          //  .first().click()
+        cy.get('[ngclass="agency-row"]')
+            .should('be.visible')
+           .first().click()
 
         cy.wait(2000)
     }

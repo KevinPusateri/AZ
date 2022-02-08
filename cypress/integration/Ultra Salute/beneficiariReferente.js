@@ -28,7 +28,8 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let cliente = PersonaFisica.SabrinaTonon()
+//let cliente = PersonaFisica.SabrinaTonon()
+let cliente = PersonaFisica.GalileoGalilei()
 //#endregion variabili iniziali
 
 //#region Enumerator
@@ -102,7 +103,7 @@ describe("POLIZZA BENEFICIARI REFERENTE", () => {
 
   it("Emissione Ultra Salute", () => {
     Ultra.emissioneUltra(ultraRV.SALUTE)
-   // Ultra.selezionaPrimaAgenzia()
+    Ultra.selezionaPrimaAgenzia()
   })
 
   it("Prosegui", () => {
