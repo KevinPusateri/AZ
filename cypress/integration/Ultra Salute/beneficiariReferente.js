@@ -28,7 +28,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let cliente = PersonaFisica.GalileoGalilei()
+let cliente = PersonaFisica.SabrinaTonon()
 //#endregion variabili iniziali
 
 //#region Enumerator
