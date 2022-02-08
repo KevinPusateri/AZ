@@ -21,7 +21,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe_RCA/tariffaCases_RCA_20220401.json'
+import { tariffaCases } from '../../../fixtures//tariffe_RCA/tariffaCases_RCA_20220401.json'
 //#endregion
 before(() => {
     Cypress.env('isAviva', false)
@@ -90,7 +90,7 @@ describe('RCA Aprile 2022: ', {
 
             it("LogTariffa", function () {
                 if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
-                    if (currentCase.Settore !== '3')
+                    if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
                         TenutaTariffa.checkTariffaRCA(currentCase)
                     else
                         this.skip()

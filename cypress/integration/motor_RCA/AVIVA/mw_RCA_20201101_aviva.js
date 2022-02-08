@@ -21,7 +21,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures/tariffe_RCA/tariffaCases_RCA_20201101_aviva.json'
+import { tariffaCases } from '../../../fixtures/tariffe_RCA/tariffaCases_RCA_20201101_aviva.json'
 //#endregion
 before(() => {
     Cypress.env('isAviva', true)

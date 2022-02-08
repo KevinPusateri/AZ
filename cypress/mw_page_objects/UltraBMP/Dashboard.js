@@ -206,6 +206,49 @@ class Dashboard {
         })
     }
 
+    /**
+     * apre il menù dot (tre puntini) di un determinato ambito
+     * e seleziona la voce indicata
+     * @param {fixture} ambito
+     * @param {string} voce 
+     */
+    static dotMenu(ambito, voce) {
+        ultraIFrame().within(() => {
+            //apre il menu dot
+            cy.get('ultra-dash-ambiti-istanze-table').find('nx-icon[class*="' + ambito + '"]')
+                .parents('tr').find('nx-icon[name="ellipsis-h"]').click()
+
+            //seleziona la voce
+            cy.get('ultra-istanza-action-menu').should('be.visible')
+                .find('div').contains(voce).click()
+        })
+    }
+
+    /**
+     * modifica la durata, a popup già aperto tramite dotMenu() 
+     * @param {int} anni 
+     */
+    static modificaDurata(anni) {
+        ultraIFrame().within(() => {
+            //se la durata è superiore ad un anno clicca il relativo switch
+            if (anni > 1) {
+                cy.get('ultra-modifica-durata-modal').find('nx-switcher').click()
+
+                //apre il menù dropdown per la scelta degli anni
+                cy.get('ultra-modifica-durata-modal').find('nx-dropdown').click()
+                cy.wait(500)
+
+                //sceglie l'anno
+                cy.get('div[role="listbox"]').should('be.visible')
+                    .find('span').contains(anni.toString() + " anni").click()
+
+                //conferma
+                cy.get('button').children('span').contains('CONFERMA').click()
+            }
+        })
+    }
+
+
     static salvaQuotazione() {
         ultraIFrame().within(() => {
             const nomeQ = Dashboard.stringaRandom(10)
@@ -214,42 +257,44 @@ class Dashboard {
                 .contains('Salva').should('be.visible').click()
 
             cy.get('div[id="salvaBody"]').should('exist')
-              .find('div[class="nx-formfield__input"]').should('be.visible')
-              .eq(0).should('be.visible')
-              .click().wait(500)
-              .clear().wait(500)
-              .type(nomeQ).wait(2000)
+                .find('div[class="nx-formfield__input"]').should('be.visible')
+                .eq(0).should('be.visible')
+                .click().wait(500)
+                .clear().wait(500)
+                .type(nomeQ).wait(2000)
 
             cy.get('div[id="salvaBody"]').should('exist')
-              .find('div[class="nx-formfield__input"]').should('be.visible')
-              .eq(1).should('be.visible')
-              .click().wait(500)
-              .clear().wait(500)
-              .type('Note alla quotazione di prova').wait(2000)
+                .find('div[class="nx-formfield__input"]').should('be.visible')
+                .eq(1).should('be.visible')
+                .click().wait(500)
+                .clear().wait(500)
+                .type('Note alla quotazione di prova').wait(2000)
 
             // Verifica notifica verde quotazione salvata
             cy.get('div[id="salvaBody"]').should('exist')
-              .find('span').contains('Salva').should('be.visible').click()
+                .find('span').contains('Salva').should('be.visible').click()
 
             // Verifica circoletto con spunta 
             cy.get('nx-message[class="header-title context-success"]').should('exist')
-              .find('nx-icon[class="nx-message__icon nx-icon--s ndbx-icon nx-icon--check-circle ng-star-inserted"]').should('be.visible')
+                .find('nx-icon[class="nx-message__icon nx-icon--s ndbx-icon nx-icon--check-circle ng-star-inserted"]').should('be.visible')
 
             // Verifica quotazione salvata 
             cy.get('nx-message[class="header-title context-success"]').should('exist')
-              .find('span[class="quotazione-salvata"]').should('be.visible').invoke('text').then(val => {
-                cy.wrap(val)
-                cy.log('testo1: ' + val)
-              })
+                .find('span[class="quotazione-salvata"]').should('be.visible').invoke('text').then(val => {
+                    cy.wrap(val)
+                    cy.log('testo1: ' + val)
+                })
             cy.get('nx-message[class="header-title context-success"]').should('exist')
-              .find('span[class="nr-quotazione"]').should('be.visible').invoke('text').then(val => {
-                cy.wrap(val)
-                cy.log('testo2: ' + val)
-              })
+                .find('span[class="nr-quotazione"]').should('be.visible').invoke('text').then(val => {
+                    cy.wrap(val)
+                    cy.log('testo2: ' + val)
+                })
 
             cy.get('button[class="close-button"]').should('exist').click()
             cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
             cy.wait(1000)
+
+            cy.pause()
 
         })
     }
@@ -257,33 +302,35 @@ class Dashboard {
     static condividiQuotazione(daSelezionare) {
         ultraIFrame().within(() => {
             cy.get('div[id="ambitiHeader"]')
-                .contains('Condividi').should('be.visible').click() 
-            
+                .contains('Condividi').should('be.visible').click()
+
             cy.get('div[id="seleziona-copertina"]').should('exist')
-              .find('p').contains('Allianz Ultra').should('have.class', 'titolo-copertina selected')
+                .find('p').contains('Allianz Ultra').should('have.class', 'titolo-copertina selected')
             cy.get('div[id="seleziona-copertina"]').should('exist')
-              .find('p').contains('Animali domestici').should('have.class', 'titolo-copertina')
+                .find('p').contains('Animali domestici').should('have.class', 'titolo-copertina')
             cy.get('div[id="seleziona-copertina"]').should('exist')
-              .find('p').contains('Catastrofi naturali').should('have.class', 'titolo-copertina')
+                .find('p').contains('Catastrofi naturali').should('have.class', 'titolo-copertina')
             cy.get('div[id="seleziona-copertina"]').should('exist')
-              .find('p').contains('Rc e Tutela legale').should('have.class', 'titolo-copertina')
+                .find('p').contains('Rc e Tutela legale').should('have.class', 'titolo-copertina')
             cy.get('div[id="seleziona-copertina"]').should('exist')
-              .find('p').contains('Casa').should('have.class', 'titolo-copertina')
+                .find('p').contains('Casa').should('have.class', 'titolo-copertina')
 
             // Selezione copertina
             cy.get('div[id="seleziona-copertina"]').should('exist')
-              .find('p').contains(daSelezionare).should('have.class', 'titolo-copertina').click()
+                .find('p').contains(daSelezionare).should('have.class', 'titolo-copertina').click()
 
-              // Consenso privacy
+            // Consenso privacy
             cy.pause()
             cy.get('span').contains('Salva PDF').should('exist')
-              .parent('button').should('have.attr', 'aria-disabled', 'true')
-            
+                .parent('button').should('have.attr', 'aria-disabled', 'true')
+
             cy.get('div[id="privacy-section"]').should('exist')
-              .find('input[class="nx-switcher__input"]').should('have.attr', 'aria-checked', 'false').click({force: true})
-              
+                .find('input[class="nx-switcher__input"]').should('have.attr', 'aria-checked', 'false').click({ force: true })
+
             cy.get('span').contains('Salva PDF').should('exist')
-              .parent('button').should('have.attr', 'aria-disabled', 'false').click()
+                .parent('button').should('have.attr', 'aria-disabled', 'false').click()
+
+            cy.pause()
 
         })
     }
@@ -291,20 +338,20 @@ class Dashboard {
     static leggiPremioTot() {
         ultraIFrame().within(() => {
             cy.get('div[class="header-price-euro ng-star-inserted"]').should('be.visible')
-              .invoke('text').then(val => {
-                cy.wrap(val).as('premioTotDashboard')
-              })
+                .invoke('text').then(val => {
+                    cy.wrap(val).as('premioTotDashboard')
+                })
         })
     }
 
     static verificaPremio(premioOld, premioNew, variazionePremio) {
         cy.pause()
         var impMin = 0
-        var impMax = 0 
+        var impMax = 0
         var premio = premioOld + variazionePremio
         impMin = (premio - 0.01)
         impMax = (premio + 0.01)
-        
+
         cy.log("** Verifica premio **")
         cy.log('PremioOld: ' + premioOld + ' - PremioNew: ' + premioNew + ' - Delta: ' + variazionePremio)
         expect(premioNew).to.be.gte(impMin).and.be.lte(impMax)
@@ -434,12 +481,7 @@ class Dashboard {
 
             //clicca sulla textbox per la data di scadenza e
             //chiude il popup per la scelta della data prima di scrivere la data
-            cy.get('input[placeholder="GG/MM/AAAA"]').click()
-            cy.wait(500)
-            cy.get('[class*="nx-datepicker-popup"]').find('.nx-datepicker-close')
-                .children('nx-icon').click()
-
-            cy.get('input[placeholder="GG/MM/AAAA"]')
+            cy.get('input[placeholder="GG/MM/AAAA"]').focus()
                 .type(scadenza).invoke('val')
                 .then(text => cy.log(text))
 
@@ -447,6 +489,7 @@ class Dashboard {
             cy.get('span').contains('CONFERMA')
                 .should('be.visible').click()
 
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
         })
     }
     //#endregion Vincoli

@@ -278,13 +278,15 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         Riepilogo.verificaAmbito(ambitoUltra.ANIMALI_DOMESTICI, modificheAnimale.Nome, soluzione.ESSENTIAL, '1', '')
         Riepilogo.verificaFrazionamento('annuale')
         Riepilogo.EmissionePolizza()
-        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()   //<<< non funziona?
+        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()   
         cy.pause()
     })
 
     it("Censimento anagrafico", () => {
-        CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica)
-        Ultra.Avanti()
+        CensimentoAnagrafico.selezionaContraentePF(personaFisica)
+        CensimentoAnagrafico.selezionaCasa(personaFisica, true)
+        CensimentoAnagrafico.selezionaAnimale(modificheAnimale.Nome, personaFisica, '380260000279818', true)
+        CensimentoAnagrafico.Avanti()
         DatiIntegrativi.caricamentoPagina()
         cy.pause()
     })
