@@ -51,7 +51,7 @@ after(function () {
     //#endregion
 })
 
-afterEach(function () {
+/* afterEach(function () {
     if (this.currentTest.state !== 'passed') {
         TopBar.logOutMW()
         //#region Mysql
@@ -62,7 +62,7 @@ afterEach(function () {
         //#endregion
         Cypress.runner.stop();
     }
-})
+}) */
 
 describe("FABBRICATO E CONTENUTO", () => {
     /* it("Login", ()=>{
