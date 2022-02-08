@@ -210,7 +210,6 @@ class LandingRicerca {
             // else {
             cy.get('lib-subsection[class="ng-star-inserted"]').should('be.visible').then($container => {
                 cy.wait(3000)
-                debugger
                 console.log($container)
                 const checkResultsEmpty = $container.find(':contains("La ricerca non ha prodotto risultati")').is(':visible')
                 cy.log(checkResultsEmpty)

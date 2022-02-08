@@ -20,10 +20,16 @@ class Mieinfo {
     static checkLinksOnMenuInfo(keys) {
         LinkMieInfo.getLinksMenu().deleteKey(keys)
 
-        const linksMenuProfiled = Object.values(LinkMieInfo.getLinksMenu())
-
-        getIFrame().find('[class="menu--link menu_padding-0"]').each(($link, i) => {
-            expect($link.text().trim()).to.include(linksMenuProfiled[i + 1]);
+        const linksMenuProfiled = Object.values(LinkMieInfo.getLinksMenu()).sort()
+        const currentLinks = []
+        // tolgo il metodo delete
+        linksMenuProfiled.pop()
+        getIFrame().find('[class*="menu_padding-0"]').each(($link, i) => {
+            currentLinks.push($link.text().trim())
+        }).then(() => {
+            console.log(currentLinks.sort())
+           
+            expect(currentLinks.sort()).to.deep.eq(linksMenuProfiled.sort());
         })
     }
 

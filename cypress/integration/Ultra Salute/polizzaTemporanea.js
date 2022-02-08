@@ -118,9 +118,7 @@ describe("POLIZZA TEMPORANEA", () => {
     dataFine.setMonth(dataInizio.getMonth() + 7)
     var inizio = ('0' + dataInizio.getDate()).slice(-2) + '' + ('0' + (dataInizio.getMonth() + 1)).slice(-2) + '' + dataInizio.getFullYear()
     var fine = ('0' + dataFine.getDate()).slice(-2) + '' + ('0' + (dataFine.getMonth() + 1)).slice(-2) + '/' + dataFine.getFullYear()
-
     cy.log("data: " + fine)
-    cy.pause()
 
     Ultra.caricamentoUltraHome()
     Ultra.contrattoTemporaneo(ambiti, inizio, fine, "Lavoratore occasionale", "Allianz")

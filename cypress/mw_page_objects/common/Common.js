@@ -11,7 +11,7 @@ class Common {
      * @param {boolean} chooseUtenza : default a false, effettua l'accesso alla seconda finestra dalla homepage
      */
     static canaleFromPopup(chooseUtenza = false) {
-        cy.wait(1000)
+        cy.wait(3000)
 
         if (Cypress.env('monoUtenza')) {
             cy.get('body').then($body => {
