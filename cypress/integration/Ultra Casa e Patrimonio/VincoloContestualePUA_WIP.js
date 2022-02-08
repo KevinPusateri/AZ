@@ -93,6 +93,7 @@ after(function () {
 describe("Vincolo contestuale PUA ", () => {
   it("Accesso Ultra Casa e Patrimonio", () => {
     cy.log("scadenza: " + scadenza)
+    cy.pause()
     TopBar.clickSales()
     BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
     //SintesiCliente.selezionaPrimaAgenzia()
