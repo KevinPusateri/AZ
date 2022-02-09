@@ -211,7 +211,7 @@ class ConsultazioneSinistriPage {
             .should('be.visible')
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => {         
-                cy.log('>> read the value: ' + text)              
+                cy.log('>> read value: ' + text)              
                 resolve(text.toString())            
             });      
         });
@@ -228,7 +228,7 @@ class ConsultazioneSinistriPage {
             .should('be.visible')
             .invoke('val')  // for input or textarea, .invoke('val')
             .then(text => {         
-                cy.log('>> read the value: ' + text)              
+                cy.log('>> read value: ' + text)              
                 resolve(text.toString())            
             });      
         });
@@ -246,7 +246,7 @@ class ConsultazioneSinistriPage {
             .find(id)
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => {         
-                cy.log('>> read the value: ' + text)
+                cy.log('>> read value: ' + text)
                 value = text.toString()
                 var pattern = new RegExp(regexExp)
                 //Tests for a match in a string. It returns true or false.
@@ -274,7 +274,7 @@ class ConsultazioneSinistriPage {
             getIFrame().find(locator).should('be.visible')
             .invoke('text')  // for input or textarea, .invoke('val')        
             .then(text => {         
-                cy.log('>> read the value: ' + text)
+                cy.log('>> read value: ' + text)
                 resolve((text.toString()))                
                 });
         });

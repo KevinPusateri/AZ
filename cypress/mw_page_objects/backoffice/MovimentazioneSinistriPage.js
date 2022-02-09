@@ -1,5 +1,6 @@
 /// <reference types="Cypress" />
 
+
 import Common from "../common/Common"
 
 const getIFrame = () => {
@@ -31,21 +32,26 @@ const getIFrameAcqDoc = () => {
 
     return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
-class MovimentazioneSinistriPage {
 
+var x = -1;
+class MovimentazioneSinistriPage {
+   
    /**
      * Click on object defined by locator id
      * @param {string} id : locator object id
      */
-    static clickBtn_ById(id) {             
-        getIFrameMovSinistri().find(id).should('be.visible').then((btn) => {    
-            expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
-            const $btn = Cypress.$(btn)
-            cy.wrap($btn)
-            .should('be.visible')
-            .wait(1000)
-            .click()  
-        })       
+    static clickBtn_ById(id) {
+        return new Cypress.Promise((resolve, reject) => {     
+            getIFrameMovSinistri().find(id).should('be.visible').then((btn) => {    
+                expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
+                const $btn = Cypress.$(btn)
+                cy.wrap($btn)
+                .should('be.visible')
+                .wait(1000)
+                .click()  
+            })
+        })
+        resolve(tot)  
         cy.wait(2000)
     }
     /**
@@ -79,23 +85,41 @@ class MovimentazioneSinistriPage {
      * @param {string} label : text displayed
      */
     static checkObj_ByLocatorAndText(locator, label) {
-    return new Cypress.Promise((resolve, reject) => {
-        getIFrameMovSinistri().find(locator).should('be.visible')
-        .then(($val) => {                                       
-            expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
-            let txt = $val.text().trim()                
-          
-            if (txt.includes(label)) {                   
-                cy.log('>> object with label: "' + label +'" is defined')
-                resolve(txt)    
-            } else
-                assert.fail(' object with label: "' + label +'" is not defined')
-        })
-    });                               
-    cy.wait(1000)            
+        return new Cypress.Promise((resolve, reject) => {
+            getIFrameMovSinistri().find(locator).should('be.visible')
+            .then(($val) => {                                       
+                expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
+                let txt = $val.text().trim()
+                if (txt.includes(label)) {                   
+                    cy.log('>> object with label: "' + label +'" is defined')
+                    resolve(txt)    
+                } else
+                    assert.fail(' object with label: "' + label +'" is not defined')
+            })
+        });
+        cy.wait(1000)            
     }
     /**
-     * Get a text value defined on object identified by its @id
+     * Defined on object identified by its @id, the function check all list values
+     * if are defined or not null
+     * @param {string} id : locator object id
+     */
+    static checkListValues_ById(id) {
+        getIFrameMovSinistri().find(id).each(($el, index, $list) => {
+            const text = $el.text()
+            cy.log('>> Element['+(index)+ '] value: '+text)
+            MovimentazioneSinistriPage.isNotNullOrEmpty(text)           
+        })
+    }
+    /**
+     * Check if an object identified by locator is displayed and disabled
+     */
+    static checkObjDisabled(id) {
+        getIFrameMovSinistri().find(id).should('exist').and('be.disabled')
+        cy.log('>> Element: ['+id+'] --> exist and disabled')
+    }
+    /**
+     * Gets a text value defined on object identified by its @id
      * @param {string} id : id locator object
      */
     static getPromiseText_ById(id) {
@@ -106,39 +130,59 @@ class MovimentazioneSinistriPage {
             .should('be.visible')
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => {         
-                cy.log('>> read the value: ' + text)
+                cy.log('>> read value: ' + text)
                 value = text.toString()
                 resolve(value)          
             });      
         });
     }
-    static clickRow_ByIdAndRow(id) {
-        let str = id.replace("_Div", "C1_Div")
-        getIFrameMovSinistri().find(str).should('be.visible').click().log('>> row is clicked')
-        getIFrameMovSinistri().find('#sinistroSelezionato').invoke('attr', 'value').then(($valueSinistro) => {
-            const sinistro = $valueSinistro
-            getIFrameMovSinistri().find('#compPolizzaSelezionato').invoke('attr', 'value').then(($compPolizza) => {
-                const compPolizza = $compPolizza
-                getIFrameMovSinistri().find('#CmdConsultazione').should('be.visible').invoke('removeAttr', 'onclick')
-                    .invoke('attr', 'href', 'https://portaleagenzie.pp.azi.allianz.it/dasincruscotto/openCons?comId=' + compPolizza + '&numSin=' + sinistro).click()
-            })
+    /**
+     * Gets a text value defined on object identified by its @locator
+     * @param {string} locator : id locator object
+     */
+     static getPromiseValue_Bylocator(locator) {
+        let value = ""; 
+        cy.log('>> locator value: ' + locator)
+        return new Cypress.Promise((resolve) => {            
+            getIFrameMovSinistri().find(locator).should('exist').invoke('val')                    
+            .then(text => {         
+                cy.log('>> read value: ' + text)
+                value = text.toString()
+                resolve(value)          
+            });
+        });
+    }
+    /**
+     * Gets total moviments in page
+     */
+     static getNumTotaleMovimenti() {
+        var tot = 0       
+        cy.wait(2000)
+        return new Cypress.Promise((resolve, reject) => {
+        
+            getIFrameMovSinistri().find('td[class="numCruscottoTOT"]:first').then($val => {  
+                expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true
+                tot = $val.text().trim()                           
+                cy.log('Totale Movimenti riportati: ' +tot)                                  
+            });                 
         })
-        cy.wait(3000)
+        resolve(tot)     
     }
     static selectionText(id, text)
     { 
         getIFrameAcqDoc().get(id).click()
         getIFrameAcqDoc().get('option').contains(text).click();
-
     }
     static UploadFile()
     {        
         const fileName = 'CI_Test.pdf'
-        getIFrameMovSinistri().find('#pdfUpload').attachFile({
-            filePath: fileName,
-            fileName: fileName,
-            mimeType: 'application/pdf',
-            encoding: 'base64'
+
+        cy.fixture(fileName).then(fileContent => {
+            getIFrameMovSinistri().find('#pdfUpload').attachFile({
+                fileContent,
+                fileName,
+                mimeType: 'application/pdf'
+            }, { subjectType: 'input' })
         })
     }
     static IdExist(id)
@@ -153,90 +197,67 @@ class MovimentazioneSinistriPage {
                 return false
             }
         })
-    }
+    }    
 
     /**
-     * Return total moviments in page
-     */
-    static getNumTotaleMovimenti() {
-        var tot = 0
-        cy.wait(2000)       
-        getIFrameMovSinistri().find('td[class="numCruscottoTOT"]:first').then(($val) => {                                       
-            expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true
-                tot = $val.text().trim()
-                cy.log(tot)   
-        })
-        return tot 
-    }
-
-    /**
-     * returns the sum of all movements divided by type
-     */
-    static getSumMovimenti() {
+    * Compare the total value of the movements with the sum of all movements by type
+    */
+    static checkTotAndSumMovimenti() {
         var sum = 0
-        var elements = new Array();
-        cy.wait(2000) 
-
+        var tot = 0
+        
+        var elements = new Array();      
+        getIFrameMovSinistri().find('td[class="numCruscottoTOT"]:first').then($val => {  
+            expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true
+            tot = $val.text().trim()                                                                          
+        });
+        cy.wait(1000) 
         getIFrameMovSinistri().find('td[class="numCruscotto"]').then(($els) => {             
             expect(Cypress.dom.isJquery($els), 'jQuery object').to.be.true
+            
             elements = Cypress.$.makeArray($els)
             expect(Cypress.dom.isJquery(elements), 'converted').to.be.false
             expect(elements, 'to array').to.be.an('array')
             for (let i=0; i<elements.length; i++)
             {              
                 sum += parseInt(elements[i].textContent.trim(), 10)
-                cy.log('sum tot ['+i+']: ' +sum)  
-            }                 
-        })
-        return sum
-    }
-    
-    /**
-    * Compare the total value of the movements with the sum of all movements by type
-    */
-    static compareTotMovimenti() {
-        var sum = MovimentazioneSinistriPage.getSumMovimenti()
-        var tot = MovimentazioneSinistriPage.getNumTotaleMovimenti()        
-        if (tot===sum)
-            assert.ok('Somma totali movimenti sinistri')
-        else
-            assert.notOk('Somma totali movimenti sinistri ko')
-    }
-
-
-    
-    static compareTotMovimenti2() {
-        var msg = 'Verifica somma dei movimenti sinistri'
-        var totMov = 0
-        var tot = 0
-        var elements = new Array();
-
-        cy.wait(2000)       
-        getIFrameMovSinistri().find('td[class="numCruscottoTOT"]:first').then(($val) => {                                
-            expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true
-                totMov = $val.text().trim()
-                cy.log('Totale Movimenti: ' +totMov)            
-        })
-
-        getIFrameMovSinistri().find('td[class="numCruscotto"]').then(($els) => {                                  
-            expect(Cypress.dom.isJquery($els), 'jQuery object').to.be.true
-            elements = Cypress.$.makeArray($els)
-            expect(Cypress.dom.isJquery(elements), 'converted').to.be.false
-            expect(elements, 'to array').to.be.an('array')
-            for (let i=0; i<elements.length; i++)
-            {              
-                tot += parseInt(elements[i].textContent.trim(), 10)
-                cy.log('sum tot ['+i+']: ' +tot)  
-            }                        
-            if (tot == totMov)
-                assert.ok(msg)
+                cy.log('Somma parziale ['+i+']: ' +sum)  
+            } 
+            cy.wait(1000) 
+            cy.log('Totale Somma Movimenti: ' +sum)            
+            cy.log('Totale Movimenti Riportati: ' +tot)
+            
+            if (tot===sum.toString())
+                assert.ok('I valori coincidono: tot===sum==='+tot)     
             else
-                assert.notOk(msg)
-        })    
+                assert.notOk('I valori sono discordanti sum='+sum+ ' tot='+tot)
+        })
+    }
+   
+    /**
+     * Gets the number of movements associated with the table row index
+     * @param {*} idx : index of row in table
+     * @returns numbers of moviments
+     */
+    static getNumMovimentiByIndex(idx)
+    {
+        let value = [];
+        let retval = -1;
+        return new Cypress.Promise((resolve, reject) => {  
+            getIFrameMovSinistri().find('.zebra').should('be.visible').then(($td) => {
+                
+            value = Array.from($td.find('.numCruscotto'), $td => $td.innerText);        
+                cy.log('Valori: ' +value)
+                retval = value[idx]
+                cy.log('Valore['+idx+']: ' +retval ) 
+                resolve (cy.wrap(retval).as('x'+idx))     
+            }) 
+        }) 
+        reject () 
     }
 
 
-    static GetElementiMovimentazioneSinistri() {
+    static getElementiMovimentazioneSinistri() {
         getIFrameMovSinistri().find('td[class="numCruscotto"]').then(($els) => {                                  
                 expect(Cypress.dom.isJquery($els), 'jQuery object').to.be.true
                 const elements = Cypress.$.makeArray($els)
@@ -247,7 +268,7 @@ class MovimentazioneSinistriPage {
         })    
     }
     
-    static GetArrayLengthMovimentazioneSinistri() {
+    static getArrayLengthMovimentazioneSinistri() {
         getIFrameMovSinistri().find('td[class="numCruscotto"]').then(($els) => {                     
                 expect(Cypress.dom.isJquery($els), 'jQuery object').to.be.true
                 const elements = Cypress.$.makeArray($els)
@@ -257,7 +278,25 @@ class MovimentazioneSinistriPage {
                 return elements.length
         })    
     }
-
+    /**
+     * Check if the value is defined
+     * @param {string} value : string value to check
+     */
+     static isNotNullOrEmpty(value) {
+        cy.wrap(value).then((validation) => {            
+            if(value === undefined) {
+                validation = false;
+            } else if(value === null) {
+                validation = false;
+            } else if(value === '') {
+                validation = false; 
+            } else {
+                validation = true;           
+            }
+            assert.isTrue(validation,">> the check value '"+value+"' is defined. ")  
+        });
+        cy.wait(1000)        
+    }
     static VerifySxPayedFields()
     {
         getIFrameMovSinistri().find('td[class="numCruscotto"]').then(($els) => {             
