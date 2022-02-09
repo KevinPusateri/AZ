@@ -542,7 +542,7 @@ class DenunciaSinistriPage {
         cy.wait(2000)     
     }
     /**
-     * Get a text value defined on object identified by its @id
+     * Gets a text value defined on object identified by its @id
      * @param {string} id : id locator object
      */
     static getPromiseText_ById(id) {
@@ -553,13 +553,13 @@ class DenunciaSinistriPage {
             .should('be.visible')
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => {         
-                cy.log('>> read value: ' + text)              
+                cy.log('>> read the value: ' + text)              
                 resolve(text.toString())            
             });      
         });
     }
     /**
-     * Get a text defined on object identified by its @id
+     * Gets a text defined on object identified by its @id
      * @param {string} id : id locator object
      */
     static getPromiseValue_ById(id) {
@@ -570,13 +570,13 @@ class DenunciaSinistriPage {
             .should('be.visible')
             .invoke('val')  // for input or textarea, .invoke('val')
             .then(text => {  
-                cy.log('>> read value: ' + text)              
+                cy.log('>> read the value: ' + text)              
                 resolve(text.toString())            
             });      
         });
     }
     /**
-     * Get a text value defined on object identified by its @id
+     * Gets a text value defined on object identified by its @id
      * @param {string} id : id locator object 
      */
     static getPromiseDate_ById(id) {
@@ -588,7 +588,7 @@ class DenunciaSinistriPage {
             .find(id)
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => {         
-                cy.log('>> read value: ' + text)
+                cy.log('>> read the value: ' + text)
                 value = text.toString()
                 var pattern = new RegExp(regexExp)
                 //Tests for a match in a string. It returns true or false.
@@ -607,7 +607,7 @@ class DenunciaSinistriPage {
         });
     }
     /**
-     * Get a text value defined on object identified by its @locator
+     * Gets a text value defined on object identified by its @locator
      * @param {string} locator : id locator object
      */
     static getPromiseValue_Bylocator(locator) {
@@ -616,7 +616,7 @@ class DenunciaSinistriPage {
             getIFrameDenuncia().find(locator).should('be.visible')
             .invoke('text')  // for input or textarea, .invoke('val')        
             .then(text => {         
-                cy.log('>> read value: ' + text)
+                cy.log('>> read the value: ' + text)
                 resolve((text.toString()))                
             });
         });
@@ -677,7 +677,7 @@ class DenunciaSinistriPage {
         cy.wait(1000)        
     }
     /**
-     * Put a @str value and is verified if its a valid IBAN 
+     * Puts a @str value and is verified if its a valid IBAN 
      * @param {string} str : string date format
      */
     static isValidIBAN(str)
@@ -691,7 +691,7 @@ class DenunciaSinistriPage {
         });
     }
     /**
-     * Put a @str value and is verified if its a date value is included in a correct format 
+     * Puts a @str value and is verified if its a date value is included in a correct format 
      * @param {string} str : string date format
      */
     static containValidDate(str) {
@@ -704,7 +704,7 @@ class DenunciaSinistriPage {
         });                             
     }
     /**
-     * Put a @numstr (ex.: numStr = "123,20") value and is verified if its a currency correct value 
+     * Puts a @numstr (ex.: numStr = "123,20") value and is verified if its a currency correct value 
      * @param {string} numstr : string currency value
      */
     static isCurrency(numstr) {      
@@ -716,7 +716,7 @@ class DenunciaSinistriPage {
         });
     }
     /**
-     * Put a @str value and is verified if its a valid EURO currency @str (ex.: "EURO") 
+     * Puts a @str value and is verified if its a valid EURO currency @str (ex.: "EURO") 
      * @param {string} str : string value
      */
     static isEuroCurrency(str) {                
