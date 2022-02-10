@@ -27,19 +27,13 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-        LoginPage.logInMWAdvanced({
-            "agentId": "ARALONGO7",
-            "agency": "010375000"
-        })
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Consultazione sinistri') 
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+        LoginPage.logInMWAdvanced()
     })
 })
 
 beforeEach(() => {
     cy.preserveCookies()
-    //Common.visitUrlOnEnv()
 })
 
 afterEach(function () {
@@ -84,9 +78,13 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
     const lblnumsin = "k-grid-content"
     
+    it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Consultazione sinistri') 
+        cy.wait(1000)        
+    });
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per targa controparte ', function () {
-               
+    it('Consultazione Sinistri: Ricerca per targa controparte ', function () {
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Targa CTP')
         ConsultazioneSinistriPage.setValue_ById('#plateCTP', targa_CTP)
         let classvalue = "search_submit targaCTP k-button"
@@ -97,8 +95,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
     });
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per dati anagrafici della CTP persona fisica ', function () {
-         
+    it('Consultazione Sinistri: Ricerca per dati anagrafici della CTP persona fisica ', function () {
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici CTP')
         ConsultazioneSinistriPage.setValue_ById('#cognomeCTP','')
         ConsultazioneSinistriPage.setValue_ById('#nomeCTP','')
@@ -120,7 +117,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
     });
     
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Ricerca per codice fiscale del CTP persona fisica ', function () {
+    it('Consultazione Sinistri: Ricerca per codice fiscale del CTP persona fisica ', function () {
       
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici CTP')
         ConsultazioneSinistriPage.setValue_ById('#cognomeCTP','')
@@ -135,7 +132,6 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"
         ConsultazioneSinistriPage.clickBtn_ById(locRArrow)
-             
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)

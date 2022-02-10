@@ -40,19 +40,13 @@ before(() => {
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-        LoginPage.logInMWAdvanced({
-            "agentId": "ARALONGO7",
-            "agency": "010375000"
-        })
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Denuncia') 
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+        LoginPage.logInMWAdvanced()
     })
 })
 
 beforeEach(() => {
     cy.preserveCookies()
-    //Common.visitUrlOnEnv()
 })
 
 afterEach(function () {
@@ -116,8 +110,14 @@ let idx_cop_gar
 //#endregion
 
 describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2 veicoli ' +
- 'coinvolti in completezza base e di tipo card 1 debitore ', () => {
-   
+'coinvolti in completezza base e di tipo card 1 debitore ', () => {
+
+    it('Atterraggio su BackOffice >> Denuncia', function () {             
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Denuncia') 
+        cy.wait(1000)        
+    });    
+
     it('Denuncia --> Ricerca cliente per numero di polizza: ' + cliente_num_pol, function() {               
         // Ricerca cliente per Polizza
         DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
@@ -144,7 +144,6 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
                 DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
             }); 
             cy.wait(1000)
-
     });
 
     it('Dati cliente Altri dati di denuncia: ' +

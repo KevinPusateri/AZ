@@ -28,19 +28,13 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-        LoginPage.logInMWAdvanced({
-            "agentId": "ARALONGO7",
-            "agency": "010375000"
-        })
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Movimentazione sinistri') 
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+        LoginPage.logInMWAdvanced()
     })
 })
 
 beforeEach(() => {
     cy.preserveCookies()
-    //Common.visitUrlOnEnv()
 })
 
 afterEach(function () {
@@ -69,37 +63,42 @@ after(function () {
 })
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO SENZA SEGUITO', () => {
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato CHIUSO SENZA SEGUITO ' +
+    
+    it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Consultazione sinistri') 
+        cy.wait(1000)        
+    });
+
+    it('Consultazione Sinistri: Selezionato un sinistro in stato CHIUSO SENZA SEGUITO ' +
     ' Dalla pagina di dettaglio è verificata la sezione INTESTAZIONE ed in particolare quanto segue: ' +
     ' (1) siano valorizzati i campi Località e CLD/Danneggiato ' , function () {
-                    
+
         MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioChiusiSS')
 
         const locatorRow1 = "#cruscottoDettaglioGridR2_Div"        
         MovimentazioneSinistriPage.clickRow_ByIdAndRow(locatorRow1) 
 
          // Verifica (2): la valorizzazione del CLD
-         const csscldDanneggiato = '#soggetti_danneggiati > div > div:nth-child(1) > table > tbody > tr:nth-child(1) > td:nth-child(2)'
-         MovimentazioneSinistriPage.getPromiseText_ById(csscldDanneggiato).then((val) => {
-             let dscrpt = val.split(':')[1];        
-             cy.log('[it]>> [CLD]: '+dscrpt);
-             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
-         });
+        const csscldDanneggiato = '#soggetti_danneggiati > div > div:nth-child(1) > table > tbody > tr:nth-child(1) > td:nth-child(2)'
+        MovimentazioneSinistriPage.getPromiseText_ById(csscldDanneggiato).then((val) => {
+            let dscrpt = val.split(':')[1];        
+            cy.log('[it]>> [CLD]: '+dscrpt);
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
+        });
 
         // Verifica (2): Valore della località
-        const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer "
+        const csslocalità = "#sx-detail > h2 > table > tbody > tr.last-row > td.pointer"
         MovimentazioneSinistriPage.getPromiseText_ById(csslocalità).then((val) => {
             let dscrpt = val.split(':')[1];            
             cy.log('[it]>> [Località]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
         });
- 
     });
-  
 
     it('In pagina dettaglio di sinistro in stato CHIUSO SENZA SEGUITO, ' +
     'Aprendo la sezione Perizie si verifica che non ci siano incarichi di perizia e che sia riportata la dicitura : "Non ci sono incarichi di perizia" ' , function () {
-           
+    
         const xpathDettaglio = "#soggetti_danneggiati > div > div:nth-child(1) > a"
         MovimentazioneSinistriPage.clickBtn_ById(xpathDettaglio) 
         
@@ -113,6 +112,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const xpathDettaglioPerizia = "#soggetti_danneggiati > div > div:nth-child(1) > div > div:nth-child(2) > div.item_content > p"
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText(xpathDettaglioPerizia, "Non sono presenti pagamenti")
     });
+
     it('In pagina dettaglio di sinistro in stato CHIUSO SENZA SEGUITO, cliccando sul tab "Acquisizione seguiti" ' +
     'Si apre la finestra di Acquisizione documenti, specificando "l\'opzione da File" e il tipo di documento si carica il file per l\'invio', function () {
         const cssAcquisizioneSeguiti = "#scannerLink > a"
@@ -127,8 +127,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         //Clicca sul puslante "Aggiungi File"
         AcquizioneDocumentiPage.clickBtn_ById('#filePath')
         // Viene effettutaoto l'upload del file
-        AcquizioneDocumentiPage.UploadFile()
-       
+        AcquizioneDocumentiPage.UploadFile()       
     });
    
 });
