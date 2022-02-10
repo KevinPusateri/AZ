@@ -47,23 +47,24 @@ function findKeyRadarUW(key, logRadarUW = parsedRadarUW) {
         }
     }
 }
-function findKeyGaranziaARD(key, currentGaranziaARD = null) {
+function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
     var result
     let garanziaARD
-    if (currentGaranziaARD === null)
-        //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA, la seconda alla ARD
+    if (currentGaranziaARD === null) {
+        //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCAa
         garanziaARD = findKeyLogTariffa('Garanzia')[1]
+    }
+
     else
         garanziaARD = currentGaranziaARD
 
-    debugger
     for (var property in garanziaARD) {
         if (garanziaARD.hasOwnProperty(property)) {
             if (property === key)
                 return garanziaARD[key]; // returns the value
             else if (typeof garanziaARD[property] === "object") {
                 // in case it is an object
-                result = findKeyGaranziaARD(key, garanziaARD[property]);
+                result = findKeyGaranziaARD(descSettore, key, garanziaARD[property]);
 
                 if (typeof result !== "undefined") {
                     return result;
@@ -84,7 +85,7 @@ class TenutaTariffa {
             // * auto è già selezionato di default quindi lo skippo
             if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada' && currentCase.Tipo_Veicolo !== 'taxi') {
                 cy.contains('un\'auto').parent().should('exist').and('be.visible').click()
-                if (currentCase.Tipo_Veicolo === 'ciclomotore' || currentCase.Tipo_Veicolo === 'autobus' || currentCase.Tipo_Veicolo === 'macchina operatrice'  || currentCase.Tipo_Veicolo === 'macchina agricola')
+                if (currentCase.Tipo_Veicolo === 'ciclomotore' || currentCase.Tipo_Veicolo === 'autobus' || currentCase.Tipo_Veicolo === 'macchina operatrice' || currentCase.Tipo_Veicolo === 'macchina agricola')
                     cy.contains('altro').should('exist').and('be.visible').click().wait(2000)
                 else
                     cy.contains(currentCase.Tipo_Veicolo).should('exist').and('be.visible').click().wait(2000)
@@ -848,6 +849,15 @@ class TenutaTariffa {
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
+                case "KASKO_COLLISIONE":
+                    cy.contains("Kasko").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+
+                    //Tipo pacchetto
+                    cy.get(':contains("Tipo"):last').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
+                    cy.get('nx-dropdown-item').contains(currentCase.Tipo_Kasko).click()
+                    cy.get('nx-spinner').should('not.be.visible')
+
                     cy.pause()
                     break
             }
@@ -855,7 +865,7 @@ class TenutaTariffa {
             cy.get('strong:contains("Auto Rischi Diversi"):last').click().wait(500)
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_Impostazioni_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             cy.contains('Annulla').should('exist').click().wait(500)
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '11_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '11_Offerta_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il totale relativo alla ARD
             cy.get('strong:contains("Auto Rischi Diversi"):last').parents('div').find('div:last').find('strong:last').invoke('text').then(value => {
@@ -909,7 +919,7 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
-            cy.get('motor-footer').should('exist').find('button').click().wait(5000)
+            cy.get('motor-footer').should('exist').find('button').click().wait(6000)
             cy.getTariffaLog(currentCase).then(logFolder => {
                 //#region LogTariffa
                 cy.readFile(logFolder + "\\logTariffa.xml").then(fileContent => {
@@ -928,6 +938,10 @@ class TenutaTariffa {
                             break
                         case "FURTO":
                             expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Furto)
+                            break
+                        case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
+                        case "KASKO_COLLISIONE":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
                             break
                     }
                 })

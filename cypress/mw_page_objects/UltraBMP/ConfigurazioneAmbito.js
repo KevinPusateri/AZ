@@ -538,7 +538,8 @@ class ConfigurazioneAmbito {
           }
           else
           {
-            valoriDefault.DataNascita = UltraBMP.dataOggiMenoUnAnno()
+            //valoriDefault.DataNascita = UltraBMP.dataOggiMenoUnAnno()
+            valoriDefault.DataNascita = UltraBMP.dataOggiPiuAnni(-1)
             cy.log("Verifica default 'Data Nascita' - atteso: " + valoriDefault.DataNascita)
             ConfigurazioneAmbito.verificaDropDown('La sua data di nascita', 4, valoriDefault.DataNascita)
           }

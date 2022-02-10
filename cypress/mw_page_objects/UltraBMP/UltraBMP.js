@@ -56,6 +56,117 @@ class UltraBMP {
      /**
     //#endregion
 
+    //#region DataOggiPiuUnAnno
+    /**
+     * Data odierna più un anno nel formato gg/mm/aaaa 
+     */
+     static dataOggiPiuUnAnno()
+     { 
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear() + 1;
+        
+        if (dd < 10) {
+          dd = '0' + dd;
+        }
+        
+        if (mm < 10) {
+          mm = '0' + mm;
+        }
+        
+        today = dd + '/' + mm + '/' + yyyy;
+        cy.log('Oggi: ' + today)
+        return today
+     }
+     /**
+    //#endregion
+
+    //#region DataOggiPiuAnni
+    * @param {number} anni - anni che si vogliono aggiungere alla data di oggi (non funziona col 29 febbraio)
+    /**
+     * Data odierna più anni nel formato gg/mm/aaaa 
+     */
+     static dataOggiPiuAnni(anni)
+     { 
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear() + anni;
+        
+        if (dd < 10) {
+          dd = '0' + dd;
+        }
+        
+        if (mm < 10) {
+          mm = '0' + mm;
+        }
+        
+        today = dd + '/' + mm + '/' + yyyy;
+        cy.log('Oggi: ' + today)
+        return today
+     }
+     /**
+    //#endregion
+
+    //#region DataOggi
+    /**
+     * Data odierna nel formato gg/mm/aaaa 
+     */
+     static dataOggi()
+     { 
+        var today = new Date();
+        //cy.log("DATA DI OGGI: " + today)
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if (dd < 10) {
+          dd = '0' + dd;
+        }
+        
+        if (mm < 10) {
+          mm = '0' + mm;
+        }
+        
+        today = dd + '/' + mm + '/' + yyyy;
+        //cy.log('Oggi: ' + today)
+        return today
+     }
+     /**
+    //#endregion
+
+    //#region DataOggiPiuGiorni
+    /**
+     * Data odierna + gg nel formato gg/mm/aaaa 
+     * @param {number} gg - giorni che si vogliono aggiungere alla data di oggi 
+     */
+     static dataOggiPiuGiorni(gg)
+     { 
+        var data = new Date();
+        data.setDate(data.getDate() + gg)
+        
+        var dd = data.getDate();
+        var mm = data.getMonth() + 1; //January is 0!
+        var yyyy = data.getFullYear();
+
+        if (dd < 10) {
+          dd = '0' + dd;
+        }
+        
+        if (mm < 10) {
+          mm = '0' + mm;
+        }
+        
+        data = dd + '/' + mm + '/' + yyyy;
+        //cy.log('Data calcolata: ' + data)
+        return data
+        
+     }
+     /**
+    //#endregion
+
+    
     //#region ClickMatita
     /**
       * ClickButton 
