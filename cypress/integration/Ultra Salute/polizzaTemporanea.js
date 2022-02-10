@@ -116,8 +116,8 @@ describe("POLIZZA TEMPORANEA", () => {
     let dataInizio = new Date(oggi)
     let dataFine = new Date(oggi);
     dataFine.setMonth(dataInizio.getMonth() + 7)
-    var inizio = ('0' + dataInizio.getDate()).slice(-2) + '' + ('0' + (dataInizio.getMonth() + 1)).slice(-2) + '' + dataInizio.getFullYear()
-    var fine = ('0' + dataFine.getDate()).slice(-2) + '' + ('0' + (dataFine.getMonth() + 1)).slice(-2) + '/' + dataFine.getFullYear()
+    var inizio = ('0' + dataInizio.getDate()).slice(-2) + '/' + ('0' + (dataInizio.getMonth() + 1)).slice(-2) + '' + dataInizio.getFullYear()
+    var fine = ('0' + dataFine.getDate()).slice(-2) + '/' + ('0' + (dataFine.getMonth() + 1)).slice(-2) + '/' + dataFine.getFullYear()
     cy.log("data: " + fine)
 
     Ultra.caricamentoUltraHome()

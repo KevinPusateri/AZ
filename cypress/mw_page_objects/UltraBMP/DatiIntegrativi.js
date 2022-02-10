@@ -17,7 +17,7 @@ class DatiIntegrativi {
     /**
      * Attende il caricamento della pagina Dati Integrativi
      */
-     static caricamentoPagina() {
+    static caricamentoPagina() {
         cy.intercept({
             method: 'GET',
             url: '**/datiintegrativi/getDati'
@@ -33,6 +33,32 @@ class DatiIntegrativi {
         })
   
       }
+
+    /**
+     * Inserisce la data di decorrenza o scadenza tramite code injection
+     * tipoData: 'decorrenza' o 'scadenza'
+     * @param {string} tipoData 
+     * @param {string} data 
+     */
+    static ModificaDataInjection(tipoData, data) {
+        ultraIFrame().within(() => {
+            var txtBox
+            switch (tipoData) {
+                case "decorrenza":
+                    txtBox = "#txtDataDecorrenza"
+                    break;
+                case "scadenza":
+                    txtBox = "#txtDataScadenza"
+                    break;
+                default:
+                    cy.log("usare il tipoData: 'decorrenza' o 'scadenza'")
+            }
+
+            cy.get(txtBox)
+                .invoke('attr', 'value', data)
+                .should('have.attr', 'value', data)
+        })
+    }
 
     /**
      * Clicca sull'opzione 'Seleziona tutti NO'

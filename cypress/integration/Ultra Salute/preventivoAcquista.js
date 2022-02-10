@@ -162,6 +162,8 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     DatiIntegrativi.caricamentoPagina()
   })
   it("Dati integrativi", () => {
+    Ultra.ModificaDataInjection()
+    cy.pause()
     Ultra.datiIntegrativiSalute(true, true, true)
     Ultra.approfondimentoSituazioneAssicurativa(false)
     Ultra.confermaDichiarazioniContraente()

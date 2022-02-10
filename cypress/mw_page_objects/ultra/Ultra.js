@@ -954,7 +954,7 @@ class Ultra {
     //a partire dal menù Rami vari nella pagina di cliente su Matrix
     static emissioneUltra(prodotto) {
         //apre il menù 'Rami vari'
-        
+
         cy.get('div[class="label"]').contains('Rami vari')
             .should('be.visible')
             .click()
@@ -972,7 +972,7 @@ class Ultra {
         //apre il menù 'Rami vari'
         cy.get('[ngclass="agency-row"]')
             .should('be.visible')
-           .first().click()
+            .first().click()
 
         cy.wait(2000)
     }
@@ -1063,6 +1063,14 @@ class Ultra {
     }
     //#endregion Helper
 
+
+    static ModificaDataInjection() {
+        ultraIFrame().within(() => {
+            cy.get('#txtDataDecorrenza')
+                .invoke('attr', 'value', '01/01/2050')
+                .should('have.attr', 'value', '01/01/2050')
+        })
+    }
 }
 
 export default Ultra
