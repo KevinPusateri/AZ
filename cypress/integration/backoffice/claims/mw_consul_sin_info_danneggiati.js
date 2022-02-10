@@ -29,19 +29,13 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-        LoginPage.logInMWAdvanced({
-            "agentId": "ARALONGO7",
-            "agency": "010375000"
-        })
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Consultazione sinistri') 
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+        LoginPage.logInMWAdvanced()
     })
 })
 
 beforeEach(() => {
     cy.preserveCookies()
-    //Common.visitUrlOnEnv()
 })
 
 afterEach(function () {
@@ -88,7 +82,13 @@ let impPagam
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro con mutidanneggiati ' +
 ' si verifica che siano sempre valorizzate le informazioni del danneggiato, ruolo e CLD ', () => {
     var ass = "";
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro con multidanneggiato' +
+    it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Consultazione sinistri') 
+        cy.wait(1000)        
+    });
+
+    it('Selezionato un sinistro con multidanneggiato' +
     '"pagina di ricerca" si controllano i valori: num sinistro.', function () {
 
         let classvalue = "search_submit claim_number k-button"
@@ -97,7 +97,6 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')       
 
         ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
-               
     });
 
     it('"Pagina di ricerca" è verificato che il nome associato al cliente assicurato, la targa, la polizza e la data di avvenimento del sinistro non siano nulli.', function () {
@@ -108,26 +107,26 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
         });
 
-       const cssTarga = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
-       ConsultazioneSinistriPage.getPromiseText_ById(cssTarga).then((val) => {          
+        const cssTarga = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
+        ConsultazioneSinistriPage.getPromiseText_ById(cssTarga).then((val) => {          
             cy.log('[it]>> [Targa]: '+val);
             targaAssicurato = val; 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-       });
+        });
 
-       const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
-       ConsultazioneSinistriPage.getPromiseText_ById(cssPolizza).then((val) => {          
-           cy.log('[it]>> [Polizza]: '+val);
-           polizzaAssicurato = val;
-           ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-       });
+        const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
+        ConsultazioneSinistriPage.getPromiseText_ById(cssPolizza).then((val) => {          
+            cy.log('[it]>> [Polizza]: '+val);
+            polizzaAssicurato = val;
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val)
+        });
 
-       const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-       ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv).then((val) => {          
+        const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
+        ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
             dtAvvenimento = val.trim(); 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-       }); 
+        }); 
     });
 
     
@@ -142,10 +141,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const clssDtl = "pageTitle"
         ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, numsin)
         // Verifica (2): Valore della data avvenimento      
-        const cssDtAvv = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"      
+        const cssDtAvv = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.clock"      
         ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento)         
         // Verifica (3): Cliente
-        const cssCliente = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
+        const cssCliente = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.people > a"
         ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssCliente, clienteAssicurato);
     });
     
@@ -161,8 +160,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let cssNomeDanneggiato = ".dynamic_content > .block > table > tbody > tr:nth-child(1) > td:nth-child(1) > a"
         ConsultazioneSinistriPage.checkListValues_ById(cssNomeDanneggiato)
          //Controllo valorizzazione CLD
-         let cssCLD = ".dynamic_content > .block > table > tbody > tr:nth-child(1) > td:nth-child(2) > a"
-         ConsultazioneSinistriPage.checkListValues_ById(cssCLD)
+        let cssCLD = ".dynamic_content > .block > table > tbody > tr:nth-child(1) > td:nth-child(2) > a"
+        ConsultazioneSinistriPage.checkListValues_ById(cssCLD)
     });
 
 });

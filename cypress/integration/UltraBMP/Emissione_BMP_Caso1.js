@@ -291,4 +291,76 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         cy.pause()
     })
 
+    it("Dati integrativi", () => {
+        DatiIntegrativi.verificaDataDecorrenza()
+        DatiIntegrativi.verificaDataScadenza()
+        DatiIntegrativi.verificaDatoPolizzaModificabile("società di brokeraggio", false)
+        DatiIntegrativi.verificaDatoPolizzaModificabile("Tacito rinnovo", true)
+        //DatiIntegrativi.impostaDataDecorrenza(UltraBMP.dataOggiPiuGiorni(-1))
+        DatiIntegrativi.selezionaTuttiNo()
+        cy.pause()
+        DatiIntegrativi.verificaRetrodatabilità()
+        cy.pause()
+        DatiIntegrativi.ClickButtonAvanti()
+        //Ultra.Avanti()
+        DatiIntegrativi.popupDichiarazioni()
+        ConsensiPrivacy.caricamentoPagina()
+        cy.pause()
+    })
+
+    it("Consensi e privacy", () => {
+        ConsensiPrivacy.Avanti()
+        ControlliProtocollazione.caricamentoPagina()
+        cy.pause()
+    })
+
+    it("salvataggio Contratto", () => {
+        ControlliProtocollazione.salvataggioContratto()
+        cy.pause()
+    })
+
+    it("Intermediario", () => {
+        ControlliProtocollazione.inserimentoIntermediario()
+        cy.pause()
+    })
+
+    it("Visualizza documenti e prosegui", () => {
+        ControlliProtocollazione.riepilogoDocumenti()
+        ControlliProtocollazione.Avanti()
+        cy.pause()
+    })
+
+    it("Adempimenti precontrattuali e Perfezionamento", () => {
+        ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
+        ControlliProtocollazione.salvaNContratto()
+        cy.pause()
+
+        cy.get('@contratto').then(val => {
+            nContratto = val
+        })
+
+        ControlliProtocollazione.Incassa()
+        Incasso.caricamentoPagina()
+        cy.pause()
+    })
+
+    it("Incasso - parte 1", () => {
+        Incasso.ClickIncassa()
+        Incasso.caricamentoModPagamento()
+        cy.pause()
+    })
+
+    it("Incasso - parte 2", () => {
+        Incasso.SelezionaMetodoPagamento('Assegno')
+        Incasso.ConfermaIncasso()
+        Incasso.caricamentoEsito()
+        cy.pause()
+    })
+
+    it("Esito incasso", () => {
+        Incasso.EsitoIncasso()
+        Incasso.Chiudi()
+        cy.pause()
+    })
+
 })

@@ -55,6 +55,7 @@ import { daVerificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
 let personaFisica = PersonaFisica.MassimoRoagna()
 //var frazionamento = "annuale"
 //var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
+var nContratto = "000"
 var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE]
 var defaultFQ = {
     "TipoAbitazione"    : "appartamento",
@@ -202,8 +203,17 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
     })
 
     it("Dati integrativi", () => {
+        DatiIntegrativi.verificaDataDecorrenza()
+        DatiIntegrativi.verificaDataScadenza()
+        DatiIntegrativi.verificaDatoPolizzaModificabile("società di brokeraggio", false)
+        DatiIntegrativi.verificaDatoPolizzaModificabile("Tacito rinnovo", true)
+        //DatiIntegrativi.impostaDataDecorrenza(UltraBMP.dataOggiPiuGiorni(-1))
         DatiIntegrativi.selezionaTuttiNo()
-        Ultra.Avanti()
+        cy.pause()
+        DatiIntegrativi.verificaRetrodatabilità()
+        cy.pause()
+        DatiIntegrativi.ClickButtonAvanti()
+        //Ultra.Avanti()
         DatiIntegrativi.popupDichiarazioni()
         ConsensiPrivacy.caricamentoPagina()
         cy.pause()

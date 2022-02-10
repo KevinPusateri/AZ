@@ -25,19 +25,13 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-        LoginPage.logInMWAdvanced({
-            "agentId": "ARALONGO7",
-            "agency": "010375000"
-        })
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Consultazione sinistri') 
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+        LoginPage.logInMWAdvanced()
     })
 })
 
 beforeEach(() => {
     cy.preserveCookies()
-    //Common.visitUrlOnEnv()
 })
 
 afterEach(function () {
@@ -64,6 +58,7 @@ after(function () {
     //#endregion
      Cypress.runner.stop();
 })
+
 //#region Script Variables
 let numsin = '929538398'
 let stato_sin = 'CHIUSO PAGATO'
@@ -73,7 +68,13 @@ let cliente
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
 
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ',  function () {
+    it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Consultazione sinistri') 
+        cy.wait(1000)        
+    });
+
+    it('Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ',  function () {
       
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
@@ -99,7 +100,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, numsin)
 
         // Verifica (1): Valore della data avvenimento      
-        const cssDtAvv2 = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"
+        const cssDtAvv2 = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.clock"
         ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv2).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {                               
@@ -108,7 +109,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         }); 
 
         // Verifica (2): Cliente
-        const cssCliente2 = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
+        const cssCliente2 = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.people > a"
         //ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssCliente2, cliente) 
 
         // Seleziona il link dati accessori

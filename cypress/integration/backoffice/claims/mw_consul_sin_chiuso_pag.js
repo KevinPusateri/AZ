@@ -25,22 +25,15 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
-
 before(() => {
     cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-        LoginPage.logInMWAdvanced({
-            "agentId": "ARALONGO7",
-            "agency": "010375000"
-        })
-        TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Consultazione sinistri') 
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+        LoginPage.logInMWAdvanced()
     })
 })
 
 beforeEach(() => {
     cy.preserveCookies()
-    //Common.visitUrlOnEnv()
 })
 
 afterEach(function () {
@@ -86,7 +79,14 @@ let impPagam
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
     var ass = "";
-    it('Atterraggio su BackOffice >> Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
+
+    it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Consultazione sinistri') 
+        cy.wait(1000)        
+    });
+
+    it('Consultazione Sinistri: Selezionato un sinistro in stato PAGATO/CHIUSO ' +
     '"pagina di ricerca" si controllano i valori: num sinistro, stato sinistro.', function () {
 
         let classvalue = "search_submit claim_number k-button"
@@ -106,26 +106,26 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
         });
 
-       const cssTarga = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
-       ConsultazioneSinistriPage.getPromiseText_ById(cssTarga).then((val) => {          
+        const cssTarga = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(4)"   
+        ConsultazioneSinistriPage.getPromiseText_ById(cssTarga).then((val) => {          
             cy.log('[it]>> [Targa]: '+val);
             targaAssicurato = val; 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-       });
+        });
 
-       const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
-       ConsultazioneSinistriPage.getPromiseText_ById(cssPolizza).then((val) => {          
-           cy.log('[it]>> [Polizza]: '+val);
-           polizzaAssicurato = val;
-           ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-       });
+        const cssPolizza = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(3)"
+        ConsultazioneSinistriPage.getPromiseText_ById(cssPolizza).then((val) => {          
+            cy.log('[it]>> [Polizza]: '+val);
+            polizzaAssicurato = val;
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val)
+        });
 
-       const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-       ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv).then((val) => {          
+        const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
+        ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
             dtAvvenimento = val.trim(); 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-       }); 
+        }); 
     });
 
     
@@ -141,21 +141,21 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const clssDtl = "pageTitle"
         ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, numsin)
 
-        // Verifica (2): Valore della data avvenimento      
-        const cssDtAvv = "#sx-detail > table > tbody > tr:nth-child(1) > td.clock"      
+        // Verifica (2): Valore della data avvenimento    
+        const cssDtAvv = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.clock"      
         ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento) 
         
         // Verifica (3): Cliente
-        const cssCliente = "#sx-detail > table > tbody > tr:nth-child(1) > td.people > a"
+        const cssCliente = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.people > a"
         ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssCliente, clienteAssicurato);
 
     });
     
     it('"Pagina di dettaglio" è verificata la sezione INTESTAZIONE con valorizzazione dei campi ' +
     ' Località e CLD/Danneggiato ', function () {
-      
+    
         //(1): Valore della località
-        const csslocalità = "#sx-detail > table > tbody > tr.last-row > td.pointer"
+        const csslocalità = "#sx-detail > h2 > table > tbody > tr.last-row > td.pointer"
         ConsultazioneSinistriPage.getPromiseText_ById(csslocalità).then((val) => {
             let dscrpt = val.split(':')[1];            
             cy.log('[it]>> [Località]: '+dscrpt);
@@ -173,7 +173,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
     it('"Pagina di dettaglio" - sezione "PERIZIE" '+
     ' Si verifica che i seguenti campi non siano nulli: Data incarico, Data scarico, Fiduciario, Tipo incarico, Stato. ' ,
-     function () {
+    function () {
         
         // Apro la sezione del danneggiato (1)
         const btnDanneggiato = "#soggetti_danneggiati > div > div > a"
@@ -187,17 +187,17 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             dtIncarico = dscrpt.trim()  
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
         });
-         
-         // Verifica : la valorizzazione del campo "Data scarico" in Sezione Perizie
-         const cssDtScarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
-         ConsultazioneSinistriPage.getPromiseText_ById(cssDtScarico).then((val) => {
-            let dscrpt = val.split(':')[1]; 
-            cy.log('[it]>> [Data scarico]: '+dscrpt);
-            dtScarico = dscrpt.trim() 
-            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
-         });
 
-          // Verifica : la valorizzazione del campo "Fiduciario" in Sezione Perizie
+        // Verifica : la valorizzazione del campo "Data scarico" in Sezione Perizie
+        const cssDtScarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
+        ConsultazioneSinistriPage.getPromiseText_ById(cssDtScarico).then((val) => {
+        let dscrpt = val.split(':')[1]; 
+        cy.log('[it]>> [Data scarico]: '+dscrpt);
+        dtScarico = dscrpt.trim() 
+        ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
+        });
+
+        // Verifica : la valorizzazione del campo "Fiduciario" in Sezione Perizie
         const cssFiduciario = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(2)'
         ConsultazioneSinistriPage.getPromiseText_ById(cssFiduciario).then((val) => {
             let dscrpt = val.split(':')[1];        

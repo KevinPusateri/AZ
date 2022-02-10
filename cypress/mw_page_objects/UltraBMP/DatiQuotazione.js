@@ -306,7 +306,8 @@ class DatiQuotazione {
 
       //Verifica default "Data di nascita" (data odierna meno un anno)
       if (daVerificare.DataNascita) {
-        valoriDefault.DataNascita = UltraBMP.dataOggiMenoUnAnno()
+        //valoriDefault.DataNascita = UltraBMP.dataOggiMenoUnAnno()
+        valoriDefault.DataNascita = UltraBMP.dataOggiPiuAnni(-1)
         cy.log("Verifica default 'Data di nascita - atteso': " + valoriDefault.DataNascita)
         DatiQuotazione.verificaInput(animale, 'La sua data di nascita', 4, valoriDefault.DataNascita)
       }
