@@ -10,12 +10,14 @@
 import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
+import menuEmissione from '../../fixtures/SchedaCliente/menuEmissione.json'
 //#endregion
 
 //#region Mysql DB Variables
@@ -33,23 +35,10 @@ const delayBetweenTests = 2000
 //#region  variabili iniziali
 //let cliente = PersonaFisica.SabrinaTonon()
 let cliente = PersonaFisica.GalileoGalilei()
+let prodotto = menuEmissione.RamiVari.UltraSalute
+var ambiti = [ambitiUltra.ambitiUltraSalute.diaria_da_ricovero]
 //#endregion variabili iniziali
 
-//#region Enumerator
-const ultraRV = {
-  CASAPATRIMONIO: "Allianz Ultra Casa e Patrimonio",
-  CASAPATRIMONIO_BMP: "Allianz Ultra Casa e Patrimonio BMP",
-  SALUTE: "Allianz Ultra Salute",
-}
-
-const ambitiUltraSalute = {
-  SPESE_MEDICHE: "health-bag-doctor",
-  DIARIA_DA_RICOVERO: "save",
-  INVALIDITA_PERMANENTE_INFORTUNIO: "injury-plaster",
-  INVALIDITA_PERMANENTE_MALATTIA: "wheelchair",
-}
-//#endregion enum
-var ambitiSelezionati = [ambitiUltra.ambitiUltraSalute.DIARIA_DA_RICOVERO]
 before(() => {
   cy.getUserWinLogin().then(data => {
     cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
@@ -105,24 +94,18 @@ describe("POLIZZA BENEFICIARI REFERENTE", () => {
   })
 
   it("Emissione Ultra Salute", () => {
-    Ultra.emissioneUltra(ultraRV.SALUTE)
-    Ultra.selezionaPrimaAgenzia()
+    SintesiCliente.Emissione(prodotto)
+    SintesiCliente.selezionaPrimaAgenzia()
+    Dashboard.caricamentoDashboardUltra()
   })
 
-  it("Prosegui", () => {
-    var ambiti = [
-      ambitiUltraSalute.SPESE_MEDICHE,
-      ambitiUltraSalute.DIARIA_DA_RICOVERO,
-      ambitiUltraSalute.INVALIDITA_PERMANENTE_INFORTUNIO
-    ]
-
+  it("Selezione Ambiti", () => {
     let oggi = Date.now()
     let dataInizio = new Date(oggi)
     let dataFine = new Date(oggi); dataFine.setMonth(dataInizio.getMonth() + 7)
-   
-
-    Ultra.caricamentoUltraHome()
-    Dashboard.selezionaAmbiti(ambitiSelezionati)
+    
+    Dashboard.selezionaAmbiti(ambiti)
+    cy.pause()
     Ultra.procediHome()
   })
 
