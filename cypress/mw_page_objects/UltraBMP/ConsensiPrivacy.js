@@ -33,6 +33,16 @@ class ConsensiPrivacy {
             cy.get('a').contains('Avanti').click() //avanti
         })
     }
+
+    /**
+     * Verifica l'esistenza della sezione
+     * * @param {*} sezione
+     */
+     static verificaSezione(sezione) {
+        ultraIFrame().within(() => {
+            cy.get('div[class="section-title"]').contains(sezione).should('have.length', 1)
+        })
+    }
 }
 
 export default ConsensiPrivacy

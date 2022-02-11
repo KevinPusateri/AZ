@@ -140,7 +140,7 @@ class CensimentoAnagrafico {
                 cy.get('#f-nome').should('be.visible').type(cliente.nome)
 
                 cy.get('#cerca-pers-forinsert').should('be.visible').click()  //avvia ricerca
-                cy.wait(1000)
+                cy.wait(3000)
                 cy.get('span').contains(cliente.cognomeNome()).click()
                 cy.wait(2000)
             })
@@ -175,6 +175,7 @@ class CensimentoAnagrafico {
                 .parent()
                 .parent()
                 .find('select').select(cliente.ubicazione())
+                .wait(2000)
             
             if (capDifferente)
             {
@@ -183,13 +184,17 @@ class CensimentoAnagrafico {
                     .should('be.visible')
                     .find('button').contains('AGGIORNA')
                     .click()
+                    
+                cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+                cy.wait(2000)
             }
 
             cy.get('span')
                 .contains('Assicurato associato').should('be.visible')
-                .parent()
-                .parent()
+                .parent().should('exist')
+                .parent().should('exist')
                 .find('select').select(cliente.cognomeNome())
+                .wait(2000)
 
             if (capDifferente)
             {
@@ -198,6 +203,8 @@ class CensimentoAnagrafico {
                     .should('be.visible')
                     .find('button').contains('AGGIORNA')
                     .click()
+                cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+                cy.wait(2000)
             }
 
         })

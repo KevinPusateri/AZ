@@ -293,9 +293,6 @@ class Dashboard {
             cy.get('button[class="close-button"]').should('exist').click()
             cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
             cy.wait(1000)
-
-            cy.pause()
-
         })
     }
 
@@ -320,7 +317,6 @@ class Dashboard {
                 .find('p').contains(daSelezionare).should('have.class', 'titolo-copertina').click()
 
             // Consenso privacy
-            cy.pause()
             cy.get('span').contains('Salva PDF').should('exist')
                 .parent('button').should('have.attr', 'aria-disabled', 'true')
 
@@ -329,8 +325,6 @@ class Dashboard {
 
             cy.get('span').contains('Salva PDF').should('exist')
                 .parent('button').should('have.attr', 'aria-disabled', 'false').click()
-
-            cy.pause()
 
         })
     }
@@ -345,7 +339,6 @@ class Dashboard {
     }
 
     static verificaPremio(premioOld, premioNew, variazionePremio) {
-        cy.pause()
         var impMin = 0
         var impMax = 0
         var premio = premioOld + variazionePremio
