@@ -312,6 +312,19 @@ class SintesiCliente {
         cy.wait('@LibriMatricolaDA', { requestTimeout: 50000 });
     }
 
+    static Emissione(fixtureEmissione) {
+        //apre il menù di emissione del ramo indicato
+        cy.get('.card-container').find('.label')
+            .contains(fixtureEmissione[0]).click()
+
+        //scorre i sottomenù fino aselezionare l'opzione richiesta
+        for (var i = 1; i < fixtureEmissione.length; i++) {
+            cy.log(fixtureEmissione[i])
+            cy.get('button[role="menuitem"]').contains(fixtureEmissione[i])
+                .should('be.visible').click()
+        }
+    }
+
     /**
      * seleziona la prima agenzia dal popup "seleziona il canale" in Matrix
      */

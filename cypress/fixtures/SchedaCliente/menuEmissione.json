@@ -1,0 +1,138 @@
+{
+  "Auto": {
+    "emissione": {
+      "preventivo": [
+        "Auto",
+        "Emissione",
+        "Preventivo Motor"
+      ],
+      "flotte": [
+        "Auto",
+        "Emissione",
+        "Flotte e conversioni"
+      ]
+    },
+    "prodottiParticolari": {
+      "AssunzioneGuidata": [
+        "Auto",
+        "Prodotti particolari",
+        "Assunzione guidata"
+      ],
+      "veicoliEpoca": [
+        "Auto",
+        "Prodotti particolari",
+        "Veicoli d/'epoca durata 10 giorni"
+      ],
+      "libriMatricola": [
+        "Auto",
+        "Prodotti particolari",
+        "Libri matricola"
+      ],
+      "kaskoARDdipendenti": {
+        "chilometro": [
+          "Auto",
+          "Prodotti particolari",
+          "Kasko e ARD per 'Dipendenti in Missione'",
+          "Kasko e ARD a Chilometro"
+        ],
+        "giornata": [
+          "Auto",
+          "Prodotti particolari",
+          "Kasko e ARD per 'Dipendenti in Missione'",
+          "Kasko e ARD a Giornata"
+        ],
+        "veicolo": [
+          "Auto",
+          "Prodotti particolari",
+          "Kasko e ARD per 'Dipendenti in Missione'",
+          "Kasko e ARD a Veicolo"
+        ]
+      },
+      "polizaAperta": {
+        "polizzaBase": [
+          "Auto",
+          "Prodotti particolari",
+          "Ploizza aperta",
+          "Polizza base"
+        ]
+      },
+      "offertaMiniflotte": [
+        "Auto",
+        "Prodotti particolari",
+        "Offerta miniflotte"
+      ],
+      "coassicurazione": [
+        "Auto",
+        "Prodotti particolari",
+        "Coassicurazione"
+      ]
+    },
+    "passioneBlu": {
+      "nuovaPolizza": [
+        "Auto",
+        "Passione BLU",
+        "Nuova polizza"
+      ],
+      "polizzaGuidata": [
+        "Auto",
+        "Passione BLU",
+        "Nuova polizza guidata"
+      ],
+      "coassicurazione": [
+        "Auto",
+        "Passione BLU",
+        "Nuova polizza Coassicurazione"
+      ]
+    }
+  },
+
+  "RamiVari": {
+    "CasaPatrimonio": [
+      "Rami vari",
+      "Allianz Ultra Casa e Patrimonio"
+    ],
+    "CasaPatrimonio_BMP": [
+      "Rami vari",
+      "Allianz Ultra Casa e Patrimonio BMP"
+    ],
+    "UltraSalute": [
+      "Rami vari",
+      "Allianz Ultra Salute"
+    ],
+    "UltraImpresa": [
+      "Rami vari",
+      "Allianz Ultra Impresa"
+    ],
+    "Allianz1Business": [
+      "Rami vari",
+      "Allianz1 Business"
+    ],
+    "FQ_UniversoSalute": [
+      "Rami vari",
+      "FastQuote Universo Salute"
+    ],
+    "FQ_InfortuniCircolazione": [
+      "Rami vari",
+      "FastQuote Infortuni Da Circolazione"
+    ],
+    "FQ_ImpresaSicura": [
+      "Rami vari",
+      "FastQuote Impresa Sicura"
+    ],
+    "FQ_Albergo": [
+      "Rami vari",
+      "FastQuote Albergo"
+    ],
+    "GestioneGrandine": [
+      "Rami vari",
+      "Gestione Grandine"
+    ],
+    "Emissione": {
+      "PolizzaNuova": [
+        "Rami vari",
+        "Emissione",
+        "Polizza nuova"
+      ]
+    }
+  }
+}

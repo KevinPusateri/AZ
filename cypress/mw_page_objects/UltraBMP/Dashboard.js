@@ -65,10 +65,7 @@ class Dashboard {
 
     /**
      * Seleziona gli ambiti indicati e verifica che vengano selezionati corretamente.
-     * Il parametro 'popup' va settato a true nel caso si voglia selezionare gli ambiti
-     * in una finestra popup, ad esempio aggiungendo un ambito nella sezione preferiti
      * @param {array} ambiti
-     * @param {bool} popup
      */
     static selezionaAmbiti(ambiti) {
         ultraIFrame().within(() => {
