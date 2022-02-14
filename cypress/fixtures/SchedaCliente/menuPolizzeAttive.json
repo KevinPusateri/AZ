@@ -8,5 +8,18 @@
   "vincoli" : "Vincoli",
   "modificaFonte" : "Modifica fonte",
   "apriPDF" : "Apri pdf di polizza",
-  "notecontratto" : "Note di contratto"
+  "notecontratto" : "Note di contratto",
+  "sostituzioneStessoVeicolo": "Sostituzione stesso veicolo",
+  "sostituzioneDiversoVeicolo": "Sostituzione diverso veicolo",
+  "sostituzioneModificaTarga" : "Sostituzione aggiornamento veicolo - Modifica targa",
+  "sostituzioneModificaGancioTraino": "Sostituzione aggiornamento veicolo - Modifica gancio traino",
+  "sostituzioneModificaDatiTecnici": "Sostituzione aggiornamento veicolo - Modifica dati tecnici",
+  "sostituzioneModificaVincolo" : "Sostituzione aggiornamento veicolo - Modifica vincolo",
+  "regolazionePremio"  : "Regolazione Premio",
+  "quietanzamentoOnline": "Quietanzamento online",
+  "stornoAnnullamento": "Storno annullamento",
+  "gestionePolizzaAperta": "Gestione polizza aperta",
+  "altriCasiAssuntivi": "Altri casi assuntivi",
+  "gestione": "Gestione",
+  "sinistri": "Sinistri"
 }

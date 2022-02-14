@@ -13,6 +13,7 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
+
 class Portafoglio {
 
     /**
@@ -44,7 +45,17 @@ class Portafoglio {
      * Torna indietro 
      */
     static back() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'client'
+            }
+        })
+
         cy.get('a').contains('Clients').click()
+
+        cy.wait('@client', { requestTimeout: 30000 })
+            .its('response.body.data.client')
+            .should('not.be.null')
     }
 
     /**
@@ -690,9 +701,10 @@ class Portafoglio {
     /**
      * Apre il menù opzioni del contratto e seleziona la voce indicata 
      * @param {string} nContratto 
-     * @param {json} voce 
+     * @param {json} voce
+     * @param {boolean} checkPage se true, verifica atterraggio pagina (false by default)
      */
-    static menuContratto(nContratto, voce) {
+    static menuContratto(nContratto, voce, checkPage = false) {
         //cerca il riquadro del contratto e apre il menù contestuale
         cy.get('.contract-number').contains(nContratto)
             .parents('.top-card-grid').find('app-contract-context-menu')
@@ -700,8 +712,86 @@ class Portafoglio {
 
         cy.wait(1000)
 
+        //effetuiamo il click nel sotto menu in determinati casi
+        if (voce.includes('Sostituzione'))
+            cy.get('[class*="transformContextMenu"]').should('be.visible')
+                .contains('Sostituzione/Riattivazione').click()
+
         cy.get('[class*="transformContextMenu"]').should('be.visible')
             .contains(voce).click() //seleziona la voce dal menù
+
+        //cy.pause()
+        //Verifica eventuale presenza del popup di disambiguazione
+        Common.canaleFromPopup()
+
+        if (checkPage)
+            this.checkPage(voce)
+    }
+
+    /**
+     * Verifica atterraggio alla pagina
+     * @param {string} page - Nome della pagina 
+     */
+    static checkPage(page) {
+
+        //#region Intercept
+        cy.intercept({
+            method: 'POST',
+            url: /NGRA2013/
+        }).as('NGRA2013')
+
+        cy.intercept({
+            method: 'POST',
+            url: /Conguagli_AD/
+        }).as('conguagliAD')
+
+        cy.intercept({
+            method: 'POST',
+            url: /IncassoDA/
+        }).as('incassoDA')
+
+        cy.intercept({
+            method: 'POST',
+            url: /GestioneAnnullamentiDA/
+        }).as('gestioneAnnullamentiDA');
+        //#endregion
+
+        if (page.includes('Sostituzione')) {
+            cy.wait('@NGRA2013', { requestTimeout: 120000 })
+
+            cy.getIFrame()
+            cy.get('@iframe').within(() => {
+                cy.contains("Sostituzione in corso di contratto").should('exist').and('be.visible')
+            })
+        }
+        else if (page.includes('Regolazione')) {
+            cy.wait('@conguagliAD', { requestTimeout: 120000 })
+
+            cy.getIFrame()
+            cy.get('@iframe').within(() => {
+                cy.contains("Gestione Regolazione Premio Allianz").should('exist').and('be.visible')
+            })
+        }
+        else if(page.includes('Quietanzamento')){
+            cy.wait('@incassoDA', { requestTimeout: 120000 }).then(incassoDA => {
+                expect(incassoDA.response.statusCode).to.be.eq(200);
+                assert.isNotNull(incassoDA.response.body)
+            })
+        }
+        else if(page.includes('Annullamento')){
+            cy.wait('@gestioneAnnullamentiDA', { requestTimeout: 120000 })
+            cy.get('@iframe').within(() => {
+                cy.contains("Gestione Annullamenti Allianz").should('exist').and('be.visible')
+                cy.contains("Lista annullamenti disponibili").should('exist').and('be.visible')
+            })
+        }
+
+        //Verifichiamo la briciola di pane
+        cy.get('lib-breadcrumbs').find('span[class="ng-star-inserted"]').should('exist').then(breadCrumb => {
+            expect(breadCrumb.text().trim().replace(/\u00a0/g, ' ')).to.equal(page)
+        })
+
+        this.back()
     }
 
     /**
