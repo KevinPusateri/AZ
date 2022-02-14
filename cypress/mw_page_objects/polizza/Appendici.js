@@ -42,6 +42,7 @@ class Appendici {
      */
     static Avanti() {
         ultraIFrame().within(() => {
+            //cy.get('#pageActionButtons')
             cy.get('input[value="Avanti"]').should('not.have.attr', 'style', 'display: none;').click()
         })
     }

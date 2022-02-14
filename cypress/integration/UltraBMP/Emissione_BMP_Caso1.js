@@ -11,7 +11,9 @@ import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
 import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
-import AreaRiservata from "../../mw_page_objects/UltraBMP/AreaRiservata"
+import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 import Common from "../../mw_page_objects/common/Common"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
@@ -252,12 +254,12 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
     })
 
     // Al momento bypasso perchè non compare il messaggio di salvataggio e non va la condivisione
-    /* 
+    
     it("Salva Quotazione e Condividi", () => {
         Dashboard.salvaQuotazione()
         Dashboard.condividiQuotazione('Catastrofi naturali')
     })
-    */
+    
 
     it("Procedi", () => {
         Dashboard.procediHome()
@@ -279,7 +281,6 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         Riepilogo.verificaFrazionamento('annuale')
         Riepilogo.EmissionePolizza()
         CensimentoAnagrafico.caricamentoCensimentoAnagrafico()   
-        cy.pause()
     })
 
     it("Censimento anagrafico", () => {
@@ -288,34 +289,34 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         CensimentoAnagrafico.selezionaAnimale(modificheAnimale.Nome, personaFisica, '380260000279818', true)
         CensimentoAnagrafico.Avanti()
         DatiIntegrativi.caricamentoPagina()
-        cy.pause()
     })
 
     it("Dati integrativi", () => {
         DatiIntegrativi.verificaDataDecorrenza()
         DatiIntegrativi.verificaDataScadenza()
-        DatiIntegrativi.verificaDatoPolizzaModificabile("società di brokeraggio", false)
         DatiIntegrativi.verificaDatoPolizzaModificabile("Tacito rinnovo", true)
-        //DatiIntegrativi.impostaDataDecorrenza(UltraBMP.dataOggiPiuGiorni(-1))
+        DatiIntegrativi.verificaDatoPolizzaModificabile("Adeguamento automatico annuale", true)
         DatiIntegrativi.selezionaTuttiNo()
         cy.pause()
         DatiIntegrativi.verificaRetrodatabilità()
         cy.pause()
         DatiIntegrativi.ClickButtonAvanti()
-        //Ultra.Avanti()
         DatiIntegrativi.popupDichiarazioni()
         ConsensiPrivacy.caricamentoPagina()
         cy.pause()
     })
 
     it("Consensi e privacy", () => {
+        ConsensiPrivacy.verificaSezione('Unico - Consensi forniti')
+        ConsensiPrivacy.verificaSezione('Privacy')
         ConsensiPrivacy.Avanti()
         ControlliProtocollazione.caricamentoPagina()
         cy.pause()
     })
 
-    it("salvataggio Contratto", () => {
+    it("salvataggio Contratto e verifiche", () => {
         ControlliProtocollazione.salvataggioContratto()
+        ControlliProtocollazione.verificaOpzione('Tipo firma', 'MANUALE')
         cy.pause()
     })
 

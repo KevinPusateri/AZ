@@ -235,11 +235,59 @@ class SintesiCliente {
                 if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
                     cy.get('app-new-auto-fast-quote').contains('Agenzia').should('be.visible')
                 }
+                cy.get('img[src$="preventivoMotor.jpg"]').should('be.visible')
                 cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible')
             } else
                 assert.fail('FastQuote non è presente')
 
         })
+    }
+
+    static calcolaDaFastQuoteAuto(tipoVeicolo, targa) {
+        //Tipo Veicolo
+        let veicolo = new RegExp("\^" + tipoVeicolo + "\$")
+        cy.get('app-new-auto-fast-quote').contains('Seleziona').should('be.visible').click()
+        cy.get('div[id^="cdk-overlay-"]').should('be.visible').within(() => {
+            cy.contains(veicolo).should('exist').click()
+        })
+
+        //Targa
+        cy.get('app-new-auto-fast-quote').find('input[placeholder="Inserisci"]').should('be.visible').click().clear().type(targa)
+
+        //Effettuiamo il Calcola
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('calculateMotorPriceQuotation')) {
+                req.alias = 'gqlCalculateMotorPriceQuotation'
+            }
+        })
+        cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible').click()
+        cy.wait('@gqlCalculateMotorPriceQuotation', { requestTimeout: 50000 })
+
+        cy.contains('Inserisci i dati manualmente').should('be.visible').click()
+
+        cy.intercept({
+            method: 'GET',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor')
+
+        Common.canaleFromPopup()
+        cy.wait('@getMotor', { requestTimeout: 50000 })
+
+        getIFrame().find('span:contains("Cerca"):visible')
+    }
+
+    static clickProcediInserimentoManualeFastQuoteAuto() {
+        cy.contains('Procedi con l\'inserimento manuale').should('exist').click()
+
+        cy.intercept({
+            method: 'GET',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor')
+
+        Common.canaleFromPopup()
+        cy.wait('@getMotor', { requestTimeout: 50000 })
+
+        getIFrame().find('span:contains("Cerca"):visible')
     }
 
     static checkFastQuoteAlbergo() {
@@ -310,6 +358,19 @@ class SintesiCliente {
         //seleziona la prima agenzia dal poup "canale con cui vuoi procedere"
         Common.canaleFromPopup()
         cy.wait('@LibriMatricolaDA', { requestTimeout: 50000 });
+    }
+
+    static Emissione(fixtureEmissione) {
+        //apre il menù di emissione del ramo indicato
+        cy.get('.card-container').find('.label')
+            .contains(fixtureEmissione[0]).click()
+
+        //scorre i sottomenù fino aselezionare l'opzione richiesta
+        for (var i = 1; i < fixtureEmissione.length; i++) {
+            cy.log(fixtureEmissione[i])
+            cy.get('button[role="menuitem"]').contains(fixtureEmissione[i])
+                .should('be.visible').click()
+        }
     }
 
     /**
