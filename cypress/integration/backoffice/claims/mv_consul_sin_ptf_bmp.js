@@ -15,7 +15,7 @@ import Dashboard from "../../../mw_page_objects/UltraBMP/Dashboard"
 import Preferiti from "../../../mw_page_objects/UltraBMP/Preferiti"
 import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
 import Portafoglio from "../../../mw_page_objects/clients/Portafoglio"
-import menuPolizzeAttive from '../../../fixtures/SchedaCliente/menuPolizzeAttive.json'
+import ConsultazioneSinistriPage from "../../../mw_page_objects/backoffice/ConsultazioneSinistriPage"
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[2].split('.')[0].toUpperCase()
@@ -69,12 +69,16 @@ after(function () {
 let cliente = PersonaFisica.MonicaSant()
 let sinistro = '927646275'
 let stato_sin = 'CHIUSO PAGATO'
-let dtAvvenimento 
+let prodotto = "31 - Bonus malus auto"
+let targa = "CV366SA"
+let polizza = "1-78794122"
+let dtAvvenimento = "17 gen 2020"
+let dtDenuncia = "20 gen 2020"
+let dtChiusura = "25 feb 2021"
+let liquidato = "12.031,76 €"
 //#endregion variabili iniziali
 
-describe('Matrix Web - Ricerca del sinistro chiuso e pagato tramite Cliente-->Portafoglio-->Sinistri', () => {
-    
-            
+describe('Matrix Web - Ricerca e verifica sinistro chiuso/pagato, da Cliente-->Portafoglio-->Sinistri', () => {                
     it("Ricerca cliente con sinistro chiuso pagato", () => {
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
@@ -89,15 +93,24 @@ describe('Matrix Web - Ricerca del sinistro chiuso e pagato tramite Cliente-->Po
                 cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
                 cy.get('lib-client-item').first().next().click()
             }
-        })
-      
+        })      
     })
 
     it("Accesso alla sezione Portafoglio-->Sinistri", () => {
         Portafoglio.clickTabPortafoglio()
-        Portafoglio.clickSubTab('Sinistri')
-       
-      
+        Portafoglio.clickSubTab('Sinistri')             
+    })
+
+    it("Verifica i dati del sinistro", () => {
+        Portafoglio.checkObj_ByLocatorAndText(".contract-number", sinistro)           
+        Portafoglio.checkObj_ByLocatorAndText(".ng-star-inserted", stato_sin)
+        Portafoglio.checkObj_ByLocatorAndText(".ng-star-inserted", prodotto)
+        Portafoglio.checkObj_ByLocatorAndText(".ng-star-inserted", targa)
+        Portafoglio.checkObj_ByLocatorAndText(".ng-star-inserted", polizza)
+        Portafoglio.checkObj_ByLocatorAndText(".ng-star-inserted", dtAvvenimento)
+        Portafoglio.checkObj_ByLocatorAndText(".ng-star-inserted", dtDenuncia)
+        Portafoglio.checkObj_ByLocatorAndText(".ng-star-inserted", dtChiusura)
+        Portafoglio.checkObj_ByLocatorAndText(".lib-format-numbers", liquidato)        
     })
    
 });

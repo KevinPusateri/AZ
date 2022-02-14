@@ -534,7 +534,7 @@ class Portafoglio {
 
 
     /**
-     * Verifica che la polliza sia in stato di "Sospesa"
+     * Verifica che la poliza sia in stato di "Sospesa"
      * @param {string} currentCustomerNumber : url del client specifico
      * @param {string} numberPolizza : numero della polizza
      */
@@ -611,6 +611,26 @@ class Portafoglio {
             return i;
         }
     }
+
+    /**
+     * Verifica la presenza di una label associata ad un oggetto identificato dal 
+     * suo locator 
+     * @param {string} locator : attribute identify 
+     * @param {string} label : text displayed
+     */
+     static checkObj_ByLocatorAndText(locator, label) {    
+        cy.get(locator).should('be.visible')
+        .then(($val) => {                                       
+            expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
+            let txt = $val.text().trim()                                    
+            if (txt.includes(label)) {                   
+                cy.log('>> object with label: "' + label +'" is defined')                      
+            } else
+                assert.fail('object with label: "' + label +'" is not defined')
+        })       
+        cy.wait(1000)            
+    }
+    
 
     /**
      * Esegui "storno Annullamento" della polizza specificata
