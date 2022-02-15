@@ -19,7 +19,14 @@
   "quietanzamentoOnline": "Quietanzamento online",
   "stornoAnnullamento": "Storno annullamento",
   "gestionePolizzaAperta": "Gestione polizza aperta",
-  "altriCasiAssuntivi": "Altri casi assuntivi",
-  "gestione": "Gestione",
+  "reperibilitaDiContratto": "Reperibilità di contratto",
+  "altriCasiAssuntiviCessione": "Cessione",
+  "altriCasiAssuntiviModificaTipologiaVeicolo": "Modifica tipologia veicolo (settore tariffario)",
+  "altriCasiAssuntiviAllineamentoProprietarioContraente": "Allineamento proprietario contraente",
+  "gestionePeriziaKasko": "Perizia Kasko",
+  "gestioneDuplicatiCertificatoCartaVerde": "Duplicati certificato e carta verde",
+  "gestioneStampaAttestatoRischio": "Stampa attestato di rischio",
+  "gestioneRistampaCertificatoGiornata": "Ristampa certificato in giornata",
+  "gestioneRevocaDisdettaRecesso": "Revoca di disdetta o recesso",
   "sinistri": "Sinistri"
 }

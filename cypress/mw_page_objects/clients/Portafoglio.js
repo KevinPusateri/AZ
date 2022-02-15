@@ -629,19 +629,19 @@ class Portafoglio {
      * @param {string} locator : attribute identify 
      * @param {string} label : text displayed
      */
-     static checkObj_ByLocatorAndText(locator, label) {    
+    static checkObj_ByLocatorAndText(locator, label) {
         cy.get(locator).should('be.visible')
-        .then(($val) => {                                       
-            expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
-            let txt = $val.text().trim()                                    
-            if (txt.includes(label)) {                   
-                cy.log('>> object with label: "' + label +'" is defined')                      
-            } else
-                assert.fail('object with label: "' + label +'" is not defined')
-        })       
-        cy.wait(1000)            
+            .then(($val) => {
+                expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true
+                let txt = $val.text().trim()
+                if (txt.includes(label)) {
+                    cy.log('>> object with label: "' + label + '" is defined')
+                } else
+                    assert.fail('object with label: "' + label + '" is not defined')
+            })
+        cy.wait(1000)
     }
-    
+
 
     /**
      * Esegui "storno Annullamento" della polizza specificata
@@ -732,10 +732,22 @@ class Portafoglio {
 
         cy.wait(1000)
 
-        //effetuiamo il click nel sotto menu in determinati casi
+        //Effetuiamo il click nel sotto menu in determinati casi
         if (voce.includes('Sostituzione'))
             cy.get('[class*="transformContextMenu"]').should('be.visible')
                 .contains('Sostituzione/Riattivazione').click()
+        else if (voce.includes('Reperibilità'))
+            cy.get('[class*="transformContextMenu"]').should('be.visible')
+                .contains('Funzioni anagrafiche').click()
+        else if (voce.includes('Cessione') || voce.includes('Modifica tipologia veicolo') || voce.includes('Allineamento proprietario contraente'))
+            cy.get('[class*="transformContextMenu"]').should('be.visible')
+                .contains('Altri casi assuntivi').click()
+        else if (voce.includes('Tecnologica') || voce.includes('Perizia Kasko') || voce.includes('Duplicati certificato e carta verde') || voce.includes('Stampa attestato di rischio') || voce.includes('Ristampa certificato in giornata') || voce.includes('Revoca di disdetta o recesso')) {
+            let re = new RegExp("\^ Gestione \$")
+            cy.get('[class*="transformContextMenu"]').should('be.visible')
+                .contains(re).click()
+        }
+
 
         cy.get('[class*="transformContextMenu"]').should('be.visible')
             .contains(voce).click() //seleziona la voce dal menù
@@ -773,7 +785,27 @@ class Portafoglio {
         cy.intercept({
             method: 'POST',
             url: /GestioneAnnullamentiDA/
-        }).as('gestioneAnnullamentiDA');
+        }).as('gestioneAnnullamentiDA')
+
+        cy.intercept({
+            method: 'POST',
+            url: '**/Auto/**'
+        }).as('postAuto')
+
+        cy.intercept({
+            method: 'POST',
+            url: /Appendici_AD/
+        }).as('appendiciAD')
+
+        cy.intercept({
+            method: 'POST',
+            url: /DuplicatiDA/
+        }).as('duplicatiDA')
+
+        cy.intercept({
+            method: 'POST',
+            url: /GestioneRevocheDA/
+        }).as('gestioneRevocheDA')
         //#endregion
 
         if (page.includes('Sostituzione')) {
@@ -792,19 +824,80 @@ class Portafoglio {
                 cy.contains("Gestione Regolazione Premio Allianz").should('exist').and('be.visible')
             })
         }
-        else if(page.includes('Quietanzamento')){
+        else if (page.includes('Quietanzamento')) {
             cy.wait('@incassoDA', { requestTimeout: 120000 }).then(incassoDA => {
                 expect(incassoDA.response.statusCode).to.be.eq(200);
                 assert.isNotNull(incassoDA.response.body)
             })
         }
-        else if(page.includes('Annullamento')){
+        else if (page.includes('Annullamento') || page.includes('Storno')) {
+            cy.wait('@postAuto', { requestTimeout: 120000 })
             cy.wait('@gestioneAnnullamentiDA', { requestTimeout: 120000 })
+
+            cy.getIFrame()
             cy.get('@iframe').within(() => {
-                cy.contains("Gestione Annullamenti Allianz").should('exist').and('be.visible')
-                cy.contains("Lista annullamenti disponibili").should('exist').and('be.visible')
+                if (page === 'Annullamento') {
+                    cy.contains("Gestione Annullamenti Allianz").should('exist').and('be.visible')
+                    cy.contains("Lista annullamenti disponibili").should('exist').and('be.visible')
+                }
+                else if (page === 'Storno annullamento') {
+                    cy.contains("Gestione Storni Allianz").should('exist').and('be.visible')
+                    cy.get('#btnStorno').should('exist').and('be.visible')
+                }
             })
         }
+        else if (page.includes('Reperibilità')) {
+            cy.wait('@appendiciAD', { requestTimeout: 120000 })
+
+            cy.getIFrame()
+            cy.get('@iframe').within(() => {
+                cy.contains("Appendici anagrafiche").should('exist').and('be.visible')
+                cy.get('input[value="Recapito Quietanza"]').should('exist').and('be.visible')
+            })
+        }
+        else if (page.includes('Cessione') || page.includes('Modifica tipologia veicolo') || page.includes('Allineamento proprietario contraente')) {
+            cy.wait('@NGRA2013', { requestTimeout: 120000 })
+            cy.wait(3000)
+            getIFrame().then($body => {
+                if ($body.find('label:contains("proprietari e i contraenti allineati")').length > 0)
+                    getIFrame().find('span:contains("Esci")').click()
+                else if ($body.find('label:contains("consentita a scadenza annua")').length > 0)
+                    getIFrame().find('span:contains("Esci")').click()
+                else
+                    getIFrame().find('input[value="› Avanti"]').should('exist').and('be.visible')
+            })
+        }
+        else if (page.includes('Perizia Kasko')) {
+            cy.wait('@postAuto', { requestTimeout: 120000 })
+
+            cy.getIFrame()
+            cy.get('@iframe').within(() => {
+                cy.get('#ctl00_pHolderMain1_btnConfermaPK').should('exist').and('be.visible')
+            })
+        }
+        else if (page.includes('Duplicati') || page.includes('Stampa attestato di rischio') || page.includes('Ristampa certificato in giornata')) {
+            cy.wait('@duplicatiDA', { requestTimeout: 120000 })
+
+            cy.getIFrame()
+            cy.get('@iframe').within(() => {
+                cy.contains('Allianz Gestione Duplicati').should('exist').and('be.visible')
+                if (page !== 'Stampa attestato di rischio') {
+                    cy.get('#btnMail').should('exist').and('be.visible')
+                    cy.get('#btnStampa').should('exist').and('be.visible')
+                }
+            })
+        }
+        else if (page.includes('Revoca di disdetta o recesso')) {
+            cy.wait('@gestioneRevocheDA', { requestTimeout: 120000 })
+
+            cy.getIFrame()
+            cy.get('@iframe').within(() => {
+                //? Per le polizze attive non è possibile proseguire con questo tipo di menu
+                //? le polizze devono essere o nello stato DISDETTA DA ASSICURATO oppure ANNULLATA
+                cy.contains('Non è possibile proseguire.').should('exist').and('be.visible')
+            })
+        }
+
 
         //Verifichiamo la briciola di pane
         cy.get('lib-breadcrumbs').find('span[class="ng-star-inserted"]').should('exist').then(breadCrumb => {
