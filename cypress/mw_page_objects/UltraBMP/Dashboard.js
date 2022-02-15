@@ -89,17 +89,11 @@ class Dashboard {
 
     static aggiungiAmbito(nuovoAmbito) {
         ultraIFrame().within(() => {
-           
-                //seleziona ambito
-               // cy.get('#ambitiRischio', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]').should('be.visible').click()
 
-                    cy.contains(nuovoAmbito).parents('div[class=d-inline-flex]').contains("+ Aggiungi nuovo ").click()
-                    cy.pause()
+            cy.get('nx-icon[class*="' + nuovoAmbito + '"]').parents('ultra-ambito-button').contains("+ Aggiungi nuovo").click()
 
-                cy.wait(500)
+            cy.wait(500)
 
-                
-            
         })
     }
 
