@@ -17,7 +17,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 
-let keys = {
+let keysRamivari = {
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: true,
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: true,
     ALLIANZ_ULTRA_SALUTE: true,
@@ -31,23 +31,103 @@ let keys = {
     GESTIONE_GRANDINE: true,
 }
 
+let keysAuto = {
+    PREVENTIVO_MOTOR: true,
+    FLOTTE_CONVENZIONI: true,
+    ASSUNZIONE_GUIDATA: true,
+    VEICOLI_EPOCA: true,
+    LIBRI_MATRICOLA: true,
+    KASKO_ARD_CHILOMETRO: true,
+    KASKO_ARD_GIORNATA: true,
+    KASKO_ARD_VEICOLO: true,
+    POLIZZA_BASE: true,
+    COASSICURAZIONE: true,
+    PASSIONE_BLU: true,
+    NUOVA_POLIZZA: true,
+    NUOVA_POLIZZA_GUIDATA: true,
+    NUOVA_POLIZZA_COASSICURAZIONE: true
+}
+
+let keysCards = {
+    AUTO: true,
+    RAMIVARI: true,
+    VITA: true
+}
+
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
-        cy.getProfiling(data.tutf).then(profiling => {
-            cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.ALLIANZ_ULTRA_IMPRESA = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.ALLIANZ_ULTRA_SALUTE = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRAPMI_OLDPROD').then(profiled => { keys.ALLIANZ1_BUSINESS = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRAS_OLDPROD').then(profiled => { keys.FASQUOTE_UNIVERSO_PERSONA = profiled })
-            cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keys.FASTQUOTE_UNIVERSO_SALUTE = profiled })
-            cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keys.FASTQUOTE_INFORTUNI_CIRCOLAZIONE = profiled })
-            cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keys.FASQUOTE_IMPRESA_SICURA = profiled })
-            cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keys.FASQUOTE_ALBERGO = profiled })
-            cy.filterProfile(profiling, 'RV_GESTIONE_GRANDINE').then(profiled => { keys.GESTIONE_GRANDINE = profiled })
 
+        // CARDS 
+        cy.getProfiling(data.tutf).then((profiling) => {
+
+            // AUTO
+            // AUTO_PREVENTIVO && AUTO_RISCHIO_NUOVO
+            cy.filterProfile(profiling, 'AUTO_PREVENTIVO').then(profiledCase1 => {
+                cy.filterProfile(profiling, 'AUTO_RISCHIO_NUOVO').then(profiledCase2 => {
+                    if (profiledCase1 && profiledCase2)
+                        keysCards.AUTO = true
+                    else
+                        keysCards.AUTO = false
+                })
+            })
+
+            // RAMI VARI
+            // (RV_PREVENTIVO && RV_RISCHIO_NUOVO) || RV_GESTIONE_GRANDINE
+            cy.filterProfile(profiling, 'RV_PREVENTIVO').then(profiledCase1 => {
+                cy.filterProfile(profiling, 'RV_RISCHIO_NUOVO').then(profiledCase2 => {
+                    if (profiledCase1 && profiledCase2)
+                        keysCards.RAMIVARI = true
+                    else
+                        cy.filterProfile(profiling, 'RV_GESTIONE_GRANDINE').then(profiled => {
+                            keysCards.RAMIVARI = profiled
+                        })
+                })
+
+            })
+
+            // VITA
+            // VITA_ASSUNZIONE && VITA_PREVENTIVAZIONE
+            cy.filterProfile(profiling, 'VITA_ASSUNZIONE').then(profiledCase1 => {
+                cy.filterProfile(profiling, 'VITA_PREVENTIVAZIONE').then(profiledCase2 => {
+                    if (profiledCase1 && profiledCase2)
+                        keysCards.VITA = true
+                    else
+                        keysCards.VITA = false
+                })
+            })
+
+
+            // AUTO
+            if (keysCards.AUTO) {
+                cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keysAuto.PREVENTIVO_MOTOR = profiled })
+                cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keysAuto.FLOTTE_CONVENZIONI = profiled })
+                cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.PASSIONE_BLU = profiled })
+                cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.NUOVA_POLIZZA = profiled })
+                cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => {
+                    if (Cypress.env('isAviva'))
+                        keysAuto.NUOVA_POLIZZA_GUIDATA = false
+                    else
+                        keysAuto.NUOVA_POLIZZA_GUIDATA = profiled
+                })
+                cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.NUOVA_POLIZZA_COASSICURAZIONE = profiled })
+            }
+
+            // RAMI VARI
+            if (keysCards.RAMIVARI) {
+                cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO = profiled })
+                cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP = profiled })
+                cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keysRamivari.ALLIANZ_ULTRA_IMPRESA = profiled })
+                cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keysRamivari.ALLIANZ_ULTRA_SALUTE = profiled })
+                cy.filterProfile(profiling, 'COMMON_ULTRAPMI_OLDPROD').then(profiled => { keysRamivari.ALLIANZ1_BUSINESS = profiled })
+                cy.filterProfile(profiling, 'COMMON_ULTRAS_OLDPROD').then(profiled => { keysRamivari.FASQUOTE_UNIVERSO_PERSONA = profiled })
+                cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASTQUOTE_UNIVERSO_SALUTE = profiled })
+                cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASTQUOTE_INFORTUNI_CIRCOLAZIONE = profiled })
+                cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASQUOTE_IMPRESA_SICURA = profiled })
+                cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASQUOTE_ALBERGO = profiled })
+                cy.filterProfile(profiling, 'RV_GESTIONE_GRANDINE').then(profiled => { keysRamivari.GESTIONE_GRANDINE = profiled })
+            }
         })
     })
 })
@@ -66,16 +146,16 @@ beforeEach(() => {
         SintesiCliente.wait()
     }
 })
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
+// })
 
-})
 describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
 
     it('Verifica i tab', function () {
@@ -90,7 +170,6 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.checkFastQuoteUltra()
     })
 
-    //! DA VEDERE ASSENTE AGENZIA SELECT
     it('Verifica FastQuote: Tab Auto', function () {
         SintesiCliente.checkFastQuoteAuto()
     })
@@ -102,23 +181,25 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica le Cards Emissioni', function () {
-        SintesiCliente.checkCardsEmissioni()
+        SintesiCliente.checkCardsEmissioni(keysCards)
     })
 
     it('Verifica Link da Card Auto', function () {
+        if (!keysCards.AUTO)
+            this.skip()
         SintesiCliente.clickAuto()
         SintesiCliente.checkLinksFromAuto()
     })
 
     it('Verifica Link da Card Auto -> Emissione', function () {
         SintesiCliente.clickAuto()
-        SintesiCliente.checkLinksFromAutoOnEmissione()
+        SintesiCliente.checkLinksFromAutoOnEmissione(keysAuto)
     })
 
     it('Verifica Link da Card Auto -> Prodotti particolari', function () {
         if (!Cypress.env('isAviva')) {
             SintesiCliente.clickAuto()
-            SintesiCliente.checkLinksFromAutoOnProdottiParticolari()
+            SintesiCliente.checkLinksFromAutoOnProdottiParticolari(keysAuto)
         } else this.skip()
     })
 
@@ -143,29 +224,22 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         } else this.skip()
     })
 
-    // TODO !INSERIRE SU TFS AVIVA 
-    if (Cypress.env('isAviva')) {
-        it('Verifica Link da Card Auto -> Natanti(AVIVA)', function () {
-            SintesiCliente.clickAuto()
-            SintesiCliente.checkLinksFromAutoOnNatanti()
-        })
-    }
-
-    it('Verifica Link da Card Rami vari', function () {
-        SintesiCliente.clickRamiVari()
-        SintesiCliente.checkLinksFromRamiVari(keys)
-    })
-
-    it('Verifica Link da Card Rami Vari -> Emissione', function () {
-        SintesiCliente.clickRamiVari()
-        SintesiCliente.checkLinksFromRamiVariOnEmissione()
+    it('Verifica Link da Card Auto -> Natanti(AVIVA)', function () {
+        if (!Cypress.env('isAviva')) {
+            cy.log('Test Per AVIVA')
+            this.skip()
+        }
+        SintesiCliente.clickAuto()
+        SintesiCliente.checkLinksFromAutoOnNatanti()
     })
 
     it('Verifica Link da Card Vita', function () {
-        if (!Cypress.env('isAviva')) {
-            SintesiCliente.clickVita()
-            SintesiCliente.checkLinksFromVita()
-        } else this.skip()
+        if (!keysCards.VITA)
+            this.skip()
+        // if (!Cypress.env('isAviva')) {
+        SintesiCliente.clickVita()
+        SintesiCliente.checkLinksFromVita()
+        // } else this.skip()
     })
 
     it('Verifica Card Auto: Emissione -> Preventivo Motor', function () {
@@ -257,99 +331,113 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         } else this.skip()
     })
 
-    if (Cypress.env('isAviva')) {
-        it('Verifica Card Auto: Natanti(AVIVA) -> Nuova polizza', function () {
-            SintesiCliente.clickAuto()
-            SintesiCliente.clickNuovaPolizza()
-            SintesiCliente.back()
-        })
-    }
+    it('Verifica Card Auto: Natanti(AVIVA) -> Nuova polizza', function () {
+        if (!Cypress.env('isAviva'))
+            this.skip()
+        SintesiCliente.clickAuto()
+        SintesiCliente.clickNuovaPolizza()
+        SintesiCliente.back()
+    })
 
     it('Verifica Card Auto: Passione Blu -> Nuova polizza guidata', function () {
-        if (!Cypress.env('isAviva')) {
-            SintesiCliente.clickAuto()
-            SintesiCliente.clickNuovaPolizzaGuidata()
-            SintesiCliente.back()
-        } else this.skip()
+        if (!keysAuto.NUOVA_POLIZZA_GUIDATA || Cypress.env('isAviva'))
+            this.skip()
+        SintesiCliente.clickAuto()
+        SintesiCliente.clickNuovaPolizzaGuidata()
+        SintesiCliente.back()
     })
 
-    if (Cypress.env('isAviva')) {
-        it('Verifica Card Auto: Natanti(AVIVA) -> Nuova polizza Coassicurazione', function () {
-            SintesiCliente.clickAuto()
-            SintesiCliente.clickNuovaPolizzaCoassicurazione()
-            SintesiCliente.back()
-        })
-    }
+    // if (Cypress.env('isAviva')) {
+    it('Verifica Card Auto: Natanti(AVIVA) -> Nuova polizza Coassicurazione', function () {
+        if (!keysAuto.NUOVA_POLIZZA_COASSICURAZIONE || !Cypress.env('isAviva'))
+            this.skip()
+        SintesiCliente.clickAuto()
+        SintesiCliente.clickNuovaPolizzaCoassicurazione()
+        SintesiCliente.back()
+    })
 
     it('Verifica Card Auto: Passione Blu -> Nuova polizza Coassicurazione', function () {
-        if (!Cypress.env('isAviva')) {
-            SintesiCliente.clickAuto()
-            SintesiCliente.clickNuovaPolizzaCoassicurazione()
-            SintesiCliente.back()
-        } else this.skip()
+        if (!keysAuto.NUOVA_POLIZZA_COASSICURAZIONE || Cypress.env('isAviva'))
+            this.skip()
+        SintesiCliente.clickAuto()
+        SintesiCliente.clickNuovaPolizzaCoassicurazione()
+        SintesiCliente.back()
     })
 
+    
+    it('Verifica Link da Card Rami vari', function () {
+        if (!keysCards.RAMIVARI)
+            this.skip()
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.checkLinksFromRamiVari(keysRamivari)
+    })
+
+    it('Verifica Link da Card Rami Vari -> Emissione', function () {
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.checkLinksFromRamiVariOnEmissione()
+    })
 
     it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio', function () {
-        if (!Cypress.env('isAviva')) {
-            SintesiCliente.clickRamiVari()
-            SintesiCliente.clickAllianzUltraCasaPatrimonio()
-            SintesiCliente.back()
-        } else this.skip()
+        if (!keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO)
+            this.skip()
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.clickAllianzUltraCasaPatrimonio()
+        SintesiCliente.back()
     })
     it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio BMP', function () {
-        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP)
+        if (!keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP)
             this.skip()
         SintesiCliente.clickRamiVari()
         SintesiCliente.clickAllianzUltraCasaPatrimonioBMP()
         SintesiCliente.back()
     })
 
-
     it('Verifica Card Rami Vari: Allianz Ultra Salute', function () {
+        if (!keysRamivari.ALLIANZ_ULTRA_SALUTE)
+            this.skip()
         SintesiCliente.clickRamiVari()
         SintesiCliente.clickAllianzUltraSalute()
         SintesiCliente.back()
     })
 
     it('Verifica Card Rami Vari: Allianz1 Business', function () {
-        if (!Cypress.env('isAviva')) {
-            SintesiCliente.clickRamiVari()
-            SintesiCliente.clickAllianz1Business()
-            SintesiCliente.back()
-        } else this.skip()
+        if (!keysRamivari.ALLIANZ1_BUSINESS)
+            this.skip()
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.clickAllianz1Business()
+        SintesiCliente.back()
     })
 
     it('Verifica Card Rami Vari: FastQuote Universo Salute', function () {
-        if (!Cypress.env('isAviva')) {
-            SintesiCliente.clickRamiVari()
-            SintesiCliente.clickFastQuoteUniversoSalute()
-            SintesiCliente.back()
-        } else this.skip()
+        if (!keysRamivari.FASTQUOTE_UNIVERSO_SALUTE)
+            this.skip()
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.clickFastQuoteUniversoSalute()
+        SintesiCliente.back()
     })
     it('Verifica Card Rami Vari: FastQuote Infortuni Da Circolazione', function () {
-        if (!Cypress.env('isAviva')) {
-            SintesiCliente.clickRamiVari()
-            SintesiCliente.clickFastQuoteInfortuniDaCircolazione()
-            SintesiCliente.back()
-        } else this.skip()
+        if (!keysRamivari.FASTQUOTE_INFORTUNI_CIRCOLAZIONE)
+            this.skip()
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.clickFastQuoteInfortuniDaCircolazione()
+        SintesiCliente.back()
     })
 
 
     it('Verifica Card Rami Vari: FastQuote Impresa Sicura', function () {
-        if (!Cypress.env('isAviva')) {
-            SintesiCliente.clickRamiVari()
-            SintesiCliente.clickFastQuoteImpresaSicura()
-            SintesiCliente.back()
-        } else this.skip()
+        if (!keysRamivari.FASQUOTE_IMPRESA_SICURA)
+            this.skip()
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.clickFastQuoteImpresaSicura()
+        SintesiCliente.back()
     })
 
     it('Verifica Card Rami Vari: FastQuote Albergo', function () {
-        if (!Cypress.env('isAviva')) {
-            SintesiCliente.clickRamiVari()
-            SintesiCliente.clickFastQuoteAlbergo()
-            SintesiCliente.back()
-        } else this.skip()
+        if (!keysRamivari.FASQUOTE_ALBERGO)
+            this.skip()
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.clickFastQuoteAlbergo()
+        SintesiCliente.back()
     })
 
     //TODO: canale + new window -> trovare un modo
@@ -367,14 +455,16 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Vita: Accedi al servizio di consulenza', function () {
-        if (!Cypress.env('isAviva')) {
-            SintesiCliente.clickVita()
-            SintesiCliente.clickSevizioConsulenza()
-            SintesiCliente.back()
-        } else this.skip()
+        if (!keysCards.VITA)
+            this.skip()
+        SintesiCliente.clickVita()
+        SintesiCliente.clickSevizioConsulenza()
+        SintesiCliente.back()
     })
 
     it('Verifica Contratti in evidenza', function () {
+        if (!keysCards.VITA)
+            this.skip()
         SintesiCliente.checkContrattiEvidenza()
         SintesiCliente.back()
     })

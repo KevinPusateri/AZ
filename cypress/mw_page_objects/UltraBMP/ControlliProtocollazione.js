@@ -174,6 +174,20 @@ class ControlliProtocollazione {
         })
     }
 
+
+    /**
+     * Verifica l'opzione selezionata per un determinante campo
+     * * @param {*} campo (è il campo che si vuole verificare)
+     * * @param {*} opzione (è l'opzione che dovrebbe essere selezionata) 
+     */
+     static verificaOpzione(campo, opzione) {
+        ultraIFrame().within(() => {
+            cy.get('div').contains(campo).should('exist')
+              .parent('div').should('exist')
+              .find('span').contains(opzione).should('be.checked')
+        })
+    }
+
     /**
      * Clicca sul pulsante Incassa
      */

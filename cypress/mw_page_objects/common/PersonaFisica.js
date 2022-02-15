@@ -71,5 +71,16 @@ export default class PersonaFisica {
 
         return MassimoRoagna
     }
+
+    static MonicaSant() {
+        let MonicaSant = new PersonaFisica("MONICA", "SANT")
+        MonicaSant.via = "VIA TRENTO"
+        MonicaSant.numero = "13/A"
+        MonicaSant.cap = "31010"
+        MonicaSant.citta = "MARENO DI PIAVE"
+        MonicaSant.provincia = "TV"
+
+        return MonicaSant
+    }
 }
 

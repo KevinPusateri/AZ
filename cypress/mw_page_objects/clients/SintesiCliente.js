@@ -15,10 +15,21 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+const CardsEmissioni = {
+    AUTO: 'Auto',
+    RAMIVARI: 'Rami vari',
+    VITA: 'Vita',
+    deleteKey: function (keys) {
+        if (!keys.AUTO) delete this.AUTO
+        if (!keys.RAMIVARI) delete this.RAMIVARI
+        if (!keys.VITA) delete this.VITA
+
+    }
+}
 
 const RamiVari = {
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio BMP' : 'Allianz Ultra Casa e Patrimonio BMP',
     ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
     ALLIANZ_ULTRA_IMPRESA: 'Allianz Ultra Impresa',
     ALLIANZ1_BUSINESS: 'Allianz1 Business',
@@ -41,6 +52,50 @@ const RamiVari = {
         if (!keys.FASQUOTE_IMPRESA_SICURA) delete this.FASQUOTE_IMPRESA_SICURA
         if (!keys.FASQUOTE_ALBERGO) delete this.FASQUOTE_ALBERGO
         if (!keys.GESTIONE_GRANDINE) delete this.GESTIONE_GRANDINE
+    }
+}
+
+
+const Auto = {
+    EMISSIONE: 'Emissione',
+    PRODOTTI_PARTICOLARI: 'Prodotti particolari',
+    PASSIONE_BLU: !Cypress.env('isAviva') ? 'Passione BLU' : 'Natanti',
+    deleteKey: function () {
+        if (Cypress.env('isAviva')) delete this.PRODOTTI_PARTICOLARI
+    }
+}
+const linksEmissioneAuto = {
+    EMISSIONE: {
+        PREVENTIVO_MOTOR: 'Preventivo Motor',
+        FLOTTE_CONVENZIONI: 'Flotte e convenzioni',
+        deleteKey: function (keys) {
+            if (!keys.PREVENTIVO_MOTOR) delete this.PREVENTIVO_MOTOR
+            if (!keys.FLOTTE_CONVENZIONI) delete this.FLOTTE_CONVENZIONI
+        }
+    },
+    PRODOTTI_PARTICOLARI: {
+        ASSUNZIONE_GUIDATA: 'Assunzione guidata (con cod. di autorizz.)',
+        VEICOLI_EPOCA: 'Veicoli d\'epoca durata 10 giorni',
+        LIBRI_MATRICOLA: 'Libri matricola',
+        KASKO_ARD_DIPENDENDI_MISSIONE: 'Kasko e ARD per \'Dipendenti in Missione\'',
+        POLIZZA_APERTA: 'Polizza aperta',
+        COASSICURAZIONE: 'Coassicurazione',
+        deleteKey: function (keys) {
+            if (!keys.ASSUNZIONE_GUIDATA) delete this.ASSUNZIONE_GUIDATA
+            if (!keys.VEICOLI_EPOCA) delete this.VEICOLI_EPOCA
+            if (!keys.LIBRI_MATRICOLA) delete this.LIBRI_MATRICOLA
+            if (!keys.COASSICURAZIONE) delete this.COASSICURAZIONE
+        }
+    },
+    PASSIONE_BLU: {
+        NUOVA_POLIZZA: 'Nuova polizza',
+        NUOVA_POLIZZA_GUIDATA: 'Nuova polizza Guidata',
+        NUOVA_POLIZZA_COASSICURAZIONE: 'Nuova polizza Coassicurazione',
+        deleteKey: function (keys) {
+            if (!keys.NUOVA_POLIZZA) delete this.NUOVA_POLIZZA
+            if (!keys.NUOVA_POLIZZA_GUIDATA || Cypress.env('isAviva')) delete this.NUOVA_POLIZZA_GUIDATA
+            if (!keys.NUOVA_POLIZZA_COASSICURAZIONE) delete this.NUOVA_POLIZZA_COASSICURAZIONE
+        }
     }
 }
 
@@ -235,11 +290,59 @@ class SintesiCliente {
                 if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
                     cy.get('app-new-auto-fast-quote').contains('Agenzia').should('be.visible')
                 }
+                cy.get('img[src$="preventivoMotor.jpg"]').should('be.visible')
                 cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible')
             } else
                 assert.fail('FastQuote non è presente')
 
         })
+    }
+
+    static calcolaDaFastQuoteAuto(tipoVeicolo, targa) {
+        //Tipo Veicolo
+        let veicolo = new RegExp("\^" + tipoVeicolo + "\$")
+        cy.get('app-new-auto-fast-quote').contains('Seleziona').should('be.visible').click()
+        cy.get('div[id^="cdk-overlay-"]').should('be.visible').within(() => {
+            cy.contains(veicolo).should('exist').click()
+        })
+
+        //Targa
+        cy.get('app-new-auto-fast-quote').find('input[placeholder="Inserisci"]').should('be.visible').click().clear().type(targa)
+
+        //Effettuiamo il Calcola
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('calculateMotorPriceQuotation')) {
+                req.alias = 'gqlCalculateMotorPriceQuotation'
+            }
+        })
+        cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible').click()
+        cy.wait('@gqlCalculateMotorPriceQuotation', { requestTimeout: 50000 })
+
+        cy.contains('Inserisci i dati manualmente').should('be.visible').click()
+
+        cy.intercept({
+            method: 'GET',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor')
+
+        Common.canaleFromPopup()
+        cy.wait('@getMotor', { requestTimeout: 50000 })
+
+        getIFrame().find('span:contains("Cerca"):visible')
+    }
+
+    static clickProcediInserimentoManualeFastQuoteAuto() {
+        cy.contains('Procedi con l\'inserimento manuale').should('exist').click()
+
+        cy.intercept({
+            method: 'GET',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor')
+
+        Common.canaleFromPopup()
+        cy.wait('@getMotor', { requestTimeout: 50000 })
+
+        getIFrame().find('span:contains("Cerca"):visible')
     }
 
     static checkFastQuoteAlbergo() {
@@ -272,17 +375,14 @@ class SintesiCliente {
     //#endregion
 
     //#region Emissioni
-    static checkCardsEmissioni() {
+    static checkCardsEmissioni(keysCards) {
         cy.get('app-client-resume app-client-resume-emissions').then(($emissione) => {
             if ($emissione.find('app-section-title .title').length > 0) {
                 cy.wrap($emissione).should('contain', 'Emissioni')
-                const tabCard = [
-                    'Auto',
-                    'Rami vari',
-                    'Vita'
-                ]
+                CardsEmissioni.deleteKey(keysCards)
+                const linkCards = Object.values(CardsEmissioni)
                 cy.get('app-kpi-dropdown-card').find('.label').each(($checkScopes, i) => {
-                    expect($checkScopes.text().trim()).to.include(tabCard[i]);
+                    expect($checkScopes.text().trim()).to.include(linkCards[i]);
                 })
             }
         })
@@ -339,11 +439,7 @@ class SintesiCliente {
     //#region Links Card Auto
     static clickAuto() {
         cy.get('lib-container').find('app-client-resume-emissions:visible').then(($fastquote) => {
-            const check = $fastquote.find(':contains("Auto")').is(':visible')
-            if (check)
-                cy.get('.card-container').find('app-kpi-dropdown-card').contains('Auto').click()
-            else
-                assert.fail('Card Auto non è presente')
+            cy.get('.card-container').find('app-kpi-dropdown-card').contains('Auto').click()
         })
     }
 
@@ -402,6 +498,7 @@ class SintesiCliente {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Libri matricola').click()
         Common.canaleFromPopup()
+        cy.wait(5000)
         getIFrame().find('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
     }
 
@@ -515,7 +612,10 @@ class SintesiCliente {
 
     static clickAllianzUltraCasaPatrimonio() {
         cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio').click()
+        if (!Cypress.env('isAviva')) {
+            cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio').click()
+        } else
+            cy.get('.cdk-overlay-container').find('button').contains('Ultra Casa e Patrimonio').click()
         cy.wait(2000)
         Common.canaleFromPopup()
         getIFrame().find('span:contains("PROCEDI"):visible')
@@ -523,7 +623,11 @@ class SintesiCliente {
 
     static clickAllianzUltraCasaPatrimonioBMP() {
         cy.wait(2000)
-        cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio BMP').click()
+        if (!Cypress.env('isAviva')) {
+            cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio BMP').click()
+        } else
+            cy.get('.cdk-overlay-container').find('button').contains('Ultra Casa e Patrimonio BMP').click()
+
         cy.wait(2000)
         cy.intercept({
             method: 'GET',
@@ -925,29 +1029,30 @@ class SintesiCliente {
     }
 
     static checkLinksFromAuto() {
-        if (!Cypress.env('isAviva')) {
+        // if (!Cypress.env('isAviva')) {
             cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
-                const linksAuto = [
-                    'Emissione',
-                    'Prodotti particolari',
-                    'Passione BLU'
-                ]
+                const linksAuto = Object.values(Auto)
+                // const linksAuto = [
+                //     'Emissione',
+                //     'Prodotti particolari',
+                //     'Passione BLU'
+                // ]
                 cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
                     expect($buttonLinks).to.contain(linksAuto[i])
                 })
             })
-        } else {
+        // } else {
             //AVIVA
-            cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
-                const linksAuto = [
-                    'Emissione',
-                    'Natanti',
-                ]
-                cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-                    expect($buttonLinks).to.contain(linksAuto[i])
-                })
-            })
-        }
+            // cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
+                // const linksAuto = [
+            //         'Emissione',
+            //         'Natanti',
+            //     ]
+            //     cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+            //         expect($buttonLinks).to.contain(linksAuto[i])
+            //     })
+            // })
+        // }
 
     }
 
@@ -973,32 +1078,23 @@ class SintesiCliente {
         })
     }
 
-    static checkLinksFromAutoOnEmissione() {
+    static checkLinksFromAutoOnEmissione(keysAuto) {
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
-            const linksEmissione = [
-                'Preventivo Motor',
-                'Flotte e convenzioni'
-            ]
-            if (Cypress.env('isAviva'))
-                linksEmissione.pop()
+            linksEmissioneAuto.EMISSIONE.deleteKey(keysAuto)
+            const linksAutoEmissione = Object.values(linksEmissioneAuto.EMISSIONE)
             cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-                expect($buttonLinks).to.contain(linksEmissione[i])
+                expect($buttonLinks).to.contain(linksAutoEmissione[i])
             })
         })
     }
 
-    static checkLinksFromAutoOnProdottiParticolari() {
+    static checkLinksFromAutoOnProdottiParticolari(keysAuto) {
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
-            const linksProdottiParticolari = [
-                'Assunzione guidata (con cod. di autorizz.)',
-                'Veicoli d\'epoca durata 10 giorni',
-                'Libri matricola',
-                'Kasko e ARD per \'Dipendenti in Missione\'',
-                'Polizza aperta',
-                'Coassicurazione'
-            ]
+            debugger
+            linksEmissioneAuto.PRODOTTI_PARTICOLARI.deleteKey(keysAuto)
+            const linksProdottiParticolari = Object.values(linksEmissioneAuto.PRODOTTI_PARTICOLARI)
             cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
                 expect($buttonLinks).to.contain(linksProdottiParticolari[i])
             })
