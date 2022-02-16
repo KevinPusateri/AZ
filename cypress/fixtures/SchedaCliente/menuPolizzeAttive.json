@@ -8,7 +8,6 @@
   "vincoli" : "Vincoli",
   "modificaFonte" : "Modifica fonte",
   "apriPDF" : "Apri pdf di polizza",
-  "notecontratto" : "Note di contratto",
   "sostituzioneStessoVeicolo": "Sostituzione stesso veicolo",
   "sostituzioneDiversoVeicolo": "Sostituzione diverso veicolo",
   "sostituzioneModificaTarga" : "Sostituzione aggiornamento veicolo - Modifica targa",
@@ -27,6 +26,5 @@
   "gestioneDuplicatiCertificatoCartaVerde": "Duplicati certificato e carta verde",
   "gestioneStampaAttestatoRischio": "Stampa attestato di rischio",
   "gestioneRistampaCertificatoGiornata": "Ristampa certificato in giornata",
-  "gestioneRevocaDisdettaRecesso": "Revoca di disdetta o recesso",
-  "sinistri": "Sinistri"
+  "gestioneRevocaDisdettaRecesso": "Revoca di disdetta o recesso"
 }

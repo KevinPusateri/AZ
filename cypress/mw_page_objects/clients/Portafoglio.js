@@ -8,10 +8,43 @@ const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .iframe()
 
-    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+    let iframe = cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .its('0.contentDocument').should('exist')
 
-    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
+}
+
+const getIFrameMatrix = () => {
+
+    cy.get('#matrixIframe')
+        .iframe();
+
+    let iframeSin = cy.get('#matrixIframe')
+        .its('0.contentDocument').should('exist');
+
+    return iframeSin.its('body').should('not.be.undefined').then(cy.wrap)
+}
+
+const getIFrameDenuncia = () => {
+
+    getIFrameMatrix().find('iframe[src="cliente.jsp"]')
+        .iframe();
+
+    let iframe = getIFrameMatrix().find('iframe[src="cliente.jsp"]')
+        .its('0.contentDocument').should('exist');
+
+    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
+}
+
+const getIframeModificaFonte = () => {
+
+    getIFrame().find('iframe[id="MAIN_IFRAME"]')
+        .iframe();
+
+    let iframe = getIFrame().find('iframe[id="MAIN_IFRAME"]')
+        .its('0.contentDocument').should('exist');
+
+    return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 class Portafoglio {
@@ -747,12 +780,15 @@ class Portafoglio {
             cy.get('[class*="transformContextMenu"]').should('be.visible')
                 .contains(re).click()
         }
+        else if (voce.includes('Denuncia sinistro'))
+            cy.get('[class*="transformContextMenu"]').should('be.visible')
+                .contains('Sinistri').click()
 
 
         cy.get('[class*="transformContextMenu"]').should('be.visible')
             .contains(voce).click() //seleziona la voce dal menù
 
-        //cy.pause()
+        cy.pause()
         //Verifica eventuale presenza del popup di disambiguazione
         Common.canaleFromPopup()
 
@@ -806,6 +842,16 @@ class Portafoglio {
             method: 'POST',
             url: /GestioneRevocheDA/
         }).as('gestioneRevocheDA')
+
+        cy.intercept({
+            method: 'GET',
+            url: /dasinden/
+        }).as('dasinden')
+
+        cy.intercept({
+            method: 'GET',
+            url: /da/
+        }).as('da')
         //#endregion
 
         if (page.includes('Sostituzione')) {
@@ -897,7 +943,22 @@ class Portafoglio {
                 cy.contains('Non è possibile proseguire.').should('exist').and('be.visible')
             })
         }
+        else if (page.includes('Denuncia sinistro')) {
+            cy.wait('@dasinden', { requestTimeout: 120000 })
+            cy.wait(5000)
+            getIFrameDenuncia().within(() => {
+                cy.contains('Dati generali di denuncia').should('exist').and('be.visible')
+                cy.contains('Avanti').should('exist').and('be.visible')
 
+            })
+        }
+        else if (page.includes('Modifica fonte')) {
+            cy.wait('@da', { requestTimeout: 120000 })
+            cy.wait(5000)
+            getIframeModificaFonte().within(() => {
+                cy.get('input[value="Esegui Variazione"]').should('exist').and('be.visible')
+            })
+        }
 
         //Verifichiamo la briciola di pane
         cy.get('lib-breadcrumbs').find('span[class="ng-star-inserted"]').should('exist').then(breadCrumb => {

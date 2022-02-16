@@ -41,6 +41,7 @@ before(() => {
             currentAgency = polizzaClient.agency
 
             TopBar.search(currentCustomerFullName)
+            LandingRicerca.filtraRicerca('E')
             LandingRicerca.clickClientePF(currentCustomerFullName)
             Portafoglio.clickTabPortafoglio()
             Portafoglio.clickSubTab('Polizze attive')
@@ -155,5 +156,15 @@ describe('Matrix Web : Verifica Menu Contestuale Polizze Auto Attive (aggancio a
         it('Revoca di disdetta o recesso', function () {
             Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.gestioneRevocaDisdettaRecesso, true)
         })
+    })
+
+    context('Sinistri', function () {
+        it('Denuncia sinistro', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.denunciaSinistro, true)
+        })
+    })
+
+    it('Modifica fonte', function () {
+        Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.modificaFonte, true)
     })
 })
