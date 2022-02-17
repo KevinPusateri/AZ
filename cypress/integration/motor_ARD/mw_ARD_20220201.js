@@ -53,10 +53,11 @@ after(function () {
     //#endregion
 })
 
-//Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
+//?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
-//Se specificato, esegue l'identificativo caso specifico
-let caseToExecute = '5'
+//?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
+let caseToExecute = []
+
 describe('ARD Febbraio 2022: ', {
     retries: {
         runMode: 0,
@@ -66,7 +67,7 @@ describe('ARD Febbraio 2022: ', {
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
-                if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso) {
+                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
                     Common.visitUrlOnEnv()
 
                     if (flowClients) {
@@ -92,7 +93,7 @@ describe('ARD Febbraio 2022: ', {
             })
 
             it("LogTariffa", function () {
-                if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
+                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) 
                         TenutaTariffa.checkTariffaARD(currentCase)
                 else
                     this.skip()
