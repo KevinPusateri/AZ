@@ -82,7 +82,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
        MovimentazioneSinistriPage.getPromiseValue_Bylocator(idAggDate).then((dscrpt) => {                
            cy.log('[it]>> [	Dati Aggiornati al]: '+dscrpt);
            MovimentazioneSinistriPage.isNotNullOrEmpty(dscrpt)
-           ConsultazioneSinistriPage.containValidDate(val)
+           ConsultazioneSinistriPage.containValidDate(dscrpt)
        });
         cy.wait(2000)        
     });
@@ -175,7 +175,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
         })
     });
     
-    it('Movimentazione: Si Verifica che per ciascuna tipologia di sinistro con movimentazione a 0 non è visibile (non esiste) il pulsante di \'Dettaglio\' ', function () {  
+    it('Movimentazione: Si Verifica che per ciascuna tipologia di sinistro con movimentazione a 0 non sia visibile (non esiste) il pulsante di \'Dettaglio\' ', function () {  
         
         var i = 0;
         for (i = 0; i < 6 ; i++) { 
