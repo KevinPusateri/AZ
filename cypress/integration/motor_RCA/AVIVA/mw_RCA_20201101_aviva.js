@@ -52,8 +52,8 @@ after(function () {
 
 //?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
-//?Se specificato, esegue l'identificativo caso specifico
-let caseToExecute = ''
+//?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
+let caseToExecute = []
 //?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
 let selectedSettori = []
 
@@ -66,7 +66,7 @@ describe('RCA Novembre 2020 AVIVA: ', {
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
-                if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso) {
+                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
                     if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
                         Common.visitUrlOnEnv()
 
@@ -96,7 +96,7 @@ describe('RCA Novembre 2020 AVIVA: ', {
             })
 
             it("LogTariffa", function () {
-                if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso) {
+                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
                     if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
                         if (currentCase.Settore !== '3')
                             TenutaTariffa.checkTariffaRCA(currentCase)
