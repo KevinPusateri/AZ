@@ -19,6 +19,8 @@
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
+import 'cypress-mochawesome-reporter/register'
+
 const customCommands = require('./commands.js')
 
 module.exports = {

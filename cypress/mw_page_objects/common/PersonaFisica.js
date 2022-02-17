@@ -50,6 +50,17 @@ export default class PersonaFisica {
         return SabrinaTonon
     }
 
+    static DavideRoana() {
+        let DavideRoana = new PersonaFisica("DAVIDE", "ROANA")
+        DavideRoana.via = "VIA AL TIGLIO";
+        DavideRoana.numero = "27"
+        DavideRoana.cap = "33075"
+        DavideRoana.citta = "CORDOVADO"
+        DavideRoana.provincia = "PD"
+
+        return DavideRoana
+    }
+
     static MassimoRoagna() {
         let MassimoRoagna = new PersonaFisica("MASSIMO", "ROAGNA")
         MassimoRoagna.via = "VIA VITTORIO ALFIERI"

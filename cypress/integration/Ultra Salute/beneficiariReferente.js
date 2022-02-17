@@ -33,10 +33,11 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-//let cliente = PersonaFisica.SabrinaTonon()
-let cliente = PersonaFisica.GalileoGalilei()
+let cliente = PersonaFisica.DavideRoana()
+//let cliente = PersonaFisica.GalileoGalilei()
 let prodotto = menuEmissione.RamiVari.UltraSalute
-var ambiti = [ambitiUltra.ambitiUltraSalute.diaria_da_ricovero]
+var ambiti = [ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio]
+var nuovoAmbito = ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio;
 //#endregion variabili iniziali
 
 before(() => {
@@ -63,16 +64,15 @@ afterEach(function () {
   }
 })
 
-after(function () {
-  TopBar.logOutMW()
-  //#region Mysql
-  cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-    let tests = testsInfo
-    cy.finishMysql(dbConfig, insertedId, tests)
-  })
+// after(function () {
+//   TopBar.logOutMW()
+//   //#region Mysql
+//   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//     let tests = testsInfo
+//     cy.finishMysql(dbConfig, insertedId, tests)
+//   })
   //#endregion
-
-})
+//})
 //#endregion Before After
 
 describe("POLIZZA BENEFICIARI REFERENTE", () => {
@@ -104,11 +104,13 @@ describe("POLIZZA BENEFICIARI REFERENTE", () => {
     let dataInizio = new Date(oggi)
     let dataFine = new Date(oggi); dataFine.setMonth(dataInizio.getMonth() + 7)
     
-    Dashboard.selezionaAmbiti(ambiti)
-    cy.pause()
-    Ultra.procediHome()
+    Dashboard.selezionaAmbiti(ambiti)   
+   
+    Dashboard.aggiungiAmbito(nuovoAmbito)
+    
+   //Ultra.procediHome()
   })
-
+/*
   it("Modifica professione in Conferma Dati Quotazione", () => {
     Ultra.ProfessionePrincipaleDatiQuotazione('barista')
     Ultra.confermaDatiQuotazione()
@@ -143,5 +145,5 @@ describe("POLIZZA BENEFICIARI REFERENTE", () => {
 
   it("Visualizza documenti e prosegui", () => {
     Ultra.riepilogoDocumenti()
-  })
+  })*/
 })
