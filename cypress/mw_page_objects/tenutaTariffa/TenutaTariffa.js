@@ -482,7 +482,7 @@ class TenutaTariffa {
 
             //#region Dettagli
             //? su Prima immatricolazione non servono i dettagli aggiuntivi
-            if (currentCase.Provenienza !== "Prima immatricolazione") {
+            if (currentCase.Provenienza !== "Prima immatricolazione" && currentCase.Provenienza !== "Voltura") {
                 if (currentCase.Data_Scadenza !== "") {
                     //Scadenza precedente contratto
                     let dataScadenzaPrecedenteContratto
@@ -774,7 +774,11 @@ class TenutaTariffa {
 
             //Verifichiamo il premio lordo a video
             cy.contains('BONUS/MALUS').parent('div').find('div[class="ng-star-inserted"]').invoke('text').then(premioLordo => {
-                expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
+                //? Visto che i premi lordi variano in base a BRAIN, verifichiamo semplicemente che non siano negativi o a zero (solitamente quando
+                //? in errore i premi lordi sono a 0.01)
+                //expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
+                let premio = parseFloat(premioLordo)
+                expect(premio).to.be.greaterThan(0.01)
             })
         })
     }
@@ -869,7 +873,11 @@ class TenutaTariffa {
 
             //Verifichiamo il totale relativo alla ARD
             cy.get('strong:contains("Auto Rischi Diversi"):last').parents('div').find('div:last').find('strong:last').invoke('text').then(value => {
-                expect(value).contains(currentCase.Totale_Premio)
+                //? Visto che i premi lordi variano in base a BRAIN, verifichiamo semplicemente che non siano negativi o a zero (solitamente quando
+                //? in errore i premi lordi sono a 0.01)
+                //expect(value).contains(currentCase.Totale_Premio)
+                let premio = parseFloat(value)
+                expect(premio).to.be.greaterThan(0.01)
             })
         })
     }
@@ -931,13 +939,13 @@ class TenutaTariffa {
                     switch (currentCase.Descrizione_Settore) {
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_2":
-                            expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Garanzie_Aggiuntive)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Garanzie_Aggiuntive)
                             break
                         case "INCENDIO":
-                            expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Incendio)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Incendio)
                             break
                         case "FURTO":
-                            expect(JSON.stringify(findKeyGaranziaARD('Radar_KeyID'))).to.contain(currentCase.Versione_Furto)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Furto)
                             break
                         case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
                         case "KASKO_COLLISIONE":
