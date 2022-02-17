@@ -50,10 +50,13 @@ after(function () {
     //#endregion
 })
 
-//Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
+//?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
-//Se specificato, esegue l'identificativo caso specifico
+//?Se specificato, esegue l'identificativo caso specifico
 let caseToExecute = ''
+//?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
+let selectedSettori = []
+
 describe('RCA Febbraio 2022: ', {
     retries: {
         runMode: 0,
@@ -64,25 +67,29 @@ describe('RCA Febbraio 2022: ', {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
                 if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso) {
-                    Common.visitUrlOnEnv()
+                    if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
+                        Common.visitUrlOnEnv()
 
-                    if (flowClients) {
-                        TopBar.searchRandom()
-                        LandingRicerca.searchRandomClient(true, (currentCase.Tipologia_Entita === 'Persona' ? 'PF' : 'PG'), 'P')
-                        LandingRicerca.clickRandomResult('PF')
-                        SintesiCliente.clickAuto()
-                        SintesiCliente.clickPreventivoMotor()
-                    }
-                    else {
-                        TopBar.clickSales()
-                        Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
-                    }
+                        if (flowClients) {
+                            TopBar.searchRandom()
+                            LandingRicerca.searchRandomClient(true, (currentCase.Tipologia_Entita === 'Persona' ? 'PF' : 'PG'), 'P')
+                            LandingRicerca.clickRandomResult('PF')
+                            SintesiCliente.clickAuto()
+                            SintesiCliente.clickPreventivoMotor()
+                        }
+                        else {
+                            TopBar.clickSales()
+                            Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+                        }
 
-                    TenutaTariffa.compilaDatiQuotazione(currentCase, flowClients)
-                    TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
-                    TenutaTariffa.compilaVeicolo(currentCase)
-                    TenutaTariffa.compilaProvenienza(currentCase)
-                    TenutaTariffa.compilaOffertaRCA(currentCase)
+                        TenutaTariffa.compilaDatiQuotazione(currentCase, flowClients)
+                        TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
+                        TenutaTariffa.compilaVeicolo(currentCase)
+                        TenutaTariffa.compilaProvenienza(currentCase)
+                        TenutaTariffa.compilaOffertaRCA(currentCase)
+                    }
+                    else
+                        this.skip()
                 }
                 else
                     this.skip()
@@ -90,8 +97,12 @@ describe('RCA Febbraio 2022: ', {
 
             it("LogTariffa", function () {
                 if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
-                    if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
-                        TenutaTariffa.checkTariffaRCA(currentCase)
+                    if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
+                        if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
+                            TenutaTariffa.checkTariffaRCA(currentCase)
+                        else
+                            this.skip()
+                    }
                     else
                         this.skip()
                 else
