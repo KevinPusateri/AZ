@@ -15,6 +15,14 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+//#region iFrame
+const matrixFrame = () => {
+    let iframeSCU = cy.get('#matrixIframe')
+        .its('0.contentDocument').should('exist')
+
+    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+}
+
 const CardsEmissioni = {
     AUTO: 'Auto',
     RAMIVARI: 'Rami vari',
@@ -499,7 +507,10 @@ class SintesiCliente {
         cy.get('.cdk-overlay-container').find('button').contains('Libri matricola').click()
         Common.canaleFromPopup()
         cy.wait(5000)
-        getIFrame().find('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
+        cy.wait('@LibriMatricolaDA', { requestTimeout: 50000 });
+        matrixFrame().within(() => {
+            cy.get('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
+        })
     }
 
     static clickKaskoARDChilometro() {
@@ -1030,28 +1041,28 @@ class SintesiCliente {
 
     static checkLinksFromAuto() {
         // if (!Cypress.env('isAviva')) {
-            cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
-                const linksAuto = Object.values(Auto)
-                // const linksAuto = [
-                //     'Emissione',
-                //     'Prodotti particolari',
-                //     'Passione BLU'
-                // ]
-                cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-                    expect($buttonLinks).to.contain(linksAuto[i])
-                })
+        cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
+            const linksAuto = Object.values(Auto)
+            // const linksAuto = [
+            //     'Emissione',
+            //     'Prodotti particolari',
+            //     'Passione BLU'
+            // ]
+            cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+                expect($buttonLinks).to.contain(linksAuto[i])
             })
+        })
         // } else {
-            //AVIVA
-            // cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
-                // const linksAuto = [
-            //         'Emissione',
-            //         'Natanti',
-            //     ]
-            //     cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-            //         expect($buttonLinks).to.contain(linksAuto[i])
-            //     })
-            // })
+        //AVIVA
+        // cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
+        // const linksAuto = [
+        //         'Emissione',
+        //         'Natanti',
+        //     ]
+        //     cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
+        //         expect($buttonLinks).to.contain(linksAuto[i])
+        //     })
+        // })
         // }
 
     }
