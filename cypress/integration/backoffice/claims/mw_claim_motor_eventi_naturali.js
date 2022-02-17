@@ -198,24 +198,32 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
                 //Evento naturale: Grandine
                 DenunciaSinistriPage.clickSelect_ById('#GARANZIE_flgGrandine', "Si")
                 DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');
-                cy.wait(2000);
+                cy.wait(3000);
             });
 
         it('Ricerca della carrozzeria amica con geolocalizzazione Google', function () {
             DenunciaSinistriPage.clickObj_ByLabel('a', 'Altre carroz.')
+            //DenunciaSinistriPage.clickBtnByJs('document.getElementById("CmdRicercaLocalita").click()')
+            //DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita')
+            cy.wait(3000);
             DenunciaSinistriPage.setValueOnGeo_ById("#indirizzo1", "Trieste")
             DenunciaSinistriPage.clickSelectOnGeo_ById("#CM", "Tutti");
             DenunciaSinistriPage.clickObjGeo_ByIDAndLabel('button', ' › Cerca')
             cy.wait(2000)
+            cy.get('section.ModalSection__StyledModalSection-sc-1ayrdn8-0 button').contains('Accept').click({force: true})
 
         });
 
         it('Selezione della carrozzeria amica con geolocalizzazione Google', function () {
             //DenunciaSinistriPage.clickObjGeo_ByLabel('SOL-CAR MIANI')
-            cy.wait(1000)
+            cy.wait(5000)
             DenunciaSinistriPage.clickObjGeoModal_ByIDAndLabel('a', 'Seleziona', 'SOL-CAR MIANI')
-
-
+            /*
+            cy.on("window:confirm", (str) => {               
+                expect(str).to.include(carrozzeria);
+            });
+            cy.on('window:confirm', () => true);
+            */
             cy.wait(2000)
         });
 
