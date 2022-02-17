@@ -16,7 +16,7 @@ class Appendici {
     /**
      * Attende il caricamento della pagina Dati Integrativi
      */
-     static caricamentoPagina() {
+    static caricamentoPagina() {
         cy.intercept({
             method: 'POST',
             url: '**/GetNuoveAppendiciContratto'
@@ -43,7 +43,8 @@ class Appendici {
     static Avanti() {
         ultraIFrame().within(() => {
             //cy.get('#pageActionButtons')
-            cy.get('input[value="Avanti"]').should('not.have.attr', 'style', 'display: none;').click()
+            cy.get('input[value="Avanti"]').first()
+                .should('not.have.attr', 'style', 'display: none;').click()
         })
     }
 
@@ -56,9 +57,17 @@ class Appendici {
     static CompilazioneAppendice(compagnia, nCiascunaPolizza) {
         ultraIFrame().within(() => {
             cy.get('#compilazioneAppendice').find('[data-bind*="COMPAGNIA"]')
-            .children('input').type(compagnia)
+                .children('input').type(compagnia)
             cy.get('#compilazioneAppendice').find('[data-bind*="POLIZZE"]')
-            .children('input').type(nCiascunaPolizza)
+                .children('input').type(nCiascunaPolizza)
+        })
+    }
+
+    static StampaDocumento() {
+        ultraIFrame().within(() => {
+            cy.get('.documentoSection').should('be.visible')
+
+            cy.get('input[value="Stampa"]').should('be.visible').click()
         })
     }
 }

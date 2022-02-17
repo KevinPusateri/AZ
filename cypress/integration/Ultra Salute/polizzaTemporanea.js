@@ -86,7 +86,7 @@ describe("POLIZZA TEMPORANEA", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
-      cy.get('input[name="main-search-input"]').type(cliente.nomeCognome()).type('{enter}')
+      cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
       cy.get('lib-client-item').first().click()
     }).then(($body) => {
       cy.wait(7000)
@@ -116,8 +116,8 @@ describe("POLIZZA TEMPORANEA", () => {
     let dataInizio = new Date(oggi)
     let dataFine = new Date(oggi);
     dataFine.setMonth(dataInizio.getMonth() + 7)
-    var inizio = ('0' + dataInizio.getDate()).slice(-2) + '/' + ('0' + (dataInizio.getMonth() + 1)).slice(-2) + '' + dataInizio.getFullYear()
-    var fine = ('0' + dataFine.getDate()).slice(-2) + '/' + ('0' + (dataFine.getMonth() + 1)).slice(-2) + '/' + dataFine.getFullYear()
+    var inizio = ('0' + dataInizio.getDate()).slice(-2) + '' + ('0' + (dataInizio.getMonth() + 1)).slice(-2) + '' + dataInizio.getFullYear()
+    var fine = ('0' + dataFine.getDate()).slice(-2) + '' + ('0' + (dataFine.getMonth() + 1)).slice(-2) + '/' + dataFine.getFullYear()
     cy.log("data: " + fine)
 
     Ultra.caricamentoUltraHome()

@@ -72,7 +72,7 @@ describe("FABBRICATO E CONTENUTO", () => {
     it("Ricerca cliente", () => {
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
-            cy.get('input[name="main-search-input"]').type(cliente.nomeCognome()).type('{enter}')
+            cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
             cy.get('lib-client-item').first().click()
         }).then(($body) => {
             cy.wait(7000)
