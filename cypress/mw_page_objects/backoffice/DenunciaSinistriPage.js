@@ -196,15 +196,9 @@ class DenunciaSinistriPage {
      * @param {string} tag : html element (button, etc...)
      * @param {string} label : text displayed
      */
-    static clickObj_ByLabel(tag, label) {   
-        return new Cypress.Promise((resolve) => {               
-            let $el = getIFrameDenuncia().contains(tag, label, { timeout: 3000 }).should('exist').and('be.visible')
-            cy.wait(2100) 
-            $el.click()
-            cy.log('>> object ['+tag+'] with label ['+label+ '] is clicked')
-            cy.wait(1000)    
-            resolve(true) 
-        })    
+    static clickObj_ByLabel(tag, label) {
+        getIFrameDenuncia().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
+        cy.wait(2000)        
     }
     /**
      * Click on object defined by html tag and content text displayed as label
@@ -335,10 +329,11 @@ class DenunciaSinistriPage {
      * @param {string} value : attribute value object 
      */
     static clickOnCheck_ByIdAndAttr(id, attr, value) {           
-        getIFrameDenuncia().find(id, { timeout: 10000 }).should('exist').and('be.visible').each(input => {          
+        getIFrameDenuncia().find(id, { timeout: 10000 }).should('be.visible').each(input => {          
             let $gar = input.attr(attr)
             if ($gar === value) {
-                cy.wrap(input).click().log('>> object with attr ['+attr+'="'+value+'"] is checked')
+                cy.wrap(input).click()
+                cy.log('>> object with attr ['+attr+'="'+value+'"] is checked')
                 cy.wait(2000)
                 return;
             }

@@ -206,11 +206,12 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             //DenunciaSinistriPage.clickBtnByJs('document.getElementById("CmdRicercaLocalita").click()')
             //DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita')
             cy.wait(3000);
+            
             DenunciaSinistriPage.setValueOnGeo_ById("#indirizzo1", "Trieste")
             DenunciaSinistriPage.clickSelectOnGeo_ById("#CM", "Tutti");
-            DenunciaSinistriPage.clickObjGeo_ByIDAndLabel('button', ' › Cerca')
+            DenunciaSinistriPage.clickObjGeo_ByTagAndLabel('button', ' › Cerca')
             cy.wait(2000)
-            cy.get('section.ModalSection__StyledModalSection-sc-1ayrdn8-0 button').contains('Accept').click({force: true})
+            //cy.get('section.ModalSection__StyledModalSection-sc-1ayrdn8-0 button').contains('Accept').click({force: true})
 
         });
 
