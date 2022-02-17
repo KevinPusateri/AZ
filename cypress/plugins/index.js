@@ -65,7 +65,6 @@ const sendEmail = (currentSubject, currentMessage, additionalEmail = null) => {
 }
 //#endregion
 
-
 //#region Mysql
 function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
 
@@ -301,6 +300,8 @@ module.exports = (on, config) => {
     //         return launchOptions;
     //     }
     // })
+
+    require('cypress-mochawesome-reporter/plugin')(on)
 
     on("task", {
         nuovoClientePersonaFisica() {
