@@ -142,7 +142,7 @@ class ConsultazioneSinistriPage {
      * @param {string} locator : class attribute 
      * @param {string} label : text displayed
      */
-     static checkObj_ByLocatorAndText(locator, label) {       
+    static checkObj_ByLocatorAndText(locator, label) {       
         return new Cypress.Promise((resolve, reject) => {     
             getIFrame().find(locator).should('be.visible')
             .then(($val) => {                                       
@@ -162,7 +162,7 @@ class ConsultazioneSinistriPage {
      * @param {string} id : locator object id
      * @param {string} value : value to be entered
      */
-     static setValue_ById(id, value) {
+    static setValue_ById(id, value) {
         return new Cypress.Promise((resolve) => {
             cy.wait(500)             
             getIFrame().find(id).should('be.visible').and('exist').clear().log('>> clean object value')

@@ -142,6 +142,7 @@ class DatiIntegrativi {
         var dataOggi = UltraBMP.dataOggi()
         var dataIeri = UltraBMP.dataOggiPiuGiorni(-1)
         DatiIntegrativi.impostaDataDecorrenza(UltraBMP.dataOggiPiuGiorni(-1))
+        //DatiIntegrativi.ModificaDataInjection('decorrenza', UltraBMP.dataOggiPiuGiorni(-1))
         DatiIntegrativi.ClickButtonAvanti()
         DatiIntegrativi.popupDichiarazioni()
         ultraIFrame().within(() => {
@@ -157,6 +158,7 @@ class DatiIntegrativi {
               .find('input').should('have.value', 'OK').click()
         })
         DatiIntegrativi.impostaDataDecorrenza(UltraBMP.dataOggi())
+        //DatiIntegrativi.ModificaDataInjection('decorrenza', UltraBMP.dataOggi())
     }
 
     /**

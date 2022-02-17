@@ -52,6 +52,17 @@ export default class PersonaFisica {
         return SabrinaTonon
     }
 
+    static DavideRoana() {
+        let DavideRoana = new PersonaFisica("DAVIDE", "ROANA")
+        DavideRoana.via = "VIA AL TIGLIO";
+        DavideRoana.numero = "27"
+        DavideRoana.cap = "33075"
+        DavideRoana.citta = "CORDOVADO"
+        DavideRoana.provincia = "PD"
+
+        return DavideRoana
+    }
+
     static MassimoRoagna() {
         let MassimoRoagna = new PersonaFisica("MASSIMO", "ROAGNA")
         MassimoRoagna.via = "VIA VITTORIO ALFIERI"
@@ -61,6 +72,17 @@ export default class PersonaFisica {
         MassimoRoagna.provincia = "TO"
 
         return MassimoRoagna
+    }
+
+    static MonicaSant() {
+        let MonicaSant = new PersonaFisica("MONICA", "SANT")
+        MonicaSant.via = "VIA TRENTO"
+        MonicaSant.numero = "13/A"
+        MonicaSant.cap = "31010"
+        MonicaSant.citta = "MARENO DI PIAVE"
+        MonicaSant.provincia = "TV"
+
+        return MonicaSant
     }
 }
 

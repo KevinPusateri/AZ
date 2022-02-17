@@ -18,6 +18,7 @@
     "ibantools": "^3.3.0",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
+    "node-fetch": "^2.6.7",
     "nodemailer": "^6.6.3",
     "p-map": "^4.0.0",
     "pdf2json": "^1.2.5",
@@ -30,7 +31,9 @@
   "devDependencies": {
     "cypress": "^8.7.0",
     "cypress-iframe": "^1.0.1",
+    "cypress-mochawesome-reporter": "^2.3.0",
     "cypress-plugin-tab": "^1.0.5",
+    "mochawesome": "^7.0.1",
     "npm-run-all": "^4.1.5"
   },
   "config": {
@@ -102,9 +105,7 @@
     "cypress:f:run:ricerca": "npm-run-all -s -c f:rc_classica f:rc_ris_clients f:rc_ris_mieInfo f:rc_risultati f:ricerca",
     "cypress:f:run:burgerMenu": "npm-run-all -s -c f:nav_burgerMenuClients f:nav_burgerMenuNumbers f:nav_burgerMenuSales f:nav_burgerMenuBackOffice",
     "cypress:f:run:censimenti": "npm-run-all -s -c f:censimento_pf f:censimento_pg",
-    "tenuta_tariffa_gen_2022": "cypress run --browser chrome --spec cypress/integration/tariffa_motor/mw_tenuta_tariffa_20220101.js",
-    "tenuta_tariffa_feb_2022": "cypress run --browser chrome --spec cypress/integration/tariffa_motor/mw_tenuta_tariffa_20220201.js",
-    "tenuta_tariffa_nov_2020_aviva": "cypress run --browser chrome --spec cypress/integration/tariffa_motor/mw_tenuta_tariffa_20201101_aviva.js"
+    "rca_02_22": ".\\node_modules\\.bin\\cypress run --browser chrome --spec cypress/integration/motor_RCA/AZ/mw_RCA_20220201.js"
   },
   "repository": {
     "type": "git",
