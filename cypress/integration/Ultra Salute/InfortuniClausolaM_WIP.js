@@ -7,11 +7,15 @@
 ///<reference types="cypress"/>
 
 //#region imports
+import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
+import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
+
 import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
@@ -31,30 +35,15 @@ Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 //#endregion
 
-//#region enum
-const ultraRV = {
-  CASAPATRIMONIO: "Allianz Ultra Casa e Patrimonio",
-  CASAPATRIMONIO_BMP: "Allianz Ultra Casa e Patrimonio BMP",
-  SALUTE: "Allianz Ultra Salute",
-}
-
-const ambitiUltraSalute = {
-  SPESE_MEDICHE: "health-bag-doctor",
-  DIARIA_DA_RICOVERO: "save",
-  INVALIDITA_PERMANENTE_INFORTUNIO: "injury-plaster",
-  INVALIDITA_PERMANENTE_MALATTIA: "wheelchair",
-}
-//#endregion enum
-
 //#region  variabili iniziali
 let personaGiuridica = "Sinopoli"
 let personaFisica = PersonaFisica.GalileoGalilei()
 var frazionamento = "trimestrale"
 var copertura = "extra-professionale"
 var ambiti = [
-  ambitiUltraSalute.SPESE_MEDICHE,
-  ambitiUltraSalute.DIARIA_DA_RICOVERO,
-  ambitiUltraSalute.INVALIDITA_PERMANENTE_INFORTUNIO
+  ambitiUltra.ambitiUltraSalute.spese_mediche,
+  ambitiUltra.ambitiUltraSalute.diaria_da_ricovero,
+  ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio
 ]
 //var frazionamento = "annuale"
 //#endregion variabili iniziali
@@ -70,7 +59,7 @@ beforeEach(() => {
   cy.preserveCookies()
 })
 
-afterEach(function () {
+/* afterEach(function () {
   if (this.currentTest.state !== 'passed') {
     //TopBar.logOutMW()
     //#region Mysql
@@ -81,7 +70,7 @@ afterEach(function () {
     //#endregion
     //Cypress.runner.stop();
   }
-})
+}) */
 
 after(function () {
   TopBar.logOutMW()
@@ -113,7 +102,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Emissione Ultra Salute", () => {
-    Ultra.emissioneUltra(ultraRV.SALUTE)
+    SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
     Ultra.selezionaPrimaAgenzia()
   })
 
@@ -124,6 +113,12 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Cambia Soluzioni", () => {
+    cy.pause()
+    for (var i = 0; i < ambiti.length; i++) {
+      Dashboard.modificaSoluzione(ambiti[i])
+    }
+    cy.pause()
+
     Ultra.modificaSoluzioneHome('Diaria da ricovero', 'Essential')
     Ultra.modificaSoluzioneHome('Spese mediche', 'Essential')
     Ultra.modificaSoluzioneHome('Invalidità permanente da infortunio', 'Premium')

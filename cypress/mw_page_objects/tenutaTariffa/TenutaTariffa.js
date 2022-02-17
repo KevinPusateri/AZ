@@ -51,8 +51,12 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
     var result
     let garanziaARD
     if (currentGaranziaARD === null) {
-        //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCAa
-        garanziaARD = findKeyLogTariffa('Garanzia')[1]
+        //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA
+        debugger
+        if (descSettore === 'KASKO_COLLISIONE')
+            garanziaARD = findKeyLogTariffa('Garanzia')[2]
+        else
+            garanziaARD = findKeyLogTariffa('Garanzia')[1]
     }
 
     else
@@ -862,7 +866,7 @@ class TenutaTariffa {
                     cy.get('nx-dropdown-item').contains(currentCase.Tipo_Kasko).click()
                     cy.get('nx-spinner').should('not.be.visible')
 
-                    cy.pause()
+                    //cy.pause()
                     break
             }
 

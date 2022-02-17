@@ -198,6 +198,21 @@ class Dashboard {
         })
     }
 
+    static modificaSoluzione(ambito, soluzione) {
+        ultraIFrame().within(() => {
+            cy.get('ultra-dash-ambiti-istanze-table')
+                .find('nx-icon[class*="'+ ambito +'"]')
+                .parents('tr')
+                .find('nx-dropdown')
+                .click()
+
+            cy.wait(500)
+            cy.get('nx-dropdown-item').contains(soluzione).should('be.visible').click() //seleziona Top
+
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+        })
+    }
+
     static modificaSoluzioneHome(ambito, soluzione) {
         ultraIFrame().within(() => {
             cy.get('tr')
@@ -253,6 +268,9 @@ class Dashboard {
                 //conferma
                 cy.get('button').children('span').contains('CONFERMA').click()
             }
+
+            cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+            cy.wait(1000)
         })
     }
 
