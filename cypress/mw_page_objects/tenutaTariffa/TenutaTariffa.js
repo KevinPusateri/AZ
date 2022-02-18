@@ -53,8 +53,10 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
     if (currentGaranziaARD === null) {
         //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA
         debugger
-        if (descSettore === 'KASKO_COLLISIONE')
+        if (descSettore === 'KASKO_COLLISIONE' || (descSettore === 'KASKO_COMPLETA'))
             garanziaARD = findKeyLogTariffa('Garanzia')[2]
+        if (descSettore === 'AVENS')
+            garanziaARD = findKeyLogTariffa('Garanzia')[4]
         else
             garanziaARD = findKeyLogTariffa('Garanzia')[1]
     }
@@ -858,6 +860,7 @@ class TenutaTariffa {
                     break
                 case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
                 case "KASKO_COLLISIONE":
+                case "KASKO_COMPLETA":
                     cy.contains("Kasko").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
 
@@ -865,8 +868,14 @@ class TenutaTariffa {
                     cy.get(':contains("Tipo"):last').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
                     cy.get('nx-dropdown-item').contains(currentCase.Tipo_Kasko).click()
                     cy.get('nx-spinner').should('not.be.visible')
+                    break
+                case "AVENS":
+                    //? AVENS compare attivando Furto
+                    cy.contains("Furto").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
 
-                    //cy.pause()
+                    cy.contains("Atti Vandalici ed Eventi Naturali").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
                     break
             }
 
@@ -953,7 +962,11 @@ class TenutaTariffa {
                             break
                         case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
                         case "KASKO_COLLISIONE":
+                        case "KASKO_COMPLETA":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
+                            break
+                        case "AVENS":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
                             break
                     }
                 })
