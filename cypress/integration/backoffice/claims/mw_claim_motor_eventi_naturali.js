@@ -97,7 +97,7 @@ let idx_cop_gar
 describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro motor avente come copertura' +
 ' di garanzia la "' + copertura_danno + '"', () => {
 
-    it('Atterraggio su BackOffice >> Denuncia', function () {             
+    it('Atterraggio su BackOffice >> Denuncia', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Denuncia') 
         cy.wait(1000)        
@@ -106,7 +106,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
     it('Denuncia --> Ricerca cliente per numero di polizza: ' + cliente_num_pol, function () {
             // Ricerca cliente per Polizza
             DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
-            DenunciaSinistriPage.clickBtn_ById('#eseguiRicerca');
+            DenunciaSinistriPage.clickBtn_ById('#eseguiRicerca');           
     });
 
     it('Dati cliente (ai fini della gestione del sinistro): inserimento dati obbligatori di denuncia: ' +

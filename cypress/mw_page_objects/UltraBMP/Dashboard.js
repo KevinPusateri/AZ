@@ -17,12 +17,13 @@ class Dashboard {
      * Attende il caricamento della dashboard
      */
     static caricamentoDashboardUltra() {
+        cy.log('***** CARICAMENTO PAGINA DASHBOARD ULTRA *****')
         cy.intercept({
             method: 'GET',
             url: '**/ambiti-disponibili'
         }).as('ambiti')
 
-        cy.wait('@ambiti', { requestTimeout: 60000 });
+        cy.wait('@ambiti', { requestTimeout: 20000 });
     }
 
     static stringaRandom(lunghezza) {

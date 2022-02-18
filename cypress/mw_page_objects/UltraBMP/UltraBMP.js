@@ -12,6 +12,17 @@ const ultraIFrame = () => {
 }
 class UltraBMP {
 
+    static aspettaPopupConferma() {
+      cy.log('***** CARICAMENTO POPUP CONFERMA *****')
+      cy.intercept({
+        method: 'GET',
+        url: '**/getInfoRedirectHome'
+    }).as('conferma')
+
+    cy.wait('@conferma', { timeout: 60000 })
+    }
+
+
     //#region Click
     /**
       * ClickButton 
@@ -186,17 +197,6 @@ class UltraBMP {
             cy.get('[id="caSoluzioni"]', { timeout: 30000 })
                 .should('be.visible')
                 .wait(1000)
-
-            //cy.log('ambito: ' + ambito)
-            //cy.log('oggetto: ' + oggetto)
-            //cy.pause()
-            //cy.get('tr').contains(ambito)
-            
-            //.should('contain', oggetto)
-            //    .parent().parent()
-            //    .find('nx-icon[name="pen"]').click()
-
-            //cy.get('#caGaranzie').should('be.visible')
             
         })
 
@@ -209,14 +209,7 @@ class UltraBMP {
       * @param {string} strmenu - testo del menù 
       */
      static SelezionaVoceMenuPagAmbiti(strMenu) {
-        //cy.log('strMenu: '+ strMenu.ToString())
-        //cy.getIFrame()
-        //cy.get('@iframe').within(() => {
         ultraIFrame().within(() => {
-            //if (strMenu.ToString().contains("Dati quotazione"))
-                //cy.contains('div', strMenu).should('be.visible').click()
-            //else
-            //cy.pause()
             cy.get('div[id="ambitiHeader"]')
                 .contains(strMenu).should('be.visible').click() 
             cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
@@ -236,14 +229,6 @@ class UltraBMP {
               .find('nx-dropdown nx-icon')
               .should('be.visible')
               .click()
-            /*  
-            cy.get('tr')
-                .contains(ambito)
-                .parent()
-                .parent()
-                .find('nx-dropdown')
-                .click()
-            */
 
             cy.wait(500)
             cy.get('nx-dropdown-item').contains(soluzione).should('be.visible').click() 
@@ -359,8 +344,6 @@ class UltraBMP {
                 cy.log('NIENTE MODIFICHE. NON INSERISCO ' + valoriIns.CapAbitazione)
 
 
-            //cy.get('button').contains('SCOPRI LA PROTEZIONE').should('be.visible').click()
-
         })
 
     }
@@ -391,105 +374,90 @@ class UltraBMP {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
-            /*
-            //Righe della tabella degli ambiti selezionati prima dell'inserimento
-            cy.pause()
-            var listingCount = 0
-            cy.get('table[class="nx-table ng-star-inserted"] > tbody > tr').then(listing => {
-                listingCount = Cypress.$(listing).length
-                cy.log("Numero righe tabella ambiti inseriti: " + listingCount)
-            })
-            //
-            */
-
             cy.contains('div.ng-star-inserted', ambito).children('span').should('be.visible').click()
-
-            /*
-            //Righe della tabella degli ambiti selezionati dopo l'inserimento
-            cy.get('table[class="nx-table ng-star-inserted"] > tbody > tr').each(($riga, indice) => {
-                //cy.wrap($riga).within(() => {
-                    cy.log('Dentro il ciclo')
-                    //cy.log('')
-                    //cy.get('td > div', {timeout: 4000}).eq(1).should('contain.text', ambito)
-                    //const checkAmbito = cy.get('td > div', {timeout: 4000}).eq(1).is(':visible')
-                    cy.log('Ambito cercato: ' + ambito)
-                    cy.log('indice: ' + indice)
-
-                    //$riga.find('td > div', {timeout: 4000}).eq(1).invoke('text').then(($text) => {
-                    //    cy.log('tipo selezionato: ', $text)
-                        //expect($text).to.equal(defaultFQ.TipoAbitazione)
-                    //}) 
-
-                    //const checkAmbito = $riga.find(':contains(ambito)').is(':visible')
-                    //$riga.find('td > div').eq(1).its('textContent').then(($textContent) => {
-                    //    cy.log('$textContent: ', $textContent)
-                    //    //expect($text).to.equal(defaultFQ.TipoAbitazione)
-                    //}) 
-                    //const valore = $riga.find('td > div').eq(1).value
-                    //cy.log('checkAmbito: ' + checkAmbito)
-                    //cy.log('testo: ' + testo)
-                //})
-            })
-            */
-
-            /*
-            cy.get('table[class="nx-table ng-star-inserted"] > tbody > tr').each(($el, index) => {
-                cy.log('$el: ' + $el)
-                cy.log('index: ' + index)
-            })
-            */
-
-            /*
-            cy.get('table[class="nx-table ng-star-inserted"] > tbody > tr').then(listing => {
-                listingCount = Cypress.$(listing).length
-                cy.log("Numero righe tabella ambiti inseriti: " + listingCount)
-                Cypress.$(listing).each((index, $el, $list) => {
-                    cy.log('Dentro il ciclo')
-                    //const testo = $el.text()
-                    //cy.log('$el.text: ' + testo)
-                    cy.log('$el: '+ $el)
-                    cy.log('index: '+ index)
-                    cy.log('$list: '+ $list)
-                    
-                    $el.find('td > div', {timeout: 4000}).eq(1)
-                    //cy.wrap($el).find('dir').should('be.visible')
-                    //const checkSearchIsPresente = cy.wrap($el).find('dir').should('be.visible')
-                    //cy.log('checkSearchIsPresente: ' + checkSearchIsPresente)
-                    //cy.log('**** find dir *****')    //.contains('ambito', {timeout: 4000} ).should('be.visible')
-                })
-            })
-            //
-            */
-
-
-            /*
-            cy.wait(3000)
-            //cy.get('table[class="nx-table ng-star-inserted"] > tbody > tr').each(($el, index, $list) => {
-            //    cy.log("Index: " + index)
-            //    const checkSearchIsPresente = $el.find('div:contains(ambito)').is(':visible')
-            cy.get('table[class="nx-table ng-star-inserted"]').should('be.visible').then(($table) => {
-                cy.wrap($table).each(($el, index, $list) => {
-                    $el.find('dir').is(':visible')
-                    cy.log('**** find dir *****')    //.contains('ambito', {timeout: 4000} ).should('be.visible')
-                })
-                //const isTrovato = $table.find('tr:contains(ambito)').is(':visible')
-                //if (isTrovato)
-                //    cy.log("trovato ambito " + "ambito")
-                //else
-                //    cy.log("NON TROVATO AMBITO " + ambito)
-            })
-            */
-            /*
-            cy.get('nx-modal').then(($modalSearch) => {
-                const checkSearchIsPresente = $modalSearch.find(':contains("Nessun cliente trovato")').is(':visible')
-                if (checkSearchIsPresente)
-                    searchOtherMember()
-            })
-            */
         })    
             
     }
     //#endregion
+
+    /**
+     * Annullamento contratto (passare una data se differente dalla data odierna)
+     * @param string dataAnnullamento (nel formato gg/mm/aaaa) 
+     */
+     static annullamentoContratto(dataAnnullamento = "") {
+        //cy.pause()
+        ultraIFrame().within(() => {
+            // Verifica data di annullamento
+            UltraBMP.verificaDataAnnullamento()
+            //cy.pause()
+            //cy.get('[id="PopupDichiarazioni"]', { timeout: 5000 })
+            //    .should('be.visible')
+            //    .find('button').contains('CONFERMA').click()
+            
+            // Click Annulla Contratto
+            cy.get('#btnAnnullaContratto').should('be.visible').click()
+            
+            // Finestra Richiesta Documenti
+            cy.get('span[class="ui-dialog-title"]').contains('Richiesta Documenti').should('exist')
+            cy.get('table[id="tableDocumenti"]').should('exist')
+              .find('tr').contains('Copie del contratto').should('be.visible')
+              .parent()
+              .parent()
+            //   .children('td').should('have.length.gt', 0)
+              .eq(0).click()
+
+            //cy.get('button').contains('ok').should('be.visible').click()
+
+            cy.get('span[class="ui-dialog-title"]').contains('Richiesta Documenti').should('exist')
+            .parent('div')
+            .parent('div')
+            .find('button').contains('Ok').should('be.visible').click()
+
+            // Operazione completata
+            cy.get('span[class="ui-dialog-title"]').contains('Operazione completata').should('be.visible')
+              .parent('div')
+              .parent('div')
+              .find('span').contains("ANNULLAMENTO DALL'ORIGINE IN AGENZIA").should('be.visible')
+            
+              cy.get('span[class="ui-dialog-title"]').contains('Operazione completata').should('be.visible')
+              .parent('div')
+              .parent('div')
+              .find('button').contains('Ok').should('be.visible').click()
+
+            //cy.pause()
+        })
+
+        // Pdf annullamento
+        ultraIFrame().within(() => {
+            cy.get('div[id="Appendicepdf"]').should('be.visible')
+              .parent('div')
+              .find('button').contains('Conferma').should('be.visible').click()
+
+            //cy.get('div[aria-labelledby="ui-dialog-title-pnlPopUpPdf"]').should('not.be.visible')
+        })
+
+        // Home
+        ultraIFrame().within(() => {
+            cy.get('input[title="Home"]').should('be.visible').click()
+
+            cy.wait(10000)
+        })
+        //cy.pause()
+
+    }
+
+    /**
+     * Verifica data annullamento (se non viene passata alcuna data dev'essere la data di oggi)
+     * @param string dataAnnullamento (nel formato gg/mm/aaaa) 
+     */
+     static verificaDataAnnullamento(dataAnnullamento = "") {
+        if (dataAnnullamento == "")
+            dataAnnullamento = UltraBMP.dataOggi()
+        cy.log("Data Annullamento da verificare: " + dataAnnullamento)
+        //ultraIFrame().within(() => {
+            cy.get('input[id="txtDataAnnullamento"]').should('have.value', dataAnnullamento)
+        //})
+    }
 
     
 }
