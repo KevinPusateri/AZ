@@ -17,6 +17,7 @@ class ConsensiPrivacy {
      * Attende il caricamento della pagina Consensi e Privacy
      */
      static caricamentoPagina() {
+        cy.log('***** CARICAMENTO PAGINA CONSENSI E PRIVACY *****')
         cy.intercept({
             method: 'GET',
             url: '**/consensi/getStatiDocumentiPersonali'
@@ -30,7 +31,7 @@ class ConsensiPrivacy {
      */
     static Avanti() {
         ultraIFrame().within(() => {
-            cy.get('a').contains('Avanti').click() //avanti
+            cy.get('a').contains('Avanti').click()   //avanti
         })
     }
 

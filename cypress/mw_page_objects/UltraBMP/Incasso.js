@@ -24,6 +24,7 @@ class Incasso {
      * Attende il caricamento della pagina Incasso iniziale
      */
     static caricamentoPagina() {
+        cy.log('***** CARICAMENTO PAGINA INCASSO *****')
         cy.intercept({
             method: 'POST',
             url: '**/InitMezziPagam'
@@ -36,6 +37,7 @@ class Incasso {
      * Attende il caricamento della pagina di Incasso con la scelta del metodo di pagamento
      */
     static caricamentoModPagamento() {
+        cy.log('***** CARICAMENTO MODALITA PAGAMENTO *****')
         cy.intercept({
             method: 'GET',
             url: '**/GetListaCassettiIncassoCompleto'
@@ -85,6 +87,25 @@ class Incasso {
             })
         })
     }
+
+    /**
+     * Seleziona tipo delega
+     * @param {string} delega 
+     */
+     static SelezionaTipoDelega(delega) {
+        ultraIFrame().within(() => {
+            ultraIFrame0().within(() => {
+                cy.get('[aria-owns="TabTipologiaDelegaComboSDD_listbox"]')
+                    .should('be.visible').click()
+
+                cy.wait(500)
+                cy.get('#TabTipologiaDelegaComboSDD_listbox')
+                    .find('li').contains(delega)
+                    .should('be.visible').click()
+            })
+        })
+    }
+
 
     /**
      *Clicca su Incassa nella sezione finale dell'incasso

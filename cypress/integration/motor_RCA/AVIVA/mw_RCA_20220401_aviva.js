@@ -50,10 +50,13 @@ after(function () {
     //#endregion
 })
 
-//Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
+//?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
-//Se specificato, esegue l'identificativo caso specifico
-let caseToExecute = '5'
+//?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
+let caseToExecute = []
+//?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
+let selectedSettori = []
+
 describe('RCA Aprile 2022 AVIVA: ', {
     retries: {
         runMode: 0,
@@ -63,37 +66,46 @@ describe('RCA Aprile 2022 AVIVA: ', {
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
-                if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso) {
-                    Common.visitUrlOnEnv()
+                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))  {
+                    if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
+                        Common.visitUrlOnEnv()
 
-                    if (flowClients) {
-                        TopBar.searchRandom()
-                        LandingRicerca.searchRandomClient(true, (currentCase.Tipologia_Entita === 'Persona' ? 'PF' : 'PG'), 'P')
-                        LandingRicerca.clickRandomResult('PF')
-                        SintesiCliente.clickAuto()
-                        SintesiCliente.clickPreventivoMotor()
-                    }
-                    else {
-                        TopBar.clickSales()
-                        Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
-                    }
+                        if (flowClients) {
+                            TopBar.searchRandom()
+                            LandingRicerca.searchRandomClient(true, (currentCase.Tipologia_Entita === 'Persona' ? 'PF' : 'PG'), 'P')
+                            LandingRicerca.clickRandomResult('PF')
+                            SintesiCliente.clickAuto()
+                            SintesiCliente.clickPreventivoMotor()
+                        }
+                        else {
+                            TopBar.clickSales()
+                            Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+                        }
 
-                    TenutaTariffa.compilaDatiQuotazione(currentCase, flowClients)
-                    TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
-                    TenutaTariffa.compilaVeicolo(currentCase)
-                    TenutaTariffa.compilaProvenienza(currentCase)
-                    TenutaTariffa.compilaOffertaRCA(currentCase)
+                        TenutaTariffa.compilaDatiQuotazione(currentCase, flowClients)
+                        TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
+                        TenutaTariffa.compilaVeicolo(currentCase)
+                        TenutaTariffa.compilaProvenienza(currentCase)
+                        TenutaTariffa.compilaOffertaRCA(currentCase)
+                    }
+                    else
+                        this.skip()
                 }
                 else
                     this.skip()
             })
 
             it("LogTariffa", function () {
-                if ((caseToExecute === '' && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute === currentCase.Identificativo_Caso)
-                    if (currentCase.Settore !== '3')
-                        TenutaTariffa.checkTariffaRCA(currentCase)
+                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
+                    if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
+                        if (currentCase.Settore !== '3')
+                            TenutaTariffa.checkTariffaRCA(currentCase)
+                        else
+                            this.skip()
+                    }
                     else
                         this.skip()
+                }
                 else
                     this.skip()
             })

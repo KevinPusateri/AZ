@@ -12,6 +12,7 @@ const ultraIFrame = () => {
 class DatiQuotazione {
 
   static CaricamentoPagina() {
+    cy.log('***** CARICAMENTO PAGINA DATI QUOTAZIONE *****')
     cy.intercept({
         method: 'GET',
         url: '**/conferma-dati/**'
@@ -29,8 +30,8 @@ class DatiQuotazione {
     cy.getIFrame()
     cy.get('@iframe').within(() => {
       cy.contains('span', azione).scrollIntoView().should('be.visible').click()
-      cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-      cy.wait(2000)
+      //cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+      //cy.wait(2000)
     })
   }
 

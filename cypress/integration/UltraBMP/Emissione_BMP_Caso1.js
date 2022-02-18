@@ -6,6 +6,7 @@
 import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
+import StartPage from "../../mw_page_objects/UltraBMP/StartPage"
 import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
@@ -14,11 +15,16 @@ import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
 import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
 import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
+import Portafoglio from "../../mw_page_objects/Clients/Portafoglio"
 import Common from "../../mw_page_objects/common/Common"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import BurgerMenuSales from "../../mw_page_objects/burgermenu/BurgerMenuSales"
+import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
+import Annullamento from "../../mw_page_objects/polizza/Annullamento"
+import TopBar from "../../mw_page_objects/common/TopBar"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import 'cypress-iframe';
 
 
@@ -53,6 +59,7 @@ import { daVerificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { defaultFQ } from '../../fixtures//Ultra/BMP_Comune.json'
 import { defaultCasa } from '../../fixtures//Ultra/BMP_Comune.json'
 import { defaultAnimale } from '../../fixtures//Ultra/BMP_Comune.json'
 import { soluzione } from '../../fixtures//Ultra/BMP_Comune.json'
@@ -70,10 +77,12 @@ var premioRC_Dopo = 0
 var premioRC_Affittacamere = 0
 var premioRC_ProprietàAnimali = 0
 
-let personaFisica = PersonaFisica.MassimoRoagna()
+//let personaFisica = PersonaFisica.MassimoRoagna()
+let personaFisica = PersonaFisica.CarloRossini()
 var clienteUbicazione = ""
 var frazionamento = "annuale"
 var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
+/*
 var defaultFQ = {
     "TipoAbitazione"    : "appartamento",
     "MqAbitazione"      : "100",
@@ -86,6 +95,7 @@ var valoriIns = {
     "UsoAbitazione"     : "casa saltuaria",
     "CapAbitazione"     : ""
 }
+*/
 //#endregion variabili iniziali
 
 
@@ -118,11 +128,15 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO)
     })
      
-    it("Verifica valori default FQ", () => {
-        UltraBMP.VerificaDefaultFQ(defaultFQ)
-        UltraBMP.ClickButton('SCOPRI LA PROTEZIONE')
+    it("Verifica valori default FQ e accesso alla dashboard", () => {
+        //UltraBMP.VerificaDefaultFQ(defaultFQ)
+        //UltraBMP.ClickButton('SCOPRI LA PROTEZIONE')
+        StartPage.VerificaDefaultFQ(defaultFQ)
+        StartPage.startScopriProtezione()
+        //Dashboard.caricamentoDashboardUltra()
+        cy.pause()
     })
-
+    
     it("Seleziona ambiti", () => {
         cy.log('Seleziona ambito')
         for(var i = 0; i<ambiti.length; i++ )
@@ -314,16 +328,23 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         cy.pause()
     })
 
-    it("salvataggio Contratto e verifiche", () => {
+    it("salvataggio Contratto", () => {
         ControlliProtocollazione.salvataggioContratto()
-        ControlliProtocollazione.verificaOpzione('Tipo firma', 'MANUALE')
+        //ControlliProtocollazione.verificaOpzione('Tipo firma', 'MANUALE')
+        ControlliProtocollazione.impostaOpzione("All'esterno dell'agenzia / a distanza", 'SI')
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 4-ter - Elenco delle regole di comportamento del distributore")
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 3 - Informativa sul distributore")
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 4 - Informazioni sulla distribuzione del prodotto assicurativo non-IBIP")
+        ControlliProtocollazione.Avanti()    // Non prosegue prima della visualizzazione dei documenti
         cy.pause()
     })
 
+    /*
     it("Intermediario", () => {
         ControlliProtocollazione.inserimentoIntermediario()
         cy.pause()
     })
+    */
 
     it("Visualizza documenti e prosegui", () => {
         ControlliProtocollazione.riepilogoDocumenti()
@@ -332,7 +353,10 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
     })
 
     it("Adempimenti precontrattuali e Perfezionamento", () => {
-        ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
+        ControlliProtocollazione.verificaPresenzaDocumento("Informativa precontrattuale: Allegati 3, 4 e 4TER")
+        ControlliProtocollazione.verificaPresenzaDocumento("Regolamento Allianz Ultra e Set informativo")
+        ControlliProtocollazione.stampaAdempimentiPrecontrattuali(false)
+        cy.pause()
         ControlliProtocollazione.salvaNContratto()
         cy.pause()
 
@@ -341,20 +365,21 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         })
 
         ControlliProtocollazione.Incassa()
-        Incasso.caricamentoPagina()
+        //Incasso.caricamentoPagina()
         cy.pause()
     })
 
     it("Incasso - parte 1", () => {
         Incasso.ClickIncassa()
-        Incasso.caricamentoModPagamento()
+        //Incasso.caricamentoModPagamento()
         cy.pause()
     })
 
     it("Incasso - parte 2", () => {
         Incasso.SelezionaMetodoPagamento('Assegno')
+        Incasso.SelezionaTipoDelega('Nessuna Delega')
         Incasso.ConfermaIncasso()
-        Incasso.caricamentoEsito()
+        //ncasso.caricamentoEsito()
         cy.pause()
     })
 
@@ -363,5 +388,34 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         Incasso.Chiudi()
         cy.pause()
     })
+
+    it("Chiusura e apertura sezione Clients", () => {
+        Ultra.chiudiFinale()
+        
+        cy.get('body').within(() => {
+            cy.get('input[name="main-search-input"]').click()
+            cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
+            cy.get('lib-client-item').first().click()
+        }).then(($body) => {
+            cy.wait(7000)
+            const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+            cy.log('permessi: ' + check)
+            if (check) {
+                cy.get('input[name="main-search-input"]').type(personaFisica).type('{enter}')
+                cy.get('lib-client-item').first().next().click()
+            }
+        })
+        cy.pause()
+    })
+
+    it("Portafoglio", () => {
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.ordinaPolizze("Numero contratto")
+        Portafoglio.menuContratto(nContratto, menuPolizzeAttive.annullamento)
+        //Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
+        //Ultra.selezionaPrimaAgenzia()
+        cy.pause()
+    })
+    
 
 })

@@ -101,6 +101,13 @@ class Riepilogo {
             cy.get('span').contains('Emetti polizza').should('be.visible').click() //emetti polizza
         })
     }
+
+    static EmissionePreventivo() {
+        ultraIFrame().within(() => {
+            cy.get('[id="riepilogoBody"]').should('be.visible') //attende la comparsa del riepilogo
+            cy.get('span').contains('Emetti preventivo').should('be.visible').click() //emetti polizza
+        })
+    }
 }
 
 export default Riepilogo

@@ -82,7 +82,7 @@ describe("FABBRICATO E CONTENUTO", () => {
     it("Ricerca cliente", () => {
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
-            cy.get('input[name="main-search-input"]').type(cliente.nomeCognome()).type('{enter}')
+            cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
             cy.get('lib-client-item').first().click()
         }).then(($body) => {
             cy.wait(7000)
@@ -231,8 +231,7 @@ describe("FABBRICATO E CONTENUTO", () => {
         Appendici.Avanti()
     })
 
-    it("Compila Appendici", () => {
-        cy.pause()        
+    it("Compila Appendici", () => {   
         Appendici.CompilazioneAppendice("Generali", "123456789")
         Appendici.Conferma()
     })

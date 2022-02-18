@@ -7,6 +7,14 @@
   "numTestsKeptInMemory": 1,
   "chromeWebSecurity": false,
   "experimentalSessionSupport": false,
+  "reporter": "cypress-mochawesome-reporter",
+  "reporterOptions": {
+    "reportDir": "cypress/reports/mocha",
+    "charts": true,
+    "reportPageTitle": "Matrix Web",
+    "embeddedScreenshots": true,
+    "inlineAssets": true
+  },
   "env": {
     "db": {
       "host": "PALZMSQDBPRLV01.srv.allianz",
