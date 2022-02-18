@@ -61,6 +61,17 @@ export default class PersonaFisica {
         return MassimoRoagna
     }
 
+    static CarloRossini() {
+        let CarloRossini = new PersonaFisica("CARLO", "ROSSINI")
+        CarloRossini.via = "VIA GIUSEPPE MAZZINI"
+        CarloRossini.numero = "1"
+        CarloRossini.cap = "34074"
+        CarloRossini.citta = "MONFALCONE"
+        CarloRossini.provincia = "GO"
+
+        return CarloRossini
+    }
+
     static MonicaSant() {
         let MonicaSant = new PersonaFisica("MONICA", "SANT")
         MonicaSant.via = "VIA TRENTO"

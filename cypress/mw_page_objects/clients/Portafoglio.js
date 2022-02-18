@@ -471,7 +471,7 @@ class Portafoglio {
      * Verifico che la pollizza sia presente su "Non in Vigore"
      * @param {string} numberPolizza : numero della polizza
      */
-    static checkPolizzaIsPresentOnNonInVigore(numberPolizza) {
+    static checkPolizzaIsPresentOnNonInVigore(numberPolizza, messaggio = "4 - Vendita / conto vendita") {
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
 
         cy.get('@polizza').should('be.visible')
@@ -495,7 +495,7 @@ class Portafoglio {
 
                             cy.get('nx-badge').invoke('attr', 'aria-describedby').then(($described) => {
                                 cy.document().its('body').find('#cdk-describedby-message-container').find('#' + $described)
-                                    .should('include.text', '4 - Vendita / conto vendita')
+                                    .should('include.text', messaggio)
                             })
                         })
 

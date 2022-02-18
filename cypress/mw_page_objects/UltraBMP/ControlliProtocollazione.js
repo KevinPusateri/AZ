@@ -24,12 +24,23 @@ class ControlliProtocollazione {
      * Attende il caricamento della pagina Consensi e Privacy
      */
     static caricamentoPagina() {
+        cy.log('***** CARICAMENTO PAGINA CONTROLLI E PROTOCOLLAZIONE *****')
         cy.intercept({
             method: 'GET',
             url: '**/GetRiepilogoDocumenti'
         }).as('documenti')
 
         cy.wait('@documenti', { timeout: 100000 })
+    }
+
+    static aspettaCaricamentoAdempimenti() {
+        cy.log('***** CARICAMENTO ADEMPIMENTI PRECONTRATTUALI IN CONTROLLI E PROTOCOLLAZIONE *****')
+        cy.intercept({
+            method: 'GET',
+            url: '**/GetSezionePrecontrattuale'
+        }).as('sezione')
+
+        cy.wait('@sezione', { timeout: 100000 })
     }
 
     /**
@@ -130,36 +141,71 @@ class ControlliProtocollazione {
     static Avanti() {
         ultraIFrame().within(() => {
             ultraIFrame0().within(() => {
-                cy.get('button').contains('Avanti').click() //avanti
+                cy.get('button').contains('Avanti').click()   //avanti
             })
         })
     }
 
     /**
      * Clicca sul pulsante Stampa
+     * Situazione differente a seconda che il cliente abbia dato o meno il consenso all'invio mail
      */
-    static stampaAdempimentiPrecontrattuali() {
-        cy.intercept({
-            method: 'GET',
-            url: '**/GetSezionePrecontrattuale'
-        }).as('precontrattuale')
+    static stampaAdempimentiPrecontrattuali(invio_mail = true) {
+        
+        //cy.intercept({
+        //    method: 'GET',
+        //    url: '**/GetSezionePrecontrattuale'
+        //}).as('precontrattuale')
 
-        cy.wait('@precontrattuale', { requestTimeout: 60000 })
+        //cy.wait('@precontrattuale', { requestTimeout: 60000 })
+        
 
         ultraIFrame().within(() => {
             ultraIFrame0().within(() => {
                 cy.log('titolo tab: ', cy.title())
                 cy.title().should('include', 'Allianz Matrix')
 
-                //attende caricamento sezione Precontrattuali
-                cy.get('div').contains('E-mail inviata in automatico con successo', { timeout: 20000 })
+                if (invio_mail)
+                {
+                    cy.get('div').contains('E-mail inviata in automatico con successo', { timeout: 20000 })
+                      .should('be.visible')
+                    
+                    cy.get('[data-bind*="sezioneContrattuali"]', { timeout: 20000 })
+                      .should('be.visible')
+                      .find('button').not('[disabled]').contains('STAMPA')
+                      .should('be.visible')
+                      .click()
+                }
+                else    // no invio mail
+                {
+                    cy.get('div[data-bind*="sezionePreContrattuali"]', { timeout: 20000 })
+                    .should('exist')
+                    .find('button').not('[disabled]').contains('STAMPA')
                     .should('be.visible')
+                    .click()
 
-                cy.get('[data-bind*="sezioneContrattuali"]', { timeout: 20000 })
+                    cy.get('[data-bind*="sezioneContrattuali"]', { timeout: 20000 })
+                      .should('be.visible')
+                      .find('button').not('[disabled]').contains('STAMPA')
+                      .should('be.visible')
+                      .click()
+                }
+                //attende caricamento sezione Precontrattuali
+                // Non funziona se non c'è il consenso all'invio mail
+                //cy.get('div').contains('E-mail inviata in automatico con successo', { timeout: 20000 })
+                //    .should('be.visible')
+
+                /*
+                cy.get('div[data-bind*="sezionePreContrattuali"]', { timeout: 20000 })
+                    .should('exist')
+
+                cy.get('[data-bind*="sezioneContrattuali"]', { timeout: 20000 })    //>>> non lo vedo
+                cy.get('div[data-bind*="BottoneStampaDocumenti"]', { timeout: 20000 })
                     .should('be.visible')
                     .find('button').not('[disabled]').contains('STAMPA')
                     .should('be.visible')
                     .click()
+                */
             })
         })
     }
@@ -179,14 +225,48 @@ class ControlliProtocollazione {
      * Verifica l'opzione selezionata per un determinante campo
      * * @param {*} campo (è il campo che si vuole verificare)
      * * @param {*} opzione (è l'opzione che dovrebbe essere selezionata) 
-     */
+     */   //>>>>>> DA SVILUPPARE - NON FUNZIONA !!!!!!!
      static verificaOpzione(campo, opzione) {
         ultraIFrame().within(() => {
-            cy.get('div').contains(campo).should('exist')
-              .parent('div').should('exist')
-              .find('span').contains(opzione).should('be.checked')
+            ultraIFrame0().within(() => {
+                cy.get('div').contains(campo).should('exist')
+                    .parent('div').should('exist')
+                    .find('span').contains(opzione).should('be.checked')
+                    //.find('span').contains(opzione).should('exist')
+            })    
+            
         })
     }
+
+    /**
+     * Verifica presenza documento da visualizzare
+     * * @param {*} documento (è il documento da verificare) 
+     */ 
+     static verificaPresenzaDocumento(documento) {
+        ultraIFrame().within(() => {
+            ultraIFrame0().within(() => {
+                cy.get('div').contains(documento).should('exist')
+            })    
+            
+        })
+    }
+
+    /**
+     * Imposta opzione per uno di campi si/no
+     * * @param {*} campo (è il campo che si vuole impostare)
+     * * @param {*} opzione (è l'opzione che si vuole impostare) 
+     */ 
+     static impostaOpzione(campo, opzione) {
+        ultraIFrame().within(() => {
+            ultraIFrame0().within(() => {
+                cy.get('div').contains(campo).should('exist')
+                    .parent('div').should('exist')
+                    .find('span').contains(opzione).should('be.visible').click()
+            })    
+            
+        })
+    }
+
 
     /**
      * Clicca sul pulsante Incassa
