@@ -9,7 +9,7 @@
   "experimentalSessionSupport": false,
   "reporter": "cypress-mochawesome-reporter",
   "reporterOptions": {
-    "reportDir": "cypress/reports",
+    "reportDir": "cypress/reports/mocha",
     "charts": true,
     "reportPageTitle": "Matrix Web",
     "embeddedScreenshots": true,
