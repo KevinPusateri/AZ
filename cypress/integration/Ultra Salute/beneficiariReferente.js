@@ -107,7 +107,7 @@ describe("POLIZZA BENEFICIARI REFERENTE", () => {
     
     Dashboard.selezionaAmbiti(ambiti)      
     Dashboard.aggiungiAmbito(nuovoAmbito)
-    //Ultra.modificaSoluzioneHome('Diaria da ricovero', 'Top')
+    Ultra.modificaSoluzioneHome(nuovoAmbito, 'Top')
     cy.pause()
     //Ultra.procediHome()
   })
