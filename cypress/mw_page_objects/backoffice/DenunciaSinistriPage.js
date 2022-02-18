@@ -171,9 +171,17 @@ class DenunciaSinistriPage {
             const $btn = Cypress.$(btn)
             cy.wrap($btn)
             .should('be.visible')           
-            .click().log('>> object with [locator="'+id+'"] is clicked')
+            .click()
+            cy.log('>> object with [locator="'+id+'"] is clicked')
         })
         cy.wait(3000)
+    }
+
+    static clickBtnByJs(jsfuntion)
+    {
+        cy.window().then((win) => {
+            cy.window().then(win => win.geolocator())            
+        });
     }
     /**
      * Click on all objects defined by locator id
@@ -188,7 +196,7 @@ class DenunciaSinistriPage {
      * @param {string} tag : html element (button, etc...)
      * @param {string} label : text displayed
      */
-    static clickObj_ByLabel(tag, label) {             
+    static clickObj_ByLabel(tag, label) {
         getIFrameDenuncia().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(2000)        
     }
@@ -198,7 +206,7 @@ class DenunciaSinistriPage {
      * @param {string} label : text displayed
      */
     static clickObjPopUpChiudi_ByLabel(tag, label) {             
-        getIFramePopUpChiudi().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
+        getIFramePopUpChiudi().contains(tag, label, { timeout: 3000 }).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(2000)        
     }
     /**
@@ -206,11 +214,11 @@ class DenunciaSinistriPage {
      * @param {string} tag : html element (button, etc...)
      * @param {string} label : text displayed
      */
-     static clickObjGeo_ByIDAndLabel(tag, label) {         
+     static clickObjGeo_ByTagAndLabel(tag, label) {         
         return new Cypress.Promise((resolve) => {     
-            let $el = getIFrameGeo().contains(tag, label).should('exist').should('be.visible')
-            $el.click().log('>> object : "' + $el.text() +'" is clicked')            
-            
+            let $el = getIFrameGeo().contains(tag, label, { timeout: 5000 }).should('exist').and('be.visible')
+            $el.click()
+            cy.log('>> object : "' + label +'" is clicked')            
             cy.wait(3000)
             resolve(true) 
         })
@@ -223,26 +231,16 @@ class DenunciaSinistriPage {
         static clickObjGeoModal_ByIDAndLabel(tag, label, carrozzeria) {
            
             debugger
+           
             getIFrameGeo().contains(carrozzeria).should('exist').click().log('>> object with label: "' +label+'" is clicked')
             getIFrameGeo().contains(tag, label).should('be.visible').click()
-            cy.on("window:confirm", (str) => {
-                expect(str).to.include(carrozzeria);
-              });
-            debugger
-            cy.window().then(win => {
-                debugger
-                const el = win.$('carrozzeria')
-                cy.wrap(el)
-                  .find('button')
-                  .contains('Confirm')
-                  .click()
-              })
-            /*
-            cy.on('window:confirm', () => true);
+           
+          
+            
              
             
             
-            */ /*
+           /*
             getIFrameGeo().contains(tag, label).should('exist').click().then(() =>                      
                 //cy.on('window:confirm', () => true )                                                
                 cy.on('window:alert', () => true )  
@@ -315,7 +313,7 @@ class DenunciaSinistriPage {
      * @param {string} value : attribute value object 
      */
     static clickOnRadio_ByIdAndText(id, value) {                   
-        getIFrameDenuncia().find(id, { timeout: 10000 }).should('exist').and('be.visible').each(li => {          
+        getIFrameDenuncia().find(id, { timeout: 5000 }).should('exist').and('be.visible').each(li => {          
             let $txt = li.text().trim()              
             if ($txt.includes(value)) {                
                 cy.wrap(li).children('input').check({force: true}).should('be.checked')
@@ -331,10 +329,11 @@ class DenunciaSinistriPage {
      * @param {string} value : attribute value object 
      */
     static clickOnCheck_ByIdAndAttr(id, attr, value) {           
-        getIFrameDenuncia().find(id, { timeout: 10000 }).should('exist').and('be.visible').each(input => {          
+        getIFrameDenuncia().find(id, { timeout: 10000 }).should('be.visible').each(input => {          
             let $gar = input.attr(attr)
             if ($gar === value) {
-                cy.wrap(input).click().log('>> object with attr ['+attr+'="'+value+'"] is checked')
+                cy.wrap(input).click()
+                cy.log('>> object with attr ['+attr+'="'+value+'"] is checked')
                 cy.wait(2000)
                 return;
             }
@@ -354,7 +353,7 @@ class DenunciaSinistriPage {
      * @param {string} value : href attribute value or part of it
      */
     static clickLnk_ByHref(value) {        
-        getIFrameDenuncia().find('a[href*="'+value+'"]').should('exist').click({ multiple: true }).log('>> link (a) with href [' +value+ '] is clicked')      
+        getIFrameDenuncia().find('a[href*="'+value+'"]', { timeout: 3000 }).should('exist').click({ multiple: true }).log('>> link (a) with href [' +value+ '] is clicked')      
         cy.wait(1000)        
     }
     /**
@@ -371,7 +370,7 @@ class DenunciaSinistriPage {
      */
     static checkObj_ByClassAndText(classvalue, label) {    
         return new Cypress.Promise((resolve) => {     
-            let obj = getIFrameDenuncia().find('[class="'+classvalue+'"]').should('be.visible')            
+            let obj = getIFrameDenuncia().find('[class="'+classvalue+'"]', { timeout: 3000 }).should('be.visible')            
             if (obj.contains(label))
             {
                 cy.log('>> object with label: "' +label+'" is defined') 

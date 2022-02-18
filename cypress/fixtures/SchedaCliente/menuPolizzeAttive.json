@@ -8,7 +8,6 @@
   "vincoli" : "Vincoli",
   "modificaFonte" : "Modifica fonte",
   "apriPDF" : "Apri pdf di polizza",
-  "notecontratto" : "Note di contratto",
   "sostituzioneStessoVeicolo": "Sostituzione stesso veicolo",
   "sostituzioneDiversoVeicolo": "Sostituzione diverso veicolo",
   "sostituzioneModificaTarga" : "Sostituzione aggiornamento veicolo - Modifica targa",
@@ -19,7 +18,13 @@
   "quietanzamentoOnline": "Quietanzamento online",
   "stornoAnnullamento": "Storno annullamento",
   "gestionePolizzaAperta": "Gestione polizza aperta",
-  "altriCasiAssuntivi": "Altri casi assuntivi",
-  "gestione": "Gestione",
-  "sinistri": "Sinistri"
+  "reperibilitaDiContratto": "Reperibilità di contratto",
+  "altriCasiAssuntiviCessione": "Cessione",
+  "altriCasiAssuntiviModificaTipologiaVeicolo": "Modifica tipologia veicolo (settore tariffario)",
+  "altriCasiAssuntiviAllineamentoProprietarioContraente": "Allineamento proprietario contraente",
+  "gestionePeriziaKasko": "Perizia Kasko",
+  "gestioneDuplicatiCertificatoCartaVerde": "Duplicati certificato e carta verde",
+  "gestioneStampaAttestatoRischio": "Stampa attestato di rischio",
+  "gestioneRistampaCertificatoGiornata": "Ristampa certificato in giornata",
+  "gestioneRevocaDisdettaRecesso": "Revoca di disdetta o recesso"
 }

@@ -50,8 +50,8 @@ let oggi = Date.now()
 let dataInizio = new Date(oggi)
 let dataFine = new Date(oggi); dataFine.setFullYear(dataInizio.getFullYear() + 10)
 var scadenza = ('0' + dataFine.getDate()).slice(-2) + '' +
-                ('0' + (dataFine.getMonth() + 1)).slice(-2) + '' +
-                dataFine.getFullYear()
+  ('0' + (dataFine.getMonth() + 1)).slice(-2) + '' +
+  dataFine.getFullYear()
 var nContratto = "000"
 //#endregion variabili iniziali
 
@@ -93,7 +93,6 @@ after(function () {
 describe("Vincolo contestuale PUA ", () => {
   it("Accesso Ultra Casa e Patrimonio", () => {
     cy.log("scadenza: " + scadenza)
-    cy.pause()
     TopBar.clickSales()
     BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
     //SintesiCliente.selezionaPrimaAgenzia()
@@ -112,27 +111,36 @@ describe("Vincolo contestuale PUA ", () => {
     Dashboard.Vincolo(true, casa, scadenza)
   })
 
-  it("Modifica durata per Fabbricato", () => {
+  it("Modifica durata per ambiti", () => {
     Dashboard.dotMenu(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, "Modifica la durata")
+    Dashboard.modificaDurata(30)
+    Dashboard.dotMenu(ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile, "Modifica la durata")
     Dashboard.modificaDurata(30)
   })
 
-  it("Cambia Soluzioni", () => {
+  it("Procedi", () => {
+    Dashboard.procediHome()
+    DatiQuotazione.CaricamentoPagina()
+    //Riepilogo.caricamentoRiepilogo()
+  })
+
+  it("Conferma dati quotazione", () => {
+    DatiQuotazione.confermaDatiQuotazione()
+    Riepilogo.caricamentoRiepilogo()
+  })
+
+  it("Riepilogo ed emissione", () => {
+    Riepilogo.EmissionePreventivo()
+    CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
+  })
+
+  it("Censimento anagrafico", () => {
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(cliente)
+    CensimentoAnagrafico.censimentoAnagrafico(cliente.cognomeNome(), cliente.ubicazione())
+    Ultra.Avanti()
+    DatiIntegrativi.caricamentoPagina()
+  })
+  it("Fine", () => {
     cy.pause()
-    Ultra.modificaSoluzioneHome('Diaria da ricovero', 'Top')
-    Ultra.modificaSoluzioneHome('Spese mediche', 'Premium')
-  })
-
-  it("Seleziona frazionamento", () => {
-    Ultra.selezionaFrazionamento(frazionamento)
-  })
-
-  it("Area riservata", () => {
-    Ultra.areaRiservata(prezzoRiservato)
-  })
-
-  it("Condividi", () => {
-    Ultra.condividi('Quotazione Test', ambiti)
-    cy.log("FINE")
   })
 })

@@ -21,7 +21,6 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 let currentTutf
-let currentCustomerNumber
 let numberPolizza
 let currentCustomerFullName
 let currentAgency
@@ -31,7 +30,6 @@ before(() => {
         currentTutf = data.tutf
         cy.log('Retriving client with Polizze Auto, please wait...')
         cy.getClientWithConsensoOTP(currentTutf).then(polizzaClient => {
-            currentCustomerNumber = polizzaClient.customerNumber
             numberPolizza = polizzaClient.numberPolizza
             currentCustomerFullName = polizzaClient.customerName
             let customImpersonification = {
@@ -43,6 +41,7 @@ before(() => {
             currentAgency = polizzaClient.agency
 
             TopBar.search(currentCustomerFullName)
+            LandingRicerca.filtraRicerca('E')
             LandingRicerca.clickClientePF(currentCustomerFullName)
             Portafoglio.clickTabPortafoglio()
             Portafoglio.clickSubTab('Polizze attive')
@@ -76,28 +75,30 @@ describe('Matrix Web : Verifica Menu Contestuale Polizze Auto Attive (aggancio a
     }
 }, function () {
 
-    it('Sostituzione/Riattivazione : Sostituzione stesso veicolo', function () {
-        Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneStessoVeicolo, true)
-    })
+    context('Sostituzione/Riattivazione', function() {
+        it('Sostituzione stesso veicolo', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneStessoVeicolo, true)
+        })
 
-    it('Sostituzione/Riattivazione : Sostituzione diverso veicolo', function () {
-        Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneDiversoVeicolo, true)
-    })
+        it('Sostituzione diverso veicolo', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneDiversoVeicolo, true)
+        })
 
-    it('Sostituzione/Riattivazione : Sostituzione aggiornamento veicolo - Modifica targa', function () {
-        Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneModificaTarga, true)
-    })
+        it('Sostituzione aggiornamento veicolo - Modifica targa', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneModificaTarga, true)
+        })
 
-    it('Sostituzione/Riattivazione : Sostituzione aggiornamento veicolo - Modifica gancio traino', function () {
-        Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneModificaGancioTraino, true)
-    })
+        it('Sostituzione aggiornamento veicolo - Modifica gancio traino', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneModificaGancioTraino, true)
+        })
 
-    it('Sostituzione/Riattivazione : Sostituzione aggiornamento veicolo - Modifica dati tecnici', function () {
-        Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneModificaDatiTecnici, true)
-    })
+        it('Sostituzione aggiornamento veicolo - Modifica dati tecnici', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneModificaDatiTecnici, true)
+        })
 
-    it('Sostituzione/Riattivazione : Sostituzione aggiornamento veicolo - Modifica vincolo', function () {
-        Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneModificaVincolo, true)
+        it('Sostituzione aggiornamento veicolo - Modifica vincolo', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.sostituzioneModificaVincolo, true)
+        })
     })
 
     it('Regolazione Premio', function () {
@@ -110,5 +111,60 @@ describe('Matrix Web : Verifica Menu Contestuale Polizze Auto Attive (aggancio a
 
     it('Annullamento', function () {
         Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.annullamento, true)
+    })
+
+    it('Storno annullamento', function () {
+        Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.stornoAnnullamento, true)
+    })
+
+    it('Funzioni anagrafiche : Reperibilità di contratto', function () {
+        Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.reperibilitaDiContratto, true)
+    })
+
+    context('Altri casi assuntivi', function() {
+        it('Cessione', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.altriCasiAssuntiviCessione, true)
+        })
+
+        it('Modifica tipologia veicolo (settore tariffario)', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.altriCasiAssuntiviModificaTipologiaVeicolo, true)
+        })
+
+        it('Allineamento proprietario contraente', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.altriCasiAssuntiviAllineamentoProprietarioContraente, true)
+        })
+    })
+
+    context('Gestione', function () {
+        //? I menu Tecnologica con la release 124 verranno rimossi
+        it('Perizia Kasko', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.gestionePeriziaKasko, true)
+        })
+
+        it('Duplicati certificato e carta verde', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.gestioneDuplicatiCertificatoCartaVerde, true)
+        })
+
+        it('Stampa attestato di rischio', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.gestioneStampaAttestatoRischio, true)
+        })
+
+        it('Ristampa certificato in giornata', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.gestioneRistampaCertificatoGiornata, true)
+        })
+
+        it('Revoca di disdetta o recesso', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.gestioneRevocaDisdettaRecesso, true)
+        })
+    })
+
+    context('Sinistri', function () {
+        it('Denuncia sinistro', function () {
+            Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.denunciaSinistro, true)
+        })
+    })
+
+    it('Modifica fonte', function () {
+        Portafoglio.menuContratto(numberPolizza, menuPolizzeAttive.modificaFonte, true)
     })
 })

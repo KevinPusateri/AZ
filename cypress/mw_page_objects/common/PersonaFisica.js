@@ -10,6 +10,7 @@ export default class PersonaFisica {
         citta: "",
         provincia: ""
     }
+    codiceFiscale
     
     constructor(nome, cognome) {
         this.nome = nome
@@ -35,6 +36,7 @@ export default class PersonaFisica {
         GalileoGalilei.cap = "56125"
         GalileoGalilei.citta = "PISA"
         GalileoGalilei.provincia = "PI"
+        GalileoGalilei.codiceFiscale = "GLLGLL64B16G702K"
 
         return GalileoGalilei
     }
@@ -48,6 +50,17 @@ export default class PersonaFisica {
         SabrinaTonon.provincia = "go"
 
         return SabrinaTonon
+    }
+
+    static DavideRoana() {
+        let DavideRoana = new PersonaFisica("DAVIDE", "ROANA")
+        DavideRoana.via = "VIA AL TIGLIO";
+        DavideRoana.numero = "27"
+        DavideRoana.cap = "33075"
+        DavideRoana.citta = "CORDOVADO"
+        DavideRoana.provincia = "PD"
+
+        return DavideRoana
     }
 
     static MassimoRoagna() {
