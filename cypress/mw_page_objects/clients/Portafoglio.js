@@ -920,7 +920,25 @@ class Portafoglio {
                 cy.get('#ctl00_pHolderMain1_btnConfermaPK').should('exist').and('be.visible')
             })
         }
-        else if (page.includes('Duplicati') || page.includes('Stampa attestato di rischio') || page.includes('Ristampa certificato in giornata')) {
+        else if (page.includes('Stampa attestato di rischio')) {
+            cy.wait(3000)
+            getIFrame().then($body => {
+                if ($body.find(':contains("Attestato di sede non presente")').length > 0)
+                    getIFrame().find('input[id="btnExit"]').click()
+                else {
+                    cy.wait('@duplicatiDA', { requestTimeout: 120000 })
+                    cy.getIFrame()
+                    cy.get('@iframe').within(() => {
+                        cy.contains('Allianz Gestione Duplicati').should('exist').and('be.visible')
+                        if (page !== 'Stampa attestato di rischio') {
+                            cy.get('#btnMail').should('exist').and('be.visible')
+                            cy.get('#btnStampa').should('exist').and('be.visible')
+                        }
+                    })
+                }
+            })
+        }
+        else if (page.includes('Duplicati') || page.includes('Ristampa certificato in giornata')) {
             cy.wait('@duplicatiDA', { requestTimeout: 120000 })
 
             cy.getIFrame()
