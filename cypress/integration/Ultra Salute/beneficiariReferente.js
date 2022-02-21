@@ -104,11 +104,12 @@ describe("POLIZZA BENEFICIARI REFERENTE", () => {
     let dataInizio = new Date(oggi)
     let dataFine = new Date(oggi); dataFine.setMonth(dataInizio.getMonth() + 7)
     
-    Dashboard.selezionaAmbiti(ambiti)   
-   
-    Dashboard.aggiungiAmbito(nuovoAmbito)
     
-   //Ultra.procediHome()
+    Dashboard.selezionaAmbiti(ambiti)      
+    Dashboard.aggiungiAmbito(nuovoAmbito)
+    Ultra.modificaSoluzioneHome(nuovoAmbito, 'Top')
+    cy.pause()
+    //Ultra.procediHome()
   })
 /*
   it("Modifica professione in Conferma Dati Quotazione", () => {

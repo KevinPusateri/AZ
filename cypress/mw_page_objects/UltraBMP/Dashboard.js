@@ -106,9 +106,7 @@ class Dashboard {
 
     static aggiungiAmbito(nuovoAmbito) {
         ultraIFrame().within(() => {
-
             cy.get('nx-icon[class*="' + nuovoAmbito + '"]').parents('ultra-ambito-button').contains("+ Aggiungi nuovo").click()
-
             cy.wait(500)
 
         })
