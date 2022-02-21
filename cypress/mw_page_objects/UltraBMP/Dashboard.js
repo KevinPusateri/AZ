@@ -65,6 +65,22 @@ class Dashboard {
     }
 
     /**
+      * SelezionaVoceMenuPagAmbiti
+      * @param {string} strmenu - testo del menù 
+      */
+     static selezionaVoceHeader(strMenu) {
+        ultraIFrame().within(() => {
+            cy.get('div[id="ambitiHeader"]')
+                .contains(strMenu).should('be.visible').click() 
+            cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+            //cy.wait(2000)
+        })
+
+    }
+    //#endregion
+
+
+    /**
      * Seleziona gli ambiti indicati e verifica che vengano selezionati corretamente.
      * @param {array} ambiti
      */

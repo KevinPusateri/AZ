@@ -339,6 +339,7 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
     it("Chiusura e apertura sezione Clients", () => {
         Ultra.chiudiFinale()
         StartPage.caricamentoPagina()
+        //cy.pause()
         
         // Ricerca anagrafica
         cy.get('body').within(() => {
@@ -354,12 +355,12 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
                 cy.get('lib-client-item').first().next().click()
             }
         })
-        //cy.pause()
+        cy.pause()
     })
 
     it("Annullamento contratto da Portafoglio", () => {
         Portafoglio.clickTabPortafoglio()
-        //Portafoglio.ordinaPolizze("Numero contratto")
+        Portafoglio.ordinaPolizze("Numero contratto")
         //Portafoglio.menuContratto(nContratto, menuPolizzeAttive.annullamento)
         //Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
         //Ultra.selezionaPrimaAgenzia()

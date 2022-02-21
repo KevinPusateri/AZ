@@ -23,8 +23,8 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import BurgerMenuSales from "../../mw_page_objects/burgermenu/BurgerMenuSales"
 import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
 import Annullamento from "../../mw_page_objects/polizza/Annullamento"
-import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
+import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import 'cypress-iframe';
 
 
@@ -81,21 +81,9 @@ var premioRC_ProprietàAnimali = 0
 let personaFisica = PersonaFisica.CarloRossini()
 var clienteUbicazione = ""
 var frazionamento = "annuale"
-var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
-/*
-var defaultFQ = {
-    "TipoAbitazione"    : "appartamento",
-    "MqAbitazione"      : "100",
-    "UsoAbitazione"     : "casa principale",
-    "CapAbitazione"     : ""
-}
-var valoriIns = {
-    "TipoAbitazione"    : "villa indipendente",
-    "MqAbitazione"      : "155",
-    "UsoAbitazione"     : "casa saltuaria",
-    "CapAbitazione"     : ""
-}
-*/
+//var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
+var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile, ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici]
+
 //#endregion variabili iniziali
 
 
@@ -129,32 +117,44 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
     })
      
     it("Verifica valori default FQ e accesso alla dashboard", () => {
-        //UltraBMP.VerificaDefaultFQ(defaultFQ)
-        //UltraBMP.ClickButton('SCOPRI LA PROTEZIONE')
         StartPage.VerificaDefaultFQ(defaultFQ)
         StartPage.startScopriProtezione()
-        //Dashboard.caricamentoDashboardUltra()
-        cy.pause()
+        //Dashboard.caricamentoDashboardUltra()    
     })
     
     it("Seleziona ambiti", () => {
         cy.log('Seleziona ambito')
+        
+        /*
         for(var i = 0; i<ambiti.length; i++ )
         {
             cy.log('RICERCA AMBITO: ' + ambiti[i])
             UltraBMP.SelezionaAmbito(ambiti[i])
+            
+            cy.pause()
         }
+        */
+        
+        Dashboard.selezionaAmbiti(ambiti)
     })
     
     
     it("Cambia Soluzioni", () => {
+        /*
     Ultra.modificaSoluzioneHome(ambitoUltra.FABBRICATO, soluzione.TOP)
     Ultra.modificaSoluzioneHome(ambitoUltra.RESPONSABILITA_CIVILE, soluzione.PREMIUM)
     Ultra.modificaSoluzioneHome(ambitoUltra.ANIMALI_DOMESTICI, soluzione.ESSENTIAL)
+    */
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, soluzione.TOP)
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile, soluzione.PREMIUM)
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici, soluzione.ESSENTIAL)
+    
     })
     
     it("Accesso Dati Quotazione da menù", ()=>{
-        UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
+        //UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
+        Dashboard.selezionaVoceHeader('Dati quotazione')    //<<<<===== DA FARE AL POSTO DI QUELLO SOPRA 
+        cy.pause()
         DatiQuotazione.VerificaDefaultCasa('Casa 1', daVerificareCasa, defaultCasa)
         DatiQuotazione.VerificaDefaultAnimaleDomestico('Animale domestico 1', daVerificareAnimale, defaultAnimale)
         DatiQuotazione.ModificaValoriCasa('Casa 1', daModificareCasa, modificheCasa)
