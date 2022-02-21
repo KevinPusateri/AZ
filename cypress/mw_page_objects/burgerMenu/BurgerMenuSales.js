@@ -17,7 +17,7 @@ const LinksBurgerMenu = {
     FLOTTE_E_CONVENZIONI: 'Flotte e Convenzioni',
     MINIFLOTTE: 'MiniFlotte',
     TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: Cypress.env('isAviva') ? ' Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio BMP' : 'Allianz Ultra Casa e Patrimonio BMP',
     ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
     ALLIANZ_ULTRA_IMPRESA: Cypress.env('isAviva') ? 'Ultra Impresa' : 'Allianz Ultra Impresa',
@@ -90,7 +90,7 @@ const LinksBurgerMenu = {
         if (!keys.GED_GESTIONE_DOCUMENTALE) delete this.GED_GESTIONE_DOCUMENTALE
         if (!keys.DOCUMENTI_DA_GESTIRE) delete this.DOCUMENTI_DA_GESTIRE
         if (!keys.FOLDER) delete this.FOLDER
-        if (!keys.ALLIANZ_GLOBAL_ASSISTANCE ) delete this.ALLIANZ_GLOBAL_ASSISTANCE
+        if (!keys.ALLIANZ_GLOBAL_ASSISTANCE) delete this.ALLIANZ_GLOBAL_ASSISTANCE
         if (!keys.ALLIANZ_PLACEMENT_PLATFORM) delete this.ALLIANZ_PLACEMENT_PLATFORM
         if (!keys.QUALITÀ_PORTAFOGLIO_AUTO) delete this.QUALITÀ_PORTAFOGLIO_AUTO
         if (!keys.APP_CUMULO_TERREMOTI) delete this.APP_CUMULO_TERREMOTI
@@ -157,7 +157,7 @@ class BurgerMenuSales extends Sales {
         LinksBurgerMenu.deleteKey(keys)
         const linksBurger = Object.values(LinksBurgerMenu)
         cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
-            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
+            expect($checkLinksBurger.text().trim()).to.include(linksBurger[i].trim());
         })
     }
 
@@ -182,6 +182,9 @@ class BurgerMenuSales extends Sales {
      * @param {string} page - Nome della pagina 
      */
     static checkPage(page) {
+        console.log(page)
+        console.log(LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO)
+        cy.pause()
         switch (page) {
             case LinksBurgerMenu.PREVENTIVO_MOTOR:
                 cy.intercept({
@@ -207,6 +210,7 @@ class BurgerMenuSales extends Sales {
                 break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO:
                 Common.canaleFromPopup()
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', './assets/img/allianz-logo-casa.png')
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
                 break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP:
@@ -216,6 +220,7 @@ class BurgerMenuSales extends Sales {
                 break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_SALUTE:
                 Common.canaleFromPopup()
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', './assets/img/allianz-logo-salute.png')
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
                 break;
             case LinksBurgerMenu.ALLIANZ1_BUSINESS:
@@ -401,7 +406,7 @@ class BurgerMenuSales extends Sales {
                 break;
             case LinksBurgerMenu.ACOM_GESTIONE_INIZIATIVE:
                 break;
-
+            // default: throw new Error('Link Errato o non presente')
         }
     }
 
