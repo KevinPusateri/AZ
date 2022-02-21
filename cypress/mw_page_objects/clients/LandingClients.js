@@ -187,34 +187,43 @@ class LandingClients {
         });
     }
 
-    static checkDigitalMe() {
+    static checkDigitalMe(keyDigitalMe) {
         cy.wait(5000)
-
+        console.log(keyDigitalMe)
         cy.get('app-digital-me-header').should('exist').and('be.visible').then(($digitalme) => {
             const checkIsRequest = $digitalme.find(':contains("Ci sono 0 richieste Digital me, di cui 0 da gestire")').is(':visible')
             if (checkIsRequest)
                 cy.wrap($digitalme).should('contain.text', 'Ci sono 0 richieste Digital me, di cui 0 da gestire')
             else {
 
-                const tabDigitalMe = [
-                    'Richieste Cliente',
-                    'Pubblicazione Proposte'
-                ]
-                cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
-                    expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
-                })
+                let tabDigitalMe = []
+                if (keyDigitalMe.PUBBLICAZIONE_PROPOSTE) {
 
-                cy.contains('Richieste Cliente').click()
-                cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
-                this.digitalMe('Richieste Cliente');
+                    tabDigitalMe = [
+                        'Richieste Cliente',
+                        'Pubblicazione Proposte'
+                    ]
+                    cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
+                        expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
+                    })
+                    cy.contains('Richieste Cliente').click()
+                    cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
+                    this.digitalMe('Richieste Cliente');
+                }
+                else
+                    tabDigitalMe = [
+                        'Richieste Cliente'
+                    ]
 
-                cy.intercept('POST', '**/graphql', (req) => {
-                    if (req.body.operationName.includes('dmEventMotor')) {
-                        req.alias = 'gqlEventMotor'
-                    }
-                })
-                cy.contains('Pubblicazione Proposte').click()
-                cy.get('app-digital-me-main-table').should('be.visible')
+                if (keyDigitalMe.PUBBLICAZIONE_PROPOSTE) {
+                    cy.intercept('POST', '**/graphql', (req) => {
+                        if (req.body.operationName.includes('dmEventMotor')) {
+                            req.alias = 'gqlEventMotor'
+                        }
+                    })
+                    cy.contains('Pubblicazione Proposte').click()
+                    cy.get('app-digital-me-main-table').should('be.visible')
+                }
             }
 
         })
