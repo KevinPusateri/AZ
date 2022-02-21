@@ -788,7 +788,6 @@ class Portafoglio {
         cy.get('[class*="transformContextMenu"]').should('be.visible')
             .contains(voce).click() //seleziona la voce dal menù
 
-        cy.pause()
         //Verifica eventuale presenza del popup di disambiguazione
         Common.canaleFromPopup()
 

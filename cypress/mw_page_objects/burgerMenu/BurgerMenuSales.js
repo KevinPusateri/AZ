@@ -299,33 +299,15 @@ class BurgerMenuSales extends Sales {
                 getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
                 break;
             case LinksBurgerMenu.MANUTENZIONE_PORTAFOGLIO_RV_MIDCO:
-                if (!Cypress.env('monoUtenza')) {
-                    cy.intercept({
-                        method: 'POST',
-                        url: '**/Danni/**'
-                    }).as('postDanni');
-                    cy.intercept({
-                        method: 'GET',
-                        url: '**/Danni/**'
-                    }).as('getDanni');
-                    Common.canaleFromPopup()
-                    if (Cypress.env('currentEnv') === 'TEST')
-                        cy.wait('@getDanni', { requestTimeout: 40000 })
-                    else {
-                        cy.wait('@getDanni', { requestTimeout: 40000 })
-                        cy.wait('@postDanni', { requestTimeout: 40000 })
-                    }
-                    cy.wait(5000)
-                    getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
-                } else {
-                    cy.intercept({
-                        method: 'GET',
-                        url: '**/Danni/**'
-                    }).as('getDanni');
-                    cy.wait('@getDanni', { requestTimeout: 40000 })
-                    cy.wait(10000)
-                    getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
-                }
+                cy.intercept({
+                    method: '+(GET|POST)',
+                    url: '**/Danni/**'
+                }).as('Danni');
+
+                Common.canaleFromPopup()
+                cy.wait('@Danni', { requestTimeout: 40000 })
+                cy.wait(5000)
+                getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
 
                 break;
             case LinksBurgerMenu.VITA_CORPORATE:
