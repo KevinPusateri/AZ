@@ -78,10 +78,16 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickIconSwitchPage()
     });
 
-    it('Verifica Top Menu incident - Verifica presenza dei link', function () {
-        TopBar.clickIconIncident()
-        TopBar.checkLinksIncident(keys)
-    })
+    if (!keys.srmOnlineEnabled && !keys.siscoEnabled)
+        it('Verifica Top Menu incident - Verifica presenza dei link', function () {
+            TopBar.clickIconIncident()
+            TopBar.checkLinksIncident(keys)
+        })
+    else
+        it('Verifica Top Menu incident - Verifica ASSENZA dei link', function () {
+            TopBar.clickIconIncident()
+            TopBar.checkLinksIncident(keys)
+        })
 
     it('Verifica Top Menu incident - Verifica atterraggio SRM Online', function () {
         if (keys.srmOnlineEnabled)

@@ -17,12 +17,13 @@ class Dashboard {
      * Attende il caricamento della dashboard
      */
     static caricamentoDashboardUltra() {
+        cy.log('***** CARICAMENTO PAGINA DASHBOARD ULTRA *****')
         cy.intercept({
             method: 'GET',
             url: '**/ambiti-disponibili'
         }).as('ambiti')
 
-        cy.wait('@ambiti', { requestTimeout: 60000 });
+        cy.wait('@ambiti', { requestTimeout: 20000 });
     }
 
     static stringaRandom(lunghezza) {
@@ -64,6 +65,22 @@ class Dashboard {
     }
 
     /**
+      * SelezionaVoceMenuPagAmbiti
+      * @param {string} strmenu - testo del menù 
+      */
+     static selezionaVoceHeader(strMenu) {
+        ultraIFrame().within(() => {
+            cy.get('div[id="ambitiHeader"]')
+                .contains(strMenu).should('be.visible').click() 
+            cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+            //cy.wait(2000)
+        })
+
+    }
+    //#endregion
+
+
+    /**
      * Seleziona gli ambiti indicati e verifica che vengano selezionati corretamente.
      * @param {array} ambiti
      */
@@ -89,9 +106,7 @@ class Dashboard {
 
     static aggiungiAmbito(nuovoAmbito) {
         ultraIFrame().within(() => {
-
             cy.get('nx-icon[class*="' + nuovoAmbito + '"]').parents('ultra-ambito-button').contains("+ Aggiungi nuovo").click()
-
             cy.wait(500)
 
         })

@@ -18,6 +18,7 @@ class DatiIntegrativi {
      * Attende il caricamento della pagina Dati Integrativi
      */
     static caricamentoPagina() {
+        cy.log('***** CARICAMENTO PAGINA DATI INTEGRATIVI *****')
         cy.intercept({
             method: 'GET',
             url: '**/datiintegrativi/getDati'

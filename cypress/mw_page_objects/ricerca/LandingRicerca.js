@@ -216,12 +216,12 @@ class LandingRicerca {
                 if (checkResultsEmpty) {
                     this.searchRandomClient(false, clientForm, clientType)
                     searchOtherMember()
-                }else{
+                } else {
                     cy.get('lib-scrollable-container').should('be.visible').then(($clienti) => {
                         let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
                         let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
                         cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
-        
+
                         cy.wait(5000)
                         cy.get('body').then(($body) => {
                             const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
@@ -229,7 +229,7 @@ class LandingRicerca {
                                 this.searchRandomClient(true, clientForm, clientType)
                                 searchOtherMember()
                             }
-        
+
                         })
                     })
                 }
@@ -569,9 +569,10 @@ class LandingRicerca {
                     linkLength = 2
                 } else if (Cypress.env('isAviva')) {
                     suggLinks = [
+                        'Ultra Casa e Patrimonio',
                         'Ultra Salute'
                     ]
-                    linkLength = 1
+                    linkLength = 2
                 } else {
                     suggLinks = [
                         'Allianz Ultra Casa e Patrimonio',

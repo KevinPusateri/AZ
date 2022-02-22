@@ -140,6 +140,7 @@ class BackOffice {
                 getIFrameMoveSinistri().find('[class="pageTitle"]:contains("Movimentazione Sinistri"):visible')
                 getIFrameMoveSinistri().find('h2 strong:contains("Sintesi Movimenti nel periodo"):visible')
                 getIFrameMoveSinistri().find('a:contains("Ricerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.DENUNCIA:
                 cy.wait(10000)
@@ -148,75 +149,89 @@ class BackOffice {
                 getIFrameDenuncia().find('h3:contains("Ricerca per targa"):visible')
                 getIFrameDenuncia().find('h3:contains("Ricerca per dati anagrafici"):visible')
                 getIFrameDenuncia().find('a:contains("Esegui Ricerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.DENUNCIA_BMP:
                 getIFrame().find('h4').should('be.visible').then($title => {
                     expect(['Dettaglio cliente', 'Customer details']).to.include($title.text().trim())
                 })
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.GESTIONE_CONTATTO_CARD:
                 getIFrame().find('div:contains("Nessun sinistro trovato"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.CONSULTAZIONE_SINISTRI:
                 getIFrame().find('button:contains("Cerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.SINISTRI_INCOMPLETI:
                 getIFrame().find('h2:contains("Sinistri Incompleti"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.SINISTRI_CANALIZZATI:
                 getIFrame().find('a:contains("Filtra"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.SINTESI_CONTABILITA:
                 getIFrame().find('span:contains("Situazione finanziaria riepilogativa"):visible').click()
                 getIFrame().find('span:contains("Esporta"):visible').click()
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.GIORNATA_CONTABILE:
                 getIFrame().find('span:contains("Calendario"):visible')
                 getIFrame().find('#statoGiornaleDiCassa').should('be.visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.CONSULTAZIONE_MOVIMENTI:
                 getIFrame().find('button:contains("Cerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.ESTRAZIONE_CONTABILITA:
                 getIFrame().find('h3:contains("ExtraDAS"):visible')
                 getIFrame().find('p:contains("Ricerca Estrazioni"):visible')
                 getIFrame().find('p:contains("Legenda"):visible')
                 getIFrame().find('button:contains("Ricerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.DELEGHE_SDD:
                 cy.wait(10000)
                 getIFrame().find('input[value="Carica"]').should('be.visible').invoke('attr', 'value').should('equal', 'Carica')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.QUADRATURA_UNIFICATA:
                 getIFrame().find('#quadNavigationBar:contains("Q.U.A.D. - home page"):visible')
                 getIFrame().find('#quadMenu:contains("Quadratura Unificata"):visible')
                 getIFrame().find('#quadMenu:contains("Agenzie Digital"):visible')
                 getIFrame().find('#ApriPdfAdesioneQuad:contains("PDF di Adesione"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.INCASSO_PER_CONTO:
                 cy.wait(10000)
                 getIFrame().find('#ctl00_pHolderMain1_btnRicercaTitoli').should('be.visible').invoke('attr', 'value').should('equal', 'Cerca')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.INCASSO_MASSIVO:
                 getIFrame().find('a:contains("Apri filtri"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.SOLLECITO_TITOLI:
                 getIFrame().find('span:contains("Gestione Sollecito Titoli")')
                 getIFrame().find('#buttonCerca:contains("Cerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.IMPOSTAZIONE_CONTABILITA:
                 getIFrame().find('#tabGiornataContabile').should('be.visible')
-                // getIFrame().find('ul > li > span:contains("Gestione dispositivi POS"):visible')
-                // getIFrame().find('ul > li > span:contains("Prenotazione POS"):visible')
-                // getIFrame().find('ul > li > span:contains("Retrocessioni Provv."):visible')
-                // getIFrame().find('ul > li > span:contains("Impostazioni DAS"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.CONVENZIONI_IN_TRATTENUTA:
                 cy.wait(10000)
                 getIFrame().find('#contentPane:contains("Gestione"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.MONITORAGGIO_GUIDA_SMART:
                 getIFrame().find('p:contains("Guida Smart"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
 
         }

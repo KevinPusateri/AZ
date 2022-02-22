@@ -504,7 +504,7 @@ class Portafoglio {
      * Verifico che la pollizza sia presente su "Non in Vigore"
      * @param {string} numberPolizza : numero della polizza
      */
-    static checkPolizzaIsPresentOnNonInVigore(numberPolizza) {
+    static checkPolizzaIsPresentOnNonInVigore(numberPolizza, messaggio = "4 - Vendita / conto vendita") {
         cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
 
         cy.get('@polizza').should('be.visible')
@@ -528,7 +528,7 @@ class Portafoglio {
 
                             cy.get('nx-badge').invoke('attr', 'aria-describedby').then(($described) => {
                                 cy.document().its('body').find('#cdk-describedby-message-container').find('#' + $described)
-                                    .should('include.text', '4 - Vendita / conto vendita')
+                                    .should('include.text', messaggio)
                             })
                         })
 
@@ -788,7 +788,6 @@ class Portafoglio {
         cy.get('[class*="transformContextMenu"]').should('be.visible')
             .contains(voce).click() //seleziona la voce dal menù
 
-        cy.pause()
         //Verifica eventuale presenza del popup di disambiguazione
         Common.canaleFromPopup()
 
@@ -921,7 +920,25 @@ class Portafoglio {
                 cy.get('#ctl00_pHolderMain1_btnConfermaPK').should('exist').and('be.visible')
             })
         }
-        else if (page.includes('Duplicati') || page.includes('Stampa attestato di rischio') || page.includes('Ristampa certificato in giornata')) {
+        else if (page.includes('Stampa attestato di rischio')) {
+            cy.wait(3000)
+            getIFrame().then($body => {
+                if ($body.find(':contains("Attestato di sede non presente")').length > 0)
+                    getIFrame().find('input[id="btnExit"]').click()
+                else {
+                    cy.wait('@duplicatiDA', { requestTimeout: 120000 })
+                    cy.getIFrame()
+                    cy.get('@iframe').within(() => {
+                        cy.contains('Allianz Gestione Duplicati').should('exist').and('be.visible')
+                        if (page !== 'Stampa attestato di rischio') {
+                            cy.get('#btnMail').should('exist').and('be.visible')
+                            cy.get('#btnStampa').should('exist').and('be.visible')
+                        }
+                    })
+                }
+            })
+        }
+        else if (page.includes('Duplicati') || page.includes('Ristampa certificato in giornata')) {
             cy.wait('@duplicatiDA', { requestTimeout: 120000 })
 
             cy.getIFrame()

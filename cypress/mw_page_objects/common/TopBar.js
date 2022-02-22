@@ -105,7 +105,7 @@ class TopBar extends HomePage {
         }
 
         cy.get('lib-user-header').should('be.visible')
-        cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]:visible').click({force:true});
+        cy.get('figure').should('be.visible').find('img[src$="user-placeholder.png"]:visible').click({ force: true });
         cy.get('lib-user-header-popover-container').should('be.visible').within(() => {
             cy.contains('Logout').click({ force: true })
         })
@@ -446,7 +446,7 @@ class TopBar extends HomePage {
             ELENCO_TELEFONICO: 'Elenco telefonico',
             deleteKey: function (keys) {
                 if (!keys.srmOnlineEnabled) delete this.SRM
-                if (!keys.srmOnlineEnabled) delete this.SISCO
+                if (!keys.siscoEnabled) delete this.SISCO
                 if (Cypress.env('isAviva')) delete this.ELENCO_TELEFONICO
             }
         }
@@ -457,24 +457,9 @@ class TopBar extends HomePage {
             cy.get('lib-utility-label').find('a').each(($link, i) => {
                 expect($link.text().trim()).to.include(linksIncident[i]);
             })
-
-        // if (!Cypress.env('isAviva')) {
-        //     const linksIncident = [
-        //         'SRM',
-        //         'SisCo',
-        //         'Elenco telefonico'
-        //     ]
-        //     cy.get('lib-utility-label').find('a').each(($link, i) => {
-        //         expect($link.text().trim()).to.include(linksIncident[i]);
-        //     })
-        // } else {
-        //     const linksIncident = [
-        //         'Elenco telefonico'
-        //     ]
-        //     cy.get('lib-utility-label').find('a').each(($link, i) => {
-        //         expect($link.text().trim()).to.include(linksIncident[i]);
-        //     })
-        // }
+        else {
+            cy.get('lib-incident-container').should('include.text', 'Nessun messaggio presente')
+        }
 
     }
 
