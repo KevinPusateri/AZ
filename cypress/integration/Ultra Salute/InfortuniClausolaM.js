@@ -166,7 +166,8 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     DatiIntegrativi.caricamentoPagina()
   })
   it("Dati integrativi", () => {
-    DatiIntegrativi.DatiIntegrativi(false, true, false)
+    DatiIntegrativi.DatiIntegrativi(true, true, true)
+    cy.pause()
     DatiIntegrativi.ClickButtonAvanti()
     DatiIntegrativi.approfondimentoSituazioneAssicurativa(false)
     DatiIntegrativi.confermaDichiarazioniContraente()
@@ -190,27 +191,28 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Visualizza documenti e prosegui", () => {
     ControlliProtocollazione.riepilogoDocumenti()
     ControlliProtocollazione.Avanti()
-})
+    ControlliProtocollazione.aspettaCaricamentoAdempimenti()
+  })
 
-it("Adempimenti precontrattuali e Perfezionamento", () => {
+  it("Adempimenti precontrattuali e Perfezionamento", () => {    
     ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
     ControlliProtocollazione.Incassa()
     Incasso.caricamentoPagina()
-})
+  })
 
-it("Incasso - parte 1", () => {
+  it("Incasso - parte 1", () => {
     Incasso.ClickIncassa()
     Incasso.caricamentoModPagamento()
-})
+  })
 
-it("Incasso - parte 2", () => {
+  it("Incasso - parte 2", () => {
     Incasso.SelezionaMetodoPagamento('Assegno')
     Incasso.ConfermaIncasso()
     Incasso.caricamentoEsito()
-})
+  })
 
-it("Esito incasso", () => {
+  it("Esito incasso", () => {
     Incasso.EsitoIncasso()
     Incasso.Chiudi()
-})
+  })
 })
