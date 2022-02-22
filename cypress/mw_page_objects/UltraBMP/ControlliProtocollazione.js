@@ -82,6 +82,25 @@ class ControlliProtocollazione {
     }
 
     /**
+     * Aggiunge la "Collaborazione orizzontale" nella sezione Intermediario
+     */
+    static intermediarioCollaborazioneOrizzontale() {
+        var checkFrame0 = false
+
+        ultraIFrame().then(($body) => {
+            //verifica la presenza dell'iframe0 annidato
+            checkFrame0 = $body.find('#iFrameResizer0').is(':visible')
+        }).within(() => {
+            if (checkFrame0) { //se l'iFrame0 è presente, controlla se è necessario inserire l'intermediario
+                ultraIFrame0().within(() => {
+                    cy.get('div').contains('Collaborazione orizzontale')
+                        .next().find('span').contains('SI').click()
+                })
+            }
+        })
+    }
+
+    /**
      * Visualizza i documenti nella sezione Riepilogo
      */
     static riepilogoDocumenti() {
@@ -144,7 +163,7 @@ class ControlliProtocollazione {
             url: '**/GetSezionePrecontrattuale'
         }).as('precontrattuale')
 
-        cy.wait('@precontrattuale', { requestTimeout: 60000 })
+        cy.wait('@precontrattuale', { timeout: 60000 })
 
         ultraIFrame().within(() => {
             ultraIFrame0().within(() => {
@@ -180,11 +199,11 @@ class ControlliProtocollazione {
      * * @param {*} campo (è il campo che si vuole verificare)
      * * @param {*} opzione (è l'opzione che dovrebbe essere selezionata) 
      */
-     static verificaOpzione(campo, opzione) {
+    static verificaOpzione(campo, opzione) {
         ultraIFrame().within(() => {
             cy.get('div').contains(campo).should('exist')
-              .parent('div').should('exist')
-              .find('span').contains(opzione).should('be.checked')
+                .parent('div').should('exist')
+                .find('span').contains(opzione).should('be.checked')
         })
     }
 

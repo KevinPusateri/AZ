@@ -7,8 +7,12 @@
 ///<reference types="cypress"/>
 
 //#region imports
+import 'cypress-iframe';
+
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
+
+import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 
 import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -17,11 +21,16 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
+import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
+import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
+import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
+import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
+import Beneficiari from "../../mw_page_objects/UltraBMP/Beneficiari"
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
-import 'cypress-iframe';
-//#endregion
+import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
+//#endregion imports
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -89,7 +98,8 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
       cy.get('input[name="main-search-input"]').type(personaGiuridica).type('{enter}')
-      cy.get('lib-client-item').first().click()
+      cy.get('lib-client-item').first()
+        .find('.name').trigger('mouseover').click()
     }).then(($body) => {
       cy.wait(7000)
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
@@ -104,78 +114,103 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Emissione Ultra Salute", () => {
     SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
     Ultra.selezionaPrimaAgenzia()
+    Dashboard.caricamentoDashboardUltra()
   })
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
-    Ultra.caricamentoUltraHome()
-    //Ultra.selezionaAmbitiHome(ambiti)
     Dashboard.selezionaAmbiti(ambiti)
   })
 
   it("Cambia Soluzioni", () => {
-    cy.pause()
     for (var i = 0; i < ambiti.length; i++) {
-      Dashboard.modificaSoluzione(ambiti[i])
+      Dashboard.modificaSoluzione(ambiti[i], "Essential")
     }
-    cy.pause()
-
-    Ultra.modificaSoluzioneHome('Diaria da ricovero', 'Essential')
-    Ultra.modificaSoluzioneHome('Spese mediche', 'Essential')
-    Ultra.modificaSoluzioneHome('Invalidità permanente da infortunio', 'Premium')
   })
 
-  it("Aggiungi garanzie per Invalidità Permanente", () => {
-    Ultra.GaranzieAggiuntiveAmbito('Invalidità permanente da infortunio', 'Capitale per morte da infortunio')
-    Ultra.procediHome()
+  it("Configurazione Invalidità Permanente da infortunio", () => {
+    ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[2])
+    ConfigurazioneAmbito.modificaDatoQuotazione("professione", "assistente presso uno studio medico")
+    ConfigurazioneAmbito.selezionaSoluzione("Premium")
+    ConfigurazioneAmbito.aggiungiGaranzia("Capitale per morte da infortunio")
+    ConfigurazioneAmbito.ClickButton("CONFERMA")
+    Dashboard.caricamentoDashboardUltra()
+    Dashboard.procediHome()
+    DatiQuotazione.CaricamentoPagina()
   })
 
-  it("Modifica professione e conferma Dati Quotazione", () => {
-    Ultra.coperturaDatiQuotazione(copertura)
-    Ultra.ProfessionePrincipaleDatiQuotazione('ingegnere solo in studio')
-    Ultra.ProfessionePrincipaleDatiQuotazione('fisioterapista', true)
-    Ultra.confermaDatiQuotazione()
-
+  it("Dati Quotazione - modifica copertura", () => {
+    DatiQuotazione.modificaDatoQuotazione("copertura", "professionale")
+    DatiQuotazione.confermaDatiQuotazione()
+    Riepilogo.caricamentoRiepilogo()
   })
 
-  it("Riepilogo ed emissione preventivo", () => {
-    Ultra.selezionaFrazionamento(frazionamento)
-    Ultra.emettiPreventivo()
-    Ultra.caricamentoCensimentoAnagrafico()
+  it("Modifica frazionamento ed emissione polizza", () => {
+    Dashboard.selezionaFrazionamento(frazionamento)
+    Riepilogo.EmissionePolizza()
+    CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
   })
 
   it("Aggiungi Cliente Persona Fisica", () => {
-    Ultra.aggiungiClienteCensimentoAnagrafico(personaFisica)
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica)
+    CensimentoAnagrafico.attendiCheckAssicurato()
   })
 
-  it("Completa Censimento Anagrafico", () => {
-    Ultra.domandaSiNo('Ditta Contraente', 'si')
-    Ultra.censimentoAnagraficoAvanti()
+  it("Domande integrative Censimento Anagrafico", () => {
+    CensimentoAnagrafico.domandeIntegrative("indennità", "si")
+    CensimentoAnagrafico.Avanti()
+    Beneficiari.caricamentoBeneficiari()
   })
 
   it("Beneficiari", () => {
-    Ultra.beneficiariAvanti()
+    Beneficiari.Avanti()
     DatiIntegrativi.caricamentoPagina()
   })
   it("Dati integrativi", () => {
-    Ultra.datiIntegrativiSalute(true, true, true)
-    Ultra.approfondimentoSituazioneAssicurativa(false)
-    Ultra.confermaDichiarazioniContraente()
-  })
-
-  it("Condividi il Preventivo", () => {
-    //Ultra.caricamentoCondividi()
-    //cy.pause()
-    Ultra.condividiPreventivoSelTutti()
-    Ultra.condividiPreventivoConferma()
+    DatiIntegrativi.DatiIntegrativi(false, true, false)
+    DatiIntegrativi.ClickButtonAvanti()
+    DatiIntegrativi.approfondimentoSituazioneAssicurativa(false)
+    DatiIntegrativi.confermaDichiarazioniContraente()
     ConsensiPrivacy.caricamentoPagina()
   })
 
   it("Consensi e privacy", () => {
-    Ultra.riepilogoDocumenti()
-    Ultra.avantiConsensi()
+    ConsensiPrivacy.Avanti()
+    ControlliProtocollazione.caricamentoPagina()
   })
 
-  it("Verifica invio mail", () => {
-    Ultra.verificaInvioMail()
+  it("salvataggio Contratto", () => {
+    ControlliProtocollazione.salvataggioContratto()
   })
+
+  it("Controlli e protocollazione - intermediario", () => {
+    ControlliProtocollazione.inserimentoIntermediario()
+    ControlliProtocollazione.intermediarioCollaborazioneOrizzontale()
+  })
+
+  it("Visualizza documenti e prosegui", () => {
+    ControlliProtocollazione.riepilogoDocumenti()
+    ControlliProtocollazione.Avanti()
+})
+
+it("Adempimenti precontrattuali e Perfezionamento", () => {
+    ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
+    ControlliProtocollazione.Incassa()
+    Incasso.caricamentoPagina()
+})
+
+it("Incasso - parte 1", () => {
+    Incasso.ClickIncassa()
+    Incasso.caricamentoModPagamento()
+})
+
+it("Incasso - parte 2", () => {
+    Incasso.SelezionaMetodoPagamento('Assegno')
+    Incasso.ConfermaIncasso()
+    Incasso.caricamentoEsito()
+})
+
+it("Esito incasso", () => {
+    Incasso.EsitoIncasso()
+    Incasso.Chiudi()
+})
 })

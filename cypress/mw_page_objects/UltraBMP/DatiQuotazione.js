@@ -571,6 +571,39 @@ class DatiQuotazione {
     })
   }
   //#endregion
+
+  static modificaDatoQuotazione(dato, modifica) {
+    ultraIFrame().within(() => {
+      cy.get('.ng-star-inserted').contains(dato)
+        .parents('[class^="ca-questions-row"]').then(($element) => {
+          switch (dato) {
+            case "assicurato", "nato", "cap": //modifica textbox/input
+              cy.wrap($element).find('input').clear().type(modifica)
+              break;
+            case "copertura":
+              cy.wrap($element).find('nx-dropdown').trigger('click')
+              cy.wait(300)
+              cy.get('nx-dropdown-item').contains(modifica)
+                .should('be.visible').click()
+              break;
+            case "professione":
+              cy.wrap($element).find('[class*="professioneDrop"]').click()
+              cy.wait(500)
+              cy.get('[class="search-professioni extended"]').should('be.visible')
+                .find('input[type="search"]').type(modifica)
+              cy.get('[id="alz-spinner"]').should('not.be.visible')
+              cy.get('[class^="result-content"]').contains(modifica).click()
+              cy.get('button').contains('CONFERMA').click()
+              cy.get('[id="alz-spinner"]').should('not.be.visible')
+              cy.get('[class*="professioneDrop"]').children()
+                .should('contain.text', modifica)
+              break;
+            default:
+            // code block
+          }
+        })
+    })
+  }
 }
 
 export default DatiQuotazione
