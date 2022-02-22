@@ -33,6 +33,14 @@ const interceptGetPentahoDA = () => {
     }).as('pentahoDama');
 }
 
+const interceptSaveOperation = () => {
+    cy.intercept('POST', '**/graphql', (req) => {
+        if (req.body.operationName.includes('saveOperationAccount')) {
+            req.alias = 'gqlsaveoperation'
+        }
+    });
+}
+
 const LinksBurgerMenu = {
     HOME_NUMBERS: 'Home Numbers',
     MONITORAGGIO_FONTI: 'Monitoraggio Fonti',
@@ -43,7 +51,7 @@ const LinksBurgerMenu = {
     INCENTIVAZIONE_RECRUITING: 'Incentivazione Recruiting',
     ANDAMENTI_TECNICI: 'Andamenti Tecnici',
     ESTRAZIONI_AVANZATE: 'Estrazioni Avanzate',
-    SCARICO_DATI: 'Scarico Dati', ///SSSS
+    SCARICO_DATI: 'Scarico Dati',
     INDICI_DIGITALI: 'Indici Digitali',
     NEW_BUSINESS_DANNI: 'New Business Danni',
     NEW_BUSINESS_ULTRA_CASA_PATRIMONIO: 'New Business Ultra Casa e Patrimonio',
@@ -62,7 +70,7 @@ const LinksBurgerMenu = {
         if (!keys.MONITORAGGIO_CARICO) delete this.MONITORAGGIO_CARICO
         if (!keys.MONITORAGGIO_CARICO_FONTE) delete this.MONITORAGGIO_CARICO_FONTE
         if (!keys.X_ADVISOR) delete this.X_ADVISOR
-        if (!keys.INCENTIVAZIONE) delete this.INCENTIVAZIONE
+        if (!keys.INCENTIVAZIONE && !Cypress.env('isAviva')) delete this.INCENTIVAZIONE
         if (!keys.INCENTIVAZIONE_RECRUITING) delete this.INCENTIVAZIONE_RECRUITING
         if (!keys.ANDAMENTI_TECNICI) delete this.ANDAMENTI_TECNICI
         if (!keys.ESTRAZIONI_AVANZATE) delete this.ESTRAZIONI_AVANZATE
@@ -149,11 +157,12 @@ class BurgerMenuNumbers extends Numbers {
      */
     static clickLink(page) {
         cy.get('lib-burger-icon').click({ force: true })
-
         if (page === LinksBurgerMenu.ESTRAZIONI_AVANZATE)
             interceptGetPentahoDA()
-        else
+        else {
+            interceptSaveOperation()
             interceptGetAgenziePDF()
+        }
 
         if (page === LinksBurgerMenu.X_ADVISOR)
             cy.contains('X - Advisor').invoke('removeAttr', 'target').click()
@@ -190,7 +199,10 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                getIFrame().find('button:contains("Incentivazione: Maturato per Fonte"):visible')
+                if (Cypress.env('isAviva'))
+                    getIFrame().find('h1').should('contain.text','Incentivazioni Allianz Viva')
+                else
+                    getIFrame().find('button:contains("Incentivazione: Maturato per Fonte"):visible')
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE_RECRUITING:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
@@ -207,28 +219,35 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.ESTRAZIONI_AVANZATE:
                 cy.wait('@pentahoDA', { requestTimeout: 40000 });
                 cy.wait('@pentahoDama', { requestTimeout: 40000 });
+                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 getIFrame().find('a:contains("Nuovo Report"):visible')
                 break;
             case LinksBurgerMenu.SCARICO_DATI:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 getIFrame().find('form:contains("Esporta tracciato")')
                 break;
             case LinksBurgerMenu.INDICI_DIGITALI:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
+                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 getIFrame().find('#toggleFilters:contains("Apri filtri")')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_DANNI:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 getIFrame().find('#ricerca_cliente').should('be.visible').and('contain.text', 'Filtra')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO:
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_SALUTE:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 getIFrame().find('#submit-Mon_PTF').should('be.visible').and('contain.text', 'Filtra')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_VITA:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                cy.wait(5000)
+                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
+                // cy.wait(5000)
                 getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_ALLIANZ1:
@@ -241,6 +260,7 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.CAPITALE_VITA_SCADENZA:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 cy.wait('@getDacommercialePOST', { requestTimeout: 150000 });
+                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 break;
         }

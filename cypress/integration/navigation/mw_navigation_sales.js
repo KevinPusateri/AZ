@@ -120,6 +120,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
 
     it('Verifica aggancio Campagne Commerciali', function () {
+        if (!keys.CAMPAGNE_COMMERCIALI)
+            this.skip()
         TopBar.clickSales()
         Sales.clickLinkRapido('Campagne Commerciali')
         Sales.backToSales()
@@ -286,12 +288,10 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
 
     it('Verifica TAB: "Campagne"', function () {
-        if (Cypress.env('isAviva'))
+        if (!keys.CAMPAGNE_COMMERCIALI)
             this.skip()
-        if (!Cypress.env('monoUtenza')) {
-            TopBar.clickSales()
-            Sales.clickTabCampagne()
-        } else this.skip()
+        TopBar.clickSales()
+        Sales.clickTabCampagne()
     })
 
     it('Verifica aggancio Appuntamento', function () {

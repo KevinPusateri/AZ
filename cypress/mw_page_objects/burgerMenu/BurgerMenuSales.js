@@ -182,9 +182,6 @@ class BurgerMenuSales extends Sales {
      * @param {string} page - Nome della pagina 
      */
     static checkPage(page) {
-        console.log(page)
-        console.log(LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO)
-        cy.pause()
         switch (page) {
             case LinksBurgerMenu.PREVENTIVO_MOTOR:
                 cy.intercept({

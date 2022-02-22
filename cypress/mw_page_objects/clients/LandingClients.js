@@ -82,7 +82,7 @@ class LandingClients {
      * Click link nella sezione "Collegamenti rapidi"
      * @param {string} page - nome del link
      */
-    static clickLinkRapido(page) {
+    static clickLinkRapido(page, keyDigitalMe = {}) {
         switch (page) {
             case LinksRapidi.ANALISI_DEI_BISOGNI:
                 if (Cypress.isBrowser('firefox')) {
@@ -103,15 +103,21 @@ class LandingClients {
                 cy.get('app-digital-me-header').should('exist').and('be.visible').then(($digitalme) => {
                     const checkIsRequest = $digitalme.find(':contains("Ci sono 0 richieste Digital me, di cui 0 da gestire")').is(':visible')
                     if (!checkIsRequest) {
-                        const tabDigitalMe = [
-                            'Richieste Cliente',
-                            'Pubblicazione Proposte'
-                        ]
-                        cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
-                            expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
-                        })
-                        cy.contains('Richieste Cliente').click()
-                        cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
+                        let tabDigitalMe = []
+                        if (keyDigitalMe.PUBBLICAZIONE_PROPOSTE) {
+
+                            tabDigitalMe = [
+                                'Richieste Cliente',
+                                'Pubblicazione Proposte'
+                            ]
+                            cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
+                                expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
+                            })
+                            cy.contains('Richieste Cliente').click()
+                            cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
+                        }else{
+                            cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
+                        }
                     } else
                         cy.wrap($digitalme).should('contain.text', 'Ci sono 0 richieste Digital me, di cui 0 da gestire')
                 })
@@ -157,7 +163,7 @@ class LandingClients {
     }
 
     static checkAssenzaVisioneGlobale() {
-        cy.get('.actions-box').contains('Vai a visione globale').should('not.be.visible')
+        cy.get('.actions-box').should('not.include.text','Vai a visione globale')
     }
 
     /**
@@ -210,10 +216,7 @@ class LandingClients {
                     cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
                     this.digitalMe('Richieste Cliente');
                 }
-                else
-                    tabDigitalMe = [
-                        'Richieste Cliente'
-                    ]
+                
 
                 if (keyDigitalMe.PUBBLICAZIONE_PROPOSTE) {
                     cy.intercept('POST', '**/graphql', (req) => {

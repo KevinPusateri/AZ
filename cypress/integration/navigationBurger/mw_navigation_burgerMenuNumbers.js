@@ -72,7 +72,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     it('Verifica i link da Burger Menu', function () {
         TopBar.clickNumbers()
-        console.log(keys)
         BurgerMenuNumbers.checkExistLinks(keys)
     })
 
@@ -106,7 +105,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
     })
 
     it('Verifica aggancio Incentivazione', function () {
-        if (!keys.INCENTIVAZIONE)
+        if (!keys.INCENTIVAZIONE && !Cypress.env('isAviva'))
             this.skip()
         TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Incentivazione')
