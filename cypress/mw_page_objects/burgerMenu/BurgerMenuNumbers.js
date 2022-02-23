@@ -185,6 +185,7 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait(15000)
                 getIFrame().find('#btnFonti').should('be.visible')
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO_FONTE:
@@ -198,11 +199,10 @@ class BurgerMenuNumbers extends Numbers {
                 Common.visitUrlOnEnv()
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 })
+                cy.wait(10000)
                 if (Cypress.env('isAviva'))
-                    getIFrame().find('h1').should('contain.text','Incentivazioni Allianz Viva')
-                else
-                    getIFrame().find('button:contains("Incentivazione: Maturato per Fonte"):visible')
+                    getIFrame().find('h1').should('contain.text', (Cypress.env('isAviva'))? 'Incentivazioni Allianz Viva' : 'Cruscotto Incentivazione')
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE_RECRUITING:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });

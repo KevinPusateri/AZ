@@ -98,7 +98,7 @@ class Numbers {
                     if (checkPopup)
                         cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
                 })
-                cy.wait('@getDacommerciale', { requestTimeout: 120000 });
+                cy.wait('@getDacommerciale', { requestTimeout: 180000 });
                 break;
             case 'MOTOR':
             case 'RAMI VARI RETAIL':
@@ -115,7 +115,7 @@ class Numbers {
                 })
                 // if ((link.includes('Portafoglio') || link.includes('Retention')) && Cypress.env('isAviva'))
                 //     cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
-                cy.wait('@postDacommerciale', { requestTimeout: 120000 });
+                cy.wait('@postDacommerciale', { requestTimeout: 180000 });
                 break;
 
         }
