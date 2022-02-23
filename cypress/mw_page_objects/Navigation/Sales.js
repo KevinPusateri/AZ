@@ -382,7 +382,7 @@ class Sales {
             }
         })
         cy.get('app-expiring-activities-accordion').contains('Attività in scadenza').click()
-        cy.wait('@gqlReceipts')
+        cy.wait('@gqlReceipts', { timeout: 15000 })
     }
 
 
@@ -546,8 +546,10 @@ class Sales {
         });
         cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
         cy.wait(5000)
-        cy.get('.cards-container').should('be.visible').find('.card').first().click()
-        cy.wait(15000)
+        cy.get('.cards-container').should('be.visible').find('.card').first().as('firstCard')
+        cy.get('@firstCard').trigger('mouseover')
+        cy.get('@firstCard').click({force: true})
+        cy.wait(20000)
         cy.wait('@digitalAgencyLink', { requestTimeout: 30000 });
         getIFrame().within(() => {
             cy.get('#AZBuilder1_ctl13_cmdEsci').should('be.visible').invoke('attr', 'value').should('equal', '  Esci  ')
