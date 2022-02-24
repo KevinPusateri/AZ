@@ -55,12 +55,11 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
         debugger
         if (descSettore === 'KASKO_COLLISIONE' || (descSettore === 'KASKO_COMPLETA'))
             garanziaARD = findKeyLogTariffa('Garanzia')[2]
-        if (descSettore === 'AVENS')
+        else if (descSettore === 'AVENS')
             garanziaARD = findKeyLogTariffa('Garanzia')[4]
         else
             garanziaARD = findKeyLogTariffa('Garanzia')[1]
     }
-
     else
         garanziaARD = currentGaranziaARD
 
