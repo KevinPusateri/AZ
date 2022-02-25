@@ -141,8 +141,8 @@ class TenutaTariffa {
 
             //Targa
             if (currentCase.Targa !== '') {
-                cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(500)
-                cy.get('input[aria-label="Targa"]').type(currentCase.Targa).wait(500)
+                cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
+                cy.get('input[aria-label="Targa"]').clear().wait(500).type(currentCase.Targa).wait(500)
             }
 
             cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
@@ -487,7 +487,7 @@ class TenutaTariffa {
 
             //#region Dettagli
             //? su Prima immatricolazione non servono i dettagli aggiuntivi
-            if (currentCase.Provenienza !== "Prima immatricolazione" && currentCase.Provenienza !== "Voltura") {
+            if (currentCase.Provenienza !== "Prima immatricolazione") {
                 if (currentCase.Data_Scadenza !== "") {
                     //Scadenza precedente contratto
                     let dataScadenzaPrecedenteContratto
