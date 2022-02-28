@@ -105,7 +105,6 @@
     "cypress:f:run:ricerca": "npm-run-all -s -c f:rc_classica f:rc_ris_clients f:rc_ris_mieInfo f:rc_risultati f:ricerca",
     "cypress:f:run:burgerMenu": "npm-run-all -s -c f:nav_burgerMenuClients f:nav_burgerMenuNumbers f:nav_burgerMenuSales f:nav_burgerMenuBackOffice",
     "cypress:f:run:censimenti": "npm-run-all -s -c f:censimento_pf f:censimento_pg",
-    "rca_02_22": ".\\node_modules\\.bin\\cypress run --browser chrome --spec cypress/integration/motor_RCA/AZ/mw_RCA_20220201.js",
     "burgerBackOffice": ".\\node_modules\\.bin\\cypress run --browser chrome --spec cypress/integration/navigationBurger/mw_navigation_burgerMenuBackOffice.js"
   },
   "repository": {
