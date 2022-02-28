@@ -60,6 +60,8 @@ class BurgerMenuBackOffice extends BackOffice {
         cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
         })
+
+        cy.screenshot('Verifica Links BackOffice', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**

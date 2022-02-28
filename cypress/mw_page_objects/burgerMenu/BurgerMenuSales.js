@@ -159,6 +159,8 @@ class BurgerMenuSales extends Sales {
         cy.get('nx-expansion-panel').find('a').each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i].trim());
         })
+
+        cy.screenshot('Verifica Links Sales', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -191,52 +193,63 @@ class BurgerMenuSales extends Sales {
                 Common.canaleFromPopup()
                 cy.wait('@getMotor', { requestTimeout: 50000 });
                 getIFrame().find('button:contains("Calcola"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.FLOTTE_E_CONVENZIONI:
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.MINIFLOTTE:
                 Common.canaleFromPopup()
                 getIFrame().find('span:contains("Nuova Trattativa"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.TRATTATIVE_AUTO_CORPORATE:
                 Common.canaleFromPopup()
                 getIFrame().find('span:contains("Nuova Trattativa"):visible')
                 getIFrame().find('span:contains("Guida"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO:
                 Common.canaleFromPopup()
                 getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', './assets/img/allianz-logo-casa.png')
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP:
                 Common.canaleFromPopup()
                 cy.wait(8000)
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_SALUTE:
                 Common.canaleFromPopup()
                 getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', './assets/img/allianz-logo-salute.png')
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ALLIANZ1_BUSINESS:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE:
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.FASTQUOTE_IMPRESA_E_ALBERGO:
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
                 getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.FASTQUOTE_IMPRESA_E_ALBERGO:
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
                 getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ALLIANZ1_PREMORIENZA:
                 cy.intercept({
@@ -249,6 +262,7 @@ class BurgerMenuSales extends Sales {
                 cy.wait(30000)
                 getIFrame().should('be.visible')
                 getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text', 'Ricerca')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
                 Common.canaleFromPopup()
@@ -256,22 +270,27 @@ class BurgerMenuSales extends Sales {
                 getIFrame().find('input[value="Home"]').should('be.visible').invoke('attr', 'value').should('equal', 'Home')
                 getIFrame().find('input[value="Indietro"]').invoke('attr', 'value').should('equal', 'Indietro')
                 getIFrame().find('input[value="Avanti"]').invoke('attr', 'value').should('equal', 'Avanti')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.GESTIONE_RICHIESTE_PER_PA:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Visualizza"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.NUOVO_SFERA:
                 Common.canaleFromPopup()
                 cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.SFERA:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Applica filtri"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.CAMPAGNE_COMMERCIALI:
                 Common.canaleFromPopup()
                 cy.url().should('include', '/campaign-manager')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.RECUPERO_PREVENTIVI_E_QUOTAZIONI:
                 cy.intercept({
@@ -281,10 +300,12 @@ class BurgerMenuSales extends Sales {
                 Common.canaleFromPopup()
                 cy.wait('@inizializzaApplicazione', { requestTimeout: 30000 });
                 getIFrame().find('button:contains("Cerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.DOCUMENTI_DA_FIRMARE:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Cerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.GESTIONE_ATTIVITA_IN_SCADENZA:
                 cy.intercept({
@@ -294,6 +315,7 @@ class BurgerMenuSales extends Sales {
                 Common.canaleFromPopup()
                 cy.wait('@getDacommerciale', { requestTimeout: 50000 });
                 getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.MANUTENZIONE_PORTAFOGLIO_RV_MIDCO:
                 cy.intercept({
@@ -305,7 +327,7 @@ class BurgerMenuSales extends Sales {
                 cy.wait('@Danni', { requestTimeout: 40000 })
                 cy.wait(5000)
                 getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
-
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.VITA_CORPORATE:
                 cy.intercept({
@@ -316,26 +338,32 @@ class BurgerMenuSales extends Sales {
                 cy.wait('@getSUV', { requestTimeout: 40000 });
                 cy.wait(10000)
                 getIFrame().find('.k-link:contains("Consultazione Collettive e Versamenti"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.MONITORAGGIO_POLIZZE_PROPOSTE:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Cerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.CERTIFICAZIONE_FISCALE:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Cerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.MANUTENZIONE_PORTAFOGLIO_AUTO:
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="Carica Polizze"]').invoke('attr', 'value').should('equal', 'Carica Polizze')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.CRUSCOTTO_CERTIFICATI_APPLICAZIONI:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Cerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.CRUSCOTTO_RIEPILOGHI_POLIZZE_ABB:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Cerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.REPORT_CLIENTE_T4L:
                 cy.intercept({
@@ -346,10 +374,12 @@ class BurgerMenuSales extends Sales {
                 cy.wait('@vita', { requestTimeout: 30000 });
                 cy.wait(6000)
                 getIFrame().find('input[value="Ricerca"]:visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.DOCUMENTI_ANNULLATI:
                 Common.canaleFromPopup()
                 getIFrame().find('span:contains("Storico polizze e quietanze distrutte"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.GED_GESTIONE_DOCUMENTALE:
                 break;
@@ -357,10 +387,12 @@ class BurgerMenuSales extends Sales {
                 cy.wait(5000)
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="Ricerca Attività"]').invoke('attr', 'value').should('equal', 'Ricerca Attività')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.FOLDER:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Cerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE:
                 if (Cypress.isBrowser('firefox')) {
@@ -372,26 +404,27 @@ class BurgerMenuSales extends Sales {
                     cy.get('#logo-oazis-header').should('be.visible')
                     cy.go('back')
                 }
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ALLIANZ_PLACEMENT_PLATFORM:
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.QUALITÀ_PORTAFOGLIO_AUTO:
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.NOTE_DI_CONTRATTO:
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ACOM_GESTIONE_INIZIATIVE:
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             // default: throw new Error('Link Errato o non presente')
         }
     }
-
-
-
-
 }
 
 export default BurgerMenuSales
