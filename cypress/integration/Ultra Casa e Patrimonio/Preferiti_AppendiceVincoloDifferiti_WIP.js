@@ -83,6 +83,7 @@ describe("FABBRICATO E CONTENUTO", () => {
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
+            cy.pause()
             cy.get('lib-client-item').first().click()
         }).then(($body) => {
             cy.wait(7000)
@@ -99,7 +100,7 @@ describe("FABBRICATO E CONTENUTO", () => {
     it("Vai a preferiti", () => {
         SintesiCliente.VaiPreferiti()
         SintesiCliente.selezionaPrimaAgenzia()
-        Preferiti.caricamentoPreferitiUltra()
+        Preferiti.caricamentoPreferitiUltra() 
     })
 
     it("Seleziona preferiti", () => {
@@ -175,6 +176,7 @@ describe("FABBRICATO E CONTENUTO", () => {
     it("Visualizza documenti e prosegui", () => {
         ControlliProtocollazione.riepilogoDocumenti()
         ControlliProtocollazione.Avanti()
+        ControlliProtocollazione.aspettaCaricamentoAdempimenti()
     })
 
     it("Adempimenti precontrattuali e Perfezionamento", () => {
@@ -218,6 +220,7 @@ describe("FABBRICATO E CONTENUTO", () => {
     })
 
     it("Portafoglio", () => {
+        cy.pause()
         Portafoglio.clickTabPortafoglio()
         Portafoglio.ordinaPolizze("Numero contratto")
         Portafoglio.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
@@ -225,18 +228,39 @@ describe("FABBRICATO E CONTENUTO", () => {
         Ultra.selezionaPrimaAgenzia()
     })
 
-    it("Seleziona Appendici", () => {
+    it("Appendice - Seleziona", () => {
         Appendici.caricamentoPagina()
         Appendici.SelezionaAppendice(appendice)
         Appendici.Avanti()
+        Appendici.caricamentoEdit()
     })
 
-    it("Compila Appendici", () => {   
+    it("Appendice - Compilazione", () => {   
         Appendici.CompilazioneAppendice("Generali", "123456789")
         Appendici.Conferma()
+        Appendici.caricamentoDocumenti()
     })
 
-    it("next", () => {
+    it("Appendice - Documenti", () => {   
+        Appendici.StampaDocumento()
+        Appendici.InviaMail()
+        Appendici.Home()
+        Appendici.caricamentoNuoveAppendici()
+    })
+
+    it("Appendice - Verifica nuova appendice", () => {
+        Appendici.VerificaNuoveAppendici("medesimo rischio")
+        cy.pause()
+        Appendici.Home()
+    })
+
+    it("Chiusura appendici e ritorno a portafoglio", () => {
+        cy.get('.nx-breadcrumb-item__text').contains('Clients').click()
+        Portafoglio.menuContratto(nContratto, menuPolizzeAttive.vincoli)
+        Ultra.selezionaPrimaAgenzia()
+    })
+
+    it("end", () => {
         cy.pause()
     })
 })

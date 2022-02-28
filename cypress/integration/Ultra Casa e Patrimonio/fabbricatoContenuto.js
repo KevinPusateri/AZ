@@ -136,6 +136,7 @@ describe("FABBRICATO E CONTENUTO", () => {
     })
 
     it("Dati integrativi", () => {
+        cy.pause()
         //Ultra.caricaDatiIntegrativi()
         Ultra.datiIntegrativi()
         Ultra.caricamentoConsensi()

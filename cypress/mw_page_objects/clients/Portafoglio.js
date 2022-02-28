@@ -991,7 +991,9 @@ class Portafoglio {
      * @param {string} ordinaPer 
      */
     static ordinaPolizze(ordinaPer) {
-        cy.get('.sorting-button').click() //apre il menù per l'ordine delle polizze
+        cy.get('.filter-container').should('be.visible')
+        cy.wait(1000)
+        cy.get('.sorting-button').should('be.visible').click() //apre il menù per l'ordine delle polizze
         cy.wait(1000)
 
         cy.get('.cdk-overlay-pane').should('be.visible')
