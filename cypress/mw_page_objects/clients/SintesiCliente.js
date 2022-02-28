@@ -303,6 +303,7 @@ class SintesiCliente {
             } else
                 assert.fail('FastQuote non è presente')
 
+            cy.screenshot('Check FastQuote Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
     }
 
@@ -323,10 +324,14 @@ class SintesiCliente {
                 req.alias = 'gqlCalculateMotorPriceQuotation'
             }
         })
+
+        cy.screenshot('Click Calcola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible').click()
         cy.wait('@gqlCalculateMotorPriceQuotation', { requestTimeout: 50000 })
 
         cy.contains('Inserisci i dati manualmente').should('be.visible').click()
+        cy.screenshot('PopUp Inserisci i dati manualmente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         cy.intercept({
             method: 'GET',
@@ -337,6 +342,8 @@ class SintesiCliente {
         cy.wait('@getMotor', { requestTimeout: 50000 })
 
         getIFrame().find('span:contains("Cerca"):visible')
+
+        cy.screenshot('Assuntivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     static clickProcediInserimentoManualeFastQuoteAuto() {
@@ -351,6 +358,7 @@ class SintesiCliente {
         cy.wait('@getMotor', { requestTimeout: 50000 })
 
         getIFrame().find('span:contains("Cerca"):visible')
+        cy.screenshot('Assuntivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     static checkFastQuoteAlbergo() {

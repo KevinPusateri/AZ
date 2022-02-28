@@ -982,6 +982,7 @@ class Portafoglio {
             expect(breadCrumb.text().trim().replace(/\u00a0/g, ' ')).to.equal(page)
         })
 
+        cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         this.back()
     }
 

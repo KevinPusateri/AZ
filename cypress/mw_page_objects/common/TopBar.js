@@ -3,6 +3,7 @@
 import Common from '../common/Common'
 import HomePage from '../../mw_page_objects/common/HomePage'
 
+//#region IFrame
 const getIFrame = () => {
 
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -23,6 +24,9 @@ const getIFrameElencoTelefonico = () => {
 
     return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
+//#endregion
+
+//#region intercept
 const interceptPageSales = () => {
     cy.intercept({
         method: 'POST',
@@ -59,6 +63,7 @@ const interceptPageNews = () => {
     }).as('getO2o');
 
 }
+//#endregion intercept
 
 const LandingPage = {
     CLIENTS: 'Clients',
@@ -68,7 +73,6 @@ const LandingPage = {
     NEWS: 'News',
     LE_MIE_INFO: 'Le mie info'
 }
-
 
 const LinkUtilita = {
     CRUSCOTTO_RESILIENCE: 'Cruscotto resilience',
@@ -93,7 +97,7 @@ const LinkUtilita = {
 class TopBar extends HomePage {
 
     /**
-     * Logout
+     * Funzione che permette di effettuare il Logout
      */
     static logOutMW() {
 
@@ -109,6 +113,8 @@ class TopBar extends HomePage {
         cy.get('lib-user-header-popover-container').should('be.visible').within(() => {
             cy.contains('Logout').click({ force: true })
         })
+
+        cy.screenshot('Logout effettuato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         cy.clearCookies();
     }
@@ -129,10 +135,13 @@ class TopBar extends HomePage {
 
             cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
             cy.get('lib-client-item').should('be.visible')
+
+            cy.screenshot(`Ricerca per ${randomChars} effettuata`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
     }
 
     /**
+     * Ricerca un valore stabilito dalla serch bar
      * @param {string} value - Cosa cercare nella barra di ricerca in TopBar
      */
     static search(value) {
@@ -146,24 +155,15 @@ class TopBar extends HomePage {
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').type(value).type('{enter}').wait(2000)
 
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
-        //cy.get('lib-client-item').should('be.visible')
+        cy.screenshot(`Ricerca ${value} effettuata`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
-
-    /**
-     * Click link dai suggerimenti
-     */
-    static searchClickLinkSuggest() {
-        cy.get('input[name="main-search-input"]').should('be.visible').click()
-        cy.get('lib-shortcut-section-item').should('be.visible')
-        cy.get('lib-search-input').find('a:contains("pulini")').click()
-    }
-
 
     /**
      * Verifica click Buca di ricerca
      */
     static clickBucaRicerca() {
         cy.get('input[name="main-search-input"]').click()
+        cy.screenshot('Verifica Buca di Ricerca', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -176,6 +176,7 @@ class TopBar extends HomePage {
         cy.url().should('eq', Common.getBaseUrl() + 'clients/')
         cy.get('app-donut-chart').should('be.visible')
         cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
+        cy.screenshot('Verifica Atterraggio "Clients"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -184,6 +185,7 @@ class TopBar extends HomePage {
     static clickBackOffice() {
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.url().should('eq', Common.getBaseUrl() + 'back-office')
+        cy.screenshot('Verifica Atterraggio "Backoffice"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -194,6 +196,7 @@ class TopBar extends HomePage {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.wait('@getNumbers', { requestTimeout: 50000 })
         cy.url().should('include', Common.getBaseUrl() + 'numbers')
+        cy.screenshot('Verifica atterraggio "Numbers"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -202,8 +205,8 @@ class TopBar extends HomePage {
     static clickSales() {
         interceptPageSales()
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        // cy.wait('@getSales', { requestTimeout: 50000 })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
+        cy.screenshot('Verifica atterraggio "Sales"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -214,6 +217,7 @@ class TopBar extends HomePage {
         cy.get('app-product-button-list').find('a').contains('News').click()
         cy.wait('@getO2o', { requestTimeout: 40000 });
         cy.url().should('eq', Common.getBaseUrl() + 'news/home')
+        cy.screenshot('Verifica atterraggio "News"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -224,11 +228,16 @@ class TopBar extends HomePage {
         cy.get('app-product-button-list').find('a').contains('Le mie info').click()
         cy.wait('@getMieInfo', { requestTimeout: 50000 })
         cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo?info=1')
+        cy.screenshot('Verifica atterraggio "Le mie info"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
+    /**
+     * Verifica assenza link alla pagina
+     * @param {string} page 
+     */
     static checkNotExistLanding(page) {
         cy.get('app-product-button-list').find('a').should('not.contain.text', page)
-
+        cy.screenshot(`Verifica ASSENZA di ${paged}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -236,6 +245,7 @@ class TopBar extends HomePage {
      */
     static clickIconCalendar() {
         cy.get('lib-calendar').click()
+        cy.screenshot('Click Calendario', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -243,6 +253,7 @@ class TopBar extends HomePage {
      */
     static clickIconIncident() {
         cy.get('lib-incident').click()
+        cy.screenshot('Click Incident', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -266,15 +277,14 @@ class TopBar extends HomePage {
                 cy.get('lib-incident-container').find('a:contains("Elenco telefonico"):visible').click()
                 Common.canaleFromPopup()
                 getIFrameElencoTelefonico().find('input[name="btnCerca"]').invoke('attr', 'value').should('equal', ' Cerca ')
-
                 break;
         }
-
+        cy.screenshot(`Verifica accesso a ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
-
 
     /**
      * Verifica la presenza di tutti i link su Utility
+     * @param {object} keys 
      */
     static checkLinksUtility(keys) {
         LinkUtilita.deleteKey(keys)
@@ -283,30 +293,10 @@ class TopBar extends HomePage {
         cy.get('lib-utility').find('lib-utility-label').each(($labelCard, i) => {
             expect($labelCard).to.contain(linksUtilita[i])
         })
-        // if (Cypress.env('monoUtenza')) {
-        //     delete LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO
-        //     delete LinkUtilita.REPORT_ALLIANZ_NOW
-        //     const linksUtilita = Object.values(LinkUtilita)
-        //     cy.get('lib-utility').find('lib-utility-label').should('have.length', 8).each(($labelCard, i) => {
-        //         expect($labelCard).to.contain(linksUtilita[i])
-        //     })
-        // } else if (Cypress.env('isAviva')) {
-        //     delete LinkUtilita.REPORT_ALLIANZ_NOW
-        //     delete LinkUtilita.GESTIONE_MAGAZZINO_OBU
-        //     delete LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS
-        //     delete LinkUtilita.CRUSCOTTO_INSTALLAZIONE_DISPOSITIVO_SATELLITARE
-        //     delete LinkUtilita.MONITOR_SCORING_AZ_BONUS_DRIVE
-        //     const linksUtilita = Object.values(LinkUtilita)
-        //     cy.get('lib-utility').find('lib-utility-label').should('have.length', 5).each(($labelCard, i) => {
-        //         expect($labelCard).to.contain(linksUtilita[i])
-        //     })
-        // } else if (Cypress.env('monoUtenza')) {
-        //     cy.get('lib-utility').find('lib-utility-label').should('have.length', 10).each(($labelCard, i) => {
-        //         expect($labelCard).to.contain(linksUtilita[i])
-        //     })
-        // }
 
+        cy.screenshot('Check Links Utility', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
+
     /**
      * Click su un link dal menu a tendina di Utilità
      * @param {string} page - nome del link 
@@ -357,6 +347,8 @@ class TopBar extends HomePage {
                 getIFrame().find('.title').should('be.visible').and('contain.text', 'Cruscotto Scoring Allianz Bonus Drive')
                 break;
         }
+
+        cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -365,6 +357,8 @@ class TopBar extends HomePage {
     static clickIconNotification() {
         cy.get('lib-notification-header').click()
         cy.get('lib-notification-list').should('be.visible')
+
+        cy.screenshot(`Click Notifiche`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -379,11 +373,11 @@ class TopBar extends HomePage {
         cy.contains('Cambio password')
         cy.contains('Configurazione stampanti')
         cy.contains('Impostazioni di agenzia')
-
+        cy.screenshot(`Click Icon User`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
-     * 
+     * Verifica icone in SwithPage/HomePage
      * @param {string} page - Se specifichi nome pagina per atterrare -
      * page: Clients, Sales, Numbers, Backoffice, News, Le mie info - 
      * altrimenti va sul link Utilià
@@ -428,13 +422,13 @@ class TopBar extends HomePage {
                 break;
             default:
                 cy.contains('Utilità').click()
-
-
         }
+        cy.screenshot(`Verifica aggancio a ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
      * Verifica la presenza dei link sull'icona incident
+     * @param {object} keys 
      */
     static checkLinksIncident(keys) {
 
@@ -459,6 +453,7 @@ class TopBar extends HomePage {
             cy.get('lib-incident-container').should('include.text', 'Nessun messaggio presente')
         }
 
+        cy.screenshot(`Verifica links Incident`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -485,6 +480,9 @@ class TopBar extends HomePage {
         cy.get('lib-notification-settings-container').should('be.visible').find('lib-notification-settings-item:visible').each(($link, i) => {
             expect($link.text().trim()).to.include(linksNotification[i]);
         })
+
+        cy.screenshot(`Check Notifiche Evidenza`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         cy.get('button[class^="nx-modal__close"]').click()
     }
 
