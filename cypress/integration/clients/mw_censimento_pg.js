@@ -126,10 +126,8 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', {
     SintesiCliente.verificaDatiSpallaSinistra(nuovoClientePG)
     DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(nuovoClientePG)
     ArchivioCliente.clickTabArchivioCliente()
-    // if (!Cypress.env('isAviva')) {
     ArchivioCliente.clickComunicazioni()
     ArchivioCliente.verificaCardComunicazioni("Invio per verifica contatto")
-    // }
     ArchivioCliente.verificaUnico()
   })
 

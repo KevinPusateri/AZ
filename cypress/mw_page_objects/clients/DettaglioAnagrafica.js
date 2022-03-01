@@ -483,7 +483,19 @@ class DettaglioAnagrafica {
             cy.contains('Codice fiscale')
                 .parents('app-client-data-label')
                 .find('div[class="value"]:first').invoke('text').then((CF) => {
-                    resolve(CF)
+                    resolve(IVA.trim())
+                })
+
+        })
+    }
+
+    static getIVAClient() {
+        return new Cypress.Promise((resolve, reject) => {
+
+            cy.contains('Partita IVA')
+                .parents('app-client-data-label')
+                .find('div[class="value"]:first').invoke('text').then((IVA) => {
+                    resolve(IVA.trim())
                 })
 
         })

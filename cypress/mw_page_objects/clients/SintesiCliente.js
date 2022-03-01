@@ -282,6 +282,18 @@ class SintesiCliente {
         })
     }
 
+    static clickTabSintesiCliente() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'gqlClient'
+            }
+        });
+
+        cy.contains('SINTESI CLIENTE').click()
+        cy.wait('@gqlClient', { requestTimeout: 30000 });
+        cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
+    }
+
     static checkFastQuoteAuto() {
         cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
 

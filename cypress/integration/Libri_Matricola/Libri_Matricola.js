@@ -8,11 +8,8 @@
 ///<reference types="cypress"/>
 
 //#region imports
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import LibriMatricola from "../../mw_page_objects/motor/LibriMatricola"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import 'cypress-iframe';
 import Veicoli from '../../mw_page_objects/motor/ListaVeicoli'
 //import cypress from "cypress";
@@ -28,11 +25,16 @@ let insertedId
 
 import { PrevApplicazione } from '../../mw_page_objects/motor/LibriMatricola'
 import { PreventivoMadre } from '../../mw_page_objects/motor/LibriMatricola'
+import TopBar from "../../mw_page_objects/common/TopBar";
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca";
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente";
 
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregions
+
+
 
 before(() => {
     cy.getUserWinLogin().then(data => {
@@ -69,66 +71,110 @@ beforeEach(() => {
 // })
 //#endregion Before After
 
-describe("LIBRI MATRICOLA", function () {
-    var nPreventivo
+describe("LIBRI MATRICOLA", {
+    retries: {
+        runMode: 0,
+        openMode: 0,
+    }
+}, () => {
     var nPreventivoMadre
-
-    context.only('PREVENTIVO MADRE', function () {
+    var nContratto
+    context('PREVENTIVO MADRE', function () {
         PreventivoMadre()
-        nPreventivoMadre = nPreventivo //! Da verificare se lo legge per la conversione
+
     })
 
     context('APPLICAZIONI', function () {
         PrevApplicazione('Auto', Veicoli.Auto_WW745FF(), ['Furto'])
 
-        PrevApplicazione('Moto', Veicoli.Moto_MM25896(), [])
+        // PrevApplicazione('Moto', Veicoli.Moto_MM25896(), [])
 
-        PrevApplicazione('Auto No RCA', Veicoli.Auto_ZZ841PP(), ['Furto'], false, 4)
-
+        // PrevApplicazione('Auto No RCA', Veicoli.Auto_ZZ841PP(), ['Furto'], false, 4)
     })
 
-
-    context('APPLICAZIONE E CONVERSIONE POLIZZA MADRE', function () {
-        it('CONVERSIONE', () => {
-            cy.log(nPreventivo)
+    context('CONFERMA PREVENTIVI APPLICAZIONE E CONVERSIONE POLIZZA MADRE', function () {
+        it('Conferma preventivi', function () {
+            cy.pause()
             //#region
             // ! DA TOGLIERE A FINE TEST COMPLETATO
-            TopBar.search('04818780480')
-            LandingRicerca.clickFirstResult()
-            SintesiCliente.clickAuto()
-            SintesiCliente.clickLibriMatricola()
-            LibriMatricola.AperturaTabPreventivi()
+            // TopBar.search('09473521004')
+            // LandingRicerca.clickFirstResult()
+            // SintesiCliente.clickAuto()
+            // SintesiCliente.clickLibriMatricola()
+            // SintesiCliente.emissioneAuto(menuAuto.prodottiParticolari.libriMatricola)
+            // cy.wait('@LibriMatricolaDA', { requestTimeout: 50000 });
+            // LibriMatricola.AperturaTabPreventivi()
             //#endregion
 
-            
-            // LibriMatricola.conversione()
-            LibriMatricola.accessoPreventivoPolizzaMadre('271228') //    nPreventivoMadre
+            LibriMatricola.backElencoPreventivi()
+            LibriMatricola.getPreventivoMadre()
+            cy.get('@nPrevMadre').then(val => {
+                nPreventivoMadre = val
+                LibriMatricola.AperturaElencoApplicazioni(nPreventivoMadre)
+                LibriMatricola.confermaPreventivi()
+                LibriMatricola.backElencoPreventivi()
+                LibriMatricola.accessoPreventivoPolizzaMadre(nPreventivoMadre) //    nPreventivoMadre
+            })
+
         });
 
-        it("Riepilogo", () => {
+        it("Riepilogo", function () {
             LibriMatricola.Avanti()
         })
 
-        it("Integrazione", () => {
+        it("Integrazione", function () {
             LibriMatricola.IntegrazioneEmettiPolizza()
-            // cy.wait('@loadIntegrazione', { requestTimeout: 60000 });
         })
-        
-        it("Consensi", () => {
+
+        it("Consensi", function () {
             LibriMatricola.consensi()
         })
 
-        it("Finale", () => {
-            LibriMatricola.ContrattoFinale()
+        it("Finale", function () {
+            LibriMatricola.FinaleContrattoLibroMatricola()
             LibriMatricola.FinaleGoHome()
-            // LibriMatricola.caricamentoElencoApplicazioni()
 
             cy.get('@contratto').then(val => {
-                nPreventivoApp = val
-                cy.log("Preventivo Applicazione n. " + nPreventivoApp)
+                nContratto = val
+                cy.log("nContratto b " + nContratto)
             })
         })
 
+        it("Verifica presenza Contratto Libro Matricola", function () {
+            LibriMatricola.AperturaTabLibriMatricola()
+            LibriMatricola.VerificaPresenzaContrattoLibroMatricola(nContratto)
+        })
     })
 
+
+    context.skip('CONVERSIONE E STAMPA MASSIVA PREVENTIVI APPLICAZIONE', function () {
+        it('Conversione', function () {
+            LibriMatricola.getLibroMatricola()
+            cy.get('@nLibroMatricola').then(nLibroMatricola => {
+
+                cy.writeFile('LibriMatricola/LibriMatricola.json', {
+                    numContrattoLibro: val
+                })
+                LibriMatricola.accessoElencoApplicazioniLibroMatricola(nLibroMatricola)
+                LibriMatricola.conversione()
+            })
+
+        })
+    })
+
+    context('INCASSO POLIZZA MADRE', function () {
+        it('Incasso', function () {
+            cy.fixture('LibriMatricola/LibriMatricola.json').then((data) => {
+                TopBar.search(data.ClientePGIVA)
+                LandingRicerca.clickFirstResult()
+            })
+            SintesiCliente.clickAuto()
+            SintesiCliente.clickLibriMatricola()
+            cy.fixture('LibriMatricola/LibriMatricola.json').then((data) => {
+                LibriMatricola.accessoIncassoPolizzaMadre(data.numContrattoLibro)
+            })
+            LibriMatricola.incasso()
+        })
+
+    })
 })
