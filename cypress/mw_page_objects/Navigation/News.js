@@ -1,8 +1,8 @@
 /// <reference types="Cypress" />
 import Common from "../common/Common"
 
+//#region Iframe
 const getIFrame = () => {
-
     cy.get('iframe').then($iframe => {
         let iframeClass
 
@@ -18,22 +18,24 @@ const getIFrame = () => {
     })
 
     return cy.get('@getFrame').its('body').should('not.be.undefined').then(cy.wrap)
-
 }
+//#endregion
 
 class News {
     /**
-    * @param {boolean} da - Se true, verifica url con aggancio in DA
-    */
+     * Check atterraggio su News
+     * @param {boolean} da Se true, verifica url con aggancio in DA
+     */
     static checkAtterraggio(da = false) {
         if (da)
             cy.url().should('include', Common.getBaseUrl() + 'legacyda')
         else
             cy.url().should('include', Common.getBaseUrl() + 'news')
 
-        
+
         getIFrame().find('app-header:contains("Primo Piano"):visible')
         getIFrame().find('app-header:contains("Tutte"):visible')
+        cy.screenshot('Check Atterraggio su News', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 }
 

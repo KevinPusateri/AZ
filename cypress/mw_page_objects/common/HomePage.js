@@ -79,6 +79,7 @@ class HomePage {
     static clickVaiAlCentroNotifiche() {
         cy.contains('Vai al Centro notifiche').click()
         cy.url().should('include', Common.getBaseUrl() + 'notification-center')
+        cy.screenshot('Vai al Centro Notifiche', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -92,6 +93,7 @@ class HomePage {
 
     static checkNotExistVediTutte() {
         cy.get('nx-link[routerlink="/news/recent"]').should('not.exist')
+        cy.screenshot('Vedi Tutte non presente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -107,7 +109,7 @@ class HomePage {
         cy.get('nx-expansion-panel').click()
         cy.wait('@gqlNotifications')
         cy.get('lib-notification-list').should('be.visible')
-
+        cy.screenshot('Pannello Notifiche', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
