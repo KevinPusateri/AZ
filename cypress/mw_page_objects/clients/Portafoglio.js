@@ -983,6 +983,7 @@ class Portafoglio {
             expect(breadCrumb.text().trim().replace(/\u00a0/g, ' ')).to.equal(page)
         })
 
+        cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         this.back()
     }
 
@@ -991,7 +992,9 @@ class Portafoglio {
      * @param {string} ordinaPer 
      */
     static ordinaPolizze(ordinaPer) {
-        cy.get('.sorting-button').click() //apre il menù per l'ordine delle polizze
+        cy.get('.filter-container').should('be.visible')
+        cy.wait(1000)
+        cy.get('.sorting-button').should('be.visible').click() //apre il menù per l'ordine delle polizze
         cy.wait(1000)
 
         cy.get('.cdk-overlay-pane').should('be.visible')

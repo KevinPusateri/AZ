@@ -130,7 +130,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     // #endregion
 
     // #region  Rami Vari
-    it.only('Verifica aggancio Allianz Ultra Casa e Patrimonio', function () {
+    it('Verifica aggancio Allianz Ultra Casa e Patrimonio', function () {
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO)
             this.skip()
         TopBar.clickSales()

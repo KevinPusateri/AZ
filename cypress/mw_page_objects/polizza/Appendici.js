@@ -24,6 +24,33 @@ class Appendici {
 
         cy.wait('@appendici', { requestTimeout: 60000 })
     }
+
+    static caricamentoEdit() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/EditAppendice/**'
+        }).as('edit')
+
+        cy.wait('@edit', { requestTimeout: 60000 })
+    }
+
+    static caricamentoDocumenti() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/Documento/**'
+        }).as('documenti')
+
+        cy.wait('@documenti', { requestTimeout: 60000 })
+    }
+
+    static caricamentoNuoveAppendici() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/GetNuoveAppendiciContratto'
+        }).as('nuoveAppendici')
+
+        cy.wait('@nuoveAppendici', { requestTimeout: 60000 })
+    }
     //#endregion caricamenti
 
     /**
@@ -54,6 +81,13 @@ class Appendici {
         })
     }
 
+    static Home() {
+        ultraIFrame().within(() => {
+            cy.get('input[value="Home"]').not('[style="display: none;"]')
+                .should('be.visible').click()
+        })
+    }
+
     static CompilazioneAppendice(compagnia, nCiascunaPolizza) {
         ultraIFrame().within(() => {
             cy.get('#compilazioneAppendice').find('[data-bind*="COMPAGNIA"]')
@@ -68,6 +102,25 @@ class Appendici {
             cy.get('.documentoSection').should('be.visible')
 
             cy.get('input[value="Stampa"]').should('be.visible').click()
+        })
+    }
+
+    static InviaMail() {
+        ultraIFrame().within(() => {
+            cy.get('.documentoSection').should('be.visible')
+
+            cy.get('input[value="@"]').should('be.visible').click()
+        })
+    }
+
+    /**
+     * Verifica che l'appendice sia presente in lista
+     * @param {string} nomeAppendice 
+     */
+    static VerificaNuoveAppendici(nomeAppendice) {
+        ultraIFrame().within(() => {
+            cy.get('#listaDocumentiGruppo').find('span[data-bind="text: Descrizione"]')
+                .contains(nomeAppendice).should('be.visible')
         })
     }
 }

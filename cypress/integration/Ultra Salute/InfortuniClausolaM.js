@@ -167,7 +167,6 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
   it("Dati integrativi", () => {
     DatiIntegrativi.DatiIntegrativi(true, true, true)
-    cy.pause()
     DatiIntegrativi.ClickButtonAvanti()
     DatiIntegrativi.approfondimentoSituazioneAssicurativa(false)
     DatiIntegrativi.confermaDichiarazioniContraente()

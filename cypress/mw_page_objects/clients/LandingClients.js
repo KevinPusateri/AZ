@@ -59,6 +59,8 @@ class LandingClients {
         cy.get('app-home-right-section').find('app-rapid-link:visible').each(($checkLinksRapidi, i) => {
             expect($checkLinksRapidi.text().trim()).to.include(linksCollegamentiRapidi[i]);
         })
+
+        cy.screenshot('Verifica presenza collegamenti rapidi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -115,7 +117,7 @@ class LandingClients {
                             })
                             cy.contains('Richieste Cliente').click()
                             cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
-                        }else{
+                        } else {
                             cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
                         }
                     } else
@@ -138,6 +140,8 @@ class LandingClients {
                 Common.canaleFromPopup()
                 getIFrame().find('#divMain:contains("Servizi antiriciclaggio"):visible')
                 break;
+
+                cy.screenshot('Verifica link rapido ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         }
     }
 
@@ -147,6 +151,7 @@ class LandingClients {
     static clickNuovoCliente() {
         cy.get('.component-section').find('button').contains('Nuovo cliente').click()
         cy.url().should('eq', Common.getBaseUrl() + 'clients/new-client')
+        cy.screenshot('Verifica Nuovo Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -160,10 +165,12 @@ class LandingClients {
         cy.get('.actions-box').contains('Vai a visione globale').click()
         cy.wait('@getDaCommerciale', { requestTimeout: 50000 })
         getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
+        cy.screenshot('Verifica Visione Globale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     static checkAssenzaVisioneGlobale() {
-        cy.get('.actions-box').should('not.include.text','Vai a visione globale')
+        cy.get('.actions-box').should('not.include.text', 'Vai a visione globale')
+        cy.screenshot('Verifica Assenza Visione Globale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -172,6 +179,7 @@ class LandingClients {
     static clickAppuntamenti() {
         cy.get('.meetings').click()
         cy.url().should('eq', Common.getBaseUrl() + 'clients/event-center')
+        cy.screenshot('Verifica Appuntamento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -190,6 +198,7 @@ class LandingClients {
                 cy.get('app-dm-requests-card').should('be.visible')
             }
 
+            cy.screenshot('Verifica Digital Me', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         });
     }
 
@@ -216,7 +225,7 @@ class LandingClients {
                     cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
                     this.digitalMe('Richieste Cliente');
                 }
-                
+
 
                 if (keyDigitalMe.PUBBLICAZIONE_PROPOSTE) {
                     cy.intercept('POST', '**/graphql', (req) => {
@@ -228,7 +237,7 @@ class LandingClients {
                     cy.get('app-digital-me-main-table').should('be.visible')
                 }
             }
-
+            cy.screenshot('Verifica Digital Me', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
     }
 
@@ -266,6 +275,7 @@ class LandingClients {
                         break;
                 }
             });
+        cy.screenshot('Verifica Digital Me', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -276,6 +286,8 @@ class LandingClients {
     static clickVediTutte() {
         cy.contains('Vedi tutte').click()
         cy.url().should('include', '/clients/digital-me')
+
+        cy.screenshot('Click su button "Vedi tutte" da Richieste Digital Me', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -301,6 +313,8 @@ class LandingClients {
                 expect(titleGlobals).to.include(title.text().trim());
             })
         })
+
+        cy.screenshot('Verifica che il contenuto di Visione globale cliente sia presente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     }
 }

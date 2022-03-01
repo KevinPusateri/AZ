@@ -3,7 +3,6 @@
  */
 /// <reference types="Cypress" />
 
-
 import LinkMieInfo from "../../mw_page_objects/navigation/LinkMieInfo"
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
@@ -42,16 +41,12 @@ before(() => {
         cy.profilingLinksMenu(data.tutf, keysLinksSubMenuRisorsePerAgenzia)
         cy.profilingLinksMenu(data.tutf, keysLinksSubMenuRisorsePerAgente)
     })
-
-
-
 })
 
 beforeEach(() => {
     cy.preserveCookies()
     Common.visitUrlOnEnv()
 })
-
 after(function () {
     TopBar.logOutMW()
     //#region Mysql

@@ -50,6 +50,8 @@ class BurgerMenuClients extends Clients {
         cy.get('lib-side-menu-link').find('a').each(($checkLinksBurger, i) => {
             expect($checkLinksBurger.text().trim()).to.include(linksBurger[i]);
         })
+
+        cy.screenshot('Verifica Links Clients', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -92,35 +94,43 @@ class BurgerMenuClients extends Clients {
             case LinksBurgerMenu.CENSIMENTO_NUOVO_CLIENTE:
                 Common.canaleFromPopup()
                 cy.url().should('eq', Common.getBaseUrl() + 'clients/new-client')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.DIGITAL_ME:
                 Common.canaleFromPopup()
                 cy.url().should('eq', Common.getBaseUrl() + 'clients/digital-me')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.PANNELLO_ANOMALIE:
                 cy.wait(3000)
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.CLIENTI_DUPLICATI:
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.CANCELLAZIONE_CLIENTI:
                 Common.canaleFromPopup()
                 getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.CANCELLAZIONE_CLIENTI_PER_FONTE:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Disassocia Tutti"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.GESTIONE_FONTE_PRINCIPALE:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("Cerca"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ANTIRICICLAGGIO:
                 Common.canaleFromPopup()
                 getIFrame().find('#divMain:contains("Servizi antiriciclaggio"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.HOSPITAL_SCANNER:
                 cy.contains(page).click()
@@ -135,6 +145,7 @@ class BurgerMenuClients extends Clients {
                 cy.get('@Open')
 
                 cy.get('app-home').should('exist').and('be.visible').and('contain.text', 'CERCA INTERVENTO')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
         }
     }

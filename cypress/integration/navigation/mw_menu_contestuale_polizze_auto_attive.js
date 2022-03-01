@@ -57,6 +57,17 @@ beforeEach(() => {
         cy.reload({ log: false })
 })
 
+afterEach(() => {
+    if (this.currentTest.state !== 'passed') {
+        TopBar.clickMatrixHome()
+        TopBar.search(currentCustomerFullName)
+        LandingRicerca.filtraRicerca('E')
+        LandingRicerca.clickClientePF(currentCustomerFullName)
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Polizze attive')
+    }
+});
+
 after(function () {
 
     TopBar.logOutMW()
