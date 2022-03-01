@@ -335,6 +335,7 @@ class Portafoglio {
         cy.get('.cdk-overlay-container').should('contain.text', 'Annullamento').within(($overlay) => {
             cy.get('button').should('be.visible')
             cy.wrap($overlay).find('button:contains("Annullamento")').click()
+            cy.wait(2000)
         })
         cy.intercept({
             method: 'POST',

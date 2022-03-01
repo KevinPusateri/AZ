@@ -27,20 +27,20 @@ class CensimentoAnagrafico {
      */
     static caricamentoCensimentoAnagrafico() {
         cy.log('***** CARICAMENTO CENSIMENTO ANAGRAFICO *****')
-        //cy.intercept({
-        //    method: 'GET',
-        //    url: '**/tmpl_anag_persona_riepilogo.htm'
-        //}).as('anagrafica')
-        
-        //cy.wait('@anagrafica', { requestTimeout: 60000 })
-
-
         cy.intercept({
             method: 'GET',
-            url: '**/completamento/getDatiQuotazione'
+            url: '**/tmpl_anag_persona.htm'
         }).as('anagrafica')
-
+        
         cy.wait('@anagrafica', { requestTimeout: 60000 })
+
+
+        //cy.intercept({
+        //    method: 'GET',
+        //    url: '**/completamento/getDatiQuotazione'
+        //}).as('anagrafica')
+
+        //cy.wait('@anagrafica', { requestTimeout: 60000 })
 
     }
 
@@ -53,6 +53,7 @@ class CensimentoAnagrafico {
         cy.wait('@checkAssicurato', { requestTimeout: 60000 })
 
     }
+
     //#endregion caricamenti
 
     /**
@@ -96,8 +97,8 @@ class CensimentoAnagrafico {
             cy.get('input[value="CERCA"]').should('be.visible').click() //cerca cliente
 
             cy.get('#divPopupAnagrafica', { timeout: 30000 }).should('be.visible') //attende la comparsa popup di ricerca anagrafiche
-            cy.wait(5000)
-            //cy.pause()
+            cy.wait(5000)         
+            cy.pause()
 
             //popup anagrafico
             ultraIFrameAnagrafica().within(() => {
@@ -135,13 +136,14 @@ class CensimentoAnagrafico {
             cy.get('#divPopupAnagrafica', { timeout: 30000 }).should('be.visible')  //attende la comparsa popup di ricerca anagrafiche
             cy.wait(5000)
 
+
             //cy.get('div[id="divPopupAnagrafica"]').should('exist')
 
             //popup anagrafico
             ultraIFrameAnagrafica().within(() => {
                 cy.get('#AZBuilder1_GroupStdPersonaImpresa__Pop').should('be.visible')
-                    .find(('input[value="Persona Fisica"]')).click()  //seleziona Persona Fisica
-                cy.wait(10000)
+                    .find(('input[value="Persona Fisica"]')).should('be.enabled').click()  //seleziona Persona Fisica
+                cy.wait(5000)
             })
 
             ultraIFrameAnagrafica().within(() => {
@@ -153,6 +155,7 @@ class CensimentoAnagrafico {
                 cy.get('span').contains(cliente.cognomeNome()).click()
                 cy.wait(2000)
             })
+            //cy.pause()
 
             /*
             //popup attenzione CAP

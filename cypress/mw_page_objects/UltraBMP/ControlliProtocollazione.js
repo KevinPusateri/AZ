@@ -37,7 +37,8 @@ class ControlliProtocollazione {
         cy.log('***** CARICAMENTO ADEMPIMENTI PRECONTRATTUALI IN CONTROLLI E PROTOCOLLAZIONE *****')
         cy.intercept({
             method: 'GET',
-            url: '**/GetSezioneStampaContrassegno'
+            //url: '**/GetSezioneStampaContrassegno'
+            url: '**/GetSezionePrecontrattuale'
         }).as('stampa')
 
         cy.wait('@stampa', { timeout: 100000 })

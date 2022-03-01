@@ -307,7 +307,7 @@ describe('Ultra BMP : Aggiunta fabbricato', function() {
         ControlliProtocollazione.stampaAdempimentiPrecontrattuali(false)
         //cy.pause()
         ControlliProtocollazione.salvaNContratto()
-        //cy.pause()
+        cy.pause()
 
         cy.get('@contratto').then(val => {
             nContratto = val
