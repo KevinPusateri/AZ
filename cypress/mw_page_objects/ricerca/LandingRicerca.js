@@ -2,21 +2,31 @@
 
 import Common from "../common/Common";
 
+/**
+ * Enum Sub Tabs Mie Info
+ * @readonly
+ * @enum {string}
+ */
 const SubTabsMieInfo = {
     CIRCOLARI: 'Circolari',
     COMPANY_HANDBOOK: 'Company Handbook',
     PRODOTTI: 'Prodotti',
-    PAGINE: 'Pagine',
+    PAGINE: 'Pagine'
 }
 
-const Tabs = {
-    CLIENTS: 'clients',
-    SALES: 'sales',
-    LE_MIE_INFO: 'le mie info',
-}
+/**
+ * @typedef {'E' | 'P' | 'C'} StatoCliente
+ */
 
+/**
+ * @typedef {'PF' | 'PG'} TipoCliente
+ */
 
-
+/**
+ * @class
+ * @classdesc Classe per utilizzare la Landing Ricerca di Matrix Web
+ * @author Andrea 'Bobo' Oboe & Kevin Pusateri
+ */
 class LandingRicerca {
 
     /**
@@ -34,12 +44,15 @@ class LandingRicerca {
     }
 
     /**
-     * Click tab Clients
+     * Click tab Mie Info
      */
     static clickTabMieInfo() {
         cy.get('a[href="/matrix/search/infos"]').click()
     }
 
+    /**
+     * Effettua Check dei subtab di Miei Info
+     */
     static checkSubTabMieInfo() {
         const subTabs = Object.values(SubTabsMieInfo)
         cy.get('lib-subsection').find('a').each(($subTab, i) => {
@@ -47,14 +60,16 @@ class LandingRicerca {
         });
     }
 
-    // Verifica che non sia presente Il tab "Le mie info"
+    /**
+     * Verifica che non sia presente Il tab "Le mie info"
+     */
     static checkNotExistMieInfo() {
         cy.get('a[href="/matrix/search/infos"]').should('not.exist')
     }
 
     /**
      * Click subTab da "Le mie Info"
-     * @param {string} subTab - Nome subTab  
+     * @param {SubTabsMieInfo} subTab - Nome subTab  
      */
     static clickSubTabMieInfo(subTab) {
         switch (subTab) {
@@ -74,9 +89,10 @@ class LandingRicerca {
     }
 
     /**
-     * @param {boolean} filtri - Se true, imposta filtri aggiuntivi di ricerca, altrimenti no
-     * @param {string} tipoCliente - Tipo Cliente a scelta tra "PF" o "PG"
-     * @param {string} statoCliente - Stato Cliente a scelta tra "E", "P" o "C"
+     * Effettua una ricerca Radnom di un Cliente in base ai parametri impostati
+     * @param {boolean} filtri - se true, imposta filtri aggiuntivi di ricerca, altrimenti no
+     * @param {TipoCliente} tipoCliente - Tipo Cliente
+     * @param {StatoCliente} statoCliente - Stato Cliente
      */
     static searchRandomClient(filtri, tipoCliente, statoCliente) {
         cy.intercept('POST', '**/graphql', (req) => {
@@ -120,10 +136,13 @@ class LandingRicerca {
 
             cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
         }
+
+        cy.screenshot('Ricerca effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
-     * @param {string} value - What to search
+     * Ricerca un valore nella buca di ricerca
+     * @param {string} value - Cosa ricercare
      */
     static search(value) {
         cy.intercept('POST', '**/graphql', (req) => {
@@ -153,8 +172,13 @@ class LandingRicerca {
                 cy.url().should('include', 'search/clients')
                 break
         }
+
+        cy.screenshot('Ricerca effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
+    /**
+     * Clicca sul primo risultato della buca di ricerca
+     */
     static clickFirstResult() {
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
@@ -171,8 +195,8 @@ class LandingRicerca {
 
     /**
      * Seleziona un Cliente Random dalla lista di ricerca ritornata
-     * @param {string} clientForm a scelta tra PF o PG (default is PG)
-     * @param {string} clientType a scelta tra P,E o C (default is P)
+     * @param {TipoCliente} [clientForm]
+     * @param {StatoCliente} [clientType]
      */
     static clickRandomResult(clientForm = 'PG', clientType = 'P') {
         //Attende il caricamento della scheda cliente
@@ -184,30 +208,6 @@ class LandingRicerca {
                 }
             });
 
-            // cy.get('body').as('body').then(($body) => {
-
-            // const scrollableNotPresent = $body.find('div[class="scrollabe-conltainer ps"]').is(':visible')
-
-            //Risultati SENZA la scrool bar
-            // if (scrollableNotPresent) {
-            //     cy.get('div[class="scrollable-container ps"]').then(($clienti) => {
-            //         let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
-            //         let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
-            //         cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
-
-            //         cy.wait(5000)
-            //         cy.get('body').then(($body) => {
-            //             const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
-            //             if (check) {
-            //                 this.searchRandomClient(true, clientForm, clientType)
-            //                 searchOtherMember()
-            //             }
-
-            //         })
-            //     })
-            // }
-            //Risultati con presenza di scrool bar
-            // else {
             cy.get('lib-subsection[class="ng-star-inserted"]').should('be.visible').then($container => {
                 cy.wait(3000)
                 console.log($container)
@@ -261,64 +261,10 @@ class LandingRicerca {
 
     }
 
-    static clickClientName(client, filtri = false, tipoCliente, statoCliente) {
-        //Attende il caricamento della scheda cliente
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('client')) {
-                req.alias = 'client'
-            }
-        });
-
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('searchClient')) {
-                req.alias = 'gqlSearchClient'
-            }
-        });
-
-        if (filtri) {
-            //Filtriamo la ricerca in base a tipoCliente
-            cy.get('.icon').find('[name="filter"]').click()
-            if (tipoCliente === "PF")
-                cy.get('.filter-group').contains('Persona giuridica').click()
-            else
-                cy.get('.filter-group').contains('Persona fisica').click()
-
-            //Filtriamo la ricerca in base a statoCliente
-            switch (statoCliente) {
-                case "E":
-                    cy.get('.filter-group').contains('Potenziale').click()
-                    cy.get('.filter-group').contains('Cessato').click()
-                    break
-                case "P":
-                    cy.get('.filter-group').contains('Effettivo').click()
-                    cy.get('.filter-group').contains('Cessato').click()
-                    break
-                case "C":
-                    cy.get('.filter-group').contains('Potenziale').click()
-                    cy.get('.filter-group').contains('Effettivo').click()
-                    break
-            }
-
-            cy.get('.footer').find('button').contains('applica').click()
-            cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
-
-            cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
-        }
-
-        // cy.get('lib-client-item:contains(' + client.name + '")').then((card) => {
-        cy.get('lib-scrollable-container').contains(client.name).then((card) => {
-            if (card.length === 1) {
-                cy.wrap(card).click()
-            } else {
-                cy.get('lib-client-item:contains("' + client.name + '"):contains("' + client.address + '")').click();
-            }
-        })
-        //Verifica se ci sono problemi nel retrive del cliente per permessi
-        cy.wait('@client', { requestTimeout: 30000 })
-            .its('response.body.data.client')
-            .should('not.be.null')
-    }
-
+    /**
+     * Effettua la ricerca e seleziona un cliente PF attraverso il suo cognome
+     * @param {string} cognome da ricerca
+     */
     static searchAndClickClientePF(cognome) {
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
@@ -352,6 +298,10 @@ class LandingRicerca {
             .should('not.be.null')
     }
 
+    /**
+     * Clicca il risultato della ricerca attraverso il suo nome completo Persona Fisica
+     * @param {string} fullName 
+     */
     static clickClientePF(fullName) {
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
@@ -370,6 +320,10 @@ class LandingRicerca {
             .should('not.be.null')
     }
 
+    /**
+     * Clicca il risultato della ricerca attraverso il suo nome completo Persona Giuridica
+     * @param {string} fullName 
+     */
     static clickClientePG(fullName) {
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
@@ -389,7 +343,7 @@ class LandingRicerca {
     }
 
     /**
-     * 
+     * Effettua un check sui Suggerimenti in Buca di Ricerca
      * @param {string} pageLanding - nome della pagina 
      */
     static checkBucaRicercaSuggerrimenti() {
@@ -417,6 +371,9 @@ class LandingRicerca {
         cy.get('a[href="/matrix/"]').click()
     }
 
+    /**
+     * Effettua un check sulla Ricerca Classica
+     */
     static checkRicercaClassica() {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
 
@@ -433,11 +390,17 @@ class LandingRicerca {
         cy.get('nx-modal-container').find('button[aria-label="Close dialog"]').click()
     }
 
-    // Verifica che non sia presente il button "Ricerca Classica"
+    /**
+     * Verifica che non sia presente il button "Ricerca Classica"
+     */
     static checkNotExistRicercaClassica() {
         cy.get('lib-advice-navigation-section').should('not.contain.text', 'Ricerca classica')
     }
 
+    /**
+     * Click sul link della Ricerca Classica
+     * @param {string} link 
+     */
     static clickRicercaClassicaLabel(link) {
         cy.intercept({
             method: 'POST',
@@ -455,9 +418,11 @@ class LandingRicerca {
             cy.wait('@danni', { requestTimeout: 30000 })
             cy.wait(3000)
         }
-
     }
 
+    /**
+     * Check Risultati Ricerca
+     */
     static checkRisultatiRicerca() {
 
         //Verifica Stato Cliente
@@ -478,8 +443,6 @@ class LandingRicerca {
             })
             cy.wrap($cliente).find('.info > .name').then(($name) => { cy.wrap($name).should('contain', $name.text()) })
             cy.wrap($cliente).find('[class="item"]').then(($adress) => { cy.wrap($adress).should('contain', $adress.text()) })
-
-
         })
 
         //Verifica Età
@@ -495,7 +458,8 @@ class LandingRicerca {
     }
 
     /** 
-     * @param {string} statoCliente - Stato Cliente a scelta tra "E", "P" o "C"
+     * Filtra la ricerca per lo Stato del Cliente
+     * @param {StatoCliente} statoCliente - Stato Cliente
      */
     static filtraRicerca(statoCliente) {
         cy.intercept('POST', '**/graphql', (req) => {
@@ -537,9 +501,8 @@ class LandingRicerca {
         cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
     }
 
-
     /**
-     * 
+     * Check Link Suggeriti
      * @param {string} value - Keywork da cercare (in base alla keyword vengono dei suggerimenti di default correlati)
      */
     static checkSuggestedLinks(value) {
@@ -626,11 +589,18 @@ class LandingRicerca {
         cy.get('lib-advice-navigation-section').contains('Suggerimenti di navigazione').should('exist').and('be.visible')
     }
 
+    /**
+     * Verifica che non ci siano i link suggeriti
+     * @param {*} suggestLink 
+     */
     static checkNotExistSuggestLinks(suggestLink) {
         if (suggestLink === 'fastquote')
             cy.get('lib-navigation-item-link').should('not.exist')
     }
 
+    /**
+     * Check Mie Info
+     */
     static checkLeMieInfo() {
         cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('le mie info').click().should('have.class', 'active')
         cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('le mie info').invoke('text').then($theElement => {
@@ -722,6 +692,9 @@ class LandingRicerca {
         })
     }
 
+    /**
+    * Check Clients
+    */
     static checkClients() {
         cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('clients').click().should('have.class', 'active')
         cy.get('[class="docs-grid-colored-row tabs-container nx-grid__row"]').contains('clients').invoke('text').then($theElement => {
@@ -765,6 +738,9 @@ class LandingRicerca {
         })
     }
 
+    /**
+     * Check Aggancio Circolari
+     */
     static checkAggancioCircolari() {
         cy.get('[class="lib-tab-info nx-grid"]').contains('Circolari').click()
         cy.get('lib-circular-item').find('a').first().invoke('removeAttr', 'target').click()
@@ -772,9 +748,13 @@ class LandingRicerca {
         cy.go('back')
     }
 
+    /**
+     * Check Button Ricerca Classica
+     */
     static checkButtonRicercaClassica() {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible')
     }
+
     /**
      * Verifica i tab(Clients,sales,Le mie info) presenti dopo
      * aver effettuato la ricerca
@@ -837,6 +817,5 @@ class LandingRicerca {
             }
         })
     }
-
 }
 export default LandingRicerca

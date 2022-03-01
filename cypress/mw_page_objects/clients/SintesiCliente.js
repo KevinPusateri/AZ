@@ -903,6 +903,7 @@ class SintesiCliente {
                     cy.log('Retrived Client Address : ' + client.address)
                 })
 
+            cy.screenshot('Cliente Selezionato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             resolve(client);
         });
     }

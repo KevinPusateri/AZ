@@ -105,6 +105,9 @@ class DettaglioAnagrafica {
 
     }
 
+    /**
+     * Effettua il click su Dettaglio Anagrafica
+     */
     static clickTabDettaglioAnagrafica() {
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {
@@ -115,6 +118,8 @@ class DettaglioAnagrafica {
         cy.contains('DETTAGLIO ANAGRAFICA').click()
 
         cy.wait('@gqlClient', { requestTimeout: 30000 });
+
+        cy.screenshot('Dettaglio Anagrafica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**

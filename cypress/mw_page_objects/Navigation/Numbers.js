@@ -29,6 +29,9 @@ const interceptGetAgenziePDF = () => {
 }
 //#endregion
 
+/**
+ * Classe di accesso alla sezione Numbers di Matrix Web
+ */
 class Numbers {
 
     /**

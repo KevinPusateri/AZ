@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 import Common from "../common/Common"
 
-//#region variables globals
+//#region Iframe
 const getIFrame = () => {
 
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -68,7 +68,6 @@ const LinksOnEmettiPolizza = {
         if (!keys.TrattativeAutoCorporateEnabled && !Cypress.env('isAviva')) delete this.TRATTATIVE_AUTO_CORPORATE
     }
 }
-
 class Sales {
 
     /**
