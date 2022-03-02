@@ -106,73 +106,101 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
        
     });
     
-    it('Movimentazione: Si Verifica che per ciascuna tipologia di sinistro con movimentazione maggiore di 0, è abilitato il pulsante di \'Dettaglio\' con relativo atterraggio di pagina', function () {  
-    
-        const mvSinObjPage = Object.create(MovimentazioneSinistriPage)      
-        var i = 0;
-        for (i = 0; i < 6 ; i++) { 
-            MovimentazioneSinistriPage.getNumMovimentiByIndex(i)
-        }
+    it('MW: Movimentazione  sinistri - corretta esposizione del numero dei sinistri \'Protocollati\'', function () { 
+        MovimentazioneSinistriPage.getNumMovimentiByIndex(0)
         cy.get('@x0').then((mov) => {                     
             cy.log('[it]>> idx[0] - Sinistri Protocollati: '+mov); 
             if (parseInt(mov)>0)
             {
                 MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioDenunciati') 
                 cy.wait(2000)
+                MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
+                cy.wait(2000)
                 MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
                 cy.wait(2000)  
             }
         }) 
+
+    });
+
+    it('MW: Movimentazione  sinistri - corretta esposizione del numero dei sinistri \'Presi in carico da CLD\'', function () { 
+        MovimentazioneSinistriPage.getNumMovimentiByIndex(1)
         cy.get('@x1').then((mov) => {                     
             cy.log('[it]>> idx[1] - Sinistri Presi in carico da CLD: '+mov); 
             if (parseInt(mov)>0)
             {
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioAperti')
+                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioAperti') 
+                cy.wait(2000)
+                MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
                 cy.wait(2000)
                 MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
                 cy.wait(2000)  
             }
         }) 
+    });
+
+    it('MW: Movimentazione  sinistri - corretta esposizione del numero dei sinistri \'Trasferiti\'', function () { 
+        MovimentazioneSinistriPage.getNumMovimentiByIndex(2)
         cy.get('@x2').then((mov) => {                     
             cy.log('[it]>> idx[2] - Sinistri Trasferiti: '+mov); 
             if (parseInt(mov)>0)
             {
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioTrasferiti')
+                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioTrasferiti') 
+                cy.wait(2000)
+                MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
                 cy.wait(2000)
                 MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
                 cy.wait(2000)  
             }
-        })      
+        }) 
+    });
+
+    it('MW: Movimentazione  sinistri - corretta esposizione del numero dei sinistri \'Sinistri Chiusi SS\'', function () { 
+        MovimentazioneSinistriPage.getNumMovimentiByIndex(3)
         cy.get('@x3').then((mov) => {                     
             cy.log('[it]>> idx[3 - Sinistri Chiusi SS: '+mov); 
             if (parseInt(mov)>0)
             {
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioChiusiSS')
+                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioChiusiSS') 
+                cy.wait(2000)
+                MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
                 cy.wait(2000)
                 MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
-                cy.wait(2000)
+                cy.wait(2000)  
             }
         }) 
+    });
+
+    it('MW: Movimentazione  sinistri - corretta esposizione del numero dei sinistri \'Pagati\'', function () { 
+        MovimentazioneSinistriPage.getNumMovimentiByIndex(4)
         cy.get('@x4').then((mov) => {                     
-            cy.log('[it]>> idx[4] - Sinistri Pagati: '+mov); 
+            cy.log('[it]>> idx[4 - Sinistri Pagati: '+mov); 
             if (parseInt(mov)>0)
             {
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioPagati')
+                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioPagati') 
+                cy.wait(2000)
+                MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
                 cy.wait(2000)
                 MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
                 cy.wait(2000)  
             }
         }) 
+    });
+
+    it('MW: Movimentazione  sinistri - corretta esposizione del numero dei sinistri \'Periziati\'', function () { 
+        MovimentazioneSinistriPage.getNumMovimentiByIndex(5)
         cy.get('@x5').then((mov) => {                     
-            cy.log('[it]>> idx[5] - Sinistri Periziati: '+mov); 
+            cy.log('[it]>> idx[5 - Sinistri Periziati: '+mov); 
             if (parseInt(mov)>0)
             {
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioPeriziati')
+                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioPeriziati') 
+                cy.wait(2000)
+                MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
                 cy.wait(2000)
                 MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
                 cy.wait(2000)  
             }
-        })
+        }) 
     });
     
     it('Movimentazione: Si Verifica che per ciascuna tipologia di sinistro con movimentazione a 0 non sia visibile (non esiste) il pulsante di \'Dettaglio\' ', function () {  
