@@ -69,6 +69,8 @@ class LibriMatricola {
     static nuovoPreventivoMadre(convenzione, dataConvenzione) {
 
         matrixFrame().within(() => {
+            cy.pause()
+
             let count = 0;
             const reloadTable = (count) => {
                 if (count === 5)
@@ -81,12 +83,12 @@ class LibriMatricola {
                 cy.wait('@loadGetAllConvenzioni', { requestTimeout: 60000 });
 
                 cy.wait(3500)
-                cy.get('#convenzioneTemplateWrapper').should('be.visible').click()
                 cy.get('input[class="inputSmlMid hasDatepicker"]').should('be.visible').click()
                     .clear().type(dataConvenzione + '{enter}', { delay: 200 })
                 cy.get('input[class="inputSmlLarge"]').click().clear().type(convenzione + '{enter}', { delay: 200 })//.wait(5000)
 
                 cy.get('span[class="ui-button-icon-primary ui-icon ui-icon-search"]').first().click().wait(3500)
+                cy.wait('@loadGetAllConvenzioni', { requestTimeout: 60000 })
 
 
                 cy.get('#tblConvenzioni').then(($table) => {
@@ -925,8 +927,8 @@ class LibriMatricola {
 
             // // Privacy per scopi assicurativi
             // cy.get('#consenso32027850_1SI').should('be.visible').click()
-            cy.contains('Consensi privacy').parents('table').within(()=>[
-                
+            cy.contains('Consensi privacy').parents('table').within(() => [
+
             ])
 
             //? CAPITA che non sia settato di default capire in base all'agenzia
