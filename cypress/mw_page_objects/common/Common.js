@@ -6,8 +6,7 @@ const getIframe = () => cy.get('iframe').its('0.contentDocument.body')
 class Common {
 
     /**
-     * 
-     * dal popup clicca sulla prima agenzia per accedere alla pagina
+     * Dal popup clicca sulla prima agenzia per accedere alla pagina
      * @param {boolean} chooseUtenza : default a false, effettua l'accesso alla seconda finestra dalla homepage
      */
     static canaleFromPopup(chooseUtenza = false) {

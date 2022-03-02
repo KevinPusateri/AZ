@@ -136,7 +136,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', {
     if (!Cypress.env('isAviva')) {
       SintesiCliente.emettiPleinAir()
       SintesiCliente.visitUrlClient(urlClient)
-      SintesiCliente.verificaInFolder(["PleinAir"])
+      SintesiCliente.verificaInFolderDocumentiAnagrafici(["PleinAir"])
     }
     else
       this.skip()

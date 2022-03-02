@@ -73,7 +73,6 @@ after(function () {
 })
 //#endregion Before After
 
-let urlClient
 let codFiscale
 describe('Matrix Web : Creazione Indirizzo', function () {
 
@@ -83,9 +82,7 @@ describe('Matrix Web : Creazione Indirizzo', function () {
         SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
             client = currentClient
         })
-        SintesiCliente.retriveUrl().then(currentUrl => {
-            urlClient = currentUrl
-        })
+
         DettaglioAnagrafica.clickTabDettaglioAnagrafica()
         DettaglioAnagrafica.getCFClient().then((CF) => {
             codFiscale = CF

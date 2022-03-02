@@ -92,13 +92,13 @@ describe('Matrix Web : Legami', function() {
                 let newMembro = retrivedMember
                 Legami.eliminaMembro(newMembro)
                 Legami.clickLinkMembro(membro)
-                SintesiCliente.checkAtterraggioName(membro)
+                SintesiCliente.checkAtterraggioSintesiCliente(membro)
                 DettaglioAnagrafica.sezioneLegami()
                 Legami.checkMembroInserito(membro, currentClient.name, false)
                 Legami.checkMembroEliminato(newMembro)
 
                 Legami.clickLinkMembro(currentClient.name)
-                SintesiCliente.checkAtterraggioName(currentClient.name)
+                SintesiCliente.checkAtterraggioSintesiCliente(currentClient.name)
                 DettaglioAnagrafica.sezioneLegami()
                 Legami.eliminaMembro(membro)
             })
@@ -130,12 +130,12 @@ describe('Matrix Web : Legami', function() {
                     Legami.checkMembroInserito(newMembro, currentClient.name)
 
                     Legami.clickLinkMembro(newMembro)
-                    SintesiCliente.checkAtterraggioName(newMembro)
+                    SintesiCliente.checkAtterraggioSintesiCliente(newMembro)
                     DettaglioAnagrafica.sezioneLegami()
                     Legami.checkMembroInserito(newMembro, currentClient.name, false)
 
                     Legami.clickLinkMembro(currentClient.name)
-                    SintesiCliente.checkAtterraggioName(currentClient.name)
+                    SintesiCliente.checkAtterraggioSintesiCliente(currentClient.name)
                     DettaglioAnagrafica.sezioneLegami()
                     Legami.clickEliminaGruppo()
                 })
