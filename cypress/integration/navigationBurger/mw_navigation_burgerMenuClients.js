@@ -31,6 +31,10 @@ let keys = {
     ANTIRICICLAGGIO: true,
     HOSPITAL_SCANNER: true,
 }
+
+let keyDigitalMe = {
+    PUBBLICAZIONE_PROPOSTE: true 
+}
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
@@ -43,6 +47,7 @@ before(() => {
             cy.filterProfile(profiling, 'COMMON_CLIENTE_GESTIONE_FONTE_PRINCIPALE').then(profiled => { keys.CANCELLAZIONE_CLIENTI_PER_FONTE = profiled })
             cy.filterProfile(profiling, 'PO_ANTIRICICLAGGIO').then(profiled => { keys.ANTIRICICLAGGIO = profiled })
             cy.filterProfile(profiling, 'HOSPITAL_SCANNER').then(profiled => { keys.HOSPITAL_SCANNER = profiled })
+            cy.filterProfile(profiling, 'DIGITALME_OFFERTA').then(profiled => { keyDigitalMe.PUBBLICAZIONE_PROPOSTE = profiled })
         })
     })
 })
@@ -94,7 +99,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
     it('Verifica aggancio Digital Me', function () {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Digital Me')
-        Clients.checkDigitalMe()
+        Clients.checkDigitalMe(keyDigitalMe)
         BurgerMenuClients.backToClients()
     });
 

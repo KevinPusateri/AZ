@@ -114,11 +114,19 @@ class SCUGestioneFontePrincipale {
         cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
         cy.get('lib-client-item').next().click()
       }
-      cy.wait(9000)
-      cy.get('#cdk-describedby-message-container:hidden').invoke('text').then((referente) => {
-        expect(referente).to.be.include(nameAgente)
-      })
+      cy.wait(15000)
 
+      cy.get('#cdk-describedby-message-container').find('div').then(divMessages => {
+        let referenteUpdated = false
+        for (let i = 0; i < divMessages.length; i++) {
+
+          referenteUpdated = divMessages[i].innerHTML.includes(nameAgente)
+
+          if (referenteUpdated)
+            break
+        }
+        assert(referenteUpdated === true)
+      })
     })
   }
 
@@ -217,9 +225,17 @@ class SCUGestioneFontePrincipale {
         cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
         cy.get('lib-client-item').next().click()
       }
-      cy.wait(9000)
-      cy.get('#cdk-describedby-message-container:hidden').invoke('text').then((referente) => {
-        expect(referente).to.be.include(nameAgente)
+      cy.wait(15000)
+      cy.get('#cdk-describedby-message-container').find('div').then(divMessages => {
+        let referenteUpdated = false
+        for (let i = 0; i < divMessages.length; i++) {
+
+          referenteUpdated = divMessages[i].innerHTML.includes(nameAgente)
+
+          if (referenteUpdated)
+            break
+        }
+        assert(referenteUpdated === true)
       })
 
     })

@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 import Common from "../common/Common"
 
-//#region variables globals
+//#region Iframe
 const getIFrame = () => {
 
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -44,7 +44,7 @@ const LinksRapidi = {
 
 const LinksOnEmettiPolizza = {
     PREVENTIVO_MOTOR: 'Preventivo Motor',
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
     ALLIANZ_ULTRA_IMPRESA: 'Allianz Ultra Impresa',
@@ -68,7 +68,6 @@ const LinksOnEmettiPolizza = {
         if (!keys.TrattativeAutoCorporateEnabled && !Cypress.env('isAviva')) delete this.TRATTATIVE_AUTO_CORPORATE
     }
 }
-
 class Sales {
 
     /**
@@ -204,16 +203,16 @@ class Sales {
             cy.get('.card-container').find('lib-da-link').each(($link, i) => {
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
-        } else if (Cypress.env('isAviva')) {
+        } else// if (Cypress.env('isAviva')) {
             //!DA PROVARE SENZA
             cy.get('.card-container').find('lib-da-link').each(($link, i) => {
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
-        } else {
-            cy.get('.card-container').find('lib-da-link').each(($link, i) => {
-                expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
-            })
-        }
+        // } else {
+        //     cy.get('.card-container').find('lib-da-link').each(($link, i) => {
+        //         expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
+        //     })
+        // }
     }
 
     /**
@@ -242,6 +241,8 @@ class Sales {
                 Common.canaleFromPopup()
                 cy.wait('@getUltra', { requestTimeout: 30000 });
                 cy.wait(5000)
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', './assets/img/allianz-logo-casa.png')
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-casa.png')
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_SALUTE:
@@ -252,6 +253,7 @@ class Sales {
                 Common.canaleFromPopup()
                 cy.wait('@getUltra', { requestTimeout: 50000 });
                 cy.wait(5000)
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-salute.png' : './assets/img/aviva-logo-salute.png')
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP:
@@ -379,7 +381,7 @@ class Sales {
             }
         })
         cy.get('app-expiring-activities-accordion').contains('Attività in scadenza').click()
-        cy.wait('@gqlReceipts')
+        cy.wait('@gqlReceipts', { timeout: 15000 })
     }
 
 
@@ -543,8 +545,10 @@ class Sales {
         });
         cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
         cy.wait(5000)
-        cy.get('.cards-container').should('be.visible').find('.card').first().click()
-        cy.wait(15000)
+        cy.get('.cards-container').should('be.visible').find('.card').first().as('firstCard')
+        cy.get('@firstCard').trigger('mouseover')
+        cy.get('@firstCard').click({force: true})
+        cy.wait(20000)
         cy.wait('@digitalAgencyLink', { requestTimeout: 30000 });
         getIFrame().within(() => {
             cy.get('#AZBuilder1_ctl13_cmdEsci').should('be.visible').invoke('attr', 'value').should('equal', '  Esci  ')
@@ -606,7 +610,7 @@ class Sales {
             cy.wait(2000)
             let enable
             cy.get('app-receipt-header').find('span').eq(1).invoke('text').then((numPezzi) => {
-                if (numPezzi.substring(0,1) === "0")
+                if (numPezzi.substring(0, 1) === "0")
                     enable = false
                 else
                     enable = true

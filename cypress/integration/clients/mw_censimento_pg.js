@@ -126,10 +126,8 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', {
     SintesiCliente.verificaDatiSpallaSinistra(nuovoClientePG)
     DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(nuovoClientePG)
     ArchivioCliente.clickTabArchivioCliente()
-    // if (!Cypress.env('isAviva')) {
     ArchivioCliente.clickComunicazioni()
     ArchivioCliente.verificaCardComunicazioni("Invio per verifica contatto")
-    // }
     ArchivioCliente.verificaUnico()
   })
 
@@ -138,7 +136,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', {
     if (!Cypress.env('isAviva')) {
       SintesiCliente.emettiPleinAir()
       SintesiCliente.visitUrlClient(urlClient)
-      SintesiCliente.verificaInFolder(["PleinAir"])
+      SintesiCliente.verificaInFolderDocumentiAnagrafici(["PleinAir"])
     }
     else
       this.skip()

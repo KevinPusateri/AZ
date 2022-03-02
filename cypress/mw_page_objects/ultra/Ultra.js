@@ -500,9 +500,7 @@ class Ultra {
     }
 
     static aggiungiClienteCensimentoAnagrafico(cliente) {
-        ultraIFrame().within(() => {
-            cy.get('#tabsAnagrafiche', { timeout: 30000 }).should('be.visible') //attende la comparsa del form con i dati quotazione
-
+        ultraIFrame().within(() => {            
             cy.get('div').contains('Persona').should('be.visible').click() //tab Persona
 
             cy.get('input[value="CERCA"]').should('be.visible').click() //cerca cliente
@@ -518,7 +516,7 @@ class Ultra {
 
                 cy.get('#cerca-pers-forinsert').should('be.visible').click() //avvia ricerca
                 cy.wait(1000)
-                cy.get('span').contains(cliente.cognomeNome()).click()
+                cy.get('td').contains(cliente.codiceFiscale).click()
                 cy.wait(2000)
             })
 
@@ -709,7 +707,6 @@ class Ultra {
             cy.get('[aria-describedby="PopupDichiarazioni"]', { timeout: 5000 })
                 .should('be.visible') //attende la comparsa del popup
                 .find('button').contains('CONFERMA').click() //conferma
-            cy.wait(5000)
         })
     }
 

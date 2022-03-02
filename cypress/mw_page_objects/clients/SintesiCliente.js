@@ -3,8 +3,8 @@ require('cypress-plugin-tab')
 
 import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 import Common from '../common/Common.js'
-import ToBar from '../common/TopBar.js'
 
+//#region Iframe
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .iframe()
@@ -15,14 +15,19 @@ const getIFrame = () => {
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-//#region iFrame
 const matrixFrame = () => {
     let iframeSCU = cy.get('#matrixIframe')
         .its('0.contentDocument').should('exist')
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
+//#endregion
 
+/**
+ * Enum Cards Emissioni
+ * @readonly
+ * @enum {string}
+ */
 const CardsEmissioni = {
     AUTO: 'Auto',
     RAMIVARI: 'Rami vari',
@@ -34,7 +39,11 @@ const CardsEmissioni = {
 
     }
 }
-
+/**
+ * Enum Voci Emissione Rami Vari
+ * @readonly
+ * @enum {string}
+ */
 const RamiVari = {
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio BMP' : 'Allianz Ultra Casa e Patrimonio BMP',
@@ -63,7 +72,11 @@ const RamiVari = {
     }
 }
 
-
+/**
+ * Enum Voci Emissione Auto (con accesso a subMenu)
+ * @readonly
+ * @enum {string}
+ */
 const Auto = {
     EMISSIONE: 'Emissione',
     PRODOTTI_PARTICOLARI: 'Prodotti particolari',
@@ -72,6 +85,12 @@ const Auto = {
         if (Cypress.env('isAviva')) delete this.PRODOTTI_PARTICOLARI
     }
 }
+
+/**
+ * Enum Links Emissione Auto
+ * @readonly
+ * @enum {Object}
+ */
 const linksEmissioneAuto = {
     EMISSIONE: {
         PREVENTIVO_MOTOR: 'Preventivo Motor',
@@ -107,6 +126,11 @@ const linksEmissioneAuto = {
     }
 }
 
+/**
+ * @class
+ * @classdesc Classe per utilizzare la Sintesi Cliente in Matrix Web
+ * @author Andrea 'Bobo' Oboe & Kevin Pusateri
+ */
 class SintesiCliente {
 
     /**
@@ -128,6 +152,9 @@ class SintesiCliente {
         cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
     }
 
+    /**
+     * Verifica la presenza dei Tab Sintesi Cliente, Dettaglio Anagrafica, Portafoglio e Archivio Cliente
+     */
     static checkTabs() {
         // Verifica Tab clients corretti
         const tabProfile = [
@@ -141,7 +168,9 @@ class SintesiCliente {
         })
     }
 
-    //#region Situazione Cliente
+    /**
+     * Effettua un check sulla parte di Situazione Cliente
+     */
     static checkSituazioneCliente() {
         cy.get('lib-container').find('app-client-resume:visible').then(($situazione) => {
             const check = $situazione.find(':contains("Situazione cliente")').is(':visible')
@@ -160,9 +189,25 @@ class SintesiCliente {
                 assert.fail('Sintesi Cliente non è presente')
         })
     }
-    //#endregion
 
-    //#region Fastquote
+    /**
+     * Click sul Tab Sintesi Cliente
+     */
+    static clickTabSintesiCliente() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'gqlClient'
+            }
+        });
+
+        cy.contains('SINTESI CLIENTE').click()
+        cy.wait('@gqlClient', { requestTimeout: 30000 });
+        cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
+    }
+
+    /**
+     * Effettua Check su Fast Quote Ultra
+     */
     static checkFastQuoteUltra() {
         cy.get('app-fast-quote').find('app-scope-element').should('be.visible')
         cy.get('lib-container').find('app-client-resume:visible').then(($fastquote) => {
@@ -282,6 +327,9 @@ class SintesiCliente {
         })
     }
 
+    /**
+     * Effettua Check su Fast Quote Auto
+     */
     static checkFastQuoteAuto() {
         cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
 
@@ -303,9 +351,13 @@ class SintesiCliente {
             } else
                 assert.fail('FastQuote non è presente')
 
+            cy.screenshot('Check FastQuote Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
     }
 
+    /**
+     * Effettua il calcola da Fast Quote Auto con accesso all'applicativo motorw
+     */
     static calcolaDaFastQuoteAuto(tipoVeicolo, targa) {
         //Tipo Veicolo
         let veicolo = new RegExp("\^" + tipoVeicolo + "\$")
@@ -323,10 +375,14 @@ class SintesiCliente {
                 req.alias = 'gqlCalculateMotorPriceQuotation'
             }
         })
+
+        cy.screenshot('Click Calcola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible').click()
         cy.wait('@gqlCalculateMotorPriceQuotation', { requestTimeout: 50000 })
 
         cy.contains('Inserisci i dati manualmente').should('be.visible').click()
+        cy.screenshot('PopUp Inserisci i dati manualmente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         cy.intercept({
             method: 'GET',
@@ -337,8 +393,13 @@ class SintesiCliente {
         cy.wait('@getMotor', { requestTimeout: 50000 })
 
         getIFrame().find('span:contains("Cerca"):visible')
+
+        cy.screenshot('Assuntivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
+    /**
+     * Click sul popup di Inserimento Manuale Fast Quote Auto
+     */
     static clickProcediInserimentoManualeFastQuoteAuto() {
         cy.contains('Procedi con l\'inserimento manuale').should('exist').click()
 
@@ -351,8 +412,12 @@ class SintesiCliente {
         cy.wait('@getMotor', { requestTimeout: 50000 })
 
         getIFrame().find('span:contains("Cerca"):visible')
+        cy.screenshot('Assuntivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
+    /**
+     * Effettua Check su Fast Quote Albergo
+     */
     static checkFastQuoteAlbergo() {
         cy.get('lib-container').find('app-client-resume:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Fast Quote")').is(':visible')
@@ -380,9 +445,17 @@ class SintesiCliente {
     static VaiPreferiti() {
         cy.get('div').contains('Vai a Preferiti').click()
     }
-    //#endregion
 
-    //#region Emissioni
+    /**
+     * Verifica le Cards Emissioni
+     * @param {Object} keysCards
+     * @example let keysCards = {
+     *  AUTO: true,
+     *   RAMIVARI: true,
+     *   VITA: true
+     * }   
+     * 
+     */
     static checkCardsEmissioni(keysCards) {
         cy.get('app-client-resume app-client-resume-emissions').then(($emissione) => {
             if ($emissione.find('app-section-title .title').length > 0) {
@@ -397,29 +470,9 @@ class SintesiCliente {
     }
 
     /**
-     * Selezione emissione Auto da scheda Emissioni
-     * @param {json menu auto} menuAuto 
+     * Effettua Emissione del ramo indicato
+     * @param {string} fixtureEmissione vedi ../../fixtures/SchedaCliente/menuEmissione.json
      */
-    static emissioneAuto(menuAuto) {
-        cy.intercept({
-            method: 'POST',
-            url: '**/Auto/GestioneLibriMatricolaDA/**'
-        }).as('LibriMatricolaDA')
-        cy.get('app-kpi-dropdown-card[lob="motor"]').click() //apre il menù Motor
-
-        cy.log('Array menù auto: ' + menuAuto.length)
-        //scorre i sottomenù fino aselezionare l'opzione richiesta
-        for (var i = 0; i < menuAuto.length; i++) {
-            cy.log(menuAuto[i])
-            cy.get('button[role="menuitem"]').contains(menuAuto[i])
-                .should('be.visible').click()
-        }
-
-        //seleziona la prima agenzia dal poup "canale con cui vuoi procedere"
-        Common.canaleFromPopup()
-        cy.wait('@LibriMatricolaDA', { requestTimeout: 50000 });
-    }
-
     static Emissione(fixtureEmissione) {
         //apre il menù di emissione del ramo indicato
         cy.get('.card-container').find('.label')
@@ -434,7 +487,9 @@ class SintesiCliente {
     }
 
     /**
-     * seleziona la prima agenzia dal popup "seleziona il canale" in Matrix
+     * Seleziona la prima agenzia dal popup "seleziona il canale" in Matrix
+     * Utilizza Common.canaleFromPopup() 
+     * @deprecated
      */
     static selezionaPrimaAgenzia() {
         cy.get('[ngclass="agency-row"]')
@@ -444,7 +499,9 @@ class SintesiCliente {
         cy.wait(2000)
     }
 
-    //#region Links Card Auto
+    /**
+     * Effettua il click su Auto
+     */
     static clickAuto() {
         cy.get('lib-container').find('app-client-resume-emissions:visible').then(($fastquote) => {
             cy.get('.card-container').find('app-kpi-dropdown-card').contains('Auto').click()
@@ -453,7 +510,7 @@ class SintesiCliente {
 
     /**
      * Emissione Preventivo Motor
-     * ! DEVE ESSERE PRIMA UTILIZZATO IL METODO clickAuto()
+     * @requires clickAuto()
      */
     static clickPreventivoMotor() {
         cy.wait(2000)
@@ -469,7 +526,9 @@ class SintesiCliente {
         getIFrame().find('button:contains("Calcola"):visible')
     }
 
-
+    /**
+     * Click Flotte Convenzioni
+     */
     static clickFlotteConvenzioni() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
@@ -480,6 +539,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Assunzione Guidata
+     */
     static clickAssunzioneGuidata() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
@@ -490,6 +552,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Veicoli Epoca
+     */
     static clickVeicoliEpoca() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
@@ -500,19 +565,24 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Libri Matricola
+     */
     static clickLibriMatricola() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Libri matricola').click()
         Common.canaleFromPopup()
-        cy.wait(5000)
-        cy.wait('@LibriMatricolaDA', { requestTimeout: 50000 });
+        cy.wait(10000)
         matrixFrame().within(() => {
             cy.get('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
         })
     }
 
+    /**
+     * Click Kasko ARD Chilometro
+     */
     static clickKaskoARDChilometro() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
@@ -525,6 +595,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Kasko ARD Giornata
+     */
     static clickKaskoARDGiornata() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
@@ -537,6 +610,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Kasko ARD Veicolo
+     */
     static clickKaskoARDVeicolo() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
@@ -549,6 +625,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Polizza Base
+     */
     static clickPolizzaBase() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
@@ -561,6 +640,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Coassicurazione
+     */
     static clickCoassicurazione() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
@@ -572,6 +654,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Nuova Polizza Motor
+     */
     static clickNuovaPolizza() {
         cy.wait(2000)
         if (!Cypress.env('isAviva'))
@@ -586,6 +671,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Nuova Polizza Guidata
+     */
     static clickNuovaPolizzaGuidata() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
@@ -596,6 +684,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Nuova Polizza Coassicurazione
+     */
     static clickNuovaPolizzaCoassicurazione() {
         cy.wait(2000)
         if (!Cypress.env('isAviva'))
@@ -608,9 +699,10 @@ class SintesiCliente {
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
-    //#endregion
 
-    //#region Links Card Rami Vari
+    /**
+     * Click Rami Vari
+     */
     static clickRamiVari() {
         cy.get('lib-container').find('app-client-resume-emissions:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Rami vari")').is(':visible')
@@ -621,6 +713,9 @@ class SintesiCliente {
         })
     }
 
+    /**
+     * Click Allianz Ultra Casa Patrimonio
+     */
     static clickAllianzUltraCasaPatrimonio() {
         cy.wait(2000)
         if (!Cypress.env('isAviva')) {
@@ -632,6 +727,9 @@ class SintesiCliente {
         getIFrame().find('span:contains("PROCEDI"):visible')
     }
 
+    /**
+     * Click Allianz Ultra Casa Patrimonio BMP
+     */
     static clickAllianzUltraCasaPatrimonioBMP() {
         cy.wait(2000)
         if (!Cypress.env('isAviva')) {
@@ -650,6 +748,9 @@ class SintesiCliente {
         getIFrame().find('span:contains("PROCEDI"):visible')
     }
 
+    /**
+     * Click Allianz Ultra Salute
+     */
     static clickAllianzUltraSalute() {
         cy.wait(2000)
         if (!Cypress.env('isAviva')) {
@@ -662,6 +763,9 @@ class SintesiCliente {
         getIFrame().find('span:contains("PROCEDI"):visible')
     }
 
+    /**
+     * Click Allianz1 Business
+     */
     static clickAllianz1Business() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Allianz1 Business').click()
@@ -671,6 +775,9 @@ class SintesiCliente {
         getIFrame().find('a:contains("AVANTI"):visible')
     }
 
+    /**
+     * Click Fast Quote Universo Salute
+     */
     static clickFastQuoteUniversoSalute() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('FastQuote Universo Salute').click()
@@ -684,6 +791,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Fast Quote Infortuni da Circolazione
+     */
     static clickFastQuoteInfortuniDaCircolazione() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('FastQuote Infortuni Da Circolazione').click()
@@ -697,6 +807,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
     }
 
+    /**
+     * Click Fast Quote Impresa Sicura
+     */
     static clickFastQuoteImpresaSicura() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('FastQuote Impresa Sicura').click()
@@ -711,6 +824,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
     }
 
+    /**
+     * Click Fast Quote Albergo
+     */
     static clickFastQuoteAlbergo() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('FastQuote Albergo').click()
@@ -722,6 +838,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
     }
 
+    /**
+     * Click Gestione Grandine
+     */
     static clickGestioneGrandine() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Gestione Grandine').click()
@@ -731,6 +850,9 @@ class SintesiCliente {
         getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
     }
 
+    /**
+     * Click Polizza Nuova Rami Vari
+     */
     static clickPolizzaNuova() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
@@ -742,9 +864,10 @@ class SintesiCliente {
         getIFrame().find('input[value="Avanti"]').invoke('attr', 'value').should('equal', 'Avanti')
         getIFrame().find('input[value="Uscita"]').invoke('attr', 'value').should('equal', 'Uscita')
     }
-    //#endregion
 
-    //#region Links Card Vita
+    /**
+     * Click Vita
+     */
     static clickVita() {
         cy.get('lib-container').find('app-client-resume-emissions:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Vita")').is(':visible')
@@ -754,6 +877,10 @@ class SintesiCliente {
                 assert.fail('Card Vita non è presente')
         })
     }
+
+    /**
+     * Click Vita > Servizio Consulenza
+     */
     static clickSevizioConsulenza() {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Accedi al servizio di consulenza').click()
@@ -770,11 +897,6 @@ class SintesiCliente {
         getIFrame().find('input[value="Avanti"]').should('be.visible').invoke('attr', 'value').should('equal', 'Avanti')
         getIFrame().find('input[value="Indietro"]:visible').invoke('attr', 'value').should('equal', 'Indietro')
     }
-    //#endregion
-
-    //#endregion
-
-    //#region Contratti in Evidenza
 
     /**
      * Verifica l'aggancio alla pagina del primo contratto
@@ -790,8 +912,10 @@ class SintesiCliente {
                 assert.fail('Contratti in evidenza')
         })
     }
-    //#endregion
 
+    /**
+     * Effettua la Cancellazione di un cliente
+     */
     static cancellaCliente() {
         cy.get('nx-icon[aria-label="Open menu"]').click();
         cy.contains('Cancellazione cliente').click();
@@ -799,6 +923,9 @@ class SintesiCliente {
         cy.contains('Ok').click();
     }
 
+    /**
+     * Emette Plein Air (flusso completo)
+     */
     static emettiPleinAir() {
         cy.get('nx-icon[aria-label="Open menu"]').click();
         cy.contains('PLEINAIR').click();
@@ -839,9 +966,10 @@ class SintesiCliente {
     }
 
     /**
+     * Verifica Documenti Anagrafici in Folder
      * @param {Array.String} labels - labels dei documenti da verificare in folder
      */
-    static verificaInFolder(labels) {
+    static verificaInFolderDocumentiAnagrafici(labels) {
         cy.get('nx-icon[aria-label="Open menu"]').click()
         cy.contains('folder').click()
         Common.canaleFromPopup()
@@ -853,6 +981,20 @@ class SintesiCliente {
         })
     }
 
+    /**
+     * Verifica Data in Spalla Sinistra
+     * @param {Objec} cliente Dati del cliente da verificare
+     * @example let cliente = {
+        nuovoClientePG.tipologia = "DITTA"
+        nuovoClientePG.formaGiuridica = "S.R.L."
+        nuovoClientePG.toponimo = "PIAZZA"
+        nuovoClientePG.indirizzo = "GIUSEPPE GARIBALDI"
+        nuovoClientePG.numCivico = "1"
+        nuovoClientePG.cap = "36045"
+        nuovoClientePG.citta = "LONIGO"
+        nuovoClientePG.provincia = "VI"
+        }
+     */
     static verificaDatiSpallaSinistra(cliente) {
         //Verifica indirizzo
         cy.get('.client-name').should('contain.text', String(cliente.ragioneSociale).toUpperCase().replace(",", ""))
@@ -866,20 +1008,31 @@ class SintesiCliente {
         cy.get('nx-icon[class*=mail]').parent().get('div').should('contain.text', String(cliente.email).toLowerCase())
     }
 
+    /**
+     * Check Atterraggio in Sintesi Cliente
+     * @param {string} cliente Nome del cliente da verificare
+     */
     static checkAtterraggioSintesiCliente(cliente) {
         cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class', 'active')
         cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
     }
 
+    /**
+     * Click su Clients BreadCrumb
+     */
     static clickClientsBriciolaPane() {
         cy.contains("Clients").should('exist').click({ force: true })
     }
 
-    static checkAtterraggioName(cliente) {
-        cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class', 'active')
-        cy.get('.client-name').should('contain.text', cliente)
-    }
-
+    /**
+     * @typedef Client
+     * @property {string} name Nome del cliente
+     * @property {string} address Indirizzo del cliente
+     */
+    /**
+     * Funzione che ritorna il nome del cliente e il suo indirizzo
+     * @returns {Promise<Client>} Promise per nome e indirizzo del cliente
+     */
     static retriveClientNameAndAddress() {
         return new Cypress.Promise((resolve, reject) => {
             let client = { name: '', address: '' }
@@ -895,10 +1048,15 @@ class SintesiCliente {
                     cy.log('Retrived Client Address : ' + client.address)
                 })
 
+            cy.screenshot('Cliente Selezionato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             resolve(client);
         });
     }
 
+    /**
+     * Ritorna l'url del cliente
+     * @returns {Promise<string>} Promise url del cliente
+     */
     static retriveUrl() {
         return new Cypress.Promise((resolve) => {
             resolve(cy.url())
@@ -940,7 +1098,7 @@ class SintesiCliente {
     /**
      * Verifica se la Scheda del Cliente ha presente o meno il Numero o la Mail principale
      * @param {string} contactType tipo di contatto a scelta tra 'numero' e 'mail'
-     * @returns true se presente, false se assente
+     * @returns {Promise<boolean>} Promise ritorna true se presente, false se assente
      */
     static checkContattoPrincipale(contactType) {
         return new Promise((resolve, reject) => {
@@ -964,9 +1122,11 @@ class SintesiCliente {
         let missingValue;
         (contactType === 'numero') ? missingValue = ' Aggiungi numero principale ' : missingValue = ' Aggiungi mail principale '
         cy.get('div.da-link.ng-star-inserted').should('be.visible').find('div:contains("' + missingValue + '")').click()
-
     }
 
+    /**
+     * Clicca sul BreadCrumb Clients per tornare in Sintesi Cliente
+     */
     static back() {
         cy.intercept({
             method: 'POST',
@@ -1002,6 +1162,8 @@ class SintesiCliente {
 
     /**
      * Emette Report Profilo Vita cliccando sui 3 puntini della spalla sx in atterraggio su Sintesi Cliente
+     * @param {string} agenzia in fase di disambiguazione da cliccare
+     * @param {boolean} [erroMessage] default false, se a true controlla prezenza errore
      */
     static emettiReportProfiloVita(agenzia, errorMessage = false) {
         cy.intercept('POST', '**/graphql', (req) => {
@@ -1039,34 +1201,22 @@ class SintesiCliente {
         }
     }
 
+    /**
+     * Verifica i Links da Card Auto
+     */
     static checkLinksFromAuto() {
-        // if (!Cypress.env('isAviva')) {
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
             const linksAuto = Object.values(Auto)
-            // const linksAuto = [
-            //     'Emissione',
-            //     'Prodotti particolari',
-            //     'Passione BLU'
-            // ]
             cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
                 expect($buttonLinks).to.contain(linksAuto[i])
             })
         })
-        // } else {
-        //AVIVA
-        // cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
-        // const linksAuto = [
-        //         'Emissione',
-        //         'Natanti',
-        //     ]
-        //     cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
-        //         expect($buttonLinks).to.contain(linksAuto[i])
-        //     })
-        // })
-        // }
-
     }
 
+    /**
+     * Verifica i Links da Card Rami Vari
+     * @param {Object} keys 
+     */
     static checkLinksFromRamiVari(keys) {
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
 
@@ -1078,6 +1228,9 @@ class SintesiCliente {
         })
     }
 
+    /**
+     * Verifica i Links da Card Vita
+     */
     static checkLinksFromVita() {
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
             const linksPassioneBlu = [
@@ -1089,6 +1242,10 @@ class SintesiCliente {
         })
     }
 
+    /**
+     * Verifica Links da Auto su Emissione
+     * @param {Object} keysAuto
+     */
     static checkLinksFromAutoOnEmissione(keysAuto) {
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
@@ -1100,6 +1257,10 @@ class SintesiCliente {
         })
     }
 
+    /**
+     * Verifica Links Auto su Prodotti Particolari
+     * @param {Object} keysAuto
+     */
     static checkLinksFromAutoOnProdottiParticolari(keysAuto) {
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
@@ -1112,6 +1273,9 @@ class SintesiCliente {
         })
     }
 
+    /**
+     * Verifica Links Auto Passione Blu
+     */
     static checkLinksFromAutoOnPassioneBlu() {
         cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
@@ -1125,6 +1289,10 @@ class SintesiCliente {
             })
         })
     }
+
+    /**
+     * Verifica Links Auto Natanti
+     */
     static checkLinksFromAutoOnNatanti() {
         cy.get('.cdk-overlay-container').find('button').contains('Natanti').click()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
@@ -1138,6 +1306,9 @@ class SintesiCliente {
         })
     }
 
+    /**
+     * Verifica Links da Rami Vari Emissione
+     */
     static checkLinksFromRamiVariOnEmissione() {
         cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
@@ -1150,6 +1321,9 @@ class SintesiCliente {
         })
     }
 
+    /**
+     * Verifica Links da Auto Prodotti Particolari Kasko
+     */
     static checkLinksFromAutoOnProdottiParticolariKasko() {
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
         cy.get('.cdk-overlay-container').find('button').contains('Kasko e ARD per \'Dipendenti in Missione\'').click()
@@ -1165,6 +1339,9 @@ class SintesiCliente {
         })
     }
 
+    /**
+     * Verifica Links da Auto Prodotti Particolari Polizza Aperta
+     */
     static checkLinksFromAutoOnProdottiParticolariPolizzaAperta() {
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
         cy.get('.cdk-overlay-container').find('button').contains('Polizza aperta').click()

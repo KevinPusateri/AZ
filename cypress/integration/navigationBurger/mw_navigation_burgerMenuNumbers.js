@@ -68,51 +68,6 @@ after(function () {
     //#endregion
 
 })
-
-// if (Cypress.env('isAviva'))
-//     describe(' AVIVA Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
-//         it('AVIVA - Verifica i link da Burger Menu', function () {
-//             TopBar.clickNumbers()
-//             BurgerMenuNumbers.checkExistLinks(keys)
-//         })
-
-//         it('AVIVA - Verifica aggancio Monitoraggio Fonti', function () {
-//             TopBar.clickNumbers()
-//             BurgerMenuNumbers.clickLink('Monitoraggio Fonti')
-//             BurgerMenuNumbers.backToNumbers()
-//         })
-
-//         it('AVIVA - Verifica aggancio New Business Danni', function () {
-//             TopBar.clickNumbers()
-//             BurgerMenuNumbers.clickLink('New Business Danni')
-//             BurgerMenuNumbers.backToNumbers()
-//         })
-
-//         it('AVIVA - Verifica aggancio New Business Ultra Salute', function () {
-//             TopBar.clickNumbers()
-//             BurgerMenuNumbers.clickLink('New Business Ultra Salute')
-//             BurgerMenuNumbers.backToNumbers()
-//         })
-
-//         it('AVIVA - Verifica aggancio Monitoraggio PTF Danni', function () {
-//             TopBar.clickNumbers()
-//             BurgerMenuNumbers.clickLink('Monitoraggio PTF Danni')
-//             BurgerMenuNumbers.backToNumbers()
-//         })
-
-//         it('AVIVA - Verifica aggancio Monitoraggio Andamento Premi', function () {
-//             TopBar.clickNumbers()
-//             BurgerMenuNumbers.clickLink('Monitoraggio Andamento Premi')
-//             BurgerMenuNumbers.backToNumbers()
-//         })
-
-//         it('AVIVA - Verifica aggancio Monitoraggio Ricavi d\'Agenzia', function () {
-//             TopBar.clickNumbers()
-//             BurgerMenuNumbers.clickLink('Monitoraggio Ricavi d\'Agenzia')
-//             BurgerMenuNumbers.backToNumbers()
-//         })
-//     })
-// else
 describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     it('Verifica i link da Burger Menu', function () {
@@ -150,7 +105,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
     })
 
     it('Verifica aggancio Incentivazione', function () {
-        if (!keys.INCENTIVAZIONE)
+        if (!keys.INCENTIVAZIONE && !Cypress.env('isAviva'))
             this.skip()
         TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Incentivazione')

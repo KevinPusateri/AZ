@@ -134,7 +134,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO)
             this.skip()
         TopBar.clickSales()
-        BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
+        BurgerMenuSales.clickLink(Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio')
         BurgerMenuSales.backToSales()
     });
 

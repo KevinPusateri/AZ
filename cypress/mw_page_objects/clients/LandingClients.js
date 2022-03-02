@@ -59,6 +59,8 @@ class LandingClients {
         cy.get('app-home-right-section').find('app-rapid-link:visible').each(($checkLinksRapidi, i) => {
             expect($checkLinksRapidi.text().trim()).to.include(linksCollegamentiRapidi[i]);
         })
+
+        cy.screenshot('Verifica presenza collegamenti rapidi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -82,7 +84,7 @@ class LandingClients {
      * Click link nella sezione "Collegamenti rapidi"
      * @param {string} page - nome del link
      */
-    static clickLinkRapido(page) {
+    static clickLinkRapido(page, keyDigitalMe = {}) {
         switch (page) {
             case LinksRapidi.ANALISI_DEI_BISOGNI:
                 if (Cypress.isBrowser('firefox')) {
@@ -103,15 +105,21 @@ class LandingClients {
                 cy.get('app-digital-me-header').should('exist').and('be.visible').then(($digitalme) => {
                     const checkIsRequest = $digitalme.find(':contains("Ci sono 0 richieste Digital me, di cui 0 da gestire")').is(':visible')
                     if (!checkIsRequest) {
-                        const tabDigitalMe = [
-                            'Richieste Cliente',
-                            'Pubblicazione Proposte'
-                        ]
-                        cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
-                            expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
-                        })
-                        cy.contains('Richieste Cliente').click()
-                        cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
+                        let tabDigitalMe = []
+                        if (keyDigitalMe.PUBBLICAZIONE_PROPOSTE) {
+
+                            tabDigitalMe = [
+                                'Richieste Cliente',
+                                'Pubblicazione Proposte'
+                            ]
+                            cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
+                                expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
+                            })
+                            cy.contains('Richieste Cliente').click()
+                            cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
+                        } else {
+                            cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
+                        }
                     } else
                         cy.wrap($digitalme).should('contain.text', 'Ci sono 0 richieste Digital me, di cui 0 da gestire')
                 })
@@ -132,6 +140,8 @@ class LandingClients {
                 Common.canaleFromPopup()
                 getIFrame().find('#divMain:contains("Servizi antiriciclaggio"):visible')
                 break;
+
+                cy.screenshot('Verifica link rapido ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         }
     }
 
@@ -141,6 +151,7 @@ class LandingClients {
     static clickNuovoCliente() {
         cy.get('.component-section').find('button').contains('Nuovo cliente').click()
         cy.url().should('eq', Common.getBaseUrl() + 'clients/new-client')
+        cy.screenshot('Verifica Nuovo Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -154,10 +165,12 @@ class LandingClients {
         cy.get('.actions-box').contains('Vai a visione globale').click()
         cy.wait('@getDaCommerciale', { requestTimeout: 50000 })
         getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
+        cy.screenshot('Verifica Visione Globale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     static checkAssenzaVisioneGlobale() {
-        cy.get('.actions-box').contains('Vai a visione globale').should('not.be.visible')
+        cy.get('.actions-box').should('not.include.text', 'Vai a visione globale')
+        cy.screenshot('Verifica Assenza Visione Globale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -166,6 +179,7 @@ class LandingClients {
     static clickAppuntamenti() {
         cy.get('.meetings').click()
         cy.url().should('eq', Common.getBaseUrl() + 'clients/event-center')
+        cy.screenshot('Verifica Appuntamento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -184,39 +198,46 @@ class LandingClients {
                 cy.get('app-dm-requests-card').should('be.visible')
             }
 
+            cy.screenshot('Verifica Digital Me', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         });
     }
 
-    static checkDigitalMe() {
+    static checkDigitalMe(keyDigitalMe) {
         cy.wait(5000)
-
+        console.log(keyDigitalMe)
         cy.get('app-digital-me-header').should('exist').and('be.visible').then(($digitalme) => {
             const checkIsRequest = $digitalme.find(':contains("Ci sono 0 richieste Digital me, di cui 0 da gestire")').is(':visible')
             if (checkIsRequest)
                 cy.wrap($digitalme).should('contain.text', 'Ci sono 0 richieste Digital me, di cui 0 da gestire')
             else {
 
-                const tabDigitalMe = [
-                    'Richieste Cliente',
-                    'Pubblicazione Proposte'
-                ]
-                cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
-                    expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
-                })
+                let tabDigitalMe = []
+                if (keyDigitalMe.PUBBLICAZIONE_PROPOSTE) {
 
-                cy.contains('Richieste Cliente').click()
-                cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
-                this.digitalMe('Richieste Cliente');
+                    tabDigitalMe = [
+                        'Richieste Cliente',
+                        'Pubblicazione Proposte'
+                    ]
+                    cy.get('nx-tab-group').find('button').each(($checkTabDigitalMe, i) => {
+                        expect($checkTabDigitalMe.text().trim()).to.include(tabDigitalMe[i]);
+                    })
+                    cy.contains('Richieste Cliente').click()
+                    cy.get('app-digital-me-main-table').find('tr > td').should('be.visible')
+                    this.digitalMe('Richieste Cliente');
+                }
 
-                cy.intercept('POST', '**/graphql', (req) => {
-                    if (req.body.operationName.includes('dmEventMotor')) {
-                        req.alias = 'gqlEventMotor'
-                    }
-                })
-                cy.contains('Pubblicazione Proposte').click()
-                cy.get('app-digital-me-main-table').should('be.visible')
+
+                if (keyDigitalMe.PUBBLICAZIONE_PROPOSTE) {
+                    cy.intercept('POST', '**/graphql', (req) => {
+                        if (req.body.operationName.includes('dmEventMotor')) {
+                            req.alias = 'gqlEventMotor'
+                        }
+                    })
+                    cy.contains('Pubblicazione Proposte').click()
+                    cy.get('app-digital-me-main-table').should('be.visible')
+                }
             }
-
+            cy.screenshot('Verifica Digital Me', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
     }
 
@@ -254,6 +275,7 @@ class LandingClients {
                         break;
                 }
             });
+        cy.screenshot('Verifica Digital Me', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -264,6 +286,8 @@ class LandingClients {
     static clickVediTutte() {
         cy.contains('Vedi tutte').click()
         cy.url().should('include', '/clients/digital-me')
+
+        cy.screenshot('Click su button "Vedi tutte" da Richieste Digital Me', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -289,6 +313,8 @@ class LandingClients {
                 expect(titleGlobals).to.include(title.text().trim());
             })
         })
+
+        cy.screenshot('Verifica che il contenuto di Visione globale cliente sia presente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     }
 }

@@ -6,6 +6,7 @@
 import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
+import StartPage from "../../mw_page_objects/UltraBMP/StartPage"
 import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
@@ -14,11 +15,16 @@ import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
 import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
 import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
+import Portafoglio from "../../mw_page_objects/Clients/Portafoglio"
 import Common from "../../mw_page_objects/common/Common"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import BurgerMenuSales from "../../mw_page_objects/burgermenu/BurgerMenuSales"
+import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
+import Annullamento from "../../mw_page_objects/polizza/Annullamento"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
+import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import 'cypress-iframe';
 
 
@@ -53,6 +59,7 @@ import { daVerificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareCasa } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareAnimale } from '../../fixtures//Ultra/BMP_Caso1.json'
 import { daModificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
+import { defaultFQ } from '../../fixtures//Ultra/BMP_Comune.json'
 import { defaultCasa } from '../../fixtures//Ultra/BMP_Comune.json'
 import { defaultAnimale } from '../../fixtures//Ultra/BMP_Comune.json'
 import { soluzione } from '../../fixtures//Ultra/BMP_Comune.json'
@@ -70,22 +77,14 @@ var premioRC_Dopo = 0
 var premioRC_Affittacamere = 0
 var premioRC_ProprietàAnimali = 0
 
-let personaFisica = PersonaFisica.MassimoRoagna()
+//let personaFisica = PersonaFisica.MassimoRoagna()
+let personaFisica = PersonaFisica.CarloRossini()
+var nContratto = "000"
 var clienteUbicazione = ""
 var frazionamento = "annuale"
-var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
-var defaultFQ = {
-    "TipoAbitazione"    : "appartamento",
-    "MqAbitazione"      : "100",
-    "UsoAbitazione"     : "casa principale",
-    "CapAbitazione"     : ""
-}
-var valoriIns = {
-    "TipoAbitazione"    : "villa indipendente",
-    "MqAbitazione"      : "155",
-    "UsoAbitazione"     : "casa saltuaria",
-    "CapAbitazione"     : ""
-}
+//var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
+var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile, ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici]
+
 //#endregion variabili iniziali
 
 
@@ -118,29 +117,45 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO)
     })
      
-    it("Verifica valori default FQ", () => {
-        UltraBMP.VerificaDefaultFQ(defaultFQ)
-        UltraBMP.ClickButton('SCOPRI LA PROTEZIONE')
+    it("Verifica valori default FQ e accesso alla dashboard", () => {
+        StartPage.VerificaDefaultFQ(defaultFQ)
+        StartPage.startScopriProtezione()
+        //Dashboard.caricamentoDashboardUltra()    
     })
-
+    
     it("Seleziona ambiti", () => {
         cy.log('Seleziona ambito')
+        
+        /*
         for(var i = 0; i<ambiti.length; i++ )
         {
             cy.log('RICERCA AMBITO: ' + ambiti[i])
             UltraBMP.SelezionaAmbito(ambiti[i])
+            
+            cy.pause()
         }
+        */
+        
+        Dashboard.selezionaAmbiti(ambiti)
     })
     
     
     it("Cambia Soluzioni", () => {
+        /*
     Ultra.modificaSoluzioneHome(ambitoUltra.FABBRICATO, soluzione.TOP)
     Ultra.modificaSoluzioneHome(ambitoUltra.RESPONSABILITA_CIVILE, soluzione.PREMIUM)
     Ultra.modificaSoluzioneHome(ambitoUltra.ANIMALI_DOMESTICI, soluzione.ESSENTIAL)
+    */
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, soluzione.TOP)
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile, soluzione.PREMIUM)
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici, soluzione.ESSENTIAL)
+    
     })
     
     it("Accesso Dati Quotazione da menù", ()=>{
-        UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
+        //UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
+        Dashboard.selezionaVoceHeader('Dati quotazione')    //<<<<===== DA FARE AL POSTO DI QUELLO SOPRA 
+        //cy.pause()
         DatiQuotazione.VerificaDefaultCasa('Casa 1', daVerificareCasa, defaultCasa)
         DatiQuotazione.VerificaDefaultAnimaleDomestico('Animale domestico 1', daVerificareAnimale, defaultAnimale)
         DatiQuotazione.ModificaValoriCasa('Casa 1', daModificareCasa, modificheCasa)
@@ -289,6 +304,7 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         CensimentoAnagrafico.selezionaAnimale(modificheAnimale.Nome, personaFisica, '380260000279818', true)
         CensimentoAnagrafico.Avanti()
         DatiIntegrativi.caricamentoPagina()
+        //cy.pause()
     })
 
     it("Dati integrativi", () => {
@@ -297,13 +313,13 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         DatiIntegrativi.verificaDatoPolizzaModificabile("Tacito rinnovo", true)
         DatiIntegrativi.verificaDatoPolizzaModificabile("Adeguamento automatico annuale", true)
         DatiIntegrativi.selezionaTuttiNo()
-        cy.pause()
+        //cy.pause()
         DatiIntegrativi.verificaRetrodatabilità()
-        cy.pause()
+        //cy.pause()
         DatiIntegrativi.ClickButtonAvanti()
         DatiIntegrativi.popupDichiarazioni()
         ConsensiPrivacy.caricamentoPagina()
-        cy.pause()
+        //cy.pause()
     })
 
     it("Consensi e privacy", () => {
@@ -311,30 +327,41 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         ConsensiPrivacy.verificaSezione('Privacy')
         ConsensiPrivacy.Avanti()
         ControlliProtocollazione.caricamentoPagina()
-        cy.pause()
+        //cy.pause()
     })
 
-    it("salvataggio Contratto e verifiche", () => {
+    it("salvataggio Contratto", () => {
         ControlliProtocollazione.salvataggioContratto()
-        ControlliProtocollazione.verificaOpzione('Tipo firma', 'MANUALE')
-        cy.pause()
+        //ControlliProtocollazione.verificaOpzione('Tipo firma', 'MANUALE')
+        ControlliProtocollazione.impostaOpzione("All'esterno dell'agenzia / a distanza", 'SI')
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 4-ter - Elenco delle regole di comportamento del distributore")
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 3 - Informativa sul distributore")
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 4 - Informazioni sulla distribuzione del prodotto assicurativo non-IBIP")
+        ControlliProtocollazione.Avanti()    // Non prosegue prima della visualizzazione dei documenti
+        //cy.pause()
     })
 
+    /*
     it("Intermediario", () => {
         ControlliProtocollazione.inserimentoIntermediario()
         cy.pause()
     })
+    */
 
     it("Visualizza documenti e prosegui", () => {
         ControlliProtocollazione.riepilogoDocumenti()
         ControlliProtocollazione.Avanti()
-        cy.pause()
+        ControlliProtocollazione.aspettaCaricamentoAdempimenti()
+        //cy.pause()
     })
 
     it("Adempimenti precontrattuali e Perfezionamento", () => {
-        ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
+        ControlliProtocollazione.verificaPresenzaDocumento("Informativa precontrattuale: Allegati 3, 4 e 4TER")
+        ControlliProtocollazione.verificaPresenzaDocumento("Regolamento Allianz Ultra e Set informativo")
+        ControlliProtocollazione.stampaAdempimentiPrecontrattuali(false)
+        //cy.pause()
         ControlliProtocollazione.salvaNContratto()
-        cy.pause()
+        //cy.pause()
 
         cy.get('@contratto').then(val => {
             nContratto = val
@@ -342,26 +369,98 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
 
         ControlliProtocollazione.Incassa()
         Incasso.caricamentoPagina()
-        cy.pause()
+        //cy.pause()
     })
 
     it("Incasso - parte 1", () => {
         Incasso.ClickIncassa()
         Incasso.caricamentoModPagamento()
-        cy.pause()
+        //cy.pause()
     })
 
     it("Incasso - parte 2", () => {
         Incasso.SelezionaMetodoPagamento('Assegno')
+        //Incasso.SelezionaTipoDelega('Nessuna Delega')
         Incasso.ConfermaIncasso()
         Incasso.caricamentoEsito()
-        cy.pause()
+        //cy.pause()
     })
 
     it("Esito incasso", () => {
         Incasso.EsitoIncasso()
         Incasso.Chiudi()
-        cy.pause()
+        UltraBMP.aspettaPopupConferma()
+        //cy.pause()
     })
+
+    it("Chiusura e apertura sezione Clients", () => {
+        Ultra.chiudiFinale()
+        StartPage.caricamentoPagina()
+        cy.pause()
+        
+        // Ricerca anagrafica
+        cy.get('body').within(() => {
+            cy.get('input[name="main-search-input"]').click()
+            cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
+            cy.get('lib-client-item').first().click()
+        }).then(($body) => {
+            cy.wait(7000)
+            const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+            cy.log('permessi: ' + check)
+            if (check) {
+                cy.get('input[name="main-search-input"]').type(personaFisica).type('{enter}')
+                cy.get('lib-client-item').first().next().click()
+            }
+        })
+        //cy.pause()
+    })
+
+    it("Annullamento contratto da Portafoglio", () => {
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.ordinaPolizze("Numero contratto")
+        //Portafoglio.menuContratto(nContratto, menuPolizzeAttive.annullamento)
+        //Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
+        //Ultra.selezionaPrimaAgenzia()
+        cy.log(">>>>> ANNULLAMENTO CONTRATTO: " + nContratto)
+        //cy.pause()
+        Portafoglio.clickAnnullamento(nContratto, 'ANN.ORIGINE/MANCATO PERFEZIONAMENTO IN AGENZIA')
+        //cy.pause()
+        //Annullamento.annullaContratto()
+        UltraBMP.annullamentoContratto()
+        //cy.pause()
+        TopBar.search(personaFisica.nomeCognome())
+        //cy.pause()
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        //cy.pause()
+        Portafoglio.clickTabPortafoglio()
+        //cy.pause()
+        Portafoglio.checkPolizzaIsNotPresentOnPolizzeAttive(nContratto)
+
+        //cy.pause()
+
+        /*
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.ordinaPolizze("Numero contratto")
+        //Portafoglio.menuContratto(nContratto, menuPolizzeAttive.annullamento)
+        //Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
+        //Ultra.selezionaPrimaAgenzia()
+        Portafoglio.clickAnnullamento(nContratto, 'ANN.ORIGINE/MANCATO PERFEZIONAMENTO IN AGENZIA')
+        Annullamento.annullaContratto()
+        TopBar.search(personaFisica)
+        LandingRicerca.clickClientePF(personaFisica.cognomeNome())
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.checkPolizzaIsNotPresentOnPolizzeAttive(nContratto)
+        */
+
+        //cy.pause()
+    })
+
+    it('Verifica che sulla card di polizza ci sia l’etichetta NON IN VIGORE ' +
+        'con il tooltip del motivo di annullamento: “4 Vendita/conto vendita”', function () {
+            Portafoglio.clickSubTab('Non in vigore')
+            Portafoglio.checkPolizzaIsPresentOnNonInVigore(nContratto, "16 - ANNULLAMENTO DALL'ORIGINE IN AGENZIA")
+            cy.pause()
+        })
+    
 
 })

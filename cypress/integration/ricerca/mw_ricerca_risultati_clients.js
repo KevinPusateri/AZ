@@ -65,9 +65,9 @@ describe('Buca di Ricerca - Risultati Clients', function() {
         describe('Buca di Ricerca - Risultati Clients - AVIVA', function() {
 
             it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function() {
-                TopBar.search('MASSIMO CASALEGNO')
+                TopBar.search('CRISTINA PO')
                 LandingRicerca.clickFirstResult()
-                SintesiCliente.checkAtterraggioSintesiCliente('MASSIMO CASALEGNO')
+                SintesiCliente.checkAtterraggioSintesiCliente('CRISTINA PO')
             })
         })
     } else {

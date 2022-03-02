@@ -146,15 +146,15 @@ beforeEach(() => {
         SintesiCliente.wait()
     }
 })
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+})
 
 describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
 
@@ -463,8 +463,6 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Contratti in evidenza', function () {
-        if (!keysCards.VITA)
-            this.skip()
         SintesiCliente.checkContrattiEvidenza()
         SintesiCliente.back()
     })

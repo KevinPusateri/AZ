@@ -27,6 +27,12 @@ let keys = {
     ANTIRICICLAGGIO: true,
     HOSPITAL_SCANNER: true,
 }
+let keyVisione = {
+    VISIONE_GLOBALE_CLIENTE: true
+}
+let keyDigitalMe = {
+    PUBBLICAZIONE_PROPOSTE: true
+}
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
@@ -36,6 +42,9 @@ before(() => {
             cy.filterProfile(profiling, 'COMMON_CLIENTE_SOGGETTI_DUPLICATI').then(profiled => { keys.CLIENTI_DUPLICATI = profiled })
             cy.filterProfile(profiling, 'PO_ANTIRICICLAGGIO').then(profiled => { keys.ANTIRICICLAGGIO = profiled })
             cy.filterProfile(profiling, 'HOSPITAL_SCANNER').then(profiled => { keys.HOSPITAL_SCANNER = profiled })
+            cy.filterProfile(profiling, 'DIGITALME_OFFERTA').then(profiled => { keyDigitalMe.PUBBLICAZIONE_PROPOSTE = profiled })
+            cy.filterProfile(profiling, 'SCAD_SCADEN_CLIENTE').then(profiled => { keyVisione.VISIONE_GLOBALE_CLIENTE = profiled })
+
         })
     })
 })
@@ -81,7 +90,7 @@ describe('Matrix Web : Navigazioni da Clients', function () {
 
     it('Verifica aggancio Digital Me', function () {
         TopBar.clickClients()
-        Clients.clickLinkRapido('Digital Me')
+        Clients.clickLinkRapido('Digital Me', keyDigitalMe)
         Clients.backToClients()
     });
 
@@ -121,13 +130,14 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     })
 
     it('Verifica aggancio Vai a visione globale', function () {
-        if (Cypress.env('isAviva'))
+        if (!keyVisione.VISIONE_GLOBALE_CLIENTE || Cypress.env('isAviva'))
             this.skip()
         TopBar.clickClients()
         Clients.clickVisioneGlobale()
     });
 
-    if (Cypress.env('isvAviva'))
+    //! Solo Per Aviva il button non è presente
+    if (Cypress.env('isAviva'))
         it('Verifica Assenza "Vai a visione globale"', function () {
             TopBar.clickClients()
             Clients.checkAssenzaVisioneGlobale()
@@ -147,6 +157,6 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     it('Verifica aggancio Richiesta Digital Me - button Vedi tutte', function () {
         TopBar.clickClients()
         Clients.clickVediTutte()
-        Clients.checkDigitalMe()
+        Clients.checkDigitalMe(keyDigitalMe)
     });
 })

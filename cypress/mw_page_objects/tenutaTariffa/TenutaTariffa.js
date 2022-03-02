@@ -53,12 +53,13 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
     if (currentGaranziaARD === null) {
         //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA
         debugger
-        if (descSettore === 'KASKO_COLLISIONE')
+        if (descSettore === 'KASKO_COLLISIONE' || (descSettore === 'KASKO_COMPLETA'))
             garanziaARD = findKeyLogTariffa('Garanzia')[2]
+        else if (descSettore === 'AVENS')
+            garanziaARD = findKeyLogTariffa('Garanzia')[4]
         else
             garanziaARD = findKeyLogTariffa('Garanzia')[1]
     }
-
     else
         garanziaARD = currentGaranziaARD
 
@@ -140,8 +141,8 @@ class TenutaTariffa {
 
             //Targa
             if (currentCase.Targa !== '') {
-                cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(500)
-                cy.get('input[aria-label="Targa"]').type(currentCase.Targa).wait(500)
+                cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
+                cy.get('input[aria-label="Targa"]').clear().wait(500).type(currentCase.Targa).wait(500)
             }
 
             cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
@@ -486,7 +487,7 @@ class TenutaTariffa {
 
             //#region Dettagli
             //? su Prima immatricolazione non servono i dettagli aggiuntivi
-            if (currentCase.Provenienza !== "Prima immatricolazione" && currentCase.Provenienza !== "Voltura") {
+            if (currentCase.Provenienza !== "Prima immatricolazione") {
                 if (currentCase.Data_Scadenza !== "") {
                     //Scadenza precedente contratto
                     let dataScadenzaPrecedenteContratto
@@ -858,6 +859,7 @@ class TenutaTariffa {
                     break
                 case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
                 case "KASKO_COLLISIONE":
+                case "KASKO_COMPLETA":
                     cy.contains("Kasko").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
 
@@ -865,8 +867,14 @@ class TenutaTariffa {
                     cy.get(':contains("Tipo"):last').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
                     cy.get('nx-dropdown-item').contains(currentCase.Tipo_Kasko).click()
                     cy.get('nx-spinner').should('not.be.visible')
+                    break
+                case "AVENS":
+                    //? AVENS compare attivando Furto
+                    cy.contains("Furto").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
 
-                    //cy.pause()
+                    cy.contains("Atti Vandalici ed Eventi Naturali").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
                     break
             }
 
@@ -953,7 +961,11 @@ class TenutaTariffa {
                             break
                         case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
                         case "KASKO_COLLISIONE":
+                        case "KASKO_COMPLETA":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
+                            break
+                        case "AVENS":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
                             break
                     }
                 })
