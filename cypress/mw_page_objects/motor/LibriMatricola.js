@@ -927,9 +927,6 @@ class LibriMatricola {
 
             // // Privacy per scopi assicurativi
             // cy.get('#consenso32027850_1SI').should('be.visible').click()
-            cy.contains('Consensi privacy').parents('table').within(() => [
-
-            ])
 
             //? CAPITA che non sia settato di default capire in base all'agenzia
             cy.get('#pnlIntermediari').should('be.visible').within(() => {
