@@ -982,6 +982,28 @@ class SintesiCliente {
     }
 
     /**
+     * Verifica Documenti in Folder - 
+     * @param {Array.String} folders - albero cartelle dove si trovano i documenti da verificare in folder
+     * @param {Array.String} labels - labels dei documenti da verificare in folder
+     */
+     static verificaInFolderDocumenti(folders, labels) {
+        cy.get('nx-icon[aria-label="Open menu"]').click()
+        cy.contains('folder').click()
+        Common.canaleFromPopup()
+        getIFrame().find('span[class="k-icon k-plus"]:visible').click()
+        for(var i = 0; i < folders.length; i++) {
+            cy.log(('folders[' + i + ']: ' + folders[i]))
+            getIFrame().find('span').contains(folders[i]).dblclick()
+            cy.wait(2000)
+        }
+        debugger
+        cy.wrap(labels).each((label, i, array) => {
+            getIFrame().find('span').contains(label).click()
+            cy.wait(2000)
+        })
+    }
+
+    /**
      * Verifica Data in Spalla Sinistra
      * @param {Objec} cliente Dati del cliente da verificare
      * @example let cliente = {

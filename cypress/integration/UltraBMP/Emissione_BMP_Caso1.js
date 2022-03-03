@@ -25,6 +25,7 @@ import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.js
 import Annullamento from "../../mw_page_objects/polizza/Annullamento"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import 'cypress-iframe';
 
 
@@ -82,6 +83,8 @@ let personaFisica = PersonaFisica.CarloRossini()
 var nContratto = "000"
 var clienteUbicazione = ""
 var frazionamento = "annuale"
+var arrPath = ['Polizze Allianz Ultra', nContratto, 'Versione 1', 'Appendici']
+var arrDoc = ['Richiesta di annullamento']
 //var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile, ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici]
 
@@ -424,7 +427,7 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         cy.log(">>>>> ANNULLAMENTO CONTRATTO: " + nContratto)
         //cy.pause()
         Portafoglio.clickAnnullamento(nContratto, 'ANN.ORIGINE/MANCATO PERFEZIONAMENTO IN AGENZIA')
-        //cy.pause()
+        cy.pause()
         //Annullamento.annullaContratto()
         UltraBMP.annullamentoContratto()
         //cy.pause()
@@ -460,7 +463,12 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
             Portafoglio.clickSubTab('Non in vigore')
             Portafoglio.checkPolizzaIsPresentOnNonInVigore(nContratto, "16 - ANNULLAMENTO DALL'ORIGINE IN AGENZIA")
             cy.pause()
-        })
+    })
+
+    it("Accesso folder", () => {
+        SintesiCliente.verificaInFolderDocumenti(arrPath, arrDoc)
+        cy.pause()
+    })
     
 
 })
