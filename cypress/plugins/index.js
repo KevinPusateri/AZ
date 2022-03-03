@@ -262,7 +262,7 @@ module.exports = (on, config) => {
         if (browser.family === 'firefox') {
 
             //Necessario per queli applicativi (tipo LM) che utilizzano ancora applet java
-            //Vado a prendere Allianz
+            //Vado a prendere Allianz IO Web Ext
             launchOptions.extensions.push(process.cwd() + "\\extensions\\allianziowebext@allianz.it.xpi")
 
             return launchOptions;
