@@ -2,7 +2,11 @@
 
 const getIframe = () => cy.get('iframe').its('0.contentDocument.body')
 
-
+/**
+ * @class
+ * @classdesc Classe Common per varie funzioni Cross Matrix Web
+ * @author Andrea 'Bobo' Oboe & Kevin Pusateri
+ */
 class Common {
 
     /**
@@ -86,8 +90,11 @@ class Common {
         return url;
     }
 
+    /**
+     * Verifica che l'url sia corretto in base all'ambiente
+     * @todo In ambiente di TEST il check non viene fatto correttamente
+     */
     static checkUrlEnv() {
-        //TODO In ambiente di TEST il check non viene fatto correttamente
         if (Cypress.env('currentEnv') !== 'TEST') {
             if (!Cypress.env('monoUtenza'))
                 cy.url().should('include', Cypress.env('baseUrlPreprod'))
@@ -97,7 +104,10 @@ class Common {
     }
 
     /**
-     * Se Preprod fa il visit su urlMWPreprod altrimenti su urlMWTest
+     * Effettua il visit url nei vari ambienti in base alle variabili settate in cypress.json
+     * Se Preprod fa il visit su urlMWPreprod altrimenti su urlMWTest (vedi cypress.json)
+     * @param {boolean} mockedNotifications default true per mockare le Notifice
+     * @param {boolean} mockedNews default a true per mockare le News
      */
     static visitUrlOnEnv(mockedNotifications = true, mockedNews = true) {
         cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
@@ -271,7 +281,7 @@ class Common {
      * @returns getIframe().within(() => {
             cy.get(id).should('exist').and('be.visible').clear().type(text)
         })
-     * @example Common.getByIdWithTypeOnIframe('#parent','Ciao, come va?')
+     * @example Common.getByIdWithTypeOnIframe('#f-nome', randomChars)
      * @link https://docs.cypress.io/api/commands/type
      */
     static getByIdWithTypeOnIframe(id, text) {
@@ -280,16 +290,25 @@ class Common {
         })
     }
 
-
-    static findByIdOnIframe(id) {
-        return getIframe().find(id)
+    /**
+     * Trova l'elemento tramite la sua path all'interno di un iFrame
+     * @param {string} path path elemento
+     * @returns elemento
+     * @example Common.findByIdOnIframe('table[role="grid"]:visible > tbody')
+     */
+    static findByIdOnIframe(path) {
+        return getIframe().find(path)
     }
 
-    static clickFindByIdOnIframe(id) {
-        return getIframe().find(id).click()
+    /**
+     * Trova l'elemento tramite la sua path all'interno di un iFrame ed effettua il click
+     * @param {*} path 
+     * @returns elemento cliccato per poter effettuare altre operazioni concatenate
+     * @example Common.clickFindByIdOnIframe('button:contains("Cancella"):visible')
+     */
+    static clickFindByIdOnIframe(path) {
+        return getIframe().find(path).click()
     }
 }
-
-
 
 export default Common
