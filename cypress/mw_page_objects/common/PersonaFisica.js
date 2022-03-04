@@ -81,6 +81,7 @@ export default class PersonaFisica {
         CarloRossini.cap = "34074"
         CarloRossini.citta = "MONFALCONE"
         CarloRossini.provincia = "GO"
+        CarloRossini.codiceFiscale = "RSSCRL80L25F356Z"
 
         return CarloRossini
     }

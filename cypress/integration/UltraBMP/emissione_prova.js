@@ -122,8 +122,53 @@ describe('Prove relative ad Ultra', function() {
                 cy.get('lib-client-item').first().next().click()
             }
         })
-        cy.pause()
+        //cy.pause()
     })
+
+    it("Annullamento contratto da Portafoglio", () => {
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.ordinaPolizze("Numero contratto")
+        //Portafoglio.menuContratto(nContratto, menuPolizzeAttive.annullamento)
+        //Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
+        //Ultra.selezionaPrimaAgenzia()
+        cy.log(">>>>> ANNULLAMENTO CONTRATTO: " + nContratto)
+        //cy.pause()
+        //Portafoglio.clickAnnullamento(nContratto, 'ANN.ORIGINE/MANCATO PERFEZIONAMENTO IN AGENZIA')
+        Portafoglio.clickAnnullamento('733117610', 'ANN.ORIGINE/MANCATO PERFEZIONAMENTO IN AGENZIA')
+        cy.pause()
+        //Annullamento.annullaContratto()
+        UltraBMP.annullamentoContratto()
+        //cy.pause()
+        TopBar.search(personaFisica.nomeCognome())
+        //cy.pause()
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        //cy.pause()
+        Portafoglio.clickTabPortafoglio()
+        //cy.pause()
+        Portafoglio.checkPolizzaIsNotPresentOnPolizzeAttive(nContratto)
+
+        //cy.pause()
+
+        /*
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.ordinaPolizze("Numero contratto")
+        //Portafoglio.menuContratto(nContratto, menuPolizzeAttive.annullamento)
+        //Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
+        //Ultra.selezionaPrimaAgenzia()
+        Portafoglio.clickAnnullamento(nContratto, 'ANN.ORIGINE/MANCATO PERFEZIONAMENTO IN AGENZIA')
+        Annullamento.annullaContratto()
+        TopBar.search(personaFisica)
+        LandingRicerca.clickClientePF(personaFisica.cognomeNome())
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.checkPolizzaIsNotPresentOnPolizzeAttive(nContratto)
+        */
+
+        //cy.pause()
+    })
+
+
+
+
 
     it("Accesso folder", () => {
         SintesiCliente.verificaInFolderDocumenti(arrPath, arrDoc)
