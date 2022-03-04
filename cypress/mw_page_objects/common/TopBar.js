@@ -56,13 +56,6 @@ const interceptPageNumbers = () => {
 
 }
 
-const interceptPageNews = () => {
-    cy.intercept({
-        method: 'GET',
-        url: '**/o2o/**'
-    }).as('getO2o');
-
-}
 //#endregion intercept
 
 const LandingPage = {
@@ -70,8 +63,7 @@ const LandingPage = {
     SALES: 'Sales',
     NUMBERS: 'Numbers',
     BACKOFFICE: 'Backoffice',
-    NEWS: 'News',
-    LE_MIE_INFO: 'Le mie info'
+    NEWS_E_INFO: 'News e Info'
 }
 
 const LinkUtilita = {
@@ -209,26 +201,16 @@ class TopBar extends HomePage {
         cy.screenshot('Verifica atterraggio "Sales"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
-    /**
-     * Verifica Atterraggio "News"
-     */
-    static clickNews() {
-        interceptPageNews()
-        cy.get('app-product-button-list').find('a').contains('News').click()
-        cy.wait('@getO2o', { requestTimeout: 40000 });
-        cy.url().should('eq', Common.getBaseUrl() + 'news/home')
-        cy.screenshot('Verifica atterraggio "News"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-    }
 
     /**
-     * Verifica Atterraggio "Le mie info"
+     * Verifica Atterraggio " News e Info"
      */
-    static clickMieInfo() {
+    static clickNewsInfo() {
         interceptPageMieInfo()
-        cy.get('app-product-button-list').find('a').contains('Le mie info').click()
+        cy.get('app-product-button-list').find('a').contains('News e Info').click()
         cy.wait('@getMieInfo', { requestTimeout: 50000 })
-        cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo?info=1')
-        cy.screenshot('Verifica atterraggio "Le mie info"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo')
+        cy.screenshot('Verifica atterraggio "News e Info"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -237,7 +219,7 @@ class TopBar extends HomePage {
      */
     static checkNotExistLanding(page) {
         cy.get('app-product-button-list').find('a').should('not.contain.text', page)
-        cy.screenshot(`Verifica ASSENZA di ${paged}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot(`Verifica ASSENZA di ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -384,7 +366,7 @@ class TopBar extends HomePage {
      */
     static clickIconSwitchPage(page) {
         cy.get('lib-switch-button').click().wait(500)
-        cy.get('.lib-switch-button-list-column').should('have.length', !(Cypress.env('isAviva')) ? 6 : 4)
+        cy.get('.lib-switch-button-list-column').should('have.length', !(Cypress.env('isAviva')) ? 5 : 4)
         switch (page) {
             case LandingPage.CLIENTS:
                 interceptPageClients()
@@ -408,17 +390,11 @@ class TopBar extends HomePage {
                 cy.get('lib-switch-button-list').contains('Backoffice').click()
                 cy.url().should('eq', Common.getBaseUrl() + 'back-office')
                 break;
-            case LandingPage.NEWS:
-                interceptPageNews()
-                cy.get('lib-switch-button-list').contains('News').click()
-                cy.wait('@getO2o', { requestTimeout: 40000 });
-                cy.url().should('eq', Common.getBaseUrl() + 'news/home')
-                break;
-            case LandingPage.LE_MIE_INFO:
+            case LandingPage.NEWS_E_INFO:
                 interceptPageMieInfo()
-                cy.get('lib-switch-button-list').contains('Le mie info').click()
+                cy.get('lib-switch-button-list').contains('News e Info').click()
                 cy.wait('@getMieInfo', { requestTimeout: 50000 })
-                cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo?info=1')
+                cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo')
                 break;
             default:
                 cy.contains('Utilità').click()
@@ -433,18 +409,23 @@ class TopBar extends HomePage {
     static checkLinksIncident(keys) {
 
         const LinksIncident = {
-            SRM: 'SRM',
+            SRM: 'SRM Online',
+            SERVICENOW_NUOVA_RICHIESTA: 'ServiceNow - Nuova richiesta',
+            SERVICENOW_ELENCO_RICHIESTE: 'ServiceNow - Elenco richieste',
             SISCO: 'SisCo',
             ELENCO_TELEFONICO: 'Elenco telefonico',
             deleteKey: function (keys) {
                 if (!keys.srmOnlineEnabled) delete this.SRM
                 if (!keys.siscoEnabled) delete this.SISCO
+                if (!keys.SERVICENOW || Cypress.env('isAviva')) {
+                    delete this.SERVICENOW_NUOVA_RICHIESTA
+                    delete this.SERVICENOW_ELENCO_RICHIESTE
+                }
                 if (Cypress.env('isAviva')) delete this.ELENCO_TELEFONICO
             }
         }
         LinksIncident.deleteKey(keys)
         const linksIncident = Object.values(LinksIncident)
-        debugger
         if (linksIncident.length > 1)
             cy.get('lib-utility-label').find('a').each(($link, i) => {
                 expect($link.text().trim()).to.include(linksIncident[i]);
