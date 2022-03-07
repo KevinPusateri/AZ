@@ -69,7 +69,6 @@ class LibriMatricola {
     static nuovoPreventivoMadre(convenzione, dataConvenzione) {
 
         matrixFrame().within(() => {
-            cy.pause()
 
             let count = 0;
             const reloadTable = (count) => {
