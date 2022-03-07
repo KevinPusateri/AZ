@@ -203,7 +203,7 @@ class TopBar extends HomePage {
 
 
     /**
-     * Verifica Atterraggio " News e Info"
+     * Verifica Atterraggio "News e Info"
      */
     static clickNewsInfo() {
         interceptPageMieInfo()

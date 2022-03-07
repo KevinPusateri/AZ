@@ -94,7 +94,6 @@ describe("LIBRI MATRICOLA", {
 
     context('CONFERMA PREVENTIVI APPLICAZIONE E CONVERSIONE POLIZZA MADRE', function () {
         it('Conferma preventivi', function () {
-            cy.pause()
             //#region
             // ! DA TOGLIERE A FINE TEST COMPLETATO
             // TopBar.search('09473521004')
@@ -113,6 +112,7 @@ describe("LIBRI MATRICOLA", {
                 LibriMatricola.AperturaElencoApplicazioni(nPreventivoMadre)
                 LibriMatricola.confermaPreventivi()
                 LibriMatricola.backElencoPreventivi()
+                cy.pause()
                 LibriMatricola.accessoPreventivoPolizzaMadre(nPreventivoMadre) //    nPreventivoMadre
             })
 
@@ -147,13 +147,13 @@ describe("LIBRI MATRICOLA", {
     })
 
 
-    context.skip('CONVERSIONE E STAMPA MASSIVA PREVENTIVI APPLICAZIONE', function () {
+    context('CONVERSIONE E STAMPA MASSIVA PREVENTIVI APPLICAZIONE', function () {
         it('Conversione', function () {
             LibriMatricola.getLibroMatricola()
             cy.get('@nLibroMatricola').then(nLibroMatricola => {
 
-                cy.writeFile('LibriMatricola/LibriMatricola.json', {
-                    numContrattoLibro: val
+                cy.writeFile('cypress/fixtures/LibriMatricola/LibriMatricola.json', {
+                    numContrattoLibro: nLibroMatricola
                 })
                 LibriMatricola.accessoElencoApplicazioniLibroMatricola(nLibroMatricola)
                 LibriMatricola.conversione()

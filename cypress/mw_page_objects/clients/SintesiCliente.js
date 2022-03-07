@@ -574,7 +574,7 @@ class SintesiCliente {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Libri matricola').click()
         Common.canaleFromPopup()
-        cy.wait(10000)
+        cy.wait(15000)
         matrixFrame().within(() => {
             cy.get('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
         })
