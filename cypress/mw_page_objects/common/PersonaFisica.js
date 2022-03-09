@@ -96,5 +96,17 @@ export default class PersonaFisica {
 
         return MonicaSant
     }
+
+    static SimonettaRossino() {
+        let SimonettaRossino = new PersonaFisica("SIMONETTA", "ROSSINO")
+        SimonettaRossino.via = "VIA GIUSEPPE GARIBALDI"
+        SimonettaRossino.numero = "12"
+        SimonettaRossino.cap = "34170"
+        SimonettaRossino.citta = "GORIZIA"
+        SimonettaRossino.provincia = "GO"
+        SimonettaRossino.codiceFiscale = "RSSSNT85E56E098Z"
+
+        return SimonettaRossino
+    }
 }
 

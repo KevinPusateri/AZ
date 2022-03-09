@@ -11,6 +11,7 @@ import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneA
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
 import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
+import CondividiPreventivo from "../../mw_page_objects/UltraBMP/CondividiPreventivo"
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
 import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
@@ -48,21 +49,21 @@ const ultraRV = {
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { modificheCasa } from '../../fixtures/Ultra/BMP_Caso1.json'
-import { modificheAnimale } from '../../fixtures/Ultra/BMP_Caso1.json'
-import { modificheRC } from '../../fixtures/Ultra/BMP_Caso1.json'
-import { daVerificareCasa } from '../../fixtures/Ultra/BMP_Caso1.json'
-import { daVerificareAnimale } from '../../fixtures/Ultra/BMP_Caso1.json'
-import { daVerificareFabbricato } from '../../fixtures/Ultra/BMP_Caso1.json'
+//import { modificheCasa } from '../../fixtures/Ultra/BMP_Caso1.json'
+import { modificheAnimale } from '../../fixtures/Ultra/BMP_Caso6.json'
+import { modificheFabbricato } from '../../fixtures/Ultra/BMP_Caso6.json'
+//import { daVerificareCasa } from '../../fixtures/Ultra/BMP_Caso1.json'
+//import { daVerificareAnimale } from '../../fixtures/Ultra/BMP_Caso1.json'
+//import { daVerificareFabbricato } from '../../fixtures/Ultra/BMP_Caso1.json'
 //import { daVerificareFADef } from '../../fixtures//Ultra/BMP_Caso1.json'
-import { daVerificareRC } from '../../fixtures/Ultra/BMP_Caso1.json'
+//import { daVerificareRC } from '../../fixtures/Ultra/BMP_Caso1.json'
 //import { daVerificareRCDef } from '../../fixtures//Ultra/BMP_Caso1.json'
-import { daModificareCasa } from '../../fixtures/Ultra/BMP_Caso1.json'
-import { daModificareAnimale } from '../../fixtures/Ultra/BMP_Caso1.json'
-import { daModificareRC } from '../../fixtures/Ultra/BMP_Caso1.json'
-import { defaultFQ } from '../../fixtures/Ultra/BMP_Comune.json'
-import { defaultCasa } from '../../fixtures/Ultra/BMP_Comune.json'
-import { defaultAnimale } from '../../fixtures/Ultra/BMP_Comune.json'
+//import { daModificareCasa } from '../../fixtures/Ultra/BMP_Caso1.json'
+import { daModificareAnimale } from '../../fixtures/Ultra/BMP_Caso6.json'
+import { daModificareFabbricato } from '../../fixtures/Ultra/BMP_Caso6.json'
+//import { defaultFQ } from '../../fixtures/Ultra/BMP_Comune.json'
+//import { defaultCasa } from '../../fixtures/Ultra/BMP_Comune.json'
+//import { defaultAnimale } from '../../fixtures/Ultra/BMP_Comune.json'
 import { soluzione } from '../../fixtures/Ultra/BMP_Comune.json'
 import { ambitoUltra } from '../../fixtures/Ultra/BMP_Comune.json'
 
@@ -80,6 +81,7 @@ var premioRC_ProprietàAnimali = 0
 
 //let personaFisica = PersonaFisica.MassimoRoagna()
 let personaFisica = PersonaFisica.CarloRossini()
+let personaFisica2 = PersonaFisica.SimonettaRossino()
 var nContratto = "000"
 var clienteUbicazione = ""
 var frazionamento = "annuale"
@@ -129,18 +131,19 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
                 cy.get('lib-client-item').first().next().click()
             }
         })
+        //cy.pause()
     })
 
-    it("Seleziona ambiti", () => {
+    it("Seleziona ambiti da Fast Quote", () => {
         cy.log('Seleziona ambito')
         //scorre l'array degli ambiti da selezionare e clicca sulle icone
         for (var i = 0; i < ambiti.length; i++) {
-            cy.log("selezione ambito " + ambiti[1])
+            cy.log("selezione ambito " + ambiti[i])
 
             //seleziona ambito
             
             //cy.get('#ambitiRischio', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
-            cy.get('div[class="scopes-box ng-star-inserted"]', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
+            cy.get('div[class="scopes-box ng-star-inserted"]', { timeout: 30000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
                 .should('be.visible').click()
             cy.log('****** AMBITO SELEZIONATO: ' + ambiti[i])
             //cy.pause()
@@ -153,21 +156,108 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
             cy.get('div[class="scopes-box ng-star-inserted"]', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
             .invoke('attr', 'class').should('contain', 'icon-selected')
         }
+        //cy.pause()
 
-        cy.get('div[class="calculate-btn"]').should('be.visible').click()
-        cy.get('button').contains('Configura').should('be.visible').click()
+        
+    })
+
+    it("Calcola in Fast Quote", () => {
+        // Click 'calcola'
+        cy.get('button').contains('Calcola').should('be.visible').click()
+        cy.wait(2000)
+        //cy.pause()
+    })
+
+    it("Configura ed accedi alla Dashboard Ultra", () => {
+        // Click 'Configura'
+        cy.get('button').contains('Configura', { timeout: 5000 }).should('be.visible').click()
         Dashboard.caricamentoDashboardUltra()
-        cy.pause()
+        //cy.pause()  
     })
 
     it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", () => {
-        Ultra.caricamentoUltraHome()
-        Ultra.verificaAmbitiHome(ambiti)
-        
-        cy.pause()
-        
+        Dashboard.verificaAmbiti(ambiti)
+        //cy.pause()   
     })
 
+    it("Cambia Soluzioni", () => {
+        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, soluzione.PREMIUM)
+        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali, soluzione.TOP)
+        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici, soluzione.PREMIUM)
+        //cy.pause()
+    })
+
+    it("Configurazione Fabbricato", () => {
+        ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
+        ConfigurazioneAmbito.ModificaValoriCasa(daModificareFabbricato, modificheFabbricato)
+        ConfigurazioneAmbito.ClickButton("CONFERMA")
+        Dashboard.caricamentoDashboardUltra()
+        //cy.pause()    
+    })
+
+    it("Configurazione Animali Domestici", () => {
+        ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[2])
+        ConfigurazioneAmbito.ModificaValoriAnimaleDomestico(daModificareAnimale, modificheAnimale)
+        ConfigurazioneAmbito.ClickButton("CONFERMA")
+        Dashboard.caricamentoDashboardUltra()   
+    })
+
+    it("Seleziona frazionamento", ()=>{
+        Dashboard.selezionaFrazionamento(frazionamento)
+        //cy.pause()
+    })
+
+    it("Modifica durata fabbricato", () => {
+        Dashboard.dotMenu(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, "Modifica la durata")
+        Dashboard.modificaDurata(5)
+        //Dashboard.dotMenu(ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile, "Modifica la durata")
+        //Dashboard.modificaDurata(30)
+        //cy.pause()
+    })
+
+    it("Procedi e Conferma", () => {
+        Dashboard.procediHome()
+        DatiQuotazione.CaricamentoPagina()
+        DatiQuotazione.confermaDatiQuotazione()
+        Riepilogo.caricamentoRiepilogo()
+        //cy.pause()
+    })
+
+    it("Verifica ambiti in Riepilogo", () => {
+        Riepilogo.verificaAmbito(ambitoUltra.FABBRICATO, modificheFabbricato.Nome, soluzione.PREMIUM, '5', '')
+        Riepilogo.verificaAmbito(ambitoUltra.CATASTROFI_NATURALI, modificheFabbricato.Nome, soluzione.TOP, '1', '')
+        Riepilogo.verificaAmbito(ambitoUltra.ANIMALI_DOMESTICI, modificheAnimale.Nome, soluzione.PREMIUM, '1', '')
+        Riepilogo.verificaFrazionamento('annuale')
+        Riepilogo.EmissionePreventivo()
+        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()   
+        //cy.pause()
+    })
+
+    it("Censimento anagrafico", () => {
+        CensimentoAnagrafico.selezionaContraentePF(personaFisica2)
+        CensimentoAnagrafico.selezionaCasa(personaFisica2, true, true)
+        CensimentoAnagrafico.selezionaAnimale(modificheAnimale.Nome, personaFisica2, '380260000279818', true)
+        CensimentoAnagrafico.Avanti()
+        DatiIntegrativi.caricamentoPagina()
+        cy.pause()
+    })
+
+    it("Dati integrativi", () => {
+        DatiIntegrativi.selezionaTuttiNo()
+        DatiIntegrativi.ClickButtonAvanti()
+        DatiIntegrativi.popupDichiarazioni()
+        CondividiPreventivo.caricamentoPreventivo()
+        //cy.pause()
+    })
+
+    it("Condividi Preventivo", () => {
+        CondividiPreventivo.SelezionaTutti()
+        CondividiPreventivo.Conferma()
+        ConsensiPrivacy.caricamentoPagina()
+        cy.pause()
+    })
+
+    
 
 
 
@@ -176,201 +266,10 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
 /////////////////////////////
 /////////////////////////////
 
-    it('Seleziona Ultra BMP', () => {
-        TopBar.clickSales()
-        //BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO_BMP)
-        BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO)
-    })
-     
-    it("Verifica valori default FQ e accesso alla dashboard", () => {
-        StartPage.VerificaDefaultFQ(defaultFQ)
-        StartPage.startScopriProtezione()
-        //Dashboard.caricamentoDashboardUltra()    
-    })
-    
-    it("Seleziona ambiti", () => {
-        cy.log('Seleziona ambito')
-        
-        /*
-        for(var i = 0; i<ambiti.length; i++ )
-        {
-            cy.log('RICERCA AMBITO: ' + ambiti[i])
-            UltraBMP.SelezionaAmbito(ambiti[i])
-            
-            cy.pause()
-        }
-        */
-        
-        Dashboard.selezionaAmbiti(ambiti)
-    })
     
     
-    it("Cambia Soluzioni", () => {
-        /*
-    Ultra.modificaSoluzioneHome(ambitoUltra.FABBRICATO, soluzione.TOP)
-    Ultra.modificaSoluzioneHome(ambitoUltra.RESPONSABILITA_CIVILE, soluzione.PREMIUM)
-    Ultra.modificaSoluzioneHome(ambitoUltra.ANIMALI_DOMESTICI, soluzione.ESSENTIAL)
-    */
-    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, soluzione.TOP)
-    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile, soluzione.PREMIUM)
-    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici, soluzione.ESSENTIAL)
+
     
-    })
-    
-    it("Accesso Dati Quotazione da menù", ()=>{
-        //UltraBMP.SelezionaVoceMenuPagAmbiti('Dati quotazione')
-        Dashboard.selezionaVoceHeader('Dati quotazione')    //<<<<===== DA FARE AL POSTO DI QUELLO SOPRA 
-        //cy.pause()
-        DatiQuotazione.VerificaDefaultCasa('Casa 1', daVerificareCasa, defaultCasa)
-        DatiQuotazione.VerificaDefaultAnimaleDomestico('Animale domestico 1', daVerificareAnimale, defaultAnimale)
-        DatiQuotazione.ModificaValoriCasa('Casa 1', daModificareCasa, modificheCasa)
-        DatiQuotazione.ModificaValoriAnimaleDomestico('Animale domestico 1', daModificareAnimale, modificheAnimale)
-        DatiQuotazione.ClickButton("CONFERMA")
-        //Dashboard.caricamentoDashboardUltra()  <<< non trova 
-    })
-
-    it("Accesso Configurazione ambito 'Fabbricato'", ()=>{
-        
-        Dashboard.leggiPremioTot()     //>> premioTotDashboard    
-        cy.get('@premioTotDashboard').then(premioTot => {
-            premioTotPrima = parseFloat(premioTot.replace(/,/,"."))
-            cy.log('Premio totale prima di aggiungere la garanzia: ' + premioTotPrima)
-        })
-
-        UltraBMP.ClickMatita("Fabbricato", "Casa 1")
-
-        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareFabbricato, modificheCasa)
-        ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.TOP)
-        
-        ConfigurazioneAmbito.leggiPremio('Ambito')   //>> premioAmbito
-        cy.get('@premioAmbito').then(premioAmbito => {
-            premioFA = parseFloat(premioAmbito.replace(/,/,"."))
-            cy.log('Premio Ambito Fabbricato: ' + premioFA)
-        })
-
-        ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('Danni da fenomeno elettrico')    //>> premioGarAgg
-        cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
-            premioFA_FenomenoElettrico = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
-            cy.log('Premio Garanzia Aggiuntiva: ' + premioFA_FenomenoElettrico)
-        })
-
-        ConfigurazioneAmbito.aggiungiGaranzia('Danni da fenomeno elettrico')
-        ConfigurazioneAmbito.ClickButton("CONFERMA")
-
-        Dashboard.leggiPremioTot()     //>> premioTotDashboard    
-        cy.get('@premioTotDashboard').then(premioTot => {
-            premioTotDopo = parseFloat(premioTot.replace(/,/,"."))
-            cy.log('Premio totale dopo aver aggiunto la garanzia: ' + premioTotDopo)
-        })
-
-    })
-
-    it("Verifica premio totale in Dashboard dopo variazioni ambito 'Fabbricato'", ()=>{
-        cy.log('********* VERIFICA PREMIO **************')
-        cy.log('premioTotPrima: ' + premioTotPrima)
-        cy.log('premioTotDopo: ' + premioTotDopo)
-        cy.log('premioFA_FenomenoElettrico: ' + premioFA_FenomenoElettrico)
-        Dashboard.verificaPremio(premioTotPrima, premioTotDopo, premioFA_FenomenoElettrico)
-    })
-
-    it("Accesso Configurazione ambito 'Responsabilità civile'", ()=>{
-
-        Dashboard.leggiPremioTot()     //>> premioTotDashboard    
-        cy.get('@premioTotDashboard').then(premioTot => {
-            premioTotPrima = parseFloat(premioTot.replace(/,/,"."))
-            cy.log('Premio totale prima di aggiungere la garanzia: ' + premioTotPrima)
-        })
-
-        UltraBMP.ClickMatita("Responsabilit", "Casa 1")
-
-        ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareRC, modificheCasa)
-        ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.PREMIUM)
-
-        ConfigurazioneAmbito.leggiPremio('Ambito')   //>> premioAmbito
-        cy.get('@premioAmbito').then(premioAmbito => {
-            premioRC_Prima = parseFloat(premioAmbito.replace(/,/,"."))
-            cy.log('Premio Ambito Responsabilità Civile - Prima delle modifiche: ' + premioRC_Prima)
-        })
-
-        ConfigurazioneAmbito.ModificaConfigurazioneAmbito(daModificareRC, modificheRC)
-        
-        ConfigurazioneAmbito.leggiPremio('Ambito')   //>> premioAmbito
-        cy.get('@premioAmbito').then(premioAmbito => {
-            premioRC_Dopo = parseFloat(premioAmbito.replace(/,/,"."))
-            cy.log('Premio Ambito Responsabilità Civile - Dopo le modifiche: ' + premioRC_Dopo)
-        })
-
-        ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('attività di affittacamere e Bed & Breakfast')    //>> premioGarAgg
-        cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
-            premioRC_Affittacamere = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
-            cy.log('Premio Garanzia Aggiuntiva Affittacamere: ' + premioRC_Affittacamere)
-        })
-
-        ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('proprietà di cavalli ed altri animali da sella')    //>> premioGarAgg
-        cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
-            premioRC_ProprietàAnimali = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
-            cy.log('Premio Garanzia Aggiuntiva Cavalli: ' + premioRC_ProprietàAnimali)
-        })
-
-        ConfigurazioneAmbito.aggiungiGaranzia('attività di affittacamere e Bed & Breakfast')
-        ConfigurazioneAmbito.aggiungiGaranzia('proprietà di cavalli ed altri animali da sella')
-        ConfigurazioneAmbito.ClickButton("CONFERMA")
-
-        Dashboard.leggiPremioTot()     //>> premioTotDashboard    
-        cy.get('@premioTotDashboard').then(premioTot => {
-            premioTotDopo = parseFloat(premioTot.replace(/,/,"."))
-            cy.log('Premio totale dopo aver aggiunto le garanzie: ' + premioTotDopo)
-        })
-        
-    })
-
-    it("Verifica premio totale in Dashboard dopo variazioni ambito 'Responsabilità Civile'", ()=>{
-        var deltaPremio = (premioRC_Dopo - premioRC_Prima) + premioRC_Affittacamere + premioRC_ProprietàAnimali
-        Dashboard.verificaPremio(premioTotPrima, premioTotDopo, deltaPremio)
-    })
-
-    it("Seleziona frazionamento", ()=>{
-        Ultra.selezionaFrazionamento(frazionamento)
-    })
-
-    // Al momento bypasso perchè non compare il messaggio di salvataggio e non va la condivisione
-    
-    it("Salva Quotazione e Condividi", () => {
-        Dashboard.salvaQuotazione()
-        Dashboard.condividiQuotazione('Catastrofi naturali')
-    })
-    
-
-    it("Procedi", () => {
-        Dashboard.procediHome()
-        DatiQuotazione.CaricamentoPagina()
-    })
-
-    it("Verifica presenza Oggetti in Dati Quotazione", () => {
-        DatiQuotazione.verificaPresenzaOggetto(defaultCasa.Nome)
-        DatiQuotazione.verificaPresenzaOggetto(modificheAnimale.Nome)
-        DatiQuotazione.confermaDatiQuotazione()
-        Riepilogo.caricamentoRiepilogo()
-    })
-
-    it("Verifica ambiti in Riepilogo", () => {
-        ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI
-        Riepilogo.verificaAmbito(ambitoUltra.FABBRICATO, defaultCasa.Nome, soluzione.TOP, '1', '')
-        Riepilogo.verificaAmbito(ambitoUltra.RESPONSABILITA_CIVILE, defaultCasa.Nome, soluzione.PREMIUM, '1', '')
-        Riepilogo.verificaAmbito(ambitoUltra.ANIMALI_DOMESTICI, modificheAnimale.Nome, soluzione.ESSENTIAL, '1', '')
-        Riepilogo.verificaFrazionamento('annuale')
-        Riepilogo.EmissionePolizza()
-        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()   
-    })
-
-    it("Censimento anagrafico", () => {
-        CensimentoAnagrafico.selezionaContraentePF(personaFisica)
-        CensimentoAnagrafico.selezionaCasa(personaFisica, true)
-        CensimentoAnagrafico.selezionaAnimale(modificheAnimale.Nome, personaFisica, '380260000279818', true)
-        CensimentoAnagrafico.Avanti()
-        DatiIntegrativi.caricamentoPagina()
-        //cy.pause()
-    })
 
     it("Dati integrativi", () => {
         DatiIntegrativi.verificaDataDecorrenza()
