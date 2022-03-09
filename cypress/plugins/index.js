@@ -257,49 +257,17 @@ module.exports = (on, config) => {
     else
         config.baseUrl = 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F/';
 
-    //TODO da verificare se puo' tornare utile
-    //! Lato Firefox sembra non accettare in input questi parametri di lancio
-    // on('before:browser:launch', (browser = {}, launchOptions) => {
+    on('before:browser:launch', (browser = {}, launchOptions) => {
 
-    //     const downloadDirectory = process.cwd() + "\\cypress\\downloads"
-    //     if (browser.family === 'firefox') {
+        if (browser.family === 'firefox') {
 
-    //         launchOptions.preferences['browser.download.folderList'] = 2
-    //         launchOptions.preferences['browser.download.dir'] = downloadDirectory
-    //         launchOptions.preferences['browser.download.useDownloadDir'] = true
-    //         launchOptions.preferences['browser.helperApps.neverAsk.openFile'] = ''
-    //         launchOptions.preferences['browser.download.alertOnEXEOpen'] = false
-    //         launchOptions.preferences['browser.helperApps.alwaysAsk.force'] = false
-    //         launchOptions.preferences['browser.download.manager.closeWhenDon'] = true
-    //         launchOptions.preferences['browser.helperApps.neverAsk.saveToDisk'] = 'application/force-download', 
-    //         'application/pdf', 
-    //         'application/x-download', 
-    //         'application/x-pdf', 
-    //         'pdf/adobe', 
-    //         'text/xml', 
-    //         'text/plain', 
-    //         'text/html', 
-    //         'application/octet-stream',
-    //         'application/xls', 
-    //         'text/csv',
-    //         'application/X_SI',
-    //         'application/xls', 
-    //         'application/ms-excel',
-    //         'application/x-msexcel',
-    //         'application/excel',
-    //         'application/x-excel',
-    //         'application/vnd.ms-excel',
-    //         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            //Necessario per queli applicativi (tipo LM) che utilizzano ancora applet java
+            //Vado a prendere Allianz IO Web Ext
+            launchOptions.extensions.push(process.cwd() + "\\extensions\\allianziowebext@allianz.it.xpi")
 
-    //         launchOptions.preferences['browser.download.panel.shown'] = true
-    //         launchOptions.preferences['browser.download.manager.focusWhenStarting'] = false
-    //         launchOptions.preferences['browser.download.manager.useWindow'] = false
-    //         launchOptions.preferences['pdfjs.disabled'] = true
-    //         launchOptions.preferences['devtools.console.stdout.content'] = true
-
-    //         return launchOptions;
-    //     }
-    // })
+            return launchOptions;
+        }
+    })
 
     require('cypress-mochawesome-reporter/plugin')(on)
 

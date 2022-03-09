@@ -574,7 +574,7 @@ class SintesiCliente {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Libri matricola').click()
         Common.canaleFromPopup()
-        cy.wait(10000)
+        cy.wait(15000)
         matrixFrame().within(() => {
             cy.get('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
         })
@@ -978,6 +978,28 @@ class SintesiCliente {
         debugger
         cy.wrap(labels).each((label, i, array) => {
             getIFrame().find('span').contains(label).click()
+        })
+    }
+
+    /**
+     * Verifica Documenti in Folder - 
+     * @param {Array.String} folders - albero cartelle dove si trovano i documenti da verificare in folder
+     * @param {Array.String} labels - labels dei documenti da verificare in folder
+     */
+     static verificaInFolderDocumenti(folders, labels) {
+        cy.get('nx-icon[aria-label="Open menu"]').click()
+        cy.contains('folder').click()
+        Common.canaleFromPopup()
+        getIFrame().find('span[class="k-icon k-plus"]:visible').click()
+        for(var i = 0; i < folders.length; i++) {
+            cy.log(('folders[' + i + ']: ' + folders[i]))
+            getIFrame().find('span').contains(folders[i]).dblclick()
+            cy.wait(2000)
+        }
+        debugger
+        cy.wrap(labels).each((label, i, array) => {
+            getIFrame().find('span').contains(label).click()
+            cy.wait(2000)
         })
     }
 

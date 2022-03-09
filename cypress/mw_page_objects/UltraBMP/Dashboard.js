@@ -23,7 +23,7 @@ class Dashboard {
             url: '**/ambiti-disponibili'
         }).as('ambiti')
 
-        cy.wait('@ambiti', { requestTimeout: 20000 });
+        cy.wait('@ambiti', { requestTimeout: 40000 });
     }
 
     static stringaRandom(lunghezza) {
@@ -55,13 +55,22 @@ class Dashboard {
      * @param {array} ambiti 
      */
     static verificaAmbiti(ambiti) {
+        cy.log(">>> VERIFICA AMBITI DASHBOARD <<<")
         ultraIFrame().within(() => {
             for (var i = 0; i < ambiti.length; i++) {
-                cy.log("Verifica selezione " + ambiti[1])
-                cy.get('[class="ng-star-inserted"]').contains(ambiti[i]).should('be.visible')
-                cy.get('div').contains(ambiti[i]).parent().parent().find('nx-icon[class*="selected"]')//[class="counter"]                
+                cy.log("Verifica selezione " + ambiti[i])
+                //cy.pause()
+                cy.get('nx-indicator[class="nx-indicator ng-star-inserted"]').should('exist')
+                  //siblings('nx-icon').should('exist')
+                  .siblings('nx-icon[class*="' + ambiti[i] + '"]', { timeout: 10000 })
+                  //.contains(ambiti[i]).should('have.length', 1)
+                  //.siblings('nx-icon[class*=ambiti[i]]')
+                  .invoke('attr', 'class').should('contain', 'selected')
+                //cy.get('[class="ng-star-inserted"]').contains(ambiti[i]).should('be.visible')
+                //cy.get('div').contains(ambiti[i]).parent().parent().find('nx-icon[class*="selected"]')//[class="counter"]                
             }
         })
+        //cy.pause()
     }
 
     /**

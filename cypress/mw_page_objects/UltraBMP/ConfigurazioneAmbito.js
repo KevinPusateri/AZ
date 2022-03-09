@@ -41,7 +41,7 @@ class ConfigurazioneAmbito {
         .find('nx-icon[class*="' + ambito + '"]')
         .parents('tr')
         .find('nx-icon[name="pen"]')
-        .click() //clicca sull'icona della penna
+        .click({force: true}) //clicca sull'icona della penna
 
       cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible') //attende il caricamento
     })
@@ -591,25 +591,25 @@ class ConfigurazioneAmbito {
       //Modifica "Uso abitazione"
       if (daModificare.Uso) {
         cy.log("Modifica 'Uso - da inserire': " + modificheCasa.Uso)
-        ConfigurazioneAmbito.modificaDropDown(casa, 'È la casa', 1, modificheCasa.Uso)
+        ConfigurazioneAmbito.modificaDropDown('È la casa', 1, modificheCasa.Uso)
       }
 
       //Modifica "Tipo abitazione"
       if (daModificare.Tipo) {
         cy.log("Modifica 'Tipo - da inserire': " + modificheCasa.Tipo)
-        ConfigurazioneAmbito.modificaDropDown(casa, 'È la casa', 4, modificheCasa.Tipo)
+        ConfigurazioneAmbito.modificaDropDown('È la casa', 4, modificheCasa.Tipo)
       }
 
       //Modifica "Metri Quadri abitazione"
       if (daModificare.Mq) {
         cy.log("Modifica 'Metri quadri abitazione - da inserire': " + modificheCasa.Mq)
-        ConfigurazioneAmbito.modificaInput(casa, 'È la casa', 6, modificheCasa.Mq)
+        ConfigurazioneAmbito.modificaInput('È la casa', 6, modificheCasa.Mq)
       }
 
       //Modifica "Piano abitazione"
       if (daModificare.Piano) {
         cy.log("Modifica 'Piano - da inserire': " + modificheCasa.Piano)
-        ConfigurazioneAmbito.modificaDropDown(casa, 'È la casa', 9, modificheCasa.Piano)
+        ConfigurazioneAmbito.modificaDropDown('È la casa', 9, modificheCasa.Piano)
       }
 
       // *** RIGA VALORE RICOSTRUZIONE ***
@@ -617,7 +617,7 @@ class ConfigurazioneAmbito {
       //Modifica "Valore abitazione"
       if (daModificare.Valore) {
         cy.log("Modifica 'Valore abitazione - da inserire': " + modificheCasa.Valore)
-        ConfigurazioneAmbito.modificaInput(casa, 'Il valore di ricostruzione', 1, modificheCasa.Valore)
+        ConfigurazioneAmbito.modificaInput('Il valore di ricostruzione', 1, modificheCasa.Valore)
       }
 
       // *** RIGA CARATTERISTICHE COSTRUTTIVE ***
@@ -625,7 +625,7 @@ class ConfigurazioneAmbito {
       //Modifica "Classe abitazione"
       if (daModificare.Classe) {
         cy.log("Modifica 'Classe - da inserire': " + modificheCasa.Classe)
-        ConfigurazioneAmbito.modificaDropDown(casa, 'Le caratteristiche costruttive', 1, modificheCasa.Classe)
+        ConfigurazioneAmbito.modificaDropDown('Le caratteristiche costruttive', 1, modificheCasa.Classe)
       }
 
       // *** RIGA MEZZI DI PROTEZIONE ***
@@ -633,13 +633,13 @@ class ConfigurazioneAmbito {
       //Modifica "Classe protezione"
       if (daModificare.ClasseProtezione) {
         cy.log("Modifica 'Classe Protezione - da inserire': " + modificheCasa.ClasseProtezione)
-        ConfigurazioneAmbito.modificaDropDown(casa, 'Ha mezzi di protezione', 1, modificheCasa.ClasseProtezione)
+        ConfigurazioneAmbito.modificaDropDown('Ha mezzi di protezione', 1, modificheCasa.ClasseProtezione)
       }
 
       //Modifica "Presenza allarme"
       if (daModificare.Allarme) {
         cy.log("Modifica 'Allarme - da inserire': " + modificheCasa.Allarme)
-        ConfigurazioneAmbito.modificaDropDown(casa, 'Ha mezzi di protezione', 3, modificheCasa.Allarme)
+        ConfigurazioneAmbito.modificaDropDown('Ha mezzi di protezione', 3, modificheCasa.Allarme)
       }
 
       // *** RIGA ANNO DI COSTRUZIONE ***
@@ -647,7 +647,7 @@ class ConfigurazioneAmbito {
       //Modifica "Anno di costruzione"
       if (daModificare.Anno) {
         cy.log("Modifica 'Anno costruzione - da inserire': " + modificheCasa.Anno)
-        ConfigurazioneAmbito.modificaDropDown(casa, 'Lo stabile è stato costruito', 1, modificheCasa.Anno)
+        ConfigurazioneAmbito.modificaDropDown('Lo stabile è stato costruito', 1, modificheCasa.Anno)
       }
 
       // *** RIGA ESTENSIONE PROTEZIONE ***
@@ -655,7 +655,7 @@ class ConfigurazioneAmbito {
       //Modifica "E"stensione protezione"
       if (daModificare.Estensione) {
         cy.log("Modifica 'Estensione protezione - da inserire': " + modificheCasa.Estensione)
-        ConfigurazioneAmbito.modificaDropDown(casa, 'estendere la protezione', 0, modificheCasa.Estensione)
+        ConfigurazioneAmbito.modificaDropDown('estendere la protezione', 0, modificheCasa.Estensione)
       }
 
       // *** RIGA ASSICURATO ***
@@ -663,7 +663,7 @@ class ConfigurazioneAmbito {
       //Modifica "Residenza assicurato"
       if (daModificare.ResidenzaAss) {
         cy.log("Modifica 'Residenza assicurato - da inserire': " + modificheCasa.ResidenzaAss)
-        ConfigurazioneAmbito.modificaDropDown(casa, 'assicurato ha la residenza', 1, modificheCasa.ResidenzaAss)
+        ConfigurazioneAmbito.modificaDropDown('assicurato ha la residenza', 1, modificheCasa.ResidenzaAss)
       }
 
       //Modifica "Cap assicurato"
@@ -701,13 +701,16 @@ class ConfigurazioneAmbito {
     ultraIFrame().within(() => {
 
       cy.log("MODIFICHE VALORI QUOTAZIONE - ANIMALE DOMESTICO")
+      cy.log('input - DaModificare Nome: ' + daModificare.Nome)
+      cy.log('input - DaModificare Tipo: ' + daModificare.Tipo)
+      cy.log('input - DaModificare Sesso: ' + daModificare.Sesso)
 
       //Modifica "Nome animale"
       if (daModificare.Nome) {
         cy.log("Modifica 'Nome animale' - da inserire: " + modificheAnimale.Nome)
         ConfigurazioneAmbito.modificaInput('è un', 1, modificheAnimale.Nome)
 
-        animale = modificheAnimale.Nome
+        //animale = modificheAnimale.Nome
       }
 
       //Modifica "Tipo"

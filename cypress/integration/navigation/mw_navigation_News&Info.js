@@ -66,38 +66,38 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
             openMode: 0,
         }
     }, function()  {
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
     })
     
 
     it('Verifica presenza links Menu', function () {
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.checkLinksOnMenuInfo(keysLinksMenu)
     })
 
     it('Verifica aggancio Primo piano', function () {
         if (!keysLinksMenu['primo-piano'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Primo piano')
     })
 
     it('Verifica aggancio Raccolte', function () {
         if (!keysLinksMenu['raccolte'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Raccolte')
     });
 
     it('Verifica aggancio Contenuti salvati', function () {
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Contenuti salvati')
     });
 
     it('Verifica aggancio Prodotti', function () {
         if (!keysLinksMenu['prodotti'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Prodotti')
         Mieinfo.checkLinksOnSubMenu('Prodotti', keysLinksSubMenuProdotti)
         Mieinfo.checkLinksOnIcon('Prodotti')
@@ -106,7 +106,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio su tutte le sotto pagine di Prodotti', function () {
         if (!keysLinksMenu['prodotti'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Prodotti');
         Mieinfo.checkPageOnSubMenu('Prodotti', keysLinksSubMenuProdotti)
     })
@@ -114,7 +114,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio Iniziative', function () {
         if (!keysLinksMenu['iniziative'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Iniziative')
         Mieinfo.checkLinksOnSubMenu('Iniziative', keysLinksSubMenuIniziative)
         Mieinfo.checkLinksOnIcon('Iniziative')
@@ -123,20 +123,20 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio su tutte le sotto pagine di Iniziative', function () {
         if (!keysLinksMenu['iniziative'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Iniziative');
         Mieinfo.checkPageOnSubMenu('Iniziative', keysLinksSubMenuIniziative)
     })
 
     it('Verifica aggancio Eventi e Sponsorizzazioni', function () {
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Eventi e Sponsorizzazioni')
     });
 
     it('Verifica aggancio Sales Academy', function () {
         if (!keysLinksMenu['sales-academy'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Sales Academy')
         Mieinfo.checkLinksOnSubMenu('Sales Academy', keysLinksSubMenuSalesAccademy)
         Mieinfo.checkLinksOnIcon('Sales Academy')
@@ -145,7 +145,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio su tutte le sotto pagine di Sales Academy', function () {
         if (!keysLinksMenu['sales-academy'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Sales Academy');
         Mieinfo.checkPageOnSubMenu('Sales Academy', keysLinksSubMenuSalesAccademy)
     })
@@ -153,7 +153,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio Momento della Verità', function () {
         if (!keysLinksMenu['sinistri'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Momento della Verità')
         Mieinfo.checkLinksOnIcon('Momento della Verità')
     });
@@ -161,7 +161,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
     //! DA VERIFICARE
     // it('Verifica aggancio Le release', function () {
-    //     TopBar.clickMieInfo()
+    //     TopBar.clickNewsInfo()
     //     Mieinfo.clickLinkOnMenu('Le release')
     //     Mieinfo.checkPanelsOnRelease()
     // });
@@ -169,7 +169,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio Rilasci informatici', function () {
         if (!keysLinksMenu['le-release'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Rilasci informatici')
         // Mieinfo.checkPanelsOnRelease()
     });
@@ -177,7 +177,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio Manuali informatici', function () {
         if (!keysLinksMenu['manuali-informatici'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Manuali informatici')
         Mieinfo.checkPanelsOnManualiInformatici()
     });
@@ -185,21 +185,21 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio Circolari', function () {
         if (!keysLinksMenu['circolari'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Circolari')
     });
 
     it('Verifica aggancio Company Handbook', function () {
         if (!keysLinksMenu['company-handbook'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Company Handbook')
     })
 
     it('Verifica aggancio Antiriciclaggio', function () {
         if (!keysLinksMenu['antiriciclaggio'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Antiriciclaggio')
         Mieinfo.checkLinksOnSubMenu('Antiriciclaggio', keysLinksSubMenuAntiriciclaggio)
         Mieinfo.checkLinksOnIcon('Antiriciclaggio')
@@ -208,7 +208,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio su tutte le sotto pagine di Antiriciclaggio', function () {
         if (!keysLinksMenu['antiriciclaggio'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Antiriciclaggio');
         Mieinfo.checkPageOnSubMenu('Antiriciclaggio', keysLinksSubMenuAntiriciclaggio)
     })
@@ -216,7 +216,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio Risorse per l\'Agenzia', function () {
         if (!keysLinksMenu['risorse-per-l\'agenzia'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia')
         Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agenzia', keysLinksSubMenuRisorsePerAgenzia)
         Mieinfo.checkLinksOnIcon('Risorse per l\'Agenzia')
@@ -224,7 +224,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agenzia', function () {
         if (!keysLinksMenu['risorse-per-l\'agenzia'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Risorse per l\'Agenzia');
         Mieinfo.checkPageOnSubMenu('Risorse per l\'Agenzia', keysLinksSubMenuRisorsePerAgenzia)
     })
@@ -232,7 +232,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio Operatività', function () {
         if (!keysLinksMenu['operativita'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Operatività')
         Mieinfo.checkPanelsOnOperativita()
     });
@@ -240,13 +240,13 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio Risorse per l\'Agente', function () {
         if (!keysLinksMenu['risorse-per-l\'agente'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Risorse per l\'Agente')
         Mieinfo.checkLinksOnSubMenu('Risorse per l\'Agente', keysLinksSubMenuRisorsePerAgente)
         Mieinfo.checkLinksOnIcon('Risorse per l\'Agente')
     });
     it('Verifica aggancio su tutte le sotto pagine di Risorse per l\'Agente', function () {
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Risorse per l\'Agente');
         Mieinfo.checkPageOnSubMenu('Risorse per l\'Agente', keysLinksSubMenuRisorsePerAgente)
     })
@@ -254,7 +254,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio Il mondo Allianz', function () {
         if (!keysLinksMenu['il-mondo-allianz'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Il mondo Allianz')
         Mieinfo.checkLinksOnSubMenu('Il mondo Allianz', keysLinksSubMenuIlMondoAllianz)
         Mieinfo.checkLinksOnIcon('Il mondo Allianz')
@@ -262,7 +262,7 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
     it('Verifica aggancio su tutte le sotto pagine di Il mondo Allianz', function () {
         if (!keysLinksMenu['il-mondo-allianz'])
             this.skip()
-        TopBar.clickMieInfo()
+        TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Il mondo Allianz');
         Mieinfo.checkPageOnSubMenu('Il mondo Allianz', keysLinksSubMenuIlMondoAllianz)
     })
@@ -270,12 +270,12 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
     //TODO : PAGINA BIANCA DA TESTARE  -- Add TFS
     // it.only('Verifica aggancio New company handbook', function () {
-    //   TopBar.clickMieInfo()
+    //   TopBar.clickNewsInfo()
     //   Mieinfo.clickLinkOnMenu('New company handbook')
     //   Mieinfo.checkLinksOnSubMenu('New company handbook')
     // })
     // it.only('Verifica aggancio su tutte le sotto pagine di New company handbook', function () {
-    //   TopBar.clickMieInfo()
+    //   TopBar.clickNewsInfo()
     //   Mieinfo.clickLinkOnMenu('New company handbook');
     //   Mieinfo.checkPageOnSubMenu('New company handbook')
     // })

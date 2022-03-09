@@ -22,6 +22,7 @@ let keys = {
     REPORT_ALLIANZ_NOW: true,
     srmOnlineEnabled: true,
     siscoEnabled: true,
+    SERVICENOW: true,
     obuEnabled: true,
     satellitareEnabled: true,
     monitorScoringAZBonusDrive: true,
@@ -38,6 +39,7 @@ before(() => {
             cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiled => { keys.interrogazioniCentralizzateEnabled = profiled })
             cy.filterProfile(profiling, 'COMMON_SERVIZI_SOL').then(profiled => { keys.srmOnlineEnabled = profiled })
             cy.filterProfile(profiling, 'VITA_SISCO').then(profiled => { keys.siscoEnabled = profiled })
+            cy.filterProfile(profiling, 'PO_SERVICENOW').then(profiled => { keys.SERVICENOW = profiled })
             cy.filterProfile(profiling, 'PO_REPORT_ALLIANZNOW').then(profiled => { keys.REPORT_ALLIANZ_NOW = profiled })
             cy.filterProfile(profiling, 'COMMON_MICROSTOCK').then(profiled => {
                 keys.obuEnabled = profiled
@@ -45,10 +47,13 @@ before(() => {
             })
             cy.filterProfile(profiling, 'COMMON_CRUSCOTTO_SCORING_ABD').then(profiled => { keys.monitorScoringAZBonusDrive = profiled })
 
-            if (Cypress.env('isAviva'))
-                keys.newsMieInfo = false
-            else
-                keys.newsMieInfo = true
+            cy.filterProfile(profiling, 'PO_LE_MIE_INFO_OM').then(profiled => {
+                if (Cypress.env('isAviva'))
+                    keys.newsMieInfo = false
+                else
+                    keys.newsMieInfo = profiled
+            })
+
         })
     })
 })
@@ -78,7 +83,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickIconSwitchPage()
     });
 
-    if (!keys.srmOnlineEnabled && !keys.siscoEnabled)
+    if (!keys.srmOnlineEnabled && !keys.siscoEnabled && !keys.SERVICENOW)
         it('Verifica Top Menu incident - Verifica presenza dei link', function () {
             TopBar.clickIconIncident()
             TopBar.checkLinksIncident(keys)
@@ -212,18 +217,12 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickIconSwitchPage('Backoffice')
     });
 
-    it('Verifica Top Menu News', function () {
+    it('Verifica Top Menu News e Info', function () {
+        cy.log(keys.newsMieInfo)
         if (!keys.newsMieInfo)
             this.skip()
         else
-            TopBar.clickIconSwitchPage('News')
-    });
-
-    it('Verifica Top Menu Le mie info', function () {
-        if (!keys.newsMieInfo)
-            this.skip()
-        else
-            TopBar.clickIconSwitchPage('Le mie info')
+            TopBar.clickIconSwitchPage('News e Info')
     });
 
     it('Verica buca di ricerca', function () {
@@ -247,28 +246,11 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     });
 
 
-    it('Verifica Button News', function () {
-        if (!keys.newsMieInfo)
-            this.skip()
-        else
-            TopBar.clickNews()
-    });
-
-    it('Verifica Button Le mie info', function () {
-        if (!keys.newsMieInfo)
-            this.skip()
-        else
-            TopBar.clickMieInfo()
-    });
-
     if (Cypress.env('isAviva')) {
-        it('Verifica assenza Button News', function () {
-            TopBar.checkNotExistLanding('News')
+        it('Verifica assenza Button News e Info', function () {
+            TopBar.checkNotExistLanding('News e Info')
         });
 
-        it('Verifica assenza Button Le mie info', function () {
-            TopBar.checkNotExistLanding('Le mie info')
-        });
     }
 
     it('Verifica link "Vai al Centro notifiche"', function () {
@@ -294,4 +276,4 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     //     HomePage.clickPanelNotifiche()
     //     HomePage.checkNotifiche()
     // })
-})
+});

@@ -174,7 +174,7 @@ class CensimentoAnagrafico {
      * @param {*} cliente  (persona fisica)
      * @param {*} capDifferente (flag per indicare se il cap è differente da quello di default)
      */
-    static selezionaCasa(cliente, capDifferente = false) {
+    static selezionaCasa(cliente, capDifferente = false, interesseStorico = false) {
         ultraIFrame().within(() => {
             //cy.log('*** seleziona Casa ***')
             //cy.log('ubicazione: ' + cliente.ubicazione() + ' - cliente: ' + cliente.cognomeNome())
@@ -218,6 +218,18 @@ class CensimentoAnagrafico {
                     .click()
                 //cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
                 cy.wait(2000)
+            }
+
+            if (interesseStorico) {
+                cy.get('span[class="domande-integrative-fabbricato"]', { timeout: 15000 })
+                  .should('have.length', 1)
+                  .find('span').contains('SI')
+                  .should('be.visible')
+                  .click()
+                //popup Fabbricato di interesse storico
+                cy.get('div[id="popupConfermaCambioDomanda"]').should('contain.text', "comporta l'azzeramento degli sconti, la rimozione della convenzione speciale e il ricalcolo del prezzo")
+                cy.get('button').contains('AGGIORNA').should('be.visible').click()
+                cy.pause()
             }
 
         })

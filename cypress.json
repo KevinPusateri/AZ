@@ -23,6 +23,7 @@
       "password": "BtG4VXvfuaj5kX3cDONqHBpyt0sLcE",
       "database": "applogs"
     },
+    "COMMAND_DELAY": 0,
     "db_da": {
       "host": "PALZMSQDBPRLV01.srv.allianz",
       "port": 5551,

@@ -66,6 +66,7 @@ Classe per utilizzare la Sintesi Cliente in Matrix Web
     * [.cancellaCliente()](#SintesiCliente.cancellaCliente)
     * [.emettiPleinAir()](#SintesiCliente.emettiPleinAir)
     * [.verificaInFolderDocumentiAnagrafici(labels)](#SintesiCliente.verificaInFolderDocumentiAnagrafici)
+    * [.verificaInFolderDocumenti(folders, labels)](#SintesiCliente.verificaInFolderDocumenti)
     * [.verificaDatiSpallaSinistra(cliente)](#SintesiCliente.verificaDatiSpallaSinistra)
     * [.checkAtterraggioSintesiCliente(cliente)](#SintesiCliente.checkAtterraggioSintesiCliente)
     * [.clickClientsBriciolaPane()](#SintesiCliente.clickClientsBriciolaPane)
@@ -372,6 +373,18 @@ Verifica Documenti Anagrafici in Folder
 
 | Param | Type | Description |
 | --- | --- | --- |
+| labels | <code>Array.String</code> | labels dei documenti da verificare in folder |
+
+<a name="SintesiCliente.verificaInFolderDocumenti"></a>
+
+### SintesiCliente.verificaInFolderDocumenti(folders, labels)
+Verifica Documenti in Folder -
+
+**Kind**: static method of [<code>SintesiCliente</code>](#SintesiCliente)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| folders | <code>Array.String</code> | albero cartelle dove si trovano i documenti da verificare in folder |
 | labels | <code>Array.String</code> | labels dei documenti da verificare in folder |
 
 <a name="SintesiCliente.verificaDatiSpallaSinistra"></a>

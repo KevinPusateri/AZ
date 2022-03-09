@@ -27,6 +27,7 @@ import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.js
 import Annullamento from "../../mw_page_objects/polizza/Annullamento"
 //import TopBar from "../../mw_page_objects/common/TopBar"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import 'cypress-iframe';
 
 //#region Mysql DB Variables
@@ -64,6 +65,10 @@ let personaFisica = PersonaFisica.CarloRossini()
 //var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
 var nContratto = "000"
 var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE]
+//var arrPath = ['Polizze Allianz Ultra', '733117594', 'Versione 1', 'Appendici']
+//var arrDoc = ['Richiesta di annullamento']
+//var arrPath = ['Polizze Allianz Ultra', '733117594', 'Versione 1']
+//var arrDoc = ['Polizza', 'Ricevuta avvenuto pagamento', 'Ciccio']
 var defaultFQ = {
     "TipoAbitazione"    : "appartamento",
     "MqAbitazione"      : "100",
@@ -100,7 +105,76 @@ after(function() {
         //#endregion
 })
 
-describe('Ultra BMP : Aggiunta fabbricato', function() {
+describe('Prove relative ad Ultra', function() {
+
+    it("Ricerca cliente", () => {
+        cy.get('body').within(() => {
+            cy.get('input[name="main-search-input"]').click()
+            cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
+            cy.get('lib-client-item').first().click()
+        }).then(($body) => {
+            cy.wait(7000)
+            const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+            //const check = cy.get('div[class="client-null-message"]').should('be.visible')
+            cy.log('permessi: ' + check)
+            if (check) {
+                cy.get('input[name="main-search-input"]').type(personaFisica).type('{enter}')
+                cy.get('lib-client-item').first().next().click()
+            }
+        })
+        //cy.pause()
+    })
+
+    it("Annullamento contratto da Portafoglio", () => {
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.ordinaPolizze("Numero contratto")
+        //Portafoglio.menuContratto(nContratto, menuPolizzeAttive.annullamento)
+        //Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
+        //Ultra.selezionaPrimaAgenzia()
+        cy.log(">>>>> ANNULLAMENTO CONTRATTO: " + nContratto)
+        //cy.pause()
+        //Portafoglio.clickAnnullamento(nContratto, 'ANN.ORIGINE/MANCATO PERFEZIONAMENTO IN AGENZIA')
+        Portafoglio.clickAnnullamento('733117610', 'ANN.ORIGINE/MANCATO PERFEZIONAMENTO IN AGENZIA')
+        cy.pause()
+        //Annullamento.annullaContratto()
+        UltraBMP.annullamentoContratto()
+        //cy.pause()
+        TopBar.search(personaFisica.nomeCognome())
+        //cy.pause()
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        //cy.pause()
+        Portafoglio.clickTabPortafoglio()
+        //cy.pause()
+        Portafoglio.checkPolizzaIsNotPresentOnPolizzeAttive(nContratto)
+
+        //cy.pause()
+
+        /*
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.ordinaPolizze("Numero contratto")
+        //Portafoglio.menuContratto(nContratto, menuPolizzeAttive.annullamento)
+        //Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
+        //Ultra.selezionaPrimaAgenzia()
+        Portafoglio.clickAnnullamento(nContratto, 'ANN.ORIGINE/MANCATO PERFEZIONAMENTO IN AGENZIA')
+        Annullamento.annullaContratto()
+        TopBar.search(personaFisica)
+        LandingRicerca.clickClientePF(personaFisica.cognomeNome())
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.checkPolizzaIsNotPresentOnPolizzeAttive(nContratto)
+        */
+
+        //cy.pause()
+    })
+
+
+
+
+
+    it("Accesso folder", () => {
+        SintesiCliente.verificaInFolderDocumenti(arrPath, arrDoc)
+        cy.pause()
+    })
+
 
     it('Seleziona Ultra BMP', () => {
         TopBar.clickSales()
