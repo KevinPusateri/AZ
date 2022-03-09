@@ -298,7 +298,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica : la valorizzazione del campo "Data pagamento" nella popup "Dettaglio Pagamento"      
         const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(1) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator1).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator1).then((val) => {
             cy.log('[it]>> [Data pagamento]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)            
             Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
@@ -306,7 +306,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         });
         // Verifica : la valorizzazione del campo "Data invio Banca" nella popup "Dettaglio Pagamento"
         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator2).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator2).then((val) => {
             cy.log('[it]>> [Data invio banca]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
@@ -315,7 +315,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica : la valorizzazione del campo "Importo" nella popup "Dettaglio Pagamento"
         const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)" 
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator3).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator3).then((val) => {          
             cy.log('[it]>> [Importo]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             Common.isValidCheck(/\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/, val, ' is valid currency') 
@@ -324,7 +324,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica : la valorizzazione del campo "Valuta" nella popup "Dettaglio Pagamento"
         const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)" 
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator4).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator4).then((val) => {          
             cy.log('[it]>> [Valuta]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             ConsultazioneSinistriPage.isEuroCurrency(val)
@@ -332,21 +332,21 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica : la valorizzazione del campo "Causale" nella popup "Dettaglio Pagamento"
         const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"       
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator5).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator5).then((val) => {          
             cy.log('[it]>> [Causale]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                               
         });
 
         // Verifica : la valorizzazione del campo "Modalità di pagamento" nella popup "Dettaglio Pagamento"
         const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(6) > td:nth-child(2)"       
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator6).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator6).then((val) => {          
             cy.log('[it]>> [Modalità di pagamento]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                                                      
         });
 
         // Verifica : la valorizzazione del campo "IBAN" nella popup "Dettaglio Pagamento"
         const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(7) > td:nth-child(2)"       
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator7).then(val => {
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator7).then(val => {
             cy.log('[it]>> [IBAN]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             //Reg exp. for valid IBAN
@@ -356,14 +356,14 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     
         // Verifica : la valorizzazione del campo "Tipo Proposta" nella popup "Dettaglio Pagamento"
         const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"       
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator8).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator8).then((val) => {          
             cy.log('[it]>> [Tipo Proposta]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                                           
         });
 
         // Verifica : la valorizzazione del campo "Stato Pagamento" nella popup "Dettaglio Pagamento"
         const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"       
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator9).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator9).then((val) => {          
             cy.log('[it]>> [Stato Pagamento]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                                                                                
         });
@@ -412,7 +412,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     
         // Verifica(1) : la valorizzazione del campo "Data incarico" nella popup "Dettaglio Incarico Perizia"
         const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator5).then((val) => {              
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator5).then((val) => {              
             cy.log('[it]>> [Data incarico]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
@@ -421,7 +421,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica(2) : la valorizzazione del campo "Data scarico" nella popup "Dettaglio Incarico Perizia"
         const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator6).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator6).then((val) => {
             cy.log('[it]>> [Data scarico]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
@@ -451,7 +451,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         // Verifica(6) : la valorizzazione del campo "Data verifica perizia" nella popup "Dettaglio Incarico Perizia"
         const popUplocator10 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(13) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator10).then((val) => {           
+        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator10).then((val) => {           
             cy.log('[it]>> [Data verifica perizia]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')

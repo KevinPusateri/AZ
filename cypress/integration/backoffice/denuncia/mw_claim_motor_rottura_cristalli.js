@@ -84,7 +84,6 @@ var copertura_danno = 'ROTTURA CRISTALLI'
 var sinistro_veicoli_coinvolti = '2'
 var sinistro_descrizione_danno = 'Danneggiamento parabrezza'
 var sinistro_località = 'GORIZIA'
-
 var tipo_danno = 'Rottura Cristalli'
 
 
@@ -138,46 +137,50 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
             DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita2');
             cy.wait(2000)
+            DenunciaSinistriPage.getPromiseValue_BylD('#CLIENTE_capAvv').then((sin_cap) => {                                
+                cy.log('[it]>> [CAP]: '+sin_cap);
+                DenunciaSinistriPage.isNotNullOrEmpty(sin_cap)
+            });             
             DenunciaSinistriPage.clickBtn_ById('#CmdAvanti');
             cy.wait(2000)
     });
 
     /*
-    it('Lista polizze: Selezione della polizza'+
-    '', function () {
-
+    it('Lista polizze: Selezione della polizza'+'', function () {
         // Selezione della polizza  
-          var  isVisible = DenunciaSinistriPage.isVisible('#avantiListaPolizze')
-        if (isVisible) {         
-            DenunciaSinistriPage.clickBtn_ById('#avantiListaPolizze');
-        } 
-    });
-      
-
-    it('Dettaglio di polizza: visualizzazione e selezione'+
-    '', function () {
-
-        // Visualizzazione del dettaglio di polizza 
+        DenunciaSinistriPage.clickBtn_ById('#avantiListaPolizze');       
+    });    
+    */
+    it('Dettaglio di polizza: visualizzazione e selezione', function () {
+        Cypress.on('fail', (err, runnable) => {
+            cy.log(runnable);
+            // returning false here prevents Cypress from
+            // failing the test   
+            return false
+        })
+       // Nel caso la polizza sia in periodo di mora si attiva la
+        //pagina di dettaglio polizza
         DenunciaSinistriPage.clickObj_ByLabel('a', 'Avanti');        
     });
-*/
-it('Sinistri potenzialmente doppi', function () {
-    Cypress.on('fail', (err, runnable) => {
-        // returning false here prevents Cypress from
-        // failing the test   
-        return false
-    })
-    cy.wait(3000)
-    DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1').then(isVisible => {
-        if (isVisible) {                              
-            let cssrdbtn = "#workarea2 > fieldset:nth-child(4) > table > tbody > tr:nth-child(2) > td > ul > li"
-            DenunciaSinistriPage.clickOnRadio_ByIdAndText(cssrdbtn, 'Prosegui denuncia in corso');
-            cy.wait(1000)
-            DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');
-            cy.wait(1000)
-        }            
-    }); 
-});
+
+    it('Sinistri potenzialmente doppi', function () {
+        Cypress.on('fail', (err, runnable) => {
+            cy.log(runnable);
+            // returning false here prevents Cypress from
+            // failing the test   
+            return false
+        })
+        cy.wait(3000)
+        DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1').then(isVisible => {
+            if (isVisible) {                              
+                let cssrdbtn = "#workarea2 > fieldset:nth-child(4) > table > tbody > tr:nth-child(2) > td > ul > li"
+                DenunciaSinistriPage.clickOnRadio_ByIdAndText(cssrdbtn, 'Prosegui denuncia in corso');
+                cy.wait(1000)
+                DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');
+                cy.wait(1000)
+            }            
+        }); 
+    });
 
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
     copertura_danno, function () {        

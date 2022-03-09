@@ -140,7 +140,7 @@ class MovimentazioneSinistriPage {
      * Gets a text value defined on object identified by its @locator
      * @param {string} locator : id locator object
      */
-     static getPromiseValue_Bylocator(locator) {
+     static getPromiseText_BylD(locator) {
         let value = ""; 
         cy.log('>> locator value: ' + locator)
         return new Cypress.Promise((resolve) => {            

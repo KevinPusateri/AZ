@@ -285,7 +285,7 @@ class ConsultazioneSinistriPage {
      * Gets a text value defined on object identified by its @locator
      * @param {string} locator : id locator object
      */
-    static getPromiseValue_Bylocator(locator) {
+    static getPromiseText_BylD(locator) {
         cy.log('>> locator value: ' + locator)
         return new Cypress.Promise((resolve) => {            
             getIFrame().find(locator).should('be.visible')

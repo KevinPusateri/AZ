@@ -206,7 +206,7 @@ class DenunciaSinistriPage {
      * @param {string} label : text displayed
      */
     static clickObjPopUpChiudi_ByLabel(tag, label) {             
-        getIFramePopUpChiudi().contains(tag, label, { timeout: 3000 }).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
+        getIFramePopUpChiudi().contains(tag, label, { timeout: 5000 }).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(2000)        
     }
     /**
@@ -606,14 +606,30 @@ class DenunciaSinistriPage {
         });
     }
     /**
-     * Gets a text value defined on object identified by its @locator
+     * Gets a text defined on object identified by its @locator
      * @param {string} locator : id locator object
      */
-    static getPromiseValue_Bylocator(locator) {
+    static getPromiseText_BylD(locator) {
         cy.log('>> locator value: ' + locator)
         return new Cypress.Promise((resolve) => {            
             getIFrameDenuncia().find(locator).should('be.visible')
             .invoke('text')  // for input or textarea, .invoke('val')        
+            .then(text => {         
+                cy.log('>> read the value: ' + text)
+                resolve((text.toString()))                
+            });
+        });
+    }
+
+    /**
+     * Gets a text defined on object identified by its @locator
+     * @param {string} locator : id locator object
+     */
+     static getPromiseValue_BylD(locator) {
+        cy.log('>> locator value: ' + locator)
+        return new Cypress.Promise((resolve) => {            
+            getIFrameDenuncia().find(locator).should('be.visible')
+            .invoke('val')  // for input or textarea, .invoke('val')        
             .then(text => {         
                 cy.log('>> read the value: ' + text)
                 resolve((text.toString()))                

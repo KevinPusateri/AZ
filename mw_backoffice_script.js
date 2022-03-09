@@ -174,7 +174,7 @@ async function main() {
 	} else
 		fullTests.push(integrationDirectory + specName);
 
-	console.log("1. Specs: "+fullTests.length)
+	console.log("Specs: "+fullTests.length)
 	const paramsRun = []
 	for (let i = 0; i < fullTests.length; i++) {
 		let specName = String(fullTests[i]).replace(/^.*[\\\/]/, '').replace('.js', '')
