@@ -247,7 +247,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             cy.log('[it]>> numero di sinistro: ' + numsin)
             numsin = numsin.substring(0,9)
             DenunciaSinistriPage.isNotNullOrEmpty(numsin)                 
-            DenunciaSinistriPage.isPositiveNumber(numsin)
+            //Reg exp. for valid signed integer
+            Common.isValidCheck(/^-?(0|[1-9]\d*)$/, numsin, 'is valid number')
+            //DenunciaSinistriPage.isPositiveNumber(numsin)
         });
 
         // il dannegiato 

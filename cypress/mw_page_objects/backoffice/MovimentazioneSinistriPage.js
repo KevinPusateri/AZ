@@ -155,7 +155,7 @@ class MovimentazioneSinistriPage {
     /**
      * Gets total moviments in page
      */
-     static getNumTotaleMovimenti() {
+    static getNumTotaleMovimenti() {
         var tot = 0       
         cy.wait(2000)
         return new Cypress.Promise((resolve, reject) => {
@@ -168,11 +168,51 @@ class MovimentazioneSinistriPage {
         })
         resolve(tot)     
     }
+    /**
+     * Defined on object identified by its @id, the function return the
+     * length list
+     * @param {string} id : locator object id
+     */
+     static getCountElements(id) {        
+        return getIFrameMovSinistri().find(id)        
+        .then(listing => {
+          const listingCount = Cypress.$(listing).length;
+          expect(listing).to.have.length(listingCount);
+          cy.log('>> Length :' + listingCount)          
+        });
+        
+        getIFrame().find(id)  
+    }
+
+    static analyzeClaimFields(id)
+    {
+        debugger
+        var table = getIFrameMovSinistri().find(id).eq(2).children('tr[header="false"]')
+            .each(($tr, index, $list) => {
+            debugger
+            var name = $tr.attr('name')
+            var size = getIFrameMovSinistri().find(id).its("length").as("size");
+            var i = index + 2;
+            const locSin = '#'+name.replace('R'+i+'_Div', 'R'+i+'C1_Div') +' span'
+            const locDtMov = '#'+name.replace('R'+i+'_Div', 'R'+i+'C2_Div') +' span'
+            const locDtAvv = '#'+name.replace('R'+i+'_Div', 'R'+i+'C4_Div') +' span'
+            const locTpDann = '#'+name.replace('R'+i+'_Div', 'R'+i+'C9_Div') +' span'
+
+            Common.isValidCheck(/^\d{9}\-?([0-9]{3})$/, $tr.find(locSin).text().trim(), ' is valid claim number')
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, $tr.find(locDtMov).text(), ' contain a valid date')
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, $tr.find(locDtAvv).text(), ' contain a valid date')
+            
+            const tpDann =  $tr.find(locTpDann).text()          
+        }) 
+        
+    }
+
     static selectionText(id, text)
     { 
         getIFrameAcqDoc().get(id).click()
         getIFrameAcqDoc().get('option').contains(text).click();
     }
+
     static UploadFile()
     {        
         const fileName = 'CI_Test.pdf'
@@ -211,8 +251,8 @@ class MovimentazioneSinistriPage {
             expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true
             tot = $val.text().trim()                                                                          
         });
-        cy.wait(1000) 
-        getIFrameMovSinistri().find('td[class="numCruscotto"]').then(($els) => {             
+            cy.wait(1000) 
+            getIFrameMovSinistri().find('td[class="numCruscotto"]').then(($els) => {             
             expect(Cypress.dom.isJquery($els), 'jQuery object').to.be.true
             
             elements = Cypress.$.makeArray($els)
@@ -233,7 +273,7 @@ class MovimentazioneSinistriPage {
                 assert.notOk('I valori sono discordanti sum='+sum+ ' tot='+tot)
         })
     }
-   
+
     /**
      * Gets the number of movements associated with the table row index
      * @param {*} idx : index of row in table
@@ -255,7 +295,6 @@ class MovimentazioneSinistriPage {
         }) 
         reject () 
     }
-
 
     static getElementiMovimentazioneSinistri() {
         getIFrameMovSinistri().find('td[class="numCruscotto"]').then(($els) => {                                  

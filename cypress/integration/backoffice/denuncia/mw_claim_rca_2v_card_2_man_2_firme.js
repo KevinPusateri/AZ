@@ -1,10 +1,9 @@
 /**
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
  *
- * @description Emissione denuncia di un sinistro motor avente come copertura 
- * di garanzia la "Rottura Cristalli"
+ * @description Emissione denuncia sinistro rca con 2 veicoli 
+ * in completezza base e di tipo card 2 mandatario
  */
-
 
 /// <reference types="Cypress" />
 import Common from "../../../mw_page_objects/common/Common"
@@ -25,6 +24,7 @@ let insertedId
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
+
 
 before(() => {
     cy.getUserWinLogin().then(data => {
@@ -63,29 +63,32 @@ after(function () {
 })
 
 //#region Script Variables
-/*
+
 var ramo_pol = '31-Globale Auto'
 var cliente_cognome = 'Toccane'
 var cliente_nome = 'Francesco'
 var cliente_dt_nascita = '25/03/1983'
 var cliente_num_pol = '79323432'
 var cliente_targa = 'DS246AT'
-*/
-var ramo_pol = '31' //601 - BONUS/MALUS
-var cliente_cognome = 'Appolonio'
-var cliente_nome = 'Gianluca'
-var cliente_dt_nascita = '23/02/1979'
-var cliente_num_pol = '530053391'
-var cliente_targa = 'Fj103dt'
 
+var controparte_conducente_cognome = 'Turco'
+var controparte_conducente_nome = 'Monica'
+var controparte_conducente_sesso = 'F'
+var controparte_conducente_località = 'Zevio'
+var controparte_conducente_indirizzo = 'Via Villasbroggia 16B'
+var controparte_conducente_cod_fis = 'TRCMNC69P44M172E'
+var controparte_compagnia = 'ALLIANZ SPA'
+var controparte_targa = 'EM000AJ'
 
-var copertura_danno = 'ROTTURA CRISTALLI'
+var copertura_danno = 'DANNO DA CIRCOLAZIONE (RCA)'
 
 var sinistro_veicoli_coinvolti = '2'
-var sinistro_descrizione_danno = 'Danneggiamento parabrezza'
+var sinistro_descrizione_danno = 'Collisione da Tamponamento'
 var sinistro_località = 'GORIZIA'
 
-var tipo_danno = 'Rottura Cristalli'
+var sinistro_firma_cai = '2 Firme'
+var sinistro_dichiarazione = 'Il Cliente Dichiara Ragione (Del Tutto O In Parte)'
+var tipo_danno = 'Card Mandatario 2 Firme'
 
 
 let dtAvvenimento 
@@ -94,15 +97,15 @@ let controparte_marca
 let idx_cop_gar
 //#endregion
 
-describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro motor avente come copertura' +
-' di garanzia la "'+copertura_danno+'"', () => {
+describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2 veicoli ' +
+'coinvolti in completezza base e di tipo card 2 mandatario ', () => {
 
     it('Atterraggio su BackOffice >> Denuncia', function () {             
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Denuncia') 
         cy.wait(1000)        
-    });    
-
+    });
+    
     it('Denuncia --> Ricerca cliente per numero di polizza: ' + cliente_num_pol, function() {               
         // Ricerca cliente per Polizza
         DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
@@ -142,17 +145,12 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             cy.wait(2000)
     });
 
-    /*
     it('Lista polizze: Selezione della polizza'+
     '', function () {
 
         // Selezione della polizza  
-          var  isVisible = DenunciaSinistriPage.isVisible('#avantiListaPolizze')
-        if (isVisible) {         
-            DenunciaSinistriPage.clickBtn_ById('#avantiListaPolizze');
-        } 
+        DenunciaSinistriPage.clickBtn_ById('#avantiListaPolizze');       
     });
-      
 
     it('Dettaglio di polizza: visualizzazione e selezione'+
     '', function () {
@@ -160,25 +158,25 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         // Visualizzazione del dettaglio di polizza 
         DenunciaSinistriPage.clickObj_ByLabel('a', 'Avanti');        
     });
-*/
-it('Sinistri potenzialmente doppi', function () {
-    Cypress.on('fail', (err, runnable) => {
-        // returning false here prevents Cypress from
-        // failing the test   
-        return false
-    })
-    cy.wait(3000)
-    DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1').then(isVisible => {
-        if (isVisible) {                              
-            let cssrdbtn = "#workarea2 > fieldset:nth-child(4) > table > tbody > tr:nth-child(2) > td > ul > li"
-            DenunciaSinistriPage.clickOnRadio_ByIdAndText(cssrdbtn, 'Prosegui denuncia in corso');
-            cy.wait(1000)
-            DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');
-            cy.wait(1000)
-        }            
-    }); 
-});
 
+    it('Sinistri potenzialmente doppi', function () {
+        Cypress.on('fail', (err, runnable) => {
+            // returning false here prevents Cypress from
+            // failing the test   
+            return false
+        })
+        cy.wait(3000)
+        DenunciaSinistriPage.isVisible('#LISTADENUNCE_listaDenDoppie1').then(isVisible => {
+            if (isVisible) {                              
+                let cssrdbtn = "#workarea2 > fieldset:nth-child(4) > table > tbody > tr:nth-child(2) > td > ul > li"
+                DenunciaSinistriPage.clickOnRadio_ByIdAndText(cssrdbtn, 'Prosegui denuncia in corso');
+                cy.wait(1000)
+                DenunciaSinistriPage.clickBtn_ById('#SINISTRI_DOPPI_continua');
+                cy.wait(1000)
+            }            
+        }); 
+    });
+    
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
     copertura_danno, function () {        
         Cypress.on('fail', (err, runnable) => {
@@ -196,18 +194,117 @@ it('Sinistri potenzialmente doppi', function () {
                 DenunciaSinistriPage.clickOnCheck_ByIdAndAttr('.SelectedCheckBox', 'myindex', idx_cop_gar);
             }
         });
-        DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');       
+          // in questo caso non va impostato l'avanti pagina   
     });
 
+    it('Inserimento dati per il risarcimento diretto con 2 veicoli conivolti e con la ' +
+    'seguente dichiarazione di responsabilità del cliente: "'+sinistro_dichiarazione+'"', function () {
+        
+        // Selezione della dichiarazione di responsabilità
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_dichiarazioneRespons', sinistro_dichiarazione)
+        // Selezione dei veicoli coinvolti
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_numVeicoli', '2')        
+         // Selezione della firma cai
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_flagCAI2firme', sinistro_firma_cai)
+    
+        //Il Conducente veicolo cliente è anche il contraente
+        DenunciaSinistriPage.clickObj_ByIdAndAttr('#GARANZIE_contraente', 'value', 'si');
+        cy.wait(3000)
+        DenunciaSinistriPage.clickBtn_ById('#cmdAvanti');
+        cy.wait(2000)
+    });
+
+    it('Lista veicolo/soggetti coinvolti --> selezionare "veicolo"' +
+    '', function () {
+        
+        // Nuovo soggetto coinvolto
+        DenunciaSinistriPage.clickBtn_ById('#newSoggettoCoinvolto')
+        // Selezione soggetto/veicolo coinvolto: veicolo
+        DenunciaSinistriPage.checkObj_ByClassAndText('k-window-title',  'soggetto/ veicolo coinvolto')
+        //DenunciaSinistriPage.checkObj_ById('popup') 
+        DenunciaSinistriPage.clickPopUpObj_ByIdAndAttr('#chkRuolo', 'value', 'veicolo');
+        DenunciaSinistriPage.clickPopUpBtn_ById('#CmdOk')
+    });
+
+    it('Dati del veicolo controparte (Targa: "' +controparte_targa + '" e compagnia ass.: "' +
+    controparte_compagnia + ") con visualizzazione popUp della lista compagnie e ricerca in base dati Ania", function () {
+
+        DenunciaSinistriPage.setValue_ById('#VEICOLO_targaTarga', controparte_targa);
+        DenunciaSinistriPage.setValue_ById('#VEICOLO_compagnia', controparte_compagnia);
+        DenunciaSinistriPage.clickBtn_ById('#CmdRicercaCompagnia')
+
+        DenunciaSinistriPage.clickPopUpObj_ByLabel('td', controparte_compagnia)       
+        DenunciaSinistriPage.clickPopUpObj_ByIdAndAttr('.field.label-grid > tbody > tr > td:nth-child(2) > .btn', 'onclick', 'closePage(\'OK\')');
+
+        DenunciaSinistriPage.clickBtn_ById('#VEICOLO_datiAnia')
+        cy.wait(4000)
+        DenunciaSinistriPage.getPromiseValue_ById('#VEICOLO_marcaVeicolo').then((val) => {    
+            controparte_marca = val              
+            cy.log('[it]>> marca vettura: ' + controparte_marca)
+        });
+    });
+
+    it('Dati del conducente di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
+    controparte_conducente_nome + '") ', function () {
+
+        DenunciaSinistriPage.clickBtn_ById('#VEICOLO_soggettoConducenteControparte')
+        DenunciaSinistriPage.setValue_ById('#TxtCognome', controparte_conducente_cognome);
+        DenunciaSinistriPage.setValue_ById('#TxtNome', controparte_conducente_nome);
+        DenunciaSinistriPage.clickSelect_ById('#SOGGETTO_sesso', controparte_conducente_sesso) 
+        DenunciaSinistriPage.setValue_ById('#TxtLocalitaRuo', controparte_conducente_località) 
+        DenunciaSinistriPage.setValue_ById('#TxtIndirizzoRuo', controparte_conducente_indirizzo) 
+        DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita')
+        cy.wait(3000)
+        DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
+        DenunciaSinistriPage.clickBtn_ById('#cercaRuolo')
+        cy.wait(4000)
+        //Salva i dati anagrafici del conducente
+        DenunciaSinistriPage.clickBtn_ById('#CmdSalva');                       
+    });
+
+    it('Dati dell\'assicurato di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
+    controparte_conducente_nome + '") ', function () {
+
+        DenunciaSinistriPage.clickBtn_ById('#VEICOLO_soggettoAssicuratoControparte')
+        DenunciaSinistriPage.setValue_ById('#TxtCognome', controparte_conducente_cognome);
+        DenunciaSinistriPage.setValue_ById('#TxtNome', controparte_conducente_nome);
+        DenunciaSinistriPage.clickSelect_ById('#SOGGETTO_sesso', controparte_conducente_sesso) 
+        DenunciaSinistriPage.setValue_ById('#TxtLocalitaRuo', controparte_conducente_località) 
+        DenunciaSinistriPage.setValue_ById('#TxtIndirizzoRuo', controparte_conducente_indirizzo) 
+        DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita')
+        cy.wait(3000)
+        DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
+        DenunciaSinistriPage.clickBtn_ById('#cercaRuolo')
+        cy.wait(4000)
+        //Salva i dati anagrafici del conducente
+        DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
+        cy.wait(1000)
+        DenunciaSinistriPage.clickBtn_ById('#avantiVeicolo');
+        cy.wait(2000)                       
+    });
+    
     it('Verifica dei dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {
         
-        DenunciaSinistriPage.checkObjVisible_ByText("Contraente");
+        DenunciaSinistriPage.checkObjVisible_ByText("Conducente Veicolo Controparte");
+        DenunciaSinistriPage.checkObjVisible_ByText(controparte_conducente_cognome)
+        DenunciaSinistriPage.checkObjVisible_ByText(controparte_conducente_nome)
+        DenunciaSinistriPage.checkObjVisible_ByText(controparte_marca)
+        DenunciaSinistriPage.checkObj_ByLocatorAndText('#DANNI_listaVeicoliSoggetti', controparte_targa)
+
+        DenunciaSinistriPage.checkObjVisible_ByText("Conducente Veicolo Cliente");
         DenunciaSinistriPage.checkObjVisible_ByText(cliente_cognome)
-        DenunciaSinistriPage.checkObjVisible_ByText(cliente_cognome)
-        DenunciaSinistriPage.checkObjVisible_ByText(cliente_targa)
-       
+        DenunciaSinistriPage.checkObjVisible_ByText(cliente_nome)
+
         DenunciaSinistriPage.clickBtn_ById('#avantiListaDanni')    
         cy.wait(2000)           
+    });
+
+    it('Pagina CAI', function () {
+        
+        DenunciaSinistriPage.clickBtn_ById('#CAI_A1');
+        DenunciaSinistriPage.clickBtn_ById('#CAI_B2');
+        
+        DenunciaSinistriPage.clickBtn_ById('#CmdAvantiCai');
     });
    
     it('Riepilogo denuncia - verifica dati danneggiato ', function () {
@@ -219,6 +316,7 @@ it('Sinistri potenzialmente doppi', function () {
     });
 
     it('Riepilogo denuncia - verifica dati di denuncia ', function () {
+        
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataAvvenimento', dtAvvenimento);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataDenuncia', dtDenuncia);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#CLIENTE_LOCALITA', sinistro_località);       
@@ -231,7 +329,7 @@ it('Sinistri potenzialmente doppi', function () {
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_cognome);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_nome);       
     });
-
+    
     it('Riepilogo denuncia - salvataggio e chiusura di denuncia ', function () {
         
         DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
@@ -240,14 +338,14 @@ it('Sinistri potenzialmente doppi', function () {
         cy.wait(1000)  
     });
 
-    it('Riepilogo - Verifica dati di sinistro', function () {
-        
+   it('Riepilogo -Verifica dati di sinistro ', function () {              
+
         const cssNumSin = "#PRECOMMIT_listaDanneggiatiBUFF > table > tbody > tr > td:nth-child(1)"
         DenunciaSinistriPage.getPromiseText_ById(cssNumSin).then((numsin) => {                 
             cy.log('[it]>> numero di sinistro: ' + numsin)
             numsin = numsin.substring(0,9)
             DenunciaSinistriPage.isNotNullOrEmpty(numsin)                 
-            DenunciaSinistriPage.isPositiveNumber(numsin)
+            Common.isValidCheck(/^-?(0|[1-9]\d*)$/, numsin, 'is valid number') 
         });
 
         // il dannegiato 
@@ -266,4 +364,5 @@ it('Sinistri potenzialmente doppi', function () {
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_cognome);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_nome);
     });
+
 });

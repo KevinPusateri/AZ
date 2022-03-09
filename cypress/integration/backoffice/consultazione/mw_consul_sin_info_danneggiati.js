@@ -156,10 +156,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.clickOnMultiObj_ById(cssSezDanneggiato)
         // Conteggio del numero dei multidanneggiati
         let count = ConsultazioneSinistriPage.getCountElements(cssSezDanneggiato)
-        //Controllo valorizzazione dei danneggiati
+        // Controllo valorizzazione dei danneggiati
         let cssNomeDanneggiato = ".dynamic_content > .block > table > tbody > tr:nth-child(1) > td:nth-child(1) > a"
         ConsultazioneSinistriPage.checkListValues_ById(cssNomeDanneggiato)
-         //Controllo valorizzazione CLD
+        // Controllo valorizzazione CLD
         let cssCLD = ".dynamic_content > .block > table > tbody > tr:nth-child(1) > td:nth-child(2) > a"
         ConsultazioneSinistriPage.checkListValues_ById(cssCLD)
     });

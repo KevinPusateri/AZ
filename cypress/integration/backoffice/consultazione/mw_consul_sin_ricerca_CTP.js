@@ -76,7 +76,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     const cf_CTP = "VVNGLD86A14Z222H"
     const dt_avv = "11/07/2020"
 
-    const lblnumsin = "k-grid-content"
+    const lblnumsin = ".k-grid-content"
     
     it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
         TopBar.clickBackOffice()
@@ -88,11 +88,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Targa CTP')
         ConsultazioneSinistriPage.setValue_ById('#plateCTP', targa_CTP)
         let classvalue = "search_submit targaCTP k-button"
-        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')        
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')      
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, numpol)
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, targa_assicurato)
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, dt_avv)
     });
 
     it('Consultazione Sinistri: Ricerca per dati anagrafici della CTP persona fisica ', function () {
@@ -104,17 +104,17 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#data_daCTP', dt_avv)
         ConsultazioneSinistriPage.setValue_ById('#data_aCTP', dt_avv)
         let classvalue = "search_submit anagraficaCTP k-button"
-        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, cognome_CTP)       
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, nome_CTP) 
+        
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, cognome_CTP)       
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, nome_CTP) 
 
         const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"
         ConsultazioneSinistriPage.clickBtn_ById(locRArrow)
-        
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, numpol)
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, targa_assicurato)
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, dt_avv)
     });
     
     it('Consultazione Sinistri: Ricerca per codice fiscale del CTP persona fisica ', function () {
@@ -127,15 +127,15 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#data_daCTP', dt_avv)
         ConsultazioneSinistriPage.setValue_ById('#data_aCTP', dt_avv)
         let classvalue = "search_submit anagraficaCTP k-button"
-        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')        
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, cf_CTP) 
+        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')       
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, cf_CTP) 
         
-        const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"
+        const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"       
         ConsultazioneSinistriPage.clickBtn_ById(locRArrow)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, numpol)
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, targa_assicurato)
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, dt_avv)
     });
 
 });

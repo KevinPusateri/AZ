@@ -115,6 +115,23 @@ class ConsultazioneSinistriPage {
         });
         cy.wait(1000)                 
     }
+
+    /**
+     * Check if an object identified by class attribute and its label is displayed
+     * @param {string} id : class attribute 
+     * @param {string} label : text displayed
+     */
+     static checkObj_ByIdAndText(id, label) {    
+        return new Cypress.Promise((resolve) => {     
+            let obj = getIFrame().find(id).should('be.visible')            
+            if (obj.contains(label))
+            {
+                cy.log('>> object with label: "' + label +'" is defined') 
+                resolve(label)
+            }            
+        });
+        cy.wait(1000)                 
+    }
     /**
      * Check if an object identified by locator and its label is displayed
      * @param {string} locator : class attribute 
@@ -280,6 +297,20 @@ class ConsultazioneSinistriPage {
         });
     }
     /**
+     * Defined on object identified by its @id, the function return the
+     * length list
+     * @param {string} id : locator object id
+     */
+     static getCountElements(id) {        
+        return getIFrame().find(id)        
+        .then(listing => {
+          const listingCount = Cypress.$(listing).length;
+          expect(listing).to.have.length(listingCount);
+          cy.log('>> Length :' + listingCount)          
+        });
+        getIFrame().find(id)  
+    }
+    /**
      * Check if exist id object in body
      */
     static IdExist(id) {
@@ -288,7 +319,7 @@ class ConsultazioneSinistriPage {
                 cy.log('>> ' + id + ' element exists!')
                 return true
             } else { 
-                cy.log('>> ' + id + ' element not exists!')
+                cy.log('>> ' + id + ' element not exists!');
                 return false
             }
         })
@@ -312,20 +343,12 @@ class ConsultazioneSinistriPage {
         });
         cy.wait(1000)        
     }
-    static isPositiveNumber(str)
-    {
-        const regexExp = /^-?(0|[1-9]\d*)$/;//Reg exp. for valid signed integer
-        var pattern = new RegExp(regexExp)
-        //Tests for a match in a string. It returns true or false.
-        validation = pattern.test(str)
-        cy.wrap(str).then((validation) => {  
-            assert.isTrue(validation,"the data: '"+numstr+"' is valid number");       
-        });
-    }
+    
     /**
      * Puts a @str value and is verified if its a valid IBAN 
      * @param {string} str : string date format
      */
+    /*
     static isValidIBAN(str)
     {       
         const regexExp = /^[A-Z]{2}[0-9A-Z]*$/; //Reg exp. for valid IBAN
@@ -336,24 +359,12 @@ class ConsultazioneSinistriPage {
             assert.isTrue(validation,'>> IBAN Validation on string "'+str+'". (IBAN '+myString[0]+') is included.')                
         });
     }
-    /**
-     * Puts a @str value and is verified if its a date value is included in a correct format 
-     * @param {string} str : string date format
-     */
-     static containValidDate(str) {
-          
-        const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
-        var pattern = new RegExp(regexExp)
-        //Tests for a match in a string. It returns true or false.       
-        cy.wrap(str).then((validation) => {
-            validation = pattern.test(str)                       
-            assert.isTrue(validation,'>> Date Validation on string "'+str+'" (contain a valid date "'+str.match(pattern)[0]+'")')         
-        });                             
-    }
+    */
     /**
      * Puts a @numstr (ex.: numStr = "123,20") value and is verified if its a currency correct value 
      * @param {string} numstr : string currency value
      */
+    /*
     static isCurrency(numstr) {      
        
         const regexExp = /\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/;        
@@ -363,6 +374,7 @@ class ConsultazioneSinistriPage {
             assert.isTrue(validation,"the data: '"+numstr+"' is valid currency value");                
         });
     }
+    */
     /**
      * Puts a @str value and is verified if its a valid EURO currency @str (ex.: "EURO") 
      * @param {string} str : string value
@@ -375,9 +387,9 @@ class ConsultazioneSinistriPage {
         });
     } 
     static getCurrency(str) {               
-        const regexExp = /\d{1,3},\d{2}/;
-        var amount = str.match(regexExp)[0]
-        ConsultazioneSinistriPage.isCurrency(amount)
+        const regexExp = /\d{1,3},\d{2}/;      
+        Common.isValidCheck(/\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/, str.match(regexExp)[0], ' is valid currency') 
+        //ConsultazioneSinistriPage.isCurrency(amount)
     }
     //#endregion  Generic function
     static getValueInClaimDetails(index) {

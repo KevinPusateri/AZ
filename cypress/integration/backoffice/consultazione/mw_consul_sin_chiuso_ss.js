@@ -99,18 +99,18 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('In pagina dettaglio di sinistro in stato CHIUSO SENZA SEGUITO, ' +
     'Aprendo la sezione Perizie si verifica che non ci siano incarichi di perizia e che sia riportata la dicitura : "Non ci sono incarichi di perizia" ' , function () {
     
-        const xpathDettaglio = "#soggetti_danneggiati > div > div:nth-child(1) > a"
-        MovimentazioneSinistriPage.clickBtn_ById(xpathDettaglio) 
+        const cssDettaglio = "#soggetti_danneggiati > div > div:nth-child(1) > a"
+        MovimentazioneSinistriPage.clickBtn_ById(cssDettaglio) 
         
-        const xpathDettaglioPerizia = "#soggetti_danneggiati > div > div:nth-child(1) > div > div:nth-child(1) > div.item_content > p"
-        MovimentazioneSinistriPage.checkObj_ByLocatorAndText(xpathDettaglioPerizia, "Non ci sono incarichi di perizia")
+        const cssDettaglioPerizia = "#soggetti_danneggiati > div > div:nth-child(1) > div > div:nth-child(1) > div.item_content > p"
+        MovimentazioneSinistriPage.checkObj_ByLocatorAndText(cssDettaglioPerizia, "Non ci sono incarichi di perizia")
     });
 
     it('In pagina dettaglio di sinistro in stato CHIUSO SENZA SEGUITO, ' +
     'Aprendo la sezione Pagamenti  sia riportata la dicitura : "Non sono presenti pagamenti" ' , function () {
     
-        const xpathDettaglioPerizia = "#soggetti_danneggiati > div > div:nth-child(1) > div > div:nth-child(2) > div.item_content > p"
-        MovimentazioneSinistriPage.checkObj_ByLocatorAndText(xpathDettaglioPerizia, "Non sono presenti pagamenti")
+        const cssDettaglioPagam = "#soggetti_danneggiati > div > div:nth-child(1) > div > div:nth-child(2) > div.item_content > p"
+        MovimentazioneSinistriPage.checkObj_ByLocatorAndText(cssDettaglioPagam, "Non sono presenti pagamenti")
     });
 
     it('In pagina dettaglio di sinistro in stato CHIUSO SENZA SEGUITO, cliccando sul tab "Acquisizione seguiti" ' +

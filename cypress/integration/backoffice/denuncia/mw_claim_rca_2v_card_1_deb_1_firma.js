@@ -2,7 +2,7 @@
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
  *
  * @description Emissione denuncia sinistro rca con 2 veicoli 
- * in completezza base e di tipo card 1 mandatario - senza firme
+ * in completezza base e di tipo card 1 debitore
  */
 
 /// <reference types="Cypress" />
@@ -25,6 +25,18 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
+/*
+before(() => {
+    cy.getUserWinLogin().then(data => {
+        cy.task('startMysql', { dbConfig: dbConfig, testCaseName: testName, currentEnv: currentEnv, currentUser: data.tutf }).then((results) => {
+            insertedId = results.insertId
+        })
+        LoginPage.logInMWAdvanced()
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Denuncia') 
+    })
+})
+*/
 
 before(() => {
     cy.getUserWinLogin().then(data => {
@@ -61,6 +73,7 @@ after(function () {
     //#endregion
      Cypress.runner.stop();
 })
+
 //#region Script Variables
 
 var ramo_pol = '31-Globale Auto'
@@ -85,9 +98,9 @@ var sinistro_veicoli_coinvolti = '2'
 var sinistro_descrizione_danno = 'Collisione da Tamponamento'
 var sinistro_località = 'GORIZIA'
 
-var sinistro_firma_cai = 'Assente'
-var sinistro_dichiarazione = 'Il Cliente Dichiara Ragione (Del Tutto O In Parte)'
-var tipo_danno = 'Card Mandatario 1 Firma'
+var sinistro_firma_cai = '1 Firma'
+var sinistro_dichiarazione = 'Il Cliente Ammette Torto'
+var tipo_danno = 'Card Debitore 1 Firma'
 
 
 let dtAvvenimento 
@@ -97,14 +110,14 @@ let idx_cop_gar
 //#endregion
 
 describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2 veicoli ' +
- 'coinvolti in completezza base e di tipo card 1 mandatario - senza firme ', () => {
+'coinvolti in completezza base e di tipo card 1 debitore ', () => {
 
     it('Atterraggio su BackOffice >> Denuncia', function () {             
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Denuncia') 
         cy.wait(1000)        
-    });
-    
+    });    
+
     it('Denuncia --> Ricerca cliente per numero di polizza: ' + cliente_num_pol, function() {               
         // Ricerca cliente per Polizza
         DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
@@ -131,7 +144,6 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
                 DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
             }); 
             cy.wait(1000)
-
     });
 
     it('Dati cliente Altri dati di denuncia: ' +
@@ -144,8 +156,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             cy.wait(2000)
     });
 
-    it('Lista polizze: Selezione della polizza'+
-    '', function () {
+    it('Lista polizze: Selezione della polizza', function () {
 
         // Selezione della polizza  
         DenunciaSinistriPage.clickBtn_ById('#avantiListaPolizze');       
@@ -175,7 +186,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             }            
         }); 
     });
-
+    
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+
     copertura_danno, function () {        
         Cypress.on('fail', (err, runnable) => {
@@ -193,7 +204,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
                 DenunciaSinistriPage.clickOnCheck_ByIdAndAttr('.SelectedCheckBox', 'myindex', idx_cop_gar);
             }
         });
-          // in questo caso non va impostato l'avanti pagina        
+        // in questo caso non va impostato l'avanti pagina    
     });
 
     it('Inserimento dati per il risarcimento diretto con 2 veicoli conivolti e con la ' +
@@ -253,12 +264,13 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.setValue_ById('#TxtLocalitaRuo', controparte_conducente_località) 
         DenunciaSinistriPage.setValue_ById('#TxtIndirizzoRuo', controparte_conducente_indirizzo) 
         DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita')
-        cy.wait(4000)
+        cy.wait(3000)
         DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
         DenunciaSinistriPage.clickBtn_ById('#cercaRuolo')
         cy.wait(4000)
         //Salva i dati anagrafici del conducente
-        DenunciaSinistriPage.clickBtn_ById('#CmdSalva');                       
+        DenunciaSinistriPage.clickBtn_ById('#CmdSalva');
+        cy.wait(1000)               
     });
 
     it('Dati dell\'assicurato di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
@@ -271,7 +283,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.setValue_ById('#TxtLocalitaRuo', controparte_conducente_località) 
         DenunciaSinistriPage.setValue_ById('#TxtIndirizzoRuo', controparte_conducente_indirizzo) 
         DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita')
-        cy.wait(4000)
+        cy.wait(3000)
         DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
         DenunciaSinistriPage.clickBtn_ById('#cercaRuolo')
         cy.wait(4000)
@@ -299,22 +311,22 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
     });
 
     it('Riepilogo denuncia - verifica dati danneggiato ', function () {
-        // il Mandatario
+        // il dannegiato 
         DenunciaSinistriPage.checkObjVisible_ByText("Veicolo");
-        DenunciaSinistriPage.checkInTbl_ByValue(cliente_cognome + " " + cliente_nome);
-        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
+        DenunciaSinistriPage.checkInTbl_ByValue(controparte_conducente_cognome + " " + controparte_conducente_nome);
+        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', controparte_targa);
         DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', tipo_danno);        
     });
 
     it('Riepilogo denuncia - verifica dati di denuncia ', function () {
-        
+        // Dati di denuncia
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataAvvenimento', dtAvvenimento);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataDenuncia', dtDenuncia);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#CLIENTE_LOCALITA', sinistro_località);       
     });
 
     it('Riepilogo denuncia - verifica dati di contraenza polizza ', function () {
-        
+        // dati di contraenza
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_numeroPolizza', cliente_num_pol);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_targa', cliente_targa);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_cognome);
@@ -329,22 +341,23 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         cy.wait(1000)  
     });
 
-    it('Riepilogo - Verifica dati di sinistro ', function () {
-       
+    it('Riepilogo - Verifica dati di sinistro  ', function () {
+        
         const cssNumSin = "#PRECOMMIT_listaDanneggiatiBUFF > table > tbody > tr > td:nth-child(1)"
         DenunciaSinistriPage.getPromiseText_ById(cssNumSin).then((numsin) => {                 
             cy.log('[it]>> numero di sinistro: ' + numsin)
             numsin = numsin.substring(0,9)
             DenunciaSinistriPage.isNotNullOrEmpty(numsin)                 
-            DenunciaSinistriPage.isPositiveNumber(numsin) 
+            Common.isValidCheck(/^-?(0|[1-9]\d*)$/, numsin, 'is valid number')
         });
 
         // il dannegiato 
         DenunciaSinistriPage.checkObjVisible_ByText("Veicolo");
-        DenunciaSinistriPage.checkInTbl_ByValue(cliente_cognome + " " + cliente_nome);
-        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
+        DenunciaSinistriPage.checkInTbl_ByValue(controparte_conducente_cognome + " " + controparte_conducente_nome);
+        DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', controparte_targa);
         DenunciaSinistriPage.checkObj_ByLocatorAndText('#PRECOMMIT_listaDanneggiatiBUFF', tipo_danno);        
-        // Dati di denuncia
+
+         // Dati di denuncia
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataAvvenimento', dtAvvenimento);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_dataDenuncia', dtDenuncia);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#CLIENTE_LOCALITA', sinistro_località);
@@ -355,5 +368,4 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_cognome);
         DenunciaSinistriPage.checkObj_ByIdAndLbl('#RIEPILOGO_datiAnagrafici', cliente_nome);
     });
-    
 });

@@ -226,8 +226,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     ' Si verifica che le date incarico e Data scarico siano date valide ' ,
      function () {
 
-        ConsultazioneSinistriPage.containValidDate(dtIncarico)
-        ConsultazioneSinistriPage.containValidDate(dtScarico)
+        Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtScarico, ' contain a valid date')
+        //ConsultazioneSinistriPage.containValidDate(dtScarico)
     });
      
     it('"Pagina di dettaglio" - sezione "PAGAMENTI" '+
@@ -282,11 +282,12 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('"Pagina di dettaglio" - sezione "PAGAMENTI" Verifica dei dati in formato valido: '+
     ' data pagamento, data invio banca e importo.' ,
      function () {
-        ConsultazioneSinistriPage.containValidDate(dtPagamento)
-
-        ConsultazioneSinistriPage.containValidDate(dtInvioBanca)
-
-        ConsultazioneSinistriPage.isCurrency(impPagam.trim())
+        Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtPagamento, ' contain a valid date')
+        Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtInvioBanca, ' contain a valid date')
+        Common.isValidCheck(/\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/, impPagam.trim(), ' is valid currency')
+        //ConsultazioneSinistriPage.containValidDate(dtPagamento)
+        //ConsultazioneSinistriPage.containValidDate(dtInvioBanca)
+        //ConsultazioneSinistriPage.isCurrency(impPagam.trim())        
     });
     
     it('Sezione "Pagamenti", - POPUP "Dettaglio Pagamento" ' +
@@ -299,15 +300,17 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(1) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator1).then((val) => {
             cy.log('[it]>> [Data pagamento]: '+val);
-            ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            ConsultazioneSinistriPage.containValidDate(val)
+            ConsultazioneSinistriPage.isNotNullOrEmpty(val)            
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
+            //ConsultazioneSinistriPage.containValidDate(val)
         });
         // Verifica : la valorizzazione del campo "Data invio Banca" nella popup "Dettaglio Pagamento"
         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator2).then((val) => {
             cy.log('[it]>> [Data invio banca]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            ConsultazioneSinistriPage.containValidDate(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
+            //ConsultazioneSinistriPage.containValidDate(val)
         });    
 
         // Verifica : la valorizzazione del campo "Importo" nella popup "Dettaglio Pagamento"
@@ -315,7 +318,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator3).then((val) => {          
             cy.log('[it]>> [Importo]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            ConsultazioneSinistriPage.isCurrency(val)
+            Common.isValidCheck(/\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/, val, ' is valid currency') 
+            //ConsultazioneSinistriPage.isCurrency(val)
         });
 
         // Verifica : la valorizzazione del campo "Valuta" nella popup "Dettaglio Pagamento"
@@ -345,7 +349,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator7).then(val => {
             cy.log('[it]>> [IBAN]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            ConsultazioneSinistriPage.isValidIBAN(val)        
+            //Reg exp. for valid IBAN
+            var isIBAN = ibantools.isValidIBAN(val)
+            assert.isTrue(isIBAN, '[it]>> IBAN is valid')                         
         });
     
         // Verifica : la valorizzazione del campo "Tipo Proposta" nella popup "Dettaglio Pagamento"
@@ -409,7 +415,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator5).then((val) => {              
             cy.log('[it]>> [Data incarico]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            ConsultazioneSinistriPage.containValidDate(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
+            //ConsultazioneSinistriPage.containValidDate(val)
         }); 
 
         // Verifica(2) : la valorizzazione del campo "Data scarico" nella popup "Dettaglio Incarico Perizia"
@@ -417,7 +424,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator6).then((val) => {
             cy.log('[it]>> [Data scarico]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            ConsultazioneSinistriPage.containValidDate(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
+            //ConsultazioneSinistriPage.containValidDate(val)
         }); 
 
         // Verifica(3) : la valorizzazione del campo "Tipo incarico" nella popup "Dettaglio Incarico Perizia"
@@ -446,7 +454,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseValue_Bylocator(popUplocator10).then((val) => {           
             cy.log('[it]>> [Data verifica perizia]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            ConsultazioneSinistriPage.containValidDate(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
+            //ConsultazioneSinistriPage.containValidDate(val)
         }); 
         // TODO: Implementare la chiusura sul secondo close della pop-up
         //const closecss= "body > div:nth-child(5) > div.k-window-titlebar.k-header > div > a > span"

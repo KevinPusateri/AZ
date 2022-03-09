@@ -128,7 +128,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.getPromiseDate_ById(cssDtInizio).then(val => {
             cy.log('[it]>> [Data inizio]: '+val); 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            ConsultazioneSinistriPage.containValidDate(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
+            //ConsultazioneSinistriPage.containValidDate(val)
         });
         
         // Verifica (5): valorizzazione 'Stato' nella sezione 'Azioni di recupero'
@@ -157,8 +158,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
       
        ConsultazioneSinistriPage.getPromiseText_ById(cssImporto).then((val) => {  
             let dscrpt = val.split(':')[1]        
-            cy.log('[it]>> [Importo]: '+dscrpt);           
-            ConsultazioneSinistriPage.isCurrency(dscrpt)  
+            cy.log('[it]>> [Importo]: '+dscrpt); 
+            Common.isValidCheck(/\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/, dscrpt, ' is valid currency')              
+            //ConsultazioneSinistriPage.isCurrency(dscrpt)  
         });
         
     });

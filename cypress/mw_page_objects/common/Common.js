@@ -288,6 +288,25 @@ class Common {
     static clickFindByIdOnIframe(id) {
         return getIframe().find(id).click()
     }
+
+    /**
+     * Defined @regexExp a regular expression is verified if the string @str 
+     * matches the reg. ex.
+     * @param {string} regexExp : regular expression string 
+     * @param {string} str : string value
+     * @param {string} msg : message
+     * @returns assert.isTrue(value, [message])
+     * @link https://docs.cypress.io/guides/references/assertions#TDD-Assertions
+     */
+    static isValidCheck(regexExp, str, msg)
+    {
+        var pattern = new RegExp(regexExp)
+        //Tests for a match in a string. It returns true or false.       
+        cy.wrap(str).then((validation) => {
+            validation = pattern.test(str)                          
+            assert.isTrue(validation,'>> The string: "' +str+ '" ' + msg)
+        });
+    }
 }
 
 

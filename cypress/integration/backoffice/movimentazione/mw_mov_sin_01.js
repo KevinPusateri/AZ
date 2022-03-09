@@ -72,7 +72,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
        
     });
     
-    it('Movimentazioni Sinistri: Formattazione pagina', function () {         
+    it('MW: Movimentazioni Sinistri: Formattazione pagina', function () {         
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.pageTitle','Movimentazione Sinistri')
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#CRUSCOTTO_tipoPortafoglio','Tutto il portafoglio')
         MovimentazioneSinistriPage.checkListValues_ById('#CRUSCOTTO_tipoPortafoglio')        
@@ -82,40 +82,39 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
        MovimentazioneSinistriPage.getPromiseValue_Bylocator(idAggDate).then((dscrpt) => {                
            cy.log('[it]>> [	Dati Aggiornati al]: '+dscrpt);
            MovimentazioneSinistriPage.isNotNullOrEmpty(dscrpt)
-           ConsultazioneSinistriPage.containValidDate(dscrpt)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dscrpt, ' contain a valid date')
+           //ConsultazioneSinistriPage.containValidDate(dscrpt)
        });
         cy.wait(2000)        
     });
 
     
-    it('Movimentazioni Sinistri: controllo che la somma dei singoli movimenti coincida con il totale della movimentazione riportata', function () {      
+    it('MW: Movimentazioni sinistri: controllo che la somma dei singoli movimenti coincida con il totale della movimentazione riportata', function () {      
        
         MovimentazioneSinistriPage.checkTotAndSumMovimenti();
         cy.wait(2000)        
     });
     
-    it('Movimentazioni Sinistri: controllo presenza descrizioni associate alle diverse tipologie di sinistro', function () {      
-       
+    it('MW: Movimentazioni sinistri: controllo presenza descrizioni associate alle diverse tipologie di sinistro', function () {             
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#container > table > tbody > tr', 'Protocollati');
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#container > table > tbody > tr', 'Presi in carico da CLD');
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#container > table > tbody > tr', 'Trasferiti CLD');
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#container > table > tbody > tr', 'Chiusi Senza Seguito');
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#container > table > tbody > tr', 'Pagati');
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#container > table > tbody > tr', 'Periziati');
-        cy.wait(2000) 
-       
+        cy.wait(2000)        
     });
     
-    it('MW: Movimentazione  sinistri - corretta esposizione del numero dei sinistri \'Protocollati\'', function () { 
+    it('MW: Movimentazione sinistri - corretta esposizione del numero dei sinistri \'Protocollati\'', function () { 
         MovimentazioneSinistriPage.getNumMovimentiByIndex(0)
         cy.get('@x0').then((mov) => {                     
             cy.log('[it]>> idx[0] - Sinistri Protocollati: '+mov); 
             if (parseInt(mov)>0)
-            {
+            {               
                 MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioDenunciati') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
-                cy.wait(2000)
+                cy.wait(2000)                
                 MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
                 cy.wait(2000)  
             }
@@ -123,7 +122,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
 
     });
 
-    it('MW: Movimentazione  sinistri - corretta esposizione del numero dei sinistri \'Presi in carico da CLD\'', function () { 
+    it('MW: Movimentazione sinistri - corretta esposizione del numero dei sinistri \'Presi in carico da CLD\'', function () { 
         MovimentazioneSinistriPage.getNumMovimentiByIndex(1)
         cy.get('@x1').then((mov) => {                     
             cy.log('[it]>> idx[1] - Sinistri Presi in carico da CLD: '+mov); 
@@ -155,7 +154,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
         }) 
     });
 
-    it('MW: Movimentazione  sinistri - corretta esposizione del numero dei sinistri \'Sinistri Chiusi SS\'', function () { 
+    it('MW: Movimentazione sinistri - corretta esposizione del numero dei sinistri \'Sinistri Chiusi SS\'', function () { 
         MovimentazioneSinistriPage.getNumMovimentiByIndex(3)
         cy.get('@x3').then((mov) => {                     
             cy.log('[it]>> idx[3 - Sinistri Chiusi SS: '+mov); 
@@ -171,7 +170,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
         }) 
     });
 
-    it('MW: Movimentazione  sinistri - corretta esposizione del numero dei sinistri \'Pagati\'', function () { 
+    it('MW: Movimentazione sinistri - corretta esposizione del numero dei sinistri \'Pagati\'', function () { 
         MovimentazioneSinistriPage.getNumMovimentiByIndex(4)
         cy.get('@x4').then((mov) => {                     
             cy.log('[it]>> idx[4 - Sinistri Pagati: '+mov); 
@@ -187,7 +186,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
         }) 
     });
 
-    it('MW: Movimentazione  sinistri - corretta esposizione del numero dei sinistri \'Periziati\'', function () { 
+    it('MW: Movimentazione sinistri - corretta esposizione del numero dei sinistri \'Periziati\'', function () { 
         MovimentazioneSinistriPage.getNumMovimentiByIndex(5)
         cy.get('@x5').then((mov) => {                     
             cy.log('[it]>> idx[5 - Sinistri Periziati: '+mov); 
@@ -203,7 +202,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
         }) 
     });
     
-    it('Movimentazione: Si Verifica che per ciascuna tipologia di sinistro con movimentazione a 0 non sia visibile (non esiste) il pulsante di \'Dettaglio\' ', function () {  
+    it('MW: Movimentazione sinistri - Per ciascuna tipologia di sinistro con movimentazione a 0 non sia visibile (non esiste) il pulsante di \'Dettaglio\' ', function () {  
         
         var i = 0;
         for (i = 0; i < 6 ; i++) { 
@@ -257,7 +256,23 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
                 cy.wait(1000)               
             }          
         })
-    });
+    })
+
+    it('MW: Movimentazione  sinistri - \'Pagati\' corretta esposizione dei dati (numero sinistro, data movimentazione e data avvenimento)', function () { 
+        MovimentazioneSinistriPage.getNumMovimentiByIndex(4)
+        cy.get('@x4').then((mov) => {                     
+            cy.log('[it]>> idx[4 - Sinistri Pagati: '+mov); 
+            if (parseInt(mov)>0)
+            {
+                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioPagati') 
+                cy.wait(2000)            
+                MovimentazioneSinistriPage.analyzeClaimFields('#listaDettaglio_Table > tbody')
+                cy.wait(2000)
+                MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
+                cy.wait(2000)  
+            }
+        }) 
+    })
 });
 
 

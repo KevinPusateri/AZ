@@ -679,6 +679,7 @@ class DenunciaSinistriPage {
      * Puts a @str value and is verified if its a valid IBAN 
      * @param {string} str : string date format
      */
+    /*
     static isValidIBAN(str)
     {       
         const regexExp = /^[A-Z]{2}[0-9A-Z]*$/; //Reg exp. for valid IBAN
@@ -689,23 +690,12 @@ class DenunciaSinistriPage {
             assert.isTrue(validation,'>> IBAN Validation on string "' +str+ '". (IBAN '+myString[0]+') is included.')                
         });
     }
-    /**
-     * Puts a @str value and is verified if its a date value is included in a correct format 
-     * @param {string} str : string date format
-     */
-    static containValidDate(str) {
-        const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
-        var pattern = new RegExp(regexExp)
-        //Tests for a match in a string. It returns true or false.       
-        cy.wrap(str).then((validation) => {
-            validation = pattern.test(str)                       
-            assert.isTrue(validation,'>> Date Validation on string "' +str+ '" (contain a valid date "'+str.match(pattern)[0]+'")')         
-        });                             
-    }
+    */
     /**
      * Puts a @numstr (ex.: numStr = "123,20") value and is verified if its a currency correct value 
      * @param {string} numstr : string currency value
      */
+    /*
     static isCurrency(numstr) {      
         const regexExp = /\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/;        
         var pattern = new RegExp(regexExp)       
@@ -714,6 +704,7 @@ class DenunciaSinistriPage {
             assert.isTrue(validation,"Currency Check on '" +numstr+ "' value ");                
         });
     }
+    */
     /**
      * Puts a @str value and is verified if its a valid EURO currency @str (ex.: "EURO") 
      * @param {string} str : string value
