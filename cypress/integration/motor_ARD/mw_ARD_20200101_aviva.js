@@ -21,11 +21,11 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_20220201.json'
+import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_20200101_aviva.json'
 //#endregion
 
 before(() => {
-    Cypress.env('isAviva', false)
+    Cypress.env('isAviva', true)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
 
@@ -54,9 +54,9 @@ after(function () {
 //?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
-let caseToExecute = []
+let caseToExecute = ['1','2']
 
-describe('ARD Febbraio 2022: ', {
+describe('AVIVA - ARD Gennaio 2020: ', {
     retries: {
         runMode: 0,
         openMode: 0,

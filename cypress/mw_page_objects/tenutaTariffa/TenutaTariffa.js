@@ -81,6 +81,16 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
 
 let currentDataNascita
 class TenutaTariffa {
+
+    /**
+     * Accesso all'Area Riservata dalla pagina di Offerta
+     */
+    static areaRiservata() {
+        cy.contains('Area riservata').should('exist').click()
+        //Attendiamo che il caricamento non sia più visibile
+        cy.get('nx-spinner').should('not.be.visible')
+    }
+
     static compilaDatiQuotazione(currentCase, flowClients) {
 
         cy.getIFrame()
@@ -826,13 +836,17 @@ class TenutaTariffa {
             }).as('getImpostazioniGenerali')
 
             //#region Effettuiamo un full deselect di tutte le ARD selezionate di default
-            //Incendio senza scoperto
-            cy.contains("Incendio senza scoperto").parents('tr').find('button:first').click()
-            cy.get('nx-spinner').should('not.be.visible')
-            //Assistenza Auto
-            cy.contains("Assistenza Auto").parents('tr').find('button:first').click()
-            cy.get('nx-spinner').should('not.be.visible')
+            if (!Cypress.env('isAviva')) {
+                //Incendio senza scoperto
+                cy.contains("Incendio senza scoperto").parents('tr').find('button:first').click()
+                cy.get('nx-spinner').should('not.be.visible')
+                //Assistenza Auto
+                cy.contains("Assistenza Auto").parents('tr').find('button:first').click()
+                cy.get('nx-spinner').should('not.be.visible')
+            }
             //#endregion
+
+            cy.pause()
 
             switch (currentCase.Descrizione_Settore) {
                 case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
@@ -854,6 +868,8 @@ class TenutaTariffa {
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 case "FURTO":
+                //Caso per AVIVA
+                case "INCENDIO E FURTO":
                     cy.contains("Furto").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
