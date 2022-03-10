@@ -64,9 +64,9 @@ after(function () {
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO SENZA SEGUITO', () => {
     
-    it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
+    it('Atterraggio su BackOffice >> Movimentazione sinistri', function () {             
         TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Consultazione sinistri') 
+        BackOffice.clickCardLink('Movimentazione sinistri') 
         cy.wait(1000)        
     });
 

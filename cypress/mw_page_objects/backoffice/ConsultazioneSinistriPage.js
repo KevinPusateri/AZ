@@ -104,24 +104,29 @@ class ConsultazioneSinistriPage {
      * @param {string} classvalue : class attribute 
      * @param {string} label : text displayed
      */
-    static checkObj_ByClassAndText(classvalue, label) {    
-        return new Cypress.Promise((resolve) => {     
-            let obj = getIFrame().find('[class="'+classvalue+'"]').should('be.visible')            
-            if (obj.contains(label))
-            {
-                cy.log('>> object with label: "' + label +'" is defined') 
-                resolve(label)
-            }            
-        });
+    static checkObj_ByClassAndText(classvalue, label) {     
+        let obj = getIFrame().find('[class="'+classvalue+'"]').should('exist')            
+        if (obj.contains(label))
+        cy.log('>> object with label: "' + label +'" is defined')
         cy.wait(1000)                 
     }
+    /**
+     * Check if an object identified by id attribute and its label is displayed
+     * @param {string} id : id attribute 
+     * @param {string} label : text displayed
+     */
+    static isTextIncluded_ByIdAndText(id, label) {     
+        getIFrame().find(id).should('exist').and('be.visible').contains(label)
+        cy.log('>> object with label: "' + label +'" is defined')
 
+        cy.wait(3000)                 
+    }
     /**
      * Check if an object identified by class attribute and its label is displayed
      * @param {string} id : class attribute 
      * @param {string} label : text displayed
      */
-     static checkObj_ByIdAndText(id, label) {    
+    static checkObj_ByIdAndText(id, label) {    
         return new Cypress.Promise((resolve) => {     
             let obj = getIFrame().find(id).should('be.visible')            
             if (obj.contains(label))
@@ -198,9 +203,9 @@ class ConsultazioneSinistriPage {
     static getCountElements(id) {        
         return getIFrame().find(id)        
         .then(listing => {
-          const listingCount = Cypress.$(listing).length;
-          expect(listing).to.have.length(listingCount);
-          cy.log('>> Length :' + listingCount)          
+            const listingCount = Cypress.$(listing).length;
+            expect(listing).to.have.length(listingCount);
+            cy.log('>> Length :' + listingCount)          
         });
         getIFrame().find(id)  
     }
@@ -216,114 +221,22 @@ class ConsultazioneSinistriPage {
             ConsultazioneSinistriPage.isNotNullOrEmpty(text)           
         })
     }
-    /**
-     * Gets a text defined on object identified by its @id
-     * @param {string} id : id locator object
-     */
-    static getPromiseText_ById(id) {
-        let value = "";        
-        return new Cypress.Promise((resolve, reject) => {
-            getIFrame()
-            .find(id)
-            .should('be.visible')
-            .invoke('text')  // for input or textarea, .invoke('val')
-            .then(text => {         
-                cy.log('>> read the value: ' + text)              
-                resolve(text.toString())            
-            });      
-        });
-    }
-     /**
-     * Gets a text defined on object identified by its @id
-     * @param {string} id : id locator object
-     */
-      static getPromiseValue_ById(id) {
-        let value = "";        
-        return new Cypress.Promise((resolve, reject) => {
-            getIFrame()
-            .find(id)
-            .should('be.visible')
-            .invoke('val')  // for input or textarea, .invoke('val')
-            .then(text => {         
-                cy.log('>> read the value: ' + text)              
-                resolve(text.toString())            
-            });      
-        });
-    }
-    /**
-         * Gets a text value defined on object identified by its @id
-         * @param {string} id : id locator object 
-         */
-    static getPromiseDate_ById(id) {
-        let value = "";
-        const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
-
-        return new Cypress.Promise((resolve, reject) => {
-            getIFrame()
-            .find(id)
-            .invoke('text')  // for input or textarea, .invoke('val')
-            .then(text => {         
-                cy.log('>> read the value: ' + text)
-                value = text.toString()
-                var pattern = new RegExp(regexExp)
-                //Tests for a match in a string. It returns true or false.
-                let validation = pattern.test(value)                  
-                if (!validation)
-                {               
-                    var msg = '>> the value: "'+value+'" not contain a valid date' 
-                    cy.log(msg)
-                    assert.fail(msg)                     
-                } else {
-                    let myString = value.match(pattern)
-                    cy.log('>> the string: "'+value+'" contain a valid date "'+myString[0]+'"')                
-                    resolve(value)
-                }
-            });      
-        });
-    }
-    /**
-     * Gets a text value defined on object identified by its @locator
-     * @param {string} locator : id locator object
-     */
-    static getPromiseText_BylD(locator) {
-        cy.log('>> locator value: ' + locator)
-        return new Cypress.Promise((resolve) => {            
-            getIFrame().find(locator).should('be.visible')
-            .invoke('text')  // for input or textarea, .invoke('val')        
-            .then(text => {         
-                cy.log('>> read the value: ' + text)
-                resolve((text.toString()))                
-                });
-        });
-    }
+    
     /**
      * Defined on object identified by its @id, the function return the
      * length list
      * @param {string} id : locator object id
      */
-     static getCountElements(id) {        
+    static getCountElements(id) {        
         return getIFrame().find(id)        
         .then(listing => {
-          const listingCount = Cypress.$(listing).length;
-          expect(listing).to.have.length(listingCount);
-          cy.log('>> Length :' + listingCount)          
+            const listingCount = Cypress.$(listing).length;
+            expect(listing).to.have.length(listingCount);
+            cy.log('>> Length :' + listingCount)          
         });
         getIFrame().find(id)  
     }
-    /**
-     * Check if exist id object in body
-     */
-    static IdExist(id) {
-        cy.get('body').then(($body) => {
-            if ($body.find(id).length > 0) {
-                cy.log('>> ' + id + ' element exists!')
-                return true
-            } else { 
-                cy.log('>> ' + id + ' element not exists!');
-                return false
-            }
-        })
-    }
+    
     /**
      * Check if the value is defined
      * @param {string} value : string value to check
@@ -360,21 +273,7 @@ class ConsultazioneSinistriPage {
         });
     }
     */
-    /**
-     * Puts a @numstr (ex.: numStr = "123,20") value and is verified if its a currency correct value 
-     * @param {string} numstr : string currency value
-     */
-    /*
-    static isCurrency(numstr) {      
-       
-        const regexExp = /\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/;        
-        var pattern = new RegExp(regexExp)       
-        cy.wrap(numstr).then((validation) => {  
-            validation = pattern.test(numstr)
-            assert.isTrue(validation,"the data: '"+numstr+"' is valid currency value");                
-        });
-    }
-    */
+    
     /**
      * Puts a @str value and is verified if its a valid EURO currency @str (ex.: "EURO") 
      * @param {string} str : string value
@@ -404,6 +303,25 @@ class ConsultazioneSinistriPage {
             });
         });
     }
+   
+    /**
+     * Gets a text defined on object identified by its @id
+     * @param {string} id : id locator object
+     * @returns text element
+     */
+     static getPromiseText_ById(id) {              
+        return new Cypress.Promise((resolve, reject) => {
+            getIFrame()
+            .find(id)
+            .should('be.visible')
+            .invoke('text')
+            .then(text => {         
+                cy.log('>> read the value: ' + text)              
+                resolve(text.toString())            
+            });      
+        });
+    }
+
 
     static printClaimDetailsValue() {
         

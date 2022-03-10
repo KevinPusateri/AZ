@@ -79,7 +79,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
        // Verifica data associata all'aggiornamento dati
        const idAggDate = '#CRUSCOTTO_datiAggiornatiAl'
        MovimentazioneSinistriPage.checkObjDisabled(idAggDate)
-       MovimentazioneSinistriPage.getPromiseText_BylD(idAggDate).then((dscrpt) => {                
+       MovimentazioneSinistriPage.getPromiseText_ByID(idAggDate).then((dscrpt) => {                
            cy.log('[it]>> [	Dati Aggiornati al]: '+dscrpt);
            MovimentazioneSinistriPage.isNotNullOrEmpty(dscrpt)
             Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dscrpt, ' contain a valid date')

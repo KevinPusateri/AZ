@@ -74,7 +74,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.wait(1000)        
     });
 
-    it('Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ',  function () {
+    it('Consultazione Sinistri: Selezione di un sinistro in stato PAGATO/CHIUSO ',  function () {
       
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
@@ -86,31 +86,34 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cliente = ConsultazioneSinistriPage.getPromiseText_ById(cssCliente1)
     
         const cssdtAvv1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-        var dtAvvenimento = ConsultazioneSinistriPage.getPromiseText_ById(cssdtAvv1)        
+        dtAvvenimento = ConsultazioneSinistriPage.getPromiseText_ById(cssdtAvv1)        
 
-        // Seleziona il sinistro
-        ConsultazioneSinistriPage.clickLnk_ByHref(numsin)
+       // Seleziona il sinistro
+       const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
+       Common.clickByIdOnIframe(css_ico_arrow_right)
+
     }); 
 
-    it('Dove sono valorizzate le "Azioni di recupero".' +
-    ' Nella sezione dati accessori si verifica che siano valorizzati i seguenti campi: Tipologia, Importo, Soggetto debitore, Data inizio e Stato." ', function () {
+    it('Nella sezione "Azioni di recupero/Dati accessori".' +
+    ' si verifica che siano valorizzati i seguenti campi: Tipologia, Importo, Soggetto debitore, Data inizio e Stato." ', function () {
         
         // Verifica : numero di sinistro in alto alla pagina di dettaglio
-        const clssDtl = "pageTitle"
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, numsin)
+        const clssDtl = "#sx-detail > h2"
+        ConsultazioneSinistriPage.isTextIncluded_ByIdAndText(clssDtl, numsin)
 
         // Verifica (1): Valore della data avvenimento      
         const cssDtAvv2 = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.clock"
-        ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv2).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(cssDtAvv2).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val).then((isNull) => {                               
-                dtAvvenimento = val;        
+                dtAvvenimento = val;
+                Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtAvvenimento, ' contain a valid date')  
             });
         }); 
 
         // Verifica (2): Cliente
-        const cssCliente2 = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.people > a"
-        //ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssCliente2, cliente) 
+        //const cssCliente2 = "#sx-detail > h2.pageTitle > table > tbody > tr:nth-child(1) > td.people > a"
+        //ConsultazioneSinistriPage.isTextIncluded_ByIdAndText(cssCliente2, cliente)
 
         // Seleziona il link dati accessori
         ConsultazioneSinistriPage.clickLnk_ByHref("/dasinconfe/DatiAccessoriIngresso")
@@ -125,11 +128,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         // Verifica (4) : la valorizzazione del campo "Data inizio" nella sezione "Azioni di Recupero"
         const cssDtInizio = '#azioni_recupero > div > div > table > tbody > tr:nth-child(2) > td:nth-child(1)'
-        ConsultazioneSinistriPage.getPromiseDate_ById(cssDtInizio).then(val => {
+        ConsultazioneSinistriPage.getPromiseText_ById(cssDtInizio).then(val => {
             cy.log('[it]>> [Data inizio]: '+val); 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
-            //ConsultazioneSinistriPage.containValidDate(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')            
         });
         
         // Verifica (5): valorizzazione 'Stato' nella sezione 'Azioni di recupero'
@@ -154,13 +156,13 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             let dscrpt = val.split(':')[1]        
             cy.log('[it]>> [Importo]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
+            Common.isValidCheck(/(?:^\d{1,3}(?:\.?\d{3})*(?:,\d{2})?$)|(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/, dscrpt.trim(), ' is valid currency')
         })
-      
-       ConsultazioneSinistriPage.getPromiseText_ById(cssImporto).then((val) => {  
+    
+        ConsultazioneSinistriPage.getPromiseText_ById(cssImporto).then((val) => {  
             let dscrpt = val.split(':')[1]        
             cy.log('[it]>> [Importo]: '+dscrpt); 
-            Common.isValidCheck(/\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/, dscrpt, ' is valid currency')              
-            //ConsultazioneSinistriPage.isCurrency(dscrpt)  
+            Common.isValidCheck(/\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/, dscrpt, ' is valid currency')           
         });
         
     });

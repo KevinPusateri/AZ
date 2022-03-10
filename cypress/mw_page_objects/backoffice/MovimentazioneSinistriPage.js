@@ -62,7 +62,7 @@ class MovimentazioneSinistriPage {
         getIFrameMovSinistri().find('a[href*="'+value+'"]').should('be.visible').click({ multiple: true }).log('>> link (a) with href ['+value+ '] is clicked')      
         cy.wait(1000)
     }
-     /**
+    /**
      * Click on object defined by locator id
      * @param {string} id : locator object id
      * @param {int} count : counter object child
@@ -140,7 +140,7 @@ class MovimentazioneSinistriPage {
      * Gets a text value defined on object identified by its @locator
      * @param {string} locator : id locator object
      */
-     static getPromiseText_BylD(locator) {
+     static getPromiseText_ByID(locator) {
         let value = ""; 
         cy.log('>> locator value: ' + locator)
         return new Cypress.Promise((resolve) => {            
@@ -173,12 +173,12 @@ class MovimentazioneSinistriPage {
      * length list
      * @param {string} id : locator object id
      */
-     static getCountElements(id) {        
+    static getCountElements(id) {        
         return getIFrameMovSinistri().find(id)        
         .then(listing => {
-          const listingCount = Cypress.$(listing).length;
-          expect(listing).to.have.length(listingCount);
-          cy.log('>> Length :' + listingCount)          
+            const listingCount = Cypress.$(listing).length;
+            expect(listing).to.have.length(listingCount);
+            cy.log('>> Length :' + listingCount)          
         });
         
         getIFrame().find(id)  
@@ -188,23 +188,17 @@ class MovimentazioneSinistriPage {
     {
         debugger
         var table = getIFrameMovSinistri().find(id).eq(2).children('tr[header="false"]')
-            .each(($tr, index, $list) => {
-            debugger
-            var name = $tr.attr('name')
-            var size = getIFrameMovSinistri().find(id).its("length").as("size");
-            var i = index + 2;
-            const locSin = '#'+name.replace('R'+i+'_Div', 'R'+i+'C1_Div') +' span'
-            const locDtMov = '#'+name.replace('R'+i+'_Div', 'R'+i+'C2_Div') +' span'
-            const locDtAvv = '#'+name.replace('R'+i+'_Div', 'R'+i+'C4_Div') +' span'
-            const locTpDann = '#'+name.replace('R'+i+'_Div', 'R'+i+'C9_Div') +' span'
-
-            Common.isValidCheck(/^\d{9}\-?([0-9]{3})$/, $tr.find(locSin).text().trim(), ' is valid claim number')
-            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, $tr.find(locDtMov).text(), ' contain a valid date')
-            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, $tr.find(locDtAvv).text(), ' contain a valid date')
-            
-            const tpDann =  $tr.find(locTpDann).text()          
-        }) 
-        
+            .each(($tr, index, $list) => {            
+            var name = $tr.attr('name')            
+            var i = index + 2;          
+            //num sin
+            Common.isValidCheck(/^\d{9}\-?([0-9]{3})$/, $tr.find('#'+name.replace('R'+i+'_Div', 'R'+i+'C1_Div') +' span').text().trim(), ' is valid claim number')
+            //Dt Mov
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, '#'+name.replace('R'+i+'_Div', 'R'+i+'C2_Div') +' span', ' contain a valid date')
+            //Dt Avv
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, '#'+name.replace('R'+i+'_Div', 'R'+i+'C9_Div') +' span', ' contain a valid date')            
+            //const tpDann =  $tr.find(locTpDann).text()          
+        })         
     }
 
     static selectionText(id, text)
@@ -225,20 +219,7 @@ class MovimentazioneSinistriPage {
             }, { subjectType: 'input' })
         })
     }
-    static IdExist(id)
-    {
-        cy.get('body').then(($body) => {
-            if ($body.find(id).length > 0) {
-                cy.log(id + ' element exists!')
-                return true
-            } else
-            { 
-                cy.log(id + ' element exists!')
-                return false
-            }
-        })
-    }    
-
+    
     /**
     * Compare the total value of the movements with the sum of all movements by type
     */
@@ -321,7 +302,7 @@ class MovimentazioneSinistriPage {
      * Check if the value is defined
      * @param {string} value : string value to check
      */
-     static isNotNullOrEmpty(value) {
+    static isNotNullOrEmpty(value) {
         cy.wrap(value).then((validation) => {            
             if(value === undefined) {
                 validation = false;
