@@ -574,42 +574,12 @@ class DenunciaSinistriPage {
             });      
         });
     }
-    /**
-     * Gets a text value defined on object identified by its @id
-     * @param {string} id : id locator object 
-     */
-    static getPromiseDate_ById(id) {
-        let value = "";
-        const regexExp = /\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/; //Check the validity of the date
-
-        return new Cypress.Promise((resolve, reject) => {
-            getIFrameDenuncia()
-            .find(id)
-            .invoke('text')  // for input or textarea, .invoke('val')
-            .then(text => {         
-                cy.log('>> read the value: ' + text)
-                value = text.toString()
-                var pattern = new RegExp(regexExp)
-                //Tests for a match in a string. It returns true or false.
-                let validation = pattern.test(value)                  
-                if (!validation)
-                {               
-                    var msg = '>> the value: "' +value+ '" not contain a valid date' 
-                    cy.log(msg)
-                    assert.fail(msg)                     
-                } else {
-                    let myString = value.match(pattern)
-                    cy.log('>> the string: "' +value+ '" contain a valid date "'+myString[0]+'"')                
-                    resolve(value)
-                }
-            });      
-        });
-    }
+    
     /**
      * Gets a text defined on object identified by its @locator
      * @param {string} locator : id locator object
      */
-    static getPromiseText_BylD(locator) {
+    static getPromiseText_ByID(locator) {
         cy.log('>> locator value: ' + locator)
         return new Cypress.Promise((resolve) => {            
             getIFrameDenuncia().find(locator).should('be.visible')
@@ -625,7 +595,7 @@ class DenunciaSinistriPage {
      * Gets a text defined on object identified by its @locator
      * @param {string} locator : id locator object
      */
-     static getPromiseValue_BylD(locator) {
+     static getPromiseValue_ByID(locator) {
         cy.log('>> locator value: ' + locator)
         return new Cypress.Promise((resolve) => {            
             getIFrameDenuncia().find(locator).should('be.visible')

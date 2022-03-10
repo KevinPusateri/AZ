@@ -137,14 +137,14 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
         DenunciaSinistriPage.clickBtn_ById('#CmdRicercaLocalita2');
         cy.wait(2000)
-        DenunciaSinistriPage.getPromiseValue_BylD('#CLIENTE_capAvv').then((sin_cap) => {                                
+        DenunciaSinistriPage.getPromiseValue_ByID('#CLIENTE_capAvv').then((sin_cap) => {                                
             cy.log('[it]>> [CAP]: '+sin_cap);
             DenunciaSinistriPage.isNotNullOrEmpty(sin_cap)
         });             
         DenunciaSinistriPage.clickBtn_ById('#CmdAvanti');
         cy.wait(2000)
     });
-    
+
     it('Lista polizze: Selezione della polizza'+'', function () {
         // Selezione della polizza  
         DenunciaSinistriPage.clickBtn_ById('#avantiListaPolizze');       

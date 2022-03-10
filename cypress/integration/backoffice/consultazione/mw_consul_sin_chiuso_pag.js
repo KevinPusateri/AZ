@@ -121,10 +121,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         });
 
         const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-        ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(cssDtAvv).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
             dtAvvenimento = val.trim(); 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
         }); 
     });
 
@@ -134,14 +135,15 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             
         ConsultazioneSinistriPage.printClaimDetailsValue()
     
-        // Seleziona il sinistro dalla pagina di ricerca
-        ConsultazioneSinistriPage.clickLnk_ByHref(numsin)
-        
-        // Verifica (1) : numero di sinistro in alto alla pagina di dettaglio
-        const clssDtl = "pageTitle"
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, numsin)
+       // Seleziona il sinistro
+       const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
+       Common.clickByIdOnIframe(css_ico_arrow_right)
+       cy.wait(2000) 
+        // Verifica (1) : numero di sinistro in alto alla pagina di dettaglio       
+       const clssDtl = "#sx-detail > h2"
+       ConsultazioneSinistriPage.isTextIncluded_ByIdAndText(clssDtl, numsin)
 
-        // Verifica (2): Valore della data avvenimento    
+        // Verifica (2): Valore della data avvenimento           
         const cssDtAvv = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.clock"      
         ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento) 
         
@@ -186,15 +188,17 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Data incarico]: '+dscrpt);
             dtIncarico = dscrpt.trim()  
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtIncarico, ' contain a valid date') 
         });
 
         // Verifica : la valorizzazione del campo "Data scarico" in Sezione Perizie
         const cssDtScarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
         ConsultazioneSinistriPage.getPromiseText_ById(cssDtScarico).then((val) => {
-        let dscrpt = val.split(':')[1]; 
-        cy.log('[it]>> [Data scarico]: '+dscrpt);
-        dtScarico = dscrpt.trim() 
-        ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
+            let dscrpt = val.split(':')[1]; 
+            cy.log('[it]>> [Data scarico]: '+dscrpt);
+            dtScarico = dscrpt.trim() 
+            ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtScarico, ' contain a valid date') 
         });
 
         // Verifica : la valorizzazione del campo "Fiduciario" in Sezione Perizie
@@ -220,20 +224,13 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Stato]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)                         
         });
+        cy.wait(2000)
     });
 
-    it('"Pagina di dettaglio" - sezione "PERIZIE" '+
-    ' Si verifica che le date incarico e Data scarico siano date valide ' ,
-     function () {
-
-        Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtScarico, ' contain a valid date')
-        //ConsultazioneSinistriPage.containValidDate(dtScarico)
-    });
-     
     it('"Pagina di dettaglio" - sezione "PAGAMENTI" '+
     '  Si verifica che i seguenti campi non siano nulli: Data pagamento, Data Invio Banca, causale pagamento, Importo, Percepiente). ' , 
-    function () {
-            
+    function () {        
+
         // Verifica : la valorizzazione del campo "Data pagamento" in Sezione Pagamenti
         const cssDtPagamento = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > p'
         ConsultazioneSinistriPage.getPromiseText_ById(cssDtPagamento).then((val) => {
@@ -241,6 +238,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Data pagamento]: '+dscrpt);
             dtPagamento = dscrpt.trim();
             ConsultazioneSinistriPage.isNotNullOrEmpty(dtPagamento)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtPagamento, ' contain a valid date') 
         });
         
         // Verifica : la valorizzazione del campo "Data invio banca" in Sezione Pagamenti
@@ -250,6 +248,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Data invio banca]: '+dscrpt);
             dtInvioBanca = dscrpt.trim();
             ConsultazioneSinistriPage.isNotNullOrEmpty(dtInvioBanca)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtInvioBanca, ' contain a valid date') 
         });
 
        // Verifica : la valorizzazione del campo "Causale" in Sezione Pagamenti
@@ -267,6 +266,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             impPagam = dscrpt;
             cy.log('[it]>> [Importo]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
+            Common.isValidCheck(/(?:^\d{1,3}(?:\.?\d{3})*(?:,\d{2})?$)|(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/, impPagam.trim(), ' is valid currency')
         });
 
          // Verifica : la valorizzazione del campo "Percepiente pagamento" in Sezione Pagamenti
@@ -276,20 +276,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Percepiente]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)                          
         });
+
     });
 
 
-    it('"Pagina di dettaglio" - sezione "PAGAMENTI" Verifica dei dati in formato valido: '+
-    ' data pagamento, data invio banca e importo.' ,
-     function () {
-        Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtPagamento, ' contain a valid date')
-        Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtInvioBanca, ' contain a valid date')
-        Common.isValidCheck(/\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/, impPagam.trim(), ' is valid currency')
-        //ConsultazioneSinistriPage.containValidDate(dtPagamento)
-        //ConsultazioneSinistriPage.containValidDate(dtInvioBanca)
-        //ConsultazioneSinistriPage.isCurrency(impPagam.trim())        
-    });
-    
     it('Sezione "Pagamenti", - POPUP "Dettaglio Pagamento" ' +
     ' verificare che le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
         //const csSinObjPage = Object.create(ConsultazioneSinistriPage)
@@ -298,24 +288,22 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica : la valorizzazione del campo "Data pagamento" nella popup "Dettaglio Pagamento"      
         const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(1) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator1).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator1).then((val) => {
             cy.log('[it]>> [Data pagamento]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)            
-            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
-            //ConsultazioneSinistriPage.containValidDate(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')           
         });
         // Verifica : la valorizzazione del campo "Data invio Banca" nella popup "Dettaglio Pagamento"
         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator2).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator2).then((val) => {
             cy.log('[it]>> [Data invio banca]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
-            //ConsultazioneSinistriPage.containValidDate(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')           
         });    
 
         // Verifica : la valorizzazione del campo "Importo" nella popup "Dettaglio Pagamento"
         const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(3) > td:nth-child(2)" 
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator3).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator3).then((val) => {          
             cy.log('[it]>> [Importo]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             Common.isValidCheck(/\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/, val, ' is valid currency') 
@@ -324,7 +312,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica : la valorizzazione del campo "Valuta" nella popup "Dettaglio Pagamento"
         const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)" 
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator4).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator4).then((val) => {          
             cy.log('[it]>> [Valuta]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             ConsultazioneSinistriPage.isEuroCurrency(val)
@@ -332,21 +320,21 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         // Verifica : la valorizzazione del campo "Causale" nella popup "Dettaglio Pagamento"
         const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"       
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator5).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator5).then((val) => {          
             cy.log('[it]>> [Causale]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                               
         });
 
         // Verifica : la valorizzazione del campo "Modalità di pagamento" nella popup "Dettaglio Pagamento"
         const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(6) > td:nth-child(2)"       
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator6).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator6).then((val) => {          
             cy.log('[it]>> [Modalità di pagamento]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                                                      
         });
 
         // Verifica : la valorizzazione del campo "IBAN" nella popup "Dettaglio Pagamento"
         const popUplocator7 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(7) > td:nth-child(2)"       
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator7).then(val => {
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator7).then(val => {
             cy.log('[it]>> [IBAN]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             //Reg exp. for valid IBAN
@@ -356,14 +344,14 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     
         // Verifica : la valorizzazione del campo "Tipo Proposta" nella popup "Dettaglio Pagamento"
         const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"       
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator8).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator8).then((val) => {          
             cy.log('[it]>> [Tipo Proposta]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                                           
         });
 
         // Verifica : la valorizzazione del campo "Stato Pagamento" nella popup "Dettaglio Pagamento"
         const popUplocator9 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"       
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator9).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator9).then((val) => {          
             cy.log('[it]>> [Stato Pagamento]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                                                                                
         });
@@ -412,20 +400,18 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     
         // Verifica(1) : la valorizzazione del campo "Data incarico" nella popup "Dettaglio Incarico Perizia"
         const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator5).then((val) => {              
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator5).then((val) => {              
             cy.log('[it]>> [Data incarico]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
-            //ConsultazioneSinistriPage.containValidDate(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')           
         }); 
 
         // Verifica(2) : la valorizzazione del campo "Data scarico" nella popup "Dettaglio Incarico Perizia"
         const popUplocator6 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(9) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator6).then((val) => {
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator6).then((val) => {
             cy.log('[it]>> [Data scarico]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
-            //ConsultazioneSinistriPage.containValidDate(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')            
         }); 
 
         // Verifica(3) : la valorizzazione del campo "Tipo incarico" nella popup "Dettaglio Incarico Perizia"
@@ -451,11 +437,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         // Verifica(6) : la valorizzazione del campo "Data verifica perizia" nella popup "Dettaglio Incarico Perizia"
         const popUplocator10 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(13) > td:nth-child(2)"  
-        ConsultazioneSinistriPage.getPromiseText_BylD(popUplocator10).then((val) => {           
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator10).then((val) => {           
             cy.log('[it]>> [Data verifica perizia]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
-            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
-            //ConsultazioneSinistriPage.containValidDate(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')           
         }); 
         // TODO: Implementare la chiusura sul secondo close della pop-up
         //const closecss= "body > div:nth-child(5) > div.k-window-titlebar.k-header > div > a > span"

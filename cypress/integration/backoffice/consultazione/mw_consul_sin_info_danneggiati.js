@@ -119,13 +119,15 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Polizza]: '+val);
             polizzaAssicurato = val;
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
+            Common.isValidCheck(/^-?(0|[1-9]\d*)$/, polizzaAssicurato, 'is valid number')
         });
 
         const cssDtAvv = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
-        ConsultazioneSinistriPage.getPromiseDate_ById(cssDtAvv).then((val) => {          
+        ConsultazioneSinistriPage.getPromiseText_ById(cssDtAvv).then((val) => {          
             cy.log('[it]>> [Data avvenimento]: '+val);
             dtAvvenimento = val.trim(); 
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
         }); 
     });
 

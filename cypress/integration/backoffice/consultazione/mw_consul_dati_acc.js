@@ -61,7 +61,7 @@ after(function () {
 })
 
 //#region Script Variables
-let sinistro = '929538074'
+let numsin = '929538074'
 let stato_sin = 'CHIUSO PAGATO'
 let dtAvvenimento 
 let cliente
@@ -76,50 +76,43 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
     it('Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ', function () {              
-        ConsultazioneSinistriPage.setValue_ById('#claim_number', sinistro)
+        ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
-
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
         ConsultazioneSinistriPage.checkObjVisible_ByText(stato_sin)
-        ConsultazioneSinistriPage.printClaimDetailsValue()      
+        ConsultazioneSinistriPage.printClaimDetailsValue()
+
     });
     
     it(' Recupero e controllo preliminare della valorizzazione delle informazioni del cliente e della data avveninmento sinistro', function () {
-        const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"      
+        const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
         ConsultazioneSinistriPage.getPromiseText_ById(cssCliente1).then((val) => {
-            cliente = val;
-            cy.log('[it]>> [Cliente]: '+cliente);              
+            cliente = val;         
+            cy.log('[it]>> [Cliente]: '+cliente);
             ConsultazioneSinistriPage.isNotNullOrEmpty(cliente)
-        });
-
-        const cssdtAvv1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)" 
-        ConsultazioneSinistriPage.getPromiseDate_ById(cssdtAvv1).then((val) => {
-            dtAvvenimento = val;   
+        }); 
+    
+        const cssdtAvv1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
+        ConsultazioneSinistriPage.getPromiseText_ById(cssdtAvv1).then((val) => {
+            dtAvvenimento = val;  
             cy.log('[it]>> [Data avvenimento]: '+dtAvvenimento);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dtAvvenimento)
-        });             
+            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtAvvenimento, ' contain a valid date') 
+        });       
 
+        // Seleziona il sinistro
+        const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
+        Common.clickByIdOnIframe(css_ico_arrow_right)
+        cy.wait(3000)
     });
 
     it('Selezionando dati accessori per il sinistro in stato chiuso/pagato  ' +
     ' verificare che siano presenti le seguenti diciture standard: ' +
     ' "Nessuna nota presente", "Non sono presenti azioni di recupero" e "Nessun soggetto presente" rispettivamente per le sezioni precedenti ', function () {
-     
-        // Seleziona il sinistro
-        ConsultazioneSinistriPage.clickLnk_ByHref(sinistro)
-      
-        // Verifica : numero di sinistro in alto alla pagina di dettaglio
-        const clssDtl = "pageTitle"
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, sinistro)
 
-        cy.log('[it]>> [cliente / Data avvenimento]: '+cliente + "/" + dtAvvenimento);
-        // Verifica (1): Valore della data avvenimento 
-        const cssDtAvv2 = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.clock"      
-        //ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssDtAvv2, dtAvvenimento)
-        
-        // Verifica (2): Cliente
-        const cssCliente2 = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.people > a"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssCliente2, cliente) 
+        // Verifica : numero di sinistro in alto alla pagina di dettaglio
+        const clssDtl = "#sx-detail > h2"
+        ConsultazioneSinistriPage.isTextIncluded_ByIdAndText(clssDtl, numsin)
 
         // Seleziona il link dati accessori
         ConsultazioneSinistriPage.clickLnk_ByHref("/dasinconfe/DatiAccessoriIngresso")
@@ -130,6 +123,5 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         ConsultazioneSinistriPage.checkObjVisible_ByText("Nessun soggetto presente")
     });
-    
 
 });
