@@ -62,7 +62,7 @@ class MovimentazioneSinistriPage {
         getIFrameMovSinistri().find('a[href*="'+value+'"]').should('be.visible').click({ multiple: true }).log('>> link (a) with href ['+value+ '] is clicked')      
         cy.wait(1000)
     }
-     /**
+    /**
      * Click on object defined by locator id
      * @param {string} id : locator object id
      * @param {int} count : counter object child
@@ -173,12 +173,12 @@ class MovimentazioneSinistriPage {
      * length list
      * @param {string} id : locator object id
      */
-     static getCountElements(id) {        
+    static getCountElements(id) {        
         return getIFrameMovSinistri().find(id)        
         .then(listing => {
-          const listingCount = Cypress.$(listing).length;
-          expect(listing).to.have.length(listingCount);
-          cy.log('>> Length :' + listingCount)          
+            const listingCount = Cypress.$(listing).length;
+            expect(listing).to.have.length(listingCount);
+            cy.log('>> Length :' + listingCount)          
         });
         
         getIFrame().find(id)  
@@ -219,20 +219,7 @@ class MovimentazioneSinistriPage {
             }, { subjectType: 'input' })
         })
     }
-    static IdExist(id)
-    {
-        cy.get('body').then(($body) => {
-            if ($body.find(id).length > 0) {
-                cy.log(id + ' element exists!')
-                return true
-            } else
-            { 
-                cy.log(id + ' element exists!')
-                return false
-            }
-        })
-    }    
-
+    
     /**
     * Compare the total value of the movements with the sum of all movements by type
     */
@@ -315,7 +302,7 @@ class MovimentazioneSinistriPage {
      * Check if the value is defined
      * @param {string} value : string value to check
      */
-     static isNotNullOrEmpty(value) {
+    static isNotNullOrEmpty(value) {
         cy.wrap(value).then((validation) => {            
             if(value === undefined) {
                 validation = false;

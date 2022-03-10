@@ -126,7 +126,7 @@ class ConsultazioneSinistriPage {
      * @param {string} id : class attribute 
      * @param {string} label : text displayed
      */
-     static checkObj_ByIdAndText(id, label) {    
+    static checkObj_ByIdAndText(id, label) {    
         return new Cypress.Promise((resolve) => {     
             let obj = getIFrame().find(id).should('be.visible')            
             if (obj.contains(label))
@@ -203,9 +203,9 @@ class ConsultazioneSinistriPage {
     static getCountElements(id) {        
         return getIFrame().find(id)        
         .then(listing => {
-          const listingCount = Cypress.$(listing).length;
-          expect(listing).to.have.length(listingCount);
-          cy.log('>> Length :' + listingCount)          
+            const listingCount = Cypress.$(listing).length;
+            expect(listing).to.have.length(listingCount);
+            cy.log('>> Length :' + listingCount)          
         });
         getIFrame().find(id)  
     }
@@ -222,35 +222,21 @@ class ConsultazioneSinistriPage {
         })
     }
     
-
     /**
      * Defined on object identified by its @id, the function return the
      * length list
      * @param {string} id : locator object id
      */
-     static getCountElements(id) {        
+    static getCountElements(id) {        
         return getIFrame().find(id)        
         .then(listing => {
-          const listingCount = Cypress.$(listing).length;
-          expect(listing).to.have.length(listingCount);
-          cy.log('>> Length :' + listingCount)          
+            const listingCount = Cypress.$(listing).length;
+            expect(listing).to.have.length(listingCount);
+            cy.log('>> Length :' + listingCount)          
         });
         getIFrame().find(id)  
     }
-    /**
-     * Check if exist id object in body
-     */
-    static IdExist(id) {
-        cy.get('body').then(($body) => {
-            if ($body.find(id).length > 0) {
-                cy.log('>> ' + id + ' element exists!')
-                return true
-            } else { 
-                cy.log('>> ' + id + ' element not exists!');
-                return false
-            }
-        })
-    }
+    
     /**
      * Check if the value is defined
      * @param {string} value : string value to check
