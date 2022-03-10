@@ -98,7 +98,7 @@ class CensimentoAnagrafico {
 
             cy.get('#divPopupAnagrafica', { timeout: 30000 }).should('be.visible') //attende la comparsa popup di ricerca anagrafiche
             cy.wait(5000)         
-            cy.pause()
+            //cy.pause()
 
             //popup anagrafico
             ultraIFrameAnagrafica().within(() => {
@@ -229,7 +229,7 @@ class CensimentoAnagrafico {
                 //popup Fabbricato di interesse storico
                 cy.get('div[id="popupConfermaCambioDomanda"]').should('contain.text', "comporta l'azzeramento degli sconti, la rimozione della convenzione speciale e il ricalcolo del prezzo")
                 cy.get('button').contains('AGGIORNA').should('be.visible').click()
-                cy.pause()
+                //cy.pause()
             }
 
         })

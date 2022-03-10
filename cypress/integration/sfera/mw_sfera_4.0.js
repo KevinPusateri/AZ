@@ -26,7 +26,7 @@ before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
-        Sfera.accediSfera()
+        Sfera.accediSferaDaHomePageMW()
     })
 })
 
@@ -48,10 +48,24 @@ after(function () {
 
 describe('Matrix Web : Sfera 4.0', function () {
 
-    it('Applicazione Delta Premio su Titolo 2', function () {
+    it('Verificare presenza ed accesso a Delta Premio da menù contestuale e ritorno in Sfera', function () {
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
         Sfera.estrai()
-        cy.pause()
         Sfera.apriVoceMenu(Sfera.VOCIMENU.DELTA_PREMIO)
+        Sfera.verificaAccessoSfera()
+    })
+
+    it('Verificare Cluster Motor Delta Premio Positivo e Negativo', function () {
+        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_NEGATIVO)
+        Sfera.espandiPannello()
+        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO)
+    })
+
+    it('Sostituzione stesso veicolo Titolo 2 e Verifica in Sfera', function () {
+        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
+        Sfera.estrai()
+        Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.VUOTO)
+        Sfera.apriVoceMenu(Sfera.VOCIMENU.SOSTITUZIONE_RIATTIVAZIONE_AUTO, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
+        cy.pause()
     })
 })

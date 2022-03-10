@@ -240,6 +240,16 @@ class ControlliProtocollazione {
         })
     }
 
+    static salvaNPreventivo() {
+        ultraIFrame().within(() => {
+            cy.get('[class="step last success"]').find('span').contains('preventivo')
+                .children('b').invoke('text').then(val => {
+                    cy.wrap(val).as('preventivo')
+                    cy.log("return " + '@preventivo')
+                })
+        })
+    }
+
 
     /**
      * Verifica l'opzione selezionata per un determinante campo
