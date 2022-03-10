@@ -68,7 +68,7 @@ const TipoTitoli = {
     TITOLO_8: {
         key: 8,
         desc: 'rimborso'
-    },
+    }
 }
 
 /**
@@ -126,9 +126,33 @@ const TipoSostituzioneRiattivazione = {
 }
 
 /**
+ * Enum Filtri
+ * @readonly
+ * @enum {Object}
+ */
+const Filtri = {
+    INFO: {
+        key: "Info",
+        values: {
+            VUOTO: "Vuoto",
+            ALTRE_SCADENZE_IN_QUIETANZAMENTO: "AQ",
+            ENTRO_PERIODO_MORA: "EM",
+            RATE_PRECEDENTI_SCOPERTE: "RS"
+        }
+    },
+    PORTAFOGLIO: {
+        key: "Pt.",
+        values: {
+            VUOTO: "Vuoto",
+            AUTO: "AU"
+        }
+    }
+}
+
+/**
  * @class
  * @classdesc Classe per interagire con Sfera 4.0 da Matrix Web
- * @author Andrea 'Bobo' Oboe
+ * @author Andrea 'Bobo' Oboe & Kevin Pusateri
  */
 class Sfera {
 
@@ -154,6 +178,14 @@ class Sfera {
      */
     static get TIPOQUIETANZE() {
         return TipoQuietanze
+    }
+
+    /**
+     * Funzione che ritorna i tipi di Filtri
+     * @returns {Filtri} tipi di Filtri
+     */
+    static get FILTRI() {
+        return Filtri
     }
 
     /**
@@ -224,7 +256,7 @@ class Sfera {
      * @returns {Object} pulsante Procedi
      * @private
      */
-    static procedi(){
+    static procedi() {
         return cy.contains('Procedi').should('exist').and('be.visible')
     }
     //#endregion
@@ -318,9 +350,23 @@ class Sfera {
         }
     }
 
-    static filtra(){
-        cy.get('div:contains("Info")').parent().find('nx-icon').click()
-        cy.pause()
+    /**
+     * @param {Filtri} filtro da utilizzare
+     * @param {String} valore da ricercare
+     */
+    static filtraSuColonna(filtro, valore) {
+        cy.get('thead').within(() => {
+
+            cy.get(`div:contains(${filtro.key})`).parent().find('nx-icon:last').click()
+            cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
+                cy.get('input:visible').type(valore)
+                cy.wait(500)
+                cy.get('span[class="nx-checkbox__control"]:visible').click()
+                cy.intercept(estraiQuietanze).as('estraiQuietanze')
+                cy.contains('Applica').should('be.enabled').click()
+                cy.wait('@estraiQuietanze', { requestTimeout: 60000 })
+            })
+        })
     }
 
     /**
