@@ -44,6 +44,32 @@ class ConsensiPrivacy {
             cy.get('div[class="section-title"]').contains(sezione).should('have.length', 1)
         })
     }
+
+    /**
+     * Visualizza documento
+     * * @param {*} documento (è il documento da visualizzare) 
+     */ 
+     static visualizzaDocumento(documento) {
+        ultraIFrame().within(() => {
+            //ultraIFrame0().within(() => {
+            cy.get('div').contains(documento).should('exist')
+              .parent('div[class="documento"]').should('exist')
+              .find('button').contains('VISUALIZZA').should('be.visible').click()
+
+            cy.get('div[class="dialog"]').should("exist")
+              .find('button').contains('Conferma').should('have.length', 1).click()
+        })
+        /*
+        ultraIFrame().within(() => {
+                //conferma popup
+                //cy.pause()
+                cy.get('div[class="dialog"]').should("exist")
+                  .find('button').contains('Conferma').should('have.length', 1).click()
+            //})    
+            
+        })
+        */
+    }
 }
 
 export default ConsensiPrivacy

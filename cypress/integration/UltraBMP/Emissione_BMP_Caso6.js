@@ -15,6 +15,7 @@ import CondividiPreventivo from "../../mw_page_objects/UltraBMP/CondividiPrevent
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
 import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import ControlliSalvataggio from "../../mw_page_objects/UltraBMP/ControlliSalvataggio"
 import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 import Portafoglio from "../../mw_page_objects/Clients/Portafoglio"
 import Common from "../../mw_page_objects/common/Common"
@@ -83,6 +84,7 @@ var premioRC_ProprietàAnimali = 0
 let personaFisica = PersonaFisica.CarloRossini()
 let personaFisica2 = PersonaFisica.SimonettaRossino()
 var nContratto = "000"
+var nPreventivo = "000"
 var clienteUbicazione = ""
 var frazionamento = "annuale"
 var arrPath = ['Polizze Allianz Ultra', nContratto, 'Versione 1', 'Appendici']
@@ -239,7 +241,7 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
         CensimentoAnagrafico.selezionaAnimale(modificheAnimale.Nome, personaFisica2, '380260000279818', true)
         CensimentoAnagrafico.Avanti()
         DatiIntegrativi.caricamentoPagina()
-        cy.pause()
+        //cy.pause()
     })
 
     it("Dati integrativi", () => {
@@ -251,9 +253,35 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
     })
 
     it("Condividi Preventivo", () => {
+        //cy.pause()
         CondividiPreventivo.SelezionaTutti()
         CondividiPreventivo.Conferma()
         ConsensiPrivacy.caricamentoPagina()
+        //cy.pause()
+    })
+
+    it("Consensi e privacy", () => {
+        ConsensiPrivacy.visualizzaDocumento('Regolamento Allianz Ultra e Set informativo')
+        ConsensiPrivacy.visualizzaDocumento('Preventivo Allianz Ultra')
+        ConsensiPrivacy.Avanti()
+        ControlliSalvataggio.caricamentoPagina()
+        //cy.pause()
+    })
+
+    it("Adempimenti precontrattuali e Perfezionamento", () => {
+        //ControlliProtocollazione.verificaPresenzaDocumento("Informativa precontrattuale: Allegati 3, 4 e 4TER")
+        ControlliSalvataggio.verificaPresenzaDocumento("Regolamento Allianz Ultra e Set informativo")
+        ControlliSalvataggio.verificaPresenzaDocumento("Preventivo Allianz Ultra")
+        ControlliSalvataggio.stampaDocumentazione()
+        ControlliSalvataggio.salvaNPreventivo()
+
+        cy.get('@preventivo').then(val => {
+            nPreventivo = val
+        })
+        //cy.pause()
+        ControlliSalvataggio.clickPulsante('Torna alla home page')
+        ControlliSalvataggio.clickConferma()
+
         cy.pause()
     })
 
@@ -272,6 +300,7 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
     
 
     it("Dati integrativi", () => {
+        cy.pause()
         DatiIntegrativi.verificaDataDecorrenza()
         DatiIntegrativi.verificaDataScadenza()
         DatiIntegrativi.verificaDatoPolizzaModificabile("Tacito rinnovo", true)

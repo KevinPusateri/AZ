@@ -27,7 +27,7 @@ class CondividiPreventivo {
     static caricamentoPreventivo() {
         cy.intercept({
             method: 'GET',
-            url: '**/copertina-animali.png'
+            url: '**/getDatiQuotazione'
         }).as('copertina')
 
         cy.wait('@copertina', { requestTimeout: 60000 })
