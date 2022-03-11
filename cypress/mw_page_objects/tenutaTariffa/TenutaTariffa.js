@@ -791,9 +791,9 @@ class TenutaTariffa {
             cy.contains('BONUS/MALUS').parent('div').find('div[class="ng-star-inserted"]').invoke('text').then(premioLordo => {
                 //? Visto che i premi lordi variano in base a BRAIN, verifichiamo semplicemente che non siano negativi o a zero (solitamente quando
                 //? in errore i premi lordi sono a 0.01)
-                //expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
-                let premio = parseFloat(premioLordo)
-                expect(premio).to.be.greaterThan(0.01)
+                expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
+                // let premio = parseFloat(premioLordo)
+                // expect(premio).to.be.greaterThan(0.01)
             })
         })
     }
