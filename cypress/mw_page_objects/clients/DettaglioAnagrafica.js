@@ -500,5 +500,19 @@ class DettaglioAnagrafica {
 
         })
     }
+
+
+    static getFormaGiuridica() {
+        return new Cypress.Promise(resolve => {
+            cy.contains('Forma giuridica').parents('app-client-data-label').within(() => {
+                cy.get('div[class="value"]').invoke('text').then((tipologia) => {
+                    if (tipologia.trim() !== '-')
+                        resolve(true)
+                    else
+                        resolve(false)
+                })
+            })
+        })
+    }
 }
 export default DettaglioAnagrafica
