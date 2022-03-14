@@ -346,7 +346,7 @@ class TenutaTariffa {
                 cy.get('nx-spinner').should('not.be.visible')
 
                 //Per i modelli fuori catalogo, da compilare a mano; altrimenti utilizzo i dropdown
-                if (currentCase.Settore === '3') {
+                if (currentCase.Settore === '3' || currentCase.Settore === '6' || currentCase.Settore === '7') {
                     //Modello Versione testo libero (essendo fuori catalogo)
                     cy.get('input[formcontrolname="marcaModelloVersione"]').should('exist').type(currentCase.Marca + ' ' + currentCase.Modello + ' ' + currentCase.Versione)
                 }
@@ -774,13 +774,14 @@ class TenutaTariffa {
                 case '6':
                 case '7':
                     //TODO Protezione Rivalsa è già settata come garanzia in automatico; implementa verficia di presenza
-
-                    //Estensione Sgombero Neve
-                    cy.contains('Estensione Sgombero Neve').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
-                    cy.get('nx-dropdown-item').contains(currentCase.Sgombero_Neve).click()
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
-                    //Attendiamo che il caricamento non sia più visibile
-                    cy.get('nx-spinner').should('not.be.visible')
+                    if (!Cypress.env('isAviva')){
+                        //Estensione Sgombero Neve
+                        cy.contains('Estensione Sgombero Neve').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
+                        cy.get('nx-dropdown-item').contains(currentCase.Sgombero_Neve).click()
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible')
+                    }
                     break
             }
 
