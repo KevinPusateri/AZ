@@ -53,7 +53,7 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
     if (currentGaranziaARD === null) {
         //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA
         debugger
-        if (descSettore === 'KASKO_COLLISIONE' || (descSettore === 'KASKO_COMPLETA'))
+        if ((descSettore === 'KASKO COLLISIONE' && !Cypress.env('isAviva')) || (descSettore === 'KASKO COMPLETA'))
             garanziaARD = findKeyLogTariffa('Garanzia')[2]
         else if (descSettore === 'AVENS')
             garanziaARD = findKeyLogTariffa('Garanzia')[4]
@@ -847,7 +847,7 @@ class TenutaTariffa {
             }
             //#endregion
 
-            cy.pause()
+            //cy.pause()
 
             switch (currentCase.Descrizione_Settore) {
                 case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
@@ -908,7 +908,31 @@ class TenutaTariffa {
                     cy.contains("Eventi Naturali").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
-
+                //AVIVA
+                case "INFORTUNI":
+                    cy.contains("Infortuni").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                //AVIVA
+                case "CRISTALLI":
+                    cy.get('div:contains("Cristalli")').parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                //AVIVA
+                case "IMPREVISTI":
+                    cy.contains("Imprevisti").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                //AVIVA
+                case "ASSISTENZA":
+                    cy.contains("Assistenza").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                //AVIVA
+                case "TUTELA GIUDIZIARIA":
+                    cy.contains("Tutela Giudiziaria").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
             }
 
             cy.get('strong:contains("Auto Rischi Diversi"):last').click().wait(500)
@@ -1011,6 +1035,26 @@ class TenutaTariffa {
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI":
                         case "EVENTI NATURALI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
+                            break
+                        //AVIVA
+                        case "INFORTUNI":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Infortuni)
+                            break
+                        //AVIVA
+                        case "CRISTALLI":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Cristalli)
+                            break
+                        //AVIVA
+                        case "IMPREVISTI":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Imprevisti)
+                            break
+                        //AVIVA
+                        case "ASSISTENZA":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Assistenza)
+                            break
+                        //AVIVA
+                        case "TUTELA GIUDIZIARIA":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Tutela_Giudiziaria)
                             break
                     }
                 })
