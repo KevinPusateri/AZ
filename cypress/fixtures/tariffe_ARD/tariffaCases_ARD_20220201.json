@@ -451,7 +451,7 @@
   {
     "Identificativo_Caso": "5",
     "Settore": "1",
-    "Descrizione_Settore": "KASKO_PRIMO_RISCHIO_ASSOLUTO",
+    "Descrizione_Settore": "KASKO PRIMO RISCHIO ASSOLUTO",
     "Periodo_Tariffazione": "03-03",
     "Anno_Periodo_Tariffazione": "2022",
     "Tipologia_Entita": "Persona",
@@ -563,7 +563,7 @@
   {
     "Identificativo_Caso": "6",
     "Settore": "1",
-    "Descrizione_Settore": "KASKO_COLLISIONE",
+    "Descrizione_Settore": "KASKO COLLISIONE",
     "Periodo_Tariffazione": "03-03",
     "Anno_Periodo_Tariffazione": "2022",
     "Tipologia_Entita": "Persona",
@@ -675,7 +675,7 @@
   {
     "Identificativo_Caso": "7",
     "Settore": "1",
-    "Descrizione_Settore": "KASKO_COMPLETA",
+    "Descrizione_Settore": "KASKO COMPLETA",
     "Periodo_Tariffazione": "03-03",
     "Anno_Periodo_Tariffazione": "2022",
     "Tipologia_Entita": "Persona",

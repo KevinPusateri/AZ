@@ -869,14 +869,19 @@ class TenutaTariffa {
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 case "FURTO":
-                //Caso per AVIVA
+                //AVIVA
                 case "INCENDIO E FURTO":
                     cy.contains("Furto").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
-                case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
-                case "KASKO_COLLISIONE":
-                case "KASKO_COMPLETA":
+                //AZ
+                case "KASKO PRIMO RISCHIO ASSOLUTO":
+                case "KASKO COMPLETA":
+                //AVIVA
+                case "KASKO TOTALE":
+                case "KASKO URTO CON ANIMALI":
+                //AZ e AVIVA
+                case "KASKO COLLISIONE":
                     cy.contains("Kasko").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
 
@@ -896,6 +901,11 @@ class TenutaTariffa {
                     }
 
                     cy.contains("Atti Vandalici ed Eventi").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                //AVIVA
+                case "EVENTI NATURALI":
+                    cy.contains("Eventi Naturali").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
 
@@ -985,13 +995,21 @@ class TenutaTariffa {
                         case "INCENDIO E FURTO":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Furto)
                             break
-                        case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
-                        case "KASKO_COLLISIONE":
-                        case "KASKO_COMPLETA":
+                        //AZ
+                        case "KASKO PRIMO RISCHIO ASSOLUTO":
+                        case "KASKO COMPLETA":
+                        //AVIVA
+                        case "KASKO TOTALE":
+                        case "KASKO URTO CON ANIMALI":
+                        //AZ e AVIVA
+                        case "KASKO COLLISIONE":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
                             break
+                        //AZ
                         case "AVENS":
+                        //AVIVA
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI":
+                        case "EVENTI NATURALI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
                             break
                     }
