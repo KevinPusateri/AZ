@@ -54,9 +54,9 @@ after(function () {
 //?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
-let caseToExecute = ['1','2']
+let caseToExecute = []
 
-describe('AVIVA - ARD Gennaio 2020: ', {
+describe('AVIVA - ARD: ', {
     retries: {
         runMode: 0,
         openMode: 0,

@@ -774,7 +774,7 @@ class TenutaTariffa {
                 case '6':
                 case '7':
                     //TODO Protezione Rivalsa è già settata come garanzia in automatico; implementa verficia di presenza
-                    if (!Cypress.env('isAviva')){
+                    if (!Cypress.env('isAviva')) {
                         //Estensione Sgombero Neve
                         cy.contains('Estensione Sgombero Neve').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
                         cy.get('nx-dropdown-item').contains(currentCase.Sgombero_Neve).click()
@@ -885,14 +885,20 @@ class TenutaTariffa {
                     cy.get('nx-dropdown-item').contains(currentCase.Tipo_Kasko).click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
+                //AZ
                 case "AVENS":
-                    //? AVENS compare attivando Furto
-                    cy.contains("Furto").parents('tr').find('button:first').click()
-                    cy.get('nx-spinner').should('not.be.visible')
+                //AVIVA
+                case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI":
+                    //? Su AZ Attiva Vandalidi ed Eventi Naturali compare attivando Furto, su Aviva è visibile by default
+                    if (!Cypress.env('isAviva')) {
+                        cy.contains("Furto").parents('tr').find('button:first').click()
+                        cy.get('nx-spinner').should('not.be.visible')
+                    }
 
-                    cy.contains("Atti Vandalici ed Eventi Naturali").parents('tr').find('button:first').click()
+                    cy.contains("Atti Vandalici ed Eventi").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
+
             }
 
             cy.get('strong:contains("Auto Rischi Diversi"):last').click().wait(500)
@@ -902,11 +908,11 @@ class TenutaTariffa {
 
             //Verifichiamo il totale relativo alla ARD
             cy.get('strong:contains("Auto Rischi Diversi"):last').parents('div').find('div:last').find('strong:last').invoke('text').then(value => {
+                expect(value).contains(currentCase.Totale_Premio)
                 //? Visto che i premi lordi variano in base a BRAIN, verifichiamo semplicemente che non siano negativi o a zero (solitamente quando
                 //? in errore i premi lordi sono a 0.01)
-                //expect(value).contains(currentCase.Totale_Premio)
-                let premio = parseFloat(value)
-                expect(premio).to.be.greaterThan(0.01)
+                // let premio = parseFloat(value)
+                // expect(premio).to.be.greaterThan(0.01)
             })
         })
     }
@@ -973,7 +979,10 @@ class TenutaTariffa {
                         case "INCENDIO":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Incendio)
                             break
+                        //AZ
                         case "FURTO":
+                        //AVIVA
+                        case "INCENDIO E FURTO":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Furto)
                             break
                         case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
@@ -982,6 +991,7 @@ class TenutaTariffa {
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
                             break
                         case "AVENS":
+                        case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
                             break
                     }
