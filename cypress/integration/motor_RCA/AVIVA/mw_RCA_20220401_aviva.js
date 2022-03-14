@@ -55,7 +55,7 @@ let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
 let caseToExecute = []
 //?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
-let selectedSettori = ['1','2']
+let selectedSettori = []
 
 describe('RCA Aprile 2022 AVIVA: ', {
     retries: {
@@ -66,7 +66,7 @@ describe('RCA Aprile 2022 AVIVA: ', {
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))  {
+                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
                     if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
                         Common.visitUrlOnEnv()
 
@@ -98,10 +98,7 @@ describe('RCA Aprile 2022 AVIVA: ', {
             it("LogTariffa", function () {
                 if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
                     if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
-                        if (currentCase.Settore !== '3')
-                            TenutaTariffa.checkTariffaRCA(currentCase)
-                        else
-                            this.skip()
+                        TenutaTariffa.checkTariffaRCA(currentCase)
                     }
                     else
                         this.skip()
