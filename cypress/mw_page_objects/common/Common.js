@@ -330,7 +330,21 @@ class Common {
         return findIframeChild(idIframe).find(path, { timeout: 5000 }).click()
     }
     /**
-     * Click su un testo dentro l'iframe
+     * Gets an object in iframe  by text
+     * @param {*} idIframe del  frame
+     * @param {string} text - testo
+     * @returns findIframeChild(idIframe).within(() => {
+            cy.contains(text).should('be.visible').click()
+        })
+     */
+    static getObjByTextOnIframe(text) {
+        return getIframe().within(() => {              
+            cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
+            cy.log('>> object with label [' +text+ '] is defined')         
+        })
+    }
+    /**
+     * Gets an object in iframe Child by text
      * @param {*} idIframe del child frame
      * @param {string} text - testo
      * @returns findIframeChild(idIframe).within(() => {

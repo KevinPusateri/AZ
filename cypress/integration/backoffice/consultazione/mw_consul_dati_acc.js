@@ -79,7 +79,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
-        ConsultazioneSinistriPage.checkObjVisible_ByText(stato_sin)
+        Common.getObjByTextOnIframe(stato_sin)
         ConsultazioneSinistriPage.printClaimDetailsValue()
 
     });
@@ -117,11 +117,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Seleziona il link dati accessori
         ConsultazioneSinistriPage.clickLnk_ByHref("/dasinconfe/DatiAccessoriIngresso")
 
-        ConsultazioneSinistriPage.checkObjVisible_ByText("Nessuna nota presente")  
+        Common.getObjByTextOnIframe("Nessuna nota presente")  
         
-        ConsultazioneSinistriPage.checkObjVisible_ByText("Non sono presenti azioni di recupero")
+        Common.getObjByTextOnIframe("Non sono presenti azioni di recupero")
 
-        ConsultazioneSinistriPage.checkObjVisible_ByText("Nessun soggetto presente")
+        Common.getObjByTextOnIframe("Nessun soggetto presente")
     });
 
 });

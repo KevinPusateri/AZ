@@ -79,7 +79,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
-        ConsultazioneSinistriPage.checkObjVisible_ByText(stato_sin)
+        Common.getObjByTextOnIframe(stato_sin)
         ConsultazioneSinistriPage.printClaimDetailsValue()
 
         const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
