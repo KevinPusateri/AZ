@@ -21,11 +21,11 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_20220201.json'
+import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_20180601_aviva.json'
 //#endregion
 
 before(() => {
-    Cypress.env('isAviva', false)
+    Cypress.env('isAviva', true)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
 
@@ -33,7 +33,10 @@ before(() => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-            LoginPage.logInMWAdvanced()
+            LoginPage.logInMWAdvanced({
+                "agentId": "AAMCIPRIANO",
+                "agency": "140001960"
+            })
         })
     })
 })
@@ -56,7 +59,7 @@ let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
 let caseToExecute = []
 
-describe('ARD Febbraio 2022: ', {
+describe('AVIVA - ARD 20180601 : ', {
     retries: {
         runMode: 0,
         openMode: 0,

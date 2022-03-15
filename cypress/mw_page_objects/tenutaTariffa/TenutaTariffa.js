@@ -53,7 +53,7 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
     if (currentGaranziaARD === null) {
         //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA
         debugger
-        if (descSettore === 'KASKO_COLLISIONE' || (descSettore === 'KASKO_COMPLETA'))
+        if ((descSettore === 'KASKO COLLISIONE' && !Cypress.env('isAviva')) || (descSettore === 'KASKO COMPLETA'))
             garanziaARD = findKeyLogTariffa('Garanzia')[2]
         else if (descSettore === 'AVENS')
             garanziaARD = findKeyLogTariffa('Garanzia')[4]
@@ -81,6 +81,20 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
 
 let currentDataNascita
 class TenutaTariffa {
+
+    /**
+     * Accesso all'Area Riservata dalla pagina di Offerta
+     */
+    static areaRiservata() {
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.pause()
+            cy.contains('Area riservata').should('exist').click()
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+        })
+    }
+
     static compilaDatiQuotazione(currentCase, flowClients) {
 
         cy.getIFrame()
@@ -336,7 +350,7 @@ class TenutaTariffa {
                 cy.get('nx-spinner').should('not.be.visible')
 
                 //Per i modelli fuori catalogo, da compilare a mano; altrimenti utilizzo i dropdown
-                if (currentCase.Settore === '3') {
+                if (currentCase.Settore === '3' || currentCase.Settore === '6' || currentCase.Settore === '7') {
                     //Modello Versione testo libero (essendo fuori catalogo)
                     cy.get('input[formcontrolname="marcaModelloVersione"]').should('exist').type(currentCase.Marca + ' ' + currentCase.Modello + ' ' + currentCase.Versione)
                 }
@@ -764,13 +778,14 @@ class TenutaTariffa {
                 case '6':
                 case '7':
                     //TODO Protezione Rivalsa è già settata come garanzia in automatico; implementa verficia di presenza
-
-                    //Estensione Sgombero Neve
-                    cy.contains('Estensione Sgombero Neve').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
-                    cy.get('nx-dropdown-item').contains(currentCase.Sgombero_Neve).click()
-                    cy.wait('@getMotor', { requestTimeout: 30000 })
-                    //Attendiamo che il caricamento non sia più visibile
-                    cy.get('nx-spinner').should('not.be.visible')
+                    if (!Cypress.env('isAviva')) {
+                        //Estensione Sgombero Neve
+                        cy.contains('Estensione Sgombero Neve').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
+                        cy.get('nx-dropdown-item').contains(currentCase.Sgombero_Neve).click()
+                        cy.wait('@getMotor', { requestTimeout: 30000 })
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible')
+                    }
                     break
             }
 
@@ -781,9 +796,9 @@ class TenutaTariffa {
             cy.contains('BONUS/MALUS').parent('div').find('div[class="ng-star-inserted"]').invoke('text').then(premioLordo => {
                 //? Visto che i premi lordi variano in base a BRAIN, verifichiamo semplicemente che non siano negativi o a zero (solitamente quando
                 //? in errore i premi lordi sono a 0.01)
-                //expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
-                let premio = parseFloat(premioLordo)
-                expect(premio).to.be.greaterThan(0.01)
+                expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
+                // let premio = parseFloat(premioLordo)
+                // expect(premio).to.be.greaterThan(0.01)
             })
         })
     }
@@ -826,13 +841,17 @@ class TenutaTariffa {
             }).as('getImpostazioniGenerali')
 
             //#region Effettuiamo un full deselect di tutte le ARD selezionate di default
-            //Incendio senza scoperto
-            cy.contains("Incendio senza scoperto").parents('tr').find('button:first').click()
-            cy.get('nx-spinner').should('not.be.visible')
-            //Assistenza Auto
-            cy.contains("Assistenza Auto").parents('tr').find('button:first').click()
-            cy.get('nx-spinner').should('not.be.visible')
+            if (!Cypress.env('isAviva')) {
+                //Incendio senza scoperto
+                cy.contains("Incendio senza scoperto").parents('tr').find('button:first').click()
+                cy.get('nx-spinner').should('not.be.visible')
+                //Assistenza Auto
+                cy.contains("Assistenza Auto").parents('tr').find('button:first').click()
+                cy.get('nx-spinner').should('not.be.visible')
+            }
             //#endregion
+
+            //cy.pause()
 
             switch (currentCase.Descrizione_Settore) {
                 case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
@@ -854,12 +873,19 @@ class TenutaTariffa {
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 case "FURTO":
+                //AVIVA
+                case "INCENDIO E FURTO":
                     cy.contains("Furto").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
-                case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
-                case "KASKO_COLLISIONE":
-                case "KASKO_COMPLETA":
+                //AZ
+                case "KASKO PRIMO RISCHIO ASSOLUTO":
+                case "KASKO COMPLETA":
+                //AVIVA
+                case "KASKO TOTALE":
+                case "KASKO URTO CON ANIMALI":
+                //AZ e AVIVA
+                case "KASKO COLLISIONE":
                     cy.contains("Kasko").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
 
@@ -868,12 +894,47 @@ class TenutaTariffa {
                     cy.get('nx-dropdown-item').contains(currentCase.Tipo_Kasko).click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
+                //AZ
                 case "AVENS":
-                    //? AVENS compare attivando Furto
-                    cy.contains("Furto").parents('tr').find('button:first').click()
-                    cy.get('nx-spinner').should('not.be.visible')
+                //AVIVA
+                case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI":
+                    //? Su AZ Attiva Vandalidi ed Eventi Naturali compare attivando Furto, su Aviva è visibile by default
+                    if (!Cypress.env('isAviva')) {
+                        cy.contains("Furto").parents('tr').find('button:first').click()
+                        cy.get('nx-spinner').should('not.be.visible')
+                    }
 
-                    cy.contains("Atti Vandalici ed Eventi Naturali").parents('tr').find('button:first').click()
+                    cy.contains("Atti Vandalici ed Eventi").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                //AVIVA
+                case "EVENTI NATURALI":
+                    cy.contains("Eventi Naturali").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                //AVIVA
+                case "INFORTUNI":
+                    cy.contains("Infortuni").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                //AVIVA
+                case "CRISTALLI":
+                    cy.get('div:contains("Cristalli")').parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                //AVIVA
+                case "IMPREVISTI":
+                    cy.contains("Imprevisti").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                //AVIVA
+                case "ASSISTENZA":
+                    cy.contains("Assistenza").parents('tr').find('button:first').click()
+                    cy.get('nx-spinner').should('not.be.visible')
+                    break
+                //AVIVA
+                case "TUTELA GIUDIZIARIA":
+                    cy.contains("Tutela Giudiziaria").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
             }
@@ -885,11 +946,11 @@ class TenutaTariffa {
 
             //Verifichiamo il totale relativo alla ARD
             cy.get('strong:contains("Auto Rischi Diversi"):last').parents('div').find('div:last').find('strong:last').invoke('text').then(value => {
+                expect(value).contains(currentCase.Totale_Premio)
                 //? Visto che i premi lordi variano in base a BRAIN, verifichiamo semplicemente che non siano negativi o a zero (solitamente quando
                 //? in errore i premi lordi sono a 0.01)
-                //expect(value).contains(currentCase.Totale_Premio)
-                let premio = parseFloat(value)
-                expect(premio).to.be.greaterThan(0.01)
+                // let premio = parseFloat(value)
+                // expect(premio).to.be.greaterThan(0.01)
             })
         })
     }
@@ -956,16 +1017,48 @@ class TenutaTariffa {
                         case "INCENDIO":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Incendio)
                             break
+                        //AZ
                         case "FURTO":
+                        //AVIVA
+                        case "INCENDIO E FURTO":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Furto)
                             break
-                        case "KASKO_PRIMO_RISCHIO_ASSOLUTO":
-                        case "KASKO_COLLISIONE":
-                        case "KASKO_COMPLETA":
+                        //AZ
+                        case "KASKO PRIMO RISCHIO ASSOLUTO":
+                        case "KASKO COMPLETA":
+                        //AVIVA
+                        case "KASKO TOTALE":
+                        case "KASKO URTO CON ANIMALI":
+                        //AZ e AVIVA
+                        case "KASKO COLLISIONE":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
                             break
+                        //AZ
                         case "AVENS":
+                        //AVIVA
+                        case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI":
+                        case "EVENTI NATURALI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
+                            break
+                        //AVIVA
+                        case "INFORTUNI":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Infortuni)
+                            break
+                        //AVIVA
+                        case "CRISTALLI":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Cristalli)
+                            break
+                        //AVIVA
+                        case "IMPREVISTI":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Imprevisti)
+                            break
+                        //AVIVA
+                        case "ASSISTENZA":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Assistenza)
+                            break
+                        //AVIVA
+                        case "TUTELA GIUDIZIARIA":
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Tutela_Giudiziaria)
                             break
                     }
                 })

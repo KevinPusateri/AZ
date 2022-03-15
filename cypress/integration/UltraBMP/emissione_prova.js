@@ -64,6 +64,7 @@ let personaFisica = PersonaFisica.CarloRossini()
 //var frazionamento = "annuale"
 //var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
 var nContratto = "000"
+var nPreventivo = "123105121"
 var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE]
 //var arrPath = ['Polizze Allianz Ultra', '733117594', 'Versione 1', 'Appendici']
 //var arrDoc = ['Richiesta di annullamento']
@@ -81,6 +82,14 @@ var valoriIns = {
     "UsoAbitazione"     : "casa saltuaria",
     "CapAbitazione"     : ""
 }
+
+const ultraIFrame = () => {
+    let iframeSCU = cy.get('#matrixIframe')
+      .its('0.contentDocument').should('exist')
+  
+    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+  }
+
 //#endregion variabili iniziali
 
 
@@ -107,7 +116,119 @@ after(function() {
 
 describe('Prove relative ad Ultra', function() {
 
+    it("Ritorno alla Homepage di Matrix", () => {
+        TopBar.clickMatrixHome()
+    })
+
+    it("Recupero preventivi da Sales", () => {
+        TopBar.clickSales()
+        BurgerMenuSales.clickLink('Recupero preventivi e quotazioni')
+        Common.canaleFromPopup()
+        cy.wait(12000);
+        
+        //cy.pause()
+    })
+
+    it("Selezione preventivo ed avvio conversione ", () => {
+        ultraIFrame().within(() => {
+            cy.get('span[id="pulsante-avanzate"]').should('be.visible').click()
+            cy.get('input[id="num-preventivo"]').should('be.visible')
+              .type(nPreventivo).wait(2000)
+              .type('{enter}')
+
+            // Verifica presenza preventivo
+            cy.get('div[id="contenitore-risultati"]').should('exist')
+              .find('table > tbody > tr').should('exist')
+              .find('td').should('have.length.gt', 1)
+              .contains(nPreventivo).should('have.length', 1)
+
+            cy.get('input[id="azione-converti"]').should('be.visible').click()
+            cy.get('div[class="k-widget k-window"]').should('exist')
+              .find('input[value*="Conferma"]').should('be.visible').click()
+
+            Dashboard.caricamentoDashboardUltra()
+
+            //cy.pause()
+            
+        })
+    })
+
+    it("Procedi emissione polizza", () => {
+        Dashboard.procediHome()
+        Riepilogo.caricamentoRiepilogo()
+        Riepilogo.EmissionePolizza()
+        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
+    })
+
+    it("Censimento anagrafico", () => {
+        CensimentoAnagrafico.Avanti()
+        DatiIntegrativi.caricamentoPagina()
+        //cy.pause()
+    })
+
+    it("Dati integrativi", () => {
+        // **** solo per test
+        DatiIntegrativi.impostaDataDecorrenza(UltraBMP.dataOggi())
+        // **** fine solo per test
+        DatiIntegrativi.ClickButtonAvanti()
+        DatiIntegrativi.popupDichiarazioni()
+        //CondividiPreventivo.caricamentoPreventivo()
+        ConsensiPrivacy.caricamentoPagina()
+        //cy.pause()
+    })
+
+    it("Consensi e privacy", () => {
+        ConsensiPrivacy.Avanti()
+        ControlliProtocollazione.caricamentoPagina()
+        //cy.pause()
+    })
+
+    it("salvataggio Contratto", () => {
+        ControlliProtocollazione.salvataggioContratto()
+        //ControlliProtocollazione.verificaOpzione('Tipo firma', 'MANUALE')
+        //ControlliProtocollazione.impostaOpzione("All'esterno dell'agenzia / a distanza", 'SI')
+        ControlliProtocollazione.verificaPresenzaDocumento("Regolamento Allianz Ultra e Set informativo")
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 3 - Informativa sul distributore")
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 4 - Informazioni sulla distribuzione del prodotto assicurativo non-IBIP")
+        ControlliProtocollazione.verificaPresenzaDocumento("Riepilogo delle richieste ed esigenze assicurative del cliente")
+        ControlliProtocollazione.Avanti()    // Non prosegue prima della visualizzazione dei documenti
+        //cy.pause()
+    })
+
+    it("Visualizza documenti e prosegui", () => {
+        ControlliProtocollazione.riepilogoDocumenti()
+        ControlliProtocollazione.Avanti()
+        ControlliProtocollazione.aspettaCaricamentoAdempimenti()
+        //cy.pause()
+    })
+
+    it("Adempimenti precontrattuali e Perfezionamento", () => {
+        ControlliProtocollazione.verificaPresenzaDocumento("Informativa precontrattuale: Allegati 3 e 4")
+        ControlliProtocollazione.verificaPresenzaDocumento("Regolamento Allianz Ultra e Set informativo")
+        ControlliProtocollazione.stampaAdempimentiPrecontrattuali(false)
+        //cy.pause()
+        ControlliProtocollazione.salvaNContratto()
+        //cy.pause()
+
+        cy.get('@contratto').then(val => {
+            nContratto = val
+        })
+
+        ControlliProtocollazione.Home()
+        StartPage.caricamentoPagina()
+        cy.pause()
+    })
+
+
+
+
+    ///////////////////////
+    //////////////////////
+    /////////////////////
+
+
     it("Ricerca cliente", () => {
+        cy.pause()
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')

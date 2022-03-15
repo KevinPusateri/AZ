@@ -483,7 +483,7 @@ class DettaglioAnagrafica {
             cy.contains('Codice fiscale')
                 .parents('app-client-data-label')
                 .find('div[class="value"]:first').invoke('text').then((CF) => {
-                    resolve(IVA.trim())
+                    resolve(CF.trim())
                 })
 
         })
@@ -498,6 +498,20 @@ class DettaglioAnagrafica {
                     resolve(IVA.trim())
                 })
 
+        })
+    }
+
+
+    static getFormaGiuridica() {
+        return new Cypress.Promise(resolve => {
+            cy.contains('Forma giuridica').parents('app-client-data-label').within(() => {
+                cy.get('div[class="value"]').invoke('text').then((tipologia) => {
+                    if (tipologia.trim() !== '-')
+                        resolve(true)
+                    else
+                        resolve(false)
+                })
+            })
         })
     }
 }

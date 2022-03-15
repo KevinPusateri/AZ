@@ -573,8 +573,12 @@ class SintesiCliente {
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Libri matricola').click()
+        cy.intercept({
+            method: 'POST',
+            url: '**/GestioneLibriMatricolaDA/**'
+        }).as('getLibriMatricola');
         Common.canaleFromPopup()
-        cy.wait(15000)
+        cy.wait('@getLibriMatricola', { requestTimeout: 40000 }).its('response.statusCode').should('eq', 200)
         matrixFrame().within(() => {
             cy.get('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
         })
@@ -986,7 +990,7 @@ class SintesiCliente {
      * @param {Array.String} folders - albero cartelle dove si trovano i documenti da verificare in folder
      * @param {Array.String} labels - labels dei documenti da verificare in folder
      */
-     static verificaInFolderDocumenti(folders, labels) {
+    static verificaInFolderDocumenti(folders, labels) {
         cy.get('nx-icon[aria-label="Open menu"]').click()
         cy.contains('folder').click()
         Common.canaleFromPopup()

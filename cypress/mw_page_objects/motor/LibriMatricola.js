@@ -44,13 +44,28 @@ class LibriMatricola {
     static backElencoPreventivi() {
         cy.wait(5000)
         matrixFrame().within(() => {
-            // Torno Indietro Elenco preventivi
             cy.intercept({
                 method: 'GET',
                 url: '**/PreventiviMadri.aspx/**'
             }).as('listaPreventivi')
             cy.get('input[value="< Elenco Preventivi"]').click()
             cy.wait('@listaPreventivi', { requestTimeout: 30000 });
+        })
+    }
+
+    /**
+     * Torno Indietro Elenco Libri Matricola
+     */
+    static backElencoLibriMatricola() {
+        matrixFrame().within(() => {
+            cy.intercept({
+                method: 'POST',
+                url: '**/GestioneLibriMatricolaDA/**'
+            }).as('getLibriMatricola');
+            cy.get('#ButtonBackElencoLM').should('be.visible').within(() => {
+                cy.get('input[value="< Elenco Libri Matricola"]').should('be.visible').click()
+            })
+            cy.wait('@getLibriMatricola', { requestTimeout: 40000 }).its('response.statusCode').should('eq', 200)
         })
     }
 
@@ -79,7 +94,6 @@ class LibriMatricola {
                     url: '**/GetAllConvenzioni'
                 }).as('loadGetAllConvenzioni')
                 cy.get('#ButtonNuovo').should('be.visible').click() //click sul pulsante 'nuovo'
-                cy.wait('@loadGetAllConvenzioni', { requestTimeout: 60000 });
 
                 cy.wait(3500)
                 cy.get('input[class="inputSmlMid hasDatepicker"]').should('be.visible').click()
@@ -199,27 +213,6 @@ class LibriMatricola {
                 .should('be.visible').click()
         })
     }
-
-    static Riepilogo(altreCoperture) {
-        matrixFrame().within(() => {
-            var copertureValue = "1" //default altre coperture: si
-
-            //se non sono presenti altre coperture
-            //modifica il value per 'no'
-            if (!altreCoperture) {
-                copertureValue = "2"
-            }
-
-            //Questionario adeguatezza: altre coperture
-            cy.get('input[name="adegAltreCopRB"][value="' + copertureValue + '"]')
-                .should('be.visible').click()
-
-            //click su avanti
-            cy.get('[value="› Avanti"]')
-                .should('be.visible').click()
-        })
-    }
-
     static RiepilogoGaranzie(garanzie) {
 
         for (var i = 0; i < garanzie.length; i++) {
@@ -727,8 +720,8 @@ class LibriMatricola {
                 .should('be.visible').type(veicolo.targa).wait(1000)
 
             //seleziona la marca
-            cy.get('div[title="Seleziona la marca del veicolo"]')
-                .find('input').type(veicolo.marca)
+            cy.get('div[title="Seleziona la marca del veicolo"]').first()
+                .find('input:first').type(veicolo.marca)
                 .wait(1000).type('{downarrow}{enter}').wait(1000)
 
             //seleziona il modello
@@ -740,7 +733,7 @@ class LibriMatricola {
                 .wait(1000).type('{downarrow}{enter}').wait(1000)
 
             //inserisce la data di immatricolazione
-            cy.get('input[data-bind*="dpDataImmatricolazioneN"]')
+            cy.get('input[data-bind*="dpDataImmatricolazioneN"]').first()
                 .type(veicolo.dataImmatricolazione).wait(1000)
 
             //inserisce il numero dei posti
@@ -859,33 +852,46 @@ class LibriMatricola {
 
             cy.get('div[aria-describedby="dialogConfermaConversione"]').should('be.visible').find('#btnConferma').click()
 
-            // Caricamento Conversione Conversione Completato
+            // Caricamento Conversione Completato
             cy.get('div[aria-describedby="dialogProgressBarConversione"]').should('be.visible').within(() => {
 
                 cy.get('#result-message', { timeout: 120000 }).should('contain.text', 'Tutti i preventivi selezionati sono stati convertiti')
                 cy.contains('Chiudi').click().wait(2000)
             })
 
-            cy.get('#popup_container').should('be.visible').find('#popup_ok:visible').click().wait(2000)
+            cy.get('#popup_container').should('be.visible').find('#popup_ok:visible').click().wait(15000)
         })
 
 
         matrixFrame().within(() => {
-            cy.log('1')
-            cy.pause()
-            //TODO FAI PARTIRE IL TEST E VEDIAMO
+            // Stampa Massiva Procedi
             cy.get('div[aria-describedby="dialogConfermaStampaMassiva"]').should('be.visible').within(() => {
-
                 cy.get('#dialogConfermaStampaMassiva', { timeout: 30000 }).should('be.visible')
-                cy.get('button[role="button"]').contains('Procedi').click()
-                cy.get('button[role="button"]').contains('Procedi').click()
+                cy.get('button[role="button"]').contains('Procedi').click().wait(2000)
 
             })
 
+            // Stampa Massiva Inizio Stampa
             cy.get('div[aria-describedby="dialogStampaMassiva"]').should('be.visible').within(() => {
                 cy.get('#btnStampa').click()
             })
             cy.get('#statusStampaApplet', { timeout: 200000 }).should('not.be.visible')
+
+            // Popup Esci
+            cy.get('div[aria-describedby="dialogStampaMassiva"]').should('be.visible').within(() => {
+                cy.contains('Esci').click()
+            })
+
+            // Popup Stampa Applicazioni Conclusa -> OK
+            cy.get('#popup_container').should('be.visible').within(() => {
+                cy.get('#popup_title').should('include.text', 'Stampa applicazioni conclusa')
+                cy.get('#popup_ok').click()
+            })
+
+            // Popup Avviso
+            cy.get('div[aria-describedby="popupUltrattivita"]').should('be.visible').within(() => {
+                cy.get('button').contains('Ok').click()
+            })
         })
 
     }
@@ -924,9 +930,6 @@ class LibriMatricola {
         //Visualizza PDF e conferma
         cy.get('@iframe').should('be.visible').within(() => {
 
-            // // Privacy per scopi assicurativi
-            // cy.get('#consenso32027850_1SI').should('be.visible').click()
-
             //? CAPITA che non sia settato di default capire in base all'agenzia
             cy.get('#pnlIntermediari').should('be.visible').within(() => {
                 cy.get('button[title="Show All Items"]').first().click().wait(1000)
@@ -962,15 +965,17 @@ class LibriMatricola {
             cy.get('div[role="dialog"]:visible').should('be.visible').within(() => {
                 cy.get('#AnteprimaPDF').should('be.visible')
                 cy.contains('Conferma').click()
-                cy.get('#AnteprimaPDF').should('not.be.visible')
+                cy.get('#AnteprimaPDF').should('not.be.visible').wait(3900)
             })
 
-            cy.intercept({
-                method: 'POST',
-                url: '**/GeneraPDF'
-            }).as('salvataggioContratto')
+            // Privacy per scopi assicurativi
+            cy.contains('Privacy per scopi assicurativi').parents('tr').within(($tr) => {
+                const isChecked = $tr.find('div[class="clStatoStampa1"]').is(':visible')
+                if (!isChecked)
+                    cy.get('td').eq(2).find('input').click()
+            })
+
             cy.get('#btnAvanti').should('be.visible').click().wait(25000)
-            // cy.wait('@salvataggioContratto', { requestTimeout: 200000 });
         })
 
         cy.get('@iframe').should('be.visible').within(() => {
@@ -982,16 +987,16 @@ class LibriMatricola {
     // Accedi Voce di menu Incasso Polizza Madre
     static accessoIncassoPolizzaMadre(nPreventivo) {
         //tasto destro sul preventivo passato come parametro
+        cy.wait(10000)
         cy.getIFrame()
-        cy.get('@iframe').within(() => {
-            cy.wait(2000)
+        cy.get('@iframe').should('be.visible').within(() => {
             cy.get('#table_polizze_madri', { timeout: 10000 }).should('be.visible').within(() => {
 
                 cy.get('#' + nPreventivo).should('be.visible').rightclick()
             })
         })
 
-        cy.wait(5000)
+        cy.wait(3000)
         // Click su Incasso Polizza Madre
         cy.get('@iframe').within(() => {
             cy.log('inside contex menu')
@@ -1038,7 +1043,7 @@ class LibriMatricola {
         })
     }
 }
-export function PrevApplicazione(nomeApplicazione, veicolo, garanzie, coperturaRCA = true, nPopupRiepilogo = 0) {
+export function PrevApplicazione(caseTest, nomeApplicazione, veicolo, garanzie, coperturaRCA = true, nPopupRiepilogo = 0) {
 
     //#region Configuration
     Cypress.config('defaultCommandTimeout', 60000)
@@ -1053,10 +1058,10 @@ export function PrevApplicazione(nomeApplicazione, veicolo, garanzie, coperturaR
 
     describe("PREVENTIVO APPLICAZIONE: " + nomeApplicazione, function () {
 
-        it("Elenco applicazioni", function () {
+        // Viene eseguito solo al primo Preventivo Applicazione
+        if (caseTest === 1)
+            it("Elenco applicazioni", function () {
 
-            // Viene eseguito solo al primo Step
-            if (nomeApplicazione === 'Auto') {
                 LibriMatricola.AperturaTabPreventivi()
                 LibriMatricola.AperturaElencoApplicazioni(nPreventivo)
 
@@ -1066,12 +1071,10 @@ export function PrevApplicazione(nomeApplicazione, veicolo, garanzie, coperturaR
                 })
 
                 LibriMatricola.caricamentoElencoApplicazioni()
-            }
-
-        })
+            })
 
         it("Nuovo preventivo applicazione", function () {
-            LibriMatricola.NuovoPreventivoApplicazione(true)
+            LibriMatricola.NuovoPreventivoApplicazione()
             LibriMatricola.caricamentoDatiAmministrativi()
         })
 
@@ -1097,13 +1100,11 @@ export function PrevApplicazione(nomeApplicazione, veicolo, garanzie, coperturaR
                 LibriMatricola.ProvenienzaVeicolo(menuProvenienza.primaImmatricolazione.documentazione)
             }
             LibriMatricola.Avanti()
-            // LibriMatricola.checkDichiarazionediNonCircolazione()
             LibriMatricola.caricamentoRiepilogo()
         })
 
         it("Riepilogo", function () {
             LibriMatricola.RiepilogoGaranzie2(garanzie, nPopupRiepilogo)
-            // LibriMatricola.AccessoriOptional()
             LibriMatricola.Avanti()
         })
 
@@ -1114,8 +1115,6 @@ export function PrevApplicazione(nomeApplicazione, veicolo, garanzie, coperturaR
         it("Finale", function () {
             LibriMatricola.ContrattoFinale()
             LibriMatricola.FinaleGoHome()
-            // LibriMatricola.caricamentoElencoApplicazioni()
-
             cy.get('@contratto').then(val => {
                 nPreventivoApp = val
                 cy.log("Preventivo Applicazione n. " + nPreventivoApp)
@@ -1139,28 +1138,59 @@ export function PreventivoMadre() {
 
     //#region  variabili iniziali
     var nPreventivo
-    //! DA MODIFICARE IN CASO di nuova convenzione (convenzione,dataConvenzione)
-    //! MODIFICARE dataConvenzione anche su ListaVeicolo.js
-    let convenzione = '611983'
-    let dataConvenzione = '01/04/2022'
+    var convenzione
+    var dataConvenzione
+    before(() => {
+        cy.fixture('LibriMatricola/Convenzione.json').then((data) => {
+            convenzione = data.convenzione
+            dataConvenzione = data.dataConvenzione
+        })
+
+    });
     //#endregion variabili iniziali
 
     it("Ricerca cliente", function () {
-        LandingRicerca.searchRandomClient(true, "PG", 'E')
-        LandingRicerca.clickRandomResult('E')
-        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-        DettaglioAnagrafica.getIVAClient().then((codIva) => {
-            cy.writeFile('cypress/fixtures/LibriMatricola/LibriMatricola.json', {
-                ClientePGIVA: codIva
+
+        
+        
+        const loopSearchClientWithBusinessForm = () => {
+            LandingRicerca.searchRandomClient(true, "PG", '')
+            LandingRicerca.clickRandomResult('PG','')
+            // LandingRicerca.search('00826700577')
+            // LandingRicerca.clickFirstResult()
+            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+            cy.wait(3000)
+            let loopCheck = false
+            DettaglioAnagrafica.getIVAClient().then((codIva) => {
+                if (codIva === '-') {
+                    loopCheck = true
+                }
+                DettaglioAnagrafica.getFormaGiuridica().then((checkExistFormaGiuridica) => {
+                    if (checkExistFormaGiuridica) {
+                        cy.writeFile('cypress/fixtures/LibriMatricola/LibriMatricola.json', {
+                            ClientePGIVA: codIva
+                        })
+                    }
+                    else {
+                        loopCheck = true
+                    }
+                })
             })
-        })
-        SintesiCliente.clickTabSintesiCliente()
+            cy.get('body').then(() => {
+                if (loopCheck) {
+
+                    loopSearchClientWithBusinessForm()
+                }
+            })
+            SintesiCliente.clickTabSintesiCliente()
+        }
+        loopSearchClientWithBusinessForm()
+
     })
 
     it("Libri Matricola da Sintesi Cliente", function () {
         SintesiCliente.clickAuto()
         SintesiCliente.clickLibriMatricola()
-        // cy.wait('@LibriMatricolaDA', { requestTimeout: 50000 });
     })
 
     it("Nuovo preventivo madre", function () {
@@ -1194,7 +1224,7 @@ export function PreventivoMadre() {
 
     })
 
-    it("Verifica presenza preventivo", function () {
+    it("Verifica presenza preventivo Madre", function () {
 
         cy.log("nContratto c " + nPreventivo)
         expect(nPreventivo).to.not.be.undefined
@@ -1205,4 +1235,3 @@ export function PreventivoMadre() {
 }
 
 export default LibriMatricola
-//VOLVO C70 2.4 20V 170 CV MOMENTUM (DAL 2005/09)

@@ -310,5 +310,22 @@ class ControlliProtocollazione {
             })
         })
     }
+
+    /**
+     * Clicca sul pulsante Home
+     */
+     static Home() {
+        ultraIFrame().within(() => {
+            ultraIFrame0().within(() => {
+                cy.get('button').contains('Home')
+                    .should('be.visible')
+                    .click()
+            })
+            //Conferma
+            cy.get('div[class="dialog"]').should('exist')
+            .find('footer[class="btn-container"]').contains('Conferma').should('be.visible').click()
+        })
+    }
+
 }
 export default ControlliProtocollazione
