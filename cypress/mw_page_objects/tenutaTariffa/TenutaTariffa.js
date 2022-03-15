@@ -86,9 +86,13 @@ class TenutaTariffa {
      * Accesso all'Area Riservata dalla pagina di Offerta
      */
     static areaRiservata() {
-        cy.contains('Area riservata').should('exist').click()
-        //Attendiamo che il caricamento non sia più visibile
-        cy.get('nx-spinner').should('not.be.visible')
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.pause()
+            cy.contains('Area riservata').should('exist').click()
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+        })
     }
 
     static compilaDatiQuotazione(currentCase, flowClients) {
