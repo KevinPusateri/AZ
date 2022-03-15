@@ -179,7 +179,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         // Apro la sezione del danneggiato (1)
         const btnDanneggiato = "#soggetti_danneggiati > div > div > a"
-        ConsultazioneSinistriPage.clickBtn_ById(btnDanneggiato)
+        Common.clickFindByIdOnIframe(btnDanneggiato)
 
         // Verifica : la valorizzazione del campo "Data incarico" in Sezione Perizie
         const cssDtIncarico = '#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > p'
@@ -284,7 +284,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     ' verificare che le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
         //const csSinObjPage = Object.create(ConsultazioneSinistriPage)
         const xpathDettaglioPagamento = "#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > a"
-        ConsultazioneSinistriPage.clickBtn_ById(xpathDettaglioPagamento)
+        Common.clickFindByIdOnIframe(xpathDettaglioPagamento)
 
         // Verifica : la valorizzazione del campo "Data pagamento" nella popup "Dettaglio Pagamento"      
         const popUplocator1 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(1) > td:nth-child(2)"  
@@ -363,7 +363,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     ' verifiche delle seguenti informazioni: Fiduciario, Tipo collaborazione, Indirizzo, Telefono ', function () {
        
         const xpathDettaglioPerizia = "#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > a"
-        ConsultazioneSinistriPage.clickBtn_ById(xpathDettaglioPerizia)
+        Common.clickFindByIdOnIframe(xpathDettaglioPerizia)
       
         // Verifica(1) : la valorizzazione del campo "Fiduciario" nella popup "Dettaglio Incarico Perizia"      
         const popUplocator1 = ".k-widget.k-window > .popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  

@@ -2,6 +2,16 @@
 
 const getIframe = () => cy.get('iframe').its('0.contentDocument.body')
 
+const findIframeChild = (subFrame) => {
+    getIframe().find(subFrame)
+        .iframe();
+
+    let iframeChild = getIframe().find(subFrame)
+        .its('0.contentDocument').should('exist');
+
+    return iframeChild.its('body').should('not.be.undefined').then(cy.wrap)
+}
+
 /**
  * @class
  * @classdesc Classe Common per varie funzioni Cross Matrix Web
@@ -307,9 +317,47 @@ class Common {
      * @example Common.clickFindByIdOnIframe('button:contains("Cancella"):visible')
      */
     static clickFindByIdOnIframe(path) {
-        return getIframe().find(path).click()
+        return getIframe().find(path, { timeout: 5000 }).click()
+    }
+    /**
+     * Trova l'elemento tramite la sua path all'interno di un iFrame ed effettua il click
+     * @param {*} idIframe del child frame
+     * @param {*} path 
+     * @returns elemento cliccato per poter effettuare altre operazioni concatenate
+     * @example Common.clickFindByIdOnIframeChild('button:contains("Cancella"):visible')
+     */
+    static clickFindByIdOnIframeChild(idIframe, path) {
+        return findIframeChild(idIframe).find(path, { timeout: 5000 }).click()
+    }
+    /**
+     * Click su un testo dentro l'iframe
+     * @param {*} idIframe del child frame
+     * @param {string} text - testo
+     * @returns findIframeChild(idIframe).within(() => {
+            cy.contains(text).should('be.visible').click()
+        })
+     */
+    static getObjByTextOnIframeChild(idIframe, text) {
+        return findIframeChild(idIframe).within(() => {              
+            cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
+            cy.log('>> object with label [' +text+ '] is defined')         
+        })
     }
 
+    /**
+     * Check if an object identified by locator and its label is displayed
+     * @param {*} idIframe del child frame
+     * @param {string} id : class attribute 
+     * @param {string} text : text displayed
+     */
+    static getObjByIdAndTextOnIframeChild(idIframe, id, text) {
+        return findIframeChild(idIframe).find(id).should('exist').then(($obj) => {
+            const value = $obj.val().toUpperCase();
+            if (value.includes(text.toUpperCase())) {                   
+                cy.log('>> object with id=' +id+ ' and label: "' +text+ '" is defined')           
+            }
+        })
+    }
     /**
      * Defined @regexExp a regular expression is verified if the string @str 
      * matches the reg. ex.

@@ -62,6 +62,8 @@ after(function () {
      Cypress.runner.stop();
 })
 
+const IframeMovSin = 'iframe[src=\"/dasincruscotto/cruscotto/cruscotto.jsp\"]'
+
 describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla movimentazione sinistri', () => {
     
     it('Atterraggio su BackOffice >> Movimentazioni Sinistri', function () {      
@@ -111,11 +113,11 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             cy.log('[it]>> idx[0] - Sinistri Protocollati: '+mov); 
             if (parseInt(mov)>0)
             {               
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioDenunciati') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioDenunciati') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
                 cy.wait(2000)                
-                MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
         }) 
@@ -128,11 +130,11 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             cy.log('[it]>> idx[1] - Sinistri Presi in carico da CLD: '+mov); 
             if (parseInt(mov)>0)
             {
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioAperti') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioAperti') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
                 cy.wait(2000)
-                MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
         }) 
@@ -144,11 +146,11 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             cy.log('[it]>> idx[2] - Sinistri Trasferiti: '+mov); 
             if (parseInt(mov)>0)
             {
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioTrasferiti') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioTrasferiti') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
                 cy.wait(2000)
-                MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
         }) 
@@ -160,11 +162,11 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             cy.log('[it]>> idx[3 - Sinistri Chiusi SS: '+mov); 
             if (parseInt(mov)>0)
             {
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioChiusiSS') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioChiusiSS') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
                 cy.wait(2000)
-                MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
         }) 
@@ -176,11 +178,11 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             cy.log('[it]>> idx[4 - Sinistri Pagati: '+mov); 
             if (parseInt(mov)>0)
             {
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioPagati') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioPagati') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
                 cy.wait(2000)
-                MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
         }) 
@@ -192,11 +194,11 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             cy.log('[it]>> idx[5 - Sinistri Periziati: '+mov); 
             if (parseInt(mov)>0)
             {
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioPeriziati') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioPeriziati') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
                 cy.wait(2000)
-                MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
         }) 
@@ -264,11 +266,11 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             cy.log('[it]>> idx[4 - Sinistri Pagati: '+mov); 
             if (parseInt(mov)>0)
             {
-                MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioPagati') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioPagati') 
                 cy.wait(2000)            
                 MovimentazioneSinistriPage.analyzeClaimFields('#listaDettaglio_Table > tbody')
                 cy.wait(2000)
-                MovimentazioneSinistriPage.clickBtn_ById('#CmdEsci') 
+                Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
         }) 

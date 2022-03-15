@@ -3,32 +3,35 @@
 
 import Common from "../common/Common"
 
-const getIFrame = () => {
-    
-    cy.get('#matrixIframe')
-        .iframe();
 
-    let iframeSin = cy.get('#matrixIframe')
+const mainFrame = '#matrixIframe'
+const subFrame = 'iframe[src="/dasincruscotto/cruscotto/cruscotto.jsp"]'
+const getIframe = () => cy.get('iframe').its('0.contentDocument.body')
+/*
+const getIframe = (iframe) => {    
+    cy
+        .get(iframe).iframe();
+    let iframeSin = cy.get(iframe)
         .its('0.contentDocument').should('exist');
 
     return iframeSin.its('body').should('not.be.undefined').then(cy.wrap)
 }
-
-const getIFrameMovSinistri = () => {
-    getIFrame().find('iframe[src="/dasincruscotto/cruscotto/cruscotto.jsp"]')
+*/
+const findIframeChild = (subFrame) => {
+    getIframe().find(subFrame)
         .iframe();
 
-    let iframeFolder = getIFrame().find('iframe[src="/dasincruscotto/cruscotto/cruscotto.jsp"]')
+    let iframeChild =  getIframe().find(subFrame)
         .its('0.contentDocument').should('exist');
 
-    return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
+    return iframeChild.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 class ConsultazioneSinistriPage {
     
 
     static ConsultazioneSinistriPage() {                  
-        getIFrame().contains("Ricerca sinistro").should('be.visible').log('Ricerca sinistro')
+        getIframe().contains("Ricerca sinistro").should('be.visible').log('Ricerca sinistro')
     }
     
     //#region Generic function
@@ -45,9 +48,11 @@ class ConsultazioneSinistriPage {
     /**
      * Click on object defined by locator id
      * @param {string} id : locator object id
-     */
+     * replaced by clickFindByIdOnIframe
+    */
+   /*
     static clickBtn_ById(id) {             
-        getIFrame().find(id).should('be.visible').then((btn) => {    
+        getIframe().find(id).should('be.visible').then((btn) => {    
             expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
             const $btn = Cypress.$(btn)
             cy.wrap($btn)
@@ -57,21 +62,22 @@ class ConsultazioneSinistriPage {
         })
         cy.wait(1000)
     }
-    /**
+     */
+  /**
      * Click on all objects defined by locator id
      * @param {string} id : locator objects id
      */
-     static clickOnMultiObj_ById(id) {             
-        getIFrame().find(id).click({ multiple: true });
-        cy.wait(1000)
-    }
+   static clickOnMultiObj_ById(id) {             
+    getIframe().find(id).click({ multiple: true });
+    cy.wait(1000)
+}
     /**
      * Click on object defined by html tag and content text displayed as label
      * @param {string} tag : html element (button, etc...)
      * @param {string} label : text displayed
      */
     static clickObj_ByLabel(tag, label) {             
-        getIFrame().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
+        getIframe().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(1000)        
     }
     /**
@@ -80,7 +86,7 @@ class ConsultazioneSinistriPage {
      * @param {string} label : text displayed
      */
     static clickBtn_ByClassAndText(classvalue, label) {             
-        getIFrame().find('[class="'+classvalue+'"]').contains(label).should('be.visible').click().log('>> object with label ['+label+ '] is clicked')       
+        getIframe().find('[class="'+classvalue+'"]').contains(label).should('be.visible').click().log('>> object with label ['+label+ '] is clicked')       
         cy.wait(2000)        
     }
     /**
@@ -88,24 +94,26 @@ class ConsultazioneSinistriPage {
      * @param {string} value : href attribute value or part of it
      */
     static clickLnk_ByHref(value) {        
-        getIFrame().find('a[href*="'+value+'"]').should('exist').click({ multiple: true }).log('>> link (a) with href ['+value+ '] is clicked')      
+        getIframe().find('a[href*="'+value+'"]').should('exist').click({ multiple: true }).log('>> link (a) with href ['+value+ '] is clicked')      
         cy.wait(1000)        
     }
     /**
      * Check if an object identified by its label is displayed    
      * @param {string} label : text displayed
      */
+    /*
     static checkObjVisible_ByText(label) {    
-        getIFrame().contains(label).should('be.visible').log('>> object with label: "' + label +'" is defined')
+        getIframe().contains(label).should('be.visible').log('>> object with label: "' + label +'" is defined')
         cy.wait(1000)        
     }
+    */
     /**
      * Check if an object identified by class attribute and its label is displayed
      * @param {string} classvalue : class attribute 
      * @param {string} label : text displayed
      */
     static checkObj_ByClassAndText(classvalue, label) {     
-        let obj = getIFrame().find('[class="'+classvalue+'"]').should('exist')            
+        let obj = getIframe().find('[class="'+classvalue+'"]', { timeout: 9000 }).should('exist')            
         if (obj.contains(label))
         cy.log('>> object with label: "' + label +'" is defined')
         cy.wait(1000)                 
@@ -116,7 +124,7 @@ class ConsultazioneSinistriPage {
      * @param {string} label : text displayed
      */
     static isTextIncluded_ByIdAndText(id, label) {     
-        getIFrame().find(id).should('exist').and('be.visible').contains(label)
+        getIframe().find(id, { timeout: 9000 }).should('exist').and('be.visible').contains(label)
         cy.log('>> object with label: "' + label +'" is defined')
 
         cy.wait(3000)                 
@@ -128,7 +136,7 @@ class ConsultazioneSinistriPage {
      */
     static checkObj_ByIdAndText(id, label) {    
         return new Cypress.Promise((resolve) => {     
-            let obj = getIFrame().find(id).should('be.visible')            
+            let obj =  getIframe().find(id, { timeout: 9000 }).should('be.visible')            
             if (obj.contains(label))
             {
                 cy.log('>> object with label: "' + label +'" is defined') 
@@ -137,28 +145,7 @@ class ConsultazioneSinistriPage {
         });
         cy.wait(1000)                 
     }
-    /**
-     * Check if an object identified by locator and its label is displayed
-     * @param {string} locator : class attribute 
-     * @param {string} label : text displayed
-     */
-    static checkObj_ByLocatorAndText2(locator, label) {
-        return new Cypress.Promise((resolve, reject) => {
-            getIFrame().find(locator).should('be.visible')
-            .then(($val) => {                                       
-                expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
-                let txt = $val.text().trim()                
-                
-                let str = label._rejectionHandler0.toString()
-                if (txt.includes(str)) {                   
-                    cy.log('>> object with label: "' + str +'" is defined')
-                    resolve(txt)    
-                } else
-                    assert.fail(' object with label: "' + str +'" is not defined')
-            })
-        });                               
-        cy.wait(1000)            
-    }
+    
     /**
      * Check if an object identified by locator and its label is displayed
      * @param {string} locator : class attribute 
@@ -166,7 +153,7 @@ class ConsultazioneSinistriPage {
      */
     static checkObj_ByLocatorAndText(locator, label) {       
         return new Cypress.Promise((resolve, reject) => {     
-            getIFrame().find(locator).should('be.visible')
+            getIframe().find(locator, { timeout: 9000 }).should('be.visible')
             .then(($val) => {                                       
                 expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true              
                 let txt = $val.text().trim()                                
@@ -187,10 +174,10 @@ class ConsultazioneSinistriPage {
     static setValue_ById(id, value) {
         return new Cypress.Promise((resolve) => {
             cy.wait(500)             
-            getIFrame().find(id).should('be.visible').and('exist').clear().log('>> clean object value')
+            getIframe().find(id).should('be.visible').and('exist').clear().log('>> clean object value')
             cy.wait(500)
             if (value !== '')          
-                getIFrame().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
+            getIframe().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
             cy.wait(500)
             resolve(true)            
         });
@@ -201,7 +188,7 @@ class ConsultazioneSinistriPage {
      * @param {string} id : locator object id
      */
     static getCountElements(id) {        
-        return getIFrame().find(id)        
+        return getIframe().find(id)        
         .then(listing => {
             const listingCount = Cypress.$(listing).length;
             expect(listing).to.have.length(listingCount);
@@ -215,7 +202,7 @@ class ConsultazioneSinistriPage {
      * @param {string} id : locator object id
      */
     static checkListValues_ById(id) {
-        getIFrame().find(id).each(($el, index, $list) => {
+        getIframe().find(id).each(($el, index, $list) => {
             const text = $el.text()
             cy.log('>> Element('+(index)+ ') value: '+text)
             ConsultazioneSinistriPage.isNotNullOrEmpty(text)           
@@ -228,13 +215,13 @@ class ConsultazioneSinistriPage {
      * @param {string} id : locator object id
      */
     static getCountElements(id) {        
-        return getIFrame().find(id)        
+        return  getIframe().find(id)        
         .then(listing => {
             const listingCount = Cypress.$(listing).length;
             expect(listing).to.have.length(listingCount);
             cy.log('>> Length :' + listingCount)          
         });
-        getIFrame().find(id)  
+        getIframe().find(id)  
     }
     
     /**
@@ -293,46 +280,45 @@ class ConsultazioneSinistriPage {
     //#endregion  Generic function
     static getValueInClaimDetails(index) {
         return new Cypress.Promise((resolve) => {
-        getIFrame()
-        .find('#results > div.k-grid-content > table > tbody > tr > td:nth-child('+index+')')
-        .invoke('text')  // for input or textarea, .invoke('val')
-        .then(text => {           
-            const someText = text;           
-            cy.log(someText);
-            resolve(someText)            
+            getIframe()
+            .find('#results > div.k-grid-content > table > tbody > tr > td:nth-child('+index+')')
+            .invoke('text')  // for input or textarea, .invoke('val')
+            .then(text => {           
+                const someText = text;           
+                cy.log(someText);
+                resolve(someText)            
+                });
             });
-        });
-    }
-   
+        }
     /**
      * Gets a text defined on object identified by its @id
      * @param {string} id : id locator object
      * @returns text element
      */
-     static getPromiseText_ById(id) {              
+    static getPromiseText_ById(id) {              
         return new Cypress.Promise((resolve, reject) => {
-            getIFrame()
-            .find(id)
-            .should('be.visible')
-            .invoke('text')
-            .then(text => {         
-                cy.log('>> read the value: ' + text)              
-                resolve(text.toString())            
-            });      
+            getIframe()
+                .find(id)
+                .should('be.visible')
+                .invoke('text')
+                .then(text => {         
+                    cy.log('>> read the value: ' + text)              
+                    resolve(text.toString())            
+                });      
         });
     }
 
 
     static printClaimDetailsValue() {
         
-        getIFrame()
+        getIframe()
             .find('#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)')
             .invoke('text')  // for input or textarea, .invoke('val')
             .then(text => {               
                 const someText = text;              
                 cy.log(someText);               
             });
-        //getIFrame().find('#results > div.k-grid-content > table > tbody > tr').should('exist').log()
+        //getIframe().find('#results > div.k-grid-content > table > tbody > tr').should('exist').log()
     }
 }
 

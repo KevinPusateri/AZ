@@ -110,7 +110,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, nome_CTP) 
 
         const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"
-        ConsultazioneSinistriPage.clickBtn_ById(locRArrow)
+        Common.clickFindByIdOnIframe(locRArrow).wait(1000).log('>> object with id ['+locRArrow+'] is clicked')
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, numsin)
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, numpol)
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, targa_assicurato)
@@ -131,7 +131,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, cf_CTP) 
         
         const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"       
-        ConsultazioneSinistriPage.clickBtn_ById(locRArrow)
+        Common.clickFindByIdOnIframe(locRArrow).wait(1000).log('>> object with id ['+locRArrow+'] is clicked')
+
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, numsin)
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, numpol)
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, targa_assicurato)

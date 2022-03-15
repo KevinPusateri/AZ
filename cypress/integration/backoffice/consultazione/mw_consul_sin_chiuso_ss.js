@@ -74,7 +74,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     ' Dalla pagina di dettaglio è verificata la sezione INTESTAZIONE ed in particolare quanto segue: ' +
     ' (1) siano valorizzati i campi Località e CLD/Danneggiato ' , function () {
 
-        MovimentazioneSinistriPage.clickBtn_ById('#CmddettaglioChiusiSS')
+        Common.clickFindByIdOnIframe('#CmddettaglioChiusiSS')
 
         const locatorRow1 = "#cruscottoDettaglioGridR2_Div"        
         MovimentazioneSinistriPage.clickRow_ByIdAndRow(locatorRow1) 
@@ -100,7 +100,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     'Aprendo la sezione Perizie si verifica che non ci siano incarichi di perizia e che sia riportata la dicitura : "Non ci sono incarichi di perizia" ' , function () {
     
         const cssDettaglio = "#soggetti_danneggiati > div > div:nth-child(1) > a"
-        MovimentazioneSinistriPage.clickBtn_ById(cssDettaglio) 
+        Common.clickFindByIdOnIframe(cssDettaglio) 
         
         const cssDettaglioPerizia = "#soggetti_danneggiati > div > div:nth-child(1) > div > div:nth-child(1) > div.item_content > p"
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText(cssDettaglioPerizia, "Non ci sono incarichi di perizia")
