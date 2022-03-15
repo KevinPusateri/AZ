@@ -720,8 +720,8 @@ class LibriMatricola {
                 .should('be.visible').type(veicolo.targa).wait(1000)
 
             //seleziona la marca
-            cy.get('div[title="Seleziona la marca del veicolo"]')
-                .find('input').type(veicolo.marca)
+            cy.get('div[title="Seleziona la marca del veicolo"]').first()
+                .find('input:first').type(veicolo.marca)
                 .wait(1000).type('{downarrow}{enter}').wait(1000)
 
             //seleziona il modello
@@ -733,7 +733,7 @@ class LibriMatricola {
                 .wait(1000).type('{downarrow}{enter}').wait(1000)
 
             //inserisce la data di immatricolazione
-            cy.get('input[data-bind*="dpDataImmatricolazioneN"]')
+            cy.get('input[data-bind*="dpDataImmatricolazioneN"]').first()
                 .type(veicolo.dataImmatricolazione).wait(1000)
 
             //inserisce il numero dei posti
@@ -1150,16 +1150,20 @@ export function PreventivoMadre() {
     //#endregion variabili iniziali
 
     it("Ricerca cliente", function () {
+
+        
+        
         const loopSearchClientWithBusinessForm = () => {
-            // LandingRicerca.searchRandomClient(true, "PG", '')
-            // LandingRicerca.clickRandomResult('PG','')
-            LandingRicerca.search('00826700577')
-            LandingRicerca.clickFirstResult()
+            LandingRicerca.searchRandomClient(true, "PG", '')
+            LandingRicerca.clickRandomResult('PG','')
+            // LandingRicerca.search('00826700577')
+            // LandingRicerca.clickFirstResult()
             DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+            cy.wait(3000)
+            let loopCheck = false
             DettaglioAnagrafica.getIVAClient().then((codIva) => {
-                if (codIva === '-'){
-                    cy.wait(2000)
-                    loopSearchClientWithBusinessForm()
+                if (codIva === '-') {
+                    loopCheck = true
                 }
                 DettaglioAnagrafica.getFormaGiuridica().then((checkExistFormaGiuridica) => {
                     if (checkExistFormaGiuridica) {
@@ -1168,12 +1172,17 @@ export function PreventivoMadre() {
                         })
                     }
                     else {
-                        loopSearchClientWithBusinessForm()
+                        loopCheck = true
                     }
                 })
             })
-            SintesiCliente.clickTabSintesiCliente()
+            cy.get('body').then(() => {
+                if (loopCheck) {
 
+                    loopSearchClientWithBusinessForm()
+                }
+            })
+            SintesiCliente.clickTabSintesiCliente()
         }
         loopSearchClientWithBusinessForm()
 

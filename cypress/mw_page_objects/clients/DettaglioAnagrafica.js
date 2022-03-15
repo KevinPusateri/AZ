@@ -483,7 +483,7 @@ class DettaglioAnagrafica {
             cy.contains('Codice fiscale')
                 .parents('app-client-data-label')
                 .find('div[class="value"]:first').invoke('text').then((CF) => {
-                    resolve(IVA.trim())
+                    resolve(CF.trim())
                 })
 
         })
