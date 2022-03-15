@@ -23,10 +23,10 @@ const getIFrameMovSinistri = () => {
 }
 
 const getIFrameAcqDoc = () => {
-    getIFrameMovSinistri().find('#fileFrame')
+    findIframeChild(constIframeMovSin).find('#fileFrame')
         .iframe();
 
-    let iframe = getIFrameMovSinistri().find('#fileFrame')
+    let iframe = findIframeChild(constIframeMovSin).find('#fileFrame')
         .its('0.contentDocument').should('exist');
 
     return iframe.its('body').should('not.be.undefined').then(cy.wrap)
