@@ -140,7 +140,6 @@ describe("LIBRI MATRICOLA", {
         it('Conversione', function () {
             LibriMatricola.getLibroMatricola()
             cy.get('@nLibroMatricola').then(nLibroMatricola => {
-
                 cy.readFile('cypress/fixtures/LibriMatricola/LibriMatricola.json').then((obj) => {
                     obj.numContrattoLibro = nLibroMatricola
                     cy.writeFile('cypress/fixtures/LibriMatricola/LibriMatricola.json', obj)
