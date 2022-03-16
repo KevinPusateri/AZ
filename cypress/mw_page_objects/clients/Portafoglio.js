@@ -95,15 +95,15 @@ class Portafoglio {
      * Click Il tab Portafoglio
      */
     static clickTabPortafoglio() {
-        cy.intercept('POST', '**/graphql', (req) => {
-            aliasQuery(req, 'contract')
-        })
+        // cy.intercept('POST', '**/graphql', (req) => {
+        //     aliasQuery(req, 'contract')
+        // })
 
         cy.get('app-client-profile-tabs').should('be.visible').within(() => {
             cy.get('a').should('be.visible')
         })
         cy.contains('PORTAFOGLIO').click()
-        cy.wait('@gqlcontract', { requestTimeout: 60000 });
+        //cy.wait('@gqlcontract', { requestTimeout: 60000 });
 
     }
 
@@ -752,6 +752,7 @@ class Portafoglio {
     }
 
     /**
+     * ******DA RIVEDERE*********
      * Apre il menù opzioni del contratto e seleziona la voce indicata 
      * @param {string} nContratto 
      * @param {json} voce
@@ -781,12 +782,12 @@ class Portafoglio {
                 .contains(re).click()
         }
         else if (voce.includes('Denuncia sinistro'))
-            cy.get('[class*="transformContextMenu"]').should('be.visible')
+            cy.get('[class*="transformContextMenu"]') //.should('be.visible')
                 .contains('Sinistri').click()
 
 
         cy.get('[class*="transformContextMenu"]').should('be.visible')
-            .contains(voce).click() //seleziona la voce dal menù
+            .contains(voce).click({ force: true }) //seleziona la voce dal menù
 
         //Verifica eventuale presenza del popup di disambiguazione
         Common.canaleFromPopup()
@@ -993,11 +994,11 @@ class Portafoglio {
     static ordinaPolizze(ordinaPer) {
         cy.get('.filter-container').should('be.visible')
         cy.wait(1000)
-        cy.get('.sorting-button').should('be.visible').click() //apre il menù per l'ordine delle polizze
+        cy.get('.sorting-button').should('be.visible')
+            .focus().click() //apre il menù per l'ordine delle polizze
         cy.wait(1000)
 
-        cy.get('.cdk-overlay-pane').should('be.visible')
-            .find('div').contains(ordinaPer).click() //seleziona la voce dal menù
+        cy.get('.lib-item-filters').contains(ordinaPer).click({ force: true }) //seleziona la voce dal menù
     }
 
     /**
@@ -1012,13 +1013,13 @@ class Portafoglio {
         //cerca il riquadro dell'ambito indicato e apre il menù contestuale
         cy.get('nx-modal-container').should('be.visible')
             .find('.category').contains(ambito.toUpperCase())
-            .parents('[class*="card"]').find('app-module-context-menu')
+            .parents('[class^="card"]').find('app-module-context-menu')
             .find('nx-icon').click()
 
         cy.wait(1000)
 
         cy.get('[class*="context-menu"]').should('be.visible')
-            .find('button').contains(voce).click() //seleziona la voce dal menù
+            .find('button').contains(voce).click({ force: true }) //seleziona la voce dal menù
     }
 }
 export default Portafoglio

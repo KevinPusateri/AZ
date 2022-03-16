@@ -5,6 +5,7 @@ import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
+import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 //#endregion
@@ -92,12 +93,10 @@ describe("FABBRICATO E CONTENUTO", () => {
         for (var i = 0; i < ambiti.length; i++) {
             cy.contains('div', ambiti[i]).parent().children('nx-icon').click()
         }
+        cy.get('span').contains('Calcola').click({ force: true })
+        cy.get('span').contains('Configura', { timeout: 30000 }).should('be.visible').click()
 
-        cy.get('[class="calculate-btn"]').click({ force: true })
-        cy.get('[class="calculate-btn"]', { timeout: 15000 }).contains('Ricalcola').should('be.visible')
-        cy.contains('span', 'Configura').parent().click()
-        cy.get('[ngclass="agency-row"]').first().click()
-        cy.wait(6000)
+        Common.canaleFromPopup()
     })
 
     it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", () => {
@@ -136,9 +135,9 @@ describe("FABBRICATO E CONTENUTO", () => {
     })
 
     it("Dati integrativi", () => {
-        cy.pause()
         //Ultra.caricaDatiIntegrativi()
         Ultra.datiIntegrativi()
+        DatiIntegrativi.popupDichiarazioni()
         Ultra.caricamentoConsensi()
     })
 

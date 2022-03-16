@@ -1,0 +1,16 @@
+{
+  "datiVincolo_test1": {
+    "dataScadenzaVincolo": "30/12/2030",
+    "titolare": "Mario Rossi",
+    "giorniCopertura": "15",
+    "numeroFinanziamento": "1245",
+    "dataFinanziamento": "01/01/2022",
+    "importoMutuo": "170.000,00",
+    "notaio": " ",
+    "dataRogito": "01/01/2022",
+    "numeroRepertorio": " ",
+    "sezioneFoglio": " ",
+    "mappale": " ",
+    "sub": " "
+  }
+}

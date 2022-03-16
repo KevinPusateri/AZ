@@ -18,8 +18,10 @@ import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
 import Appendici from "../../mw_page_objects/polizza/Appendici"
+import Vincoli from "../../mw_page_objects/polizza/Vincoli"
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
+import datiVincoli from '../../fixtures/Ultra/datiVincolo.json'
 import 'cypress-iframe';
 //#endregion
 
@@ -83,7 +85,6 @@ describe("FABBRICATO E CONTENUTO", () => {
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
-            cy.pause()
             cy.get('lib-client-item').first().click()
         }).then(($body) => {
             cy.wait(7000)
@@ -220,16 +221,16 @@ describe("FABBRICATO E CONTENUTO", () => {
     })
 
     it("Portafoglio", () => {
-        cy.pause()
         Portafoglio.clickTabPortafoglio()
         Portafoglio.ordinaPolizze("Numero contratto")
+        cy.pause()
         Portafoglio.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
         Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
         Ultra.selezionaPrimaAgenzia()
+        Appendici.caricamentoPagina()
     })
 
     it("Appendice - Seleziona", () => {
-        Appendici.caricamentoPagina()
         Appendici.SelezionaAppendice(appendice)
         Appendici.Avanti()
         Appendici.caricamentoEdit()
@@ -250,14 +251,46 @@ describe("FABBRICATO E CONTENUTO", () => {
 
     it("Appendice - Verifica nuova appendice", () => {
         Appendici.VerificaNuoveAppendici("medesimo rischio")
-        cy.pause()
         Appendici.Home()
     })
 
-    it("Chiusura appendici e ritorno a portafoglio", () => {
+    it("Vincoli - apertura sezione Vincoli", () => {
         cy.get('.nx-breadcrumb-item__text').contains('Clients').click()
         Portafoglio.menuContratto(nContratto, menuPolizzeAttive.vincoli)
-        Ultra.selezionaPrimaAgenzia()
+        //Ultra.selezionaPrimaAgenzia()
+        Vincoli.caricamentoPagina()
+    })
+
+    it("Vincoli - aggiunta vincolo", () => {        
+        Vincoli.SelezionaAmbito("Fabbricato")
+        Vincoli.AggiungiVincolo()
+        Vincoli.caricamentoPagina()
+    })
+
+    it("Vincoli - ente vincolatario", () => {
+        Vincoli.SelezionaEnteVincolatario("Banca")
+        Vincoli.attesaRicerca()
+        Vincoli.RicercaBanca("Banca", "Unicredit")
+        //Vincoli.updateAppendice()
+    })
+
+    it("Vincoli - Testi direzionali", () => {
+        cy.pause()
+        Vincoli.TestiDirezionali("Vincolo 42")
+    })
+
+    it("Vincoli - Dati vincolo", () => {
+        cy.pause()
+        Vincoli.DatiVincolo(datiVincoli.datiVincolo_test1)
+    })
+
+    it("Vincoli - Conversione", () => {
+        Vincoli.Converti()
+        Vincoli.generazioneDocumenti()
+    })
+
+    it("Vincoli - Stampa documenti", () => {
+        Vincoli.StampaDocumenti("Firma Allianz")
     })
 
     it("end", () => {

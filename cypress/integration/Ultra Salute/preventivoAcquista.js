@@ -164,7 +164,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Dati integrativi", () => {
     Ultra.datiIntegrativiSalute(true, true, true)
     Ultra.approfondimentoSituazioneAssicurativa(false)
-    Ultra.confermaDichiarazioniContraente()
+    DatiIntegrativi.popupDichiarazioni()
   })
 
   it("Condividi il Preventivo", () => {

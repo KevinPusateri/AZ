@@ -626,11 +626,6 @@ class Ultra {
 
             //cy.pause()
             cy.get('[id="btnAvanti"]').click() //avanti
-
-            //Attende la comparsa del popup 'Dichiarazioni contraente principale' e clicca su Conferma
-            cy.get('[id="PopupDichiarazioni"]', { timeout: 5000 })
-                .should('be.visible')
-                .find('button').contains('CONFERMA').click()
         })
     }
 

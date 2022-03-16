@@ -106,7 +106,7 @@ class DatiIntegrativi {
         ultraIFrame().within(() => {
             cy.get('[id="PopupDichiarazioni"]', { timeout: 5000 })
                 .should('be.visible')
-                .find('button').contains('CONFERMA').click()
+                .find('button').contains('AVANTI').click()
         })
     }
 
@@ -245,7 +245,7 @@ class DatiIntegrativi {
             //Attende la comparsa del popup 'Dichiarazioni contraente principale' e clicca su Conferma            
             cy.get('[aria-describedby="PopupDichiarazioni"]', { timeout: 5000 })
                 .should('be.visible') //attende la comparsa del popup
-                .find('button').contains('CONFERMA').click() //conferma
+                .find('button').contains('AVANTI').click() //conferma
         })
     }
 }
