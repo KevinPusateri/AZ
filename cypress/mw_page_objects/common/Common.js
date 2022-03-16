@@ -348,7 +348,7 @@ class Common {
      * @param {*} idIframe del child frame
      * @param {string} text - testo
      * @returns findIframeChild(idIframe).within(() => {
-            cy.contains(text).should('be.visible').click()
+            cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
         })
      */
     static getObjByTextOnIframeChild(idIframe, text) {
@@ -360,9 +360,15 @@ class Common {
 
     /**
      * Check if an object identified by locator and its label is displayed
-     * @param {*} idIframe del child frame
-     * @param {string} id : class attribute 
+     * @param {*} idIframe id child frame
+     * @param {string} id : id attribute 
      * @param {string} text : text displayed
+     * @returns findIframeChild(idIframe).find(id).should('exist').then(($obj) => {
+            const value = $obj.val().toUpperCase();
+            if (value.includes(text.toUpperCase())) {                   
+                cy.log('>> object with id=' +id+ ' and label: "' +text+ '" is defined')           
+            }
+        })
      */
     static getObjByIdAndTextOnIframeChild(idIframe, id, text) {
         return findIframeChild(idIframe).find(id).should('exist').then(($obj) => {
@@ -378,7 +384,8 @@ class Common {
      * @param {string} regexExp : regular expression string 
      * @param {string} str : string value
      * @param {string} msg : message
-     * @returns assert.isTrue(value, [message])
+     * @example For date check: Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
+     * @returns assert.isTrue(the string @str respects the rule, [message])
      * @link https://docs.cypress.io/guides/references/assertions#TDD-Assertions
      */
     static isValidCheck(regexExp, str, msg)
