@@ -319,6 +319,7 @@ class Common {
     static clickFindByIdOnIframe(path) {
         return getIframe().find(path, { timeout: 5000 }).click()
     }
+    
     /**
      * Trova l'elemento tramite la sua path all'interno di un iFrame ed effettua il click
      * @param {*} idIframe del child frame
@@ -329,6 +330,7 @@ class Common {
     static clickFindByIdOnIframeChild(idIframe, path) {
         return findIframeChild(idIframe).find(path, { timeout: 5000 }).click()
     }
+
     /**
      * Gets an object in iframe  by text
      * @param {*} idIframe del  frame
@@ -343,6 +345,7 @@ class Common {
             cy.log('>> object with label [' +text+ '] is defined')         
         })
     }
+
     /**
      * Gets an object in iframe Child by text
      * @param {*} idIframe del child frame
@@ -372,6 +375,7 @@ class Common {
             }
         })
     }
+
     /**
      * Defined @regexExp a regular expression is verified if the string @str 
      * matches the reg. ex.
@@ -390,6 +394,7 @@ class Common {
             assert.isTrue(validation,'>> The string: "' +str+ '" ' + msg)
         });
     }
+
 }
 
 export default Common
