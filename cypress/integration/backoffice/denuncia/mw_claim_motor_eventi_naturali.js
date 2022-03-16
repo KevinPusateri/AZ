@@ -81,7 +81,7 @@ var cliente_targa = 'Fj103dt'
 
 var copertura_danno = 'EVENTI NATURALI'
 
-var sinistro_veicoli_coinvolti = '2'
+var sinistro_veicoli_coinvolti = '1'
 var sinistro_descrizione_danno = 'Danneggiamento da grandine'
 var sinistro_località = 'GORIZIA'
 

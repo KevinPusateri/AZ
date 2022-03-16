@@ -81,7 +81,6 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
         Common.getObjByTextOnIframe(stato_sin)
         ConsultazioneSinistriPage.printClaimDetailsValue()
-
     });
     
     it(' Recupero e controllo preliminare della valorizzazione delle informazioni del cliente e della data avveninmento sinistro', function () {

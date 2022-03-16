@@ -74,5 +74,18 @@ export default class ListaAuto {
 
         return MM25896
     }
+
+    static Auto_Applicazione1() {
+        let targa = getPlateAuto()
+        let WW745FF = new ListaAuto("Auto", targa)
+        WW745FF.targa = targa
+        WW745FF.marca = "VOLKSWAGEN"
+        WW745FF.modello = "GOLF 8ª SERIE"
+        WW745FF.versione = "GOLF 1.5 ETSI 150 CV EVO ACT DSG LIFE (DAL 2019/12)"
+        WW745FF.dataImmatricolazione = "01/04/2022"
+        WW745FF.nPosti = "5"
+
+        return WW745FF
+    }
     
 }
