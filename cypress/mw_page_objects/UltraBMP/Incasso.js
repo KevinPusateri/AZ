@@ -74,8 +74,11 @@ class Incasso {
      * Seleziona il metodo di pagamento
      * @param {string} metodo 
      */
-    static SelezionaMetodoPagamento(metodo) {
+    static SelezionaMetodoPagamento(metodo, fl_frame0 = true ) {
         ultraIFrame().within(() => {
+            cy.log('*****   Seleziona Metodo di Pagamento *****')
+            cy.log('fl_frame0: ' + fl_frame0)
+            if (fl_frame0)
             ultraIFrame0().within(() => {
                 cy.get('[aria-owns="TabIncassoModPagCombo_listbox"]')
                     .should('be.visible').click()
@@ -85,6 +88,16 @@ class Incasso {
                     .find('li').contains(metodo)
                     .should('be.visible').click()
             })
+            else
+            {
+                cy.get('[aria-owns="TabIncassoModPagCombo_listbox"]')
+                    .should('be.visible').click()
+
+                cy.wait(500)
+                cy.get('#TabIncassoModPagCombo_listbox')
+                    .find('li').contains(metodo)
+                    .should('be.visible').click()
+            }
         })
     }
 
@@ -110,20 +123,27 @@ class Incasso {
     /**
      *Clicca su Incassa nella sezione finale dell'incasso
      */
-    static ConfermaIncasso() {
+    static ConfermaIncasso(fl_frame0 = true) {
         ultraIFrame().within(() => {
+            if (fl_frame0)
             ultraIFrame0().within(() => {
                 cy.get('button').contains('Incassa')
                     .should('be.visible').click()
             })
+            else
+            {
+                cy.get('button').contains('Incassa')
+                    .should('be.visible').click()
+            }
         })
     }
 
     /**
      * Verifica che l'incasso sia andato a buon fine
      */
-    static EsitoIncasso() {
+    static EsitoIncasso(fl_frame0 = true) {
         ultraIFrame().within(() => {
+            if (fl_frame0)
             ultraIFrame0().within(() => {
                 //scorre la lista dei risultati e controlla che abbiano tutti la spunta verde
                 cy.get('[data-bind="foreach: Result.Steps"]')
@@ -131,18 +151,31 @@ class Incasso {
                         cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green')
                     });
             })
+            else
+            {
+                cy.get('[data-bind="foreach: Result.Steps"]')
+                    .find('img').each(($img, index, $list) => {
+                        cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green')
+                    });
+            }
         })
     }
 
     /**
      * Clicca sul pulsante Chiudi al termine dell'incasso
      */
-    static Chiudi() {
+    static Chiudi(fl_frame0 = true) {
         ultraIFrame().within(() => {
+            if (fl_frame0)
             ultraIFrame0().within(() => {
                 cy.get('[value="> CHIUDI"]')
                     .should('be.visible').click()
             })
+            else
+            {
+                cy.get('[value="> CHIUDI"]')
+                    .should('be.visible').click()
+            }
         })
     }
 }
