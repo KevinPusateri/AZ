@@ -255,7 +255,7 @@ class BackOffice {
     static backToBackOffice() {
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
         cy.url().should('eq', Common.getBaseUrl() + 'back-office')
-        cy.screenshot('Torna indietro su Backoffice' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Torna indietro su Backoffice', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     //#endregion

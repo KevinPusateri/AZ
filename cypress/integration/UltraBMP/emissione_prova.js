@@ -61,9 +61,11 @@ import { daVerificareRC } from '../../fixtures//Ultra/BMP_Caso1.json'
 //var clienteUbicazione = ""
 //let personaFisica = PersonaFisica.MassimoRoagna()
 let personaFisica = PersonaFisica.CarloRossini()
+let personaFisica2 = PersonaFisica.SimonettaRossino()
+
 //var frazionamento = "annuale"
 //var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
-var nContratto = "000"
+var nContratto = "733117851"
 var nPreventivo = "123105121"
 var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE]
 //var arrPath = ['Polizze Allianz Ultra', '733117594', 'Versione 1', 'Appendici']
@@ -115,8 +117,70 @@ after(function() {
 })
 
 describe('Prove relative ad Ultra', function() {
+    it("Apertura sezione Clients", () => {
+        // Ricerca anagrafica
+        cy.get('body').within(() => {
+            cy.get('input[name="main-search-input"]').click()
+            cy.get('input[name="main-search-input"]').type(personaFisica2.nomeCognome()).type('{enter}')
+            cy.get('lib-client-item').first().click()
+        }).then(($body) => {
+            cy.wait(7000)
+            const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+            cy.log('permessi: ' + check)
+            if (check) {
+                cy.get('input[name="main-search-input"]').type(personaFisica2).type('{enter}')
+                cy.get('lib-client-item').first().next().click()
+            }
+        })
+        //cy.pause()
+    })
+
+    it("Accesso portafoglio Proposte ed avvio incasso", () => {
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Proposte')
+        Portafoglio.ordinaPolizze("Numero contratto")
+        cy.log(">>>>> INCASSO PROPOSTA DA PORTAFOGLIO : " + nContratto)
+        Portafoglio.clickIncassaProposta(nContratto)
+        Portafoglio.caricamentoPaginaIncassa()
+        Portafoglio.clickIncassa()
+        Incasso.caricamentoModPagamento()
+    })
+
+    //it("Incasso - parte 1", () => {
+    //    Incasso.ClickIncassa()
+    //    Incasso.caricamentoModPagamento()
+    //    //cy.pause()
+    //})
+
+    it("Incasso - parte 2", () => {
+        Incasso.SelezionaMetodoPagamento('Contanti', false)
+        //Incasso.SelezionaTipoDelega('Nessuna Delega')
+        Incasso.ConfermaIncasso(false)
+        Incasso.caricamentoEsito()
+        //cy.pause()
+    })
+
+    it("Esito incasso", () => {
+        Incasso.EsitoIncasso(false)
+        Incasso.Chiudi(false)
+        //UltraBMP.aspettaPopupConferma()
+        cy.pause()
+    })
+
+
+
+
+
+
+
+
+
+
+
+
 
     it("Ritorno alla Homepage di Matrix", () => {
+        cy.pause()
         TopBar.clickMatrixHome()
     })
 

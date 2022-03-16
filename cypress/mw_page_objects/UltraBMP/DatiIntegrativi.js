@@ -100,13 +100,13 @@ class DatiIntegrativi {
     }
 
     /**
-     * clicca sul pulsante Conferma nel popup Dichiarazioni Contraente
+     * clicca sul pulsante Avanti nel popup Dichiarazioni Contraente
      */
     static popupDichiarazioni() {
         ultraIFrame().within(() => {
             cy.get('[id="PopupDichiarazioni"]', { timeout: 5000 })
                 .should('be.visible')
-                .find('button').contains('CONFERMA').click()
+                .find('button').contains('AVANTI').should('be.visible').click()
         })
     }
 
