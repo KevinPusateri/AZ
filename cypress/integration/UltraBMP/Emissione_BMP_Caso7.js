@@ -5,6 +5,7 @@
 /// <reference types="Cypress" />
 import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
+import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
 import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
 import StartPage from "../../mw_page_objects/UltraBMP/StartPage"
 import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
@@ -40,12 +41,12 @@ let insertedId
 
 //#region enum
 const ultraRV = {
-  CASAPATRIMONIO: "Allianz Ultra Casa e Patrimonio",
-  CASAPATRIMONIO_BMP: "Allianz Ultra Casa e Patrimonio BMP",
-  SALUTE: "Allianz Ultra Salute",
+    CASAPATRIMONIO: "Allianz Ultra Casa e Patrimonio",
+    CASAPATRIMONIO_BMP: "Allianz Ultra Casa e Patrimonio BMP",
+    SALUTE: "Allianz Ultra Salute",
 }
 
-  
+
 //#endregion
 
 //#region Configuration
@@ -70,7 +71,7 @@ var premioRC_Affittacamere = 0
 var premioRC_ProprietàAnimali = 0
 
 //let personaFisica = PersonaFisica.MassimoRoagna()
-let personaFisica = PersonaFisica.CarloRossini()
+let personaFisica = PersonaFisica.GalileoGalilei()
 let personaFisica2 = PersonaFisica.SimonettaRossino()
 var nContratto = "000"
 var nPreventivo = "000"
@@ -83,8 +84,8 @@ var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, ambitiUltra.ambi
 
 const ultraIFrame = () => {
     let iframeSCU = cy.get('#matrixIframe')
-      .its('0.contentDocument').should('exist')
-  
+        .its('0.contentDocument').should('exist')
+
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
@@ -102,17 +103,17 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function() {
+after(function () {
     TopBar.logOutMW()
-        //#region Mysql
+    //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-            let tests = testsInfo
-            cy.finishMysql(dbConfig, insertedId, tests)
-        })
-        //#endregion
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
 })
 
-describe('Ultra BMP : Emissione BMP Caso6', function() {
+describe('Ultra BMP : Emissione BMP Caso6', function () {
 
     it("Ricerca cliente", () => {
         cy.get('body').within(() => {
@@ -133,11 +134,11 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
     })
 
     it("Emissione preventivo Casa e Patrimonio", () => {
-        SintesiCliente.clickRamiVari()
-        SintesiCliente.clickAllianzUltraCasaPatrimonio()
-        cy.pause()
+        SintesiCliente.Emissione(prodotti.RamiVari.CasaPatrimonio)
+        Common.canaleFromPopup()
+        Dashboard.caricamentoDashboardUltra()
     })
-    
+
 
 
 
@@ -154,7 +155,7 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
             cy.log("selezione ambito " + ambiti[i])
 
             //seleziona ambito
-            
+
             //cy.get('#ambitiRischio', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
             cy.get('div[class="scopes-box ng-star-inserted"]', { timeout: 30000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
                 .should('be.visible').click()
@@ -165,7 +166,7 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
             //verifica che sia selezionato
             cy.log('>>> verifica selezione ambito: ' + ambiti[i])
             cy.get('div[class="scopes-box ng-star-inserted"]', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
-            .invoke('attr', 'class').should('contain', 'icon-selected')
+                .invoke('attr', 'class').should('contain', 'icon-selected')
         }
     })
 
@@ -178,11 +179,11 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
     it("Configura ed accedi alla Dashboard Ultra", () => {
         // Click 'Configura'
         cy.get('button').contains('Configura', { timeout: 5000 }).should('be.visible').click()
-        Dashboard.caricamentoDashboardUltra() 
+        Dashboard.caricamentoDashboardUltra()
     })
 
     it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", () => {
-        Dashboard.verificaAmbiti(ambiti)   
+        Dashboard.verificaAmbiti(ambiti)
     })
 
     it("Cambia Soluzioni", () => {
@@ -195,17 +196,17 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
         ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
         ConfigurazioneAmbito.ModificaValoriCasa(daModificareFabbricato, modificheFabbricato)
         ConfigurazioneAmbito.ClickButton("CONFERMA")
-        Dashboard.caricamentoDashboardUltra()    
+        Dashboard.caricamentoDashboardUltra()
     })
 
     it("Configurazione Animali Domestici", () => {
         ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[2])
         ConfigurazioneAmbito.ModificaValoriAnimaleDomestico(daModificareAnimale, modificheAnimale)
         ConfigurazioneAmbito.ClickButton("CONFERMA")
-        Dashboard.caricamentoDashboardUltra()   
+        Dashboard.caricamentoDashboardUltra()
     })
 
-    it("Seleziona frazionamento", ()=>{
+    it("Seleziona frazionamento", () => {
         Dashboard.selezionaFrazionamento(frazionamento)
     })
 
@@ -227,7 +228,7 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
         Riepilogo.verificaAmbito(ambitoUltra.ANIMALI_DOMESTICI, modificheAnimale.Nome, soluzione.PREMIUM, '1', '')
         Riepilogo.verificaFrazionamento('annuale')
         Riepilogo.EmissionePreventivo()
-        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()   
+        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
     })
 
     it("Censimento anagrafico", () => {
@@ -281,28 +282,28 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
         BurgerMenuSales.clickLink('Recupero preventivi e quotazioni')
         Common.canaleFromPopup()
         cy.wait(12000);
-        
+
     })
 
     it("Selezione preventivo ed avvio conversione ", () => {
         ultraIFrame().within(() => {
             cy.get('span[id="pulsante-avanzate"]').should('be.visible').click()
             cy.get('input[id="num-preventivo"]').should('be.visible')
-              .type(nPreventivo).wait(2000)
-              .type('{enter}')
+                .type(nPreventivo).wait(2000)
+                .type('{enter}')
 
             // Verifica presenza preventivo
             cy.get('div[id="contenitore-risultati"]').should('exist')
-              .find('table > tbody > tr').should('exist')
-              .find('td').should('have.length.gt', 1)
-              .contains(nPreventivo).should('have.length', 1)
+                .find('table > tbody > tr').should('exist')
+                .find('td').should('have.length.gt', 1)
+                .contains(nPreventivo).should('have.length', 1)
 
             cy.get('input[id="azione-converti"]').should('be.visible').click()
             cy.get('div[class="k-widget k-window"]').should('exist')
-              .find('input[value*="Conferma"]').should('be.visible').click()
+                .find('input[value*="Conferma"]').should('be.visible').click()
 
             Dashboard.caricamentoDashboardUltra()
-            
+
         })
     })
 
@@ -425,6 +426,6 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
         SintesiCliente.verificaInFolderDocumenti(arrPath, arrDoc)
         cy.pause()
     })
-    
+
 
 })
