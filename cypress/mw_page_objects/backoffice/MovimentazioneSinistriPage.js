@@ -313,21 +313,18 @@ class MovimentazioneSinistriPage {
      * Check if the value is defined
      * @param {string} value : string value to check
      */
-    static isNotNullOrEmpty(value) {
+     static isNotNullOrEmpty(value) {
         cy.wrap(value).then((validation) => {            
-            if(value === undefined) {
-                validation = false;
-            } else if(value === null) {
-                validation = false;
-            } else if(value === '') {
+            if ((value === undefined) 
+                || (value === null) || (value === '')) 
                 validation = false; 
-            } else {
-                validation = true;           
-            }
+            else 
+                validation = true;                       
             assert.isTrue(validation,">> the check value '"+value+"' is defined. ")  
         });
         cy.wait(1000)        
     }
+    
     static VerifySxPayedFields()
     {
         findIframeChild(IframeMovSin).find('td[class="numCruscotto"]').then(($els) => {             

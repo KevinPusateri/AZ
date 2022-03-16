@@ -2,7 +2,7 @@
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
  *
  * @description Emissione denuncia di un sinistro motor avente come copertura 
- * di garanzia la "Rottura Cristalli"
+ * di garanzia la "Eventi Naturali - Grandine"
  */
 
 
@@ -59,7 +59,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-     Cypress.runner.stop();
+    Cypress.runner.stop();
 })
 
 //#region Script Variables
@@ -79,41 +79,40 @@ var cliente_dt_nascita = '23/02/1979'
 var cliente_num_pol = '530053391'
 var cliente_targa = 'Fj103dt'
 
-
-var copertura_danno = 'ROTTURA CRISTALLI'
+var copertura_danno = 'ATTI VANDALICI'
 
 var sinistro_veicoli_coinvolti = '1'
-var sinistro_descrizione_danno = 'Danneggiamento parabrezza'
+var sinistro_descrizione_danno = 'Carrozzeria graffiata'
 var sinistro_località = 'GORIZIA'
-var tipo_danno = 'Rottura Cristalli'
 
+var tipo_danno = 'Eventi Naturali'
 
-let dtAvvenimento 
+let dtAvvenimento
 let dtDenuncia
 let controparte_marca
 let idx_cop_gar
 //#endregion
 
 describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro motor avente come copertura' +
-' di garanzia la "'+copertura_danno+'"', () => {
+' di garanzia la "' + copertura_danno + '"', () => {
 
-    it('Atterraggio su BackOffice >> Denuncia', function () {             
+    it('Atterraggio su BackOffice >> Denuncia', function () {
         TopBar.clickBackOffice()
         cy.wait(1000)
         BackOffice.clickCardLink('Denuncia') 
-        cy.wait(1000)      
-    });    
+        cy.wait(1000)    
+    });        
 
-    it('Denuncia --> Ricerca cliente per numero di polizza: ' + cliente_num_pol, function() {               
+    it('Denuncia --> Ricerca cliente per numero di polizza: ' + cliente_num_pol, function () {
         // Ricerca cliente per Polizza
         DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
         Common.clickFindByIdOnIframeChild(IframeDen, '#eseguiRicerca');
-        cy.wait(1000)
+        cy.wait(1000)   
     });
 
     it('Dati cliente (ai fini della gestione del sinistro): inserimento dati obbligatori di denuncia: ' +
         'data avvenimento, data denuncia, data pervenimento è località dell\'avvenuto sinistro',
-        function() {
+        function () {
             DenunciaSinistriPage.getPlusMinusDate(-2).then((dtAvv) => {
                 dtAvvenimento = dtAvv
                 cy.log('[it]>> [Data avvenimento sinistro]: ' + dtAvvenimento);
@@ -122,14 +121,14 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             cy.wait(1000)
             DenunciaSinistriPage.getPlusMinusDate(-2).then((dtDen) => {
                 dtDenuncia = dtDen
-                cy.log('[it]>> [Data denuncia sinistro]: '+dtDenuncia);           
-                DenunciaSinistriPage.setValue_ById('#CLIENTE_dataDenuncia', dtDenuncia)   
-            }); 
+                cy.log('[it]>> [Data denuncia sinistro]: ' + dtDenuncia);
+                DenunciaSinistriPage.setValue_ById('#CLIENTE_dataDenuncia', dtDenuncia)
+            });
             cy.wait(1000)
-            DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {          
-                cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
-                DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
-            }); 
+            DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {
+                cy.log('[it]>> [Data pervenimento sinistro]: ' + dtPer);
+                DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)
+            });
             cy.wait(1000)
     });
 
@@ -138,12 +137,12 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         DenunciaSinistriPage.setValue_ById('#CLIENTE_descDinamica', sinistro_descrizione_danno)
         DenunciaSinistriPage.setValue_ById('#CLIENTE_localitaAvv', sinistro_località)
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdRicercaLocalita2');
-        cy.wait(3000)
+        cy.wait(2000)
         DenunciaSinistriPage.getPromiseValue_ByID('#CLIENTE_capAvv').then((sin_cap) => {                                
             cy.log('[it]>> [CAP]: '+sin_cap);
             DenunciaSinistriPage.isNotNullOrEmpty(sin_cap)
         });             
-        Common.clickFindByIdOnIframeChild(IframeDen, '#CmdAvanti')
+        Common.clickFindByIdOnIframeChild(IframeDen, '#CmdAvanti');
         cy.wait(2000)
     });
 
@@ -154,11 +153,11 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
     });    
     */
     it('Dettaglio di polizza: visualizzazione e selezione', function () {     
-       // Nel caso la polizza sia in periodo di mora si attiva la
-        //pagina di dettaglio polizza
-        DenunciaSinistriPage.clickObj_ByLabel('a','Avanti')    
-    });
-
+        // Nel caso la polizza sia in periodo di mora si attiva la
+         //pagina di dettaglio polizza
+         DenunciaSinistriPage.clickObj_ByLabel('a','Avanti')    
+     });
+ 
     it('Sinistri potenzialmente doppi', function () {
         Cypress.on('fail', (err, runnable) => {
             cy.log(runnable);
@@ -194,25 +193,26 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             if (idx !== undefined) {                
                 DenunciaSinistriPage.clickOnCheck_ByIdAndAttr('.SelectedCheckBox', 'myindex', idx_cop_gar);
             }
-        });
-        DenunciaSinistriPage.clickObj_ByLabel('a','Avanti')    
+        });         
+         cy.wait(1000); 
+         DenunciaSinistriPage.clickObj_ByLabel('a','Avanti')   
+         cy.wait(3000);  
     });
-
     it('Verifica dei dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {        
         Common.getObjByTextOnIframeChild(IframeDen, 'Contraente');       
-        Common.getObjByTextOnIframeChild(IframeDen, cliente_cognome + " " + cliente_nome)       
+        Common.getObjByTextOnIframeChild(IframeDen, cliente_cognome + " " +cliente_nome)       
         Common.getObjByTextOnIframeChild(IframeDen, cliente_targa)
     
         Common.clickFindByIdOnIframeChild(IframeDen, '#avantiListaDanni')    
-        cy.wait(4000)           
+        cy.wait(4000)            
     });
 
     it('Riepilogo denuncia - verifica dati danneggiato ', function () {
-        // il danneggiato
-        Common.getObjByTextOnIframeChild(IframeDen, 'Veicolo');
-        Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_cognome + " " + cliente_nome);
-        Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
-        Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', tipo_danno);        
+       // il danneggiato
+       Common.getObjByTextOnIframeChild(IframeDen, 'Veicolo');
+       Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_cognome + " " + cliente_nome)   
+       Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
+       Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', tipo_danno);        
     });
 
     it('Riepilogo denuncia - verifica dati di denuncia ', function () {
@@ -247,8 +247,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         });
 
         // il dannegiato 
-        Common.getObjByTextOnIframeChild(IframeDen, "Veicolo");
-        Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_cognome + " " +cliente_nome);
+        Common.getObjByTextOnIframeChild(IframeDen, 'Veicolo');
+        Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_cognome + " " + cliente_nome);
+
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', tipo_danno);        
         // Dati di denuncia
@@ -262,5 +263,6 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#RIEPILOGO_datiAnagrafici', cliente_cognome);
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#RIEPILOGO_datiAnagrafici', cliente_nome);
     });
-
+    
+    
 });
