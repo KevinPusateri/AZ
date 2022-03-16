@@ -85,6 +85,7 @@ describe('ARD Aprile 2022: ', {
                     TenutaTariffa.compilaVeicolo(currentCase)
                     TenutaTariffa.compilaProvenienza(currentCase)
                     TenutaTariffa.compilaOffertaARD(currentCase)
+                    TenutaTariffa.areaRiservata(currentCase)
                 }
                 else
                     this.skip()

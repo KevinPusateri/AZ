@@ -91,11 +91,18 @@ class TenutaTariffa {
             cy.contains('Area riservata').should('exist').click()
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
-            
-            //Andiamo a fare focus su Totale riduzione ARD
-            cy.contains("Riduzione totale sul premio ARD").should('exist').click()
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-            cy.pause()
+
+            //Per MACROLESIONI, verifico la Riduzione ARD
+            if (currentCase.Descrizione_Settore === 'MACROLESIONI') {
+                //Andiamo a fare focus su Totale riduzione ARD
+                cy.contains("Riduzione totale sul premio ARD").should('exist').click()
+                cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.contains("Totale riduzione ARD").parent().parent().find('div[nxcol="2"]').within(() => {
+                    cy.get('strong').invoke('text').then((riduzioneARD) => {
+                        expect(riduzioneARD).contains(currentCase.Riduzione_ARD)
+                    })
+                })
+            }
         })
     }
 
