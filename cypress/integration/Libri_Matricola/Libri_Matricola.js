@@ -24,9 +24,10 @@ let insertedId
 
 import { PrevApplicazione } from '../../mw_page_objects/motor/LibriMatricola'
 import { PreventivoMadre } from '../../mw_page_objects/motor/LibriMatricola'
-import TopBar from "../../mw_page_objects/common/TopBar";
+import { InclusioneApplicazione } from '../../mw_page_objects/motor/LibriMatricola'
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca";
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente";
+import TopBar from "../../mw_page_objects/common/TopBar";
 
 
 //#region Configuration
@@ -37,10 +38,10 @@ Cypress.config('defaultCommandTimeout', 60000)
 before(() => {
     // expect(Cypress.browser.name).to.contain('firefox')
 
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
-    })
+    // cy.getUserWinLogin().then(data => {
+    //     cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+    //     LoginPage.logInMWAdvanced()
+    // })
 })
 
 beforeEach(() => {
@@ -138,13 +139,15 @@ describe("LIBRI MATRICOLA", {
 
     context('CONVERSIONE E STAMPA MASSIVA PREVENTIVI APPLICAZIONE', function () {
         it('Conversione', function () {
+            cy.pause()
+
             LibriMatricola.getLibroMatricola()
             cy.get('@nLibroMatricola').then(nLibroMatricola => {
                 cy.readFile('cypress/fixtures/LibriMatricola/LibriMatricola.json').then((obj) => {
                     obj.numContrattoLibro = nLibroMatricola
                     cy.writeFile('cypress/fixtures/LibriMatricola/LibriMatricola.json', obj)
                 })
-                LibriMatricola.accessoElencoApplicazioniLibroMatricola(nLibroMatricola)
+                LibriMatricola.accessoElencoPrevApplicazioni(nLibroMatricola)
                 LibriMatricola.conversione()
             })
 
@@ -154,7 +157,6 @@ describe("LIBRI MATRICOLA", {
     context('INCASSO POLIZZA MADRE', function () {
         it('Incasso', function () {
             cy.fixture('LibriMatricola/LibriMatricola.json').then((data) => {
-                // cy.pause()
                 LandingRicerca.search(data.ClientePGIVA)
                 LandingRicerca.clickFirstResult()
                 SintesiCliente.clickAuto()
@@ -165,5 +167,11 @@ describe("LIBRI MATRICOLA", {
             })
         })
 
+    })
+
+
+    context.only('INCLUSIONE APPLICAZIONI', function () {
+        //! impostare Come primo parametro : 1 caso di test 
+        InclusioneApplicazione(1, 'Auto', Veicoli.Auto_Applicazione1(), ['Furto'])
     })
 })
