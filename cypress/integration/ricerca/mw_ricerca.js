@@ -75,17 +75,12 @@ describe('Matrix Ricerca', {
     })
 
     if (!Cypress.env('isAviva')) {
-        it(notExist + 'Verifica Ricerca Da Landing News', function() {
+        it(notExist + 'Verifica Ricerca Da Landing News e Info', function() {
             TopBar.clickNews()
             LandingRicerca.checkBucaRicercaSuggerrimenti()
             TopBar.clickMatrixHome()
         })
 
-        it(notExist + 'Verifica Ricerca Da Landing Le mie info', function() {
-            TopBar.clickMieInfo()
-            LandingRicerca.checkBucaRicercaSuggerrimenti()
-            TopBar.clickMatrixHome()
-        })
     }
 
     it('Verifica Ricerca Da Landing BackOffice', function() {

@@ -108,7 +108,7 @@ describe('Matrix Web : Convenzioni', {
             if (!Cypress.env('monoUtenza')) {
                 DettaglioAnagrafica.clickSubTab('Legami')
                 Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
-                SintesiCliente.checkAtterraggioName(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
+                SintesiCliente.checkAtterraggioSintesiCliente(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
                 DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
@@ -135,7 +135,7 @@ describe('Matrix Web : Convenzioni', {
                 DettaglioAnagrafica.clickSubTab('Legami')
                 cy.wait(5000)
                 Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
-                SintesiCliente.checkAtterraggioName(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
+                SintesiCliente.checkAtterraggioSintesiCliente(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
                 DettaglioAnagrafica.checkConvenzioniPresenti(false)

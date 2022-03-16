@@ -2,8 +2,18 @@
 import Common from './Common'
 import TopBar from './TopBar'
 
+/**
+ * @class
+ * @classdesc Classe per avvio di Matrix Web e Login
+ * @author Andrea 'Bobo' Oboe
+ */
 class LoginPage {
 
+    /**
+     * Effettua il primo visit di Matrix Web
+     * @author Andrea 'Bobo' Oboe
+     * @private
+     */
     static launchMW() {
         cy.clearCookies()
         cy.clearLocalStorage()
@@ -23,108 +33,6 @@ class LoginPage {
     }
 
     /**
-     * Login in MW
-     * @deprecated Please use logInMWAdvanced() instead
-     * @param {string} userName : TUTF utilizzata per il login
-     * @param {string} psw : PSW della TUTF per effettuare il login
-     * @param {boolean} performeImpersonification  : default a true, effettua l'impersonificazione che di default è impostata su ARFPULINI2 sulla 010710000
-     * @param {string} agency : default a 010710000, setta l'agenzia sulla quale effettuare l'impersonificazione !! Al momento disponibili 01710000 e 01375000 !!
-     * @param {boolean} mockedNotifications : default a true, mocka le notifiche in atterraggio su MW
-     * @param {boolean} mockedNews : default a true, mocka le news in atterraggio su MW
-     */
-    static logInMW(userName, psw, performeImpersonification = true, agency = '010710000', mockedNotifications = true, mockedNews = true) {
-
-        this.launchMW()
-
-        //Skip this two requests that blocks on homepage
-        cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
-        cy.intercept(/launch-*/, 'ignore').as('launchStaging')
-
-        if (mockedNotifications) {
-
-            cy.intercept('POST', '**/graphql', (req) => {
-                if (req.body.operationName.includes('notifications')) {
-                    req.reply({ fixture: 'mockNotifications.json' })
-                }
-            })
-            cy.intercept('POST', '**/graphql', (req) => {
-                if (req.body.operationName.includes('getNotificationCategories')) {
-                    req.reply({ fixture: 'mockGetNotificationCategories.json' })
-                }
-            })
-
-        }
-
-        if (mockedNews) {
-
-            cy.intercept('POST', '**/graphql', (req) => {
-                if (req.body.operationName.includes('news')) {
-                    req.reply({ fixture: 'mockNews.json' })
-                }
-            })
-        } else {
-            //Wait for news graphQL to be returned
-            cy.intercept('POST', '**/graphql', (req) => {
-                if (req.body.operationName.includes('news'))
-                    req.alias = 'gqlNews'
-            })
-        }
-
-        //Intecettiamo by default userDetails che serve a tutta una serie di chiamate in MW
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('userDetails'))
-                req.alias = 'gqlUserDetails'
-        })
-
-        //effettuo impersonification se specificato
-        if (performeImpersonification) {
-            let agentId
-
-            //! MONOUTENZA DEDICATA PER EFFETTUARE I TEST SU SECONDA FINESTRA (AG 070004549)
-            if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
-                agency = '070004549'
-                agentId = 'ASGNAZZARRO1'
-            } else {
-                //TODO Implementare anche altre agenzie che si vogliono
-                switch (agency) {
-                    case '010710000':
-                        agentId = 'ARFPULINI2'
-                        break;
-                    case '010375000':
-                        agentId = 'ARALONGO7'
-                        break;
-                }
-            }
-            cy.impersonification(userName, agentId, agency).then(() => {
-                cy.get('input[name="Ecom_User_ID"]').type(userName)
-                cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
-                cy.get('input[type="SUBMIT"]').click()
-
-                if (!Cypress.env('monoUtenza'))
-                    Common.checkUrlEnv()
-                if (!mockedNews)
-                    cy.wait('@gqlNews')
-
-                cy.wait('@gqlUserDetails')
-
-                if (Cypress.env('isSecondWindow'))
-                    TopBar.clickSecondWindow()
-            })
-        } else {
-            cy.get('input[name="Ecom_User_ID"]').type(userName)
-            cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
-            cy.get('input[type="SUBMIT"]').click()
-
-            Common.checkUrlEnv()
-
-            if (!mockedNews)
-                cy.wait('@gqlNews')
-
-            cy.wait('@gqlUserDetails')
-        }
-    }
-
-    /**
      * Login in MW Advanced
      * @param {object} customImpersonification default empty, if specified perform a custom impersonification before login
      * @example let customImpersonification = {
@@ -133,6 +41,7 @@ class LoginPage {
         }
      * @param {boolean} mockedNotifications default a true, mocka le notifiche in atterraggio su MW
      * @param {boolean} mockedNews default a true, mocka le news in atterraggio su MW
+     * @author Andrea 'Bobo' Oboe
      */
     static logInMWAdvanced(customImpersonification = {}, mockedNotifications = true, mockedNews = true) {
         this.launchMW()

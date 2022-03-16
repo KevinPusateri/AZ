@@ -1,6 +1,6 @@
 /**
  * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
- * @author Kevin Pusateri <kevin.pusateri@allianz.it>
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it> 
  */
 
 /// <reference types="Cypress" />
@@ -98,10 +98,7 @@ describe('RCA Novembre 2020 AVIVA: ', {
             it("LogTariffa", function () {
                 if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
                     if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
-                        if (currentCase.Settore !== '3')
-                            TenutaTariffa.checkTariffaRCA(currentCase)
-                        else
-                            this.skip()
+                        TenutaTariffa.checkTariffaRCA(currentCase)
                     }
                     else
                         this.skip()

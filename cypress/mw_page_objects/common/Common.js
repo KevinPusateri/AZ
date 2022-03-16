@@ -2,12 +2,25 @@
 
 const getIframe = () => cy.get('iframe').its('0.contentDocument.body')
 
+const findIframeChild = (subFrame) => {
+    getIframe().find(subFrame)
+        .iframe();
 
+    let iframeChild = getIframe().find(subFrame)
+        .its('0.contentDocument').should('exist');
+
+    return iframeChild.its('body').should('not.be.undefined').then(cy.wrap)
+}
+
+/**
+ * @class
+ * @classdesc Classe Common per varie funzioni Cross Matrix Web
+ * @author Andrea 'Bobo' Oboe & Kevin Pusateri
+ */
 class Common {
 
     /**
-     * 
-     * dal popup clicca sulla prima agenzia per accedere alla pagina
+     * Dal popup clicca sulla prima agenzia per accedere alla pagina
      * @param {boolean} chooseUtenza : default a false, effettua l'accesso alla seconda finestra dalla homepage
      */
     static canaleFromPopup(chooseUtenza = false) {
@@ -87,8 +100,11 @@ class Common {
         return url;
     }
 
+    /**
+     * Verifica che l'url sia corretto in base all'ambiente
+     * @todo In ambiente di TEST il check non viene fatto correttamente
+     */
     static checkUrlEnv() {
-        //TODO In ambiente di TEST il check non viene fatto correttamente
         if (Cypress.env('currentEnv') !== 'TEST') {
             if (!Cypress.env('monoUtenza'))
                 cy.url().should('include', Cypress.env('baseUrlPreprod'))
@@ -98,7 +114,10 @@ class Common {
     }
 
     /**
-     * Se Preprod fa il visit su urlMWPreprod altrimenti su urlMWTest
+     * Effettua il visit url nei vari ambienti in base alle variabili settate in cypress.json
+     * Se Preprod fa il visit su urlMWPreprod altrimenti su urlMWTest (vedi cypress.json)
+     * @param {boolean} mockedNotifications default true per mockare le Notifice
+     * @param {boolean} mockedNews default a true per mockare le News
      */
     static visitUrlOnEnv(mockedNotifications = true, mockedNews = true) {
         cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
@@ -272,7 +291,7 @@ class Common {
      * @returns getIframe().within(() => {
             cy.get(id).should('exist').and('be.visible').clear().type(text)
         })
-     * @example Common.getByIdWithTypeOnIframe('#parent','Ciao, come va?')
+     * @example Common.getByIdWithTypeOnIframe('#f-nome', randomChars)
      * @link https://docs.cypress.io/api/commands/type
      */
     static getByIdWithTypeOnIframe(id, text) {
@@ -281,16 +300,108 @@ class Common {
         })
     }
 
-
-    static findByIdOnIframe(id) {
-        return getIframe().find(id)
+    /**
+     * Trova l'elemento tramite la sua path all'interno di un iFrame
+     * @param {string} path path elemento
+     * @returns elemento
+     * @example Common.findByIdOnIframe('table[role="grid"]:visible > tbody')
+     */
+    static findByIdOnIframe(path) {
+        return getIframe().find(path)
     }
 
-    static clickFindByIdOnIframe(id) {
-        return getIframe().find(id).click()
+    /**
+     * Trova l'elemento tramite la sua path all'interno di un iFrame ed effettua il click
+     * @param {*} path 
+     * @returns elemento cliccato per poter effettuare altre operazioni concatenate
+     * @example Common.clickFindByIdOnIframe('button:contains("Cancella"):visible')
+     */
+    static clickFindByIdOnIframe(path) {
+        return getIframe().find(path, { timeout: 5000 }).click()
     }
+    
+    /**
+     * Trova l'elemento tramite la sua path all'interno di un iFrame ed effettua il click
+     * @param {*} idIframe del child frame
+     * @param {*} path 
+     * @returns elemento cliccato per poter effettuare altre operazioni concatenate
+     * @example Common.clickFindByIdOnIframeChild('button:contains("Cancella"):visible')
+     */
+    static clickFindByIdOnIframeChild(idIframe, path) {
+        return findIframeChild(idIframe).find(path, { timeout: 5000 }).click()
+    }
+
+    /**
+     * Gets an object in iframe  by text
+     * @param {*} idIframe del  frame
+     * @param {string} text - testo
+     * @returns findIframeChild(idIframe).within(() => {
+            cy.contains(text).should('be.visible').click()
+        })
+     */
+    static getObjByTextOnIframe(text) {
+        return getIframe().within(() => {              
+            cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
+            cy.log('>> object with label [' +text+ '] is defined')         
+        })
+    }
+
+    /**
+     * Gets an object in iframe Child by text
+     * @param {*} idIframe del child frame
+     * @param {string} text - testo
+     * @returns findIframeChild(idIframe).within(() => {
+            cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
+        })
+     */
+    static getObjByTextOnIframeChild(idIframe, text) {
+        return findIframeChild(idIframe).within(() => {              
+            cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
+            cy.log('>> object with label [' +text+ '] is defined')         
+        })
+    }
+
+    /**
+     * Check if an object identified by locator and its label is displayed
+     * @param {*} idIframe id child frame
+     * @param {string} id : id attribute 
+     * @param {string} text : text displayed
+     * @returns findIframeChild(idIframe).find(id).should('exist').then(($obj) => {
+            const value = $obj.val().toUpperCase();
+            if (value.includes(text.toUpperCase())) {                   
+                cy.log('>> object with id=' +id+ ' and label: "' +text+ '" is defined')           
+            }
+        })
+     */
+    static getObjByIdAndTextOnIframeChild(idIframe, id, text) {
+        return findIframeChild(idIframe).find(id).should('exist').then(($obj) => {
+            const value = $obj.val().toUpperCase();
+            if (value.includes(text.toUpperCase())) {                   
+                cy.log('>> object with id=' +id+ ' and label: "' +text+ '" is defined')           
+            }
+        })
+    }
+
+    /**
+     * Defined @regexExp a regular expression is verified if the string @str 
+     * matches the reg. ex.
+     * @param {string} regexExp : regular expression string 
+     * @param {string} str : string value
+     * @param {string} msg : message
+     * @example For date check: Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
+     * @returns assert.isTrue(the string @str respects the rule, [message])
+     * @link https://docs.cypress.io/guides/references/assertions#TDD-Assertions
+     */
+    static isValidCheck(regexExp, str, msg)
+    {
+        var pattern = new RegExp(regexExp)
+        //Tests for a match in a string. It returns true or false.       
+        cy.wrap(str).then((validation) => {
+            validation = pattern.test(str)                          
+            assert.isTrue(validation,'>> The string: "' +str+ '" ' + msg)
+        });
+    }
+
 }
-
-
 
 export default Common

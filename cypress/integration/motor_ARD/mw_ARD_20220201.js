@@ -20,8 +20,6 @@ let insertedId
 //#endregion
 
 //#region Configuration
-//? Per implementazione, recuperare le casistiche da
-//? http://alm.azi.allianzit/tfs/AlmAllianz/Test%20Factory/_versionControl?path=%24%2FTest%20Factory%2FTenuta_Tariffa_Motor%2FARD%2FResources%2FArd_Cases.xml&_a=contents
 Cypress.config('defaultCommandTimeout', 60000)
 import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_20220201.json'
 //#endregion

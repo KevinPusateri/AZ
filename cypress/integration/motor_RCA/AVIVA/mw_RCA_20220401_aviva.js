@@ -1,16 +1,16 @@
 /**
  * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
- * @author Kevin Pusateri <kevin.pusateri@allianz.it>
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it> 
  */
 
 /// <reference types="Cypress" />
-import Sales from "../../mw_page_objects/navigation/Sales"
-import Common from "../../mw_page_objects/common/Common"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import TenutaTariffa from "../../mw_page_objects/tenutaTariffa/TenutaTariffa"
+import Sales from "../../../mw_page_objects/navigation/Sales"
+import Common from "../../../mw_page_objects/common/Common"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LandingRicerca from "../../../mw_page_objects/ricerca/LandingRicerca"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import TenutaTariffa from "../../../mw_page_objects/tenutaTariffa/TenutaTariffa"
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -66,7 +66,7 @@ describe('RCA Aprile 2022 AVIVA: ', {
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))  {
+                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
                     if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
                         Common.visitUrlOnEnv()
 
@@ -98,10 +98,7 @@ describe('RCA Aprile 2022 AVIVA: ', {
             it("LogTariffa", function () {
                 if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
                     if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
-                        if (currentCase.Settore !== '3')
-                            TenutaTariffa.checkTariffaRCA(currentCase)
-                        else
-                            this.skip()
+                        TenutaTariffa.checkTariffaRCA(currentCase)
                     }
                     else
                         this.skip()

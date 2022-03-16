@@ -81,6 +81,7 @@ export default class PersonaFisica {
         CarloRossini.cap = "34074"
         CarloRossini.citta = "MONFALCONE"
         CarloRossini.provincia = "GO"
+        CarloRossini.codiceFiscale = "RSSCRL80L25F356Z"
 
         return CarloRossini
     }
@@ -94,6 +95,18 @@ export default class PersonaFisica {
         MonicaSant.provincia = "TV"
 
         return MonicaSant
+    }
+
+    static SimonettaRossino() {
+        let SimonettaRossino = new PersonaFisica("SIMONETTA", "ROSSINO")
+        SimonettaRossino.via = "VIA GIUSEPPE GARIBALDI"
+        SimonettaRossino.numero = "12"
+        SimonettaRossino.cap = "34170"
+        SimonettaRossino.citta = "GORIZIA"
+        SimonettaRossino.provincia = "GO"
+        SimonettaRossino.codiceFiscale = "RSSSNT85E56E098Z"
+
+        return SimonettaRossino
     }
 }
 

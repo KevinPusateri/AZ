@@ -335,6 +335,7 @@ class Portafoglio {
         cy.get('.cdk-overlay-container').should('contain.text', 'Annullamento').within(($overlay) => {
             cy.get('button').should('be.visible')
             cy.wrap($overlay).find('button:contains("Annullamento")').click()
+            cy.wait(2000)
         })
         cy.intercept({
             method: 'POST',
@@ -1020,6 +1021,41 @@ class Portafoglio {
 
         cy.get('[class*="context-menu"]').should('be.visible')
             .find('button').contains(voce).click({ force: true }) //seleziona la voce dal menù
+    }
+
+    /**
+    * Click pulsante "Incassa" da Portafoglio proposte
+    * @param {string} nProposta  
+    */
+    static clickIncassaProposta(nProposta) {
+        cy.get('div').contains(nProposta).should('exist')
+          .parents('app-contract-card').should('have.length', 1)
+          .find('button').contains('Incassa').should('exist').click()
+    }
+
+    /**
+     * Attende il caricamento della pagina Clients Incassa
+     */
+     static caricamentoPaginaIncassa() {
+        cy.log('***** CARICAMENTO PAGINA INCASSO DA CLIENTS *****')
+        cy.intercept({
+            method: 'POST',
+            url: '**/Auto/IncassoDA/**'
+        }).as('incasso')
+
+        cy.wait('@incasso', { requestTimeout: 60000 })
+    }
+
+    /**
+    * Click pulsante "Incassa" da Clients/Incassa
+    * @param {string} nProposta  
+    */
+     static clickIncassa() {
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {   
+            cy.get('input[value="> Incassa"]')
+              .should('be.visible').click() 
+        })
     }
 }
 export default Portafoglio

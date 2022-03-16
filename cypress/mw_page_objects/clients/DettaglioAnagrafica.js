@@ -105,6 +105,9 @@ class DettaglioAnagrafica {
 
     }
 
+    /**
+     * Effettua il click su Dettaglio Anagrafica
+     */
     static clickTabDettaglioAnagrafica() {
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {
@@ -115,6 +118,8 @@ class DettaglioAnagrafica {
         cy.contains('DETTAGLIO ANAGRAFICA').click()
 
         cy.wait('@gqlClient', { requestTimeout: 30000 });
+
+        cy.screenshot('Dettaglio Anagrafica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -478,9 +483,35 @@ class DettaglioAnagrafica {
             cy.contains('Codice fiscale')
                 .parents('app-client-data-label')
                 .find('div[class="value"]:first').invoke('text').then((CF) => {
-                    resolve(CF)
+                    resolve(CF.trim())
                 })
 
+        })
+    }
+
+    static getIVAClient() {
+        return new Cypress.Promise((resolve, reject) => {
+
+            cy.contains('Partita IVA')
+                .parents('app-client-data-label')
+                .find('div[class="value"]:first').invoke('text').then((IVA) => {
+                    resolve(IVA.trim())
+                })
+
+        })
+    }
+
+
+    static getFormaGiuridica() {
+        return new Cypress.Promise(resolve => {
+            cy.contains('Forma giuridica').parents('app-client-data-label').within(() => {
+                cy.get('div[class="value"]').invoke('text').then((tipologia) => {
+                    if (tipologia.trim() !== '-')
+                        resolve(true)
+                    else
+                        resolve(false)
+                })
+            })
         })
     }
 }

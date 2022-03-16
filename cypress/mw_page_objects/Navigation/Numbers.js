@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 import Common from "../common/Common"
 
+//#region Iframe
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
         .iframe();
@@ -10,7 +11,9 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
+//#endregion
 
+//#region Intercept
 const interceptPostAgenziePDF = () => {
     cy.intercept({
         method: 'POST',
@@ -18,14 +21,17 @@ const interceptPostAgenziePDF = () => {
     }).as('postDacommerciale');
 }
 
-
 const interceptGetAgenziePDF = () => {
     cy.intercept({
         method: 'GET',
         url: '**/dacommerciale/**'
     }).as('getDacommerciale');
 }
+//#endregion
 
+/**
+ * Classe di accesso alla sezione Numbers di Matrix Web
+ */
 class Numbers {
 
     /**
@@ -57,6 +63,7 @@ class Numbers {
         cy.get('app-filters').find('h3:contains("COMPAGNIE"):visible')
         cy.get('app-filters').find('h3:contains("FONTI"):visible')
         cy.get('app-filters').find('h3:contains("PERIODO"):visible')
+        cy.screenshot('Verifica filtro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.contains('ANNULLA').click()
     }
 
@@ -74,8 +81,9 @@ class Numbers {
     static checkAtterraggioRicaviDiAgenzia() {
         interceptPostAgenziePDF()
         cy.get('app-agency-incoming').contains('RICAVI DI AGENZIA').click()
-        cy.wait('@postDacommerciale', { requestTimeout: 80000 });
+        cy.wait('@postDacommerciale', { requestTimeout: 80000 })
         getIFrame().find('a:contains("Filtra"):visible')
+        cy.screenshot('Verifica atterraggio Ricavi di Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -119,6 +127,7 @@ class Numbers {
                 break;
 
         }
+        cy.screenshot(`Verifica atterraggio ${tab} ${link}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getIFrame().find('#ricerca_cliente', { timeout: 15000 }).should('be.visible').and('contain.text', 'Filtra')
     }
 
@@ -131,6 +140,7 @@ class Numbers {
         cy.get('lib-card').should('be.visible').first().click()
         cy.wait('@postDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('#ricerca_cliente:contains("Filtra"):visible')
+        cy.screenshot('Verifica atterraggio Primo indice di prodotto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -142,6 +152,7 @@ class Numbers {
         cy.get('app-load-monitoring').find('app-lob-title').should('contain.text', 'DANNI')
         cy.get('app-load-monitoring').find('app-lob-title').should('contain.text', 'MOTOR')
         cy.get('app-load-monitoring').find('app-lob-title').should('contain.text', 'RAMI VARI RETAIL')
+        cy.screenshot('Verifica atterraggio Primo indice Monitoraggio Carico', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -152,6 +163,7 @@ class Numbers {
         cy.get('app-digital-indexes').find('lib-card').first().click()
         cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('a:contains("Apri filtri"):visible')
+        cy.screenshot('Verifica atterraggio Primo indice digitale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -167,6 +179,7 @@ class Numbers {
         Common.canaleFromPopup()
         cy.wait('@postDacommerciale', { requestTimeout: 60000 });
         getIFrame().contains('Report').should('be.visible')
+        cy.screenshot(`Verifica atterraggio Incentivi dal panel ${panel}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -221,12 +234,12 @@ class Numbers {
                             expect(titleCardTitle).include(title.text())
                         })
                     })
+                    cy.screenshot(`Check Card ${title}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     break;
             }
         })
 
     }
-
 }
 
 export default Numbers

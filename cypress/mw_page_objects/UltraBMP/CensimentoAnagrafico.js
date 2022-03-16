@@ -27,20 +27,20 @@ class CensimentoAnagrafico {
      */
     static caricamentoCensimentoAnagrafico() {
         cy.log('***** CARICAMENTO CENSIMENTO ANAGRAFICO *****')
-        //cy.intercept({
-        //    method: 'GET',
-        //    url: '**/tmpl_anag_persona_riepilogo.htm'
-        //}).as('anagrafica')
-        
-        //cy.wait('@anagrafica', { requestTimeout: 60000 })
-
-
         cy.intercept({
             method: 'GET',
-            url: '**/completamento/getDatiQuotazione'
+            url: '**/tmpl_anag_persona.htm'
         }).as('anagrafica')
-
+        
         cy.wait('@anagrafica', { requestTimeout: 60000 })
+
+
+        //cy.intercept({
+        //    method: 'GET',
+        //    url: '**/completamento/getDatiQuotazione'
+        //}).as('anagrafica')
+
+        //cy.wait('@anagrafica', { requestTimeout: 60000 })
 
     }
 
@@ -53,6 +53,7 @@ class CensimentoAnagrafico {
         cy.wait('@checkAssicurato', { requestTimeout: 60000 })
 
     }
+
     //#endregion caricamenti
 
     /**
@@ -96,7 +97,7 @@ class CensimentoAnagrafico {
             cy.get('input[value="CERCA"]').should('be.visible').click() //cerca cliente
 
             cy.get('#divPopupAnagrafica', { timeout: 30000 }).should('be.visible') //attende la comparsa popup di ricerca anagrafiche
-            cy.wait(5000)
+            cy.wait(5000)         
             //cy.pause()
 
             //popup anagrafico
@@ -135,13 +136,14 @@ class CensimentoAnagrafico {
             cy.get('#divPopupAnagrafica', { timeout: 30000 }).should('be.visible')  //attende la comparsa popup di ricerca anagrafiche
             cy.wait(5000)
 
+
             //cy.get('div[id="divPopupAnagrafica"]').should('exist')
 
             //popup anagrafico
             ultraIFrameAnagrafica().within(() => {
                 cy.get('#AZBuilder1_GroupStdPersonaImpresa__Pop').should('be.visible')
-                    .find(('input[value="Persona Fisica"]')).click()  //seleziona Persona Fisica
-                cy.wait(10000)
+                    .find(('input[value="Persona Fisica"]')).should('be.enabled').click()  //seleziona Persona Fisica
+                cy.wait(5000)
             })
 
             ultraIFrameAnagrafica().within(() => {
@@ -153,6 +155,7 @@ class CensimentoAnagrafico {
                 cy.get('span').contains(cliente.cognomeNome()).click()
                 cy.wait(2000)
             })
+            //cy.pause()
 
             /*
             //popup attenzione CAP
@@ -171,7 +174,7 @@ class CensimentoAnagrafico {
      * @param {*} cliente  (persona fisica)
      * @param {*} capDifferente (flag per indicare se il cap è differente da quello di default)
      */
-    static selezionaCasa(cliente, capDifferente = false) {
+    static selezionaCasa(cliente, capDifferente = false, interesseStorico = false) {
         ultraIFrame().within(() => {
             //cy.log('*** seleziona Casa ***')
             //cy.log('ubicazione: ' + cliente.ubicazione() + ' - cliente: ' + cliente.cognomeNome())
@@ -215,6 +218,18 @@ class CensimentoAnagrafico {
                     .click()
                 //cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
                 cy.wait(2000)
+            }
+
+            if (interesseStorico) {
+                cy.get('span[class="domande-integrative-fabbricato"]', { timeout: 15000 })
+                  .should('have.length', 1)
+                  .find('span').contains('SI')
+                  .should('be.visible')
+                  .click()
+                //popup Fabbricato di interesse storico
+                cy.get('div[id="popupConfermaCambioDomanda"]').should('contain.text', "comporta l'azzeramento degli sconti, la rimozione della convenzione speciale e il ricalcolo del prezzo")
+                cy.get('button').contains('AGGIORNA').should('be.visible').click()
+                //cy.pause()
             }
 
         })

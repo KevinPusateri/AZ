@@ -1,0 +1,58 @@
+{
+    "daModificareFabbricato" : {
+      "Assicurato"        : false,
+      "Nome"              : true,
+      "Cap"               : false,
+      "Uso"               : false,
+      "Tipo"              : false,
+      "Mq"                : false,
+      "Piano"             : true,
+      "Valore"            : false,
+      "Classe"            : true,
+      "ClasseProtezione"  : false,
+      "Allarme"           : false,
+      "Anno"              : true,
+      "Estensione"        : false,
+      "ResidenzaAss"      : false,
+      "CapAss"            : false
+    },
+  
+    "modificheFabbricato" : {
+      "Assicurato"        : "",
+      "Nome"              : "Casa Verde",
+      "Cap"               : "",
+      "Uso"               : "",
+      "Tipo"              : "",
+      "Mq"                : "",
+      "Piano"             : "piano seminterrato, terra o rialzato",
+      "Valore"            : "",
+      "Classe"            : "classe 2",
+      "ClasseProtezione"  : "",
+      "Allarme"           : "",
+      "Anno"              : "dal 2005 in poi",
+      "Estensione"        : "",
+      "ResidenzaAss"      : "",
+      "CapAss"            : ""
+    },
+  
+    "daModificareAnimale" : {
+      "Nome"              : true,
+      "Tipo"              : false,
+      "Sesso"             : true,
+      "Razza"             : true,
+      "DataNascita"       : false,
+      "Residenza"         : false,
+      "Cap"               : false
+    },
+  
+    "modificheAnimale" : {
+      "Nome"              : "Nera",
+      "Tipo"              : "",
+      "Sesso"             : "una femmina",
+      "Razza"             : "pit bull",
+      "DataNascita"       : "",
+      "Residenza"         : "",
+      "Cap"               : ""
+    }
+  
+  }

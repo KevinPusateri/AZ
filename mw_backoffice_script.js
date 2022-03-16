@@ -72,6 +72,7 @@ if (process.argv.slice(2).length >= 6 && process.argv.slice(2)[6] === 'true') {
 }
 
 //#region DO NOT EDIT
+
 const path = require('path')
 const async = require('async')
 const fs = require('fs')
@@ -83,11 +84,14 @@ const pMap = require('p-map');
 const prompt = require('prompt-sync')()
 require('events').EventEmitter.defaultMaxListeners = 15
 let PARALLEL_RUN_COUNT = process.argv.slice(2)[0]
-const integrationDirectory = path.join(__dirname, String("./cypress/integration/backoffice/claims/"))
+const integrationDirectory = path.join(__dirname, String("./cypress/integration/backoffice/"))
 //#endregion DO NOT EDIT
 
 //#region Chooser Type run all or single collections
+
 var filenames = fs.readdirSync(integrationDirectory);
+
+
 var indexCollection = 0;
 let option = '';
 if (!scheduled) {
@@ -114,6 +118,24 @@ if (!scheduled) {
 else
 	option = 1;
 //#endregion
+
+function walk(dir) {
+    let results = [];
+    const list = fs.readdirSync(dir);
+    list.forEach(function(file) {
+        file = dir + '/' + file;
+        file_type = file.split(".").pop();
+        file_name = file.split(/(\\|\/)/g).pop();
+		console.log(file_name)
+        const stat = fs.statSync(file);
+        if (stat && stat.isDirectory()) { 
+            results = results.concat(walk(file));
+        } else { 
+            if (file_type == "js") results.push(file);
+        }
+    });
+    return results;
+}
 
 function showAllCollectionToDecide() {
 
@@ -145,14 +167,18 @@ async function main() {
 		let specs = fs.readdirSync(integrationDirectory);
 
 		specs.forEach((spec) => {
-			fullTests.push(integrationDirectory + spec);
+			var cmdfiles = walk(integrationDirectory + spec);
+			fullTests.push(cmdfiles);
+			console.log(cmdfiles)
 		});
 	} else
 		fullTests.push(integrationDirectory + specName);
 
+	console.log("Specs: "+fullTests.length)
 	const paramsRun = []
 	for (let i = 0; i < fullTests.length; i++) {
 		let specName = String(fullTests[i]).replace(/^.*[\\\/]/, '').replace('.js', '')
+		console.log("2."+i+" "+specName +": "+specName)
 		paramsRun.push({
 			specName: specName,
 			cypressParams: {

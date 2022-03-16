@@ -37,7 +37,8 @@ class ControlliProtocollazione {
         cy.log('***** CARICAMENTO ADEMPIMENTI PRECONTRATTUALI IN CONTROLLI E PROTOCOLLAZIONE *****')
         cy.intercept({
             method: 'GET',
-            url: '**/GetSezioneStampaContrassegno'
+            //url: '**/GetSezioneStampaContrassegno'
+            url: '**/GetSezionePrecontrattuale'
         }).as('stampa')
 
         cy.wait('@stampa', { timeout: 100000 })
@@ -239,6 +240,16 @@ class ControlliProtocollazione {
         })
     }
 
+    static salvaNPreventivo() {
+        ultraIFrame().within(() => {
+            cy.get('[class="step last success"]').find('span').contains('preventivo')
+                .children('b').invoke('text').then(val => {
+                    cy.wrap(val).as('preventivo')
+                    cy.log("return " + '@preventivo')
+                })
+        })
+    }
+
 
     /**
      * Verifica l'opzione selezionata per un determinante campo
@@ -299,5 +310,22 @@ class ControlliProtocollazione {
             })
         })
     }
+
+    /**
+     * Clicca sul pulsante Home
+     */
+     static Home() {
+        ultraIFrame().within(() => {
+            ultraIFrame0().within(() => {
+                cy.get('button').contains('Home')
+                    .should('be.visible')
+                    .click()
+            })
+            //Conferma
+            cy.get('div[class="dialog"]').should('exist')
+            .find('footer[class="btn-container"]').contains('Conferma').should('be.visible').click()
+        })
+    }
+
 }
 export default ControlliProtocollazione

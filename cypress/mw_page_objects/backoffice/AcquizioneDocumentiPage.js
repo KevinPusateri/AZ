@@ -23,10 +23,10 @@ const getIFrameMovSinistri = () => {
 }
 
 const getIFrameAcqDoc = () => {
-    getIFrameMovSinistri().find('#fileFrame')
+    findIframeChild(constIframeMovSin).find('#fileFrame')
         .iframe();
 
-    let iframe = getIFrameMovSinistri().find('#fileFrame')
+    let iframe = findIframeChild(constIframeMovSin).find('#fileFrame')
         .its('0.contentDocument').should('exist');
 
     return iframe.its('body').should('not.be.undefined').then(cy.wrap)
@@ -38,7 +38,7 @@ class AcquizioneDocumentiPage {
      * Click on object defined by locator id
      * @param {string} id : locator object id
      */
-      static clickBtn_ById(id) {                         
+    static clickBtn_ById(id) {                         
             getIFrameAcqDoc().find(id).then((btn) => {
                 cy.wrap(btn)
                 .scrollIntoView()
@@ -47,9 +47,7 @@ class AcquizioneDocumentiPage {
                 .wait(1000)
                 .click().log('>> object with id ['+id+'] is clicked')
                 //cy.window().then(win => ShowFile(this.value)) 
-            }) 
-            
-           
+            })                        
     }
    /**
      * Click on object defined by locator id

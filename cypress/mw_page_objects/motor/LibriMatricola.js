@@ -5,11 +5,11 @@
 **/
 
 import 'cypress-iframe';
+import PageVPS from "../../mw_page_objects/vps/PageVPS";
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente";
-import menuAuto from '../../fixtures/Motor/menuMotor.json'
 import menuProvenienza from '../../fixtures/Motor/ProdottoProvenienza.json'
 import LandingRicerca from "../ricerca/LandingRicerca";
-import TopBar from '../common/TopBar';
+import DettaglioAnagrafica from '../clients/DettaglioAnagrafica';
 
 //#region iFrame
 const matrixFrame = () => {
@@ -40,6 +40,37 @@ class LibriMatricola {
     }
 
     /**
+     * Torna indietro all'elenco preventivi Madre
+     */
+    static backElencoPreventivi() {
+        cy.wait(5000)
+        matrixFrame().within(() => {
+            cy.intercept({
+                method: 'GET',
+                url: '**/PreventiviMadri.aspx/**'
+            }).as('listaPreventivi')
+            cy.get('input[value="< Elenco Preventivi"]').click()
+            cy.wait('@listaPreventivi', { requestTimeout: 30000 });
+        })
+    }
+
+    /**
+     * Torno Indietro Elenco Libri Matricola
+     */
+    static backElencoLibriMatricola() {
+        matrixFrame().within(() => {
+            cy.intercept({
+                method: 'POST',
+                url: '**/GestioneLibriMatricolaDA/**'
+            }).as('getLibriMatricola');
+            cy.get('#ButtonBackElencoLM').should('be.visible').within(() => {
+                cy.get('input[value="< Elenco Libri Matricola"]').should('be.visible').click()
+            })
+            cy.wait('@getLibriMatricola', { requestTimeout: 40000 }).its('response.statusCode').should('eq', 200)
+        })
+    }
+
+    /**
      * Attende il caricamento di Libri Matricola su DA
      */
     // static caricamentoLibriMatricolaDA() {
@@ -51,25 +82,71 @@ class LibriMatricola {
      * Avvia l'emissione di un nuovo preventivo madre
      * @param {string} convenzione 
      */
-    static nuovoPreventivoMadre(convenzione) {
+    static nuovoPreventivoMadre(convenzione, dataConvenzione) {
 
         matrixFrame().within(() => {
 
-            cy.get('#ButtonNuovo').should('be.visible').click() //click sul pulsante 'nuovo'
-            cy.pause()
+            let count = 0;
+            const reloadTable = (count) => {
+                if (count === 5)
+                    assert.fail('Rifare il flusso (Convenzione non trovata)')
+                cy.intercept({
+                    method: 'POST',
+                    url: '**/GetAllConvenzioni'
+                }).as('loadGetAllConvenzioni')
+                cy.get('#ButtonNuovo').should('be.visible').click() //click sul pulsante 'nuovo'
 
-            cy.get('#tblConvenzioni').should('be.visible')
-                .find('td[aria-describedby="tblConvenzioni_txtDescrizione"]')
-                .contains(convenzione).should('be.visible').click()
+                cy.wait(3500)
+                cy.get('input[class="inputSmlMid hasDatepicker"]').should('be.visible').click()
+                    .clear().type(dataConvenzione + '{enter}', { delay: 200 })
+                cy.get('input[class="inputSmlLarge"]').click().clear().type(convenzione + '{enter}', { delay: 200 })//.wait(5000)
 
-            cy.intercept({
-                method: 'POST',
-                url: '**/GetDatiAggiuntiviConvenzione'
-            }).as('loadDatiIntegrativi')
+                cy.get('span[class="ui-button-icon-primary ui-icon ui-icon-search"]').first().click().wait(3500)
+                cy.wait('@loadGetAllConvenzioni', { requestTimeout: 60000 })
 
-            cy.get('button').children('span').contains('Ok')
-                .should('be.visible').click()
-            cy.wait('@loadDatiIntegrativi', { requestTimeout: 60000 });
+
+                cy.get('#tblConvenzioni').then(($table) => {
+                    const table = $table.find('td').is(':contains(' + convenzione + ')')
+                    if (!table) {
+                        cy.contains('Chiudi').click()
+                        count++
+                        reloadTable(count)
+                    }
+                    else {
+                        cy.wrap($table).find('td[aria-describedby="tblConvenzioni_txtCodice"]:visible').wait(1000)
+                        cy.get('#tblConvenzioni').contains(convenzione).should('be.visible').click()
+                        cy.intercept({
+                            method: 'POST',
+                            url: '**/GetDatiAggiuntiviConvenzione'
+                        }).as('loadDatiIntegrativi')
+
+                        cy.get('button').children('span').contains('Ok')
+                            .should('be.visible').click()
+                        cy.wait('@loadDatiIntegrativi', { requestTimeout: 60000 });
+                    }
+
+                })
+            }
+
+            reloadTable(count)
+
+        })
+
+    }
+
+    /**
+     * 
+     */
+    static checkDichiarazionediNonCircolazione() {
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.wait(5000)
+            cy.get('form').then($form => {
+                console.log($form)
+                if ($form.find('div[role="dialog"]:visible').length > 0) {
+                    cy.get('div[role="dialog"]').should('be.visible').contains('Si').click()
+                }
+            })
         })
     }
 
@@ -137,27 +214,6 @@ class LibriMatricola {
                 .should('be.visible').click()
         })
     }
-
-    static Riepilogo(altreCoperture) {
-        matrixFrame().within(() => {
-            var copertureValue = "1" //default altre coperture: si
-
-            //se non sono presenti altre coperture
-            //modifica il value per 'no'
-            if (!altreCoperture) {
-                copertureValue = "2"
-            }
-
-            //Questionario adeguatezza: altre coperture
-            cy.get('input[name="adegAltreCopRB"][value="' + copertureValue + '"]')
-                .should('be.visible').click()
-
-            //click su avanti
-            cy.get('[value="› Avanti"]')
-                .should('be.visible').click()
-        })
-    }
-
     static RiepilogoGaranzie(garanzie) {
 
         for (var i = 0; i < garanzie.length; i++) {
@@ -201,7 +257,6 @@ class LibriMatricola {
     }
 
     static RiepilogoGaranzie2(garanzie, nPopup) {
-
         for (var i = 0; i < garanzie.length; i++) {
             cy.log('var i outside: ' + i)
             var a = i
@@ -243,12 +298,20 @@ class LibriMatricola {
         }
     }
 
+    static AccessoriOptional() {
+        matrixFrame().within(() => {
+            cy.get('span[class="ui-button-text"]').should('be.visible').contains('OK').click()
+        })
+    }
+
+
     /**
      * Completa la pagina Integrazione
      * [21/12/2021 si limita ad emettere il preventivo]
+     * @param {boolean} inviaRichiestaVPS - default settato a false verifico se Cliccare Invio Richiesta VPS
      */
-    static Integrazione() {
-        //attende il completamento del salvataggio preventivo 608601
+    static Integrazione(inviaRichiestaVPS = false) {
+        //attende il completamento del salvataggio preventivo
         cy.intercept({
             method: 'POST',
             url: '**/GetElencoAutorizzazioni'
@@ -256,12 +319,66 @@ class LibriMatricola {
 
         cy.wait('@loadIntegrazione', { requestTimeout: 60000 });
 
-        matrixFrame().within(() => {
-            //click su Emetti preventivo
-            cy.get('#btnSalvaNomin')
-                .should('be.visible').click()
+        if (!inviaRichiestaVPS) {
+            matrixFrame().within(() => {
+                //click su Emetti preventivo
+                cy.get('#btnSalvaNomin')
+                    .should('be.visible').click()
+            })
+        }
+
+    }
+
+    /**
+     * 
+     * @private
+     */
+    static inviaRichiestaVPS() {
+        return new Cypress.Promise((resolve, reject) => {
+
+            //attende il completamento della richiesta VPS
+            cy.intercept({
+                method: 'POST',
+                url: '**/VerificaAbilitazioneRichiestaVPSUrgente'
+            }).as('loadVerificaAbilitazioneRichiestaVPSUrgente')
+            matrixFrame().within(() => {
+                //click su Emetti preventivo
+                cy.pause()
+                cy.get('#btnInviaRichiesta')
+                    .should('be.visible').click()
+            })
+            cy.wait('@loadVerificaAbilitazioneRichiestaVPSUrgente', { requestTimeout: 60000 });
+
+            matrixFrame().within(() => {
+                // Inserimento codice VPS
+                cy.intercept({
+                    method: 'POST',
+                    url: '**/InviaRichiestaVPS'
+                }).as('loadInviaRichiestaVPS')
+                cy.get('div[role="dialog"]').should('be.visible').within(() => {
+                    // Esistono motivazioni commerciali? check Si ->    
+                    cy.get('#rb_commerciali_si').click()
+                    cy.get('#txtTestoMotivazioniTeniche').type('asdaweawda')
+                    cy.get('button').find('span:contains("Ok"):visible').click()
+
+                })
+                cy.wait('@loadInviaRichiestaVPS', { requestTimeout: 60000 });
+
+                cy.get('div[role="dialog"]').should('be.visible').within(() => {
+                    cy.get('#EsitoinvioVPS').should('include.text', 'completato con successo.')
+                    cy.get('#EsitoinvioVPS').invoke('text').then(numeroPreventivo => {
+                        var result = numeroPreventivo.replace(/\D/g, "");
+                        // Esistono motivazioni commerciali? ->  check Si    
+                        cy.get('button').find('span:contains("Ok"):visible').click()
+                        resolve(result)
+
+                        cy.wait(15000)
+                    })
+                })
+            })
         })
     }
+
     /**
      * Completa la pagina Integrazione
      * Emetti Polizza
@@ -275,11 +392,17 @@ class LibriMatricola {
 
         cy.wait('@loadIntegrazione', { requestTimeout: 60000 });
 
+        cy.intercept({
+            method: 'GET',
+            url: '**/Completamento/**'
+        }).as('completamento')
         matrixFrame().within(() => {
             //click su Emetti preventivo
             cy.get('#btnAvanti')
                 .should('be.visible').click()
         })
+        cy.wait('@completamento', { requestTimeout: 60000 });
+
     }
 
     /**
@@ -293,8 +416,7 @@ class LibriMatricola {
             url: '**/GeneraPDF'
         }).as('salvataggioContratto')
 
-        cy.wait('@salvataggioContratto', { requestTimeout: 80000 });
-
+        cy.wait('@salvataggioContratto', { requestTimeout: 220000 });
         matrixFrame().within(() => {
             cy.get('[class="clNumeroPrevContr"]').invoke('text').then(val => {
                 cy.wrap(val).as('contratto')
@@ -317,9 +439,63 @@ class LibriMatricola {
             cy.get('#pnlDialog').contains('Si è sicuri di voler uscire?')
                 .next('div').find('span').contains('Si').click() //Risponde SI al popup di attenzione
         })
-        cy.wait('@LibriMatricolaDA', { requestTimeout: 120000 });
+
+        cy.wait(5000)
 
     }
+
+    static FinaleContrattoLibroMatricola() {
+        matrixFrame().within(() => {
+            cy.get('[class="clNumeroPrevContr"]').invoke('text').then(val => {
+                cy.wrap(val).as('contratto')
+                cy.log("return " + '@contratto')
+            })
+        })
+
+        // Adempimenti precontrattuali
+        matrixFrame().within(() => {
+            cy.wait(2000)
+            cy.get('div[role="dialog"]').then(($dialog) => {
+                const dialog = $dialog.find('#Elencodocumentidagestire').is(':visible')
+                if (dialog) {
+                    cy.get('div[role="dialog"]:visible').should('be.visible').within(() => {
+                        cy.get('#Elencodocumentidagestire').should('be.visible')
+                        cy.contains('Ok').click()
+                        cy.get('#Elencodocumentidagestire').should('not.be.visible')
+                    })
+                }
+            })
+
+            cy.get('a[href="GetPDFFile.ashx?tipoStampa=precontrattuale&isInMobilita=false"]').should('be.visible').invoke('removeAttr', 'href').click()
+
+        })
+        matrixFrame().within(() => {
+            cy.get('#div1').should('be.visible').and('contain.text', 'Operazione conclusa')
+        })
+
+        // Perfezionamento
+        matrixFrame().within(() => {
+            cy.get('a[href="GetPDFFile.ashx?tipoStampa=anteprimaContratto&isInMobilita=false"]').should('be.visible').invoke('removeAttr', 'href').click()
+            cy.get('#divPannelloMsgConsegnaDoc').should('be.visible').and('include.text', 'Operazione conclusa')
+        })
+
+        // // Torna in Home
+        // matrixFrame().within(() => {
+        //     cy.get('input[value="› Home"]').should('be.visible').click()
+        // })
+
+    }
+
+    static VerificaPresenzaContrattoLibroMatricola(nContratto) {
+        cy.wait(10000)
+        cy.getIFrame()
+        cy.get('@iframe').should('be.visible').within(() => {
+            cy.get('#table_polizze_madri').should('be.visible').within(() => {
+                cy.get('#' + nContratto).should('be.visible')
+            })
+        })
+    }
+
 
     /**
      * ritorna alla Home dalla pagina finale di salvataggio contratto su Preventivo Applicazione 
@@ -367,6 +543,13 @@ class LibriMatricola {
         })
     }
 
+    static AperturaTabLibriMatricola() {
+        matrixFrame().within(() => {
+
+            cy.get('#tab_polizze_madri').should('be.visible').click()
+        })
+    }
+
     /**
      * verifica che il Preventivo Madre compaia nella lista dei preventivi
      * [23/12/2021 non considera la presenza di più pagine]
@@ -384,43 +567,79 @@ class LibriMatricola {
         })
     }
 
-    static AperturaElencoApplicazioni(nPreventivo, nomeApplicazione) {
+    static AperturaElencoApplicazioni(nPreventivo) {
+        cy.wait(2000)
         matrixFrame().within(() => {
             //tasto destro sul preventivo passato come parametro, altrimenti ne sceglie uno casualmente
             //e restituisce il numero del preventivo scelto
 
             // table diventa preventivi figlie table_preventivi_figlie
             cy.wait(2000)
-            if (nomeApplicazione === 'Auto') {
-                cy.get('#table_preventivi_madre', { timeout: 10000 }).within(() => {
+            cy.get('#table_preventivi_madre', { timeout: 10000 }).within(() => {
 
-                    if (nPreventivo == null) {
-                        cy.get('[class*="ui-row-ltr"]', { timeout: 10000 }).should('be.visible')
-                            .then(($rows) => {
-                                const items = $rows.toArray()
-                                return Cypress._.sample(items)
-                            }).rightclick().then(($rows) => {
-                                cy.wrap($rows.find('[aria-describedby="table_preventivi_madre_NumeroPreventivo"]').text())
-                                    .as('nPrevMadre')
-                            })
-                    }
-                    else {
-                        cy.get('#' + nPreventivo).should('be.visible').rightclick()
-                    }
-                })
-
-            }
+                if (nPreventivo == null) {
+                    cy.get('[class*="ui-row-ltr"]', { timeout: 10000 }).should('be.visible')
+                        .then(($rows) => {
+                            const items = $rows.toArray()
+                            return Cypress._.sample(items)
+                        }).rightclick().then(($rows) => {
+                            cy.wrap($rows.find('[aria-describedby="table_preventivi_madre_NumeroPreventivo"]').text())
+                                .as('nPrevMadre')
+                        })
+                }
+                else {
+                    cy.get('#' + nPreventivo).should('be.visible').rightclick()
+                }
+            })
 
         })
 
-        if (nomeApplicazione === 'Auto')
-            matrixFrame().within(() => {
-                cy.log('inside contex menu')
-                cy.get('[id="jqContextMenu"]', { timeout: 5000 })
-                    .find('#visualizzaPreventiviFiglie')
-                    .should('be.visible').click()
+        matrixFrame().within(() => {
+            cy.log('inside contex menu')
+            cy.get('[id="jqContextMenu"]', { timeout: 5000 })
+                .find('#visualizzaPreventiviFiglie')
+                .should('be.visible').click()
+        })
+
+    }
+
+    static getPreventivoMadre() {
+        cy.wait(5000)
+
+        matrixFrame().within(() => {
+            cy.get('#table_preventivi_madre', { timeout: 10000 }).should('be.visible').within(() => {
+
+                cy.get('[class*="ui-row-ltr"]', { timeout: 10000 }).should('be.visible')
+                    .then(($rows) => {
+                        const items = $rows.toArray()
+                        return Cypress._.sample(items)
+                    }).then(($rows) => {
+                        cy.wrap($rows.find('[aria-describedby="table_preventivi_madre_NumeroPreventivo"]').text())
+                            .as('nPrevMadre')
+                    })
             })
 
+        })
+
+    }
+
+    static getLibroMatricola() {
+        cy.wait(5000)
+
+        matrixFrame().within(() => {
+            cy.get('#table_polizze_madri', { timeout: 10000 }).should('be.visible').within(() => {
+
+                cy.get('[class*="ui-row-ltr"]', { timeout: 10000 }).should('be.visible')
+                    .then(($rows) => {
+                        const items = $rows.toArray()
+                        return Cypress._.sample(items)
+                    }).then(($rows) => {
+                        cy.wrap($rows.find('[aria-describedby="table_polizze_madri_NumeroContratto"]').text())
+                            .as('nLibroMatricola')
+                    })
+            })
+
+        })
     }
 
     static caricamentoElencoApplicazioni() {
@@ -555,27 +774,27 @@ class LibriMatricola {
         matrixFrame().within(() => {
             //inserisce la targa
             cy.get('input[data-bind*="targaRicercaANIANumero"]').first()
-                .should('be.visible').type(veicolo.targa)
+                .should('be.visible').type(veicolo.targa).wait(1000)
 
             //seleziona la marca
-            cy.get('div[title="Seleziona la marca del veicolo"]')
-                .find('input').type(veicolo.marca)
-                .wait(1000).type('{downarrow}{enter}')
+            cy.get('div[title="Seleziona la marca del veicolo"]').first()
+                .find('input:first').type(veicolo.marca)
+                .wait(1000).type('{downarrow}{enter}').wait(1000)
 
             //seleziona il modello
             cy.get('#cbModello').find('input').type(veicolo.modello)
-                .wait(1000).type('{downarrow}{enter}')
+                .wait(1000).type('{downarrow}{enter}').wait(1000)
 
             //seleziona la versione
             cy.get('#cbVersione').find('input').type(veicolo.versione)
-                .wait(1000).type('{downarrow}{enter}')
+                .wait(1000).type('{downarrow}{enter}').wait(1000)
 
             //inserisce la data di immatricolazione
-            cy.get('input[data-bind*="dpDataImmatricolazioneN"]')
-                .type(veicolo.dataImmatricolazione)
+            cy.get('input[data-bind*="dpDataImmatricolazioneN"]').first()
+                .type(veicolo.dataImmatricolazione).wait(1000)
 
             //inserisce il numero dei posti
-            cy.get('input[title*="numero di posti"]').filter(':visible').type(veicolo.nPosti)
+            cy.get('input[title*="numero di posti"]').filter(':visible').type(veicolo.nPosti).wait(1000)
         })
     }
 
@@ -624,7 +843,8 @@ class LibriMatricola {
         })
     }
 
-    static conversione() {
+    static confermaPreventivi() {
+        cy.wait(5000)
         //Selezioniamo tutti preventivi
         matrixFrame().within(() => {
             cy.get('#cb_table_preventivi_figlie').should('be.visible').click()
@@ -632,19 +852,11 @@ class LibriMatricola {
             cy.get('input[value="Conferma preventivi selezionati"]').click()
             cy.get('#popup_content').should('be.visible').find('#popup_ok').click()
 
-            cy.get('#popup_message').should('contain.text', 'Sono stati confermati 3 preventivi')
+            cy.get('#popup_message').should('be.visible')
             cy.get('#popup_content').should('be.visible').find('#popup_ok').click()
-            cy.get('div[class="iconconfermato"]').should('be.visible').and('have.length', 3)
+            cy.get('div[class="iconconfermato"]').should('be.visible')
 
 
-            // Torno Indietro Elenco preventivi
-            cy.intercept({
-                method: 'GET',
-                url: '**/PreventiviMadri.aspx/**'
-            }).as('listaPreventivi')
-            cy.get('input[value="< Elenco Preventivi"]').click()
-            cy.wait('@listaPreventivi', { requestTimeout: 30000 });
-            cy.pause()
         })
     }
 
@@ -674,19 +886,6 @@ class LibriMatricola {
 
         // Inserire la Data
         cy.get('@iframe').within(() => {
-            cy.get('#dialogDataPresuntoIncassoContent').should('be.visible').within(() => {
-
-                // un giorno dopo alla data corrente
-                var today = new Date();
-                var tomorrow = new Date(today);
-                tomorrow.setDate(today.getDate() + 1);
-                tomorrow.toLocaleDateString();
-                let formattedDate = String(tomorrow.getDate()).padStart(2, '0') + '' +
-                    String(tomorrow.getMonth() + 1).padStart(2, '0') + '' +
-                    tomorrow.getFullYear()
-
-                cy.get('#dataPresuntoIncassoDialogValue').clear().type(formattedDate).wait(500)
-            })
 
             cy.intercept({
                 method: 'POST',
@@ -699,22 +898,245 @@ class LibriMatricola {
         })
     }
 
-    static consensi() {
-        cy.getIFrame()
 
-        //Visualizza PDF e conferma
+    static conversione() {
+        cy.wait(5000)
+        //Selezioniamo tutti preventivi
+        matrixFrame().within(() => {
+            cy.get('#cb_table_preventivi_figlie').should('be.visible').click()
+            //Conferme dei popup
+            cy.get('input[value="Converti preventivi selezionati"]').click()
+
+            cy.get('div[aria-describedby="dialogConfermaConversione"]').should('be.visible').find('#btnConferma').click()
+
+            // Caricamento Conversione Completato
+            cy.get('div[aria-describedby="dialogProgressBarConversione"]').should('be.visible').within(() => {
+
+                cy.get('#result-message', { timeout: 120000 }).should('contain.text', 'Tutti i preventivi selezionati sono stati convertiti')
+                cy.contains('Chiudi').click().wait(2000)
+            })
+
+            cy.get('#popup_container').should('be.visible').find('#popup_ok:visible').click().wait(15000)
+        })
+
+
+        matrixFrame().within(() => {
+            // Stampa Massiva Procedi
+            cy.get('div[aria-describedby="dialogConfermaStampaMassiva"]').should('be.visible').within(() => {
+                cy.get('#dialogConfermaStampaMassiva', { timeout: 30000 }).should('be.visible')
+                cy.get('button[role="button"]').contains('Procedi').click().wait(2000)
+
+            })
+
+            // Stampa Massiva Inizio Stampa
+            cy.get('div[aria-describedby="dialogStampaMassiva"]').should('be.visible').within(() => {
+                cy.get('#btnStampa').click()
+            })
+            cy.get('#statusStampaApplet', { timeout: 200000 }).should('not.be.visible')
+
+            // Popup Esci
+            cy.get('div[aria-describedby="dialogStampaMassiva"]').should('be.visible').within(() => {
+                cy.contains('Esci').click()
+            })
+
+            // Popup Stampa Applicazioni Conclusa -> OK
+            cy.get('#popup_container').should('be.visible').within(() => {
+                cy.get('#popup_title').should('include.text', 'Stampa applicazioni conclusa')
+                cy.get('#popup_ok').click()
+            })
+
+            // Popup Avviso
+            cy.get('div[aria-describedby="popupUltrattivita"]').should('be.visible').within(() => {
+                cy.get('button').contains('Ok').click()
+            })
+        })
+
+    }
+
+
+    /**
+     * Accedi all'Elenco Preventivi Applicazioni
+     * @param {string} nPreventivo - numero del preventivo 
+     */
+    static accessoElencoPrevApplicazioni(nPreventivo) {
+
+        //tasto destro sul preventivo passato come parametro
+        cy.getIFrame()
         cy.get('@iframe').within(() => {
-            cy.get('input[alt="Visualizza Informativa"]').first().click()
-            cy.pause()
-            cy.get('#AnteprimaPDF').should('be.visible')
-            cy.get('button').contains('Conferma').click()
-            cy.get('#AnteprimaPDF').should('not.be.visible')
-            cy.pause()
+            cy.wait(2000)
+            cy.get('#table_polizze_madri', { timeout: 10000 }).should('be.visible').within(() => {
+
+                cy.get('#' + nPreventivo).should('be.visible').rightclick()
+            })
+        })
+
+        // Click su Accesso a Elenco Preventivi
+        cy.get('@iframe').within(() => {
+            cy.log('inside contex menu')
+            cy.get('[id="jqContextMenu"]', { timeout: 5000 })
+                .find('#visualizzaPLF')
+                .should('be.visible').click()
+        })
+
+    }
+
+    /**
+     * Accedi all'Elenco Applicazioni
+     * @param {string} nPreventivo - numero del preventivo 
+     */
+    static accessoElencoApplicazioni(nPreventivo) {
+
+        //tasto destro sul preventivo passato come parametro
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.wait(2000)
+            cy.get('#table_polizze_madri', { timeout: 10000 }).should('be.visible').within(() => {
+
+                cy.get('#' + nPreventivo).should('be.visible').rightclick()
+            })
+        })
+
+        // Click su Accesso a Elenco Preventivi
+        cy.get('@iframe').within(() => {
+            cy.log('inside contex menu')
+            cy.get('[id="jqContextMenu"]', { timeout: 5000 })
+                .find('#visualizzaPF')
+                .should('be.visible').click()
+        })
+
+    }
+
+    static consensi() {
+        cy.wait(10000)
+        cy.getIFrame()
+        //Visualizza PDF e conferma
+        cy.get('@iframe').should('be.visible').within(() => {
+
+            //? CAPITA che non sia settato di default capire in base all'agenzia
+            cy.get('#pnlIntermediari').should('be.visible').within(() => {
+                cy.get('button[title="Show All Items"]').first().click().wait(1000)
+            })
+            cy.get('#ulintermediario').should('exist').and('be.visible').find('li').contains('PULINI FRANCESCO').click()
+
+
+            // Set Informativo
+            cy.get('#btnVisualizzaPrivacy').should('be.visible').first().click()
+            cy.get('div[role="dialog"]:visible').should('be.visible').within(() => {
+                cy.get('#AnteprimaPDF').should('be.visible')
+                cy.contains('Conferma').click()
+                cy.get('#AnteprimaPDF').should('not.be.visible')
+            })
+            // Allegato 3 Informativa
+            cy.get('input[alt="Visualizza Informativa"]').should('be.visible').first().click()
+            cy.get('div[role="dialog"]:visible').should('be.visible').within(() => {
+                cy.get('#AnteprimaPDF').should('be.visible')
+                cy.contains('Conferma').click()
+                cy.get('#AnteprimaPDF').should('not.be.visible')
+            })
+
+            // Allegato 4 Informazioni
+            cy.get('input[alt="Visualizza Informativa"]').should('be.visible').eq(1).click()
+            cy.get('div[role="dialog"]:visible').should('be.visible').within(() => {
+                cy.get('#AnteprimaPDF').should('be.visible')
+                cy.contains('Conferma').click()
+                cy.get('#AnteprimaPDF').should('not.be.visible')
+            })
+
+            // Riepilogo delle richieste
+            cy.get('#btnVisualizzaAdeguatezza').should('be.visible').click()
+            cy.get('div[role="dialog"]:visible').should('be.visible').within(() => {
+                cy.get('#AnteprimaPDF').should('be.visible')
+                cy.contains('Conferma').click()
+                cy.get('#AnteprimaPDF').should('not.be.visible').wait(3900)
+            })
+
+            // Privacy per scopi assicurativi
+            cy.contains('Privacy per scopi assicurativi').parents('tr').within(($tr) => {
+                const isChecked = $tr.find('div[class="clStatoStampa1"]').is(':visible')
+                if (!isChecked)
+                    cy.get('td').eq(2).find('input').click()
+            })
+
+            cy.get('#btnAvanti').should('be.visible').click().wait(25000)
+        })
+
+        cy.get('@iframe').should('be.visible').within(() => {
+            cy.get('img[src="Images/iconImagesBlue/confirm_green.gif"]').should('be.visible')
+        })
+    }
+
+
+    // Accedi Voce di menu Incasso Polizza Madre
+    static accessoIncassoPolizzaMadre(nPreventivo) {
+        //tasto destro sul preventivo passato come parametro
+        cy.wait(10000)
+        cy.getIFrame()
+        cy.get('@iframe').should('be.visible').within(() => {
+            cy.get('#table_polizze_madri', { timeout: 10000 }).should('be.visible').within(() => {
+
+                cy.get('#' + nPreventivo).should('be.visible').rightclick()
+            })
+        })
+
+        cy.wait(3000)
+        // Click su Incasso Polizza Madre
+        cy.get('@iframe').within(() => {
+            cy.log('inside contex menu')
+            cy.get('[id="jqContextMenu"]', { timeout: 5000 })
+                .find('#incassaPM')
+                .should('be.visible').click()
+
+        })
+    }
+
+    /**
+     * Flusso Incasso Polizza Madre 
+     */
+    static incasso() {
+        cy.wait(10000)
+        cy.getIFrame()
+        cy.get('@iframe').should('be.visible').within(() => {
+            // Incasso
+            cy.intercept({
+                method: 'POST',
+                url: '**/GoToIncasso'
+            }).as('GoToIncasso')
+            cy.get('#pnlBtnIncasso').should('be.visible').click()
+            cy.wait('@GoToIncasso', { requestTimeout: 60000 });
+        })
+
+        //Digital Accounting System (DAS) - sezione incassi
+        cy.wait(8000)
+        cy.get('@iframe').should('be.visible').within(() => {
+
+            // Modalita di Pagamento
+            cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').click()
+            cy.get('#TabIncassoModPagCombo-list').should('be.visible').within(() => {
+                cy.contains('Assegno').click()
+            })
+            // Incasso
+            cy.get('#btnTabIncassoConfirm').should('be.visible').click()
+        })
+
+        cy.wait(10000)
+        cy.get('@iframe').should('be.visible').within(() => {
+            // Incasso Completato Chiudi Pagina
+            cy.get('#ctl00_pHolderMain1_btnChiudi').should('be.visible').click().wait(8000)
+        })
+    }
+
+
+    /**
+     * inizio Inclusione Nuova Applicazione
+     */
+    static inclusioneNuovaApplicazione() {
+        cy.wait(10000)
+        matrixFrame().within(() => {
+            cy.get('input[value="Inclusione Nuova Applicazione"]').click()
         })
     }
 }
-
-export function PrevApplicazione(nomeApplicazione, veicolo, garanzie, coperturaRCA = true, nPopupRiepilogo = 0) {
+export function PrevApplicazione(caseTest, nomeApplicazione, veicolo, garanzie, coperturaRCA = true, nPopupRiepilogo = 0) {
 
     //#region Configuration
     Cypress.config('defaultCommandTimeout', 60000)
@@ -727,14 +1149,14 @@ export function PrevApplicazione(nomeApplicazione, veicolo, garanzie, coperturaR
     //#endregion variabili iniziali
 
 
-    describe("PREVENTIVO APPLICAZIONE: " + nomeApplicazione, () => {
+    describe("PREVENTIVO APPLICAZIONE: " + nomeApplicazione, function () {
 
-        it("Elenco applicazioni", () => {
+        // Viene eseguito solo al primo Preventivo Applicazione
+        if (caseTest === 1)
+            it("Elenco applicazioni", function () {
 
-            // Viene eseguito solo al primo Step
-            if (nomeApplicazione === 'Auto') {
                 LibriMatricola.AperturaTabPreventivi()
-                LibriMatricola.AperturaElencoApplicazioni(nPreventivo, nomeApplicazione)
+                LibriMatricola.AperturaElencoApplicazioni(nPreventivo)
 
                 cy.get('@nPrevMadre').then(val => {
                     nPreventivo = val
@@ -742,32 +1164,30 @@ export function PrevApplicazione(nomeApplicazione, veicolo, garanzie, coperturaR
                 })
 
                 LibriMatricola.caricamentoElencoApplicazioni()
-            }
+            })
 
-        })
-
-        it("Nuovo preventivo applicazione", () => {
-            LibriMatricola.NuovoPreventivoApplicazione(true)
+        it("Nuovo preventivo applicazione", function () {
+            LibriMatricola.NuovoPreventivoApplicazione()
             LibriMatricola.caricamentoDatiAmministrativi()
         })
 
-        it("Dati Amministrativi", () => {
+        it("Dati Amministrativi", function () {
             LibriMatricola.Avanti()
             LibriMatricola.caricamentoContraenteProprietario()
         })
 
-        it("Contraente/Proprietario", () => {
+        it("Contraente/Proprietario", function () {
             LibriMatricola.Avanti()
             LibriMatricola.caricamentoVeicolo()
         })
 
-        it("Veicolo", () => {
+        it("Veicolo", function () {
             LibriMatricola.NuovoVeicolo(veicolo)
             LibriMatricola.Avanti()
             LibriMatricola.caricamentoProdottoProvenienza()
         })
 
-        it("Selezione provenienza", () => {
+        it("Selezione provenienza", function () {
             LibriMatricola.CoperturaRCA(coperturaRCA)
             if (coperturaRCA) {
                 LibriMatricola.ProvenienzaVeicolo(menuProvenienza.primaImmatricolazione.documentazione)
@@ -776,27 +1196,25 @@ export function PrevApplicazione(nomeApplicazione, veicolo, garanzie, coperturaR
             LibriMatricola.caricamentoRiepilogo()
         })
 
-        it("Riepilogo", () => {
+        it("Riepilogo", function () {
             LibriMatricola.RiepilogoGaranzie2(garanzie, nPopupRiepilogo)
             LibriMatricola.Avanti()
         })
 
-        it("Integrazione", () => {
+        it("Integrazione", function () {
             LibriMatricola.Integrazione()
         })
 
-        it("Finale", () => {
+        it("Finale", function () {
             LibriMatricola.ContrattoFinale()
             LibriMatricola.FinaleGoHome()
-            // LibriMatricola.caricamentoElencoApplicazioni()
-
             cy.get('@contratto').then(val => {
                 nPreventivoApp = val
                 cy.log("Preventivo Applicazione n. " + nPreventivoApp)
             })
         })
 
-        it("Verifica presenza preventivo applicazione", () => {
+        it("Verifica presenza preventivo applicazione", function () {
             expect(nPreventivoApp).to.not.be.undefined
             expect(nPreventivoApp).to.not.be.null
 
@@ -813,47 +1231,83 @@ export function PreventivoMadre() {
 
     //#region  variabili iniziali
     var nPreventivo
-    let currentClientPG
+    var convenzione
+    var dataConvenzione
+    before(() => {
+        cy.fixture('LibriMatricola/Convenzione.json').then((data) => {
+            convenzione = data.convenzione
+            dataConvenzione = data.dataConvenzione
+        })
+
+    });
     //#endregion variabili iniziali
 
-    it("Ricerca cliente", () => {
-        // LandingRicerca.searchRandomClient(true, "PG", 'E')
-        // LandingRicerca.clickRandomResult('E')
-        TopBar.search('04818780480')
-        LandingRicerca.clickFirstResult()
-        SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-            currentClientPG = currentClient
-        })
+    it("Ricerca cliente", function () {
+
+
+
+        const loopSearchClientWithBusinessForm = () => {
+            LandingRicerca.searchRandomClient(true, "PG", '')
+            LandingRicerca.clickRandomResult('PG', '')
+            // LandingRicerca.search('00826700577')
+            // LandingRicerca.clickFirstResult()
+            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+            cy.wait(3000)
+            let loopCheck = false
+            DettaglioAnagrafica.getIVAClient().then((codIva) => {
+                if (codIva === '-') {
+                    loopCheck = true
+                }
+                DettaglioAnagrafica.getFormaGiuridica().then((checkExistFormaGiuridica) => {
+                    if (checkExistFormaGiuridica) {
+                        cy.writeFile('cypress/fixtures/LibriMatricola/LibriMatricola.json', {
+                            ClientePGIVA: codIva
+                        })
+                    }
+                    else {
+                        loopCheck = true
+                    }
+                })
+            })
+            cy.get('body').then(() => {
+                if (loopCheck) {
+
+                    loopSearchClientWithBusinessForm()
+                }
+            })
+            SintesiCliente.clickTabSintesiCliente()
+        }
+        loopSearchClientWithBusinessForm()
+
     })
 
-    it("Libri Matricola da Sintesi Cliente", () => {
-        SintesiCliente.emissioneAuto(menuAuto.prodottiParticolari.libriMatricola)
-        cy.wait('@LibriMatricolaDA', { requestTimeout: 50000 });
-
+    it("Libri Matricola da Sintesi Cliente", function () {
+        SintesiCliente.clickAuto()
+        SintesiCliente.clickLibriMatricola()
     })
 
-    it("Nuovo preventivo madre", () => {
-        LibriMatricola.nuovoPreventivoMadre('SALA TEST LM AUTOMATICI')
+    it("Nuovo preventivo madre", function () {
+        LibriMatricola.nuovoPreventivoMadre(convenzione, dataConvenzione)
     })
 
-    it("Dati integrativi", () => {
-        LibriMatricola.datiIntegrativi(true)
+    it("Dati integrativi", function () {
+        LibriMatricola.datiIntegrativi(false)
     })
 
-    it("Contraente", () => {
+    it("Contraente", function () {
         LibriMatricola.Contraente()
         LibriMatricola.caricamentoRiepilogo()
     })
 
-    it("Riepilogo", () => {
+    it("Riepilogo", function () {
         LibriMatricola.Riepilogo(false)
     })
 
-    it("Integrazione", () => {
+    it("Integrazione", function () {
         LibriMatricola.Integrazione()
     })
 
-    it("Finale", () => {
+    it("Finale", function () {
         LibriMatricola.ContrattoFinale()
         LibriMatricola.FinaleGoHome()
         cy.get('@contratto').then(val => {
@@ -863,7 +1317,7 @@ export function PreventivoMadre() {
 
     })
 
-    it("Verifica presenza preventivo", () => {
+    it("Verifica presenza preventivo Madre", function () {
 
         cy.log("nContratto c " + nPreventivo)
         expect(nPreventivo).to.not.be.undefined
@@ -873,5 +1327,96 @@ export function PreventivoMadre() {
 
 }
 
+export function InclusioneApplicazione(caseTest, nomeApplicazione, veicolo, garanzie, coperturaRCA = true, nPopupRiepilogo = 0) {
+
+    //#region Configuration
+    Cypress.config('defaultCommandTimeout', 60000)
+    const delayBetweenTests = 2000
+    //#endregions
+    var nPreventivoApp
+
+    describe("INCLUSIONE APPLICAZIONE: " + nomeApplicazione, function () {
+        it('Inclusione Nuova Applicazione', function () {
+            cy.fixture('LibriMatricola/LibriMatricola.json').then((data) => {
+                // LandingRicerca.search(data.ClientePGIVA)
+                LandingRicerca.search('02036631006')
+                LandingRicerca.clickFirstResult()
+                SintesiCliente.clickAuto()
+                SintesiCliente.clickLibriMatricola()
+                // LibriMatricola.accessoElencoApplicazioni(data.numContrattoLibro)
+                LibriMatricola.accessoElencoApplicazioni('531298496')
+                LibriMatricola.inclusioneNuovaApplicazione()
+                LibriMatricola.caricamentoDatiAmministrativi()
+            })
+        })
+        it('Dati Amministrativi', function () {
+            LibriMatricola.Avanti()
+            LibriMatricola.caricamentoContraenteProprietario()
+        })
+
+        it("Contraente/Proprietario", function () {
+            LibriMatricola.Avanti()
+            LibriMatricola.caricamentoVeicolo()
+        })
+
+        it("Veicolo", function () {
+            LibriMatricola.NuovoVeicolo(veicolo)
+            LibriMatricola.Avanti()
+            LibriMatricola.caricamentoProdottoProvenienza()
+        })
+
+        it("Selezione provenienza", function () {
+            LibriMatricola.CoperturaRCA(coperturaRCA)
+            if (coperturaRCA) {
+                LibriMatricola.ProvenienzaVeicolo(menuProvenienza.primaImmatricolazione.documentazione)
+            }
+            LibriMatricola.Avanti()
+            LibriMatricola.caricamentoRiepilogo()
+        })
+
+        it("Riepilogo", function () {
+            LibriMatricola.RiepilogoGaranzie2(garanzie, nPopupRiepilogo)
+            LibriMatricola.Avanti()
+        })
+
+        it("Integrazione", function () {
+            LibriMatricola.Integrazione(true)
+            LibriMatricola.inviaRichiestaVPS().then((numPreventivoApp) => {
+                cy.log(numPreventivoApp)
+                cy.pause()
+                nPreventivoApp = numPreventivoApp
+            })
+
+        })
+
+        // TODO: Verifica Esito in attesa di Autorizzazione giallo
+        // it("Verifica Esito in attesa di Autorizzazione", function () {
+
+        // })
+
+        it.only("Autorizza Preventivo (VPS)", function () {
+            // TopBar.logOutMW()
+            PageVPS.launchLoginVPS()
+            PageVPS.ricercaRichiestaNum('273255')
+
+        })
+
+        it("Finale", function () {
+            LibriMatricola.ContrattoFinale()
+            LibriMatricola.FinaleGoHome()
+            cy.get('@contratto').then(val => {
+                nPreventivoApp = val
+                cy.log("Preventivo Applicazione n. " + nPreventivoApp)
+            })
+        })
+
+        it("Verifica presenza preventivo applicazione", function () {
+            expect(nPreventivoApp).to.not.be.undefined
+            expect(nPreventivoApp).to.not.be.null
+
+            LibriMatricola.VerificaPresenzaPrevApp(nPreventivoApp)
+        })
+    })
+}
+
 export default LibriMatricola
-//VOLVO C70 2.4 20V 170 CV MOMENTUM (DAL 2005/09)

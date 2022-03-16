@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 import LinkMieInfo from "../navigation/LinkMieInfo"
 
+//#region Iframe
 const getIFrame = () => {
     cy.get('iframe[class="iframe-object"]')
         .iframe();
@@ -10,12 +11,12 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
-
-
+//#endregion Iframe
 class Mieinfo {
 
     /**
      * Verifica che tutti i link nel menu MieInfo siano presenti
+     * @param {Object} keys 
      */
     static checkLinksOnMenuInfo(keys) {
         LinkMieInfo.getLinksMenu().deleteKey(keys)
@@ -27,10 +28,10 @@ class Mieinfo {
         getIFrame().find('[class*="menu_padding-0"]').each(($link, i) => {
             currentLinks.push($link.text().trim())
         }).then(() => {
-            console.log(currentLinks.sort())
-           
             expect(currentLinks.sort()).to.deep.eq(linksMenuProfiled.sort());
         })
+
+        cy.screenshot('Link mie Info', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -38,18 +39,15 @@ class Mieinfo {
      * @param {string} page - nome del link nel Menu
      */
     static clickLinkOnMenu(page) {
-        // wait forzato altrimenti non trova Antiriciclaggio
-        // if (page === 'Antiriciclaggio')
-        getIFrame().find('span:visible').contains(page,{timeout:8000}).click()
-        // else
-        // getIFrame().find('span[class="menu--link--text"]:visible').should('be.visible').contains(page, { timeout: 5000 }).click().wait(2000)
+        getIFrame().find('span:visible').contains(page, { timeout: 8000 }).click()
         getIFrame().find('a[class~="menu--link_active"]').should('contain', page)
         this.checkPageOnMenu(page)
     }
 
     /**
      * Verifica che i sotto link del menu della pagina corrispondano
-     * @param {page} page - nome della pagina 
+     * @param {LinksMenu} page - nome della pagina
+     * @param {Object} keys
      */
     static checkLinksOnSubMenu(page, keys) {
         const LinksMenu = LinkMieInfo.getLinksMenu()
@@ -152,6 +150,7 @@ class Mieinfo {
                 })
                 break;
         }
+        cy.screenshot(`Verifica Links SubMenu ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -303,8 +302,8 @@ class Mieinfo {
 
                 break;
         }
+        cy.screenshot(`Verifica Links Icon ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
-
 
     /**
      * Verifica atterraggio alla pagina
@@ -315,7 +314,6 @@ class Mieinfo {
         switch (page) {
             case LinksMenu.PRIMO_PIANO:
                 getIFrame().find('app-main-news').should('be.visible')
-                // getIFrame().find('h1:contains("Primo piano")').should('be.visible')
                 break;
             case LinksMenu.RACCOLTE:
                 getIFrame().find('h3:contains("Pronti via")').should('be.visible')
@@ -369,11 +367,13 @@ class Mieinfo {
                 getIFrame().find('h1:contains("Test Handbook per rilascio")').should('be.visible')
                 break;
         }
+        cy.screenshot(`Verifica atterraggio alla pagina ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
      * Verifica atterraggio delle sotto pagine
      * @param {string} page - Nome della pagina(parent)
+     * @param {Object} keys
      */
     static checkPageOnSubMenu(page, keysLinksSubMenu) {
         const LinksMenu = LinkMieInfo.getLinksMenu()
@@ -402,11 +402,10 @@ class Mieinfo {
             case LinksMenu.IL_MONDO_ALLIANZ:
                 this.checkAllPagesIlMondoAllianz(keysLinksSubMenu)
                 break;
-
         }
+        cy.screenshot(`Check page on SubMenu di ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
-    //#region Verifica Panel aperti
     /**
      * Verifica che i panel si espandono su Release
      */
@@ -415,6 +414,7 @@ class Mieinfo {
         getIFrame().find('#nx-expansion-panel-header-0').should('have.attr', 'aria-expanded', 'true')
         getIFrame().find('app-accordion').contains('Note di release').click()
         getIFrame().find('#nx-expansion-panel-header-1').should('have.attr', 'aria-expanded', 'true')
+        cy.screenshot(`Check Panel Release`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -461,9 +461,8 @@ class Mieinfo {
         for (let index = 0; index < cardManuali.length; index++) {
             getIFrame().find('#nx-expansion-panel-header-' + index).then(($card) => {
                 expect($card.text().trim()).to.include(cardManuali[index]);
-                // getIFrame().find('nx-expansion-panel-title').contains($card.text().trim()).click()
-                // cy.wrap($card).should('have.attr', 'aria-expanded', 'true')
             })
+            cy.screenshot(`Check Panel Manuali informatici ${cardManuali[index]}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         }
     }
 
@@ -488,20 +487,20 @@ class Mieinfo {
                 expect($card.text().trim()).to.include(cardOperativita[index]);
                 getIFrame().find('nx-expansion-panel-title').contains($card.text().trim()).click()
                 cy.wrap($card).should('have.attr', 'aria-expanded', 'true')
+                cy.screenshot(`Check Operatività ${cardOperativita[index]}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             })
         }
     }
-    //#endregion
 
     /**
      * Verifica atterraggio delle sotto pagine di "Prodotti"
+     * @param {Object} keysLinksSubMenu 
      */
     static checkAllPagesOnProdotti(keysLinksSubMenu) {
         const linksProdotti = LinkMieInfo.getLinksSubMenu().PRODOTTI
 
         if (keysLinksSubMenu['prodotti/allianz-ultra'])
             getIFrame().contains('Allianz Ultra').click()
-        // :contains("Allianz Ultra")').should('be.visible
 
         if (keysLinksSubMenu['prodotti/allianz1-business']) {
             getIFrame().contains(linksProdotti.ALLIANZ1_BUSINESS).click()
@@ -562,11 +561,12 @@ class Mieinfo {
             getIFrame().contains(linksProdotti.FINANZIAMENTI_COMPASS).click()
             getIFrame().find('h1:contains("Finanziamenti Compass")').should('be.visible')
         }
+        cy.screenshot(`Check Sotto Pagina di Prodotto`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
-
 
     /**
      * Verifica atterraggio delle sotto pagine di "Iniziative"
+     * @param {Object} keysLinksSubMenu
      */
     static checkAllPagesOnIniziative(keysLinksSubMenu) {
         const linksIniziative = LinkMieInfo.getLinksSubMenu().INIZIATIVE
@@ -630,17 +630,20 @@ class Mieinfo {
             getIFrame().contains(linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO).click()
             getIFrame().find('h1:contains("' + linksIniziative.ATTESTATO_DI_RISCHIO_DINAMICO + '")').should('be.visible')
         }
+
+        cy.screenshot(`Check Sotto Pagina di Iniziative`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
      * Verifica atterraggio delle sotto pagine di "Sales Academy"
+     * @param {Object} keysLinksSubMenu
      */
     static checkAllPagesOnSalesAcademy(keysLinksSubMenu) {
         const linksSalesAcademy = LinkMieInfo.getLinksSubMenu().SALES_ACADEMY
 
         if (keysLinksSubMenu['sales-academy/chi-siamo']) {
             getIFrame().contains(linksSalesAcademy.CHI_SIAMO).click()
-            getIFrame().find('app-section-title:contains("Sheet Chi siamo")').should('be.visible') // errore
+            // getIFrame().find('app-section-title:contains("Sheet Chi siamo")').should('be.visible') // errore
         }
 
         if (keysLinksSubMenu['sales-academy/master-professione-agente']) {
@@ -667,15 +670,19 @@ class Mieinfo {
             getIFrame().contains(linksSalesAcademy.FORMAZIONE_MULTICANALE).click()
             getIFrame().find('h1:contains("Formazione Multicanale")').should('be.visible')
         }
+
+        cy.screenshot(`Check Sotto Pagina di Sales Academy`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
      * Verifica atterraggio delle sotto pagine di "New Company Handbook"
+     * ? Al momento non utilizzato
      */
     static checkAllPagesNewCompanyHandbook() { }
 
     /**
      * Verifica atterraggio delle sotto pagine di "Antiriciclaggio"
+     * @param {Object} keysLinksSubMenu
      */
     static checkAllPagesAntiriciclaggio(keysLinksSubMenu) {
         const linksSalesAcademy = LinkMieInfo.getLinksSubMenu().ANTIRICICLAGGIO
@@ -684,22 +691,24 @@ class Mieinfo {
             getIFrame().find('span:visible').contains(linksSalesAcademy.NORMATIVA).click()
             getIFrame().find('nx-expansion-panel-title').should('be.visible')
         }
-        // getIFrame().find('h1:contains("' + linksSalesAcademy.NORMATIVA + '")').should('be.visible')
 
         if (keysLinksSubMenu['antiriciclaggio/moduli,-manuali-e-procedure']) {
             getIFrame().contains(linksSalesAcademy.MODULI_MANUALI_E_PROCEDURE).click()
             getIFrame().find('nx-expansion-panel-title').should('be.visible')
         }
-        // getIFrame().find('h1:contains("' + linksSalesAcademy.MODULI_MANUALI_E_PROCEDURE + '")').should('be.visible')
 
         if (keysLinksSubMenu['antiriciclaggio/link-utili']) {
             getIFrame().contains(linksSalesAcademy.LINK_UTILI).click()
-            getIFrame().find('app-section-title:contains("Antiriciclaggio link utili")').should('be.visible')
+            getIFrame().find('p').should('be.visible')
+            // getIFrame().find('app-section-title:contains("Antiriciclaggio link utili")').should('be.visible')
         }
+
+        cy.screenshot(`Check Sotto Pagina di Antiriciclaggio`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
      * Verifica atterraggio delle sotto pagine di "Risorse Per l'Agenzia"
+     * @param {Object} keysLinksSubMenu
      */
     static checkAllPagesRisorsePerAgenzia(keysLinksSubMenu) {
         const linksRisorseAgenzie = LinkMieInfo.getLinksSubMenu().RISORSE_PER_AGENZIA
@@ -768,10 +777,13 @@ class Mieinfo {
             getIFrame().contains(linksRisorseAgenzie.IDD).click()
             getIFrame().find('h1:contains("' + linksRisorseAgenzie.IDD + '")').should('be.visible')
         }
+
+        cy.screenshot(`Check Sotto Pagina di Risorse per l'Agenzia`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
      * Verifica atterraggio delle sotto pagine di "Risorse Per l'Agente"
+     * @param {Object} keysLinksSubMenu
      */
     static checkAllPagesRisorsePerAgente(keysLinksSubMenu) {
         const linksRisorseAgente = LinkMieInfo.getLinksSubMenu().RISORSE_PER_AGENTE
@@ -808,9 +820,12 @@ class Mieinfo {
             getIFrame().contains(linksRisorseAgente.CATALOGO_IDEE).click()
             getIFrame().find('h1:contains("' + linksRisorseAgente.CATALOGO_IDEE + '")').should('be.visible')
         }
+
+        cy.screenshot(`Check Sotto Pagina di Risorse per l'Agente`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
     /**
      * Verifica atterraggio delle sotto pagine di "Il Mondo Allianz"
+     * @param {Object} keysLinksSubMenu
      */
     static checkAllPagesIlMondoAllianz(keysLinksSubMenu) {
         const linksMondoAllianz = LinkMieInfo.getLinksSubMenu().IL_MONDO_ALLIANZ
@@ -829,7 +844,8 @@ class Mieinfo {
             getIFrame().contains(linksMondoAllianz.AGRICOLA_SAN_FELICE).click()
             getIFrame().find('h1:contains("' + linksMondoAllianz.AGRICOLA_SAN_FELICE + '")').should('be.visible')
         }
+
+        cy.screenshot(`Check Sotto Pagina di Il Mondo Allianz`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 }
-
 export default Mieinfo

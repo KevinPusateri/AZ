@@ -135,6 +135,6 @@ describe('Matrix Web : Modifica PG', {
         LandingRicerca.clickClientePG(currentClientPG.name)
         SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
         DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)
-        SintesiCliente.verificaInFolder([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel])
+        SintesiCliente.verificaInFolderDocumentiAnagrafici([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel])
     })
 })
