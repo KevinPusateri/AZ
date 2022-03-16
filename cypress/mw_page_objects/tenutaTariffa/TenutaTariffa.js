@@ -344,6 +344,14 @@ class TenutaTariffa {
 
 
                     cy.wait('@getMotor', { requestTimeout: 30000 })
+
+                    cy.wait(3000)
+
+                    cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').within(($tipoVeicolo) => {
+                        let isNotEmpty = $tipoVeicolo.find('span').is(':visible')
+                        expect(isNotEmpty).to.be.true
+                        cy.pause()
+                    })
                 }
             })
 
