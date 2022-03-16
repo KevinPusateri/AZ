@@ -23,6 +23,11 @@ Classe Common per varie funzioni Cross Matrix Web
     * [.getByIdWithTypeOnIframe(i, text)](#Common.getByIdWithTypeOnIframe) ⇒ <code>cy.get(id).should(&#x27;exist&#x27;).and(&#x27;be.visible&#x27;).clear().type(text)</code>
     * [.findByIdOnIframe(path)](#Common.findByIdOnIframe) ⇒
     * [.clickFindByIdOnIframe(path)](#Common.clickFindByIdOnIframe) ⇒
+    * [.clickFindByIdOnIframeChild(idIframe, path)](#Common.clickFindByIdOnIframeChild) ⇒
+    * [.getObjByTextOnIframe(idIframe, text)](#Common.getObjByTextOnIframe) ⇒ <code>cy.contains(text).should(&#x27;be.visible&#x27;).click()</code>
+    * [.getObjByTextOnIframeChild(idIframe, text)](#Common.getObjByTextOnIframeChild) ⇒ <code>cy.contains(text).should(&#x27;be.visible&#x27;).click()</code>
+    * [.getObjByIdAndTextOnIframeChild(idIframe, id, text)](#Common.getObjByIdAndTextOnIframeChild)
+    * [.isValidCheck(regexExp, str, msg)](#Common.isValidCheck) ⇒
 
 <a name="Common.canaleFromPopup"></a>
 
@@ -244,3 +249,74 @@ Trova l'elemento tramite la sua path all'interno di un iFrame ed effettua il cli
 ```js
 Common.clickFindByIdOnIframe('button:contains("Cancella"):visible')
 ```
+<a name="Common.clickFindByIdOnIframeChild"></a>
+
+### Common.clickFindByIdOnIframeChild(idIframe, path) ⇒
+Trova l'elemento tramite la sua path all'interno di un iFrame ed effettua il click
+
+**Kind**: static method of [<code>Common</code>](#Common)  
+**Returns**: elemento cliccato per poter effettuare altre operazioni concatenate  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| idIframe | <code>\*</code> | del child frame |
+| path | <code>\*</code> |  |
+
+**Example**  
+```js
+Common.clickFindByIdOnIframeChild('button:contains("Cancella"):visible')
+```
+<a name="Common.getObjByTextOnIframe"></a>
+
+### Common.getObjByTextOnIframe(idIframe, text) ⇒ <code>cy.contains(text).should(&#x27;be.visible&#x27;).click()</code>
+Gets an object in iframe  by text
+
+**Kind**: static method of [<code>Common</code>](#Common)  
+**Returns**: <code>cy.contains(text).should(&#x27;be.visible&#x27;).click()</code> - findIframeChild(idIframe).within(() => )  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| idIframe | <code>\*</code> | del  frame |
+| text | <code>string</code> | testo |
+
+<a name="Common.getObjByTextOnIframeChild"></a>
+
+### Common.getObjByTextOnIframeChild(idIframe, text) ⇒ <code>cy.contains(text).should(&#x27;be.visible&#x27;).click()</code>
+Gets an object in iframe Child by text
+
+**Kind**: static method of [<code>Common</code>](#Common)  
+**Returns**: <code>cy.contains(text).should(&#x27;be.visible&#x27;).click()</code> - findIframeChild(idIframe).within(() => )  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| idIframe | <code>\*</code> | del child frame |
+| text | <code>string</code> | testo |
+
+<a name="Common.getObjByIdAndTextOnIframeChild"></a>
+
+### Common.getObjByIdAndTextOnIframeChild(idIframe, id, text)
+Check if an object identified by locator and its label is displayed
+
+**Kind**: static method of [<code>Common</code>](#Common)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| idIframe | <code>\*</code> | del child frame |
+| id | <code>string</code> | : class attribute |
+| text | <code>string</code> | : text displayed |
+
+<a name="Common.isValidCheck"></a>
+
+### Common.isValidCheck(regexExp, str, msg) ⇒
+Defined @regexExp a regular expression is verified if the string @str matches the reg. ex.
+
+**Kind**: static method of [<code>Common</code>](#Common)  
+**Returns**: assert.isTrue(value, [message])  
+**Link**: https://docs.cypress.io/guides/references/assertions#TDD-Assertions  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| regexExp | <code>string</code> | : regular expression string |
+| str | <code>string</code> | : string value |
+| msg | <code>string</code> | : message |
+
