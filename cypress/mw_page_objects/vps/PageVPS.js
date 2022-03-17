@@ -11,8 +11,18 @@ class PageVPS {
      * Effettua il primo visit
      */
     static launchLoginVPS() {
+
         Cypress.config().baseUrl = 'http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx'
+
+        const stub = cy.stub().as('open')
+        cy.on('window:before:load', (win) => {
+            cy.stub(win, 'open').callsFake(stub)
+        })
+
         cy.visit('/')
+
+        cy.get('@open').should('have.been.calledOnce')
+
         //TODO: Da criptare le credenziali
         cy.get('body').then(($body) => {
             var formLoginExist = $body.find('input[name="Ecom_User_ID"]').is(':visible')
@@ -24,6 +34,11 @@ class PageVPS {
             }
         })
 
+        // cause the window to be recreated
+        cy.reload()
+
+        // all window.open calls are correctly forwarded to our stub
+        cy.get('@open').should('have.been.calledTwice')
     }
 
     /**
