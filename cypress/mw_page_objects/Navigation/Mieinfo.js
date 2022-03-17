@@ -315,6 +315,9 @@ class Mieinfo {
             case LinksMenu.PRIMO_PIANO:
                 getIFrame().find('app-main-news').should('be.visible')
                 break;
+            case LinksMenu.TUTTE_LE_NOTIZIE:
+                getIFrame().find('h1:contains("Tutte le notizie")').should('be.visible')
+            break;
             case LinksMenu.RACCOLTE:
                 getIFrame().find('h3:contains("Pronti via")').should('be.visible')
                 break;
