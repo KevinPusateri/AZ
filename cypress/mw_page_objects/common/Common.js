@@ -15,7 +15,7 @@ const findIframeChild = (subFrame) => {
 /**
  * @class
  * @classdesc Classe Common per varie funzioni Cross Matrix Web
- * @author Andrea 'Bobo' Oboe & Kevin Pusateri
+ * @author Andrea 'Bobo' Oboe, Kevin Pusateri & Michele Delle Donne
  */
 class Common {
 
@@ -366,12 +366,7 @@ class Common {
      * @param {*} idIframe id child frame
      * @param {string} id : id attribute 
      * @param {string} text : text displayed
-     * @returns findIframeChild(idIframe).find(id).should('exist').then(($obj) => {
-            const value = $obj.val().toUpperCase();
-            if (value.includes(text.toUpperCase())) {                   
-                cy.log('>> object with id=' +id+ ' and label: "' +text+ '" is defined')           
-            }
-        })
+     * @returns {Object}
      */
     static getObjByIdAndTextOnIframeChild(idIframe, id, text) {
         return findIframeChild(idIframe).find(id).should('exist').then(($obj) => {
