@@ -15,6 +15,7 @@ import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagr
 import CondividiPreventivo from "../../mw_page_objects/UltraBMP/CondividiPreventivo"
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+import AreaRiservata from "../../mw_page_objects/UltraBMP/AreaRiservata"
 import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
 import ControlliSalvataggio from "../../mw_page_objects/UltraBMP/ControlliSalvataggio"
 import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
@@ -58,11 +59,15 @@ import { daModificareFabbricato } from '../../fixtures/Ultra/BMP_Caso6.json'
 import { soluzione } from '../../fixtures/Ultra/BMP_Comune.json'
 import { ambitoUltra } from '../../fixtures/Ultra/BMP_Comune.json'
 
+
 //#endregion
 
 //#region  variabili iniziali
-var premioTotPrima = 0
-var premioTotDopo = 0
+var premioMinimo = 0
+var premioMassimo = 0
+var premioIniziale = 0
+var premioBarrato = 0
+var premioScontato = 0
 var premioFA = 0
 var premioFA_FenomenoElettrico = 0
 var premioRC_Prima = 0
@@ -71,7 +76,7 @@ var premioRC_Affittacamere = 0
 var premioRC_ProprietàAnimali = 0
 
 //let personaFisica = PersonaFisica.MassimoRoagna()
-let personaFisica = PersonaFisica.GalileoGalilei()
+let personaFisica = PersonaFisica.CarloRossini()
 let personaFisica2 = PersonaFisica.SimonettaRossino()
 var nContratto = "000"
 var nPreventivo = "000"
@@ -80,7 +85,10 @@ var frazionamento = "annuale"
 var arrPath = []
 var arrDoc = []
 //var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
-var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali, ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici]
+var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, 
+              ambitiUltra.ambitiUltraCasaPatrimonio.contenuto,
+              ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali,
+              ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici]
 
 const ultraIFrame = () => {
     let iframeSCU = cy.get('#matrixIframe')
@@ -138,6 +146,77 @@ describe('Ultra BMP : Emissione BMP Caso6', function () {
         Common.canaleFromPopup()
         Dashboard.caricamentoDashboardUltra()
     })
+
+    it("Seleziona ambiti", () => {
+        cy.log('Seleziona ambito')
+        Dashboard.selezionaAmbiti(ambiti)
+    })
+    
+    it("Cambia Soluzioni", () => {
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, soluzione.TOP)
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.contenuto, soluzione.TOP)
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali, soluzione.TOP)
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici, soluzione.TOP)
+    })
+    
+    it("Seleziona frazionamento", () => {
+        Dashboard.selezionaFrazionamento(frazionamento)
+    })
+
+    it("Lettura premio totale prima dello sconto", () => {
+        Dashboard.leggiPremioTot()    //>> premioTotDashboard 
+        cy.get('@premioTotDashboard').then(premioTot => {
+            premioIniziale = premioTot
+            cy.log('Premio iniziale prima dello sconto: ' + premioIniziale)
+        })
+    })
+
+    it("Accesso Area Riservata", () => {
+        Dashboard.selezionaVoceHeader('Area riservata')
+        //AreaRiservata.caricamentoPagina()
+    })
+
+    it("Lettura premi Area Riservata", () => {
+        AreaRiservata.leggiPremio('MIN')
+        cy.get('@premioMin').then(premioMin => {
+            premioMinimo = parseFloat(premioMin.replace(/,/,"."))
+            cy.log('Premio Minimo: ' + premioMinimo)
+        })
+        AreaRiservata.leggiPremio('MAX')
+        cy.get('@premioMax').then(premioMax => {
+            premioMassimo = parseFloat(premioMax.replace(/,/,"."))
+            cy.log('Premio Massimo: ' + premioMassimo)
+        })
+    })
+
+    it("Impostazione sconto in Area Riservata", () => {
+        AreaRiservata.impostaSconto(premioMinimo, premioMassimo, 65)
+        AreaRiservata.clickConferma()
+        Dashboard.caricamentoDashboardUltra()
+    })
+
+    it("Lettura premi dopo applicazione sconto", () => {
+        // Premio scontato
+        
+        Dashboard.leggiPremioTot('SCONTATO')    //>> premioTotDashboardScontato
+        cy.get('@premioTotDashboardScontato').then(premioTotScontato => {
+            premioScontato = premioTotScontato
+            cy.log('Premio scontato: ' + premioScontato)
+        })
+        
+
+        // Premio iniziale barrato
+        Dashboard.leggiPremioTot('BARRATO')    //>> premioTotDashboardBarrato 
+        cy.get('@premioTotDashboardBarrato').then(premioTotBarrato => {
+            premioBarrato = premioTotBarrato
+            cy.log('Premio barrato dopo sconto: ' + premioBarrato)
+        })
+    })
+
+    it("Verifica premio barrato", () => {
+        expect(premioBarrato).to.be.equal(premioIniziale)
+    })
+
 
 
 
