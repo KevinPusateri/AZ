@@ -1402,7 +1402,7 @@ export function InclusioneApplicazione(nomeApplicazione, veicolo, garanzie, cope
 
         // })
 
-        it("Autorizza Preventivo (VPS)", function () {
+        it.only("Autorizza Preventivo (VPS)", function () {
             PageVPS.launchLoginVPS()
             PageVPS.ricercaRichiestaNum(nPreventivoApp).then((richiestaId) => {
                 PageVPS.autorizza(richiestaId)

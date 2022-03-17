@@ -35,14 +35,14 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregions
 
 
-before(() => {
-    expect(Cypress.browser.name).to.contain('firefox')
+// before(() => {
+//     expect(Cypress.browser.name).to.contain('firefox')
 
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
-    })
-})
+//     cy.getUserWinLogin().then(data => {
+//         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+//         LoginPage.logInMWAdvanced()
+//     })
+// })
 
 beforeEach(() => {
     cy.preserveCookies()
