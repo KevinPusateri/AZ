@@ -241,7 +241,7 @@ class Sales {
                 Common.canaleFromPopup()
                 cy.wait('@getUltra', { requestTimeout: 30000 });
                 cy.wait(5000)
-                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-casa.png')
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_SALUTE:
@@ -546,7 +546,7 @@ class Sales {
         cy.wait(5000)
         cy.get('.cards-container').should('be.visible').find('.card').first().as('firstCard')
         cy.get('@firstCard').trigger('mouseover')
-        cy.get('@firstCard').click({force: true})
+        cy.get('@firstCard').click({ force: true })
         cy.wait(20000)
         cy.wait('@digitalAgencyLink', { requestTimeout: 30000 });
         getIFrame().within(() => {
@@ -605,7 +605,8 @@ class Sales {
                 }
             })
             cy.get('app-lob-link').should('be.visible').contains(lob).click()
-            cy.wait('@gqlSfera')
+            if (lob !== 'Motor')
+                cy.wait('@gqlSfera')
             cy.wait(2000)
             let enable
             cy.get('app-receipt-header').find('span').eq(1).invoke('text').then((numPezzi) => {

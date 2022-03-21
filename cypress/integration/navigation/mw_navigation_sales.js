@@ -150,12 +150,22 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    if (Cypress.env('isAviva'))
+
+    //TODO: Implement profiling keys for Emmetti Polizza
+    https://github.developer.allianz.io/az-italy/matrix-web-fe-tests/issues/65
+    if (Cypress.env('isAviva')) {
         it('Verifica aggancio Emetti Polizza - Ultra Salute', function () {
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Ultra Salute')
             Sales.backToSales()
         })
+
+        it('Verifica aggancio Emetti Polizza - Ultra Casa e Patrimonio', function () {
+            TopBar.clickSales()
+            Sales.clickLinkOnEmettiPolizza('Ultra Casa e Patrimonio')
+            Sales.backToSales()
+        })
+    }
     else {
 
         it('Verifica aggancio Emetti Polizza - Allianz Ultra Salute', function () {
@@ -223,7 +233,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         } else this.skip()
     })
 
-    it('Verifica "Premi"', function () {
+    it('Verifica tab "Premi"', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
             Sales.checkExistPremi()

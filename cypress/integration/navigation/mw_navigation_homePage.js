@@ -19,6 +19,8 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 let keys = {
     interrogazioniCentralizzateEnabled: true,
+    PIATTAFORMA_CONTRATTI_AZ_TELEMATICS: true,
+    MONITOR_SCORING_AZ_BONUS_DRIVE: true,
     REPORT_ALLIANZ_NOW: true,
     srmOnlineEnabled: true,
     siscoEnabled: true,
@@ -36,6 +38,8 @@ before(() => {
         LoginPage.logInMWAdvanced()
 
         cy.getProfiling(data.tutf).then(profiling => {
+            cy.filterProfile(profiling, 'COMMON_PIATTAFORMA_TMX').then(profiled => { keys.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS = profiled })
+            cy.filterProfile(profiling, 'COMMON_CRUSCOTTO_SCORING_ABD').then(profiled => { keys.MONITOR_SCORING_AZ_BONUS_DRIVE = profiled })
             cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiled => { keys.interrogazioniCentralizzateEnabled = profiled })
             cy.filterProfile(profiling, 'COMMON_SERVIZI_SOL').then(profiled => { keys.srmOnlineEnabled = profiled })
             cy.filterProfile(profiling, 'VITA_SISCO').then(profiled => { keys.siscoEnabled = profiled })
