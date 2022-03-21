@@ -11,18 +11,11 @@ class PageVPS {
      * Effettua il primo visit
      */
     static launchLoginVPS() {
-        cy.clearCookies().wait(2000)
 
-        Cypress.config().baseUrl = 'http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx'
+        // Cypress.config().baseUrl = 'http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx'
 
-        // const stub = cy.stub().as('open')
-        // cy.on('window:before:load', (win) => {
-        //     cy.stub(win, 'open').callsFake(stub)
-        // })
-
-        cy.visit('/')
-        // cy.get('@open').should('have.been.calledOnce')
-        //TODO: Da criptare le credenziali
+        // cy.newTabAction('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
+        cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
         cy.get('body').then(($body) => {
             var formLoginExist = $body.find('input[name="Ecom_User_ID"]').is(':visible')
             if (formLoginExist) {
@@ -31,16 +24,10 @@ class PageVPS {
                 cy.get('[name="Ecom_Password"]').type('pwdeuvps02')
                 cy.pause()
 
-                cy.get('[value="Conferma"]').click()
 
             }
         })
 
-        // cause the window to be recreated
-        cy.reload()
-
-        // all window.open calls are correctly forwarded to our stub
-        // cy.get('@open').should('have.been.calledTwice')
     }
 
     /**
@@ -54,6 +41,7 @@ class PageVPS {
 
     static ricercaRichiestaNum(nPreventivoApp) {
         return new Cypress.Promise((resolve) => {
+            cy.reload()
 
             // Seleziona Modalità normale
             cy.get('#ddlModalitaEsecuzione').select('(!) Modalità normale')

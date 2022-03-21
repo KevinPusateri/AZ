@@ -1387,12 +1387,12 @@ export function InclusioneApplicazione(nomeApplicazione, veicolo, garanzie, cope
             LibriMatricola.Avanti()
         })
 
-        it("Integrazione", function () {
-            LibriMatricola.Integrazione(true)
-            LibriMatricola.inviaRichiestaVPS().then((numPreventivoApp) => {
-                cy.log(numPreventivoApp)
-                nPreventivoApp = numPreventivoApp
-            })
+        it.only("Integrazione", function () {
+            // LibriMatricola.Integrazione(true)
+            // LibriMatricola.inviaRichiestaVPS().then((numPreventivoApp) => {
+            //     cy.log(numPreventivoApp)
+            //     nPreventivoApp = numPreventivoApp
+            // })
             TopBar.logOutMW()
             cy.wait(1500)
         })
@@ -1403,11 +1403,27 @@ export function InclusioneApplicazione(nomeApplicazione, veicolo, garanzie, cope
         // })
 
         it.only("Autorizza Preventivo (VPS)", function () {
-            PageVPS.launchLoginVPS()
-            PageVPS.ricercaRichiestaNum(nPreventivoApp).then((richiestaId) => {
-                PageVPS.autorizza(richiestaId)
-            })
+            // PageVPS.launchLoginVPS()
+            cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
 
+        })
+        it.only("aa", function () {
+            cy.get('body').then(($body) => {
+                var formLoginExist = $body.find('input[name="Ecom_User_ID"]').is(':visible')
+                if (formLoginExist) {
+                    cy.get('table').should('be.visible')
+                    cy.get('[name="Ecom_User_ID"]').clear().type('euvps02')
+                    cy.get('[name="Ecom_Password"]').clear().type('pwdeuvps02')
+                    cy.pause()
+                }
+                cy.get('[value="Conferma"]').click()
+                // cy.reload()
+                // cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
+
+            })
+        })
+        it.only("aa", function () {
+            cy.reload()
         })
 
         // it("Finale", function () {

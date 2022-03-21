@@ -260,11 +260,18 @@ module.exports = (on, config) => {
     on('before:browser:launch', (browser = {}, launchOptions) => {
 
         if (browser.family === 'firefox') {
+            launchOptions.preferences['browser.download.dir'] = process.cwd()+"\\cypress\\downloads"
+            launchOptions.preferences['browser.download.folderList'] = 2
+            launchOptions.preferences['browser.download.panel.shown'] = false
+            launchOptions.preferences['browser.download.manager.focusWhenStarting'] = true
+            launchOptions.preferences['browser.helperApps.neverAsk.saveToDisk'] = 'application/pdf','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            launchOptions.preferences['browser.download.manager.useWindow'] = true
+            launchOptions.preferences['pdfjs.disabled'] = false
+            launchOptions.preferences['devtools.console.stdout.content'] = false
 
             //Necessario per queli applicativi (tipo LM) che utilizzano ancora applet java
             //Vado a prendere Allianz IO Web Ext
             launchOptions.extensions.push(process.cwd() + "\\extensions\\allianziowebext@allianz.it.xpi")
-
             return launchOptions;
         }
     })
