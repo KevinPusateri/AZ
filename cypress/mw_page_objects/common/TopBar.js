@@ -286,6 +286,7 @@ class TopBar extends HomePage {
     static clickLinkOnUtilita(page) {
         if (page === LinkUtilita.CASELLA_DI_POSTA_ED_AGENZIA ||
             page === LinkUtilita.BANCHE_DATI_ANIA ||
+            page === LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO ||
             page === LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS) {
             cy.get('lib-switch-button-utility').should('be.visible').within(() => {
 
@@ -306,7 +307,8 @@ class TopBar extends HomePage {
                 cy.url().should('include', 'https://login.microsoftonline.com/common')
                 break;
             case LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO:
-                getIFrame().find('input[name="Continua"]').should('be.visible')
+                cy.get('#form_auto').should('be.visible')
+                cy.go('back')
                 break;
             case LinkUtilita.REPORT_ALLIANZ_NOW:
                 break;
