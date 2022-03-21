@@ -87,12 +87,12 @@ class HomePage {
      */
     static clickVediTutte() {
         cy.contains('Vedi tutte').click()
-        cy.url().should('eq', Common.getBaseUrl() + 'news/recent')
+        cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo?news=news')
         News.checkAtterraggio()
     }
 
     static checkNotExistVediTutte() {
-        cy.get('nx-link[routerlink="/news/recent"]').should('not.exist')
+        cy.get('nx-link[routerlink="/lemieinfo?news=news"]').should('not.exist')
         cy.screenshot('Vedi Tutte non presente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
