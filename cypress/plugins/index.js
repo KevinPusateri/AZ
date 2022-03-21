@@ -264,7 +264,7 @@ module.exports = (on, config) => {
             //Necessario per queli applicativi (tipo LM) che utilizzano ancora applet java
             //Vado a prendere Allianz IO Web Ext
             launchOptions.extensions.push(process.cwd() + "\\extensions\\allianziowebext@allianz.it.xpi")
-            launchOptions.extensions.push(process.cwd() + "\\extensions\\allow_cors_access_control_allow_origin-0.1.6-an+fx.xpi")
+
             return launchOptions;
         }
     })
