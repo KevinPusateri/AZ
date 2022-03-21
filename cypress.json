@@ -53,7 +53,7 @@
     "isSecondWindow": false,
     "monoUtenza": false,
     "multiUtenza": "5-851-0-100",
-    "isAviva": false,
+    "isAviva": true,
     "hostParsr": "H2017LE00038A",
     "portParsr": "3001"
   }

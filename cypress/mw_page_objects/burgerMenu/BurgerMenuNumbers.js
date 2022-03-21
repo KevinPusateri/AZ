@@ -181,6 +181,7 @@ class BurgerMenuNumbers extends Numbers {
         switch (page) {
             case LinksBurgerMenu.MONITORAGGIO_FONTI:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@getDacommercialePOST', { requestTimeout: 150000 });
                 getIFrame().find('a:contains("Filtra")')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
