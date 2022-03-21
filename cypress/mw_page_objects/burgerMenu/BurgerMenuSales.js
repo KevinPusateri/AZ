@@ -63,7 +63,7 @@ const LinksBurgerMenu = {
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
         if (!keys.ALLIANZ_ULTRA_SALUTE) delete this.ALLIANZ_ULTRA_SALUTE
         if (!keys.ALLIANZ1_BUSINESS) delete this.ALLIANZ1_BUSINESS
-        if (!keys.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE) delete this.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE
+        if (!keys.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE || Cypress.env('isAviva')) delete this.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE
         if (!keys.FASTQUOTE_UNIVERSO_PERSONA) delete this.FASTQUOTE_UNIVERSO_PERSONA
         if (!keys.FASTQUOTE_UNIVERSO_SALUTE) delete this.FASTQUOTE_UNIVERSO_SALUTE
         if (!keys.ALLIANZ_ULTRA_IMPRESA) delete this.ALLIANZ_ULTRA_IMPRESA
@@ -184,8 +184,6 @@ class BurgerMenuSales extends Sales {
      * @param {string} page - Nome della pagina 
      */
     static checkPage(page) {
-        console.log(page)
-        console.log(LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO)
         switch (page) {
             case LinksBurgerMenu.PREVENTIVO_MOTOR:
                 cy.intercept({
@@ -215,7 +213,7 @@ class BurgerMenuSales extends Sales {
                 break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO:
                 Common.canaleFromPopup()
-                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', './assets/img/allianz-logo-casa.png')
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -227,7 +225,7 @@ class BurgerMenuSales extends Sales {
                 break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_SALUTE:
                 Common.canaleFromPopup()
-                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', './assets/img/allianz-logo-salute.png')
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-salute.png' : './assets/img/aviva-logo-salute.png')
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;

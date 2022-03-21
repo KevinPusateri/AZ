@@ -241,7 +241,6 @@ class Sales {
                 Common.canaleFromPopup()
                 cy.wait('@getUltra', { requestTimeout: 30000 });
                 cy.wait(5000)
-                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', './assets/img/allianz-logo-casa.png')
                 getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-casa.png')
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
                 break;

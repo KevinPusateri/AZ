@@ -67,7 +67,7 @@ before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
-        BurgerMenuSales.getProfiling(data.tutf,keys)
+        BurgerMenuSales.getProfiling(data.tutf, keys)
     })
 })
 
@@ -130,7 +130,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     // #endregion
 
     // #region  Rami Vari
-    it('Verifica aggancio Allianz Ultra Casa e Patrimonio', function () {
+    it('Verifica aggancio ' + (Cypress.env('isAviva')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio', function () {
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO)
             this.skip()
         TopBar.clickSales()
@@ -146,7 +146,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     });
 
-    it('Verifica aggancio Allianz Ultra Salute', function () {
+    it('Verifica aggancio ' + (Cypress.env('isAviva')) ? 'Ultra Salute' : 'Allianz Ultra Salute', function () {
         if (!keys.ALLIANZ_ULTRA_SALUTE)
             this.skip()
         TopBar.clickSales()
@@ -163,7 +163,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
-        if (!keys.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE)
+        if (!keys.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE || Cypress.env('isAviva'))
             this.skip()
         TopBar.clickSales()
         BurgerMenuSales.clickLink('FastQuote Infortuni da circolazione')
