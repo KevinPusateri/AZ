@@ -88,7 +88,7 @@ describe('AVIVA - ARD 20220401 : ', {
                     TenutaTariffa.compilaVeicolo(currentCase)
                     TenutaTariffa.compilaProvenienza(currentCase)
                     TenutaTariffa.compilaOffertaARD(currentCase)
-                    TenutaTariffa.areaRiservata()
+                    TenutaTariffa.areaRiservata(currentCase)
                 }
                 else
                     this.skip()
