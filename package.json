@@ -16,6 +16,7 @@
     "fs": "0.0.1-security",
     "ftp-deploy": "^2.3.8",
     "ibantools": "^3.3.0",
+    "minimist": "^1.2.6",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
     "node-fetch": "^2.6.7",
