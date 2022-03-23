@@ -101,14 +101,6 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         BackOffice.clickAppuntamentiFuturi()
     });
 
-    it('Verifica atterraggio Nuova Incentivazione Vita("News")', function () {
-        if (Cypress.env('isAviva'))
-            this.skip()
-        TopBar.clickBackOffice()
-        BackOffice.clickNewsLanding()
-        BackOffice.backToBackOffice()
-    });
-
     it('Verifica links Sinistri', function () {
         TopBar.clickBackOffice()
         BackOffice.checkLinksOnSinistriExist(keys)

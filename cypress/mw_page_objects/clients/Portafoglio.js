@@ -236,7 +236,18 @@ class Portafoglio {
             else {
                 cy.get('lib-da-link').should('be.visible')
                 cy.get('lib-filter-button-with-modal').should('be.visible')
-                cy.get('app-wallet-inactive-contracts').find('app-section-title').should('contain.text', 'Polizze')
+
+                cy.get('app-wallet-inactive-contracts').should('be.visible').then(($contract) => {
+
+                    var firstCheck = $contract.find(':contains("Polizze attive")').is(':visible')
+                    var secondCheck = $contract.find(':contains("Polizza attiva")').is(':visible')
+                    if (firstCheck || secondCheck) {
+                        assert.isTrue(true, 'corretto')
+                        cy.log(firstCheck)
+                        cy.log(secondCheck)
+                    }
+                })
+
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.wait(5000)
                 cy.get('app-contract-card').should('be.visible').first().click()

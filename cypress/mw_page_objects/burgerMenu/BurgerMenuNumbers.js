@@ -193,6 +193,7 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO_FONTE:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait(15000)
                 getIFrame().find('#contentPane:contains("Apri filtri"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -227,7 +228,6 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.ESTRAZIONI_AVANZATE:
                 cy.wait('@pentahoDA', { requestTimeout: 40000 });
                 cy.wait('@pentahoDama', { requestTimeout: 40000 });
-                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 getIFrame().find('a:contains("Nuovo Report"):visible')
                 break;
             case LinksBurgerMenu.SCARICO_DATI:
@@ -238,7 +238,6 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.INDICI_DIGITALI:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 getIFrame().find('#toggleFilters:contains("Apri filtri")')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -259,6 +258,7 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.NEW_BUSINESS_VITA:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
+                cy.wait(15000)
                 getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
