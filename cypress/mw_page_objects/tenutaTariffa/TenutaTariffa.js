@@ -956,7 +956,7 @@ class TenutaTariffa {
                     break
                 //AZ
                 case "MACROLESIONI":
-                    cy.contains("Spese mediche per macrolesioni alla guida").parents('tr').find('button:first').click()
+                    cy.contains("Spese mediche per Macrolesioni alla guida").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
             }
