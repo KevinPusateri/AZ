@@ -60,7 +60,7 @@ describe('Matrix Web : Note di contratto', function () {
 
         it('Verifica Aggiungi Nota', function () {
             //('Retriving client with polizze auto, please wait...')
-            cy.getClientWithPolizze(currentTutf, '31', false, false, 'PF', true).then(customerFullName => {
+            cy.getClientWithPolizze(currentTutf, '31', false, false, 'PF', (Cypress.env('isAviva')) ? true : false).then(customerFullName => {
                 currentCustomerFullName = customerFullName
                 TopBar.search(currentCustomerFullName)
                 LandingRicerca.clickClientePF(currentCustomerFullName)
@@ -377,7 +377,7 @@ describe('Matrix Web : Note di contratto', function () {
         })
     })
 
-    context('Polizza Allianz1 Business', function () {
+    context.only('Polizza Allianz1 Business', function () {
         //('Retriving client with polizze allianz 1 business, please wait...')
         it('Verifica Aggiungi Nota', function () {
             if (!Cypress.env('isAviva')) {

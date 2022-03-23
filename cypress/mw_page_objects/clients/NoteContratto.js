@@ -9,8 +9,7 @@ class NoteContratto {
      * Verifica inserimento di una nota di contratto
      */
     static inserisciNotaContratto() {
-        cy.get('app-contract-card').should('be.visible')
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').should('be.visible').as('polizza')
 
         //#region Loop elimina le note se presenti
         const loopDeleteNotes = () => {
@@ -44,45 +43,45 @@ class NoteContratto {
         }
         loopDeleteNotes()
         cy.get('nx-icon[name="product-board-paper-note"]').should('not.exist')
-            //#endregion
+        //#endregion
 
         //#region Aggiungi una nota di contratto 
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').first().should('exist').then(($contract) => {
-                cy.wrap($contract)
-                    .find('app-contract-context-menu > nx-icon').click()
-                cy.get('.cdk-overlay-container').should('contain.text', 'Note di contratto').within(($overlay) => {
-                    cy.get('button').should('be.visible')
-                    cy.wrap($overlay).find('button:contains("Note di contratto")').click()
+        cy.get('app-contract-card').should('be.visible').as('polizza').first().should('exist').then(($contract) => {
+            cy.wrap($contract)
+                .find('app-contract-context-menu > nx-icon').click()
+            cy.get('.cdk-overlay-container').should('contain.text', 'Note di contratto').within(($overlay) => {
+                cy.get('button').should('be.visible')
+                cy.wrap($overlay).find('button:contains("Note di contratto")').click()
+            })
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                cy.get('button').find('span:contains("Aggiungi nota")').click()
+            })
+
+            cy.get('.cdk-overlay-container').should('be.visible')
+            cy.get('lib-note-action-modal').should('be.visible').within(() => {
+                cy.get('span').should('be.visible').and('contain.text', 'Salva')
+                cy.get('input[name="title"]').should('be.visible').type('Test Nota')
+
+                cy.fixture('Nota.json').then((data) => {
+                    cy.get('textarea[name="description"]').should('be.visible').type(JSON.stringify(data.nota))
+                    cy.get('button').find('span:contains("Salva")').first().click().wait(2000)
                 })
-                cy.get('nx-modal-container').should('be.visible').within(() => {
-                    cy.get('button').find('span:contains("Aggiungi nota")').click()
-                })
-
-                cy.get('.cdk-overlay-container').should('be.visible')
-                cy.get('lib-note-action-modal').should('be.visible').within(() => {
-                    cy.get('span').should('be.visible').and('contain.text', 'Salva')
-                    cy.get('input[name="title"]').should('be.visible').type('Test Nota')
-
-                    cy.fixture('Nota.json').then((data) => {
-                        cy.get('textarea[name="description"]').should('be.visible').type(JSON.stringify(data.nota))
-                        cy.get('button').find('span:contains("Salva")').first().click().wait(2000)
-                    })
-
-                })
-                Common.canaleFromPopup()
-
-                cy.get('lib-contract-notes-badge').should('exist').and('be.visible')
-                    .find('[class="badge-label"]:contains("Note")').should('be.visible')
 
             })
-            //#endregion
+            Common.canaleFromPopup()
+
+            cy.get('lib-contract-notes-badge').should('exist').and('be.visible')
+                .find('[class="badge-label"]:contains("Note")').should('be.visible')
+
+        })
+        //#endregion
     }
 
     /**
      *  Verifica la nota inserita con descrizione presa dal file nota.json
      */
     static checkNotaInserita() {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
 
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
@@ -135,7 +134,7 @@ class NoteContratto {
      * - sia presente il menu contestuale(tre puntini)
      */
     static checkBadgeNota() {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
                 cy.wait(1000)
@@ -171,7 +170,7 @@ class NoteContratto {
      * Verifica che la nota venga modificata
      */
     static modificaNota() {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
                 cy.wait(1000)
@@ -240,7 +239,7 @@ class NoteContratto {
      * Verifica Inserimento di una nota direttamente dal "badge"(icona) Note 
      */
     static inserisciNotaFromBadge() {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
 
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
@@ -292,7 +291,7 @@ class NoteContratto {
      * Verifica nota con flag Importante sia stato inserito
      */
     static checkImportante() {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
 
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
@@ -359,7 +358,7 @@ class NoteContratto {
                         numberPolizza: '',
                         lob: ''
                     }
-                    cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+                    cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
 
                     cy.get('@polizza').first().should('exist').then(() => {
 
@@ -396,7 +395,7 @@ class NoteContratto {
      * @param {string} testo - titolo o testo modificato 
      */
     static checkNotaModificata(testo) {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
                 if ($note.find("nx-icon").length > 0) {
@@ -425,8 +424,8 @@ class NoteContratto {
      * Cancella tutte le note della prima polizza
      */
     static cancellaNote() {
-        cy.get('app-contract-card').should('be.visible')
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').should('be.visible')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
 
         //#region Loop elimina le note se presenti
         const loopDeleteNotes = () => {
