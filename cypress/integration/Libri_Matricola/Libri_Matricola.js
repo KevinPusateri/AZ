@@ -156,11 +156,11 @@ describe("LIBRI MATRICOLA", {
     context('INCASSO POLIZZA MADRE', function () {
         it('Incasso', function () {
             cy.fixture('LibriMatricola/LibriMatricola.json').then((data) => {
-                LandingRicerca.search(data.ClientePGIVA)
-                LandingRicerca.clickFirstResult()
-                // SintesiCliente.back()
-                SintesiCliente.clickAuto()
-                SintesiCliente.clickLibriMatricola()
+                // LandingRicerca.search(data.ClientePGIVA)
+                // LandingRicerca.clickFirstResult()
+                // SintesiCliente.clickAuto()
+                // SintesiCliente.clickLibriMatricola()
+                LibriMatricola.backElencoLibriMatricola()
                 LibriMatricola.accessoIncassoPolizzaMadre(data.numContrattoLibro)
                 LibriMatricola.incasso()
             })

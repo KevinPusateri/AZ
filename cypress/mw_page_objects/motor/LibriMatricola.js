@@ -942,7 +942,6 @@ class LibriMatricola {
 
             // Stampa Massiva Inizio Stampa
             cy.get('div[aria-describedby="dialogStampaMassiva"]').should('be.visible').within(() => {
-                cy.pause()
                 cy.get('#btnStampa').click()
             })
             cy.get('#statusStampaApplet', { timeout: 200000 }).should('not.be.visible')
@@ -1106,7 +1105,7 @@ class LibriMatricola {
      * Flusso Incasso Polizza Madre 
      */
     static incasso() {
-        cy.wait(10000)
+        cy.wait(15000)
         cy.getIFrame()
         cy.get('@iframe').should('be.visible').within(() => {
             // Incasso
