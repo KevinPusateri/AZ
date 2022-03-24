@@ -47,7 +47,7 @@ const LinksOnEmettiPolizza = {
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
-    ALLIANZ_ULTRA_IMPRESA: 'Allianz Ultra Impresa',
+    ALLIANZ_ULTRA_IMPRESA: Cypress.env('isAviva') ? 'Ultra Impresa' : 'Allianz Ultra Impresa',
     ALLIANZ1_BUSINESS: 'Allianz1 Business',
     FASTQUOTE_IMPRESA_E_ALBERGO: 'FastQuote Impresa e Albergo',
     FLOTTE_E_CONVENZIONI: 'Flotte e Convenzioni',
@@ -243,6 +243,11 @@ class Sales {
                 cy.wait(5000)
                 getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
+                break;
+            case LinksOnEmettiPolizza.ALLIANZ_ULTRA_IMPRESA:
+                Common.canaleFromPopup()
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', './assets/img/logo/impresa.svg')
+                getIFrame().find('ultra-fast-quote-impresa-form').should('be.visible')
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_SALUTE:
                 cy.intercept({

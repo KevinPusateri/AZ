@@ -154,6 +154,14 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     });
 
+    it('Verifica aggancio ' + (Cypress.env('isAviva')) ? 'Ultra Impresa' : 'Allianz Ultra Impresa', function () {
+        if (!keys.ALLIANZ_ULTRA_IMPRESA)
+            this.skip()
+        TopBar.clickSales()
+        BurgerMenuSales.clickLink(Cypress.env('isAviva') ? 'Ultra Impresa' : 'Allianz Ultra Impresa')
+        BurgerMenuSales.backToSales()
+    });
+
     it('Verifica aggancio Allianz1 Business', function () {
         if (!keys.ALLIANZ1_BUSINESS)
             this.skip()

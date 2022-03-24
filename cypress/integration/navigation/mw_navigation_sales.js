@@ -189,6 +189,14 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             Sales.backToSales()
         })
 
+        it('Verifica aggancio Emetti Polizza - Allianz Ultra Impresa', function () {
+            if (!keys.UltraImpresaEnabled)
+                this.skip()
+            TopBar.clickSales()
+            Sales.clickLinkOnEmettiPolizza('Allianz Ultra Impresa')
+            Sales.backToSales()
+        })
+        
         it('Verifica aggancio Emetti Polizza - Allianz1 Business', function () {
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz1 Business')

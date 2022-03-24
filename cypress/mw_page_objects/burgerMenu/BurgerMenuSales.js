@@ -229,6 +229,12 @@ class BurgerMenuSales extends Sales {
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
+            case LinksBurgerMenu.ALLIANZ_ULTRA_IMPRESA:
+                Common.canaleFromPopup()
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', './assets/img/logo/impresa.svg')
+                getIFrame().find('ultra-fast-quote-impresa-form').should('be.visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                break;
             case LinksBurgerMenu.ALLIANZ1_BUSINESS:
                 Common.canaleFromPopup()
                 getIFrame().find('button:contains("CALCOLA IL TUO PREZZO"):visible')
