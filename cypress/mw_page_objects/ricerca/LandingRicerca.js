@@ -161,9 +161,12 @@ class LandingRicerca {
             case 'fastquote':
             case 'ultra':
             case 'circolari':
+                cy.wait(3000)
                 cy.url().then($url => {
                     if ($url.includes("search/infos/circulars"))
                         cy.get('[class="lib-tab-info nx-grid"]').should('be.visible').and('contain.text', "Circolari")
+                    else if ($url.includes("search/news/publications"))
+                        cy.get('[class="lib-tab-info nx-grid"]').should('be.visible').and('contain.text', "Notizie")
                     else
                         cy.get('[class="lib-tab-info nx-grid"]').should('be.visible').and('contain.text', "Clienti")
                 })
@@ -540,9 +543,10 @@ class LandingRicerca {
                     suggLinks = [
                         'Allianz Ultra Casa e Patrimonio',
                         'Allianz Ultra Casa e Patrimonio BMP',
-                        'Allianz Ultra Salute'
+                        'Allianz Ultra Salute',
+                        'Allianz Ultra Impresa'
                     ]
-                    linkLength = 3
+                    linkLength = 4
                 }
                 break
             case 'bmp':
