@@ -6,6 +6,8 @@
 /// <reference types="Cypress" />
 
 const { XMLParser } = require('fast-xml-parser')
+const moment = require('moment')
+
 let parsedLogTariffa
 let parsedRadarUW
 
@@ -286,23 +288,21 @@ class TenutaTariffa {
             //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
             //Differenziamo se Prima Immatricolazione è calcolata in automatico oppure è in formato data
             let dataPrimaImmatricolazione
-            if (!currentCase.Prima_Immatricolazione.includes('ann')) {
-                var dateParts = currentCase.Prima_Immatricolazione.split("/")
-                dataPrimaImmatricolazione = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
-            }
+            let formattedPrimaImmatricolazione
+            if (!currentCase.Prima_Immatricolazione.includes('ann'))
+                formattedPrimaImmatricolazione = currentCase.Prima_Immatricolazione
             else {
                 if (currentCase.Prima_Immatricolazione.split(' ')[1].includes('ann')) {
+
                     let dataDecorrenza = calcolaDataDecorrenza(currentCase)
-                    dataPrimaImmatricolazione = new Date(dataDecorrenza.getFullYear() - currentCase.Prima_Immatricolazione.split(' ')[0],
-                        dataDecorrenza.getMonth(),
-                        dataDecorrenza.getDate() - 10)
+                    let formattedDataDecorrenza = dataDecorrenza.getFullYear() + '-' +
+                        String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(dataDecorrenza.getDate()).padStart(2, '0')
+
+                    formattedPrimaImmatricolazione = moment(formattedDataDecorrenza, 'YYYY-MM-DD').subtract(currentCase.Prima_Immatricolazione.split(' ')[0], 'years').subtract('10', 'days').format('DD/MM/YYYY')
 
                 }
             }
-
-            let formattedPrimaImmatricolazione = String(dataPrimaImmatricolazione.getDate()).padStart(2, '0') + '/' +
-                String(dataPrimaImmatricolazione.getMonth() + 1).padStart(2, '0') + '/' +
-                dataPrimaImmatricolazione.getFullYear()
 
             cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').clear().wait(500)
             cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').type(formattedPrimaImmatricolazione).type('{enter}').wait(500)
@@ -523,20 +523,19 @@ class TenutaTariffa {
             if (currentCase.Provenienza !== "Prima immatricolazione") {
                 if (currentCase.Data_Scadenza !== "") {
                     //Scadenza precedente contratto
-                    let dataScadenzaPrecedenteContratto
-                    let dataDecorrenza = calcolaDataDecorrenza(currentCase)
-                    if (currentCase.Data_Scadenza.split(' ')[1].includes('giorn'))
-                        dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
-                            dataDecorrenza.getMonth(),
-                            dataDecorrenza.getDate() - currentCase.Data_Scadenza.split(' ')[0])
-                    else if (currentCase.Data_Scadenza.split(' ')[1].includes('mes'))
-                        dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
-                            dataDecorrenza.getMonth() - currentCase.Data_Scadenza.split(' ')[0],
-                            dataDecorrenza.getDate())
+                    debugger
+                    let formattedDataScadenzaPrecedenteContratto
 
-                    let formattedDataScadenzaPrecedenteContratto = String(dataScadenzaPrecedenteContratto.getDate()).padStart(2, '0') + '/' +
-                        String(dataScadenzaPrecedenteContratto.getMonth() + 1).padStart(2, '0') + '/' +
-                        dataScadenzaPrecedenteContratto.getFullYear()
+                    let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+                    let formattedDataDecorrenza = dataDecorrenza.getFullYear() + '-' +
+                        String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(dataDecorrenza.getDate()).padStart(2, '0')
+
+
+                    if (currentCase.Data_Scadenza.split(' ')[1].includes('giorn'))
+                        formattedDataScadenzaPrecedenteContratto = moment(formattedDataDecorrenza, 'YYYY-MM-DD').subtract(currentCase.Data_Scadenza.split(' ')[0], 'days').format('DD/MM/YYYY')
+                    else if (currentCase.Data_Scadenza.split(' ')[1].includes('mes'))
+                        formattedDataScadenzaPrecedenteContratto = moment(formattedDataDecorrenza, 'YYYY-MM-DD').subtract(currentCase.Data_Scadenza.split(' ')[0], 'months').format('DD/MM/YYYY')
 
                     cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').clear()
                     cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').type(formattedDataScadenzaPrecedenteContratto).type('{enter}')
