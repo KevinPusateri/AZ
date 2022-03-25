@@ -33,6 +33,7 @@ let keys = {
     NEW_BUSINESS_DANNI: true,
     NEW_BUSINESS_ULTRA_CASA_PATRIMONIO: true,
     NEW_BUSINESS_ULTRA_SALUTE: true,
+    NEW_BUSINESS_ULTRA_IMPRESA: true,
     NEW_BUSINESS_VITA: true,
     NEW_BUSINESS_ALLIANZ1: true,
     MONITORAGGIO_PTF_DANNI: true,
@@ -168,11 +169,19 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         BurgerMenuNumbers.backToNumbers()
     })
 
-    it('Verifica aggancio New Business Ultra Salute', function () {
+    it.only('Verifica aggancio New Business Ultra Salute', function () {
         if (!keys.NEW_BUSINESS_ULTRA_SALUTE)
             this.skip()
         TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('New Business Ultra Salute')
+        BurgerMenuNumbers.backToNumbers()
+    })
+
+    it.only('Verifica aggancio New Business Ultra Impresa', function () {
+        if (!keys.NEW_BUSINESS_ULTRA_IMPRESA)
+            this.skip()
+        TopBar.clickNumbers()
+        BurgerMenuNumbers.clickLink('New Business Ultra Impresa')
         BurgerMenuNumbers.backToNumbers()
     })
 

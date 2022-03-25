@@ -160,7 +160,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         BurgerMenuClients.backToClients()
     });
 
-    it.only('Verifica aggancio Conensi Email sui Contratti', function () {
+    it('Verifica aggancio Conensi Email sui Contratti', function () {
         if (!keys.CONSENSI_EMAIL_SUI_CONTRATTI)
             this.skip()
         TopBar.clickClients()

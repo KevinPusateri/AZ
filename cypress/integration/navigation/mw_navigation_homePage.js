@@ -130,7 +130,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.checkNotificheEvidenza()
     })
 
-    it.only('Verifica presenza links da Utilità', function () {
+    it('Verifica presenza links da Utilità', function () {
         TopBar.clickIconSwitchPage()
         TopBar.checkLinksUtility(keys)
     })
