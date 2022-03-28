@@ -127,6 +127,30 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
+    it('Verifica ASSENZA Campagne Commerciali', function () {
+        if (!Cypress.env('isAviva'))
+            this.skip()
+        TopBar.clickSales()
+        Sales.checkNotExistLink('a', 'Campagne Commerciali')
+        Sales.backToSales()
+    })
+
+    it('Verifica ASSENZA Sfera', function () {
+        if (!Cypress.env('isAviva'))
+            this.skip()
+        TopBar.clickSales()
+        Sales.checkNotExistLink('a', /^Sfera$/)
+        Sales.backToSales()
+    })
+
+    it('Verifica ASSENZA GED – Gestione Documentale', function () {
+        if (!Cypress.env('isAviva'))
+            this.skip()
+        TopBar.clickSales()
+        Sales.checkNotExistLink('a', 'GED – Gestione Documentale')
+        Sales.backToSales()
+    })
+
     it('Verifica aggancio Recupero preventivi e quotazioni', function () {
         TopBar.clickSales()
         Sales.clickLinkRapido('Recupero preventivi e quotazioni')
@@ -196,7 +220,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             Sales.clickLinkOnEmettiPolizza('Allianz Ultra Impresa')
             Sales.backToSales()
         })
-        
+
         it('Verifica aggancio Emetti Polizza - Allianz1 Business', function () {
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz1 Business')
@@ -310,6 +334,14 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             this.skip()
         TopBar.clickSales()
         Sales.clickTabCampagne()
+    })
+
+    it('Verifica ASSENZA TAB: CAMPAGNE', function () {
+        if (!Cypress.env('isAviva'))
+            this.skip()
+        TopBar.clickSales()
+        Sales.checkNotExistLink('button[role="tab"]', 'CAMPAGNE')
+        Sales.backToSales()
     })
 
     it('Verifica aggancio Appuntamento', function () {

@@ -632,6 +632,15 @@ class Sales {
         })
 
     }
+
+    /**
+     * Verifica che il link sia assente nella Pagina si Sales
+     * @param {string} element - elemento html da utilizzare nella get
+     * @param {string} link - testo del link
+     */
+    static checkNotExistLink(element, textLink) {
+        cy.get(element,{timeout:10000}).should('not.contain.text', textLink)
+    }
 }
 
 export default Sales
