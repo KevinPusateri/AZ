@@ -86,8 +86,8 @@ class Riepilogo {
     static verificaFrazionamento(fraz) {
         ultraIFrame().within(() => {
             cy.get('div[class="header-price-frazionam"]').should('exist')
-            .children('div').should('have.length.gt', 0)
-            .eq(1).should('contain.text', fraz)
+            .children('div[class="header-month ng-star-inserted"]').should('have.length.gt', 0)
+            .should('contain.text', fraz)
         })
     }
 
@@ -106,6 +106,42 @@ class Riepilogo {
         ultraIFrame().within(() => {
             cy.get('[id="riepilogoBody"]').should('be.visible') //attende la comparsa del riepilogo
             cy.get('span').contains('Emetti preventivo').should('be.visible').click() //emetti polizza
+        })
+    }
+
+    /**
+     * Lettura del premio totale
+     * @param {string}} tipo - può essere INIZIALE (default), BARRATO, SCONTATO 
+     */
+     static  leggiPremioTot(tipo = 'INIZIALE') {
+        ultraIFrame().within(() => {
+            if (tipo.toUpperCase() == 'INIZIALE')    // Premio Iniziale non scontato
+            {
+                cy.log('**** PREMIO INIZIALE *****')
+                cy.get('div[class="header-price-euro ng-star-inserted"]').should('be.visible')
+                .invoke('text').then(val => {
+                    cy.wrap(val).as('premioTotRiepilogo')
+                    cy.log('leggi premio tot INIZIALE: ' + val)
+                })
+            }
+            else if (tipo.toUpperCase() == 'SCONTATO')    // Premio totale dopo l'applicazione dello sconto
+            {
+                cy.log('**** PREMIO SCONTATO *****')
+                cy.get('div[class="header-price-euro header-price-euro-wo-discount ng-star-inserted"]').should('be.visible')
+                .invoke('text').then(val => {
+                    cy.wrap(val).as('premioTotRiepilogoScontato')
+                    cy.log('leggi premio tot SCONTATO: ' + val)
+                })
+            }
+            else if (tipo.toUpperCase() == 'BARRATO')    // Premio totale iniziale barrato dopo l'applicazione dello sconto
+            {
+                cy.log('**** PREMIO BARRATO *****')
+                cy.get('div[class="header-price-euro-w-discount ng-star-inserted"]').should('be.visible')
+                .invoke('text').then(val => {
+                    cy.wrap(val).as('premioTotRiepilogoBarrato')
+                    cy.log('leggi premio tot BARRATO: ' + val)
+                }) 
+            }
         })
     }
 }

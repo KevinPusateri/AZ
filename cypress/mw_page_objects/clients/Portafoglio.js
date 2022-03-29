@@ -95,15 +95,17 @@ class Portafoglio {
      * Click Il tab Portafoglio
      */
     static clickTabPortafoglio() {
-        // cy.intercept('POST', '**/graphql', (req) => {
-        //     aliasQuery(req, 'contract')
-        // })
+        cy.intercept('POST', '**/graphql', (req) => {
+            aliasQuery(req, 'contract')
+        })
 
         cy.get('app-client-profile-tabs').should('be.visible').within(() => {
             cy.get('a').should('be.visible')
         })
-        cy.contains('PORTAFOGLIO').click()
-        //cy.wait('@gqlcontract', { requestTimeout: 60000 });
+        cy.contains('PORTAFOGLIO').click().wait(2000)
+        cy.wait('@gqlcontract', { requestTimeout: 60000 });
+        cy.screenshot('Verifica aggancio Portafoglio', {capture:'fullPage'},{ overwrite: true })
+
 
     }
 
@@ -1014,6 +1016,16 @@ class Portafoglio {
     }
 
     /**
+     * Visualizza Lista 
+     */
+     static visualizzaLista() {
+        cy.get('app-wallet-list-toggle-button').should('be.visible').find('div[class^="icon"]').then(($iconList) => {
+            if ($iconList.hasClass('icon'))
+                cy.get('app-wallet-list-toggle-button').find('nx-icon').click()
+        })
+    }
+
+    /**
      * apre il menù contestuale nella sezione 'ambiti del contratto'
      * @param {string} ambito 
      * @param {string} voce 
@@ -1067,6 +1079,18 @@ class Portafoglio {
             cy.get('input[value="> Incassa"]')
               .should('be.visible').click() 
         })
+    }
+
+    /**
+     * Verifica che il pireventivo specificato sia presente su "Preventivi"
+     * @param {string} numberPreventivo : numero di preventivo 
+     */
+     static checkPreventivoIsPresentOnPreventivi(numberPreventivo) {
+         cy.log("Verifica Preventivo: " + numberPreventivo)
+         Portafoglio.visualizzaLista()
+         cy.get('table[class="nx-table contracts-table ng-star-inserted"]').should('exist')
+           .find('tbody').should('exist')
+           .find('td').contains(numberPreventivo).should('have.length', 1) 
     }
 }
 export default Portafoglio

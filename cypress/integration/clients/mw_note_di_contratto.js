@@ -31,11 +31,14 @@ let insertedId
 
 //#region Before After
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        currentTutf = data.tutf
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            currentTutf = data.tutf
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
 
-        LoginPage.logInMWAdvanced()
+            LoginPage.logInMWAdvanced()
+        })
     })
 })
 beforeEach(() => {
@@ -377,7 +380,7 @@ describe('Matrix Web : Note di contratto', function () {
         })
     })
 
-    context.only('Polizza Allianz1 Business', function () {
+    context('Polizza Allianz1 Business', function () {
         //('Retriving client with polizze allianz 1 business, please wait...')
         it('Verifica Aggiungi Nota', function () {
             if (!Cypress.env('isAviva')) {

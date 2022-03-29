@@ -1,0 +1,22 @@
+{
+    "daModificareAnimale" : {
+      "Nome"              : true,
+      "Tipo"              : false,
+      "Sesso"             : false,
+      "Razza"             : false,
+      "DataNascita"       : false,
+      "Residenza"         : false,
+      "Cap"               : false
+    },
+  
+    "modificheAnimale" : {
+      "Nome"              : "Nerino",
+      "Tipo"              : "",
+      "Sesso"             : "",
+      "Razza"             : "",
+      "DataNascita"       : "",
+      "Residenza"         : "",
+      "Cap"               : ""
+    }
+  
+  }
