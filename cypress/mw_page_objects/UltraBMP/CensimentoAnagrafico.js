@@ -173,6 +173,7 @@ class CensimentoAnagrafico {
      * Seleziona un contraente già esistente
      * @param {*} cliente  (persona fisica)
      * @param {*} capDifferente (flag per indicare se il cap è differente da quello di default)
+     * @param {*} interesseStorico (flag per indicare se la casa è di interesse storico)
      */
     static selezionaCasa(cliente, capDifferente = false, interesseStorico = false) {
         ultraIFrame().within(() => {
@@ -251,7 +252,10 @@ class CensimentoAnagrafico {
                 .wait(1000)
                 .type(animale)
 
-            cy.get('#lblAnimalemicrochip').should('be.visible').type(microchip)
+            cy.get('#lblAnimalemicrochip').should('be.visible')
+              .clear()
+              .wait(1000)
+              .type(microchip)
 
             cy.get('div')
                 .contains('Proprietario').should('be.visible')

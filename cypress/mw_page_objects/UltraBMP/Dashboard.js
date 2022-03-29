@@ -380,7 +380,7 @@ class Dashboard {
     }
 
     /**
-     * modifica la durata, a popup già aperto tramite dotMenu() 
+     * Lettura del premio totale
      * @param {string}} tipo - può essere INIZIALE (default), BARRATO, SCONTATO 
      */
     static  leggiPremioTot(tipo = 'INIZIALE') {
