@@ -95,15 +95,17 @@ class Portafoglio {
      * Click Il tab Portafoglio
      */
     static clickTabPortafoglio() {
-        // cy.intercept('POST', '**/graphql', (req) => {
-        //     aliasQuery(req, 'contract')
-        // })
+        cy.intercept('POST', '**/graphql', (req) => {
+            aliasQuery(req, 'contract')
+        })
 
         cy.get('app-client-profile-tabs').should('be.visible').within(() => {
             cy.get('a').should('be.visible')
         })
-        cy.contains('PORTAFOGLIO').click()
-        //cy.wait('@gqlcontract', { requestTimeout: 60000 });
+        cy.contains('PORTAFOGLIO').click().wait(2000)
+        cy.wait('@gqlcontract', { requestTimeout: 60000 });
+        cy.screenshot('Verifica aggancio Portafoglio', {capture:'fullPage'},{ overwrite: true })
+
 
     }
 

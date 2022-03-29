@@ -2,6 +2,7 @@
 
 import Common from '../common/Common'
 import HomePage from '../../mw_page_objects/common/HomePage'
+import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 
 //#region IFrame
 const getIFrame = () => {
@@ -32,6 +33,9 @@ const interceptPageSales = () => {
         method: 'POST',
         url: '**/sales/**',
     }).as('getSales');
+    cy.intercept('POST', '**/graphql', (req) => {
+        aliasQuery(req, 'getExtractedSferaReceipts')
+    })
 }
 
 const interceptPageMieInfo = () => {
@@ -201,8 +205,10 @@ class TopBar extends HomePage {
     static clickSales() {
         interceptPageSales()
         cy.get('app-product-button-list').find('a').contains('Sales').click()
+        // cy.wait('@getSales', { requestTimeout: 50000 })
+        cy.wait('@gqlgetExtractedSferaReceipts', { requestTimeout: 60000 })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
-        cy.screenshot('Verifica atterraggio "Sales"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Verifica atterraggio "Sales"',  { capture: 'fullPage' },{ overwrite: true })
     }
 
 
