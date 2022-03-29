@@ -33,7 +33,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let cliente = PersonaFisica.DavideRoana()
+let cliente = PersonaFisica.CarloRossini()
 //let cliente = PersonaFisica.GalileoGalilei()
 let prodotto = menuEmissione.RamiVari.UltraSalute
 var ambiti = [ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio]
@@ -94,22 +94,19 @@ describe("POLIZZA BENEFICIARI REFERENTE", () => {
   })
 
   it("Emissione Ultra Salute", () => {
-    SintesiCliente.Emissione(prodotto)
-    SintesiCliente.selezionaPrimaAgenzia()
+    SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
+    Ultra.selezionaPrimaAgenzia()
     Dashboard.caricamentoDashboardUltra()
   })
 
-  it("Selezione Ambiti", () => {
-    let oggi = Date.now()
-    let dataInizio = new Date(oggi)
-    let dataFine = new Date(oggi); dataFine.setMonth(dataInizio.getMonth() + 7)
-    
-    
-    Dashboard.selezionaAmbiti(ambiti)      
-    Dashboard.aggiungiAmbito(nuovoAmbito)
-    Ultra.modificaSoluzioneHome(nuovoAmbito, 'Top')
-    cy.pause()
-    //Ultra.procediHome()
+  it("Selezione ambiti nella homepage di Ultra Salute", () => {
+    Dashboard.selezionaAmbiti(ambiti)
+  })
+
+  it("Cambia Soluzioni", () => {
+    for (var i = 0; i < ambiti.length; i++) {
+      Dashboard.modificaSoluzione(ambiti[i], "Essential")
+    }
   })
 /*
   it("Modifica professione in Conferma Dati Quotazione", () => {
