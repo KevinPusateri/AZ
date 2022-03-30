@@ -120,6 +120,11 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.checkRefreshQuietanzamento()
     })
 
+    it('Verifica Filtro Quietanzamento', function () {
+        TopBar.clickSales()
+        Sales.checkFiltriQuietanzamento()
+    })
+
     if (!Cypress.env('isAviva'))
         it('Verifica aggancio Sfera', function () {
             TopBar.clickSales()

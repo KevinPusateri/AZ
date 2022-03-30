@@ -80,6 +80,14 @@ class Sales {
     }
 
     /**
+     * click Filtro del Quietanzamento
+     */
+    static filtro() {
+        cy.get('button[aria-label="filter"]').should('be.visible').click()
+        cy.get('nx-modal-container').should('be.visible')
+    }
+
+    /**
      * Click checkBox Cluster 
      * @param {string} cluster 
      */
@@ -668,7 +676,9 @@ class Sales {
     }
 
     /**
-     * click Refresh QUIETANZAMENTO
+     * Check Refresh QUIETANZAMENTO
+     * Selezioniamo due cluster Random e verifichiamo dopo il refresh 
+     * il ripristino dei checkBox selezionati in precedenza
      */
     static checkRefreshQuietanzamento() {
 
@@ -687,6 +697,43 @@ class Sales {
             .should('not.have.class', 'app-receipt-manager-cluster selected')
 
         cy.screenshot('Verifica checkBox non presente', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
+
+
+    }
+
+    /**
+     * Verifica il corretto funzionamento del Filtro 
+     */
+    static checkFiltriQuietanzamento() {
+
+        // Mi salvo Il numero di Agenzie pre-Filtro
+        cy.get('div[class="single-info"]').first().should('be.visible').within(() => {
+            cy.get('span[class="value"]').invoke('text').as('numAgenzieTot')
+        })
+
+        cy.get('@numAgenzieTot').then((numAgenzie) => {
+            cy.log(numAgenzie)
+            this.filtro()
+
+            // Deseleziono la prima Agenzia
+            cy.get('nx-checkbox-group').find('nx-checkbox:first').click()
+            cy.contains('APPLICA').click().wait(3500)
+            cy.get('app-receipt-manager-cluster').should('be.visible')
+
+            cy.get('div[class="single-info"]').first().should('be.visible').within(() => {
+                cy.get('span[class="value"]').invoke('text').then((numAgenzieRimaste) => {
+                    cy.log(numAgenzieRimaste)
+
+                    // Verifico che dopo il filtro l'agenzia sia stata modificata
+                    if (numAgenzie !== numAgenzieRimaste)
+                        assert.isTrue(true, numAgenzie + ' diverso da ' + numAgenzieRimaste)
+                    else
+                        assert.fail('L\'agenzia non è stata tolta dal filtro')
+
+
+                })
+            })
+        })
 
 
     }
