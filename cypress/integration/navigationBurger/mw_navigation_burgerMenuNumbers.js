@@ -169,7 +169,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         BurgerMenuNumbers.backToNumbers()
     })
 
-    it.only('Verifica aggancio New Business Ultra Salute', function () {
+    it('Verifica aggancio New Business Ultra Salute', function () {
         if (!keys.NEW_BUSINESS_ULTRA_SALUTE)
             this.skip()
         TopBar.clickNumbers()
@@ -177,7 +177,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         BurgerMenuNumbers.backToNumbers()
     })
 
-    it.only('Verifica aggancio New Business Ultra Impresa', function () {
+    it('Verifica aggancio New Business Ultra Impresa', function () {
         if (!keys.NEW_BUSINESS_ULTRA_IMPRESA)
             this.skip()
         TopBar.clickNumbers()
