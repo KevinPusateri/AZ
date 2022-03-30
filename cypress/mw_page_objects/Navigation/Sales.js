@@ -71,6 +71,31 @@ const LinksOnEmettiPolizza = {
 class Sales {
 
     /**
+     * click Refresh del Quietanzamento
+     */
+    static refresh() {
+        cy.get('button[aria-label="refresh"]').should('be.visible').click()
+        cy.get('app-receipt-manager-cluster').should('be.visible')
+        cy.get('app-receipt-manager-footer').should('be.visible').find('button:contains("Estrai")').should('be.visible')
+    }
+
+    /**
+     * Click checkBox Cluster 
+     * @param {string} cluster 
+     */
+    static clickCluster(cluster) {
+        cy.contains(cluster).parents('app-receipt-manager-cluster').within(() => {
+            cy.get('nx-checkbox').click()
+        })
+
+        // Verifico che il Cluster sia stato selezionato
+        cy.contains(cluster)
+            .parents('app-receipt-manager-cluster')
+            .children()
+            .should('have.class', 'app-receipt-manager-cluster selected')
+    }
+
+    /**
      * Torna indietro su Sales
      */
     static backToSales() {
@@ -639,16 +664,31 @@ class Sales {
      * @param {string} link - testo del link
      */
     static checkNotExistLink(element, textLink) {
-        cy.get(element,{timeout:10000}).should('not.contain.text', textLink)
+        cy.get(element, { timeout: 10000 }).should('not.contain.text', textLink)
     }
 
     /**
      * click Refresh QUIETANZAMENTO
      */
-    static clickRefreshQuietanzamento(){
-        cy.get('button[aria-label="refresh"]').should('be.visible').click()
-        cy.get('app-receipt-manager-cluster').should('be.visible')
-        cy.get('app-receipt-manager-footer').should('be.visible').find('button:contains("Estrai")').should('be.visible')
+    static checkRefreshQuietanzamento() {
+
+        this.clickCluster('Modalità pagamento da remoto')
+        this.clickCluster('Monocoperti')
+        cy.screenshot('Verifica checkBox Selezionati', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
+
+        this.refresh()
+        cy.screenshot('Refresh', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
+
+
+        // Verifica che il CheckBox non sia selezionato dopo il refresh
+        cy.contains('Modalità pagamento da remoto')
+            .parents('app-receipt-manager-cluster')
+            .children()
+            .should('not.have.class', 'app-receipt-manager-cluster selected')
+
+        cy.screenshot('Verifica checkBox non presente', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
+
+
     }
 }
 
