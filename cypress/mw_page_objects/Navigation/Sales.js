@@ -641,6 +641,15 @@ class Sales {
     static checkNotExistLink(element, textLink) {
         cy.get(element,{timeout:10000}).should('not.contain.text', textLink)
     }
+
+    /**
+     * click Refresh QUIETANZAMENTO
+     */
+    static clickRefreshQuietanzamento(){
+        cy.get('button[aria-label="refresh"]').should('be.visible').click()
+        cy.get('app-receipt-manager-cluster').should('be.visible')
+        cy.get('app-receipt-manager-footer').should('be.visible').find('button:contains("Estrai")').should('be.visible')
+    }
 }
 
 export default Sales
