@@ -88,6 +88,15 @@ class Sales {
     }
 
     /**
+     * Click su Gestisci Preferiti(Cluster)
+     */
+    static gestisciPreferiti() {
+        cy.get('app-favourite-cluster-manager-modal').should('be.visible').click()
+        cy.get('app-favourite-cluster-manager-modal-content').should('be.visible')
+
+    }
+
+    /**
      * Click checkBox Cluster 
      * @param {string} cluster 
      */
@@ -733,6 +742,74 @@ class Sales {
 
                 })
             })
+        })
+
+
+    }
+
+    /**
+     * Verifica Cluster Preferiti siano salvati correttamente
+     * nella Landing
+     */
+    static checkGestisciPreferiti() {
+        // Function seleziona i restanti Preferiti (max 8)
+        function selectALLStars() {
+            // Prendiamo Numero di cluster preferiti vuoti
+            cy.get('div[class="favourite-box-container ng-star-inserted"]')
+                .find('div[class="app-favourite-cluster-item isBox empty"]')
+                .its('length').as('favouritesEmpty')
+
+            cy.get('@favouritesEmpty').then((favouritesEmpty) => {
+                let clusterPrefer = []
+                // Selezioniamo i cluster tanti quanti i Box preferiti sono vuoti
+                for (let index = favouritesEmpty - 1; index >= 0; index--) {
+                    cy.get('nx-icon[name="star-o"]').eq(index).click()
+                }
+
+                // Ci salviamo i cluster selezionati e verifichiamo dopo il salvataggio
+                // se i cluster sono stati aggiunti correttamente nella Landing Sales
+                cy.get('div[class="cluster-list ng-star-inserted"]').within(() => {
+                    cy.get('nx-icon[name="star"]').parents('app-favourite-cluster-item')
+                        .within(() => {
+
+                            cy.get('span[class="label ng-star-inserted"]').each(($boxPrefer) => {
+                                clusterPrefer.push($boxPrefer.text())
+                            })
+                        })
+                }).then(() => {
+                    // Verifica il numero di BOX preferiti sia selezionati 8
+                    cy.get('div[class="favourite-box-container ng-star-inserted"]')
+                        .find('div[class="app-favourite-cluster-item isBox"]').should('have.length', 8)
+
+                    cy.contains('Salva').click().wait(3500)
+
+                    // Verifica da Landing Sales i cluster salvati
+                    for (let index = 0; index < clusterPrefer.length; index++) {
+                        cy.get('app-receipt-manager-body').should('include.text', clusterPrefer[index])
+                    }
+                })
+            })
+
+        }
+
+        this.gestisciPreferiti()
+
+        cy.get('div[class="favourite-box-container ng-star-inserted"]')
+            .find('div[class="app-favourite-cluster-item isBox"]')
+            .its('length').as('favouritesChecked')
+
+        cy.get('@favouritesChecked').then((favouritesChecked) => {
+
+            if (favouritesChecked < 8) {
+                selectALLStars()
+            } else {
+                for (let index = favouritesChecked - 1; index >= 0; index--) {
+                    cy.get('div[class="favourite-box-container ng-star-inserted"]')
+                        .find('div[class="app-favourite-cluster-item isBox"]').eq(index).click()
+                }
+                selectALLStars()
+            }
+
         })
 
 
