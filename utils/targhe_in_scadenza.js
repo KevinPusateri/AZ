@@ -39,7 +39,9 @@ const writeData = (targa, data) => {
     })
 
     var query = "UPDATE NGRA2021_Casi_Assuntivi_Motor SET Codice_fiscale='" + data.contractorFiscalCode + "'," +
-        "Data_nascita='" + data.dataNascita + "'," +
+        "Data_nascita=STR_TO_DATE('" + data.dataNascita + "','%d/%m/%Y')," +
+        "Data_immatricolazione=STR_TO_DATE('" + data.registerDate + "','%Y-%m-%d')," +
+        "Tipo_veicolo='" + data.vehicleTypeDescription + "'," +
         "Prov_targa='" + data.provRes + "' " +
         "WHERE Targa='" + targa + "'"
 
@@ -130,7 +132,9 @@ const retriveInfo = (targa) => {
                                 'provRes': respSivi.data.itemList[0].provRes,
                                 'istatProvinceCode': respSivi.data.itemList[0].istatProvinceCode,
                                 'istatMunicipalCode': respSivi.data.itemList[0].istatMunicipalCode,
-                                'municipalName': respSivi.data.itemList[0].municipalName
+                                'municipalName': respSivi.data.itemList[0].municipalName,
+                                'registerDate': respSivi.data.itemList[0].registerDate,
+                                'vehicleTypeDescription': respSivi.data.itemList[0].vehicleTypeDescription
                             })
                         })
                     })
@@ -149,7 +153,7 @@ currentTarghe.then(function (result) {
         retriveInfo(currentTarga).then(resp => {
             console.log(`--- Info per targa ${currentTarga} ---`)
             console.log(resp)
-            writeData(currentTarga,resp)
+            writeData(currentTarga, resp)
         })
     }
 })
