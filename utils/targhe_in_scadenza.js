@@ -18,7 +18,7 @@ const retriveTarghe = () => {
         if (err) throw err;
     })
 
-    var query = "SELECT Targa FROM NGRA2021_Casi_Assuntivi_Motor WHERE Caso_assuntivo=0"
+    var query = "SELECT Targa FROM NGRA2021_Casi_Assuntivi_Motor"
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
             if (error) {
@@ -43,7 +43,12 @@ const writeData = (targa, data) => {
         "Cognome='" + data.socialNameSurname + "'," +
         "Data_nascita=STR_TO_DATE('" + data.dataNascita + "','%d/%m/%Y')," +
         "Data_immatricolazione=STR_TO_DATE('" + data.registerDate + "','%Y-%m-%d')," +
-        "Tipo_veicolo='" + data.vehicleTypeDescription + "'," +
+        "Tipo_targa='" + data.vehicleTypeDescription + "'," +
+        "Toponimo='" + data.toponimo + "'," +
+        "Indirizzo='" + data.indirizzo + "'," +
+        "Comune_residenza='" + data.municipalName + "'," +
+        "Compagnia_provenienza='" + data.companyDescr + "'," +
+        "Data_scadenza=STR_TO_DATE('" + data.coverageEndDate + "','%Y-%m-%d')," +
         "Targa='" + targa.trim() + "'," +
         "Prov_targa='" + data.provRes + "' " +
         "WHERE Targa='" + targa + "'"
@@ -139,18 +144,55 @@ const retriveInfo = (targa) => {
                                 }
                             }).then((respAtrc) => {
 
-                                resolve({
-                                    'contractorFiscalCode': contractorFiscalCode,
-                                    'socialNameSurname': respAtrc.data.itemList[0].socialNameSurname,
-                                    'contractorName': respAtrc.data.itemList[0].contractorName,
-                                    'dataNascita': dataNascita,
-                                    'provRes': respSivi.data.itemList[0].provRes,
-                                    'istatProvinceCode': respSivi.data.itemList[0].istatProvinceCode,
-                                    'istatMunicipalCode': respSivi.data.itemList[0].istatMunicipalCode,
-                                    'municipalName': respSivi.data.itemList[0].municipalName,
-                                    'registerDate': respSivi.data.itemList[0].registerDate,
-                                    'vehicleTypeDescription': respSivi.data.itemList[0].vehicleTypeDescription
+                                axios.post(`http://be2be.pp.azi.allianzit/Anagrafe/AnagrafeWS/Services/EgonServices.asmx/AutocompleteStreet`,
+                                    qs.stringify({
+                                        Comune: `${respSivi.data.itemList[0].municipalName}`,
+                                        Token: 'RO'
+                                    }), {
+                                    headers: {
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    }
+                                }).then((respEgon) => {
+
+                                    xml2js.parseString(respEgon.data, (err, result) => {
+                                        if (err)
+                                            throw err
+
+                                        var xmlRsponseEgon = result.string._
+
+                                        xml2js.parseString(xmlRsponseEgon, (err, resultOfEgon) => {
+                                            if (err)
+                                                throw err
+
+                                            let addresses = resultOfEgon.DataWP.DataNormalized[0].String
+
+                                            //Selezioniamo un indirizzo random (per semplicità che abbiamo solo uno spazio)
+                                            let filteredAddresses = addresses.filter(function(address){
+                                                return address._.split(' ').length -1 === 1
+                                            })
+                                            let toponimo = filteredAddresses[Math.floor(Math.random() * filteredAddresses.length)]._.split(' ')[0]
+                                            let indirizzo = filteredAddresses[Math.floor(Math.random() * filteredAddresses.length)]._.split(' ')[1]
+
+                                            resolve({
+                                                'contractorFiscalCode': contractorFiscalCode,
+                                                'socialNameSurname': respAtrc.data.itemList[0].socialNameSurname,
+                                                'contractorName': respAtrc.data.itemList[0].contractorName,
+                                                'dataNascita': dataNascita,
+                                                'provRes': respSivi.data.itemList[0].provRes,
+                                                'municipalName': respSivi.data.itemList[0].municipalName,
+                                                'registerDate': respSivi.data.itemList[0].registerDate,
+                                                'coverageEndDate': respSita.data.itemList[0].coverageEndDate,
+                                                'vehicleTypeDescription': respSivi.data.itemList[0].vehicleTypeDescription,
+                                                'toponimo': toponimo,
+                                                'indirizzo': indirizzo,
+                                                'companyDescr': respSita.data.itemList[0].companyDescr
+                                            })
+                                        })
+
+
+                                    })
                                 })
+
                             })
                         })
                     })
