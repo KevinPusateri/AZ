@@ -134,15 +134,15 @@ class Sales {
     }
 
     /**
-     * Verifica se i "pz" sono presenti 
+     * Verifica se "i "€"" sono presenti 
      */
     static checkExistPremi() {
         cy.get('app-lob-link').find('div[class="app-lob-link ng-star-inserted"]:visible').each((lob) => {
             cy.wrap(lob).find('span:contains("' + lob.text() + '")').click()
-            cy.get('app-receipt-header').find('span:contains("Pezzi")').click()
-            cy.get('app-receipt-header').find('span[class="value ng-star-inserted"]').invoke('text').should('not.include', '€')
-            cy.get('app-receipt-manager-header-item').invoke('text').should('not.include', '€')
-            cy.get('app-receipt-manager-footer').invoke('text').should('not.include', '€')
+            cy.get('app-receipt-header').find('span:contains("Premi")').click()
+            cy.get('app-receipt-header').find('span[class="value ng-star-inserted"]').invoke('text').should('not.include', 'pz')
+            cy.get('app-receipt-manager-header-item').invoke('text').should('not.include', 'pz')
+            cy.get('app-receipt-manager-footer').invoke('text').should('not.include', 'pz')
         })
     }
 
@@ -814,6 +814,74 @@ class Sales {
 
 
     }
-}
 
+    /**
+     * Verifica che il carico Totale Pezzi corrisponde
+     */
+    static checkCaricoTotalePezzi() {
+        cy.get('app-sfera').should('be.visible').within(() => {
+            var countTotaleCarico = 0.00
+            cy.get('app-receipt-manager-header-item').find('span[class="value ng-star-inserted"]').each(($item) => {
+                countTotaleCarico += (+$item.text().split('pz')[0].trim())
+            })
+
+
+            cy.get('div[class="app-receipt-header"]').within(() => {
+                cy.get('span[class="value ng-star-inserted"]').then(($totale) => {
+                    let totale = (+$totale.text().split('pezzi')[0].trim().replace(/\./g, ''))
+                    expect(countTotaleCarico).to.be.eq(totale)
+                })
+            })
+        })
+    }
+
+    /**
+    * Verifica che il carico Totale Premi corrisponde
+    */
+    static checkCaricoTotalePremi() {
+        cy.get('app-receipt-header').find('span:contains("Premi")').click()
+        cy.get('app-sfera').should('be.visible').within(() => {
+            var countTotaleCarico = 0.00
+            cy.get('app-receipt-manager-header-item').find('span[class="value ng-star-inserted"]').each(($item) => {
+                countTotaleCarico += parseFloat($item.text().split('€')[0].trim().replace(/\./g, '').replace(/\,/g, '.'))
+            })
+
+            cy.get('div[class="app-receipt-header"]').within(() => {
+                cy.get('span[class="value ng-star-inserted"]').then(($totale) => {
+                    let totale = parseFloat($totale.text().split('€')[0].trim().replace(/\./g, '').replace(/\,/g, '.'))
+                    expect(countTotaleCarico).to.be.eq(totale)
+                })
+            })
+        })
+    }
+
+    // Verifica dopo un cluster selezionato la variazione del carico da estrarre
+    static checkCaricoEstratto() {
+
+        cy.contains('CARICO DA ESTRARRE')
+            .parents('app-extracted-value')
+            .find('span[class="value ng-star-inserted"]:first')
+            .then(($caricoDaEstrarre) => {
+
+                var countTotaleCarico = (+($caricoDaEstrarre.text().split('pz')[0].trim().replace(/\./g, '')))
+                cy.get('span[class="cluster-title"]').first()
+                    .then(($title) => {
+                        this.clickCluster($title.text())
+
+                        cy.wait(2000)
+                        // Verifico la variazione
+                        cy.contains('CARICO DA ESTRARRE')
+                            .parents('app-extracted-value')
+                            .find('span[class="value ng-star-inserted"]:first')
+                            .then(($caricoDaEstrarreChanged) => {
+                                var countTotaleCaricoChanged = (+($caricoDaEstrarreChanged.text().split('pz')[0].trim().replace(/\./g, '')))
+                                expect(countTotaleCarico).to.be.above(countTotaleCaricoChanged)
+                            })
+                    })
+
+            })
+
+
+    }
+}
 export default Sales

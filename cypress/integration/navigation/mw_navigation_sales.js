@@ -84,16 +84,16 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
 
-})
+// })
 
 
 describe('Matrix Web : Navigazioni da Sales', function () {
@@ -129,6 +129,21 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         TopBar.clickSales()
         Sales.checkGestisciPreferiti()
     })
+
+    context('Verifica Carico Totale',function () {
+
+        it('Verificare che il Carico Totale sia la somma degli stati: Da Lavorare, In Lavorazione e Incassato', function () {
+            TopBar.clickSales()
+            Sales.checkCaricoTotalePezzi()
+            Sales.checkCaricoTotalePremi()
+        })
+
+        it(' Verificare che il carico totale si aggiorni in tempo reale', function () {
+            TopBar.clickSales()
+            Sales.checkCaricoEstratto()
+        })
+
+    });
 
     if (!Cypress.env('isAviva'))
         it('Verifica aggancio Sfera', function () {
