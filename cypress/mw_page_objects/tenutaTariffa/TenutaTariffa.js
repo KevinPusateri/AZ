@@ -109,6 +109,39 @@ class TenutaTariffa {
         })
     }
 
+
+    static flussoATRScadenzaAltraCompagnia(caso) {
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+
+            //Tipologia Veicolo
+            //? al momento lavoriamo direttamente con gli Autoveicoli quindi non serve gestire questo dropdown che by default è selezionato auto
+
+            //Data Nascita
+            let myBirthDay = new Date(caso.Data_nascita)
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click()
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(myBirthDay.getDate() + '/' + (myBirthDay.getMonth() + 1) + '/' + myBirthDay.getFullYear()).wait(1000)
+
+            //Targa
+            cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
+            cy.get('input[aria-label="Targa"]').clear().wait(500).type(caso.Targa).wait(500)
+
+            cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
+
+            cy.contains('Calcola').should('be.visible').click({ force: true })
+
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+
+            //Inseriamo la residenza
+            
+
+
+            cy.screenshot('Dati Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+            cy.pause()
+        })
+    }
     static compilaDatiQuotazione(currentCase, flowClients) {
 
         cy.getIFrame()

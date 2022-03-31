@@ -39,9 +39,12 @@ const writeData = (targa, data) => {
     })
 
     var query = "UPDATE NGRA2021_Casi_Assuntivi_Motor SET Codice_fiscale='" + data.contractorFiscalCode + "'," +
+        "Nome='" + data.contractorName + "'," +
+        "Cognome='" + data.socialNameSurname + "'," +
         "Data_nascita=STR_TO_DATE('" + data.dataNascita + "','%d/%m/%Y')," +
         "Data_immatricolazione=STR_TO_DATE('" + data.registerDate + "','%Y-%m-%d')," +
         "Tipo_veicolo='" + data.vehicleTypeDescription + "'," +
+        "Targa='" + targa.trim() + "'," +
         "Prov_targa='" + data.provRes + "' " +
         "WHERE Targa='" + targa + "'"
 
@@ -126,15 +129,28 @@ const retriveInfo = (targa) => {
                                 'Content-Type': 'application/json',
                             }
                         }).then((respSivi) => {
-                            resolve({
-                                'contractorFiscalCode': contractorFiscalCode,
-                                'dataNascita': dataNascita,
-                                'provRes': respSivi.data.itemList[0].provRes,
-                                'istatProvinceCode': respSivi.data.itemList[0].istatProvinceCode,
-                                'istatMunicipalCode': respSivi.data.itemList[0].istatMunicipalCode,
-                                'municipalName': respSivi.data.itemList[0].municipalName,
-                                'registerDate': respSivi.data.itemList[0].registerDate,
-                                'vehicleTypeDescription': respSivi.data.itemList[0].vehicleTypeDescription
+
+                            axios({
+                                url: `http://online.azi.allianzit/WebdaniaFES/services/vehicle/${targa}/atrc/`,
+                                method: 'get',
+                                timeout: 30000,
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            }).then((respAtrc) => {
+
+                                resolve({
+                                    'contractorFiscalCode': contractorFiscalCode,
+                                    'socialNameSurname': respAtrc.data.itemList[0].socialNameSurname,
+                                    'contractorName': respAtrc.data.itemList[0].contractorName,
+                                    'dataNascita': dataNascita,
+                                    'provRes': respSivi.data.itemList[0].provRes,
+                                    'istatProvinceCode': respSivi.data.itemList[0].istatProvinceCode,
+                                    'istatMunicipalCode': respSivi.data.itemList[0].istatMunicipalCode,
+                                    'municipalName': respSivi.data.itemList[0].municipalName,
+                                    'registerDate': respSivi.data.itemList[0].registerDate,
+                                    'vehicleTypeDescription': respSivi.data.itemList[0].vehicleTypeDescription
+                                })
                             })
                         })
                     })
