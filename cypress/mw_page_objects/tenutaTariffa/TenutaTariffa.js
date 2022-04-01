@@ -123,16 +123,16 @@ class TenutaTariffa {
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
-
-            cy.wait(1000)
+            cy.wait(2000)
 
             //Data Nascita
             let myBirthDay = new Date(caso.Data_nascita)
-            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click()
-            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(myBirthDay.getDate() + '/' + (myBirthDay.getMonth() + 1) + '/' + myBirthDay.getFullYear()).wait(1000)
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click().wait(500)
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(('0' + myBirthDay.getDate()).slice(-2) + '/' + ('0' + (myBirthDay.getMonth() + 1)).slice(-2) + '/' + myBirthDay.getFullYear()).wait(1000)
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
+            cy.wait(1000)
 
             cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
 
@@ -142,10 +142,37 @@ class TenutaTariffa {
             cy.get('nx-spinner').should('not.be.visible')
 
             //Inseriamo la residenza
-            cy.pause()
+            //Toponimo
+            if (caso.Toponimo.toUpperCase() !== 'VIA') {
+                cy.contains('via').should('be.visible').click().wait(500)
+                let re = new RegExp("\^ " + caso.Toponimo.toLowerCase() + " \$")
+                cy.contains(re).should('exist').click().wait(500)
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
 
+            //Indirizzo
+            cy.get('input[aria-label="Indirizzo"]').should('exist').and('be.visible').click().wait(1000)
+            cy.get('input[aria-label="Indirizzo"]').clear().wait(500).type(caso.Indirizzo).wait(500)
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+
+            //Numero
+            //? Metto a 1 by default
+            cy.get('input[aria-label="NumeroCivico"]').should('exist').and('be.visible').click().wait(1000)
+            cy.get('input[aria-label="NumeroCivico"]').clear().wait(500).type('1').wait(500)
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+
+            //Comune
+            cy.get('input[aria-label="Comune"]').should('exist').and('be.visible').click().wait(1000)
+            cy.get('input[aria-label="Comune"]').clear().wait(500).type(caso.Comune_residenza).wait(500)
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
 
             cy.screenshot('Dati Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+            cy.contains('Calcola').should('be.visible').click({ force: true })
 
             cy.pause()
         })

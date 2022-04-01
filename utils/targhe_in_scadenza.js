@@ -201,27 +201,38 @@ const retriveInfo = targa => {
                                             let toponimo = filteredAddresses[Math.floor(Math.random() * filteredAddresses.length)]._.split(' ')[0]
                                             let indirizzo = filteredAddresses[Math.floor(Math.random() * filteredAddresses.length)]._.split(' ')[1]
 
-                                            let currentInfos = {
-                                                    'Targa': targa,
-                                                    'Codice_Fiscale': contractorFiscalCode,
-                                                    'Cognome': respAtrc.data.itemList[0].socialNameSurname,
-                                                    'Nome': respAtrc.data.itemList[0].contractorName,
-                                                    'Data_Nascita': dataNascita,
-                                                    'Provincia': respSivi.data.itemList[0].provRes,
-                                                    'Comune': respSivi.data.itemList[0].municipalName,
-                                                    'Data_Immatricolazione': respSivi.data.itemList[0].registerDate,
-                                                    'Data_Fine_Copertura': respSita.data.itemList[0].coverageEndDate,
-                                                    'Descrizione_Veicolo': respSivi.data.itemList[0].vehicleTypeDescription,
-                                                    'Toponimo': toponimo,
-                                                    'Indirizzo': indirizzo,
-                                                    'Compagnia_Provenienza': respSita.data.itemList[0].companyDescr
-                                            }
+                                            axios({
+                                                url: `http://online.azi.allianzit/WebdaniaFES/services/vehicle/${targa}/sivi/detail/0`,
+                                                method: 'get',
+                                                timeout: 30000,
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                }
+                                            }).then(detailedSivi => {
 
-                                            //Aggiungiamo all'array da mandare via mail
-                                            targheToSend.push(currentInfos)
-
-                                            //Aggiungiamo
-                                            resolve(currentInfos)
+                                                let currentInfos = {
+                                                        'Targa': targa,
+                                                        'Alimentazione': detailedSivi.data.fuelTypeDescr,
+                                                        'Codice_Fiscale': contractorFiscalCode,
+                                                        'Cognome': respAtrc.data.itemList[0].socialNameSurname,
+                                                        'Nome': respAtrc.data.itemList[0].contractorName,
+                                                        'Data_Nascita': dataNascita,
+                                                        'Provincia': respSivi.data.itemList[0].provRes,
+                                                        'Comune': respSivi.data.itemList[0].municipalName,
+                                                        'Data_Immatricolazione': respSivi.data.itemList[0].registerDate,
+                                                        'Data_Fine_Copertura': respSita.data.itemList[0].coverageEndDate,
+                                                        'Descrizione_Veicolo': respSivi.data.itemList[0].vehicleTypeDescription,
+                                                        'Toponimo': toponimo,
+                                                        'Indirizzo': indirizzo,
+                                                        'Compagnia_Provenienza': respSita.data.itemList[0].companyDescr
+                                                }
+    
+                                                //Aggiungiamo all'array da mandare via mail
+                                                targheToSend.push(currentInfos)
+    
+                                                //Aggiungiamo
+                                                resolve(currentInfos)
+                                            })
                                         })
                                     })
                                 })
