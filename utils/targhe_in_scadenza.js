@@ -11,6 +11,8 @@ const dbConfig = {
     "database": "applogs"
 }
 
+let targheToSend = []
+
 //#region Support functions
 const retriveTarghe = () => {
     const connection = mysql.createConnection(dbConfig)
@@ -38,19 +40,19 @@ const writeData = (targa, data) => {
         if (err) throw err;
     })
 
-    var query = "UPDATE NGRA2021_Casi_Assuntivi_Motor SET Codice_fiscale='" + data.contractorFiscalCode + "'," +
-        "Nome='" + data.contractorName + "'," +
-        "Cognome='" + data.socialNameSurname + "'," +
-        "Data_nascita=STR_TO_DATE('" + data.dataNascita + "','%d/%m/%Y')," +
-        "Data_immatricolazione=STR_TO_DATE('" + data.registerDate + "','%Y-%m-%d')," +
-        "Tipo_targa='" + data.vehicleTypeDescription + "'," +
-        "Toponimo='" + data.toponimo + "'," +
-        "Indirizzo='" + data.indirizzo + "'," +
-        "Comune_residenza='" + data.municipalName + "'," +
-        "Compagnia_provenienza='" + data.companyDescr + "'," +
-        "Data_scadenza=STR_TO_DATE('" + data.coverageEndDate + "','%Y-%m-%d')," +
+    var query = "UPDATE NGRA2021_Casi_Assuntivi_Motor SET Codice_fiscale='" + data.Codice_Fiscale + "'," +
+        "Nome='" + data.Nome + "'," +
+        "Cognome='" + data.Cognome + "'," +
+        "Data_nascita=STR_TO_DATE('" + data.Data_Nascita + "','%d/%m/%Y')," +
+        "Data_immatricolazione=STR_TO_DATE('" + data.Data_Immatricolazione + "','%Y-%m-%d')," +
+        "Tipo_targa='" + data.Descrizione_Veicolo + "'," +
+        "Toponimo='" + data.Toponimo.replace("'","''") + "'," +
+        "Indirizzo='" + data.Indirizzo.replace("'","''") + "'," +
+        "Comune_residenza='" + data.Comune.replace("'","''") + "'," +
+        "Compagnia_provenienza='" + data.Compagnia_Provenienza + "'," +
+        "Data_scadenza=STR_TO_DATE('" + data.Data_Fine_Copertura + "','%Y-%m-%d')," +
         "Targa='" + targa.trim() + "'," +
-        "Prov_targa='" + data.provRes + "' " +
+        "Prov_targa='" + data.Provincia + "' " +
         "WHERE Targa='" + targa + "'"
 
     return new Promise((resolve, reject) => {
@@ -66,7 +68,7 @@ const writeData = (targa, data) => {
     })
 }
 
-const sendEmail = (currentSubject, currentMessage, additionalEmail = null) => {
+const sendEmail = () => {
     return new Promise((resolve, reject) => {
         const nodemailer = require('nodemailer')
 
@@ -80,10 +82,10 @@ const sendEmail = (currentSubject, currentMessage, additionalEmail = null) => {
         })
 
         const email = {
-            from: '"Test Automatici MW" <noreply@allianz.it>',
-            to: (additionalEmail === null) ? 'test.factory.test@allianz.it' : 'test.factory.test@allianz.it,' + additionalEmail,
-            subject: currentSubject,
-            html: currentMessage + '</br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>',
+            from: '"Il Mago delle Targhe" <noreply@allianz.it>',
+            to: 'mail_tf@allianz.it',
+            subject: 'Le Targhe Del Giorno - Autovetture',
+            html: generateTable() + '</br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>',
         };
         transporter.sendMail(email, function (err, info) {
             return err ? err.message : 'Message sent: ' + info.response;
@@ -91,8 +93,34 @@ const sendEmail = (currentSubject, currentMessage, additionalEmail = null) => {
         resolve(true)
     })
 }
-const retriveInfo = (targa) => {
 
+const generateTable = () => {
+
+    //Get headers
+    const keys = Object.keys(targheToSend[0])
+
+    //Build table header
+    const header = `<thead><tr>` + keys
+        .map(key => `<th style="border: 1px solid black">${key}</th>`)
+        .join('') + `</thead></tr>`
+
+    // Build the table body
+    const body = `<tbody>` + targheToSend
+        .map(row => `<tr>${Object.values(row)
+            .map(cell => `<td style="border: 1px solid black">${cell}</td>`)
+            .join('')}</tr>`
+        ).join('')
+
+    // Build the final table
+    return table = `
+    <table style="border: 1px solid black">
+        ${header}
+        ${body}
+    </table>
+    `
+}
+
+const retriveInfo = targa => {
     return new Promise((resolve, reject) => {
         axios({
             url: `http://online.azi.allianzit/WebdaniaFES/services/vehicle/${targa}/sita/`,
@@ -167,32 +195,36 @@ const retriveInfo = (targa) => {
                                             let addresses = resultOfEgon.DataWP.DataNormalized[0].String
 
                                             //Selezioniamo un indirizzo random (per semplicità che abbiamo solo uno spazio)
-                                            let filteredAddresses = addresses.filter(function(address){
-                                                return address._.split(' ').length -1 === 1
+                                            let filteredAddresses = addresses.filter(function (address) {
+                                                return address._.split(' ').length - 1 === 1
                                             })
                                             let toponimo = filteredAddresses[Math.floor(Math.random() * filteredAddresses.length)]._.split(' ')[0]
                                             let indirizzo = filteredAddresses[Math.floor(Math.random() * filteredAddresses.length)]._.split(' ')[1]
 
-                                            resolve({
-                                                'contractorFiscalCode': contractorFiscalCode,
-                                                'socialNameSurname': respAtrc.data.itemList[0].socialNameSurname,
-                                                'contractorName': respAtrc.data.itemList[0].contractorName,
-                                                'dataNascita': dataNascita,
-                                                'provRes': respSivi.data.itemList[0].provRes,
-                                                'municipalName': respSivi.data.itemList[0].municipalName,
-                                                'registerDate': respSivi.data.itemList[0].registerDate,
-                                                'coverageEndDate': respSita.data.itemList[0].coverageEndDate,
-                                                'vehicleTypeDescription': respSivi.data.itemList[0].vehicleTypeDescription,
-                                                'toponimo': toponimo,
-                                                'indirizzo': indirizzo,
-                                                'companyDescr': respSita.data.itemList[0].companyDescr
-                                            })
+                                            let currentInfos = {
+                                                    'Targa': targa,
+                                                    'Codice_Fiscale': contractorFiscalCode,
+                                                    'Cognome': respAtrc.data.itemList[0].socialNameSurname,
+                                                    'Nome': respAtrc.data.itemList[0].contractorName,
+                                                    'Data_Nascita': dataNascita,
+                                                    'Provincia': respSivi.data.itemList[0].provRes,
+                                                    'Comune': respSivi.data.itemList[0].municipalName,
+                                                    'Data_Immatricolazione': respSivi.data.itemList[0].registerDate,
+                                                    'Data_Fine_Copertura': respSita.data.itemList[0].coverageEndDate,
+                                                    'Descrizione_Veicolo': respSivi.data.itemList[0].vehicleTypeDescription,
+                                                    'Toponimo': toponimo,
+                                                    'Indirizzo': indirizzo,
+                                                    'Compagnia_Provenienza': respSita.data.itemList[0].companyDescr
+                                            }
+
+                                            //Aggiungiamo all'array da mandare via mail
+                                            targheToSend.push(currentInfos)
+
+                                            //Aggiungiamo
+                                            resolve(currentInfos)
                                         })
-
-
                                     })
                                 })
-
                             })
                         })
                     })
@@ -203,15 +235,23 @@ const retriveInfo = (targa) => {
 }
 //#endregion
 
-console.log("Recuperiamo le targhe su cui fare analisi...\n\n")
-let currentTarghe = retriveTarghe()
-currentTarghe.then(function (result) {
-    for (let i = 0; i < result.length; i++) {
-        let currentTarga = result[i].Targa.trim()
-        retriveInfo(currentTarga).then(resp => {
-            console.log(`--- Info per targa ${currentTarga} ---`)
-            console.log(resp)
-            writeData(currentTarga, resp)
-        })
+const main = async () => {
+    console.log("Recuperiamo le targhe su cui fare analisi...\n\n")
+    let currentTarghe = await retriveTarghe()
+
+    for (let i = 0; i < currentTarghe.length; i++) {
+        let currentTarga = currentTarghe[i].Targa.trim()
+        const currentTargaInfos = await retriveInfo(currentTarga)
+        console.log(`--- Info per targa ${currentTarga} ---`)
+        console.log(currentTargaInfos)
+        writeData(currentTarga, currentTargaInfos)
     }
-})
+
+    console.log('\n\nGenerazione ed invio mail...\n\n')
+
+    await sendEmail()
+
+    console.log('--- DONE ---')
+}
+
+main()
