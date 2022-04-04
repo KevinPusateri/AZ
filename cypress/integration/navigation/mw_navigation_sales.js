@@ -130,20 +130,75 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.checkGestisciPreferiti()
     })
 
-    context('Verifica Carico Totale',function () {
+    context('Verifica Carico Totale', function () {
 
         it('Verificare che il Carico Totale sia la somma degli stati: Da Lavorare, In Lavorazione e Incassato', function () {
             TopBar.clickSales()
+            Sales.selectFirstDay('1')
             Sales.checkCaricoTotalePezzi()
             Sales.checkCaricoTotalePremi()
         })
 
         it(' Verificare che il carico totale si aggiorni in tempo reale', function () {
             TopBar.clickSales()
+            Sales.selectFirstDay('1')
             Sales.checkCaricoEstratto()
         })
 
     });
+
+    it('Verifica Azioni Veloci Motor', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAllClusterPreferiti()
+            Sales.selectAltriCluster()
+            Sales.clickAzioniVeloci()
+            Sales.checkAzioniVeloci()
+            Sales.backToSales()
+        })
+    })
+
+    it('Verifica Azioni Veloci Rami Vari', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Rami vari', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster()
+            Sales.clickAzioniVeloci()
+            Sales.checkAzioniVeloci()
+            Sales.backToSales()
+        })
+    })
+
+    it('Verifica Azioni Veloci Vita', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Vita', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster()
+            Sales.clickAzioniVeloci()
+            Sales.checkAzioniVeloci()
+            Sales.backToSales()
+        })
+    })
+
+    it('Verifica Azioni Veloci Tutte', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Tutte', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster()
+            Sales.clickAzioniVeloci()
+            Sales.checkAzioniVeloci()
+            Sales.backToSales()
+        })
+    })
 
     if (!Cypress.env('isAviva'))
         it('Verifica aggancio Sfera', function () {
@@ -320,7 +375,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Motor', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
-            Sales.lobDiInteresse('Motor').then((checkEnabled) => {
+            Sales.lobDiInteresse('Motor', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
             })
@@ -331,7 +386,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Rami Vari', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
-            Sales.lobDiInteresse('Rami vari').then((checkEnabled) => {
+            Sales.lobDiInteresse('Rami vari', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
             })
@@ -343,7 +398,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         if (Cypress.env('isAviva'))
             this.skip()
         TopBar.clickSales()
-        Sales.lobDiInteresse('Vita').then((checkEnabled) => {
+        Sales.lobDiInteresse('Vita', 'Estrai').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
         })
@@ -353,7 +408,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Tutte', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
-            Sales.lobDiInteresse('Tutte').then((checkEnabled) => {
+            Sales.lobDiInteresse('Tutte', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
             })
