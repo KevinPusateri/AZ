@@ -105,26 +105,27 @@ class Sales {
         cy.get('app-fast-actions-modal-content').should('be.visible')
 
         if (radioButton !== '') {
-            switch (radioButton) {
-                case 'Eliminazione sconto commerciale':
-                    cy.get('nx-expansion-panel-title')
-                        .contains(pannello)
-                        .parents('nx-expansion-panel')
-                        .within(() => {
-                            cy.contains(pannello).click()
+            cy.get('nx-expansion-panel-title')
+                .contains(pannello)
+                .parents('nx-expansion-panel')
+                .within(() => {
+                    if (pannello !== 'Per tutti i cluster selezionati')
+                        cy.contains(pannello).click()
+                    switch (radioButton) {
+                        case 'Eliminazione sconto commerciale':
                             cy.contains(radioButton).click()
-                        })
-                    break;
-                case 'Verifica possibilità di incremento premio':
-                    cy.get('nx-expansion-panel-title')
-                        .contains(pannello)
-                        .parents('nx-expansion-panel')
-                        .within(() => {
-                            cy.contains(pannello).click()
+                            break;
+                        case 'Verifica possibilità di incremento premio':
                             cy.contains(radioButton).click()
-                        })
-                    break;
-            }
+                            break;
+                        case 'Crea iniziativa':
+                            cy.contains(radioButton).click()
+                            break;
+                        case 'Vai a vista Quietanzamento':
+                            cy.contains(radioButton).click()
+                            break;
+                    }
+                })
             cy.contains('Procedi').click()
             cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
             cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible')
@@ -144,40 +145,55 @@ class Sales {
     }
 
     /**
-     * 
-     * @param {boolean} allCluster - default true seleziona tutti i cluster, altrimenti uno solo
-     * @param {string} cluster - Nome del cluster
+     * Seleziona tutti i cluster se non si passa un cluster
+     * @param {string} cluster - default settato vuoto, altrimenti specificare un singolo cluster
      */
     static selectAltriCluster(cluster = '') {
+        cy.wait(3000)
+        cy.contains('CARICO DA ESTRARRE')
+            .parents('app-extracted-value')
+            .find('span[class="value ng-star-inserted"]:first')
+            .then(($caricoDaEstrarre) => {
 
+                var countTotaleCarico = (+($caricoDaEstrarre.text().split('pz')[0].trim().replace(/\./g, '')))
 
-        cy.contains('Seleziona altri cluster').click().wait(3000)
+                cy.contains('Seleziona altri cluster').click().wait(3000)
 
-        cy.get('app-cluster-selection-modal-content').should('be.visible').within(() => {
-            if (cluster !== '')
-                this.clickCluster(cluster, true)
-            else {
-                var arrayCluster = []
-                cy.get('div[class^="app-receipt-manager-cluster"]')
-                    .not('div[class^="app-receipt-manager-cluster disabled"]')
-                    .not('div[class^="app-receipt-manager-cluster selected onModal"]')
-                    .find('span[class="cluster-title"]').each(($clusterPreferiti) => {
-                        arrayCluster.push($clusterPreferiti.text().trim())
-                    }).then(() => {
-                        for (let index = 0; index < arrayCluster.length; index++) {
-                            cy.contains(arrayCluster[index]).parents('div[class^=app-receipt-manager-cluster]')
-                                .then(($cluster) => {
-                                    if (!$cluster.hasClass('app-receipt-manager-cluster selected onModal')) {
-                                        this.clickCluster(arrayCluster[index], true)
-                                    }
-                                })
-                        }
+                cy.get('app-cluster-selection-modal-content').should('be.visible').within(() => {
+                    if (cluster !== '')
+                        this.clickCluster(cluster, true)
+                    else {
+                        var arrayCluster = []
+                        cy.get('div[class^="app-receipt-manager-cluster"]')
+                            .not('div[class^="app-receipt-manager-cluster disabled"]')
+                            .not('div[class^="app-receipt-manager-cluster selected onModal"]')
+                            .find('span[class="cluster-title"]').each(($clusterPreferiti) => {
+                                arrayCluster.push($clusterPreferiti.text().trim())
+                            }).then(() => {
+                                for (let index = 0; index < arrayCluster.length; index++) {
+                                    cy.contains(arrayCluster[index]).parents('div[class^=app-receipt-manager-cluster]')
+                                        .then(($cluster) => {
+                                            if (!$cluster.hasClass('app-receipt-manager-cluster selected onModal')) {
+                                                this.clickCluster(arrayCluster[index], true)
+                                            }
+                                        })
+                                }
+                            })
+                    }
+                    cy.contains('Salva').click().wait(3000)
+
+                })
+                cy.wait(2000)
+                // Verifico la variazione
+                cy.contains('CARICO DA ESTRARRE')
+                    .parents('app-extracted-value')
+                    .find('span[class="value ng-star-inserted"]:first')
+                    .then(($caricoDaEstrarreChanged) => {
+                        var countTotaleCaricoChanged = (+($caricoDaEstrarreChanged.text().split('pz')[0].trim().replace(/\./g, '')))
+                        expect(countTotaleCarico).to.be.above(countTotaleCaricoChanged)
                     })
-            }
-            cy.contains('Salva').click().wait(3000)
 
-        })
-
+            })
 
     }
 

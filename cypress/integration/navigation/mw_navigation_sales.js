@@ -226,6 +226,30 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
     });
 
+    // it('Verifica Azioni Veloci: "Crea iniziativa"', function () {
+    //     TopBar.clickSales()
+    //     Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+    //         if (!checkEnabled)
+    //             this.skip()
+    //         Sales.selectFirstDay('1')
+    //         Sales.selectAllClusterPreferiti()
+    //         Sales.clickAzioniVeloci('Per tutti i cluster selezionati', 'Verifica possibilità di incremento premio')
+    //         Sales.backToSales()
+    //     })
+    // });
+
+    it('Verifica Azioni Veloci: "Vai a vista Quietanzamento"', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster('Modalità pagamento da remoto')
+            Sales.clickAzioniVeloci('Per tutti i cluster selezionati', 'Vai a vista Quietanzamento')
+            Sales.backToSales()
+        })
+    });
+
     if (!Cypress.env('isAviva'))
         it('Verifica aggancio Sfera', function () {
             TopBar.clickSales()
