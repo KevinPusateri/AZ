@@ -115,7 +115,15 @@ class Sales {
                             cy.contains(radioButton).click()
                         })
                     break;
-                default: new Error('RadioButton da implementare: ' + radioButton)
+                case 'Verifica possibilità di incremento premio':
+                    cy.get('nx-expansion-panel-title')
+                        .contains(pannello)
+                        .parents('nx-expansion-panel')
+                        .within(() => {
+                            cy.contains(pannello).click()
+                            cy.contains(radioButton).click()
+                        })
+                    break;
             }
             cy.contains('Procedi').click()
             cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')

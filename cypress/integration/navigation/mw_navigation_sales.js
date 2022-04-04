@@ -214,6 +214,18 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
     });
 
+    it('Verifica Azioni Veloci: "Verifica possibilità di incremento premio"', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster('Delta premio negativo')
+            Sales.clickAzioniVeloci('Delta premio negativo', 'Verifica possibilità di incremento premio')
+            Sales.backToSales()
+        })
+    });
+
     if (!Cypress.env('isAviva'))
         it('Verifica aggancio Sfera', function () {
             TopBar.clickSales()
