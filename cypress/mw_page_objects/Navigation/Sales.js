@@ -124,12 +124,49 @@ class Sales {
                         case 'Vai a vista Quietanzamento':
                             cy.contains(radioButton).click()
                             break;
+                        case 'Assegna colore':
+                            cy.contains(radioButton).click()
+                            break;
                     }
                 })
             cy.contains('Procedi').click()
+
+
+            if (radioButton === 'Assegna colore')
+                checkAssegnaColore()
+            else {
+                cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
+                cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible')
+                cy.screenshot('Verifica aggancio ' + radioButton, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            }
+        }
+
+        
+        function checkAssegnaColore() {
+
+            cy.get('div[class="card-bar"]').should('be.visible').its('length').then(elementCount => {
+                let selected = Cypress._.random(elementCount - 1);
+                cy.get('div[class="card-bar"]').eq(selected).click().invoke('attr', 'style').as('styleColor');
+                cy.contains('Procedi').click()
+
+            });
+            cy.get('app-response').should('be.visible').then(() => {
+                cy.get('h1').should('include.text', 'Colore assegnato con successo')
+                cy.contains('Chiudi').click()
+            })
+            cy.intercept({
+                method: 'POST',
+                url: '**/estraiQuietanze'
+            }).as('estrai');
+            cy.contains('Estrai').click()
+            cy.wait('@estrai', { requestTimeout: 50000 });
+            // cy.wait(5000)
             cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
-            cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible')
-            cy.screenshot('Verifica aggancio ' + radioButton, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.get('#main-table-sfera').should('exist').and('be.visible')
+                cy.get('@styleColor').then((color) => {
+                    cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+                    cy.screenshot('Verifica aggancio ' + radioButton, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                })
         }
     }
 
