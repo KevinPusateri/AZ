@@ -97,10 +97,31 @@ class Sales {
 
     /**
      * Click Azioni Veloci
+     * @param {string} pannello - Pannello azione veloce
+     * @param {string} radioButton - Radio Button dell'azione veloce all'interno del pannello
      */
-    static clickAzioniVeloci() {
+    static clickAzioniVeloci(pannello = '', radioButton = '') {
         cy.contains('Azioni Veloci').click()
         cy.get('app-fast-actions-modal-content').should('be.visible')
+
+        if (radioButton !== '') {
+            switch (radioButton) {
+                case 'Eliminazione sconto commerciale':
+                    cy.get('nx-expansion-panel-title')
+                        .contains(pannello)
+                        .parents('nx-expansion-panel')
+                        .within(() => {
+                            cy.contains(pannello).click()
+                            cy.contains(radioButton).click()
+                        })
+                    break;
+                default: new Error('RadioButton da implementare: ' + radioButton)
+            }
+            cy.contains('Procedi').click()
+            cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
+            cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible')
+            cy.screenshot('Verifica aggancio ' + radioButton, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        }
     }
 
     /**
@@ -119,40 +140,34 @@ class Sales {
      * @param {boolean} allCluster - default true seleziona tutti i cluster, altrimenti uno solo
      * @param {string} cluster - Nome del cluster
      */
-    static selectAltriCluster(allCluster = true, cluster = '') {
+    static selectAltriCluster(cluster = '') {
 
 
         cy.contains('Seleziona altri cluster').click().wait(3000)
 
         cy.get('app-cluster-selection-modal-content').should('be.visible').within(() => {
-            var allOthersCluster = []
-            if (allCluster)
+            if (cluster !== '')
+                this.clickCluster(cluster, true)
+            else {
+                var arrayCluster = []
                 cy.get('div[class^="app-receipt-manager-cluster"]')
-                    .find('span[class="cluster-title"]').each((nameCluster) => {
-                        allOthersCluster.push(nameCluster.text().trim())
-                    })
-            else
-                allOthersCluster.push(cluster)
-
-
-            var arrayCluster = []
-            cy.get('div[class^="app-receipt-manager-cluster"]')
-                .not('div[class^="app-receipt-manager-cluster disabled"]')
-                .not('div[class^="app-receipt-manager-cluster selected onModal"]')
-                .find('span[class="cluster-title"]').each(($clusterPreferiti) => {
-                    arrayCluster.push($clusterPreferiti.text().trim())
-                }).then(() => {
-                    for (let index = 0; index < arrayCluster.length; index++) {
-                        if (allOthersCluster.includes(arrayCluster[index]))
+                    .not('div[class^="app-receipt-manager-cluster disabled"]')
+                    .not('div[class^="app-receipt-manager-cluster selected onModal"]')
+                    .find('span[class="cluster-title"]').each(($clusterPreferiti) => {
+                        arrayCluster.push($clusterPreferiti.text().trim())
+                    }).then(() => {
+                        for (let index = 0; index < arrayCluster.length; index++) {
                             cy.contains(arrayCluster[index]).parents('div[class^=app-receipt-manager-cluster]')
                                 .then(($cluster) => {
                                     if (!$cluster.hasClass('app-receipt-manager-cluster selected onModal')) {
                                         this.clickCluster(arrayCluster[index], true)
                                     }
                                 })
-                    }
-                    cy.contains('Salva').click().wait(3000)
-                })
+                        }
+                    })
+            }
+            cy.contains('Salva').click().wait(3000)
+
         })
 
 
@@ -180,15 +195,6 @@ class Sales {
                 .parents('app-receipt-manager-cluster')
                 .children()
                 .should('have.class', 'app-receipt-manager-cluster selected')
-    }
-
-
-    /**
-     * Click Button Azioni Veloci
-     */
-    static clickAzioniVeloci() {
-        cy.contains('Azioni Veloci').click()
-        cy.get('app-fast-actions-modal-content').should('be.visible')
     }
 
     /**
@@ -261,12 +267,12 @@ class Sales {
         //#region Function CheckPannelli()
         function checkPannelli(azioniVelociPerTutti, pannello) {
             cy.get('nx-expansion-panel-title')
-            .contains(pannello)
-            .parents('nx-expansion-panel')
-            .within(() => {
-                var arrayAzioniVeloci = []
-                cy.contains(pannello).click()
-                cy.get('lib-check-user-permissions').find('span[class="action-title"]').each(($azioniVeloci) => {
+                .contains(pannello)
+                .parents('nx-expansion-panel')
+                .within(() => {
+                    var arrayAzioniVeloci = []
+                    cy.contains(pannello).click()
+                    cy.get('lib-check-user-permissions').find('span[class="action-title"]').each(($azioniVeloci) => {
                         arrayAzioniVeloci.push($azioniVeloci.text().trim())
                     }).then(() => {
                         for (let index = 0; index < azioniVelociPerTutti.length; index++) {

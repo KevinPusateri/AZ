@@ -117,16 +117,19 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica Refresh Quietanzamento', function () {
         TopBar.clickSales()
+        Sales.selectFirstDay('1')
         Sales.checkRefreshQuietanzamento()
     })
 
     it('Verifica Filtro Quietanzamento', function () {
         TopBar.clickSales()
+        Sales.selectFirstDay('1')
         Sales.checkFiltriQuietanzamento()
     })
 
     it('Verifica Gestisci Preferiti Quietanzamento', function () {
         TopBar.clickSales()
+        Sales.selectFirstDay('1')
         Sales.checkGestisciPreferiti()
     })
 
@@ -153,7 +156,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             if (!checkEnabled)
                 this.skip()
             Sales.selectFirstDay('1')
-            Sales.selectAllClusterPreferiti()
             Sales.selectAltriCluster()
             Sales.clickAzioniVeloci()
             Sales.checkAzioniVeloci()
@@ -199,6 +201,18 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             Sales.backToSales()
         })
     })
+
+    it('Verifica Azioni Veloci: "Eliminazione Sconto Commerciale"', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster('Uscite ANIA')
+            Sales.clickAzioniVeloci('Uscite ANIA', 'Eliminazione sconto commerciale')
+            Sales.backToSales()
+        })
+    });
 
     if (!Cypress.env('isAviva'))
         it('Verifica aggancio Sfera', function () {
