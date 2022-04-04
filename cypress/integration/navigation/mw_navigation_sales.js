@@ -250,6 +250,18 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
     });
 
+    it('Verifica Azioni Veloci: "Assegna Colore"', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster('Modalità pagamento da remoto')
+            Sales.clickAzioniVeloci('Per tutti i cluster selezionati', 'Assegna colore')
+            Sales.backToSales()
+        })
+    });
+
     if (!Cypress.env('isAviva'))
         it('Verifica aggancio Sfera', function () {
             TopBar.clickSales()
