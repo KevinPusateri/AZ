@@ -21,8 +21,6 @@ import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import BurgerMenuSales from "../../mw_page_objects/burgermenu/BurgerMenuSales"
-import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
-import Annullamento from "../../mw_page_objects/polizza/Annullamento"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
@@ -380,7 +378,7 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         Portafoglio.ordinaPolizze("Numero contratto")
         cy.log(">>>>> ANNULLAMENTO CONTRATTO: " + nContratto)
         Portafoglio.clickAnnullamento(nContratto, 'ANN.ORIGINE/MANCATO PERFEZIONAMENTO IN AGENZIA')
-        cy.pause()
+        //cy.pause()
         UltraBMP.annullamentoContratto()
         TopBar.search(personaFisica.nomeCognome())
         LandingRicerca.clickClientePF(personaFisica.nomeCognome())
