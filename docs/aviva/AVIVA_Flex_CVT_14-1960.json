@@ -1,0 +1,34 @@
+[
+  {
+    "CCODICE": "002349",
+    "CDESCRIZIONE": "AA E AA CONSULTING SRL",
+    "CCODICE_1": "MOD055",
+    "CDESCRIZIONE_2": "FLEX MODULO 55",
+    "CDESCRIZIONE_3": "PRD Easy Drive - CVT_Kasko Altri veicoli",
+    "NSCONTOMAX": 30
+  },
+  {
+    "CCODICE": "002349",
+    "CDESCRIZIONE": "AA E AA CONSULTING SRL",
+    "CCODICE_1": "MOD055",
+    "CDESCRIZIONE_2": "FLEX MODULO 55",
+    "CDESCRIZIONE_3": "PRD Easy Drive - CVT_Kasko Collisione",
+    "NSCONTOMAX": 0
+  },
+  {
+    "CCODICE": "002349",
+    "CDESCRIZIONE": "AA E AA CONSULTING SRL",
+    "CCODICE_1": "MOD055",
+    "CDESCRIZIONE_2": "FLEX MODULO 55",
+    "CDESCRIZIONE_3": "PRD Easy Drive - CVT_Kasko Totale",
+    "NSCONTOMAX": 30
+  },
+  {
+    "CCODICE": "002349",
+    "CDESCRIZIONE": "AA E AA CONSULTING SRL",
+    "CCODICE_1": "MOD055",
+    "CDESCRIZIONE_2": "FLEX MODULO 55",
+    "CDESCRIZIONE_3": "PRD Easy Drive - CVT_Kasko Urto con Animali",
+    "NSCONTOMAX": 0
+  }
+]
