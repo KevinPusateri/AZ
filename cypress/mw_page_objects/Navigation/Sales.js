@@ -71,6 +71,51 @@ const LinksOnEmettiPolizza = {
 class Sales {
 
     /**
+     * Click Estrai Del Quietanzamento
+     */
+    static clickEstraiQuietanzamento() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/estraiQuietanze'
+        }).as('estrai');
+        cy.get('app-receipt-manager').should('be.visible').contains('Estrai').click()
+        cy.wait('@estrai', { requestTimeout: 50000 });
+    }
+
+    /**
+     * Verifica che le modifiche(colori e dati) siano corrette 
+     */
+    static checkEstraiModifiche(cluster) {
+
+        // Verifico se i dati di Incassate, In lavorazione, Da lavorare corrispondono
+        cy.get('app-sfera').should('be.visible').then(() => {
+            var carico = []
+            cy.get('app-receipt-manager-header-item').find('span[class="value ng-star-inserted"]').each(($item) => {
+                carico.push($item.text().split('pz')[0].trim())
+            })
+
+            this.clickEstraiQuietanzamento()
+
+            cy.contains('Espandi Pannello').click()
+
+            cy.get('nx-card-header').should('be.visible')
+                .find('h3[nxheadline="subsection-small"]').each((card, index) => {
+                    cy.wrap(card).should('include.text', carico[index])
+                })
+        })
+
+        // Verifico che i colori dei due cluster selezionati siano corretti 
+        cy.get('app-cluster').should('be.visible')
+        cy.get('app-cluster').contains(cluster[0]).parents('nx-badge').then(($cluster) => {
+            cy.wrap($cluster).should('have.css', 'border', '3px solid rgb(108, 165, 102)')
+        })
+        cy.get('app-cluster').contains(cluster[1]).parents('nx-badge').then(($cluster) => {
+            cy.wrap($cluster).should('have.css', 'border', '3px solid rgb(200, 91, 120)')
+        })
+
+    }
+
+    /**
      * click Refresh del Quietanzamento
      */
     static refresh() {
