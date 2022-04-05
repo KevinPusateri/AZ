@@ -19,11 +19,11 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
-let retrievedTarghe
+let retrivedRandomCase
 before(() => {
 
     cy.task('getTargheInScadenzaAltraCompagnia', { dbConfig: dbConfig }).then((currentRetrievedTarghe) => {
-        retrievedTarghe = currentRetrievedTarghe
+        retrivedRandomCase = currentRetrievedTarghe[Math.floor(Math.random() * currentRetrievedTarghe.length)]
         cy.getUserWinLogin().then(data => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
             LoginPage.logInMWAdvanced()
@@ -33,7 +33,9 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
 })
+
 after(function () {
+    TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
@@ -42,12 +44,13 @@ after(function () {
     //#endregion
 })
 
-describe('ATR in Scadenza Altra Compagnia', function () {
+describe('ATR in Scadenza Altra Compagnia per targa', function () {
     it('Verifica Prenventivo Motor da Sales', function () {
 
+        cy.log('Targa per il test : ' + retrivedRandomCase.Targa)
         TopBar.clickSales()
         Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
         
-        TenutaTariffa.flussoATRScadenzaAltraCompagnia(retrievedTarghe[0])
+        TenutaTariffa.flussoATRScadenzaAltraCompagnia(retrivedRandomCase)
     })
 })

@@ -608,7 +608,8 @@ TXT_CODVEIrif=50000 and
 date(tms_ins)=current date AND
 cod_utente_canale&lt;&gt;'IVASS' and
 dat_decorrenza>current date AND
-length(RTRIM(TXT_TARGA_TELA))=7
+length(RTRIM(TXT_TARGA_TELA))=7 AND
+TXT_TARGA_TELA LIKE 'G%'
 fetch first 10 rows only
 with ur</sql>
     <limit>0</limit>
@@ -720,7 +721,7 @@ with ur</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>352</xloc>
+      <xloc>336</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
