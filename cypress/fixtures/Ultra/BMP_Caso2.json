@@ -1,0 +1,38 @@
+{
+    "daModificareContenuto" : {
+      "Assicurato"        : false,
+      "Nome"              : true,
+      "Cap"               : false,
+      "Uso"               : false,
+      "Tipo"              : false,
+      "Mq"                : false,
+      "Piano"             : false,
+      "Valore"            : false,
+      "Classe"            : false,
+      "ClasseProtezione"  : false,
+      "Allarme"           : false,
+      "Anno"              : false,
+      "Estensione"        : false,
+      "ResidenzaAss"      : false,
+      "CapAss"            : false
+    },
+  
+    "modificheContenuto" : {
+      "Assicurato"        : "",
+      "Nome"              : "Casa Rosetta",
+      "Cap"               : "",
+      "Uso"               : "",
+      "Tipo"              : "",
+      "Mq"                : "",
+      "Piano"             : "",
+      "Valore"            : "",
+      "Classe"            : "",
+      "ClasseProtezione"  : "",
+      "Allarme"           : "",
+      "Anno"              : "",
+      "Estensione"        : "",
+      "ResidenzaAss"      : "",
+      "CapAss"            : ""
+    }
+  
+  }

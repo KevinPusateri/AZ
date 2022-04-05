@@ -28,6 +28,7 @@ import Annullamento from "../../mw_page_objects/polizza/Annullamento"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
+import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
 import 'cypress-iframe';
 
 
@@ -50,25 +51,23 @@ const ultraRV = {
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { modificheAnimale } from '../../fixtures/Ultra/BMP_Caso6.json'
-import { modificheFabbricato } from '../../fixtures/Ultra/BMP_Caso6.json'
-import { daModificareAnimale } from '../../fixtures/Ultra/BMP_Caso6.json'
-import { daModificareFabbricato } from '../../fixtures/Ultra/BMP_Caso6.json'
+//import { modificheAnimale } from '../../fixtures/Ultra/BMP_Caso2.json'
+import { modificheContenuto } from '../../fixtures/Ultra/BMP_Caso2.json'
+//import { daModificareAnimale } from '../../fixtures/Ultra/BMP_Caso2.json'
+import { daModificareContenuto } from '../../fixtures/Ultra/BMP_Caso2.json'
 import { soluzione } from '../../fixtures/Ultra/BMP_Comune.json'
 import { ambitoUltra } from '../../fixtures/Ultra/BMP_Comune.json'
 
 //#endregion
 
 //let personaFisica = PersonaFisica.MassimoRoagna()
-let personaFisica = PersonaFisica.CarloRossini()
-let personaFisica2 = PersonaFisica.SimonettaRossino()
+let personaFisica = PersonaFisica.MarioRossini()
 var nContratto = "000"
 var nPreventivo = "000"
 var frazionamento = "annuale"
 var arrPath = []
 var arrDoc = []
-//var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
-var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali, ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici]
+var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.contenuto, ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali, ambitiUltra.ambitiUltraCasaPatrimonio.tutela_legale]
 
 const ultraIFrame = () => {
     let iframeSCU = cy.get('#matrixIframe')
@@ -101,7 +100,7 @@ after(function() {
         //#endregion
 })
 
-describe('Ultra BMP : Emissione BMP Caso6', function() {
+describe('Ultra BMP : Emissione BMP Caso2', function() {
 
     it("Ricerca cliente", () => {
         cy.get('body').within(() => {
@@ -120,7 +119,75 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
         })
     })
 
+    it("Emissione Ultra Casa e Patrimonio", () => {
+        SintesiCliente.Emissione(prodotti.RamiVari.CasaPatrimonio)
+        //Ultra.selezionaPrimaAgenzia()
+        Dashboard.caricamentoDashboardUltra()
+      })
+    
+      it("Selezione ambiti in dashboard", () => {
+        Dashboard.selezionaAmbiti(ambiti)
+      })
+
+      it("Accesso Configurazione ambito 'Contenuto'", ()=>{
+        
+        //UltraBMP.ClickMatita("Contenuto")
+        ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
+
+        ConfigurazioneAmbito.ModificaValoriCasa(daModificareContenuto, modificheContenuto)
+        ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.PLUS)
+
+        ConfigurazioneAmbito.modificaSommaAssicurata('Danni al contenuto della casa', '35.000,00 €', false, true)
+        ConfigurazioneAmbito.modificaSommaAssicurata('Danni accidentali a superfici in vetro degli arredi', '3.000,00 €', false)
+    })
+
+    it("Aggiungi garanzia ambito 'Contenuto'", ()=>{
+        ConfigurazioneAmbito.aggiungiGaranzia('Danni da fenomeno elettrico')
+        ConfigurazioneAmbito.ClickButton("CONFERMA")
+        Dashboard.caricamentoDashboardUltra()
+    })
+
+    it("Accesso Configurazione ambito 'Catastrofi Naturali'", ()=>{
+        
+        //UltraBMP.ClickMatita("Catastrofi naturali")
+        ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[1])
+        ConfigurazioneAmbito.VerificaDefaultCasa(daModificareContenuto, modificheContenuto)
+        ConfigurazioneAmbito.selezionaSoluzione("Essential")
+        ConfigurazioneAmbito.ClickButton("CONFERMA")
+        Dashboard.caricamentoDashboardUltra()
+    })
+
+    it("Accesso Configurazione ambito 'Tutela legale'", ()=>{
+        
+        //UltraBMP.ClickMatita("Tutela legale")
+        ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[2])
+        ConfigurazioneAmbito.VerificaDefaultCasa(daModificareContenuto, modificheContenuto)
+        ConfigurazioneAmbito.selezionaSoluzione("Top")
+
+        ConfigurazioneAmbito.modificaSommaAssicurata('Casa', '25.000,00 €', false, false)
+        ConfigurazioneAmbito.modificaSommaAssicurata('Veicoli guidati con patente', '25.000,00 €', false, false)
+
+        //ConfigurazioneAmbito.ClickButton("CONFERMA")
+        //Dashboard.caricamentoDashboardUltra()
+    })
+
+    it("Aggiungi garanzia ambito 'Tutela legale'", ()=>{
+        ConfigurazioneAmbito.aggiungiGaranzia('Famiglia')
+        ConfigurazioneAmbito.aggiungiEstensione('+ Controversie con il datore di lavoro')
+        ConfigurazioneAmbito.ClickButton("CONFERMA")
+        Dashboard.caricamentoDashboardUltra()
+    })
+
+
+
+    ///////////////////
+    ////////////////////
+    ///////////////////
+
+
+
     it("Seleziona ambiti da Fast Quote", () => {
+        cy.pause()
         cy.log('Seleziona ambito')
         //scorre l'array degli ambiti da selezionare e clicca sulle icone
         for (var i = 0; i < ambiti.length; i++) {

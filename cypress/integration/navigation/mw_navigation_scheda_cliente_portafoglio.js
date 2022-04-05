@@ -12,82 +12,138 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-    //#endregion
+//#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 
 //#endregion
 
+//#region variables
+let currentClient
+//#endregion
 
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+        })
     })
 })
 
 beforeEach(() => {
     cy.preserveCookies()
     HomePage.reloadMWHomePage()
+    if (!Cypress.env('monoUtenza'))
+        cy.getUserWinLogin().then(data => {
+            let fileAgency
+            if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
+                fileAgency = 'agencies'
+            else
+                fileAgency = 'agenciesAviva'
 
-    if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
-        TopBar.search('Pulini Francesco')
-        SintesiCliente.wait()
-    } else if (!Cypress.env('isAviva')) {
+            cy.fixture(fileAgency).then(agenciesFromFixture => {
+                var currentAgency = agenciesFromFixture.shift()
+                cy.log('Perform impersonification on ' + currentAgency.agency)
+                cy.impersonification(data.tutf, currentAgency.agentId, currentAgency.agency)
+                switch (Cypress.currentTest.title) {
+                    case 'Verifica subTab Portafoglio':
+                    case 'Verifica subTab Polizze attive':
+                        cy.getClientWithPolizzeAttive(data.tutf, '31', 'PF', currentAgency).then((client) => {
+                            currentClient = client
+                            TopBar.search(currentClient.socialSecurityNumber)
+                            SintesiCliente.wait()
+                        })
+                        break
+                    case 'Verifica subTab Proposte':
+                        cy.getClientWithProposte(data.tutf, '31', 'PF', currentAgency).then((client) => {
+                            currentClient = client
+                            TopBar.search(currentClient.socialSecurityNumber)
+                            SintesiCliente.wait()
+                        })
+                        break
+                    case 'Verifica subTab Preventivi':
+                        cy.getClientWithPreventivi(data.tutf, 'PF', currentAgency).then((client) => {
+                            currentClient = client
+                            TopBar.search(currentClient.socialSecurityNumber)
+                            SintesiCliente.wait()
+                        })
+                        break
+                    case 'Verifica subTab Non in vigore':
+                        cy.getClientWithNonInVigore(data.tutf, 'PF', currentAgency).then((client) => {
+                            currentClient = client
+                            TopBar.search(currentClient.socialSecurityNumber)
+                            SintesiCliente.wait()
+                        })
+                        break
+                    case 'Verifica subTab Sinistri':
+                        cy.getClientWithSinistri(data.tutf, 'PF', currentAgency).then((client) => {
+                            currentClient = client
+                            TopBar.search(currentClient.socialSecurityNumber)
+                            SintesiCliente.wait()
+                        })
+                        break
+                    default:
+                        throw new Error('Test Nuovo Da Aggiungere')
+                }
+            })
+
+        })
+
+    if (Cypress.env('monoUtenza')) {
         TopBar.search('SLZNLL54A04H431Q')
         SintesiCliente.wait()
-    } else {
-        TopBar.search('DRLTMS95L21F257R')
-        SintesiCliente.wait()
     }
-
 })
 
 
-after(function() {
+after(function () {
     TopBar.logOutMW()
-        //#region Mysql
+    //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-            let tests = testsInfo
-            cy.finishMysql(dbConfig, insertedId, tests)
-        })
-        //#endregion
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
 
 })
 
-describe('MW: Navigazioni da Scheda Cliente - Tab Portafoglio', function() {
+describe('MW: Navigazioni da Scheda Cliente - Tab Portafoglio', function () {
 
-    it('Verifica subTab Portafoglio', function() {
+    it('Verifica subTab Portafoglio', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.checkLinksSubTabs()
     })
 
-    it('Verifica subTab Polizze attive', function() {
+    it('Verifica subTab Polizze attive', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Polizze attive')
+        Portafoglio.filtraPolizze('Motor')
         Portafoglio.checkPolizzeAttive()
     })
 
-    it('Verifica subTab Proposte', function() {
+    it('Verifica subTab Proposte', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Proposte')
         Portafoglio.checkProposte()
     })
 
-    it('Verifica subTab Preventivi', function() {
+    it('Verifica subTab Preventivi', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Preventivi')
         Portafoglio.checkPreventivi()
     })
 
-    it('Verifica subTab Non in vigore', function() {
+    it('Verifica subTab Non in vigore', function () {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Non in vigore')
         Portafoglio.checkNonInVigore()
     })
 
-    it('Verifica subTab Sinistri', function() {
+    //TODO: SINISTRI BEFOREACH CISL
+    it('Verifica subTab Sinistri', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             if (!currentHostName.includes('SM')) {

@@ -60,8 +60,25 @@ class ConfigurazioneAmbito {
 
       cy.get('ultra-config-ambito-garanzia-aggiuntiva')
         .contains(garanziaAgg).should('be.visible')
-        .parents('ultra-config-ambito-garanzia-aggiuntiva')
+        //.parents('ultra-config-ambito-garanzia-aggiuntiva')
+        .parents('div[class="garanzia-principale ultra-centered nx-grid__row"]')
         .find('button').should('be.enabled').click()
+        //.find('button').contains('Aggiungi').should('exist').click()
+
+      cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+    })
+  }
+
+  static aggiungiEstensione(garanziaAgg) {
+    ultraIFrame().within(() => {
+      cy.get('#caGaranzie').should('be.visible') //verifica che la sezione Garanzie Aggiuntive sia visibile
+
+      cy.get('ultra-config-ambito-garanzia-aggiuntiva')
+        .contains(garanziaAgg).should('be.visible')
+        //.parents('ultra-config-ambito-garanzia-aggiuntiva')
+        .parents('div[class="ca-sottogaranzia nx-grid__row ng-star-inserted"]')
+        .find('button').should('be.enabled').click()
+        //.find('button').contains('Aggiungi').should('exist').click()
 
       cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
     })
@@ -854,6 +871,62 @@ class ConfigurazioneAmbito {
     })
   }
   //#endregion Soluzioni
+
+  //#region Modifica Somma Assicurata 
+  /**
+    * Modifica Somma Assicurata della soluzione selezionata
+    * @param {string} copertura - copertura di cui si vuole modificare la somma assicurata
+    * @param {string} importo - il valore che si vuole impostare
+    * @param {boolean} tutte - flag che indica se la modifica dev'essere applicata a tutte le soluzioni
+    * @param {boolean} importoLibero - flag importo libero (true) o da lista predefinita importi
+    */
+   static modificaSommaAssicurata(copertura, importo, tutte, importoLibero = false) {
+    ultraIFrame().within(() => {
+      var strSiNo = "No"
+      if (tutte)
+        strSiNo = "Si"
+
+
+      cy.log("MODIFICHE VALORI SOMMA ASSICURATA")
+      if (importoLibero)
+      {
+        cy.get('div[class="ca-col-soluzione selected"]').should('exist')
+          .find('span').contains(copertura)
+          .parents('div[class="garanzia-name"]')
+          .parent('div').should('have.length', 1)
+          .find('div[class="col-control col-valuta ng-star-inserted"]')
+          .find('input').should('have.length', 1)
+          .click().wait(500)
+          .clear().wait(500)
+          .type(importo).wait(2000)
+          .type('{enter}')  
+
+        cy.get('div[id="warning-switch-solution"]').should('exist')
+          .find('div[class="bottoni-modale ng-star-inserted"]').should('exist')
+          .find('button').contains(strSiNo).should('be.visible').click()
+      }
+      else       // dropdown
+      {
+        cy.get('div[class="ca-col-soluzione selected"]').should('exist')
+        .find('span').contains(copertura)
+        .parents('div[class="garanzia-name"]')
+        .parent('div').should('have.length', 1)
+        .find('div[class="col-control col-dropdown ng-star-inserted"]')
+        .find('nx-dropdown').should('have.length', 1).click()
+        
+        cy.get('.nx-dropdown__panel-body').should('be.visible')
+          .find('span').contains(importo).click()
+      }
+
+      cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+      cy.wait(1000)
+
+    })
+
+  }
+  //#endregion
+
+
 }
 
 

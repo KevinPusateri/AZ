@@ -138,7 +138,7 @@ function retriveTarghe(dbConfig) {
         if (err) throw err;
     })
 
-    var query = "SELECT Targa FROM NGRA2021_Casi_Assuntivi_Motor WHERE Caso_assuntivo=0"
+    var query = "SELECT * FROM NGRA2021_Casi_Assuntivi_Motor"
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
             if (error) {
@@ -314,7 +314,7 @@ module.exports = (on, config) => {
     });
 
     on("task", {
-        getTarghe({ dbConfig }) {
+        getTargheInScadenzaAltraCompagnia({ dbConfig }) {
             return retriveTarghe(dbConfig)
         }
     });

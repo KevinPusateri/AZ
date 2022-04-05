@@ -1576,6 +1576,395 @@ Cypress.Commands.add('getCurrentDate', (dd = 0) => {
   return formattedDate
 })
 
+/**
+ * Ottieni un Cliente che abbia almeno una polizza Attiva
+ */
+Cypress.Commands.add('getClientWithPolizzeAttive', (tutf, branchId, clientType = 'PF', currentAgency) => {
+
+  cy.generateTwoLetters().then(nameRandom => {
+    cy.generateTwoLetters().then(firstNameRandom => {
+      cy.request({
+        method: 'GET',
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
+        log: false,
+        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+        headers: {
+          'x-allianz-user': tutf
+        }
+      }).then(response => {
+        if (response.body.length === 0)
+          cy.getClientWithPolizzeAttive(tutf, branchId, clientType, currentAgency)
+        else {
+          //Verifichiamo solo clienti in stato EFFETTIVO
+          let clientiEffettivi = response.body.filter(el => {
+            return el.partyCategory[0] === 'E' && el.socialSecurityNumber !== ''
+          })
+
+          if (clientiEffettivi.length > 0) {
+            let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+            //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+            cy.request({
+              method: 'GET',
+              retryOnStatusCodeFailure: true,
+              timeout: 60000,
+              log: false,
+              url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
+              headers: {
+                'x-allianz-user': tutf
+              }
+            }).then(responseContracts => {
+              //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
+              if (responseContracts.status !== 200)
+                cy.getClientWithPolizzeAttive(tutf, branchId, clientType, currentAgency)
+              //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
+              let contractsWithBranchId
+              contractsWithBranchId = responseContracts.body.filter(el => {
+                return el.branchId.includes(branchId)
+              })
+
+              if (contractsWithBranchId.length > 0) {
+                cy.getUserProfileToken(tutf).then(userProfileToken => {
+                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.firstName + ' ' + currentClient.name).then(isInBuca => {
+                    if (isInBuca) {
+                      cy.isClientAccessible(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isAccessible => {
+                        if (isAccessible)
+                          cy.isClientEffettivo(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isEffettivo => {
+                            if (isEffettivo)
+                              return currentClient
+                            else
+                              cy.getClientWithPolizzeAttive(tutf, branchId, clientType, currentAgency)
+                          })
+                        else
+                          cy.getClientWithPolizzeAttive(tutf, branchId, clientType, currentAgency)
+                      })
+                    }
+                    else
+                      cy.getClientWithPolizzeAttive(tutf, branchId, clientType, currentAgency)
+
+                  })
+                })
+              } else
+                cy.getClientWithPolizzeAttive(tutf, branchId, clientType, currentAgency)
+            })
+          } else
+            cy.getClientWithPolizzeAttive(tutf, branchId, clientType, currentAgency)
+        }
+      })
+    })
+  })
+})
+
+/**
+ * Ottieni un Cliente che abbia almeno una Proposta
+ */
+Cypress.Commands.add('getClientWithProposte', (tutf, branchId, clientType = 'PF', currentAgency) => {
+
+  cy.generateTwoLetters().then(nameRandom => {
+    cy.generateTwoLetters().then(firstNameRandom => {
+      cy.request({
+        method: 'GET',
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
+        log: false,
+        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+        headers: {
+          'x-allianz-user': tutf
+        }
+      }).then(response => {
+        if (response.body.length === 0)
+          cy.getClientWithProposte(tutf, branchId, clientType, currentAgency)
+        else {
+          //Verifichiamo solo clienti in stato EFFETTIVO
+          let clientiEffettivi = response.body.filter(el => {
+            return el.partyCategory[0] === 'E' && el.socialSecurityNumber !== ''
+          })
+
+          if (clientiEffettivi.length > 0) {
+            let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+            //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+            cy.request({
+              method: 'GET',
+              retryOnStatusCodeFailure: true,
+              timeout: 60000,
+              log: false,
+              url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Application',
+              headers: {
+                'x-allianz-user': tutf
+              }
+            }).then(responseContracts => {
+              //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
+              if (responseContracts.status !== 200)
+                cy.getClientWithProposte(tutf, branchId, clientType, currentAgency)
+              //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
+              let contractsWithBranchId
+              contractsWithBranchId = responseContracts.body.filter(el => {
+                return el.branchId.includes(branchId)
+              })
+
+              if (contractsWithBranchId.length > 0) {
+                cy.getUserProfileToken(tutf).then(userProfileToken => {
+                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.firstName + ' ' + currentClient.name).then(isInBuca => {
+                    if (isInBuca) {
+                      cy.isClientAccessible(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isAccessible => {
+                        if (isAccessible)
+                          cy.isClientEffettivo(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isEffettivo => {
+                            if (isEffettivo)
+                              return currentClient
+                            else
+                              cy.getClientWithProposte(tutf, branchId, clientType, currentAgency)
+                          })
+                        else
+                          cy.getClientWithProposte(tutf, branchId, clientType, currentAgency)
+                      })
+                    }
+                    else
+                      cy.getClientWithProposte(tutf, branchId, clientType, currentAgency)
+                  })
+                })
+              } else
+                cy.getClientWithProposte(tutf, branchId, clientType, currentAgency)
+            })
+          } else
+            cy.getClientWithProposte(tutf, branchId, clientType, currentAgency)
+        }
+      })
+    })
+  })
+})
+
+/**
+ * Ottieni un Cliente che abbia almeno un Preventivo
+ */
+Cypress.Commands.add('getClientWithPreventivi', (tutf, clientType = 'PF', currentAgency) => {
+
+  cy.generateTwoLetters().then(nameRandom => {
+    cy.generateTwoLetters().then(firstNameRandom => {
+      cy.request({
+        method: 'GET',
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
+        log: false,
+        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+        headers: {
+          'x-allianz-user': tutf
+        }
+      }).then(response => {
+        if (response.body.length === 0)
+          cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+        else {
+          //Verifichiamo solo clienti in stato EFFETTIVO
+          let clientiEffettivi = response.body.filter(el => {
+            return el.partyCategory[0] === 'E' && el.socialSecurityNumber !== ''
+          })
+
+          if (clientiEffettivi.length > 0) {
+            let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+            //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+            cy.request({
+              method: 'GET',
+              retryOnStatusCodeFailure: true,
+              timeout: 60000,
+              log: false,
+              url: be2beHost + '/daanagrafe/CISLCore/contractinfos?partyId=' + currentClient.customerNumber + '&contractPhase=Quotation',
+              headers: {
+                'x-allianz-user': tutf
+              }
+            }).then(responseContracts => {
+              if (responseContracts.status !== 200)
+                cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+
+              let contracts
+              contracts = responseContracts.body
+
+              if (contracts.length > 0) {
+                cy.getUserProfileToken(tutf).then(userProfileToken => {
+                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.firstName + ' ' + currentClient.name).then(isInBuca => {
+                    if (isInBuca) {
+                      cy.isClientAccessible(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isAccessible => {
+                        if (isAccessible)
+                          cy.isClientEffettivo(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isEffettivo => {
+                            if (isEffettivo)
+                              return currentClient
+                            else
+                              cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                          })
+                        else
+                          cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                      })
+                    }
+                    else
+                      cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                  })
+                })
+              } else
+                cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+
+            })
+          } else
+            cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+        }
+      })
+    })
+  })
+})
+
+/**
+ * Ottieni un Cliente che abbia almeno un Non in Vigore
+ */
+ Cypress.Commands.add('getClientWithNonInVigore', (tutf, clientType = 'PF', currentAgency) => {
+
+  cy.generateTwoLetters().then(nameRandom => {
+    cy.generateTwoLetters().then(firstNameRandom => {
+      cy.request({
+        method: 'GET',
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
+        log: false,
+        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+        headers: {
+          'x-allianz-user': tutf
+        }
+      }).then(response => {
+        if (response.body.length === 0)
+          cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+        else {
+          //Verifichiamo solo clienti in stato EFFETTIVO
+          let clientiEffettivi = response.body.filter(el => {
+            return el.partyCategory[0] === 'E' && el.socialSecurityNumber !== ''
+          })
+
+          if (clientiEffettivi.length > 0) {
+            let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+            //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+            cy.request({
+              method: 'GET',
+              retryOnStatusCodeFailure: true,
+              timeout: 60000,
+              log: false,
+              url: be2beHost + '/daanagrafe/CISLCore/contractinfos?partyId=' + currentClient.customerNumber + '&contractPhase=Contract&contractStatus=Rescind',
+              headers: {
+                'x-allianz-user': tutf
+              }
+            }).then(responseContracts => {
+              if (responseContracts.status !== 200)
+                cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+
+              let contracts
+              contracts = responseContracts.body
+
+              if (contracts.length > 0) {
+                cy.getUserProfileToken(tutf).then(userProfileToken => {
+                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.firstName + ' ' + currentClient.name).then(isInBuca => {
+                    if (isInBuca) {
+                      cy.isClientAccessible(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isAccessible => {
+                        if (isAccessible)
+                          cy.isClientEffettivo(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isEffettivo => {
+                            if (isEffettivo)
+                              return currentClient
+                            else
+                              cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                          })
+                        else
+                          cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                      })
+                    }
+                    else
+                      cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                  })
+                })
+              } else
+                cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+
+            })
+          } else
+            cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+        }
+      })
+    })
+  })
+})
+/**
+ * Ottieni un Cliente che abbia almeno un Sinistro
+ */
+ Cypress.Commands.add('getClientWithSinistri', (tutf, clientType = 'PF', currentAgency) => {
+
+  cy.generateTwoLetters().then(nameRandom => {
+    cy.generateTwoLetters().then(firstNameRandom => {
+      cy.request({
+        method: 'GET',
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
+        log: false,
+        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+        headers: {
+          'x-allianz-user': tutf
+        }
+      }).then(response => {
+        if (response.body.length === 0)
+          cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+        else {
+          //Verifichiamo solo clienti in stato EFFETTIVO
+          let clientiEffettivi = response.body.filter(el => {
+            return el.partyCategory[0] === 'E' && el.socialSecurityNumber !== ''
+          })
+
+          if (clientiEffettivi.length > 0) {
+            let currentClient = clientiEffettivi[Math.floor(Math.random() * clientiEffettivi.length)]
+            //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+            cy.request({
+              method: 'GET',
+              retryOnStatusCodeFailure: true,
+              timeout: 60000,
+              log: false,
+              url: be2beHost + '/daanagrafe/CISLCore/claims?partyId=' + currentClient.customerNumber,
+              headers: {
+                'x-allianz-user': tutf
+              }
+            }).then(responseContracts => {
+              if (responseContracts.status !== 200)
+                cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+
+              let contracts
+              contracts = responseContracts.body
+
+              if (contracts.length > 0) {
+                cy.getUserProfileToken(tutf).then(userProfileToken => {
+                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.firstName + ' ' + currentClient.name).then(isInBuca => {
+                    if (isInBuca) {
+                      cy.isClientAccessible(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isAccessible => {
+                        if (isAccessible)
+                          cy.isClientEffettivo(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isEffettivo => {
+                            if (isEffettivo)
+                              return currentClient
+                            else
+                              cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                          })
+                        else
+                          cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                      })
+                    }
+                    else
+                      cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                  })
+                })
+              } else
+                cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+
+            })
+          } else
+            cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+        }
+      })
+    })
+  })
+})
+
 // Set CYPRESS_COMMAND_DELAY above zero for demoing to stakeholders,
 // E.g. CYPRESS_COMMAND_DELAY=1000 node_modules/.bin/cypress open
 const COMMAND_DELAY = Cypress.env('COMMAND_DELAY') || 0;

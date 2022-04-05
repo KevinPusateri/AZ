@@ -53,11 +53,8 @@ const ultraRV = {
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 import { modificheAnimale } from '../../fixtures/Ultra/BMP_Caso7.json'
-//import { modificheFabbricato } from '../../fixtures/Ultra/BMP_Caso6.json'
 import { daModificareAnimale } from '../../fixtures/Ultra/BMP_Caso7.json'
-//import { daModificareFabbricato } from '../../fixtures/Ultra/BMP_Caso6.json'
 import { soluzione } from '../../fixtures/Ultra/BMP_Comune.json'
-import { ambitoUltra } from '../../fixtures/Ultra/BMP_Comune.json'
 
 
 //#endregion
@@ -298,10 +295,6 @@ describe('Ultra BMP : Emissione BMP Caso7', function () {
     })
 
     it("Apertura sezione Clients", () => {
-        //Ultra.chiudiFinale()
-        //StartPage.caricamentoPagina()
-        //cy.pause()
-        
         // Ricerca anagrafica
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
@@ -319,6 +312,7 @@ describe('Ultra BMP : Emissione BMP Caso7', function () {
     })
 
     it("Verifica presenza preventivo in Portafoglio", () => {
+        cy.pause()
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Preventivi')
         //Portafoglio.visualizzaLista()

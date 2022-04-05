@@ -192,7 +192,7 @@ class UltraBMP {
                 .parent()
                 .parent()
                 .find('[name="pen"]')
-                .click()
+                .click({ timeout: 10000 })
             //attende il caricamento della pagina Configurazione Contenuto
             cy.get('[id="caSoluzioni"]', { timeout: 30000 })
                 .should('be.visible')

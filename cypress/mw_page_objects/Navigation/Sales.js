@@ -71,6 +71,283 @@ const LinksOnEmettiPolizza = {
 class Sales {
 
     /**
+     * click Refresh del Quietanzamento
+     */
+    static refresh() {
+        cy.get('button[aria-label="refresh"]').should('be.visible').click()
+        cy.get('app-receipt-manager-cluster').should('be.visible')
+        cy.get('app-receipt-manager-footer').should('be.visible').find('button:contains("Estrai")').should('be.visible')
+    }
+
+    /**
+     * click Filtro del Quietanzamento
+     */
+    static filtro() {
+        cy.get('button[aria-label="filter"]').should('be.visible').click()
+        cy.get('nx-modal-container').should('be.visible')
+    }
+
+    /**
+     * Click su Gestisci Preferiti(Cluster)
+     */
+    static gestisciPreferiti() {
+        cy.get('app-favourite-cluster-manager-modal').should('be.visible').click()
+        cy.get('app-favourite-cluster-manager-modal-content').should('be.visible')
+    }
+
+    /**
+     * Click Azioni Veloci
+     * @param {string} pannello - Pannello azione veloce
+     * @param {string} radioButton - Radio Button dell'azione veloce all'interno del pannello
+     */
+    static clickAzioniVeloci(pannello = '', radioButton = '') {
+        cy.contains('Azioni Veloci').click()
+        cy.get('app-fast-actions-modal-content').should('be.visible')
+
+        if (radioButton !== '') {
+            cy.get('nx-expansion-panel-title')
+                .contains(pannello)
+                .parents('nx-expansion-panel')
+                .within(() => {
+                    if (pannello !== 'Per tutti i cluster selezionati')
+                        cy.contains(pannello).click()
+                    switch (radioButton) {
+                        case 'Eliminazione sconto commerciale':
+                            cy.contains(radioButton).click()
+                            break;
+                        case 'Verifica possibilità di incremento premio':
+                            cy.contains(radioButton).click()
+                            break;
+                        case 'Crea iniziativa':
+                            cy.contains(radioButton).click()
+                            break;
+                        case 'Vai a vista Quietanzamento':
+                            cy.contains(radioButton).click()
+                            break;
+                        case 'Assegna colore':
+                            cy.contains(radioButton).click()
+                            break;
+                    }
+                })
+            cy.contains('Procedi').click()
+
+
+            if (radioButton === 'Assegna colore')
+                checkAssegnaColore()
+            else {
+                cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
+                cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible')
+                cy.screenshot('Verifica aggancio ' + radioButton, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            }
+        }
+
+        
+        function checkAssegnaColore() {
+
+            cy.get('div[class="card-bar"]').should('be.visible').its('length').then(elementCount => {
+                let selected = Cypress._.random(elementCount - 1);
+                cy.get('div[class="card-bar"]').eq(selected).click().invoke('attr', 'style').as('styleColor');
+                cy.contains('Procedi').click()
+
+            });
+            cy.get('app-response').should('be.visible').then(() => {
+                cy.get('h1').should('include.text', 'Colore assegnato con successo')
+                cy.contains('Chiudi').click()
+            })
+            cy.intercept({
+                method: 'POST',
+                url: '**/estraiQuietanze'
+            }).as('estrai');
+            cy.contains('Estrai').click()
+            cy.wait('@estrai', { requestTimeout: 50000 });
+            // cy.wait(5000)
+            cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
+            cy.get('#main-table-sfera').should('exist').and('be.visible')
+                cy.get('@styleColor').then((color) => {
+                    cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+                    cy.screenshot('Verifica aggancio ' + radioButton, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                })
+        }
+    }
+
+    /**
+     * Seleziona tutti i Cluster Preferiti
+     */
+    static selectAllClusterPreferiti() {
+        cy.get('div[class="app-receipt-manager-cluster"]')
+            .not('div[class="app-receipt-manager-cluster disabled"]')
+            .find('span[class="cluster-title"]').each(($clusterPreferiti) => {
+                this.clickCluster($clusterPreferiti.text().trim())
+            })
+    }
+
+    /**
+     * Seleziona tutti i cluster se non si passa un cluster
+     * @param {string} cluster - default settato vuoto, altrimenti specificare un singolo cluster
+     */
+    static selectAltriCluster(cluster = '') {
+        cy.wait(3000)
+        cy.contains('CARICO DA ESTRARRE')
+            .parents('app-extracted-value')
+            .find('span[class="value ng-star-inserted"]:first')
+            .then(($caricoDaEstrarre) => {
+
+                var countTotaleCarico = (+($caricoDaEstrarre.text().split('pz')[0].trim().replace(/\./g, '')))
+
+                cy.contains('Seleziona altri cluster').click().wait(3000)
+
+                cy.get('app-cluster-selection-modal-content').should('be.visible').within(() => {
+                    if (cluster !== '')
+                        this.clickCluster(cluster, true)
+                    else {
+                        var arrayCluster = []
+                        cy.get('div[class^="app-receipt-manager-cluster"]')
+                            .not('div[class^="app-receipt-manager-cluster disabled"]')
+                            .not('div[class^="app-receipt-manager-cluster selected onModal"]')
+                            .find('span[class="cluster-title"]').each(($clusterPreferiti) => {
+                                arrayCluster.push($clusterPreferiti.text().trim())
+                            }).then(() => {
+                                for (let index = 0; index < arrayCluster.length; index++) {
+                                    cy.contains(arrayCluster[index]).parents('div[class^=app-receipt-manager-cluster]')
+                                        .then(($cluster) => {
+                                            if (!$cluster.hasClass('app-receipt-manager-cluster selected onModal')) {
+                                                this.clickCluster(arrayCluster[index], true)
+                                            }
+                                        })
+                                }
+                            })
+                    }
+                    cy.contains('Salva').click().wait(3000)
+
+                })
+                cy.wait(2000)
+                // Verifico la variazione
+                cy.contains('CARICO DA ESTRARRE')
+                    .parents('app-extracted-value')
+                    .find('span[class="value ng-star-inserted"]:first')
+                    .then(($caricoDaEstrarreChanged) => {
+                        var countTotaleCaricoChanged = (+($caricoDaEstrarreChanged.text().split('pz')[0].trim().replace(/\./g, '')))
+                        expect(countTotaleCarico).to.be.above(countTotaleCaricoChanged)
+                    })
+
+            })
+
+    }
+
+    /**
+     * Click checkBox Cluster 
+     * @param {string} cluster 
+     * @param {boolean} onModal - Dalla modale di "Seleziona altri cluster" 
+     */
+    static clickCluster(cluster, onModal = false) {
+        cy.contains(cluster).parents('app-receipt-manager-cluster').within(() => {
+            cy.get('nx-checkbox').click().wait(1000)
+        })
+
+        // Verifico che il Cluster sia stato selezionato
+        if (onModal) {
+            cy.contains(cluster)
+                .parents('app-receipt-manager-cluster')
+                .children()
+                .should('have.class', 'app-receipt-manager-cluster onModal selected')
+        }
+        else
+            cy.contains(cluster)
+                .parents('app-receipt-manager-cluster')
+                .children()
+                .should('have.class', 'app-receipt-manager-cluster selected')
+    }
+
+    /**
+     * Verifica Per Ogni Voce(Pannello) se sono presenti le azioni veloci
+     */
+    static checkAzioniVeloci() {
+
+        cy.get('app-fast-actions-modal-content').within(() => {
+            var arrayTitle = []
+            cy.get('nx-expansion-panel-title').each(($title) => {
+                arrayTitle.push($title.text().split('(')[0].trim())
+            }).then(() => {
+                for (let index = 0; index < arrayTitle.length; index++) {
+                    switch (arrayTitle[index]) {
+                        case 'Per tutti i cluster selezionati':
+                            var azioniVelociPerTutti = [
+                                'Crea iniziativa',
+                                'Assegna colore',
+                                'Crea e invia codici AZ Pay',
+                                'Pubblica in Area Personale',
+                                'Lancia FQ massiva',
+                                'Vai a vista Quietanzamento'
+                            ]
+                            checkPannelli(azioniVelociPerTutti, arrayTitle[index])
+                            break;
+                        case 'Monocoperti':
+                            var azioniVelociMonocoperti = [
+                                'Up-selling aumento garanzie'
+                            ]
+                            checkPannelli(azioniVelociMonocoperti, arrayTitle[index])
+                            break;
+                        case 'Uscite ANIA':
+                            var azioniVelociANIA = [
+                                'Eliminazione sconto commerciale'
+                            ]
+                            checkPannelli(azioniVelociANIA, arrayTitle[index])
+                            break;
+                        case 'Sinistrose':
+                            var azioniVelociSinistrose = [
+                                'Verifica delta premio'
+                            ]
+                            checkPannelli(azioniVelociSinistrose, arrayTitle[index])
+                            break;
+                        case 'Delta premio negativo':
+                            var azioniVelociDeltaPremioNegativo = [
+                                'Verifica possibilità di incremento premio'
+                            ]
+                            checkPannelli(azioniVelociDeltaPremioNegativo, arrayTitle[index])
+                            break;
+                        case 'Delta premio positivo':
+                            var azioniVelociDeltaPremioPositivo = [
+                                'Verifica possibilità di riduzione premio'
+                            ]
+                            checkPannelli(azioniVelociDeltaPremioPositivo, arrayTitle[index])
+                            break;
+                        case 'Monocoperti RCA':
+                            var azioniVelociMonocopertiRCA = [
+                                'Up-selling aumento garanzie'
+                            ]
+                            checkPannelli(azioniVelociMonocopertiRCA, arrayTitle[index])
+                            break;
+                        default:
+                            throw new Error('Manca tra i panneli un azione veloce' + arrayTitle[index])
+                    }
+                }
+                cy.contains('Indietro').click()
+            })
+        })
+
+        //#region Function CheckPannelli()
+        function checkPannelli(azioniVelociPerTutti, pannello) {
+            cy.get('nx-expansion-panel-title')
+                .contains(pannello)
+                .parents('nx-expansion-panel')
+                .within(() => {
+                    var arrayAzioniVeloci = []
+                    cy.contains(pannello).click()
+                    cy.get('lib-check-user-permissions').find('span[class="action-title"]').each(($azioniVeloci) => {
+                        arrayAzioniVeloci.push($azioniVeloci.text().trim())
+                    }).then(() => {
+                        for (let index = 0; index < azioniVelociPerTutti.length; index++) {
+                            console.log(azioniVelociPerTutti[index])
+                            expect(arrayAzioniVeloci).to.include(azioniVelociPerTutti[index])
+                        }
+                    })
+                })
+        }
+        //#endregion
+
+    }
+
+    /**
      * Torna indietro su Sales
      */
     static backToSales() {
@@ -92,15 +369,15 @@ class Sales {
     }
 
     /**
-     * Verifica se i "pz" sono presenti 
+     * Verifica se "i "€"" sono presenti 
      */
     static checkExistPremi() {
         cy.get('app-lob-link').find('div[class="app-lob-link ng-star-inserted"]:visible').each((lob) => {
             cy.wrap(lob).find('span:contains("' + lob.text() + '")').click()
-            cy.get('app-receipt-header').find('span:contains("Pezzi")').click()
-            cy.get('app-receipt-header').find('span[class="value ng-star-inserted"]').invoke('text').should('not.include', '€')
-            cy.get('app-receipt-manager-header-item').invoke('text').should('not.include', '€')
-            cy.get('app-receipt-manager-footer').invoke('text').should('not.include', '€')
+            cy.get('app-receipt-header').find('span:contains("Premi")').click()
+            cy.get('app-receipt-header').find('span[class="value ng-star-inserted"]').invoke('text').should('not.include', 'pz')
+            cy.get('app-receipt-manager-header-item').invoke('text').should('not.include', 'pz')
+            cy.get('app-receipt-manager-footer').invoke('text').should('not.include', 'pz')
         })
     }
 
@@ -602,7 +879,7 @@ class Sales {
      * Verifica l'aggancio alla pagina
      * @param {string} lob - nome del lob
      */
-    static lobDiInteresse(lob) {
+    static lobDiInteresse(lob, button = '') {
         return new Cypress.Promise((resolve, reject) => {
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('getTotalSferaReceipts')) {
@@ -623,9 +900,12 @@ class Sales {
                 if (!enable)
                     resolve(enable)
                 else {
-                    cy.get('app-receipt-manager-footer').find('button:contains("Estrai"):visible').click()
-                    cy.get('app-table-component').should('be.visible')
-                    cy.get('nx-header-actions').should('contain.text', 'Espandi Pannello')
+                    if (button === 'Estrai') {
+                        cy.get('app-receipt-manager-footer').find('button:contains("Estrai"):visible').click()
+                        cy.get('app-table-component').should('be.visible')
+                        cy.get('nx-header-actions').should('contain.text', 'Espandi Pannello')
+                    }
+
                     resolve(enable)
                 }
             })
@@ -639,8 +919,225 @@ class Sales {
      * @param {string} link - testo del link
      */
     static checkNotExistLink(element, textLink) {
-        cy.get(element,{timeout:10000}).should('not.contain.text', textLink)
+        cy.get(element, { timeout: 10000 }).should('not.contain.text', textLink)
+    }
+
+    /**
+     * Check Refresh QUIETANZAMENTO
+     * Selezioniamo due cluster Random e verifichiamo dopo il refresh 
+     * il ripristino dei checkBox selezionati in precedenza
+     */
+    static checkRefreshQuietanzamento() {
+
+        this.clickCluster('Modalità pagamento da remoto')
+        this.clickCluster('Monocoperti')
+        cy.screenshot('Verifica checkBox Selezionati', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
+
+        this.refresh()
+        cy.screenshot('Refresh', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
+
+
+        // Verifica che il CheckBox non sia selezionato dopo il refresh
+        cy.contains('Modalità pagamento da remoto')
+            .parents('app-receipt-manager-cluster')
+            .children()
+            .should('not.have.class', 'app-receipt-manager-cluster selected')
+
+        cy.screenshot('Verifica checkBox non presente', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
+
+
+    }
+
+    /**
+     * Verifica il corretto funzionamento del Filtro 
+     */
+    static checkFiltriQuietanzamento() {
+
+        // Mi salvo Il numero di Agenzie pre-Filtro
+        cy.get('div[class="single-info"]').first().should('be.visible').within(() => {
+            cy.get('span[class="value"]').invoke('text').as('numAgenzieTot')
+        })
+
+        cy.get('@numAgenzieTot').then((numAgenzie) => {
+            cy.log(numAgenzie)
+            this.filtro()
+
+            // Deseleziono la prima Agenzia
+            cy.get('nx-checkbox-group').find('nx-checkbox:first').click()
+            cy.contains('APPLICA').click().wait(3500)
+            cy.get('app-receipt-manager-cluster').should('be.visible')
+
+            cy.get('div[class="single-info"]').first().should('be.visible').within(() => {
+                cy.get('span[class="value"]').invoke('text').then((numAgenzieRimaste) => {
+                    cy.log(numAgenzieRimaste)
+
+                    // Verifico che dopo il filtro l'agenzia sia stata modificata
+                    if (numAgenzie !== numAgenzieRimaste)
+                        assert.isTrue(true, numAgenzie + ' diverso da ' + numAgenzieRimaste)
+                    else
+                        assert.fail('L\'agenzia non è stata tolta dal filtro')
+
+
+                })
+            })
+        })
+
+
+    }
+
+    /**
+     * Verifica Cluster Preferiti siano salvati correttamente
+     * nella Landing
+     */
+    static checkGestisciPreferiti() {
+        // Function seleziona i restanti Preferiti (max 8)
+        function selectALLStars() {
+            // Prendiamo Numero di cluster preferiti vuoti
+            cy.get('div[class="favourite-box-container ng-star-inserted"]')
+                .find('div[class="app-favourite-cluster-item isBox empty"]')
+                .its('length').as('favouritesEmpty')
+
+            cy.get('@favouritesEmpty').then((favouritesEmpty) => {
+                let clusterPrefer = []
+                // Selezioniamo i cluster tanti quanti i Box preferiti sono vuoti
+                for (let index = favouritesEmpty - 1; index >= 0; index--) {
+                    cy.get('nx-icon[name="star-o"]').eq(index).click()
+                }
+
+                // Ci salviamo i cluster selezionati e verifichiamo dopo il salvataggio
+                // se i cluster sono stati aggiunti correttamente nella Landing Sales
+                cy.get('div[class="cluster-list ng-star-inserted"]').within(() => {
+                    cy.get('nx-icon[name="star"]').parents('app-favourite-cluster-item')
+                        .within(() => {
+
+                            cy.get('span[class="label ng-star-inserted"]').each(($boxPrefer) => {
+                                clusterPrefer.push($boxPrefer.text())
+                            })
+                        })
+                }).then(() => {
+                    // Verifica il numero di BOX preferiti sia selezionati 8
+                    cy.get('div[class="favourite-box-container ng-star-inserted"]')
+                        .find('div[class="app-favourite-cluster-item isBox"]').should('have.length', 8)
+
+                    cy.contains('Salva').click().wait(3500)
+
+                    // Verifica da Landing Sales i cluster salvati
+                    for (let index = 0; index < clusterPrefer.length; index++) {
+                        cy.get('app-receipt-manager-body').should('include.text', clusterPrefer[index])
+                    }
+                })
+            })
+
+        }
+
+        this.gestisciPreferiti()
+
+        cy.get('div[class="favourite-box-container ng-star-inserted"]')
+            .find('div[class="app-favourite-cluster-item isBox"]')
+            .its('length').as('favouritesChecked')
+
+        cy.get('@favouritesChecked').then((favouritesChecked) => {
+
+            if (favouritesChecked < 8) {
+                selectALLStars()
+            } else {
+                for (let index = favouritesChecked - 1; index >= 0; index--) {
+                    cy.get('div[class="favourite-box-container ng-star-inserted"]')
+                        .find('div[class="app-favourite-cluster-item isBox"]').eq(index).click()
+                }
+                selectALLStars()
+            }
+
+        })
+
+
+    }
+
+    /**
+     * Seleziona il giorno del mese precedente
+     * @param {string} day - giorno 
+     */
+    static selectFirstDay(day) {
+        cy.get('nx-icon[name="calendar"]').first().should('be.visible').click()
+        cy.get('nx-calendar').should('be.visible').within(() => {
+            cy.get('button[aria-label="Previous month"]').should('be.visible').click()
+            cy.get('td').contains(day).click()
+        })
+
+        cy.wait(7000)
+        cy.get('app-receipt-manager-cluster').should('be.visible')
+
+    }
+
+    /**
+     * Verifica che il carico Totale Pezzi corrisponde
+     */
+    static checkCaricoTotalePezzi() {
+
+        cy.get('app-sfera').should('be.visible').within(() => {
+            var countTotaleCarico = 0.00
+            cy.get('app-receipt-manager-header-item').find('span[class="value ng-star-inserted"]').each(($item) => {
+                countTotaleCarico += (+$item.text().split('pz')[0].trim())
+            })
+
+            cy.get('div[class="app-receipt-header"]').within(() => {
+                cy.get('span[class="value ng-star-inserted"]').then(($totale) => {
+                    let totale = (+$totale.text().split('pezzi')[0].trim().replace(/\./g, ''))
+                    expect(countTotaleCarico.toFixed(2)).to.be.eq(totale.toFixed(2))
+                })
+            })
+        })
+    }
+
+    /**
+    * Verifica che il carico Totale Premi corrisponde
+    */
+    static checkCaricoTotalePremi() {
+        cy.get('app-receipt-header').find('span:contains("Premi")').click()
+        cy.get('app-sfera').should('be.visible').within(() => {
+            var countTotaleCarico = 0.00
+            cy.get('app-receipt-manager-header-item').find('span[class="value ng-star-inserted"]').each(($item) => {
+                countTotaleCarico += parseFloat($item.text().split('€')[0].trim().replace(/\./g, '').replace(/\,/g, '.'))
+            })
+
+            cy.get('div[class="app-receipt-header"]').within(() => {
+                cy.get('span[class="value ng-star-inserted"]').then(($totale) => {
+                    let totale = parseFloat($totale.text().split('€')[0].trim().replace(/\./g, '').replace(/\,/g, '.'))
+                    expect(countTotaleCarico.toFixed(2)).to.be.eq(totale.toFixed(2))
+                })
+            })
+        })
+    }
+
+    // Verifica dopo un cluster selezionato la variazione del carico da estrarre
+    static checkCaricoEstratto() {
+
+        cy.contains('CARICO DA ESTRARRE')
+            .parents('app-extracted-value')
+            .find('span[class="value ng-star-inserted"]:first')
+            .then(($caricoDaEstrarre) => {
+
+                var countTotaleCarico = (+($caricoDaEstrarre.text().split('pz')[0].trim().replace(/\./g, '')))
+                cy.get('div[class="app-receipt-manager-cluster"]')
+                    .not('div[class="app-receipt-manager-cluster disabled"]')
+                    .then(($title) => {
+                        this.clickCluster($title.eq(0).text())
+                        this.clickCluster($title.eq(1).text())
+
+                        cy.wait(2000)
+                        // Verifico la variazione
+                        cy.contains('CARICO DA ESTRARRE')
+                            .parents('app-extracted-value')
+                            .find('span[class="value ng-star-inserted"]:first')
+                            .then(($caricoDaEstrarreChanged) => {
+                                var countTotaleCaricoChanged = (+($caricoDaEstrarreChanged.text().split('pz')[0].trim().replace(/\./g, '')))
+                                expect(countTotaleCarico).to.be.above(countTotaleCaricoChanged)
+                            })
+                    })
+
+            })
+
+
     }
 }
-
 export default Sales

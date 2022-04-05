@@ -33,41 +33,44 @@ let keys = {
 
 
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
 
-        cy.getProfiling(data.tutf).then(profiling => {
-            cy.filterProfile(profiling, 'COMMON_PIATTAFORMA_TMX').then(profiled => { keys.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS = false })
-            cy.filterProfile(profiling, 'COMMON_CRUSCOTTO_SCORING_ABD').then(profiled => { keys.MONITOR_SCORING_AZ_BONUS_DRIVE = false })
-            cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiled => { keys.interrogazioniCentralizzateEnabled = profiled })
-            cy.filterProfile(profiling, 'COMMON_SERVIZI_SOL').then(profiled => { keys.srmOnlineEnabled = profiled })
-            cy.filterProfile(profiling, 'VITA_SISCO').then(profiled => { keys.siscoEnabled = profiled })
-            cy.filterProfile(profiling, 'PO_SERVICENOW').then(profiled => { keys.SERVICENOW = profiled })
-            cy.filterProfile(profiling, 'COMMON_SCARICO_CERTIFICATI').then(profiledCert => {
-                cy.filterProfile(profiling, 'COMMON_REPORTING_SCARICO_AGENZIA').then(profiledScaricoAgenzia => {
-                    cy.filterProfile(profiling, 'DAS_GIORNATA_ESTRAZIONE_SUITE_ESTERNE').then(profiledEstrazioneSuite => {
-                        if (!(profiledCert && (profiledScaricoAgenzia || profiledEstrazioneSuite)))
-                            keys.GESTIONE_CERTIFICATI = false
+            cy.getProfiling(data.tutf).then(profiling => {
+                cy.filterProfile(profiling, 'COMMON_PIATTAFORMA_TMX').then(profiled => { keys.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS = false })
+                cy.filterProfile(profiling, 'COMMON_CRUSCOTTO_SCORING_ABD').then(profiled => { keys.MONITOR_SCORING_AZ_BONUS_DRIVE = false })
+                cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiled => { keys.interrogazioniCentralizzateEnabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_SERVIZI_SOL').then(profiled => { keys.srmOnlineEnabled = profiled })
+                cy.filterProfile(profiling, 'VITA_SISCO').then(profiled => { keys.siscoEnabled = profiled })
+                cy.filterProfile(profiling, 'PO_SERVICENOW').then(profiled => { keys.SERVICENOW = profiled })
+                cy.filterProfile(profiling, 'COMMON_SCARICO_CERTIFICATI').then(profiledCert => {
+                    cy.filterProfile(profiling, 'COMMON_REPORTING_SCARICO_AGENZIA').then(profiledScaricoAgenzia => {
+                        cy.filterProfile(profiling, 'DAS_GIORNATA_ESTRAZIONE_SUITE_ESTERNE').then(profiledEstrazioneSuite => {
+                            if (!(profiledCert && (profiledScaricoAgenzia || profiledEstrazioneSuite)))
+                                keys.GESTIONE_CERTIFICATI = false
+                        })
                     })
                 })
-            })
 
-            cy.filterProfile(profiling, 'PO_REPORT_ALLIANZNOW').then(profiled => { keys.REPORT_ALLIANZ_NOW = profiled })
-            //? Rimosso dalla Release 124, default a false
-            cy.filterProfile(profiling, 'COMMON_MICROSTOCK').then(profiled => {
-                keys.obuEnabled = false
-                keys.satellitareEnabled = false
-            })
-            //? Rimosso dalla Release 124, default a false
+                cy.filterProfile(profiling, 'PO_REPORT_ALLIANZNOW').then(profiled => { keys.REPORT_ALLIANZ_NOW = profiled })
+                //? Rimosso dalla Release 124, default a false
+                cy.filterProfile(profiling, 'COMMON_MICROSTOCK').then(profiled => {
+                    keys.obuEnabled = false
+                    keys.satellitareEnabled = false
+                })
+                //? Rimosso dalla Release 124, default a false
 
-            cy.filterProfile(profiling, 'PO_LE_MIE_INFO_OM').then(profiled => {
-                if (Cypress.env('isAviva'))
-                    keys.newsMieInfo = false
-                else
-                    keys.newsMieInfo = profiled
-            })
+                cy.filterProfile(profiling, 'PO_LE_MIE_INFO_OM').then(profiled => {
+                    if (Cypress.env('isAviva'))
+                        keys.newsMieInfo = false
+                    else
+                        keys.newsMieInfo = profiled
+                })
 
+            })
         })
     })
 })

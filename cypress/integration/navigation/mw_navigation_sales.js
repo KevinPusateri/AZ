@@ -45,33 +45,36 @@ let keysRapidi = {
 }
 
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
-        // Profiling Emetti polizza
-        cy.getProfiling(data.tutf).then(profiling => {
-            cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.BMPenabled = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.UltraImpresaEnabled = profiled })
-            cy.filterProfile(profiling, 'AUTO_PREVENTIVO').then(profiled => { keys.PreventivoMotorEnabled = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.UltraSaluteEnabled = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.UltraUltraCasaPatrimonioEnabled = profiled })
-            cy.filterProfile(profiling, 'COMMON_ALLIANZ1_BUSINESS').then(profiled => { keys.Allianz1BusinessEnabled = profiled })
-            cy.filterProfile(profiling, 'COMMON_FASTQUOTE_IMPRESA_SICURA').then(profiled => { keys.FasquoteImpresaAlbergoEnabled = profiled })
-            cy.filterProfile(profiling, 'AUTO_PREVENTIVO').then(profiled => { keys.FlotteConvenzioniEnabled = profiled })
-            cy.filterProfile(profiling, 'VITA_PREVENTIVAZIONE_ANONIMA').then(profiled => { keys.PreventivoAnonimoVitaenabled = profiled })
-            cy.filterProfile(profiling, 'COMMON_MINIFLOTTE').then(profiled => { keys.MiniflotteEnabled = profiled })
-            cy.filterProfile(profiling, 'COMMON_TOOL_TRATTATIVE').then(profiled => { keys.TrattativeAutoCorporateEnabled = profiled })
-        })
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+            // Profiling Emetti polizza
+            cy.getProfiling(data.tutf).then(profiling => {
+                cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.BMPenabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.UltraImpresaEnabled = profiled })
+                cy.filterProfile(profiling, 'AUTO_PREVENTIVO').then(profiled => { keys.PreventivoMotorEnabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.UltraSaluteEnabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.UltraUltraCasaPatrimonioEnabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_ALLIANZ1_BUSINESS').then(profiled => { keys.Allianz1BusinessEnabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_FASTQUOTE_IMPRESA_SICURA').then(profiled => { keys.FasquoteImpresaAlbergoEnabled = profiled })
+                cy.filterProfile(profiling, 'AUTO_PREVENTIVO').then(profiled => { keys.FlotteConvenzioniEnabled = profiled })
+                cy.filterProfile(profiling, 'VITA_PREVENTIVAZIONE_ANONIMA').then(profiled => { keys.PreventivoAnonimoVitaenabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_MINIFLOTTE').then(profiled => { keys.MiniflotteEnabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_TOOL_TRATTATIVE').then(profiled => { keys.TrattativeAutoCorporateEnabled = profiled })
+            })
 
-        //Profiling collegamenti rapidi
-        cy.getProfiling(data.tutf).then(profiling => {
-            cy.filterProfile(profiling, 'COMMON_GESTIONE_MONITORAGGIO_PROPOSTE').then(profiled => { keys.MONITORAGGIO_POLIZZE_PROPOSTE = profiled })
-            cy.filterProfile(profiling, 'COMMON_OFFERTA_PREVENTIVI').then(profiled => { keys.RECUPERO_PREVENTIVI_QUOTAZIONI = profiled })
-            cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keys.NUOVO_SFERA = profiled })
-            cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keys.SFERA = profiled })
-            cy.filterProfile(profiling, 'RUOLO_CAMPAIGN').then(profiled => { keys.CAMPAGNE_COMMERCIALI = profiled })
-            cy.filterProfile(profiling, 'COMMON_GED').then(profiled => { keys.GED_GESTIONE_DOCUMENTALE = profiled })
+            //Profiling collegamenti rapidi
+            cy.getProfiling(data.tutf).then(profiling => {
+                cy.filterProfile(profiling, 'COMMON_GESTIONE_MONITORAGGIO_PROPOSTE').then(profiled => { keys.MONITORAGGIO_POLIZZE_PROPOSTE = profiled })
+                cy.filterProfile(profiling, 'COMMON_OFFERTA_PREVENTIVI').then(profiled => { keys.RECUPERO_PREVENTIVI_QUOTAZIONI = profiled })
+                cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keys.NUOVO_SFERA = profiled })
+                cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keys.SFERA = profiled })
+                cy.filterProfile(profiling, 'RUOLO_CAMPAIGN').then(profiled => { keys.CAMPAGNE_COMMERCIALI = profiled })
+                cy.filterProfile(profiling, 'COMMON_GED').then(profiled => { keys.GED_GESTIONE_DOCUMENTALE = profiled })
 
+            })
         })
     })
 })
@@ -111,6 +114,153 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             Sales.backToSales()
         } else this.skip()
     })
+
+    it('Verifica Refresh Quietanzamento', function () {
+        TopBar.clickSales()
+        Sales.selectFirstDay('1')
+        Sales.checkRefreshQuietanzamento()
+    })
+
+    it('Verifica Filtro Quietanzamento', function () {
+        TopBar.clickSales()
+        Sales.selectFirstDay('1')
+        Sales.checkFiltriQuietanzamento()
+    })
+
+    it('Verifica Gestisci Preferiti Quietanzamento', function () {
+        TopBar.clickSales()
+        Sales.selectFirstDay('1')
+        Sales.checkGestisciPreferiti()
+    })
+
+    context('Verifica Carico Totale', function () {
+
+        it('Verificare che il Carico Totale sia la somma degli stati: Da Lavorare, In Lavorazione e Incassato', function () {
+            TopBar.clickSales()
+            Sales.selectFirstDay('1')
+            Sales.checkCaricoTotalePezzi()
+            Sales.checkCaricoTotalePremi()
+        })
+
+        it(' Verificare che il carico totale si aggiorni in tempo reale', function () {
+            TopBar.clickSales()
+            Sales.selectFirstDay('1')
+            Sales.checkCaricoEstratto()
+        })
+
+    });
+
+    it('Verifica Azioni Veloci Motor', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster()
+            Sales.clickAzioniVeloci()
+            Sales.checkAzioniVeloci()
+            Sales.backToSales()
+        })
+    })
+
+    it('Verifica Azioni Veloci Rami Vari', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Rami vari', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster()
+            Sales.clickAzioniVeloci()
+            Sales.checkAzioniVeloci()
+            Sales.backToSales()
+        })
+    })
+
+    it('Verifica Azioni Veloci Vita', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Vita', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster()
+            Sales.clickAzioniVeloci()
+            Sales.checkAzioniVeloci()
+            Sales.backToSales()
+        })
+    })
+
+    it('Verifica Azioni Veloci Tutte', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Tutte', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster()
+            Sales.clickAzioniVeloci()
+            Sales.checkAzioniVeloci()
+            Sales.backToSales()
+        })
+    })
+
+    it('Verifica Azioni Veloci: "Eliminazione Sconto Commerciale"', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster('Uscite ANIA')
+            Sales.clickAzioniVeloci('Uscite ANIA', 'Eliminazione sconto commerciale')
+            Sales.backToSales()
+        })
+    });
+
+    it('Verifica Azioni Veloci: "Verifica possibilità di incremento premio"', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster('Delta premio negativo')
+            Sales.clickAzioniVeloci('Delta premio negativo', 'Verifica possibilità di incremento premio')
+            Sales.backToSales()
+        })
+    });
+
+    // it('Verifica Azioni Veloci: "Crea iniziativa"', function () {
+    //     TopBar.clickSales()
+    //     Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+    //         if (!checkEnabled)
+    //             this.skip()
+    //         Sales.selectFirstDay('1')
+    //         Sales.selectAllClusterPreferiti()
+    //         Sales.clickAzioniVeloci('Per tutti i cluster selezionati', 'Verifica possibilità di incremento premio')
+    //         Sales.backToSales()
+    //     })
+    // });
+
+    it('Verifica Azioni Veloci: "Vai a vista Quietanzamento"', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster('Modalità pagamento da remoto')
+            Sales.clickAzioniVeloci('Per tutti i cluster selezionati', 'Vai a vista Quietanzamento')
+            Sales.backToSales()
+        })
+    });
+
+    it('Verifica Azioni Veloci: "Assegna Colore"', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster('Modalità pagamento da remoto')
+            Sales.clickAzioniVeloci('Per tutti i cluster selezionati', 'Assegna colore')
+            Sales.backToSales()
+        })
+    });
 
     if (!Cypress.env('isAviva'))
         it('Verifica aggancio Sfera', function () {
@@ -287,7 +437,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Motor', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
-            Sales.lobDiInteresse('Motor').then((checkEnabled) => {
+            Sales.lobDiInteresse('Motor', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
             })
@@ -298,7 +448,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Rami Vari', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
-            Sales.lobDiInteresse('Rami vari').then((checkEnabled) => {
+            Sales.lobDiInteresse('Rami vari', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
             })
@@ -310,7 +460,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         if (Cypress.env('isAviva'))
             this.skip()
         TopBar.clickSales()
-        Sales.lobDiInteresse('Vita').then((checkEnabled) => {
+        Sales.lobDiInteresse('Vita', 'Estrai').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
         })
@@ -320,7 +470,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Tutte', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
-            Sales.lobDiInteresse('Tutte').then((checkEnabled) => {
+            Sales.lobDiInteresse('Tutte', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
             })
