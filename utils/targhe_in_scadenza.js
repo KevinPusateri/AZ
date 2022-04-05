@@ -224,7 +224,11 @@ const retriveInfo = targa => {
                                                         'Descrizione_Veicolo': respSivi.data.itemList[0].vehicleTypeDescription,
                                                         'Toponimo': toponimo,
                                                         'Indirizzo': indirizzo,
-                                                        'Compagnia_Provenienza': respSita.data.itemList[0].companyDescr
+                                                        'Compagnia_Provenienza': respSita.data.itemList[0].companyDescr,
+                                                        'Cl_Prov':respAtrc.data.itemList[0].provenanceClass,
+                                                        'Cl_Ass':respAtrc.data.itemList[0].assignmentClass,
+                                                        'CU_Prov':respAtrc.data.itemList[0].provenanceClassCU,
+                                                        'CU_Ass':respAtrc.data.itemList[0].assignmentClassCU
                                                 }
     
                                                 //Aggiungiamo all'array da mandare via mail

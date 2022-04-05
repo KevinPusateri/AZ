@@ -119,7 +119,7 @@ class TenutaTariffa {
 
             //Targa
             cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
-            cy.get('input[aria-label="Targa"]').clear().wait(500).type(caso.Targa).wait(500)
+            cy.get('input[aria-label="Targa"]').clear().wait(500).type(caso.Targa).wait(1000)
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
@@ -127,7 +127,7 @@ class TenutaTariffa {
 
             //Data Nascita
             let myBirthDay = new Date(caso.Data_nascita)
-            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click().wait(500)
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click().wait(1000)
             cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(('0' + myBirthDay.getDate()).slice(-2) + '/' + ('0' + (myBirthDay.getMonth() + 1)).slice(-2) + '/' + myBirthDay.getFullYear()).wait(1000)
 
             //Attendiamo che il caricamento non sia più visibile
@@ -136,45 +136,73 @@ class TenutaTariffa {
 
             cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
 
+            cy.screenshot('Dati Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
             cy.contains('Calcola').should('be.visible').click({ force: true })
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
 
             //Inseriamo la residenza
-            //Toponimo
-            if (caso.Toponimo.toUpperCase() !== 'VIA') {
-                cy.contains('via').should('be.visible').click().wait(500)
-                let re = new RegExp("\^ " + caso.Toponimo.toLowerCase() + " \$")
-                cy.contains(re).should('exist').click().wait(500)
-                //Attendiamo che il caricamento non sia più visibile
-                cy.get('nx-spinner').should('not.be.visible')
-            }
+            //? se il cliente non è registrato in portafoglio, questa parte non compare
+            cy.get('@iframe').within(() => { }).then($body => {
+                var checkIndirizzoVisible = $body.find('input[aria-label="Indirizzo"]').is(':visible')
+                if (checkIndirizzoVisible) {
+                    //Toponimo
+                    if (caso.Toponimo.toUpperCase() !== 'VIA') {
+                        cy.contains('via').should('be.visible').click().wait(500)
+                        let re = new RegExp("\^ " + caso.Toponimo.toLowerCase() + " \$")
+                        cy.contains(re).should('exist').click().wait(500)
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible')
+                    }
 
-            //Indirizzo
-            cy.get('input[aria-label="Indirizzo"]').should('exist').and('be.visible').click().wait(1000)
-            cy.get('input[aria-label="Indirizzo"]').clear().wait(500).type(caso.Indirizzo).wait(500)
-            //Attendiamo che il caricamento non sia più visibile
+                    //Indirizzo
+                    cy.get('input[aria-label="Indirizzo"]').should('exist').and('be.visible').click().wait(1000)
+                    cy.get('input[aria-label="Indirizzo"]').type(caso.Indirizzo).wait(500)
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible')
+
+                    //Numero Civico
+                    //? Metto a 1 by default che lato assuntivo non mi importa
+                    cy.get('input[aria-label="NumeroCivico"]').should('exist').and('be.visible').click().wait(1000)
+                    cy.get('input[aria-label="NumeroCivico"]').type('1').wait(500)
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible')
+
+                    //Comune
+                    cy.get('input[aria-label="Comune"]').should('exist').and('be.visible').click().wait(1000)
+                    cy.get('input[aria-label="Comune"]').type(caso.Comune_residenza.toUpperCase()).wait(500)
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible')
+
+                    cy.screenshot('Dati Indirizzo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+                    cy.contains('Calcola').should('be.visible').click({ force: true })
+                }
+            })
+
+            //Verifichiamo se siamo arrivati in pagina di Offerta direttamente
+            //Attendiamo che il caricamento non sia più visibile (ci mette un po')
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
+            cy.screenshot('Offerta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+            //Controlliamo i vari dati in Provenienza
+            cy.contains('Provenienza').should('be.visible').click({ force: true }).wait(1000)
+            cy.screenshot('Provenienza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.contains('Modifica').should('be.visible').click().wait(1000)
             cy.get('nx-spinner').should('not.be.visible')
 
-            //Numero
-            //? Metto a 1 by default
-            cy.get('input[aria-label="NumeroCivico"]').should('exist').and('be.visible').click().wait(1000)
-            cy.get('input[aria-label="NumeroCivico"]').clear().wait(500).type('1').wait(500)
-            //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible')
+            //Scadenza Precedente Contratto
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').invoke('val').then(dataScadenza => {
+                let myDataScadenza = new Date(caso.Data_scadenza)
+                expect(dataScadenza).to.include(('0' + myDataScadenza.getDate()).slice(-2) + '/' + ('0' + (myDataScadenza.getMonth() + 1)).slice(-2) + '/' + myDataScadenza.getFullYear())
+            })
 
-            //Comune
-            cy.get('input[aria-label="Comune"]').should('exist').and('be.visible').click().wait(1000)
-            cy.get('input[aria-label="Comune"]').clear().wait(500).type(caso.Comune_residenza).wait(500)
-            //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible')
-
-            cy.screenshot('Dati Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
-            cy.contains('Calcola').should('be.visible').click({ force: true })
-
-            cy.pause()
+            //Compagnia di Provenienza
+            cy.contains('COMPAGNIA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').find('span').should('be.visible').invoke('text').then(compProv => {
+                expect(compProv).to.include(caso.Compagnia_provenienza)
+            })
         })
     }
     static compilaDatiQuotazione(currentCase, flowClients) {
@@ -591,7 +619,6 @@ class TenutaTariffa {
             if (currentCase.Provenienza !== "Prima immatricolazione") {
                 if (currentCase.Data_Scadenza !== "") {
                     //Scadenza precedente contratto
-                    debugger
                     let formattedDataScadenzaPrecedenteContratto
 
                     let dataDecorrenza = calcolaDataDecorrenza(currentCase)
