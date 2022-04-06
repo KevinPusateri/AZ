@@ -112,26 +112,21 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Emissione Ultra Salute", () => {
     SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
-    Ultra.selezionaPrimaAgenzia()
+   // Ultra.selezionaPrimaAgenzia()
     Dashboard.caricamentoDashboardUltra()
   })
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
     Dashboard.selezionaAmbiti(ambiti)    
-    //Ultra.aggiungiAmbito(ambiti)
+    Dashboard.aggiungiAmbito(ambiti)
     
   })
 
-  it("Cambia Soluzioni", () => {
-    for (var i = 0; i < ambiti.length; i++) {
-      Dashboard.modificaSoluzione(ambiti[i], "Essential")
-    }
-  })
 
   it("Configurazione Invalidità Permanente da infortunio", () => {
-    ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[2])
+    ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
     ConfigurazioneAmbito.modificaDatoQuotazione("professione", "assistente presso uno studio medico")
-    ConfigurazioneAmbito.selezionaSoluzione("Premium")
+    ConfigurazioneAmbito.selezionaSoluzione("Top")
     ConfigurazioneAmbito.aggiungiGaranzia("Capitale per morte da infortunio")
     ConfigurazioneAmbito.ClickButton("CONFERMA")
     Dashboard.caricamentoDashboardUltra()
