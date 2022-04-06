@@ -69,4 +69,10 @@ describe('Matrix Web : Sfera 4.0', function () {
     //     Sfera.apriVoceMenu(Sfera.VOCIMENU.SOSTITUZIONE_RIATTIVAZIONE_AUTO, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
     //     cy.pause()
     // })
+
+    it.only('Quietanzamento Vista Operativa - Gestisci colora riga : Assegna colore', () => {
+        Sfera.setDateEstrazione()
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        Sfera.assegnaColoreRighe(Sfera.COLORI.SIGNIFICATO_ALFA)
+    });
 })
