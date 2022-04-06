@@ -226,6 +226,19 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
     });
 
+    it('Verifica Estrai', function () {
+        TopBar.clickSales()
+        Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
+            if (!checkEnabled)
+                this.skip()
+            Sales.selectFirstDay('1')
+            Sales.selectAltriCluster('Modalità pagamento da remoto')
+            Sales.selectAltriCluster('Monocoperti')
+            Sales.checkEstraiModifiche(['Modalità pagamento da remoto', 'Monocoperti'])
+            Sales.backToSales()
+        })
+    });
+
     // it('Verifica Azioni Veloci: "Crea iniziativa"', function () {
     //     TopBar.clickSales()
     //     Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {

@@ -71,6 +71,51 @@ const LinksOnEmettiPolizza = {
 class Sales {
 
     /**
+     * Click Estrai Del Quietanzamento
+     */
+    static clickEstraiQuietanzamento() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/estraiQuietanze'
+        }).as('estrai');
+        cy.get('app-receipt-manager').should('be.visible').contains('Estrai').click()
+        cy.wait('@estrai', { requestTimeout: 50000 });
+    }
+
+    /**
+     * Verifica che le modifiche(colori e dati) siano corrette 
+     */
+    static checkEstraiModifiche(cluster) {
+
+        // Verifico se i dati di Incassate, In lavorazione, Da lavorare corrispondono
+        cy.get('app-sfera').should('be.visible').then(() => {
+            var carico = []
+            cy.get('app-receipt-manager-header-item').find('span[class="value ng-star-inserted"]').each(($item) => {
+                carico.push($item.text().split('pz')[0].trim())
+            })
+
+            this.clickEstraiQuietanzamento()
+
+            cy.contains('Espandi Pannello').click()
+
+            cy.get('nx-card-header').should('be.visible')
+                .find('h3[nxheadline="subsection-small"]').each((card, index) => {
+                    cy.wrap(card).should('include.text', carico[index])
+                })
+        })
+
+        // Verifico che i colori dei due cluster selezionati siano corretti 
+        cy.get('app-cluster').should('be.visible')
+        cy.get('app-cluster').contains(cluster[0]).parents('nx-badge').then(($cluster) => {
+            cy.wrap($cluster).should('have.css', 'border', '3px solid rgb(108, 165, 102)')
+        })
+        cy.get('app-cluster').contains(cluster[1]).parents('nx-badge').then(($cluster) => {
+            cy.wrap($cluster).should('have.css', 'border', '3px solid rgb(200, 91, 120)')
+        })
+
+    }
+
+    /**
      * click Refresh del Quietanzamento
      */
     static refresh() {
@@ -141,7 +186,7 @@ class Sales {
             }
         }
 
-        
+
         function checkAssegnaColore() {
 
             cy.get('div[class="card-bar"]').should('be.visible').its('length').then(elementCount => {
@@ -160,13 +205,12 @@ class Sales {
             }).as('estrai');
             cy.contains('Estrai').click()
             cy.wait('@estrai', { requestTimeout: 50000 });
-            // cy.wait(5000)
             cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
             cy.get('#main-table-sfera').should('exist').and('be.visible')
-                cy.get('@styleColor').then((color) => {
-                    cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
-                    cy.screenshot('Verifica aggancio ' + radioButton, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                })
+            cy.get('@styleColor').then((color) => {
+                cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+                cy.screenshot('Verifica aggancio ' + radioButton, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            })
         }
     }
 
@@ -469,6 +513,7 @@ class Sales {
      * Verifica link presenti su Emetti Polizza
      */
     static checkLinksOnEmettiPolizza(keys) {
+        cy.wait(4000)
         cy.contains('Emetti polizza').click({ force: true })
 
         LinksOnEmettiPolizza.deleteKey(keys)
@@ -480,16 +525,10 @@ class Sales {
             cy.get('.card-container').find('lib-da-link').each(($link, i) => {
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
-        } else// if (Cypress.env('isAviva')) {
-            //!DA PROVARE SENZA
-            cy.get('.card-container').find('lib-da-link').each(($link, i) => {
+        } else
+            cy.get('div[class^="card-container"').should('be.visible').find('lib-da-link').each(($link, i) => {
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
-        // } else {
-        //     cy.get('.card-container').find('lib-da-link').each(($link, i) => {
-        //         expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
-        //     })
-        // }
     }
 
     /**
@@ -538,12 +577,7 @@ class Sales {
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP:
-                // cy.intercept({
-                //     method: 'GET',
-                //     url: '/ultra2/**'
-                // }).as('getUltra2');
                 Common.canaleFromPopup()
-                // cy.wait('@getUltra2', { requestTimeout: 30000 });
                 cy.wait(15000)
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
                 break;
@@ -784,14 +818,27 @@ class Sales {
      * Click sul pannello "Proposte danni" atterraggio su tab Vita
      */
     static clickTabVitaOnProposte() {
+        // cy.intercept('POST', '**/graphql', (req) => {
+        //     if (req.body.operationName.includes('salesContract') &&
+        //         req.body.variables.filter.tabCallType.includes('salesDamagePremium')) {
+        //         req.alias = 'gqlLife'
+        //     }
+        // })
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('salesContract') &&
-                req.body.variables.filter.tabCallType.includes('LIFE')) {
-                req.alias = 'gqlLife'
+                req.body.variables.filter.tabCallType.includes('DAMAGE')) {
+                req.alias = 'gqlDamage'
+            }
+        })
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('salesDamagePremium')) {
+                req.alias = 'gqlsalesDamagePremium'
             }
         })
         cy.get('app-proposals-section').contains('Proposte').click()
-        cy.wait('@gqlLife', { requestTimeout: 30000 });
+        // cy.wait('@gqlLife', { requestTimeout: 30000 });
+        cy.wait('@gqlDamage', { requestTimeout: 50000 });
+        cy.wait('@gqlsalesDamagePremium', { requestTimeout: 50000 });
         cy.get('app-paginated-cards').find('button:contains("Vita")').click().wait(3000)
     }
 
@@ -799,20 +846,12 @@ class Sales {
      * Click sulla prima card Danni 
      */
     static clickPrimaCardDanniOnProposte() {
-        // cy.intercept({
-        //     method: 'POST',
-        //     url: '**/InquiryAgenzia_AD/**'
-        // }).as('getAuto');
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
         cy.get('div[class="damages prop-card ng-star-inserted"]').first().find('lib-da-link').first().click()
-        // cy.wait(10000)
-        // cy.wait('@getAuto', { requestTimeout: 40000 });
         getIFrame().within(() => {
             cy.get('#menuContainer').should('be.visible')
             cy.get('#menuContainer').find('a').should('be.visible').and('contain.text', '« Uscita')
         })
-        // .find('#menuContainer > a').should('be.visible').and('contain.text','« Uscita')
-        // getIFrame().find('a:contains("« Uscita"):visible')
     }
 
     /**
@@ -829,10 +868,10 @@ class Sales {
         cy.get('.cards-container').should('be.visible').find('.card').first().as('firstCard')
         cy.get('@firstCard').trigger('mouseover')
         cy.get('@firstCard').click({ force: true })
-        cy.wait(20000)
         cy.wait('@digitalAgencyLink', { requestTimeout: 30000 });
+        cy.wait(20000)
         getIFrame().within(() => {
-            cy.get('#AZBuilder1_ctl13_cmdEsci').should('be.visible').invoke('attr', 'value').should('equal', '  Esci  ')
+            cy.get('#AZBuilder1_ctl14_cmdEsci').should('be.visible').invoke('attr', 'value').should('equal', '  Esci  ')
         })
 
     }

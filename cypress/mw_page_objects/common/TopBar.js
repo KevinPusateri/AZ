@@ -208,7 +208,7 @@ class TopBar extends HomePage {
         // cy.wait('@getSales', { requestTimeout: 50000 })
         cy.wait('@gqlgetExtractedSferaReceipts', { requestTimeout: 60000 })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
-        cy.screenshot('Verifica atterraggio "Sales"',  { capture: 'fullPage' },{ overwrite: true })
+        cy.screenshot('Verifica atterraggio "Sales"', { capture: 'fullPage' }, { overwrite: true })
     }
 
 
