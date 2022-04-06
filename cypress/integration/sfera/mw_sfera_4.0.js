@@ -70,9 +70,15 @@ describe('Matrix Web : Sfera 4.0', function () {
     //     cy.pause()
     // })
 
-    it.only('Quietanzamento Vista Operativa - Gestisci colora riga : Assegna colore', () => {
+    it('Quietanzamento Vista Operativa - Gestisci colora riga : Assegna colore', () => {
         Sfera.setDateEstrazione()
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.assegnaColoreRighe(Sfera.COLORI.SIGNIFICATO_ALFA)
+    });
+
+    it.only('Quietanzamento Vista Operativa - Gestisci colora riga : Rimuovi colore', () => {
+        Sfera.setDateEstrazione()
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
     });
 })
