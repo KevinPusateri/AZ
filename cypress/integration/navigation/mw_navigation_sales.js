@@ -44,6 +44,9 @@ let keysRapidi = {
     GED_GESTIONE_DOCUMENTALE: true
 }
 
+let cluster = Sales.getCluster()
+let azioniVeloci = Sales.getAzioniVeloci()
+
 before(() => {
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
@@ -84,16 +87,16 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
 
-})
+// })
 
 
 describe('Matrix Web : Navigazioni da Sales', function () {
@@ -102,53 +105,40 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         TopBar.clickSales()
     })
 
-    it('Verifica presenza dei collegamenti rapidi', function () {
-        TopBar.clickSales()
-        Sales.checkExistLinksCollegamentiRapidi(keysRapidi)
-    })
-
-    it('Verifica aggancio Nuovo Sfera', function () {
-        if (!Cypress.env('monoUtenza')) {
-            TopBar.clickSales()
-            Sales.clickLinkRapido('Nuovo Sfera')
-            Sales.backToSales()
-        } else this.skip()
-    })
 
     it('Verifica Refresh Quietanzamento', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.selectFirstDay('1')
         Sales.checkRefreshQuietanzamento()
     })
 
     it('Verifica Filtro Quietanzamento', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.selectFirstDay('1')
         Sales.checkFiltriQuietanzamento()
     })
 
     it('Verifica Gestisci Preferiti Quietanzamento', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.selectFirstDay('1')
         Sales.checkGestisciPreferiti()
     })
 
-    context('Verifica Carico Totale', function () {
-
-        it('Verificare che il Carico Totale sia la somma degli stati: Da Lavorare, In Lavorazione e Incassato', function () {
-            TopBar.clickSales()
-            Sales.selectFirstDay('1')
-            Sales.checkCaricoTotalePezzi()
-            Sales.checkCaricoTotalePremi()
-        })
-
-        it(' Verificare che il carico totale si aggiorni in tempo reale', function () {
-            TopBar.clickSales()
-            Sales.selectFirstDay('1')
-            Sales.checkCaricoEstratto()
-        })
-
-    });
+    it('Verifica Carico Totale', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
+        TopBar.clickSales()
+        Sales.selectFirstDay('1')
+        Sales.checkCaricoEstratto()
+        Sales.checkCaricoTotalePezzi()
+        Sales.checkCaricoTotalePremi()
+    })
 
     it('Verifica Azioni Veloci Motor', function () {
         TopBar.clickSales()
@@ -164,6 +154,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Azioni Veloci Rami Vari', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Rami vari', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
@@ -177,6 +169,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Azioni Veloci Vita', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Vita', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
@@ -190,6 +184,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Azioni Veloci Tutte', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Tutte', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
@@ -203,38 +199,44 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Azioni Veloci: "Eliminazione Sconto Commerciale"', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
             Sales.selectFirstDay('1')
-            Sales.selectAltriCluster('Uscite ANIA')
-            Sales.clickAzioniVeloci('Uscite ANIA', 'Eliminazione sconto commerciale')
+            Sales.selectAltriCluster(cluster.USCITE_ANIA)
+            Sales.clickAzioniVeloci(cluster.USCITE_ANIA, azioniVeloci.ELIMINAZIONE_SCONTO_COMMERCIALE)
             Sales.backToSales()
         })
     });
 
     it('Verifica Azioni Veloci: "Verifica possibilità di incremento premio"', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
             Sales.selectFirstDay('1')
-            Sales.selectAltriCluster('Delta premio negativo')
-            Sales.clickAzioniVeloci('Delta premio negativo', 'Verifica possibilità di incremento premio')
+            Sales.selectAltriCluster(cluster.DELTA_PREMIO_NEGATIVO)
+            Sales.clickAzioniVeloci(cluster.DELTA_PREMIO_NEGATIVO, azioniVeloci.VERIFICA_POSSIBILITA_DI_INCREMENTO_PREMIO)
             Sales.backToSales()
         })
     });
 
     it('Verifica Estrai', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
             Sales.selectFirstDay('1')
-            Sales.selectAltriCluster('Modalità pagamento da remoto')
-            Sales.selectAltriCluster('Monocoperti')
-            Sales.checkEstraiModifiche(['Modalità pagamento da remoto', 'Monocoperti'])
+            Sales.selectAltriCluster(cluster.MODALITA_PAGAMENTO_DA_REMOTO)
+            Sales.selectAltriCluster(cluster.MONOCOPERTI)
+            Sales.checkEstraiModifiche([cluster.MODALITA_PAGAMENTO_DA_REMOTO, cluster.MONOCOPERTI])
             Sales.backToSales()
         })
     });
@@ -252,28 +254,45 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     // });
 
     it('Verifica Azioni Veloci: "Vai a vista Quietanzamento"', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
             Sales.selectFirstDay('1')
-            Sales.selectAltriCluster('Modalità pagamento da remoto')
-            Sales.clickAzioniVeloci('Per tutti i cluster selezionati', 'Vai a vista Quietanzamento')
+            Sales.selectAltriCluster(cluster.MODALITA_PAGAMENTO_DA_REMOTO)
+            Sales.clickAzioniVeloci(cluster.PER_TUTTI_I_CLUSTER_SELEZIONATI, azioniVeloci.VAI_A_VISTA_QUIETANZAMENTO)
             Sales.backToSales()
         })
     });
 
     it('Verifica Azioni Veloci: "Assegna Colore"', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
             Sales.selectFirstDay('1')
-            Sales.selectAltriCluster('Modalità pagamento da remoto')
-            Sales.clickAzioniVeloci('Per tutti i cluster selezionati', 'Assegna colore')
+            Sales.selectAltriCluster(cluster.MODALITA_PAGAMENTO_DA_REMOTO)
+            Sales.clickAzioniVeloci(cluster.PER_TUTTI_I_CLUSTER_SELEZIONATI, azioniVeloci.ASSEGNA_COLORE)
             Sales.backToSales()
         })
     });
+
+    it('Verifica presenza dei collegamenti rapidi', function () {
+        TopBar.clickSales()
+        Sales.checkExistLinksCollegamentiRapidi(keysRapidi)
+    })
+
+    it('Verifica aggancio Nuovo Sfera', function () {
+        if (!Cypress.env('monoUtenza')) {
+            TopBar.clickSales()
+            Sales.clickLinkRapido('Nuovo Sfera')
+            Sales.backToSales()
+        } else this.skip()
+    })
 
     if (!Cypress.env('isAviva'))
         it('Verifica aggancio Sfera', function () {
@@ -419,6 +438,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             Sales.clickLinkOnEmettiPolizza('Trattative Auto Corporate')
             Sales.backToSales()
         })
+
+
     }
 
     it('Verifica tab "Pezzi"', function () {
