@@ -61,11 +61,12 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO)
     })
 
-    it('Sostituzione stesso veicolo Titolo 2 e Verifica in Sfera', function () {
-        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-        Sfera.estrai()
-        Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.VUOTO)
-        Sfera.apriVoceMenu(Sfera.VOCIMENU.SOSTITUZIONE_RIATTIVAZIONE_AUTO, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
-        cy.pause()
-    })
+    //! Necessari chiarimenti con Visentin
+    // it('Sostituzione stesso veicolo Titolo 2 e Verifica in Sfera', function () {
+    //     Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
+    //     Sfera.estrai()
+    //     Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.VUOTO)
+    //     Sfera.apriVoceMenu(Sfera.VOCIMENU.SOSTITUZIONE_RIATTIVAZIONE_AUTO, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
+    //     cy.pause()
+    // })
 })
