@@ -372,10 +372,13 @@ class DenunciaSinistriPage {
     static isVisibleText(txt)
     {
         return new Promise((resolve) => {
-            findIframeChild(IframeDen).within(() => {              
-                cy.contains(txt).should('exist').and('be.visible')
+            check = false
+            findIframeChild(IframeDen).within(($body) => {              
+                // cy.contains(txt).should('exist').and('be.visible')
+                const check = $body.find('span:contains("'+txt+'")').is(':visible')
+
                 cy.log('>> Text : [' +txt+ '] is visible! ')            
-                resolve(true)                
+                resolve(check)                
             })
             resolve(false)    
         })
