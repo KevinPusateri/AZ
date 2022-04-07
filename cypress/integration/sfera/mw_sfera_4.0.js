@@ -49,6 +49,7 @@ after(function () {
 describe('Matrix Web : Sfera 4.0', function () {
 
     it('Verificare presenza ed accesso a Delta Premio da menù contestuale e ritorno in Sfera', function () {
+        Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
         Sfera.estrai()
         Sfera.apriVoceMenu(Sfera.VOCIMENU.DELTA_PREMIO)
@@ -56,6 +57,7 @@ describe('Matrix Web : Sfera 4.0', function () {
     })
 
     it('Verificare Cluster Motor Delta Premio Positivo e Negativo', function () {
+        Sfera.setDateEstrazione()
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_NEGATIVO)
         Sfera.espandiPannello()
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO)
@@ -76,7 +78,7 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.assegnaColoreRighe(Sfera.COLORI.SIGNIFICATO_ALFA)
     });
 
-    it.only('Quietanzamento Vista Operativa - Gestisci colora riga : Rimuovi colore', () => {
+    it('Quietanzamento Vista Operativa - Gestisci colora riga : Rimuovi colore', () => {
         Sfera.setDateEstrazione()
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
