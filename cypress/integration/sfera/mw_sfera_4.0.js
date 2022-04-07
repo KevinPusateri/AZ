@@ -76,11 +76,15 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.setDateEstrazione()
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.assegnaColoreRighe(Sfera.COLORI.SIGNIFICATO_ALFA)
-    });
+    })
 
     it('Quietanzamento Vista Operativa - Gestisci colora riga : Rimuovi colore', () => {
         Sfera.setDateEstrazione()
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
-    });
+    })
+
+    it('Gestione Stampa Senza Incasso per Quietanze Allianz', () => {
+        
+    })
 })
