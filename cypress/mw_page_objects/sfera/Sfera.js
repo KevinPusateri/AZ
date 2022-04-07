@@ -552,11 +552,11 @@ class Sfera {
      * @param {colori} colore da assegnare
      */
     static assegnaColoreRighe(colore) {
-
         this.assegnaColore().click()
         cy.get('div[id^="cdk-overlay"]').should('be.visible').within(() => {
             cy.contains(colore).parent().find('nx-radio').click()
-            cy.contains(colore).parents('nx-card').find('div:first').invoke('attr', 'style').as('styleColor')
+            if (colore !== colori.NESSUN_COLORE)
+                cy.contains(colore).parents('nx-card').find('div:first').invoke('attr', 'style').as('styleColor')
             cy.contains('Procedi').click()
 
         })
@@ -570,10 +570,17 @@ class Sfera {
 
         })
 
-        cy.get('@styleColor').then((color) => {
-            cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
-            cy.screenshot('Verifica colori', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        })
+        //Verifichiamo che la tabella d'estrazione sia presente
+        this.tableEstrazione()
+
+        if (colore === colori.NESSUN_COLORE)
+            cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: white;')
+        else
+            cy.get('@styleColor').then((color) => {
+
+                cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+            })
+        cy.screenshot('Verifica colori', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     }
 }
