@@ -70,6 +70,20 @@ class DatiIntegrativi {
     }
 
     /**
+     * Seleziona 'SI' sulla presenza di altre coperture assicurative per l'ambito di rischio
+     * @param {string} ambito - ambito a cui ci si vuole riferire  
+     */
+     static selezionaSiAmbito(ambito) {
+        ultraIFrame().within(() => {
+            cy.get('div[class="box-border-bottom weight--bold header-ambito"]').should('have.length.gt', 0)
+              .find('label').contains(ambito).should('exist')
+              .parent('div')
+              .parent('div').should('have.length', 1)
+              .find('span').contains('SI').should('have.length', 1).click()
+        })
+    }
+
+    /**
      * 
      * @param {bool} speseMediche 
      * @param {bool} diariaRicovero 
@@ -107,6 +121,17 @@ class DatiIntegrativi {
             cy.get('[id="PopupDichiarazioni"]', { timeout: 5000 })
                 .should('be.visible')
                 .find('button').contains('AVANTI').should('be.visible').click()
+        })
+    }
+
+    /**
+     * clicca sul pulsante Conferma nel popup "Approfondimento sulla situazione assicurativa"
+     */
+     static popupApprofondimentoSituazioneAssicurativa() {
+        ultraIFrame().within(() => {
+            cy.get('div[id="QuestionarioSituazioneAssicurativa"]', { timeout: 5000 })
+                .should('be.visible')
+                .find('button').contains('CONFERMA').should('be.visible').click()
         })
     }
 
