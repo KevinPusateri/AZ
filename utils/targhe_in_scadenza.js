@@ -68,6 +68,27 @@ const writeData = (targa, data) => {
     })
 }
 
+const deleteMissedTarga = (targa) =>{
+    const connection = mysql.createConnection(dbConfig)
+    connection.connect((err) => {
+        if (err) throw err;
+    })
+
+    var query = `DELETE FROM NGRA2021_Casi_Assuntivi_Motor WHERE Targa='${targa}'`
+
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error) {
+                console.error(error)
+                reject(error)
+            } else {
+                connection.end()
+                return resolve(results)
+            }
+        })
+    })
+}
+
 const sendEmail = () => {
     return new Promise((resolve, reject) => {
         const nodemailer = require('nodemailer')
@@ -85,7 +106,7 @@ const sendEmail = () => {
             from: '"Il Mago delle Targhe" <noreply@allianz.it>',
             to: 'mail_tf@allianz.it',
             subject: 'Le Targhe Del Giorno - Autovetture e Motorette',
-            html: generateTable() + '</br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>',
+            html: generateTable() + '</br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>Thanks also to Angelo Merlo for query support</br></br>',
         };
         transporter.sendMail(email, function (err, info) {
             return err ? err.message : 'Message sent: ' + info.response;
@@ -247,7 +268,7 @@ const retriveInfo = targa => {
                 }
             })
             .catch(error => {
-                reject(`${targa} in errore --> reject`)
+                reject(`${targa}`)
             })
     })
 }
@@ -264,7 +285,8 @@ const main = async () => {
             console.log(`--- Info per targa ${currentTarga} ---`)
             console.log(currentTargaInfos)
             writeData(currentTarga, currentTargaInfos)
-        } catch (error) {
+        } catch (targaToRemove) {
+            deleteMissedTarga(targaToRemove)
         }
     }
 
