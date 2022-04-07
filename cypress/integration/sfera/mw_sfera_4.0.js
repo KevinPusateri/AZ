@@ -83,4 +83,8 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
     });
+    
+    it('Sfera AZpay', () => {
+       
+    });
 })
