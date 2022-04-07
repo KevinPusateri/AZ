@@ -33,6 +33,72 @@
       "Estensione"        : "",
       "ResidenzaAss"      : "",
       "CapAss"            : ""
+    },
+
+    "daVerificareCasa" : {
+      "Assicurato"        : false,
+      "Nome"              : true,
+      "Cap"               : false,
+      "Uso"               : false,
+      "Tipo"              : false,
+      "Mq"                : false,
+      "Piano"             : true,
+      "Valore"            : false,
+      "Classe"            : false,
+      "ClasseProtezione"  : false,
+      "Allarme"           : true,
+      "Anno"              : false,
+      "Estensione"        : false,
+      "ResidenzaAss"      : false,
+      "CapAss"            : false
+    },
+
+    "daModificareCasa" : {
+      "Assicurato"        : false,
+      "Nome"              : false,
+      "Cap"               : false,
+      "Uso"               : false,
+      "Tipo"              : false,
+      "Mq"                : false,
+      "Piano"             : true,
+      "Valore"            : false,
+      "Classe"            : false,
+      "ClasseProtezione"  : false,
+      "Allarme"           : true,
+      "Anno"              : false,
+      "Estensione"        : false,
+      "ResidenzaAss"      : false,
+      "CapAss"            : false
+    },
+  
+    "modificheCasa" : {
+      "Assicurato"        : "",
+      "Nome"              : "Casa Rosetta",
+      "Cap"               : "",
+      "Uso"               : "",
+      "Tipo"              : "",
+      "Mq"                : "",
+      "Piano"             : "piano seminterrato, terra o rialzato",
+      "Valore"            : "",
+      "Classe"            : "",
+      "ClasseProtezione"  : "",
+      "Allarme"           : "Ha",
+      "Anno"              : "",
+      "Estensione"        : "",
+      "ResidenzaAss"      : "",
+      "CapAss"            : ""
+    },
+
+    "ubicazione" : {
+      "Toponomastica"     : "Via",
+      "Indirizzo"         : "Cesare Battisti",
+      "Numero"            : "9",
+      "Scala"             : "b",
+      "Nazione"           : "",
+      "Provincia"         : "Trieste",
+      "Comune"            : "",
+      "Località"          : "",
+      "Cap"               : "34125"
     }
   
   }

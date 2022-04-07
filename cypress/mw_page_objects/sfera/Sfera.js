@@ -150,11 +150,55 @@ const Filtri = {
 }
 
 /**
+ * Enum Data Input Form
+ * @enum {Object}
+ */
+const dateInputForm = {
+    DATA_INIZIO_PERIODO: "dataInizioPeriodo",
+    DATA_FINE_PERIODO: "dataFinePeriodo"
+}
+
+/**
+ * Enum Seleziona Righe
+ * @enum {Object}
+ */
+const selezionaRighe = {
+    PAGINA_CORRENTE: "Pagina corrente",
+    TUTTE_LE_PAGINE: "Tutte le pagine"
+}
+
+/**
+ * Enum Colori assegnabili (si basa sulla 01-710000)
+ * ? Come si generano nuovi colori ?
+ * @enum {Object}
+ */
+const colori = {
+    NESSUN_COLORE: "Nessun colore",
+    SIGNIFICATO_ALFA: "significato alfa",
+    TEST: "test",
+    TEST_3: "test 3"
+}
+
+/**
  * @class
  * @classdesc Classe per interagire con Sfera 4.0 da Matrix Web
  * @author Andrea 'Bobo' Oboe & Kevin Pusateri
  */
 class Sfera {
+
+    /**
+     * Funzione che ritorna i colori disponibili per le righe
+     */
+    static get COLORI() {
+        return colori
+    }
+
+    /**
+     * Funzione che ritorna le voci disponibili per la selezione multipla delle righe di tabella
+     */
+    static get SELEZIONARIGHE() {
+        return selezionaRighe
+    }
 
     /**
      * Funzione che ritorna le voci di menu disponibili su Sfera
@@ -258,6 +302,25 @@ class Sfera {
      */
     static procedi() {
         return cy.contains('Procedi').should('exist').and('be.visible')
+    }
+
+    /**
+     * Ritorna il pulsante di refresh vicino alle date
+     * @returns {Object} pulsante refresh
+     * @private
+     */
+    static aggiorna() {
+        return cy.get('nx-icon[class="refresh-icon"]').should('exist').and('be.visible')
+    }
+
+    /**
+     * 
+     * @returns Ritorna il pulsante 'Assegna colore'
+     * @return {Object} pulsante 'Assegna colore'
+     * @private
+     */
+    static assegnaColore() {
+        return cy.contains('Assegna colore').should('exist').and('be.visible')
     }
     //#endregion
 
@@ -437,6 +500,88 @@ class Sfera {
             expect(parseInt(clusterMotorText.match(/\(([^)]+)\)/)[1])).to.be.greaterThan(0)
         })
         this.estrai()
+    }
+
+    /**
+     * Imposta la data di inizio e fine sulla quale effettuare l'estrazione
+     * @param {string} [dataInizio] default undefined; se non specificata, setta automaticamente la data 1 mese prima da oggi
+     * @param {string} [dataFine] default undefined; se non specificata, setta automaticamente la data odierna
+     */
+    static setDateEstrazione(dataInizio = undefined, dataFine = undefined) {
+        //Impostiamo la data di inizio estrazione
+        if (dataInizio === undefined) {
+            //Se non specificata la data, settiamo automaticamente la data a 1 mese prima rispetto ad oggi
+            let today = new Date()
+            today.setMonth(today.getMonth() - 1)
+            dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
+        }
+
+        cy.get(`input[formcontrolname="${dateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).type(dataInizio).wait(500)
+
+        //Impostiamo la data di fine estrazione
+        if (dataFine === undefined) {
+            //Se non specificata la data, settiamo automaticamente la data odierna
+            let today = new Date()
+            dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
+        }
+
+        cy.get(`input[formcontrolname="${dateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type(dataFine).wait(500).type('{esc}')
+
+        //Clicchiamo su estrai
+        this.estrai()
+
+        cy.wait(2000)
+    }
+
+    /**
+     * Effettua selezione multipla sulle righe della tabella di estrazione
+     * @param {selezionaRighe} righe Tipo di selezione multipla da effettuare
+     */
+    static selectRighe(righe) {
+        cy.get('.nx-checkbox__control:visible').first().should('be.visible').click().wait(500)
+        cy.get('div[class^="all-page"]').should('be.visible').within($div => {
+            if (righe === selezionaRighe.PAGINA_CORRENTE)
+                cy.get('nx-checkbox').first().click()
+            else
+                cy.get('nx-checkbox').last().click()
+        })
+    }
+
+    /**
+     * Assegna un colore alle righe precedentemente selezionate
+     * @param {colori} colore da assegnare
+     */
+    static assegnaColoreRighe(colore) {
+        this.assegnaColore().click()
+        cy.get('div[id^="cdk-overlay"]').should('be.visible').within(() => {
+            cy.contains(colore).parent().find('nx-radio').click()
+            if (colore !== colori.NESSUN_COLORE)
+                cy.contains(colore).parents('nx-card').find('div:first').invoke('attr', 'style').as('styleColor')
+            cy.contains('Procedi').click()
+
+        })
+
+        cy.wait(5000)
+
+        cy.get('sfera-assegna-colore').should('be.visible').within(() => {
+
+            cy.get('h3').should('include.text', 'Colore assegnato con successo')
+            cy.get('button').last().should('be.visible').click()
+
+        })
+
+        //Verifichiamo che la tabella d'estrazione sia presente
+        this.tableEstrazione()
+
+        if (colore === colori.NESSUN_COLORE)
+            cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: white;')
+        else
+            cy.get('@styleColor').then((color) => {
+
+                cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+            })
+        cy.screenshot('Verifica colori', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
     }
 }
 

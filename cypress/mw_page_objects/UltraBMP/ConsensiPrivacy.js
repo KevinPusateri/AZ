@@ -59,16 +59,20 @@ class ConsensiPrivacy {
             cy.get('div[class="dialog"]').should("exist")
               .find('button').contains('Conferma').should('have.length', 1).click()
         })
-        /*
+    }
+
+    /**
+     * Verifica presenza popup invio mail documentazione 
+     */ 
+     static VerificaInvioMail() {
+        cy.wait(10000)
+        cy.pause()
         ultraIFrame().within(() => {
-                //conferma popup
-                //cy.pause()
-                cy.get('div[class="dialog"]').should("exist")
-                  .find('button').contains('Conferma').should('have.length', 1).click()
-            //})    
-            
+            cy.get('div[class="dialog-small dialog-content"]').should('exist')
+              .find('main').contains("La documentazione è stata inviata con successo all’indirizzo:").should('exist')
+              .parent('div').should('have.class','dialog-small dialog-content')
+              .find('a').contains('OK').should('be.visible').click()
         })
-        */
     }
 }
 

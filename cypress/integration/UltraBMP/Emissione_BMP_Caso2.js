@@ -51,12 +51,14 @@ const ultraRV = {
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-//import { modificheAnimale } from '../../fixtures/Ultra/BMP_Caso2.json'
 import { modificheContenuto } from '../../fixtures/Ultra/BMP_Caso2.json'
-//import { daModificareAnimale } from '../../fixtures/Ultra/BMP_Caso2.json'
+import { modificheCasa } from '../../fixtures//Ultra/BMP_Caso2.json'
+import { daModificareCasa } from '../../fixtures//Ultra/BMP_Caso2.json'
+import { daVerificareCasa } from '../../fixtures//Ultra/BMP_Caso2.json'
 import { daModificareContenuto } from '../../fixtures/Ultra/BMP_Caso2.json'
 import { soluzione } from '../../fixtures/Ultra/BMP_Comune.json'
 import { ambitoUltra } from '../../fixtures/Ultra/BMP_Comune.json'
+import { ubicazione } from '../../fixtures//Ultra/BMP_Caso2.json'
 
 //#endregion
 
@@ -64,7 +66,7 @@ import { ambitoUltra } from '../../fixtures/Ultra/BMP_Comune.json'
 let personaFisica = PersonaFisica.MarioRossini()
 var nContratto = "000"
 var nPreventivo = "000"
-var frazionamento = "annuale"
+var frazionamento = "mensile"
 var arrPath = []
 var arrDoc = []
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.contenuto, ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali, ambitiUltra.ambitiUltraCasaPatrimonio.tutela_legale]
@@ -178,83 +180,48 @@ describe('Ultra BMP : Emissione BMP Caso2', function() {
         Dashboard.caricamentoDashboardUltra()
     })
 
+    it("Procedi", () => {
+        Dashboard.procediHome()
+        DatiQuotazione.CaricamentoPagina()
+    })
+
+    it("Modifica dati quotazione e conferma", () => {
+        DatiQuotazione.ModificaValoriCasa(modificheContenuto.Nome, daModificareCasa, modificheCasa)
+        DatiQuotazione.confermaDatiQuotazione()
+        Riepilogo.caricamentoRiepilogo()
+    })
+
+    it("Verifica dati quotazione", () => {
+        Dashboard.selezionaVoceHeader('Dati quotazione')
+        DatiQuotazione.VerificaDefaultCasa(modificheCasa.Nome, daVerificareCasa, modificheCasa)
+        DatiQuotazione.confermaDatiQuotazione()
+        Riepilogo.caricamentoRiepilogo()
+    })
+
+    it("Verifica ambiti in Riepilogo", () => {
+        Riepilogo.verificaFrazionamento(frazionamento)
+        Riepilogo.EmissionePreventivo()
+        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()   
+    })
+
+    /////>>>>> COPIARE PROVA
+    it("Anagrafica", () => {
+        CensimentoAnagrafico.selezionaNuovoFabbricato(ubicazione)  
+        cy.pause()
+    })
+
+
+
+    
+
 
 
     ///////////////////
     ////////////////////
     ///////////////////
 
-
-
-    it("Seleziona ambiti da Fast Quote", () => {
-        cy.pause()
-        cy.log('Seleziona ambito')
-        //scorre l'array degli ambiti da selezionare e clicca sulle icone
-        for (var i = 0; i < ambiti.length; i++) {
-            cy.log("selezione ambito " + ambiti[i])
-
-            //seleziona ambito
-            
-            //cy.get('#ambitiRischio', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
-            cy.get('div[class="scopes-box ng-star-inserted"]', { timeout: 30000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
-                .should('be.visible').click()
-            cy.log('****** AMBITO SELEZIONATO: ' + ambiti[i])
-
-            cy.wait(500)
-
-            //verifica che sia selezionato
-            cy.log('>>> verifica selezione ambito: ' + ambiti[i])
-            cy.get('div[class="scopes-box ng-star-inserted"]', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
-            .invoke('attr', 'class').should('contain', 'icon-selected')
-        }
-    })
-
-    it("Calcola in Fast Quote", () => {
-        // Click 'calcola'
-        cy.get('button').contains('Calcola').should('be.visible').click()
-        cy.wait(2000)
-    })
-
-    it("Configura ed accedi alla Dashboard Ultra", () => {
-        // Click 'Configura'
-        cy.get('button').contains('Configura', { timeout: 5000 }).should('be.visible').click()
-        Dashboard.caricamentoDashboardUltra() 
-    })
-
-    it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", () => {
-        Dashboard.verificaAmbiti(ambiti)   
-    })
-
-    it("Cambia Soluzioni", () => {
-        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, soluzione.PREMIUM)
-        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali, soluzione.TOP)
-        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici, soluzione.PREMIUM)
-    })
-
-    it("Configurazione Fabbricato", () => {
-        ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
-        ConfigurazioneAmbito.ModificaValoriCasa(daModificareFabbricato, modificheFabbricato)
-        ConfigurazioneAmbito.ClickButton("CONFERMA")
-        Dashboard.caricamentoDashboardUltra()    
-    })
-
-    it("Configurazione Animali Domestici", () => {
-        ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[2])
-        ConfigurazioneAmbito.ModificaValoriAnimaleDomestico(daModificareAnimale, modificheAnimale)
-        ConfigurazioneAmbito.ClickButton("CONFERMA")
-        Dashboard.caricamentoDashboardUltra()   
-    })
-
-    it("Seleziona frazionamento", ()=>{
-        Dashboard.selezionaFrazionamento(frazionamento)
-    })
-
-    it("Modifica durata fabbricato", () => {
-        Dashboard.dotMenu(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, "Modifica la durata")
-        Dashboard.modificaDurata(5)
-    })
-
     it("Procedi e Conferma", () => {
+        cy.pause()
         Dashboard.procediHome()
         DatiQuotazione.CaricamentoPagina()
         DatiQuotazione.confermaDatiQuotazione()

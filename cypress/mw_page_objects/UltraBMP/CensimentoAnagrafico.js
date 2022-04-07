@@ -237,6 +237,42 @@ class CensimentoAnagrafico {
     }
 
     /**
+     * Seleziona un'ubicazione differente da quella del contraente
+     * @param {*} cliente  (persona fisica)
+     * @param {json} ubicazione // Nuova ubicazione
+     */
+     static selezionaNuovoFabbricato(cliente, ubicazione) {
+        ultraIFrame().within(() => {
+            cy.log('*** selezionaNuovoFabbricato ***')
+
+            cy.get('#tabsAnagrafiche', { timeout: 30000 }).should('be.visible')  //attende la comparsa del form con i dati quotazione
+            cy.get('div').contains('Casa').should('be.visible').click()  //tab Casa
+
+            cy.get('button').contains('NUOVO FABBRICATO').should('be.visible').click()
+            cy.wait(5000)
+
+            CensimentoAnagrafico.impostaUbicazione(ubicazione)
+            cy.wait(3000)
+
+        })
+        ultraIFrame().within(() => {
+            cy.get('#popupConfermaCambioParamTariffari', { timeout: 15000 })
+              .should('be.visible')
+              .find('button').contains('AGGIORNA')
+              .click()
+                
+            cy.wait(2000)
+            
+            cy.get('span')
+                .contains('Assicurato associato').should('be.visible')
+                .parent().should('exist')
+                .parent().should('exist')
+                .find('select').select(cliente.cognomeNome())
+                .wait(2000)
+        })
+    }
+
+    /**
      * Seleziona un animale
      * @param {*} cliente  (persona fisica)
      * @param {*} microchip (numero di 15 cifre)
@@ -294,6 +330,97 @@ class CensimentoAnagrafico {
             }
         })
     }
+
+    /**
+     * Impostazione ubicazione diversa dall'indirizzo del contraente 
+     * @param {json} ubicazione //
+     */
+     static impostaUbicazione(ubicazione) {
+        ultraIFrameAnagrafica().within(() => {
+            cy.log("ultraIFrameAnagrafica - 1")
+                
+            if(!ubicazione.Toponomastica == "")
+            {
+                cy.get('input[id*="_campoUBI_CodPrefis"]').should('be.visible')
+                  .click().wait(500)
+                  .type(ubicazione.Toponomastica).wait(500)
+                cy.get('ul[id*="_campoUBI_CodPrefis_listbox"]').should('be.visible')
+                  .find('li').contains(ubicazione.Toponomastica.toUpperCase()).click()
+            }
+            if(!ubicazione.Indirizzo == "")
+            {
+                cy.get('input[id*="_campoUBI_DesIndir"]').should('be.visible')
+                  .click().wait(500)
+                  .clear().wait(500)
+                  .type(ubicazione.Indirizzo).wait(500)
+            }
+            if(!ubicazione.Numero == "")
+            {
+                cy.get('input[id*="_campoUBI_NumCiv"]').should('be.visible')
+                  .click().wait(500)
+                  .clear().wait(500)
+                  .type(ubicazione.Numero).wait(500)
+            }
+            if(!ubicazione.Scala == "")
+            {
+                cy.get('input[id*="_campoUBI_NumScala"]').should('be.visible')
+                  .click().wait(500)
+                  .clear().wait(500)
+                  .type(ubicazione.Scala).wait(500)
+            }
+            if(!ubicazione.Nazione == "")
+            {
+                cy.get('span[aria-owns*="_campoUBI_Nazione_listbox"]').should('exist').click()
+                cy.get('ul[id*="_campoUBI_Nazione_listbox"]').should('be.visible')
+                  .find('li').contains(ubicazione.Nazione).should('be.visible').click()
+            }
+            
+            if(!ubicazione.Provincia == "")
+            {
+                cy.get('input[id*="_campoUBI_Provincia"]').should('exist')
+                  .click().wait(500)
+                  .type(ubicazione.Provincia).wait(500)
+                cy.contains(ubicazione.Provincia.toUpperCase()).should('be.visible').click()
+            }
+                
+                
+        })
+        cy.wait(2000)
+        
+        if(!ubicazione.Comune == "")
+        {
+            ultraIFrameAnagrafica().within(() => {
+                cy.log("ultraIFrameAnagrafica - 2")
+                cy.get('input[id*="_campoUBI_CodTerr"]').should('exist').wait(3000)
+                  .click().wait(1000)
+                  .clear().wait(1000)
+            })
+        
+            ultraIFrameAnagrafica().within(() => {
+                cy.get('input[id*="_campoUBI_CodTerr"]').should('exist')
+                .type(ubicazione.Comune).wait(500)
+
+                cy.get('ul[id*="_campoUBI_CodTerr_listbox"]').should('be.visible')
+                .find('li').contains(ubicazione.Comune.toUpperCase()).click().wait(2000)
+            })
+        }
+
+        if(!ubicazione.Cap == "")
+        {
+            ultraIFrameAnagrafica().within(() => {
+                cy.get('span[aria-owns*="_campoUBI_CodCap_listbox"]').should('exist').click()
+
+                cy.get('ul[id*="_campoUBI_CodCap_listbox"]').should('be.visible')
+                  .find('li').contains(ubicazione.Cap).should('be.visible').click()
+            })
+        }
+
+        ultraIFrameAnagrafica().within(() => {
+            cy.get('input[id*="_Conferma"]').should('be.visible').click()
+        })
+
+    }
+
 }
 
 export default CensimentoAnagrafico
