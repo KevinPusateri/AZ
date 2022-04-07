@@ -96,7 +96,8 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
-      cy.get('input[name="main-search-input"]').type(personaGiuridica).type('{enter}')
+     
+      cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
       cy.get('lib-client-item').first()
         .find('.name').trigger('mouseover').click()
     }).then(($body) => {
@@ -104,7 +105,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
       cy.log('permessi: ' + check)
       if (check) {
-        cy.get('input[name="main-search-input"]').type(personaGiuridica).type('{enter}')
+        cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
         cy.get('lib-client-item').first().next().click()
       }
     })
