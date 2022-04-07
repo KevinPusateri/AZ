@@ -193,13 +193,10 @@ const retriveInfo = targa => {
                                                 throw err
 
                                             let addresses = resultOfEgon.DataWP.DataNormalized[0].String
-
-                                            //Selezioniamo un indirizzo random (per semplicità che abbiamo solo uno spazio)
-                                            let filteredAddresses = addresses.filter(function (address) {
-                                                return address._.split(' ').length - 1 === 1
-                                            })
-                                            let toponimo = filteredAddresses[Math.floor(Math.random() * filteredAddresses.length)]._.split(' ')[0]
-                                            let indirizzo = filteredAddresses[Math.floor(Math.random() * filteredAddresses.length)]._.split(' ')[1]
+                                            let randomAddress = addresses[Math.floor(Math.random() * addresses.length)]._
+                                            
+                                            let toponimo = randomAddress.substring(0, randomAddress.indexOf(' '))
+                                            let indirizzo = randomAddress.substring(randomAddress.indexOf(' ') + 1)
 
                                             axios({
                                                 url: `http://online.azi.allianzit/WebdaniaFES/services/vehicle/${targa}/sivi/detail/0`,
