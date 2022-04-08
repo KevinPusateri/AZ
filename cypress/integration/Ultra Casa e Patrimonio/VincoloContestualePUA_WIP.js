@@ -184,7 +184,7 @@ describe("Vincolo contestuale PUA ", () => {
 
   it("Recupero preventivo", () => {
     StartPage.menuHeader(menuStart.recupero)
-    RecuperoPreventivo.impostaFiltro(filtroRicercaPreventivo.dataDal, "03022022")
+    RecuperoPreventivo.impostaFiltro(filtroRicercaPreventivo.dataDal, dataOggi)
     RecuperoPreventivo.clickFiltraRisultati()
   })
 

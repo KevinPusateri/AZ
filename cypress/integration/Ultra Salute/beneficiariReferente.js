@@ -114,14 +114,13 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Emissione Ultra Salute", () => {
     SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
-   // Ultra.selezionaPrimaAgenzia()
+    Ultra.selezionaPrimaAgenzia()
     Dashboard.caricamentoDashboardUltra()
   })
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
     Dashboard.selezionaAmbiti(ambiti)    
-    Dashboard.aggiungiAmbito(ambiti)
-    
+    Dashboard.aggiungiAmbito(ambiti)    
   })
 
 
@@ -131,7 +130,6 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     ConfigurazioneAmbito.selezionaSoluzione("Top")
     ConfigurazioneAmbito.aggiungiGaranzia("Capitale per morte da infortunio")
     ConfigurazioneAmbito.ClickButton("CONFERMA")
-    Dashboard.caricamentoDashboardUltra()
     Dashboard.procediHome()
     DatiQuotazione.CaricamentoPagina()
   })

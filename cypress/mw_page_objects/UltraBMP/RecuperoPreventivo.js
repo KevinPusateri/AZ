@@ -76,6 +76,14 @@ class RecuperoPreventivo {
                 .find('span').contains("FILTRA RISULTATI").click()
         })
     }
+
+    static ordinaRisultati(colonna, ordine) {
+        ultraIFrame().within(() => {
+            cy.get('ultra-recupera-preventivo-table').should('exist')
+                .find('[nxsortheadercell="'+colonna+'"]').children('[role="button"]')
+                .click()
+        })
+    }
 }
 
 export default RecuperoPreventivo
