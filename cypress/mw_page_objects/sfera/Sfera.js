@@ -368,7 +368,11 @@ class Sfera {
      * Espande il pannello che contiene rami estrazione, date, Incassate, In lavorazione e Da lavorare
      */
     static espandiPannello() {
-        cy.contains('Espandi Pannello').should('exist').and('be.visible').click()
+        cy.get('body').within($body => {
+            var espandiPannelloIsVisible = $body.find('span:contains("Espandi Pannello")').is(':visible')
+            if (espandiPannelloIsVisible)
+                cy.contains('Espandi Pannello').click()
+        })
     }
 
     /**
@@ -397,6 +401,9 @@ class Sfera {
      * @param {TipoQuietanze} tipoQuietanze Tipo di Quietanze che devono rimanere nell'estrazione
      */
     static filtraTipoQuietanze(tipoQuietanze) {
+        //Vediamo se espandere il pannello per le date
+        this.espandiPannello()
+
         switch (tipoQuietanze) {
             case TipoQuietanze.INCASSATE:
                 this.clickTipoQuietanze(this.TIPOQUIETANZE.DA_LAVORARE)
@@ -492,6 +499,10 @@ class Sfera {
      */
     static selezionaCluserMotor(clusterMotor) {
         cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+
+        //Vediamo se espandere il pannello per le date
+        this.espandiPannello()
+        
         cy.contains(clusterMotor).click()
         cy.wait('@aggiornaCaricoTotale', { requestTimeout: 60000 })
 
@@ -508,6 +519,10 @@ class Sfera {
      * @param {string} [dataFine] default undefined; se non specificata, setta automaticamente la data odierna
      */
     static setDateEstrazione(dataInizio = undefined, dataFine = undefined) {
+
+        //Vediamo se espandere il pannello per le date
+        this.espandiPannello()
+
         //Impostiamo la data di inizio estrazione
         if (dataInizio === undefined) {
             //Se non specificata la data, settiamo automaticamente la data a 1 mese prima rispetto ad oggi

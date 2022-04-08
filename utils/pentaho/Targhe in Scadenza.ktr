@@ -543,7 +543,12 @@
   </connection>
   <order>
     <hop>
-      <from>Retrive Targhe from DB2 PROD</from>
+      <from>Retrive Targhe AUTOVETTURE from DB2 PROD</from>
+      <to>Table output</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Retrive Targhe MOTORETTE from DB2 PROD 2</from>
       <to>Table output</to>
       <enabled>Y</enabled>
     </hop>
@@ -587,7 +592,7 @@
     </GUI>
   </step>
   <step>
-    <name>Retrive Targhe from DB2 PROD</name>
+    <name>Retrive Targhe AUTOVETTURE from DB2 PROD</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -601,17 +606,17 @@
     <sql>SELECT DISTINCT dat_decorrenza, txt_targa_tela, txt_veicolo, '0' AS CASO_ASSUNTIVO
 FROM grad.preventivo_log
 WHERE 
-cod_comp=73 and 
-num_agenzia=0 and 
+cod_comp=73 AND
+num_agenzia=0 AND
 num_step=50 AND
-TXT_CODVEIrif=50000 and
+TXT_CODVEI LIKE 'A%'AND
 date(tms_ins)=current date AND
-cod_utente_canale&lt;&gt;'IVASS' and
-dat_decorrenza>current date AND
+cod_utente_canale&lt;&gt;'IVASS' AND
+dat_decorrenza>CURRENT DATE AND
 length(RTRIM(TXT_TARGA_TELA))=7 AND
 TXT_TARGA_TELA LIKE 'G%'
 fetch first 10 rows only
-with ur</sql>
+WITH UR</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -625,7 +630,7 @@ with ur</sql>
         <name>DAT_DECORRENZA</name>
         <length>-1</length>
         <precision>-1</precision>
-        <origin>Retrive Targhe from DB2 PROD</origin>
+        <origin>Retrive Targhe AUTOVETTURE from DB2 PROD</origin>
         <comments>DAT_DECORRENZA</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -648,7 +653,7 @@ with ur</sql>
         <name>TXT_TARGA_TELA</name>
         <length>20</length>
         <precision>-1</precision>
-        <origin>Retrive Targhe from DB2 PROD</origin>
+        <origin>Retrive Targhe AUTOVETTURE from DB2 PROD</origin>
         <comments>TXT_TARGA_TELA</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -671,7 +676,7 @@ with ur</sql>
         <name>TXT_VEICOLO</name>
         <length>70</length>
         <precision>-1</precision>
-        <origin>Retrive Targhe from DB2 PROD</origin>
+        <origin>Retrive Targhe AUTOVETTURE from DB2 PROD</origin>
         <comments>TXT_VEICOLO</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -694,7 +699,7 @@ with ur</sql>
         <name>CASO_ASSUNTIVO</name>
         <length>1</length>
         <precision>-1</precision>
-        <origin>Retrive Targhe from DB2 PROD</origin>
+        <origin>Retrive Targhe AUTOVETTURE from DB2 PROD</origin>
         <comments>CASO_ASSUNTIVO</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -721,8 +726,8 @@ with ur</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>336</xloc>
-      <yloc>144</yloc>
+      <xloc>416</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -769,8 +774,147 @@ with ur</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>560</xloc>
+      <xloc>704</xloc>
       <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Retrive Targhe MOTORETTE from DB2 PROD 2</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>DB2 PROD</connection>
+    <sql>SELECT DISTINCT dat_decorrenza, txt_targa_tela, txt_veicolo, '0' AS CASO_ASSUNTIVO
+FROM grad.preventivo_log
+WHERE 
+cod_comp=73 AND
+num_agenzia=0 AND
+num_step=50 AND
+TXT_CODVEI LIKE 'E%'AND
+date(tms_ins)=CURRENT DATE AND
+cod_utente_canale&lt;&gt;'IVASS' AND
+dat_decorrenza>current date AND
+length(RTRIM(TXT_TARGA_TELA))=7
+fetch first 10 rows only
+WITH UR</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cached_row_meta_active>N</cached_row_meta_active>
+    <row-meta>
+      <value-meta>
+        <type>Date</type>
+        <storagetype>normal</storagetype>
+        <name>DAT_DECORRENZA</name>
+        <length>-1</length>
+        <precision>-1</precision>
+        <origin>Retrive Targhe MOTORETTE from DB2 PROD 2</origin>
+        <comments>DAT_DECORRENZA</comments>
+        <conversion_Mask/>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol>.</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>it_IT</date_format_locale>
+        <date_format_timezone>Europe/Berlin</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>TXT_TARGA_TELA</name>
+        <length>20</length>
+        <precision>-1</precision>
+        <origin>Retrive Targhe MOTORETTE from DB2 PROD 2</origin>
+        <comments>TXT_TARGA_TELA</comments>
+        <conversion_Mask/>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol>.</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>it_IT</date_format_locale>
+        <date_format_timezone>Europe/Berlin</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>TXT_VEICOLO</name>
+        <length>70</length>
+        <precision>-1</precision>
+        <origin>Retrive Targhe MOTORETTE from DB2 PROD 2</origin>
+        <comments>TXT_VEICOLO</comments>
+        <conversion_Mask/>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol>.</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>it_IT</date_format_locale>
+        <date_format_timezone>Europe/Berlin</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>CASO_ASSUNTIVO</name>
+        <length>1</length>
+        <precision>-1</precision>
+        <origin>Retrive Targhe MOTORETTE from DB2 PROD 2</origin>
+        <comments>CASO_ASSUNTIVO</comments>
+        <conversion_Mask/>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol>.</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>it_IT</date_format_locale>
+        <date_format_timezone>Europe/Berlin</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+    </row-meta>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>288</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
