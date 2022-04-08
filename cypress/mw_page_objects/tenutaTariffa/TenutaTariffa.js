@@ -6,6 +6,8 @@
 /// <reference types="Cypress" />
 
 const { XMLParser } = require('fast-xml-parser')
+const moment = require('moment')
+
 let parsedLogTariffa
 let parsedRadarUW
 
@@ -91,14 +93,118 @@ class TenutaTariffa {
             cy.contains('Area riservata').should('exist').click()
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
-            
+
             //Andiamo a fare focus su Totale riduzione ARD
             cy.contains("Riduzione totale sul premio ARD").should('exist').click()
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-            cy.pause()
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+            //Per MACROLESIONI, verifico la Riduzione ARD
+            if (currentCase.Descrizione_Settore === 'MACROLESIONI') {
+                cy.contains("Totale riduzione ARD").parent().parent().find('div[nxcol="2"]').within(() => {
+                    cy.get('strong').invoke('text').then((riduzioneARD) => {
+                        expect(riduzioneARD).contains(currentCase.Riduzione_ARD)
+                    })
+                })
+            }
         })
     }
 
+
+    static flussoATRScadenzaAltraCompagnia(caso) {
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+
+            //Tipologia Veicolo
+            //? al momento lavoriamo direttamente con gli Autoveicoli quindi non serve gestire questo dropdown che by default è selezionato auto
+
+            //Targa
+            cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
+            cy.get('input[aria-label="Targa"]').clear().wait(500).type(caso.Targa).wait(1000)
+
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+            cy.wait(2000)
+
+            //Data Nascita
+            let myBirthDay = new Date(caso.Data_nascita)
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click().wait(1000)
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(('0' + myBirthDay.getDate()).slice(-2) + '/' + ('0' + (myBirthDay.getMonth() + 1)).slice(-2) + '/' + myBirthDay.getFullYear()).wait(1000)
+
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+            cy.wait(1000)
+
+            cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
+
+            cy.screenshot('Dati Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+            cy.contains('Calcola').should('be.visible').click({ force: true })
+
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+
+            //Inseriamo la residenza
+            //? se il cliente non è registrato in portafoglio, questa parte non compare
+            cy.get('@iframe').within(() => { }).then($body => {
+                var checkIndirizzoVisible = $body.find('input[aria-label="Indirizzo"]').is(':visible')
+                if (checkIndirizzoVisible) {
+                    //Toponimo
+                    if (caso.Toponimo.toUpperCase() !== 'VIA') {
+                        cy.contains('via').should('be.visible').click().wait(500)
+                        let re = new RegExp("\^ " + caso.Toponimo.toLowerCase() + " \$")
+                        cy.contains(re).should('exist').click().wait(500)
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible')
+                    }
+
+                    //Indirizzo
+                    cy.get('input[aria-label="Indirizzo"]').should('exist').and('be.visible').click().wait(1000)
+                    cy.get('input[aria-label="Indirizzo"]').type(caso.Indirizzo).wait(500)
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible')
+
+                    //Numero Civico
+                    //? Metto a 1 by default che lato assuntivo non mi importa
+                    cy.get('input[aria-label="NumeroCivico"]').should('exist').and('be.visible').click().wait(1000)
+                    cy.get('input[aria-label="NumeroCivico"]').type('1').wait(500)
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible')
+
+                    //Comune
+                    cy.get('input[aria-label="Comune"]').should('exist').and('be.visible').click().wait(1000)
+                    cy.get('input[aria-label="Comune"]').type(caso.Comune_residenza.toUpperCase()).wait(500)
+                    //Attendiamo che il caricamento non sia più visibile
+                    cy.get('nx-spinner').should('not.be.visible')
+
+                    cy.screenshot('Dati Indirizzo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+                    cy.contains('Calcola').should('be.visible').click({ force: true })
+                }
+            })
+
+            //Verifichiamo se siamo arrivati in pagina di Offerta direttamente
+            //Attendiamo che il caricamento non sia più visibile (ci mette un po')
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
+            cy.screenshot('Offerta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+            //Controlliamo i vari dati in Provenienza
+            cy.contains('Provenienza').should('be.visible').click({ force: true }).wait(1000)
+            cy.screenshot('Provenienza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.contains('Modifica').should('be.visible').click().wait(1000)
+            cy.get('nx-spinner').should('not.be.visible')
+
+            //Scadenza Precedente Contratto
+            cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').invoke('val').then(dataScadenza => {
+                let myDataScadenza = new Date(caso.Data_scadenza)
+                expect(dataScadenza).to.include(('0' + myDataScadenza.getDate()).slice(-2) + '/' + ('0' + (myDataScadenza.getMonth() + 1)).slice(-2) + '/' + myDataScadenza.getFullYear())
+            })
+
+            //Compagnia di Provenienza
+            cy.contains('COMPAGNIA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').find('span').should('be.visible').invoke('text').then(compProv => {
+                expect(compProv).to.include(caso.Compagnia_provenienza)
+            })
+        })
+    }
     static compilaDatiQuotazione(currentCase, flowClients) {
 
         cy.getIFrame()
@@ -278,23 +384,21 @@ class TenutaTariffa {
             //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
             //Differenziamo se Prima Immatricolazione è calcolata in automatico oppure è in formato data
             let dataPrimaImmatricolazione
-            if (!currentCase.Prima_Immatricolazione.includes('ann')) {
-                var dateParts = currentCase.Prima_Immatricolazione.split("/")
-                dataPrimaImmatricolazione = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
-            }
+            let formattedPrimaImmatricolazione
+            if (!currentCase.Prima_Immatricolazione.includes('ann'))
+                formattedPrimaImmatricolazione = currentCase.Prima_Immatricolazione
             else {
                 if (currentCase.Prima_Immatricolazione.split(' ')[1].includes('ann')) {
+
                     let dataDecorrenza = calcolaDataDecorrenza(currentCase)
-                    dataPrimaImmatricolazione = new Date(dataDecorrenza.getFullYear() - currentCase.Prima_Immatricolazione.split(' ')[0],
-                        dataDecorrenza.getMonth(),
-                        dataDecorrenza.getDate() - 10)
+                    let formattedDataDecorrenza = dataDecorrenza.getFullYear() + '-' +
+                        String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(dataDecorrenza.getDate()).padStart(2, '0')
+
+                    formattedPrimaImmatricolazione = moment(formattedDataDecorrenza, 'YYYY-MM-DD').subtract(currentCase.Prima_Immatricolazione.split(' ')[0], 'years').subtract('10', 'days').format('DD/MM/YYYY')
 
                 }
             }
-
-            let formattedPrimaImmatricolazione = String(dataPrimaImmatricolazione.getDate()).padStart(2, '0') + '/' +
-                String(dataPrimaImmatricolazione.getMonth() + 1).padStart(2, '0') + '/' +
-                dataPrimaImmatricolazione.getFullYear()
 
             cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').clear().wait(500)
             cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').type(formattedPrimaImmatricolazione).type('{enter}').wait(500)
@@ -337,6 +441,13 @@ class TenutaTariffa {
 
 
                     cy.wait('@getMotor', { requestTimeout: 30000 })
+
+                    cy.wait(3000)
+
+                    cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').within(($tipoVeicolo) => {
+                        let isNotEmpty = $tipoVeicolo.find('span').is(':visible')
+                        expect(isNotEmpty).to.be.true
+                    })
                 }
             })
 
@@ -508,20 +619,18 @@ class TenutaTariffa {
             if (currentCase.Provenienza !== "Prima immatricolazione") {
                 if (currentCase.Data_Scadenza !== "") {
                     //Scadenza precedente contratto
-                    let dataScadenzaPrecedenteContratto
-                    let dataDecorrenza = calcolaDataDecorrenza(currentCase)
-                    if (currentCase.Data_Scadenza.split(' ')[1].includes('giorn'))
-                        dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
-                            dataDecorrenza.getMonth(),
-                            dataDecorrenza.getDate() - currentCase.Data_Scadenza.split(' ')[0])
-                    else if (currentCase.Data_Scadenza.split(' ')[1].includes('mes'))
-                        dataScadenzaPrecedenteContratto = new Date(dataDecorrenza.getFullYear(),
-                            dataDecorrenza.getMonth() - currentCase.Data_Scadenza.split(' ')[0],
-                            dataDecorrenza.getDate())
+                    let formattedDataScadenzaPrecedenteContratto
 
-                    let formattedDataScadenzaPrecedenteContratto = String(dataScadenzaPrecedenteContratto.getDate()).padStart(2, '0') + '/' +
-                        String(dataScadenzaPrecedenteContratto.getMonth() + 1).padStart(2, '0') + '/' +
-                        dataScadenzaPrecedenteContratto.getFullYear()
+                    let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+                    let formattedDataDecorrenza = dataDecorrenza.getFullYear() + '-' +
+                        String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(dataDecorrenza.getDate()).padStart(2, '0')
+
+
+                    if (currentCase.Data_Scadenza.split(' ')[1].includes('giorn'))
+                        formattedDataScadenzaPrecedenteContratto = moment(formattedDataDecorrenza, 'YYYY-MM-DD').subtract(currentCase.Data_Scadenza.split(' ')[0], 'days').format('DD/MM/YYYY')
+                    else if (currentCase.Data_Scadenza.split(' ')[1].includes('mes'))
+                        formattedDataScadenzaPrecedenteContratto = moment(formattedDataDecorrenza, 'YYYY-MM-DD').subtract(currentCase.Data_Scadenza.split(' ')[0], 'months').format('DD/MM/YYYY')
 
                     cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').clear()
                     cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').type(formattedDataScadenzaPrecedenteContratto).type('{enter}')
@@ -855,8 +964,6 @@ class TenutaTariffa {
             }
             //#endregion
 
-            //cy.pause()
-
             switch (currentCase.Descrizione_Settore) {
                 case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
                 case "GARANZIE_AGGIUNTIVE_PACCHETTO_2":
@@ -943,7 +1050,7 @@ class TenutaTariffa {
                     break
                 //AZ
                 case "MACROLESIONI":
-                    cy.contains("Spese mediche per macrolesioni alla guida").parents('tr').find('button:first').click()
+                    cy.contains("Spese mediche per Macrolesioni alla guida").parents('tr').find('button:first').click()
                     cy.get('nx-spinner').should('not.be.visible')
                     break
             }

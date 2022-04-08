@@ -59,16 +59,16 @@ after(function () {
 
 describe('Matrix Web : Navigazioni da Le Mie Info', function () {
 
-    it('Verifica aggancio Le Mie Info',  {
+    it('Verifica aggancio Le Mie Info', {
         // Settato in caso di FAILED nel Before(Mostra l'errore)
         retries: {
             runMode: 0,
             openMode: 0,
         }
-    }, function()  {
+    }, function () {
         TopBar.clickNewsInfo()
     })
-    
+
 
     it('Verifica presenza links Menu', function () {
         TopBar.clickNewsInfo()
@@ -80,6 +80,11 @@ describe('Matrix Web : Navigazioni da Le Mie Info', function () {
             this.skip()
         TopBar.clickNewsInfo()
         Mieinfo.clickLinkOnMenu('Primo piano')
+    })
+
+    it('Verifica aggancio Tutte le notizie', function () {
+        TopBar.clickNewsInfo()
+        Mieinfo.clickLinkOnMenu('Tutte le notizie')
     })
 
     it('Verifica aggancio Raccolte', function () {

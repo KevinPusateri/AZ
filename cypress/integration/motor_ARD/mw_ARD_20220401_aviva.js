@@ -32,10 +32,21 @@ before(() => {
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
+            //List of possible AVIVA
+            //14-1960
+            // {
+            //     "agentId": "AAMCIPRIANO",
+            //     "agency": "140001960"
+            // }
+            //14-1995
+            // {
+            //     "agentId": "AALALICATA",
+            //     "agency": "140001995"
+            // }
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
             LoginPage.logInMWAdvanced({
-                "agentId": "AAMCIPRIANO",
-                "agency": "140001960"
+                "agentId": "AALALICATA",
+                "agency": "140001995"
             })
         })
     })
@@ -88,7 +99,7 @@ describe('AVIVA - ARD 20220401 : ', {
                     TenutaTariffa.compilaVeicolo(currentCase)
                     TenutaTariffa.compilaProvenienza(currentCase)
                     TenutaTariffa.compilaOffertaARD(currentCase)
-                    TenutaTariffa.areaRiservata()
+                    TenutaTariffa.areaRiservata(currentCase)
                 }
                 else
                     this.skip()

@@ -9,8 +9,7 @@ class NoteContratto {
      * Verifica inserimento di una nota di contratto
      */
     static inserisciNotaContratto() {
-        cy.get('app-contract-card').should('be.visible')
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').should('be.visible').as('polizza')
 
         //#region Loop elimina le note se presenti
         const loopDeleteNotes = () => {
@@ -44,45 +43,49 @@ class NoteContratto {
         }
         loopDeleteNotes()
         cy.get('nx-icon[name="product-board-paper-note"]').should('not.exist')
-            //#endregion
+        //#endregion
 
         //#region Aggiungi una nota di contratto 
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').first().should('exist').then(($contract) => {
-                cy.wrap($contract)
-                    .find('app-contract-context-menu > nx-icon').click()
-                cy.get('.cdk-overlay-container').should('contain.text', 'Note di contratto').within(($overlay) => {
-                    cy.get('button').should('be.visible')
-                    cy.wrap($overlay).find('button:contains("Note di contratto")').click()
+        cy.get('app-contract-card').should('be.visible').as('polizza').first().should('exist').then(($contract) => {
+            cy.wrap($contract)
+                .find('app-contract-context-menu > nx-icon').click()
+            cy.get('.cdk-overlay-container').should('contain.text', 'Note di contratto').within(($overlay) => {
+                cy.get('button').should('be.visible')
+                cy.wrap($overlay).find('button:contains("Note di contratto")').click()
+            })
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                cy.get('button').find('span:contains("Aggiungi nota")').click()
+            })
+
+            cy.get('.cdk-overlay-container').should('be.visible')
+            cy.get('lib-note-action-modal').should('be.visible').within(() => {
+                cy.get('span').should('be.visible').and('contain.text', 'Salva')
+                cy.get('input[name="title"]').should('be.visible').type('Test Nota')
+
+                cy.fixture('Nota.json').then((data) => {
+                    cy.get('textarea[name="description"]').should('be.visible').type(JSON.stringify(data.nota))
+                    cy.screenshot('Inserimento nota', { capture: 'fullPage' }, { overwrite: true })
+                    cy.get('button').find('span:contains("Salva")').first().click().wait(2000)
                 })
-                cy.get('nx-modal-container').should('be.visible').within(() => {
-                    cy.get('button').find('span:contains("Aggiungi nota")').click()
-                })
-
-                cy.get('.cdk-overlay-container').should('be.visible')
-                cy.get('lib-note-action-modal').should('be.visible').within(() => {
-                    cy.get('span').should('be.visible').and('contain.text', 'Salva')
-                    cy.get('input[name="title"]').should('be.visible').type('Test Nota')
-
-                    cy.fixture('Nota.json').then((data) => {
-                        cy.get('textarea[name="description"]').should('be.visible').type(JSON.stringify(data.nota))
-                        cy.get('button').find('span:contains("Salva")').first().click().wait(2000)
-                    })
-
-                })
-                Common.canaleFromPopup()
-
-                cy.get('lib-contract-notes-badge').should('exist').and('be.visible')
-                    .find('[class="badge-label"]:contains("Note")').should('be.visible')
 
             })
-            //#endregion
+            Common.canaleFromPopup()
+
+            cy.get('lib-contract-notes-badge').should('exist').and('be.visible')
+                .find('[class="badge-label"]:contains("Note")').should('be.visible')
+
+            cy.screenshot('Verifica Badge Nota', { capture: 'fullPage' }, { overwrite: true })
+
+
+        })
+        //#endregion
     }
 
     /**
      *  Verifica la nota inserita con descrizione presa dal file nota.json
      */
     static checkNotaInserita() {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
 
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
@@ -100,6 +103,7 @@ class NoteContratto {
                                 .and('contain.text', JSON.stringify(data.nota).toUpperCase())
                         })
                     })
+                    cy.screenshot('Verifica Nota Inserita', { capture: 'fullPage' }, { overwrite: true })
                     cy.get('.cdk-overlay-container').within(() => {
                         cy.get('nx-icon[name="close"]').click()
                     })
@@ -117,13 +121,19 @@ class NoteContratto {
      * @param {string} count - numero di note 
      */
     static checkTooltipNote(count) {
-        if (parseInt(count) === 1)
+        cy.get('lib-contract-notes-badge').first().should('exist').rightclick()
+        if (parseInt(count) === 1) {
             cy.get('#cdk-describedby-message-container').should('exist').and('contain.text', count + ' nota')
-        else if (parseInt(count) === 3)
+            cy.screenshot('Verifica Tooltip 1 Nota Presente', { capture: 'fullPage' }, { overwrite: true })
+        }
+        else if (parseInt(count) === 3) {
             cy.get('#cdk-describedby-message-container').should('exist').and('contain.text', count + ' note di cui 1 importante')
-        else
+            cy.screenshot('Verifica Tooltip note Presenti di cui 1 importante', { capture: 'fullPage' }, { overwrite: true })
+        }
+        else {
             cy.get('#cdk-describedby-message-container').should('exist').and('contain.text', count + ' note')
-
+            cy.screenshot('Verifica Tooltip note Presenti', { capture: 'fullPage' }, { overwrite: true })
+        }
 
     }
 
@@ -135,7 +145,7 @@ class NoteContratto {
      * - sia presente il menu contestuale(tre puntini)
      */
     static checkBadgeNota() {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
                 cy.wait(1000)
@@ -147,9 +157,9 @@ class NoteContratto {
                         cy.get('div[class="note-content"]').should('exist').and('be.visible')
                         cy.get('nx-modal-container')
                             .should('be.visible')
+                            .screenshot('Verifica Badge nota presente', { capture: 'fullPage' }, { overwrite: true })
                             .find('nx-icon[aria-label="Apri menu"]').first().click()
                         cy.get('button[role="menuitem"]').should('exist').and('be.visible')
-
                     })
                     cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Elimina Nota')
                     cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Modifica Nota')
@@ -171,7 +181,7 @@ class NoteContratto {
      * Verifica che la nota venga modificata
      */
     static modificaNota() {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
                 cy.wait(1000)
@@ -183,7 +193,8 @@ class NoteContratto {
                         cy.get('nx-modal-container')
                             .should('be.visible')
                             .find('nx-icon[aria-label="Apri menu"]').first().click()
-                        cy.get('button[role="menuitem"]').should('exist').and('be.visible')
+                        cy.get('button[role="menuitem"]').should('exist').and('be.visible').wait(2000)
+                        cy.screenshot('Button Modifica', { capture: 'fullPage' }, { overwrite: true })
 
                     })
 
@@ -194,10 +205,9 @@ class NoteContratto {
                         cy.get('lib-note-action-modal').should('exist').and('be.visible').within(() => {
                             cy.get('input[name="title"]').clear().type('TEST NOTA MODIFICATA')
                             cy.get('textarea[name="description"]').clear().type('TEST DESCRIZIONE NOTA MODIFICATA')
+                            cy.screenshot('Inizio Modifica Nota', { capture: 'fullPage' }, { overwrite: true })
                             cy.get('button').find('span:contains("Salva modifica")').first().click()
-
                         })
-
                     })
 
                     cy.get('nx-modal-container').should('not.exist')
@@ -224,6 +234,7 @@ class NoteContratto {
                             .and('contain.text', 'TEST NOTA MODIFICA')
                             .and('contain.text', 'TEST DESCRIZIONE NOTA MODIFICATA')
                     })
+                    cy.screenshot('Verifica nota Modificata', { capture: 'fullPage' }, { overwrite: true })
                     cy.get('.cdk-overlay-container').within(() => {
                         cy.get('nx-icon[name="close"]').click()
                     })
@@ -240,7 +251,7 @@ class NoteContratto {
      * Verifica Inserimento di una nota direttamente dal "badge"(icona) Note 
      */
     static inserisciNotaFromBadge() {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
 
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
@@ -249,8 +260,10 @@ class NoteContratto {
                     cy.wrap($note).click()
 
                     cy.get('.cdk-overlay-container').should('be.visible').within(() => {
+
                         cy.get('div[class="note-content"]').should('exist').and('be.visible')
                         cy.get('nx-modal-container')
+                            .screenshot('Modale Aggiungi nota', { capture: 'fullPage' }, { overwrite: true })
                             .find('button:contains("Aggiungi nota"):visible').click()
                     })
 
@@ -258,6 +271,7 @@ class NoteContratto {
                         cy.get('lib-note-action-modal').should('exist').and('be.visible').within(() => {
                             cy.get('input[name="title"]').clear().type('TEST BADGE')
                             cy.get('textarea[name="description"]').clear().type('TEST AGGIUNTO NOTA DA BADGE')
+                            cy.screenshot('Inserimento Nota da Badge', { capture: 'fullPage' }, { overwrite: true })
                             cy.get('button').find('span:contains("Salva")').first().click()
                         })
                     })
@@ -273,6 +287,7 @@ class NoteContratto {
                             .should('be.visible')
                             .and('contain.text', 'TEST BADGE')
                             .and('contain.text', 'TEST AGGIUNTO NOTA DA BADGE')
+                        cy.screenshot('Nota inserita da Badge', { capture: 'fullPage' }, { overwrite: true })
                     })
 
                     cy.get('.cdk-overlay-container').within(() => {
@@ -292,7 +307,7 @@ class NoteContratto {
      * Verifica nota con flag Importante sia stato inserito
      */
     static checkImportante() {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
 
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
@@ -311,13 +326,11 @@ class NoteContratto {
                             cy.get('input[name="title"]').clear().type('TEST IMPORTANTE')
                             cy.get('textarea[name="description"]').clear().type('TEST AGGIUNTO NOTA IMPORTANTE')
                             cy.get('span[class="nx-checkbox__control"]').click()
+                            cy.screenshot('Nota inserita con flag Importante', { capture: 'fullPage' }, { overwrite: true })
                             cy.get('button').find('span:contains("Salva")').first().click()
                         })
                     })
 
-                    // cy.get('lib-note-action-modal').should('be.visible').within(() => {
-                    //     cy.get('lib-disambiguation').find('div[ngclass="agency-row"]').first().click()
-                    // })
                     Common.canaleFromPopup()
 
                     cy.get('nx-modal-container').should('not.exist')
@@ -330,6 +343,7 @@ class NoteContratto {
                             .and('contain.text', 'TEST IMPORTANTE')
                             .and('contain.text', 'TEST AGGIUNTO NOTA IMPORTANTE')
                         cy.get('[class="important-icon ng-star-inserted"]').should('contain.text', '!')
+                        cy.screenshot('Verifica Nota con flag Importante inserita', { capture: 'fullPage' }, { overwrite: true })
                     })
 
                     cy.get('.cdk-overlay-container').within(() => {
@@ -359,7 +373,7 @@ class NoteContratto {
                         numberPolizza: '',
                         lob: ''
                     }
-                    cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+                    cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
 
                     cy.get('@polizza').first().should('exist').then(() => {
 
@@ -396,7 +410,7 @@ class NoteContratto {
      * @param {string} testo - titolo o testo modificato 
      */
     static checkNotaModificata(testo) {
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
                 if ($note.find("nx-icon").length > 0) {
@@ -409,6 +423,7 @@ class NoteContratto {
                             .should('be.visible')
                             .and('contain.text', testo)
                     })
+                    cy.screenshot('Verifica Nota Modificata Da Sales corrisponda', { capture: 'fullPage' }, { overwrite: true })
                     cy.get('.cdk-overlay-container').within(() => {
                         cy.get('nx-icon[name="close"]').click()
                     })
@@ -425,8 +440,8 @@ class NoteContratto {
      * Cancella tutte le note della prima polizza
      */
     static cancellaNote() {
-        cy.get('app-contract-card').should('be.visible')
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+        cy.get('app-contract-card').should('be.visible').as('polizza').should('be.visible')
+        cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
 
         //#region Loop elimina le note se presenti
         const loopDeleteNotes = () => {
@@ -443,12 +458,15 @@ class NoteContratto {
                                 .should('be.visible')
                                 .find('nx-icon[aria-label="Apri menu"]').first().click()
                             cy.get('button[role="menuitem"]').should('exist').and('be.visible')
+                            cy.screenshot('Inizio Eliminazione Nota', { capture: 'fullPage' }, { overwrite: true })
+
                         })
 
                         cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Elimina Nota')
                             .find('span:contains("Elimina Nota")').click()
                         cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Stai per eliminare la nota.')
                         cy.get('.cdk-overlay-container').should('be.visible').and('contain.text', 'Elimina Nota')
+                        cy.screenshot('Verifica Nota Eliminata', { capture: 'fullPage' }, { overwrite: true })
                         cy.get('lib-note-action-modal').find('span:contains("Elimina Nota")').click()
 
                         loopDeleteNotes()

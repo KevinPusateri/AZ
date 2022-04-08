@@ -19,41 +19,58 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 let keys = {
     interrogazioniCentralizzateEnabled: true,
+    PIATTAFORMA_CONTRATTI_AZ_TELEMATICS: false,
+    MONITOR_SCORING_AZ_BONUS_DRIVE: false,
     REPORT_ALLIANZ_NOW: true,
+    GESTIONE_CERTIFICATI: true,
     srmOnlineEnabled: true,
     siscoEnabled: true,
     SERVICENOW: true,
-    obuEnabled: true,
-    satellitareEnabled: true,
-    monitorScoringAZBonusDrive: true,
+    obuEnabled: false,
+    satellitareEnabled: false,
     newsMieInfo: true
 }
 
 
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
 
-        cy.getProfiling(data.tutf).then(profiling => {
-            cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiled => { keys.interrogazioniCentralizzateEnabled = profiled })
-            cy.filterProfile(profiling, 'COMMON_SERVIZI_SOL').then(profiled => { keys.srmOnlineEnabled = profiled })
-            cy.filterProfile(profiling, 'VITA_SISCO').then(profiled => { keys.siscoEnabled = profiled })
-            cy.filterProfile(profiling, 'PO_SERVICENOW').then(profiled => { keys.SERVICENOW = profiled })
-            cy.filterProfile(profiling, 'PO_REPORT_ALLIANZNOW').then(profiled => { keys.REPORT_ALLIANZ_NOW = profiled })
-            cy.filterProfile(profiling, 'COMMON_MICROSTOCK').then(profiled => {
-                keys.obuEnabled = profiled
-                keys.satellitareEnabled = profiled
+            cy.getProfiling(data.tutf).then(profiling => {
+                cy.filterProfile(profiling, 'COMMON_PIATTAFORMA_TMX').then(profiled => { keys.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS = false })
+                cy.filterProfile(profiling, 'COMMON_CRUSCOTTO_SCORING_ABD').then(profiled => { keys.MONITOR_SCORING_AZ_BONUS_DRIVE = false })
+                cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiled => { keys.interrogazioniCentralizzateEnabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_SERVIZI_SOL').then(profiled => { keys.srmOnlineEnabled = profiled })
+                cy.filterProfile(profiling, 'VITA_SISCO').then(profiled => { keys.siscoEnabled = profiled })
+                cy.filterProfile(profiling, 'PO_SERVICENOW').then(profiled => { keys.SERVICENOW = profiled })
+                cy.filterProfile(profiling, 'COMMON_SCARICO_CERTIFICATI').then(profiledCert => {
+                    cy.filterProfile(profiling, 'COMMON_REPORTING_SCARICO_AGENZIA').then(profiledScaricoAgenzia => {
+                        cy.filterProfile(profiling, 'DAS_GIORNATA_ESTRAZIONE_SUITE_ESTERNE').then(profiledEstrazioneSuite => {
+                            if (!(profiledCert && (profiledScaricoAgenzia || profiledEstrazioneSuite)))
+                                keys.GESTIONE_CERTIFICATI = false
+                        })
+                    })
+                })
+
+                cy.filterProfile(profiling, 'PO_REPORT_ALLIANZNOW').then(profiled => { keys.REPORT_ALLIANZ_NOW = profiled })
+                //? Rimosso dalla Release 124, default a false
+                cy.filterProfile(profiling, 'COMMON_MICROSTOCK').then(profiled => {
+                    keys.obuEnabled = false
+                    keys.satellitareEnabled = false
+                })
+                //? Rimosso dalla Release 124, default a false
+
+                cy.filterProfile(profiling, 'PO_LE_MIE_INFO_OM').then(profiled => {
+                    if (Cypress.env('isAviva'))
+                        keys.newsMieInfo = false
+                    else
+                        keys.newsMieInfo = profiled
+                })
+
             })
-            cy.filterProfile(profiling, 'COMMON_CRUSCOTTO_SCORING_ABD').then(profiled => { keys.monitorScoringAZBonusDrive = profiled })
-
-            cy.filterProfile(profiling, 'PO_LE_MIE_INFO_OM').then(profiled => {
-                if (Cypress.env('isAviva'))
-                    keys.newsMieInfo = false
-                else
-                    keys.newsMieInfo = profiled
-            })
-
         })
     })
 })
@@ -171,12 +188,20 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickLinkOnUtilita('Banche Dati ANIA')
     })
 
-    it('Verifica atterraggio da Utilità - Gestione Magazzino OBU', function () {
-        if (keys.obuEnabled) {
-            TopBar.clickIconSwitchPage()
-            TopBar.clickLinkOnUtilita('Gestione Magazzino OBU')
-        } else this.skip()
+    it('Verifica atterraggio da Utilità - Gestione certificati', function () {
+        if (!keys.GESTIONE_CERTIFICATI)
+            this.skip()
+        TopBar.clickIconSwitchPage()
+        TopBar.clickLinkOnUtilita('Gestione certificati')
     })
+
+    //? Rimosso dalla Release 124
+    // it('Verifica atterraggio da Utilità - Gestione Magazzino OBU', function () {
+    //     if (keys.obuEnabled) {
+    //         TopBar.clickIconSwitchPage()
+    //         TopBar.clickLinkOnUtilita('Gestione Magazzino OBU')
+    //     } else this.skip()
+    // })
 
     // Accesso non autorizzato --add excel
     // ! IMPOSSIBILE Pagina inesistente
@@ -185,15 +210,16 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     //     TopBar.clickLinkOnUtilita('Piattaforma contratti AZ Telematics')
     // })
 
-    it('Verifica atterraggio da Utilità - Cruscotto Installazione Dispositivo Satellitare', function () {
-        if (!Cypress.env('monoUtenza') && keys.satellitareEnabled) {
-            TopBar.clickIconSwitchPage()
-            TopBar.clickLinkOnUtilita('Cruscotto Installazione Dispositivo Satellitare')
-        } else this.skip()
-    })
+    //? Rimosso dalla Release 124
+    // it('Verifica atterraggio da Utilità - Cruscotto Installazione Dispositivo Satellitare', function () {
+    //     if (!Cypress.env('monoUtenza') && keys.satellitareEnabled) {
+    //         TopBar.clickIconSwitchPage()
+    //         TopBar.clickLinkOnUtilita('Cruscotto Installazione Dispositivo Satellitare')
+    //     } else this.skip()
+    // })
 
     it('Verifica atterraggio da Utilità - Monitor Scoring AZ Bonus Drive', function () {
-        if (keys.monitorScoringAZBonusDrive) {
+        if (keys.MONITOR_SCORING_AZ_BONUS_DRIVE) {
             TopBar.clickIconSwitchPage()
             TopBar.clickLinkOnUtilita('Monitor Scoring AZ Bonus Drive')
         }

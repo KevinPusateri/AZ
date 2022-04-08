@@ -15,6 +15,7 @@ import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagr
 import CondividiPreventivo from "../../mw_page_objects/UltraBMP/CondividiPreventivo"
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+import AreaRiservata from "../../mw_page_objects/UltraBMP/AreaRiservata"
 import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
 import ControlliSalvataggio from "../../mw_page_objects/UltraBMP/ControlliSalvataggio"
 import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
@@ -51,18 +52,21 @@ const ultraRV = {
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { modificheAnimale } from '../../fixtures/Ultra/BMP_Caso6.json'
-import { modificheFabbricato } from '../../fixtures/Ultra/BMP_Caso6.json'
-import { daModificareAnimale } from '../../fixtures/Ultra/BMP_Caso6.json'
-import { daModificareFabbricato } from '../../fixtures/Ultra/BMP_Caso6.json'
+import { modificheAnimale } from '../../fixtures/Ultra/BMP_Caso7.json'
+import { daModificareAnimale } from '../../fixtures/Ultra/BMP_Caso7.json'
 import { soluzione } from '../../fixtures/Ultra/BMP_Comune.json'
-import { ambitoUltra } from '../../fixtures/Ultra/BMP_Comune.json'
+
 
 //#endregion
 
 //#region  variabili iniziali
-var premioTotPrima = 0
-var premioTotDopo = 0
+var premioMinimo = 0
+var premioMassimo = 0
+var premioIniziale = 0
+var premioBarrato = 0
+var premioScontato = 0
+var premioBarratoRiepilogo = 0
+var premioScontatoRiepilogo = 0
 var premioFA = 0
 var premioFA_FenomenoElettrico = 0
 var premioRC_Prima = 0
@@ -71,7 +75,7 @@ var premioRC_Affittacamere = 0
 var premioRC_ProprietàAnimali = 0
 
 //let personaFisica = PersonaFisica.MassimoRoagna()
-let personaFisica = PersonaFisica.GalileoGalilei()
+let personaFisica = PersonaFisica.CarloRossini()
 let personaFisica2 = PersonaFisica.SimonettaRossino()
 var nContratto = "000"
 var nPreventivo = "000"
@@ -80,7 +84,10 @@ var frazionamento = "annuale"
 var arrPath = []
 var arrDoc = []
 //var ambiti = [ambitoUltra.FABBRICATO, ambitoUltra.RESPONSABILITA_CIVILE, ambitoUltra.ANIMALI_DOMESTICI]
-var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali, ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici]
+var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, 
+              ambitiUltra.ambitiUltraCasaPatrimonio.contenuto,
+              ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali,
+              ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici]
 
 const ultraIFrame = () => {
     let iframeSCU = cy.get('#matrixIframe')
@@ -113,7 +120,7 @@ after(function () {
     //#endregion
 })
 
-describe('Ultra BMP : Emissione BMP Caso6', function () {
+describe('Ultra BMP : Emissione BMP Caso7', function () {
 
     it("Ricerca cliente", () => {
         cy.get('body').within(() => {
@@ -139,80 +146,74 @@ describe('Ultra BMP : Emissione BMP Caso6', function () {
         Dashboard.caricamentoDashboardUltra()
     })
 
-
-
-
-
-    /////////////////////////
-    ////////////////////////
-    ///////////////////////
-
-    it("Seleziona ambiti da Fast Quote", () => {
-        cy.pause()
+    it("Seleziona ambiti", () => {
         cy.log('Seleziona ambito')
-        //scorre l'array degli ambiti da selezionare e clicca sulle icone
-        for (var i = 0; i < ambiti.length; i++) {
-            cy.log("selezione ambito " + ambiti[i])
-
-            //seleziona ambito
-
-            //cy.get('#ambitiRischio', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
-            cy.get('div[class="scopes-box ng-star-inserted"]', { timeout: 30000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
-                .should('be.visible').click()
-            cy.log('****** AMBITO SELEZIONATO: ' + ambiti[i])
-
-            cy.wait(500)
-
-            //verifica che sia selezionato
-            cy.log('>>> verifica selezione ambito: ' + ambiti[i])
-            cy.get('div[class="scopes-box ng-star-inserted"]', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
-                .invoke('attr', 'class').should('contain', 'icon-selected')
-        }
+        Dashboard.selezionaAmbiti(ambiti)
     })
-
-    it("Calcola in Fast Quote", () => {
-        // Click 'calcola'
-        cy.get('button').contains('Calcola').should('be.visible').click()
-        cy.wait(2000)
-    })
-
-    it("Configura ed accedi alla Dashboard Ultra", () => {
-        // Click 'Configura'
-        cy.get('button').contains('Configura', { timeout: 5000 }).should('be.visible').click()
-        Dashboard.caricamentoDashboardUltra()
-    })
-
-    it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", () => {
-        Dashboard.verificaAmbiti(ambiti)
-    })
-
+    
     it("Cambia Soluzioni", () => {
-        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, soluzione.PREMIUM)
-        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali, soluzione.TOP)
-        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici, soluzione.PREMIUM)
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, soluzione.TOP)
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.contenuto, soluzione.TOP)
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.catastrofi_naturali, soluzione.TOP)
+    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici, soluzione.TOP)
     })
-
-    it("Configurazione Fabbricato", () => {
-        ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
-        ConfigurazioneAmbito.ModificaValoriCasa(daModificareFabbricato, modificheFabbricato)
-        ConfigurazioneAmbito.ClickButton("CONFERMA")
-        Dashboard.caricamentoDashboardUltra()
-    })
-
-    it("Configurazione Animali Domestici", () => {
-        ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[2])
-        ConfigurazioneAmbito.ModificaValoriAnimaleDomestico(daModificareAnimale, modificheAnimale)
-        ConfigurazioneAmbito.ClickButton("CONFERMA")
-        Dashboard.caricamentoDashboardUltra()
-    })
-
+    
     it("Seleziona frazionamento", () => {
         Dashboard.selezionaFrazionamento(frazionamento)
     })
 
-    it("Modifica durata fabbricato", () => {
-        Dashboard.dotMenu(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, "Modifica la durata")
-        Dashboard.modificaDurata(5)
+    it("Lettura premio totale prima dello sconto", () => {
+        Dashboard.leggiPremioTot()    //>> premioTotDashboard 
+        cy.get('@premioTotDashboard').then(premioTot => {
+            premioIniziale = premioTot
+            cy.log('Premio iniziale prima dello sconto: ' + premioIniziale)
+        })
+    })
+
+    it("Accesso Area Riservata", () => {
+        Dashboard.selezionaVoceHeader('Area riservata')
+        //AreaRiservata.caricamentoPagina()
+    })
+
+    it("Lettura premi Area Riservata", () => {
+        AreaRiservata.leggiPremio('MIN')
+        cy.get('@premioMin').then(premioMin => {
+            premioMinimo = parseFloat(premioMin.replace(/,/,"."))
+            cy.log('Premio Minimo: ' + premioMinimo)
+        })
+        AreaRiservata.leggiPremio('MAX')
+        cy.get('@premioMax').then(premioMax => {
+            premioMassimo = parseFloat(premioMax.replace(/,/,"."))
+            cy.log('Premio Massimo: ' + premioMassimo)
+        })
+    })
+
+    it("Impostazione sconto in Area Riservata", () => {
+        AreaRiservata.impostaSconto(premioMinimo, premioMassimo, 65)
+        AreaRiservata.clickConferma()
+        Dashboard.caricamentoDashboardUltra()
+    })
+
+    it("Lettura premi dopo applicazione sconto", () => {
+        // Premio scontato
+        
+        Dashboard.leggiPremioTot('SCONTATO')    //>> premioTotDashboardScontato
+        cy.get('@premioTotDashboardScontato').then(premioTotScontato => {
+            premioScontato = premioTotScontato
+            cy.log('Premio scontato: ' + premioScontato)
+        })
+        
+
+        // Premio iniziale barrato
+        Dashboard.leggiPremioTot('BARRATO')    //>> premioTotDashboardBarrato 
+        cy.get('@premioTotDashboardBarrato').then(premioTotBarrato => {
+            premioBarrato = premioTotBarrato
+            cy.log('Premio barrato dopo sconto: ' + premioBarrato)
+        })
+    })
+
+    it("Verifica premio barrato", () => {
+        expect(premioBarrato).to.be.equal(premioIniziale)
     })
 
     it("Procedi e Conferma", () => {
@@ -222,19 +223,36 @@ describe('Ultra BMP : Emissione BMP Caso6', function () {
         Riepilogo.caricamentoRiepilogo()
     })
 
-    it("Verifica ambiti in Riepilogo", () => {
-        Riepilogo.verificaAmbito(ambitoUltra.FABBRICATO, modificheFabbricato.Nome, soluzione.PREMIUM, '5', '')
-        Riepilogo.verificaAmbito(ambitoUltra.CATASTROFI_NATURALI, modificheFabbricato.Nome, soluzione.TOP, '1', '')
-        Riepilogo.verificaAmbito(ambitoUltra.ANIMALI_DOMESTICI, modificheAnimale.Nome, soluzione.PREMIUM, '1', '')
+    it("Lettura premi in pagina di Riepilogo", () => {
+        // Premio scontato
+        
+        Riepilogo.leggiPremioTot('SCONTATO')    //>> premioTotRiepilogoScontato
+        cy.get('@premioTotRiepilogoScontato').then(premioTotScontato => {
+            premioScontatoRiepilogo = premioTotScontato
+            cy.log('Premio scontato Riepilogo: ' + premioScontatoRiepilogo)
+        })
+        
+
+        // Premio iniziale barrato
+        Riepilogo.leggiPremioTot('BARRATO')    //>> premioTotRiepilogoBarrato 
+        cy.get('@premioTotRiepilogoBarrato').then(premioTotBarrato => {
+            premioBarratoRiepilogo = premioTotBarrato
+            cy.log('Premio barrato dopo sconto Riepilogo: ' + premioBarratoRiepilogo)
+        })
+    })
+
+    it("Verifiche premio e frazionamento in Riepilogo", () => {
         Riepilogo.verificaFrazionamento('annuale')
+        expect(premioScontatoRiepilogo).to.be.equal(premioScontato)
+        expect(premioBarratoRiepilogo).to.be.equal(premioBarrato)
         Riepilogo.EmissionePreventivo()
         CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
     })
 
     it("Censimento anagrafico", () => {
-        CensimentoAnagrafico.selezionaContraentePF(personaFisica2)
-        CensimentoAnagrafico.selezionaCasa(personaFisica2, true, true)
-        CensimentoAnagrafico.selezionaAnimale(modificheAnimale.Nome, personaFisica2, '380260000279818', true)
+        //CensimentoAnagrafico.selezionaContraentePF(personaFisica2)
+        CensimentoAnagrafico.selezionaCasa(personaFisica)
+        CensimentoAnagrafico.selezionaAnimale(modificheAnimale.Nome, personaFisica, '380260000279818', false)
         CensimentoAnagrafico.Avanti()
         DatiIntegrativi.caricamentoPagina()
     })
@@ -276,156 +294,33 @@ describe('Ultra BMP : Emissione BMP Caso6', function () {
         TopBar.clickMatrixHome()
     })
 
-    it("Recupero preventivi da Sales", () => {
-        TopBar.clickSales()
-        cy.wait(10000)
-        BurgerMenuSales.clickLink('Recupero preventivi e quotazioni')
-        Common.canaleFromPopup()
-        cy.wait(12000);
-
-    })
-
-    it("Selezione preventivo ed avvio conversione ", () => {
-        ultraIFrame().within(() => {
-            cy.get('span[id="pulsante-avanzate"]').should('be.visible').click()
-            cy.get('input[id="num-preventivo"]').should('be.visible')
-                .type(nPreventivo).wait(2000)
-                .type('{enter}')
-
-            // Verifica presenza preventivo
-            cy.get('div[id="contenitore-risultati"]').should('exist')
-                .find('table > tbody > tr').should('exist')
-                .find('td').should('have.length.gt', 1)
-                .contains(nPreventivo).should('have.length', 1)
-
-            cy.get('input[id="azione-converti"]').should('be.visible').click()
-            cy.get('div[class="k-widget k-window"]').should('exist')
-                .find('input[value*="Conferma"]').should('be.visible').click()
-
-            Dashboard.caricamentoDashboardUltra()
-
-        })
-    })
-
-    it("Procedi emissione polizza", () => {
-        Dashboard.procediHome()
-        Riepilogo.caricamentoRiepilogo()
-        Riepilogo.EmissionePolizza()
-        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
-    })
-
-    it("Censimento anagrafico", () => {
-        CensimentoAnagrafico.Avanti()
-        DatiIntegrativi.caricamentoPagina()
-    })
-
-    it("Dati integrativi", () => {
-        DatiIntegrativi.ClickButtonAvanti()
-        DatiIntegrativi.popupDichiarazioni()
-        ConsensiPrivacy.caricamentoPagina()
-    })
-
-    it("Consensi e privacy", () => {
-        ConsensiPrivacy.Avanti()
-        ControlliProtocollazione.caricamentoPagina()
-    })
-
-    it("salvataggio Contratto", () => {
-        ControlliProtocollazione.salvataggioContratto()
-        ControlliProtocollazione.verificaPresenzaDocumento("Regolamento Allianz Ultra e Set informativo")
-        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 3 - Informativa sul distributore")
-        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 4 - Informazioni sulla distribuzione del prodotto assicurativo non-IBIP")
-        ControlliProtocollazione.verificaPresenzaDocumento("Riepilogo delle richieste ed esigenze assicurative del cliente")
-        ControlliProtocollazione.Avanti()    // Non prosegue prima della visualizzazione dei documenti
-    })
-
-    it("Visualizza documenti e prosegui", () => {
-        ControlliProtocollazione.riepilogoDocumenti()
-        ControlliProtocollazione.Avanti()
-        ControlliProtocollazione.aspettaCaricamentoAdempimenti()
-    })
-
-    it("Adempimenti precontrattuali e Perfezionamento", () => {
-        ControlliProtocollazione.verificaPresenzaDocumento("Informativa precontrattuale: Allegati 3 e 4")
-        ControlliProtocollazione.verificaPresenzaDocumento("Regolamento Allianz Ultra e Set informativo")
-        ControlliProtocollazione.stampaAdempimentiPrecontrattuali(false)
-        ControlliProtocollazione.salvaNContratto()
-
-        cy.get('@contratto').then(val => {
-            nContratto = val
-        })
-
-        ControlliProtocollazione.Home()
-        StartPage.caricamentoPagina()
-    })
-
     it("Apertura sezione Clients", () => {
         // Ricerca anagrafica
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
-            cy.get('input[name="main-search-input"]').type(personaFisica2.nomeCognome()).type('{enter}')
+            cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
             cy.get('lib-client-item').first().click()
         }).then(($body) => {
             cy.wait(7000)
             const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
             cy.log('permessi: ' + check)
             if (check) {
-                cy.get('input[name="main-search-input"]').type(personaFisica2).type('{enter}')
+                cy.get('input[name="main-search-input"]').type(personaFisica).type('{enter}')
                 cy.get('lib-client-item').first().next().click()
             }
         })
     })
 
-    it("Accesso portafoglio Proposte ed avvio incasso", () => {
+    it("Verifica presenza preventivo in Portafoglio", () => {
+        cy.pause()
         Portafoglio.clickTabPortafoglio()
-        Portafoglio.clickSubTab('Proposte')
-        Portafoglio.ordinaPolizze("Numero contratto")
-        cy.log(">>>>> INCASSO PROPOSTA DA PORTAFOGLIO : " + nContratto)
-        Portafoglio.clickIncassaProposta(nContratto)
-        Portafoglio.caricamentoPaginaIncassa()
-        Portafoglio.clickIncassa()
-        Incasso.caricamentoModPagamento()
+        Portafoglio.clickSubTab('Preventivi')
+        //Portafoglio.visualizzaLista()
+        Portafoglio.checkPreventivoIsPresentOnPreventivi(nPreventivo)
     })
 
-    it("Incasso - parte 2", () => {
-        Incasso.SelezionaMetodoPagamento('Contanti', false)
-        //Incasso.SelezionaTipoDelega('Nessuna Delega')
-        Incasso.ConfermaIncasso(false)
-        Incasso.caricamentoEsito()
-    })
-
-    it("Esito incasso", () => {
-        Incasso.EsitoIncasso(false)
-        Incasso.Chiudi(false)
+    it("Fine Test", () => {
         cy.pause()
     })
-
-
-
-    it("Apertura sezione Clients", () => {
-        // Ricerca anagrafica
-        cy.get('body').within(() => {
-            cy.get('input[name="main-search-input"]').click()
-            cy.get('input[name="main-search-input"]').type(personaFisica2.nomeCognome()).type('{enter}')
-            cy.get('lib-client-item').first().click()
-        }).then(($body) => {
-            cy.wait(7000)
-            const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
-            cy.log('permessi: ' + check)
-            if (check) {
-                cy.get('input[name="main-search-input"]').type(personaFisica2).type('{enter}')
-                cy.get('lib-client-item').first().next().click()
-            }
-        })
-        //cy.pause()
-    })
-
-    it("Accesso folder", () => {
-        arrPath = ['Polizze Allianz Ultra', nContratto, 'Versione 1']
-        arrDoc = ['Ricevuta avvenuto pagamento']
-        SintesiCliente.verificaInFolderDocumenti(arrPath, arrDoc)
-        cy.pause()
-    })
-
 
 })

@@ -379,11 +379,47 @@ class Dashboard {
         })
     }
 
-    static leggiPremioTot() {
+    /**
+     * Lettura del premio totale
+     * @param {string}} tipo - può essere INIZIALE (default), BARRATO, SCONTATO 
+     */
+    static  leggiPremioTot(tipo = 'INIZIALE') {
         ultraIFrame().within(() => {
-            cy.get('div[class="header-price-euro ng-star-inserted"]').should('be.visible')
+            if (tipo.toUpperCase() == 'INIZIALE')    // Premio Iniziale non scontato
+            {
+                cy.log('**** PREMIO INIZIALE *****')
+                cy.get('div[class="header-price-euro ng-star-inserted"]').should('be.visible')
                 .invoke('text').then(val => {
                     cy.wrap(val).as('premioTotDashboard')
+                    cy.log('leggi premio tot INIZIALE: ' + val)
+                })
+            }
+            else if (tipo.toUpperCase() == 'SCONTATO')    // Premio totale dopo l'applicazione dello sconto
+            {
+                cy.log('**** PREMIO SCONTATO *****')
+                cy.get('div[class="header-price-euro header-price-euro-wo-discount ng-star-inserted"]').should('be.visible')
+                .invoke('text').then(val => {
+                    cy.wrap(val).as('premioTotDashboardScontato')
+                    cy.log('leggi premio tot SCONTATO: ' + val)
+                })
+            }
+            else if (tipo.toUpperCase() == 'BARRATO')    // Premio totale iniziale barrato dopo l'applicazione dello sconto
+            {
+                cy.log('**** PREMIO BARRATO *****')
+                cy.get('div[class="header-price-euro-w-discount ng-star-inserted"]').should('be.visible')
+                .invoke('text').then(val => {
+                    cy.wrap(val).as('premioTotDashboardBarrato')
+                    cy.log('leggi premio tot BARRATO: ' + val)
+                }) 
+            }
+        })
+    }
+
+    static leggiPremioTotBarrato() {
+        ultraIFrame().within(() => {
+            cy.get('div[class="header-price-euro-w-discount ng-star-inserted"]').should('be.visible')
+                .invoke('text').then(val => {
+                    cy.wrap(val).as('premioTotDashboardBarrato')
                 })
         })
     }

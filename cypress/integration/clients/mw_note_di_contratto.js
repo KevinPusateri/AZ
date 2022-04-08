@@ -31,11 +31,14 @@ let insertedId
 
 //#region Before After
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        currentTutf = data.tutf
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            currentTutf = data.tutf
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
 
-        LoginPage.logInMWAdvanced()
+            LoginPage.logInMWAdvanced()
+        })
     })
 })
 beforeEach(() => {
@@ -60,7 +63,7 @@ describe('Matrix Web : Note di contratto', function () {
 
         it('Verifica Aggiungi Nota', function () {
             //('Retriving client with polizze auto, please wait...')
-            cy.getClientWithPolizze(currentTutf, '31', false, false, 'PF', true).then(customerFullName => {
+            cy.getClientWithPolizze(currentTutf, '31', false, false, 'PF', (Cypress.env('isAviva')) ? true : false).then(customerFullName => {
                 currentCustomerFullName = customerFullName
                 TopBar.search(currentCustomerFullName)
                 LandingRicerca.clickClientePF(currentCustomerFullName)

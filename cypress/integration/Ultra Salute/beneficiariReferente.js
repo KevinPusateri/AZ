@@ -1,5 +1,5 @@
 /**
- * @author Chiara Costa <chiara.costaallianz.it>
+ * @author Chiara Costa <chiara.costa@allianz.it>
  *
  * @description 
  */
@@ -7,18 +7,30 @@
 ///<reference types="cypress"/>
 
 //#region imports
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Ultra from "../../mw_page_objects/ultra/Ultra"
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 
-import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
-import menuEmissione from '../../fixtures/SchedaCliente/menuEmissione.json'
-//#endregion
+import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
+
+import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+
+import Common from "../../mw_page_objects/common/Common"
+import TopBar from "../../mw_page_objects/common/TopBar"
+import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
+import LoginPage from "../../mw_page_objects/common/LoginPage"
+import Ultra from "../../mw_page_objects/ultra/Ultra"
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
+import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
+import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
+import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
+import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
+import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
+import Beneficiari from "../../mw_page_objects/UltraBMP/Beneficiari"
+import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
+//#endregion imports
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
@@ -33,11 +45,15 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let cliente = PersonaFisica.DavideRoana()
-//let cliente = PersonaFisica.GalileoGalilei()
-let prodotto = menuEmissione.RamiVari.UltraSalute
-var ambiti = [ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio]
-var nuovoAmbito = ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio;
+let personaGiuridica = "Sinopoli"
+let personaFisica = PersonaFisica.CarloRossini()
+//let personaFisica = PersonaFisica.GalileoGalilei()
+var frazionamento = "trimestrale"
+var copertura = "extra-professionale"
+var ambiti = [
+   ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio
+]
+//var frazionamento = "annuale"
 //#endregion variabili iniziali
 
 before(() => {
@@ -51,7 +67,7 @@ beforeEach(() => {
   cy.preserveCookies()
 })
 
-afterEach(function () {
+/* afterEach(function () {
   if (this.currentTest.state !== 'passed') {
     //TopBar.logOutMW()
     //#region Mysql
@@ -62,89 +78,137 @@ afterEach(function () {
     //#endregion
     //Cypress.runner.stop();
   }
-})
+}) */
 
-// after(function () {
-//   TopBar.logOutMW()
-//   //#region Mysql
-//   cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//     let tests = testsInfo
-//     cy.finishMysql(dbConfig, insertedId, tests)
-//   })
+after(function () {
+  TopBar.logOutMW()
+  //#region Mysql
+  cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+    let tests = testsInfo
+    cy.finishMysql(dbConfig, insertedId, tests)
+  })
   //#endregion
-//})
+
+})
 //#endregion Before After
 
-describe("POLIZZA BENEFICIARI REFERENTE", () => {
+describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
-      cy.get('input[name="main-search-input"]').type(cliente.nomeCognome()).type('{enter}')
-      cy.get('lib-client-item').first().click()
+     
+      cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
+      cy.get('lib-client-item').first()
+        .find('.name').trigger('mouseover').click()
     }).then(($body) => {
       cy.wait(7000)
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
-      //const check = cy.get('div[class="client-null-message"]').should('be.visible')
       cy.log('permessi: ' + check)
       if (check) {
-        cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
+        cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
         cy.get('lib-client-item').first().next().click()
       }
     })
   })
 
   it("Emissione Ultra Salute", () => {
-    SintesiCliente.Emissione(prodotto)
-    SintesiCliente.selezionaPrimaAgenzia()
+    SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
+   // Ultra.selezionaPrimaAgenzia()
     Dashboard.caricamentoDashboardUltra()
   })
 
-  it("Selezione Ambiti", () => {
-    let oggi = Date.now()
-    let dataInizio = new Date(oggi)
-    let dataFine = new Date(oggi); dataFine.setMonth(dataInizio.getMonth() + 7)
+  it("Selezione ambiti nella homepage di Ultra Salute", () => {
+    Dashboard.selezionaAmbiti(ambiti)    
+    Dashboard.aggiungiAmbito(ambiti)
     
-    
-    Dashboard.selezionaAmbiti(ambiti)      
-    Dashboard.aggiungiAmbito(nuovoAmbito)
-    Ultra.modificaSoluzioneHome(nuovoAmbito, 'Top')
-    cy.pause()
-    //Ultra.procediHome()
-  })
-/*
-  it("Modifica professione in Conferma Dati Quotazione", () => {
-    Ultra.ProfessionePrincipaleDatiQuotazione('barista')
-    Ultra.confermaDatiQuotazione()
   })
 
-  it("Riepilogo ed emissione", () => {
-    Ultra.riepilogoEmissione()
+
+  it("Configurazione Invalidità Permanente da infortunio", () => {
+    ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
+    ConfigurazioneAmbito.modificaDatoQuotazione("professione", "assistente presso uno studio medico")
+    ConfigurazioneAmbito.selezionaSoluzione("Top")
+    ConfigurazioneAmbito.aggiungiGaranzia("Capitale per morte da infortunio")
+    ConfigurazioneAmbito.ClickButton("CONFERMA")
+    Dashboard.caricamentoDashboardUltra()
+    Dashboard.procediHome()
+    DatiQuotazione.CaricamentoPagina()
   })
 
-  it("Censimento anagrafico", () => {
-    cy.pause()
-    Ultra.caricamentoCensimentoAnagrafico()
-    Ultra.censimentoAnagraficoSalute(cliente.cognome + ' ' + cliente.nome, false, false, false)
+  it("Dati Quotazione - modifica copertura", () => {
+    DatiQuotazione.modificaDatoQuotazione("copertura", "professionale")
+    DatiQuotazione.confermaDatiQuotazione()
+    Riepilogo.caricamentoRiepilogo()
   })
 
+  it("Modifica frazionamento ed emissione polizza", () => {
+    Dashboard.selezionaFrazionamento(frazionamento)
+    Riepilogo.EmissionePolizza()
+    CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
+  })
+
+  it("Aggiungi Cliente Persona Fisica", () => {
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica)
+    CensimentoAnagrafico.attendiCheckAssicurato()
+  })
+
+  it("Domande integrative Censimento Anagrafico", () => {
+    CensimentoAnagrafico.domandeIntegrative("indennità", "si")
+    CensimentoAnagrafico.Avanti()
+    Beneficiari.caricamentoBeneficiari()
+  })
+
+  it("Beneficiari", () => {
+    Beneficiari.Avanti()
+    DatiIntegrativi.caricamentoPagina()
+  })
   it("Dati integrativi", () => {
-    Ultra.caricaDatiIntegrativi()
-    Ultra.datiIntegrativiSalute(true, true, false)
-    Ultra.approfondimentoSituazioneAssicurativa(true)
-    Ultra.confermaDichiarazioniContraente()
+    DatiIntegrativi.DatiIntegrativi(true, true, true)
+    DatiIntegrativi.ClickButtonAvanti()
+    DatiIntegrativi.approfondimentoSituazioneAssicurativa(false)
+    DatiIntegrativi.confermaDichiarazioniContraente()
+    ConsensiPrivacy.caricamentoPagina()
   })
 
   it("Consensi e privacy", () => {
-    Ultra.caricamentoConsensi()
-    Ultra.avantiConsensi()
+    ConsensiPrivacy.Avanti()
+    ControlliProtocollazione.caricamentoPagina()
   })
 
-  it("Consensi sezione Intermediario", () => {
-    Ultra.salvataggioContratto()
-    Ultra.consensiSezIntermediario('2060281 BUOSI FRANCESCA', true)
+  it("salvataggio Contratto", () => {
+    ControlliProtocollazione.salvataggioContratto()
+  })
+
+  it("Controlli e protocollazione - intermediario", () => {
+    ControlliProtocollazione.inserimentoIntermediario()
+    ControlliProtocollazione.intermediarioCollaborazioneOrizzontale()
   })
 
   it("Visualizza documenti e prosegui", () => {
-    Ultra.riepilogoDocumenti()
-  })*/
+    ControlliProtocollazione.riepilogoDocumenti()
+    ControlliProtocollazione.Avanti()
+    ControlliProtocollazione.aspettaCaricamentoAdempimenti()
+  })
+
+  it("Adempimenti precontrattuali e Perfezionamento", () => {    
+    ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
+    ControlliProtocollazione.Incassa()
+    Incasso.caricamentoPagina()
+  })
+
+  it("Incasso - parte 1", () => {
+    Incasso.ClickIncassa()
+    Incasso.caricamentoModPagamento()
+  })
+
+  it("Incasso - parte 2", () => {
+    Incasso.SelezionaMetodoPagamento('Assegno')
+    Incasso.ConfermaIncasso()
+    Incasso.caricamentoEsito()
+  })
+
+  it("Esito incasso", () => {
+    Incasso.EsitoIncasso()
+    Incasso.Chiudi()
+  })
 })

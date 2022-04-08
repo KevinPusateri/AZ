@@ -55,7 +55,8 @@ const LinksBurgerMenu = {
     INDICI_DIGITALI: 'Indici Digitali',
     NEW_BUSINESS_DANNI: 'New Business Danni',
     NEW_BUSINESS_ULTRA_CASA_PATRIMONIO: 'New Business Ultra Casa e Patrimonio',
-    NEW_BUSINESS_ULTRA_SALUTE: 'Ultra Salute',
+    NEW_BUSINESS_ULTRA_SALUTE: 'New Business Ultra Salute',
+    NEW_BUSINESS_ULTRA_IMPRESA: 'New Business Ultra Impresa',
     NEW_BUSINESS_VITA: 'New Business Vita',
     NEW_BUSINESS_ALLIANZ1: 'New Business Allianz1',
     MONITORAGGIO_PTF_DANNI: 'Monitoraggio PTF Danni',
@@ -114,7 +115,8 @@ class BurgerMenuNumbers extends Numbers {
             cy.filterProfile(profiling, 'COMMON_REPORTING_INDICEDIGITALE').then(profiled => { keys.INDICI_DIGITALI = profiled })
             cy.filterProfile(profiling, 'REPORTING_NB_DANNI').then(profiled => { keys.NEW_BUSINESS_DANNI = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.NEW_BUSINESS_ULTRA_SALUTE = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.NEW_BUSINESS_ULTRA_IMPRESA = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.ULTRA = profiled })
             cy.filterProfile(profiling, 'REPORTING_NB_VITA').then(profiled => { keys.NEW_BUSINESS_VITA = profiled })
             cy.filterProfile(profiling, 'REPORTING_NB_A1').then(profiled => { keys.NEW_BUSINESS_ALLIANZ1 = profiled })
             cy.filterProfile(profiling, 'REPORTING_MONITOR_PTF_DANNI').then(profiled => { keys.MONITORAGGIO_PTF_DANNI = profiled })
@@ -181,6 +183,7 @@ class BurgerMenuNumbers extends Numbers {
         switch (page) {
             case LinksBurgerMenu.MONITORAGGIO_FONTI:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@getDacommercialePOST', { requestTimeout: 150000 });
                 getIFrame().find('a:contains("Filtra")')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -192,6 +195,7 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO_FONTE:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait(15000)
                 getIFrame().find('#contentPane:contains("Apri filtri"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -226,7 +230,6 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.ESTRAZIONI_AVANZATE:
                 cy.wait('@pentahoDA', { requestTimeout: 40000 });
                 cy.wait('@pentahoDama', { requestTimeout: 40000 });
-                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 getIFrame().find('a:contains("Nuovo Report"):visible')
                 break;
             case LinksBurgerMenu.SCARICO_DATI:
@@ -237,7 +240,6 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.INDICI_DIGITALI:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
                 getIFrame().find('#toggleFilters:contains("Apri filtri")')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -258,6 +260,7 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.NEW_BUSINESS_VITA:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
+                cy.wait(15000)
                 getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -269,6 +272,7 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.MONITORAGGIO_ANDAMENTO_PREMI:
             case LinksBurgerMenu.MONITORAGGIO_RICAVI_AGENZIA:
             case LinksBurgerMenu.CAPITALE_VITA_SCADENZA:
+            case LinksBurgerMenu.NEW_BUSINESS_ULTRA_IMPRESA:
                 cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
                 cy.wait('@getDacommercialePOST', { requestTimeout: 150000 });
                 cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });

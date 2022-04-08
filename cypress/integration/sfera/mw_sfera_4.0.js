@@ -49,6 +49,7 @@ after(function () {
 describe('Matrix Web : Sfera 4.0', function () {
 
     it('Verificare presenza ed accesso a Delta Premio da menù contestuale e ritorno in Sfera', function () {
+        Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
         Sfera.estrai()
         Sfera.apriVoceMenu(Sfera.VOCIMENU.DELTA_PREMIO)
@@ -56,16 +57,37 @@ describe('Matrix Web : Sfera 4.0', function () {
     })
 
     it('Verificare Cluster Motor Delta Premio Positivo e Negativo', function () {
+        Sfera.setDateEstrazione()
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_NEGATIVO)
         Sfera.espandiPannello()
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO)
     })
 
-    it('Sostituzione stesso veicolo Titolo 2 e Verifica in Sfera', function () {
-        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-        Sfera.estrai()
-        Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.VUOTO)
-        Sfera.apriVoceMenu(Sfera.VOCIMENU.SOSTITUZIONE_RIATTIVAZIONE_AUTO, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
-        cy.pause()
+    //! Necessari chiarimenti con Visentin
+    // it('Sostituzione stesso veicolo Titolo 2 e Verifica in Sfera', function () {
+    //     Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
+    //     Sfera.estrai()
+    //     Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.VUOTO)
+    //     Sfera.apriVoceMenu(Sfera.VOCIMENU.SOSTITUZIONE_RIATTIVAZIONE_AUTO, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
+    //     cy.pause()
+    // })
+
+    it('Quietanzamento Vista Operativa - Gestisci colora riga : Assegna colore', () => {
+        Sfera.setDateEstrazione()
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        Sfera.assegnaColoreRighe(Sfera.COLORI.SIGNIFICATO_ALFA)
+    })
+
+    it('Quietanzamento Vista Operativa - Gestisci colora riga : Rimuovi colore', () => {
+        Sfera.setDateEstrazione()
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
+    })
+    it('Gestione Stampa Senza Incasso per Quietanze Allianz', () => {
+
+    })
+
+    it('Sfera AZpay', () => {
+
     })
 })

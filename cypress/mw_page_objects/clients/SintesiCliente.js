@@ -220,7 +220,6 @@ class SintesiCliente {
                     cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Preferiti"]').should('be.visible')
                     cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Salva"]').should('be.visible')
                     cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Condividi"]').should('be.visible')
-                    cy.wrap($iconBottom).find('lib-da-link[calldaname="ALLIANZ-ULTRA#Configura"]').should('be.visible')
                 })
                 //#endregion
 
@@ -273,7 +272,7 @@ class SintesiCliente {
                     //#endregion
 
                     //#region Link Vai a preferiti(Ultra - Casa e patrimonio)
-                    cy.get('app-ultra-fast-quote').find('.favorites-cta').contains('Vai a Preferiti').click()
+                    cy.get('app-ultra-fast-quote').contains('Vai a Preferiti').click()
                     Common.canaleFromPopup()
                     getIFrame().find('#dashBody').should('be.visible')
                     getIFrame().find('img[src="./assets/img/allianz-logo-casa.png"]').should('be.visible')
@@ -312,7 +311,7 @@ class SintesiCliente {
                 //#endregion
 
                 //#region Link Vai a preferiti(Ultra - Salute)
-                cy.get('app-ultra-health-fast-quote').find('.favorites-cta').contains('Vai a Preferiti').click()
+                cy.get('app-ultra-health-fast-quote').contains('Vai a Preferiti').click()
                 Common.canaleFromPopup()
                 getIFrame().find('#dashBody').should('be.visible')
                 if (!Cypress.env('isAviva'))
@@ -1230,8 +1229,9 @@ class SintesiCliente {
     /**
      * Verifica i Links da Card Auto
      */
-    static checkLinksFromAuto() {
+    static checkLinksFromAuto(keys) {
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
+            Auto.deleteKey(keys)
             const linksAuto = Object.values(Auto)
             cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
                 expect($buttonLinks).to.contain(linksAuto[i])

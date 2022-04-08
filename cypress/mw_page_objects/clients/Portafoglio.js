@@ -95,15 +95,17 @@ class Portafoglio {
      * Click Il tab Portafoglio
      */
     static clickTabPortafoglio() {
-        // cy.intercept('POST', '**/graphql', (req) => {
-        //     aliasQuery(req, 'contract')
-        // })
+        cy.intercept('POST', '**/graphql', (req) => {
+            aliasQuery(req, 'contract')
+        })
 
         cy.get('app-client-profile-tabs').should('be.visible').within(() => {
             cy.get('a').should('be.visible')
         })
-        cy.contains('PORTAFOGLIO').click()
-        //cy.wait('@gqlcontract', { requestTimeout: 60000 });
+        cy.contains('PORTAFOGLIO').click().wait(2000)
+        cy.wait('@gqlcontract', { requestTimeout: 60000 });
+        cy.screenshot('Verifica aggancio Portafoglio', { clip: { x: 0, y: 0, width: 1920, height: 900 } }, { overwrite: true })
+
 
     }
 
@@ -129,6 +131,7 @@ class Portafoglio {
      * Verifica Se il Cliente possiede delle Pollizze (Polizze attive)
      */
     static checkPolizzeAttive() {
+        cy.screenshot('Verifica Polizze Attive', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Polizze attive")').is(':visible')
             if (container)
@@ -151,6 +154,7 @@ class Portafoglio {
                 cy.wait(3000)
                 Common.canaleFromPopup()
                 getIFrame().find('#navigation-area:contains("Contratto"):visible')
+                cy.screenshot('Verifica Scheda Polizza Attiva', { capture: 'fullPage' }, { overwrite: true })
                 this.back()
             }
         })
@@ -160,6 +164,7 @@ class Portafoglio {
      * Verifica la presenza dei preventivi
      */
     static checkPreventivi() {
+        cy.screenshot('Verifica Preventivi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Preventivi")').is(':visible')
             if (container)
@@ -179,8 +184,10 @@ class Portafoglio {
                 cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 })
                 cy.wait(10000)
                 getIFrame().find('#casella-ricerca').should('exist').and('be.visible').and('contain.text', 'Cerca')
+                cy.screenshot('Verifica Preventivo', { capture: 'fullPage' }, { overwrite: true })
                 this.back()
             }
+
         })
     }
 
@@ -188,6 +195,7 @@ class Portafoglio {
      * Verifica la presenza delle proposte
      */
     static checkProposte() {
+        cy.screenshot('Verifica Proposte', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Proposte")').is(':visible')
             if (container)
@@ -216,8 +224,9 @@ class Portafoglio {
                     cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 }).then((interception) => {
                         expect(interception.response.statusCode).to.be.eq(200);
                     });
-
-                    getIFrame().find('a:contains("Contratto"):visible')
+                    
+                    getIFrame().find('a:contains("Contratto"):visible',{timeout:15000})
+                    cy.screenshot('Verifica Scheda Proposta', { capture: 'fullPage' }, { overwrite: true })
                     this.back()
                 })
             }
@@ -229,6 +238,7 @@ class Portafoglio {
      * Verifica la presenza delle polizze non in vigore
      */
     static checkNonInVigore() {
+        cy.screenshot('Verifica Non in Vigore', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Polizze")').is(':visible')
             if (container)
@@ -236,13 +246,25 @@ class Portafoglio {
             else {
                 cy.get('lib-da-link').should('be.visible')
                 cy.get('lib-filter-button-with-modal').should('be.visible')
-                cy.get('app-wallet-inactive-contracts').find('app-section-title').should('contain.text', 'Polizze')
+
+                cy.get('app-wallet-inactive-contracts').should('be.visible').then(($contract) => {
+
+                    var firstCheck = $contract.find(':contains("Polizze attive")').is(':visible')
+                    var secondCheck = $contract.find(':contains("Polizza attiva")').is(':visible')
+                    if (firstCheck || secondCheck) {
+                        assert.isTrue(true, 'corretto')
+                        cy.log(firstCheck)
+                        cy.log(secondCheck)
+                    }
+                })
+
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.wait(5000)
                 cy.get('app-contract-card').should('be.visible').first().click()
                 Common.canaleFromPopup()
                 cy.wait(10000)
                 getIFrame().find('#navigation-area').should('be.visible').and('contain.text', '« Uscita')
+                cy.screenshot('Verifica Scheda Non in Vigore', { capture: 'fullPage' }, { overwrite: true })
                 this.back()
             }
         })
@@ -252,6 +274,7 @@ class Portafoglio {
      * Verifica la presenza dei sinistri
      */
     static checkSinistri() {
+        cy.screenshot('Verifica Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Sinistri")').is(':visible')
             if (container)
@@ -266,6 +289,7 @@ class Portafoglio {
 
                 cy.get('.cdk-overlay-container').find('button').contains('Consulta sinistro').click()
                 getIFrame().find('a[class="active"]').should('contain.text', 'Dettaglio del Sinistro')
+                cy.screenshot('Verifica Scheda Sinistri', { capture: 'fullPage' }, { overwrite: true })
                 this.back()
             }
         })
@@ -1003,6 +1027,16 @@ class Portafoglio {
     }
 
     /**
+     * Visualizza Lista 
+     */
+    static visualizzaLista() {
+        cy.get('app-wallet-list-toggle-button').should('be.visible').find('div[class^="icon"]').then(($iconList) => {
+            if ($iconList.hasClass('icon'))
+                cy.get('app-wallet-list-toggle-button').find('nx-icon').click()
+        })
+    }
+
+    /**
      * apre il menù contestuale nella sezione 'ambiti del contratto'
      * @param {string} ambito 
      * @param {string} voce 
@@ -1029,14 +1063,14 @@ class Portafoglio {
     */
     static clickIncassaProposta(nProposta) {
         cy.get('div').contains(nProposta).should('exist')
-          .parents('app-contract-card').should('have.length', 1)
-          .find('button').contains('Incassa').should('exist').click()
+            .parents('app-contract-card').should('have.length', 1)
+            .find('button').contains('Incassa').should('exist').click()
     }
 
     /**
      * Attende il caricamento della pagina Clients Incassa
      */
-     static caricamentoPaginaIncassa() {
+    static caricamentoPaginaIncassa() {
         cy.log('***** CARICAMENTO PAGINA INCASSO DA CLIENTS *****')
         cy.intercept({
             method: 'POST',
@@ -1050,13 +1084,26 @@ class Portafoglio {
     * Click pulsante "Incassa" da Clients/Incassa
     * @param {string} nProposta  
     */
-     static clickIncassa() {
+    static clickIncassa() {
         cy.getIFrame()
-        cy.get('@iframe').within(() => {   
+        cy.get('@iframe').within(() => {
             cy.get('input[value="> Incassa"]')
-              .should('be.visible').click() 
+                .should('be.visible').click()
         })
     }
+
+    /**
+     * Verifica che il pireventivo specificato sia presente su "Preventivi"
+     * @param {string} numberPreventivo : numero di preventivo 
+     */
+    static checkPreventivoIsPresentOnPreventivi(numberPreventivo) {
+        cy.log("Verifica Preventivo: " + numberPreventivo)
+        Portafoglio.visualizzaLista()
+        cy.get('table[class="nx-table contracts-table ng-star-inserted"]').should('exist')
+            .find('tbody').should('exist')
+            .find('td').contains(numberPreventivo).should('have.length', 1)
+    }
+    
 }
 export default Portafoglio
 //<img _ngcontent-yoe-c287="" class="loading-spinner" src="assets/images/spinner.gif" alt="Caricamento...">

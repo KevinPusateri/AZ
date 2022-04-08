@@ -108,5 +108,17 @@ export default class PersonaFisica {
 
         return SimonettaRossino
     }
+
+    static MarioRossini() {
+        let MarioRossini = new PersonaFisica("MARIO", "ROSSINI")
+        MarioRossini.via = "VIA GIUSEPPE MAZZINI"
+        MarioRossini.numero = "1"
+        MarioRossini.cap = "34074"
+        MarioRossini.citta = "MONFALCONE"
+        MarioRossini.provincia = "GO"
+        MarioRossini.codiceFiscale = "RSSMRA82L12F356R"
+
+        return MarioRossini
+    }
 }
 

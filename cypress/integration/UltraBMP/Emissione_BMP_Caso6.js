@@ -59,22 +59,11 @@ import { ambitoUltra } from '../../fixtures/Ultra/BMP_Comune.json'
 
 //#endregion
 
-//#region  variabili iniziali
-var premioTotPrima = 0
-var premioTotDopo = 0
-var premioFA = 0
-var premioFA_FenomenoElettrico = 0
-var premioRC_Prima = 0
-var premioRC_Dopo = 0
-var premioRC_Affittacamere = 0
-var premioRC_ProprietàAnimali = 0
-
 //let personaFisica = PersonaFisica.MassimoRoagna()
 let personaFisica = PersonaFisica.CarloRossini()
 let personaFisica2 = PersonaFisica.SimonettaRossino()
 var nContratto = "000"
 var nPreventivo = "000"
-var clienteUbicazione = ""
 var frazionamento = "annuale"
 var arrPath = []
 var arrDoc = []
@@ -257,6 +246,8 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
 
     it("Ritorno alla Homepage di Matrix", () => {
         TopBar.clickMatrixHome()
+        cy.pause()
+        cy.wait(5000)
     })
 
     it("Recupero preventivi da Sales", () => {

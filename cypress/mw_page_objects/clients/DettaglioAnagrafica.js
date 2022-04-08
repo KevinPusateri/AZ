@@ -389,11 +389,17 @@ class DettaglioAnagrafica {
                     aderente: aderente
                 }
                 //Agenzia
-                cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').click()
-                cy.contains(agenzia).should('be.visible').click()
+                cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').click().wait(2000)
+                cy.get('nx-dropdown-item').should('be.visible').within(()=>{
+                    cy.contains(agenzia).should('be.visible').click()
+                })
+                cy.get('nx-dropdown[formcontrolname="convenzione"]').should('be.visible').click().wait(2000)
                 //Convenzione
-                cy.get('#nx-dropdown-rendered-5').click()
-                cy.contains(convenzione).should('be.visible').click()
+                // cy.get('#nx-dropdown-rendered-5').click()
+                cy.get('nx-dropdown-item').should('be.visible').within(()=>{
+                    cy.contains(convenzione).should('be.visible').click()
+                })
+                // cy.contains(convenzione).should('be.visible').click()
                 //Matricola
                 if (convenzioneInserita.matricola !== '')
                     cy.get('input[formcontrolname="matricola"]').should('be.visible').type(convenzioneInserita.matricola)
@@ -439,10 +445,6 @@ class DettaglioAnagrafica {
      */
     static checkConvenzioniPresenti(isPresent, toBeDelated = false) {
 
-        cy.intercept({
-            method: 'GET',
-            url: '**/getclientagreements/**'
-        }).as('getClientAgreements');
 
         cy.wait(3000)
         cy.get('h3').should('be.visible').and('exist').invoke('text').then($text => {
@@ -457,7 +459,6 @@ class DettaglioAnagrafica {
                     if (toBeDelated) {
                         cy.get('svg[data-icon="trash-alt"]').click()
                         cy.contains('Conferma').should('be.visible').click()
-                        cy.wait('@getClientAgreements', { timeout: 30000 })
                         cy.wait(2000)
                     }
                     break;

@@ -11,12 +11,23 @@ class PageVPS {
      * Effettua il primo visit
      */
     static launchLoginVPS() {
+
+        // Cypress.config().baseUrl = 'http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx'
+
+        // cy.newTabAction('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
         cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
-        //TODO: Da criptare le credenziali
-        // cy.get('table').should('be.visible')
-        // cy.get('[name="Ecom_User_ID"]').type('euvps02')
-        // cy.get('[name="Ecom_Password"]').type('pwdeuvps02')
-        // cy.get('[value="Conferma"]').click()
+        cy.get('body').then(($body) => {
+            var formLoginExist = $body.find('input[name="Ecom_User_ID"]').is(':visible')
+            if (formLoginExist) {
+                cy.get('table').should('be.visible')
+                cy.get('[name="Ecom_User_ID"]').type('euvps02')
+                cy.get('[name="Ecom_Password"]').type('pwdeuvps02')
+                cy.pause()
+
+
+            }
+        })
+
     }
 
     /**
@@ -29,32 +40,54 @@ class PageVPS {
     }
 
     static ricercaRichiestaNum(nPreventivoApp) {
-        // Seleziona Modalità normale
-        cy.get('#ddlModalitaEsecuzione').select('(!) Modalità normale')
+        return new Cypress.Promise((resolve) => {
+            cy.reload()
 
-        // Ricerca Preventivo Applicazione
-        cy.get('#linkRicerca').should('be.visible').click()
-        cy.get('#selCampo1').select('Richiesta num.')
-        cy.get('#selOperator1').select('Uguale')
-        cy.get('#fValore1').clear().type(nPreventivoApp)
-        cy.pause()
-        cy.get('#btnApplicaFiltro').click()
+            // Seleziona Modalità normale
+            cy.get('#ddlModalitaEsecuzione').select('(!) Modalità normale')
+            cy.wait(3000)
 
-        // Preventivo Selezionato
-        cy.get('td:contains("' + nPreventivoApp + '")').should('be.visible').click()
-        cy.get('#datiStampabili').should('be.visible')
-        cy.get('#pnlInformazioniAggiuntive').should('be.visible')
-        cy.pause()
-        cy.window().then(win => {
-            cy.stub(win, 'open').callsFake((url, target) => {
-                expect(target).to.be.undefined
-                // call the original `win.open` method
-                // but pass the `_self` argument
-                return win.open.wrappedMethod.call(win, url, '_self')
-            }).as('open')
+            // Ricerca Preventivo Applicazione
+            cy.get('#linkRicerca').should('be.visible').click()
+            cy.get('#selCampo1').select('Richiesta num.')
+            cy.get('#selOperator1').select('Uguale')
+            cy.get('#fValore1').clear().type(nPreventivoApp)
+            cy.get('#btnApplicaFiltro').click().wait(2000)
+
+            // Preventivo Selezionato
+            cy.get('td:contains("' + nPreventivoApp + '")').should('be.visible').click()
+            cy.get('#datiStampabili').should('be.visible')
+            cy.get('#pnlInformazioniAggiuntive').should('be.visible')
+            cy.get('#MasterForm').should('have.attr', 'action').then((href) => {
+
+                let richiestaId = href.substring(
+                    href.indexOf("Id=") + 3,
+                    href.lastIndexOf("&LDAPEDIR=")
+                );
+                console.log(richiestaId)
+                resolve(richiestaId)
+            })
+
         })
-        cy.get('#btnAutorizza').should('be.visible').click()
-         cy.get('@open')
+    }
+
+    static autorizza(richiestaId) {
+        cy.getUserWinLogin().then(data => {
+            var agency = data.agency.substring(3)
+            cy.window().then(win => {
+                cy.stub(win, 'open').callsFake((url, target) => {
+                    let urlAutorizza = 'AutorizzaRichiesta.aspx?RichiestaId=' + richiestaId + '&CodiceAgenzia=' + agency
+                    win.location.href = urlAutorizza
+                }).as("popup")
+            })
+            cy.get('#btnAutorizza').should('be.visible').click()
+            cy.get('@popup')
+                .should("be.called")
+
+            cy.get('h1')
+                .should('have.text', 'Autorizza preventivo')
+            cy.pause()
+        })
     }
 }
 

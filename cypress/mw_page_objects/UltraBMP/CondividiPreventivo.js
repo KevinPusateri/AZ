@@ -65,6 +65,18 @@ class CondividiPreventivo {
     }
 
     /**
+     * Seleziona copertina
+     * @param {string} copertina (copertina che si vuole selezionare) 
+     */
+     static SelezionaCopertina(copertina) {
+        ultraIFrame().within(() => {
+            cy.get('div[class="copertine"]').should('exist')
+              .find('div[class="radio-strip-items"]').should('exist')
+              .find('footer').contains(copertina).should('have.length', 1).click()
+        })
+    }
+
+    /**
      * Clicca sul pulsante Conferma
      */
     static Conferma() {

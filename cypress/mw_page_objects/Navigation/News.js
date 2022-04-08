@@ -30,7 +30,7 @@ class News {
         if (da)
             cy.url().should('include', Common.getBaseUrl() + 'legacyda')
         else
-            cy.url().should('include', Common.getBaseUrl() + 'news')
+            cy.url().should('include', Common.getBaseUrl() + 'lemieinfo?news=news')
 
 
         getIFrame().find('app-header:contains("Primo Piano"):visible')

@@ -6,6 +6,7 @@
   "dependencies": {
     "aggregate-error": "^4.0.0",
     "archiver": "^5.3.0",
+    "axios": "^0.26.1",
     "crypto-js": "^4.1.1",
     "cypress-downloadfile": "^1.2.1",
     "cypress-file-upload": "^5.0.7",
@@ -16,6 +17,7 @@
     "fs": "0.0.1-security",
     "ftp-deploy": "^2.3.8",
     "ibantools": "^3.3.0",
+    "minimist": "^1.2.6",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
     "node-fetch": "^2.6.7",
@@ -26,7 +28,9 @@
     "prompt-sync": "^4.1.6",
     "rimraf": "^3.0.2",
     "ssh2": "^1.4.0",
-    "unzipper": "^0.10.11"
+    "unzipper": "^0.10.11",
+    "xlsx": "^0.18.4",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "cypress": "^8.7.0",
@@ -90,15 +94,16 @@
     "navigationBackOffice": ".\\node_modules\\.bin\\cypress run --browser firefox --spec cypress/integration/navigation/mw_navigation_backOffice.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/navigationBackOffice, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web Navigatin BackOffice'\"",
     "navigationClients": ".\\node_modules\\.bin\\cypress run --browser firefox --spec cypress/integration/navigation/mw_navigation_clients.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/navigationClients, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web Navigatin Clients'\"",
     "navigationHomePage": ".\\node_modules\\.bin\\cypress run --browser firefox --spec cypress/integration/navigation/mw_navigation_homePage.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/navigationHomePage, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web Navigatin HomePage'\"",
-    "navigationMieInfo": ".\\node_modules\\.bin\\cypress run --browser firefox --spec cypress/integration/navigation/mw_navigation_mieInfo.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/navigationMieInfo, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web Navigatin Mie Info'\"",
-    "navigationNews": ".\\node_modules\\.bin\\cypress run --browser firefox --spec cypress/integration/navigation/mw_navigation_news.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/navigationNews, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web Navigatin News'\"",
+    "navigationNewsInfo": ".\\node_modules\\.bin\\cypress run --browser firefox --spec cypress/integration/navigation/mw_navigation_NewsInfo.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/navigationNewsInfo, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web Navigatin News Info'\"",
     "navigationNumbers": ".\\node_modules\\.bin\\cypress run --browser firefox --spec cypress/integration/navigation/mw_navigation_numbers.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/navigationumbers, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web Navigatin Numbers'\"",
     "fastQuoteMotorClients": ".\\node_modules\\.bin\\cypress run --browser firefox --spec cypress/integration/navigation/mw_fastquote_motor_clients.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/fastQuoteMotorClients, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web FastQuote Motor Clients'\"",
     "menuPolizzeAutoAttive": ".\\node_modules\\.bin\\cypress run --browser firefox --spec cypress/integration/navigation/mw_menu_contestuale_polizze_auto_attive.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/menuPolizzeAutoAttive, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web Menu Polizze Auto Attive'\"",
+    "clients_noteContratto": ".\\node_modules\\.bin\\cypress run --browser electron --spec cypress/integration/clients/mw_note_di_contratto.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/noteContratto, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web Clients Note di Contratto'\"",
     "aviva_ard_20220401": ".\\node_modules\\.bin\\cypress run --browser chrome --spec cypress/integration/motor_ARD/mw_ARD_20220401_aviva.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/aviva_ard_20220401, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='AVIVA ARD Aprile 2022'\"",
     "aviva_ard_20180601": ".\\node_modules\\.bin\\cypress run --browser chrome --spec cypress/integration/motor_ARD/mw_ARD_20180601_aviva.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/aviva_ard_20180601, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='AVIVA ARD Giugno 2018'\"",
-    "aviva_rca_20201101": ".\\node_modules\\.bin\\cypress run --browser chrome --spec cypress/integration/motor_RCA/AVIVA/mw_RCA_20201101_aviva.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/aviva_rca_20201101, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='AVIVA RCA Novembre 2020'\"",
-    "aviva_rca_20220401": ".\\node_modules\\.bin\\cypress run --browser chrome --spec cypress/integration/motor_RCA/AVIVA/mw_RCA_20220401_aviva.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/aviva_rca_20220401, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='AVIVA RCA Aprile 2022'\""
+    "az_ard_20220201": ".\\node_modules\\.bin\\cypress run --browser chrome --spec cypress/integration/motor_ARD/mw_ARD_20220201.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/az_ard_20220201, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='AZ ARD Febbraio 2022'\"",
+    "aviva_rca_20220401": ".\\node_modules\\.bin\\cypress run --browser chrome --spec cypress/integration/motor_RCA/AVIVA/mw_RCA_20220401_aviva.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/aviva_rca_20220401, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='AVIVA RCA Aprile 2022'\"",
+    "az_rca_20220401": ".\\node_modules\\.bin\\cypress run --browser chrome --spec cypress/integration/motor_RCA/AZ/mw_RCA_20220401.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/az_rca_20220401, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='AZ RCA Aprile 2022'\""
   },
   "repository": {
     "type": "git",

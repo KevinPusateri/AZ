@@ -57,7 +57,7 @@ beforeEach(() => {
         cy.reload({ log: false })
 })
 
-afterEach(() => {
+afterEach(function () {
     if (this.currentTest.state !== 'passed') {
         TopBar.clickMatrixHome()
         TopBar.search(currentCustomerFullName)

@@ -188,7 +188,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         if (!keysCards.AUTO)
             this.skip()
         SintesiCliente.clickAuto()
-        SintesiCliente.checkLinksFromAuto()
+        SintesiCliente.checkLinksFromAuto(keysAuto)
     })
 
     it('Verifica Link da Card Auto -> Emissione', function () {
@@ -364,7 +364,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.back()
     })
 
-    
+
     it('Verifica Link da Card Rami vari', function () {
         if (!keysCards.RAMIVARI)
             this.skip()
@@ -463,6 +463,8 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Contratti in evidenza', function () {
+        if (!keysCards.VITA)
+            this.skip()
         SintesiCliente.checkContrattiEvidenza()
         SintesiCliente.back()
     })

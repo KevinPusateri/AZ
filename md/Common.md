@@ -4,7 +4,7 @@
 Classe Common per varie funzioni Cross Matrix Web
 
 **Kind**: global class  
-**Author**: Andrea 'Bobo' Oboe & Kevin Pusateri  
+**Author**: Andrea 'Bobo' Oboe, Kevin Pusateri & Michele Delle Donne  
 
 * [Common](#Common)
     * [.canaleFromPopup(chooseUtenza)](#Common.canaleFromPopup)
@@ -25,8 +25,8 @@ Classe Common per varie funzioni Cross Matrix Web
     * [.clickFindByIdOnIframe(path)](#Common.clickFindByIdOnIframe) ⇒
     * [.clickFindByIdOnIframeChild(idIframe, path)](#Common.clickFindByIdOnIframeChild) ⇒
     * [.getObjByTextOnIframe(idIframe, text)](#Common.getObjByTextOnIframe) ⇒ <code>cy.contains(text).should(&#x27;be.visible&#x27;).click()</code>
-    * [.getObjByTextOnIframeChild(idIframe, text)](#Common.getObjByTextOnIframeChild) ⇒ <code>cy.contains(text).should(&#x27;be.visible&#x27;).click()</code>
-    * [.getObjByIdAndTextOnIframeChild(idIframe, id, text)](#Common.getObjByIdAndTextOnIframeChild)
+    * [.getObjByTextOnIframeChild(idIframe, text)](#Common.getObjByTextOnIframeChild) ⇒ <code>cy.contains(text, { timeout: 5000 }).should(&#x27;exist&#x27;).and(&#x27;be.visible&#x27;)</code>
+    * [.getObjByIdAndTextOnIframeChild(idIframe, id, text)](#Common.getObjByIdAndTextOnIframeChild) ⇒ <code>Object</code>
     * [.isValidCheck(regexExp, str, msg)](#Common.isValidCheck) ⇒
 
 <a name="Common.canaleFromPopup"></a>
@@ -281,11 +281,11 @@ Gets an object in iframe  by text
 
 <a name="Common.getObjByTextOnIframeChild"></a>
 
-### Common.getObjByTextOnIframeChild(idIframe, text) ⇒ <code>cy.contains(text).should(&#x27;be.visible&#x27;).click()</code>
+### Common.getObjByTextOnIframeChild(idIframe, text) ⇒ <code>cy.contains(text, { timeout: 5000 }).should(&#x27;exist&#x27;).and(&#x27;be.visible&#x27;)</code>
 Gets an object in iframe Child by text
 
 **Kind**: static method of [<code>Common</code>](#Common)  
-**Returns**: <code>cy.contains(text).should(&#x27;be.visible&#x27;).click()</code> - findIframeChild(idIframe).within(() => )  
+**Returns**: <code>cy.contains(text, { timeout: 5000 }).should(&#x27;exist&#x27;).and(&#x27;be.visible&#x27;)</code> - findIframeChild(idIframe).within(() => )  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -294,15 +294,15 @@ Gets an object in iframe Child by text
 
 <a name="Common.getObjByIdAndTextOnIframeChild"></a>
 
-### Common.getObjByIdAndTextOnIframeChild(idIframe, id, text)
+### Common.getObjByIdAndTextOnIframeChild(idIframe, id, text) ⇒ <code>Object</code>
 Check if an object identified by locator and its label is displayed
 
 **Kind**: static method of [<code>Common</code>](#Common)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| idIframe | <code>\*</code> | del child frame |
-| id | <code>string</code> | : class attribute |
+| idIframe | <code>\*</code> | id child frame |
+| id | <code>string</code> | : id attribute |
 | text | <code>string</code> | : text displayed |
 
 <a name="Common.isValidCheck"></a>
@@ -311,7 +311,7 @@ Check if an object identified by locator and its label is displayed
 Defined @regexExp a regular expression is verified if the string @str matches the reg. ex.
 
 **Kind**: static method of [<code>Common</code>](#Common)  
-**Returns**: assert.isTrue(value, [message])  
+**Returns**: assert.isTrue(the string @str respects the rule, [message])  
 **Link**: https://docs.cypress.io/guides/references/assertions#TDD-Assertions  
 
 | Param | Type | Description |
@@ -320,3 +320,7 @@ Defined @regexExp a regular expression is verified if the string @str matches t
 | str | <code>string</code> | : string value |
 | msg | <code>string</code> | : message |
 
+**Example**  
+```js
+For date check: Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')
+```

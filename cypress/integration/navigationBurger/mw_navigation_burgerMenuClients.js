@@ -30,6 +30,7 @@ let keys = {
     GESTIONE_FONTE_PRINCIPALE: true,
     ANTIRICICLAGGIO: true,
     HOSPITAL_SCANNER: true,
+    CONSENSI_EMAIL_SUI_CONTRATTI: true,
 }
 
 let keyDigitalMe = {
@@ -48,6 +49,7 @@ before(() => {
             cy.filterProfile(profiling, 'PO_ANTIRICICLAGGIO').then(profiled => { keys.ANTIRICICLAGGIO = profiled })
             cy.filterProfile(profiling, 'HOSPITAL_SCANNER').then(profiled => { keys.HOSPITAL_SCANNER = profiled })
             cy.filterProfile(profiling, 'DIGITALME_OFFERTA').then(profiled => { keyDigitalMe.PUBBLICAZIONE_PROPOSTE = profiled })
+            cy.filterProfile(profiling, 'CLIENTE_MODIFICA_ANAGRAFICA').then(profiled => { keys.CONSENSI_EMAIL_SUI_CONTRATTI = profiled })
         })
     })
 })
@@ -158,5 +160,12 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         BurgerMenuClients.backToClients()
     });
 
+    it('Verifica aggancio Conensi Email sui Contratti', function () {
+        if (!keys.CONSENSI_EMAIL_SUI_CONTRATTI)
+            this.skip()
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Consensi email sui contratti')
+        BurgerMenuClients.backToClients()
+    });
 
 });

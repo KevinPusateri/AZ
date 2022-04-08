@@ -67,24 +67,17 @@ if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è at
 }
 //#endregion Before After
 
-let retrivedClient
-let retrivedPartyRelations
 describe('Matrix Web : Convenzioni', {
     retries: {
         runMode: 0,
         openMode: 0,
     }
 }, () => {
-
-
     it('Come delegato accedere all\'agenzia 01-710000 e cercare un cliente PG e verificare in Dettaglio Anagrafica la presenza del Tab Convenzioni', function () {
         if (!Cypress.env('monoUtenza')) {
 
             LandingRicerca.searchRandomClient(true, 'PG', 'P')
             LandingRicerca.clickRandomResult()
-            SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-                currentClientPG = currentClient
-            })
 
             DettaglioAnagrafica.clickTabDettaglioAnagrafica()
             DettaglioAnagrafica.clickSubTab('Convenzioni')
@@ -98,6 +91,4 @@ describe('Matrix Web : Convenzioni', {
                 DettaglioAnagrafica.clickAggiungiConvenzione(false)
             } else this.skip()
         });
-
-
 })

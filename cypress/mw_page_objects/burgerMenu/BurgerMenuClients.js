@@ -11,6 +11,13 @@ const getIFrame = () => {
 
     return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
 }
+const interceptloadSCIImpresa = () => {
+    cy.intercept({
+        method: 'POST',
+        url: '**/SCImpresa/**'
+    }).as('loadSCIImpresa')
+}
+
 
 const LinksBurgerMenu = {
     HOME_CLIENTS: 'Home Clients',
@@ -24,6 +31,7 @@ const LinksBurgerMenu = {
     GESTIONE_FONTE_PRINCIPALE: 'Gestione fonte principale',
     ANTIRICICLAGGIO: 'Antiriciclaggio',
     HOSPITAL_SCANNER: 'Hospital scanner',
+    CONSENSI_EMAIL_SUI_CONTRATTI: 'Consensi email sui contratti',
     deleteKey: function (keys) {
         if (!keys.CENSIMENTO_NUOVO_CLIENTE) delete this.CENSIMENTO_NUOVO_CLIENTE
         if (!keys.PANNELLO_ANOMALIE) delete this.PANNELLO_ANOMALIE
@@ -34,6 +42,7 @@ const LinksBurgerMenu = {
         if (!keys.ANTIRICICLAGGIO) delete this.ANTIRICICLAGGIO
         if (!keys.HOSPITAL_SCANNER) delete this.HOSPITAL_SCANNER
         if (Cypress.env('isAviva')) delete this.ANALISI_DEI_BISOGNI
+        if (!keys.CONSENSI_EMAIL_SUI_CONTRATTI) delete this.CONSENSI_EMAIL_SUI_CONTRATTI
     }
 }
 
@@ -59,12 +68,14 @@ class BurgerMenuClients extends Clients {
      * @param {string} page - nome del link 
      */
     static clickLink(page) {
+        interceptloadSCIImpresa()
+
         cy.get('lib-burger-icon').click({ force: true })
         if (page === LinksBurgerMenu.ANALISI_DEI_BISOGNI ||
             page === LinksBurgerMenu.HOSPITAL_SCANNER) {
             this.checkPage(page)
         } else {
-            cy.contains(page,{timeout:5000}).click()
+            cy.contains(page, { timeout: 5000 }).click()
             this.checkPage(page)
         }
 
@@ -147,6 +158,10 @@ class BurgerMenuClients extends Clients {
                 cy.get('app-home').should('exist').and('be.visible').and('contain.text', 'CERCA INTERVENTO')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
+            case LinksBurgerMenu.CONSENSI_EMAIL_SUI_CONTRATTI:
+                Common.canaleFromPopup()
+                cy.wait('@loadSCIImpresa', { requestTimeout: 30000 })
+                getIFrame().find('button:contains("Salva")').should('be.visible')
         }
     }
 
