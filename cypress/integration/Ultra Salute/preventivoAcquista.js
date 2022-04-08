@@ -114,12 +114,11 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Emissione Ultra Salute", () => {
     Ultra.emissioneUltra(ultraRV.SALUTE)
-    Ultra.selezionaPrimaAgenzia()
+    Common.canaleFromPopup()
+    Dashboard.caricamentoDashboardUltra()
   })
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
-    Ultra.caricamentoUltraHome()
-    //Ultra.selezionaAmbitiHome(ambiti)
     Dashboard.selezionaAmbiti(ambiti)
   })
 

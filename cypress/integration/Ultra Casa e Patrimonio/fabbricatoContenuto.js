@@ -94,7 +94,9 @@ describe("FABBRICATO E CONTENUTO", () => {
             cy.contains('div', ambiti[i]).parent().children('nx-icon').click()
         }
         cy.get('span').contains('Calcola').click({ force: true })
-        cy.get('span').contains('Configura', { timeout: 30000 }).should('be.visible').click()
+        cy.get('lib-format-numbers').should('be.visible')
+        cy.get('lib-da-link[calldaname$="Configura"]').should('be.visible').click()
+        
 
         Common.canaleFromPopup()
     })

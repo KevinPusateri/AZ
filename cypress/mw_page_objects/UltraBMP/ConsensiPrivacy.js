@@ -16,7 +16,7 @@ class ConsensiPrivacy {
     /**
      * Attende il caricamento della pagina Consensi e Privacy
      */
-     static caricamentoPagina() {
+    static caricamentoPagina() {
         cy.log('***** CARICAMENTO PAGINA CONSENSI E PRIVACY *****')
         cy.intercept({
             method: 'GET',
@@ -31,7 +31,8 @@ class ConsensiPrivacy {
      */
     static Avanti() {
         ultraIFrame().within(() => {
-            cy.get('a').contains('Avanti').click()   //avanti
+            cy.get('a').contains('Avanti')
+            .should('be.visible').click()   //avanti
         })
     }
 
@@ -39,7 +40,7 @@ class ConsensiPrivacy {
      * Verifica l'esistenza della sezione
      * * @param {*} sezione
      */
-     static verificaSezione(sezione) {
+    static verificaSezione(sezione) {
         ultraIFrame().within(() => {
             cy.get('div[class="section-title"]').contains(sezione).should('have.length', 1)
         })
@@ -48,16 +49,28 @@ class ConsensiPrivacy {
     /**
      * Visualizza documento
      * * @param {*} documento (è il documento da visualizzare) 
-     */ 
-     static visualizzaDocumento(documento) {
+     */
+    static visualizzaDocumento(documento) {
         ultraIFrame().within(() => {
-            //ultraIFrame0().within(() => {
-            cy.get('div').contains(documento).should('exist')
-              .parent('div[class="documento"]').should('exist')
-              .find('button').contains('VISUALIZZA').should('be.visible').click()
+            //Se impostato su "tutti" visualizza tutti i documenti presenti
+            if (documento == "tutti") {
+                cy.get('div[class="table-documenti"]')
+                    .find('button').each(($button, index, $list) => {
+                        cy.wrap($button).click() //click su Visualizza
+                        cy.get('div[class^="dialog-documento"]').should("exist")
+                            .find('button').contains('Conferma')
+                            .should('be.visible').click() //conferma popup
+                    });
+            }
+            else {
+                //ultraIFrame0().within(() => {
+                cy.get('div').contains(documento).should('exist')
+                    .parent('div[class="documento"]').should('exist')
+                    .find('button').contains('VISUALIZZA').should('be.visible').click()
 
-            cy.get('div[class="dialog"]').should("exist")
-              .find('button').contains('Conferma').should('have.length', 1).click()
+                cy.get('div[class="dialog"]').should("exist")
+                    .find('button').contains('Conferma').should('have.length', 1).click()
+            }
         })
         /*
         ultraIFrame().within(() => {

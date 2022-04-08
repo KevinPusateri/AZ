@@ -370,8 +370,8 @@ class Ultra {
             cy.get('#salvaForm')
                 .find('span').contains('Salva').click()
 
-            cy.get('#warning-switch-solution').should('be.visible') //attende il caricamento del popup 'attenzione'
-            cy.get('button').children('span').contains('Ok').click() //chiude il popup
+            // cy.get('#warning-switch-solution').should('be.visible') //attende il caricamento del popup 'attenzione'
+            // cy.get('button').children('span').contains('Ok').click() //chiude il popup
 
             cy.get('#condividiModal').should('be.visible') //attende il caricamento del popup 'condividi l'offerta'
 
@@ -701,7 +701,7 @@ class Ultra {
             //Attende la comparsa del popup 'Dichiarazioni contraente principale' e clicca su Conferma            
             cy.get('[aria-describedby="PopupDichiarazioni"]', { timeout: 5000 })
                 .should('be.visible') //attende la comparsa del popup
-                .find('button').contains('CONFERMA').click() //conferma
+                .find('button').contains('AVANTI').click() //conferma
         })
     }
 
