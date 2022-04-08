@@ -35,6 +35,26 @@ class CondividiPreventivo {
     //#endregion caricamenti
 
     /**
+     * seleziona la copertina indicata
+     * @param {string} copertina 
+     */
+     static SelezionaCopertina(copertina) {
+        //click sulla copertina
+        ultraIFrame().within(() => {
+            cy.get('footer').contains(copertina)
+                .should('be.visible').click()
+        })
+
+        //verifica che la copertina sia selezionata
+        ultraIFrame().within(() => {
+            cy.get('footer').contains(copertina)
+                .parents('[class^="radio-strip"]').first()
+                .should('have.attr', 'class')
+                .and('match', /selected/)
+        })
+    }
+
+    /**
      * Seleziona tutte le schede
      */
      static SelezionaTutti() {

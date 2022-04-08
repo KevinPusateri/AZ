@@ -11,7 +11,7 @@ const ultraIFrame = () => {
 }
 
 const IFrameAnagrafe = () => {
-    let iframeAnag = cy.get('.popupContent').find('iframe[src^="/Anagrafe"]')
+    let iframeAnag = cy.get('iframe[src^="/Anagrafe"]') //('.popupContent').find
         .its('0.contentDocument').should('exist')
 
     return iframeAnag.its('body').should('not.be.undefined').then(cy.wrap)
@@ -65,7 +65,7 @@ class Vincoli {
 
     /**
      * Seleziona l'ambito da vincolare
-     * @param {string} ambito 
+     * @param {string} ambito
      */
     static SelezionaAmbito(ambito) {
         ultraIFrame().within(() => {
@@ -95,6 +95,7 @@ class Vincoli {
 
     static RicercaBanca(tipoRicerca, ricerca) {
         ultraIFrame().within(() => {
+            cy.wait(1000)
             IFrameAnagrafe().within(() => {
                 cy.get('table[id$="TipoRicerca"]').should('be.visible')
                     .find('input[value="' + tipoRicerca + '"]').click()
@@ -197,5 +198,46 @@ class Vincoli {
                 .should('be.visible').click()
         })
     }
+
+    //#region Gestione Vincoli Ultra
+    /**
+     * Inserisce l'ente vincolatario dalla pagina Gestione Vincoli per Ultra
+     */
+    static ApriPopupEnteVincolatario() {
+        ultraIFrame().within(() => {
+            cy.get('#btnApriPopupAnagEnte')
+                .should('be.visible').click()
+        })
+    }
+
+    /**
+     * ricerca e inserisce il testo direzionale indicato
+     * @param {string} testo titolo del testo da ricercare
+     */
+    static InserisciTestoDirezionaleUltra(testo) {
+        ultraIFrame().within(() => {
+            cy.get('input[value="Testi Direzionali"]')
+                .should('be.visible').click()
+
+            cy.get('#popupTestiLiberi').should('be.visible')
+                .find('.txt-ricerca-testi-liberi').type(testo)
+            cy.get('#popupTestiLiberi')
+                .find('.btn-ricerca-testi-liberi').click()
+
+            cy.get('input[value="Seleziona"]')
+                .should('be.visible').first().click()
+        })
+    }
+
+    /**
+     * click su Conferma nella pagina Gestione Vincoli di Ultra
+     */
+    static ConfermaGestioneVincoli() {
+        ultraIFrame().within(() => {
+            cy.get('#btnConferma')
+                .should('be.visible').click()
+        })
+    }
+    //#endregion Gestione Vincoli Ultra 
 }
 export default Vincoli

@@ -121,8 +121,6 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
-    Ultra.caricamentoUltraHome()
-    //Ultra.selezionaAmbitiHome(ambiti)
     Dashboard.selezionaAmbiti(ambiti)
   })
 

@@ -152,7 +152,8 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Aggiungi Cliente Persona Fisica", () => {
     CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica)
-    CensimentoAnagrafico.attendiCheckAssicurato()
+    //CensimentoAnagrafico.attendiCheckAssicurato()
+    CensimentoAnagrafico.popupCap()
   })
 
   it("Domande integrative Censimento Anagrafico", () => {
@@ -165,6 +166,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     Beneficiari.Avanti()
     DatiIntegrativi.caricamentoPagina()
   })
+  
   it("Dati integrativi", () => {
     DatiIntegrativi.DatiIntegrativi(true, true, true)
     DatiIntegrativi.ClickButtonAvanti()
@@ -195,6 +197,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Adempimenti precontrattuali e Perfezionamento", () => {    
     ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
+    cy.pause()
     ControlliProtocollazione.Incassa()
     Incasso.caricamentoPagina()
   })

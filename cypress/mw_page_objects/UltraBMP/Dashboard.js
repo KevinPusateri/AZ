@@ -61,11 +61,11 @@ class Dashboard {
                 cy.log("Verifica selezione " + ambiti[i])
                 //cy.pause()
                 cy.get('nx-indicator[class="nx-indicator ng-star-inserted"]').should('exist')
-                  //siblings('nx-icon').should('exist')
-                  .siblings('nx-icon[class*="' + ambiti[i] + '"]', { timeout: 10000 })
-                  //.contains(ambiti[i]).should('have.length', 1)
-                  //.siblings('nx-icon[class*=ambiti[i]]')
-                  .invoke('attr', 'class').should('contain', 'selected')
+                    //siblings('nx-icon').should('exist')
+                    .siblings('nx-icon[class*="' + ambiti[i] + '"]', { timeout: 10000 })
+                    //.contains(ambiti[i]).should('have.length', 1)
+                    //.siblings('nx-icon[class*=ambiti[i]]')
+                    .invoke('attr', 'class').should('contain', 'selected')
                 //cy.get('[class="ng-star-inserted"]').contains(ambiti[i]).should('be.visible')
                 //cy.get('div').contains(ambiti[i]).parent().parent().find('nx-icon[class*="selected"]')//[class="counter"]                
             }
@@ -77,10 +77,10 @@ class Dashboard {
       * SelezionaVoceMenuPagAmbiti
       * @param {string} strmenu - testo del menù 
       */
-     static selezionaVoceHeader(strMenu) {
+    static selezionaVoceHeader(strMenu) {
         ultraIFrame().within(() => {
             cy.get('div[id="ambitiHeader"]')
-                .contains(strMenu).should('exist').click() 
+                .contains(strMenu).should('be.visible').click()
             cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
             //cy.wait(2000)
         })
@@ -225,7 +225,7 @@ class Dashboard {
     static modificaSoluzione(ambito, soluzione) {
         ultraIFrame().within(() => {
             cy.get('ultra-dash-ambiti-istanze-table')
-                .find('nx-icon[class*="'+ ambito +'"]')
+                .find('nx-icon[class*="' + ambito + '"]')
                 .parents('tr')
                 .find('nx-dropdown')
                 .click()
@@ -557,19 +557,32 @@ class Dashboard {
                 cy.get('div').contains(casa[i])
                     .parent('div').find('nx-checkbox').click()
             }
+        })
 
+        ultraIFrame().within(() => {
             //clicca sulla textbox per la data di scadenza e
             //chiude il popup per la scelta della data prima di scrivere la data
+            cy.wait(500)
             cy.get('input[placeholder="GG/MM/AAAA"]').focus()
-                .type(scadenza).invoke('val')
+                .type(scadenza, { force: true }).invoke('val')
                 .then(text => cy.log(text))
-
+        })
+        
+        //se presente chiude il popup del calendario
+        ultraIFrame().then(($body) => {
+            if ($body.find('.nx-datepicker-header').is(':visible')) {
+                cy.log("is visible: " +$body.find('.nx-datepicker-header').is(':visible'))
+                $body.find('.nx-datepicker-header').find('[name="close"]').click()
+            }
+        })
+        
+        ultraIFrame().within(() => {
             //conferma il vincolo
             cy.get('span').contains('CONFERMA')
                 .should('be.visible').click()
 
             cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
-        })
+        })     
     }
     //#endregion Vincoli
 }

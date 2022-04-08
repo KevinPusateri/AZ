@@ -101,7 +101,7 @@ describe("FABBRICATO E CONTENUTO", () => {
     it("Vai a preferiti", () => {
         SintesiCliente.VaiPreferiti()
         SintesiCliente.selezionaPrimaAgenzia()
-        Preferiti.caricamentoPreferitiUltra() 
+        Preferiti.caricamentoPreferitiUltra()
     })
 
     it("Seleziona preferiti", () => {
@@ -270,6 +270,7 @@ describe("FABBRICATO E CONTENUTO", () => {
     it("Vincoli - ente vincolatario", () => {
         Vincoli.SelezionaEnteVincolatario("Banca")
         Vincoli.attesaRicerca()
+        cy.pause()
         Vincoli.RicercaBanca("Banca", "Unicredit")
         //Vincoli.updateAppendice()
     })
