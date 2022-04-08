@@ -68,7 +68,7 @@ const writeData = (targa, data) => {
     })
 }
 
-const deleteMissedTarga = (targa) =>{
+const deleteMissedTarga = (targa) => {
     const connection = mysql.createConnection(dbConfig)
     connection.connect((err) => {
         if (err) throw err;
@@ -265,6 +265,9 @@ const retriveInfo = targa => {
                             })
                         })
                     })
+                        .catch(error => {
+                            reject(`${targa}`)
+                        })
                 }
             })
             .catch(error => {
