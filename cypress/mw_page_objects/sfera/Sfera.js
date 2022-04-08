@@ -153,7 +153,7 @@ const Filtri = {
  * Enum Data Input Form
  * @enum {Object}
  */
-const dateInputForm = {
+const DateInputForm = {
     DATA_INIZIO_PERIODO: "dataInizioPeriodo",
     DATA_FINE_PERIODO: "dataFinePeriodo"
 }
@@ -162,7 +162,7 @@ const dateInputForm = {
  * Enum Seleziona Righe
  * @enum {Object}
  */
-const selezionaRighe = {
+const SelezionaRighe = {
     PAGINA_CORRENTE: "Pagina corrente",
     TUTTE_LE_PAGINE: "Tutte le pagine"
 }
@@ -172,11 +172,21 @@ const selezionaRighe = {
  * ? Come si generano nuovi colori ?
  * @enum {Object}
  */
-const colori = {
+const Colori = {
     NESSUN_COLORE: "Nessun colore",
     SIGNIFICATO_ALFA: "significato alfa",
     TEST: "test",
     TEST_3: "test 3"
+}
+
+/**
+ * Enum Portafogli selezionabili in estrazione
+ * @enum {Object}
+ */
+const Portafogli = {
+    MOTOR: "Motor",
+    RAMI_VARI: "RamiVari",
+    VITA: "Vita"
 }
 
 /**
@@ -187,17 +197,27 @@ const colori = {
 class Sfera {
 
     /**
+     * Funzione che ritorna i portafogli disponibili su cui effettauare le estrazioini
+     * @returns {Portafogli} Portafogli disponibili
+     */
+    static get PORTAFOGLI() {
+        return Portafogli
+    }
+
+    /**
      * Funzione che ritorna i colori disponibili per le righe
+     * @returns {Colori} Colori possibili per le righe
      */
     static get COLORI() {
-        return colori
+        return Colori
     }
 
     /**
      * Funzione che ritorna le voci disponibili per la selezione multipla delle righe di tabella
+     * @returns {SelezionaRighe} Righe da selezionare
      */
     static get SELEZIONARIGHE() {
-        return selezionaRighe
+        return SelezionaRighe
     }
 
     /**
@@ -321,6 +341,16 @@ class Sfera {
      */
     static assegnaColore() {
         return cy.contains('Assegna colore').should('exist').and('be.visible')
+    }
+
+    /**
+     * 
+     * @returns Ritorna il dropdown con i portafogli disponibili
+     * @return {Object} dropdown con i portafogli disponibili
+     * @private
+     */
+    static lobPortafogli() {
+        return cy.get('nx-dropdown[formcontrolname="lobSelezionate"]').should('exist').and('be.visible')
     }
     //#endregion
 
@@ -502,7 +532,7 @@ class Sfera {
 
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
-        
+
         cy.contains(clusterMotor).click()
         cy.wait('@aggiornaCaricoTotale', { requestTimeout: 60000 })
 
@@ -515,10 +545,11 @@ class Sfera {
 
     /**
      * Imposta la data di inizio e fine sulla quale effettuare l'estrazione
+     * @param {Boolean} [performEstrai] default false, se true clicca su estrai
      * @param {string} [dataInizio] default undefined; se non specificata, setta automaticamente la data 1 mese prima da oggi
      * @param {string} [dataFine] default undefined; se non specificata, setta automaticamente la data odierna
      */
-    static setDateEstrazione(dataInizio = undefined, dataFine = undefined) {
+    static setDateEstrazione(performEstrai = false, dataInizio = undefined, dataFine = undefined) {
 
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
@@ -531,7 +562,7 @@ class Sfera {
             dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${dateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).type(dataInizio).wait(500)
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).type(dataInizio).wait(500)
 
         //Impostiamo la data di fine estrazione
         if (dataFine === undefined) {
@@ -540,22 +571,22 @@ class Sfera {
             dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${dateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type(dataFine).wait(500).type('{esc}')
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type(dataFine).wait(500).type('{esc}')
 
         //Clicchiamo su estrai
-        this.estrai()
+        if (performEstrai) this.estrai()
 
         cy.wait(2000)
     }
 
     /**
      * Effettua selezione multipla sulle righe della tabella di estrazione
-     * @param {selezionaRighe} righe Tipo di selezione multipla da effettuare
+     * @param {SelezionaRighe} righe Tipo di selezione multipla da effettuare
      */
     static selectRighe(righe) {
         cy.get('.nx-checkbox__control:visible').first().should('be.visible').click().wait(500)
         cy.get('div[class^="all-page"]').should('be.visible').within($div => {
-            if (righe === selezionaRighe.PAGINA_CORRENTE)
+            if (righe === SelezionaRighe.PAGINA_CORRENTE)
                 cy.get('nx-checkbox').first().click()
             else
                 cy.get('nx-checkbox').last().click()
@@ -564,13 +595,13 @@ class Sfera {
 
     /**
      * Assegna un colore alle righe precedentemente selezionate
-     * @param {colori} colore da assegnare
+     * @param {Colori} colore da assegnare
      */
     static assegnaColoreRighe(colore) {
         this.assegnaColore().click()
         cy.get('div[id^="cdk-overlay"]').should('be.visible').within(() => {
             cy.contains(colore).parent().find('nx-radio').click()
-            if (colore !== colori.NESSUN_COLORE)
+            if (colore !== Colori.NESSUN_COLORE)
                 cy.contains(colore).parents('nx-card').find('div:first').invoke('attr', 'style').as('styleColor')
             cy.contains('Procedi').click()
 
@@ -588,7 +619,7 @@ class Sfera {
         //Verifichiamo che la tabella d'estrazione sia presente
         this.tableEstrazione()
 
-        if (colore === colori.NESSUN_COLORE)
+        if (colore === Colori.NESSUN_COLORE)
             cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: white;')
         else
             cy.get('@styleColor').then((color) => {
@@ -596,7 +627,63 @@ class Sfera {
                 cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
             })
         cy.screenshot('Verifica colori', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+    }
 
+    /**
+     * Seleziona i portafogli su cui effettuare l'estrazione
+     * @param {Boolean} performEstrai clicca su Estrai o meno
+     * @param {...any} portafogli da selezionare
+     */
+    static selezionaPortafoglio(performEstrai, ...portafogli) {
+        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+        //Vediamo se espandere il pannello per le date
+        this.espandiPannello()
+        this.lobPortafogli().click().wait(500)
+
+        cy.get('div[class="nx-dropdown__panel nx-dropdown__panel--in-outline-field ng-star-inserted"]').within(() => {
+            //Selezioniamo 
+            for (let i = 0; i < portafogli.length; i++) {
+                cy.get(`div:contains(${portafogli[i]})`).parents('label').then($chekcBoxChecked => {
+
+                    if (!$chekcBoxChecked.find('nx-icon').is(':visible')) {
+                        cy.get(`div:contains(${portafogli[i]})`).parents('nx-dropdown-item').click()
+                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                    }
+                })
+            }
+
+            //Controllo le eventuali lob da de-selezionare
+            if (!portafogli.includes(Portafogli.MOTOR))
+                cy.get(`div:contains(${Portafogli.MOTOR})`).parents('label').then($chekcBoxChecked => {
+
+                    if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
+                        cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
+                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                    }
+                })
+            if (!portafogli.includes(Portafogli.RAMI_VARI))
+                cy.get(`div:contains(${Portafogli.RAMI_VARI})`).parents('label').then($chekcBoxChecked => {
+
+                    if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
+                        cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
+                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                    }
+                })
+            if (!portafogli.includes(Portafogli.VITA))
+                cy.get(`div:contains(${Portafogli.VITA})`).parents('label').then($chekcBoxChecked => {
+
+                    if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
+                        cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
+                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                    }
+                })
+        })
+
+        if (performEstrai)
+            this.estrai()
+        else
+            cy.get('div[class="nx-dropdown__panel nx-dropdown__panel--in-outline-field ng-star-inserted"]').type('{esc}')
     }
 }
 

@@ -83,8 +83,13 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
     })
-    it('Gestione Stampa Senza Incasso per Quietanze Allianz', () => {
 
+    it.only('Gestione Stampa Senza Incasso per Quietanze Allianz', () => {
+        Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
+        Sfera.setDateEstrazione(false,'02/02/2022')
+        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
+        Sfera.estrai()
+        cy.pause()
     })
 
     it('Sfera AZpay', () => {
