@@ -46,14 +46,14 @@ const delayBetweenTests = 2000
 
 //#region  variabili iniziali
 let personaGiuridica = "Sinopoli"
-let personaFisica = PersonaFisica.CarloRossini()
-//let personaFisica = PersonaFisica.GalileoGalilei()
+//let personaFisica = PersonaFisica.CarloRossini()
+let personaFisica = PersonaFisica.GalileoGalilei()
 var frazionamento = "trimestrale"
 var copertura = "extra-professionale"
 var ambiti = [
    ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio
 ]
-let tab = "'Persona 1'"
+let tab = "Persona 1"
 //var frazionamento = "annuale"
 //#endregion variabili iniziali
 
@@ -98,7 +98,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
      
-      cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
+      cy.get('input[name="main-search-input"]').type(personaFisica.codiceFiscale).type('{enter}')
       cy.get('lib-client-item').first()
         .find('.name').trigger('mouseover').click()
     }).then(($body) => {

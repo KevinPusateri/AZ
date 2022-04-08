@@ -58,7 +58,7 @@ var ambiti = [
   ambitiUltraSalute.INVALIDITA_PERMANENTE_INFORTUNIO
 ]
 
-let tabCensmentoAnagrafica = "Persona"
+//let tabCensmentoAnagrafica = "Persona"
 //var frazionamento = "annuale"
 //#endregion variabili iniziali
 
@@ -150,7 +150,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Aggiungi Cliente Persona Fisica", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica,tabCensmentoAnagrafica)
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica)
   })
 
   it("Completa Censimento Anagrafico", () => {
