@@ -16,6 +16,7 @@ import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
 import 'cypress-iframe';
 //#endregion
 
@@ -56,6 +57,8 @@ var ambiti = [
   ambitiUltraSalute.DIARIA_DA_RICOVERO,
   ambitiUltraSalute.INVALIDITA_PERMANENTE_INFORTUNIO
 ]
+
+let tabCensmentoAnagrafica = "Persona"
 //var frazionamento = "annuale"
 //#endregion variabili iniziali
 
@@ -114,7 +117,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Emissione Ultra Salute", () => {
     Ultra.emissioneUltra(ultraRV.SALUTE)
-    Ultra.selezionaPrimaAgenzia()
+    //Ultra.selezionaPrimaAgenzia()
   })
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
@@ -149,7 +152,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Aggiungi Cliente Persona Fisica", () => {
-    Ultra.aggiungiClienteCensimentoAnagrafico(personaFisica)
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica,tabCensmentoAnagrafica)
   })
 
   it("Completa Censimento Anagrafico", () => {

@@ -53,6 +53,7 @@ var copertura = "extra-professionale"
 var ambiti = [
    ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio
 ]
+let tab = "'Persona 1'"
 //var frazionamento = "annuale"
 //#endregion variabili iniziali
 
@@ -148,7 +149,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Aggiungi Cliente Persona Fisica", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica)
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica,tab)
     CensimentoAnagrafico.attendiCheckAssicurato()
   })
 

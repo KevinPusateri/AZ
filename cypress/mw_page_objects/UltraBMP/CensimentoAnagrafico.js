@@ -90,9 +90,9 @@ class CensimentoAnagrafico {
         })
     }
 
-    static aggiungiClienteCensimentoAnagrafico(cliente) {
+    static aggiungiClienteCensimentoAnagrafico(cliente, tab) {
         ultraIFrame().within(() => {
-            cy.get('div').contains('Persona').should('be.visible').click() //tab Persona
+         //   cy.get('div').contains('Persona 1').should('be.visible').click() //tab Persona
 
             cy.get('input[value="CERCA"]').should('be.visible').click() //cerca cliente
 
@@ -120,6 +120,38 @@ class CensimentoAnagrafico {
             //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento  nx-spinner__spin-block
         })
     }
+
+    static aggiungiClienteCensimentoAnagrafico(cliente, tab) {
+        ultraIFrame().within(() => {            
+            cy.get('div').contains('Persona').should('be.visible').click() //tab Persona
+
+            cy.get('input[value="CERCA"]').should('be.visible').click() //cerca cliente
+
+            cy.get('#divPopupAnagrafica', { timeout: 30000 }).should('be.visible') //attende la comparsa popup di ricerca anagrafiche
+            cy.wait(5000)
+            //cy.pause()
+
+            //popup anagrafico
+            ultraIFrameAnagrafica().within(() => {
+                cy.get('#f-cognome').should('be.visible').type(cliente.cognome)
+                cy.get('#f-nome').should('be.visible').type(cliente.nome)
+
+                cy.get('#cerca-pers-forinsert').should('be.visible').click() //avvia ricerca
+                cy.wait(1000)
+                cy.get('td').contains(cliente.codiceFiscale).click()
+                cy.wait(2000)
+            })
+
+            //popup attenzione CAP
+            cy.get('#popupConfermaCambioParamTariffari', { timeout: 15000 })
+                .should('be.visible')
+                .find('button').contains('AGGIORNA')
+                .click()
+
+            //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento  nx-spinner__spin-block
+        })
+    }
+
 
     /**
      * Seleziona un contraente già esistente
