@@ -107,6 +107,7 @@ const VociMenu = {
 const ClusterMotor = {
     DELTA_PREMIO_NEGATIVO: "Delta premio negativo",
     DELTA_PREMIO_POSITIVO: "Delta premio positivo",
+    QUIETANZE_STAMPABILI: "Quietanze Stampabili"
 }
 
 /**
@@ -526,8 +527,9 @@ class Sfera {
     /**
      * Seleziona il cluster motor sul quale effettuare l'estrazione
      * @param {ClusterMotor} clusterMotor tipo di cluster da selezionare
+     * @param {Boolean} [performEstrai] default false, se true clicca su estrai
      */
-    static selezionaCluserMotor(clusterMotor) {
+    static selezionaCluserMotor(clusterMotor, performEstrai = false) {
         cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
 
         //Vediamo se espandere il pannello per le date
@@ -540,7 +542,9 @@ class Sfera {
         cy.contains(clusterMotor).invoke('text').then(clusterMotorText => {
             expect(parseInt(clusterMotorText.match(/\(([^)]+)\)/)[1])).to.be.greaterThan(0)
         })
-        this.estrai()
+        
+        if (performEstrai)
+            this.estrai()
     }
 
     /**
@@ -680,10 +684,10 @@ class Sfera {
                 })
         })
 
+        cy.get('body').click()
+
         if (performEstrai)
             this.estrai()
-        else
-            cy.get('div[class="nx-dropdown__panel nx-dropdown__panel--in-outline-field ng-star-inserted"]').type('{esc}')
     }
 
     /**

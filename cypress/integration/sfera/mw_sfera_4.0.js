@@ -58,9 +58,9 @@ describe('Matrix Web : Sfera 4.0', function () {
 
     it('Verificare Cluster Motor Delta Premio Positivo e Negativo', function () {
         Sfera.setDateEstrazione()
-        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_NEGATIVO)
+        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_NEGATIVO, true)
         Sfera.espandiPannello()
-        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO)
+        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
     })
 
     //! Necessari chiarimenti con Visentin
@@ -84,18 +84,18 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
     })
 
-    it.only('Gestione Stampa Senza Incasso per Quietanze Allianz', () => {
+    it('Gestione Stampa Senza Incasso per Quietanze Motor Allianz', () => {
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-        Sfera.setDateEstrazione(false,'02/02/2022')
+        Sfera.setDateEstrazione(false, '02/02/2022')
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
-        Sfera.estrai()
+        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
         cy.pause()
     })
 
     it('Sfera AZpay', () => {
         Sfera.setDateEstrazione()
         Sfera.selezionaVista('codice azpay')
-        Sfera.gestisciColonne(['Cons. Email Cl','Cod. AZPay'])
+        Sfera.gestisciColonne(['Cons. Email Cl', 'Cod. AZPay'])
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         //! Problema -> Trovare il cliente valido per l'invio azpay
         Sfera.creaAndInviaCodiceAzPay()
