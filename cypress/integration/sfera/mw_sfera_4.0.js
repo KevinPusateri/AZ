@@ -88,6 +88,11 @@ describe('Matrix Web : Sfera 4.0', function () {
     })
 
     it('Sfera AZpay', () => {
-
+        Sfera.setDateEstrazione()
+        Sfera.selezionaVista('codice azpay')
+        Sfera.gestisciColonne(['Cons. Email Cl','Cod. AZPay'])
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        //! Problema -> Trovare il cliente valido per l'invio azpay
+        Sfera.creaAndInviaCodiceAzPay()
     })
 })

@@ -502,7 +502,7 @@ class Sfera {
 
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
-        
+
         cy.contains(clusterMotor).click()
         cy.wait('@aggiornaCaricoTotale', { requestTimeout: 60000 })
 
@@ -596,6 +596,75 @@ class Sfera {
                 cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
             })
         cy.screenshot('Verifica colori', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+    }
+
+    /**
+     * Seleziona la vista 
+     * @param {string} nameVista - nome della Vista
+     */
+    static selezionaVista(nameVista) {
+        // click Seleziona Vista tendina
+        cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+
+        // Click Le mie viste
+        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+            cy.contains('Le mie viste').click()
+        }).then(() => {
+
+            cy.get('div[class="cdk-overlay-pane"]').last()
+                .should('be.visible').within(() => {
+                    cy.get('button').contains(nameVista).click({ force: true })
+                })
+        })
+
+    }
+
+    /**
+     * Verifica se colonne mancanti di aggiungerli nella vista
+     * @param {string} colonna - array colonne 
+     */
+    static gestisciColonne(colonna) {
+
+        cy.get('table').should('be.visible').then(() => {
+            var colonneDaAggiungere = []
+            var colonnePresenti = []
+            // Verifica se le colonne richieste siano già presenti nella tabella
+            cy.get('th[class="nx-header-cell ng-star-inserted"]').find('div[class="table-component-th-name"]').each(($nameColonna) => {
+                colonnePresenti.push($nameColonna.text())
+            }).then(() => {
+                for (let index = 0; index < colonna.length; index++) {
+                    if (!colonnePresenti.includes(colonna[index])) {
+                        colonneDaAggiungere.push(colonna[index])
+                    }
+                }
+                // Se mancanti li aggiungiamo
+                if (colonneDaAggiungere.length > 0) {
+                    cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+                    cy.get('nx-modal-container').should('be.visible').within(() => {
+                        for (let index = 0; index < colonneDaAggiungere.length; index++) {
+                            cy.get('input[type="search"]').clear().type(colonneDaAggiungere[index])
+                            cy.get('span')
+                                .contains(colonneDaAggiungere[index])
+                                .parents('div[class="flex-content center-content all-column-element ng-star-inserted"]').find('nx-icon').click()
+                        }
+                    })
+                    cy.contains('Applica vista').click()
+                }
+            })
+        })
+    }
+
+    static creaAndInviaCodiceAzPay() {
+        //Click tre puntini
+        cy.get('nx-icon[class="ndbx-icon nx-icon--ellipsis-v nx-link__icon nx-icon--auto"]')
+            .should('be.visible')
+            .click().wait(2000)
+
+        cy.get('sfera-az-pay-modal').should('be.visible').click()
+        cy.contains('Crea e invia codici AZPay').click()
+        cy.contains('Procedi').click()
+        cy.pause()
 
     }
 }
