@@ -11,6 +11,7 @@ import menuProvenienza from '../../fixtures/Motor/ProdottoProvenienza.json'
 import LandingRicerca from "../ricerca/LandingRicerca";
 import DettaglioAnagrafica from '../clients/DettaglioAnagrafica';
 import TopBar from '../common/TopBar';
+import LoginPage from '../common/LoginPage';
 
 //#region iFrame
 const matrixFrame = () => {
@@ -453,10 +454,10 @@ class LibriMatricola {
                 cy.log("return " + '@contratto')
             })
         })
+        cy.wait(10000)
 
         // Adempimenti precontrattuali
         matrixFrame().within(() => {
-            cy.wait(2000)
             cy.get('div[role="dialog"]').then(($dialog) => {
                 const dialog = $dialog.find('#Elencodocumentidagestire').is(':visible')
                 if (dialog) {
@@ -490,10 +491,6 @@ class LibriMatricola {
             cy.get('#divPannelloMsgConsegnaDoc').should('be.visible').and('include.text', 'Operazione conclusa')
         })
 
-        // // Torna in Home
-        // matrixFrame().within(() => {
-        //     cy.get('input[value="› Home"]').should('be.visible').click()
-        // })
 
     }
 
@@ -924,7 +921,7 @@ class LibriMatricola {
             // Caricamento Conversione Completato
             cy.get('div[aria-describedby="dialogProgressBarConversione"]').should('be.visible').within(() => {
 
-                cy.get('#result-message', { timeout: 120000 }).should('contain.text', 'Tutti i preventivi selezionati sono stati convertiti')
+                cy.get('#result-message', { timeout: 150000 }).should('contain.text', 'Tutti i preventivi selezionati sono stati convertiti')
                 cy.contains('Chiudi').click().wait(2000)
             })
 
@@ -1347,6 +1344,7 @@ export function InclusioneApplicazione(nomeApplicazione, veicolo, garanzie, cope
     describe("INCLUSIONE APPLICAZIONE: " + nomeApplicazione, function () {
         it('Inclusione Nuova Applicazione', function () {
             cy.fixture('LibriMatricola/LibriMatricola.json').then((data) => {
+                LoginPage.logInMWAdvanced()
                 LandingRicerca.search(data.ClientePGIVA)
                 LandingRicerca.clickFirstResult()
                 SintesiCliente.clickAuto()
@@ -1386,12 +1384,12 @@ export function InclusioneApplicazione(nomeApplicazione, veicolo, garanzie, cope
             LibriMatricola.Avanti()
         })
 
-        it.only("Integrazione", function () {
-            // LibriMatricola.Integrazione(true)
-            // LibriMatricola.inviaRichiestaVPS().then((numPreventivoApp) => {
-            //     cy.log(numPreventivoApp)
-            //     nPreventivoApp = numPreventivoApp
-            // })
+        it("Integrazione", function () {
+            LibriMatricola.Integrazione(true)
+            LibriMatricola.inviaRichiestaVPS().then((numPreventivoApp) => {
+                cy.log(numPreventivoApp)
+                nPreventivoApp = numPreventivoApp
+            })
             TopBar.logOutMW()
             cy.wait(1500)
         })
@@ -1402,25 +1400,9 @@ export function InclusioneApplicazione(nomeApplicazione, veicolo, garanzie, cope
         // })
 
         it.only("Autorizza Preventivo (VPS)", function () {
-            // PageVPS.launchLoginVPS()
-            cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
-
+            PageVPS.launchLoginVPS()
         })
-        it.only("aa", function () {
-            cy.get('body').then(($body) => {
-                var formLoginExist = $body.find('input[name="Ecom_User_ID"]').is(':visible')
-                if (formLoginExist) {
-                    cy.get('table').should('be.visible')
-                    cy.get('[name="Ecom_User_ID"]').clear().type('euvps02')
-                    cy.get('[name="Ecom_Password"]').clear().type('pwdeuvps02')
-                    cy.pause()
-                }
-                cy.get('[value="Conferma"]').click()
-                // cy.reload()
-                // cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
 
-            })
-        })
         it.only("aa", function () {
             cy.reload()
         })

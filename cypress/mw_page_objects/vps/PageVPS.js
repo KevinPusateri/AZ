@@ -15,7 +15,7 @@ class PageVPS {
         // Cypress.config().baseUrl = 'http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx'
 
         // cy.newTabAction('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
-        cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
+        cy.visit('https://amlogin-pp.allianz.it/nidp/idff/sso?id=10&sid=0&option=credential&sid=0&target=https%3A%2F%2Fpp-onlesp.servizi.allianzit%2FLAGBroker%3F%2522http%3A%2F%2Fonline.pp.azi.allianzit%2FAutorDanni%2FVPS%2FVPS.aspx%2522')
         cy.get('body').then(($body) => {
             var formLoginExist = $body.find('input[name="Ecom_User_ID"]').is(':visible')
             if (formLoginExist) {
@@ -23,9 +23,11 @@ class PageVPS {
                 cy.get('[name="Ecom_User_ID"]').type('euvps02')
                 cy.get('[name="Ecom_Password"]').type('pwdeuvps02')
                 cy.pause()
+                cy.get('[value="Conferma"]').click()
 
 
             }
+
         })
 
     }
