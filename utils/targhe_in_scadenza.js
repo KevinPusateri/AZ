@@ -261,7 +261,13 @@ const retriveInfo = targa => {
                                             })
                                         })
                                     })
+                                        .catch(error => {
+                                            reject(`${targa}`)
+                                        })
                                 })
+                                    .catch(error => {
+                                        reject(`${targa}`)
+                                    })
                             })
                         })
                     })
