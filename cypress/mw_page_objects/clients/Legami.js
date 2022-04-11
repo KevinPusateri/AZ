@@ -14,6 +14,8 @@ class Legami {
             .should('be.visible').and('contain.text', 'Gruppo aziendale creato')
         cy.get('nx-modal').find('h4:visible').should('contain.text', 'Aggiunta di un membro al gruppo aziendale')
         cy.get('nx-modal').find('div[class="nx-grid"]').should('be.visible')
+        cy.screenshot('Verifica Gruppo Creato', { clip: { x: 0, y: 0, width: 1920, height: 700 }, overwrite: true })
+
     }
 
     /**
@@ -68,6 +70,8 @@ class Legami {
                                 else {
                                     cy.get('.cdk-overlay-container').find('nx-message-toast')
                                         .should('be.visible').and('contain.text', 'Membro aggiunto al gruppo')
+                                    cy.screenshot('Verifica Membro inserito ' + name, { clip: { x: 0, y: 0, width: 1920, height: 700 }, overwrite: true })
+
                                     resolve(name)
                                 }
 
@@ -95,30 +99,34 @@ class Legami {
         if (check) {
             // CAPOGRUPPO
             cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
-                    cy.get('div[class="member-name"]:first:visible').find('div[class^="data"]').not(':contains("Membro")').then((name) => {
-                        cy.wrap($panel).should('include.text', capogruppo)
-                        expect(name.text().trim()).to.include(capogruppo)
-                    })
+                cy.get('div[class="member-name"]:first:visible').find('div[class^="data"]').not(':contains("Membro")').then((name) => {
+                    cy.wrap($panel).should('include.text', capogruppo)
+                    cy.screenshot('Verifica Capogruppo inserito ' + capogruppo, { clip: { x: 0, y: 0, width: 1920, height: 700 }, overwrite: true })
+                    expect(name.text().trim()).to.include(capogruppo)
                 })
-                // APPARTENENTE
+            })
+            // APPARTENENTE
             cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
                 cy.get('div[class="member-name"]:visible').eq(1).find('nx-link:first:visible').then((name) => {
                     cy.wrap($panel).should('include.text', membro)
+                    cy.screenshot('Verifica Membro inserito ' + membro, { clip: { x: 0, y: 0, width: 1920, height: 700 }, overwrite: true })
                     expect(name.text().trim()).to.include(membro)
                 })
             })
         } else {
             // CAPOGRUPPO
             cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
-                    cy.get('div[class="member-name"]:first').find('nx-link:first:visible').then((name) => {
-                        cy.wrap($panel).should('include.text', capogruppo)
-                        expect(name.text().trim()).to.include(capogruppo)
-                    })
+                cy.get('div[class="member-name"]:first').find('nx-link:first:visible').then((name) => {
+                    cy.wrap($panel).should('include.text', capogruppo)
+                    cy.screenshot('Verifica Capogruppo inserito ' + capogruppo, { clip: { x: 0, y: 0, width: 1920, height: 700 }, overwrite: true })
+                    expect(name.text().trim()).to.include(capogruppo)
                 })
-                // APPARTENTENTE
+            })
+            // APPARTENTENTE
             cy.get('ac-anagrafe-panel').should('be.visible').find('div[class="gruppo-panel"]:first:visible').within(($panel) => {
                 cy.get('div[class="member-name"]:visible').eq(1).find('div[class^="data"]').not(':contains("Membro")').then((name) => {
                     cy.wrap($panel).should('include.text', membro)
+                    cy.screenshot('Verifica Membro inserito ' + membro, { clip: { x: 0, y: 0, width: 1920, height: 700 }, overwrite: true })
                     expect(name.text().trim()).to.include(membro)
                 })
             })
@@ -135,6 +143,8 @@ class Legami {
 
         cy.get('.cdk-overlay-container').find('nx-message-toast')
             .should('be.visible').and('include.text', 'Gruppo aziendale eliminato')
+        cy.screenshot('Verifica Gruppo aziendale eliminato', { clip: { x: 0, y: 0, width: 1920, height: 700 }, overwrite: true })
+
     }
 
     /**
@@ -176,6 +186,7 @@ class Legami {
             cy.wrap($modal).find('span:contains("Aggiungi"):visible').click()
             cy.get('.cdk-overlay-container').find('nx-message-toast')
                 .should('be.visible').and('contain.text', 'Aderente già presente in altro Gruppo Aziendale.')
+            cy.screenshot('Verifica Aderente già presente', { clip: { x: 0, y: 0, width: 1920, height: 700 }, overwrite: true })
             cy.wrap($modal).find('nx-icon[name="close"]:visible').click()
         })
     }
@@ -195,6 +206,7 @@ class Legami {
 
         cy.get('.cdk-overlay-container').find('nx-message-toast')
             .should('be.visible').and('contain.text', 'Membro rimosso dal gruppo')
+        cy.screenshot('Verifica Membro rimosso', { clip: { x: 0, y: 0, width: 1920, height: 700 }, overwrite: true })
         cy.wait(5000)
         cy.get('ac-anagrafe-panel').find('div[class="member-name"]')
             .should('be.visible').then((name) => {
@@ -211,6 +223,7 @@ class Legami {
         cy.get('ac-anagrafe-panel').find('div[class="member-name"]')
             .should('be.visible').then((name) => {
                 expect(name.text()).to.not.include(membro)
+                cy.screenshot('Verifica Membro rimosso da Legami', { clip: { x: 0, y: 0, width: 1920, height: 700 }, overwrite: true })
             })
     }
 
@@ -258,6 +271,7 @@ class Legami {
                             else {
                                 cy.get('.cdk-overlay-container').find('nx-message-toast')
                                     .should('be.visible').and('contain.text', 'E\' stato raggiunto il numero massimo di imprese (3) per Nucleo Aziendale')
+                                cy.screenshot('Verifica numero massimo di imprese(3) raggiunte', { clip: { x: 0, y: 0, width: 1920, height: 700 }, overwrite: true })
                                 cy.get('nx-modal').find('nx-icon[name="close"]:visible').click()
                             }
                         })
