@@ -46,13 +46,14 @@ const delayBetweenTests = 2000
 
 //#region  variabili iniziali
 let personaGiuridica = "Sinopoli"
-let personaFisica = PersonaFisica.CarloRossini()
-//let personaFisica = PersonaFisica.GalileoGalilei()
+//let personaFisica = PersonaFisica.CarloRossini()
+let personaFisica = PersonaFisica.GalileoGalilei()
 var frazionamento = "trimestrale"
 var copertura = "extra-professionale"
 var ambiti = [
    ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio
 ]
+let tab = "Persona 1"
 //var frazionamento = "annuale"
 //#endregion variabili iniziali
 
@@ -97,7 +98,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
      
-      cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
+      cy.get('input[name="main-search-input"]').type(personaFisica.codiceFiscale).type('{enter}')
       cy.get('lib-client-item').first()
         .find('.name').trigger('mouseover').click()
     }).then(($body) => {
@@ -113,14 +114,13 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Emissione Ultra Salute", () => {
     SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
-   // Ultra.selezionaPrimaAgenzia()
+    Ultra.selezionaPrimaAgenzia()
     Dashboard.caricamentoDashboardUltra()
   })
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
     Dashboard.selezionaAmbiti(ambiti)    
-    Dashboard.aggiungiAmbito(ambiti)
-    
+    Dashboard.aggiungiAmbito(ambiti)    
   })
 
 
@@ -130,7 +130,6 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     ConfigurazioneAmbito.selezionaSoluzione("Top")
     ConfigurazioneAmbito.aggiungiGaranzia("Capitale per morte da infortunio")
     ConfigurazioneAmbito.ClickButton("CONFERMA")
-    Dashboard.caricamentoDashboardUltra()
     Dashboard.procediHome()
     DatiQuotazione.CaricamentoPagina()
   })
@@ -148,7 +147,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Aggiungi Cliente Persona Fisica", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica)
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica,tab)
     CensimentoAnagrafico.attendiCheckAssicurato()
   })
 

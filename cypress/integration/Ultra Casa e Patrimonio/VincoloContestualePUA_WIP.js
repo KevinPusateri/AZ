@@ -18,13 +18,19 @@ import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
 import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
 import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
+import Vincoli from "../../mw_page_objects/polizza/Vincoli"
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import CondividiPreventivo from "../../mw_page_objects/UltraBMP/CondividiPreventivo"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
 import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import RecuperoPreventivo from "../../mw_page_objects/UltraBMP/RecuperoPreventivo"
 import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
+
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
+import menuStart from '../../fixtures/Ultra/menuHeaderStart.json'
+import filtroRicercaPreventivo from '../../fixtures/Ultra/filtroRicercaPreventivo.json'
 import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
 import 'cypress-iframe';
 //#endregion
@@ -48,6 +54,9 @@ var casa = ["Casa 1"]
 var frazionamento = "annuale"
 let oggi = Date.now()
 let dataInizio = new Date(oggi)
+var dataOggi = ('0' + dataInizio.getDate()).slice(-2) + '' +
+  ('0' + (dataInizio.getMonth() + 1)).slice(-2) + '' +
+  dataInizio.getFullYear()
 let dataFine = new Date(oggi); dataFine.setFullYear(dataInizio.getFullYear() + 10)
 var scadenza = ('0' + dataFine.getDate()).slice(-2) + '' +
   ('0' + (dataFine.getMonth() + 1)).slice(-2) + '' +
@@ -92,7 +101,7 @@ after(function () {
 
 describe("Vincolo contestuale PUA ", () => {
   it("Accesso Ultra Casa e Patrimonio", () => {
-    cy.log("scadenza: " + scadenza)
+    cy.log("oggi: " + dataOggi)
     TopBar.clickSales()
     BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio')
     //SintesiCliente.selezionaPrimaAgenzia()
@@ -135,11 +144,50 @@ describe("Vincolo contestuale PUA ", () => {
   })
 
   it("Censimento anagrafico", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(cliente)
-    CensimentoAnagrafico.censimentoAnagrafico(cliente.cognomeNome(), cliente.ubicazione())
+    CensimentoAnagrafico.selezionaContraentePF(cliente)
+    CensimentoAnagrafico.censimentoAnagrafico(cliente.cognomeNome(), cliente.ubicazione(), true)
+    CensimentoAnagrafico.apriVincoli()
+    Vincoli.ApriPopupEnteVincolatario()
+    Vincoli.attesaRicerca()
+    Vincoli.RicercaBanca("Banca", "Unicredit")
+    Vincoli.InserisciTestoDirezionaleUltra("Vincolo 1")
+    Vincoli.ConfermaGestioneVincoli()
+    CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
     Ultra.Avanti()
     DatiIntegrativi.caricamentoPagina()
   })
+
+  it("Dati integrativi", () => {
+    DatiIntegrativi.selezionaTuttiNo()
+    DatiIntegrativi.ClickButtonAvanti()
+    // DatiIntegrativi.approfondimentoSituazioneAssicurativa(false)
+    DatiIntegrativi.confermaDichiarazioniContraente()
+    CondividiPreventivo.caricamentoPreventivo()
+  })
+
+  it("Condividi il Preventivo", () => {
+    CondividiPreventivo.SelezionaCopertina("Casa")
+    CondividiPreventivo.Conferma()
+    ConsensiPrivacy.caricamentoPagina()
+  })
+
+  it("Visualizza documenti e prosegui", () => {
+    ConsensiPrivacy.visualizzaDocumento("tutti")
+    ConsensiPrivacy.Avanti()
+  })
+
+  it("Verifica invio mail e ritorno alla homepage", () => {
+    ControlliProtocollazione.verificaInvioMail()
+    ControlliProtocollazione.Home()
+    StartPage.caricamentoPagina()
+  })
+
+  it("Recupero preventivo", () => {
+    StartPage.menuHeader(menuStart.recupero)
+    RecuperoPreventivo.impostaFiltro(filtroRicercaPreventivo.dataDal, dataOggi)
+    RecuperoPreventivo.clickFiltraRisultati()
+  })
+
   it("Fine", () => {
     cy.pause()
   })

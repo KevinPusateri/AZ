@@ -1,0 +1,7 @@
+{
+  "numeroPreventivo": "numero",
+  "nomePreventivo": "nome",
+  "dataDal": "dataInizio",
+  "dataAl": "dataFine",
+  "note": "note"
+}

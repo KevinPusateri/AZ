@@ -17,7 +17,7 @@ class StartPage {
     /**
      * Attende il caricamento della pagina
      */
-     static caricamentoPagina() {
+    static caricamentoPagina() {
         cy.log('***** CARICAMENTO PAGINA INIZIALE ULTRA *****')
         cy.intercept({
             method: 'GET',
@@ -35,7 +35,21 @@ class StartPage {
         })
     }
 
-    //ricerca la professione e seleziona il primo risultato
+    /**
+     * Seleziona una voce dal menù header
+     * @param {fixture} voce [calcola, modifica, recupero]
+     */
+    static menuHeader(voce) {
+        ultraIFrame().within(() => {
+            cy.get('nx-header-navigation').find('a')
+                .contains(voce).click()
+        })
+    }
+
+    /**
+     * ricerca la professione e seleziona il primo risultato
+     * @param {string} professione
+     */
     static startModificaProfessione(professione) {
         ultraIFrame().within(() => {
             cy.get('span').contains('professione').should('be.visible')
@@ -63,34 +77,33 @@ class StartPage {
       * Verifica valori di default
       * @param {JSON} defaultFQ - Valori di default 
       */
-     static VerificaDefaultFQ(defaultFQ) {
+    static VerificaDefaultFQ(defaultFQ) {
         ultraIFrame().within(() => {
-    
+
             //Verifica default tipo abitazione
             cy.log("Verifica default tipo abitazione: " + defaultFQ.TipoAbitazione)
-            cy.get('#nx-dropdown-rendered-0 > span', {timeout: 4000}).invoke('text').then(($text) => {
+            cy.get('#nx-dropdown-rendered-0 > span', { timeout: 4000 }).invoke('text').then(($text) => {
                 cy.log('tipo selezionato: ', $text)
                 expect($text).to.equal(defaultFQ.TipoAbitazione)
-            }) 
+            })
 
             //Verifica default dimensione abitazione
             cy.log("Verifica default dimensione abitazione: " + defaultFQ.MqAbitazione)
-            cy.get('#nx-input-0', {timeout: 4000}).should('have.value', defaultFQ.MqAbitazione)
+            cy.get('#nx-input-0', { timeout: 4000 }).should('have.value', defaultFQ.MqAbitazione)
 
             //Verifica default utilizzo abitazione
             cy.log("Verifica default utilizzo abitazione: " + defaultFQ.UsoAbitazione)
-            cy.get('#nx-dropdown-rendered-1 > span', {timeout: 4000}).invoke('text').then(($text) => {
+            cy.get('#nx-dropdown-rendered-1 > span', { timeout: 4000 }).invoke('text').then(($text) => {
                 cy.log('uso selezionato: ', $text)
                 expect(($text).trim()).to.equal(defaultFQ.UsoAbitazione)
-            }) 
+            })
 
             //Verifica default cap
-            if (defaultFQ.CapAbitazione.length > 0)
-            {
+            if (defaultFQ.CapAbitazione.length > 0) {
                 cy.log("Verifica default cap abitazione: " + defaultFQ.CapAbitazione)
-                cy.get('#nx-input-1', {timeout: 4000}).should('have.value', defaultFQ.CapAbitazione)
+                cy.get('#nx-input-1', { timeout: 4000 }).should('have.value', defaultFQ.CapAbitazione)
             }
-            
+
         })
 
     }

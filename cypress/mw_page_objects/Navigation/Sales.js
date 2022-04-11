@@ -254,13 +254,35 @@ class Sales {
 
             if (radioButton === azioniVeloci.ASSEGNA_COLORE)
                 checkAssegnaColore()
-            else {
+            else if (radioButton === azioniVeloci.CREA_INIZIATIVA) {
+                creaIniziativa()
+            } else {
                 cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
                 cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible')
                 cy.screenshot('Verifica ' + radioButton, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             }
+
+
         }
 
+        function creaIniziativa() {
+            cy.get('nx-dropdown').should('be.visible').click()
+            cy.get('nx-dropdown-item').first().should('be.visible').click()
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('campaignAgent')) {
+                    req.alias = 'gqlCampaignAgent'
+                }
+            })
+            cy.contains('Procedi').click()
+
+            cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 }).then(gqlCampaignAgent => {
+                expect(gqlCampaignAgent.response.statusCode).to.be.eq(200);
+                assert.isNotNull(gqlCampaignAgent.response.body)
+
+                cy.contains('Avanti').click()
+            })
+
+        }
 
         function checkAssegnaColore() {
 

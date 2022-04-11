@@ -250,6 +250,24 @@ class ControlliProtocollazione {
         })
     }
 
+    /**
+     * verifica la comparsa del popup che conferma l'invio dei documenti via mail
+     */
+    static verificaInvioMail() {
+        cy.intercept({
+            method: 'POST',
+            url: '**/InviaMail'
+        }).as('invioMail')
+
+        cy.wait('@invioMail', { requestTimeout: 60000 });
+
+        ultraIFrame().within(() => {
+            cy.get('[class="dialog-small dialog-content"]')
+                .should('be.visible').contains('La documentazione è stata inviata con successo')
+                .next('footer').children('a').click()
+        })
+    }
+
 
     /**
      * Verifica l'opzione selezionata per un determinante campo
@@ -315,7 +333,30 @@ class ControlliProtocollazione {
      * Clicca sul pulsante Home
      */
      static Home() {
-        ultraIFrame().within(() => {
+        var checkFrame0 = false
+
+        ultraIFrame().then(($body) => {
+            //verifica la presenza dell'iframe0 annidato
+            checkFrame0 = $body.find('#iFrameResizer0').is(':visible')
+        }).within(() => {
+            if (checkFrame0) { //se l'iFrame0 è presente, controlla se è necessario inserire l'intermediario
+                ultraIFrame0().within(() => {
+                    cy.get('button').contains('Home', { matchCase: false })
+                    .should('be.visible')
+                    .click()
+                })
+            }
+            else {
+                cy.get('button').contains('Home', { matchCase: false })
+                    .should('be.visible')
+                    .click()
+            }
+
+            cy.get('div[class="dialog"]').should('exist')
+            .find('footer[class="btn-container"]').contains('Conferma').should('be.visible').click()
+        })
+
+        /* ultraIFrame().within(() => {
             ultraIFrame0().within(() => {
                 cy.get('button').contains('Home')
                     .should('be.visible')
@@ -324,7 +365,7 @@ class ControlliProtocollazione {
             //Conferma
             cy.get('div[class="dialog"]').should('exist')
             .find('footer[class="btn-container"]').contains('Conferma').should('be.visible').click()
-        })
+        }) */
     }
 
 }
