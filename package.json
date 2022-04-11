@@ -18,7 +18,7 @@
     "ftp-deploy": "^2.3.8",
     "ibantools": "^3.3.0",
     "minimist": "^1.2.6",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "mysql": "^2.18.1",
     "node-fetch": "^2.6.7",
     "nodemailer": "^6.6.3",
