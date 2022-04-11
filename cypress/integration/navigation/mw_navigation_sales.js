@@ -87,16 +87,16 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
 
-// })
+})
 
 
 describe('Matrix Web : Navigazioni da Sales', function () {
@@ -241,14 +241,15 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
     });
 
+    // TODO:
     // it('Verifica Azioni Veloci: "Crea iniziativa"', function () {
     //     TopBar.clickSales()
     //     Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
     //         if (!checkEnabled)
     //             this.skip()
     //         Sales.selectFirstDay('1')
-    //         Sales.selectAllClusterPreferiti()
-    //         Sales.clickAzioniVeloci('Per tutti i cluster selezionati', 'Verifica possibilità di incremento premio')
+    //         Sales.selectAltriCluster(cluster.MODALITA_PAGAMENTO_DA_REMOTO)
+    //         Sales.clickAzioniVeloci(cluster.PER_TUTTI_I_CLUSTER_SELEZIONATI, azioniVeloci.CREA_INIZIATIVA)
     //         Sales.backToSales()
     //     })
     // });
