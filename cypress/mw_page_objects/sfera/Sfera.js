@@ -210,6 +210,16 @@ const Portafogli = {
  */
 class Sfera {
 
+
+    static aggiungiContoCorrente() {
+        return new Cypress.Promise((resolve, reject) => {
+
+
+
+            resolve(true);
+        });
+    }
+
     /**
      * Funzione che ritorna i portafogli disponibili su cui effettauare le estrazioini
      * @returns {Portafogli} Portafogli disponibili
@@ -564,7 +574,6 @@ class Sfera {
      */
     static selezionaCluserMotor(clusterMotor, performEstrai = false) {
         cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
-
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
 

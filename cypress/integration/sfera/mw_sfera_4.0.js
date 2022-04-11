@@ -5,6 +5,7 @@
 /// <reference types="Cypress" />
 
 //#region import
+import SCUContiCorrenti from "../../mw_page_objects/clients/SCUContiCorrenti"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import Sfera from "../../mw_page_objects/sfera/Sfera"
@@ -48,7 +49,7 @@ after(function () {
 
 describe('Matrix Web : Sfera 4.0', function () {
 
-    it.only('Verificare presenza ed accesso a Delta Premio da menù contestuale e ritorno in Sfera', function () {
+    it('Verificare presenza ed accesso a Delta Premio da menù contestuale e ritorno in Sfera', function () {
         Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
         Sfera.estrai()
@@ -89,11 +90,20 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.setDateEstrazione(false, '02/02/2022')
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
+        SCUContiCorrenti.aggiungiContoCorrente().then((conto) => {
+            cy.log('MERDA DA CONTO')
+          })
+        Sfera.aggiungiContoCorrente().then((conto) => {
+            cy.log(conto)
+            cy.log('MERDA DA SFERA')
+          })
         Sfera.apriVoceMenu(Sfera.VOCIMENU.STAMPA_SENZA_INCASSO).then((polizza) => {
+            cy.log('MERDA DA VOCE')
             //De-Selezioniamo le Stampabili
-            Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, false)
-            Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPATE, true)
-            Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, polizza)
+            cy.pause()
+            // Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, false)
+            // Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPATE, true)
+            // Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, polizza)
         })
     })
 
