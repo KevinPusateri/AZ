@@ -3,6 +3,7 @@
 import TopBar from "../../mw_page_objects/common/TopBar"
 import Sales from "../../mw_page_objects/Navigation/Sales"
 import NGRA2013 from "../../mw_page_objects/motor/NGRA2013"
+import Common from "../../mw_page_objects/common/Common"
 
 //#region Intercept
 const infoUtente = {
@@ -92,6 +93,10 @@ const VociMenu = {
     DELTA_PREMIO: {
         parent: 'Quietanza',
         key: 'Delta premio'
+    },
+    STAMPA_SENZA_INCASSO: {
+        parent: 'Quietanza',
+        key: 'Stampa senza incasso'
     },
     SOSTITUZIONE_RIATTIVAZIONE_AUTO: {
         parent: 'Polizza',
@@ -492,13 +497,12 @@ class Sfera {
     static apriVoceMenu(voce, polizza = null, tipoSostituzioneRiattivazione = null) {
         if (polizza === null)
             this.bodyTableEstrazione().find('tr:first').within(() => {
-                this.threeDotsMenuContestuale().click()
+                this.threeDotsMenuContestuale().click({ force: true })
             })
         else
             this.bodyTableEstrazione().find('tr').contains(polizza).parents('tr').within(() => {
-                this.threeDotsMenuContestuale().click()
+                this.threeDotsMenuContestuale().click({ force: true })
             })
-
 
         //Andiamo a selezionare prima il menu contestuale 'padre'
         this.menuContestualeParent().within(() => {
@@ -509,6 +513,8 @@ class Sfera {
         this.menuContestualeChild().within(() => {
             cy.contains(voce.key).click()
         })
+
+        Common.canaleFromPopup()
 
         //Verifichiamo gli accessi in base al tipo di menu selezionato
         switch (voce) {
@@ -524,6 +530,7 @@ class Sfera {
                 break;
         }
     }
+
     /**
      * Seleziona il cluster motor sul quale effettuare l'estrazione
      * @param {ClusterMotor} clusterMotor tipo di cluster da selezionare
@@ -542,7 +549,7 @@ class Sfera {
         cy.contains(clusterMotor).invoke('text').then(clusterMotorText => {
             expect(parseInt(clusterMotorText.match(/\(([^)]+)\)/)[1])).to.be.greaterThan(0)
         })
-        
+
         if (performEstrai)
             this.estrai()
     }
