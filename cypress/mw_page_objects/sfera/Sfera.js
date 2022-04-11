@@ -4,6 +4,7 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import Sales from "../../mw_page_objects/Navigation/Sales"
 import NGRA2013 from "../../mw_page_objects/motor/NGRA2013"
 import Common from "../../mw_page_objects/common/Common"
+import IncassoDA from "../../mw_page_objects/da/IncassoDA"
 
 //#region Intercept
 const infoUtente = {
@@ -112,7 +113,8 @@ const VociMenu = {
 const ClusterMotor = {
     DELTA_PREMIO_NEGATIVO: "Delta premio negativo",
     DELTA_PREMIO_POSITIVO: "Delta premio positivo",
-    QUIETANZE_STAMPABILI: "Quietanze Stampabili"
+    QUIETANZE_STAMPABILI: "Quietanze Stampabili",
+    QUIETANZE_STAMPATE: "Quietanze Stampate"
 }
 
 /**
@@ -151,6 +153,12 @@ const Filtri = {
         values: {
             VUOTO: "Vuoto",
             AUTO: "AU"
+        }
+    },
+    POLIZZA: {
+        key: "Polizza",
+        values: {
+            VUOTO: "Vuoto"
         }
     }
 }
@@ -493,8 +501,11 @@ class Sfera {
      * @param {VociMenu} voce 
      * @param {number} [polizza] default null, se specificato clicca sul menu contestuale della polizza passata
      * @param {TipoSostituzioneRiattivazione} [tipoSostituzioneRiattivazione] default null, tipo di sostituzione/riattivazione auto da effettuare
+     * 
+     * @returns {String} polizza su cui sono state effettuate le operazioni
      */
     static apriVoceMenu(voce, polizza = null, tipoSostituzioneRiattivazione = null) {
+
         if (polizza === null)
             this.bodyTableEstrazione().find('tr:first').within(() => {
                 this.threeDotsMenuContestuale().click({ force: true })
@@ -515,20 +526,34 @@ class Sfera {
         })
 
         Common.canaleFromPopup()
+        
+        return new Cypress.Promise((resolve, reject) => {
+            //Salviamo la polizza sulla quale effettuiamo le operazioni per poterla utilizzare successivamente
+            let numPolizza = ''
+            //Verifichiamo gli accessi in base al tipo di menu selezionato
+            switch (voce) {
+                case VociMenu.DELTA_PREMIO:
+                    NGRA2013.verificaAccessoRiepilogo()
+                    break;
+                case VociMenu.SOSTITUZIONE_RIATTIVAZIONE_AUTO:
+                    //Scegliamo il Tipo di sostituzione dal popup
+                    this.dropdownSostituzioneRiattivazione().click()
+                    cy.contains(tipoSostituzioneRiattivazione).should('exist').click()
+                    this.procedi().click()
+                    cy.pause()
+                    break;
+                case VociMenu.STAMPA_SENZA_INCASSO:
+                    IncassoDA.accessoIncassoDA()
+                    IncassoDA.clickStampa()
+                    numPolizza = IncassoDA.getNumeroContratto()
+                    IncassoDA.clickCHIUDI()
+                    break;
+            }
 
-        //Verifichiamo gli accessi in base al tipo di menu selezionato
-        switch (voce) {
-            case VociMenu.DELTA_PREMIO:
-                NGRA2013.verificaAccessoRiepilogo()
-                break;
-            case VociMenu.SOSTITUZIONE_RIATTIVAZIONE_AUTO:
-                //Scegliamo il Tipo di sostituzione dal popup
-                this.dropdownSostituzioneRiattivazione().click()
-                cy.contains(tipoSostituzioneRiattivazione).should('exist').click()
-                this.procedi().click()
-                cy.pause()
-                break;
-        }
+            //Verifichiamo il rientro in Sfera
+            this.verificaAccessoSfera()
+            resolve(numPolizza)
+        })
     }
 
     /**

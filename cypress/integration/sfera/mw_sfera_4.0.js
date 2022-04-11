@@ -72,27 +72,32 @@ describe('Matrix Web : Sfera 4.0', function () {
     //     cy.pause()
     // })
 
-    it('Quietanzamento Vista Operativa - Gestisci colora riga : Assegna colore', () => {
+    it('Quietanzamento Vista Operativa - Gestisci colora riga : Assegna colore', function () {
         Sfera.setDateEstrazione()
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.assegnaColoreRighe(Sfera.COLORI.SIGNIFICATO_ALFA)
     })
 
-    it('Quietanzamento Vista Operativa - Gestisci colora riga : Rimuovi colore', () => {
+    it('Quietanzamento Vista Operativa - Gestisci colora riga : Rimuovi colore', function () {
         Sfera.setDateEstrazione()
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
     })
 
-    it('Gestione Stampa Senza Incasso per Quietanze Motor Allianz', () => {
+    it.only('Gestione Stampa Senza Incasso per Quietanze Motor Allianz', function () {
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
         Sfera.setDateEstrazione(false, '02/02/2022')
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
-        cy.pause()
+        Sfera.apriVoceMenu(Sfera.VOCIMENU.STAMPA_SENZA_INCASSO).then((polizza) => {
+            //De-Selezioniamo le Stampabili
+            Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, false)
+            Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPATE, true)
+            Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, polizza)
+        })
     })
 
-    it('Sfera AZpay', () => {
+    it('Sfera AZpay', function () {
         Sfera.setDateEstrazione()
         Sfera.selezionaVista('codice azpay')
         Sfera.gestisciColonne(['Cons. Email Cl', 'Cod. AZPay'])
