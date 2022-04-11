@@ -398,6 +398,7 @@ class Sfera {
         cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
 
         this.bodyTableEstrazione()
+        cy.pause() // DA TOGLIERE
     }
 
     /**

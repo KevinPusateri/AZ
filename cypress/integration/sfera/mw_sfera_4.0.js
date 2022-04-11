@@ -48,7 +48,7 @@ after(function () {
 
 describe('Matrix Web : Sfera 4.0', function () {
 
-    it('Verificare presenza ed accesso a Delta Premio da menù contestuale e ritorno in Sfera', function () {
+    it.only('Verificare presenza ed accesso a Delta Premio da menù contestuale e ritorno in Sfera', function () {
         Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
         Sfera.estrai()
@@ -92,12 +92,21 @@ describe('Matrix Web : Sfera 4.0', function () {
         cy.pause()
     })
 
-    it('Sfera AZpay', () => {
+    // TODO: ATTENDERE LA RISPOSTA DI STEFANO
+    // it('Sfera AZpay', () => {
+    //     Sfera.setDateEstrazione()
+    //     Sfera.selezionaVista('codice azpay')
+    //     Sfera.gestisciColonne(['Cons. Email Cl', 'Cod. AZPay'])
+    //     Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+    //     //! Problema -> Trovare il cliente valido per l'invio azpay
+    //     Sfera.creaAndInviaCodiceAzPay()
+    // })
+
+    it('verificare corretto layout del pannello scontistica su visat delta premio', function () {
         Sfera.setDateEstrazione()
-        Sfera.selezionaVista('codice azpay')
-        Sfera.gestisciColonne(['Cons. Email Cl', 'Cod. AZPay'])
-        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-        //! Problema -> Trovare il cliente valido per l'invio azpay
-        Sfera.creaAndInviaCodiceAzPay()
+        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
+        Sfera.estrai()
+        Sfera.apriVoceMenu(Sfera.VOCIMENU.DELTA_PREMIO)
+        Sfera.verificaAccessoSfera()
     })
 })
