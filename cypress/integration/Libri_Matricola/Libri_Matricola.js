@@ -36,12 +36,12 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 
 before(() => {
-    // expect(Cypress.browser.name).to.contain('firefox')
+    expect(Cypress.browser.name).to.contain('firefox')
 
-    // cy.getUserWinLogin().then(data => {
-    //     cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-    //     LoginPage.logInMWAdvanced()
-    // })
+    cy.getUserWinLogin().then(data => {
+        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+        LoginPage.logInMWAdvanced()
+    })
 })
 
 beforeEach(() => {
@@ -89,9 +89,9 @@ describe("LIBRI MATRICOLA", {
         //! impostare Come primo parametro : 1 caso di test 
         PrevApplicazione(1, 'Auto', Veicoli.Auto_WW745FF(), ['Furto'])
 
-        // PrevApplicazione(2, 'Moto', Veicoli.Moto_MM25896(), [])
+        PrevApplicazione(2, 'Moto', Veicoli.Moto_MM25896(), [])
 
-        // PrevApplicazione(3, 'Auto No RCA', Veicoli.Auto_ZZ841PP(), ['Furto'], false, 4)
+        PrevApplicazione(3, 'Auto No RCA', Veicoli.Auto_ZZ841PP(), ['Furto'], false, 4)
     })
 
     context('CONFERMA PREVENTIVI APPLICAZIONE E CONVERSIONE POLIZZA MADRE', function () {
@@ -172,9 +172,9 @@ describe("LIBRI MATRICOLA", {
     })
 
 
-    context.only('INCLUSIONE APPLICAZIONI', function () {
-        //! impostare Come primo parametro : 1 caso di test 
-        InclusioneApplicazione('Auto', Veicoli.Auto_Applicazione1(), ['Furto'])
-    })
+    // context.only('INCLUSIONE APPLICAZIONI', function () {
+    //     //! impostare Come primo parametro : 1 caso di test 
+    //     InclusioneApplicazione('Auto', Veicoli.Auto_Applicazione1(), ['Furto'])
+    // })
 
 })
