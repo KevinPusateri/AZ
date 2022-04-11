@@ -215,48 +215,52 @@ const retriveInfo = targa => {
                                                     if (err)
                                                         throw err
 
-                                                    let addresses = resultOfEgon.DataWP.DataNormalized[0].String
-                                                    let randomAddress = addresses[Math.floor(Math.random() * addresses.length)]._
+                                                    try {
+                                                        let addresses = resultOfEgon.DataWP.DataNormalized[0].String
+                                                        let randomAddress = addresses[Math.floor(Math.random() * addresses.length)]._
 
-                                                    let toponimo = randomAddress.substring(0, randomAddress.indexOf(' '))
-                                                    let indirizzo = randomAddress.substring(randomAddress.indexOf(' ') + 1)
+                                                        let toponimo = randomAddress.substring(0, randomAddress.indexOf(' '))
+                                                        let indirizzo = randomAddress.substring(randomAddress.indexOf(' ') + 1)
 
-                                                    axios({
-                                                        url: `http://online.azi.allianzit/WebdaniaFES/services/vehicle/${targa}/sivi/detail/0`,
-                                                        method: 'get',
-                                                        timeout: 30000,
-                                                        headers: {
-                                                            'Content-Type': 'application/json',
-                                                        }
-                                                    }).then(detailedSivi => {
+                                                        axios({
+                                                            url: `http://online.azi.allianzit/WebdaniaFES/services/vehicle/${targa}/sivi/detail/0`,
+                                                            method: 'get',
+                                                            timeout: 30000,
+                                                            headers: {
+                                                                'Content-Type': 'application/json',
+                                                            }
+                                                        }).then(detailedSivi => {
+                                                            let currentInfos = {
+                                                                'Targa': targa,
+                                                                'Alimentazione': detailedSivi.data.fuelTypeDescr,
+                                                                'Codice_Fiscale': contractorFiscalCode,
+                                                                'Cognome': respAtrc.data.itemList[0].socialNameSurname,
+                                                                'Nome': respAtrc.data.itemList[0].contractorName,
+                                                                'Data_Nascita': dataNascita,
+                                                                'Provincia': respSivi.data.itemList[0].provRes,
+                                                                'Comune': respSivi.data.itemList[0].municipalName,
+                                                                'Data_Immatricolazione': respSivi.data.itemList[0].registerDate,
+                                                                'Data_Fine_Copertura': respSita.data.itemList[0].coverageEndDate,
+                                                                'Descrizione_Veicolo': respSivi.data.itemList[0].vehicleTypeDescription,
+                                                                'Toponimo': toponimo,
+                                                                'Indirizzo': indirizzo,
+                                                                'Compagnia_Provenienza': respSita.data.itemList[0].companyDescr,
+                                                                'Cl_Prov': respAtrc.data.itemList[0].provenanceClass,
+                                                                'Cl_Ass': respAtrc.data.itemList[0].assignmentClass,
+                                                                'CU_Prov': respAtrc.data.itemList[0].provenanceClassCU,
+                                                                'CU_Ass': respAtrc.data.itemList[0].assignmentClassCU
+                                                            }
 
-                                                        let currentInfos = {
-                                                            'Targa': targa,
-                                                            'Alimentazione': detailedSivi.data.fuelTypeDescr,
-                                                            'Codice_Fiscale': contractorFiscalCode,
-                                                            'Cognome': respAtrc.data.itemList[0].socialNameSurname,
-                                                            'Nome': respAtrc.data.itemList[0].contractorName,
-                                                            'Data_Nascita': dataNascita,
-                                                            'Provincia': respSivi.data.itemList[0].provRes,
-                                                            'Comune': respSivi.data.itemList[0].municipalName,
-                                                            'Data_Immatricolazione': respSivi.data.itemList[0].registerDate,
-                                                            'Data_Fine_Copertura': respSita.data.itemList[0].coverageEndDate,
-                                                            'Descrizione_Veicolo': respSivi.data.itemList[0].vehicleTypeDescription,
-                                                            'Toponimo': toponimo,
-                                                            'Indirizzo': indirizzo,
-                                                            'Compagnia_Provenienza': respSita.data.itemList[0].companyDescr,
-                                                            'Cl_Prov': respAtrc.data.itemList[0].provenanceClass,
-                                                            'Cl_Ass': respAtrc.data.itemList[0].assignmentClass,
-                                                            'CU_Prov': respAtrc.data.itemList[0].provenanceClassCU,
-                                                            'CU_Ass': respAtrc.data.itemList[0].assignmentClassCU
-                                                        }
+                                                            //Aggiungiamo all'array da mandare via mail
+                                                            targheToSend.push(currentInfos)
 
-                                                        //Aggiungiamo all'array da mandare via mail
-                                                        targheToSend.push(currentInfos)
+                                                            //Aggiungiamo
+                                                            resolve(currentInfos)
+                                                        })
 
-                                                        //Aggiungiamo
-                                                        resolve(currentInfos)
-                                                    })
+                                                    } catch (error) {
+                                                        reject(`${targa}`)
+                                                    }
                                                 })
                                             })
                                         })
