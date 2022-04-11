@@ -135,9 +135,9 @@ class LandingRicerca {
             cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
 
             cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
+            cy.screenshot('Ricerca effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         }
 
-        cy.screenshot('Ricerca effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
