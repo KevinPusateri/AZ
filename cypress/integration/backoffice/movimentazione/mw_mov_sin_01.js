@@ -79,14 +79,14 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#CRUSCOTTO_tipoPortafoglio','Tutto il portafoglio')
         MovimentazioneSinistriPage.checkListValues_ById('#CRUSCOTTO_tipoPortafoglio')        
        // Verifica data associata all'aggiornamento dati
-       const idAggDate = '#CRUSCOTTO_datiAggiornatiAl'
-       MovimentazioneSinistriPage.checkObjDisabled(idAggDate)
-       MovimentazioneSinistriPage.getPromiseText_ByID(idAggDate).then((dscrpt) => {                
-           cy.log('[it]>> [	Dati Aggiornati al]: '+dscrpt);
-           MovimentazioneSinistriPage.isNotNullOrEmpty(dscrpt)
-            Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dscrpt, ' contain a valid date')
-           //ConsultazioneSinistriPage.containValidDate(dscrpt)
-       });
+        const idAggDate = '#CRUSCOTTO_datiAggiornatiAl'
+        MovimentazioneSinistriPage.checkObjDisabled(idAggDate)
+        MovimentazioneSinistriPage.getPromiseText_ByID(idAggDate).then((dscrpt) => {                
+            cy.log('[it]>> [	Dati Aggiornati al]: '+dscrpt);
+            MovimentazioneSinistriPage.isNotNullOrEmpty(dscrpt)
+                Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dscrpt, ' contain a valid date')
+            //ConsultazioneSinistriPage.containValidDate(dscrpt)
+        });
         cy.wait(2000)        
     });
 
