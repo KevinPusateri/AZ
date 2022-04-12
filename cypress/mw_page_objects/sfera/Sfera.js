@@ -494,6 +494,8 @@ class Sfera {
 
         //Verifichiamo che la tabella d'estrazione sia presente
         this.tableEstrazione()
+
+        cy.wait(2000)
     }
 
     /**
