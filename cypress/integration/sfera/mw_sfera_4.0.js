@@ -123,16 +123,11 @@ describe('Matrix Web : Sfera 4.0', function () {
     // })
 
 
-    it.only('Verifica Estrazione report excel', function () {
-
+    it('Verifica Estrazione report excel', function () {
         Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
         Sfera.estrai()
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-        // cy.fixture('xlsxData').then((data) => {
-        //     json = data.rows
-        //     cy.writeFile('cypress/fixtures/xlsxData.json', { data })
-        // })
         Sfera.estrazioneReportExcel()
     })
 
