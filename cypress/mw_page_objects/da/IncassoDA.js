@@ -71,10 +71,12 @@ class IncassoDA {
      * @returns {String} il numero di contratto 
      */
     static getNumeroContratto() {
-        cy.get('.TitoloItemDivTitle').should('exist').and('be.visible').invoke('text').then((infos) => {
-            //Recuperiamo solo il numero di Contratto
-            let contratto = infos.split(' ')[1]
-            return contratto
+        return new Cypress.Promise((resolve) =>{
+            cy.get('.TitoloItemDivTitle').should('exist').and('be.visible').invoke('text').then((infos) => {
+                //Recuperiamo solo il numero di Cont
+                let contratto = infos.split(' ')[1]
+                resolve(contratto)
+            })
         })
     }
 }
