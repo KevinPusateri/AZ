@@ -22,12 +22,16 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
+
 //#region Before After
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
-        Sfera.accediSferaDaHomePageMW()
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+            Sfera.accediSferaDaHomePageMW()
+        })
     })
 })
 
@@ -92,11 +96,11 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
         SCUContiCorrenti.aggiungiContoCorrente().then((conto) => {
             cy.log('MERDA DA CONTO')
-          })
+        })
         Sfera.aggiungiContoCorrente().then((conto) => {
             cy.log(conto)
             cy.log('MERDA DA SFERA')
-          })
+        })
         Sfera.apriVoceMenu(Sfera.VOCIMENU.STAMPA_SENZA_INCASSO).then((polizza) => {
             cy.log('MERDA DA VOCE')
             //De-Selezioniamo le Stampabili
@@ -117,11 +121,29 @@ describe('Matrix Web : Sfera 4.0', function () {
     //     Sfera.creaAndInviaCodiceAzPay()
     // })
 
-    it('verificare corretto layout del pannello scontistica su visat delta premio', function () {
+    // TODO: ATTENDERE
+    // it('verificare corretto layout del pannello scontistica su visat delta premio', function () {
+    //     Sfera.setDateEstrazione()
+    //     Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
+    //     Sfera.estrai()
+    //     Sfera.apriVoceMenu(Sfera.VOCIMENU.DELTA_PREMIO)
+    //     Sfera.verificaAccessoSfera()
+    // })
+
+
+    it.only('Verifica Estrazione report excel', function () {
+
         Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
         Sfera.estrai()
-        Sfera.apriVoceMenu(Sfera.VOCIMENU.DELTA_PREMIO)
-        Sfera.verificaAccessoSfera()
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        // cy.fixture('xlsxData').then((data) => {
+        //     json = data.rows
+        //     cy.writeFile('cypress/fixtures/xlsxData.json', { data })
+        // })
+        Sfera.estrazioneReportExcel()
     })
+
+
+
 })

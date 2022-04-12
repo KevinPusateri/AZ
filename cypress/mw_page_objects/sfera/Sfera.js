@@ -416,7 +416,6 @@ class Sfera {
         cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
 
         this.bodyTableEstrazione()
-        cy.pause() // DA TOGLIERE
     }
 
     /**
@@ -537,7 +536,7 @@ class Sfera {
         })
 
         Common.canaleFromPopup()
-        
+
         return new Cypress.Promise((resolve, reject) => {
             //Salviamo la polizza sulla quale effettuiamo le operazioni per poterla utilizzare successivamente
             let numPolizza = ''
@@ -800,6 +799,77 @@ class Sfera {
         cy.pause()
 
     }
+
+    /**
+     * Estrazione Excel e verifica dati estratti correttamente
+     */
+    static estrazioneReportExcel() {
+        var currentColumn = [
+            "Info",
+            "Pt.",
+            "Contraente",
+            "Num.\nPolizza",
+            "Scad.",
+            "Inizio\nCopertura",
+            "Evo",
+            "Cod\nAgenzia",
+            "Cod.\nFraz",
+            "Sede",
+            "Fonte",
+            "Ramo",
+            "Premio\nLordo Rata",
+            "Gg.Mo.\n/Fuo.Mo.",
+            "Descrizione\nProdotto",
+            "Decorrenza\nPolizza",
+            "Scadenza\nPolizza",
+            "Vin",
+            "Delta pr.\nNetto RCA",
+            "Delta Premio\nNetto ARD",
+            "Importo Canone",
+            "Ind att.rin",
+            "R.abb",
+            "Coass.",
+            "Val. Extra",
+            "Avv Email",
+            "Nr Avv\nSms",
+            "Avv Pdf",
+            "Targa",
+            "Pag",
+            "FQ\nTot",
+            "Dlt pr Qtz €"
+        ];
+        var rows = []
+        cy.get('tr[class="nx-table-row ng-star-inserted selectedRow"]').each((rowsTable) => {
+            cy.wrap(rowsTable).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($textCell) => {
+                rows.push($textCell.text().trim())
+            })
+        })
+        cy.get('nx-icon[name="arrow-download"]').should('be.visible').click()
+        cy.get('sfera-esporta-pdf').should('be.visible').within(() => {
+            cy.contains('Procedi').click()
+            cy.get('h3').should('include.text', 'Excel esportato con successo')
+            cy.contains('Chiudi').click()
+
+            cy.task('getFolderDownload').then((folderDownload) => {
+                cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
+                    // Verifica Colonne presenti
+                    expect(jsonData[0].data[0]).to.eqls(currentColumn);
+                    for (let index = 0; index < rows.length; index++) {
+                        // Verifica Clienti presenti
+                        expect(jsonData[0].data[index + 1]).to.include(rows[index]);
+                    }
+                });
+            })
+        })
+
+    }
+
+    /**
+     * Verifica Che le colonne siano presenti su excel
+     */
+    static checkReportExcelColumn() {
+    }
+
 }
 
 export default Sfera

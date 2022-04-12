@@ -24,6 +24,7 @@ const fs = require('fs')
 const path = require('path')
 const rimraf = require('../../node_modules/rimraf')
 const unzipper = require('unzipper')
+const xlsx = require('node-xlsx').default
 
 //#region Support Functions
 const getMostRecentFile = (dir) => {
@@ -404,8 +405,29 @@ module.exports = (on, config) => {
     })
 
     on("task", {
+        getFolderDownload() {
+           let folderDownload = process.cwd()+"\\cypress\\downloads"
+            return folderDownload
+        }
+    })
+
+    on("task", {
         sendMail({ currentSubject, currentMessage, additionalEmail }) {
             return sendEmail(currentSubject, currentMessage, additionalEmail)
+        }
+    })
+
+
+    on("task", {
+        parseXlsx({ filePath }) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const jsonData = xlsx.parse(fs.readFileSync(filePath))
+                    resolve(jsonData);
+                } catch (e) {
+                    reject(e)
+                }
+            })
         }
     })
 
