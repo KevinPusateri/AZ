@@ -89,25 +89,17 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
     })
 
-    it.only('Gestione Stampa Senza Incasso per Quietanze Motor Allianz', function () {
+    it('Effettua Stampa Senza Incasso per Quietanze Motor Allianz', function () {
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-        Sfera.setDateEstrazione(false, '02/02/2022')
+        Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
-        SCUContiCorrenti.aggiungiContoCorrente().then((conto) => {
-            cy.log('MERDA DA CONTO')
-        })
-        Sfera.aggiungiContoCorrente().then((conto) => {
-            cy.log(conto)
-            cy.log('MERDA DA SFERA')
-        })
         Sfera.apriVoceMenu(Sfera.VOCIMENU.STAMPA_SENZA_INCASSO).then((polizza) => {
-            cy.log('MERDA DA VOCE')
+            cy.log(`Stampa Senza Incasso effettuata su contratto ${polizza}`)
             //De-Selezioniamo le Stampabili
-            cy.pause()
-            // Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, false)
-            // Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPATE, true)
-            // Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, polizza)
+            Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, false)
+            Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPATE, true)
+            Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, polizza)
         })
     })
 

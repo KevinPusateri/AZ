@@ -210,16 +210,6 @@ const Portafogli = {
  */
 class Sfera {
 
-
-    static aggiungiContoCorrente() {
-        return new Cypress.Promise((resolve, reject) => {
-
-
-
-            resolve(true);
-        });
-    }
-
     /**
      * Funzione che ritorna i portafogli disponibili su cui effettauare le estrazioini
      * @returns {Portafogli} Portafogli disponibili
@@ -512,32 +502,31 @@ class Sfera {
      * @param {number} [polizza] default null, se specificato clicca sul menu contestuale della polizza passata
      * @param {TipoSostituzioneRiattivazione} [tipoSostituzioneRiattivazione] default null, tipo di sostituzione/riattivazione auto da effettuare
      * 
-     * @returns {String} polizza su cui sono state effettuate le operazioni
+     * @returns {Promise} polizza su cui sono state effettuate le operazioni
      */
     static apriVoceMenu(voce, polizza = null, tipoSostituzioneRiattivazione = null) {
+        return new Cypress.Promise(resolve => {
+            if (polizza === null)
+                this.bodyTableEstrazione().find('tr:first').within(() => {
+                    this.threeDotsMenuContestuale().click({ force: true })
+                })
+            else
+                this.bodyTableEstrazione().find('tr').contains(polizza).parents('tr').within(() => {
+                    this.threeDotsMenuContestuale().click({ force: true })
+                })
 
-        if (polizza === null)
-            this.bodyTableEstrazione().find('tr:first').within(() => {
-                this.threeDotsMenuContestuale().click({ force: true })
+            //Andiamo a selezionare prima il menu contestuale 'padre'
+            this.menuContestualeParent().within(() => {
+                cy.contains(voce.parent).should('exist').and('be.visible').click()
             })
-        else
-            this.bodyTableEstrazione().find('tr').contains(polizza).parents('tr').within(() => {
-                this.threeDotsMenuContestuale().click({ force: true })
+
+            //Andiamo a selezionare il menu contestuale 'figlio'
+            this.menuContestualeChild().within(() => {
+                cy.contains(voce.key).click()
             })
 
-        //Andiamo a selezionare prima il menu contestuale 'padre'
-        this.menuContestualeParent().within(() => {
-            cy.contains(voce.parent).should('exist').and('be.visible').click()
-        })
+            Common.canaleFromPopup()
 
-        //Andiamo a selezionare il menu contestuale 'figlio'
-        this.menuContestualeChild().within(() => {
-            cy.contains(voce.key).click()
-        })
-
-        Common.canaleFromPopup()
-
-        return new Cypress.Promise((resolve, reject) => {
             //Salviamo la polizza sulla quale effettuiamo le operazioni per poterla utilizzare successivamente
             let numPolizza = ''
             //Verifichiamo gli accessi in base al tipo di menu selezionato
@@ -555,14 +544,15 @@ class Sfera {
                 case VociMenu.STAMPA_SENZA_INCASSO:
                     IncassoDA.accessoIncassoDA()
                     IncassoDA.clickStampa()
-                    numPolizza = IncassoDA.getNumeroContratto()
-                    IncassoDA.clickCHIUDI()
+                    IncassoDA.getNumeroContratto().then(numContratto => {
+                        numPolizza = numContratto
+                        IncassoDA.clickCHIUDI()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                        resolve(numPolizza)
+                    })
                     break;
             }
-
-            //Verifichiamo il rientro in Sfera
-            this.verificaAccessoSfera()
-            resolve(numPolizza)
         })
     }
 
