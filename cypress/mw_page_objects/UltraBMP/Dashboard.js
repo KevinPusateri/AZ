@@ -439,7 +439,7 @@ class Dashboard {
     static procediHome() {
         ultraIFrame().within(() => {
             cy.get('[id="dashTable"]').should('be.visible')
-            cy.get('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
+            cy.get('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click().wait(500)
         })
     }
 

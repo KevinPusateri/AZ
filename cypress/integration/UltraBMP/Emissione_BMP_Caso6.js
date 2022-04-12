@@ -168,14 +168,14 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
         ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
         ConfigurazioneAmbito.ModificaValoriCasa(daModificareFabbricato, modificheFabbricato)
         ConfigurazioneAmbito.ClickButton("CONFERMA")
-        Dashboard.caricamentoDashboardUltra()    
+        //Dashboard.caricamentoDashboardUltra()    
     })
 
     it("Configurazione Animali Domestici", () => {
         ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[2])
         ConfigurazioneAmbito.ModificaValoriAnimaleDomestico(daModificareAnimale, modificheAnimale)
         ConfigurazioneAmbito.ClickButton("CONFERMA")
-        Dashboard.caricamentoDashboardUltra()   
+        //Dashboard.caricamentoDashboardUltra()   
     })
 
     it("Seleziona frazionamento", ()=>{

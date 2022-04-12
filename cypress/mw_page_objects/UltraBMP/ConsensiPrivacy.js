@@ -79,7 +79,7 @@ class ConsensiPrivacy {
      */ 
      static VerificaInvioMail() {
         cy.wait(10000)
-        cy.pause()
+        //cy.pause()
         ultraIFrame().within(() => {
             cy.get('div[class="dialog-small dialog-content"]').should('exist')
               .find('main').contains("La documentazione è stata inviata con successo all’indirizzo:").should('exist')

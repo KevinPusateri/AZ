@@ -1032,7 +1032,18 @@ class Portafoglio {
     static visualizzaLista() {
         cy.get('app-wallet-list-toggle-button').should('be.visible').find('div[class^="icon"]').then(($iconList) => {
             if ($iconList.hasClass('icon'))
+            {
                 cy.get('app-wallet-list-toggle-button').find('nx-icon').click()
+
+                cy.intercept('POST', '**/graphql', (req) => {
+                    if (req.body.operationName.includes('saveContractModalView')) {
+                        req.alias = 'gqlModalView'
+                    }
+                })
+                //cy.contains('DETTAGLIO ANAGRAFICA').click()
+        
+                cy.wait('@gqlModalView', { requestTimeout: 30000 })
+            }
         })
     }
 
@@ -1093,7 +1104,7 @@ class Portafoglio {
     }
 
     /**
-     * Verifica che il pireventivo specificato sia presente su "Preventivi"
+     * Verifica che il preventivo specificato sia presente su "Preventivi"
      * @param {string} numberPreventivo : numero di preventivo 
      */
     static checkPreventivoIsPresentOnPreventivi(numberPreventivo) {
@@ -1102,6 +1113,50 @@ class Portafoglio {
         cy.get('table[class="nx-table contracts-table ng-star-inserted"]').should('exist')
             .find('tbody').should('exist')
             .find('td').contains(numberPreventivo).should('have.length', 1)
+    }
+
+    /**
+     * Seleziona Gestione dal menù tre puntini del preventivo specificato
+     * @param {string} numberPreventivo : numero di preventivo 
+     */
+     static clickGestionePreventivo(numPrev) {
+        Portafoglio.visualizzaLista()
+        cy.wait(5000)
+        //cy.pause()
+        cy.get('table[class="nx-table contracts-table ng-star-inserted"]').should('exist')
+          .find('span').contains(numPrev).should('have.length', 1).wait(500)
+          .click()
+
+        //cy.pause()
+
+
+        /*
+          .parents('tr').should('have.length', 1)
+          .find('nx-icon[name="ellipsis-h"]').should('have.length', 1).wait(10000)
+          .click({force: true}).wait(2000)
+          //.parents('div[class="context-container"]').should('exist')
+          //.scrollIntoView().click()
+        cy.get('div[class="cdk-overlay-pane"]').should('exist')
+          .find('button[ngclass="context-link"]').contains('Gestione').should('exist').click()
+        //cy.get('button[ngclass="context-link"]').contains('Gestione').should('exist').click()
+        */
+
+
+        //Aspetta caricamento pagina Cruscotto Preventivi
+        cy.log('***** CARICAMENTO PAGINA CRUSCOTTO PREVENTIVI *****')
+        cy.intercept({
+            method: 'POST',
+            url: '**/Danni/CruscottoPreventivi_AD/**'
+        }).as('cruscottoPreventivi')
+        cy.wait('@cruscottoPreventivi', { requestTimeout: 60000 });
+        
+        // Seleziona pulsante di Modifica Preventivo
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.get('div[id="contenitore-dettagli"]').should('exist')
+              .find('input[value="› Modifica Preventivo"]').should('be.enabled').click()
+        })
+        
     }
     
 }
