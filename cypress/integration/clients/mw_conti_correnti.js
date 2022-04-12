@@ -42,28 +42,32 @@ var contoCorrente = {
 let urlClient
 //#region Before After
 before(() => {
-  cy.getUserWinLogin().then(data => {
-    cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-    LoginPage.logInMWAdvanced()
-  })
+  cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+    cy.log(folderToDelete + ' rimossa!')
+    cy.getUserWinLogin().then(data => {
+      cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+      LoginPage.logInMWAdvanced()
+    })
 
-  cy.fixture('iban.json').then((data) => {
-    var indexScelta = Math.floor(Math.random() * data.iban.length);
-    contoCorrente.iban = data.iban[indexScelta]
-  })
-  cy.fixture('vat_codFisc.json').then((data) => {
-    var indexScelta = Math.floor(Math.random() * data.codFisc.length);
-    contoCorrente.vat = data.codFisc[indexScelta]
-  })
+    cy.fixture('iban.json').then((data) => {
+      var indexScelta = Math.floor(Math.random() * data.iban.length);
+      contoCorrente.iban = data.iban[indexScelta]
+    })
+    cy.fixture('vat_codFisc.json').then((data) => {
+      var indexScelta = Math.floor(Math.random() * data.codFisc.length);
+      contoCorrente.vat = data.codFisc[indexScelta]
+    })
 
 
-  LandingRicerca.searchRandomClient(true, "PF", "E")
-  LandingRicerca.clickRandomResult()
-  SintesiCliente.retriveUrl().then(currentUrl => {
-    urlClient = currentUrl
-  })
-  SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-    client = currentClient
+    LandingRicerca.searchRandomClient(true, "PF", "E")
+    LandingRicerca.clickRandomResult()
+    SintesiCliente.retriveUrl().then(currentUrl => {
+      urlClient = currentUrl
+    })
+    SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+      client = currentClient
+    })
+
   })
 })
 
@@ -86,7 +90,7 @@ after(function () {
 var contoModificato
 describe('Matrix Web : Conti Correnti', function () {
 
-  it('Verifica Aggiungi Conto corrente', function () {
+  it.only('Verifica Aggiungi Conto corrente', function () {
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Conti correnti')
     SCUContiCorrenti.aggiungiContoCorrente(contoCorrente, client).then((conto) => {
@@ -106,7 +110,7 @@ describe('Matrix Web : Conti Correnti', function () {
   it('Verifica Modifica Conto corrente', function () {
     SCUContiCorrenti.modificaConto(contoCorrente).then((newConto) => {
       contoModificato = newConto
-      TopBar.search(client.name) 
+      TopBar.search(client.name)
       LandingRicerca.clickClientePF(client.name)
       DettaglioAnagrafica.clickTabDettaglioAnagrafica()
       DettaglioAnagrafica.clickSubTab('Conti correnti')

@@ -746,7 +746,7 @@ class Sfera {
 
     /**
      * Verifica se colonne mancanti di aggiungerli nella vista
-     * @param {string} colonna - array colonne 
+     * @param {Object} colonna - array colonne 
      */
     static gestisciColonne(colonna) {
 
@@ -856,12 +856,102 @@ class Sfera {
 
     }
 
-    /**
-     * Verifica Che le colonne siano presenti su excel
-     */
-    static checkReportExcelColumn() {
+    static checkColonnaPresente(colonna) {
+        cy.get('div[class="table-component-th-name"]').should('include.text', colonna)
+    }
+    static checkColonnaAssente(colonna) {
+        cy.get('div[class="table-component-th-name"]').should('not.include.text', colonna)
     }
 
+    /**
+     * Verifica drag & Drop Di una colonna in prima posizione
+     * @param {string} colonna - nome della colonna
+     */
+    static dragDropColonna(colonna) {
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container:visible').should('be.visible').within(() => {
+                cy.wait(5000)
+                // const dataTransfer = new DataTransfer();
+                cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').should('be.visible').within(() => {
+                    cy.contains(colonna)
+                        .parents('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
+                        .within(() => {
+                            cy.get('nx-icon:first').as('column')
+                        })
+                })
+                cy.get('@column').move({ deltaX: 50, deltaY: 50 })
+                // .trigger('dragstart', {
+                //     dataTransfer
+                // })
+
+                // cy.get('div[class="cdk-drop-list elements ng-star-inserted]').trigger('drop', {
+                //     dataTransfer
+                // })
+
+                // cy.get('')
+            })
+        })
+    }
+
+    /**
+     * Verifica la colonna eliminata
+     * @param {string} colonna - nome della colonna
+     */    
+    static eliminaColonna(colonna) {
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container:visible').should('be.visible').within(() => {
+                cy.wait(5000)
+                cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').should('be.visible').within(() => {
+                    cy.contains(colonna)
+                        .parents('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
+                        .within(() => {
+                            cy.get('nx-icon[name="minus-circle"]').click()
+                        })
+                })
+                cy.contains('Applica vista').click()
+            })
+        })
+    }
+
+    /**
+     * Verifica il Blocco della Colonna
+     * @param {string} colonna - nome della colonna
+     */
+    static bloccaColonna(colonna) {
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                cy.wait(5000)
+                cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').should('be.visible').within(() => {
+                    cy.contains(colonna)
+                        .parents('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
+                        .within(() => {
+                            cy.get('nx-icon[name="lock-unlock"]').click()
+                        })
+                })
+                cy.contains('Applica vista').click()
+            })
+
+            cy.get('th[class="thSticky col-sticky-shadow col-sticky-1 nx-header-cell ng-star-inserted"]').should('include.text',colonna)
+        })
+    }
+
+    static salvaVistaPersonalizzata(){
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                cy.contains('Applica e salva vista').click()
+            })
+        })
+
+        cy.get('nx-modal-container').should('be.visible').within(()=>{
+            cy.contains('Nuova vista').click()
+            cy.get('input[placeholder="Inserisci il nome della vista"]').should('be.visible').type('Automatici')
+            cy.contains('Salva').click()
+        })
+    }
 }
 
 export default Sfera

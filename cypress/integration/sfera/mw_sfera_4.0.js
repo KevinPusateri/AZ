@@ -39,16 +39,16 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
 
-})
+// })
 //#endregion Before After
 
 describe('Matrix Web : Sfera 4.0', function () {
@@ -131,6 +131,21 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.estrazioneReportExcel()
     })
 
+    context('Verifica Rotella Gestione Colonne', () => {
+        
+    it('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
+        Sfera.setDateEstrazione()
+        Sfera.estrai()
+        Sfera.gestisciColonne(['Cod. AZPay'])
+        Sfera.checkColonnaPresente('Cod. AZPay')
+        Sfera.bloccaColonna('Cod. AZPay')
+        // Sfera.dragDropColonna('Cod. AZPay')
+        Sfera.eliminaColonna('Cod. AZPay')
+        Sfera.checkColonnaAssente('Cod. AZPay')
+        Sfera.salvaVistaPersonalizzata()
+    })
+
+});
 
 
 })
