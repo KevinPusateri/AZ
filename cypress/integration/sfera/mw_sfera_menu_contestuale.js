@@ -49,148 +49,38 @@ after(function () {
 describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
     context('Motor > Menu Quietanza', () => {
 
-        it.only('Estrazione Quietanze Motor Da Lavorare (In mora)', () => {
+        it('Estrazione Quietanze Motor Da Lavorare (In mora)', () => {
             Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
             Sfera.setDateEstrazione()
             Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
             Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.IN_MORA, true)
         })
 
-        it.only('Incasso', function () {
+        it('Incasso', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, false)
         })
 
         it('Delta premio', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
-        })
-
-        it('Riquietanzamento per clienti valori extra', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
+            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO, false)
         })
 
         it('Riduzione premi > Variazione riduzione premi', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
-        })
-
-        it('Riduzione premi > Consolidamento Riduzione Premi', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
-        })
-
-        it('Generazione avviso', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
+            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.VARIAZIONE_RIDUZIONE_PREMI, false)
         })
 
         it('Stampa senza incasso', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
-        })
-    })
-
-    context('Motor > Menu Quietanza', () => {
-        it('Incasso', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
+            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, false)
         })
 
-        it('Delta premio', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
-        })
-
+        //TODO supporto per trovare modalità estrazione per queste voci affinchè siano utilizzabili
         it('Riquietanzamento per clienti valori extra', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
-        })
-
-        it('Riduzione premi > Variazione riduzione premi', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
         })
 
         it('Riduzione premi > Consolidamento Riduzione Premi', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
         })
 
         it('Generazione avviso', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
         })
 
-        it('Stampa senza incasso', function () {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.estrai()
-            cy.pause()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO)
-            Sfera.verificaAccessoSfera()
-        })
     })
-
 })

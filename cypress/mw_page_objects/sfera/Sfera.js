@@ -468,11 +468,11 @@ class Sfera {
         TopBar.clickSales()
         Sales.clickLinkRapido('Nuovo Sfera')
 
-        cy.wait('@infoUtente', { requestTimeout: 60000 })
-        cy.wait('@agenzieFonti', { requestTimeout: 60000 })
-        cy.wait('@caricaVista', { requestTimeout: 60000 })
-        cy.wait('@aggiornaCaricoTotale', { requestTimeout: 60000 })
-        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+        cy.wait('@infoUtente', { timeout: 60000 })
+        cy.wait('@agenzieFonti', { timeout: 60000 })
+        cy.wait('@caricaVista', { timeout: 60000 })
+        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
     }
 
     /**
@@ -485,11 +485,11 @@ class Sfera {
         cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
         cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
 
-        cy.wait('@infoUtente', { requestTimeout: 60000 })
-        cy.wait('@agenzieFonti', { requestTimeout: 60000 })
-        cy.wait('@caricaVista', { requestTimeout: 60000 })
-        cy.wait('@aggiornaCaricoTotale', { requestTimeout: 60000 })
-        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+        cy.wait('@infoUtente', { timeout: 60000 })
+        cy.wait('@agenzieFonti', { timeout: 60000 })
+        cy.wait('@caricaVista', { timeout: 60000 })
+        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
 
         this.bodyTableEstrazione()
     }
@@ -520,7 +520,7 @@ class Sfera {
             cy.get('input').invoke('attr', 'value').then((isChecked) => {
                 if ((isChecked && !bePresent) || (!isChecked && bePresent)) {
                     cy.get('nx-icon').click()
-                    cy.wait('@aggiornaCaricoTotale', { requestTimeout: 60000 })
+                    cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                 }
             })
         })
@@ -564,7 +564,7 @@ class Sfera {
                 cy.get('span[class="nx-checkbox__control"]:visible').click()
                 cy.intercept(estraiQuietanze).as('estraiQuietanze')
                 cy.contains('Applica').should('be.enabled').click()
-                cy.wait('@estraiQuietanze', { requestTimeout: 120000 })
+                cy.wait('@estraiQuietanze', { timeout: 120000 })
             })
         })
     }
@@ -576,7 +576,7 @@ class Sfera {
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
         cy.contains('Estrai').should('exist').click()
 
-        cy.wait('@estraiQuietanze', { requestTimeout: 120000 })
+        cy.wait('@estraiQuietanze', { timeout: 120000 })
 
         //Verifichiamo che la tabella d'estrazione sia presente
         this.tableEstrazione()
@@ -628,18 +628,43 @@ class Sfera {
             //Verifichiamo gli accessi in base al tipo di menu selezionato
             switch (voce) {
                 case VociMenuQuietanza.INCASSO:
-                    IncassoDA.accessoIncassoDA()
+                    IncassoDA.accessoMezziPagam()
                     cy.wait(2000)
-                    cy.screenshot('Applicativo Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    cy.screenshot('Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
                         //TODO implementare flusso di incasso completo
                     }
-                    IncassoDA.clickCHIUDI()
+                    else
+                        IncassoDA.clickCHIUDI()
                     //Verifichiamo il rientro in Sfera
                     this.verificaAccessoSfera()
                     break;
                 case VociMenuQuietanza.DELTA_PREMIO:
                     NGRA2013.verificaAccessoRiepilogo()
+                    cy.wait(2000)
+                    cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di delta premio
+                    }
+                    else
+                        NGRA2013.home(true)
+                    //Verifichiamo il rientro in Sfera
+                    this.verificaAccessoSfera()
+                    break;
+                case VociMenuQuietanza.VARIAZIONE_RIDUZIONE_PREMI:
+                    IncassoDA.accessoGestioneFlex()
+                    IncassoDA.salvaSimulazione()
+                    cy.wait(200)
+                    cy.screenshot('Variazione Riduzione Premi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di incasso completo
+                    }
+                    else
+                        IncassoDA.clickCHIUDI()
+                    //Verifichiamo il rientro in Sfera
+                    this.verificaAccessoSfera()
+                    break;
+                case VociMenuQuietanza.RIQUIETANZAMENTO:
                     break;
                 case VociMenuPolizza.SOSTITUZIONE_RIATTIVAZIONE_AUTO:
                     //Scegliamo il Tipo di sostituzione dal popup
@@ -649,15 +674,24 @@ class Sfera {
                     cy.pause()
                     break;
                 case VociMenuQuietanza.STAMPA_SENZA_INCASSO:
-                    IncassoDA.accessoIncassoDA()
-                    IncassoDA.clickStampa()
-                    IncassoDA.getNumeroContratto().then(numContratto => {
-                        numPolizza = numContratto
+                    IncassoDA.accessoMezziPagam()
+                    cy.wait(200)
+                    cy.screenshot('Stampa Senza Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        IncassoDA.clickStampa()
+                        IncassoDA.getNumeroContratto().then(numContratto => {
+                            numPolizza = numContratto
+                            IncassoDA.clickCHIUDI()
+                            //Verifichiamo il rientro in Sfera
+                            this.verificaAccessoSfera()
+                            resolve(numPolizza)
+                        })
+                    }
+                    else {
                         IncassoDA.clickCHIUDI()
                         //Verifichiamo il rientro in Sfera
                         this.verificaAccessoSfera()
-                        resolve(numPolizza)
-                    })
+                    }
                     break;
             }
         })
@@ -674,7 +708,7 @@ class Sfera {
         this.espandiPannello()
 
         cy.contains(clusterMotor).click()
-        cy.wait('@aggiornaCaricoTotale', { requestTimeout: 60000 })
+        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
 
         //Verifichiamo che sia valorizzato il numero tra ()
         cy.contains(clusterMotor).invoke('text').then(clusterMotorText => {
@@ -790,7 +824,7 @@ class Sfera {
 
                     if (!$chekcBoxChecked.find('nx-icon').is(':visible')) {
                         cy.get(`div:contains(${portafogli[i]})`).parents('nx-dropdown-item').click()
-                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
             }
@@ -801,7 +835,7 @@ class Sfera {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
                         cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
-                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
             if (!portafogli.includes(Portafogli.RAMI_VARI))
@@ -809,7 +843,7 @@ class Sfera {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
                         cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
-                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
             if (!portafogli.includes(Portafogli.VITA))
@@ -817,7 +851,7 @@ class Sfera {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
                         cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
-                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
         })
