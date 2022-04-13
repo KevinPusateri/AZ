@@ -123,6 +123,7 @@ after(function () {
 describe('Ultra BMP : Emissione BMP Caso7', function () {
 
     it("Ricerca cliente", () => {
+        /*
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(personaFisica.codiceFiscale).type('{enter}')
@@ -137,6 +138,10 @@ describe('Ultra BMP : Emissione BMP Caso7', function () {
                 cy.get('lib-client-item').first().next().click()
             }
         })
+        */
+        TopBar.search(personaFisica.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
         //cy.pause()
     })
 
@@ -296,6 +301,7 @@ describe('Ultra BMP : Emissione BMP Caso7', function () {
 
     it("Apertura sezione Clients", () => {
         // Ricerca anagrafica
+        /*
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
@@ -309,6 +315,10 @@ describe('Ultra BMP : Emissione BMP Caso7', function () {
                 cy.get('lib-client-item').first().next().click()
             }
         })
+        */
+        TopBar.search(personaFisica.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
     })
 
     it("Verifica presenza preventivo in Portafoglio", () => {

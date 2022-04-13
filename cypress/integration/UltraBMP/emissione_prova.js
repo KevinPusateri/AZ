@@ -65,7 +65,7 @@ import { ubicazione } from '../../fixtures//Ultra/BMP_Caso2.json'
 //let personaFisica = PersonaFisica.MassimoRoagna()
 let personaFisica = PersonaFisica.MarioRossini()
 var nContratto = "000"
-var nPreventivo = "123109355"
+var nPreventivo = "123109181"
 var frazionamento = "mensile"
 var arrPath = []
 var arrDoc = []
@@ -386,6 +386,7 @@ describe('Ultra BMP : Emissione BMP Caso2', function() {
 
     it("Apertura sezione Clients", () => {
         // Ricerca anagrafica
+        /*
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
@@ -399,6 +400,10 @@ describe('Ultra BMP : Emissione BMP Caso2', function() {
                 cy.get('lib-client-item').first().next().click()
             }
         })
+        */
+        TopBar.search(personaFisica.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
     })
 
     it("Fine test", () => {
