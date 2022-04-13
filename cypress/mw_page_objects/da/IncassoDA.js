@@ -37,7 +37,9 @@ class IncassoDA {
      * @private
      */
     static chiudi() {
-        return cy.get('input[name*="btnChiudi"]').should('exist').and('be.visible')
+        cy.get('#pnlBarraAvanzamento').should('exist').and('be.visible').within(()=>{
+            return cy.get('input[name*="btnChiudi"]').should('exist').and('be.visible')
+        })
     }
 
     /**
