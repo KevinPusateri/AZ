@@ -1,4 +1,14 @@
 //#region Intercept
+const initMezziPagam = {
+    method: 'POST',
+    url: /InitMezziPagam/
+}
+
+const getLogonUserName = {
+    method: 'POST',
+    url: /GetLogonUserName/
+}
+
 const selectTitolo = {
     method: 'POST',
     url: /SelectTitolo/
@@ -47,7 +57,12 @@ class IncassoDA {
      */
     static accessoIncassoDA() {
         cy.intercept(selectTitolo).as('selectTitolo')
+        cy.intercept(initMezziPagam).as('initMezziPagam')
+        cy.intercept(getLogonUserName).as('getLogonUserName')
+
         cy.wait('@selectTitolo', { requestTimeout: 60000 })
+        cy.wait('@initMezziPagam', { requestTimeout: 60000 })
+        cy.wait('@getLogonUserName', { requestTimeout: 60000 })
     }
 
     /**
