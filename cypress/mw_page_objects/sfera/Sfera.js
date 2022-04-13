@@ -928,12 +928,14 @@ class Sfera {
                     cy.contains(colonna)
                         .parents('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
                         .within(() => {
+                            // click blocca colonna
                             cy.get('nx-icon[name="lock-unlock"]').click()
                         })
                 })
                 cy.contains('Applica vista').click()
             })
 
+            // Verifica il blocco effettuato
             cy.get('th[class="thSticky col-sticky-shadow col-sticky-1 nx-header-cell ng-star-inserted"]').should('include.text',colonna)
         })
     }
