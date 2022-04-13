@@ -388,7 +388,7 @@ class UltraBMP {
         //cy.pause()
         ultraIFrame().within(() => {
             // Verifica data di annullamento
-            UltraBMP.verificaDataAnnullamento()
+            UltraBMP.verificaDataAnnullamento(dataAnnullamento)
             //cy.pause()
             //cy.get('[id="PopupDichiarazioni"]', { timeout: 5000 })
             //    .should('be.visible')

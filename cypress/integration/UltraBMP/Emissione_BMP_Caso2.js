@@ -105,6 +105,7 @@ after(function() {
 describe('Ultra BMP : Emissione BMP Caso2', function() {
 
     it("Ricerca cliente", () => {
+        /*
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(personaFisica.codiceFiscale).type('{enter}')
@@ -119,6 +120,10 @@ describe('Ultra BMP : Emissione BMP Caso2', function() {
                 cy.get('lib-client-item').first().next().click()
             }
         })
+        */
+        TopBar.search(personaFisica.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
     })
 
     it("Emissione Ultra Casa e Patrimonio", () => {
@@ -360,6 +365,7 @@ describe('Ultra BMP : Emissione BMP Caso2', function() {
 
     it("Apertura sezione Clients", () => {
         // Ricerca anagrafica
+        /*
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(personaFisica2.nomeCognome()).type('{enter}')
@@ -373,6 +379,10 @@ describe('Ultra BMP : Emissione BMP Caso2', function() {
                 cy.get('lib-client-item').first().next().click()
             }
         })
+        */
+        TopBar.search(personaFisica2.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica2.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica2.nomeCognome())
     })
 
     it("Fine Test", () => {
@@ -385,9 +395,7 @@ describe('Ultra BMP : Emissione BMP Caso2', function() {
 
 
 
-    ///////////////////
-    ////////////////////
-    ///////////////////
+    
 
     
 

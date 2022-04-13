@@ -178,10 +178,10 @@ class CensimentoAnagrafico {
 
             cy.get('div').contains('Contraente Principale').should('be.visible').click()  //tab Contraente Principale
 
-            cy.get('button').contains('CERCA').should('be.visible').click()  //cerca cliente
+            cy.get('button').contains('CERCA').should('be.visible').click().wait(5000)  //cerca cliente
 
             cy.get('#divPopupAnagrafica', { timeout: 30000 }).should('be.visible')  //attende la comparsa popup di ricerca anagrafiche
-            cy.wait(5000)
+            cy.wait(500)
 
 
             //cy.get('div[id="divPopupAnagrafica"]').should('exist')
@@ -200,7 +200,7 @@ class CensimentoAnagrafico {
                 cy.get('#cerca-pers-forinsert').should('be.visible').click()  //avvia ricerca
                 cy.wait(5000)
                 cy.get('span').contains(cliente.cognomeNome()).click()
-                cy.wait(2000)
+                cy.wait(500)
             })
             //cy.pause()
 
@@ -267,7 +267,7 @@ class CensimentoAnagrafico {
                 .contains('Assicurato associato').should('be.visible')
                 .parent().should('exist')
                 .parent().should('exist')
-                .find('select').select(cliente.cognomeNome())
+                .find('select').first().select(cliente.cognomeNome())
                 .wait(2000)
 
             if (capDifferente) {
@@ -346,16 +346,19 @@ class CensimentoAnagrafico {
                 .clear()
                 .wait(1000)
                 .type(animale)
+                .wait(1000)
 
             cy.get('#lblAnimalemicrochip').should('be.visible')
                 .clear()
                 .wait(1000)
                 .type(microchip)
+                .wait(1000)
 
             cy.get('div')
                 .contains('Proprietario').should('be.visible')
                 .parent()
                 .find('select').select(cliente.cognomeNome())
+                .wait(1000)
 
             if (capDifferente) {
                 //popup attenzione CAP
@@ -363,6 +366,8 @@ class CensimentoAnagrafico {
                     .should('be.visible')
                     .find('button').contains('AGGIORNA')
                     .click()
+                //cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
+                cy.wait(2000)
             }
 
         })

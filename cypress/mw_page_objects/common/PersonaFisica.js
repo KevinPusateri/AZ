@@ -120,5 +120,17 @@ export default class PersonaFisica {
 
         return MarioRossini
     }
+
+    static MartaRocchi() {
+        let MartaRocchi = new PersonaFisica("MARTA", "ROCCHI")
+        MartaRocchi.via = "VIA SAN FELICE"
+        MartaRocchi.numero = "63/2"
+        MartaRocchi.cap = "40122"
+        MartaRocchi.citta = "BOLOGNA"
+        MartaRocchi.provincia = "BO"
+        MartaRocchi.codiceFiscale = "RCCMRT69A65H294Y"
+
+        return MartaRocchi
+    }
 }
 
