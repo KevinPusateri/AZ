@@ -86,21 +86,56 @@ const TipoQuietanze = {
 }
 
 /**
- * Enum Voci Menu
+ * Enum Voci Menu Quietanza
  * @readonly
  * @enum {Object}
  */
-const VociMenu = {
+const VociMenuQuietanza = {
+    INCASSO: {
+        root: 'Quietanza',
+        parent: '',
+        key: 'Incasso'
+    },
     DELTA_PREMIO: {
-        parent: 'Quietanza',
+        root: 'Quietanza',
+        parent: '',
         key: 'Delta premio'
     },
+    RIQUIETANZAMENTO: {
+        root: 'Quietanza',
+        parent: '',
+        key: 'Riquietanzamento per clienti valori extra'
+    },
+    VARIAZIONE_RIDUZIONE_PREMI: {
+        root: 'Quietanza',
+        parent: 'Riduzione premi',
+        key: 'Variazione riduzione premi'
+    },
+    CONSOLIDAMENTO_RIDUZIONE_PREMI: {
+        root: 'Quietanza',
+        parent: 'Riduzione premi',
+        key: 'Consolidamento Riduzione Premi'
+    },
+    GENERAZIONE_AVVISO: {
+        root: 'Quietanza',
+        parent: '',
+        key: 'Generazione avviso'
+    },
     STAMPA_SENZA_INCASSO: {
-        parent: 'Quietanza',
+        root: 'Quietanza',
+        parent: '',
         key: 'Stampa senza incasso'
     },
+}
+
+/**
+ * Enum Voci Menu Polizza
+ * @readonly
+ * @enum {Object}
+ */
+const VociMenuPolizza = {
     SOSTITUZIONE_RIATTIVAZIONE_AUTO: {
-        parent: 'Polizza',
+        parent: '',
         key: 'Sostituzione / Riattivazione auto'
     }
 }
@@ -114,7 +149,8 @@ const ClusterMotor = {
     DELTA_PREMIO_NEGATIVO: "Delta premio negativo",
     DELTA_PREMIO_POSITIVO: "Delta premio positivo",
     QUIETANZE_STAMPABILI: "Quietanze Stampabili",
-    QUIETANZE_STAMPATE: "Quietanze Stampate"
+    QUIETANZE_STAMPATE: "Quietanze Stampate",
+    IN_MORA: "In mora"
 }
 
 /**
@@ -235,11 +271,19 @@ class Sfera {
     }
 
     /**
-     * Funzione che ritorna le voci di menu disponibili su Sfera
-     * @returns {VociMenu} Voci di Menu
+     * Funzione che ritorna le voci di menu Quietanza disponibili su Sfera
+     * @returns {VociMenuQuietanza} Voci di Menu Quietanza
      */
-    static get VOCIMENU() {
-        return VociMenu
+    static get VOCIMENUQUIETANZA() {
+        return VociMenuQuietanza
+    }
+
+    /**
+     * Funzione che ritorna le voci di menu Polizza disponibili su Sfera
+     * @returns {VociMenuPolizza} Voci di Menu Polizza
+     */
+    static get VOCIMENUPOLIZZA() {
+        return VociMenuPolizza
     }
 
     /**
@@ -478,7 +522,7 @@ class Sfera {
                 cy.get('span[class="nx-checkbox__control"]:visible').click()
                 cy.intercept(estraiQuietanze).as('estraiQuietanze')
                 cy.contains('Applica').should('be.enabled').click()
-                cy.wait('@estraiQuietanze', { requestTimeout: 60000 })
+                cy.wait('@estraiQuietanze', { requestTimeout: 120000 })
             })
         })
     }
@@ -490,7 +534,7 @@ class Sfera {
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
         cy.contains('Estrai').should('exist').click()
 
-        cy.wait('@estraiQuietanze', { requestTimeout: 60000 })
+        cy.wait('@estraiQuietanze', { requestTimeout: 120000 })
 
         //Verifichiamo che la tabella d'estrazione sia presente
         this.tableEstrazione()
@@ -500,13 +544,14 @@ class Sfera {
 
     /**
      * Effettua l'accesso al menu contestuale della prima riga o della polizza specificata
-     * @param {VociMenu} voce 
+     * @param {VociMenuQuietanza} voce 
+     * @param {Boolean} [flussoCompleto] default true, se a false effettua solo verifica aggancio applicativo
      * @param {number} [polizza] default null, se specificato clicca sul menu contestuale della polizza passata
      * @param {TipoSostituzioneRiattivazione} [tipoSostituzioneRiattivazione] default null, tipo di sostituzione/riattivazione auto da effettuare
      * 
      * @returns {Promise} polizza su cui sono state effettuate le operazioni
      */
-    static apriVoceMenu(voce, polizza = null, tipoSostituzioneRiattivazione = null) {
+    static apriVoceMenu(voce, flussoCompleto = true, polizza = null, tipoSostituzioneRiattivazione = null) {
         return new Cypress.Promise(resolve => {
             if (polizza === null)
                 this.bodyTableEstrazione().find('tr:first').within(() => {
@@ -517,10 +562,17 @@ class Sfera {
                     this.threeDotsMenuContestuale().click({ force: true })
                 })
 
-            //Andiamo a selezionare prima il menu contestuale 'padre'
+            //Andiamo a selezionare la root (Quietanza,Polizza...)
             this.menuContestualeParent().within(() => {
-                cy.contains(voce.parent).should('exist').and('be.visible').click()
+                cy.contains(voce.root).should('exist').and('be.visible').click()
             })
+
+            //Andiamo a selezionare prima il menu contestuale 'padre' (se presente)
+            if (voce.parent !== '') {
+                this.menuContestualeParent().within(() => {
+                    cy.contains(voce.parent).should('exist').and('be.visible').click()
+                })
+            }
 
             //Andiamo a selezionare il menu contestuale 'figlio'
             this.menuContestualeChild().within(() => {
@@ -533,18 +585,29 @@ class Sfera {
             let numPolizza = ''
             //Verifichiamo gli accessi in base al tipo di menu selezionato
             switch (voce) {
-                case VociMenu.DELTA_PREMIO:
+                case VociMenuQuietanza.INCASSO:
+                    IncassoDA.accessoIncassoDA()
+                    cy.screenshot('Applicativo Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di incasso completo
+                    }
+                    IncassoDA.clickCHIUDI()
+                    //Verifichiamo il rientro in Sfera
+                    this.verificaAccessoSfera()
+                    break;
+                case VociMenuQuietanza.DELTA_PREMIO:
                     NGRA2013.verificaAccessoRiepilogo()
                     break;
-                case VociMenu.SOSTITUZIONE_RIATTIVAZIONE_AUTO:
+                case VociMenuPolizza.SOSTITUZIONE_RIATTIVAZIONE_AUTO:
                     //Scegliamo il Tipo di sostituzione dal popup
                     this.dropdownSostituzioneRiattivazione().click()
                     cy.contains(tipoSostituzioneRiattivazione).should('exist').click()
                     this.procedi().click()
                     cy.pause()
                     break;
-                case VociMenu.STAMPA_SENZA_INCASSO:
+                case VociMenuQuietanza.STAMPA_SENZA_INCASSO:
                     IncassoDA.accessoIncassoDA()
+                    cy.pause()
                     IncassoDA.clickStampa()
                     IncassoDA.getNumeroContratto().then(numContratto => {
                         numPolizza = numContratto
