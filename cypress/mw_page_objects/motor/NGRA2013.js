@@ -21,10 +21,8 @@ class NGRA2013 {
         cy.intercept(riepilogo).as('riepilogo')
         cy.wait('@riepilogo', { requestTimeout: 60000 })
         this.avanti()
-        this.annullaModifiche()
         cy.wait(2000)
         cy.screenshot('Verifica Accesso a Riepilogo NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        this.home(true)
     }
 
     /**
@@ -42,10 +40,9 @@ class NGRA2013 {
     /**
      * Interazione con il pulsante Home
      * @param {boolean} [performeClick] default false, se true effettua click
-     * @private
      */
     static home(performeClick = false) {
-        cy.get('[value="› Home"]').should('exist').and('be.visible')
+        cy.get('[value="› Home"]:visible').should('exist').and('be.visible')
 
         if (performeClick)
         {

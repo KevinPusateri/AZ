@@ -47,13 +47,21 @@ class IncassoDA {
      * @private
      */
     static chiudi() {
-        return cy.get('input[name*="btnChiudi"]').should('exist').and('be.visible')
+        return cy.get('input[name*="btnChiudi"]:visible').should('exist').and('be.visible')
     }
 
     /**
-     * Verifica l'accesso in prima istanza all'applicativo IncassoDA
+     * @returns Ritorna il pulsante '> Salva Simulazione'
+     * @return {Object} pulsante '> Salva Simulazione'
      */
-    static accessoIncassoDA() {
+    static salvaSimulazione() {
+        return cy.get('input[name*="btnSalvaSimulazione"]:visible').should('exist').and('be.visible')
+    }
+
+    /**
+     * Verifica l'accesso in prima istanza all'applicativo IncassoDA/MezziPagam.aspx
+     */
+    static accessoMezziPagam() {
         cy.intercept(selectTitolo).as('selectTitolo')
         cy.intercept(initMezziPagam).as('initMezziPagam')
         cy.intercept(getLogonUserName).as('getLogonUserName')
@@ -61,6 +69,14 @@ class IncassoDA {
         cy.wait('@selectTitolo', { timeout: 60000 })
         cy.wait('@initMezziPagam', { timeout: 60000 })
         cy.wait('@getLogonUserName', { timeout: 60000 })
+    }
+
+    /**
+     * Verifica l'accesso in prima istanza all'applicativo IncassoDA/GestioneFlex.aspx
+     */
+    static accessoGestioneFlex() {
+        cy.intercept(initMezziPagam).as('initMezziPagam')
+        cy.wait('@initMezziPagam', { timeout: 60000 })
     }
 
     /**
@@ -79,6 +95,13 @@ class IncassoDA {
      */
     static clickCHIUDI() {
         this.chiudi().click()
+    }
+
+    /**
+     * Click > Salva Simulazione
+     */
+    static clickSalvaSimulazione() {
+        this.salvaSimulazione().click()
     }
 
     /**
