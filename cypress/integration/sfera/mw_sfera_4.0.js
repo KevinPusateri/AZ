@@ -19,6 +19,12 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
+let options = {
+    retries: {
+        runMode: 0,
+        openMode: 0,
+    }
+}
 //#endregion
 
 //#region Before After
@@ -153,6 +159,12 @@ describe('Matrix Web : Sfera 4.0', function () {
         })
 
     });
+
+
+    it('Verifica Filtro Fonti e Filtro Agenzie Tutte Selezionate', options, function () {
+        Sfera.fontiAllSelezionati()
+        Sfera.agenzieAllSelezionati()
+    })
 
 
 })

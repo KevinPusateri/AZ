@@ -1064,6 +1064,46 @@ class Sfera {
         cy.get('div[class="success-container ng-star-inserted"]').should('be.visible')
 
     }
+
+    /**
+     * Verifica le fonti siano tutte correttamente selezionate
+     */
+    static fontiAllSelezionati() {
+        cy.get('h3').contains('Fonti').click()
+        cy.get('nx-modal-container[role="dialog"]').should('be.visible').within(() => {
+            cy.screenshot('Fonti Selezionate', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.get('div[class="container-list ng-star-inserted"]').within(() => {
+                cy.get('div[class="nx-checkbox__label-text"]').its('length').then((numFonti) => {
+                    cy.get('nx-icon[class="ndbx-icon nx-icon--check nx-icon--auto ng-star-inserted"]').its('length').then((numCheckAttivi) => {
+                        expect(numFonti).to.eql(numCheckAttivi,'Fonti non tutti selezionati')
+                    })
+                })
+            })
+            cy.contains('Annulla').click()
+        })
+    }
+
+
+    /**
+    * Verifica le agenzie siano tutte correttamente selezionate
+    */
+    static agenzieAllSelezionati() {
+        cy.get('h3').contains('Agenzie').click()
+
+        cy.get('nx-modal-container[role="dialog"]').should('be.visible').within(() => {
+            cy.screenshot('Agenzie Selezionate', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.get('div[class="container-list ng-star-inserted"]').within(() => {
+                cy.get('div[class="nx-checkbox__label-text"]')
+                    .its('length').then((numAgenzie) => {
+                        cy.get('nx-icon[class="ndbx-icon nx-icon--check nx-icon--auto ng-star-inserted"]')
+                            .its('length').then((numCheckAttivi) => {
+                                expect(numAgenzie).to.eql(numCheckAttivi)
+                            })
+                    })
+            })
+            cy.contains('Annulla').click()
+        })
+    }
 }
 
 export default Sfera
