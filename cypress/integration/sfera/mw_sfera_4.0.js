@@ -1,5 +1,6 @@
 /**
  * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it>
 */
 
 /// <reference types="Cypress" />
@@ -43,16 +44,16 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
 
-// })
+})
 //#endregion Before After
 
 describe('Matrix Web : Sfera 4.0', function () {
@@ -93,17 +94,13 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
     })
 
-    it.only('Effettua Stampa Senza Incasso per Quietanze Motor Allianz', function () {
+    it('Effettua Stampa Senza Incasso per Quietanze Motor Allianz', function () {
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
         Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
         Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO).then((polizza) => {
             cy.log(`Stampa Senza Incasso effettuata su contratto ${polizza}`)
-            //De-Selezioniamo le Stampabili
-            Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, false)
-            Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPATE, true)
-            Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, polizza)
         })
     })
 
