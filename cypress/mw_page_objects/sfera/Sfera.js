@@ -587,6 +587,7 @@ class Sfera {
             switch (voce) {
                 case VociMenuQuietanza.INCASSO:
                     IncassoDA.accessoIncassoDA()
+                    cy.wait(2000)
                     cy.screenshot('Applicativo Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
                         //TODO implementare flusso di incasso completo

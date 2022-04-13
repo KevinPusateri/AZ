@@ -5,7 +5,6 @@
 /// <reference types="Cypress" />
 
 //#region import
-import SCUContiCorrenti from "../../mw_page_objects/clients/SCUContiCorrenti"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import Sfera from "../../mw_page_objects/sfera/Sfera"
@@ -27,7 +26,6 @@ let options = {
     }
 }
 //#endregion
-
 
 //#region Before After
 before(() => {
@@ -95,7 +93,7 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
     })
 
-    it('Effettua Stampa Senza Incasso per Quietanze Motor Allianz', function () {
+    it.only('Effettua Stampa Senza Incasso per Quietanze Motor Allianz', function () {
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
         Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
