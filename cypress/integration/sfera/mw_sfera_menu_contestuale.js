@@ -49,7 +49,7 @@ after(function () {
 describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
     context('Motor > Menu Quietanza', () => {
 
-        it.only('Estrazione Quietanze Motor Da Lavorare (In mora)', () => {
+        it('Estrazione Quietanze Motor Da Lavorare (In mora)', () => {
             Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
             Sfera.setDateEstrazione()
             Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
@@ -72,8 +72,8 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, false)
         })
 
-        it.only('Riquietanzamento per clienti valori extra', function () {
-            cy.pause()
+        //TODO supporto per trovare modalità estrazione per queste voci affinchè siano utilizzabili
+        it('Riquietanzamento per clienti valori extra', function () {
         })
 
         it('Riduzione premi > Consolidamento Riduzione Premi', function () {
@@ -81,7 +81,6 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
 
         it('Generazione avviso', function () {
         })
-
 
     })
 })
