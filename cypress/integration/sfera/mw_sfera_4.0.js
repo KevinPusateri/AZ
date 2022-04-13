@@ -37,16 +37,16 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
 
-})
+// })
 //#endregion Before After
 
 describe('Matrix Web : Sfera 4.0', function () {
@@ -92,7 +92,7 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
-        Sfera.apriVoceMenu(Sfera.VOCIMENU.STAMPA_SENZA_INCASSO).then((polizza) => {
+        Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO).then((polizza) => {
             cy.log(`Stampa Senza Incasso effettuata su contratto ${polizza}`)
             //De-Selezioniamo le Stampabili
             Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, false)
@@ -143,7 +143,7 @@ describe('Matrix Web : Sfera 4.0', function () {
             // Sfera.salvaVistaPersonalizzata() //! Bug Aperto 
         })
 
-        it.only('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
+        it('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
             Sfera.setDateEstrazione()
             Sfera.estrai()
             Sfera.gestisciColonne(['Cod. AZPay'])

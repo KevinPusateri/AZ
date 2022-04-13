@@ -608,7 +608,6 @@ class Sfera {
                     break;
                 case VociMenuQuietanza.STAMPA_SENZA_INCASSO:
                     IncassoDA.accessoIncassoDA()
-                    cy.pause()
                     IncassoDA.clickStampa()
                     IncassoDA.getNumeroContratto().then(numContratto => {
                         numPolizza = numContratto

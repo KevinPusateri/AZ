@@ -47,9 +47,7 @@ class IncassoDA {
      * @private
      */
     static chiudi() {
-        cy.get('#pnlBarraAvanzamento').should('exist').and('be.visible').within(()=>{
-            return cy.get('input[name*="btnChiudi"]').should('exist').and('be.visible')
-        })
+        return cy.get('input[name*="btnChiudi"]').should('exist').and('be.visible')
     }
 
     /**
@@ -60,9 +58,9 @@ class IncassoDA {
         cy.intercept(initMezziPagam).as('initMezziPagam')
         cy.intercept(getLogonUserName).as('getLogonUserName')
 
-        cy.wait('@selectTitolo', { requestTimeout: 60000 })
-        cy.wait('@initMezziPagam', { requestTimeout: 60000 })
-        cy.wait('@getLogonUserName', { requestTimeout: 60000 })
+        cy.wait('@selectTitolo', { timeout: 60000 })
+        cy.wait('@initMezziPagam', { timeout: 60000 })
+        cy.wait('@getLogonUserName', { timeout: 60000 })
     }
 
     /**
@@ -72,8 +70,8 @@ class IncassoDA {
         cy.intercept(incassa).as('incassa')
         cy.intercept(getPostIncassoData).as('getPostIncassoData')
         this.stampa().click()
-        cy.wait('@incassa', { requestTimeout: 60000 })
-        cy.wait('@getPostIncassoData', { requestTimeout: 60000 })
+        cy.wait('@incassa', { timeout: 180000 })
+        cy.wait('@getPostIncassoData', { timeout: 120000 })
     }
 
     /**
@@ -88,7 +86,7 @@ class IncassoDA {
      * @returns {String} il numero di contratto 
      */
     static getNumeroContratto() {
-        return new Cypress.Promise((resolve) =>{
+        return new Cypress.Promise((resolve) => {
             cy.get('.TitoloItemDivTitle').should('exist').and('be.visible').invoke('text').then((infos) => {
                 //Recuperiamo solo il numero di Cont
                 let contratto = infos.split(' ')[1]
