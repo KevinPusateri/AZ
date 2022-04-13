@@ -93,7 +93,7 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
     })
 
-    it.only('Effettua Stampa Senza Incasso per Quietanze Motor Allianz', function () {
+    it('Effettua Stampa Senza Incasso per Quietanze Motor Allianz', function () {
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
         Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
@@ -164,6 +164,13 @@ describe('Matrix Web : Sfera 4.0', function () {
     it('Verifica Filtro Fonti e Filtro Agenzie Tutte Selezionate', options, function () {
         Sfera.fontiAllSelezionati()
         Sfera.agenzieAllSelezionati()
+    })
+
+    it.only('Verifica Dati Complementari', options, function () {
+        // Sfera.setDateEstrazione()
+        Sfera.estrai()
+        Sfera.selectRandomContraente()
+        Sfera.checkDatiComplementari() 
     })
 
 

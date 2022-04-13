@@ -31,6 +31,25 @@ const estraiQuietanze = {
     method: 'POST',
     url: /estraiQuietanze/
 }
+
+const interceptContraenteScheda = () => {
+    cy.intercept({
+        method: 'POST',
+        url: '**/recuperaDatiAnagraficiCliente',
+    }).as('getDatiAnagrafici');
+    cy.intercept({
+        method: 'POST',
+        url: '**/recuperaIniziativeCliente',
+    }).as('getDatiIniziative');
+    cy.intercept({
+        method: 'POST',
+        url: '**/recuperaContrattiCliente',
+    }).as('getContratti');
+    cy.intercept({
+        method: 'POST',
+        url: '**/recuperaFastquoteCliente',
+    }).as('getFastquote');
+}
 //#endregion
 
 /**
@@ -239,6 +258,29 @@ const Portafogli = {
     VITA: "Vita"
 }
 
+/**
+ * Enum Tab su Scheda Dati Complementari Cliente 
+ * @enum {Object}
+ */
+const TabScheda = {
+    PANORAMICA: "Panoramica",
+    NOTE: "Note",
+    DETTAGLIO_PREMI: "Dettaglio Premi",
+    INIZIATIVE: "Iniziative"
+}
+
+/**
+ * Enum Panel da Panoramica 
+ * @enum {Object}
+ */
+const Pannelli = {
+    VALORE_CLIENTE: "Valore Cliente",
+    POLIZZE: "Polizze",
+    PROPOSTE: "Proposte",
+    PREVENTIVI: "Preventivi",
+    FASTQUOTE: "Fastquote",
+    DISDETTE: "Disdette"
+}
 /**
  * @class
  * @classdesc Classe per interagire con Sfera 4.0 da Matrix Web
@@ -1075,7 +1117,7 @@ class Sfera {
             cy.get('div[class="container-list ng-star-inserted"]').within(() => {
                 cy.get('div[class="nx-checkbox__label-text"]').its('length').then((numFonti) => {
                     cy.get('nx-icon[class="ndbx-icon nx-icon--check nx-icon--auto ng-star-inserted"]').its('length').then((numCheckAttivi) => {
-                        expect(numFonti).to.eql(numCheckAttivi,'Fonti non tutti selezionati')
+                        expect(numFonti).to.eql(numCheckAttivi, 'Fonti non tutti selezionati')
                     })
                 })
             })
@@ -1104,6 +1146,101 @@ class Sfera {
             cy.contains('Annulla').click()
         })
     }
-}
 
+    static selectRandomContraente() {
+        interceptContraenteScheda()
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+            let selected = Cypress._.random(rowsTable - 1);
+            cy.wrap(rowsTable).eq(selected).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($Contraente) => {
+                cy.wrap($Contraente).click()
+                cy.wait('@getDatiAnagrafici', { requestTimeout: 30000 })
+                cy.wait('@getDatiIniziative', { requestTimeout: 30000 })
+                cy.wait('@getContratti', { requestTimeout: 30000 })
+                cy.wait('@getFastquote', { requestTimeout: 30000 })
+            })
+        })
+    }
+
+    static checkDatiComplementari() {
+        // Scheda Contraente
+        cy.get('div[class="container-dati-complementari"]').should('be.visible').within(() => {
+            //#region  Verifica Dati personali
+            cy.get('div[class="row-info nx-margin-top-s nx-grid__row"]').within(($tabInfo) => {
+                const title = [
+                    'Dati personali',
+                    'Contatti',
+                    'Consensi'
+                ]
+                cy.get('div[class^="col-title nx-font-weight-bold"]').each(($title, index) => {
+                    cy.wrap($title).should('contain.text', title[index])
+                })
+
+                const infoDati = [
+                    'Cellulare',
+                    'Fisso',
+                    'E-Mail',
+                    'Email',
+                    'Grafo',
+                    'OTP',
+                ]
+                for (let index = 0; index < infoDati.length; index++) {
+                    cy.wrap($tabInfo).should('include.text', infoDati[index])
+                }
+            })
+
+
+            //#region  Verifica dei Tab Presenti
+            var currentTabs = []
+            cy.get('button[role="tab"]').each(($tab) => {
+                currentTabs.push($tab.text().trim())
+            }).then(() => {
+                expect(Object.values(TabScheda).sort()).to.deep.eq(currentTabs.sort())
+            })
+
+            var tabEnabled = 'nx-tab-header__item ng-star-inserted nx-tab-header__item--disabled'
+            cy.get('button[role="tab"]').each(($x) => {
+                if (!$x.hasClass(tabEnabled)) {
+                    switch ($x.text()) {
+                        case TabScheda.PANORAMICA:
+                            break;
+                        case TabScheda.NOTE:
+                            break
+                        case TabScheda.DETTAGLIO_PREMI:
+                            break;
+                        case TabScheda.INIZIATIVE:
+                            break;
+                    }
+                }
+            });
+            //#endregion
+
+            //#region  Verifica Panoramica
+            const radioButtonPanoramica = [
+                'Cliente',
+                'Nucleo'
+            ]
+            cy.get('div[class="horizontal-buttons"]').find('nx-radio').each(($radioButton) => {
+                expect(radioButtonPanoramica).to.include($radioButton.text())
+            })
+
+            // Verifica pannelli presenti
+            cy.get('nx-expansion-panel-title').should('be.visible').each(($panel) => {
+                expect(Object.values(Pannelli)).to.include($panel.text().trim())
+            })
+
+            // Verifica apertura pannelli
+            cy.get('nx-expansion-panel-header[aria-disabled="false"]').each(($panel) => {
+                cy.wrap($panel).click()
+                cy.wrap($panel).parents('nx-expansion-panel')
+                    .find('div[role="region"]')
+                    .should('have.attr', 'style', 'visibility: visible;')
+                cy.wrap($panel).parents('nx-expansion-panel')
+                    .find('table').should('be.visible')
+
+
+            })
+            //#endregion
+        })
+    }
+}
 export default Sfera
