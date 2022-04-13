@@ -961,7 +961,28 @@ class Sfera {
     /**
      * Verifica la colonna eliminata
      * @param {string} colonna - nome della colonna
-     */    
+     */
+    static eliminaColonna(colonna) {
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container:visible').should('be.visible').within(() => {
+                cy.wait(5000)
+                cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').should('be.visible').within(() => {
+                    cy.contains(colonna)
+                        .parents('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
+                        .within(() => {
+                            cy.get('nx-icon[name="minus-circle"]').click()
+                        })
+                })
+                cy.contains('Applica vista').click()
+            })
+        })
+    }
+
+    /**
+      * Elimina colonna Permanente
+      * @param {string} colonna - nome della colonna
+      */
     static eliminaColonna(colonna) {
         cy.get('table').should('be.visible').then(() => {
             cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
@@ -1000,11 +1021,11 @@ class Sfera {
             })
 
             // Verifica il blocco effettuato
-            cy.get('th[class="thSticky col-sticky-shadow col-sticky-1 nx-header-cell ng-star-inserted"]').should('include.text',colonna)
+            cy.get('th[class="thSticky col-sticky-shadow col-sticky-1 nx-header-cell ng-star-inserted"]').should('include.text', colonna)
         })
     }
 
-    static salvaVistaPersonalizzata(){
+    static salvaVistaPersonalizzata() {
         cy.get('table').should('be.visible').then(() => {
             cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
             cy.get('nx-modal-container').should('be.visible').within(() => {
@@ -1012,11 +1033,37 @@ class Sfera {
             })
         })
 
-        cy.get('nx-modal-container').should('be.visible').within(()=>{
+        cy.get('nx-modal-container').should('be.visible').within(() => {
             cy.contains('Nuova vista').click()
             cy.get('input[placeholder="Inserisci il nome della vista"]').should('be.visible').type('Automatici')
             cy.contains('Salva').click()
         })
+    }
+
+    /**
+     * Salva Vista Sostituendo una vista esistente
+     * @param {string} vista - nome della vista esistente
+     */
+    static sostituisciVista(vista) {
+        // Salva vista
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                cy.contains('Applica e salva vista').click().wait(4000)
+            })
+        })
+
+        // Sostituisci Vista
+        cy.get('nx-modal-container[aria-label="Salva Vista"]').should('be.visible').within(() => {
+            cy.contains('Sostituisci esistente').click()
+            cy.get('nx-dropdown[placeholder="Seleziona una vista"]').click()
+        })
+        cy.get('div[role="listbox"]').should('be.visible').find('nx-dropdown-item:contains("' + vista + '")').click().wait(1500)
+        cy.get('nx-modal-container[aria-label="Salva Vista"]:visible').within(() => {
+            cy.get('button[nxmodalclose="Agree"]').click()
+        })
+        cy.get('div[class="success-container ng-star-inserted"]').should('be.visible')
+
     }
 }
 

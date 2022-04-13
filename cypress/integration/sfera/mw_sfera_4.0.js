@@ -143,7 +143,13 @@ describe('Matrix Web : Sfera 4.0', function () {
             // Sfera.salvaVistaPersonalizzata() //! Bug Aperto 
         })
 
-        it('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
+        it.only('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
+            Sfera.setDateEstrazione()
+            Sfera.estrai()
+            Sfera.gestisciColonne(['Cod. AZPay'])
+            Sfera.sostituisciVista('prova 1')
+            Sfera.selezionaVista('prova 1') //? Nella vista Sostituita non è presente la colonna aggiunta al rientro in Sfera
+            Sfera.checkColonnaPresente('Cod. AZPay')
         })
 
     });
