@@ -44,16 +44,15 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
-
-})
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
+// })
 //#endregion Before After
 
 describe('Matrix Web : Sfera 4.0', function () {
@@ -161,13 +160,6 @@ describe('Matrix Web : Sfera 4.0', function () {
     it('Verifica Filtro Fonti e Filtro Agenzie Tutte Selezionate', options, function () {
         Sfera.fontiAllSelezionati()
         Sfera.agenzieAllSelezionati()
-    })
-
-    it.only('Verifica Dati Complementari', options, function () {
-        // Sfera.setDateEstrazione()
-        Sfera.estrai()
-        Sfera.selectRandomContraente()
-        Sfera.checkDatiComplementari() 
     })
 
 
