@@ -51,6 +51,12 @@ const interceptContraenteScheda = () => {
         method: 'POST',
         url: '**/recuperaFastquoteCliente',
     }).as('getFastquote');
+
+    //Note
+    cy.intercept({
+        method: 'POST',
+        url: '**/recuperaNoteCliente',
+    }).as('getRecuperaNote');
 }
 //#endregion
 
@@ -386,6 +392,15 @@ class Sfera {
      */
     static get TIPOQUIETANZE() {
         return TipoQuietanze
+    }
+
+    /**
+     * Funzione che ritorna Tab nella Scheda Anagrafica
+     * @returns {TabScheda} tipo di Scheda
+     * @private
+     */
+    static get TABSCHEDA() {
+        return TabScheda
     }
 
     /**
@@ -1278,18 +1293,44 @@ class Sfera {
     static selectRandomContraente() {
         interceptContraenteScheda()
         cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
-            let selected = Cypress._.random(rowsTable - 1);
+            let selected = Cypress._.random(rowsTable.length - 1);
             cy.wrap(rowsTable).eq(selected).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($Contraente) => {
                 cy.wrap($Contraente).click()
-                cy.wait('@getDatiAnagrafici', { requestTimeout: 30000 })
-                cy.wait('@getDatiIniziative', { requestTimeout: 30000 })
-                cy.wait('@getContratti', { requestTimeout: 30000 })
-                cy.wait('@getFastquote', { requestTimeout: 30000 })
+                cy.wait('@getDatiAnagrafici', { requestTimeout: 50000 })
+                cy.wait('@getDatiIniziative', { requestTimeout: 50000 })
+                cy.wait('@getContratti', { requestTimeout: 50000 })
+                cy.wait('@getFastquote', { requestTimeout: 50000 })
             })
         })
     }
 
-    static checkDatiComplementari() {
+    /**
+     * Verifica Tab Scheda 
+     * @param {TabScheda} tabScheda Tipo di TabScheda per l'apertura del tab
+     * 
+     */
+    static checkDatiComplementari(tabScheda) {
+        // Fa il loop finchè non trova un Contraente con il Tab Iniziative Abilitato
+        const loopCheckTabEnabled = (tabScheda) => {
+            if (tabScheda === TabScheda.INIZIATIVE) {
+                cy.get('button[role="tab"]').should('be.visible').then(($Tabs) => {
+                    cy.wait(2500)
+                    cy.wrap($Tabs).find('div[class="nx-tab-label__content"]:contains("' + tabScheda + '")')
+                        .parents('button[role="tab"]').then(($TabScheda) => {
+                            let classDisabled = 'nx-tab-header__item ng-star-inserted nx-tab-header__item--disabled'
+                            let tabEnabled = $TabScheda.hasClass(classDisabled)
+                            if (tabEnabled) {
+                                cy.contains('Chiudi').click()
+                                this.selectRandomContraente()
+                                loopCheckAllTabEnabled(TabScheda.INIZIATIVE)
+                            }
+                        })
+
+                })
+            }
+        }
+        loopCheckTabEnabled(tabScheda)
+
         // Scheda Contraente
         cy.get('div[class="container-dati-complementari"]').should('be.visible').within(() => {
             //#region  Verifica Dati personali
@@ -1325,49 +1366,113 @@ class Sfera {
                 expect(Object.values(TabScheda).sort()).to.deep.eq(currentTabs.sort())
             })
 
-            var tabEnabled = 'nx-tab-header__item ng-star-inserted nx-tab-header__item--disabled'
-            cy.get('button[role="tab"]').each(($x) => {
-                if (!$x.hasClass(tabEnabled)) {
-                    switch ($x.text()) {
-                        case TabScheda.PANORAMICA:
-                            break;
-                        case TabScheda.NOTE:
-                            break
-                        case TabScheda.DETTAGLIO_PREMI:
-                            break;
-                        case TabScheda.INIZIATIVE:
-                            break;
-                    }
-                }
-            });
+            // Inizio Verifica Scheda del TAB
+            cy.contains(tabScheda).click()
+            switch (tabScheda) {
+                case TabScheda.PANORAMICA:
+                    cy.screenshot(TabScheda.PANORAMICA, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    checkPanoramica()
+                    break;
+                case TabScheda.NOTE:
+                    cy.screenshot(TabScheda.NOTE, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    // checkNote()
+                    break
+                case TabScheda.DETTAGLIO_PREMI:
+                    cy.screenshot(TabScheda.DETTAGLIO_PREMI, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    checkDettaglioPremi()
+                    break;
+                case TabScheda.INIZIATIVE:
+                    cy.screenshot(TabScheda.INIZIATIVE, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    checkIniziative()
+                    break;
+                default: throw new Error('Errore: ' + tabScheda + ' non Esiste')
+            }
             //#endregion
 
-            //#region  Verifica Panoramica
-            const radioButtonPanoramica = [
-                'Cliente',
-                'Nucleo'
-            ]
-            cy.get('div[class="horizontal-buttons"]').find('nx-radio').each(($radioButton) => {
-                expect(radioButtonPanoramica).to.include($radioButton.text())
-            })
+            function checkNote() {
+                cy.wait('@getRecuperaNote', { requestTimeout: 30000 })
+                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                cy.contains('Aggiungi nuova nota').click()
+                cy.get('div[class="new-nota-container"]').should('be.visible').within(() => {
+                    cy.get('input[formcontrolname="titolo"]').type('Titolo Automatici')
+                    cy.get('textarea[formcontrolname="testo"]').type('Testo Automatici')
+                    cy.contains('Salva nota').click()
+                })
+            }
 
-            // Verifica pannelli presenti
-            cy.get('nx-expansion-panel-title').should('be.visible').each(($panel) => {
-                expect(Object.values(Pannelli)).to.include($panel.text().trim())
-            })
+            function checkPanoramica() {
+                //#region  Verifica Panoramica
+                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
 
-            // Verifica apertura pannelli
-            cy.get('nx-expansion-panel-header[aria-disabled="false"]').each(($panel) => {
-                cy.wrap($panel).click()
-                cy.wrap($panel).parents('nx-expansion-panel')
-                    .find('div[role="region"]')
-                    .should('have.attr', 'style', 'visibility: visible;')
-                cy.wrap($panel).parents('nx-expansion-panel')
-                    .find('table').should('be.visible')
+                const radioButtonPanoramica = [
+                    'Cliente',
+                    'Nucleo'
+                ]
+                cy.get('div[class="horizontal-buttons"]').find('nx-radio').each(($radioButton) => {
+                    expect(radioButtonPanoramica).to.include($radioButton.text())
+                })
 
+                // Verifica Nucleo disabilitato
+                cy.get('nx-radio[nxvalue="nucleo"]').then(($radio) => {
+                    const checkEnabledRadio = $radio.find('input[type="radio"]').is(':enabled')
+                    if (checkEnabledRadio)
+                        cy.get('nx-radio[nxvalue="nucleo"]').find('input[type="radio"]').should('not.have.attr', 'disabled')
+                    else
+                        cy.get('nx-radio[nxvalue="nucleo"]').find('input[type="radio"]').should('have.attr', 'disabled')
+                })
 
-            })
-            //#endregion
+                // Verifica pannelli presenti
+                cy.get('nx-expansion-panel-title').should('be.visible').each(($panel) => {
+                    expect(Object.values(Pannelli)).to.include($panel.text().trim())
+                })
+
+                // Verifica apertura pannelli
+                cy.get('nx-expansion-panel-header[aria-disabled="false"]').each(($panel) => {
+                    cy.wrap($panel).click()
+                    cy.wrap($panel).parents('nx-expansion-panel')
+                        .find('div[role="region"]')
+                        .should('have.attr', 'style', 'visibility: visible;')
+                    cy.wrap($panel).parents('nx-expansion-panel')
+                        .find('table').should('be.visible')
+                })
+
+                //#endregion
+            }
+
+            function checkDettaglioPremi() {
+                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                cy.get('nx-tab-group').should('be.visible').within(() => {
+                    const titleColumn = [
+                        'Premio Quietanza anno corrente',
+                        'Premio Quietanza anno precedente',
+                        'Delta Premio Quietanza',
+                        'Rid. Premio',
+                        'Premio lavorato',
+                    ]
+                    cy.get('th').each(($titleColumn) => {
+                        if ($titleColumn.text().length > 0) {
+                            expect(titleColumn).to.include($titleColumn.text())
+                        }
+                    })
+
+                    const titleRow = [
+                        '% CMC',
+                        '% commerciale',
+                        '% totale',
+                        'Rid. Premio'
+                    ]
+                    cy.get('td[class="nx-font-weight-bold"]').each(($titleRow) => {
+                        if ($titleRow.text().length > 0) {
+                            expect(titleRow).to.include($titleRow.text())
+                        }
+                    })
+                })
+            }
+
+            function checkIniziative() {
+                cy.get('table[class="table-panel ng-star-inserted"]').should('be.visible')
+                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+            }
         })
     }
 }
