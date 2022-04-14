@@ -121,16 +121,16 @@ export default class PersonaFisica {
         return MarioRossini
     }
 
-    static MartaRocchi() {
-        let MartaRocchi = new PersonaFisica("MARTA", "ROCCHI")
-        MartaRocchi.via = "VIA SAN FELICE"
-        MartaRocchi.numero = "63/2"
-        MartaRocchi.cap = "40122"
-        MartaRocchi.citta = "BOLOGNA"
-        MartaRocchi.provincia = "BO"
-        MartaRocchi.codiceFiscale = "RCCMRT69A65H294Y"
+    static MarcoMarco() {
+        let MarcoMarco = new PersonaFisica("MARCO", "MARCO")
+        MarcoMarco.via = "VIA GIUSEPPE MAZZINI"
+        MarcoMarco.numero = "1"
+        MarcoMarco.cap = "34074"
+        MarcoMarco.citta = "MONFALCONE"
+        MarcoMarco.provincia = "GO"
+        MarcoMarco.codiceFiscale = "MRCMRC85A01F356P"
 
-        return MartaRocchi
+        return MarcoMarco
     }
 }
 

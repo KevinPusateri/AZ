@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 
 import { find } from "lodash";
+import Folder from "../../mw_page_objects/common/Folder"
 
 //#region iFrame
 const ultraIFrame = () => {
@@ -266,7 +267,7 @@ class CensimentoAnagrafico {
             cy.get('span')
                 .contains('Assicurato associato').should('be.visible')
                 .parent().should('exist')
-                .parent().should('exist')
+                .parent().should('exist').wait(500)
                 .find('select').first().select(cliente.cognomeNome())
                 .wait(2000)
 
@@ -491,6 +492,134 @@ class CensimentoAnagrafico {
             cy.get('input[id*="_Conferma"]').should('be.visible').click()
         })
 
+    }
+
+    /**
+    * Verifica che non si possa proseguire nell'emissione se il contraente non ha correttamente fornito
+    * numero di cellulare ed e-mail 
+    */
+    static verificaAlertBloccoContraente() {
+        ultraIFrame().within(() => {
+            cy.get('#tabsAnagrafiche', { timeout: 30000 }).should('be.visible')  //attende la comparsa del form con i dati quotazione
+            cy.get('div').contains('Contraente Principale').should('be.visible').click()  //tab Contraente Principale
+
+            //Panel messaggi errore
+            cy.get('div[class="error-panel"]').should('exist')
+              .find('li[class="error-txt"]').should('exist')
+              .contains("Attenzione: Per proseguire con l'emissione del contratto e' necessario inserire il cellulare e l'email del cliente.").should('be.visible')
+
+            //Campi evidenziati in rosso
+            CensimentoAnagrafico.verificaCampoInRosso('Cellulare')
+            CensimentoAnagrafico.verificaCampoInRosso('Email')
+
+        })
+    }
+
+    /**
+    * Entra in Dati Cliente per modificare i dati del contraente
+    * Al momento aggiunge numero di telefono e email. Sarebbe da generalizzare
+    */
+     static modificaDatiCLiente() {
+        ultraIFrame().within(() => {
+            cy.intercept({
+                method: 'POST',
+                url: '**/IsClientModifiable'
+            }).as('postCliente');
+
+            cy.get('input[value="Dati cliente"]').should('be.visible').click()
+
+            cy.wait('@postCliente', { requestTimeout: 120000 });
+        })
+
+        ultraIFrame().within(() => {
+
+            //popup anagrafico
+            ultraIFrameAnagrafica().within(() => {
+
+                var mail = 'pietro.scocchi@allianz.it'
+                var pref_int = '+39'
+                var pref = '340'
+                var numero = '8906718'
+
+                //email
+                cy.get('form[id="aggiungi-cliente"]').should('exist')
+                  .find('input[id="email"]').should('be.enabled')
+                  .clear()
+                  .wait(1000)
+                  .type(mail)
+                  .wait(1000)
+                
+                //Checkbox invio documenti
+                cy.get('input[id="invio-documenti-no"]').should('be.enabled').check().wait(500)
+
+                //Prefisso interno
+                cy.get('input[name="tel-pr-int-3_input"]').should('exist').type(pref_int).wait(500)
+                cy.get('ul[id="tel-pr-int-3_listbox"]').should('exist')
+                .contains(pref_int).click().wait(500)
+
+                //Prefisso
+                cy.get('input[name="tel-pref-3_input"]').should('exist').type(pref).wait(500)
+                cy.get('ul[id="tel-pref-3_listbox"]').should('exist')
+                .contains(pref).click().wait(500)
+
+                //Numero  
+                cy.get('form[id="aggiungi-cliente"]').should('exist')
+                  .find('input[id="tel-num-3"]').should('be.enabled')
+                  .clear()
+                  .wait(1000)
+                  .type(numero)
+                  .wait(1000)
+
+                //Conferma
+                //cy.intercept({
+                //    method: 'POST',
+                //    url: '**//GetAppCallToWA'
+                //}).as('GetAppCallToWA')
+
+                cy.get('div[class="cols cols-button"]').should('exist')
+                  .find('button').contains('Conferma').should('be.visible').click()
+
+                //cy.wait('@GetAppCallToWA', { requestTimeout: 60000 });
+                //cy.get('[class="loader-img"]').should('not.be.visible')
+                cy.wait(20000)
+            })
+
+        })
+
+        //Conferma modifiche anagrafiche
+        ultraIFrame().within(() => {
+
+            //popup anagrafico
+            ultraIFrameAnagrafica().within(() => {
+                cy.intercept({
+                    method: 'POST',
+                    url: '**//getCustomerTree'
+                }).as('getCustomerTree')
+
+                cy.get('div[class="allianz-alert-window k-window-content k-content"]').should('exist')
+                  .find('button').contains('Conferma').should('be.visible').click().wait(500)
+                  //.wait(20000)
+                
+                cy.wait('@getCustomerTree', { requestTimeout: 60000 });
+                cy.wait(10000)
+                
+            })
+
+        })
+        //Folder.clickTornaIndietro(true)
+        //Uscita da Folder
+        ultraIFrame().within(() => {
+            ultraIFrameAnagrafica().within(() => {
+                cy.get('h1[class="url-back"]').should('exist')
+                  .find('a[id="idUrlBack"]').should('be.visible').click().wait(2000)
+            })
+        })
+
+    }
+
+    static verificaCampoInRosso(campo) {
+        cy.get('span[data-bind*="HasBloccoDigitalID"]').should('be.visible').and('have.attr', 'style', 'color: red;')
+          .contains(campo).should('have.length', 1)
     }
 
 }

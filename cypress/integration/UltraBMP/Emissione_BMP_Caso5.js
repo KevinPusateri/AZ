@@ -24,6 +24,7 @@ import BurgerMenuSales from "../../mw_page_objects/burgermenu/BurgerMenuSales"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
+import Folder from "../../mw_page_objects/common/Folder"
 import 'cypress-iframe';
 
 
@@ -76,7 +77,7 @@ var premioRC_Dopo = 0
 var premioRC_Affittacamere = 0
 var premioRC_ProprietàAnimali = 0
 
-let personaFisica = PersonaFisica.MartaRocchi()
+let personaFisica = PersonaFisica.MarcoMarco()
 var nContratto = "000"
 var clienteUbicazione = ""
 var frazionamento = "annuale"
@@ -153,10 +154,21 @@ describe('Ultra BMP : Emissione BMP Caso5', function() {
         //DatiIntegrativi.caricamentoPagina()
 
         //CensimentoAnagrafico.selezionaContraentePF(personaFisica2)
-        CensimentoAnagrafico.selezionaCasa(personaFisica, true, false)
+        CensimentoAnagrafico.selezionaCasa(personaFisica)
         //CensimentoAnagrafico.selezionaAnimale(modificheAnimale.Nome, personaFisica2, '380260000279818', true)
         CensimentoAnagrafico.Avanti()
         //DatiIntegrativi.caricamentoPagina()
+    })
+
+    it("Verifiche alert Anagrafica incompleta", () => {
+        CensimentoAnagrafico.verificaAlertBloccoContraente()
+    })
+
+    it("Modifiche anagrafica contraente", () => {
+        CensimentoAnagrafico.modificaDatiCLiente()
+        CensimentoAnagrafico.selezionaCasa(personaFisica)
+        CensimentoAnagrafico.Avanti()
+        DatiIntegrativi.caricamentoPagina()
     })
 
     it("Fine test", () => {
