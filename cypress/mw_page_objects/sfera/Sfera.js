@@ -1228,7 +1228,7 @@ class Sfera {
                             if (tabEnabled) {
                                 cy.contains('Chiudi').click()
                                 this.selectRandomContraente()
-                                loopCheckAllTabEnabled(TabScheda.INIZIATIVE)
+                                loopCheckTabEnabled(TabScheda.INIZIATIVE)
                             }
                         })
 
@@ -1281,7 +1281,7 @@ class Sfera {
                     break;
                 case TabScheda.NOTE:
                     cy.screenshot(TabScheda.NOTE, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    // checkNote()
+                    // checkNote() //!Da abilitare alla chiusura del BUG
                     break
                 case TabScheda.DETTAGLIO_PREMI:
                     cy.screenshot(TabScheda.DETTAGLIO_PREMI, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
