@@ -36,7 +36,7 @@ before(() => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
             LoginPage.logInMWAdvanced()
             Sfera.accediSferaDaHomePageMW()
-            // Sfera.setDateEstrazione()
+            Sfera.setDateEstrazione()
             Sfera.estrai()
             Sfera.selectRandomContraente()
         })
