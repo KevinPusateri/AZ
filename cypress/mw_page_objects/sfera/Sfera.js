@@ -5,6 +5,8 @@ import Sales from "../../mw_page_objects/Navigation/Sales"
 import NGRA2013 from "../../mw_page_objects/motor/NGRA2013"
 import Common from "../../mw_page_objects/common/Common"
 import IncassoDA from "../../mw_page_objects/da/IncassoDA"
+import InquiryAgenzia from "../../mw_page_objects/da/InquiryAgenzia"
+import Folder from "../../mw_page_objects/common/Folder"
 
 //#region Intercept
 const infoUtente = {
@@ -159,10 +161,52 @@ const VociMenuQuietanza = {
  * @enum {Object}
  */
 const VociMenuPolizza = {
+    RIPRESA_PREVENTIVO_AUTO: {
+        root: 'Polizza',
+        parent: '',
+        key: 'Ripresa prev. auto'
+    },
+    SOSTITUZIONE_RAMI_VARI: {
+        root: 'Polizza',
+        parent: '',
+        key: 'Sostituzione rami vari'
+    },
     SOSTITUZIONE_RIATTIVAZIONE_AUTO: {
+        root: 'Polizza',
         parent: '',
         key: 'Sostituzione / Riattivazione auto'
+    },
+    CONSULTAZIONE_POLIZZA: {
+        root: 'Polizza',
+        parent: 'Consultazione',
+        key: 'Polizza'
+    },
+    CONSULTAZIONE_DOCUMENTI_POLIZZA: {
+        root: 'Polizza',
+        parent: 'Consultazione',
+        key: 'Documenti di polizza'
+    },
+    COMPARATORE_AZ_ULTRA: {
+        root: 'Polizza',
+        parent: 'Consultazione',
+        key: 'Comparatore AZ ultra'
+    },
+    DETTAGLIO_ABBINATA: {
+        root: 'Polizza',
+        parent: '',
+        key: 'Dettaglio abbinata'
+    },
+    DISATTIVAZIONE_ALLIANZ_PAY: {
+        root: 'Polizza',
+        parent: '',
+        key: 'Disattivazione Allianz Pay'
+    },
+    MODIFICA_MODALITA_PAGAMENTO: {
+        root: 'Polizza',
+        parent: '',
+        key: 'Modifica modalità di pagamento preferito della polizza'
     }
+    //TODO Modulari quando trovo il parent menu attivo
 }
 
 /**
@@ -633,7 +677,18 @@ class Sfera {
 
             //Andiamo a selezionare il menu contestuale 'figlio'
             this.menuContestualeChild().within(() => {
-                cy.contains(voce.key).click()
+                //? CONSULTAZIONE_DOCUMENTI_POLIZZA si apre su nuovo tab, quindi gestisto il _self
+                if (voce.key === VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA.key) {
+                    cy.window().then(win => {
+                        cy.stub(win, 'open').callsFake((url) => {
+                            return win.open.wrappedMethod.call(win, url, '_self');
+                        }).as('Open');
+                    })
+                    cy.contains(voce.key).click()
+                    cy.get('@Open')
+                }
+                else
+                    cy.contains(voce.key).click()
             })
 
             Common.canaleFromPopup()
@@ -649,10 +704,11 @@ class Sfera {
                     if (flussoCompleto) {
                         //TODO implementare flusso di incasso completo
                     }
-                    else
+                    else {
                         IncassoDA.clickCHIUDI()
-                    //Verifichiamo il rientro in Sfera
-                    this.verificaAccessoSfera()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                    }
                     break;
                 case VociMenuQuietanza.DELTA_PREMIO:
                     NGRA2013.verificaAccessoRiepilogo()
@@ -661,11 +717,12 @@ class Sfera {
                     if (flussoCompleto) {
                         //TODO implementare flusso di delta premio
                     }
-                    else
+                    else {
                         NGRA2013.home(true)
-                    //Verifichiamo il rientro in Sfera
-                    this.verificaAccessoSfera()
-                    break;
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                        break;
+                    }
                 case VociMenuQuietanza.VARIAZIONE_RIDUZIONE_PREMI:
                     IncassoDA.accessoGestioneFlex()
                     IncassoDA.salvaSimulazione()
@@ -674,10 +731,11 @@ class Sfera {
                     if (flussoCompleto) {
                         //TODO implementare flusso di incasso completo
                     }
-                    else
+                    else {
                         IncassoDA.clickCHIUDI()
-                    //Verifichiamo il rientro in Sfera
-                    this.verificaAccessoSfera()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                    }
                     break;
                 case VociMenuQuietanza.RIQUIETANZAMENTO:
                     break;
@@ -686,7 +744,17 @@ class Sfera {
                     this.dropdownSostituzioneRiattivazione().click()
                     cy.contains(tipoSostituzioneRiattivazione).should('exist').click()
                     this.procedi().click()
-                    cy.pause()
+                    Common.canaleFromPopup()
+                    NGRA2013.verificaAccessoDatiAmministrativi()
+                    cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di incasso completo
+                    }
+                    else {
+                        NGRA2013.home(true)
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                    }
                     break;
                 case VociMenuQuietanza.STAMPA_SENZA_INCASSO:
                     IncassoDA.accessoMezziPagam()
@@ -707,6 +775,32 @@ class Sfera {
                         //Verifichiamo il rientro in Sfera
                         this.verificaAccessoSfera()
                     }
+                    break;
+                case VociMenuPolizza.CONSULTAZIONE_POLIZZA:
+                    InquiryAgenzia.verificaAccessoInquiryAgenzia()
+                    cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        InquiryAgenzia.clickUscita()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                    }
+                    break;
+                case VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA:
+                    Folder.verificaCaricamentoFolder()
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.go('back')
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                    }
+                    break;
+                case VociMenuPolizza.MODIFICA_MODALITA_PAGAMENTO:
+                    cy.pause()
                     break;
             }
         })

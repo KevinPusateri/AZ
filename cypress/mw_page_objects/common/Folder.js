@@ -42,7 +42,35 @@ const getDocumentoPersonale = () => {
 }
 //#endregion iFrame
 
+//#region Intercept
+const getUserProfile = {
+    method: 'POST',
+    url: /getUserProfile/
+}
+const getUserAttributes = {
+    method: 'POST',
+    url: /getUserAttributes/
+}
+const getCustomerTree = {
+    method: 'POST',
+    url: /getCustomerTree/
+}
+//#endregion
+
 class Folder {
+
+    /**
+     * Verifica accesso a Folder
+     */
+    static verificaCaricamentoFolder() {
+        cy.intercept(getUserProfile).as('getUserProfile')
+        cy.intercept(getUserAttributes).as('getUserAttributes')
+        cy.intercept(getCustomerTree).as('getCustomerTree')
+
+        cy.wait('@getUserProfile', { timeout: 60000 }).its('response.statusCode').should('eq', 200)
+        cy.wait('@getUserAttributes', { timeout: 60000 }).its('response.statusCode').should('eq', 200)
+        cy.wait('@getCustomerTree', { timeout: 60000 }).its('response.statusCode').should('eq', 200)
+    }
     static caricaDocumentoIdentita() {
         //#region BackEnd Calls
         cy.intercept({

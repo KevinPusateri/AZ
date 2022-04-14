@@ -27,6 +27,11 @@ before(() => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
         Sfera.accediSferaDaHomePageMW()
+
+        Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
+        Sfera.setDateEstrazione()
+        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
+        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.IN_MORA, true)
     })
 })
 
@@ -48,13 +53,6 @@ after(function () {
 
 describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
     context('Motor > Menu Quietanza', () => {
-
-        it('Estrazione Quietanze Motor Da Lavorare (In mora)', () => {
-            Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
-            Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-            Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.IN_MORA, true)
-        })
 
         it('Incasso', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, false)
@@ -81,6 +79,23 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
 
         it('Generazione avviso', function () {
         })
+    })
 
+    context('Motor > Menu Polizza', () => {
+        it('Sostituzione / Riattivazione auto', function () {
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.SOSTITUZIONE_RIATTIVAZIONE_AUTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
+        })
+
+        it('Consultazione > Polizza', function () {
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_POLIZZA, false)
+        })
+
+        it.only('Consultazione > Documenti di polizza', function () {
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_DOCUMENTI_POLIZZA,false)
+        })
+
+        it.only('Modifica modalità di pagamento preferito della polizza', function () {
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.MODIFICA_MODALITA_PAGAMENTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO,false)
+        })
     })
 })
