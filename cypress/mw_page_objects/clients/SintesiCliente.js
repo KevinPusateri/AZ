@@ -195,7 +195,7 @@ class SintesiCliente {
      */
     static clickTabSintesiCliente() {
         cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('client')) {
+            if (req.body.operationName.includes('client') || req.body.operationName.includes('fastQuoteProfiling')) {
                 req.alias = 'gqlClient'
             }
         });
