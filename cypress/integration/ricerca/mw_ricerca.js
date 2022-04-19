@@ -100,14 +100,9 @@ if (Cypress.env('isAviva')) {
     }, function() {
 
 
-        it(notExist + 'Verifica Ricerca Da Landing News', function() {
-            TopBar.checkNotExistLanding('News')
+        it(notExist + 'Verifica Ricerca Da Landing News e Info', function() {
+            TopBar.checkNotExistLanding('News e Info')
         })
-
-        it(notExist + 'Verifica Ricerca Da Landing Le mie info', function() {
-            TopBar.checkNotExistLanding('Le mie info')
-        })
-
 
     })
 }

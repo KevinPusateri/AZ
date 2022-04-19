@@ -367,7 +367,7 @@ class TopBar extends HomePage {
         cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
         if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
             cy.contains('Ci sono altri profili collegati')
-        cy.contains('Cambio password')
+        cy.get('lib-user-name-container').should('not.contain','Cambio password')
         cy.contains('Configurazione stampanti')
         cy.contains('Impostazioni di agenzia')
         cy.screenshot(`Click Icon User`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
