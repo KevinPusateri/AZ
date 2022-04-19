@@ -1213,14 +1213,15 @@ class Sfera {
         cy.get('table').should('be.visible').then(() => {
             cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
             cy.get('nx-modal-container').should('be.visible').within(() => {
-                cy.contains('Applica e salva vista').click()
+                cy.contains('Applica e salva vista').click().wait(3000)
             })
         })
 
         cy.get('nx-modal-container').should('be.visible').within(() => {
-            cy.contains('Nuova vista').click()
-            cy.get('input[placeholder="Inserisci il nome della vista"]').should('be.visible').type('Automatici')
-            cy.contains('Salva').click()
+            cy.contains('Nuova vista').click().wait(3000)
+            cy.get('input[placeholder="Inserisci il nome della vista"]:visible').type('Automatici')
+            cy.get('button[nxmodalclose="Agree"]:visible').click()
+            cy.pause()
         })
     }
 
