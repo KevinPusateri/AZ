@@ -58,6 +58,11 @@ const interceptContraenteScheda = () => {
         url: '**/recuperaNoteCliente',
     }).as('getRecuperaNote');
 }
+
+const cambiaModalitaPagamentoPreferita = {
+    method: 'POST',
+    url: '**/cambiaModalitaPagamentoPreferita'
+}
 //#endregion
 
 /**
@@ -236,6 +241,24 @@ const TipoSostituzioneRiattivazione = {
     RIATTIVAZIONE_ALTRO_VEICOLO: "Riattivazione altro veicolo",
     RIATTIVAZIONE_STESSO_VEICOLO: "Riattivazione stesso veicolo",
     CESSIONE: "Cessione"
+}
+
+/**
+ * Enum TipoModalitaPgamento
+ * @readonly
+ * @enum {Object}
+ */
+const TipoModalitaPagamento = {
+    ASSEGNO: "Assegno",
+    BONIFICO: "Bonifico",
+    CONTANTI: "Contanti",
+    POS_DIREZIONALE: "Pos Direzionale",
+    POS_AGENZIA: "Pos Agenzia",
+    AZ_BANK: "Az Bank",
+    TRATTENUTA_STIPENDIO: "Trattenuta sullo stipendio",
+    RID_DIREZIONALE: "Rid Direzionale",
+    POS_VIRTUALE: "Pos Virtuale",
+    ALTRO: "Altro"
 }
 
 /**
@@ -419,6 +442,14 @@ class Sfera {
         return TipoSostituzioneRiattivazione
     }
 
+    /**
+     * Funzione che ritorna i tipi di modalità di pagamento
+     * @returns {TipoModalitaPagamento} tipo modalità di pagamento
+     */
+    static get TIPOMODALITAPAGAMENTO() {
+        return TipoModalitaPagamento
+    }
+
     //#region Elementi Sfera
     /**
      * Ritorna la tabella delle estrazioni
@@ -473,6 +504,16 @@ class Sfera {
     static dropdownSostituzioneRiattivazione() {
         return cy.get('sfera-sost-auto-modal').find('nx-dropdown').should('exist').and('be.visible')
     }
+
+    /**
+ * Ritorna il dropdown Modalità Pagamento preferita
+ * @returns {Object} Modalità Pagamento Preferitadropdown da popup
+ * @private
+ */
+    static dropdownModalitaPagamentoPreferita() {
+        return cy.get('sfera-pagamento-preferito-modal').find('nx-dropdown').should('exist').and('be.visible')
+    }
+
 
     /**
      * Ritorna il pulsante Procedi
@@ -649,10 +690,11 @@ class Sfera {
      * @param {Boolean} [flussoCompleto] default true, se a false effettua solo verifica aggancio applicativo
      * @param {number} [polizza] default null, se specificato clicca sul menu contestuale della polizza passata
      * @param {TipoSostituzioneRiattivazione} [tipoSostituzioneRiattivazione] default null, tipo di sostituzione/riattivazione auto da effettuare
+     * @param {TipoModalitaPagamento} [modalitaPagamentoPreferita] default null, tipo di modalità di pagamento preferita
      * 
      * @returns {Promise} polizza su cui sono state effettuate le operazioni
      */
-    static apriVoceMenu(voce, flussoCompleto = true, polizza = null, tipoSostituzioneRiattivazione = null) {
+    static apriVoceMenu(voce, flussoCompleto = true, polizza = null, tipoSostituzioneRiattivazione = null, modalitaPagamentoPreferita = null) {
         return new Cypress.Promise(resolve => {
             if (polizza === null)
                 this.bodyTableEstrazione().find('tr:first').within(() => {
@@ -789,18 +831,43 @@ class Sfera {
                     }
                     break;
                 case VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA:
-                    Folder.verificaCaricamentoFolder()
+                    Folder.verificaCaricamentoFolder(false)
+                    cy.screenshot('Consultazione Documenti Polizza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
                         //TODO implementare flusso completo
                     }
                     else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
                         cy.go('back')
-                        //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera()
+
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        this.estrai()
                     }
                     break;
                 case VociMenuPolizza.MODIFICA_MODALITA_PAGAMENTO:
-                    cy.pause()
+                    cy.intercept(cambiaModalitaPagamentoPreferita).as('cambiaModalitaPagamentoPreferita')
+                    this.dropdownModalitaPagamentoPreferita().click()
+                    cy.contains(modalitaPagamentoPreferita).should('exist').click()
+                    cy.screenshot('Setta Modalità Pagamento Preferita', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    this.procedi().click()
+                    //Verifichiamo che sia andato a compimento
+                    cy.wait('@cambiaModalitaPagamentoPreferita', { timeout: 120000 }).then(bffCambiaModalitaPagamento => {
+                        debugger
+                        expect(bffCambiaModalitaPagamento.response.statusCode).to.be.eq(200)
+                        expect(bffCambiaModalitaPagamento.response.body.esito).to.include("Effettuato ScriviModalitaPagamentoPreferita")
+                        cy.screenshot('Modalità Pagamento Preferita settata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        cy.contains('Chiudi').click()
+                    })
                     break;
             }
         })
