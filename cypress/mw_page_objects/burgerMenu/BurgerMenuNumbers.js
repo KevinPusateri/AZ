@@ -78,6 +78,7 @@ const LinksBurgerMenu = {
         if (!keys.SCARICO_DATI) delete this.SCARICO_DATI
         if (!keys.INDICI_DIGITALI) delete this.INDICI_DIGITALI
         if (!keys.NEW_BUSINESS_DANNI) delete this.NEW_BUSINESS_DANNI
+        if (!keys.NEW_BUSINESS_ULTRA_IMPRESA) delete this.NEW_BUSINESS_ULTRA_IMPRESA
         if (!keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO) delete this.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO
         if (!keys.NEW_BUSINESS_ULTRA_SALUTE) delete this.NEW_BUSINESS_ULTRA_SALUTE
         if (!keys.NEW_BUSINESS_VITA) delete this.NEW_BUSINESS_VITA
@@ -115,8 +116,7 @@ class BurgerMenuNumbers extends Numbers {
             cy.filterProfile(profiling, 'COMMON_REPORTING_INDICEDIGITALE').then(profiled => { keys.INDICI_DIGITALI = profiled })
             cy.filterProfile(profiling, 'REPORTING_NB_DANNI').then(profiled => { keys.NEW_BUSINESS_DANNI = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.NEW_BUSINESS_ULTRA_IMPRESA = profiled })
-            cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.ULTRA = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.NEW_BUSINESS_ULTRA_IMPRESA = profiled })
             cy.filterProfile(profiling, 'REPORTING_NB_VITA').then(profiled => { keys.NEW_BUSINESS_VITA = profiled })
             cy.filterProfile(profiling, 'REPORTING_NB_A1').then(profiled => { keys.NEW_BUSINESS_ALLIANZ1 = profiled })
             cy.filterProfile(profiling, 'REPORTING_MONITOR_PTF_DANNI').then(profiled => { keys.MONITORAGGIO_PTF_DANNI = profiled })
