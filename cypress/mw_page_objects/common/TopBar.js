@@ -114,7 +114,6 @@ class TopBar extends HomePage {
             cy.contains('Logout').click({ force: true })
         })
 
-        cy.screenshot('Logout effettuato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         cy.clearCookies();
     }

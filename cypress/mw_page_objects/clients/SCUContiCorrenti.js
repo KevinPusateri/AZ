@@ -49,7 +49,11 @@ class SCUContiCorrenti {
 
             contoCorrente.intestatario = client.name
             getSCU().find('label[for="annoApertura"]').then((textAnnoApertura) => contoCorrente.annoApertura = textAnnoApertura.text())
-
+            getSCU().within(()=>{
+                cy.get('div[class^="header-container"]').scrollIntoView().should('be.visible')
+                cy.pause()
+                cy.screenshot('Verifica Conto corrente salvato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            })
             getSCU().find('#submit:contains("Salva")').click().wait(8000);
             resolve(contoCorrente);
         });
@@ -61,14 +65,14 @@ class SCUContiCorrenti {
     */
     static checkContoCorrente(contoCorrente) {
         cy.get('app-client-bank-accounts').find('app-client-bank-account-card').then((list) => {
-            console.log(list.text())
+            cy.screenshot('Verifica Conto corrente inserito', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             expect(list.text()).to.include(contoCorrente.iban)
         })
     }
 
     static checkContoCorrenteModificato(conto) {
         cy.get('app-client-bank-accounts').find('app-client-bank-account-card').then((list) => {
-            console.log(list.text())
+            cy.screenshot('Verifica Conto corrente Modificato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             expect(list.text()).to.include(conto)
         })
     }
@@ -96,13 +100,14 @@ class SCUContiCorrenti {
                         cy.fixture('iban.json').then((data) => {
                             var indexScelta
                             debugger
-                            do{
+                            do {
                                 indexScelta = Math.floor(Math.random() * data.iban.length);
-                            }while(data.iban[indexScelta] === contoCorrente.iban)
+                            } while (data.iban[indexScelta] === contoCorrente.iban)
                             var newIban = data.iban[indexScelta]
                             var validIban = ibantools.isValidIBAN(newIban)
                             if (validIban) {
                                 getSCU().find('#iban').clear().type(newIban).type('{enter}').wait(3000)
+                                cy.screenshot('Modifica Conto Corrente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                                 getSCU().find('#submit:contains("Salva"):visible').click().wait(8000)
                                 resolve(newIban);
                             }
@@ -143,6 +148,7 @@ class SCUContiCorrenti {
         cy.get('nx-modal-container').within((container) => {
             cy.wrap(container).should('contain.text', 'Elimina conto corrente')
             cy.contains('Conferma').click()
+            cy.screenshot('Verifica Conto corrente inserito', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
     }
     static checkCodiceFISCALE(vat) {

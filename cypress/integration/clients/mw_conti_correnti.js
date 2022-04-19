@@ -90,7 +90,7 @@ after(function () {
 var contoModificato
 describe('Matrix Web : Conti Correnti', function () {
 
-  it.only('Verifica Aggiungi Conto corrente', function () {
+  it('Verifica Aggiungi Conto corrente', function () {
     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     DettaglioAnagrafica.clickSubTab('Conti correnti')
     SCUContiCorrenti.aggiungiContoCorrente(contoCorrente, client).then((conto) => {
