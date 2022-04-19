@@ -39,16 +39,16 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
 
-})
+// })
 //#endregion Before After
 
 describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
@@ -71,18 +71,19 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
         })
 
         //TODO supporto per trovare modalità estrazione per queste voci affinchè siano utilizzabili
-        it('Riquietanzamento per clienti valori extra', function () {
-        })
+        // it('Riquietanzamento per clienti valori extra', function () {
+        // })
 
-        it('Riduzione premi > Consolidamento Riduzione Premi', function () {
-        })
+        // it('Riduzione premi > Consolidamento Riduzione Premi', function () {
+        // })
 
-        it('Generazione avviso', function () {
-        })
+        // it('Generazione avviso', function () {
+        // })
     })
 
-    context('Motor > Menu Polizza', () => {
-        it('Sostituzione / Riattivazione auto', function () {
+    context('Motor > Menu Polizza', function(){
+        it.only('Sostituzione / Riattivazione auto', function () {
+            cy.pause()
             Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.SOSTITUZIONE_RIATTIVAZIONE_AUTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
         })
 
@@ -90,12 +91,36 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_POLIZZA, false)
         })
 
-        it.only('Consultazione > Documenti di polizza', function () {
-            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_DOCUMENTI_POLIZZA,false)
+        it('Consultazione > Documenti di polizza', function () {
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_DOCUMENTI_POLIZZA, false)
         })
 
-        it.only('Modifica modalità di pagamento preferito della polizza', function () {
-            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.MODIFICA_MODALITA_PAGAMENTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO,false)
+        it('Modifica modalità di pagamento preferito della polizza', function () {
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.MODIFICA_MODALITA_PAGAMENTO, false, null, null, Sfera.TIPOMODALITAPAGAMENTO.CONTANTI)
         })
+
+        //TODO supporto per trovare modalità estrazione per queste voci affinchè siano utilizzabili
+        // it('Ripresa prev. auto', function () {
+        // })
+
+        // it('Dettaglio abbinata', function () {
+        // })
+
+        // it('Disattivazione Allianz Pay', function () {
+        // })
     })
+
+    //TODO
+    // context('Rami Vari > Menu Polizza'), function(){
+    //     it('Sostituzione rami vari', function () {
+    //     })
+
+    //     it('Consultazione > Comparatore AZ ultra', function () {
+            
+    //     })
+
+    //     it('Modulari', function () {
+            
+    //     });
+    // }
 })
