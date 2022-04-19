@@ -32,7 +32,8 @@ let keys = {
     FlotteConvenzioniEnabled: true,
     PreventivoAnonimoVitaenabled: true,
     MiniflotteEnabled: true,
-    TrattativeAutoCorporateEnabled: true
+    TrattativeAutoCorporateEnabled: true,
+    PREVENTIVO_MOTOR_SAFEDRIVE: true
 }
 
 let keysRapidi = {
@@ -66,6 +67,7 @@ before(() => {
                 cy.filterProfile(profiling, 'VITA_PREVENTIVAZIONE_ANONIMA').then(profiled => { keys.PreventivoAnonimoVitaenabled = profiled })
                 cy.filterProfile(profiling, 'COMMON_MINIFLOTTE').then(profiled => { keys.MiniflotteEnabled = profiled })
                 cy.filterProfile(profiling, 'COMMON_TOOL_TRATTATIVE').then(profiled => { keys.TrattativeAutoCorporateEnabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_SAFE_DRIVE').then(profiled => { keys.PREVENTIVO_MOTOR_SAFEDRIVE = profiled })
             })
 
             //Profiling collegamenti rapidi
@@ -141,6 +143,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Azioni Veloci Motor', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
@@ -357,6 +361,13 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
+    it('Verifica aggancio Emetti Polizza - Preventivo Motor SafeDrive', function () {
+        if (!keys.COMMON_SAFE_DRIVE)
+            this.skip()
+        TopBar.clickSales()
+        Sales.clickLinkOnEmettiPolizza('Preventivo Motor SafeDrive')
+        Sales.backToSales()
+    })
 
     //TODO: Implement profiling keys for Emmetti Polizza
     https://github.developer.allianz.io/az-italy/matrix-web-fe-tests/issues/65
