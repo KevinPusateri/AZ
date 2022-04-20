@@ -44,26 +44,18 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+})
 //#endregion Before After
 
 describe('Matrix Web : Sfera 4.0', function () {
-
-    it('Verificare presenza ed accesso a Delta Premio da menù contestuale e ritorno in Sfera', function () {
-        Sfera.setDateEstrazione()
-        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-        Sfera.estrai()
-        Sfera.apriVoceMenu(Sfera.VOCIMENU.DELTA_PREMIO)
-        Sfera.verificaAccessoSfera()
-    })
 
     it('Verificare Cluster Motor Delta Premio Positivo e Negativo', function () {
         Sfera.setDateEstrazione()
@@ -133,26 +125,26 @@ describe('Matrix Web : Sfera 4.0', function () {
 
     context('Verifica Rotella Gestione Colonne', () => {
 
-        it.only('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
+        it('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
             Sfera.setDateEstrazione()
             Sfera.estrai()
             Sfera.gestisciColonne(['Cod. AZPay'])
             Sfera.checkColonnaPresente('Cod. AZPay')
-            // Sfera.bloccaColonna('Cod. AZPay')
+            Sfera.bloccaColonna('Cod. AZPay')
             // Sfera.dragDropColonna('Cod. AZPay') //! Da Implementare in quanto da studiare
-            // Sfera.eliminaColonna('Cod. AZPay')
-            // Sfera.checkColonnaAssente('Cod. AZPay')
-            Sfera.salvaVistaPersonalizzata() //! Bug Aperto 
+            Sfera.eliminaColonna('Cod. AZPay')
+            Sfera.checkColonnaAssente('Cod. AZPay')
+            Sfera.salvaVistaPersonalizzata('Automatici')
+            Sfera.selezionaVista('Automatici')
+            Sfera.eliminaVista('Automatici')
         })
 
-        // it('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
-        //     Sfera.setDateEstrazione()
-        //     Sfera.estrai()
-        //     Sfera.gestisciColonne(['Cod. AZPay'])
-        //     Sfera.sostituisciVista('prova 1')
-        //     Sfera.selezionaVista('prova 1') //? Nella vista Sostituita non è presente la colonna aggiunta al rientro in Sfera
-        //     Sfera.checkColonnaPresente('Cod. AZPay')
-        // })
+        it('Verifica Sostituisci Vista', function () {
+            Sfera.gestisciColonne(['Cod. AZPay'])
+            Sfera.sostituisciVista('prova 1')
+            Sfera.selezionaVista('prova 1')
+            Sfera.checkColonnaPresente('Cod. AZPay')
+        })
 
     });
 
