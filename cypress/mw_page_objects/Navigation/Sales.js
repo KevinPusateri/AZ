@@ -156,7 +156,7 @@ class Sales {
             url: '**/estraiQuietanze'
         }).as('estrai');
         cy.get('app-receipt-manager').should('be.visible').contains('Estrai').click()
-        cy.wait('@estrai', { requestTimeout: 50000 });
+        cy.wait('@estrai', { timeout: 50000 });
     }
 
     /**
@@ -278,7 +278,7 @@ class Sales {
             })
             cy.contains('Procedi').click()
 
-            cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 }).then(gqlCampaignAgent => {
+            cy.wait('@gqlCampaignAgent', { timeout: 60000 }).then(gqlCampaignAgent => {
                 expect(gqlCampaignAgent.response.statusCode).to.be.eq(200);
                 assert.isNotNull(gqlCampaignAgent.response.body)
 
@@ -306,7 +306,7 @@ class Sales {
                 url: '**/estraiQuietanze'
             }).as('estrai');
             cy.contains('Estrai').click()
-            cy.wait('@estrai', { requestTimeout: 50000 });
+            cy.wait('@estrai', { timeout: 50000 });
             cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
             cy.get('#main-table-sfera').should('exist').and('be.visible')
             cy.get('@styleColor').then((color) => {
@@ -559,7 +559,7 @@ class Sales {
                     url: '**/aggiornaContatoriCluster'
                 }).as('aggiornaContatoriCluster');
                 cy.get('app-quick-access').contains('Nuovo Sfera').click()
-                cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 });
+                cy.wait('@aggiornaContatoriCluster', { timeout: 60000 });
                 cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + LinksRapidi.NUOVO_SFERA, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -570,7 +570,7 @@ class Sales {
                 }).as('getDacommerciale');
                 cy.get('app-quick-access').find('lib-da-link').contains('Sfera').click()
                 Common.canaleFromPopup()
-                cy.wait('@getDacommerciale', { requestTimeout: 50000 });
+                cy.wait('@getDacommerciale', { timeout: 50000 });
                 getIFrame().find('ul > li > span:contains("Quietanzamento"):visible')
                 getIFrame().find('ul > li > span:contains("Visione Globale"):visible')
                 getIFrame().find('ul > li > span:contains("Portafoglio"):visible')
@@ -589,7 +589,7 @@ class Sales {
                 })
                 cy.get('app-quick-access').contains('Campagne Commerciali').click()
                 Common.canaleFromPopup()
-                cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 }).then(gqlCampaignAgent => {
+                cy.wait('@gqlCampaignAgent', { timeout: 60000 }).then(gqlCampaignAgent => {
                     expect(gqlCampaignAgent.response.statusCode).to.be.eq(200);
                     assert.isNotNull(gqlCampaignAgent.response.body)
                 })
@@ -610,7 +610,7 @@ class Sales {
                 }).as('inizializzaContratti');
                 cy.get('app-quick-access').contains('Monitoraggio Polizze Proposte').click()
                 Common.canaleFromPopup()
-                cy.wait('@inizializzaContratti', { requestTimeout: 30000 });
+                cy.wait('@inizializzaContratti', { timeout: 30000 });
                 getIFrame().find('button:contains("Cerca"):visible')
                 cy.screenshot('Verifica aggancio ' + LinksRapidi.MONITORAGGIO_POLIZZE_PROPOSTE, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -621,7 +621,7 @@ class Sales {
                 }).as('inizializzaContratti');
                 cy.get('app-quick-access').contains('Monitoraggio Polizze Proposte').click()
                 Common.canaleFromPopup()
-                cy.wait('@inizializzaContratti', { requestTimeout: 30000 });
+                cy.wait('@inizializzaContratti', { timeout: 30000 });
                 getIFrame().find('button:contains("Cerca"):visible')
                 cy.screenshot('Verifica aggancio ' + LinksRapidi.GED_GESTIONE_DOCUMENTALE, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -668,8 +668,8 @@ class Sales {
                     url: '**/assuntivomotor/**'
                 }).as('getMotor');
                 Common.canaleFromPopup()
-                cy.wait('@getMotor', { requestTimeout: 100000 });
-                getIFrame().find('button:contains("Calcola"):visible', { timeout: 10000 })
+                cy.wait('@getMotor', { timeout: 100000 });
+                getIFrame().find('button:contains("Calcola"):visible', { timeout: 120000 })
                 cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.PREVENTIVO_MOTOR, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO:
@@ -678,7 +678,7 @@ class Sales {
                     url: '**/ultra/**'
                 }).as('getUltra');
                 Common.canaleFromPopup()
-                cy.wait('@getUltra', { requestTimeout: 30000 });
+                cy.wait('@getUltra', { timeout: 30000 });
                 cy.wait(5000)
                 getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
@@ -700,8 +700,8 @@ class Sales {
                     url: '**/matrix/sales/**'
                 }).as('getMatrixSales');
                 Common.canaleFromPopup()
-                cy.wait('@getUltra', { requestTimeout: 50000 });
-                cy.wait('@getMatrixSales', { requestTimeout: 30000 });
+                cy.wait('@getUltra', { timeout: 50000 });
+                cy.wait('@getMatrixSales', { timeout: 30000 });
                 cy.wait(5000)
                 getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-salute.png' : './assets/img/aviva-logo-salute.png')
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
@@ -723,8 +723,8 @@ class Sales {
                     url: '**/allianzRicSemBE/api/**'
                 }).as('getApi');
                 Common.canaleFromPopup()
-                cy.wait('@getDanni', { requestTimeout: 30000 });
-                cy.wait('@getApi', { requestTimeout: 30000 });
+                cy.wait('@getDanni', { timeout: 30000 });
+                cy.wait('@getApi', { timeout: 30000 });
                 getIFrame().find('button:contains("CALCOLA IL TUO PREZZO")').should('be.visible', { timeout: 20000 })
                 cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.ALLIANZ1_BUSINESS, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                 break;
@@ -734,7 +734,7 @@ class Sales {
                     url: '**/Auto/**'
                 }).as('getAuto');
                 Common.canaleFromPopup()
-                cy.wait('@getAuto', { requestTimeout: 30000 });
+                cy.wait('@getAuto', { timeout: 30000 });
                 getIFrame().find('form input[value="Cerca"]', { timeout: 10000 }).invoke('attr', 'value').should('equal', 'Cerca')
                 cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.FASTQUOTE_IMPRESA_E_ALBERGO, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                 break;
@@ -759,8 +759,8 @@ class Sales {
                     url: '**/GetElenco'
                 }).as('getElenco');
                 Common.canaleFromPopup()
-                cy.wait('@getAuto', { requestTimeout: 30000 });
-                cy.wait('@getElenco', { requestTimeout: 30000 });
+                cy.wait('@getAuto', { timeout: 30000 });
+                cy.wait('@getElenco', { timeout: 30000 });
                 getIFrame().find('span:contains("Nuova Trattativa"):visible', { timeout: 10000 })
                 cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.MINIFLOTTE, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                 break;
@@ -770,7 +770,7 @@ class Sales {
                     url: '**/Auto/**'
                 }).as('getAuto');
                 Common.canaleFromPopup()
-                cy.wait('@getAuto', { requestTimeout: 30000 });
+                cy.wait('@getAuto', { timeout: 30000 });
                 getIFrame().find('span:contains("Nuova Trattativa"):visible', { timeout: 10000 })
                 cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.TRATTATIVE_AUTO_CORPORATE, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                 break;
@@ -780,7 +780,7 @@ class Sales {
                     url: /Danni*/
                 }).as('getDanni');
                 Common.canaleFromPopup()
-                cy.wait('@getDanni', { requestTimeout: 40000 });
+                cy.wait('@getDanni', { timeout: 40000 });
                 getIFrame().find('#main-wrapper input[value="Cerca"]', { timeout: 10000 }).invoke('attr', 'value').should('equal', 'Cerca')
                 cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.GESTIONE_RICHIESTE_PER_PA, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                 break;
@@ -790,7 +790,7 @@ class Sales {
                     url: '**/dati-quotazione'
                 }).as('getDati');
                 Common.canaleFromPopup()
-                cy.wait('@getDati', { requestTimeout: 40000 });
+                cy.wait('@getDati', { timeout: 40000 });
                 getIFrame().find('button:contains("Calcola"):visible', { timeout: 10000 })
                 cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.PREVENTIVO_MOTOR_SAFEDRIVE, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                 break;
@@ -819,8 +819,8 @@ class Sales {
                 if (!$btn.hasClass('disabled')) {
                     cy.wrap($btn).click()
                     cy.get('.details-container').find('button:contains("Estrai dettaglio")').click()
-                    cy.wait('@getDacommerciale', { requestTimeout: 50000 });
-                    cy.wait('@getRicercaDatiAnagraficiRipetitore', { requestTimeout: 50000 });
+                    cy.wait('@getDacommerciale', { timeout: 50000 });
+                    cy.wait('@getRicercaDatiAnagraficiRipetitore', { timeout: 50000 });
                     getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
                     cy.screenshot('Estrazione Dettaglio', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                     check = false
@@ -924,7 +924,7 @@ class Sales {
         }).as('getDanni');
         cy.get('.cards-container').find('.card').first().click()
         Common.canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 30000 });
+        cy.wait('@getDanni', { timeout: 30000 });
         getIFrame().find('button:contains("Cerca"):visible')
         cy.screenshot('Verifica Dettaglio Contratto', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
     }
@@ -955,8 +955,8 @@ class Sales {
             url: '**/Danni/**'
         }).as('getDanniG');
         Common.canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 40000 });
-        cy.wait('@getDanniG', { requestTimeout: 40000 });
+        cy.wait('@getDanni', { timeout: 40000 });
+        cy.wait('@getDanniG', { timeout: 40000 });
         cy.wait(10000)
         cy.get('#iframe-container').within(() => {
             getIFrame().find('form:contains("Cerca"):visible')
@@ -982,8 +982,8 @@ class Sales {
             }
         })
         cy.get('app-proposals-section').contains('Proposte').click()
-        cy.wait('@gqlDamage', { requestTimeout: 50000 });
-        cy.wait('@gqlsalesDamagePremium', { requestTimeout: 50000 });
+        cy.wait('@gqlDamage', { timeout: 50000 });
+        cy.wait('@gqlsalesDamagePremium', { timeout: 50000 });
         cy.get('app-paginated-cards').find('button:contains("Danni")').click()
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
         cy.get('app-paginated-cards')
@@ -1013,9 +1013,9 @@ class Sales {
             }
         })
         cy.get('app-proposals-section').contains('Proposte').click()
-        // cy.wait('@gqlLife', { requestTimeout: 30000 });
-        cy.wait('@gqlDamage', { requestTimeout: 50000 });
-        cy.wait('@gqlsalesDamagePremium', { requestTimeout: 50000 });
+        // cy.wait('@gqlLife', { timeout: 30000 });
+        cy.wait('@gqlDamage', { timeout: 50000 });
+        cy.wait('@gqlsalesDamagePremium', { timeout: 50000 });
         cy.get('app-paginated-cards').find('button:contains("Vita")').click().wait(3000)
         cy.get('app-paginated-cards')
             .screenshot('Verifica Proposte Da Vita', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
@@ -1049,7 +1049,7 @@ class Sales {
         cy.get('.cards-container').should('be.visible').find('.card').first().as('firstCard')
         cy.get('@firstCard').trigger('mouseover')
         cy.get('@firstCard').click({ force: true })
-        cy.wait('@digitalAgencyLink', { requestTimeout: 30000 });
+        cy.wait('@digitalAgencyLink', { timeout: 30000 });
         cy.wait(20000)
         getIFrame().within(() => {
             cy.get('#AZBuilder1_ctl14_cmdEsci').should('be.visible').invoke('attr', 'value').should('equal', '  Esci  ')
@@ -1072,8 +1072,8 @@ class Sales {
             url: '**/Danni/**'
         }).as('getDanniG');
         Common.canaleFromPopup()
-        cy.wait('@getDanni', { requestTimeout: 40000 });
-        cy.wait('@getDanniG', { requestTimeout: 40000 });
+        cy.wait('@getDanni', { timeout: 40000 });
+        cy.wait('@getDanniG', { timeout: 40000 });
         cy.wait(5000)
         cy.get('#iframe-container').within(() => {
             getIFrame().find('form:contains("Cerca"):visible')
@@ -1091,7 +1091,7 @@ class Sales {
         })
         cy.get('nx-tab-header').find('button:contains("CAMPAGNE")').click()
         Common.canaleFromPopup()
-        cy.wait('@gqlCampaignAgent', { requestTimeout: 60000 });
+        cy.wait('@gqlCampaignAgent', { timeout: 60000 });
         cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
         getIFrame().find('button:contains("Verifica stato campagne attive"):visible')
         cy.screenshot('Verifica Campagne', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
