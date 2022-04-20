@@ -177,7 +177,7 @@ class Sales {
 
             cy.get('nx-card-header').should('be.visible')
                 .find('h3[nxheadline="subsection-small"]').each((card, index) => {
-                    cy.wrap(card).should('include.text', carico[index])
+                    expect(card.text().trim().replace(/\./g, '')).to.be.eq(carico[index].replace(/\./g, ''))
                 })
         })
 
@@ -382,26 +382,33 @@ class Sales {
 
     /**
      * Click checkBox Cluster 
-     * @param {string} cluster 
+     * e verifica se è stato selezionato
+     * @param {string} cluster - nome del cluster
      * @param {boolean} onModal - Dalla modale di "Seleziona altri cluster" 
+     * @param {boolean} selected - default settato a false, verifica se il checkbox è stato cliccato,
+     * altrimenti unchecked 
      */
-    static clickCluster(cluster, onModal = false) {
+    static clickCluster(cluster, onModal = false, selected = false) {
         cy.contains(cluster).parents('app-receipt-manager-cluster').within(() => {
             cy.get('nx-checkbox').click()
         })
 
-        // Verifico che il Cluster sia stato selezionato
-        if (onModal) {
-            cy.contains(cluster)
-                .parents('app-receipt-manager-cluster')
-                .children()
-                .should('have.class', 'app-receipt-manager-cluster onModal selected')
+        if (!selected) {
+            // Verifico che il Cluster sia stato selezionato
+            if (onModal) {
+                cy.contains(cluster)
+                    .parents('app-receipt-manager-cluster')
+                    .children()
+                    .should('have.class', 'app-receipt-manager-cluster onModal selected')
+            }
+            else
+                cy.contains(cluster)
+                    .parents('app-receipt-manager-cluster')
+                    .children()
+                    .should('have.class', 'app-receipt-manager-cluster selected')
         }
-        else
-            cy.contains(cluster)
-                .parents('app-receipt-manager-cluster')
-                .children()
-                .should('have.class', 'app-receipt-manager-cluster selected')
+
+
     }
 
     /**
@@ -1052,7 +1059,9 @@ class Sales {
         cy.wait('@digitalAgencyLink', { timeout: 30000 });
         cy.wait(20000)
         getIFrame().within(() => {
-            cy.get('#AZBuilder1_ctl14_cmdEsci').should('be.visible').invoke('attr', 'value').should('equal', '  Esci  ')
+            cy.get('td[class="AZBasicButtons"]').should('be.visible').within(()=>{
+                cy.get('input[value="  Esci  "]').should('be.visible')
+            })
         })
         cy.screenshot('Verifica Dettaglio Card Vita Proposte', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
 
@@ -1276,7 +1285,8 @@ class Sales {
         cy.get('app-sfera').should('be.visible').within(() => {
             var countTotaleCarico = 0.00
             cy.get('app-receipt-manager-header-item').find('span[class="value ng-star-inserted"]').each(($item) => {
-                countTotaleCarico += (+$item.text().split('pz')[0].trim())
+                console.log($item.text().split('pz')[0].trim())
+                countTotaleCarico += (+$item.text().split('pz')[0].trim().replace(/\./g, ''))
             })
 
             cy.get('div[class="app-receipt-header"]').within(() => {
@@ -1331,6 +1341,8 @@ class Sales {
                             .then(($caricoDaEstrarreChanged) => {
                                 var countTotaleCaricoChanged = (+($caricoDaEstrarreChanged.text().split('pz')[0].trim().replace(/\./g, '')))
                                 expect(countTotaleCarico).to.be.above(countTotaleCaricoChanged)
+                                this.clickCluster($title.eq(0).text(), false, true)
+                                this.clickCluster($title.eq(1).text(), false, true)
                             })
                     })
 
