@@ -182,39 +182,38 @@ class BurgerMenuNumbers extends Numbers {
     static checkPage(page) {
         switch (page) {
             case LinksBurgerMenu.MONITORAGGIO_FONTI:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                cy.wait('@getDacommercialePOST', { requestTimeout: 150000 });
+                cy.wait('@getDacommercialeGET', { timeout: 150000 });
+                cy.wait('@getDacommercialePOST', { timeout: 150000 });
                 getIFrame().find('a:contains("Filtra")')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@getDacommercialeGET', { timeout: 150000 });
                 cy.wait(15000)
                 getIFrame().find('#btnFonti').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.MONITORAGGIO_CARICO_FONTE:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@getDacommercialeGET', { timeout: 150000 });
                 cy.wait(15000)
                 getIFrame().find('#contentPane:contains("Apri filtri"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.X_ADVISOR:
-                cy.contains('Advisor')
-                cy.contains('Dashboard')
+                cy.contains('Advisor',{timeout:20000})
+                cy.contains('Dashboard',{timeout:20000})
                 cy.get('textarea').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 Common.visitUrlOnEnv()
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 })
+                cy.wait('@getDacommercialeGET', { timeout: 150000 })
                 cy.wait(10000)
-                if (Cypress.env('isAviva'))
-                    getIFrame().find('h1').should('contain.text', (Cypress.env('isAviva')) ? 'Incentivazioni Allianz Viva' : 'Cruscotto Incentivazione')
+                getIFrame().find('h1').should('contain.text', (Cypress.env('isAviva')) ? 'Incentivazioni Allianz Viva' : 'Cruscotto Incentivazione')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE_RECRUITING:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@getDacommercialeGET', { timeout: 150000 });
                 if (!Cypress.env('monoUtenza'))
                     getIFrame().find('[class="menu-padre"]:contains("Report"):visible')
                 else
@@ -223,43 +222,43 @@ class BurgerMenuNumbers extends Numbers {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ANDAMENTI_TECNICI:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
+                cy.wait('@getDacommercialeGET', { timeout: 150000 });
                 getIFrame().find('button:contains("Fonti produttive"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ESTRAZIONI_AVANZATE:
-                cy.wait('@pentahoDA', { requestTimeout: 40000 });
-                cy.wait('@pentahoDama', { requestTimeout: 40000 });
+                cy.wait('@pentahoDA', { timeout: 40000 });
+                cy.wait('@pentahoDama', { timeout: 40000 });
                 getIFrame().find('a:contains("Nuovo Report"):visible')
                 break;
             case LinksBurgerMenu.SCARICO_DATI:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
+                cy.wait('@getDacommercialeGET', { timeout: 150000 });
+                cy.wait('@gqlsaveoperation', { timeout: 40000 });
                 getIFrame().find('form:contains("Esporta tracciato")')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.INDICI_DIGITALI:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
+                cy.wait('@getDacommercialeGET', { timeout: 150000 });
+                cy.wait('@gqlsaveoperation', { timeout: 40000 });
                 getIFrame().find('#toggleFilters:contains("Apri filtri")')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_DANNI:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
+                cy.wait('@getDacommercialeGET', { timeout: 150000 });
+                cy.wait('@gqlsaveoperation', { timeout: 40000 });
                 getIFrame().find('#ricerca_cliente').should('be.visible').and('contain.text', 'Filtra')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO:
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_SALUTE:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
+                cy.wait('@getDacommercialeGET', { timeout: 150000 });
+                cy.wait('@gqlsaveoperation', { timeout: 40000 });
                 getIFrame().find('#submit-Mon_PTF').should('be.visible').and('contain.text', 'Filtra')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_VITA:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
+                cy.wait('@getDacommercialeGET', { timeout: 150000 });
+                cy.wait('@gqlsaveoperation', { timeout: 40000 });
                 cy.wait(15000)
                 getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -273,9 +272,9 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.MONITORAGGIO_RICAVI_AGENZIA:
             case LinksBurgerMenu.CAPITALE_VITA_SCADENZA:
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_IMPRESA:
-                cy.wait('@getDacommercialeGET', { requestTimeout: 150000 });
-                cy.wait('@getDacommercialePOST', { requestTimeout: 150000 });
-                cy.wait('@gqlsaveoperation', { requestTimeout: 40000 });
+                cy.wait('@getDacommercialeGET', { timeout: 150000 });
+                cy.wait('@getDacommercialePOST', { timeout: 150000 });
+                cy.wait('@gqlsaveoperation', { timeout: 40000 });
                 getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
