@@ -245,6 +245,49 @@ const VociMenuCliente = {
 }
 
 /**
+ * Enum Voci Menu Emissione
+ * @readonly
+ * @enum {Object}
+ */
+const VociMenuEmissione = {
+    AUTO: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Nuova polizza Auto'
+    },
+    RAMI_VARI: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Nuova polizza Rami Vari'
+    },
+    SERVIZIO_CONSULENZA_VITA: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Servizio consulenza del Vita'
+    },
+    ULTRA_CASA_PATRIMONIO: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Nuova polizza Allianz Ultra Casa e Patrimonio'
+    },
+    ULTRA_SALUTE: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Nuova polizza Allianz Ultra Salute'
+    },
+    ULTRA_IMPRESA: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Nuova polizza Allianz Ultra Impresa'
+    },
+    PREVENTIVO_MOTOR: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Preventivo Motor'
+    }
+}
+
+/**
  * Enum Cluster
  * @readonly
  * @enum {Object}
@@ -437,6 +480,14 @@ class Sfera {
      */
     static get VOCIMENUCLIENTE() {
         return VociMenuCliente
+    }
+
+    /**
+     * Funzione che ritorna le voci di menu Cliente disponibili su Sfera
+     * @returns {VociMenuEmissione} Voci di Menu Cliente
+     */
+    static get VOCIMENUEMISSIONE() {
+        return VociMenuEmissione
     }
 
     /**
@@ -1340,9 +1391,9 @@ class Sfera {
                             force: true,
                             source: { x: 100, y: 100 }
                         })
-                        // .then((success) => {
-                        //     assert.isTrue(success)
-                        // })
+                    // .then((success) => {
+                    //     assert.isTrue(success)
+                    // })
                     // const dataTransfer = new DataTransfer();
                     // cy.get('@colonna').trigger('dragstart', { dataTransfer }, { force: true }).wait(500)
                     // cy.get('@otherColumn')

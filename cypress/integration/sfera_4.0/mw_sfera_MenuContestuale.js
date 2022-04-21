@@ -123,12 +123,12 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
     //     });
     // }
 
-    context('Motor > Menu Cliente', function() {
+    context('Menu Cliente', function() {
         it('Scheda cliente', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.SCHEDA_CLIENTE, false)
         })
 
-        it.only('Lista polizze', function () {
+        it('Lista polizze', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE, false)
         })
 
@@ -140,4 +140,27 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
         // it('Report profilo vita', function () {
         // })
     })
+
+    context('Menu Emissione', function() {
+        it('Nuova polizza Auto', function () {
+        })
+
+        it('Nuova polizza Rami Vari', function () {
+        })
+
+        it('Servizio consulenza del Vita', function () {
+        })
+
+        it('Nuova polizza Allianz Ultra Casa e Patrimonio', function () {
+        })
+
+        it('Nuova polizza Allianz Ultra Salute', function () {
+        })
+
+        it('Nuova polizza Allianz Ultra Impresa', function () {
+        })
+
+        it('Preventivo Motor', function () {
+        })
+    });
 })
