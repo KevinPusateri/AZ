@@ -123,7 +123,7 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.estrazioneReportExcel()
     })
 
-    context('Verifica Rotella Gestione Colonne', () => {
+    context('🖕🔥Verifica Rotella Gestione Colonne', () => {
 
         it('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
             Sfera.setDateEstrazione()
@@ -131,7 +131,7 @@ describe('Matrix Web : Sfera 4.0', function () {
             Sfera.gestisciColonne(['Cod. AZPay'])
             Sfera.checkColonnaPresente('Cod. AZPay')
             Sfera.bloccaColonna('Cod. AZPay')
-            // Sfera.dragDropColonna('Cod. AZPay') //! Da Implementare in quanto da studiare
+            // Sfera.dragDropColonna('Info') //! Da Implementare in quanto da studiare
             Sfera.eliminaColonna('Cod. AZPay')
             Sfera.checkColonnaAssente('Cod. AZPay')
             Sfera.salvaVistaPersonalizzata('Automatici')

@@ -1070,19 +1070,19 @@ class Sfera {
 
             cy.get('div[class="modal-gestisci-viste-content ng-star-inserted"]')
                 .should('be.visible').within(() => {
-                   cy.get('div[class="flex-content center-content row-view ng-star-inserted"]:contains("'+nameVista+'")').within(()=>{
-                       cy.get('nx-icon[class~="nx-icon--trash-o"]').click()
-                   })
+                    cy.get('div[class="flex-content center-content row-view ng-star-inserted"]:contains("' + nameVista + '")').within(() => {
+                        cy.get('nx-icon[class~="nx-icon--trash-o"]').click()
+                    })
                 })
-                cy.intercept(caricaVista).as('caricaVista')
-                cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
-                cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+            cy.intercept(caricaVista).as('caricaVista')
+            cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+            cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
 
-                cy.get('button[nxmodalclose="Agree"]').click()
+            cy.get('button[nxmodalclose="Agree"]').click()
 
-                cy.wait('@caricaVista', { timeout: 60000 })
-                cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+            cy.wait('@caricaVista', { timeout: 60000 })
+            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
         })
 
     }
@@ -1215,24 +1215,25 @@ class Sfera {
             cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
             cy.get('nx-modal-container:visible').should('be.visible').within(() => {
                 cy.wait(5000)
-                // const dataTransfer = new DataTransfer();
                 cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').should('be.visible').within(() => {
                     cy.contains(colonna)
                         .parents('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
-                        .within(() => {
-                            cy.get('nx-icon:first').as('column')
+                        .find('nx-icon:first').within(($colonna) => {
+                            cy.wrap($colonna).as('colonna')
                         })
+
+                    cy.get('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
+                        .eq(3).find('nx-icon:first').as('otherColumn')
+                    cy.get('@colonna')
+                        .drag('@otherColumn').wait(500)
+                    const dataTransfer = new DataTransfer();
+                    cy.get('@colonna').trigger('dragstart', { dataTransfer }, { force: true }).wait(500)
+                    cy.get('@otherColumn')
+                        .trigger('dragover', { force: true }).wait(500)
+                    cy.get('@otherColumn')
+                        .trigger('drop', { dataTransfer }).wait(500)
+                    cy.get('@colonna').trigger('dragend', { force: true })
                 })
-                cy.get('@column').move({ deltaX: 50, deltaY: 50 })
-                // .trigger('dragstart', {
-                //     dataTransfer
-                // })
-
-                // cy.get('div[class="cdk-drop-list elements ng-star-inserted]').trigger('drop', {
-                //     dataTransfer
-                // })
-
-                // cy.get('')
             })
         })
     }
@@ -1470,7 +1471,7 @@ class Sfera {
                     break;
                 case TabScheda.NOTE:
                     cy.screenshot(TabScheda.NOTE, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    // checkNote() //!Da abilitare alla chiusura del BUG
+                    checkNote()//! BUG
                     break
                 case TabScheda.DETTAGLIO_PREMI:
                     cy.screenshot(TabScheda.DETTAGLIO_PREMI, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1492,6 +1493,7 @@ class Sfera {
                     cy.get('input[formcontrolname="titolo"]').type('Titolo Automatici')
                     cy.get('textarea[formcontrolname="testo"]').type('Testo Automatici')
                     cy.contains('Salva nota').click()
+                    cy.pause()
                 })
             }
 
