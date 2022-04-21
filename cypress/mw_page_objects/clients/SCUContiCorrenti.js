@@ -51,7 +51,6 @@ class SCUContiCorrenti {
             getSCU().find('label[for="annoApertura"]').then((textAnnoApertura) => contoCorrente.annoApertura = textAnnoApertura.text())
             getSCU().within(()=>{
                 cy.get('div[class^="header-container"]').scrollIntoView().should('be.visible')
-                cy.pause()
                 cy.screenshot('Verifica Conto corrente salvato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             })
             getSCU().find('#submit:contains("Salva")').click().wait(8000);
