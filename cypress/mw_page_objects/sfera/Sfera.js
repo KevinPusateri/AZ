@@ -1218,21 +1218,27 @@ class Sfera {
                 cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').should('be.visible').within(() => {
                     cy.contains(colonna)
                         .parents('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
-                        .find('nx-icon:first').within(($colonna) => {
+                        .within(($colonna) => {
                             cy.wrap($colonna).as('colonna')
                         })
 
                     cy.get('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
-                        .eq(3).find('nx-icon:first').as('otherColumn')
+                        .eq(3).as('otherColumn')
                     cy.get('@colonna')
-                        .drag('@otherColumn').wait(500)
-                    const dataTransfer = new DataTransfer();
-                    cy.get('@colonna').trigger('dragstart', { dataTransfer }, { force: true }).wait(500)
-                    cy.get('@otherColumn')
-                        .trigger('dragover', { force: true }).wait(500)
-                    cy.get('@otherColumn')
-                        .trigger('drop', { dataTransfer }).wait(500)
-                    cy.get('@colonna').trigger('dragend', { force: true })
+                        .drag('@otherColumn', {
+                            force: true,
+                            source: { x: 100, y: 100 }
+                        })
+                        // .then((success) => {
+                        //     assert.isTrue(success)
+                        // })
+                    // const dataTransfer = new DataTransfer();
+                    // cy.get('@colonna').trigger('dragstart', { dataTransfer }, { force: true }).wait(500)
+                    // cy.get('@otherColumn')
+                    //     .trigger('dragover', { force: true }).wait(500)
+                    // cy.get('@otherColumn')
+                    //     .trigger('drop', { dataTransfer }).wait(500)
+                    // cy.get('@colonna').trigger('dragend', { force: true })
                 })
             })
         })
