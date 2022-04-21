@@ -385,20 +385,7 @@ class DenunciaSinistriPage {
             return check           
         //})
     }
-    /*
-    static isVisibleText(text)
-    { 
-        let visible = false;
-        cy.log('>> check if the text="' +text+ '" is defined...')
-        findIframeChild(IframeDen).contains(text, { timeout: 10000 }).should('exist').and('be.visible')
-        .then(() => {       
-            visible =  true;
-            cy.log('>> [text="' +text+ '"] defined!')
-        });        
-        assert.isTrue(visible, ">> is text='"+test+"' visible")   
-        return visible
-    }
-    */
+ 
     /**
      * Check if the value is defined
      * @param {string} value : string value to check
