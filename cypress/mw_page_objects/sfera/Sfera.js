@@ -7,6 +7,8 @@ import Common from "../../mw_page_objects/common/Common"
 import IncassoDA from "../../mw_page_objects/da/IncassoDA"
 import InquiryAgenzia from "../../mw_page_objects/da/InquiryAgenzia"
 import Folder from "../../mw_page_objects/common/Folder"
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
+import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
 
 //#region Intercept
 const infoUtente = {
@@ -215,6 +217,34 @@ const VociMenuPolizza = {
 }
 
 /**
+ * Enum Voci Menu Cliente
+ * @readonly
+ * @enum {Object}
+ */
+const VociMenuCliente = {
+    SCHEDA_CLIENTE: {
+        root: 'Cliente',
+        parent: '',
+        key: 'Scheda cliente'
+    },
+    LISTA_POLIZZE: {
+        root: 'Cliente',
+        parent: '',
+        key: 'Lista polizze'
+    },
+    LISTA_SINISTRI: {
+        root: 'Cliente',
+        parent: '',
+        key: 'Lista sinistri'
+    },
+    REPORT_PROFILO_VITA: {
+        root: 'Cliente',
+        parent: '',
+        key: 'Report profilo vita'
+    }
+}
+
+/**
  * Enum Cluster
  * @readonly
  * @enum {Object}
@@ -399,6 +429,14 @@ class Sfera {
      */
     static get VOCIMENUPOLIZZA() {
         return VociMenuPolizza
+    }
+
+    /**
+     * Funzione che ritorna le voci di menu Cliente disponibili su Sfera
+     * @returns {VociMenuCliente} Voci di Menu Cliente
+     */
+    static get VOCIMENUCLIENTE() {
+        return VociMenuCliente
     }
 
     /**
@@ -719,8 +757,9 @@ class Sfera {
 
             //Andiamo a selezionare il menu contestuale 'figlio'
             this.menuContestualeChild().within(() => {
-                //? CONSULTAZIONE_DOCUMENTI_POLIZZA si apre su nuovo tab, quindi gestisto il _self
-                if (voce.key === VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA.key) {
+                //? CONSULTAZIONE_DOCUMENTI_POLIZZA, Voci menu Cliente si apre su nuovo tab, quindi gestisto il _self
+                if (voce.key === VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA.key ||
+                    voce.root === 'Cliente') {
                     cy.window().then(win => {
                         cy.stub(win, 'open').callsFake((url) => {
                             return win.open.wrappedMethod.call(win, url, '_self');
@@ -868,6 +907,78 @@ class Sfera {
                         cy.screenshot('Modalità Pagamento Preferita settata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                         cy.contains('Chiudi').click()
                     })
+                    break;
+                case VociMenuCliente.SCHEDA_CLIENTE:
+                    SintesiCliente.checkAtterraggioSintesiCliente()
+                    cy.screenshot('Scheda Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        this.estrai()
+                    }
+                    break;
+                case VociMenuCliente.LISTA_POLIZZE:
+                    Portafoglio.checkPolizzeAttive(false)
+                    cy.screenshot('Lista Polizze', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        this.estrai()
+                    }
+                    break;
+                case VociMenuCliente.LISTA_SINISTRI:
+                    Portafoglio.checkSinistri()
+                    cy.screenshot('Lista Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        this.estrai()
+                    }
                     break;
             }
         })
