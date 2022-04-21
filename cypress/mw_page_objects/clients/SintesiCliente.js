@@ -994,7 +994,7 @@ class SintesiCliente {
         cy.contains('folder').click()
         Common.canaleFromPopup()
         getIFrame().find('span[class="k-icon k-plus"]:visible').click()
-        for(var i = 0; i < folders.length; i++) {
+        for (var i = 0; i < folders.length; i++) {
             cy.log(('folders[' + i + ']: ' + folders[i]))
             getIFrame().find('span').contains(folders[i]).dblclick()
             cy.wait(2000)
@@ -1035,11 +1035,12 @@ class SintesiCliente {
 
     /**
      * Check Atterraggio in Sintesi Cliente
-     * @param {string} cliente Nome del cliente da verificare
+     * @param {string} [cliente] default a undefined, se specificato verfica il Nome del cliente in card
      */
-    static checkAtterraggioSintesiCliente(cliente) {
+    static checkAtterraggioSintesiCliente(cliente = undefined) {
         cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class', 'active')
-        cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
+        if (cliente !== undefined)
+            cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
     }
 
     /**

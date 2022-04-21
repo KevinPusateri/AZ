@@ -82,8 +82,7 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
     })
 
     context('Motor > Menu Polizza', function(){
-        it.only('Sostituzione / Riattivazione auto', function () {
-            cy.pause()
+        it('Sostituzione / Riattivazione auto', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.SOSTITUZIONE_RIATTIVAZIONE_AUTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
         })
 
@@ -123,4 +122,22 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
             
     //     });
     // }
+
+    context('Motor > Menu Cliente', function() {
+        it('Scheda cliente', function () {
+            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.SCHEDA_CLIENTE, false)
+        })
+
+        it.only('Lista polizze', function () {
+            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE, false)
+        })
+
+        it('Lista sinistri', function () {
+            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI, false)
+        })
+
+        //TODO estrazione sul ptf vita
+        // it('Report profilo vita', function () {
+        // })
+    })
 })
