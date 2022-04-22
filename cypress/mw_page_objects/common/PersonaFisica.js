@@ -132,5 +132,17 @@ export default class PersonaFisica {
 
         return MarioRossini
     }
+
+    static MarcoMarco() {
+        let MarcoMarco = new PersonaFisica("MARCO", "MARCO")
+        MarcoMarco.via = "VIA GIUSEPPE MAZZINI"
+        MarcoMarco.numero = "1"
+        MarcoMarco.cap = "34074"
+        MarcoMarco.citta = "MONFALCONE"
+        MarcoMarco.provincia = "GO"
+        MarcoMarco.codiceFiscale = "MRCMRC85A01F356P"
+
+        return MarcoMarco
+    }
 }
 

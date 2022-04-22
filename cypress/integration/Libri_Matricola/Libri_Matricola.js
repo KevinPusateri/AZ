@@ -148,6 +148,7 @@ describe("LIBRI MATRICOLA", {
                 })
                 LibriMatricola.accessoElencoPrevApplicazioni(nLibroMatricola)
                 LibriMatricola.conversione()
+                TopBar.logOutMW()
             })
 
         })
@@ -156,13 +157,15 @@ describe("LIBRI MATRICOLA", {
     context('INCASSO POLIZZA MADRE', function () {
         it('Incasso', function () {
             cy.fixture('LibriMatricola/LibriMatricola.json').then((data) => {
-                // LandingRicerca.search(data.ClientePGIVA)
-                // LandingRicerca.clickFirstResult()
-                // SintesiCliente.clickAuto()
-                // SintesiCliente.clickLibriMatricola()
-                LibriMatricola.backElencoLibriMatricola()
+                LoginPage.logInMWAdvanced()
+                LandingRicerca.search(data.ClientePGIVA)
+                LandingRicerca.clickFirstResult()
+                SintesiCliente.clickAuto()
+                SintesiCliente.clickLibriMatricola()
+                // LibriMatricola.backElencoLibriMatricola()
                 LibriMatricola.accessoIncassoPolizzaMadre(data.numContrattoLibro)
                 LibriMatricola.incasso()
+                
             })
         })
 

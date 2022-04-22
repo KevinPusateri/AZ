@@ -286,6 +286,7 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
     })
 
     it("Dati integrativi", () => {
+        cy.pause()
         DatiIntegrativi.verificaDataDecorrenza()
         DatiIntegrativi.verificaDataScadenza()
         DatiIntegrativi.verificaDatoPolizzaModificabile("Tacito rinnovo", true)
@@ -358,6 +359,7 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         cy.pause()
         
         // Ricerca anagrafica
+        /*
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
@@ -371,6 +373,10 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
                 cy.get('lib-client-item').first().next().click()
             }
         })
+        */
+        TopBar.search(personaFisica.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
     })
 
     it("Annullamento contratto da Portafoglio", () => {

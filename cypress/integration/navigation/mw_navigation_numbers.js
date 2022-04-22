@@ -207,7 +207,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
             Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
             Numbers.clickAndCheckAtterraggioMonitoraggioCarico()
         })
-        
+
         it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function () {
             TopBar.clickNumbers()
             Numbers.clickTab('INCENTIVI', 'incentives')
@@ -235,6 +235,8 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
 
         it('Verifica su Indicatori Operativi aggancio Primo indice digitale', function () {
             TopBar.clickNumbers()
+            //Indici Presenti nel periodo 2022
+            Numbers.filtriPeriodo()
             Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
             Numbers.clickAndCheckAtterraggioPrimoIndiceDigitale()
             Numbers.backToNumbers('operational-indicators')

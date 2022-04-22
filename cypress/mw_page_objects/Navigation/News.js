@@ -33,8 +33,9 @@ class News {
             cy.url().should('include', Common.getBaseUrl() + 'lemieinfo?news=news')
 
 
-        getIFrame().find('app-header:contains("Primo Piano"):visible')
-        getIFrame().find('app-header:contains("Tutte"):visible')
+        // getIFrame().find('app-header:contains("Primo Piano"):visible')
+        // getIFrame().find('app-header:contains("Tutte"):visible')
+        getIFrame().find('app-header:contains("Tutte le notizie"):visible')
         cy.screenshot('Check Atterraggio su News', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 }

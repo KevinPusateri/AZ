@@ -14,6 +14,7 @@ const getIFrame = () => {
 
 const LinksBurgerMenu = {
     PREVENTIVO_MOTOR: 'Preventivo Motor',
+    SAFE_DRIVE_AUTOVETTURE: 'Safe Drive Autovetture',
     FLOTTE_E_CONVENZIONI: 'Flotte e Convenzioni',
     MINIFLOTTE: 'MiniFlotte',
     TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
@@ -56,6 +57,7 @@ const LinksBurgerMenu = {
     ACOM_GESTIONE_INIZIATIVE: 'ACOM Gestione iniziative',
     deleteKey: function (keys) {
         if (!keys.PREVENTIVO_MOTOR) delete this.PREVENTIVO_MOTOR
+        if (!keys.SAFE_DRIVE_AUTOVETTURE) delete this.SAFE_DRIVE_AUTOVETTURE
         if ((!keys.FLOTTE_E_CONVENZIONI || Cypress.env('isAviva'))) delete this.FLOTTE_E_CONVENZIONI
         if (!keys.MINIFLOTTE) delete this.MINIFLOTTE
         if (!keys.TRATTATIVE_AUTO_CORPORATE) delete this.TRATTATIVE_AUTO_CORPORATE
@@ -145,6 +147,8 @@ class BurgerMenuSales extends Sales {
             // cy.filterProfile(profiling, 'COMMON_GESTIONE_APP_CUMULI_PRODOTTO_TERREMOTO').then(profiled => { keys.APP_CUMULO_TERREMOTI = profiled })
             cy.filterProfile(profiling, 'PO_CLIENTE_SCHEDA_CLIENTE').then(profiled => { keys.NOTE_DI_CONTRATTO = profiled })
             cy.filterProfile(profiling, 'COMMON_CLIENTE_ACOM').then(profiled => { keys.ACOM_GESTIONE_INIZIATIVE = profiled })
+            cy.filterProfile(profiling, 'COMMON_SAFE_DRIVE').then(profiled => { keys.SAFE_DRIVE_AUTOVETTURE = profiled })
+
         })
     }
 
@@ -186,6 +190,16 @@ class BurgerMenuSales extends Sales {
     static checkPage(page) {
         switch (page) {
             case LinksBurgerMenu.PREVENTIVO_MOTOR:
+                cy.intercept({
+                    method: 'POST',
+                    url: '**/assuntivomotor/**'
+                }).as('getMotor');
+                Common.canaleFromPopup()
+                cy.wait('@getMotor', { requestTimeout: 50000 });
+                getIFrame().find('button:contains("Calcola"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                break;
+            case LinksBurgerMenu.SAFE_DRIVE_AUTOVETTURE:
                 cy.intercept({
                     method: 'POST',
                     url: '**/assuntivomotor/**'

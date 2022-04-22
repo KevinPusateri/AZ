@@ -240,6 +240,17 @@ class Numbers {
         })
 
     }
+
+    /**
+     * Filtro Cambiando il periodo
+     */
+    static filtriPeriodo() {
+        cy.get('nx-icon[name="filter"]').click()
+        cy.get('app-filters').should('be.visible').within(() => {
+            cy.contains('2022').click()
+            cy.contains('APPLICA').click()
+        })
+    }
 }
 
 export default Numbers

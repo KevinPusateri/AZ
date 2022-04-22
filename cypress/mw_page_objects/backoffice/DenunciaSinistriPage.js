@@ -213,8 +213,10 @@ class DenunciaSinistriPage {
      * @param {string} id : locator object id
      * @param {string} value : attribute value object 
      */
-    static clickOnRadio_ByIdAndText(id, value) {                   
-        findIframeChild(IframeDen).find(id, { timeout: 5000 }).should('exist').and('be.visible').each(li => {          
+    static clickOnRadio_ByIdAndText(id, value) {
+        
+
+        findIframeChild(IframeDen).find(id, { timeout: 5000 }).should('be.visible').each(li => {          
             let $txt = li.text().trim()              
             if ($txt.includes(value)) {                
                 cy.wrap(li).children('input').check({force: true}).should('be.checked')
@@ -371,17 +373,17 @@ class DenunciaSinistriPage {
      */
     static isVisibleText(txt)
     {
-        return new Promise((resolve) => {
-            check = false
-            findIframeChild(IframeDen).within(($body) => {              
-                // cy.contains(txt).should('exist').and('be.visible')
-                const check = $body.find('span:contains("'+txt+'")').is(':visible')
-
-                cy.log('>> Text : [' +txt+ '] is visible! ')            
-                resolve(check)                
+        //return new Promise((resolve) => {
+            let check = false
+            findIframeChild(IframeDen).within(($body) => {
+                check = $body.find('span:contains("'+txt+'")').is(':visible')
+                if (check)
+                    cy.log('>> Text : [' +txt+ '] is visible! ')
+                else 
+                    cy.log('>> Text : [' +txt+ '] is Not visible! ')                         
             })
-            resolve(false)    
-        })
+            return check           
+        //})
     }
     /*
     static isVisibleText(text)
