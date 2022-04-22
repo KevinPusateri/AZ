@@ -364,7 +364,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Emetti Polizza - Safe Drive Autovetture', function () {
-        if (!keys.COMMON_SAFE_DRIVE)
+        if (!keys.SAFE_DRIVE_AUTOVETTURE)
             this.skip()
         TopBar.clickSales()
         Sales.clickLinkOnEmettiPolizza('Safe Drive Autovetture')
