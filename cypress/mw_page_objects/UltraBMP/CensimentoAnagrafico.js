@@ -217,6 +217,25 @@ class CensimentoAnagrafico {
     }
 
     /**
+     * verifica che il fabbricato sia già stato inserito
+     * @param {PersonaFisica} cliente 
+     */
+    static verificaFabbricatoInserito(cliente) {
+        ultraIFrame().within(() => {
+            //popup attenzione CAP
+            cy.get('.tabs-title').contains('Casa').click()
+            
+            cy.get('.tabs-title').contains('Casa').siblings('div')
+                .should('be.visible').and('have.class', 'tabs-title-contraente')
+                .contains(cliente.via + " " + cliente.numero)
+                .parents('li').first().should('have.attr', 'aria-selected').and('contain', 'true')
+
+            cy.get('div[class$="divContenutoTabCompletamento"]').should('be.visible')
+                .find('input[value="CAMBIO ASSICURATO"]').should('be.visible')
+        })
+    }
+
+    /**
      * chiude il popup di attenzione relativo al CAP differente
      */
     static popupCap() {

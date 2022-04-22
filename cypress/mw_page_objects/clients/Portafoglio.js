@@ -3,6 +3,7 @@
 import Common from "../common/Common";
 import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 import LandingRicerca from "../ricerca/LandingRicerca";
+import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -104,9 +105,7 @@ class Portafoglio {
         })
         cy.contains('PORTAFOGLIO').click().wait(2000)
         cy.wait('@gqlcontract', { requestTimeout: 60000 });
-        cy.screenshot('Verifica aggancio Portafoglio', { clip: { x: 0, y: 0, width: 1920, height: 900 } }, { overwrite: true })
-
-
+        //cy.screenshot('Verifica aggancio Portafoglio', { clip: { x: 0, y: 0, width: 1920, height: 900 } }, { overwrite: true })s
     }
 
     /**
@@ -224,8 +223,8 @@ class Portafoglio {
                     cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 }).then((interception) => {
                         expect(interception.response.statusCode).to.be.eq(200);
                     });
-                    
-                    getIFrame().find('a:contains("Contratto"):visible',{timeout:15000})
+
+                    getIFrame().find('a:contains("Contratto"):visible', { timeout: 15000 })
                     cy.screenshot('Verifica Scheda Proposta', { capture: 'fullPage' }, { overwrite: true })
                     this.back()
                 })
@@ -301,7 +300,8 @@ class Portafoglio {
      * ("Polizze attive")
      */
     static clickSubTab(subTab) {
-        cy.get('nx-tab-header').scrollIntoView().contains(subTab).scrollIntoView().click({ force: true })
+        cy.get('nx-tab-header').scrollIntoView().contains(subTab)
+            .scrollIntoView().click({ force: true })
         // ! Disattivo la visualizzazione elenco lista 
 
         cy.get('app-wallet-list-toggle-button').should('be.visible').find('div[class^="icon"]').then(($iconList) => {
@@ -523,6 +523,27 @@ class Portafoglio {
             }
             return i;
         }
+    }
+
+    static checkPolizzaAttivaLite(numberPolizza) {
+        cy.get('app-client-wallet').should('exist')
+            .find('nx-tab-header').should('be.visible').scrollIntoView()
+            .then(($body) => {
+                if ($body.find('div:contains("Polizze attive")')
+                    .parent('button[class*="active"]').is(':visible')) {
+                    cy.log("portafoglio polizze attive già aperto")
+                }
+                else {
+                    cy.log("Apertura portafoglio polizze attive")
+                    $body.find('div:contains("Polizze attive")').trigger('click')
+                }
+            })
+
+        this.ordinaPolizze("Numero contratto")
+
+        cy.get('app-wallet-active-contracts').should('exist')
+            .find('[ngclass="contract-number"]:contains(' + numberPolizza + ')')
+            .should('be.visible')
     }
 
     /**
@@ -777,7 +798,7 @@ class Portafoglio {
     }
 
     /**
-     * ******DA RIVEDERE*********
+     * todo: modificare gli if con uno switch e separare il controllo popup canale
      * Apre il menù opzioni del contratto e seleziona la voce indicata 
      * @param {string} nContratto 
      * @param {json} voce
@@ -819,6 +840,15 @@ class Portafoglio {
 
         if (checkPage)
             this.checkPage(voce)
+    }
+
+    static checkAmbiti(nContratto, ambiti) {
+        this.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
+        cy.get('nx-modal-container').should('be.visible')
+            .find('[class="modal-title"]').contains('Ambiti del contratto')
+            .parents('app-modular-contract').find('[class="category"]').each(($ambiti, index, $list) => {
+                expect($ambiti).to.contain(ambiti[index])
+            })
     }
 
     /**
@@ -1103,7 +1133,6 @@ class Portafoglio {
             .find('tbody').should('exist')
             .find('td').contains(numberPreventivo).should('have.length', 1)
     }
-    
 }
 export default Portafoglio
 //<img _ngcontent-yoe-c287="" class="loading-spinner" src="assets/images/spinner.gif" alt="Caricamento...">

@@ -171,15 +171,6 @@ class ControlliProtocollazione {
      * Situazione differente a seconda che il cliente abbia dato o meno il consenso all'invio mail
      */
     static stampaAdempimentiPrecontrattuali(invio_mail = true) {
-        
-        //cy.intercept({
-        //    method: 'GET',
-        //    url: '**/GetSezionePrecontrattuale'
-        //}).as('precontrattuale')
-
-        //cy.wait('@precontrattuale', { requestTimeout: 60000 })
-        
-
         ultraIFrame().within(() => {
             ultraIFrame0().within(() => {
                 cy.log('titolo tab: ', cy.title())
@@ -194,7 +185,7 @@ class ControlliProtocollazione {
                       .should('be.visible')
                       .find('button').not('[disabled]').contains('STAMPA')
                       .should('be.visible')
-                      .click()
+                      .click({ctrlKey: true})
                 }
                 else    // no invio mail
                 {
@@ -202,13 +193,13 @@ class ControlliProtocollazione {
                     .should('exist')
                     .find('button').not('[disabled]').contains('STAMPA')
                     .should('be.visible')
-                    .click()
+                    .click({ctrlKey: true})
 
                     cy.get('[data-bind*="sezioneContrattuali"]', { timeout: 20000 })
                       .should('be.visible')
                       .find('button').not('[disabled]').contains('STAMPA')
                       .should('be.visible')
-                      .click()
+                      .click({ctrlKey: true})
                 }
                 //attende caricamento sezione Precontrattuali
                 // Non funziona se non c'è il consenso all'invio mail

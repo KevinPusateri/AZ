@@ -70,6 +70,9 @@ class RecuperoPreventivo {
         }
     }
 
+    /**
+     * click sul pulsante Filtra Risultati
+     */
     static clickFiltraRisultati() {
         ultraIFrame().within(() => {
             cy.get('[class^="nx-expansion-panel__body"]').should('be.visible')
@@ -77,11 +80,64 @@ class RecuperoPreventivo {
         })
     }
 
+    /**
+     * Ordina la lista preventivi secondo la colonna e l'ordine indicato
+     * @param {json} colonna 
+     * @param {json} ordine 
+     */
     static ordinaRisultati(colonna, ordine) {
         ultraIFrame().within(() => {
+            cy.get('ultra-recupera-preventivo-table').should('exist').then(($body) => {
+                do {
+                    $body.find('[nxsortheadercell="' + colonna + '"]').children('[role="button"]')
+                        .trigger('click')
+
+                    cy.log('while: ' + !$body.find('[nxsortheadercell="' + colonna + '"]')
+                        .children('[title*="' + ordine + '"]').is(':visible'))
+                }
+                while (
+                    !$body.find('[nxsortheadercell="' + colonna + '"]')
+                        .children('[title*="' + ordine + '"]').is(':visible')
+                )
+            })
+
+        })
+    }
+
+    static gestisci(nContratto) {
+        ultraIFrame().within(() => {
+            cy.get('[class$="ultra-container"]').children().first()
+                .should('exist').then(($body) => {
+                    cy.log("gestisci")
+                    if (
+                        !$body.find('ultra-recupera-preventivo-table')
+                            .find('div:contains(' + nContratto + ')').is(':visible') /* &&
+                        !$body.find('ultra-pagination')
+                            .find('[class="pagination-avanti disabled"]').is(':visible') */
+                    ) {
+                        do {
+                            $body.find('ultra-pagination')
+                                .find('[class="pagination-avanti disabled"]').trigger('click')
+                        }
+                        while (
+                            !$body.find('ultra-recupera-preventivo-table')
+                                .find('div:contains(' + nContratto + ')').is(':visible') &&
+                            !$body.find('ultra-pagination')
+                                .find('[class="pagination-avanti disabled"]').is(':visible')
+                        )
+                    }
+                })
+        })
+
+        /*
+         && !$body.find('ultra-pagination')
+            .find('[class="pagination-avanti disabled"]').is(':visible')
+        */
+
+        ultraIFrame().within(() => {
             cy.get('ultra-recupera-preventivo-table').should('exist')
-                .find('[nxsortheadercell="'+colonna+'"]').children('[role="button"]')
-                .click()
+                .find('div').contains(nContratto).parents('tr').first()
+                .find('button').click()
         })
     }
 }
