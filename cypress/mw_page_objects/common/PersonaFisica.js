@@ -41,6 +41,18 @@ export default class PersonaFisica {
         return GalileoGalilei
     }
 
+    static EttoreMajorana() {
+        let EttoreMajorana = new PersonaFisica("ETTORE", "MAJORANA")
+        EttoreMajorana.via = "VIA ETNEA"
+        EttoreMajorana.numero = "251"
+        EttoreMajorana.cap = "95125"
+        EttoreMajorana.citta = "CATANIA"
+        EttoreMajorana.provincia = "CT"
+        EttoreMajorana.codiceFiscale = "MJRTTR86M05C351Z"
+
+        return EttoreMajorana
+    }
+
     static SabrinaTonon() {
         let SabrinaTonon = new PersonaFisica("SABRINA", "TONON")
         SabrinaTonon.via = "VIA DELL'AEROPORTO"

@@ -3,6 +3,7 @@
 import Common from "../common/Common";
 import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 import LandingRicerca from "../ricerca/LandingRicerca";
+import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -303,7 +304,8 @@ class Portafoglio {
      * ("Polizze attive")
      */
     static clickSubTab(subTab) {
-        cy.get('nx-tab-header').scrollIntoView().contains(subTab).scrollIntoView().click({ force: true })
+        cy.get('nx-tab-header').scrollIntoView().contains(subTab)
+            .scrollIntoView().click({ force: true })
         // ! Disattivo la visualizzazione elenco lista 
 
         cy.get('app-wallet-list-toggle-button').should('be.visible').find('div[class^="icon"]').then(($iconList) => {
@@ -525,6 +527,27 @@ class Portafoglio {
             }
             return i;
         }
+    }
+
+    static checkPolizzaAttivaLite(numberPolizza) {
+        cy.get('app-client-wallet').should('exist')
+            .find('nx-tab-header').should('be.visible').scrollIntoView()
+            .then(($body) => {
+                if ($body.find('div:contains("Polizze attive")')
+                    .parent('button[class*="active"]').is(':visible')) {
+                    cy.log("portafoglio polizze attive già aperto")
+                }
+                else {
+                    cy.log("Apertura portafoglio polizze attive")
+                    $body.find('div:contains("Polizze attive")').trigger('click')
+                }
+            })
+
+        this.ordinaPolizze("Numero contratto")
+
+        cy.get('app-wallet-active-contracts').should('exist')
+            .find('[ngclass="contract-number"]:contains(' + numberPolizza + ')')
+            .should('be.visible')
     }
 
     /**
@@ -779,7 +802,7 @@ class Portafoglio {
     }
 
     /**
-     * ******DA RIVEDERE*********
+     * todo: modificare gli if con uno switch e separare il controllo popup canale
      * Apre il menù opzioni del contratto e seleziona la voce indicata 
      * @param {string} nContratto 
      * @param {json} voce
@@ -821,6 +844,15 @@ class Portafoglio {
 
         if (checkPage)
             this.checkPage(voce)
+    }
+
+    static checkAmbiti(nContratto, ambiti) {
+        this.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
+        cy.get('nx-modal-container').should('be.visible')
+            .find('[class="modal-title"]').contains('Ambiti del contratto')
+            .parents('app-modular-contract').find('[class="category"]').each(($ambiti, index, $list) => {
+                expect($ambiti).to.contain(ambiti[index])
+            })
     }
 
     /**

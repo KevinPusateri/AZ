@@ -353,8 +353,8 @@ class SCUContatti {
               .find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
               .click()
               .wait(3000);
-            cy.get("button").contains("Elimina contatto").should('be.visible').click();
-            cy.get('nx-modal-container').should('be.visible')
+              cy.get("button").contains("Elimina contatto").should('be.visible').click();
+              cy.get('nx-modal-container').should('be.visible')
             cy.get('nx-modal-container').find('span:contains("Conferma"):visible').click()
             cy.wait(5000)
             cy.get('body').should('be.visible').then(() => {

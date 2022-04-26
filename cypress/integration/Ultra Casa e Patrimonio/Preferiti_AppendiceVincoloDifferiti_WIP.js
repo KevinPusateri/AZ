@@ -223,7 +223,6 @@ describe("FABBRICATO E CONTENUTO", () => {
     it("Portafoglio", () => {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.ordinaPolizze("Numero contratto")
-        cy.pause()
         Portafoglio.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
         Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
         Ultra.selezionaPrimaAgenzia()

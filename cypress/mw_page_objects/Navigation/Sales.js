@@ -112,7 +112,7 @@ const LinksOnEmettiPolizza = {
     PREVENTIVO_MOTOR: 'Preventivo Motor',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
-    PREVENTIVO_MOTOR_SAFEDRIVE: 'Preventivo Motor SafeDrive',
+    SAFE_DRIVE_AUTOVETTURE: 'Safe Drive Autovetture',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
     ALLIANZ_ULTRA_IMPRESA: Cypress.env('isAviva') ? 'Ultra Impresa' : 'Allianz Ultra Impresa',
     ALLIANZ1_BUSINESS: 'Allianz1 Business',
@@ -125,7 +125,7 @@ const LinksOnEmettiPolizza = {
         if (!keys.PreventivoMotorEnabled) delete this.PREVENTIVO_MOTOR
         if (!keys.UltraUltraCasaPatrimonioEnabled) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
         if (!keys.UltraSaluteEnabled) delete this.ALLIANZ_ULTRA_SALUTE
-        if (!Cypress.env('isAviva')) delete this.PREVENTIVO_MOTOR_SAFEDRIVE
+        // if (!Cypress.env('isAviva')) delete this.SAFE_DRIVE_AUTOVETTURE
         if (!keys.BMPenabled) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
         if (!keys.UltraImpresaEnabled) delete this.ALLIANZ_ULTRA_IMPRESA
         if (!keys.Allianz1BusinessEnabled) delete this.ALLIANZ1_BUSINESS
@@ -134,7 +134,7 @@ const LinksOnEmettiPolizza = {
         if (!keys.PreventivoAnonimoVitaenabled) delete this.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI
         if (!keys.MiniflotteEnabled) delete this.MINIFLOTTE
         if (!keys.TrattativeAutoCorporateEnabled || Cypress.env('isAviva')) delete this.TRATTATIVE_AUTO_CORPORATE
-        if (!keys.PREVENTIVO_MOTOR_SAFEDRIVE) delete this.PREVENTIVO_MOTOR_SAFEDRIVE
+        if (!keys.SAFE_DRIVE_AUTOVETTURE) delete this.SAFE_DRIVE_AUTOVETTURE
     }
 }
 class Sales {
@@ -654,7 +654,6 @@ class Sales {
             })
         } else
             cy.get('div[class^="card-container"').should('be.visible').find('lib-da-link').each(($link, i) => {
-                debugger
 
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
@@ -791,7 +790,7 @@ class Sales {
                 getIFrame().find('#main-wrapper input[value="Cerca"]', { timeout: 10000 }).invoke('attr', 'value').should('equal', 'Cerca')
                 cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.GESTIONE_RICHIESTE_PER_PA, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                 break;
-            case LinksOnEmettiPolizza.PREVENTIVO_MOTOR_SAFEDRIVE:
+            case LinksOnEmettiPolizza.SAFE_DRIVE_AUTOVETTURE:
                 cy.intercept({
                     method: 'GET',
                     url: '**/dati-quotazione'
@@ -799,7 +798,7 @@ class Sales {
                 Common.canaleFromPopup()
                 cy.wait('@getDati', { timeout: 40000 });
                 getIFrame().find('button:contains("Calcola"):visible', { timeout: 10000 })
-                cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.PREVENTIVO_MOTOR_SAFEDRIVE, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
+                cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.SAFE_DRIVE_AUTOVETTURE, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                 break;
 
         }

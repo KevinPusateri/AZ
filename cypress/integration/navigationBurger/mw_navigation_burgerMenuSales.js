@@ -61,7 +61,7 @@ let keys = {
     APP_CUMULO_TERREMOTI: false,
     NOTE_DI_CONTRATTO: true,
     ACOM_GESTIONE_INIZIATIVE: true,
-    PREVENTIVO_MOTOR_SAFEDRIVE: true
+    SAFE_DRIVE_AUTOVETTURE: true
 }
 
 before(() => {
@@ -104,11 +104,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Preventivo Motor SafeDrive', function () {
-        if (!keys.PREVENTIVO_MOTOR_SAFEDRIVE)
+    it('Verifica aggancio Safe Drive Autovetture', function () {
+        if (!keys.SAFE_DRIVE_AUTOVETTURE)
             this.skip()
         TopBar.clickSales()
-        BurgerMenuSales.clickLink('Preventivo Motor SafeDrive')
+        BurgerMenuSales.clickLink('Safe Drive Autovetture')
         BurgerMenuSales.backToSales()
     });
 
