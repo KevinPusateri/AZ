@@ -193,18 +193,13 @@ class ControlliProtocollazione {
                     .should('exist')
                     .find('button').not('[disabled]').contains('STAMPA')
                     .should('be.visible')
-<<<<<<< HEAD
                     .click().wait(10000)
-=======
-                    .click({ctrlKey: true})
->>>>>>> 820702eea232d1c950d3bc1618398fcbb562c36c
 
                     //Prima stampa copia cliente
                     cy.get('[data-bind*="sezioneContrattuali"]', { timeout: 20000 })
                       .should('be.visible')
                       .find('button').not('[disabled]').contains('STAMPA')
                       .should('be.visible')
-<<<<<<< HEAD
                       .click().wait(10000)
 
                     //Seconda stampa copia cliente e copia direzione da firmare
@@ -213,9 +208,6 @@ class ControlliProtocollazione {
                     .find('button').not('[disabled]').contains('STAMPA')
                     .should('be.visible')
                     .click().wait(10000)
-=======
-                      .click({ctrlKey: true})
->>>>>>> 820702eea232d1c950d3bc1618398fcbb562c36c
                 }
                 //attende caricamento sezione Precontrattuali
                 // Non funziona se non c'è il consenso all'invio mail
