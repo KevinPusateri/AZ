@@ -94,10 +94,12 @@ const Auto = {
 const linksEmissioneAuto = {
     EMISSIONE: {
         PREVENTIVO_MOTOR: 'Preventivo Motor',
+        SAFE_DRIVE_AUTOVETTURE: 'Safe Drive Autovetture',
         FLOTTE_CONVENZIONI: 'Flotte e convenzioni',
         deleteKey: function (keys) {
             if (!keys.PREVENTIVO_MOTOR) delete this.PREVENTIVO_MOTOR
-            if (!keys.FLOTTE_CONVENZIONI) delete this.FLOTTE_CONVENZIONI
+            if (!keys.FLOTTE_CONVENZIONI || Cypress.env('isAviva')) delete this.FLOTTE_CONVENZIONI
+            if (!keys.SAFE_DRIVE_AUTOVETTURE) delete this.SAFE_DRIVE_AUTOVETTURE
         }
     },
     PRODOTTI_PARTICOLARI: {
@@ -523,6 +525,24 @@ class SintesiCliente {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { timeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
+
+    }
+    /**
+     * Emissione Safe Drive Autovetture
+     * @requires clickAuto()
+     */
+    static clickSafeDriveAutovetture() {
+        cy.wait(2000)
+        cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
+        cy.wait(2000)
+        cy.get('.cdk-overlay-container').find('button').contains('Safe Drive Autovetture').click()
+        cy.intercept({
+            method: 'POST',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor');
+        Common.canaleFromPopup()
+        cy.wait('@getMotor', { timeout: 50000 });
+        getIFrame().find('button:contains("Calcola"):visible', { timeout: 10000 })
     }
 
     /**
