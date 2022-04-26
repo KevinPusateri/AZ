@@ -32,7 +32,8 @@ let keys = {
     FlotteConvenzioniEnabled: true,
     PreventivoAnonimoVitaenabled: true,
     MiniflotteEnabled: true,
-    TrattativeAutoCorporateEnabled: true
+    TrattativeAutoCorporateEnabled: true,
+    SAFE_DRIVE_AUTOVETTURE: true
 }
 
 let keysRapidi = {
@@ -66,6 +67,7 @@ before(() => {
                 cy.filterProfile(profiling, 'VITA_PREVENTIVAZIONE_ANONIMA').then(profiled => { keys.PreventivoAnonimoVitaenabled = profiled })
                 cy.filterProfile(profiling, 'COMMON_MINIFLOTTE').then(profiled => { keys.MiniflotteEnabled = profiled })
                 cy.filterProfile(profiling, 'COMMON_TOOL_TRATTATIVE').then(profiled => { keys.TrattativeAutoCorporateEnabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_SAFE_DRIVE').then(profiled => { keys.SAFE_DRIVE_AUTOVETTURE = profiled })
             })
 
             //Profiling collegamenti rapidi
@@ -141,6 +143,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Azioni Veloci Motor', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
@@ -352,16 +356,27 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
+        if (!keys.PreventivoMotorEnabled)
+            this.skip()
         TopBar.clickSales()
         Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
         Sales.backToSales()
     })
 
+    it('Verifica aggancio Emetti Polizza - Safe Drive Autovetture', function () {
+        if (!keys.SAFE_DRIVE_AUTOVETTURE)
+            this.skip()
+        TopBar.clickSales()
+        Sales.clickLinkOnEmettiPolizza('Safe Drive Autovetture')
+        Sales.backToSales()
+    })
 
     //TODO: Implement profiling keys for Emmetti Polizza
     https://github.developer.allianz.io/az-italy/matrix-web-fe-tests/issues/65
     if (Cypress.env('isAviva')) {
         it('Verifica aggancio Emetti Polizza - Ultra Salute', function () {
+            if (!keys.UltraSaluteEnabled)
+                this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Ultra Salute')
             Sales.backToSales()
@@ -376,6 +391,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     else {
 
         it('Verifica aggancio Emetti Polizza - Allianz Ultra Salute', function () {
+            if (!keys.UltraSaluteEnabled)
+                this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz Ultra Salute')
             Sales.backToSales()
@@ -405,36 +422,48 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
 
         it('Verifica aggancio Emetti Polizza - Allianz1 Business', function () {
+            if (!keys.Allianz1BusinessEnabled)
+                this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz1 Business')
             Sales.backToSales()
         })
 
         it('Verifica aggancio Emetti Polizza - FastQuote Impresa e Albergo', function () {
+            if (!keys.FasquoteImpresaAlbergoEnabled)
+                this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('FastQuote Impresa e Albergo')
             Sales.backToSales()
         })
 
         it('Verifica aggancio Emetti Polizza - Flotte e Convenzioni', function () {
+            if (!keys.FlotteConvenzioniEnabled)
+                this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Flotte e Convenzioni')
             Sales.backToSales()
         })
 
         it('Verifica aggancio Emetti Polizza - Preventivo anonimo Vita Individuali', function () {
+            if (!keys.PreventivoAnonimoVitaenabled)
+                this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Preventivo anonimo Vita Individuali')
             Sales.backToSales()
         })
 
         it('Verifica aggancio Emetti Polizza - MiniFlotte', function () {
+            if (!keys.MiniflotteEnabled)
+                this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('MiniFlotte')
             Sales.backToSales()
         })
 
         it('Verifica aggancio Emetti Polizza - Trattative Auto Corporate', function () {
+            if (keys.TrattativeAutoCorporateEnabled)
+                this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Trattative Auto Corporate')
             Sales.backToSales()

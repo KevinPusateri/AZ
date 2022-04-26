@@ -65,7 +65,7 @@ import { ubicazione } from '../../fixtures//Ultra/BMP_Caso2.json'
 //let personaFisica = PersonaFisica.MassimoRoagna()
 let personaFisica = PersonaFisica.MarioRossini()
 var nContratto = "000"
-var nPreventivo = "000"
+var nPreventivo = "123109181"
 var frazionamento = "mensile"
 var arrPath = []
 var arrDoc = []
@@ -105,23 +105,146 @@ after(function() {
 describe('Ultra BMP : Emissione BMP Caso2', function() {
 
     it("Ricerca cliente", () => {
+        TopBar.search(personaFisica.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
+        //cy.pause()
+    })
+
+    it("Gestione Preventivo da Portafoglio Preventivi", () => {
+        Portafoglio.clickTabPortafoglio()
+        Portafoglio.clickSubTab('Preventivi')
+        Portafoglio.ordinaPolizze("Numero contratto")
+        Portafoglio.clickGestionePreventivo(nPreventivo)       //>> Entra in Modifica Preventivo
+        Dashboard.caricamentoDashboardUltra()
+        //cy.pause()
+    })
+
+    it("Modifica Garanzia Aggiuntiva 'Contenuto''", ()=>{
+        cy.pause()
+        //UltraBMP.ClickMatita("Contenuto")
+        ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
+        ConfigurazioneAmbito.modificaSommaAssicurataGarAgg("Danni da fenomeno elettrico", "7.500,00 €")
+        ConfigurazioneAmbito.ClickButton("CONFERMA")
+        //Dashboard.caricamentoDashboardUltra()
+    })
+
+    it("Procedi", () => {
+        cy.pause()
+        Dashboard.procediHome()
+        Riepilogo.caricamentoRiepilogo()
+        //DatiQuotazione.CaricamentoPagina()
+    })
+
+    it("Procedi emissione polizza", () => {
+        //Dashboard.procediHome()
+        //Riepilogo.caricamentoRiepilogo()
+        cy.pause()
+        Riepilogo.EmissionePolizza()
+        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
+    })
+
+    it("Censimento anagrafico", () => {
+        CensimentoAnagrafico.Avanti()
+        DatiIntegrativi.caricamentoPagina()
+    })
+
+    it("Dati integrativi", () => {
+        cy.pause()
+        DatiIntegrativi.impostaDataDecorrenza(UltraBMP.dataOggi())       // Solo per test di prova!!!
+        DatiIntegrativi.ClickButtonAvanti()
+        DatiIntegrativi.popupApprofondimentoSituazioneAssicurativa()
+        DatiIntegrativi.popupDichiarazioni()
+        ConsensiPrivacy.caricamentoPagina()
+    })
+
+    it("Consensi e privacy", () => {
+        cy.pause()
+        ConsensiPrivacy.verificaSezione('Unico - Consensi forniti')
+        ConsensiPrivacy.verificaSezione('Privacy')
+        ConsensiPrivacy.Avanti()
+        ControlliProtocollazione.caricamentoPagina()
+    })
+
+    it("salvataggio Contratto", () => {
+        cy.pause()
+        ControlliProtocollazione.salvataggioContratto()
+        ControlliProtocollazione.verificaPresenzaDocumento("Regolamento Allianz Ultra e Set informativo")
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 3 - Informativa sul distributore")
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 4 - Informazioni sulla distribuzione del prodotto assicurativo non-IBIP")
+        ControlliProtocollazione.verificaPresenzaDocumento("Riepilogo delle richieste ed esigenze assicurative del cliente")
+        ControlliProtocollazione.Avanti()    // Non prosegue prima della visualizzazione dei documenti
+    })
+
+    it("Visualizza documenti e prosegui", () => {
+        ControlliProtocollazione.riepilogoDocumenti()
+        //cy.pause()
+        ControlliProtocollazione.Avanti()
+        ControlliProtocollazione.aspettaCaricamentoAdempimenti()
+    })
+
+    it("Adempimenti precontrattuali e Perfezionamento", () => {
+        ControlliProtocollazione.verificaPresenzaDocumento("Informativa precontrattuale: Allegati 3 e 4")
+        ControlliProtocollazione.verificaPresenzaDocumento("Regolamento Allianz Ultra e Set informativo")
+        ControlliProtocollazione.stampaAdempimentiPrecontrattuali(true)
+        ControlliProtocollazione.salvaNContratto()
+
+        cy.get('@contratto').then(val => {
+            nContratto = val
+        })
+        cy.pause()
+        ///// FINO QUI !!!! ===>>> DA FARE PERFEZIONAMENTO - INVIO MAIL 
+        //////
+
+
+        ControlliProtocollazione.Home()
+        StartPage.caricamentoPagina()
+    })
+
+    it("Apertura sezione Clients", () => {
+        // Ricerca anagrafica
+        TopBar.search(personaFisica.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
+
+        /*
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
-            cy.get('input[name="main-search-input"]').type(personaFisica.codiceFiscale).type('{enter}')
+            cy.get('input[name="main-search-input"]').type(personaFisica2.nomeCognome()).type('{enter}')
             cy.get('lib-client-item').first().click()
         }).then(($body) => {
             cy.wait(7000)
             const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
-            //const check = cy.get('div[class="client-null-message"]').should('be.visible')
             cy.log('permessi: ' + check)
             if (check) {
-                cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
+                cy.get('input[name="main-search-input"]').type(personaFisica2).type('{enter}')
                 cy.get('lib-client-item').first().next().click()
             }
         })
+        */
     })
 
+
+
+
+
+
+
+    
+    it("Fine Test", () => {
+        cy.pause()
+    })
+
+
+
+
+
+
+
+
+
     it("Emissione Ultra Casa e Patrimonio", () => {
+        cy.pause()
         SintesiCliente.Emissione(prodotti.RamiVari.CasaPatrimonio)
         //Ultra.selezionaPrimaAgenzia()
         Dashboard.caricamentoDashboardUltra()
@@ -236,15 +359,17 @@ describe('Ultra BMP : Emissione BMP Caso2', function() {
         ConsensiPrivacy.visualizzaDocumento('Regolamento Allianz Ultra e Set informativo')
         ConsensiPrivacy.visualizzaDocumento('Preventivo Allianz Ultra')
         ConsensiPrivacy.Avanti()
-        ConsensiPrivacy.VerificaInvioMail()
         ControlliSalvataggio.caricamentoPagina()
+        ConsensiPrivacy.VerificaInvioMail()
+        //ControlliSalvataggio.caricamentoPagina()
     })
 
     it("Adempimenti precontrattuali e Perfezionamento", () => {
-        cy.pause()
+        //cy.pause()
         ControlliSalvataggio.verificaPresenzaDocumento("Regolamento Allianz Ultra e Set informativo")
         ControlliSalvataggio.verificaPresenzaDocumento("Preventivo Allianz Ultra")
-        ControlliSalvataggio.stampaDocumentazione()
+        ControlliSalvataggio.verificaPresenzaDocumento("E-mail inviata in automatico con successo.")      // Verifica presenza del messaggio
+        //ControlliSalvataggio.stampaDocumentazione()
         ControlliSalvataggio.salvaNPreventivo()
 
         cy.get('@preventivo').then(val => {
@@ -255,10 +380,34 @@ describe('Ultra BMP : Emissione BMP Caso2', function() {
     })
 
     it("Ritorno alla Homepage di Matrix", () => {
-        cy.pause()
         TopBar.clickMatrixHome()
-        cy.pause()
         cy.wait(5000)
+    })
+
+    it("Apertura sezione Clients", () => {
+        // Ricerca anagrafica
+        /*
+        cy.get('body').within(() => {
+            cy.get('input[name="main-search-input"]').click()
+            cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
+            cy.get('lib-client-item').first().click()
+        }).then(($body) => {
+            cy.wait(7000)
+            const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+            cy.log('permessi: ' + check)
+            if (check) {
+                cy.get('input[name="main-search-input"]').type(personaFisica).type('{enter}')
+                cy.get('lib-client-item').first().next().click()
+            }
+        })
+        */
+        TopBar.search(personaFisica.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
+    })
+
+    it("Fine test", () => {
+        cy.pause()
     })
 
 })

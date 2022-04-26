@@ -23,7 +23,7 @@ class ConfigurazioneAmbito {
     */
   static ClickButton(azione) {
     ultraIFrame().within(() => {
-      cy.contains('span', azione).scrollIntoView().should('be.visible').click()
+      cy.contains('span', azione).scrollIntoView().should('be.visible').click().wait(500)
       cy.get('[id="alz-spinner"]').should('not.be.visible')
     })
 
@@ -120,6 +120,36 @@ class ConfigurazioneAmbito {
         .eq(0).find('span').should('be.visible').invoke('text').then(val => {
           cy.wrap(val).as('premioGarAgg')
         })
+    })
+
+  }
+
+  /**
+   * Modifica della somma assicurata della garanzia aggiuntiva passata in input
+   * @param {string} garanziaAgg   (nome della garanzia aggiuntiva)
+   * @param {string} importo   (valore somma assicurata che si vuole selezionare) 
+   */
+  static modificaSommaAssicurataGarAgg(garanziaAgg, importo) {
+    cy.intercept({
+      method: 'GET',
+      url: /premio/
+  }).as('premio')
+
+    ultraIFrame().within(() => {
+      //cy.log('***** CARICAMENTO PAGINA CONTROLLI E PROTOCOLLAZIONE *****')
+        
+      cy.contains('span', garanziaAgg).should('exist')
+        .parents('div[class="garanzia-principale ultra-centered nx-grid__row"]').should('have.length', 1)
+        //.parent('div')
+        .find('div').contains('Somma assicurata').should('exist')
+        .parents('div[class="garanzia-control nx-grid__column-3 ng-star-inserted"]').should('exist')
+        .find('nx-dropdown[class="nx-dropdown ng-star-inserted is-filled"]').should('exist').click().wait(500)
+
+      cy.get('div[class="nx-dropdown__panel-body"]').should('exist')
+        .contains(importo).click()
+
+        cy.wait('@premio', { timeout: 100000 })
+
     })
 
   }

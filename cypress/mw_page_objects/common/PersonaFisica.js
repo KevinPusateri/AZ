@@ -41,6 +41,18 @@ export default class PersonaFisica {
         return GalileoGalilei
     }
 
+    static EttoreMajorana() {
+        let EttoreMajorana = new PersonaFisica("ETTORE", "MAJORANA")
+        EttoreMajorana.via = "VIA ETNEA"
+        EttoreMajorana.numero = "251"
+        EttoreMajorana.cap = "95125"
+        EttoreMajorana.citta = "CATANIA"
+        EttoreMajorana.provincia = "CT"
+        EttoreMajorana.codiceFiscale = "MJRTTR86M05C351Z"
+
+        return EttoreMajorana
+    }
+
     static SabrinaTonon() {
         let SabrinaTonon = new PersonaFisica("SABRINA", "TONON")
         SabrinaTonon.via = "VIA DELL'AEROPORTO"
@@ -119,6 +131,18 @@ export default class PersonaFisica {
         MarioRossini.codiceFiscale = "RSSMRA82L12F356R"
 
         return MarioRossini
+    }
+
+    static MarcoMarco() {
+        let MarcoMarco = new PersonaFisica("MARCO", "MARCO")
+        MarcoMarco.via = "VIA GIUSEPPE MAZZINI"
+        MarcoMarco.numero = "1"
+        MarcoMarco.cap = "34074"
+        MarcoMarco.citta = "MONFALCONE"
+        MarcoMarco.provincia = "GO"
+        MarcoMarco.codiceFiscale = "MRCMRC85A01F356P"
+
+        return MarcoMarco
     }
 }
 

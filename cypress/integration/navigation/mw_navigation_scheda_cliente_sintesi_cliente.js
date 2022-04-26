@@ -34,6 +34,7 @@ let keysRamivari = {
 let keysAuto = {
     PREVENTIVO_MOTOR: true,
     FLOTTE_CONVENZIONI: true,
+    SAFE_DRIVE_AUTOVETTURE: true,
     ASSUNZIONE_GUIDATA: true,
     VEICOLI_EPOCA: true,
     LIBRI_MATRICOLA: true,
@@ -103,6 +104,7 @@ before(() => {
             if (keysCards.AUTO) {
                 cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keysAuto.PREVENTIVO_MOTOR = profiled })
                 cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keysAuto.FLOTTE_CONVENZIONI = profiled })
+                cy.filterProfile(profiling, 'COMMON_SAFE_DRIVE').then(profiled => { keysAuto.SAFE_DRIVE_AUTOVETTURE = profiled })
                 cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.PASSIONE_BLU = profiled })
                 cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.NUOVA_POLIZZA = profiled })
                 cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => {
@@ -245,6 +247,14 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     it('Verifica Card Auto: Emissione -> Preventivo Motor', function () {
         SintesiCliente.clickAuto()
         SintesiCliente.clickPreventivoMotor()
+        SintesiCliente.back()
+    })
+
+    it('Verifica Card Auto: Emissione -> Safe Drive Autovetture', function () {
+        if (!keysAuto.SAFE_DRIVE_AUTOVETTURE)
+            this.skip()
+        SintesiCliente.clickAuto()
+        SintesiCliente.clickSafeDriveAutovetture()
         SintesiCliente.back()
     })
 

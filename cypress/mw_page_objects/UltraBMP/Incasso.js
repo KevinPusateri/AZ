@@ -62,34 +62,45 @@ class Incasso {
      * clicca sul pulsante Incassa
      */
     static ClickIncassa() {
-        ultraIFrame().within(() => {
-            ultraIFrame0().within(() => {
+        var checkFrame0 = false
+
+        ultraIFrame().then(($body) => {
+            checkFrame0 = $body.find('#iFrameResizer0').is(':visible') //verifica la presenza dell'iframe0 annidato
+            cy.log('checkFrame0: ' + checkFrame0)
+        }).within(() => {
+            if (checkFrame0) {
+                ultraIFrame0().within(() => {
+                    cy.get('input[value="> Incassa"]')
+                        .should('be.visible').click()
+                })
+            }
+            else {
                 cy.get('input[value="> Incassa"]')
-                .should('be.visible').click()
-            })
+                    .should('be.visible').click()
+            }
         })
     }
 
     /**
      * Seleziona il metodo di pagamento
+     * todo: modificare con riconoscimento automatico iframe0 (v. CheckIncassa)
      * @param {string} metodo 
      */
-    static SelezionaMetodoPagamento(metodo, fl_frame0 = true ) {
+    static SelezionaMetodoPagamento(metodo, fl_frame0 = true) {
         ultraIFrame().within(() => {
             cy.log('*****   Seleziona Metodo di Pagamento *****')
             cy.log('fl_frame0: ' + fl_frame0)
             if (fl_frame0)
-            ultraIFrame0().within(() => {
-                cy.get('[aria-owns="TabIncassoModPagCombo_listbox"]')
-                    .should('be.visible').click()
+                ultraIFrame0().within(() => {
+                    cy.get('[aria-owns="TabIncassoModPagCombo_listbox"]')
+                        .should('be.visible').click()
 
-                cy.wait(500)
-                cy.get('#TabIncassoModPagCombo_listbox')
-                    .find('li').contains(metodo)
-                    .should('be.visible').click()
-            })
-            else
-            {
+                    cy.wait(500)
+                    cy.get('#TabIncassoModPagCombo_listbox')
+                        .find('li').contains(metodo)
+                        .should('be.visible').click()
+                })
+            else {
                 cy.get('[aria-owns="TabIncassoModPagCombo_listbox"]')
                     .should('be.visible').click()
 
@@ -105,8 +116,37 @@ class Incasso {
      * Seleziona tipo delega
      * @param {string} delega 
      */
-     static SelezionaTipoDelega(delega) {
-        ultraIFrame().within(() => {
+    static SelezionaTipoDelega(delega) {
+        var checkFrame0 = false
+
+        ultraIFrame().then(($body) => {
+            checkFrame0 = $body.find('#iFrameResizer0').is(':visible') //verifica la presenza dell'iframe0 annidato
+            cy.log('checkFrame0: ' + checkFrame0)
+        }).within(() => {
+            if (checkFrame0) {
+                ultraIFrame0().within(() => {
+                    cy.get('[aria-owns="TabTipologiaDelegaComboSDD_listbox"]')
+                        .should('be.visible').click()
+
+                    cy.wait(500)
+                    cy.get('#TabTipologiaDelegaComboSDD_listbox')
+                        .find('li').contains(delega)
+                        .should('be.visible').click()
+                })
+            }
+            else {
+                cy.get('[aria-owns="TabTipologiaDelegaComboSDD_listbox"]')
+                    .should('be.visible').click()
+
+                cy.wait(500)
+                cy.get('#TabTipologiaDelegaComboSDD_listbox')
+                    .find('li').contains(delega)
+                    .should('be.visible').click()
+            }
+        })
+
+
+        /* ultraIFrame().within(() => {
             ultraIFrame0().within(() => {
                 cy.get('[aria-owns="TabTipologiaDelegaComboSDD_listbox"]')
                     .should('be.visible').click()
@@ -116,22 +156,22 @@ class Incasso {
                     .find('li').contains(delega)
                     .should('be.visible').click()
             })
-        })
+        }) */
     }
 
 
     /**
-     *Clicca su Incassa nella sezione finale dell'incasso
+     * Clicca su Incassa nella sezione finale dell'incasso
+     * todo: modificare con riconoscimento automatico iframe0 (v. CheckIncassa)
      */
     static ConfermaIncasso(fl_frame0 = true) {
         ultraIFrame().within(() => {
             if (fl_frame0)
-            ultraIFrame0().within(() => {
-                cy.get('button').contains('Incassa')
-                    .should('be.visible').click()
-            })
-            else
-            {
+                ultraIFrame0().within(() => {
+                    cy.get('button').contains('Incassa')
+                        .should('be.visible').click()
+                })
+            else {
                 cy.get('button').contains('Incassa')
                     .should('be.visible').click()
             }
@@ -140,19 +180,19 @@ class Incasso {
 
     /**
      * Verifica che l'incasso sia andato a buon fine
+     * todo: modificare con riconoscimento automatico iframe0 (v. CheckIncassa)
      */
     static EsitoIncasso(fl_frame0 = true) {
         ultraIFrame().within(() => {
             if (fl_frame0)
-            ultraIFrame0().within(() => {
-                //scorre la lista dei risultati e controlla che abbiano tutti la spunta verde
-                cy.get('[data-bind="foreach: Result.Steps"]')
-                    .find('img').each(($img, index, $list) => {
-                        cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green')
-                    });
-            })
-            else
-            {
+                ultraIFrame0().within(() => {
+                    //scorre la lista dei risultati e controlla che abbiano tutti la spunta verde
+                    cy.get('[data-bind="foreach: Result.Steps"]')
+                        .find('img').each(($img, index, $list) => {
+                            cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green')
+                        });
+                })
+            else {
                 cy.get('[data-bind="foreach: Result.Steps"]')
                     .find('img').each(($img, index, $list) => {
                         cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green')
@@ -167,12 +207,11 @@ class Incasso {
     static Chiudi(fl_frame0 = true) {
         ultraIFrame().within(() => {
             if (fl_frame0)
-            ultraIFrame0().within(() => {
-                cy.get('[value="> CHIUDI"]')
-                    .should('be.visible').click()
-            })
-            else
-            {
+                ultraIFrame0().within(() => {
+                    cy.get('[value="> CHIUDI"]')
+                        .should('be.visible').click()
+                })
+            else {
                 cy.get('[value="> CHIUDI"]')
                     .should('be.visible').click()
             }

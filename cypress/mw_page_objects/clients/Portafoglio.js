@@ -3,6 +3,7 @@
 import Common from "../common/Common";
 import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 import LandingRicerca from "../ricerca/LandingRicerca";
+import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -86,7 +87,7 @@ class Portafoglio {
 
         cy.get('a').contains('Clients').click()
 
-        cy.wait('@client', { requestTimeout: 30000 })
+        cy.wait('@client', { timeout: 30000 })
             .its('response.body.data.client')
             .should('not.be.null')
     }
@@ -103,7 +104,7 @@ class Portafoglio {
             cy.get('a').should('be.visible')
         })
         cy.contains('PORTAFOGLIO').click().wait(2000)
-        cy.wait('@gqlcontract', { requestTimeout: 60000 });
+        cy.wait('@gqlcontract', { timeout: 60000 });
         cy.screenshot('Verifica aggancio Portafoglio', { clip: { x: 0, y: 0, width: 1920, height: 900 } }, { overwrite: true })
 
 
@@ -129,8 +130,9 @@ class Portafoglio {
 
     /**
      * Verifica Se il Cliente possiede delle Pollizze (Polizze attive)
+     * @param {Boolean} [performAggancioApplicativo] default true, effettua aggancio applicativo dalla card
      */
-    static checkPolizzeAttive() {
+    static checkPolizzeAttive(performAggancioApplicativo = true) {
         cy.screenshot('Verifica Polizze Attive', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Polizze attive")').is(':visible')
@@ -148,14 +150,15 @@ class Portafoglio {
                     }
                 })
                 cy.get('lib-filter-button-with-modal').should('be.visible')
-                cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.wait(3000)
-                cy.get('app-contract-card').should('be.visible').first().click()
-                cy.wait(3000)
-                Common.canaleFromPopup()
-                getIFrame().find('#navigation-area:contains("Contratto"):visible')
-                cy.screenshot('Verifica Scheda Polizza Attiva', { capture: 'fullPage' }, { overwrite: true })
-                this.back()
+                if(performAggancioApplicativo){
+                    cy.get('app-contract-card').should('be.visible').first().click()
+                    cy.wait(3000)
+                    Common.canaleFromPopup()
+                    getIFrame().find('#navigation-area:contains("Contratto"):visible')
+                    cy.screenshot('Verifica Scheda Polizza Attiva', { capture: 'fullPage' }, { overwrite: true })
+                    this.back()
+                }
             }
         })
     }
@@ -181,7 +184,7 @@ class Portafoglio {
                     }
                 })
                 Common.canaleFromPopup()
-                cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 })
+                cy.wait('@gqlDigitalAgencyLink', { timeout: 40000 })
                 cy.wait(10000)
                 getIFrame().find('#casella-ricerca').should('exist').and('be.visible').and('contain.text', 'Cerca')
                 cy.screenshot('Verifica Preventivo', { capture: 'fullPage' }, { overwrite: true })
@@ -209,7 +212,7 @@ class Portafoglio {
                     }
 
                 })
-                cy.get('app-wallet-proposals').find('app-section-title').should('contain.text', 'Proposte')
+                cy.get('app-wallet-proposals').find('app-section-title').should('contain.text', 'Propost')
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.get('app-contract-card').should('be.visible')
                 cy.get('app-contract-card').first().then(() => {
@@ -221,11 +224,11 @@ class Portafoglio {
                         }
                     })
                     Common.canaleFromPopup()
-                    cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 40000 }).then((interception) => {
+                    cy.wait('@gqlDigitalAgencyLink', { timeout: 40000 }).then((interception) => {
                         expect(interception.response.statusCode).to.be.eq(200);
                     });
-                    
-                    getIFrame().find('a:contains("Contratto"):visible',{timeout:15000})
+
+                    getIFrame().find('a:contains("Contratto"):visible', { timeout: 15000 })
                     cy.screenshot('Verifica Scheda Proposta', { capture: 'fullPage' }, { overwrite: true })
                     this.back()
                 })
@@ -301,7 +304,8 @@ class Portafoglio {
      * ("Polizze attive")
      */
     static clickSubTab(subTab) {
-        cy.get('nx-tab-header').scrollIntoView().contains(subTab).scrollIntoView().click({ force: true })
+        cy.get('nx-tab-header').scrollIntoView().contains(subTab)
+            .scrollIntoView().click({ force: true })
         // ! Disattivo la visualizzazione elenco lista 
 
         cy.get('app-wallet-list-toggle-button').should('be.visible').find('div[class^="icon"]').then(($iconList) => {
@@ -367,7 +371,7 @@ class Portafoglio {
         }).as('postAuto');
 
         Common.canaleFromPopup()
-        cy.wait('@postAuto', { requestTimeout: 120000 });
+        cy.wait('@postAuto', { timeout: 120000 });
 
         cy.getIFrame()
         cy.get('@iframe').within(() => {
@@ -523,6 +527,27 @@ class Portafoglio {
             }
             return i;
         }
+    }
+
+    static checkPolizzaAttivaLite(numberPolizza) {
+        cy.get('app-client-wallet').should('exist')
+            .find('nx-tab-header').should('be.visible').scrollIntoView()
+            .then(($body) => {
+                if ($body.find('div:contains("Polizze attive")')
+                    .parent('button[class*="active"]').is(':visible')) {
+                    cy.log("portafoglio polizze attive già aperto")
+                }
+                else {
+                    cy.log("Apertura portafoglio polizze attive")
+                    $body.find('div:contains("Polizze attive")').trigger('click')
+                }
+            })
+
+        this.ordinaPolizze("Numero contratto")
+
+        cy.get('app-wallet-active-contracts').should('exist')
+            .find('[ngclass="contract-number"]:contains(' + numberPolizza + ')')
+            .should('be.visible')
     }
 
     /**
@@ -726,7 +751,7 @@ class Portafoglio {
         }).as('postAuto');
 
         Common.canaleFromPopup()
-        cy.wait('@postAuto', { requestTimeout: 60000 });
+        cy.wait('@postAuto', { timeout: 60000 });
 
         cy.getIFrame()
         cy.get('@iframe').should('be.visible').within(() => {
@@ -777,7 +802,7 @@ class Portafoglio {
     }
 
     /**
-     * ******DA RIVEDERE*********
+     * todo: modificare gli if con uno switch e separare il controllo popup canale
      * Apre il menù opzioni del contratto e seleziona la voce indicata 
      * @param {string} nContratto 
      * @param {json} voce
@@ -819,6 +844,15 @@ class Portafoglio {
 
         if (checkPage)
             this.checkPage(voce)
+    }
+
+    static checkAmbiti(nContratto, ambiti) {
+        this.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
+        cy.get('nx-modal-container').should('be.visible')
+            .find('[class="modal-title"]').contains('Ambiti del contratto')
+            .parents('app-modular-contract').find('[class="category"]').each(($ambiti, index, $list) => {
+                expect($ambiti).to.contain(ambiti[index])
+            })
     }
 
     /**
@@ -880,7 +914,7 @@ class Portafoglio {
         //#endregion
 
         if (page.includes('Sostituzione')) {
-            cy.wait('@NGRA2013', { requestTimeout: 120000 })
+            cy.wait('@NGRA2013', { timeout: 120000 })
 
             cy.getIFrame()
             cy.get('@iframe').within(() => {
@@ -888,7 +922,7 @@ class Portafoglio {
             })
         }
         else if (page.includes('Regolazione')) {
-            cy.wait('@conguagliAD', { requestTimeout: 120000 })
+            cy.wait('@conguagliAD', { timeout: 120000 })
 
             cy.getIFrame()
             cy.get('@iframe').within(() => {
@@ -896,14 +930,14 @@ class Portafoglio {
             })
         }
         else if (page.includes('Quietanzamento')) {
-            cy.wait('@incassoDA', { requestTimeout: 120000 }).then(incassoDA => {
+            cy.wait('@incassoDA', { timeout: 120000 }).then(incassoDA => {
                 expect(incassoDA.response.statusCode).to.be.eq(200);
                 assert.isNotNull(incassoDA.response.body)
             })
         }
         else if (page.includes('Annullamento') || page.includes('Storno')) {
-            cy.wait('@postAuto', { requestTimeout: 120000 })
-            cy.wait('@gestioneAnnullamentiDA', { requestTimeout: 120000 })
+            cy.wait('@postAuto', { timeout: 120000 })
+            cy.wait('@gestioneAnnullamentiDA', { timeout: 120000 })
 
             cy.getIFrame()
             cy.get('@iframe').within(() => {
@@ -918,7 +952,7 @@ class Portafoglio {
             })
         }
         else if (page.includes('Reperibilità')) {
-            cy.wait('@appendiciAD', { requestTimeout: 120000 })
+            cy.wait('@appendiciAD', { timeout: 120000 })
 
             cy.getIFrame()
             cy.get('@iframe').within(() => {
@@ -927,7 +961,7 @@ class Portafoglio {
             })
         }
         else if (page.includes('Cessione') || page.includes('Modifica tipologia veicolo') || page.includes('Allineamento proprietario contraente')) {
-            cy.wait('@NGRA2013', { requestTimeout: 120000 })
+            cy.wait('@NGRA2013', { timeout: 120000 })
             cy.wait(3000)
             getIFrame().then($body => {
                 if ($body.find('label:contains("proprietari e i contraenti allineati")').length > 0)
@@ -939,7 +973,7 @@ class Portafoglio {
             })
         }
         else if (page.includes('Perizia Kasko')) {
-            cy.wait('@postAuto', { requestTimeout: 120000 })
+            cy.wait('@postAuto', { timeout: 120000 })
 
             cy.getIFrame()
             cy.get('@iframe').within(() => {
@@ -952,7 +986,7 @@ class Portafoglio {
                 if ($body.find(':contains("Attestato di sede non presente")').length > 0)
                     getIFrame().find('input[id="btnExit"]').click()
                 else {
-                    cy.wait('@duplicatiDA', { requestTimeout: 120000 })
+                    cy.wait('@duplicatiDA', { timeout: 120000 })
                     cy.getIFrame()
                     cy.get('@iframe').within(() => {
                         cy.contains('Allianz Gestione Duplicati').should('exist').and('be.visible')
@@ -965,7 +999,7 @@ class Portafoglio {
             })
         }
         else if (page.includes('Duplicati') || page.includes('Ristampa certificato in giornata')) {
-            cy.wait('@duplicatiDA', { requestTimeout: 120000 })
+            cy.wait('@duplicatiDA', { timeout: 120000 })
 
             cy.getIFrame()
             cy.get('@iframe').within(() => {
@@ -977,7 +1011,7 @@ class Portafoglio {
             })
         }
         else if (page.includes('Revoca di disdetta o recesso')) {
-            cy.wait('@gestioneRevocheDA', { requestTimeout: 120000 })
+            cy.wait('@gestioneRevocheDA', { timeout: 120000 })
 
             cy.getIFrame()
             cy.get('@iframe').within(() => {
@@ -987,7 +1021,7 @@ class Portafoglio {
             })
         }
         else if (page.includes('Denuncia sinistro')) {
-            cy.wait('@dasinden', { requestTimeout: 120000 })
+            cy.wait('@dasinden', { timeout: 120000 })
             cy.wait(5000)
             getIFrameDenuncia().within(() => {
                 cy.contains('Dati generali di denuncia').should('exist').and('be.visible')
@@ -996,7 +1030,7 @@ class Portafoglio {
             })
         }
         else if (page.includes('Modifica fonte')) {
-            cy.wait('@da', { requestTimeout: 120000 })
+            cy.wait('@da', { timeout: 120000 })
             cy.wait(5000)
             getIframeModificaFonte().within(() => {
                 cy.get('input[value="Esegui Variazione"]').should('exist').and('be.visible')
@@ -1031,8 +1065,18 @@ class Portafoglio {
      */
     static visualizzaLista() {
         cy.get('app-wallet-list-toggle-button').should('be.visible').find('div[class^="icon"]').then(($iconList) => {
-            if ($iconList.hasClass('icon'))
+            if ($iconList.hasClass('icon')) {
                 cy.get('app-wallet-list-toggle-button').find('nx-icon').click()
+
+                cy.intercept('POST', '**/graphql', (req) => {
+                    if (req.body.operationName.includes('saveContractModalView')) {
+                        req.alias = 'gqlModalView'
+                    }
+                })
+                //cy.contains('DETTAGLIO ANAGRAFICA').click()
+
+                cy.wait('@gqlModalView', { timeout: 30000 })
+            }
         })
     }
 
@@ -1077,7 +1121,7 @@ class Portafoglio {
             url: '**/Auto/IncassoDA/**'
         }).as('incasso')
 
-        cy.wait('@incasso', { requestTimeout: 60000 })
+        cy.wait('@incasso', { timeout: 60000 })
     }
 
     /**
@@ -1093,7 +1137,7 @@ class Portafoglio {
     }
 
     /**
-     * Verifica che il pireventivo specificato sia presente su "Preventivi"
+     * Verifica che il preventivo specificato sia presente su "Preventivi"
      * @param {string} numberPreventivo : numero di preventivo 
      */
     static checkPreventivoIsPresentOnPreventivi(numberPreventivo) {
@@ -1103,7 +1147,51 @@ class Portafoglio {
             .find('tbody').should('exist')
             .find('td').contains(numberPreventivo).should('have.length', 1)
     }
-    
+
+    /**
+     * Seleziona Gestione dal menù tre puntini del preventivo specificato
+     * @param {string} numberPreventivo : numero di preventivo 
+     */
+    static clickGestionePreventivo(numPrev) {
+        Portafoglio.visualizzaLista()
+        cy.wait(5000)
+        //cy.pause()
+        cy.get('table[class="nx-table contracts-table ng-star-inserted"]').should('exist')
+            .find('span').contains(numPrev).should('have.length', 1).wait(500)
+            .click()
+
+        //cy.pause()
+
+
+        /*
+          .parents('tr').should('have.length', 1)
+          .find('nx-icon[name="ellipsis-h"]').should('have.length', 1).wait(10000)
+          .click({force: true}).wait(2000)
+          //.parents('div[class="context-container"]').should('exist')
+          //.scrollIntoView().click()
+        cy.get('div[class="cdk-overlay-pane"]').should('exist')
+          .find('button[ngclass="context-link"]').contains('Gestione').should('exist').click()
+        //cy.get('button[ngclass="context-link"]').contains('Gestione').should('exist').click()
+        */
+
+
+        //Aspetta caricamento pagina Cruscotto Preventivi
+        cy.log('***** CARICAMENTO PAGINA CRUSCOTTO PREVENTIVI *****')
+        cy.intercept({
+            method: 'POST',
+            url: '**/Danni/CruscottoPreventivi_AD/**'
+        }).as('cruscottoPreventivi')
+        cy.wait('@cruscottoPreventivi', { timeout: 60000 });
+
+        // Seleziona pulsante di Modifica Preventivo
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.get('div[id="contenitore-dettagli"]').should('exist')
+                .find('input[value="› Modifica Preventivo"]').should('be.enabled').click()
+        })
+
+    }
+
 }
 export default Portafoglio
 //<img _ngcontent-yoe-c287="" class="loading-spinner" src="assets/images/spinner.gif" alt="Caricamento...">

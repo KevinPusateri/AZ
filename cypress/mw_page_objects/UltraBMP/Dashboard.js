@@ -48,6 +48,15 @@ class Dashboard {
 
         cy.wait('@Preferiti', { requestTimeout: 60000 });
     }
+
+    static caricamentoAmbitiAcquistati() {
+        cy.intercept({
+            method: 'GET',
+            url: '**/oggetti-assicurati'
+        }).as('oggettiAssicurati')
+
+        cy.wait('@oggettiAssicurati', { requestTimeout: 60000 });
+    }
     //#endregion caricamenti
 
     /**
@@ -383,34 +392,34 @@ class Dashboard {
      * Lettura del premio totale
      * @param {string}} tipo - può essere INIZIALE (default), BARRATO, SCONTATO 
      */
-    static  leggiPremioTot(tipo = 'INIZIALE') {
+    static leggiPremioTot(tipo = 'INIZIALE') {
         ultraIFrame().within(() => {
             if (tipo.toUpperCase() == 'INIZIALE')    // Premio Iniziale non scontato
             {
                 cy.log('**** PREMIO INIZIALE *****')
                 cy.get('div[class="header-price-euro ng-star-inserted"]').should('be.visible')
-                .invoke('text').then(val => {
-                    cy.wrap(val).as('premioTotDashboard')
-                    cy.log('leggi premio tot INIZIALE: ' + val)
-                })
+                    .invoke('text').then(val => {
+                        cy.wrap(val).as('premioTotDashboard')
+                        cy.log('leggi premio tot INIZIALE: ' + val)
+                    })
             }
             else if (tipo.toUpperCase() == 'SCONTATO')    // Premio totale dopo l'applicazione dello sconto
             {
                 cy.log('**** PREMIO SCONTATO *****')
                 cy.get('div[class="header-price-euro header-price-euro-wo-discount ng-star-inserted"]').should('be.visible')
-                .invoke('text').then(val => {
-                    cy.wrap(val).as('premioTotDashboardScontato')
-                    cy.log('leggi premio tot SCONTATO: ' + val)
-                })
+                    .invoke('text').then(val => {
+                        cy.wrap(val).as('premioTotDashboardScontato')
+                        cy.log('leggi premio tot SCONTATO: ' + val)
+                    })
             }
             else if (tipo.toUpperCase() == 'BARRATO')    // Premio totale iniziale barrato dopo l'applicazione dello sconto
             {
                 cy.log('**** PREMIO BARRATO *****')
                 cy.get('div[class="header-price-euro-w-discount ng-star-inserted"]').should('be.visible')
-                .invoke('text').then(val => {
-                    cy.wrap(val).as('premioTotDashboardBarrato')
-                    cy.log('leggi premio tot BARRATO: ' + val)
-                }) 
+                    .invoke('text').then(val => {
+                        cy.wrap(val).as('premioTotDashboardBarrato')
+                        cy.log('leggi premio tot BARRATO: ' + val)
+                    })
             }
         })
     }
@@ -436,10 +445,23 @@ class Dashboard {
         expect(premioNew).to.be.gte(impMin).and.be.lte(impMax)
     }
 
+    /**
+     * 
+     * @param {json} ambito 
+     */
+    static sblocca(ambito) {
+        ultraIFrame().within(() => {
+            cy.get('ultra-dash-ambiti-istanze-table')
+                .find('nx-icon[class*="' + ambito + '"]').should('be.visible')
+                .parents('tr').first().find('button[class*="button-sblocca"]').should('be.visible')
+                .click()
+        })
+    }
+
     static procediHome() {
         ultraIFrame().within(() => {
             cy.get('[id="dashTable"]').should('be.visible')
-            cy.get('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click()
+            cy.get('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click().wait(500)
         })
     }
 
@@ -567,24 +589,147 @@ class Dashboard {
                 .type(scadenza, { force: true }).invoke('val')
                 .then(text => cy.log(text))
         })
-        
+
         //se presente chiude il popup del calendario
         ultraIFrame().then(($body) => {
             if ($body.find('.nx-datepicker-header').is(':visible')) {
-                cy.log("is visible: " +$body.find('.nx-datepicker-header').is(':visible'))
+                cy.log("is visible: " + $body.find('.nx-datepicker-header').is(':visible'))
                 $body.find('.nx-datepicker-header').find('[name="close"]').click()
             }
         })
-        
+
         ultraIFrame().within(() => {
             //conferma il vincolo
             cy.get('span').contains('CONFERMA')
                 .should('be.visible').click()
 
             cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
-        })     
+        })
     }
     //#endregion Vincoli
+
+    //#region Convenzioni
+    static Convenzione(convenzione) {
+        ultraIFrame().within(() => {
+            cy.get('nx-header-actions').find("span")
+                .contains('Convenzioni').click()
+        })
+
+        //attesa
+        // cy.intercept({
+        //     method: 'GET',
+        //     url: '**/convenzioni'
+        // }).as('convenzioni')
+        // cy.wait('@convenzioni', { requestTimeout: 30000 });
+
+        ultraIFrame().within(() => {
+            cy.get('ultra-convenzioni-modal').should('be.visible')
+                .find('#cercaConvenzione').find('input').type(convenzione)
+
+            cy.get('ultra-convenzioni-modal').should('be.visible')
+                .find('.lista-convenzioni').find('span').contains(convenzione)
+                .parents('div').first().children('nx-radio').click()
+
+            cy.get('ultra-convenzioni-modal').should('be.visible')
+                .find('#colonnaDettaglio').find('[class*="titolo-dettaglio"]')
+                .should('contain.text', convenzione)
+
+            cy.get('ultra-convenzioni-modal').should('be.visible')
+                .find('button').children('span').contains('Conferma').click()
+
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+        })
+    }
+
+    static Convenzione(convenzione) {
+        ultraIFrame().within(() => {
+            cy.get('nx-header-actions').find("span")
+                .contains('Convenzioni').click()
+        })
+
+        //attesa
+        // cy.intercept({
+        //     method: 'GET',
+        //     url: '**/convenzioni'
+        // }).as('convenzioni')
+        // cy.wait('@convenzioni', { requestTimeout: 30000 });
+
+        ultraIFrame().within(() => {
+            cy.get('ultra-convenzioni-modal').should('be.visible')
+                .find('#cercaConvenzione').find('input').type(convenzione)
+
+            cy.get('ultra-convenzioni-modal').should('be.visible')
+                .find('.lista-convenzioni').find('span').contains(convenzione)
+                .parents('div').first().children('nx-radio').click()
+
+            cy.get('ultra-convenzioni-modal').should('be.visible')
+                .find('#colonnaDettaglio').find('[class*="titolo-dettaglio"]')
+                .should('contain.text', convenzione)
+
+            cy.get('ultra-convenzioni-modal').should('be.visible')
+                .find('button').children('span').contains('Conferma').click()
+
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+        })
+    }
+
+    static VerificaAmbientiConvenzione(ambitiSelect, ambitiDeselect = null, ambitiDisable = null) {
+        ultraIFrame().then(($body) => {
+            if ($body.find('ultra-convenzioni-modal').is(':visible')) {
+                cy.log('popup convenzioni già aperto')
+            }
+            else {
+                $body.find('nx-header-actions').find('span:contains("Convenzioni")').click()
+            }
+        })
+
+        //verifica ambiti in popup Convensioni
+        ultraIFrame().within(() => {
+            cy.get('ultra-convenzioni-modal').find('#colonnaDettaglio')
+                .should('be.visible').find('span').contains('personalizza')
+                .click()
+
+            cy.get('ultra-convenzioni-modal').find('.container-ambiti')
+                .should('be.visible')
+
+            for (var i = 0; i < ambitiSelect.length; i++) {
+                cy.get('ultra-convenzioni-modal').find('.container-ambiti')
+                    .find('p').contains(ambitiSelect[i]).parents('div[class*="istanzaAmbitoButton"]')
+                    .should('have.attr', 'class').and('contain', 'selected')
+            }
+
+            if (ambitiDeselect != null) {
+                for (var i = 0; i < ambitiDeselect.length; i++) {
+                    cy.get('ultra-convenzioni-modal').find('.container-ambiti')
+                        .find('p').contains(ambitiDeselect[i]).parents('div[class*="istanzaAmbitoButton"]')
+                        .should('have.attr', 'class').and('contain', 'deselected')
+                }
+            }
+
+            if (ambitiDisable != null) {
+                for (var i = 0; i < ambitiDisable.length; i++) {
+                    cy.get('ultra-convenzioni-modal').find('.container-ambiti')
+                        .find('p').contains(ambitiDisable[i]).parents('div[class*="istanzaAmbitoButton"]')
+                        .should('have.attr', 'class').and('contain', 'disabled')
+                }
+            }
+
+            cy.get('ultra-convenzioni-modal').should('be.visible')
+                .find('button').children('span').contains('Annulla').click()
+
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+        })
+
+        //verifica convenzioni in tooltip dashboard
+        ultraIFrame().within(() => {
+            for (var i = 0; i < ambitiSelect.length; i++) {
+                cy.get('ultra-dash-ambiti-istanze-table').first()
+                .should('be.visible').find('div').contains(ambitiSelect[i])
+                .parents('tr').find('.tooltip-text').contains('convenzione')
+            }
+        })
+    }
+    //#endregion Convenzioni
 }
 
 export default Dashboard

@@ -94,10 +94,12 @@ const Auto = {
 const linksEmissioneAuto = {
     EMISSIONE: {
         PREVENTIVO_MOTOR: 'Preventivo Motor',
+        SAFE_DRIVE_AUTOVETTURE: 'Safe Drive Autovetture',
         FLOTTE_CONVENZIONI: 'Flotte e convenzioni',
         deleteKey: function (keys) {
             if (!keys.PREVENTIVO_MOTOR) delete this.PREVENTIVO_MOTOR
-            if (!keys.FLOTTE_CONVENZIONI) delete this.FLOTTE_CONVENZIONI
+            if (!keys.FLOTTE_CONVENZIONI || Cypress.env('isAviva')) delete this.FLOTTE_CONVENZIONI
+            if (!keys.SAFE_DRIVE_AUTOVETTURE) delete this.SAFE_DRIVE_AUTOVETTURE
         }
     },
     PRODOTTI_PARTICOLARI: {
@@ -148,7 +150,7 @@ class SintesiCliente {
         })
         cy.get('lib-client-item').should('be.visible')
         cy.get('lib-client-item').first().click()
-        cy.wait('@pageClient', { requestTimeout: 60000 });
+        cy.wait('@pageClient', { timeout: 60000 });
         cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
     }
 
@@ -195,13 +197,13 @@ class SintesiCliente {
      */
     static clickTabSintesiCliente() {
         cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('client')) {
+            if (req.body.operationName.includes('client') || req.body.operationName.includes('fastQuoteProfiling')) {
                 req.alias = 'gqlClient'
             }
         });
 
         cy.contains('SINTESI CLIENTE').click()
-        cy.wait('@gqlClient', { requestTimeout: 30000 });
+        cy.wait('@gqlClient', { timeout: 30000 });
         cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
     }
 
@@ -286,7 +288,7 @@ class SintesiCliente {
                     aliasQuery(req, 'getScopes')
                 })
                 cy.get('app-ultra-parent-tabs').find('nx-tab-header').contains('Salute').click()
-                cy.wait('@gqlgetScopes', { requestTimeout: 60000 })
+                cy.wait('@gqlgetScopes', { timeout: 60000 })
                 var scopesSalute = [
                     'Spese mediche',
                     'Diaria da ricovero',
@@ -339,7 +341,7 @@ class SintesiCliente {
                     aliasQuery(req, 'dataSettings')
                 })
                 cy.get('nx-tab-header').find('button').contains('Auto').click()
-                cy.wait('@gqldataSettings', { requestTimeout: 60000 })
+                cy.wait('@gqldataSettings', { timeout: 60000 })
                 cy.get('app-new-auto-fast-quote').contains('Tipo veicolo').should('be.visible')
                 cy.get('app-new-auto-fast-quote').contains('Targa').should('be.visible')
                 if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
@@ -378,7 +380,7 @@ class SintesiCliente {
         cy.screenshot('Click Calcola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible').click()
-        cy.wait('@gqlCalculateMotorPriceQuotation', { requestTimeout: 50000 })
+        cy.wait('@gqlCalculateMotorPriceQuotation', { timeout: 50000 })
 
         cy.contains('Inserisci i dati manualmente').should('be.visible').click()
         cy.screenshot('PopUp Inserisci i dati manualmente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -389,7 +391,7 @@ class SintesiCliente {
         }).as('getMotor')
 
         Common.canaleFromPopup()
-        cy.wait('@getMotor', { requestTimeout: 50000 })
+        cy.wait('@getMotor', { timeout: 50000 })
 
         getIFrame().find('span:contains("Cerca"):visible')
 
@@ -408,7 +410,7 @@ class SintesiCliente {
         }).as('getMotor')
 
         Common.canaleFromPopup()
-        cy.wait('@getMotor', { requestTimeout: 50000 })
+        cy.wait('@getMotor', { timeout: 50000 })
 
         getIFrame().find('span:contains("Cerca"):visible')
         cy.screenshot('Assuntivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -521,8 +523,26 @@ class SintesiCliente {
             url: '**/assuntivomotor/**'
         }).as('getMotor');
         Common.canaleFromPopup()
-        cy.wait('@getMotor', { requestTimeout: 50000 });
+        cy.wait('@getMotor', { timeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
+
+    }
+    /**
+     * Emissione Safe Drive Autovetture
+     * @requires clickAuto()
+     */
+    static clickSafeDriveAutovetture() {
+        cy.wait(2000)
+        cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
+        cy.wait(2000)
+        cy.get('.cdk-overlay-container').find('button').contains('Safe Drive Autovetture').click()
+        cy.intercept({
+            method: 'POST',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor');
+        Common.canaleFromPopup()
+        cy.wait('@getMotor', { timeout: 50000 });
+        getIFrame().find('button:contains("Calcola"):visible', { timeout: 10000 })
     }
 
     /**
@@ -577,7 +597,7 @@ class SintesiCliente {
             url: '**/GestioneLibriMatricolaDA/**'
         }).as('getLibriMatricola');
         Common.canaleFromPopup()
-        cy.wait('@getLibriMatricola', { requestTimeout: 40000 }).its('response.statusCode').should('eq', 200)
+        cy.wait('@getLibriMatricola', { timeout: 40000 }).its('response.statusCode').should('eq', 200)
         matrixFrame().within(() => {
             cy.get('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
         })
@@ -746,7 +766,7 @@ class SintesiCliente {
             url: '**/fonti'
         }).as('getFonti');
         Common.canaleFromPopup()
-        cy.wait('@getFonti', { requestTimeout: 50000 });
+        cy.wait('@getFonti', { timeout: 50000 });
         getIFrame().find('img[src="./assets/img/allianz-logo-casa.png"]').should('be.visible')
         getIFrame().find('span:contains("PROCEDI"):visible')
     }
@@ -822,7 +842,7 @@ class SintesiCliente {
             url: '**/Auto/**'
         }).as('getAuto');
         Common.canaleFromPopup()
-        cy.wait('@getAuto', { requestTimeout: 50000 });
+        cy.wait('@getAuto', { timeout: 50000 });
         getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
         getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
     }
@@ -895,7 +915,7 @@ class SintesiCliente {
         })
 
         Common.canaleFromPopup()
-        cy.wait('@gqlDigitalAgencyLink', { requestTimeout: 30000 })
+        cy.wait('@gqlDigitalAgencyLink', { timeout: 30000 })
         cy.wait(20000)
         getIFrame().find('input[value="Avanti"]').should('be.visible').invoke('attr', 'value').should('equal', 'Avanti')
         getIFrame().find('input[value="Indietro"]:visible').invoke('attr', 'value').should('equal', 'Indietro')
@@ -946,7 +966,7 @@ class SintesiCliente {
         }).as('dacontabilita');
 
         getIFrame().find('#ButtonQuestOk').click().wait(10000)
-        cy.wait('@dacontabilita', { requestTimeout: 60000 })
+        cy.wait('@dacontabilita', { timeout: 60000 })
 
         getIFrame().find('#TabVarieInserimentoTipoPagamento').click()
         getIFrame().find('li').contains("Contanti").click()
@@ -961,7 +981,7 @@ class SintesiCliente {
 
         getIFrame().find('#TabVarieInserimentoButton').click().wait(8000)
 
-        cy.wait('@questionariWeb', { requestTimeout: 60000 })
+        cy.wait('@questionariWeb', { timeout: 60000 })
 
         getIFrame().within(($frame) => {
             $frame.find('#ButtonQuestOk').click()
@@ -994,7 +1014,7 @@ class SintesiCliente {
         cy.contains('folder').click()
         Common.canaleFromPopup()
         getIFrame().find('span[class="k-icon k-plus"]:visible').click()
-        for(var i = 0; i < folders.length; i++) {
+        for (var i = 0; i < folders.length; i++) {
             cy.log(('folders[' + i + ']: ' + folders[i]))
             getIFrame().find('span').contains(folders[i]).dblclick()
             cy.wait(2000)
@@ -1035,11 +1055,12 @@ class SintesiCliente {
 
     /**
      * Check Atterraggio in Sintesi Cliente
-     * @param {string} cliente Nome del cliente da verificare
+     * @param {string} [cliente] default a undefined, se specificato verfica il Nome del cliente in card
      */
-    static checkAtterraggioSintesiCliente(cliente) {
+    static checkAtterraggioSintesiCliente(cliente = undefined) {
         cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class', 'active')
-        cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
+        if (cliente !== undefined)
+            cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
     }
 
     /**
@@ -1116,7 +1137,7 @@ class SintesiCliente {
             }
         }
 
-        cy.wait('@pageClient', { requestTimeout: 60000 });
+        cy.wait('@pageClient', { timeout: 60000 });
         cy.get('app-scope-element', { timeout: 120000 }).should('exist').and('be.visible')
     }
 
@@ -1165,10 +1186,10 @@ class SintesiCliente {
 
         })
         cy.get('a').contains('Clients').click().wait(5000)
-        cy.wait('@pageClient', { requestTimeout: 60000 });
-        cy.wait('@gqlclientContractValidation', { requestTimeout: 60000 })
-        cy.wait('@gqlfastQuoteProfiling', { requestTimeout: 60000 })
-        cy.wait('@gqlgetScopes', { requestTimeout: 60000 })
+        cy.wait('@pageClient', { timeout: 60000 });
+        cy.wait('@gqlclientContractValidation', { timeout: 60000 })
+        cy.wait('@gqlfastQuoteProfiling', { timeout: 60000 })
+        cy.wait('@gqlgetScopes', { timeout: 60000 })
         cy.get('app-fast-quote').should('be.visible')
         cy.get('app-fast-quote').find('nx-tab-group').should('be.visible')
         cy.get('app-fast-quote').find('app-scope-element').should('be.visible')

@@ -515,5 +515,23 @@ class DettaglioAnagrafica {
             })
         })
     }
+
+    static contattoPresente() {
+        return new Cypress.Promise(resolve => {
+
+            cy.get('span[class="nx-button__content-wrapper"]').should('be.visible')
+            cy.get('app-client-profile-detail').should('be.visible').then(($contattiPage)=>{
+                const checkEmpty = $contattiPage.find(':contains("Non sono presenti altri contatti")').is(':visible')
+                
+                if(checkEmpty){
+                    resolve(true)
+                }else{
+                    resolve(false)
+                }
+                
+            })
+        })
+    }
+
 }
 export default DettaglioAnagrafica

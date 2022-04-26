@@ -661,12 +661,14 @@ class Mieinfo {
 
         if (keysLinksSubMenu['sales-academy/percorsi-di-ruolo']) {
             getIFrame().contains(linksSalesAcademy.PERCORSI_DI_RUOLO).click()
-            getIFrame().find('h3:contains("Sheet Percorsi di ruolo")').should('be.visible')
+            // getIFrame().find('h3:contains("Sheet Percorsi di ruolo")').should('be.visible')
+            getIFrame().find('app-text-indeterminate-type').should('be.visible')
         }
 
         if (keysLinksSubMenu['sales-academy/obblighi-ivass']) {
             getIFrame().contains(linksSalesAcademy.CAMPUS_IVASS).click()
-            getIFrame().find(':contains("Sheet Obblighi IVASS")').should('be.visible')
+            // getIFrame().find(':contains("Sheet Obblighi IVASS")').should('be.visible')
+            getIFrame().find('app-text-indeterminate-type').should('be.visible')
         }
 
         if (keysLinksSubMenu['sales-academy/canali']) {

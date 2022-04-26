@@ -24,6 +24,7 @@ const fs = require('fs')
 const path = require('path')
 const rimraf = require('../../node_modules/rimraf')
 const unzipper = require('unzipper')
+const xlsx = require('node-xlsx').default
 
 //#region Support Functions
 const getMostRecentFile = (dir) => {
@@ -55,7 +56,7 @@ const sendEmail = (currentSubject, currentMessage, additionalEmail = null) => {
             from: '"Test Automatici MW" <noreply@allianz.it>',
             to: (additionalEmail === null) ? 'test.factory.test@allianz.it' : 'test.factory.test@allianz.it,' + additionalEmail,
             subject: currentSubject,
-            html:  currentMessage + '</br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>',
+            html: currentMessage + '</br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>',
         };
         transporter.sendMail(email, function (err, info) {
             return err ? err.message : 'Message sent: ' + info.response;
@@ -260,11 +261,11 @@ module.exports = (on, config) => {
     on('before:browser:launch', (browser = {}, launchOptions) => {
 
         if (browser.family === 'firefox') {
-            launchOptions.preferences['browser.download.dir'] = process.cwd()+"\\cypress\\downloads"
+            launchOptions.preferences['browser.download.dir'] = process.cwd() + "\\cypress\\downloads"
             launchOptions.preferences['browser.download.folderList'] = 2
             launchOptions.preferences['browser.download.panel.shown'] = false
             launchOptions.preferences['browser.download.manager.focusWhenStarting'] = true
-            launchOptions.preferences['browser.helperApps.neverAsk.saveToDisk'] = 'application/pdf','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            launchOptions.preferences['browser.helperApps.neverAsk.saveToDisk'] = 'application/pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             launchOptions.preferences['browser.download.manager.useWindow'] = true
             launchOptions.preferences['pdfjs.disabled'] = false
             launchOptions.preferences['devtools.console.stdout.content'] = false
@@ -272,7 +273,13 @@ module.exports = (on, config) => {
             //Necessario per queli applicativi (tipo LM) che utilizzano ancora applet java
             //Vado a prendere Allianz IO Web Ext
             launchOptions.extensions.push(process.cwd() + "\\extensions\\allianziowebext@allianz.it.xpi")
-            return launchOptions;
+            return launchOptions
+
+        } else if (browser.family === "chromium" && browser.name !== "electron") {
+            launchOptions.preferences['download.default_directory'] = process.cwd() + "\\cypress\\downloads"
+            launchOptions.preferences['download.prompt_for_download'] = false
+
+            return launchOptions
         }
     })
 
@@ -404,8 +411,29 @@ module.exports = (on, config) => {
     })
 
     on("task", {
+        getFolderDownload() {
+            let folderDownload = process.cwd() + "\\cypress\\downloads"
+            return folderDownload
+        }
+    })
+
+    on("task", {
         sendMail({ currentSubject, currentMessage, additionalEmail }) {
             return sendEmail(currentSubject, currentMessage, additionalEmail)
+        }
+    })
+
+
+    on("task", {
+        parseXlsx({ filePath }) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const jsonData = xlsx.parse(fs.readFileSync(filePath))
+                    resolve(jsonData);
+                } catch (e) {
+                    reject(e)
+                }
+            })
         }
     })
 

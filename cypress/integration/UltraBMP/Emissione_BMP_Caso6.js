@@ -104,6 +104,7 @@ after(function() {
 describe('Ultra BMP : Emissione BMP Caso6', function() {
 
     it("Ricerca cliente", () => {
+        /*
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(personaFisica.codiceFiscale).type('{enter}')
@@ -118,6 +119,10 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
                 cy.get('lib-client-item').first().next().click()
             }
         })
+        */
+        TopBar.search(personaFisica.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
     })
 
     it("Seleziona ambiti da Fast Quote", () => {
@@ -168,14 +173,14 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
         ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
         ConfigurazioneAmbito.ModificaValoriCasa(daModificareFabbricato, modificheFabbricato)
         ConfigurazioneAmbito.ClickButton("CONFERMA")
-        Dashboard.caricamentoDashboardUltra()    
+        //Dashboard.caricamentoDashboardUltra()    
     })
 
     it("Configurazione Animali Domestici", () => {
         ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[2])
         ConfigurazioneAmbito.ModificaValoriAnimaleDomestico(daModificareAnimale, modificheAnimale)
         ConfigurazioneAmbito.ClickButton("CONFERMA")
-        Dashboard.caricamentoDashboardUltra()   
+        //Dashboard.caricamentoDashboardUltra()   
     })
 
     it("Seleziona frazionamento", ()=>{
@@ -335,6 +340,7 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
 
     it("Apertura sezione Clients", () => {
         // Ricerca anagrafica
+        /*
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(personaFisica2.nomeCognome()).type('{enter}')
@@ -348,6 +354,10 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
                 cy.get('lib-client-item').first().next().click()
             }
         })
+        */
+        TopBar.search(personaFisica2.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica2.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica2.nomeCognome())
     })
 
     it("Accesso portafoglio Proposte ed avvio incasso", () => {
@@ -378,6 +388,7 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
 
     it("Apertura sezione Clients", () => {
         // Ricerca anagrafica
+        /*
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(personaFisica2.nomeCognome()).type('{enter}')
@@ -391,6 +402,10 @@ describe('Ultra BMP : Emissione BMP Caso6', function() {
                 cy.get('lib-client-item').first().next().click()
             }
         })
+        */
+        TopBar.search(personaFisica2.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica2.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica2.nomeCognome())
         //cy.pause()
     })
 

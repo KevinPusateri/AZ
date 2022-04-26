@@ -384,7 +384,6 @@ class LandingRicerca {
             'Ricerca Cliente',
             'Ricerca Polizze proposte',
             'Ricerca Preventivi',
-            'Ricerca News',
             'Rubrica'
         ]
         cy.get('nx-modal-container').find('lib-da-link').each(($linkRicerca, i) => {
@@ -760,13 +759,14 @@ class LandingRicerca {
     }
 
     /**
-     * Verifica i tab(Clients,sales,Le mie info) presenti dopo
+     * Verifica i tab(Clients,sales, news e Le mie info) presenti dopo
      * aver effettuato la ricerca
      */
     static checkTabDopoRicerca() {
         const tabHeader = [
             'clients',
             'sales',
+            'news',
             'le mie info'
         ]
         cy.get('[class^="docs-grid-colored-row tabs-container"]').find('[class^="tab-header"]').each(($tab, i) => {

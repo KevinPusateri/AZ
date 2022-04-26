@@ -1965,6 +1965,10 @@ Cypress.Commands.add('getClientWithPreventivi', (tutf, clientType = 'PF', curren
   })
 })
 
+Cypress.Commands.add('parseXlsx', (inputFile) => {
+  return cy.task('parseXlsx', { filePath: inputFile })
+})
+
 // Set CYPRESS_COMMAND_DELAY above zero for demoing to stakeholders,
 // E.g. CYPRESS_COMMAND_DELAY=1000 node_modules/.bin/cypress open
 const COMMAND_DELAY = Cypress.env('COMMAND_DELAY') || 0;

@@ -1,11 +1,11 @@
 /**
  * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it>
 */
 
 /// <reference types="Cypress" />
 
 //#region import
-import SCUContiCorrenti from "../../mw_page_objects/clients/SCUContiCorrenti"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import Sfera from "../../mw_page_objects/sfera/Sfera"
@@ -20,14 +20,23 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
+let options = {
+    retries: {
+        runMode: 0,
+        openMode: 0,
+    }
+}
 //#endregion
 
 //#region Before After
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
-        Sfera.accediSferaDaHomePageMW()
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+            Sfera.accediSferaDaHomePageMW()
+        })
     })
 })
 
@@ -43,19 +52,10 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-
 })
 //#endregion Before After
 
 describe('Matrix Web : Sfera 4.0', function () {
-
-    it('Verificare presenza ed accesso a Delta Premio da menù contestuale e ritorno in Sfera', function () {
-        Sfera.setDateEstrazione()
-        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-        Sfera.estrai()
-        Sfera.apriVoceMenu(Sfera.VOCIMENU.DELTA_PREMIO)
-        Sfera.verificaAccessoSfera()
-    })
 
     it('Verificare Cluster Motor Delta Premio Positivo e Negativo', function () {
         Sfera.setDateEstrazione()
@@ -85,25 +85,13 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
     })
 
-    it.only('Gestione Stampa Senza Incasso per Quietanze Motor Allianz', function () {
+    it('Effettua Stampa Senza Incasso per Quietanze Motor Allianz', function () {
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-        Sfera.setDateEstrazione(false, '02/02/2022')
+        Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
         Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
-        SCUContiCorrenti.aggiungiContoCorrente().then((conto) => {
-            cy.log('MERDA DA CONTO')
-          })
-        Sfera.aggiungiContoCorrente().then((conto) => {
-            cy.log(conto)
-            cy.log('MERDA DA SFERA')
-          })
-        Sfera.apriVoceMenu(Sfera.VOCIMENU.STAMPA_SENZA_INCASSO).then((polizza) => {
-            cy.log('MERDA DA VOCE')
-            //De-Selezioniamo le Stampabili
-            cy.pause()
-            // Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, false)
-            // Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPATE, true)
-            // Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, polizza)
+        Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO).then((polizza) => {
+            cy.log(`Stampa Senza Incasso effettuata su contratto ${polizza}`)
         })
     })
 
@@ -117,11 +105,54 @@ describe('Matrix Web : Sfera 4.0', function () {
     //     Sfera.creaAndInviaCodiceAzPay()
     // })
 
-    it('verificare corretto layout del pannello scontistica su visat delta premio', function () {
+    // TODO: ATTENDERE
+    // it('verificare corretto layout del pannello scontistica su visat delta premio', function () {
+    //     Sfera.setDateEstrazione()
+    //     Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
+    //     Sfera.estrai()
+    //     Sfera.apriVoceMenu(Sfera.VOCIMENU.DELTA_PREMIO)
+    //     Sfera.verificaAccessoSfera()
+    // })
+
+
+    it('Verifica Estrazione report excel', function () {
         Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
         Sfera.estrai()
-        Sfera.apriVoceMenu(Sfera.VOCIMENU.DELTA_PREMIO)
-        Sfera.verificaAccessoSfera()
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        Sfera.estrazioneReportExcel()
     })
+
+    context('🖕🔥Verifica Rotella Gestione Colonne', () => {
+
+        it('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
+            Sfera.setDateEstrazione()
+            Sfera.estrai()
+            Sfera.gestisciColonne(['Cod. AZPay'])
+            Sfera.checkColonnaPresente('Cod. AZPay')
+            Sfera.bloccaColonna('Cod. AZPay')
+            // Sfera.dragDropColonna('Info') //! Da Implementare in quanto da studiare
+            Sfera.eliminaColonna('Cod. AZPay')
+            Sfera.checkColonnaAssente('Cod. AZPay')
+            Sfera.salvaVistaPersonalizzata('Automatici')
+            Sfera.selezionaVista('Automatici')
+            Sfera.eliminaVista('Automatici')
+        })
+
+        it('Verifica Sostituisci Vista', function () {
+            Sfera.gestisciColonne(['Cod. AZPay'])
+            Sfera.sostituisciVista('prova 1')
+            Sfera.selezionaVista('prova 1')
+            Sfera.checkColonnaPresente('Cod. AZPay')
+        })
+
+    });
+
+
+    it('Verifica Filtro Fonti e Filtro Agenzie Tutte Selezionate', options, function () {
+        Sfera.fontiAllSelezionati()
+        Sfera.agenzieAllSelezionati()
+    })
+
+
 })

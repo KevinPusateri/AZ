@@ -100,7 +100,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickIconSwitchPage()
     });
 
-    if (!keys.srmOnlineEnabled && !keys.siscoEnabled && !keys.SERVICENOW)
+    if (keys.srmOnlineEnabled && keys.siscoEnabled && keys.SERVICENOW)
         it('Verifica Top Menu incident - Verifica presenza dei link', function () {
             TopBar.clickIconIncident()
             TopBar.checkLinksIncident(keys)
@@ -195,13 +195,12 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickLinkOnUtilita('Gestione certificati')
     })
 
-    //? Rimosso dalla Release 124
-    // it('Verifica atterraggio da Utilità - Gestione Magazzino OBU', function () {
-    //     if (keys.obuEnabled) {
-    //         TopBar.clickIconSwitchPage()
-    //         TopBar.clickLinkOnUtilita('Gestione Magazzino OBU')
-    //     } else this.skip()
-    // })
+    it('Verifica atterraggio da Utilità - Gestione Magazzino OBU', function () {
+        if (keys.obuEnabled) {
+            TopBar.clickIconSwitchPage()
+            TopBar.clickLinkOnUtilita('Gestione Magazzino OBU')
+        } else this.skip()
+    })
 
     // Accesso non autorizzato --add excel
     // ! IMPOSSIBILE Pagina inesistente
@@ -210,7 +209,6 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     //     TopBar.clickLinkOnUtilita('Piattaforma contratti AZ Telematics')
     // })
 
-    //? Rimosso dalla Release 124
     // it('Verifica atterraggio da Utilità - Cruscotto Installazione Dispositivo Satellitare', function () {
     //     if (!Cypress.env('monoUtenza') && keys.satellitareEnabled) {
     //         TopBar.clickIconSwitchPage()
@@ -276,8 +274,11 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         it('Verifica assenza Button News e Info', function () {
             TopBar.checkNotExistLanding('News e Info')
         });
+    } else
+        it('Verifica Button News e Info', function () {
+            TopBar.clickNewsInfo()
+        });
 
-    }
 
     it('Verifica link "Vai al Centro notifiche"', function () {
         HomePage.clickVaiAlCentroNotifiche()

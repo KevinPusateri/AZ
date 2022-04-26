@@ -22,7 +22,7 @@ class Riepilogo {
             url: '**/riepilogo/**'
         }).as('riepilogo')
 
-        cy.wait('@riepilogo', { requestTimeout: 60000 });
+        cy.wait('@riepilogo', { timeout: 180000 });
     }
     //#endregion caricamenti
 

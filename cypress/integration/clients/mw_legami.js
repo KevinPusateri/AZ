@@ -71,7 +71,7 @@ describe('Matrix Web : Legami', function () {
 
     Cypress._.times(1, () => {
 
-        it.only('Verifica creazione di un Gruppo aziendale con inserimento membro', function () {
+        it('Verifica creazione di un Gruppo aziendale con inserimento membro', function () {
             DettaglioAnagrafica.checkClientWithoutLegame()
             SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
                 currentClient = retrivedClient

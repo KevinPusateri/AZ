@@ -5,6 +5,10 @@ import Sales from "../../mw_page_objects/Navigation/Sales"
 import NGRA2013 from "../../mw_page_objects/motor/NGRA2013"
 import Common from "../../mw_page_objects/common/Common"
 import IncassoDA from "../../mw_page_objects/da/IncassoDA"
+import InquiryAgenzia from "../../mw_page_objects/da/InquiryAgenzia"
+import Folder from "../../mw_page_objects/common/Folder"
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
+import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
 
 //#region Intercept
 const infoUtente = {
@@ -30,6 +34,36 @@ const aggiornaContatoriCluster = {
 const estraiQuietanze = {
     method: 'POST',
     url: /estraiQuietanze/
+}
+
+const interceptContraenteScheda = () => {
+    cy.intercept({
+        method: 'POST',
+        url: '**/recuperaDatiAnagraficiCliente',
+    }).as('getDatiAnagrafici');
+    cy.intercept({
+        method: 'POST',
+        url: '**/recuperaIniziativeCliente',
+    }).as('getDatiIniziative');
+    cy.intercept({
+        method: 'POST',
+        url: '**/recuperaContrattiCliente',
+    }).as('getContratti');
+    cy.intercept({
+        method: 'POST',
+        url: '**/recuperaFastquoteCliente',
+    }).as('getFastquote');
+
+    //Note
+    cy.intercept({
+        method: 'POST',
+        url: '**/recuperaNoteCliente',
+    }).as('getRecuperaNote');
+}
+
+const cambiaModalitaPagamentoPreferita = {
+    method: 'POST',
+    url: '**/cambiaModalitaPagamentoPreferita'
 }
 //#endregion
 
@@ -86,22 +120,170 @@ const TipoQuietanze = {
 }
 
 /**
- * Enum Voci Menu
+ * Enum Voci Menu Quietanza
  * @readonly
  * @enum {Object}
  */
-const VociMenu = {
+const VociMenuQuietanza = {
+    INCASSO: {
+        root: 'Quietanza',
+        parent: '',
+        key: 'Incasso'
+    },
     DELTA_PREMIO: {
-        parent: 'Quietanza',
+        root: 'Quietanza',
+        parent: '',
         key: 'Delta premio'
     },
+    RIQUIETANZAMENTO: {
+        root: 'Quietanza',
+        parent: '',
+        key: 'Riquietanzamento per clienti valori extra'
+    },
+    VARIAZIONE_RIDUZIONE_PREMI: {
+        root: 'Quietanza',
+        parent: 'Riduzione premi',
+        key: 'Variazione riduzione premi'
+    },
+    CONSOLIDAMENTO_RIDUZIONE_PREMI: {
+        root: 'Quietanza',
+        parent: 'Riduzione premi',
+        key: 'Consolidamento Riduzione Premi'
+    },
+    GENERAZIONE_AVVISO: {
+        root: 'Quietanza',
+        parent: '',
+        key: 'Generazione avviso'
+    },
     STAMPA_SENZA_INCASSO: {
-        parent: 'Quietanza',
+        root: 'Quietanza',
+        parent: '',
         key: 'Stampa senza incasso'
     },
+}
+
+/**
+ * Enum Voci Menu Polizza
+ * @readonly
+ * @enum {Object}
+ */
+const VociMenuPolizza = {
+    RIPRESA_PREVENTIVO_AUTO: {
+        root: 'Polizza',
+        parent: '',
+        key: 'Ripresa prev. auto'
+    },
+    SOSTITUZIONE_RAMI_VARI: {
+        root: 'Polizza',
+        parent: '',
+        key: 'Sostituzione rami vari'
+    },
     SOSTITUZIONE_RIATTIVAZIONE_AUTO: {
-        parent: 'Polizza',
+        root: 'Polizza',
+        parent: '',
         key: 'Sostituzione / Riattivazione auto'
+    },
+    CONSULTAZIONE_POLIZZA: {
+        root: 'Polizza',
+        parent: 'Consultazione',
+        key: 'Polizza'
+    },
+    CONSULTAZIONE_DOCUMENTI_POLIZZA: {
+        root: 'Polizza',
+        parent: 'Consultazione',
+        key: 'Documenti di polizza'
+    },
+    COMPARATORE_AZ_ULTRA: {
+        root: 'Polizza',
+        parent: 'Consultazione',
+        key: 'Comparatore AZ ultra'
+    },
+    DETTAGLIO_ABBINATA: {
+        root: 'Polizza',
+        parent: '',
+        key: 'Dettaglio abbinata'
+    },
+    DISATTIVAZIONE_ALLIANZ_PAY: {
+        root: 'Polizza',
+        parent: '',
+        key: 'Disattivazione Allianz Pay'
+    },
+    MODIFICA_MODALITA_PAGAMENTO: {
+        root: 'Polizza',
+        parent: '',
+        key: 'Modifica modalità di pagamento preferito della polizza'
+    }
+    //TODO Modulari quando trovo il parent menu attivo
+}
+
+/**
+ * Enum Voci Menu Cliente
+ * @readonly
+ * @enum {Object}
+ */
+const VociMenuCliente = {
+    SCHEDA_CLIENTE: {
+        root: 'Cliente',
+        parent: '',
+        key: 'Scheda cliente'
+    },
+    LISTA_POLIZZE: {
+        root: 'Cliente',
+        parent: '',
+        key: 'Lista polizze'
+    },
+    LISTA_SINISTRI: {
+        root: 'Cliente',
+        parent: '',
+        key: 'Lista sinistri'
+    },
+    REPORT_PROFILO_VITA: {
+        root: 'Cliente',
+        parent: '',
+        key: 'Report profilo vita'
+    }
+}
+
+/**
+ * Enum Voci Menu Emissione
+ * @readonly
+ * @enum {Object}
+ */
+const VociMenuEmissione = {
+    AUTO: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Nuova polizza Auto'
+    },
+    RAMI_VARI: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Nuova polizza Rami Vari'
+    },
+    SERVIZIO_CONSULENZA_VITA: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Servizio consulenza del Vita'
+    },
+    ULTRA_CASA_PATRIMONIO: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Nuova polizza Allianz Ultra Casa e Patrimonio'
+    },
+    ULTRA_SALUTE: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Nuova polizza Allianz Ultra Salute'
+    },
+    ULTRA_IMPRESA: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Nuova polizza Allianz Ultra Impresa'
+    },
+    PREVENTIVO_MOTOR: {
+        root: 'Emissione',
+        parent: '',
+        key: 'Preventivo Motor'
     }
 }
 
@@ -114,7 +296,8 @@ const ClusterMotor = {
     DELTA_PREMIO_NEGATIVO: "Delta premio negativo",
     DELTA_PREMIO_POSITIVO: "Delta premio positivo",
     QUIETANZE_STAMPABILI: "Quietanze Stampabili",
-    QUIETANZE_STAMPATE: "Quietanze Stampate"
+    QUIETANZE_STAMPATE: "Quietanze Stampate",
+    IN_MORA: "In mora"
 }
 
 /**
@@ -131,6 +314,24 @@ const TipoSostituzioneRiattivazione = {
     RIATTIVAZIONE_ALTRO_VEICOLO: "Riattivazione altro veicolo",
     RIATTIVAZIONE_STESSO_VEICOLO: "Riattivazione stesso veicolo",
     CESSIONE: "Cessione"
+}
+
+/**
+ * Enum TipoModalitaPgamento
+ * @readonly
+ * @enum {Object}
+ */
+const TipoModalitaPagamento = {
+    ASSEGNO: "Assegno",
+    BONIFICO: "Bonifico",
+    CONTANTI: "Contanti",
+    POS_DIREZIONALE: "Pos Direzionale",
+    POS_AGENZIA: "Pos Agenzia",
+    AZ_BANK: "Az Bank",
+    TRATTENUTA_STIPENDIO: "Trattenuta sullo stipendio",
+    RID_DIREZIONALE: "Rid Direzionale",
+    POS_VIRTUALE: "Pos Virtuale",
+    ALTRO: "Altro"
 }
 
 /**
@@ -204,21 +405,34 @@ const Portafogli = {
 }
 
 /**
+ * Enum Tab su Scheda Dati Complementari Cliente 
+ * @enum {Object}
+ */
+const TabScheda = {
+    PANORAMICA: "Panoramica",
+    NOTE: "Note",
+    DETTAGLIO_PREMI: "Dettaglio Premi",
+    INIZIATIVE: "Iniziative"
+}
+
+/**
+ * Enum Panel da Panoramica 
+ * @enum {Object}
+ */
+const Pannelli = {
+    VALORE_CLIENTE: "Valore Cliente",
+    POLIZZE: "Polizze",
+    PROPOSTE: "Proposte",
+    PREVENTIVI: "Preventivi",
+    FASTQUOTE: "Fastquote",
+    DISDETTE: "Disdette"
+}
+/**
  * @class
  * @classdesc Classe per interagire con Sfera 4.0 da Matrix Web
  * @author Andrea 'Bobo' Oboe & Kevin Pusateri
  */
 class Sfera {
-
-
-    static aggiungiContoCorrente() {
-        return new Cypress.Promise((resolve, reject) => {
-
-
-
-            resolve(true);
-        });
-    }
 
     /**
      * Funzione che ritorna i portafogli disponibili su cui effettauare le estrazioini
@@ -245,11 +459,35 @@ class Sfera {
     }
 
     /**
-     * Funzione che ritorna le voci di menu disponibili su Sfera
-     * @returns {VociMenu} Voci di Menu
+     * Funzione che ritorna le voci di menu Quietanza disponibili su Sfera
+     * @returns {VociMenuQuietanza} Voci di Menu Quietanza
      */
-    static get VOCIMENU() {
-        return VociMenu
+    static get VOCIMENUQUIETANZA() {
+        return VociMenuQuietanza
+    }
+
+    /**
+     * Funzione che ritorna le voci di menu Polizza disponibili su Sfera
+     * @returns {VociMenuPolizza} Voci di Menu Polizza
+     */
+    static get VOCIMENUPOLIZZA() {
+        return VociMenuPolizza
+    }
+
+    /**
+     * Funzione che ritorna le voci di menu Cliente disponibili su Sfera
+     * @returns {VociMenuCliente} Voci di Menu Cliente
+     */
+    static get VOCIMENUCLIENTE() {
+        return VociMenuCliente
+    }
+
+    /**
+     * Funzione che ritorna le voci di menu Cliente disponibili su Sfera
+     * @returns {VociMenuEmissione} Voci di Menu Cliente
+     */
+    static get VOCIMENUEMISSIONE() {
+        return VociMenuEmissione
     }
 
     /**
@@ -269,6 +507,15 @@ class Sfera {
     }
 
     /**
+     * Funzione che ritorna Tab nella Scheda Anagrafica
+     * @returns {TabScheda} tipo di Scheda
+     * @private
+     */
+    static get TABSCHEDA() {
+        return TabScheda
+    }
+
+    /**
      * Funzione che ritorna i tipi di Filtri
      * @returns {Filtri} tipi di Filtri
      */
@@ -282,6 +529,14 @@ class Sfera {
      */
     static get TIPOSOSTITUZIONERIATTIVAZIONE() {
         return TipoSostituzioneRiattivazione
+    }
+
+    /**
+     * Funzione che ritorna i tipi di modalità di pagamento
+     * @returns {TipoModalitaPagamento} tipo modalità di pagamento
+     */
+    static get TIPOMODALITAPAGAMENTO() {
+        return TipoModalitaPagamento
     }
 
     //#region Elementi Sfera
@@ -340,6 +595,16 @@ class Sfera {
     }
 
     /**
+ * Ritorna il dropdown Modalità Pagamento preferita
+ * @returns {Object} Modalità Pagamento Preferitadropdown da popup
+ * @private
+ */
+    static dropdownModalitaPagamentoPreferita() {
+        return cy.get('sfera-pagamento-preferito-modal').find('nx-dropdown').should('exist').and('be.visible')
+    }
+
+
+    /**
      * Ritorna il pulsante Procedi
      * @returns {Object} pulsante Procedi
      * @private
@@ -392,11 +657,11 @@ class Sfera {
         TopBar.clickSales()
         Sales.clickLinkRapido('Nuovo Sfera')
 
-        cy.wait('@infoUtente', { requestTimeout: 60000 })
-        cy.wait('@agenzieFonti', { requestTimeout: 60000 })
-        cy.wait('@caricaVista', { requestTimeout: 60000 })
-        cy.wait('@aggiornaCaricoTotale', { requestTimeout: 60000 })
-        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+        cy.wait('@infoUtente', { timeout: 60000 })
+        cy.wait('@agenzieFonti', { timeout: 60000 })
+        cy.wait('@caricaVista', { timeout: 60000 })
+        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
     }
 
     /**
@@ -409,14 +674,13 @@ class Sfera {
         cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
         cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
 
-        cy.wait('@infoUtente', { requestTimeout: 60000 })
-        cy.wait('@agenzieFonti', { requestTimeout: 60000 })
-        cy.wait('@caricaVista', { requestTimeout: 60000 })
-        cy.wait('@aggiornaCaricoTotale', { requestTimeout: 60000 })
-        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+        cy.wait('@infoUtente', { timeout: 60000 })
+        cy.wait('@agenzieFonti', { timeout: 60000 })
+        cy.wait('@caricaVista', { timeout: 60000 })
+        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
 
         this.bodyTableEstrazione()
-        cy.pause() // DA TOGLIERE
     }
 
     /**
@@ -445,7 +709,7 @@ class Sfera {
             cy.get('input').invoke('attr', 'value').then((isChecked) => {
                 if ((isChecked && !bePresent) || (!isChecked && bePresent)) {
                     cy.get('nx-icon').click()
-                    cy.wait('@aggiornaCaricoTotale', { requestTimeout: 60000 })
+                    cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                 }
             })
         })
@@ -489,7 +753,7 @@ class Sfera {
                 cy.get('span[class="nx-checkbox__control"]:visible').click()
                 cy.intercept(estraiQuietanze).as('estraiQuietanze')
                 cy.contains('Applica').should('be.enabled').click()
-                cy.wait('@estraiQuietanze', { requestTimeout: 60000 })
+                cy.wait('@estraiQuietanze', { timeout: 120000 })
             })
         })
     }
@@ -501,69 +765,273 @@ class Sfera {
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
         cy.contains('Estrai').should('exist').click()
 
-        cy.wait('@estraiQuietanze', { requestTimeout: 60000 })
+        cy.wait('@estraiQuietanze', { timeout: 120000 })
 
         //Verifichiamo che la tabella d'estrazione sia presente
         this.tableEstrazione()
+
+        cy.wait(2000)
     }
 
     /**
      * Effettua l'accesso al menu contestuale della prima riga o della polizza specificata
-     * @param {VociMenu} voce 
+     * @param {VociMenuQuietanza} voce 
+     * @param {Boolean} [flussoCompleto] default true, se a false effettua solo verifica aggancio applicativo
      * @param {number} [polizza] default null, se specificato clicca sul menu contestuale della polizza passata
      * @param {TipoSostituzioneRiattivazione} [tipoSostituzioneRiattivazione] default null, tipo di sostituzione/riattivazione auto da effettuare
+     * @param {TipoModalitaPagamento} [modalitaPagamentoPreferita] default null, tipo di modalità di pagamento preferita
      * 
-     * @returns {String} polizza su cui sono state effettuate le operazioni
+     * @returns {Promise} polizza su cui sono state effettuate le operazioni
      */
-    static apriVoceMenu(voce, polizza = null, tipoSostituzioneRiattivazione = null) {
+    static apriVoceMenu(voce, flussoCompleto = true, polizza = null, tipoSostituzioneRiattivazione = null, modalitaPagamentoPreferita = null) {
+        return new Cypress.Promise(resolve => {
+            if (polizza === null)
+                this.bodyTableEstrazione().find('tr:first').within(() => {
+                    this.threeDotsMenuContestuale().click({ force: true })
+                })
+            else
+                this.bodyTableEstrazione().find('tr').contains(polizza).parents('tr').within(() => {
+                    this.threeDotsMenuContestuale().click({ force: true })
+                })
 
-        if (polizza === null)
-            this.bodyTableEstrazione().find('tr:first').within(() => {
-                this.threeDotsMenuContestuale().click({ force: true })
+            //Andiamo a selezionare la root (Quietanza,Polizza...)
+            this.menuContestualeParent().within(() => {
+                cy.contains(voce.root).should('exist').and('be.visible').click()
             })
-        else
-            this.bodyTableEstrazione().find('tr').contains(polizza).parents('tr').within(() => {
-                this.threeDotsMenuContestuale().click({ force: true })
+
+            //Andiamo a selezionare prima il menu contestuale 'padre' (se presente)
+            if (voce.parent !== '') {
+                this.menuContestualeParent().within(() => {
+                    cy.contains(voce.parent).should('exist').and('be.visible').click()
+                })
+            }
+
+            //Andiamo a selezionare il menu contestuale 'figlio'
+            this.menuContestualeChild().within(() => {
+                //? CONSULTAZIONE_DOCUMENTI_POLIZZA, Voci menu Cliente si apre su nuovo tab, quindi gestisto il _self
+                if (voce.key === VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA.key ||
+                    voce.root === 'Cliente') {
+                    cy.window().then(win => {
+                        cy.stub(win, 'open').callsFake((url) => {
+                            return win.open.wrappedMethod.call(win, url, '_self');
+                        }).as('Open');
+                    })
+                    cy.contains(voce.key).click()
+                    cy.get('@Open')
+                }
+                else
+                    cy.contains(voce.key).click()
             })
 
-        //Andiamo a selezionare prima il menu contestuale 'padre'
-        this.menuContestualeParent().within(() => {
-            cy.contains(voce.parent).should('exist').and('be.visible').click()
-        })
+            Common.canaleFromPopup()
 
-        //Andiamo a selezionare il menu contestuale 'figlio'
-        this.menuContestualeChild().within(() => {
-            cy.contains(voce.key).click()
-        })
-
-        Common.canaleFromPopup()
-        
-        return new Cypress.Promise((resolve, reject) => {
             //Salviamo la polizza sulla quale effettuiamo le operazioni per poterla utilizzare successivamente
             let numPolizza = ''
             //Verifichiamo gli accessi in base al tipo di menu selezionato
             switch (voce) {
-                case VociMenu.DELTA_PREMIO:
-                    NGRA2013.verificaAccessoRiepilogo()
+                case VociMenuQuietanza.INCASSO:
+                    IncassoDA.accessoMezziPagam()
+                    cy.wait(2000)
+                    cy.screenshot('Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di incasso completo
+                    }
+                    else {
+                        IncassoDA.clickCHIUDI()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                    }
                     break;
-                case VociMenu.SOSTITUZIONE_RIATTIVAZIONE_AUTO:
+                case VociMenuQuietanza.DELTA_PREMIO:
+                    NGRA2013.verificaAccessoRiepilogo()
+                    cy.wait(2000)
+                    cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di delta premio
+                    }
+                    else {
+                        NGRA2013.home(true)
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                        break;
+                    }
+                case VociMenuQuietanza.VARIAZIONE_RIDUZIONE_PREMI:
+                    IncassoDA.accessoGestioneFlex()
+                    IncassoDA.salvaSimulazione()
+                    cy.wait(200)
+                    cy.screenshot('Variazione Riduzione Premi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di incasso completo
+                    }
+                    else {
+                        IncassoDA.clickCHIUDI()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                    }
+                    break;
+                case VociMenuQuietanza.RIQUIETANZAMENTO:
+                    break;
+                case VociMenuPolizza.SOSTITUZIONE_RIATTIVAZIONE_AUTO:
                     //Scegliamo il Tipo di sostituzione dal popup
                     this.dropdownSostituzioneRiattivazione().click()
                     cy.contains(tipoSostituzioneRiattivazione).should('exist').click()
                     this.procedi().click()
-                    cy.pause()
+                    Common.canaleFromPopup()
+                    NGRA2013.verificaAccessoDatiAmministrativi()
+                    cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di incasso completo
+                    }
+                    else {
+                        NGRA2013.home(true)
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                    }
                     break;
-                case VociMenu.STAMPA_SENZA_INCASSO:
-                    IncassoDA.accessoIncassoDA()
-                    IncassoDA.clickStampa()
-                    numPolizza = IncassoDA.getNumeroContratto()
-                    IncassoDA.clickCHIUDI()
+                case VociMenuQuietanza.STAMPA_SENZA_INCASSO:
+                    IncassoDA.accessoMezziPagam()
+                    cy.wait(200)
+                    cy.screenshot('Stampa Senza Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        IncassoDA.clickStampa()
+                        IncassoDA.getNumeroContratto().then(numContratto => {
+                            numPolizza = numContratto
+                            IncassoDA.clickCHIUDI()
+                            //Verifichiamo il rientro in Sfera
+                            this.verificaAccessoSfera()
+                            resolve(numPolizza)
+                        })
+                    }
+                    else {
+                        IncassoDA.clickCHIUDI()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                    }
+                    break;
+                case VociMenuPolizza.CONSULTAZIONE_POLIZZA:
+                    InquiryAgenzia.verificaAccessoInquiryAgenzia()
+                    cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        InquiryAgenzia.clickUscita()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                    }
+                    break;
+                case VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA:
+                    Folder.verificaCaricamentoFolder(false)
+                    cy.screenshot('Consultazione Documenti Polizza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        this.estrai()
+                    }
+                    break;
+                case VociMenuPolizza.MODIFICA_MODALITA_PAGAMENTO:
+                    cy.intercept(cambiaModalitaPagamentoPreferita).as('cambiaModalitaPagamentoPreferita')
+                    this.dropdownModalitaPagamentoPreferita().click()
+                    cy.contains(modalitaPagamentoPreferita).should('exist').click()
+                    cy.screenshot('Setta Modalità Pagamento Preferita', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    this.procedi().click()
+                    //Verifichiamo che sia andato a compimento
+                    cy.wait('@cambiaModalitaPagamentoPreferita', { timeout: 120000 }).then(bffCambiaModalitaPagamento => {
+                        debugger
+                        expect(bffCambiaModalitaPagamento.response.statusCode).to.be.eq(200)
+                        expect(bffCambiaModalitaPagamento.response.body.esito).to.include("Effettuato ScriviModalitaPagamentoPreferita")
+                        cy.screenshot('Modalità Pagamento Preferita settata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        cy.contains('Chiudi').click()
+                    })
+                    break;
+                case VociMenuCliente.SCHEDA_CLIENTE:
+                    SintesiCliente.checkAtterraggioSintesiCliente()
+                    cy.screenshot('Scheda Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        this.estrai()
+                    }
+                    break;
+                case VociMenuCliente.LISTA_POLIZZE:
+                    Portafoglio.checkPolizzeAttive(false)
+                    cy.screenshot('Lista Polizze', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        this.estrai()
+                    }
+                    break;
+                case VociMenuCliente.LISTA_SINISTRI:
+                    Portafoglio.checkSinistri()
+                    cy.screenshot('Lista Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        this.estrai()
+                    }
                     break;
             }
-
-            //Verifichiamo il rientro in Sfera
-            this.verificaAccessoSfera()
-            resolve(numPolizza)
         })
     }
 
@@ -578,7 +1046,7 @@ class Sfera {
         this.espandiPannello()
 
         cy.contains(clusterMotor).click()
-        cy.wait('@aggiornaCaricoTotale', { requestTimeout: 60000 })
+        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
 
         //Verifichiamo che sia valorizzato il numero tra ()
         cy.contains(clusterMotor).invoke('text').then(clusterMotorText => {
@@ -694,7 +1162,7 @@ class Sfera {
 
                     if (!$chekcBoxChecked.find('nx-icon').is(':visible')) {
                         cy.get(`div:contains(${portafogli[i]})`).parents('nx-dropdown-item').click()
-                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
             }
@@ -705,7 +1173,7 @@ class Sfera {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
                         cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
-                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
             if (!portafogli.includes(Portafogli.RAMI_VARI))
@@ -713,7 +1181,7 @@ class Sfera {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
                         cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
-                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
             if (!portafogli.includes(Portafogli.VITA))
@@ -721,7 +1189,7 @@ class Sfera {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
                         cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
-                        cy.wait('@aggiornaContatoriCluster', { requestTimeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
         })
@@ -747,15 +1215,43 @@ class Sfera {
 
             cy.get('div[class="cdk-overlay-pane"]').last()
                 .should('be.visible').within(() => {
-                    cy.get('button').contains(nameVista).click({ force: true })
+                    cy.get('button').contains(nameVista).click({ force: true }).wait(2000)
                 })
+        })
+        cy.get('h2[nxheadline="subsection-medium"]').should('include.text', nameVista)
+
+    }
+
+    static eliminaVista(nameVista) {
+        cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+
+        // Click Le mie viste
+        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+            cy.contains('Gestisci viste').click()
+        }).then(() => {
+
+            cy.get('div[class="modal-gestisci-viste-content ng-star-inserted"]')
+                .should('be.visible').within(() => {
+                    cy.get('div[class="flex-content center-content row-view ng-star-inserted"]:contains("' + nameVista + '")').within(() => {
+                        cy.get('nx-icon[class~="nx-icon--trash-o"]').click()
+                    })
+                })
+            cy.intercept(caricaVista).as('caricaVista')
+            cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+            cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+            cy.get('button[nxmodalclose="Agree"]').click()
+
+            cy.wait('@caricaVista', { timeout: 60000 })
+            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
         })
 
     }
 
     /**
      * Verifica se colonne mancanti di aggiungerli nella vista
-     * @param {string} colonna - array colonne 
+     * @param {Object} colonna - array colonne 
      */
     static gestisciColonne(colonna) {
 
@@ -800,6 +1296,449 @@ class Sfera {
         cy.pause()
 
     }
-}
 
+    /**
+     * Estrazione Excel e verifica dati estratti correttamente
+     */
+    static estrazioneReportExcel() {
+        var currentColumn = [
+            "Info",
+            "Pt.",
+            "Contraente",
+            "Num.\nPolizza",
+            "Scad.",
+            "Inizio\nCopertura",
+            "Evo",
+            "Cod\nAgenzia",
+            "Cod.\nFraz",
+            "Sede",
+            "Fonte",
+            "Ramo",
+            "Premio\nLordo Rata",
+            "Gg.Mo.\n/Fuo.Mo.",
+            "Descrizione\nProdotto",
+            "Decorrenza\nPolizza",
+            "Scadenza\nPolizza",
+            "Vin",
+            "Delta pr.\nNetto RCA",
+            "Delta Premio\nNetto ARD",
+            "Importo Canone",
+            "Ind att.rin",
+            "R.abb",
+            "Coass.",
+            "Val. Extra",
+            "Avv Email",
+            "Nr Avv\nSms",
+            "Avv Pdf",
+            "Targa",
+            "Pag",
+            "FQ\nTot",
+            "Dlt pr Qtz €"
+        ];
+        var rows = []
+        cy.get('tr[class="nx-table-row ng-star-inserted selectedRow"]').each((rowsTable) => {
+            cy.wrap(rowsTable).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($textCell) => {
+                rows.push($textCell.text().trim())
+            })
+        })
+        cy.get('nx-icon[name="arrow-download"]').should('be.visible').click()
+        cy.get('sfera-esporta-pdf').should('be.visible').within(() => {
+            cy.contains('Procedi').click()
+            cy.get('h3').should('include.text', 'Excel esportato con successo')
+            cy.contains('Chiudi').click()
+
+            cy.task('getFolderDownload').then((folderDownload) => {
+                cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
+                    // Verifica Colonne presenti
+                    expect(jsonData[0].data[0]).to.eqls(currentColumn);
+                    for (let index = 0; index < rows.length; index++) {
+                        // Verifica Clienti presenti
+                        expect(jsonData[0].data[index + 1]).to.include(rows[index]);
+                    }
+                });
+            })
+        })
+
+    }
+
+    static checkColonnaPresente(colonna) {
+        cy.get('div[class="table-component-th-name"]').should('include.text', colonna)
+    }
+    static checkColonnaAssente(colonna) {
+        cy.get('div[class="table-component-th-name"]').should('not.include.text', colonna)
+    }
+
+    /**
+     * Verifica drag & Drop Di una colonna in prima posizione
+     * @param {string} colonna - nome della colonna
+     */
+    static dragDropColonna(colonna) {
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container:visible').should('be.visible').within(() => {
+                cy.wait(5000)
+                cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').should('be.visible').within(() => {
+                    cy.contains(colonna)
+                        .parents('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
+                        .within(($colonna) => {
+                            cy.wrap($colonna).as('colonna')
+                        })
+
+                    cy.get('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
+                        .eq(3).as('otherColumn')
+                    cy.get('@colonna')
+                        .drag('@otherColumn', {
+                            force: true,
+                            source: { x: 100, y: 100 }
+                        })
+                    // .then((success) => {
+                    //     assert.isTrue(success)
+                    // })
+                    // const dataTransfer = new DataTransfer();
+                    // cy.get('@colonna').trigger('dragstart', { dataTransfer }, { force: true }).wait(500)
+                    // cy.get('@otherColumn')
+                    //     .trigger('dragover', { force: true }).wait(500)
+                    // cy.get('@otherColumn')
+                    //     .trigger('drop', { dataTransfer }).wait(500)
+                    // cy.get('@colonna').trigger('dragend', { force: true })
+                })
+            })
+        })
+    }
+
+    /**
+     * Verifica la colonna eliminata
+     * @param {string} colonna - nome della colonna
+     */
+    static eliminaColonna(colonna) {
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container:visible').should('be.visible').within(() => {
+                cy.wait(5000)
+                cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').should('be.visible').within(() => {
+                    cy.contains(colonna)
+                        .parents('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
+                        .within(() => {
+                            cy.get('nx-icon[name="minus-circle"]').click()
+                        })
+                })
+                cy.contains('Applica vista').click()
+            })
+        })
+    }
+
+    /**
+      * Elimina colonna Permanente
+      * @param {string} colonna - nome della colonna
+      */
+    static eliminaColonna(colonna) {
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container:visible').should('be.visible').within(() => {
+                cy.wait(5000)
+                cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').should('be.visible').within(() => {
+                    cy.contains(colonna)
+                        .parents('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
+                        .within(() => {
+                            cy.get('nx-icon[name="minus-circle"]').click()
+                        })
+                })
+                cy.contains('Applica vista').click()
+            })
+        })
+    }
+
+    /**
+     * Verifica il Blocco della Colonna
+     * @param {string} colonna - nome della colonna
+     */
+    static bloccaColonna(colonna) {
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                cy.wait(5000)
+                cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').should('be.visible').within(() => {
+                    cy.contains(colonna)
+                        .parents('div[class="cdk-drag flex-content center-content all-column-element element ng-star-inserted"]')
+                        .within(() => {
+                            // click blocca colonna
+                            cy.get('nx-icon[name="lock-unlock"]').click()
+                        })
+                })
+                cy.contains('Applica vista').click()
+            })
+
+            // Verifica il blocco effettuato
+            cy.get('th[class="thSticky col-sticky-shadow col-sticky-1 nx-header-cell ng-star-inserted"]').should('include.text', colonna)
+        })
+    }
+
+    static salvaVistaPersonalizzata(nameVista) {
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                cy.contains('Applica e salva vista').click().wait(3000)
+            })
+        })
+
+        cy.get('nx-modal-container').should('be.visible').within(() => {
+            cy.contains('Nuova vista').click().wait(3000)
+            cy.get('input[placeholder="Inserisci il nome della vista"]:visible').type(nameVista)
+            cy.get('button[nxmodalclose="Agree"]:visible').click()
+        })
+    }
+
+    /**
+     * Salva Vista Sostituendo una vista esistente
+     * @param {string} vista - nome della vista esistente
+     */
+    static sostituisciVista(vista) {
+        // Salva vista
+        cy.get('table').should('be.visible').then(() => {
+            cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                cy.contains('Applica e salva vista').click().wait(4000)
+            })
+        })
+
+        // Sostituisci Vista
+        cy.get('nx-modal-container[aria-label="Salva Vista"]').should('be.visible').within(() => {
+            cy.contains('Sostituisci esistente').click()
+            cy.get('nx-dropdown[placeholder="Seleziona una vista"]').click()
+        })
+        cy.get('div[role="listbox"]').should('be.visible').find('nx-dropdown-item:contains("' + vista + '")').click().wait(1500)
+        cy.get('nx-modal-container[aria-label="Salva Vista"]:visible').within(() => {
+            cy.get('button[nxmodalclose="Agree"]').click()
+        })
+        cy.get('div[class="success-container ng-star-inserted"]').should('be.visible')
+
+    }
+
+    /**
+     * Verifica le fonti siano tutte correttamente selezionate
+     */
+    static fontiAllSelezionati() {
+        cy.get('h3').contains('Fonti').click()
+        cy.get('nx-modal-container[role="dialog"]').should('be.visible').within(() => {
+            cy.screenshot('Fonti Selezionate', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.get('div[class="container-list ng-star-inserted"]').within(() => {
+                cy.get('div[class="nx-checkbox__label-text"]').its('length').then((numFonti) => {
+                    cy.get('nx-icon[class="ndbx-icon nx-icon--check nx-icon--auto ng-star-inserted"]').its('length').then((numCheckAttivi) => {
+                        expect(numFonti).to.eql(numCheckAttivi, 'Fonti non tutti selezionati')
+                    })
+                })
+            })
+            cy.contains('Annulla').click()
+        })
+    }
+
+
+    /**
+    * Verifica le agenzie siano tutte correttamente selezionate
+    */
+    static agenzieAllSelezionati() {
+        cy.get('h3').contains('Agenzie').click()
+
+        cy.get('nx-modal-container[role="dialog"]').should('be.visible').within(() => {
+            cy.screenshot('Agenzie Selezionate', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.get('div[class="container-list ng-star-inserted"]').within(() => {
+                cy.get('div[class="nx-checkbox__label-text"]')
+                    .its('length').then((numAgenzie) => {
+                        cy.get('nx-icon[class="ndbx-icon nx-icon--check nx-icon--auto ng-star-inserted"]')
+                            .its('length').then((numCheckAttivi) => {
+                                expect(numAgenzie).to.eql(numCheckAttivi)
+                            })
+                    })
+            })
+            cy.contains('Annulla').click()
+        })
+    }
+
+    static selectRandomContraente() {
+        interceptContraenteScheda()
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+            let selected = Cypress._.random(rowsTable.length - 1);
+            cy.wrap(rowsTable).eq(selected).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($Contraente) => {
+                cy.wrap($Contraente).click()
+                cy.wait('@getDatiAnagrafici', { requestTimeout: 50000 })
+                cy.wait('@getDatiIniziative', { requestTimeout: 50000 })
+                cy.wait('@getContratti', { requestTimeout: 50000 })
+                cy.wait('@getFastquote', { requestTimeout: 50000 })
+            })
+        })
+    }
+
+    /**
+     * Verifica Tab Scheda 
+     * @param {TabScheda} tabScheda Tipo di TabScheda per l'apertura del tab
+     * 
+     */
+    static checkDatiComplementari(tabScheda) {
+        // Fa il loop finchè non trova un Contraente con il Tab Iniziative Abilitato
+        const loopCheckTabEnabled = (tabScheda) => {
+            if (tabScheda === TabScheda.INIZIATIVE) {
+                cy.get('button[role="tab"]').should('be.visible').then(($Tabs) => {
+                    cy.wait(2500)
+                    cy.wrap($Tabs).find('div[class="nx-tab-label__content"]:contains("' + tabScheda + '")')
+                        .parents('button[role="tab"]').then(($TabScheda) => {
+                            let classDisabled = 'nx-tab-header__item ng-star-inserted nx-tab-header__item--disabled'
+                            let tabEnabled = $TabScheda.hasClass(classDisabled)
+                            if (tabEnabled) {
+                                cy.contains('Chiudi').click()
+                                this.selectRandomContraente()
+                                loopCheckTabEnabled(TabScheda.INIZIATIVE)
+                            }
+                        })
+
+                })
+            }
+        }
+        loopCheckTabEnabled(tabScheda)
+
+        // Scheda Contraente
+        cy.get('div[class="container-dati-complementari"]').should('be.visible').within(() => {
+            //#region  Verifica Dati personali
+            cy.get('div[class="row-info nx-margin-top-s nx-grid__row"]').within(($tabInfo) => {
+                const title = [
+                    'Dati personali',
+                    'Contatti',
+                    'Consensi'
+                ]
+                cy.get('div[class^="col-title nx-font-weight-bold"]').each(($title, index) => {
+                    cy.wrap($title).should('contain.text', title[index])
+                })
+
+                const infoDati = [
+                    'Cellulare',
+                    'Fisso',
+                    'E-Mail',
+                    'Email',
+                    'Grafo',
+                    'OTP',
+                ]
+                for (let index = 0; index < infoDati.length; index++) {
+                    cy.wrap($tabInfo).should('include.text', infoDati[index])
+                }
+            })
+
+
+            //#region  Verifica dei Tab Presenti
+            var currentTabs = []
+            cy.get('button[role="tab"]').each(($tab) => {
+                currentTabs.push($tab.text().trim())
+            }).then(() => {
+                expect(Object.values(TabScheda).sort()).to.deep.eq(currentTabs.sort())
+            })
+
+            // Inizio Verifica Scheda del TAB
+            cy.contains(tabScheda).click()
+            switch (tabScheda) {
+                case TabScheda.PANORAMICA:
+                    cy.screenshot(TabScheda.PANORAMICA, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    checkPanoramica()
+                    break;
+                case TabScheda.NOTE:
+                    cy.screenshot(TabScheda.NOTE, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    checkNote()//! BUG
+                    break
+                case TabScheda.DETTAGLIO_PREMI:
+                    cy.screenshot(TabScheda.DETTAGLIO_PREMI, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    checkDettaglioPremi()
+                    break;
+                case TabScheda.INIZIATIVE:
+                    cy.screenshot(TabScheda.INIZIATIVE, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    checkIniziative()
+                    break;
+                default: throw new Error('Errore: ' + tabScheda + ' non Esiste')
+            }
+            //#endregion
+
+            function checkNote() {
+                cy.wait('@getRecuperaNote', { requestTimeout: 30000 })
+                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                cy.contains('Aggiungi nuova nota').click()
+                cy.get('div[class="new-nota-container"]').should('be.visible').within(() => {
+                    cy.get('input[formcontrolname="titolo"]').type('Titolo Automatici')
+                    cy.get('textarea[formcontrolname="testo"]').type('Testo Automatici')
+                    cy.contains('Salva nota').click()
+                    cy.pause()
+                })
+            }
+
+            function checkPanoramica() {
+                //#region  Verifica Panoramica
+                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+
+                const radioButtonPanoramica = [
+                    'Cliente',
+                    'Nucleo'
+                ]
+                cy.get('div[class="horizontal-buttons"]').find('nx-radio').each(($radioButton) => {
+                    expect(radioButtonPanoramica).to.include($radioButton.text())
+                })
+
+                // Verifica Nucleo disabilitato
+                cy.get('nx-radio[nxvalue="nucleo"]').then(($radio) => {
+                    const checkEnabledRadio = $radio.find('input[type="radio"]').is(':enabled')
+                    if (checkEnabledRadio)
+                        cy.get('nx-radio[nxvalue="nucleo"]').find('input[type="radio"]').should('not.have.attr', 'disabled')
+                    else
+                        cy.get('nx-radio[nxvalue="nucleo"]').find('input[type="radio"]').should('have.attr', 'disabled')
+                })
+
+                // Verifica pannelli presenti
+                cy.get('nx-expansion-panel-title').should('be.visible').each(($panel) => {
+                    expect(Object.values(Pannelli)).to.include($panel.text().trim())
+                })
+
+                // Verifica apertura pannelli
+                cy.get('nx-expansion-panel-header[aria-disabled="false"]').each(($panel) => {
+                    cy.wrap($panel).click()
+                    cy.wrap($panel).parents('nx-expansion-panel')
+                        .find('div[role="region"]')
+                        .should('have.attr', 'style', 'visibility: visible;')
+                    cy.wrap($panel).parents('nx-expansion-panel')
+                        .find('table').should('be.visible')
+                })
+
+                //#endregion
+            }
+
+            function checkDettaglioPremi() {
+                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                cy.get('nx-tab-group').should('be.visible').within(() => {
+                    const titleColumn = [
+                        'Premio Quietanza anno corrente',
+                        'Premio Quietanza anno precedente',
+                        'Delta Premio Quietanza',
+                        'Rid. Premio',
+                        'Premio lavorato',
+                    ]
+                    cy.get('th').each(($titleColumn) => {
+                        if ($titleColumn.text().length > 0) {
+                            expect(titleColumn).to.include($titleColumn.text())
+                        }
+                    })
+
+                    const titleRow = [
+                        '% CMC',
+                        '% commerciale',
+                        '% totale',
+                        'Rid. Premio'
+                    ]
+                    cy.get('td[class="nx-font-weight-bold"]').each(($titleRow) => {
+                        if ($titleRow.text().length > 0) {
+                            expect(titleRow).to.include($titleRow.text())
+                        }
+                    })
+                })
+            }
+
+            function checkIniziative() {
+                cy.get('table[class="table-panel ng-star-inserted"]').should('be.visible')
+                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+            }
+        })
+    }
+}
 export default Sfera

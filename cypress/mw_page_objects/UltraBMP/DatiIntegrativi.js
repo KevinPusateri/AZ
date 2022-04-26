@@ -1,6 +1,5 @@
 /// <reference types="Cypress" />
 
-import { find } from "lodash";
 import UltraBMP from "../../mw_page_objects/UltraBMP/UltraBMP"
 
 //#region iFrame
@@ -273,6 +272,69 @@ class DatiIntegrativi {
                 .find('button').contains('AVANTI').click() //conferma
         })
     }
+
+    /**
+     * Modifica fonte per ruolo
+     * @param {string} ruolo 
+     */
+    static modificaFonteRuolo(ruolo) {
+        ultraIFrame().within(() => {
+            cy.get('div[id="dettaglio-fonte-selezionata"]').should('be.visible').click().wait(500)
+            cy.get('div[id="dettaglio-intermediario"]').should('be.visible') //verifica apertura popup fonte
+                .find('[id="edit-fonte-selezionata"]').should('be.visible').click() //click sull'icona della penna
+            cy.wait(2000)
+
+            //Modifica fonte
+            cy.get('table[id="fonti-grid"]').should('exist')
+              .find('td').contains(ruolo).first().should('exist')
+              .parent('tr').should('have.length', 1)
+              .find('div').first().click().wait(500)
+
+            //Salvataggio fonte selezionata
+            cy.get('table[id="fonti-grid"]').should('exist')
+              .find('td').contains(ruolo).first().should('exist')
+              .parent('tr').should('have.length', 1)
+              .find('td').should('exist')
+              .eq(1)
+              .invoke('text').then(val => {
+                cy.wrap(val).as('fonteSel')
+                cy.log('Fonte selezionata: ' + val)
+              })
+
+            cy.get('div[id="popup-seleziona-fonte-content"]').should('exist')
+              .find('div[class="btn-container"]').should('exist')
+              .find('button').contains('CONFERMA').should('have.length', 1).click().wait(500)
+
+            //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+
+            /*
+            cy.get('span').contains('Fonte').should('be.visible')
+                .next('nx-icon').click() //dblclick() //click su pulsante Fonte
+            cy.wait(500)
+            cy.get('[id="fontePopover"]').should('be.visible') //verifica apertura popup fonte
+                .find('[name="pen"]').click() //click sull'icona della penna
+            cy.wait(2000)
+
+            cy.get('[class*="fonti-table"]').should('exist') //verifica apertura popup per la scelta della fonte
+
+            //seleziona una fonte random
+            cy.get('[class*="fonti-table"]').find('[class*="sottofonte-semplice"]') //lista delle fonti
+                .then(($fonti) => {
+                    var rndFonte = Math.floor(Math.random() * $fonti.length)
+                    cy.get($fonti).eq(rndFonte).first().find('nx-radio').click() //click sul radio button di una fonte random
+
+                    cy.get($fonti).eq(rndFonte).first().invoke('text').then(($text) => {
+                        cy.log('fonte selezionata: ', $text)
+                    })
+                });
+
+            cy.get('button').contains('CONFERMA').should('exist').click()
+
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+            */
+        })
+    }
+
 }
 
 export default DatiIntegrativi

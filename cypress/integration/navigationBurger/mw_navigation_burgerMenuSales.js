@@ -60,7 +60,8 @@ let keys = {
     QUALITÀ_PORTAFOGLIO_AUTO: true,
     APP_CUMULO_TERREMOTI: false,
     NOTE_DI_CONTRATTO: true,
-    ACOM_GESTIONE_INIZIATIVE: true
+    ACOM_GESTIONE_INIZIATIVE: true,
+    SAFE_DRIVE_AUTOVETTURE: true
 }
 
 before(() => {
@@ -102,6 +103,14 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.clickLink('Preventivo Motor')
         BurgerMenuSales.backToSales()
     })
+
+    it('Verifica aggancio Safe Drive Autovetture', function () {
+        if (!keys.SAFE_DRIVE_AUTOVETTURE)
+            this.skip()
+        TopBar.clickSales()
+        BurgerMenuSales.clickLink('Safe Drive Autovetture')
+        BurgerMenuSales.backToSales()
+    });
 
     it('Verifica aggancio Flotte e Convenzioni', function () {
         if (!keys.FLOTTE_E_CONVENZIONI || Cypress.env('isAviva'))

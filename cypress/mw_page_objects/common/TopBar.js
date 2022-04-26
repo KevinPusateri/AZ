@@ -114,7 +114,6 @@ class TopBar extends HomePage {
             cy.contains('Logout').click({ force: true })
         })
 
-        cy.screenshot('Logout effettuato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         cy.clearCookies();
     }
@@ -133,7 +132,7 @@ class TopBar extends HomePage {
             cy.get('input[name="main-search-input"]').should('exist').and('be.visible').click()
             cy.get('input[name="main-search-input"]').should('exist').and('be.visible').type(randomChars).type('{enter}').wait(2000)
 
-            cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
+            cy.wait('@gqlSearchClient', { timeout: 30000 });
             cy.get('lib-client-item').should('be.visible')
 
             cy.screenshot(`Ricerca per ${randomChars} effettuata`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -154,7 +153,7 @@ class TopBar extends HomePage {
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').click()
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').type(value).type('{enter}').wait(2000)
 
-        cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
+        cy.wait('@gqlSearchClient', { timeout: 30000 });
         cy.screenshot(`Ricerca ${value} effettuata`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
@@ -172,7 +171,7 @@ class TopBar extends HomePage {
     static clickClients() {
         interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
-        cy.wait('@getClients', { requestTimeout: 30000 })
+        cy.wait('@getClients', { timeout: 30000 })
         cy.url().should('eq', Common.getBaseUrl() + 'clients/')
         cy.get('app-donut-chart').should('be.visible')
         cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
@@ -194,7 +193,7 @@ class TopBar extends HomePage {
     static clickNumbers() {
         interceptPageNumbers()
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
-        cy.wait('@getNumbers', { requestTimeout: 50000 })
+        cy.wait('@getNumbers', { timeout: 50000 })
         cy.url().should('include', Common.getBaseUrl() + 'numbers')
         cy.screenshot('Verifica atterraggio "Numbers"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
@@ -205,8 +204,8 @@ class TopBar extends HomePage {
     static clickSales() {
         interceptPageSales()
         cy.get('app-product-button-list').find('a').contains('Sales').click()
-        // cy.wait('@getSales', { requestTimeout: 50000 })
-        cy.wait('@gqlgetExtractedSferaReceipts', { requestTimeout: 60000 })
+        // cy.wait('@getSales', { timeout: 50000 })
+        cy.wait('@gqlgetExtractedSferaReceipts', { timeout: 60000 })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
         cy.screenshot('Verifica atterraggio "Sales"', { capture: 'fullPage' }, { overwrite: true })
     }
@@ -218,7 +217,7 @@ class TopBar extends HomePage {
     static clickNewsInfo() {
         interceptPageMieInfo()
         cy.get('app-product-button-list').find('a').contains('News e Info').click()
-        cy.wait('@getMieInfo', { requestTimeout: 50000 })
+        cy.wait('@getMieInfo', { timeout: 50000 })
         cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo')
         cy.screenshot('Verifica atterraggio "News e Info"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
@@ -368,7 +367,7 @@ class TopBar extends HomePage {
         cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
         if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
             cy.contains('Ci sono altri profili collegati')
-        cy.contains('Cambio password')
+        cy.get('lib-user-name-container').should('not.contain','Cambio password')
         cy.contains('Configurazione stampanti')
         cy.contains('Impostazioni di agenzia')
         cy.screenshot(`Click Icon User`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -388,18 +387,18 @@ class TopBar extends HomePage {
                 interceptPageClients()
                 cy.get('lib-switch-button-list').contains('Clients').click()
                 cy.url().should('eq', Common.getBaseUrl() + 'clients/')
-                cy.wait('@getClients', { requestTimeout: 30000 })
+                cy.wait('@getClients', { timeout: 30000 })
                 break;
             case LandingPage.SALES:
                 interceptPageSales()
                 cy.get('lib-switch-button-list').contains('Sales').click()
-                cy.wait('@getSales', { requestTimeout: 50000 })
+                cy.wait('@getSales', { timeout: 50000 })
                 cy.url().should('eq', Common.getBaseUrl() + 'sales/')
                 break;
             case LandingPage.NUMBERS:
                 interceptPageNumbers()
                 cy.get('lib-switch-button-list').contains('Numbers').click()
-                cy.wait('@getNumbers', { requestTimeout: 50000 })
+                cy.wait('@getNumbers', { timeout: 50000 })
                 cy.url().should('eq', Common.getBaseUrl() + 'numbers/business-lines')
                 break;
             case LandingPage.BACKOFFICE:
@@ -409,7 +408,7 @@ class TopBar extends HomePage {
             case LandingPage.NEWS_E_INFO:
                 interceptPageMieInfo()
                 cy.get('lib-switch-button-list').contains('News e Info').click()
-                cy.wait('@getMieInfo', { requestTimeout: 50000 })
+                cy.wait('@getMieInfo', { timeout: 50000 })
                 cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo')
                 break;
             default:

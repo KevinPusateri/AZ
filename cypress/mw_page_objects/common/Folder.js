@@ -43,6 +43,18 @@ const getDocumentoPersonale = () => {
 //#endregion iFrame
 
 class Folder {
+
+    /**
+     * Verifica accesso a Folder
+     * @param {Boolean} [frameBased] default true, se il Folder è all'interno di un frame o meno
+     */
+    static verificaCaricamentoFolder(frameBased = true) {
+        if (frameBased)
+            getFolder().find('span[class="k-icon k-plus"]:visible')
+        else
+            cy.get('span[class="k-icon k-plus"]:visible').should('exist').and('be.visible')
+
+    }
     static caricaDocumentoIdentita() {
         //#region BackEnd Calls
         cy.intercept({
