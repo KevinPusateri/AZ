@@ -380,7 +380,7 @@ class SintesiCliente {
         cy.screenshot('Click Calcola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible').click()
-        cy.wait('@gqlCalculateMotorPriceQuotation', { timeout: 50000 })
+        cy.wait('@gqlCalculateMotorPriceQuotation', { timeout: 120000 })
 
         cy.contains('Inserisci i dati manualmente').should('be.visible').click()
         cy.screenshot('PopUp Inserisci i dati manualmente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -391,7 +391,7 @@ class SintesiCliente {
         }).as('getMotor')
 
         Common.canaleFromPopup()
-        cy.wait('@getMotor', { timeout: 50000 })
+        cy.wait('@getMotor', { timeout: 120000 })
 
         getIFrame().find('span:contains("Cerca"):visible')
 
