@@ -1330,6 +1330,7 @@ class Sfera {
             "Avv Email",
             "Nr Avv\nSms",
             "Avv Pdf",
+            "Motivo Non Val.Extra",
             "Targa",
             "Pag",
             "FQ\nTot",
@@ -1639,7 +1640,7 @@ class Sfera {
                     break;
                 case TabScheda.NOTE:
                     cy.screenshot(TabScheda.NOTE, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    checkNote()//! BUG
+                    checkNote()
                     break
                 case TabScheda.DETTAGLIO_PREMI:
                     cy.screenshot(TabScheda.DETTAGLIO_PREMI, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1654,14 +1655,12 @@ class Sfera {
             //#endregion
 
             function checkNote() {
-                cy.wait('@getRecuperaNote', { requestTimeout: 30000 })
                 cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
                 cy.contains('Aggiungi nuova nota').click()
                 cy.get('div[class="new-nota-container"]').should('be.visible').within(() => {
                     cy.get('input[formcontrolname="titolo"]').type('Titolo Automatici')
                     cy.get('textarea[formcontrolname="testo"]').type('Testo Automatici')
                     cy.contains('Salva nota').click()
-                    cy.pause()
                 })
             }
 
