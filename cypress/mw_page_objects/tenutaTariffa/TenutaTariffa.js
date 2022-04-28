@@ -714,10 +714,12 @@ class TenutaTariffa {
             //! purtroppo il componente non è trovabile agevolmente al momento
             cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > nx-icon').click()
             cy.get('nx-formfield').first().click().clear().wait(500).type(formattedDataDecorrenza).type('{enter}')
-
+            
             cy.wait('@getMotor', { timeout: 60000 })
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
+            cy.get('nx-formfield').find('input').click()
+            cy.get('#navbar').click()
 
             //Facciamo focus out dalla data di decorrenza
             cy.get('nx-formfield').find('input').click()
