@@ -693,7 +693,7 @@ class TenutaTariffa {
             cy.wait('@getMotor', { timeout: 100000 })
 
             //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible')
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
         })
     }
 
@@ -722,6 +722,8 @@ class TenutaTariffa {
             cy.get('#navbar').click()
 
             //Facciamo focus out dalla data di decorrenza
+            cy.get('nx-formfield').find('input').click()
+            cy.get('#navbar').click()
 
             //Verifichiamo che sia stata settata correttamente la data
             cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > div > p').should('exist').and('be.visible').invoke('text').then(currentDataDecorrenza => {
@@ -739,12 +741,13 @@ class TenutaTariffa {
             }).as('getImpostazioniGenerali')
 
             //Frazionamento
-            cy.get('document.querySelector("#navbar > div > div > div.nx-grid__column-3 > app-motor-cart > div > div > div.nx-grid__column-6 > div > div > div > div > div:nth-child(2) > div > h3")').click()
+            cy.get('#cart-bar > app-motor-cart > div > div > div.clickAble.nx-grid__column-6 > div > div > div > div > div:nth-child(2) > nx-icon').click()
             cy.get('#cart-pop').within(() => {
                 cy.contains('annuale').should('exist').and('be.visible').invoke('text').then(currentFrazionamento => {
+                    debugger
                     if (currentFrazionamento !== currentCase.Frazionamento.toUpperCase()) {
                         cy.contains('annuale').should('exist').and('be.visible').click().wait(1000)
-                        cy.contains(currentCase.Frazionamento.toUpperCase()).should('exist').and('be.visible').click()
+                        cy.contains(currentCase.Frazionamento.toLowerCase()).should('exist').and('be.visible').click()
 
                         cy.wait('@getMotor', { timeout: 30000 })
                         cy.wait('@getOptionalPacchetti', { timeout: 30000 })
