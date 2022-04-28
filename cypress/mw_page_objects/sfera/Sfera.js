@@ -1662,6 +1662,11 @@ class Sfera {
                     cy.get('textarea[formcontrolname="testo"]').type('Testo Automatici')
                     cy.contains('Salva nota').click()
                 })
+                cy.wait(3000)
+                cy.get('div[class^="container-nota"]').should('be.visible').and('include.text','TITOLO AUTOMATICI')
+                cy.get('div[class^="container-nota"]').should('be.visible').and('include.text','TESTO AUTOMATICI')
+                cy.get('div[class^="container-nota"]:contains("TITOLO AUTOMATICI")').find('nx-icon[name="trash"]').click()
+                cy.contains('Elimina').click()
             }
 
             function checkPanoramica() {

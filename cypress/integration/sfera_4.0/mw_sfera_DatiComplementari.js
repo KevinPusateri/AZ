@@ -64,7 +64,7 @@ describe('Matrix Web : Sfera 4.0', options, function () {
         Sfera.checkDatiComplementari(Sfera.TABSCHEDA.PANORAMICA)
     })
 
-    it('⚠️🚧Verifica Dati Complementari ' + Sfera.TABSCHEDA.NOTE, options, function () {
+    it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.NOTE, options, function () {
         Sfera.checkDatiComplementari(Sfera.TABSCHEDA.NOTE)
     })
 
