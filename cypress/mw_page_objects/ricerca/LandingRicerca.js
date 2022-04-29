@@ -797,6 +797,7 @@ class LandingRicerca {
             cy.get('[class="lib-clients-container"]').should('be.visible')
             const check = $body.find('span:contains("La ricerca non ha prodotto risultati")').is(':visible')
             if (check) {
+                cy.screenshot('Verifica Cliente Cancellato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 cy.get('body').should('contain.text', 'La ricerca non ha prodotto risultati')
             } else {
                 cy.intercept('POST', '**/graphql', (req) => {
@@ -811,13 +812,14 @@ class LandingRicerca {
                 cy.get('@body').then($body => {
                     cy.wrap($body).should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari', { requestTimeout: 10000 })
                     const check = $body.find('lib-page-layout:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
-                    debugger
                     if (check) {
                         assert.isTrue(true, 'Cliente eliminato');
                     } else {
                         assert.fail('Cliente non è stato eliminato -> ' + cliente);
                     }
                 })
+                cy.screenshot('Verifica Cliente Cancellato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
             }
         })
     }
