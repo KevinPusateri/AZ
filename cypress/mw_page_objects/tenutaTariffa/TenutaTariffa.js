@@ -617,10 +617,9 @@ class TenutaTariffa {
             //#region Dettagli
             //? su Prima immatricolazione non servono i dettagli aggiuntivi
             if (currentCase.Provenienza !== "Prima immatricolazione") {
+                let formattedDataScadenzaPrecedenteContratto
                 if (currentCase.Data_Scadenza !== "") {
                     //Scadenza precedente contratto
-                    let formattedDataScadenzaPrecedenteContratto
-
                     let dataDecorrenza = calcolaDataDecorrenza(currentCase)
                     let formattedDataDecorrenza = dataDecorrenza.getFullYear() + '-' +
                         String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '-' +
@@ -642,6 +641,7 @@ class TenutaTariffa {
                 if (currentCase.Compagnia_Provenienza !== "") {
                     cy.contains('COMPAGNIA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click()
                     cy.get('nx-dropdown-item').contains(currentCase.Compagnia_Provenienza).click()
+
                     cy.wait('@getMotor', { timeout: 30000 })
 
                     //Formula di provenienza
@@ -652,6 +652,21 @@ class TenutaTariffa {
                     cy.get('h3:contains("Dettagli")').first().click()
                     cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '06_Dettagli', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     //#endregion
+
+                    //Verifichiamo che la data non sia resettata
+                    //? vedi bug trovato il release 124bis
+                    if (currentCase.Data_Scadenza !== "")
+                        cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').invoke('val').then(currentDataScadenzaPrecedenteContratto => {
+                            expect(currentDataScadenzaPrecedenteContratto).to.include(formattedDataScadenzaPrecedenteContratto)
+                        })
+
+                    //Verifichiamo che la compagnia di provenienza non sia stata resettata
+                    //? vedi bug trovato in release 124bis
+                    //? Se non trova lo span è da segnalare come bug in quanto non ha salvato correttamente la compagnia di provenienza
+                    cy.contains('COMPAGNIA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').find('span').invoke('text').then(currentCompagniaProvenienza => {
+                        expect(currentCompagniaProvenienza).to.include(currentCase.Compagnia_Provenienza.toUpperCase())
+                    })
+
 
                     //#region Sinistri
                     cy.contains('Sinistri').click()
@@ -714,21 +729,11 @@ class TenutaTariffa {
             //! purtroppo il componente non è trovabile agevolmente al momento
             cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > nx-icon').click()
             cy.get('nx-formfield').first().click().clear().wait(500).type(formattedDataDecorrenza).type('{enter}')
-            
+
             cy.wait('@getMotor', { timeout: 60000 })
+
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
-            cy.get('nx-formfield').find('input').click()
-            cy.get('#navbar').click()
-
-            //Facciamo focus out dalla data di decorrenza
-            cy.get('nx-formfield').find('input').click()
-            cy.get('#navbar').click()
-
-            //Verifichiamo che sia stata settata correttamente la data
-            cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > div > p').should('exist').and('be.visible').invoke('text').then(currentDataDecorrenza => {
-                expect(currentDataDecorrenza).to.include(formattedDataDecorrenza)
-            })
 
             cy.intercept({
                 method: 'GET',
@@ -742,26 +747,34 @@ class TenutaTariffa {
 
             //Frazionamento
             cy.get('#cart-bar > app-motor-cart > div > div > div.clickAble.nx-grid__column-6 > div > div > div > div > div:nth-child(2) > nx-icon').click()
-            cy.get('#cart-pop').within(() => {
-                cy.contains('annuale').should('exist').and('be.visible').invoke('text').then(currentFrazionamento => {
-                    debugger
-                    if (currentFrazionamento !== currentCase.Frazionamento.toUpperCase()) {
-                        cy.contains('annuale').should('exist').and('be.visible').click().wait(1000)
-                        cy.contains(currentCase.Frazionamento.toLowerCase()).should('exist').and('be.visible').click()
 
-                        cy.wait('@getMotor', { timeout: 30000 })
-                        cy.wait('@getOptionalPacchetti', { timeout: 30000 })
-                        cy.wait('@getImpostazioniGenerali', { timeout: 30000 })
+            if (currentCase.Frazionamento.toLocaleLowerCase() !== "annuale") {
 
-                        //Attendiamo che il caricamento non sia più visibile
-                        cy.get('nx-spinner').should('not.be.visible')
-                    }
+                cy.get('#cart-pop').within(() => {
+                    cy.contains('annuale').should('exist').and('be.visible').click()
                 })
-            })
+
+                cy.contains(currentCase.Frazionamento.toLowerCase()).click()
+
+                cy.wait('@getMotor', { timeout: 30000 })
+                cy.wait('@getOptionalPacchetti', { timeout: 30000 })
+                cy.wait('@getImpostazioniGenerali', { timeout: 30000 })
+
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
 
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '09_Offerta_Recap_Top', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-            cy.pause()
+            //Verifichiamo che sia stata settata correttamente la data
+            cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > div > p').should('exist').and('be.visible').invoke('text').then(currentDataDecorrenza => {
+                expect(currentDataDecorrenza).to.include(formattedDataDecorrenza)
+            })
+
+            //Espandiamo pannello RCA
+            cy.contains("RCA - BONUS MALUS UNIFICATA").parents('form').within(() => {
+                cy.get('nx-icon[class~="clickAble"]').first().click()
+            })
 
             //Massimale
             cy.contains('Massimale').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
@@ -780,13 +793,15 @@ class TenutaTariffa {
                     cy.wait('@getMotor', { timeout: 30000 })
 
                     //TODO Protezione Rivalsa è già settata come garanzia in automatico; implementa verficia di presenza
-
                     if (!Cypress.env('isAviva'))
                         //Indennita' danno totale RCA
                         if (currentCase.Indennita_Danno_Totale !== '') {
-                            cy.contains("Indennita' danno totale RCA").parents('tr').find('button').click()
-                            //Attendiamo che il caricamento non sia più visibile
-                            cy.get('nx-spinner').should('not.be.visible')
+                            cy.pause()
+                            cy.contains("Indennita' danno totale RCA").parent('div').within(() => {
+                                cy.get('nx-icon').click()
+                                //Attendiamo che il caricamento non sia più visibile
+                                cy.get('nx-spinner').should('not.be.visible')
+                            })
                         }
 
                     break
@@ -917,16 +932,14 @@ class TenutaTariffa {
                     break
             }
 
-            cy.get('strong:contains("Rc Auto")').click()
+            cy.get('h3:contains("Rc Auto")').click()
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il premio lordo a video
-            cy.contains('BONUS/MALUS').parent('div').find('div[class="ng-star-inserted"]').invoke('text').then(premioLordo => {
-                //? Visto che i premi lordi variano in base a BRAIN, verifichiamo semplicemente che non siano negativi o a zero (solitamente quando
-                //? in errore i premi lordi sono a 0.01)
-                expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
-                // let premio = parseFloat(premioLordo)
-                // expect(premio).to.be.greaterThan(0.01)
+            cy.contains("RCA - BONUS MALUS UNIFICATA").parents('form').within(() => {
+                cy.get('p[class~="premio"]').first().invoke('text').then(premioLordo => {
+                    expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
+                })
             })
         })
     }
