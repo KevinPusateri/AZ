@@ -56,7 +56,7 @@ let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
 let caseToExecute = []
 //?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
-let selectedSettori = ['5']
+let selectedSettori = []
 
 describe('RCA Aprile 2022: ', {
     retries: {

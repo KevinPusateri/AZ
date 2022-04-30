@@ -96,7 +96,7 @@ class TenutaTariffa {
 
             //Andiamo a fare focus su Totale riduzione ARD
             cy.contains("Riduzione totale sul premio ARD").should('exist').click()
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
 
             //Per MACROLESIONI, verifico la Riduzione ARD
             if (currentCase.Descrizione_Settore === 'MACROLESIONI') {
@@ -136,7 +136,7 @@ class TenutaTariffa {
 
             cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
 
-            cy.screenshot('Dati Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot('Dati Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
 
             cy.contains('Calcola').should('be.visible').click({ force: true })
 
@@ -176,7 +176,7 @@ class TenutaTariffa {
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible')
 
-                    cy.screenshot('Dati Indirizzo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    cy.screenshot('Dati Indirizzo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
 
                     cy.contains('Calcola').should('be.visible').click({ force: true })
                 }
@@ -185,11 +185,11 @@ class TenutaTariffa {
             //Verifichiamo se siamo arrivati in pagina di Offerta direttamente
             //Attendiamo che il caricamento non sia più visibile (ci mette un po')
             cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
-            cy.screenshot('Offerta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot('Offerta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
 
             //Controlliamo i vari dati in Provenienza
             cy.contains('Provenienza').should('be.visible').click({ force: true }).wait(1000)
-            cy.screenshot('Provenienza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot('Provenienza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
             cy.contains('Modifica').should('be.visible').click().wait(1000)
             cy.get('nx-spinner').should('not.be.visible')
 
@@ -271,7 +271,7 @@ class TenutaTariffa {
 
             cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
 
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '01_Dati_Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '01_Dati_Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
 
             if (currentCase.Targa !== '')
                 cy.contains('Calcola').should('be.visible').click({ force: true })
@@ -346,7 +346,7 @@ class TenutaTariffa {
                     })
             }
 
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '02_Contraente_Proprietario', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '02_Contraente_Proprietario', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
 
             cy.contains('AVANTI').should('exist').and('be.visible').click()
 
@@ -430,7 +430,7 @@ class TenutaTariffa {
                         cy.contains(fullDetails).click()
 
 
-                        cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Tipo_Veicolo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Tipo_Veicolo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
 
                         cy.contains('Conferma').click()
                     }
@@ -485,7 +485,7 @@ class TenutaTariffa {
             }
 
             currentCase.Targa !== '' ? cy.contains('Informazioni Generali').click() : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click()
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
             //#endregion
 
             //#region Dati Veicolo Tecnici
@@ -525,7 +525,7 @@ class TenutaTariffa {
                 cy.get('nx-spinner').should('not.be.visible')
             }
 
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
             //#endregion
 
             cy.contains('AVANTI').should('exist').and('be.visible').click()
@@ -611,7 +611,7 @@ class TenutaTariffa {
                 cy.get('nx-spinner').should('not.be.visible')
             }
 
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '05_Provenienza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '05_Provenienza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
             //#endregion
 
             //#region Dettagli
@@ -650,7 +650,7 @@ class TenutaTariffa {
                     cy.wait('@getMotor', { timeout: 30000 })
 
                     cy.get('h3:contains("Dettagli")').first().click()
-                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '06_Dettagli', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '06_Dettagli', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false, disableTimersAndAnimations: false })
                     //#endregion
 
                     //Verifichiamo che la data non sia resettata
@@ -670,29 +670,32 @@ class TenutaTariffa {
 
                     //#region Sinistri
                     cy.contains('Sinistri').click()
-                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '07_Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '07_Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
                     //#endregion
 
                     //#region CL
                     //CL B. provenienza
-                    cy.contains('CL. B/ M provenienza').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Provenienza)
+                    cy.contains('CL. B/ M provenienza').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Provenienza).type('{enter}')
+                    cy.get('nx-spinner').should('not.be.visible')
                     //CL B. assegnazione
-                    cy.contains('Cl. B/ M assegnazione').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Assegnazione)
+                    cy.contains('Cl. B/ M assegnazione').parents('div[class="nx-formfield__input-container"]').find('input').should('be.visible').type(currentCase.Cl_BM_Assegnazione).type('{enter}')
+                    cy.get('nx-spinner').should('not.be.visible')
                     //CL provenienza CU
                     cy.contains('Cl. provenienza cu').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click()
                     cy.get('nx-dropdown-item').contains(currentCase.Cl_Provenienza_CU).click()
+                    cy.get('nx-spinner').should('not.be.visible')
                     //CL assegnazione CU
                     cy.contains('Cl. assegnazione cu').parents('div[class="nx-formfield__input"]').find('nx-dropdown').should('be.visible').click()
                     cy.get('nx-dropdown-item').contains(currentCase.Cl_Assegnazione_CU).click()
+                    cy.get('nx-spinner').should('not.be.visible')
 
 
-                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '08_CL', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '08_CL', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
                     //#endregion
                 }
             }
 
             //TODO Attestato conforme all'articolo 134, comma 4 bis, del Codice assicurazioni ?
-
             cy.contains('AVANTI').should('exist').and('be.visible').click().wait(2000)
 
             //Popup di dichiarazione di non circolazione a SI
@@ -764,7 +767,7 @@ class TenutaTariffa {
                 cy.get('nx-spinner').should('not.be.visible')
             }
 
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '09_Offerta_Recap_Top', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '09_Offerta_Recap_Top', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
 
             //Verifichiamo che sia stata settata correttamente la data
             cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > div > p').should('exist').and('be.visible').invoke('text').then(currentDataDecorrenza => {
@@ -796,12 +799,11 @@ class TenutaTariffa {
                     if (!Cypress.env('isAviva'))
                         //Indennita' danno totale RCA
                         if (currentCase.Indennita_Danno_Totale !== '') {
-                            cy.pause()
-                            cy.contains("Indennita' danno totale RCA").parent('div').within(() => {
-                                cy.get('nx-icon').click()
-                                //Attendiamo che il caricamento non sia più visibile
-                                cy.get('nx-spinner').should('not.be.visible')
+                            cy.contains("Indennita' danno totale RCA").parent('div').parent('div').within(() => {
+                                cy.get('nx-checkbox').click()
                             })
+                            //Attendiamo che il caricamento non sia più visibile
+                            cy.get('nx-spinner').should('not.be.visible')
                         }
 
                     break
@@ -933,7 +935,7 @@ class TenutaTariffa {
             }
 
             cy.get('h3:contains("Rc Auto")').click()
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
 
             //Verifichiamo il premio lordo a video
             cy.contains("RCA - BONUS MALUS UNIFICATA").parents('form').within(() => {
@@ -1084,9 +1086,9 @@ class TenutaTariffa {
             }
 
             cy.get('strong:contains("Auto Rischi Diversi"):last').click().wait(500)
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_Impostazioni_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_Impostazioni_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
             cy.contains('Annulla').should('exist').click().wait(500)
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '11_Offerta_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '11_Offerta_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
 
             //Verifichiamo il totale relativo alla ARD
             cy.get('strong:contains("Auto Rischi Diversi"):last').parents('div').find('div:last').find('strong:last').invoke('text').then(value => {
