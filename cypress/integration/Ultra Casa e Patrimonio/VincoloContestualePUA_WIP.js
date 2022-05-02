@@ -55,11 +55,11 @@ var casa = ["Casa 1"]
 var frazionamento = "annuale"
 let oggi = Date.now()
 let dataInizio = new Date(oggi)
-var dataOggi = ('0' + dataInizio.getDate()).slice(-2) + '/' +
+var dataOggi = ('0' + dataInizio.getDate()).slice(-2) + '' +
   ('0' + (dataInizio.getMonth() + 1)).slice(-2) + '' +
   dataInizio.getFullYear()
 let dataFine = new Date(oggi); dataFine.setFullYear(dataInizio.getFullYear() + 10)
-var scadenza = ('0' + dataFine.getDate()).slice(-2) + '/' +
+var scadenza = ('0' + dataFine.getDate()).slice(-2) + '' +
   ('0' + (dataFine.getMonth() + 1)).slice(-2) + '' +
   dataFine.getFullYear()
 var nContratto = "000"
