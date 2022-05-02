@@ -228,7 +228,6 @@ class TopBar extends HomePage {
      */
     static checkNotExistLanding(page) {
         cy.get('app-product-button-list').find('a').should('not.contain.text', page)
-        cy.screenshot(`Verifica ASSENZA di ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -244,7 +243,6 @@ class TopBar extends HomePage {
      */
     static clickIconIncident() {
         cy.get('lib-incident').click()
-        cy.screenshot('Click Incident', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -258,19 +256,21 @@ class TopBar extends HomePage {
                 cy.get('lib-incident-container').find('a:contains("SRM Online"):visible').click()
                 Common.canaleFromPopup()
                 getIFrame().find('#ext-element-10:contains("Dashboard")').should('be.visible')
+                cy.screenshot(`Verifica accesso a ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case "SisCo":
                 cy.get('lib-incident-container').find('a:contains("SisCo"):visible').click()
                 Common.canaleFromPopup()
                 getIFrame().find('a:contains("Individuali")').should('be.visible')
+                cy.screenshot(`Verifica accesso a ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case "Elenco telefonico":
                 cy.get('lib-incident-container').find('a:contains("Elenco telefonico"):visible').click()
                 Common.canaleFromPopup()
                 getIFrameElencoTelefonico().find('input[name="btnCerca"]').invoke('attr', 'value').should('equal', ' Cerca ')
+                cy.screenshot(`Verifica accesso a ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
         }
-        cy.screenshot(`Verifica accesso a ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -285,7 +285,6 @@ class TopBar extends HomePage {
             expect($labelCard).to.contain(linksUtilita[i])
         })
 
-        cy.screenshot('Check Links Utility', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -298,12 +297,19 @@ class TopBar extends HomePage {
             page === LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO ||
             page === LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS) {
             cy.get('lib-switch-button-utility').should('be.visible').within(() => {
-
                 cy.contains(page).should('be.visible').parents('lib-check-user-permissions').find('a[class="ng-star-inserted"]').invoke('removeAttr', 'target').click()
             })
+        } else if (page === LinkUtilita.CASELLA_DI_POSTA_ED_AGENZIA) {
+            cy.window().then(win => {
+                cy.stub(win, 'open').callsFake((url) => {
+                    return win.open.wrappedMethod.call(win, url, '_self');
+                }).as('Open');
+            })
+            cy.pause()
+            cy.contains(page).click()
+            cy.get('@Open')
         } else {
             cy.get('lib-switch-button-utility').should('be.visible').within(() => {
-
                 cy.contains(page).click()
             })
         }
@@ -311,41 +317,54 @@ class TopBar extends HomePage {
         switch (page) {
             case LinkUtilita.CRUSCOTTO_RESILIENCE:
                 getIFrame().find('#buttonCercaAttivita').should('contain.text', 'Cerca').and('be.visible')
+                cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinkUtilita.CASELLA_DI_POSTA_ED_AGENZIA:
                 cy.url().should('include', 'https://login.microsoftonline.com/common')
+                cy.get('input[value="Submit"]').should('be.visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.go('back')
                 break;
             case LinkUtilita.QUATTRORUOTE_CALCOLO_VALORE_VEICOLO:
                 cy.get('#form_auto').should('be.visible')
+                cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 cy.go('back')
                 break;
             case LinkUtilita.REPORT_ALLIANZ_NOW:
                 break;
             case LinkUtilita.INTERROGAZIONI_CENTRALIZZATE:
                 getIFrame().find('h4').should('be.visible').and('contain.text', 'Interrogazioni centralizzate')
+                cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinkUtilita.BANCHE_DATI_ANIA:
                 cy.url().should('include', 'Auto/InquiryAnia/Ricerca.aspx')
+                cy.get('form').should('be.visible').within(() => {
+                    cy.get('input[value="Cerca"]').should('be.visible')
+                })
+                cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 cy.go('back')
                 break;
             case LinkUtilita.GESTIONE_MAGAZZINO_OBU:
                 getIFrame().find('#btnSearch').should('be.visible').and('contain.text', 'Cerca')
+                cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinkUtilita.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS:
                 break;
             case LinkUtilita.CRUSCOTTO_INSTALLAZIONE_DISPOSITIVO_SATELLITARE:
                 getIFrame().find('#btnSearch').should('be.visible').and('contain.text', 'Cerca')
+                cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinkUtilita.MONITOR_SCORING_AZ_BONUS_DRIVE:
                 getIFrame().find('.title').should('be.visible').and('contain.text', 'Cruscotto Scoring Allianz Bonus Drive')
+                cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinkUtilita.GESTIONE_CERTIFICATI:
                 getIFrame().find('app-home-page-container').should('be.visible')
                 getIFrame().find('nx-card').should('be.visible')
+                cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
         }
 
-        cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -355,7 +374,6 @@ class TopBar extends HomePage {
         cy.get('lib-notification-header').click()
         cy.get('lib-notification-list').should('be.visible')
 
-        cy.screenshot(`Click Notifiche`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -367,10 +385,9 @@ class TopBar extends HomePage {
         cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
         if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
             cy.contains('Ci sono altri profili collegati')
-        cy.get('lib-user-name-container').should('not.contain','Cambio password')
+        cy.contains('Cambio password')
         cy.contains('Configurazione stampanti')
         cy.contains('Impostazioni di agenzia')
-        cy.screenshot(`Click Icon User`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -414,7 +431,6 @@ class TopBar extends HomePage {
             default:
                 cy.contains('Utilità').click()
         }
-        cy.screenshot(`Verifica aggancio a ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -449,7 +465,6 @@ class TopBar extends HomePage {
             cy.get('lib-incident-container').should('include.text', 'Nessun messaggio presente')
         }
 
-        cy.screenshot(`Verifica links Incident`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
