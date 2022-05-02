@@ -1043,7 +1043,9 @@ class TenutaTariffa {
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 case "INCENDIO":
-                    cy.contains("Incendio").parents('tr').find('button:first').click()
+                    cy.contains("Incendio").parent('div').parent('div').within(() => {
+                        cy.get('nx-checkbox').click()
+                    })
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 case "FURTO":
