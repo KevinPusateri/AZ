@@ -427,7 +427,17 @@ class BurgerMenuSales extends Sales {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ALLIANZ_PLACEMENT_PLATFORM:
+                cy.window().then(win => {
+                    cy.stub(win, 'open').callsFake((url) => {
+                        return win.open.wrappedMethod.call(win, url, '_self');
+                    }).as('Open');
+                })
+                Common.canaleFromPopup()
+                cy.get('@Open')
+                cy.get('#abstract').should('be.visible')
+                cy.url().should('include', '/DATrxCont/htmlFragment/matrix_app.html')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.go('back')
                 break;
             case LinksBurgerMenu.QUALITÀ_PORTAFOGLIO_AUTO:
                 Common.canaleFromPopup()
@@ -440,9 +450,17 @@ class BurgerMenuSales extends Sales {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ACOM_GESTIONE_INIZIATIVE:
+                cy.window().then(win => {
+                    cy.stub(win, 'open').callsFake((url) => {
+                        return win.open.wrappedMethod.call(win, url, '_self');
+                    }).as('Open');
+                })
+                Common.canaleFromPopup()
+                cy.get('@Open')
+                cy.get('#AreaUtile').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.go('back')
                 break;
-            // default: throw new Error('Link Errato o non presente')
         }
     }
 }

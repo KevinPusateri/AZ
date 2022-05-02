@@ -386,11 +386,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         })
     })
 
-    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e aggiungere su excel
-    // it.skip('Verifica aggancio Allianz Placement Platform', function () {
-    //     TopBar.clickSales()
-    //     BurgerMenuSales.clickLink('Allianz placement platform')
-    // })
+    //TODO DA  aggiungere Release 125
+    it('Verifica aggancio Allianz Placement Platform', function () {
+        TopBar.clickSales()
+        BurgerMenuSales.clickLink('Allianz placement platform')
+    })
 
     it('Verifica aggancio Qualità portafoglio auto', function () {
         if (!keys.QUALITÀ_PORTAFOGLIO_AUTO)
@@ -409,22 +409,10 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e excel
-    // it('Verifica aggancio ACOM Gestione iniziative', function () {
-    //     TopBar.clickSales()
-    //     cy.get('lib-burger-icon').click({force:true})
-
-    //     var newUrl = '';
-    //     cy.window().then((win) => {
-    //         cy.stub(win, 'open').as('windowOpen').callsFake(url => {
-    //             newUrl = url;
-    //         });
-    //     }).then(()=>{
-
-    //         cy.contains('ACOM Gestione iniziative').click()
-    //         Common.canaleFromPopup()
-    //         cy.get('@windowOpen').should('be.called');
-    //         cy.visit(newUrl)
-    //     })
-    // })
+    it('Verifica aggancio ACOM Gestione iniziative', function () {
+        //TODO Implementare su TFS release 125 
+        TopBar.clickSales()
+        BurgerMenuSales.clickLink('ACOM Gestione iniziative')
+    })
     //#endregion
 })
