@@ -98,7 +98,35 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickIconNotification()
         TopBar.clickIconUser()
         TopBar.clickIconSwitchPage()
-    });
+    })
+
+    it('Aggiungi e Verifica Preferiti in MW Home Page', function () {
+        HomePage.aggiungiPreferito(HomePage.PREFERITI.NUOVOSFERA)
+        HomePage.aggiungiPreferito(HomePage.PREFERITI.BANCHEDATIANIA)
+        HomePage.aggiungiPreferito(HomePage.PREFERITI.QUATTRORUOTE)
+
+        //Effettuiamo un reload per vedere se si sono mantenute le modifiche
+        Common.visitUrlOnEnv()
+
+        HomePage.checkPreferiti(true,
+            HomePage.PREFERITI.NUOVOSFERA,
+            HomePage.PREFERITI.BANCHEDATIANIA,
+            HomePage.PREFERITI.QUATTRORUOTE)
+
+    })
+
+    it('Rimuovi e Verifica Preferiti in MW Home Page', function () {
+        HomePage.rimuoviPreferito(HomePage.PREFERITI.BANCHEDATIANIA)
+        HomePage.rimuoviPreferito(HomePage.PREFERITI.QUATTRORUOTE)
+
+        //Effettuiamo un reload per vedere se si sono mantenute le modifiche
+        Common.visitUrlOnEnv()
+
+        HomePage.checkPreferiti(false,
+            HomePage.PREFERITI.BANCHEDATIANIA,
+            HomePage.PREFERITI.QUATTRORUOTE)
+
+    })
 
     if (keys.srmOnlineEnabled && keys.siscoEnabled && keys.SERVICENOW)
         it('Verifica Top Menu incident - Verifica presenza dei link', function () {
