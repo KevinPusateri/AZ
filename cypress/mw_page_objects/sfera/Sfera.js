@@ -1663,8 +1663,8 @@ class Sfera {
                     cy.contains('Salva nota').click()
                 })
                 cy.wait(3000)
-                cy.get('div[class^="container-nota"]').should('be.visible').and('include.text','TITOLO AUTOMATICI')
-                cy.get('div[class^="container-nota"]').should('be.visible').and('include.text','TESTO AUTOMATICI')
+                cy.get('div[class^="container-nota"]').should('be.visible').and('include.text', 'TITOLO AUTOMATICI')
+                cy.get('div[class^="container-nota"]').should('be.visible').and('include.text', 'TESTO AUTOMATICI')
                 cy.get('div[class^="container-nota"]:contains("TITOLO AUTOMATICI")').find('nx-icon[name="trash"]').click()
                 cy.contains('Elimina').click()
             }
@@ -1742,6 +1742,34 @@ class Sfera {
                 cy.get('table[class="table-panel ng-star-inserted"]').should('be.visible')
                 cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
             }
+        })
+    }
+
+    /**
+     * Verifica La Griglia "Valore Cliente"
+     */
+    static checkGrigliaValoreCliente() {
+        cy.get('nx-expansion-panel-header[aria-disabled="false"]:contains("Valore Cliente")').then(($panel) => {
+            cy.wrap($panel).click()
+            cy.wrap($panel).parents('nx-expansion-panel')
+                .find('div[role="region"]')
+                .should('have.attr', 'style', 'visibility: visible;')
+            // Check della Griglia
+            cy.wrap($panel).parents('nx-expansion-panel')
+                .find('table').should('be.visible').within(() => {
+                    cy.get('tr').eq(0).find('td:last').then(($valore) => {
+                        console.log($valore.text())
+                        expect($valore.text().trim()).to.not.equal('-')
+                        expect($valore.text().trim()).not.to.be.empty
+                    })
+                    cy.get('tr').eq(1).find('td:last').then(($valore) => {
+                        console.log($valore.text())
+                        expect($valore.text().trim()).to.not.equal('-')
+                        expect($valore.text().trim()).not.to.be.empty
+                    })
+                    cy.screenshot('Verifica Griglia Valore Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                })
+
         })
     }
 }

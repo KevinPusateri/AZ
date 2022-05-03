@@ -36,7 +36,7 @@ before(() => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
             LoginPage.logInMWAdvanced()
             Sfera.accediSferaDaHomePageMW()
-            Sfera.setDateEstrazione()
+            // Sfera.setDateEstrazione()
             Sfera.estrai()
             Sfera.selectRandomContraente()
         })
@@ -60,9 +60,16 @@ after(function () {
 
 describe('Matrix Web : Sfera 4.0', options, function () {
 
-    it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.PANORAMICA, options, function () {
-        Sfera.checkDatiComplementari(Sfera.TABSCHEDA.PANORAMICA)
-    })
+    context(Sfera.TABSCHEDA.PANORAMICA, () => {
+
+        it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.PANORAMICA, options, function () {
+            Sfera.checkDatiComplementari(Sfera.TABSCHEDA.PANORAMICA)
+        })
+
+        it('Verifica Ripetitore cliente griglia valore cliente', options, function () {
+            Sfera.checkGrigliaValoreCliente()
+        })
+    });
 
     it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.NOTE, options, function () {
         Sfera.checkDatiComplementari(Sfera.TABSCHEDA.NOTE)
