@@ -57,7 +57,7 @@ let caseToExecute = []
 //?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
 let selectedSettori = []
 
-describe('RCA Aprile 2022 AVIVA: ', {
+describe('RCA AVIVA: ', {
     retries: {
         runMode: 0,
         openMode: 0,
