@@ -318,7 +318,6 @@ describe('Ultra BMP : Emissione BMP Caso7', function () {
         */
         TopBar.search(personaFisica.nomeCognome()) 
         LandingRicerca.clickClientePF(personaFisica.nomeCognome())
-        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
     })
 
     it("Verifica presenza preventivo in Portafoglio", () => {
