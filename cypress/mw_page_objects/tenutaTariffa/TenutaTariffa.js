@@ -55,7 +55,7 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
     if (currentGaranziaARD === null) {
         //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA
         debugger
-        if ((descSettore === 'KASKO COLLISIONE' && !Cypress.env('isAviva')) || (descSettore === 'KASKO COMPLETA'))
+        if (descSettore === 'KASKO COMPLETA')
             garanziaARD = findKeyLogTariffa('Garanzia')[2]
         else if (descSettore === 'AVENS')
             garanziaARD = findKeyLogTariffa('Garanzia')[4]
@@ -1051,7 +1051,9 @@ class TenutaTariffa {
                 case "FURTO":
                 //AVIVA
                 case "INCENDIO E FURTO":
-                    cy.contains("Furto").parents('tr').find('button:first').click()
+                    cy.contains("Furto").parent('div').parent('div').within(() => {
+                        cy.get('nx-checkbox').click()
+                    })
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 //AZ
@@ -1062,8 +1064,15 @@ class TenutaTariffa {
                 case "KASKO URTO CON ANIMALI":
                 //AZ e AVIVA
                 case "KASKO COLLISIONE":
-                    cy.contains("Kasko").parents('tr').find('button:first').click()
+                    cy.contains("Kasko").parent('div').parent('div').within(() => {
+                        cy.get('nx-checkbox').click()
+                    })
                     cy.get('nx-spinner').should('not.be.visible')
+
+                    //Espandiamo pannello Kasko
+                    cy.contains("Kasko").parent('div').parent('div').within(() => {
+                        cy.get('nx-icon[class~="clickAble"]').first().click()
+                    })
 
                     //Tipo pacchetto
                     cy.get(':contains("Tipo"):last').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
@@ -1076,41 +1085,57 @@ class TenutaTariffa {
                 case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI":
                     //? Su AZ Attiva Vandalidi ed Eventi Naturali compare attivando Furto, su Aviva è visibile by default
                     if (!Cypress.env('isAviva')) {
-                        cy.contains("Furto").parents('tr').find('button:first').click()
+                        cy.contains("Furto").parent('div').parent('div').within(() => {
+                            cy.get('nx-checkbox').click()
+                        })
                         cy.get('nx-spinner').should('not.be.visible')
                     }
 
-                    cy.contains("Atti Vandalici ed Eventi").parents('tr').find('button:first').click()
+                    cy.contains("Atti Vandalici ed Eventi").parent('div').parent('div').within(() => {
+                        cy.get('nx-checkbox').click()
+                    })
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 //AVIVA
                 case "EVENTI NATURALI":
-                    cy.contains("Eventi Naturali").parents('tr').find('button:first').click()
+                    cy.contains("Eventi Naturali").parent('div').parent('div').within(() => {
+                        cy.get('nx-checkbox').click()
+                    })
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 //AVIVA
                 case "INFORTUNI":
-                    cy.contains("Infortuni").parents('tr').find('button:first').click()
+                    cy.contains("Infortuni").parent('div').parent('div').within(() => {
+                        cy.get('nx-checkbox').click()
+                    })
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 //AVIVA
                 case "CRISTALLI":
-                    cy.get('div:contains("Cristalli")').parents('tr').find('button:first').click()
+                    cy.contains("Cristalli").parent('div').parent('div').within(() => {
+                        cy.get('nx-checkbox').click()
+                    })
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 //AVIVA
                 case "IMPREVISTI":
-                    cy.contains("Imprevisti").parents('tr').find('button:first').click()
+                    cy.contains("Imprevisti").parent('div').parent('div').within(() => {
+                        cy.get('nx-checkbox').click()
+                    })
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 //AVIVA
                 case "ASSISTENZA":
-                    cy.contains("Assistenza").parents('tr').find('button:first').click()
+                    cy.contains("Assistenza").parent('div').parent('div').within(() => {
+                        cy.get('nx-checkbox').click()
+                    })
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 //AVIVA
                 case "TUTELA GIUDIZIARIA":
-                    cy.contains("Tutela Giudiziaria").parents('tr').find('button:first').click()
+                    cy.contains("Tutela Giudiziaria").parent('div').parent('div').within(() => {
+                        cy.get('nx-checkbox').click()
+                    })
                     cy.get('nx-spinner').should('not.be.visible')
                     break
                 //AZ
