@@ -296,7 +296,7 @@ describe('Ultra BMP : Emissione BMP Caso7', function () {
     })
 
     it("Ritorno alla Homepage di Matrix", () => {
-        TopBar.clickMatrixHome()
+        Common.visitUrlOnEnv()
     })
 
     it("Apertura sezione Clients", () => {

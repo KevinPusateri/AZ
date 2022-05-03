@@ -265,7 +265,7 @@ module.exports = (on, config) => {
             launchOptions.preferences['browser.download.folderList'] = 2
             launchOptions.preferences['browser.download.panel.shown'] = false
             launchOptions.preferences['browser.download.manager.focusWhenStarting'] = true
-            launchOptions.preferences['browser.helperApps.neverAsk.saveToDisk'] = 'application/pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            launchOptions.preferences['browser.helperApps.neverAsk.saveToDisk'] = 'application/pdf','application/PDF','PDF', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             launchOptions.preferences['browser.download.manager.useWindow'] = true
             launchOptions.preferences['pdfjs.disabled'] = false
             launchOptions.preferences['devtools.console.stdout.content'] = false
