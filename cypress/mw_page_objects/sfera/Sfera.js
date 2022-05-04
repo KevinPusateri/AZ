@@ -1801,6 +1801,7 @@ class Sfera {
                             })
                         }
                     })
+                    cy.screenshot('Verifica Griglia Polizze', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 })
         })
     }
