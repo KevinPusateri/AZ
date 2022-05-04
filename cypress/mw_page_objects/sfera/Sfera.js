@@ -1076,7 +1076,7 @@ class Sfera {
             dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).type(dataInizio).wait(500)
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).click().type(dataInizio).wait(500)
 
         //Impostiamo la data di fine estrazione
         if (dataFine === undefined) {
@@ -1085,7 +1085,7 @@ class Sfera {
             dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type(dataFine).wait(500).type('{esc}')
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type('{esc}').click().type(dataFine).wait(500).type('{esc}')
 
         //Clicchiamo su estrai
         if (performEstrai) this.estrai()
@@ -1156,10 +1156,9 @@ class Sfera {
         this.lobPortafogli().click().wait(500)
 
         cy.get('div[class="nx-dropdown__panel nx-dropdown__panel--in-outline-field ng-star-inserted"]').within(() => {
-            //Selezioniamo 
+            //Selezioniamo
             for (let i = 0; i < portafogli.length; i++) {
                 cy.get(`div:contains(${portafogli[i]})`).parents('label').then($chekcBoxChecked => {
-
                     if (!$chekcBoxChecked.find('nx-icon').is(':visible')) {
                         cy.get(`div:contains(${portafogli[i]})`).parents('nx-dropdown-item').click()
                         cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
@@ -1180,7 +1179,7 @@ class Sfera {
                 cy.get(`div:contains(${Portafogli.RAMI_VARI})`).parents('label').then($chekcBoxChecked => {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
-                        cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
+                        cy.get(`div:contains(${Portafogli.RAMI_VARI})`).parents('nx-dropdown-item').click()
                         cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
@@ -1188,7 +1187,7 @@ class Sfera {
                 cy.get(`div:contains(${Portafogli.VITA})`).parents('label').then($chekcBoxChecked => {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
-                        cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
+                        cy.get(`div:contains(${Portafogli.VITA})`).parents('nx-dropdown-item').click()
                         cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
@@ -1293,7 +1292,6 @@ class Sfera {
         cy.get('sfera-az-pay-modal').should('be.visible').click()
         cy.contains('Crea e invia codici AZPay').click()
         cy.contains('Procedi').click()
-        cy.pause()
 
     }
 
@@ -1330,6 +1328,7 @@ class Sfera {
             "Avv Email",
             "Nr Avv\nSms",
             "Avv Pdf",
+            "Motivo Non Val.Extra",
             "Targa",
             "Pag",
             "FQ\nTot",
@@ -1562,8 +1561,9 @@ class Sfera {
                 cy.wrap($Contraente).click()
                 cy.wait('@getDatiAnagrafici', { requestTimeout: 50000 })
                 cy.wait('@getDatiIniziative', { requestTimeout: 50000 })
-                cy.wait('@getContratti', { requestTimeout: 50000 })
-                cy.wait('@getFastquote', { requestTimeout: 50000 })
+                cy.wait('@getContratti', { requestTimeout: 50000 }).its('response.body').then((body) => {
+                    cy.writeFile('cypress/fixtures/Sfera/DatiComplementariContratti.json', body)
+                })
             })
         })
     }
@@ -1639,7 +1639,7 @@ class Sfera {
                     break;
                 case TabScheda.NOTE:
                     cy.screenshot(TabScheda.NOTE, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    checkNote()//! BUG
+                    checkNote()
                     break
                 case TabScheda.DETTAGLIO_PREMI:
                     cy.screenshot(TabScheda.DETTAGLIO_PREMI, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1654,15 +1654,18 @@ class Sfera {
             //#endregion
 
             function checkNote() {
-                cy.wait('@getRecuperaNote', { requestTimeout: 30000 })
                 cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
                 cy.contains('Aggiungi nuova nota').click()
                 cy.get('div[class="new-nota-container"]').should('be.visible').within(() => {
                     cy.get('input[formcontrolname="titolo"]').type('Titolo Automatici')
                     cy.get('textarea[formcontrolname="testo"]').type('Testo Automatici')
                     cy.contains('Salva nota').click()
-                    cy.pause()
                 })
+                cy.wait(3000)
+                cy.get('div[class^="container-nota"]').should('be.visible').and('include.text', 'TITOLO AUTOMATICI')
+                cy.get('div[class^="container-nota"]').should('be.visible').and('include.text', 'TESTO AUTOMATICI')
+                cy.get('div[class^="container-nota"]:contains("TITOLO AUTOMATICI")').find('nx-icon[name="trash"]').click()
+                cy.contains('Elimina').click()
             }
 
             function checkPanoramica() {
@@ -1699,6 +1702,9 @@ class Sfera {
                         .should('have.attr', 'style', 'visibility: visible;')
                     cy.wrap($panel).parents('nx-expansion-panel')
                         .find('table').should('be.visible')
+                    cy.wait(2000)
+                    cy.wrap($panel).click()
+                    cy.wait(2000)
                 })
 
                 //#endregion
@@ -1738,6 +1744,64 @@ class Sfera {
                 cy.get('table[class="table-panel ng-star-inserted"]').should('be.visible')
                 cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
             }
+        })
+    }
+
+    /**
+     * Verifica La Griglia "Valore Cliente"
+     */
+    static checkGrigliaValoreCliente() {
+        // Apri Pannello Valore CLiente
+        cy.get('nx-expansion-panel-header[aria-disabled="false"]:contains("Valore Cliente")').then(($panel) => {
+            cy.wrap($panel).click()
+            cy.wrap($panel).parents('nx-expansion-panel')
+                .find('div[role="region"]')
+                .should('have.attr', 'style', 'visibility: visible;')
+            // Check della Griglia
+            cy.wrap($panel).parents('nx-expansion-panel')
+                .find('table').should('be.visible').within(() => {
+                    cy.get('tr').eq(0).find('td:last').then(($valore) => {
+                        expect($valore.text().trim()).to.not.equal('-')
+                        expect($valore.text().trim()).not.to.be.empty
+                    })
+                    cy.get('tr').eq(1).find('td:last').then(($valore) => {
+                        expect($valore.text().trim()).to.not.equal('-')
+                        expect($valore.text().trim()).not.to.be.empty
+                    })
+                    cy.screenshot('Verifica Griglia Valore Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                })
+
+        })
+    }
+
+    /**
+     * Verifica La Griglia "Polizze"
+     */
+    static checkPolizze() {
+        // Apri Pannello Polizze
+        cy.get('nx-expansion-panel-header[aria-expanded="false"]:contains("Polizze"):visible').then(($panel) => {
+            cy.wrap($panel).click()
+            cy.wrap($panel).parents('nx-expansion-panel')
+                .find('div[role="region"]')
+                .should('have.attr', 'style', 'visibility: visible;')
+            cy.wrap($panel).parents('nx-expansion-panel')
+                .find('table').should('be.visible').within(() => {
+                    cy.fixture('Sfera/DatiComplementariContratti.json').then((data) => {
+                        for (let index = 0; index < data.listaPolizze.length; index++) {
+                            cy.get('tr[class="ng-star-inserted"]').eq(index).then(($checkDato) => {
+                                expect($checkDato.text()).to.include(data.listaPolizze[index].contraente)
+                                expect($checkDato.text()).to.include(data.listaPolizze[index].areaPortafoglio)
+                                expect($checkDato.text()).to.include(data.listaPolizze[index].numeroContratto)
+                                expect($checkDato.text()).to.include(data.listaPolizze[index].prodotto)
+                                // expect($checkDato.text()).to.include(data.listaPolizze[index].premioLordo.split('EUR ')[1])
+                                let date = new Date(data.listaPolizze[index].dataProssimaQuietanza)
+                                let formatDate = ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear()
+                                expect($checkDato.text()).to.include(formatDate)
+                            })
+                        }
+                    })
+                    cy.screenshot('Verifica Griglia Polizze', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                })
         })
     }
 }

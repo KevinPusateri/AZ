@@ -162,6 +162,7 @@ class BurgerMenuClients extends Clients {
                 Common.canaleFromPopup()
                 cy.wait('@loadSCIImpresa', { requestTimeout: 30000 })
                 getIFrame().find('button:contains("Salva")').should('be.visible')
+                break;
         }
     }
 

@@ -1,7 +1,8 @@
 /**
  * @author Andrea 'Bobo' Oboe <andrea.oboe@allianz.it>
- * @author Kevin Pusateri <kevin.pusateri@allianz.it> 
+ * @author Kevin Pusateri <kevin.pusateri@allianz.it>
  */
+
 
 /// <reference types="Cypress" />
 import Sales from "../../../mw_page_objects/navigation/Sales"
@@ -21,10 +22,10 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../../fixtures/tariffe_RCA/tariffaCases_RCA_20220401_aviva.json'
+import { tariffaCases } from '../../../fixtures//tariffe_RCA/tariffaCases_RCA_20220701.json'
 //#endregion
 before(() => {
-    Cypress.env('isAviva', true)
+    Cypress.env('isAviva', false)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
 
@@ -57,7 +58,7 @@ let caseToExecute = []
 //?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
 let selectedSettori = []
 
-describe('RCA Aprile 2022 AVIVA: ', {
+describe('RCA Luglio 2022: ', {
     retries: {
         runMode: 0,
         openMode: 0,
@@ -96,13 +97,15 @@ describe('RCA Aprile 2022 AVIVA: ', {
             })
 
             it("LogTariffa", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
+                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
                     if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
-                        TenutaTariffa.checkTariffaRCA(currentCase)
+                        if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
+                            TenutaTariffa.checkTariffaRCA(currentCase)
+                        else
+                            this.skip()
                     }
                     else
                         this.skip()
-                }
                 else
                     this.skip()
             })

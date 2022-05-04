@@ -75,12 +75,12 @@ describe('Matrix Web : Sfera 4.0', function () {
 
     it('Quietanzamento Vista Operativa - Gestisci colora riga : Assegna colore', function () {
         Sfera.setDateEstrazione()
+        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.assegnaColoreRighe(Sfera.COLORI.SIGNIFICATO_ALFA)
     })
 
     it('Quietanzamento Vista Operativa - Gestisci colora riga : Rimuovi colore', function () {
-        Sfera.setDateEstrazione()
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
     })

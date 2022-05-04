@@ -296,7 +296,7 @@ describe('Ultra BMP : Emissione BMP Caso7', function () {
     })
 
     it("Ritorno alla Homepage di Matrix", () => {
-        TopBar.clickMatrixHome()
+        Common.visitUrlOnEnv()
     })
 
     it("Apertura sezione Clients", () => {
@@ -318,7 +318,6 @@ describe('Ultra BMP : Emissione BMP Caso7', function () {
         */
         TopBar.search(personaFisica.nomeCognome()) 
         LandingRicerca.clickClientePF(personaFisica.nomeCognome())
-        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
     })
 
     it("Verifica presenza preventivo in Portafoglio", () => {

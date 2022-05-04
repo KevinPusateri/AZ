@@ -193,13 +193,21 @@ class ControlliProtocollazione {
                     .should('exist')
                     .find('button').not('[disabled]').contains('STAMPA')
                     .should('be.visible')
-                    .click({ctrlKey: true})
+                    .click().wait(10000)
 
+                    //Prima stampa copia cliente
                     cy.get('[data-bind*="sezioneContrattuali"]', { timeout: 20000 })
                       .should('be.visible')
                       .find('button').not('[disabled]').contains('STAMPA')
                       .should('be.visible')
-                      .click({ctrlKey: true})
+                      .click().wait(10000)
+
+                    //Seconda stampa copia cliente e copia direzione da firmare
+                    cy.get('[data-bind*="sezioneContrattuali"]', { timeout: 20000 })
+                    .should('be.visible')
+                    .find('button').not('[disabled]').contains('STAMPA')
+                    .should('be.visible')
+                    .click().wait(10000)
                 }
                 //attende caricamento sezione Precontrattuali
                 // Non funziona se non c'è il consenso all'invio mail
@@ -287,6 +295,20 @@ class ControlliProtocollazione {
                 cy.get('div').contains(documento).should('exist')
             })    
             
+        })
+    }
+
+    /**
+     * Verifica intermediario
+     * * @param {string} intermediario (è l'intermediario da verificare) 
+     */ 
+     static verificaIntermediario(intermediario) {
+        ultraIFrame().within(() => {
+            ultraIFrame0().within(() => {
+                cy.get('div[class="sezionetipo2-content"]').should('exist')
+                  .find('div[class="consenso"]').should('exist')
+                  .find('span[class="select2-chosen"]').contains(intermediario).should('have.length', 1)
+            })
         })
     }
 

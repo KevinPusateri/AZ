@@ -306,6 +306,12 @@ class LandingRicerca {
      * @param {string} fullName 
      */
     static clickClientePF(fullName) {
+        //Skip this two requests that blocks on homepage
+        cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
+        cy.intercept(/launch-*/, 'ignore').as('launchStaging')
+        cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
+        cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
+        
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {
@@ -384,7 +390,6 @@ class LandingRicerca {
             'Ricerca Cliente',
             'Ricerca Polizze proposte',
             'Ricerca Preventivi',
-            'Ricerca News',
             'Rubrica'
         ]
         cy.get('nx-modal-container').find('lib-da-link').each(($linkRicerca, i) => {
@@ -760,13 +765,14 @@ class LandingRicerca {
     }
 
     /**
-     * Verifica i tab(Clients,sales,Le mie info) presenti dopo
+     * Verifica i tab(Clients,sales, news e Le mie info) presenti dopo
      * aver effettuato la ricerca
      */
     static checkTabDopoRicerca() {
         const tabHeader = [
             'clients',
             'sales',
+            'news',
             'le mie info'
         ]
         cy.get('[class^="docs-grid-colored-row tabs-container"]').find('[class^="tab-header"]').each(($tab, i) => {
@@ -797,6 +803,7 @@ class LandingRicerca {
             cy.get('[class="lib-clients-container"]').should('be.visible')
             const check = $body.find('span:contains("La ricerca non ha prodotto risultati")').is(':visible')
             if (check) {
+                cy.screenshot('Verifica Cliente Cancellato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 cy.get('body').should('contain.text', 'La ricerca non ha prodotto risultati')
             } else {
                 cy.intercept('POST', '**/graphql', (req) => {
@@ -811,13 +818,14 @@ class LandingRicerca {
                 cy.get('@body').then($body => {
                     cy.wrap($body).should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari', { requestTimeout: 10000 })
                     const check = $body.find('lib-page-layout:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
-                    debugger
                     if (check) {
                         assert.isTrue(true, 'Cliente eliminato');
                     } else {
                         assert.fail('Cliente non è stato eliminato -> ' + cliente);
                     }
                 })
+                cy.screenshot('Verifica Cliente Cancellato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
             }
         })
     }

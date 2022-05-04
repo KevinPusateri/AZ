@@ -42,6 +42,8 @@ const ultraRV = {
   SALUTE: "Allianz Ultra Salute",
 }
 
+let contatto
+
   
 //#endregion
 
@@ -64,6 +66,8 @@ import { soluzione } from '../../fixtures//Ultra/BMP_Comune.json'
 import { ambitoUltra } from '../../fixtures//Ultra/BMP_Comune.json'
 import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
 import { ubicazione } from '../../fixtures//Ultra/BMP_Caso2.json'
+import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
+import SCUContatti from "../../mw_page_objects/clients/SCUContatti"
 
 //#endregion
 
@@ -78,6 +82,7 @@ var premioRC_Affittacamere = 0
 var premioRC_ProprietàAnimali = 0
 
 let personaFisica = PersonaFisica.MarcoMarco()
+var fonteSelezionata =""
 var nContratto = "000"
 var clienteUbicazione = ""
 var frazionamento = "annuale"
@@ -117,7 +122,39 @@ describe('Ultra BMP : Emissione BMP Caso5', function() {
         SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
     })
 
+    it("Cancella contatti", () => {
+        var contatto1 = {
+            tipo: "E-Mail",
+            principale: "Sì",
+            email: "pietro.scocchi@allianz.it"
+        };
+        var contatto2 = {
+            tipo: "Cellulare",
+            principale: "Sì",
+            prefissoInt: "+39",
+            prefisso: "340",
+            phone: "8906718"
+        };
+
+        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+        DettaglioAnagrafica.clickSubTab('Contatti')
+        DettaglioAnagrafica.contattoPresente().then((checkIsPresent)=>{
+          
+            if(!checkIsPresent){
+            
+                SCUContatti.eliminaContatto(contatto1)
+                SCUContatti.eliminaContatto(contatto2)
+            }
+        })
+
+        //cy.pause()
+    })
+    
+    
+    
     it("Emissione Ultra Casa e Patrimonio", () => {
+        //cy.pause()
+        SintesiCliente.clickTabSintesiCliente()
         SintesiCliente.Emissione(prodotti.RamiVari.CasaPatrimonio)
         //Ultra.selezionaPrimaAgenzia()
         Dashboard.caricamentoDashboardUltra()
@@ -169,6 +206,91 @@ describe('Ultra BMP : Emissione BMP Caso5', function() {
         CensimentoAnagrafico.selezionaCasa(personaFisica)
         CensimentoAnagrafico.Avanti()
         DatiIntegrativi.caricamentoPagina()
+    })
+
+    it("Modifica fonte in Dati Integrativi", () => {
+        DatiIntegrativi.modificaFonteRuolo("FRONT LINE")    //>> fonteSel
+        cy.get('@fonteSel').then(fonteSel => {
+            fonteSelezionata = fonteSel
+            cy.log('Salvataggio Fonte Selezionata: ' + fonteSelezionata)
+        })
+    })
+
+    it("Dati Integrativi", () => {
+        DatiIntegrativi.selezionaTuttiNo()
+        DatiIntegrativi.ClickButtonAvanti()
+        DatiIntegrativi.popupDichiarazioni()
+        ConsensiPrivacy.caricamentoPagina()
+    })
+
+    
+
+    it("Consensi e privacy", () => {
+        ConsensiPrivacy.verificaSezione('Unico - Consensi forniti')
+        ConsensiPrivacy.verificaSezione('Privacy')
+        ConsensiPrivacy.Avanti()
+        ControlliProtocollazione.caricamentoPagina()
+    })
+
+    it("salvataggio Contratto", () => {
+        ControlliProtocollazione.salvataggioContratto()
+        //ControlliProtocollazione.verificaOpzione('Tipo firma', 'MANUALE')
+        //ControlliProtocollazione.impostaOpzione("All'esterno dell'agenzia / a distanza", 'SI')
+        //ControlliProtocollazione.verificaPresenzaDocumento("Allegato 4-ter - Elenco delle regole di comportamento del distributore")
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 3 - Informativa sul distributore")
+        ControlliProtocollazione.verificaPresenzaDocumento("Allegato 4 - Informazioni sulla distribuzione del prodotto assicurativo non-IBIP")
+        ControlliProtocollazione.Avanti()    // Non prosegue prima della visualizzazione dei documenti
+    })
+
+    it("Verifica Intermediario", () => {
+        ControlliProtocollazione.verificaIntermediario(fonteSelezionata)
+    })
+
+    it("Visualizza documenti e prosegui", () => {
+        //cy.pause()
+        ControlliProtocollazione.riepilogoDocumenti()
+        ControlliProtocollazione.Avanti()
+        ControlliProtocollazione.aspettaCaricamentoAdempimenti()
+    })
+
+    it("Adempimenti precontrattuali e Perfezionamento", () => {
+        ControlliProtocollazione.verificaPresenzaDocumento("Informativa precontrattuale: Allegati 3 e 4")
+        ControlliProtocollazione.verificaPresenzaDocumento("Regolamento Allianz Ultra e Set informativo")
+        ControlliProtocollazione.stampaAdempimentiPrecontrattuali(false)
+        ControlliProtocollazione.salvaNContratto()
+
+        cy.get('@contratto').then(val => {
+            nContratto = val
+        })
+
+        ControlliProtocollazione.Home()
+        //StartPage.caricamentoPagina()
+        //ControlliProtocollazione.Incassa()
+        //Incasso.caricamentoPagina()
+    })
+
+    it("Ritorno alla Homepage di Matrix", () => {
+        TopBar.clickMatrixHome()
+    })
+
+
+    // Annullo la proposta appena emessa per poter eliminare i contatti del contraente per poter rifare il test 
+    it("Apertura sezione Clients", () => {
+        TopBar.search(personaFisica.nomeCognome()) 
+        LandingRicerca.clickClientePF(personaFisica.nomeCognome())
+        SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
+    })
+
+    it("Annullamento contratto da Portafoglio", () => {
+        Portafoglio.clickTabPortafoglio()
+        cy.wait(5000)
+        Portafoglio.clickSubTab('Proposte')
+        cy.wait(5000)
+        Portafoglio.ordinaPolizze("Numero contratto")
+        cy.wait(5000)
+        cy.log(">>>>> ANNULLAMENTO CONTRATTO: " + nContratto)
+        Portafoglio.clickAnnullamento(nContratto, 'ANN.ORIGINE/MANCATO PERFEZIONAMENTO IN AGENZIA')
+        UltraBMP.annullamentoContratto('')
     })
 
     it("Fine test", () => {

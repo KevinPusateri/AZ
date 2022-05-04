@@ -94,7 +94,7 @@ class Annullamento {
                 // Click Ok Popup
                 cy.get('div[class="inputLabel inputAvviso derogaAvviso"]').should('be.visible')
                 cy.get('div[class="inputLabel inputAvviso derogaAvviso"]').parents('div[class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable"]').within(() => {
-                    cy.get('span[class="ui-button-text"]').contains('Ok').click().wait(30000)
+                    cy.get('span[class="ui-button-text"]').contains('Ok').click().wait(60000)
                 })
         })
         //#endregion

@@ -94,10 +94,12 @@ const Auto = {
 const linksEmissioneAuto = {
     EMISSIONE: {
         PREVENTIVO_MOTOR: 'Preventivo Motor',
+        SAFE_DRIVE_AUTOVETTURE: 'Safe Drive Autovetture',
         FLOTTE_CONVENZIONI: 'Flotte e convenzioni',
         deleteKey: function (keys) {
             if (!keys.PREVENTIVO_MOTOR) delete this.PREVENTIVO_MOTOR
-            if (!keys.FLOTTE_CONVENZIONI) delete this.FLOTTE_CONVENZIONI
+            if (!keys.FLOTTE_CONVENZIONI || Cypress.env('isAviva')) delete this.FLOTTE_CONVENZIONI
+            if (!keys.SAFE_DRIVE_AUTOVETTURE) delete this.SAFE_DRIVE_AUTOVETTURE
         }
     },
     PRODOTTI_PARTICOLARI: {
@@ -378,7 +380,7 @@ class SintesiCliente {
         cy.screenshot('Click Calcola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible').click()
-        cy.wait('@gqlCalculateMotorPriceQuotation', { timeout: 50000 })
+        cy.wait('@gqlCalculateMotorPriceQuotation', { timeout: 120000 })
 
         cy.contains('Inserisci i dati manualmente').should('be.visible').click()
         cy.screenshot('PopUp Inserisci i dati manualmente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -389,7 +391,7 @@ class SintesiCliente {
         }).as('getMotor')
 
         Common.canaleFromPopup()
-        cy.wait('@getMotor', { timeout: 50000 })
+        cy.wait('@getMotor', { timeout: 120000 })
 
         getIFrame().find('span:contains("Cerca"):visible')
 
@@ -523,6 +525,24 @@ class SintesiCliente {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { timeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
+
+    }
+    /**
+     * Emissione Safe Drive Autovetture
+     * @requires clickAuto()
+     */
+    static clickSafeDriveAutovetture() {
+        cy.wait(2000)
+        cy.get('.cdk-overlay-container').find('button').contains('Emissione').click()
+        cy.wait(2000)
+        cy.get('.cdk-overlay-container').find('button').contains('Safe Drive Autovetture').click()
+        cy.intercept({
+            method: 'POST',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor');
+        Common.canaleFromPopup()
+        cy.wait('@getMotor', { timeout: 50000 });
+        getIFrame().find('button:contains("Calcola"):visible', { timeout: 10000 })
     }
 
     /**
@@ -1132,10 +1152,14 @@ class SintesiCliente {
                 .then(body => {
                     let missingValue;
                     (contactType === 'numero') ? missingValue = 'Aggiungi numero principale' : missingValue = ' Aggiungi mail principale '
-                    if (body.find('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').is(':visible'))
+                    if (body.find('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').is(':visible')){
+                        cy.get('nx-sidebar').should('be.visible').screenshot('Verifica ' + contactType + ' inserito', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: true })
                         resolve(false)
-                    else
+                    }
+                    else {
+                        cy.get('nx-sidebar').should('be.visible').screenshot('Verifica ' + contactType + ' inserito', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: true })
                         resolve(true)
+                    }
                 })
         })
     }

@@ -85,12 +85,6 @@ describe('Buca di Ricerca', {
             SCU.checkAggancioRubrica()
         })
 
-        it('Verifica Click su Ricerca News', function () {
-            LandingRicerca.searchRandomClient(false)
-            LandingRicerca.clickRicercaClassicaLabel('Ricerca News')
-            News.checkAtterraggio(true)
-        })
-
         it('Verifica Click su Ricerca Preventivi', function () {
             LandingRicerca.searchRandomClient(false)
             LandingRicerca.clickRicercaClassicaLabel('Ricerca Preventivi')

@@ -212,7 +212,7 @@ class Portafoglio {
                     }
 
                 })
-                cy.get('app-wallet-proposals').find('app-section-title').should('contain.text', 'Proposte')
+                cy.get('app-wallet-proposals').find('app-section-title').should('contain.text', 'Propost')
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.get('app-contract-card').should('be.visible')
                 cy.get('app-contract-card').first().then(() => {

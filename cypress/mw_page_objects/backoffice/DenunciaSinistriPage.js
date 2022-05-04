@@ -97,7 +97,8 @@ class DenunciaSinistriPage {
      * @param {string} value : attribute value object 
      */
     static clickPopUpObj_ByIdAndAttr(id, attr, value) {             
-        getIFramePopUp(IframePopUp).find(id).should('have.attr', attr, value).should('be.visible').click({ multiple: true }).log('>> object with attr ['+attr+'="'+value+'"] is clicked')       
+        getIFramePopUp(IframePopUp).find(id).should('have.attr', attr, value).should('be.visible').click({ multiple: true })
+        cy.log('>> object with attr ['+attr+'="'+value+'"] is clicked')       
         cy.wait(2000)
     }
     /**
@@ -105,7 +106,8 @@ class DenunciaSinistriPage {
      * @param {string} id : locator object id
      */
     static clickPopUpBtn_ById(id) {             
-        getIFramePopUp(IframePopUp).find(id).should('be.visible').click().log('>> object with [id='+id+'] is clicked')        
+        getIFramePopUp(IframePopUp).find(id).should('be.visible').click()
+        cy.log('>> object with [id='+id+'] is clicked')        
         cy.wait(1000)
     }
     /**
@@ -144,7 +146,8 @@ class DenunciaSinistriPage {
      * @param {string} label : text displayed
      */
     static clickObj_ByLabel(tag, label) {
-        findIframeChild(IframeDen).contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
+        findIframeChild(IframeDen).contains(tag, label).should('exist').should('be.visible').click()
+        cy.log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(2000)        
     }
     /**
@@ -153,7 +156,8 @@ class DenunciaSinistriPage {
      * @param {string} label : text displayed
      */
     static clickObjPopUpChiudi_ByLabel(tag, label) {             
-        getIFramePopUpChiudi().contains(tag, label, { timeout: 5000 }).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
+        getIFramePopUpChiudi().contains(tag, label, { timeout: 5000 }).should('exist').should('be.visible').click()
+        cy.log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(2000)        
     }
     /**
@@ -260,11 +264,9 @@ class DenunciaSinistriPage {
     static setValue_ById(id, value) {
         return new Cypress.Promise((resolve) => {
             cy.wait(500)             
-            findIframeChild(IframeDen).find(id).should('exist').clear()
-            cy.log('>> clean object value')
+            findIframeChild(IframeDen).find(id).should('exist').clear().log('>> clean object value')
             cy.wait(1000)
-            findIframeChild(IframeDen).find(id).should('exist').type(value)
-            cy.log('>> value: [' + value +'] entered')                   
+            findIframeChild(IframeDen).find(id).should('exist').type(value).log('>> value: [' + value +'] entered')
             cy.wait(1000)
             resolve(true)            
         });
@@ -385,20 +387,7 @@ class DenunciaSinistriPage {
             return check           
         //})
     }
-    /*
-    static isVisibleText(text)
-    { 
-        let visible = false;
-        cy.log('>> check if the text="' +text+ '" is defined...')
-        findIframeChild(IframeDen).contains(text, { timeout: 10000 }).should('exist').and('be.visible')
-        .then(() => {       
-            visible =  true;
-            cy.log('>> [text="' +text+ '"] defined!')
-        });        
-        assert.isTrue(visible, ">> is text='"+test+"' visible")   
-        return visible
-    }
-    */
+ 
     /**
      * Check if the value is defined
      * @param {string} value : string value to check

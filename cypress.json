@@ -1,4 +1,5 @@
 {
+  "experimentalSessionAndOrigin": false,
   "retries": 1,
   "video": false,
   "videoCompression": 25,
@@ -6,7 +7,6 @@
   "projectId": "4ypuc8",
   "numTestsKeptInMemory": 1,
   "chromeWebSecurity": false,
-  "experimentalSessionSupport": false,
   "reporter": "cypress-mochawesome-reporter",
   "reporterOptions": {
     "reportDir": "cypress/reports/mocha",

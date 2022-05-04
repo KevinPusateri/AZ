@@ -34,7 +34,7 @@ let cliente
  */
 const searchClientWithoutContattiPrincipali = (contactType) => {
     LandingRicerca.searchRandomClient(true, "PF", Cypress.env('isAviva') ? "E" : "P")
-    LandingRicerca.clickRandomResult("PF",Cypress.env('isAviva') ? "E" : "P")
+    LandingRicerca.clickRandomResult("PF", Cypress.env('isAviva') ? "E" : "P")
 
     SintesiCliente.checkContattoPrincipale(contactType).then(contactIsPresent => {
         if (!contactIsPresent)
@@ -48,14 +48,16 @@ const searchClientWithoutContattiPrincipali = (contactType) => {
 
 //#region Before After
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-        LoginPage.logInMWAdvanced()
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+        })
+        cy.task('nuovoContatto').then((object) => {
+            contatto = object
+        })
     })
-    cy.task('nuovoContatto').then((object) => {
-        contatto = object
-    })
-
 
 
 })
@@ -111,7 +113,7 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
     })
 
     it('Verifica Numero Principale inserito', () => {
-        TopBar.search(cliente.name) 
+        TopBar.search(cliente.name)
         LandingRicerca.clickClientePF(cliente.name)
         SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
         SintesiCliente.checkContattoPrincipale('numero').then(contactIsPresent => {
@@ -136,7 +138,7 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
     })
 
     it('Verifica Mail Principale inserita', () => {
-        TopBar.search(cliente.name) 
+        TopBar.search(cliente.name)
         LandingRicerca.clickClientePF(cliente.name)
         SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
         SintesiCliente.checkContattoPrincipale('mail').then(contactIsPresent => {
