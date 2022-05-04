@@ -1156,16 +1156,17 @@ class Sfera {
         this.lobPortafogli().click().wait(500)
 
         cy.get('div[class="nx-dropdown__panel nx-dropdown__panel--in-outline-field ng-star-inserted"]').within(() => {
-            //Selezioniamo 
+            //Selezioniamo
             for (let i = 0; i < portafogli.length; i++) {
                 cy.get(`div:contains(${portafogli[i]})`).parents('label').then($chekcBoxChecked => {
-
                     if (!$chekcBoxChecked.find('nx-icon').is(':visible')) {
                         cy.get(`div:contains(${portafogli[i]})`).parents('nx-dropdown-item').click()
                         cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
             }
+
+            cy.pause()
 
             //Controllo le eventuali lob da de-selezionare
             if (!portafogli.includes(Portafogli.MOTOR))
@@ -1180,7 +1181,7 @@ class Sfera {
                 cy.get(`div:contains(${Portafogli.RAMI_VARI})`).parents('label').then($chekcBoxChecked => {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
-                        cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
+                        cy.get(`div:contains(${Portafogli.RAMI_VARI})`).parents('nx-dropdown-item').click()
                         cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
@@ -1188,7 +1189,7 @@ class Sfera {
                 cy.get(`div:contains(${Portafogli.VITA})`).parents('label').then($chekcBoxChecked => {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
-                        cy.get(`div:contains(${Portafogli.MOTOR})`).parents('nx-dropdown-item').click()
+                        cy.get(`div:contains(${Portafogli.VITA})`).parents('nx-dropdown-item').click()
                         cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
