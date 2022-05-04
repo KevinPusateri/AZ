@@ -222,6 +222,7 @@ class DettaglioAnagrafica {
                 expect(label.text().trim()).to.include('Tipologia P.E.P.');
                 expect(label.text().trim()).to.include('Codice fiscale*');
                 expect(label.text().trim()).to.include('Referente');
+                cy.screenshot('Dati Campi Dati Principali', { overwrite: true })
             })
 
         })
@@ -239,6 +240,8 @@ class DettaglioAnagrafica {
             })
 
         })
+        cy.get('app-physical-client-main-data:contains("Dati principali persona fisica")')
+            .screenshot('Campi Identificazione Adeguata verifica', { overwrite: true })
     }
 
     static checkCampiConsensi() {
@@ -276,8 +279,11 @@ class DettaglioAnagrafica {
                                 expect(label.text().trim()).to.include('Attività promozionali relative a società terze partner');
                                 expect(label.text().trim()).to.include('Indagini di mercato');
                             })
+                        cy.wait(5000)
+                        cy.contains(panelName[i]).parents('nx-expansion-panel').find('[id^=cdk-accordion-child]')
+                            .screenshot('Campi Consensi: ' + panelName[i], { overwrite: true })
                     } else if (panelName[i] === 'Consensi e adeguatezza AGL') {
-                        cy.contains(panelName[i]).click()
+                        cy.contains(panelName[i]).click().wait(3500)
 
                         cy.contains(panelName[i]).parents('nx-expansion-panel').find('[id^=cdk-accordion-child]')
                             .find('[class^="label"]').its('length').should('be.lt', 11)
@@ -297,11 +303,14 @@ class DettaglioAnagrafica {
                                 expect(label.text().trim()).to.include('Attività promozionali relative a società terze partner');
                                 expect(label.text().trim()).to.include('Indagini di mercato');
                             })
+                        cy.contains(panelName[i]).parents('nx-expansion-panel').find('[id^=cdk-accordion-child]')
+                            .screenshot('Campi Consensi: ' + panelName[i], { overwrite: true })
+
                         cy.contains(panelName[i]).parents('nx-expansion-panel').find('lib-da-link')
                             .should('contain.text', 'Modifica consensi AGL')
 
                     } else if (panelName[i] === 'Consensi e adeguatezza Leben') {
-                        cy.contains(panelName[i]).click()
+                        cy.contains(panelName[i]).click().wait(3500)
 
                         cy.contains(panelName[i]).parents('nx-expansion-panel').find('[id^=cdk-accordion-child]')
                             .find('[class^="label"]').its('length').should('be.lt', 11)
@@ -321,6 +330,8 @@ class DettaglioAnagrafica {
                                 expect(label.text().trim()).to.include('Attività promozionali relative a società terze partner');
                                 expect(label.text().trim()).to.include('Indagini di mercato');
                             })
+                        cy.contains(panelName[i]).parents('nx-expansion-panel').find('[id^=cdk-accordion-child]')
+                            .screenshot('Campi Consensi: ' + panelName[i], { overwrite: true })
                         cy.contains(panelName[i]).parents('nx-expansion-panel').find('lib-da-link')
                             .should('contain.text', 'Modifica consensi Leben')
                     }
@@ -334,6 +345,8 @@ class DettaglioAnagrafica {
         cy.contains('app-section-title', 'Residenza anagrafica', { timeout: 10000 }).should('exist')
         cy.get('[class="label"]').should('include.text', 'Comune*')
         cy.get('[class="label"]').should('include.text', 'Indirizzo*')
+        cy.contains('app-section-title', 'Residenza anagrafica').click()
+
     }
 
     static checkCampiDomicilio() {
@@ -350,7 +363,6 @@ class DettaglioAnagrafica {
     static checkCampiEmail() {
         cy.contains('app-section-title', 'Email', { timeout: 10000 }).should('exist')
             .next('.box').should('include.text', 'Email')
-
     }
 
     static checkCampiDocumentoPrincipale() {
@@ -390,13 +402,13 @@ class DettaglioAnagrafica {
                 }
                 //Agenzia
                 cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').click().wait(2000)
-                cy.get('nx-dropdown-item').should('be.visible').within(()=>{
+                cy.get('nx-dropdown-item').should('be.visible').within(() => {
                     cy.contains(agenzia).should('be.visible').click()
                 })
                 cy.get('nx-dropdown[formcontrolname="convenzione"]').should('be.visible').click().wait(2000)
                 //Convenzione
                 // cy.get('#nx-dropdown-rendered-5').click()
-                cy.get('nx-dropdown-item').should('be.visible').within(()=>{
+                cy.get('nx-dropdown-item').should('be.visible').within(() => {
                     cy.contains(convenzione).should('be.visible').click()
                 })
                 // cy.contains(convenzione).should('be.visible').click()
@@ -520,15 +532,15 @@ class DettaglioAnagrafica {
         return new Cypress.Promise(resolve => {
 
             cy.get('span[class="nx-button__content-wrapper"]').should('be.visible')
-            cy.get('app-client-profile-detail').should('be.visible').then(($contattiPage)=>{
+            cy.get('app-client-profile-detail').should('be.visible').then(($contattiPage) => {
                 const checkEmpty = $contattiPage.find(':contains("Non sono presenti altri contatti")').is(':visible')
-                
-                if(checkEmpty){
+
+                if (checkEmpty) {
                     resolve(true)
-                }else{
+                } else {
                     resolve(false)
                 }
-                
+
             })
         })
     }

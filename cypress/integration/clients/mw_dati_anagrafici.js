@@ -27,18 +27,22 @@ var client
 
 //#region Before After
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-        LoginPage.logInMWAdvanced()
-    })
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+        })
 
 
-    LandingRicerca.searchRandomClient(true, "PF", "E")
-    LandingRicerca.clickRandomResult()
-    SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
-        client = currentClient
+        LandingRicerca.searchRandomClient(true, "PF", "E")
+        LandingRicerca.clickRandomResult()
+        SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
+            client = currentClient
+        })
+        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
     })
-    DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+
 })
 
 beforeEach(() => {
