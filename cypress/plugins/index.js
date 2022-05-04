@@ -265,7 +265,7 @@ module.exports = (on, config) => {
             launchOptions.preferences['browser.download.folderList'] = 2
             launchOptions.preferences['browser.download.panel.shown'] = false
             launchOptions.preferences['browser.download.manager.focusWhenStarting'] = true
-            launchOptions.preferences['browser.helperApps.neverAsk.saveToDisk'] = 'application/pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            launchOptions.preferences['browser.helperApps.neverAsk.saveToDisk'] = 'application/force-download','application/pdf','application/x-download','application/x-pdf','pdf/adobe','ext/xml','text/plain','text/html','application/octet-stream','application/xls','text/csv','application/X_SI','application/xls','application/ms-excel','application/x-msexcel','application/excel','application/x-excel','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             launchOptions.preferences['browser.download.manager.useWindow'] = true
             launchOptions.preferences['pdfjs.disabled'] = false
             launchOptions.preferences['devtools.console.stdout.content'] = false

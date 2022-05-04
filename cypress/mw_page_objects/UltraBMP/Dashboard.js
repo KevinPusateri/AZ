@@ -23,7 +23,7 @@ class Dashboard {
             url: '**/ambiti-disponibili'
         }).as('ambiti')
 
-        cy.wait('@ambiti', { requestTimeout: 40000 });
+        cy.wait('@ambiti', { timeout: 120000 });
     }
 
     static stringaRandom(lunghezza) {
@@ -46,7 +46,7 @@ class Dashboard {
             url: '**/preferiti/disponibili'
         }).as('Preferiti')
 
-        cy.wait('@Preferiti', { requestTimeout: 60000 });
+        cy.wait('@Preferiti', { timeout: 60000 });
     }
 
     static caricamentoAmbitiAcquistati() {
@@ -55,7 +55,7 @@ class Dashboard {
             url: '**/oggetti-assicurati'
         }).as('oggettiAssicurati')
 
-        cy.wait('@oggettiAssicurati', { requestTimeout: 60000 });
+        cy.wait('@oggettiAssicurati', { timeout: 60000 });
     }
     //#endregion caricamenti
 
@@ -493,7 +493,7 @@ class Dashboard {
                 url: '**/premio'
             }).as('premio')
 
-            cy.wait('@premio', { requestTimeout: 60000 });
+            cy.wait('@premio', { timeout: 60000 });
         })
     }
 
@@ -620,7 +620,7 @@ class Dashboard {
         //     method: 'GET',
         //     url: '**/convenzioni'
         // }).as('convenzioni')
-        // cy.wait('@convenzioni', { requestTimeout: 30000 });
+        // cy.wait('@convenzioni', { timeout: 30000 });
 
         ultraIFrame().within(() => {
             cy.get('ultra-convenzioni-modal').should('be.visible')
@@ -652,7 +652,7 @@ class Dashboard {
         //     method: 'GET',
         //     url: '**/convenzioni'
         // }).as('convenzioni')
-        // cy.wait('@convenzioni', { requestTimeout: 30000 });
+        // cy.wait('@convenzioni', { timeout: 30000 });
 
         ultraIFrame().within(() => {
             cy.get('ultra-convenzioni-modal').should('be.visible')
