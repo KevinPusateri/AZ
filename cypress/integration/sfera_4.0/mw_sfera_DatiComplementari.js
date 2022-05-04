@@ -69,18 +69,30 @@ describe('Matrix Web : Sfera 4.0', options, function () {
         it('Verifica Ripetitore cliente griglia valore cliente', options, function () {
             Sfera.checkGrigliaValoreCliente()
         })
+
+        it('Verifica Ripetitore cliente Polizze', options, function () {
+            Sfera.checkPolizze()
+        })
     });
 
-    it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.NOTE, options, function () {
-        Sfera.checkDatiComplementari(Sfera.TABSCHEDA.NOTE)
+    context(Sfera.TABSCHEDA.NOTE, () => {
+
+        it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.NOTE, options, function () {
+            Sfera.checkDatiComplementari(Sfera.TABSCHEDA.NOTE)
+        })
     })
 
-    it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.DETTAGLIO_PREMI, options, function () {
-        Sfera.checkDatiComplementari(Sfera.TABSCHEDA.DETTAGLIO_PREMI)
+    context(Sfera.TABSCHEDA.DETTAGLIO_PREMI, () => {
+        it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.DETTAGLIO_PREMI, options, function () {
+            Sfera.checkDatiComplementari(Sfera.TABSCHEDA.DETTAGLIO_PREMI)
+        })
     })
 
-    it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.INIZIATIVE, options, function () {
-        Sfera.checkDatiComplementari(Sfera.TABSCHEDA.INIZIATIVE)
+    context(Sfera.TABSCHEDA.INIZIATIVE, () => {
+
+        it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.INIZIATIVE, options, function () {
+            Sfera.checkDatiComplementari(Sfera.TABSCHEDA.INIZIATIVE)
+        })
     })
 
 })
