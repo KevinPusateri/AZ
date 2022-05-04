@@ -117,6 +117,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Emissione Ultra Salute", () => {
     Ultra.emissioneUltra(ultraRV.SALUTE)
+    Common.canaleFromPopup()
     //Ultra.selezionaPrimaAgenzia()
   })
 
@@ -150,7 +151,8 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Aggiungi Cliente Persona Fisica", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica)
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica, "Persona")
+    CensimentoAnagrafico.aggiornaParamCliente()
   })
 
   it("Completa Censimento Anagrafico", () => {

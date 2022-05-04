@@ -115,6 +115,7 @@ describe("CONVENZIONE STANDARD", () => {
   })
 
   it("Emissione Ultra Casa e Patrimonio", () => {
+    cy.pause()
     SintesiCliente.Emissione(prodotti.RamiVari.CasaPatrimonio)
     Common.canaleFromPopup()
     Dashboard.caricamentoDashboardUltra()
@@ -307,8 +308,9 @@ describe("CONVENZIONE STANDARD", () => {
     Incasso.Chiudi()
   })
 
-  it("Fine", () => {
+  it("Fine", () => {h
     cy.pause()
     //todo: controllare come cercare vecchia polizza senza convenzione o retrodatare la scadenza
+    //todo: usare database?
   })
 })

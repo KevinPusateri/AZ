@@ -133,7 +133,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     ConfigurazioneAmbito.selezionaSoluzione("Premium")
     ConfigurazioneAmbito.aggiungiGaranzia("Capitale per morte da infortunio")
     ConfigurazioneAmbito.ClickButton("CONFERMA")
-    Dashboard.caricamentoDashboardUltra()
+    //Dashboard.caricamentoDashboardUltra()
     Dashboard.procediHome()
     DatiQuotazione.CaricamentoPagina()
   })
@@ -151,9 +151,10 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Aggiungi Cliente Persona Fisica", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica)
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica, "Persona")
+    CensimentoAnagrafico.aggiornaParamCliente()
     //CensimentoAnagrafico.attendiCheckAssicurato()
-    CensimentoAnagrafico.popupCap()
+    //CensimentoAnagrafico.popupCap()
   })
 
   it("Domande integrative Censimento Anagrafico", () => {
@@ -197,7 +198,6 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Adempimenti precontrattuali e Perfezionamento", () => {    
     ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
-    cy.pause()
     ControlliProtocollazione.Incassa()
     Incasso.caricamentoPagina()
   })
@@ -208,6 +208,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Incasso - parte 2", () => {
+    cy.pause()
     Incasso.SelezionaMetodoPagamento('Assegno')
     Incasso.ConfermaIncasso()
     Incasso.caricamentoEsito()

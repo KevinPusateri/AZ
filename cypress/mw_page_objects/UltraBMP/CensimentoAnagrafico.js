@@ -124,15 +124,17 @@ class CensimentoAnagrafico {
                 cy.get('td').contains(cliente.codiceFiscale).click()
                 cy.wait(2000)
             })
+        })
+    }
 
-            //popup attenzione CAP
+    static aggiornaParamCliente() {
+        ultraIFrame().within(() => {
+            //popup attenzione
             cy.get('#popupConfermaCambioParamTariffari', { timeout: 15000 })
                 .should('be.visible')
                 .find('button').contains('AGGIORNA')
                 .click()
-
-            //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento  nx-spinner__spin-block
-        })
+            })
     }
 
     static aggiungiClienteCensimentoAnagrafico(cliente, tab) {
@@ -157,14 +159,6 @@ class CensimentoAnagrafico {
                 cy.get('td').contains(cliente.codiceFiscale).click()
                 cy.wait(2000)
             })
-
-            //popup attenzione CAP
-            cy.get('#popupConfermaCambioParamTariffari', { timeout: 15000 })
-                .should('be.visible')
-                .find('button').contains('AGGIORNA')
-                .click()
-
-            //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento  nx-spinner__spin-block
         })
     }
 

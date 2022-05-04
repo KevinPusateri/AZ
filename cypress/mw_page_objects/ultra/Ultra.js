@@ -206,15 +206,14 @@ class Ultra {
 
     static modificaSoluzioneHome(ambito, soluzione) {
         ultraIFrame().within(() => {
-            cy.get('tr')
-                .contains(ambito)
-                .parent()
-                .parent()
-                .find('nx-dropdown')
-                .click()
+            cy.get('ultra-dash-ambiti-istanze-table')
+                .find('div').contains(ambito)
+                .parents('tr').first()
+                .find('nx-dropdown').click()
 
             cy.wait(500)
-            cy.get('nx-dropdown-item').contains(soluzione).should('be.visible').click() //seleziona Top
+            cy.get('nx-dropdown-item').contains(soluzione).should('be.visible')
+                .click() //seleziona Top
 
             cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
         })
@@ -420,7 +419,7 @@ class Ultra {
             if (altre) {
                 cy.get('div[class*="addProfessione"]').click() //aggiungi altre professioni
             }
-            else {
+            else {                
                 cy.get('div[class*="professioneDrop"]').click() //clicca sulla professione presente
             }
 
@@ -437,7 +436,8 @@ class Ultra {
             cy.get('div[class*="search-professioni extended"]')
                 .find('span').contains('CONFERMA').click()
 
-            cy.wait(1000)
+            //cy.wait(1000)
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
         })
     }
 
@@ -500,7 +500,7 @@ class Ultra {
     }
 
     static aggiungiClienteCensimentoAnagrafico(cliente) {
-        ultraIFrame().within(() => {            
+        ultraIFrame().within(() => {
             cy.get('div').contains('Persona').should('be.visible').click() //tab Persona
 
             cy.get('input[value="CERCA"]').should('be.visible').click() //cerca cliente

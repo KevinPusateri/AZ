@@ -1076,7 +1076,7 @@ class Sfera {
             dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).type(dataInizio).wait(500)
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).click().type(dataInizio).wait(500)
 
         //Impostiamo la data di fine estrazione
         if (dataFine === undefined) {
@@ -1085,7 +1085,7 @@ class Sfera {
             dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type(dataFine).wait(500).type('{esc}')
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type('{esc}').click().type(dataFine).wait(500).type('{esc}')
 
         //Clicchiamo su estrai
         if (performEstrai) this.estrai()
@@ -1165,8 +1165,6 @@ class Sfera {
                     }
                 })
             }
-
-            cy.pause()
 
             //Controllo le eventuali lob da de-selezionare
             if (!portafogli.includes(Portafogli.MOTOR))

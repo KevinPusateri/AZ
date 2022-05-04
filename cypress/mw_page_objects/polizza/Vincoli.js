@@ -14,7 +14,7 @@ const IFrameAnagrafe = () => {
     let iframeAnag = cy.get('iframe[src^="/Anagrafe"]') //('.popupContent').find
         .its('0.contentDocument').should('exist')
 
-    return iframeAnag.its('body').should('not.be.undefined').then(cy.wrap)
+    return iframeAnag.its('body').should('not.be.null').then(cy.wrap)
 }
 //#endregion iFrame
 

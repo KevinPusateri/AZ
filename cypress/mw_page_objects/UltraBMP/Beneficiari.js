@@ -35,6 +35,62 @@ class Beneficiari {
     //#endregion caricamenti
 
     /**
+     * Seleziona il tipo di beneficiario
+     * @param {string} tipoBeneficiario 
+     */
+    static tipoBeneficiario(tipoBeneficiario) {
+        ultraIFrame().within(() => {
+            cy.get('[nxlabel="Tipo beneficiario"]')
+                .find('nx-dropdown').should('be.visible')
+                .click() //apre menù Tipo Beneficiario
+
+            cy.get('nx-dropdown-item').find('span')
+                .contains(tipoBeneficiario).click() //seleziona il beneficiario
+
+            cy.wait(500)
+
+            cy.get('[nxlabel="Tipo beneficiario"]')
+                .find('nx-dropdown').find('span').contains(tipoBeneficiario)
+                .should('be.visible') //verifica che il beneficiario sia stato selezionato
+        })
+    }
+
+    static inserisciBeneficiario() {
+        cy.window().then((win) => {
+            cy.spy(win, 'open').as('windowOpen'); // 'spy' vs 'stub' lets the new tab still open if you are visually watching it
+        });
+
+        ultraIFrame().within(() => {
+            cy.get('.tipo').find('.inserisci').children('button')
+            .click() //click su Inserisci
+        })
+
+        cy.pause()
+
+        /* ultraIFrame().within(() => {
+            // Get window object
+            cy.window().then((win) => {
+                // Replace window.open(url, target)-function with our own arrow function
+                cy.stub(win, 'open').callsFake((url) => {
+                    // change window location to be same as the popup url
+                    win.location.href = "https://portaleagenzie.pp.azi.allianz.it/daanagrafe/SCU/Search/";
+                }).as("popup") // alias it with popup, so we can wait refer it with @popup
+            })
+
+            // Click button which triggers javascript's window.open() call
+            cy.get('.tipo').find('.inserisci').children('button')
+                .click() //click su Inserisci
+        })
+
+        // Make sure that it triggered window.open function call
+        cy.get("@popup") */
+
+        // Now we can continue integration testing for the new "popup tab" inside the same tab
+        cy.get('#f-cognome').should('be.visible')
+    }
+
+
+    /**
      * Clicca sul pulsante Avanti
      */
     static Avanti() {
