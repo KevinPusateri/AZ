@@ -152,6 +152,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Aggiungi Cliente Persona Fisica", () => {
     CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica, "Persona")
+    CensimentoAnagrafico.aggiornaParamCliente()
   })
 
   it("Completa Censimento Anagrafico", () => {
