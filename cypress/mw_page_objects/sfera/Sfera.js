@@ -1294,7 +1294,6 @@ class Sfera {
         cy.get('sfera-az-pay-modal').should('be.visible').click()
         cy.contains('Crea e invia codici AZPay').click()
         cy.contains('Procedi').click()
-        cy.pause()
 
     }
 
@@ -1564,8 +1563,9 @@ class Sfera {
                 cy.wrap($Contraente).click()
                 cy.wait('@getDatiAnagrafici', { requestTimeout: 50000 })
                 cy.wait('@getDatiIniziative', { requestTimeout: 50000 })
-                cy.wait('@getContratti', { requestTimeout: 50000 })
-                cy.wait('@getFastquote', { requestTimeout: 50000 })
+                cy.wait('@getContratti', { requestTimeout: 50000 }).its('response.body').then((body) => {
+                    cy.writeFile('cypress/fixtures/Sfera/DatiComplementariContratti.json', body)
+                })
             })
         })
     }
@@ -1704,6 +1704,9 @@ class Sfera {
                         .should('have.attr', 'style', 'visibility: visible;')
                     cy.wrap($panel).parents('nx-expansion-panel')
                         .find('table').should('be.visible')
+                    cy.wait(2000)
+                    cy.wrap($panel).click()
+                    cy.wait(2000)
                 })
 
                 //#endregion
@@ -1750,6 +1753,7 @@ class Sfera {
      * Verifica La Griglia "Valore Cliente"
      */
     static checkGrigliaValoreCliente() {
+        // Apri Pannello Valore CLiente
         cy.get('nx-expansion-panel-header[aria-disabled="false"]:contains("Valore Cliente")').then(($panel) => {
             cy.wrap($panel).click()
             cy.wrap($panel).parents('nx-expansion-panel')
@@ -1759,18 +1763,46 @@ class Sfera {
             cy.wrap($panel).parents('nx-expansion-panel')
                 .find('table').should('be.visible').within(() => {
                     cy.get('tr').eq(0).find('td:last').then(($valore) => {
-                        console.log($valore.text())
                         expect($valore.text().trim()).to.not.equal('-')
                         expect($valore.text().trim()).not.to.be.empty
                     })
                     cy.get('tr').eq(1).find('td:last').then(($valore) => {
-                        console.log($valore.text())
                         expect($valore.text().trim()).to.not.equal('-')
                         expect($valore.text().trim()).not.to.be.empty
                     })
                     cy.screenshot('Verifica Griglia Valore Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 })
 
+        })
+    }
+
+    /**
+     * Verifica La Griglia "Polizze"
+     */
+    static checkPolizze() {
+        // Apri Pannello Polizze
+        cy.get('nx-expansion-panel-header[aria-expanded="false"]:contains("Polizze"):visible').then(($panel) => {
+            cy.wrap($panel).click()
+            cy.wrap($panel).parents('nx-expansion-panel')
+                .find('div[role="region"]')
+                .should('have.attr', 'style', 'visibility: visible;')
+            cy.wrap($panel).parents('nx-expansion-panel')
+                .find('table').should('be.visible').within(() => {
+                    cy.fixture('Sfera/DatiComplementariContratti.json').then((data) => {
+                        for (let index = 0; index < data.listaPolizze.length; index++) {
+                            cy.get('tr[class="ng-star-inserted"]').eq(index).then(($checkDato) => {
+                                expect($checkDato.text()).to.include(data.listaPolizze[index].contraente)
+                                expect($checkDato.text()).to.include(data.listaPolizze[index].areaPortafoglio)
+                                expect($checkDato.text()).to.include(data.listaPolizze[index].numeroContratto)
+                                expect($checkDato.text()).to.include(data.listaPolizze[index].prodotto)
+                                // expect($checkDato.text()).to.include(data.listaPolizze[index].premioLordo.split('EUR ')[1])
+                                let date = new Date(data.listaPolizze[index].dataProssimaQuietanza)
+                                let formatDate = ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear()
+                                expect($checkDato.text()).to.include(formatDate)
+                            })
+                        }
+                    })
+                })
         })
     }
 }
