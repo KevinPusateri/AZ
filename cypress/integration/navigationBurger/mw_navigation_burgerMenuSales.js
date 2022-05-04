@@ -386,8 +386,9 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         })
     })
 
-    //TODO DA  aggiungere Release 125
     it('Verifica aggancio Allianz Placement Platform', function () {
+        if (!keys.ALLIANZ_PLACEMENT_PLATFORM)
+            this.skip()
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz placement platform')
     })
@@ -408,9 +409,9 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
-    //TODO Al momento rimosso in quanto il target non è presente in quanto c'è la finestra di Common di mezzo e excel
     it('Verifica aggancio ACOM Gestione iniziative', function () {
-        //TODO Implementare su TFS release 125 
+        if (!keys.ACOM_GESTIONE_INIZIATIVE)
+            this.skip()
         TopBar.clickSales()
         BurgerMenuSales.clickLink('ACOM Gestione iniziative')
     })
