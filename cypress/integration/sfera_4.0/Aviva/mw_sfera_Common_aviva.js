@@ -60,4 +60,12 @@ describe('Matrix Web : Sfera 4.0 AVIVA', function () {
         Sfera.fontiAllSelezionati()
         Sfera.agenzieAllSelezionati()
     })
+
+    it('Verifica rimozione AZPay', options, function () {
+        Sfera.setDateEstrazione()
+        Sfera.estrai()
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        Sfera.checkLinkMenu('Crea e invia codici AzPay')
+    })
+
 })

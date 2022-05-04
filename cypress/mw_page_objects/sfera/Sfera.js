@@ -763,6 +763,9 @@ class Sfera {
      */
     static estrai() {
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
+        //! DA CAPIRE COME EVITARE
+        if (Cypress.env('isAviva'))
+            cy.contains('Estrai').should('exist').click()
         cy.contains('Estrai').should('exist').click()
 
         cy.wait('@estraiQuietanze', { timeout: 120000 })
@@ -1803,6 +1806,16 @@ class Sfera {
                     cy.screenshot('Verifica Griglia Polizze', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 })
         })
+    }
+
+    static checkLinkMenu(link) {
+        //Click tre puntini
+        cy.get('nx-icon[class="ndbx-icon nx-icon--ellipsis-v nx-link__icon nx-icon--auto"]')
+            .should('be.visible')
+            .click().wait(2000)
+
+        cy.get('div[role="menu"]:visible').should('not.include.text', link)
+
     }
 }
 export default Sfera
