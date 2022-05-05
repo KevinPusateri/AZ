@@ -1857,13 +1857,13 @@ class Sfera {
         })
     }
 
-    // /**
-    //  * Verifica se su AVIVA è selezionato solo Motor
-    //  * @param {Portafogli} portafoglio
-    //  */
-    // static checkLob(portafoglio) {
-    //     cy.get('nx-dropdown[formcontrolname="lobSelezionate"]')
-    //         .find('span[class="ng-star-inserted"]').should('contain.text', portafoglio)
-    // }
+    /**
+     * Verifica se su AVIVA è selezionato solo Motor
+     * @param {Portafogli} portafoglio
+     */
+    static checkLob(portafoglio) {
+        cy.get('nx-dropdown[formcontrolname="lobSelezionate"]')
+            .find('span[class="ng-star-inserted"]').should('contain.text', portafoglio)
+    }
 }
 export default Sfera

@@ -74,8 +74,8 @@ describe('Matrix Web : Sfera 4.0 AVIVA', function () {
         Sfera.checkVoceAzioniVeloci(Sfera.CLUSTERMOTOR.SINISTROSE)
     })
 
-    // it('Verifica Tasto Azioni Veloci Cluster Sinistrose', options, function () {
-    //     Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
-    // })
+    it('Verifica Tasto Azioni Veloci Cluster Sinistrose', options, function () {
+        Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
+    })
 
 })
