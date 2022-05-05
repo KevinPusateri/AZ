@@ -1049,7 +1049,7 @@ class Sfera {
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
 
-        cy.contains(clusterMotor).click()
+        cy.contains(clusterMotor).click({force:true})
         cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
 
         //Verifichiamo che sia valorizzato il numero tra ()
@@ -1844,6 +1844,8 @@ class Sfera {
                     const span = []
                     cy.get('span[class="nx-radio__label--text"]').each(($span) => {
                         span.push($span.text().trim())
+                        console.log($span.text().trim())
+                        cy.pause()
                     }).then(() => {
                         expect(span).to.have.length(5)
                         expect(span).to.include('Esporta pdf / excel')
