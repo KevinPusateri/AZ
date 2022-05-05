@@ -297,7 +297,8 @@ const ClusterMotor = {
     DELTA_PREMIO_POSITIVO: "Delta premio positivo",
     QUIETANZE_STAMPABILI: "Quietanze Stampabili",
     QUIETANZE_STAMPATE: "Quietanze Stampate",
-    IN_MORA: "In mora"
+    IN_MORA: "In mora",
+    SINISTROSE: "Sinistrose",
 }
 
 /**
@@ -1808,6 +1809,10 @@ class Sfera {
         })
     }
 
+    /**
+     * Click the three dots, then check that the menu does not include the text of the link.
+     * @param {string} link - the link to be checked
+     */
     static checkLinkMenu(link) {
         //Click tre puntini
         cy.get('nx-icon[class="ndbx-icon nx-icon--ellipsis-v nx-link__icon nx-icon--auto"]')
@@ -1815,7 +1820,50 @@ class Sfera {
             .click().wait(2000)
 
         cy.get('div[role="menu"]:visible').should('not.include.text', link)
-
     }
+
+
+    /**
+     * Verifica Azioni veloci dal Cluster richeisto
+     * @param {ClusterMotor} cluster - nome del cluster
+     */
+    static checkVoceAzioniVeloci(cluster) {
+        cy.contains('Azioni veloci').click()
+        cy.get('nx-modal-container').should('be.visible').within(() => {
+
+            switch (cluster) {
+                case ClusterMotor.SINISTROSE:
+                    const titles = []
+                    cy.get('nx-expansion-panel-title').each(($title) => {
+                        titles.push($title.text().trim().split(' (')[0])
+                    }).then(() => {
+                        expect(titles).to.have.length(2)
+                        expect(titles).to.include('Per tutti i cluster selezionati')
+                        expect(titles).to.include('Sinistrose')
+                    })
+                    const span = []
+                    cy.get('span[class="nx-radio__label--text"]').each(($span) => {
+                        span.push($span.text().trim())
+                    }).then(() => {
+                        expect(span).to.have.length(5)
+                        expect(span).to.include('Esporta pdf / excel')
+                        expect(span).to.includes('Assegna Colore')
+                        expect(span).to.include('SMS/Mail a testo libero')
+                        expect(span).to.include('Verifica delta premio')
+                    })
+                    break;
+            }
+            cy.get('nx-icon[name="close"]').click()
+        })
+    }
+
+    // /**
+    //  * Verifica se su AVIVA è selezionato solo Motor
+    //  * @param {Portafogli} portafoglio
+    //  */
+    // static checkLob(portafoglio) {
+    //     cy.get('nx-dropdown[formcontrolname="lobSelezionate"]')
+    //         .find('span[class="ng-star-inserted"]').should('contain.text', portafoglio)
+    // }
 }
 export default Sfera

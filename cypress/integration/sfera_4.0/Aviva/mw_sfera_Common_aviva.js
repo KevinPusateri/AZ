@@ -68,4 +68,14 @@ describe('Matrix Web : Sfera 4.0 AVIVA', function () {
         Sfera.checkLinkMenu('Crea e invia codici AzPay')
     })
 
+    it('Verifica Tasto Azioni Veloci Cluster Sinistrose', options, function () {
+        Sfera.setDateEstrazione()
+        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.SINISTROSE)
+        Sfera.checkVoceAzioniVeloci(Sfera.CLUSTERMOTOR.SINISTROSE)
+    })
+
+    // it('Verifica Tasto Azioni Veloci Cluster Sinistrose', options, function () {
+    //     Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
+    // })
+
 })
