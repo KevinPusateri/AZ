@@ -67,4 +67,8 @@ describe('Matrix Web : Campagne Commerciali', function () {
         TopBar.searchAndClickSuggestedNavigations('Campagne Commerciali')
         CampagneCommerciali.verificaAccessoCampagneCommerciali()
     })
+
+    it('Visualizzazione Monitoraggio Campagne (Verifica Stato Campagne Attive)', function () {
+        CampagneCommerciali.statoCampagneAttive()
+    })
 })

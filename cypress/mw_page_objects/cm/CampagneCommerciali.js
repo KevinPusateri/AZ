@@ -2,6 +2,18 @@
 
 import Common from "../common/Common"
 
+//#region iFrame
+const getIFrame = () => {
+    cy.get('iframe[class="iframe-content ng-star-inserted"]')
+        .iframe();
+
+    let iframeSCU = cy.get('iframe[class="iframe-content ng-star-inserted"]')
+        .its('0.contentDocument').should('exist');
+
+    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+}
+//#endregion iFrame
+
 //#region Intercept
 //#endregion
 
@@ -14,10 +26,6 @@ import Common from "../common/Common"
  * @author Andrea 'Bobo' Oboe
  */
 class CampagneCommerciali {
-
-    //#region Elementi Campagne Commerciali
-    //#endregion
-
     /**
      * Verifica accesso a Campagne Commerciali
      */
@@ -35,6 +43,32 @@ class CampagneCommerciali {
 
         cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
         cy.screenshot('Verifica accesso Campagne Commerciali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+    }
+
+    static statoCampagneAttive() {
+        getIFrame().within(() => {
+            cy.intercept('POST', '**/graphql', (req) => {
+                if (req.body.operationName.includes('campaignAgent')) {
+                    req.alias = 'gqlCampaignAgent'
+                } else if (req.body.operationName.includes('campaignsMonitoringTableData')) {
+                    req.alias = 'gqlcampaignsMonitoringTableData'
+                }
+            })
+
+            cy.contains("Verifica stato campagne attive").should('exist').and('be.visible').click()
+
+            cy.wait('@gqlCampaignAgent', { timeout: 120000 })
+            cy.wait('@gqlcampaignsMonitoringTableData', { timeout: 120000 })
+
+            cy.contains("Campagne attive").should('exist').and('be.visible')
+            cy.contains("Numeri chiave").should('exist').and('be.visible')
+            //Card list con i Numeri chiave
+            cy.get('lib-interaction-card-list').should('exist').and('be.visible')
+            //Tabella con le campagne attive
+            cy.get('.lib-active-campaigns-table').should('exist').and('be.visible')
+        })
+
+        cy.screenshot('Stato Campagne Attive', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 }
 
