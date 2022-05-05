@@ -54,14 +54,21 @@ class CampagneCommerciali {
                     req.alias = 'gqlcampaignsMonitoringTableData'
                 }
             })
-            
+
             cy.contains("Verifica stato campagne attive").should('exist').and('be.visible').click()
 
             cy.wait('@gqlCampaignAgent', { timeout: 120000 })
             cy.wait('@gqlcampaignsMonitoringTableData', { timeout: 120000 })
 
-            cy.pause()
+            cy.contains("Campagne attive").should('exist').and('be.visible')
+            cy.contains("Numeri chiave").should('exist').and('be.visible')
+            //Card list con i Numeri chiave
+            cy.get('lib-interaction-card-list').should('exist').and('be.visible')
+            //Tabella con le campagne attive
+            cy.get('.lib-active-campaigns-table').should('exist').and('be.visible')
         })
+
+        cy.screenshot('Stato Campagne Attive', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 }
 

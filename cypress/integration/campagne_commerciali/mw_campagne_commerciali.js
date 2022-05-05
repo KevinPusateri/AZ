@@ -44,15 +44,15 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+})
 //#endregion Before After
 
 describe('Matrix Web : Campagne Commerciali', function () {
@@ -63,12 +63,12 @@ describe('Matrix Web : Campagne Commerciali', function () {
         Common.visitUrlOnEnv()
     })
 
-    it.only('Accesso a Campagne Commerciali da Buca di Ricerca', function () {
+    it('Accesso a Campagne Commerciali da Buca di Ricerca', function () {
         TopBar.searchAndClickSuggestedNavigations('Campagne Commerciali')
         CampagneCommerciali.verificaAccessoCampagneCommerciali()
     })
 
-    it.only('Visualizzazione Monitoraggio Campagne (Verifica Stato Campagne Attive)', function () {
+    it('Visualizzazione Monitoraggio Campagne (Verifica Stato Campagne Attive)', function () {
         CampagneCommerciali.statoCampagneAttive()
     })
 })
