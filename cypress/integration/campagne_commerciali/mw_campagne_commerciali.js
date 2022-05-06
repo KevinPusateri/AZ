@@ -21,7 +21,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-let options = {
+let optionsRetrials = {
     retries: {
         runMode: 0,
         openMode: 0,
@@ -55,7 +55,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Campagne Commerciali', function () {
+describe('Matrix Web : Campagne Commerciali', optionsRetrials, function () {
 
     it('Accesso a Campagne Commerciali da Sales', function () {
         TopBar.clickSales()
@@ -70,5 +70,9 @@ describe('Matrix Web : Campagne Commerciali', function () {
 
     it('Visualizzazione Monitoraggio Campagne (Verifica Stato Campagne Attive)', function () {
         CampagneCommerciali.statoCampagneAttive()
+    })
+
+    it('Visualizzazione Monitoraggio Campagne (Controlla i Risultati delle Vendite)', function () {
+        CampagneCommerciali.risultatiDelleVendite()
     })
 })
