@@ -1,5 +1,6 @@
 /// <reference types="Cypress" />
 
+import { watchFile } from "fs";
 import Common from "../common/Common"
 
 //#region iFrame
@@ -173,6 +174,40 @@ class CampagneCommerciali {
             waitCheckGQL('gqlCampaignsMonitoring')
 
             cy.screenshot('Vedi Campagna', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+            cy.contains("Indietro").should('exist').and('be.visible').click()
+
+            waitCheckGQL('gqlCampaignList')
+            waitCheckGQL('gqlCampaignsMonitoring')
+            waitCheckGQL('gqlCampaignAgent')
+        })
+    }
+
+    static campagneInArrivo() {
+        gqlCampaing()
+
+        getIFrame().within(() => {
+
+            cy.get('.lib-upcoming-campaigns-carousel').should('exist').within(() => {
+                //clicchiamo sulla prima disponibile
+                cy.contains('Vedi campagna').first().should('exist').click()
+            })
+        })
+
+        waitCheckGQL('gqlCampaign')
+        waitCheckGQL('gqlCampaignAgent')
+
+        //Verifichiamo che il pulsante 'Configura e attiva' sia disabilitato
+        getIFrame().within(() => {
+            cy.get('button:contains("Configura e attiva")').should('exist').and('be.visible').and('have.attr', 'disabled')
+
+            cy.screenshot('Campagne in Arrivo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+            cy.contains("Indietro").should('exist').and('be.visible').click()
+
+            waitCheckGQL('gqlCampaignList')
+            waitCheckGQL('gqlCampaignsMonitoring')
+            waitCheckGQL('gqlCampaignAgent')
         })
     }
 }
