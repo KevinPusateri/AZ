@@ -75,4 +75,15 @@ describe('Matrix Web : Campagne Commerciali', optionsRetrials, function () {
     it('Visualizzazione Monitoraggio Campagne (Controlla i Risultati delle Vendite)', function () {
         CampagneCommerciali.risultatiDelleVendite()
     })
+
+    it('Filtri - Campagne Disponibili', function () {
+        CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.PERIODO)
+        CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.TIPOLOGIA_CAMPAGNA)
+        CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.LINEA_BUSINESS)
+        CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.SORGENTE_DATI)
+    })
+
+    it('Campagne Attive', function () {
+        CampagneCommerciali.vediCampagna()
+    })
 })

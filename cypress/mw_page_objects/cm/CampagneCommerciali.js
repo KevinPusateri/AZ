@@ -27,8 +27,16 @@ const gqlCampaing = () => {
             req.alias = 'gqlCampaignsMonitoring'
         } else if (req.body.operationName.includes('campaignUser')) {
             req.alias = 'gqlCampaignUser'
-        } else if(req.body.operationName.includes('multipleCampaignMassCommunicationKpi')){
+        } else if (req.body.operationName.includes('multipleCampaignMassCommunicationKpi')) {
             req.alias = 'gqlMultipleCampaignMassCommunicationKpi'
+        } else if (req.body.operationName.includes('campaign')) {
+            req.alias = 'gqlCampaign'
+        } else if (req.body.operationName.includes('taskTable')) {
+            req.alias = 'gqlTaskTable'
+        } else if (req.body.operationName.includes('campaignMassCommunicationKpi')) {
+            req.alias = 'gqlCampaignMassCommunicationKpi'
+        } else if (req.body.operationName.includes('massCommunicationOrderDetails')) {
+            req.alias = 'gqlMassCommunicationOrderDetails'
         }
     })
 }
@@ -42,6 +50,18 @@ const waitCheckGQL = (operationName) => {
 //#endregion
 
 //#region Enum
+/**
+ * Enum Tipo Quietanze
+ * @readonly
+ * @enum {Object}
+ * @private
+ */
+const Filtro = {
+    PERIODO: 'Periodo',
+    TIPOLOGIA_CAMPAGNA: 'Tipologia campagna',
+    LINEA_BUSINESS: 'Linea di business',
+    SORGENTE_DATI: 'Sorgente dati'
+}
 //#endregion
 
 /**
@@ -50,6 +70,15 @@ const waitCheckGQL = (operationName) => {
  * @author Andrea 'Bobo' Oboe
  */
 class CampagneCommerciali {
+
+    /**
+     * Funzione che ritorna i tipi di filtri
+     * @returns {Filtro} tipo di filtro
+     */
+    static get FILTRO() {
+        return Filtro
+    }
+
     /**
      * Verifica accesso a Campagne Commerciali
      */
@@ -102,7 +131,7 @@ class CampagneCommerciali {
 
             cy.contains("Controlla i risultati delle vendite").should('exist').and('be.visible').click()
 
-            waitCheckGQL('gqlCampaignAgent')
+            waitCheckGQL('gqlCampaignsMonitoringTableData')
             waitCheckGQL('gqlCampaignsMonitoring')
             waitCheckGQL('gqlCampaignAgent')
 
@@ -118,6 +147,32 @@ class CampagneCommerciali {
             waitCheckGQL('gqlCampaignList')
             waitCheckGQL('gqlCampaignsMonitoring')
             waitCheckGQL('gqlCampaignAgent')
+        })
+    }
+
+    static filtri(filtro) {
+        getIFrame().within(() => {
+            cy.contains(filtro).should('exist').parent().parent().find('nx-dropdown').click()
+
+            //clicchiamo sull'ultima voce disponible
+            cy.get('nx-dropdown-item:visible').last().click()
+        })
+    }
+
+    static vediCampagna() {
+        getIFrame().within(() => {
+            gqlCampaing()
+
+            //clicchiamo sulla prima disponibile
+            cy.contains('Vedi campagna').first().should('exist').click()
+
+            waitCheckGQL('gqlCampaign')
+            waitCheckGQL('gqlTaskTable')
+            waitCheckGQL('gqlMassCommunicationOrderDetails')
+            waitCheckGQL('gqlCampaignAgent')
+            waitCheckGQL('gqlCampaignsMonitoring')
+
+            cy.screenshot('Vedi Campagna', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
     }
 }
