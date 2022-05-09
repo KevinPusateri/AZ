@@ -1897,6 +1897,49 @@ class Sfera {
     }
 
     /**
+     * Verifica se su AVIVA Lob non è presente la voce
+     * @param {Portafogli} portafoglio
+     */
+    static checkNotExistLob(portafoglio) {
+        cy.get('nx-dropdown[formcontrolname="lobSelezionate"]')
+            .find('span[class="ng-star-inserted"]').should('not.contain.text', portafoglio)
+    }
+
+    /**
+     * Verifica se la voce non è presente
+     * @param {VociMenuEmissione} voceMenu 
+     */
+    static checkVociMenuNotExist(voce) {
+
+        // Selezioniamo una riga a random
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+            let selected = Cypress._.random(rowsTable.length - 1);
+            cy.wrap(rowsTable).eq(selected).within(() => {
+                this.threeDotsMenuContestuale().click({ force: true })
+            })
+        })
+
+        //Andiamo a selezionare la root (Quietanza,Polizza...)
+        this.menuContestualeParent().within(() => {
+            cy.contains(voce.root).should('exist').and('be.visible').click()
+        })
+
+        //Andiamo a selezionare prima il menu contestuale 'padre' (se presente)
+        if (voce.parent !== '') {
+            this.menuContestualeParent().within(() => {
+                cy.contains(voce.parent).should('exist').and('be.visible').click()
+            })
+        }
+
+        //Andiamo a verificare che il menu contestuale 'figlio' sia ASSENTE
+        this.menuContestualeChild().within(() => {
+            //? CONSULTAZIONE_DOCUMENTI_POLIZZA, Voci menu Cliente si apre su nuovo tab, quindi gestisto il _self
+            cy.get('button[role="menuitem"]',{timeout:10000}).should('not.contain.text', voce.key)
+        })
+    }
+
+
+    /**
    * Verifica se su AVIVA è selezionato solo Motor
    * @param {Portafogli} portafoglio
    */
