@@ -500,6 +500,14 @@ class Sfera {
     }
 
     /**
+     * Funzione che ritorna i Cluster Motor
+     * @returns {ClusterMotor} Cluster Motor
+     */
+    static get CLUSTERMOTOR() {
+        return ClusterMotor
+    }
+
+    /**
      * Funzione che ritorna i tipi di quietanze
      * @returns {TipoQuietanze} tipo di Quietanze
      */
@@ -565,7 +573,7 @@ class Sfera {
      * @private
      */
     static threeDotsMenuContestuale() {
-        return cy.get('nx-icon[name="ellipsis-h"]').should('exist').and('be.visible')
+        return cy.get('nx-icon[name="ellipsis-h"]').should('exist')
     }
 
     /**
@@ -764,9 +772,6 @@ class Sfera {
      */
     static estrai() {
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
-        //! DA CAPIRE COME EVITARE
-        if (Cypress.env('isAviva'))
-            cy.contains('Estrai').should('exist').click()
         cy.contains('Estrai').should('exist').click()
 
         cy.wait('@estraiQuietanze', { timeout: 120000 })
@@ -787,12 +792,20 @@ class Sfera {
      * 
      * @returns {Promise} polizza su cui sono state effettuate le operazioni
      */
-    static apriVoceMenu(voce, flussoCompleto = true, polizza = null, tipoSostituzioneRiattivazione = null, modalitaPagamentoPreferita = null) {
+    static apriVoceMenu(voce, flussoCompleto = true, polizza = null, tipoSostituzioneRiattivazione = null, modalitaPagamentoPreferita = null, random = false) {
         return new Cypress.Promise(resolve => {
             if (polizza === null)
-                this.bodyTableEstrazione().find('tr:first').within(() => {
-                    this.threeDotsMenuContestuale().click({ force: true })
-                })
+                if (random)
+                    cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+                        let selected = Cypress._.random(rowsTable.length - 1);
+                        cy.wrap(rowsTable).eq(selected).within(() => {
+                            this.threeDotsMenuContestuale().click({ force: true })
+                        })
+                    })
+                else
+                    this.bodyTableEstrazione().find('tr:first').within(() => {
+                        this.threeDotsMenuContestuale().click({ force: true })
+                    })
             else
                 this.bodyTableEstrazione().find('tr').contains(polizza).parents('tr').within(() => {
                     this.threeDotsMenuContestuale().click({ force: true })
@@ -838,7 +851,19 @@ class Sfera {
                     cy.wait(2000)
                     cy.screenshot('Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
-                        //TODO implementare flusso di incasso completo
+                        // Inizio flusso incasso
+                        cy.get('#pnlBtnIncasso').should('be.visible').click()
+                        cy.get('#btnTabIncassoConfirm').should('be.visible').click()
+                        cy.get('h2[class="page-title"]').should('be.visible')
+                        cy.get('img[src="css/ultra/Images/Shape.png"]').should('be.visible')
+                        cy.get('input[value="CHIUDI"]').click()
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        cy.url().should('include', '/matrix/sales/sfera')
+
                     }
                     else {
                         IncassoDA.clickCHIUDI()
@@ -1049,7 +1074,7 @@ class Sfera {
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
 
-        cy.contains(clusterMotor).click({force:true})
+        cy.contains(clusterMotor).click({ force: true })
         cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
 
         //Verifichiamo che sia valorizzato il numero tra ()
@@ -1089,7 +1114,7 @@ class Sfera {
             dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type('{esc}').click().type(dataFine).wait(500).type('{esc}')
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type(dataFine).wait(500).type('{esc}')
 
         //Clicchiamo su estrai
         if (performEstrai) this.estrai()
@@ -1843,13 +1868,16 @@ class Sfera {
                     })
                     const span = []
                     cy.get('span[class="nx-radio__label--text"]').each(($span) => {
-                        span.push($span.text().trim())
-                        console.log($span.text().trim())
-                        cy.pause()
+
+                        if ($span.text().includes('Assegna Colore'))
+                            span.push($span.text().trim().substring(0, 14))
+                        else
+                            span.push($span.text().trim())
                     }).then(() => {
+
                         expect(span).to.have.length(5)
                         expect(span).to.include('Esporta pdf / excel')
-                        expect(span).to.includes('Assegna Colore')
+                        expect(span).to.include('Assegna Colore')
                         expect(span).to.include('SMS/Mail a testo libero')
                         expect(span).to.include('Verifica delta premio')
                     })
@@ -1863,6 +1891,15 @@ class Sfera {
      * Verifica se su AVIVA è selezionato solo Motor
      * @param {Portafogli} portafoglio
      */
+    static checkLob(portafoglio) {
+        cy.get('nx-dropdown[formcontrolname="lobSelezionate"]')
+            .find('span[class="ng-star-inserted"]').should('contain.text', portafoglio)
+    }
+
+    /**
+   * Verifica se su AVIVA è selezionato solo Motor
+   * @param {Portafogli} portafoglio
+   */
     static checkLob(portafoglio) {
         cy.get('nx-dropdown[formcontrolname="lobSelezionate"]')
             .find('span[class="ng-star-inserted"]').should('contain.text', portafoglio)

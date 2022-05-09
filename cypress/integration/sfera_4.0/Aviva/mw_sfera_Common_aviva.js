@@ -27,6 +27,13 @@ let options = {
 }
 //#endregion
 
+let today = new Date()
+today.setDate(today.getDate() + 1)
+let dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
+today.setMonth(today.getMonth() + 1)
+let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 2)).slice(-2) + '/' + today.getFullYear()
+
+
 //#region Before After
 before(() => {
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
@@ -74,8 +81,14 @@ describe('Matrix Web : Sfera 4.0 AVIVA', function () {
         Sfera.checkVoceAzioniVeloci(Sfera.CLUSTERMOTOR.SINISTROSE)
     })
 
-    it('Verifica Tasto Azioni Veloci Cluster Sinistrose', options, function () {
+    it('Verifica Lob', options, function () {
         Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
+    })
+
+    it('Verifica incasso T2 motor', options, function () {
+        Sfera.setDateEstrazione(false, dataInizio, dataFine)
+        Sfera.estrai()
+        Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
     })
 
 })
