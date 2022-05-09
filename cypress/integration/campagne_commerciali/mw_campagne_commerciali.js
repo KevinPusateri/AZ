@@ -86,4 +86,8 @@ describe('Matrix Web : Campagne Commerciali', optionsRetrials, function () {
     it('Campagne Attive', function () {
         CampagneCommerciali.vediCampagna()
     })
+
+    it('Campagne in Arrivo', function () {
+        CampagneCommerciali.campagneInArrivo()
+    })
 })
