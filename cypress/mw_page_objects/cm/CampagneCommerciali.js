@@ -29,6 +29,14 @@ const gqlCampaing = () => {
             req.alias = 'gqlCampaignUser'
         } else if (req.body.operationName.includes('multipleCampaignMassCommunicationKpi')) {
             req.alias = 'gqlMultipleCampaignMassCommunicationKpi'
+        } else if (req.body.operationName.includes('campaign')) {
+            req.alias = 'gqlCampaign'
+        } else if (req.body.operationName.includes('taskTable')) {
+            req.alias = 'gqlTaskTable'
+        } else if (req.body.operationName.includes('campaignMassCommunicationKpi')) {
+            req.alias = 'gqlCampaignMassCommunicationKpi'
+        } else if (req.body.operationName.includes('massCommunicationOrderDetails')) {
+            req.alias = 'gqlMassCommunicationOrderDetails'
         }
     })
 }
@@ -148,6 +156,23 @@ class CampagneCommerciali {
 
             //clicchiamo sull'ultima voce disponible
             cy.get('nx-dropdown-item:visible').last().click()
+        })
+    }
+
+    static vediCampagna() {
+        getIFrame().within(() => {
+            gqlCampaing()
+
+            //clicchiamo sulla prima disponibile
+            cy.contains('Vedi campagna').first().should('exist').click()
+
+            waitCheckGQL('gqlCampaign')
+            waitCheckGQL('gqlTaskTable')
+            waitCheckGQL('gqlMassCommunicationOrderDetails')
+            waitCheckGQL('gqlCampaignAgent')
+            waitCheckGQL('gqlCampaignsMonitoring')
+
+            cy.screenshot('Vedi Campagna', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
     }
 }

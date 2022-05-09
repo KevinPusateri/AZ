@@ -82,4 +82,8 @@ describe('Matrix Web : Campagne Commerciali', optionsRetrials, function () {
         CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.LINEA_BUSINESS)
         CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.SORGENTE_DATI)
     })
+
+    it('Campagne Attive', function () {
+        CampagneCommerciali.vediCampagna()
+    })
 })
