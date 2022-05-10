@@ -6,6 +6,7 @@
 /// <reference types="Cypress" />
 
 //#region import
+import HomePage from "../../mw_page_objects/common/HomePage"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import Sfera from "../../mw_page_objects/sfera/Sfera"
@@ -20,12 +21,20 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
+
+//#region global variabled
 let options = {
     retries: {
         runMode: 0,
         openMode: 0,
     }
 }
+let today = new Date()
+today.setDate(today.getDate() + 5)
+let dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
+today.setMonth(today.getMonth() + 1)
+let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 2)).slice(-2) + '/' + today.getFullYear()
+
 //#endregion
 
 //#region Before After
@@ -154,5 +163,28 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.agenzieAllSelezionati()
     })
 
+
+    it('Verifica incasso T2 motor Ramo 31', options, function () {
+        TopBar.logOutMW()
+        let customImpersonification = {
+            "agentId": "ARALONGO7",
+            "agency": "010375000"
+        }
+        LoginPage.logInMWAdvanced(customImpersonification)
+        Sfera.accediSferaDaHomePageMW()
+        Sfera.setDateEstrazione(false, dataInizio, dataFine)
+        Sfera.estrai()
+        Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
+        Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
+    })
+
+    it('Verifica incasso T2 motor Ramo 32', options, function () {
+        HomePage.reloadMWHomePage()
+        Sfera.accediSferaDaHomePageMW()
+        Sfera.setDateEstrazione(false, dataInizio, dataFine)
+        Sfera.estrai()
+        Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_32)
+        Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
+    })
 
 })

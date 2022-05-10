@@ -362,6 +362,15 @@ const Filtri = {
         values: {
             VUOTO: "Vuoto"
         }
+    },
+    RAMO: {
+        key: "Ramo",
+        values: {
+            RAMO_31: '31',
+            RAMO_32: '32',
+            RAMO_13: '13',
+            VUOTO: "Vuoto"
+        }
     }
 }
 
@@ -779,7 +788,7 @@ class Sfera {
         //Verifichiamo che la tabella d'estrazione sia presente
         this.tableEstrazione()
 
-        cy.wait(2000)
+        cy.wait(5000)
     }
 
     /**
@@ -789,6 +798,8 @@ class Sfera {
      * @param {number} [polizza] default null, se specificato clicca sul menu contestuale della polizza passata
      * @param {TipoSostituzioneRiattivazione} [tipoSostituzioneRiattivazione] default null, tipo di sostituzione/riattivazione auto da effettuare
      * @param {TipoModalitaPagamento} [modalitaPagamentoPreferita] default null, tipo di modalità di pagamento preferita
+     * @param {Boolean} [random] default false, se a true seleziona una quietanza random
+     * @param {Number} [index] default false, se a true seleziona una quietanza random
      * 
      * @returns {Promise} polizza su cui sono state effettuate le operazioni
      */
@@ -852,17 +863,42 @@ class Sfera {
                     cy.screenshot('Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
                         // Inizio flusso incasso
+                        cy.wait(5000)
+                        cy.intercept({
+                            method: '+(GET|POST)',
+                            url: '**/Incasso/**'
+                        }).as('getIncasso');
                         cy.get('#pnlBtnIncasso').should('be.visible').click()
+                        cy.wait(3000)
+                        cy.get('body').then(($body) => {
+                            const popupWarning = $body.find('div[role="dialog"]').is(':visible')
+                            if (popupWarning)
+                                cy.get('div[role="dialog"]').find('button:contains("Procedi")').click()
+                        })
+                        cy.wait('@getIncasso', { timeout: 40000 })
+                        cy.wait(5000)
+                        // Seleziono il metodo di pagamento
+                        cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').should('be.visible').click().wait(1000)
+                        cy.get('#TabIncassoModPagCombo_listbox').should('be.visible')
+                            .find('li').contains(/^Assegno$/).click()
+                        //Conferma incasso
+                        cy.screenshot('Conferma incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                         cy.get('#btnTabIncassoConfirm').should('be.visible').click()
-                        cy.get('h2[class="page-title"]').should('be.visible')
+                        // Verifica incasso confermato
+                        cy.get('h2[class="page-title"]').should('be.visible').then(() => {
+                            cy.wait(5000)
+                            cy.screenshot('Verifica incasso conferrmato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                            cy.wait(5000)
+                        })
+
                         cy.get('img[src="css/ultra/Images/Shape.png"]').should('be.visible')
+
                         cy.get('input[value="CHIUDI"]').click()
-                        cy.wait('@infoUtente', { timeout: 60000 })
-                        cy.wait('@agenzieFonti', { timeout: 60000 })
-                        cy.wait('@caricaVista', { timeout: 60000 })
-                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
-                        cy.url().should('include', '/matrix/sales/sfera')
+                        cy.wait('@estraiQuietanze', { timeout: 120000 })
+                        cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
+                        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then(() => {
+                            cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        })
 
                     }
                     else {
@@ -1934,7 +1970,7 @@ class Sfera {
         //Andiamo a verificare che il menu contestuale 'figlio' sia ASSENTE
         this.menuContestualeChild().within(() => {
             //? CONSULTAZIONE_DOCUMENTI_POLIZZA, Voci menu Cliente si apre su nuovo tab, quindi gestisto il _self
-            cy.get('button[role="menuitem"]',{timeout:10000}).should('not.contain.text', voce.key)
+            cy.get('button[role="menuitem"]', { timeout: 10000 }).should('not.contain.text', voce.key)
         })
     }
 
@@ -1947,5 +1983,6 @@ class Sfera {
         cy.get('nx-dropdown[formcontrolname="lobSelezionate"]')
             .find('span[class="ng-star-inserted"]').should('contain.text', portafoglio)
     }
+
 }
 export default Sfera
