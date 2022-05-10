@@ -1,6 +1,5 @@
 /// <reference types="Cypress" />
 
-import { watchFile } from "fs";
 import Common from "../common/Common"
 
 //#region iFrame
