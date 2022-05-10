@@ -8,8 +8,8 @@
 import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
-import Sales from "../../mw_page_objects/Navigation/Sales"
 import CampagneCommerciali from "../../mw_page_objects/cm/CampagneCommerciali"
+import StrutturaAgenzia from "../../mw_page_objects/da/StrutturaAgenzia"
 //#endregion import
 
 //#region Configuration
@@ -35,7 +35,11 @@ before(() => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-            LoginPage.logInMWAdvanced()
+            let customImpersonification = {
+                "agentId": "AREGASBARRI",
+                "agency": "010710000"
+            }
+            LoginPage.logInMWAdvanced(customImpersonification)
         })
     })
 })
@@ -57,41 +61,19 @@ after(function () {
 
 describe('Matrix Web : Campagne Commerciali', optionsRetrials, function () {
 
-    it('Accesso a Campagne Commerciali da Sales', function () {
-        TopBar.clickSales()
-        Sales.clickLinkRapido('Campagne Commerciali')
-        Common.visitUrlOnEnv()
-    })
+    it('Profilazione Dinamica Agente (Salesman)', function () {
 
-    it('Accesso a Campagne Commerciali da Buca di Ricerca', function () {
+        TopBar.searchAndClickSuggestedNavigations('Struttura di agenzia')
+        StrutturaAgenzia.verificaAccessoDBFonti()
+        StrutturaAgenzia.clickVoceMenu(StrutturaAgenzia.VOCIMENU.GEST_ACCOUNTS)
+        cy.pause()
+
+        Common.visitUrlOnEnv()
         TopBar.searchAndClickSuggestedNavigations('Campagne Commerciali')
         CampagneCommerciali.verificaAccessoCampagneCommerciali()
     })
 
-    it('Visualizzazione Monitoraggio Campagne (Verifica Stato Campagne Attive)', function () {
-        CampagneCommerciali.statoCampagneAttive()
-    })
+    it('Profilazione Dinamica Agente (Salesman) - Ripristino default', function () {
 
-    it('Visualizzazione Monitoraggio Campagne (Controlla i Risultati delle Vendite)', function () {
-        CampagneCommerciali.risultatiDelleVendite()
-    })
-
-    it('Filtri - Campagne Disponibili', function () {
-        CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.PERIODO)
-        CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.TIPOLOGIA_CAMPAGNA)
-        CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.LINEA_BUSINESS)
-        CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.SORGENTE_DATI)
-    })
-
-    it('Campagne Attive', function () {
-        CampagneCommerciali.vediCampagna()
-    })
-
-    it('Campagne in Arrivo', function () {
-        CampagneCommerciali.campagneInArrivo()
-    })
-
-    it('Suggerimento Campagna', function () {
-        CampagneCommerciali.suggerimentoCampagna()
     })
 })
