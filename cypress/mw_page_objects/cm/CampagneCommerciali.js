@@ -210,6 +210,19 @@ class CampagneCommerciali {
             waitCheckGQL('gqlCampaignAgent')
         })
     }
+
+    static suggerimentoCampagna() {
+        getIFrame().within(() => {
+            cy.contains('Suggerisci una campagna').should('exist').click()
+
+            cy.get('nx-modal-container').should('exist').and('be.visible').within(() => {
+                cy.contains('Suggerisci una campagna').should('exist').and('be.visible')
+                cy.get('textarea').should('exist').and('be.visible')
+                cy.screenshot('Suggerisci una campagna', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.contains('Annulla').should('exist').and('be.visible').click()
+            })
+        })
+    }
 }
 
 export default CampagneCommerciali

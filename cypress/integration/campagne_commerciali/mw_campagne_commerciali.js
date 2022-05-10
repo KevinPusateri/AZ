@@ -90,4 +90,8 @@ describe('Matrix Web : Campagne Commerciali', optionsRetrials, function () {
     it('Campagne in Arrivo', function () {
         CampagneCommerciali.campagneInArrivo()
     })
+
+    it('Suggerimento Campagna', function () {
+        CampagneCommerciali.suggerimentoCampagna()
+    })
 })
