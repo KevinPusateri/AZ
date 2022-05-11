@@ -187,4 +187,15 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
     })
 
+    it('Verifica Azioni Veloci > Esporta Excel', options, function () {
+        HomePage.reloadMWHomePage()
+        Sfera.accediSferaDaHomePageMW()
+        Sfera.setDateEstrazione(false, dataInizio, dataFine)
+        Sfera.selectRandomCluster()
+        cy.get('@clucsterLength').then((clusterLength)=>{
+            Sfera.azioniVeloci(Sfera.AZIONIVELOCI.ESPORTA_PDF_EXCEL)
+            Sfera.checkExcel(clusterLength)
+        })
+    })
+
 })

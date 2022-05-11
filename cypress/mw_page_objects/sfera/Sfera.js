@@ -336,6 +336,21 @@ const TipoModalitaPagamento = {
 }
 
 /**
+ * Enum AzioniVeloci
+ * @readonly
+ * @enum {Object}
+ */
+const AzioniVeloci = {
+    CREA_INIZIATIVA: "Crea iniziativa",
+    ESPORTA_PDF_EXCEL: "Esporta pdf / excel",
+    CREA_E_INVIA_CODICI_AZPAY: "Crea e invia codici AZpay",
+    PUBBLICA_IN_AREA_PERSONALE: "Pubblica in Area Personale",
+    LANCIA_FQ_MASSIVA: "Lancia FQ Massiva",
+    SMS_MAIL_A_TESTO_LIBERO: "SMS/Mail a testo libero",
+    ASSEGNA_COLORE: "SMS/Mail a testo libero"
+}
+
+/**
  * Enum Filtri
  * @readonly
  * @enum {Object}
@@ -450,6 +465,14 @@ class Sfera {
      */
     static get PORTAFOGLI() {
         return Portafogli
+    }
+
+    /**
+     * Funzione che ritorna le Azioni Veloci disponibili
+     * @returns {AzioniVeloci} AzioniVeloci disponibili
+     */
+    static get AZIONIVELOCI() {
+        return AzioniVeloci
     }
 
     /**
@@ -1984,5 +2007,79 @@ class Sfera {
             .find('span[class="ng-star-inserted"]').should('contain.text', portafoglio)
     }
 
+    /**
+     * Flusso Azioni Veloci
+     * @param {AzioniVeloci} azioni 
+     */
+    static azioniVeloci(azioni) {
+        cy.contains('Azioni veloci').click()
+        cy.get('nx-modal-container[role="dialog"]').should('be.visible')
+        switch (azioni) {
+            case AzioniVeloci.CREA_INIZIATIVA:
+                //TODO
+                throw new Error("Da implementare il flusso")
+                break;
+            case AzioniVeloci.CREA_E_INVIA_CODICI_AZPAY:
+                //TODO
+                throw new Error("Da implementare il flusso")
+                break;
+            case AzioniVeloci.ESPORTA_PDF_EXCEL:
+                cy.contains(AzioniVeloci.ESPORTA_PDF_EXCEL).click()
+                cy.contains('button', 'Procedi').click().wait(500)
+                cy.get('nx-modal-container[role="dialog"]').should('be.visible')
+                cy.contains('Procedi').click()
+                cy.get('h3').should('include.text', 'Excel esportato con successo')
+                cy.contains('Torna alle azioni veloci').click()
+                cy.contains('Annulla').click()
+                break;
+            case AzioniVeloci.LANCIA_FQ_MASSIVA:
+                //TODO
+                throw new Error("Da implementare il flusso")
+                break;
+            case AzioniVeloci.PUBBLICA_IN_AREA_PERSONALE:
+                //TODO
+                throw new Error("Da implementare il flusso")
+                break;
+            case AzioniVeloci.SMS_MAIL_A_TESTO_LIBERO:
+                //TODO
+                throw new Error("Da implementare il flusso")
+                break;
+            case AzioniVeloci.ASSEGNA_COLORE:
+                //TODO
+                throw new Error("Da implementare il flusso")
+                break;
+            default:
+                throw new Error("Azione veloce non presente")
+        }
+    }
+
+    /**
+     * It gets the folder path of the download folder, then parses the excel file in that folder and
+     * checks if the number of rows in the excel file is equal to the number of rows in the table.
+     * @param dateLength - The number of rows in the excel file
+     */
+    static checkExcel(dateLength) {
+        cy.task('getFolderDownload').then((folderDownload) => {
+            cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
+                expect((jsonData[0].data.length - 1).toString()).to.eqls(dateLength);
+            });
+        })
+    }
+
+    static selectRandomCluster() {
+        cy.get('app-cluster').should('be.visible').within(($appCluster) => {
+            const checkCluster = $appCluster.is(':contains("Avviso da Inviare")')
+            if (checkCluster)
+                cy.contains('Avviso da Inviare').click()
+            cy.get('nx-badge').not('nx-badge[style*="opacity"]').then(($clusterEnabled) => {
+                let selected = Cypress._.random($clusterEnabled.length - 1);
+                cy.wrap($clusterEnabled).eq(selected).click()
+                cy.wrap($clusterEnabled).eq(selected).invoke('text').then((nameCluster) => {
+                    var number = nameCluster.replace(/\D/g, "");
+                    cy.wrap(number).as('clucsterLength')
+                })
+            })
+        })
+    }
 }
 export default Sfera
