@@ -80,6 +80,37 @@ describe("LIBRI MATRICOLA", {
 }, () => {
     var nPreventivoMadre
     var nContratto
+
+    // it.only('MW', function () {
+    //     TopBar.logOutMW()
+    // });
+
+    // it.only('VPS', function () {
+    //     // cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
+    //     // cy.origin('https://amlogin-pp.allianz.it/nidp/idff/sso?sid=0&sid=0')
+    //     // cy.get('table').should('be.visible')
+    //     // cy.get('[name="Ecom_User_ID"]').type('euvps02')
+    //     // cy.get('[name="Ecom_Password"]').type('pwdeuvps02')
+    //     // cy.get('[value="Conferma"]').click()
+    //     let email = 'euvps02'
+    //     let psw = 'pwdeuvps02'
+    //     cy.session(([email, psw]), () => {
+
+    //         cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
+    //         cy.get('[name="Ecom_User_ID"]').type('euvps02')
+    //         cy.get('[name="Ecom_Password"]').type('pwdeuvps02')
+    //         cy.get('[value="Conferma"]').click()
+    //         cy.url()
+    //             .should("include", 'sasasa');
+    //         cy.origin('https://amlogin-pp.allianz.it/nidp/idff/',
+    //             { args: [email, psw] },
+    //             ([email, psw]) => {
+    //                 cy.get('[name="Ecom_User_ID"]').type(email)
+    //                 cy.get('[name="Ecom_Password"]').type(psw)
+    //             })
+    //     })
+    // });
+
     context('PREVENTIVO MADRE', function () {
         PreventivoMadre()
 

@@ -158,6 +158,25 @@ class TopBar extends HomePage {
     }
 
     /**
+     * It searches for a value in a search bar, waits for the results to appear, then clicks on the first
+     * result from the suggested links
+     * 
+     * @param value - the value to be searched
+     */
+    static searchAndClickSuggestedNavigations(value) {
+        cy.get('input[name="main-search-input"]').click().type(value).wait(3000)
+        cy.screenshot(`Ricerca ${value} effettuata`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+        cy.get('div[class="results-main-search-container ng-star-inserted"]').within(($results) => {
+            //Clicchiamo sul risultato
+            $results.find('div:contains("' + value + '")').trigger('click')
+        })
+
+        //Vediamo eventuale popup del canale
+        Common.canaleFromPopup()
+    }
+
+    /**
      * Verifica click Buca di ricerca
      */
     static clickBucaRicerca() {
