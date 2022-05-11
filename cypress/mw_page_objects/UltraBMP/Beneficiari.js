@@ -56,14 +56,26 @@ class Beneficiari {
     }
 
     static inserisciBeneficiario() {
-        cy.window().then((win) => {
-            cy.spy(win, 'open').as('windowOpen'); // 'spy' vs 'stub' lets the new tab still open if you are visually watching it
-        });
-
         ultraIFrame().within(() => {
+            cy.window().then(win => {
+                cy.stub(win, 'open').callsFake((url) => {
+                    return win.open.wrappedMethod.call(win, url, '_self');
+                }).as('Open');
+            })
+
+
             cy.get('.tipo').find('.inserisci').children('button')
-            .click() //click su Inserisci
+                .click() //click su Inserisci
         })
+
+        cy.get('@Open')
+        cy.get('#f-cognome').should('be.visible')
+        cy.pause()
+
+        cy.go('back')
+
+
+
 
         cy.pause()
 
@@ -86,7 +98,7 @@ class Beneficiari {
         cy.get("@popup") */
 
         // Now we can continue integration testing for the new "popup tab" inside the same tab
-        cy.get('#f-cognome').should('be.visible')
+
     }
 
 
