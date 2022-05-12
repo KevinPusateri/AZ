@@ -525,7 +525,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { timeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
-
+        cy.screenshot('Verifica aggancio Prventivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
     /**
      * Emissione Safe Drive Autovetture
@@ -543,6 +543,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { timeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible', { timeout: 10000 })
+        cy.screenshot('Verifica aggancio Safe Drive Autovetture', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -556,6 +557,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio Flotte e convenzioni', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -569,6 +571,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio Assunzione guidata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -582,6 +585,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio Veicoli d\'epoca', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -600,6 +604,7 @@ class SintesiCliente {
         cy.wait('@getLibriMatricola', { timeout: 40000 }).its('response.statusCode').should('eq', 200)
         matrixFrame().within(() => {
             cy.get('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
+            cy.screenshot('Verifica aggancio Libri matricola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
     }
 
@@ -614,8 +619,10 @@ class SintesiCliente {
         cy.get('.cdk-overlay-pane').find('button').contains('Kasko e ARD al Chilometro').click()
         Common.canaleFromPopup()
         getIFrame().find('button:contains("Annulla"):visible').click()
+        getIFrame().find('li').contains('Dati Amministrativi').click()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio Kasko e ARD al Chilometro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -629,8 +636,10 @@ class SintesiCliente {
         cy.get('.cdk-overlay-pane').find('button').contains('Kasko e ARD a Giornata').click()
         Common.canaleFromPopup()
         getIFrame().find('button:contains("Annulla"):visible').click()
+        getIFrame().find('li').contains('Dati Amministrativi').click()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio Kasko e ARD a Giornata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -644,8 +653,10 @@ class SintesiCliente {
         cy.get('.cdk-overlay-pane').find('button').contains('Kasko e ARD a Veicolo').click()
         Common.canaleFromPopup()
         getIFrame().find('button:contains("Annulla"):visible').click()
+        getIFrame().find('li').contains('Dati Amministrativi').click()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio Kasko e ARD a Veicolo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -659,8 +670,10 @@ class SintesiCliente {
         cy.get('.cdk-overlay-pane').find('button').contains('Polizza base').click()
         Common.canaleFromPopup()
         getIFrame().find('button:contains("Annulla"):visible').click()
+        getIFrame().find('li').contains('Dati Amministrativi').click()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio Polizza base', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -673,8 +686,10 @@ class SintesiCliente {
         cy.get('.cdk-overlay-container').find('button').contains('Coassicurazione').click()
         Common.canaleFromPopup()
         getIFrame().find('button:contains("Annulla"):visible').click()
+        getIFrame().find('li').contains('Dati Amministrativi').click()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio Coassicurazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -692,6 +707,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio Nuova polizza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -705,6 +721,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio Nuova polizza guidata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -721,6 +738,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         getIFrame().find('input[value="› Home"]').invoke('attr', 'value').should('equal', '› Home')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio Nuova polizza Coassicurazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -746,8 +764,16 @@ class SintesiCliente {
         } else
             cy.get('.cdk-overlay-container').find('button').contains('Ultra Casa e Patrimonio').click()
         cy.wait(2000)
+        cy.intercept({
+            method: 'GET',
+            url: '**/fonti'
+        }).as('getFonti');
         Common.canaleFromPopup()
-        getIFrame().find('span:contains("PROCEDI"):visible')
+        cy.wait('@getFonti', { timeout: 50000 });
+        getIFrame().find('ultra-ambiti-disponibili').should('be.visible')
+        getIFrame().find('span:contains("PROCEDI")').should('be.visible')
+        getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
+        cy.screenshot('Verifica aggancio Ultra Casa e Patrimonio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -769,6 +795,8 @@ class SintesiCliente {
         cy.wait('@getFonti', { timeout: 50000 });
         getIFrame().find('img[src="./assets/img/allianz-logo-casa.png"]').should('be.visible')
         getIFrame().find('span:contains("PROCEDI"):visible')
+        cy.screenshot('Verifica aggancio Ultra Casa e Patrimonio BMP', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
     }
 
     /**
@@ -782,8 +810,16 @@ class SintesiCliente {
             cy.get('.cdk-overlay-container').find('button').contains('Ultra Salute').click()
 
         cy.wait(2000)
+        cy.intercept({
+            method: 'GET',
+            url: '**/fonti'
+        }).as('getFonti');
         Common.canaleFromPopup()
+        cy.wait('@getFonti', { timeout: 50000 });
+        getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-salute.png' : './assets/img/aviva-logo-salute.png')
+        getIFrame().find('ultra-ambiti-disponibili').should('be.visible')
         getIFrame().find('span:contains("PROCEDI"):visible')
+        cy.screenshot('Verifica aggancio Ultra Salute', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -793,9 +829,15 @@ class SintesiCliente {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('Allianz1 Business').click()
         cy.wait(2000)
+        cy.intercept({
+            method: 'POST',
+            url: '**/Modular2/**'
+        }).as('getModular2')
         Common.canaleFromPopup()
-        getIFrame().find('a:contains("EMETTI QUOTAZIONE"):visible')
-        getIFrame().find('a:contains("AVANTI"):visible')
+        cy.wait('@getModular2', { timeout: 50000 });
+        getIFrame().find('a:contains("EMETTI QUOTAZIONE")').should('be.visible')
+        getIFrame().find('a:contains("AVANTI")').should('be.visible')
+        cy.screenshot('Verifica aggancio Allianz1 Business', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -812,6 +854,7 @@ class SintesiCliente {
         getIFrame().find('input[value="› Indietro"]').invoke('attr', 'value').should('equal', '› Indietro')
         getIFrame().find('input[value="› Emetti Quotazione"]').invoke('attr', 'value').should('equal', '› Emetti Quotazione')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio FastQuote Universo Salute', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -828,6 +871,7 @@ class SintesiCliente {
         getIFrame().find('input[value="› Indietro"]').invoke('attr', 'value').should('equal', '› Indietro')
         getIFrame().find('input[value="› Emetti Quotazione"]').invoke('attr', 'value').should('equal', '› Emetti Quotazione')
         getIFrame().find('input[value="› Avanti"]').invoke('attr', 'value').should('equal', '› Avanti')
+        cy.screenshot('Verifica aggancio FastQuote Infortuni Da Circolazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -845,6 +889,7 @@ class SintesiCliente {
         cy.wait('@getAuto', { timeout: 50000 });
         getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
         getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
+        cy.screenshot('Verifica aggancio FastQuote Impresa Sicura', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -859,6 +904,7 @@ class SintesiCliente {
         cy.wait(8000)
         getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
         getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
+        cy.screenshot('Verifica aggancio FastQuote Albergo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -871,6 +917,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
         getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
+        cy.screenshot('Verifica aggancio Gestione Grandine', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -886,6 +933,7 @@ class SintesiCliente {
         getIFrame().find('input[value="Indietro"]').invoke('attr', 'value').should('equal', 'Indietro')
         getIFrame().find('input[value="Avanti"]').invoke('attr', 'value').should('equal', 'Avanti')
         getIFrame().find('input[value="Uscita"]').invoke('attr', 'value').should('equal', 'Uscita')
+        cy.screenshot('Verifica aggancio Polizza nuova', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -919,6 +967,7 @@ class SintesiCliente {
         cy.wait(20000)
         getIFrame().find('input[value="Avanti"]').should('be.visible').invoke('attr', 'value').should('equal', 'Avanti')
         getIFrame().find('input[value="Indietro"]:visible').invoke('attr', 'value').should('equal', 'Indietro')
+        cy.screenshot('Verifica aggancio Accedi al servizio di consulenza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -1082,7 +1131,7 @@ class SintesiCliente {
     static retriveClientNameAndAddress() {
         return new Cypress.Promise((resolve, reject) => {
             let client = { name: '', address: '' }
-            cy.get('div[class*=client-name]').invoke('text')
+            cy.get('div[class*=client-name]').should('be.visible').invoke('text')
                 .then(currentClientName => {
                     client.name = currentClientName
 
