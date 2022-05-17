@@ -121,8 +121,10 @@ class DettaglioAnagrafica {
         });
 
         cy.contains('DETTAGLIO ANAGRAFICA').click()
-
+        
         cy.wait('@gqlClient', { timeout: 15000 }).its('response.statusCode').should('eq', 200)
+        cy.get('app-section-title:contains("Dati principali")').should('be.visible').wait(3000)
+        cy.screenshot('Dettaglio Anagrafica', { clip: { x: 0, y: 0, width: 1920, height: 700 } })
     }
 
     /**
@@ -397,7 +399,8 @@ class DettaglioAnagrafica {
         cy.contains('Aggiungi Convenzione').should('be.visible').click()
         if (!convenzionePresente) {
             cy.get('h4').should('contain.text', 'Nessuna convenzione disponibile per l\'agenzia selezionata')
-            cy.contains('Annulla').click()
+            cy.screenshot('Nessuna convenzione disponibile ', { clip: { x: 0, y: 0, width: 1920, height: 900 }})
+            cy.contains('Annulla').click().wait(5000)
         } else {
             return new Cypress.Promise((resolve, reject) => {
                 const convenzioneInserita = {
