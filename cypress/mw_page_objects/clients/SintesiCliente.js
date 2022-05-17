@@ -1143,7 +1143,6 @@ class SintesiCliente {
                     cy.log('Retrived Client Address : ' + client.address)
                 })
 
-            cy.screenshot('Cliente Selezionato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             resolve(client);
         });
     }
@@ -1201,7 +1200,7 @@ class SintesiCliente {
                 .then(body => {
                     let missingValue;
                     (contactType === 'numero') ? missingValue = 'Aggiungi numero principale' : missingValue = ' Aggiungi mail principale '
-                    if (body.find('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').is(':visible')){
+                    if (body.find('.scrollable-sidebar-content').find('div:contains("' + missingValue + '")').is(':visible')) {
                         cy.get('nx-sidebar').should('be.visible').screenshot('Verifica ' + contactType + ' inserito', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: true })
                         resolve(false)
                     }

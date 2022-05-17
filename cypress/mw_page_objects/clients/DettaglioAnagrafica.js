@@ -40,15 +40,20 @@ class DettaglioAnagrafica {
         cy.contains('Aggiungi documento').click()
     }
 
-    static checkDocumento(documentType) {
+    static checkDocumento(documentType, checkTest = true) {
         return new Cypress.Promise((resolve, reject) => {
+            cy.wait(8000)
             cy.get('app-client-documents').should('exist').and('be.visible')
             cy.get('body')
                 .then(body => {
-                    if (body.find('div:contains("' + documentType + '")').length > 0)
+                    if (body.find('div:contains("' + documentType + '")').length > 0) {
+                        if (checkTest)
+                            cy.screenshot('Verifica ' + documentType + ' inserito', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                         resolve(true)
-                    else
+                    }
+                    else {
                         resolve(false)
+                    }
                 })
         })
     }

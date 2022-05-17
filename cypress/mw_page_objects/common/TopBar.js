@@ -154,7 +154,7 @@ class TopBar extends HomePage {
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').type(value).type('{enter}').wait(2000)
 
         cy.wait('@gqlSearchClient', { timeout: 30000 });
-        cy.screenshot(`Ricerca ${value} effettuata`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Ricerca ' + value + ' effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**

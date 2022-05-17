@@ -33,6 +33,8 @@ class SCUDocumenti {
         getSCU().find('#luogo-emissione').type('TRIESTE')
         cy.wait(1000)
         getSCU().find('li:contains("TRIESTE")').click()
+        getSCU().find('h4:contains("Riepilogo")').click()
+        cy.screenshot('Riepilogo Carta Identita', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getSCU().find('button:contains("Salva")').click()
 
         //#region BackEnd Calls
@@ -70,11 +72,10 @@ class SCUDocumenti {
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
         cy.wait('@preview', { requestTimeout: 30000 })
-
+        cy.screenshot('Carta d\'identita Caricato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(10000)
-        // // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })  
     }
 
     static nuovaPatente() {
@@ -88,6 +89,8 @@ class SCUDocumenti {
         getSCU().find('#luogo-emissione').type('TRIESTE')
         cy.wait(1000)
         getSCU().find('li:contains("TRIESTE")').click()
+        getSCU().find('h4:contains("Riepilogo")').click()
+        cy.screenshot('Riepilogo Patente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getSCU().find('button:contains("Salva")').click()
 
         //#region BackEnd Calls
@@ -124,11 +127,10 @@ class SCUDocumenti {
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
         cy.wait('@preview', { requestTimeout: 30000 })
-
+        cy.screenshot('Patente Caricato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
         cy.wait(10000)
 
     }
@@ -142,6 +144,8 @@ class SCUDocumenti {
         getSCU().find('#luogo-emissione').type('TRIESTE')
         cy.wait(1000)
         getSCU().find('li:contains("TRIESTE")').click()
+        getSCU().find('h4:contains("Riepilogo")').click()
+        cy.screenshot('Riepilogo Passaporto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getSCU().find('button:contains("Salva")').click()
 
         //#region BackEnd Calls
@@ -178,11 +182,10 @@ class SCUDocumenti {
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
         cy.wait('@preview', { requestTimeout: 30000 })
-
+        cy.screenshot('Passaporto Caricato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
         cy.wait(10000)
 
     }
@@ -196,6 +199,8 @@ class SCUDocumenti {
         getSCU().find('#luogo-emissione').type('TRIESTE')
         cy.wait(1000)
         getSCU().find('li:contains("TRIESTE")').click()
+        getSCU().find('h4:contains("Riepilogo")').click()
+        cy.screenshot('Riepilogo Porto d\'armi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getSCU().find('button:contains("Salva")').click()
 
         //#region BackEnd Calls
@@ -232,16 +237,15 @@ class SCUDocumenti {
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
         cy.wait('@preview', { requestTimeout: 30000 })
-
+        cy.screenshot('Porto armi caricato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
         cy.wait(10000)
 
     }
 
-    static nuovaTesseraPostale () {
+    static nuovaTesseraPostale() {
         getSCU().find('span[aria-owns="tipo-documento_listbox"]').click()
         getSCU().find('li:contains("POSTALE")').click()
         getSCU().find('#numero-documento').type('123456789')
@@ -250,6 +254,8 @@ class SCUDocumenti {
         getSCU().find('#luogo-emissione').type('TRIESTE')
         cy.wait(1000)
         getSCU().find('li:contains("TRIESTE")').click()
+        getSCU().find('h4:contains("Riepilogo")').click()
+        cy.screenshot('Riepilogo Tessera Postale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getSCU().find('button:contains("Salva")').click()
 
         //#region BackEnd Calls
@@ -286,16 +292,15 @@ class SCUDocumenti {
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
         cy.wait('@preview', { requestTimeout: 30000 })
-
+        cy.screenshot('Tessera postale caricato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
         cy.wait(10000)
 
     }
 
-    static nuovoAltroDocumento () {
+    static nuovoAltroDocumento() {
         getSCU().find('span[aria-owns="tipo-documento_listbox"]').click()
         getSCU().find('li:contains("ALTRO")').click()
         getSCU().find('#autorita-rilascio').type('CLERO')
@@ -306,6 +311,8 @@ class SCUDocumenti {
         cy.wait(500)
         getSCU().find('li:contains("TRIESTE")').click()
         getSCU().find('#descrizione-documento').type('AUTORIZZAZIONE ESORCISMI')
+        getSCU().find('h4:contains("Riepilogo")').click()
+        cy.screenshot('Riepilogo Altro Documento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getSCU().find('button:contains("Salva")').click()
 
         //#region BackEnd Calls
@@ -342,11 +349,10 @@ class SCUDocumenti {
 
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
         cy.wait('@preview', { requestTimeout: 30000 })
-
+        cy.screenshot('Altro documento caricato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
-        // cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 }) 
         cy.wait(10000)
 
     }
