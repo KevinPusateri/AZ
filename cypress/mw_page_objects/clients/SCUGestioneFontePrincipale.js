@@ -31,6 +31,7 @@ class SCUGestioneFontePrincipale {
 
           searchClients()
         } else {
+          cy.screenshot('Ricerca clienti', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
           return
         }
       })
@@ -86,15 +87,25 @@ class SCUGestioneFontePrincipale {
             })
             cy.wrap($tr.eq(indexFonte)).click()
           }
+
         })
       })
     })
 
+    getIFrame().within(() => {
+      cy.contains('Clienti selezionati').click()
+      cy.screenshot('Selezione del Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
+    })
+
     // Click Imposta Fonte principale
     cy.get('body').within(() => {
-
       getIFrame().find('button[class="k-button assegnafonte"]').scrollIntoView().click().wait(5000)
+    })
+    getIFrame().within(() => {
+      cy.screenshot('Assegna Fonte', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
+    })
 
+    cy.get('body').within(() => {
       getIFrame()
         .find('div[class="message container"]:contains("Fonte principale impostata con successo per 1 cliente")')
         .should('be.visible')
@@ -126,6 +137,7 @@ class SCUGestioneFontePrincipale {
             break
         }
         assert(referenteUpdated === true)
+        cy.screenshot('Referente presente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
       })
     })
   }
@@ -145,6 +157,7 @@ class SCUGestioneFontePrincipale {
 
           searchClients()
         } else {
+          cy.screenshot('Ricerca clienti', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
           return
         }
       })
@@ -200,12 +213,19 @@ class SCUGestioneFontePrincipale {
         })
       })
     })
-
+    getIFrame().within(() => {
+      cy.get('h2:contains("Clienti selezionati"):visible').click()
+      cy.screenshot('Selezione del Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
+    })
     // Click Imposta Fonte principale
     cy.get('body').within(() => {
-
       getIFrame().find('button[class="k-button assegnafonte"]').scrollIntoView().click().wait(5000)
+    })
+    getIFrame().within(() => {
+      cy.screenshot('Assegna Fonte', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
+    })
 
+    cy.get('body').within(() => {
       getIFrame()
         .find('div[class="message container"]:contains("Fonte principale impostata con successo per 1 cliente")')
         .should('be.visible')
@@ -236,6 +256,7 @@ class SCUGestioneFontePrincipale {
             break
         }
         assert(referenteUpdated === true)
+        cy.screenshot('Referente presente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
       })
 
     })
