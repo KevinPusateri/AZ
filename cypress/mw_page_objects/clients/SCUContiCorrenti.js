@@ -49,8 +49,8 @@ class SCUContiCorrenti {
 
             contoCorrente.intestatario = client.name
             getSCU().find('label[for="annoApertura"]').then((textAnnoApertura) => contoCorrente.annoApertura = textAnnoApertura.text())
-            getSCU().within(()=>{
-                cy.get('div[class^="header-container"]').scrollIntoView().should('be.visible')
+            getSCU().within(() => {
+                cy.get('h3:contains("Aggiunta di un nuovo conto corrente")').click()
                 cy.screenshot('Verifica Conto corrente salvato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             })
             getSCU().find('#submit:contains("Salva")').click().wait(8000);
@@ -66,6 +66,17 @@ class SCUContiCorrenti {
         cy.get('app-client-bank-accounts').find('app-client-bank-account-card').then((list) => {
             cy.screenshot('Verifica Conto corrente inserito', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             expect(list.text()).to.include(contoCorrente.iban)
+        })
+    }
+
+    /**
+     * Verifica contoCorrente non sia piu presente
+     * @param {string} contoCorrente - Object contoCorrente
+     */
+    static checkContoCorrenteIsNotPresent(contoCorrente) {
+        cy.get('app-client-bank-accounts').find('lib-empty-list-icon-with-label').then((list) => {
+            cy.screenshot('Verifica Conto corrente non presente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            expect(list.text()).to.not.include(contoCorrente.iban)
         })
     }
 
@@ -141,13 +152,13 @@ class SCUContiCorrenti {
                         .click()
                         .wait(5000);
                     cy.get("lib-check-user-permissions").contains("Elimina conto corrente").click();
+                    cy.screenshot('Verifica popup elimina Conto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 })
         })
 
         cy.get('nx-modal-container').within((container) => {
             cy.wrap(container).should('contain.text', 'Elimina conto corrente')
             cy.contains('Conferma').click()
-            cy.screenshot('Verifica Conto corrente inserito', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
     }
     static checkCodiceFISCALE(vat) {
