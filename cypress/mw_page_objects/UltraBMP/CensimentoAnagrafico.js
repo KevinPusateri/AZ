@@ -151,17 +151,21 @@ class CensimentoAnagrafico {
 
             //popup anagrafico
             ultraIFrameAnagrafica().within(() => {
-                cy.get('#f-cognome').should('be.visible').type(cliente.cognome)
-                cy.get('#f-nome').should('be.visible').type(cliente.nome)
-
-                cy.get('#cerca-pers-forinsert').should('be.visible').click() //avvia ricerca
-                cy.wait(1000)
-                cy.get('td').contains(cliente.codiceFiscale).click()
-                cy.wait(2000)
+                CensimentoAnagrafico.ricercaInPopupAnagrafico(cliente);
             })
         })
     }
 
+
+    static ricercaInPopupAnagrafico(cliente) {
+        cy.get('#f-cognome').should('be.visible').type(cliente.cognome);
+        cy.get('#f-nome').should('be.visible').type(cliente.nome);
+
+        cy.get('#cerca-pers-forinsert').should('be.visible').click(); //avvia ricerca
+        cy.wait(1000);
+        cy.get('td').contains(cliente.codiceFiscale).click();
+        return cy.wait(500);
+    }
 
     /**
      * Seleziona un contraente già esistente
