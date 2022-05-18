@@ -93,8 +93,9 @@ class LandingRicerca {
      * @param {boolean} filtri - se true, imposta filtri aggiuntivi di ricerca, altrimenti no
      * @param {TipoCliente} tipoCliente - Tipo Cliente
      * @param {StatoCliente} statoCliente - Stato Cliente
+     * @param {Boolean} screenshot - default settato a true, altrimenti non fa lo screenshot
      */
-    static searchRandomClient(filtri, tipoCliente, statoCliente) {
+    static searchRandomClient(filtri, tipoCliente, statoCliente, screenshot = true) {
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('searchClient')) {
                 req.alias = 'gqlSearchClient'
@@ -134,8 +135,9 @@ class LandingRicerca {
             cy.get('.footer').find('button').contains('applica').click()
             cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
 
-            cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
-            cy.screenshot('Ricerca effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible').wait(5000)
+            if (screenshot)
+                cy.screenshot('Ricerca effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         }
 
     }
@@ -200,8 +202,9 @@ class LandingRicerca {
      * Seleziona un Cliente Random dalla lista di ricerca ritornata
      * @param {TipoCliente} [clientForm]
      * @param {StatoCliente} [clientType]
+     * @param {Boolean} screenshot - default settato a true, altrimenti non fa lo screenshot
      */
-    static clickRandomResult(clientForm = 'PG', clientType = 'P') {
+    static clickRandomResult(clientForm = 'PG', clientType = 'P', screenshot = true) {
         //Attende il caricamento della scheda cliente
         const searchOtherMember = () => {
 
@@ -217,7 +220,7 @@ class LandingRicerca {
                 const checkResultsEmpty = $container.find(':contains("La ricerca non ha prodotto risultati")').is(':visible')
                 cy.log(checkResultsEmpty)
                 if (checkResultsEmpty) {
-                    this.searchRandomClient(false, clientForm, clientType)
+                    this.searchRandomClient(false, clientForm, clientType, screenshot)
                     searchOtherMember()
                 } else {
                     cy.get('lib-scrollable-container').should('be.visible').then(($clienti) => {
@@ -229,7 +232,7 @@ class LandingRicerca {
                         cy.get('body').then(($body) => {
                             const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
                             if (check) {
-                                this.searchRandomClient(true, clientForm, clientType)
+                                this.searchRandomClient(true, clientForm, clientType, screenshot)
                                 searchOtherMember()
                             }
 
@@ -237,25 +240,6 @@ class LandingRicerca {
                     })
                 }
             })
-            // cy.get('lib-scrollable-container').should('be.visible').then(($clienti) => {
-            //     let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
-            //     let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
-            //     cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
-
-            //     cy.wait(5000)
-            //     cy.get('body').then(($body) => {
-            //         const check = $body.find('lib-container:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari"):visible').is(':visible')
-            //         if (check) {
-            //             this.searchRandomClient(true, clientForm, clientType)
-            //             searchOtherMember()
-            //         }
-
-            //     })
-            // })
-            // }
-            // })
-
-
         }
 
         searchOtherMember()
@@ -311,7 +295,7 @@ class LandingRicerca {
         cy.intercept(/launch-*/, 'ignore').as('launchStaging')
         cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
         cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
-        
+
         //Attende il caricamento della scheda cliente
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client')) {

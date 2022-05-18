@@ -31,23 +31,28 @@ let documentType = ''
 
 //#region Support
 const searchClientWithoutDoc = (documentType) => {
-    LandingRicerca.searchRandomClient(true, "PF", "P")
-    LandingRicerca.clickRandomResult('PF')
+    LandingRicerca.searchRandomClient(true, "PF", "P", false)
+    LandingRicerca.clickRandomResult('PF','P',false)
     DettaglioAnagrafica.sezioneDocumenti()
-    DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
+    DettaglioAnagrafica.checkDocumento(documentType, false).then(documentIsPresent => {
         if (documentIsPresent)
             searchClientWithoutDoc(documentType)
-        else
+        else {
+            cy.screenshot({ clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             return
+        }
     })
 }
 //#endregion
 
 //#region Before After
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+        })
     })
 })
 
@@ -55,7 +60,7 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function() {
+after(function () {
     TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
@@ -67,13 +72,13 @@ after(function() {
 })
 //#endregion Before After
 
-describe('Matrix Web : Documenti', function() {
+describe('Matrix Web : Documenti', function () {
     it('Cerca Cliente senza Carta D\'Identità', () => {
         documentType = 'identita'
         searchClientWithoutDoc(documentType)
     })
 
-    it('Inserisci Carta D\'Identità', () => {
+    it('Inserisci Carta D\'Identità', function () {
         SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
             currentClient = retrivedClient
         })
@@ -82,7 +87,7 @@ describe('Matrix Web : Documenti', function() {
         SCUDocumenti.nuovaCartaIdentita()
     })
 
-    it('Verifica Carta D\'Identità inserita', () => {
+    it('Verifica Carta D\'Identità inserita', function () {
         TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
@@ -94,12 +99,12 @@ describe('Matrix Web : Documenti', function() {
         })
     })
 
-    it('Cerca Cliente senza Patente', () => {
+    it('Cerca Cliente senza Patente', function () {
         documentType = 'Patente'
         searchClientWithoutDoc(documentType)
     })
 
-    it('Inserisci Patente', () => {
+    it('Inserisci Patente', function () {
         SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
             currentClient = retrivedClient
         })
@@ -108,7 +113,7 @@ describe('Matrix Web : Documenti', function() {
         SCUDocumenti.nuovaPatente()
     })
 
-    it('Verifica Patente', () => {
+    it('Verifica Patente', function () {
         TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
@@ -120,12 +125,12 @@ describe('Matrix Web : Documenti', function() {
         })
     })
 
-    it('Cerca Cliente senza Passaporto', () => {
+    it('Cerca Cliente senza Passaporto', function () {
         documentType = 'Passaporto'
         searchClientWithoutDoc(documentType)
     })
 
-    it('Inserisci Passaporto', () => {
+    it('Inserisci Passaporto', function () {
         SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
             currentClient = retrivedClient
         })
@@ -134,7 +139,7 @@ describe('Matrix Web : Documenti', function() {
         SCUDocumenti.nuovoPassaporto()
     })
 
-    it('Verifica Passaporto', () => {
+    it('Verifica Passaporto', function () {
         TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
@@ -146,12 +151,12 @@ describe('Matrix Web : Documenti', function() {
         })
     })
 
-    it('Cerca Cliente senza Porto D\'Armi', () => {
+    it('Cerca Cliente senza Porto D\'Armi', function () {
         documentType = 'armi'
         searchClientWithoutDoc(documentType)
     })
 
-    it('Inserisci Porto D\'Armi', () => {
+    it('Inserisci Porto D\'Armi', function () {
         SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
             currentClient = retrivedClient
         })
@@ -160,7 +165,7 @@ describe('Matrix Web : Documenti', function() {
         SCUDocumenti.nuovoPortoArmi()
     })
 
-    it('Verifica Porto D\'Armi', () => {
+    it('Verifica Porto D\'Armi', function () {
         TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
@@ -172,12 +177,12 @@ describe('Matrix Web : Documenti', function() {
         })
     })
 
-    it('Cerca Cliente senza Tessera Postale', () => {
+    it('Cerca Cliente senza Tessera Postale', function () {
         documentType = 'Postale'
         searchClientWithoutDoc(documentType)
     })
 
-    it('Inserisci Tessera Postale', () => {
+    it('Inserisci Tessera Postale', function () {
         SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
             currentClient = retrivedClient
         })
@@ -186,7 +191,7 @@ describe('Matrix Web : Documenti', function() {
         SCUDocumenti.nuovaTesseraPostale()
     })
 
-    it('Verifica Tessera Postale', () => {
+    it('Verifica Tessera Postale', function () {
         TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
@@ -198,12 +203,12 @@ describe('Matrix Web : Documenti', function() {
         })
     })
 
-    it('Cerca Cliente senza Altro Documento', () => {
+    it('Cerca Cliente senza Altro Documento', function () {
         documentType = 'Altro'
         searchClientWithoutDoc(documentType)
     })
 
-    it('Inserisci Altro Documento', () => {
+    it('Inserisci Altro Documento', function () {
         SintesiCliente.retriveClientNameAndAddress().then(retrivedClient => {
             currentClient = retrivedClient
         })
@@ -212,7 +217,7 @@ describe('Matrix Web : Documenti', function() {
         SCUDocumenti.nuovoAltroDocumento()
     })
 
-    it('Verifica Altro Documento', () => {
+    it('Verifica Altro Documento', function () {
         TopBar.search(currentClient.name)
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()

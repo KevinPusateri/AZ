@@ -442,8 +442,8 @@
     <access>Native</access>
     <database>DB2PROD</database>
     <port>6021</port>
-    <username>GU01046</username>
-    <password>Encrypted 2be98afc86aa7f2e4fd4e9a42f6cb96fb</password>
+    <username>TUTF085</username>
+    <password>Encrypted 2be98afc86aa7f2e49b2d9b44f8c2f78f</password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>

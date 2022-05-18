@@ -40,15 +40,20 @@ class DettaglioAnagrafica {
         cy.contains('Aggiungi documento').click()
     }
 
-    static checkDocumento(documentType) {
+    static checkDocumento(documentType, checkTest = true) {
         return new Cypress.Promise((resolve, reject) => {
+            cy.wait(8000)
             cy.get('app-client-documents').should('exist').and('be.visible')
             cy.get('body')
                 .then(body => {
-                    if (body.find('div:contains("' + documentType + '")').length > 0)
+                    if (body.find('div:contains("' + documentType + '")').length > 0) {
+                        if (checkTest)
+                            cy.screenshot('Verifica ' + documentType + ' inserito', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                         resolve(true)
-                    else
+                    }
+                    else {
                         resolve(false)
+                    }
                 })
         })
     }
@@ -116,10 +121,10 @@ class DettaglioAnagrafica {
         });
 
         cy.contains('DETTAGLIO ANAGRAFICA').click()
-
-        cy.wait('@gqlClient', { requestTimeout: 30000 });
-
-        cy.screenshot('Dettaglio Anagrafica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        
+        cy.wait('@gqlClient', { timeout: 15000 }).its('response.statusCode').should('eq', 200)
+        cy.get('app-section-title:contains("Dati principali")').should('be.visible').wait(3000)
+        cy.screenshot('Dettaglio Anagrafica', { clip: { x: 0, y: 0, width: 1920, height: 700 } })
     }
 
     /**
@@ -128,6 +133,10 @@ class DettaglioAnagrafica {
      */
     static clickSubTab(subTab) {
 
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('saveOperationAccount'))
+                req.alias = 'gqlOperation'
+        });
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('client'))
                 req.alias = 'gqlClient'
@@ -142,10 +151,10 @@ class DettaglioAnagrafica {
 
         //Sul tab Legami non c'è la gqlClient specificata
         if (subTab !== 'Legami')
-            cy.wait('@gqlClient', { requestTimeout: 30000 })
+            cy.wait('@gqlClient', { timeout: 30000 }).its('response.statusCode').should('eq', 200)
 
-        // if (subTab === 'Convenzioni')
-        //     cy.wait('@getClientAgreements', { requestTimeout: 120000 })
+        if (subTab === 'Convenzioni')
+            cy.wait('@gqlOperation', { timeout: 30000 }).its('response.statusCode').should('eq', 200)
     }
 
     static checkSubTabDatiAnagrafici() {
@@ -390,7 +399,8 @@ class DettaglioAnagrafica {
         cy.contains('Aggiungi Convenzione').should('be.visible').click()
         if (!convenzionePresente) {
             cy.get('h4').should('contain.text', 'Nessuna convenzione disponibile per l\'agenzia selezionata')
-            cy.contains('Annulla').click()
+            cy.screenshot('Nessuna convenzione disponibile ', { clip: { x: 0, y: 0, width: 1920, height: 900 }})
+            cy.contains('Annulla').click().wait(5000)
         } else {
             return new Cypress.Promise((resolve, reject) => {
                 const convenzioneInserita = {
@@ -442,6 +452,7 @@ class DettaglioAnagrafica {
                         cy.get('nx-dropdown-item[class^="nx-dropdown-item"]').should('exist').and('be.visible')
                         cy.contains(aderente.toUpperCase()).should('be.visible').click()
                     }
+                    cy.screenshot('Aggiungi Convenzione con Ruolo ' + ruolo, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
                     cy.contains('Aggiungi').click()
                 })
@@ -457,9 +468,8 @@ class DettaglioAnagrafica {
      */
     static checkConvenzioniPresenti(isPresent, toBeDelated = false) {
 
-
-        cy.wait(3000)
-        cy.get('h3').should('be.visible').and('exist').invoke('text').then($text => {
+        cy.wait(10000)
+        cy.get('h3').should('exist').and('be.visible').invoke('text').then($text => {
             let numberOfConvenzioni = Number.parseInt($text.trim(), 10)
             switch (numberOfConvenzioni) {
                 case 0:
@@ -468,6 +478,11 @@ class DettaglioAnagrafica {
                     break;
                 default:
                     cy.wrap(numberOfConvenzioni).should('be.greaterThan', 0)
+                    cy.get('app-convenzioni').should('exist').and('be.visible').within(() => {
+                        cy.get('.row:eq(1)').should('exist').and('be.visible')
+                        cy.screenshot('Convenzione Presente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
+                    })
+                    cy.wait(4000)
                     if (toBeDelated) {
                         cy.get('svg[data-icon="trash-alt"]').click()
                         cy.contains('Conferma').should('be.visible').click()
@@ -475,6 +490,7 @@ class DettaglioAnagrafica {
                     }
                     break;
             }
+
         })
     }
 
@@ -488,6 +504,7 @@ class DettaglioAnagrafica {
                 cy.get('[class~="list-content"]').should('contain.text', convenzione.ruolo)
             })
         })
+        cy.screenshot('Convenzione ' + convenzione.convenzioneId + ' ' + convenzione.ruolo, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     static getCFClient() {
