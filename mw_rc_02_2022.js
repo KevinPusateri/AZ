@@ -26,7 +26,7 @@ const path = require('path')
 const cypress = require('cypress')
 const pMap = require('p-map');
 require('events').EventEmitter.defaultMaxListeners = 15
-const rcaSpec = path.join(__dirname, String("./cypress/integration/motor_RCA/AZ/mw_RCA_20220201.js"))
+const rcaSpec = path.join(__dirname, String("./cypress/integration/motor_RCA/AZ/mw_RCA_20220401.js"))
 //#endregion DO NOT EDIT
 
 async function main() {
