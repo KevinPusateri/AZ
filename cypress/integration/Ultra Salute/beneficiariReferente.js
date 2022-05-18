@@ -167,6 +167,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     Beneficiari.Avanti()
     DatiIntegrativi.caricamentoPagina()
   })
+  
   it("Dati integrativi", () => {
     cy.pause()
     DatiIntegrativi.DatiIntegrativi(true, true, true)

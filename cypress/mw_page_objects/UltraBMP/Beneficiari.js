@@ -57,50 +57,25 @@ class Beneficiari {
 
     static inserisciBeneficiario() {
         ultraIFrame().within(() => {
-            cy.window().then(win => {
-                cy.stub(win, 'open').callsFake((url) => {
-                    return win.open.wrappedMethod.call(win, url, '_self');
-                }).as('Open');
-            })
-
-
-            cy.get('.tipo').find('.inserisci').children('button')
-                .click() //click su Inserisci
+            cy.get('.tipo').find('.inserisci').children('button').click()
         })
 
-        cy.get('@Open')
-        cy.get('#f-cognome').should('be.visible')
-        cy.pause()
-
-        cy.go('back')
-
-
-
-
-        cy.pause()
-
-        /* ultraIFrame().within(() => {
-            // Get window object
-            cy.window().then((win) => {
-                // Replace window.open(url, target)-function with our own arrow function
-                cy.stub(win, 'open').callsFake((url) => {
-                    // change window location to be same as the popup url
-                    win.location.href = "https://portaleagenzie.pp.azi.allianz.it/daanagrafe/SCU/Search/";
-                }).as("popup") // alias it with popup, so we can wait refer it with @popup
-            })
-
-            // Click button which triggers javascript's window.open() call
-            cy.get('.tipo').find('.inserisci').children('button')
-                .click() //click su Inserisci
+        cy.intercept('ultra/api/beneficiari/cerca?idAmbitoAssicurato=P_1_3&ruolo=beneficiario&tipoRischio=persona')
+            .as('anagrafe')
+        cy.wait('@anagrafe').then((interception) => {
+            cy.log(interception.request.url.body)
+            cy.openWindow(interception.request.url)
         })
+        // cy.request('ultra/api/beneficiari/cerca?idAmbitoAssicurato=P_1_3&ruolo=beneficiario&tipoRischio=persona')
+        //     .then((resp) => {
+        //         //cy.log(resp.url.body)
+        //         cy.openWindow(resp.url)
+        //     })
 
-        // Make sure that it triggered window.open function call
-        cy.get("@popup") */
+        cy.switchWindow()
 
-        // Now we can continue integration testing for the new "popup tab" inside the same tab
-
+        cy.get('#f-cognome')
     }
-
 
     /**
      * Clicca sul pulsante Avanti
