@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 
 import { find } from "lodash";
+import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico";
 
 //#region iFrame
 const ultraIFrame = () => {
@@ -12,10 +13,10 @@ const ultraIFrame = () => {
 
 
 const ultraIFrameAnagrafica = () => {
-    let iframeAnag = cy.get('#divPopupAnagrafica').find('#divPopUpACAnagrafica')
+    let iframeAnag = cy.get('#divPopupAnagrafica')
         .its('0.contentDocument').should('exist')
 
-    return iframeAnag.its('body').should('not.be.undefined').then(cy.wrap)
+    return iframeAnag.its('body').should('not.be.undefined').and('not.be.null').then(cy.wrap)
 }
 //#endregion iFrame
 
@@ -82,6 +83,49 @@ class Beneficiari {
           cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string, '_blank');
 
         cy.get('#f-cognome')
+    }
+
+    static getIframeWindow() {
+        return cy.get('#matrixIframe')
+            .its('0.contentWindow').should('exist')
+        // .its('0.contentDocument').should('exist')
+    }
+
+
+    static inserisciBeneficiarioNew(persona) {
+        cy.pause()
+        this.getIframeWindow().then(iframeMatrix => {
+            let iframeAnag
+            const mywin = {
+                closed: false,
+            }
+            // replace 'window.open' with a custom function
+            cy.stub(iframeMatrix, 'open').callsFake(url => {
+                iframeAnag.setAttribute('src', url);
+                return mywin;
+            }).as('popupAnagrafico');
+            ultraIFrame().within(x => {
+                // crea un iframe dove mettere il contenuto anagrafico, e lo inserisco nell'iframe di Ultra
+                iframeAnag = document.createElement("iframe");
+                iframeAnag.setAttribute('style', 'z-index: 10000;position: absolute;top: 10px;left: 10px;width: 1024px;height: 800px;');
+                iframeAnag.setAttribute('id', 'divPopupAnagrafica')
+                x[0].appendChild(iframeAnag)
+
+                cy.get('.tipo').find('.inserisci').children('button').click() //click su Inserisci
+                cy.get('@popupAnagrafico').should("be.called")
+                cy.wait(2000)
+                ultraIFrameAnagrafica().within(() => {
+                    CensimentoAnagrafico.ricercaInPopupAnagrafico(persona).then(() => {
+                        // FIXME: da trovare un modo per aspettare la chiusura del popup che non sia attendere abbastanza...
+                        // cy.url().should('contain', 'rientro-beneficiari')
+                        cy.wait(10000).then(() => {
+                            mywin.closed = true;
+                            iframeAnag.remove();
+                        })
+                    })
+                })
+            })
+        })
     }
 
     /**
