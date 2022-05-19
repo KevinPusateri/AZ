@@ -24,11 +24,11 @@ let insertedId
 Cypress.config('defaultCommandTimeout', 60000)
 import { tariffaCases } from '../../../fixtures//tariffe_RCA/tariffaCases_RCA_20220401.json'
 //#endregion
+
 before(() => {
     Cypress.env('isAviva', false)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
-
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
