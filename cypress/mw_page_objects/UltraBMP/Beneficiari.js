@@ -76,11 +76,11 @@ class Beneficiari {
         //cy.switchWindow()
         cy.window().then((win) => {
             cy.spy(win, 'open').as('windowOpen'); // 'spy' vs 'stub' lets the new tab still open if you are visually watching it
-          });
-          // perform action here [for me it was a button being clicked that eventually ended in a window.open]
-          // verify the window opened
-          // verify the first parameter is a string (this is the dynamic url) and the second is _blank (opens a new window)
-          cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string, '_blank');
+        });
+        // perform action here [for me it was a button being clicked that eventually ended in a window.open]
+        // verify the window opened
+        // verify the first parameter is a string (this is the dynamic url) and the second is _blank (opens a new window)
+        cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string, '_blank');
 
         cy.get('#f-cognome')
     }
@@ -93,17 +93,19 @@ class Beneficiari {
 
 
     static inserisciBeneficiarioNew(persona) {
-        cy.pause()
         this.getIframeWindow().then(iframeMatrix => {
             let iframeAnag
+
             const mywin = {
                 closed: false,
             }
+
             // replace 'window.open' with a custom function
             cy.stub(iframeMatrix, 'open').callsFake(url => {
                 iframeAnag.setAttribute('src', url);
                 return mywin;
             }).as('popupAnagrafico');
+
             ultraIFrame().within(x => {
                 // crea un iframe dove mettere il contenuto anagrafico, e lo inserisco nell'iframe di Ultra
                 iframeAnag = document.createElement("iframe");
@@ -113,7 +115,9 @@ class Beneficiari {
 
                 cy.get('.tipo').find('.inserisci').children('button').click() //click su Inserisci
                 cy.get('@popupAnagrafico').should("be.called")
+
                 cy.wait(2000)
+
                 ultraIFrameAnagrafica().within(() => {
                     CensimentoAnagrafico.ricercaInPopupAnagrafico(persona).then(() => {
                         // FIXME: da trovare un modo per aspettare la chiusura del popup che non sia attendere abbastanza...
@@ -125,6 +129,39 @@ class Beneficiari {
                     })
                 })
             })
+        })
+    }
+
+    /**
+     * Clicca sul pulsante Inserisci
+     */
+    static clickInserisci() {
+        ultraIFrame().within(() => {
+            cy.get('.tipo').find('.inserisci').children('button').click()
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+            cy.wait(500)
+        })
+    }
+
+    /**
+     * Inserisce la percentuale del capitale per il beneficiario indicato
+     * @param {string} beneficiario 
+     * @param {string} percentuale 
+     */
+    static percentualeCapitale(beneficiario, percentuale) {
+        ultraIFrame().within(() => {
+            //inserisce il valore della percentuale
+            cy.get('.beneficiari-table').find('div').contains(beneficiario.toUpperCase())
+                .parents('.beneficiario-row').find('input').click()
+                .clear().type(percentuale)
+
+                cy.wait(500)
+
+            //clicca sul nome del beneficiario per confermare il valore
+            cy.get('.row-title').click()
+
+            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+            cy.wait(500)
         })
     }
 

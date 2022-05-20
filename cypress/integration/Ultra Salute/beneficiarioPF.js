@@ -8,6 +8,8 @@
 
 //#region imports
 import 'cypress-iframe';
+//import common from 'mocha/lib/interfaces/common';
+import Common from "../../mw_page_objects/common/Common"
 import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json';
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json';
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente";
@@ -41,9 +43,9 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 //#region  variabili iniziali
-let personaFisica = PersonaFisica.CarloRossini()
+let personaFisica = PersonaFisica.GalileoGalilei()
 let assicurato = personaFisica // PersonaFisica.MarcoMarco()
-const personaBeneficiario = PersonaFisica.SimonettaRossino()
+const personaBeneficiario = PersonaFisica.EttoreMajorana()
 var ambiti = [
   ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio
 ]
@@ -108,7 +110,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Emissione Ultra Salute", () => {
     SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
     // in caso di agenzia HUB
-    //Ultra.selezionaPrimaAgenzia()
+    Common.canaleFromPopup()
     Dashboard.caricamentoDashboardUltra()
   })
 
@@ -119,7 +121,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Configurazione Invalidità Permanente da infortunio", () => {
     ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
-    // ConfigurazioneAmbito.modificaDatoQuotazione("professione", "assistente presso uno studio medico")
+    ConfigurazioneAmbito.modificaDatoQuotazione("professione", "assistente presso uno studio medico")
     ConfigurazioneAmbito.selezionaSoluzione("Top")
     ConfigurazioneAmbito.aggiungiGaranzia("Capitale per morte da infortunio")
     ConfigurazioneAmbito.ClickButton("CONFERMA")
@@ -141,6 +143,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Aggiungi Cliente Persona Fisica", () => {
     CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(assicurato, "Persona 1")
     CensimentoAnagrafico.attendiCheckAssicurato()
+    cy.wait(1000)
     CensimentoAnagrafico.Avanti()
     Beneficiari.caricamentoBeneficiari()
   })
@@ -148,17 +151,17 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Beneficiari", () => {
     Beneficiari.tipoBeneficiario('Persona fisica')
     Beneficiari.inserisciBeneficiarioNew(personaBeneficiario)
-    // FIXME: fill the percentage
+    Beneficiari.tipoBeneficiario('Eredi legittimi')
+    Beneficiari.clickInserisci()
+    Beneficiari.percentualeCapitale(personaBeneficiario.nomeCognome(), "60")
+    Beneficiari.percentualeCapitale("Eredi legittimi", "40")
     // cy.get('#nx-input-5').should('be.visible').clear().type('100');
-    cy.pause()
     Beneficiari.Avanti()
     DatiIntegrativi.caricamentoPagina()
   })
   it("Dati integrativi", () => {
-    cy.pause()
-    DatiIntegrativi.DatiIntegrativi(true, true, true)
+    DatiIntegrativi.selezionaTuttiNo()
     DatiIntegrativi.ClickButtonAvanti()
-    DatiIntegrativi.approfondimentoSituazioneAssicurativa(false)
     DatiIntegrativi.confermaDichiarazioniContraente()
     ConsensiPrivacy.caricamentoPagina()
   })
@@ -181,27 +184,5 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     ControlliProtocollazione.riepilogoDocumenti()
     ControlliProtocollazione.Avanti()
     ControlliProtocollazione.aspettaCaricamentoAdempimenti()
-  })
-
-  it("Adempimenti precontrattuali e Perfezionamento", () => {
-    ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
-    ControlliProtocollazione.Incassa()
-    Incasso.caricamentoPagina()
-  })
-
-  it("Incasso - parte 1", () => {
-    Incasso.ClickIncassa()
-    Incasso.caricamentoModPagamento()
-  })
-
-  it("Incasso - parte 2", () => {
-    Incasso.SelezionaMetodoPagamento('Assegno')
-    Incasso.ConfermaIncasso()
-    Incasso.caricamentoEsito()
-  })
-
-  it("Esito incasso", () => {
-    Incasso.EsitoIncasso()
-    Incasso.Chiudi()
   })
 })
