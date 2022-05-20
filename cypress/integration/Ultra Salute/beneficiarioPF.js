@@ -143,7 +143,6 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Aggiungi Cliente Persona Fisica", () => {
     CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(assicurato, "Persona 1")
     CensimentoAnagrafico.attendiCheckAssicurato()
-    cy.wait(1000)
     CensimentoAnagrafico.Avanti()
     Beneficiari.caricamentoBeneficiari()
   })
