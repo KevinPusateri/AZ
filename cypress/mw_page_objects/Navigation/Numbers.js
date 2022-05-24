@@ -208,7 +208,9 @@ class Numbers {
                         const titleCardTitle = [
                             'New business',
                             'Incassi',
-                            'Riserve'
+                            'Riserve',
+                            'Capitali vita in scadenza',
+                            'Capitale reinvestito'
                         ]
                         expect(titleCardTitle).include(title.text())
                     })
