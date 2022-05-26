@@ -55,7 +55,7 @@ class Incasso {
             url: '**/GetPostIncassoData'
         }).as('postIncasso')
 
-        cy.wait('@postIncasso', { requestTimeout: 60000 })
+        cy.wait('@postIncasso', { timeout: 60000 })
     }
 
     /**

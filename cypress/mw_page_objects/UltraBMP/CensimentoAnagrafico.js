@@ -124,15 +124,17 @@ class CensimentoAnagrafico {
                 cy.get('td').contains(cliente.codiceFiscale).click()
                 cy.wait(2000)
             })
+        })
+    }
 
-            //popup attenzione CAP
+    static aggiornaParamCliente() {
+        ultraIFrame().within(() => {
+            //popup attenzione
             cy.get('#popupConfermaCambioParamTariffari', { timeout: 15000 })
                 .should('be.visible')
                 .find('button').contains('AGGIORNA')
                 .click()
-
-            //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento  nx-spinner__spin-block
-        })
+            })
     }
 
     static aggiungiClienteCensimentoAnagrafico(cliente, tab) {
@@ -149,25 +151,21 @@ class CensimentoAnagrafico {
 
             //popup anagrafico
             ultraIFrameAnagrafica().within(() => {
-                cy.get('#f-cognome').should('be.visible').type(cliente.cognome)
-                cy.get('#f-nome').should('be.visible').type(cliente.nome)
-
-                cy.get('#cerca-pers-forinsert').should('be.visible').click() //avvia ricerca
-                cy.wait(1000)
-                cy.get('td').contains(cliente.codiceFiscale).click()
-                cy.wait(2000)
+                CensimentoAnagrafico.ricercaInPopupAnagrafico(cliente);
             })
-
-            //popup attenzione CAP
-            cy.get('#popupConfermaCambioParamTariffari', { timeout: 15000 })
-                .should('be.visible')
-                .find('button').contains('AGGIORNA')
-                .click()
-
-            //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento  nx-spinner__spin-block
         })
     }
 
+
+    static ricercaInPopupAnagrafico(cliente) {
+        cy.get('#f-cognome').should('be.visible').type(cliente.cognome);
+        cy.get('#f-nome').should('be.visible').type(cliente.nome);
+
+        cy.get('#cerca-pers-forinsert').should('be.visible').click(); //avvia ricerca
+        cy.wait(1000);
+        cy.get('td').contains(cliente.codiceFiscale).click();
+        return cy.wait(500);
+    }
 
     /**
      * Seleziona un contraente già esistente

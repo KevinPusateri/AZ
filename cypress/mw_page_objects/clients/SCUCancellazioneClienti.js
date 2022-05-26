@@ -62,8 +62,10 @@ class SCUCancellazioneClienti {
                                     cy.log(clienteCF)
                                     resolve(clienteCF);
                                 })
+
                         })
                     })
+                    cy.screenshot('Cliente da Cancellare', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     Common.getById('#body').within(() => {
                         Common.getByIdOnIframe('div[class="selected-grid-fisica k-grid k-widget"]').and('include.text', clienteCF)
                         Common.clickFindByIdOnIframe('button:contains("Cancella"):visible')
@@ -75,7 +77,6 @@ class SCUCancellazioneClienti {
                     })
 
                     Common.getById('#body').within(() => {
-                        Common.getByIdOnIframe('div[class="modal-dialog"]').and('contain.text', 'Cancellazione clienti completata')
                         Common.clickFindByIdOnIframe('button:contains("Chiudi"):visible')
                     })
 
@@ -101,11 +102,9 @@ class SCUCancellazioneClienti {
                         const isTrovato = $table.find('tr:contains("Nessun record da visualizzare")').is(':visible')
                         if (isTrovato) {
                             cy.generateTwoLetters().then(randomChars => {
-                                    // cy.get('@iframe').find('#g-denominazione').clear().type(randomChars)
-                                    Common.getByIdWithTypeOnIframe('#g-denominazione', randomChars)
+                                Common.getByIdWithTypeOnIframe('#g-denominazione', randomChars)
 
-                                })
-                                // cy.get('@iframe').find('input[value="Cerca"]:visible').click().wait(2000)
+                            })
                             Common.clickByIdOnIframe('input[value="Cerca"]:visible').wait(2000)
 
                             searchClients()
@@ -139,6 +138,7 @@ class SCUCancellazioneClienti {
                                 })
                         })
                     })
+                    cy.screenshot('Cliente da Cancellare', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     Common.getById('#body').within(() => {
                         Common.getByIdOnIframe('div[class="selected-grid-giuridica k-grid k-widget"]').and('include.text', clienteIVA)
                         Common.clickFindByIdOnIframe('button:contains("Cancella"):visible')

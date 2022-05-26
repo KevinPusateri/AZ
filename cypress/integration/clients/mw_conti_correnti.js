@@ -122,5 +122,6 @@ describe('Matrix Web : Conti Correnti', function () {
   //ADD TFS
   it('Verifica Conto corrente eliminato', function () {
     SCUContiCorrenti.eliminaConto(contoModificato)
+    SCUContiCorrenti.checkContoCorrenteIsNotPresent(contoCorrente)
   })
 })

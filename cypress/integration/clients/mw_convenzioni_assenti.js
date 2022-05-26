@@ -27,15 +27,18 @@ let insertedId
 //#region Before After
 if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è attiva 
     before(() => {
-        cy.getUserWinLogin().then(data => {
-            cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+        cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+            cy.log(folderToDelete + ' rimossa!')
+            cy.getUserWinLogin().then(data => {
+                cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
 
-            let customImpersonification = {
-                "agentId": "ARFPULINI2",
-                "agency": "010710000"
-            }
+                let customImpersonification = {
+                    "agentId": "ARFPULINI2",
+                    "agency": "010710000"
+                }
 
-            LoginPage.logInMWAdvanced(customImpersonification)
+                LoginPage.logInMWAdvanced(customImpersonification)
+            })
         })
     })
     beforeEach(() => {

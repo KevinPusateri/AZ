@@ -5,6 +5,7 @@ if (process.argv.slice(2).length < 1) {
     console.log('\nMissing arguments. Please Use like this:\n');
     console.log("\x1b[35m%s\x1b[0m", '[0] -> headed (true or false) [OPTIONAL, default is false]\n');
     console.log("\x1b[32m%s\x1b[0m", '[1] -> currentEnv (PREPROD or TEST) [OPTIONAL, default is PREPROD]\n');
+    console.log("\x1b[32m%s\x1b[0m", '[1] -> isTFS (false or true) [OPTIONAL, default is false]\n');
 
     process.exit(0);
 }
@@ -21,12 +22,18 @@ if (process.argv.slice(2).length >= 2 && process.argv.slice(2)[1] === 'TEST') {
     console.log('Environment is TEST\n')
 }
 
+let isTFS = false
+if (process.argv.slice(2).length >= 3 && process.argv.slice(2)[2] === 'true') {
+    isTFS = true
+    console.log('TFS is ON\n')
+}
+
 //#region DO NOT EDIT
 const path = require('path')
 const cypress = require('cypress')
 const pMap = require('p-map');
 require('events').EventEmitter.defaultMaxListeners = 15
-const rcaSpec = path.join(__dirname, String("./cypress/integration/motor_RCA/AZ/mw_RCA_20220201.js"))
+const rcaSpec = path.join(__dirname, String("./cypress/integration/motor_RCA/AZ/mw_RCA_20220401.js"))
 //#endregion DO NOT EDIT
 
 async function main() {
@@ -36,12 +43,15 @@ async function main() {
     paramsRun.push({
         specName: specName,
         cypressParams: {
-            browser : 'chrome',
+            browser: 'chrome',
             quiet: true,
             spec: rcaSpec,
             headed: headed,
             config: {
-                video: false
+                video: false,
+                env: {
+                    isTFS: isTFS
+                }
             }
         }
     })

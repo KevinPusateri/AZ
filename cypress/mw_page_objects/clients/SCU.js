@@ -64,17 +64,17 @@ class SCU {
     }
 
     static nuovoClientePFDocumento() {
-            getSCU().find('span[aria-owns="tipo-documento_listbox"]').click()
-            getSCU().find('li:contains("CARTA D\'IDENTITA\'")').click()
-            getSCU().find('#numero-documento').type('AR66666')
-            getSCU().find('#data-emissione').type('01012021')
-            getSCU().find('#data-scadenza').type('01012030')
-            getSCU().find('#luogo-emissione').type('LONIGO')
-            getSCU().find('#luogo-emissione_listbox').click()
-            getSCU().find('button:contains("Avanti")').click()
-            getSCU().find('button:contains("Conferma")').click()
-        }
-        //#endregion
+        getSCU().find('span[aria-owns="tipo-documento_listbox"]').click()
+        getSCU().find('li:contains("CARTA D\'IDENTITA\'")').click()
+        getSCU().find('#numero-documento').type('AR66666')
+        getSCU().find('#data-emissione').type('01012021')
+        getSCU().find('#data-scadenza').type('01012030')
+        getSCU().find('#luogo-emissione').type('LONIGO')
+        getSCU().find('#luogo-emissione_listbox').click()
+        getSCU().find('button:contains("Avanti")').click()
+        getSCU().find('button:contains("Conferma")').click()
+    }
+    //#endregion
 
     //#region Persona Giuridica
     static nuovoClientePGDatiAnagrafici(nuovoClientePG) {
@@ -110,6 +110,10 @@ class SCU {
         getSCU().find("li:contains('" + clientePG.tipologia + "')").click()
         getSCU().find('span[aria-owns="nazione-partita-iva_listbox"]').click();
         getSCU().find('li:contains("IT-Italia")').click();
+        getSCU().within(() => {
+            cy.get('#collapseAnagrafica').find('h2:contains("Dati principali")').click()
+            cy.screenshot('Dati Anagrafici', { overwrite: true })
+        })
     }
 
     static nuovoClientePGContatti(nuovoClientePG) {
@@ -121,7 +125,7 @@ class SCU {
         getSCU().find('#indirizzo-num').type(nuovoClientePG.numCivico)
         getSCU().find('#residenza-comune').type(nuovoClientePG.citta)
         getSCU().find('#residenza-comune_listbox').click()
-            //Contatto Email
+        //Contatto Email
         getSCU().find('#email').type(nuovoClientePG.email)
 
         cy.intercept({
@@ -135,17 +139,21 @@ class SCU {
 
         //#region Verifica presenza normalizzatore
         getSCU().find('#Allianz-msg-container').then((container) => {
-                if (container.find('li:contains(normalizzata)').length > 0) {
-                    getSCU().find('button:contains("Avanti")').click()
-                }
-            })
-            //#endregion
+            if (container.find('li:contains(normalizzata)').length > 0) {
+                getSCU().find('button:contains("Avanti")').click()
+            }
+        })
+        //#endregion
     }
 
     static modificaClientePGModificaContatti(clientePG) {
         getSCU().find('a:contains("Contatti")').click().wait(1000)
         //getSCU().find('#pec').clear().type(clientePG.pec)
         getSCU().find('#email').clear().type(clientePG.mail)
+        getSCU().within(() => {
+            cy.get('#collapseContatti').find('h2:contains("Sede Legale")').click()
+            cy.screenshot('Contatti', { overwrite: true })
+        })
     }
 
     static nuovoClientePGConsensi() {
@@ -167,6 +175,10 @@ class SCU {
         getSCU().find('label[for="promo-allianz-terzi-no"]').click()
         getSCU().find('label[for="promo-allianz-profilazione-no"]').click()
         getSCU().find('label[for="promo-allianz-indagini-no"]').click()
+        getSCU().within(() => {
+            cy.get('#collapseConsensi').find('h5:contains("Privacy e consensi")').click()
+            cy.screenshot('Consensi', { overwrite: true })
+        })
     }
 
     static nuovoClientePGConfermaInserimento() {
@@ -196,53 +208,53 @@ class SCU {
     }
 
     static modificaClientePGConfermaModifiche() {
-            //#region Intercept
-            cy.intercept({
-                method: 'POST',
-                url: /NormalizeImpresa/
-            }).as('normalizeImpresa')
+        //#region Intercept
+        cy.intercept({
+            method: 'POST',
+            url: /NormalizeImpresa/
+        }).as('normalizeImpresa')
 
-            cy.intercept({
-                method: 'POST',
-                url: /ValidateForEdit/
-            }).as('validateForEdit')
+        cy.intercept({
+            method: 'POST',
+            url: /ValidateForEdit/
+        }).as('validateForEdit')
 
-            cy.intercept({
-                method: 'GET',
-                url: '**/AnagrafeWA40/**'
-            }).as('anagrafeWA40')
+        cy.intercept({
+            method: 'GET',
+            url: '**/AnagrafeWA40/**'
+        }).as('anagrafeWA40')
 
-            cy.intercept({
-                method: 'GET',
-                url: '**/SCU/**'
-            }).as('scu')
+        cy.intercept({
+            method: 'GET',
+            url: '**/SCU/**'
+        }).as('scu')
 
-            cy.intercept({
-                    method: 'POST',
-                    url: /getCustomerTree/
-                }).as('getCustomerTree')
-                //#endregion Intercept
+        cy.intercept({
+            method: 'POST',
+            url: /getCustomerTree/
+        }).as('getCustomerTree')
+        //#endregion Intercept
 
-            getSCU().find('#submit').click().wait(1000)
+        getSCU().find('#submit').click().wait(1000)
 
-            //Verifica presenza normalizzatore
-            getSCU().find('#Allianz-msg-container').then((container) => {
-                if (container.find('li:contains(normalizzati)').length > 0) {
-                    getSCU().find('#submit').click()
-                }
-            });
+        //Verifica presenza normalizzatore
+        getSCU().find('#Allianz-msg-container').then((container) => {
+            if (container.find('li:contains(normalizzati)').length > 0) {
+                getSCU().find('#submit').click()
+            }
+        });
 
-            cy.wait('@normalizeImpresa', { requestTimeout: 60000 });
-            cy.wait('@validateForEdit', { requestTimeout: 60000 });
-            cy.wait('@anagrafeWA40', { requestTimeout: 120000 });
-            cy.wait('@scu', { requestTimeout: 60000 }).wait(1000);
+        cy.wait('@normalizeImpresa', { requestTimeout: 60000 });
+        cy.wait('@validateForEdit', { requestTimeout: 60000 });
+        cy.wait('@anagrafeWA40', { requestTimeout: 120000 });
+        cy.wait('@scu', { requestTimeout: 60000 }).wait(1000);
 
-            getSCU().find('button:contains("Conferma")').click();
+        getSCU().find('button:contains("Conferma")').click();
 
-            //Restiamo in attesa del caricamento del tree del folder
-            cy.wait('@getCustomerTree', { requestTimeout: 30000 });
-        }
-        //#endregion
+        //Restiamo in attesa del caricamento del tree del folder
+        cy.wait('@getCustomerTree', { requestTimeout: 30000 });
+    }
+    //#endregion
 
     static generazioneStampe(isModifica = false) {
         cy.intercept({

@@ -57,7 +57,10 @@ class SCUAltriIndirizzi {
             getSCU().find('#cap_listbox > li:contains("' + indirizzo.cap + '")').click()
             //#endregion
 
+            getSCU().find('h3:contains("Inserimento Ubicazione")').click()
+            cy.screenshot('Scheda Inserimento Indirizzo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             getSCU().find('#submit:contains("Salva")').click()
+
             resolve(indirizzo);
         })
 
@@ -99,6 +102,9 @@ class SCUAltriIndirizzi {
                         indirizzo.cap = '20123'
                         //#endregion
 
+                        getSCU().find('h3:contains("Inserimento Ubicazione")').click()
+                        cy.screenshot('Modifica Indirizzo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
                         getSCU().find('#submit:contains("Salva")').click().wait(120000);
                         resolve(indirizzo);
                     })
@@ -107,23 +113,26 @@ class SCUAltriIndirizzi {
     }
 
     /**
-       * Verifica contoCorrete creato sia presente
-       * @param {string} indirizzo - Object contoCorrete creato
+       * Verifica indirizzo creato sia presente
+       * @param {string} indirizzo - Object indirizzo creato
        */
     static checkAltriIndirizzi(indirizzo) {
-        // cy.then(() => {
         cy.get('app-client-other-addresses').should('be.visible').find('app-client-address-table-row').then((list) => {
             if (list.length > 0) {
+                cy.screenshot('Indirizzo Visualizzato correttamente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 expect(list.text()).to.include(indirizzo.address)
                 expect(list.text()).to.include(indirizzo.comune)
                 expect(list.text()).to.include(indirizzo.cap)
             } else
                 assert.fail('Nessun Indirizzo è stato inserito')
         })
-        // })
     }
 
 
+    /**
+     * Elimina l'indirizzo specificato
+     * @param {string} indirizzo - nome dell'indirizzo
+     */
     static eliminaIndirizzo(indirizzo) {
         cy.get("app-client-other-addresses").should('be.visible').then((table) => {
             cy.wrap(table)
@@ -140,7 +149,10 @@ class SCUAltriIndirizzi {
         cy.get('nx-modal-container').within((container) => {
             cy.wrap(container).should('contain.text', 'Elimina indirizzo')
             cy.contains('Elimina indirizzo').click()
+            cy.wrap(container).should('not.be.visible')
+            cy.screenshot('Indirizzo ' + indirizzo.address + ' eliminato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
+        
     }
 }
 export default SCUAltriIndirizzi

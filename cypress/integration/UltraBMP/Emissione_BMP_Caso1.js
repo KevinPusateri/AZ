@@ -110,6 +110,7 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
 
     it('Seleziona Ultra BMP', () => {
         TopBar.clickSales()
+        cy.pause()
         //BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO_BMP)
         BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO)
     })

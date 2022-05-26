@@ -16,7 +16,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-    //#endregion
+//#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
@@ -24,9 +24,12 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+        })
     })
 })
 
@@ -35,41 +38,41 @@ beforeEach(() => {
 })
 
 
-after(function() {
+after(function () {
 
-        TopBar.logOutMW()
+    TopBar.logOutMW()
 
-        //#region Mysql
-        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-                let tests = testsInfo
-                cy.finishMysql(dbConfig, insertedId, tests)
-            })
-            //#endregion
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
+})
+//#endregion
 
 var cliente;
-describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function() {
+describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
 
-    it('Verifica aggancio pagina Cancellazione Clienti', function() {
+    it('Verifica aggancio pagina Cancellazione Clienti', function () {
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Cancellazione Clienti')
     })
 
-    it('Verifica Cancellazione clienti PF', function() {
+    it('Verifica Cancellazione clienti PF', function () {
         SCUCancellazioneClienti.eseguiCancellazioneOnPersonaFisica().then(currentClient => {
             cliente = currentClient
         })
     })
 
-    it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function() {
+    it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
         HomePage.reloadMWHomePage()
         TopBar.search(cliente)
         LandingRicerca.filtraRicerca('P')
         LandingRicerca.checkClienteNotFound(cliente)
     })
 
-    it('Verifica Cancellazione clienti PG', function() {
+    it('Verifica Cancellazione clienti PG', function () {
         HomePage.reloadMWHomePage()
         TopBar.clickClients()
         BurgerMenuClients.clickLink('Cancellazione Clienti')
@@ -79,7 +82,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function() {
 
     })
 
-    it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function() {
+    it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
         HomePage.reloadMWHomePage()
         TopBar.search(cliente)
         LandingRicerca.checkClienteNotFound(cliente)

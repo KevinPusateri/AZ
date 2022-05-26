@@ -26,17 +26,28 @@ let insertedId
 let customImpersonification
 //#endregion
 
+let options = {
+    retries: {
+        runMode: 1,
+        openMode: 0,
+    }
+}
+
 //#region Before After
 if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è attiva 
     before(() => {
-        cy.getUserWinLogin().then(data => {
-            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
 
-            customImpersonification = {
-                "agentId": "ARGMOLLICA3",
-                "agency": "010745000"
-            }
-            LoginPage.logInMWAdvanced(customImpersonification)
+        cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+            cy.log(folderToDelete + ' rimossa!')
+            cy.getUserWinLogin().then(data => {
+                cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+
+                customImpersonification = {
+                    "agentId": "ARGMOLLICA3",
+                    "agency": "010745000"
+                }
+                LoginPage.logInMWAdvanced(customImpersonification)
+            })
         })
     })
     beforeEach(() => {
@@ -68,16 +79,11 @@ if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è at
 
 let retrivedClient
 let retrivedPartyRelations
-describe('Matrix Web : Convenzioni', {
-    retries: {
-        runMode: 0,
-        openMode: 0,
-    }
-}, () => {
+describe('Matrix Web : Convenzioni', () => {
     it('Come delegato accedere all\'agenzia 01-745000 e cercare un cliente PF che abbia un legame familiare\n' +
         'Inserire una Convezione a piacere tra quelli presenti, inserire Matricola e Ruolo "Convenzionato\n' +
         'N.B. Prendersi nota delle convenzioni e del legame\n' +
-        'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', function () {
+        'Verificare che l\'operazione vada a buon fine e sia presente la convenzione', options, function () {
             if (!Cypress.env('monoUtenza')) {
 
                 cy.log('Retriving client with relations, please wait...')
@@ -87,7 +93,7 @@ describe('Matrix Web : Convenzioni', {
                     retrivedClient = currentClient[0]
                     retrivedPartyRelations = currentClient[1]
                     TopBar.search(currentClient[0].name + ' ' + currentClient[0].firstName)
-                    LandingRicerca.clickClientePF(currentClient[0].firstName+ ' ' + currentClient[0].name)
+                    LandingRicerca.clickClientePF(currentClient[0].firstName + ' ' + currentClient[0].name)
                     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                     DettaglioAnagrafica.clickSubTab('Convenzioni')
                     DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
@@ -104,7 +110,7 @@ describe('Matrix Web : Convenzioni', {
         '- si apra il campo "Aderenti Convenzione" nel cui menu a tendina sia presente il nome del cliente con cui c\'è il legame.\n' +
         'Scegliere conferma e verificare che:\n' +
         '- l\'operazione vada a buon fine\n' +
-        '- sia presente la convenzione\n', function () {
+        '- sia presente la convenzione\n', options, function () {
             if (!Cypress.env('monoUtenza')) {
                 DettaglioAnagrafica.clickSubTab('Legami')
                 Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
@@ -124,7 +130,7 @@ describe('Matrix Web : Convenzioni', {
     it('Accedere nuovamente alla scheda del convenzionato e da Azioni scegliere Elimina' +
         'Verificare che:' +
         '- l\'operazione vada a buon fine' +
-        '- la convenzione non sia più presente (anche per il familiare)', function () {
+        '- la convenzione non sia più presente (anche per il familiare)', options, function () {
             if (!Cypress.env('monoUtenza')) {
                 TopBar.search(retrivedClient.name + ' ' + retrivedClient.firstName)
                 LandingRicerca.clickClientePF(retrivedClient.firstName + ' ' + retrivedClient.name)

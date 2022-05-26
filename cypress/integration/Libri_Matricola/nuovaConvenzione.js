@@ -155,15 +155,17 @@ describe("LIBRI MATRICOLA", function () {
         // Dati Convenzione
         // un giorno dopo alla data corrente
         var afterTwoMonth = new Date();
-        afterTwoMonth.setMonth(afterTwoMonth.getMonth() + 17);
+        afterTwoMonth.setMonth(afterTwoMonth.getMonth() + 2);
         afterTwoMonth.setDate(1)
         
         afterTwoMonth.toLocaleDateString();
-        let formattedDate = String(afterTwoMonth.getDate()).padStart(2, '0') + '' +
-            String(afterTwoMonth.getMonth()).padStart(2, '0') + '' +
+        let formattedDate = String(afterTwoMonth.getDate()).padStart(2, '0') + '/' +
+            String(afterTwoMonth.getMonth()).padStart(2, '0') + '/' +
             afterTwoMonth.getFullYear()
         cy.log(formattedDate)
-        cy.get('#ctl00_ContentPlaceHolder1_dtDecorrenza').should('be.visible').type(formattedDate)
+        cy.pause()
+
+        cy.get('#ctl00_ContentPlaceHolder1_dtDecorrenza').should('be.visible').clear().type(formattedDate)
         
         cy.get('#ctl00$ContentPlaceHolder1$txtDescrizione').should('be.visible').type('SALA TEST LM AUTOMATICI')
         cy.pause()

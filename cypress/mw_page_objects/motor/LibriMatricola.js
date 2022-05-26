@@ -552,6 +552,7 @@ class LibriMatricola {
     }
 
     static AperturaTabLibriMatricola() {
+        cy.wait(5000)
         matrixFrame().within(() => {
 
             cy.get('#tab_polizze_madri').should('be.visible').click()
@@ -921,7 +922,7 @@ class LibriMatricola {
             // Caricamento Conversione Completato
             cy.get('div[aria-describedby="dialogProgressBarConversione"]').should('be.visible').within(() => {
 
-                cy.get('#result-message', { timeout: 150000 }).should('contain.text', 'Tutti i preventivi selezionati sono stati convertiti')
+                cy.get('#result-message', { timeout: 200000 }).should('contain.text', 'Tutti i preventivi selezionati sono stati convertiti')
                 cy.contains('Chiudi').click().wait(2000)
             })
 

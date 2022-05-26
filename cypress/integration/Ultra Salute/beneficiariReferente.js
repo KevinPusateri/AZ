@@ -48,12 +48,12 @@ const delayBetweenTests = 2000
 let personaGiuridica = "Sinopoli"
 //let personaFisica = PersonaFisica.CarloRossini()
 let personaFisica = PersonaFisica.GalileoGalilei()
+let secondoAssicurato = PersonaFisica.EttoreMajorana()
 var frazionamento = "trimestrale"
 var copertura = "extra-professionale"
 var ambiti = [
-   ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio
+  ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio
 ]
-let tab = "Persona 1"
 //var frazionamento = "annuale"
 //#endregion variabili iniziali
 
@@ -97,7 +97,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
-     
+
       cy.get('input[name="main-search-input"]').type(personaFisica.codiceFiscale).type('{enter}')
       cy.get('lib-client-item').first()
         .find('.name').trigger('mouseover').click()
@@ -119,8 +119,8 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
-    Dashboard.selezionaAmbiti(ambiti)    
-    Dashboard.aggiungiAmbito(ambiti)    
+    Dashboard.selezionaAmbiti(ambiti)
+    Dashboard.aggiungiAmbito(ambiti)
   })
 
 
@@ -147,21 +147,29 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Aggiungi Cliente Persona Fisica", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica,tab)
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica, "Persona 1")
     CensimentoAnagrafico.attendiCheckAssicurato()
   })
 
-  it("Domande integrative Censimento Anagrafico", () => {
-    CensimentoAnagrafico.domandeIntegrative("indennità", "si")
+  it("Aggiungi secondo assicurato", () => {
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(secondoAssicurato, "Persona 2")
+    CensimentoAnagrafico.aggiornaParamCliente()
+    CensimentoAnagrafico.attendiCheckAssicurato()
     CensimentoAnagrafico.Avanti()
     Beneficiari.caricamentoBeneficiari()
   })
 
   it("Beneficiari", () => {
+    cy.pause()
+    Beneficiari.tipoBeneficiario('Persona fisica')
+    Beneficiari.inserisciBeneficiario()
+    cy.pause()
     Beneficiari.Avanti()
     DatiIntegrativi.caricamentoPagina()
   })
+  
   it("Dati integrativi", () => {
+    cy.pause()
     DatiIntegrativi.DatiIntegrativi(true, true, true)
     DatiIntegrativi.ClickButtonAvanti()
     DatiIntegrativi.approfondimentoSituazioneAssicurativa(false)
@@ -189,7 +197,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     ControlliProtocollazione.aspettaCaricamentoAdempimenti()
   })
 
-  it("Adempimenti precontrattuali e Perfezionamento", () => {    
+  it("Adempimenti precontrattuali e Perfezionamento", () => {
     ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
     ControlliProtocollazione.Incassa()
     Incasso.caricamentoPagina()

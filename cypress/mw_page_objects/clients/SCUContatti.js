@@ -323,6 +323,8 @@ class SCUContatti {
     // Telefono: numero random
     this.addPhone(contatto);
 
+    getSCU().find('h3:contains("Aggiungi Telefono principale")').click()
+    cy.screenshot('Aggiungi Numero Principale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     //click salva
     getSCU().find('#submit:contains("Salva")').click();
   }
@@ -331,6 +333,9 @@ class SCUContatti {
     // Inserisci Email
     this.addEmail(contatto);
 
+    getSCU().find('h3:contains("Aggiungi Mail principale")').click()
+    cy.screenshot('Aggiungi Mail principale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+    
     //click salva
     getSCU().find('#submit:contains("Salva")').click();
   }

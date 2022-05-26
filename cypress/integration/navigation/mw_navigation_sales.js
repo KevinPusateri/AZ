@@ -383,6 +383,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
 
         it('Verifica aggancio Emetti Polizza - Ultra Casa e Patrimonio', function () {
+            if (!keys.UltraUltraCasaPatrimonioEnabled)
+                this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Ultra Casa e Patrimonio')
             Sales.backToSales()
@@ -399,6 +401,8 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
 
         it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio', function () {
+            if (!keys.UltraUltraCasaPatrimonioEnabled)
+                this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio')
             Sales.backToSales()
