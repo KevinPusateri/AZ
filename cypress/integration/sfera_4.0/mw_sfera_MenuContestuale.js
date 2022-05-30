@@ -30,8 +30,9 @@ before(() => {
 
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
         Sfera.setDateEstrazione()
-        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.IN_MORA, true)
+        //Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
+        //Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.IN_MORA, true)
+        //Sfera.estrai()
     })
 })
 
@@ -142,7 +143,8 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
     })
 
     context('Menu Emissione', function() {
-        it('Nuova polizza Auto', function () {
+        it.only('Nuova polizza Auto', function () {
+            cy.pause()
         })
 
         it('Nuova polizza Rami Vari', function () {
