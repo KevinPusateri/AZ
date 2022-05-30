@@ -101,7 +101,7 @@ const LinksRapidi = {
     deleteKey: function (keys) {
         if (!keys.NUOVO_SFERA) delete this.NUOVO_SFERA
         if (!keys.SFERA || Cypress.env('isAviva')) delete this.SFERA
-        if (!keys.CAMPAGNE_COMMERCIALI || Cypress.env('isAviva')) delete this.CAMPAGNE_COMMERCIALI
+        if (!keys.CAMPAGNE_COMMERCIALI) delete this.CAMPAGNE_COMMERCIALI
         if (!keys.RECUPERO_PREVENTIVI_E_QUOTAZIONI) delete this.RECUPERO_PREVENTIVI_E_QUOTAZIONI
         if (!keys.MONITORAGGIO_POLIZZE_PROPOSTE) delete this.MONITORAGGIO_POLIZZE_PROPOSTE
         if (!keys.GED_GESTIONE_DOCUMENTALE || Cypress.env('isAviva')) delete this.GED_GESTIONE_DOCUMENTALE

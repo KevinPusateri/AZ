@@ -81,9 +81,6 @@ const Auto = {
     EMISSIONE: 'Emissione',
     PRODOTTI_PARTICOLARI: 'Prodotti particolari',
     PASSIONE_BLU: !Cypress.env('isAviva') ? 'Passione BLU' : 'Natanti',
-    deleteKey: function () {
-        if (Cypress.env('isAviva')) delete this.PRODOTTI_PARTICOLARI
-    }
 }
 
 /**
@@ -1304,7 +1301,7 @@ class SintesiCliente {
      */
     static checkLinksFromAuto(keys) {
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
-            Auto.deleteKey(keys)
+            // Auto.deleteKey(keys)
             const linksAuto = Object.values(Auto)
             cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
                 expect($buttonLinks).to.contain(linksAuto[i])

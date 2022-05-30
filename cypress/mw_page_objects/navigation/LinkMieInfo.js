@@ -108,6 +108,7 @@ const LinksSubMenu = {
         // OBBLIGHI_IVASS: 'Obblighi IVASS',
         CAMPUS_IVASS: 'Campus e IVASS',
         FORMAZIONE_MULTICANALE: 'Formazione Multicanale',
+        DEMO_ALLIANZ: 'Demo Allianz',
         deleteKey: function (keys) {
             if (!keys['sales-academy/chi-siamo']) delete this.CHI_SIAMO
             if (!keys['sales-academy/master-professione-agente']) delete this.MASTER_PROFESSIONE_AGENTE
@@ -115,6 +116,7 @@ const LinksSubMenu = {
             if (!keys['sales-academy/percorsi-di-ruolo']) delete this.PERCORSI_DI_RUOLO
             if (!keys['sales-academy/obblighi-ivass']) delete this.CAMPUS_IVASS
             if (!keys['sales-academy/canali']) delete this.FORMAZIONE_MULTICANALE
+            if (!keys['sales-academy/demo-allianz']) delete this.DEMO_ALLIANZ
         }
     },
     // NEW_COMPANY_HANDBOOK: {
@@ -123,10 +125,12 @@ const LinksSubMenu = {
     // },
     ANTIRICICLAGGIO: {
         NORMATIVA: 'Normativa',
+        MANUALE_ANTIRICICLAGGIO: 'Manuale antiriciclaggio',
         MODULI_MANUALI_E_PROCEDURE: 'Moduli, manuali e procedure',
         LINK_UTILI: 'Link utili',
         deleteKey: function (keys) {
             if (!keys['antiriciclaggio/normative']) delete this.NORMATIVA
+            if (!keys['antiriciclaggio/manuale-antiriciclaggio']) delete this.MANUALE_ANTIRICICLAGGIO
             if (!keys['antiriciclaggio/moduli,-manuali-e-procedure']) delete this.MODULI_MANUALI_E_PROCEDURE
             if (!keys['antiriciclaggio/link-utili']) delete this.LINK_UTILI
         }
@@ -372,9 +376,11 @@ let SALES_ACADEMY = {
     'sales-academy/percorsi-di-ruolo': true,
     'sales-academy/obblighi-ivass': true,
     'sales-academy/canali': true,
+    'sales-academy/demo-allianz': true
 }
 let ANTIRICICLAGGIO = {
     'antiriciclaggio/normative': true,
+    'antiriciclaggio/manuale-antiriciclaggio': true,
     'antiriciclaggio/moduli,-manuali-e-procedure': true,
     'antiriciclaggio/link-utili': true,
 }
