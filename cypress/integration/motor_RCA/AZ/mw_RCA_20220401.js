@@ -35,7 +35,7 @@ let selectedSettori
 if(settori === '')
     selectedSettori = ['5']
 else
-    selectedSettori = settori.split(' ')
+    selectedSettori = settori.split('-')
 
 before(() => {
     cy.task('log', `Run eseguito per i settori ${selectedSettori}`)
