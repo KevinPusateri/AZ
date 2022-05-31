@@ -38,7 +38,6 @@ else {
     if (settori.length > 1)
         selectedSettori = settori.split('-')
     else{
-        console.log('sss -> '+settori)
         selectedSettori = [settori]
     }
 }
