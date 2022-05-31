@@ -109,7 +109,6 @@ class TenutaTariffa {
         })
     }
 
-
     static flussoATRScadenzaAltraCompagnia(caso) {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
@@ -205,6 +204,7 @@ class TenutaTariffa {
             })
         })
     }
+
     static compilaDatiQuotazione(currentCase, flowClients) {
 
         cy.getIFrame()
@@ -277,6 +277,9 @@ class TenutaTariffa {
                 cy.contains('Calcola').should('be.visible').click({ force: true })
             else
                 cy.contains('Non conosci la targa?').should('be.visible').click({ force: true })
+
+            cy.task('log', 'Dati Quotazione compilati correttamente')
+
         })
     }
 
@@ -362,6 +365,8 @@ class TenutaTariffa {
                 }
             })
         })
+
+        cy.task('log', 'Dati Contraente Proprietario compilati correttamente')
     }
 
     static compilaVeicolo(currentCase) {
@@ -535,6 +540,7 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
         });
+        cy.task('log', 'Dati Veicolo compilati correttamente')
     }
 
     static compilaProvenienza(currentCase) {
@@ -715,6 +721,8 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
         })
+
+        cy.task('log', 'Dati Provenienza compilati correttamente')
     }
 
     static compilaOffertaRCA(currentCase) {
@@ -946,9 +954,11 @@ class TenutaTariffa {
             cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
                 cy.get('p[class~="premio"]').first().invoke('text').then(premioLordo => {
                     expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
+                    cy.task('log', 'Dati Offerta compilati correttamente')
                 })
             })
         })
+
     }
 
     static compilaOffertaARD(currentCase) {
