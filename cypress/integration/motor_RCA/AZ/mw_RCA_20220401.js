@@ -32,10 +32,14 @@ let caseToExecute = []
 //?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
 let settori = Cypress.env('selectedSettori')
 let selectedSettori
-if(settori === '')
+if (settori === '')
     selectedSettori = ['5']
-else
-    selectedSettori = settori.split('-')
+else {
+    if (settori.length > 1)
+        selectedSettori = settori.split('-')
+    else
+        selectedSettori = [settori]
+}
 
 before(() => {
     cy.task('log', `Run eseguito per i settori ${selectedSettori}`)
@@ -82,7 +86,7 @@ describe('RCA Aprile 2022: ', {
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
-                
+
                 if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
                     if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
                         Common.visitUrlOnEnv()
