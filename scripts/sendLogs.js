@@ -14,7 +14,7 @@ const currentDT = moment().format('YYYY-MM-DD_HH.mm.ss');
 
 const stream = process.argv.slice(2)[0]
 const htmlExportLogMailTo = process.argv.slice(2)[1]
-const dirLogs = '..//cypress//screenshots//' + stream + '//';
+const dirLogs = '..//cypress//reports//' + stream + '//';
 
 const zipDirectory = async (source, out) => {
 	const archive = archiver('zip', { zlib: { level: 9 } });
@@ -42,10 +42,10 @@ const sendMail = async () => {
 		}
 	});
 
-	let mailSubject = 'Report Screenshot MW FE ' + stream.toUpperCase() + ' PREPROD';
+	let mailSubject = 'Report Logs ' + stream.toUpperCase() + ' PREPROD';
 
 	await transporter.sendMail({
-		from: '"MW FE Testing" <noreply@allianz.it>',
+		from: '"Report Testing" <noreply@allianz.it>',
 		to: htmlExportLogMailTo,
 		subject: mailSubject,
 		text: mailSubject,
