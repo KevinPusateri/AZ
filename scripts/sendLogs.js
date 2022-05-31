@@ -14,7 +14,7 @@ const currentDT = moment().format('YYYY-MM-DD_HH.mm.ss');
 
 const stream = process.argv.slice(2)[0]
 const htmlExportLogMailTo = process.argv.slice(2)[1]
-const dirLogs = '..//cypress//reports//' + stream + '//';
+const dirLogs = '..//cypress//reports//';
 
 const zipDirectory = async (source, out) => {
 	const archive = archiver('zip', { zlib: { level: 9 } });
