@@ -25,7 +25,20 @@ Cypress.config('defaultCommandTimeout', 60000)
 import { tariffaCases } from '../../../fixtures//tariffe_RCA/tariffaCases_RCA_20220401.json'
 //#endregion
 
+//?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
+let flowClients = false
+//?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
+let caseToExecute = []
+//?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
+let settori = Cypress.env('selectedSettori')
+let selectedSettori
+if(settori === '')
+    selectedSettori = ['5']
+else
+    selectedSettori = settori.split(' ')
+
 before(() => {
+    cy.task('log', `Run eseguito per i settori ${selectedSettori}`)
     Cypress.env('isAviva', false)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
@@ -60,13 +73,6 @@ after(function () {
     //#endregion
 })
 
-//?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
-let flowClients = false
-//?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
-let caseToExecute = []
-//?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
-let selectedSettori = ['5','4','1','2']
-
 describe('RCA Aprile 2022: ', {
     retries: {
         runMode: 0,
@@ -76,6 +82,7 @@ describe('RCA Aprile 2022: ', {
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
+                
                 if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
                     if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
                         Common.visitUrlOnEnv()
