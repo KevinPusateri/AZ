@@ -35,7 +35,6 @@ let selectedSettori
 if (settori === '')
     selectedSettori = ['5']
 else {
-    cy.task('log', settori)
     if (settori.length > 1)
         selectedSettori = settori.split('-')
     else
