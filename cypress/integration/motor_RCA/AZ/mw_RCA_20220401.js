@@ -42,6 +42,15 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
+let performeLogTariffa
+afterEach(function () {
+    if (this.currentTest.state !== 'passed')
+        performeLogTariffa = false
+    else
+        performeLogTariffa = true
+
+})
+
 after(function () {
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
@@ -56,7 +65,7 @@ let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
 let caseToExecute = []
 //?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
-let selectedSettori = []
+let selectedSettori = ['5','4','1','2']
 
 describe('RCA Aprile 2022: ', {
     retries: {
@@ -97,15 +106,19 @@ describe('RCA Aprile 2022: ', {
             })
 
             it("LogTariffa", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
-                    if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
-                        if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
-                            TenutaTariffa.checkTariffaRCA(currentCase)
+                if (performeLogTariffa) {
+                    if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
+                        if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
+                            if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
+                                TenutaTariffa.checkTariffaRCA(currentCase)
+                            else
+                                this.skip()
+                        }
                         else
                             this.skip()
-                    }
                     else
                         this.skip()
+                }
                 else
                     this.skip()
             })
