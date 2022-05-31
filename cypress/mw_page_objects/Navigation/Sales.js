@@ -677,6 +677,7 @@ class Sales {
                 cy.wait('@getMotor', { timeout: 100000 });
                 getIFrame().find('button:contains("Calcola"):visible', { timeout: 120000 })
                 cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.PREVENTIVO_MOTOR, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true, disableTimersAndAnimations: false })
+                cy.task('log', 'Aggancio Preventivo Motor da Sales... OK!')
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO:
                 cy.intercept({

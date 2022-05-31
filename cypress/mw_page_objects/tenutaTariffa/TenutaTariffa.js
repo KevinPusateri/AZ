@@ -1193,8 +1193,10 @@ class TenutaTariffa {
 
                     //Radar_KeyID
                     expect(JSON.stringify(findKeyLogTariffa('Radar_KeyID'))).to.contain(currentCase.Versione_Tariffa_Radar)
+                    cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyLogTariffa('Radar_KeyID'))}`)
                     //CMC PUNTA FLEX
                     expect(JSON.stringify(findKeyLogTariffa('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
+                    cy.task('log', `Versione Radar_Punta_Flex_KeyID rilevata ${JSON.stringify(findKeyLogTariffa('Radar_Punta_Flex_KeyID'))}`)
                 })
                 //#endregion
 
@@ -1208,6 +1210,7 @@ class TenutaTariffa {
 
                     //Radar_KeyID
                     expect(JSON.stringify(findKeyRadarUW('Versione_Radar'))).to.contain(currentCase.Versione_Radar_UW)
+                    cy.task('log', `Versione Radar UW rilevata ${JSON.stringify(findKeyRadarUW('Versione_Radar'))}`)
 
                 })
 
