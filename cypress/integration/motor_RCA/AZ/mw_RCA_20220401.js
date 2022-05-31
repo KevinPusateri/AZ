@@ -37,8 +37,10 @@ if (settori === '')
 else {
     if (settori.length > 1)
         selectedSettori = settori.split('-')
-    else
+    else{
+        console.log('sss -> '+settori)
         selectedSettori = [settori]
+    }
 }
 
 before(() => {
