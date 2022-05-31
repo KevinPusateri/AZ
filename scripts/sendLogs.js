@@ -66,7 +66,7 @@ async function main() {
 		await sendMail();
 	}
 	else
-		console.log('Nothing to send => NO ERRORS :) ')
+		console.log('Nothing to send; please check ')
 }
 
 main();
