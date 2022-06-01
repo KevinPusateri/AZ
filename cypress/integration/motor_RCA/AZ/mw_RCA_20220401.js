@@ -33,7 +33,7 @@ let caseToExecute = []
 let settori = Cypress.env('selectedSettori')
 let selectedSettori
 if (settori === '')
-    selectedSettori = ['5']
+    selectedSettori = []
 else {
     if (settori.length > 1)
         selectedSettori = settori.split('-')
