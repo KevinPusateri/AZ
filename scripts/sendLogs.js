@@ -64,7 +64,7 @@ const sendMail = async () => {
 
 async function main() {
 	if (fs.existsSync(reportLogs)) {
-		await zipDirectory(reportLogs, screenshotsFolder, '..//MW_FE_' + stream.toUpperCase() + '_PREPROD.zip');
+		await zipDirectory(reportLogs, screenShots, '..//MW_FE_' + stream.toUpperCase() + '_PREPROD.zip');
 		await sendMail();
 	}
 	else
