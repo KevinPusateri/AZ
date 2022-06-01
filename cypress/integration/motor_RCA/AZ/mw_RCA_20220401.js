@@ -37,8 +37,8 @@ if (settori === '')
 else {
     if (settori.length > 1)
         selectedSettori = settori.split('-')
-    else{
-        selectedSettori = [settori]
+    else {
+        selectedSettori = [`${settori}`]
     }
 }
 
