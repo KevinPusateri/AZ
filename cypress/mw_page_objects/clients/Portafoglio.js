@@ -307,7 +307,7 @@ class Portafoglio {
             else {
                 cy.get('lib-da-link').should('be.visible')
                 cy.get('lib-filter-button-with-modal').should('be.visible')
-                cy.get('app-wallet-claims').find('app-section-title').should('contain.text', 'Sinistri')
+                cy.get('app-wallet-claims').find('app-section-title').should('contain.text', 'Sinistr')
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.get('app-claim-card').first()
                     .find('app-contract-context-menu > nx-icon').click()

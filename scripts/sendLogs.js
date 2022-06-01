@@ -14,15 +14,17 @@ const currentDT = moment().format('YYYY-MM-DD_HH.mm.ss');
 
 const stream = process.argv.slice(2)[0]
 const htmlExportLogMailTo = process.argv.slice(2)[1]
-const dirLogs = '..//cypress//screenshots//' + stream + '//';
+const reportLogs = '..//cypress//reports//';
+const screenShots = '..//cypress//screenshots//';
 
-const zipDirectory = async (source, out) => {
+const zipDirectory = async (reportFolder, screenshotsFolder, out) => {
 	const archive = archiver('zip', { zlib: { level: 9 } });
 	const stream = fs.createWriteStream(out);
 
 	return new Promise((resolve, reject) => {
 		archive
-			.directory(source, false)
+			.directory(reportFolder, true, { date: new Date() })
+			.directory(screenshotsFolder, true, { date: new Date() })
 			.on('error', err => reject(err))
 			.pipe(stream)
 			;
@@ -42,10 +44,10 @@ const sendMail = async () => {
 		}
 	});
 
-	let mailSubject = 'Report Screenshot MW FE ' + stream.toUpperCase() + ' PREPROD';
+	let mailSubject = 'Report Logs ' + stream.toUpperCase() + ' PREPROD';
 
 	await transporter.sendMail({
-		from: '"MW FE Testing" <noreply@allianz.it>',
+		from: '"Report Testing" <noreply@allianz.it>',
 		to: htmlExportLogMailTo,
 		subject: mailSubject,
 		text: mailSubject,
@@ -61,12 +63,12 @@ const sendMail = async () => {
 }
 
 async function main() {
-	if (fs.existsSync(dirLogs)) {
-		await zipDirectory(dirLogs, '..//MW_FE_' + stream.toUpperCase() + '_PREPROD.zip');
+	if (fs.existsSync(reportLogs)) {
+		await zipDirectory(reportLogs, screenShots, '..//MW_FE_' + stream.toUpperCase() + '_PREPROD.zip');
 		await sendMail();
 	}
 	else
-		console.log('Nothing to send => NO ERRORS :) ')
+		console.log('Nothing to send; please check ')
 }
 
 main();

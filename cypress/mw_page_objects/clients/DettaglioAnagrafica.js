@@ -90,7 +90,7 @@ class DettaglioAnagrafica {
             }
         })
         cy.contains('DETTAGLIO ANAGRAFICA').click()
-        cy.contains('Documenti').click()
+        cy.contains('Documenti').click({force:true})
 
         cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
     }

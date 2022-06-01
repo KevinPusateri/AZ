@@ -259,7 +259,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         
         Common.clickFindByIdOnIframeChild(IframeDen, '#VEICOLO_datiAnia')
         cy.wait(8000)
-        DenunciaSinistriPage.getPromiseValue_ById('#VEICOLO_marcaVeicolo').then((val) => {  
+        DenunciaSinistriPage.getPromiseValue_ByID('#VEICOLO_marcaVeicolo').then((val) => {  
             controparte_marca = val
             cy.log('[it]>> marca vettura: ' + controparte_marca)
         })              

@@ -331,7 +331,7 @@ class Mieinfo {
                 getIFrame().find('h1:contains("Iniziative")').should('be.visible')
                 break;
             case LinksMenu.EVENTI_E_SPONSORIZZAZIONI:
-                getIFrame().find('h1:contains("Eventi")').should('be.visible')
+                getIFrame().find('h1:contains("Serie Podcast")').should('be.visible')
                 break;
             case LinksMenu.SALES_ACADEMY:
                 getIFrame().find('h1:contains("Sales Academy")').should('be.visible')
@@ -465,7 +465,6 @@ class Mieinfo {
             getIFrame().find('#nx-expansion-panel-header-' + index).then(($card) => {
                 expect($card.text().trim()).to.include(cardManuali[index]);
             })
-            cy.screenshot(`Check Panel Manuali informatici ${cardManuali[index]}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         }
     }
 

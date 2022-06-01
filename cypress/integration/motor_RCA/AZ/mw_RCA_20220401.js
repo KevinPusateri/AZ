@@ -25,7 +25,25 @@ Cypress.config('defaultCommandTimeout', 60000)
 import { tariffaCases } from '../../../fixtures//tariffe_RCA/tariffaCases_RCA_20220401.json'
 //#endregion
 
+//?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
+let flowClients = false
+//?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
+let caseToExecute = []
+//?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
+let settori = Cypress.env('selectedSettori')
+let selectedSettori
+if (settori === '')
+    selectedSettori = ['5']
+else {
+    if (settori.length > 1)
+        selectedSettori = settori.split('-')
+    else {
+        selectedSettori = [`${settori}`]
+    }
+}
+
 before(() => {
+    cy.task('log', `Run eseguito per i settori ${selectedSettori}`)
     Cypress.env('isAviva', false)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
     expect(Cypress.browser.name).to.contain('chrome')
@@ -42,6 +60,15 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
+let performeLogTariffa
+afterEach(function () {
+    if (this.currentTest.state !== 'passed')
+        performeLogTariffa = false
+    else
+        performeLogTariffa = true
+
+})
+
 after(function () {
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
@@ -50,13 +77,6 @@ after(function () {
     })
     //#endregion
 })
-
-//?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
-let flowClients = false
-//?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
-let caseToExecute = ['1']
-//?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
-let selectedSettori = []
 
 describe('RCA Aprile 2022: ', {
     retries: {
@@ -67,6 +87,7 @@ describe('RCA Aprile 2022: ', {
     tariffaCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
+
                 if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
                     if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
                         Common.visitUrlOnEnv()
@@ -97,15 +118,19 @@ describe('RCA Aprile 2022: ', {
             })
 
             it("LogTariffa", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
-                    if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
-                        if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
-                            TenutaTariffa.checkTariffaRCA(currentCase)
+                if (performeLogTariffa) {
+                    if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
+                        if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
+                            if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
+                                TenutaTariffa.checkTariffaRCA(currentCase)
+                            else
+                                this.skip()
+                        }
                         else
                             this.skip()
-                    }
                     else
                         this.skip()
+                }
                 else
                     this.skip()
             })
