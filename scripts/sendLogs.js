@@ -14,15 +14,17 @@ const currentDT = moment().format('YYYY-MM-DD_HH.mm.ss');
 
 const stream = process.argv.slice(2)[0]
 const htmlExportLogMailTo = process.argv.slice(2)[1]
-const dirLogs = '..//cypress//reports//';
+const reportLogs = '..//cypress//reports//';
+const screenShots = '..//cypress//screenshots//';
 
-const zipDirectory = async (source, out) => {
+const zipDirectory = async (reportFolder, screenshotsFolder, out) => {
 	const archive = archiver('zip', { zlib: { level: 9 } });
 	const stream = fs.createWriteStream(out);
 
 	return new Promise((resolve, reject) => {
 		archive
-			.directory(source, false)
+			.directory(reportFolder, true, { date: new Date() })
+			.directory(screenshotsFolder, true, { date: new Date() })
 			.on('error', err => reject(err))
 			.pipe(stream)
 			;
@@ -61,8 +63,8 @@ const sendMail = async () => {
 }
 
 async function main() {
-	if (fs.existsSync(dirLogs)) {
-		await zipDirectory(dirLogs, '..//MW_FE_' + stream.toUpperCase() + '_PREPROD.zip');
+	if (fs.existsSync(reportLogs)) {
+		await zipDirectory(reportLogs, screenshotsFolder, '..//MW_FE_' + stream.toUpperCase() + '_PREPROD.zip');
 		await sendMail();
 	}
 	else
