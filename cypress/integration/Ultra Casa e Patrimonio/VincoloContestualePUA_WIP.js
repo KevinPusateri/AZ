@@ -303,6 +303,7 @@ describe("Vincolo contestuale PUA ", () => {
   })
 
   it("Verifica polizza attiva", () => {
+    cy.pause()
     Portafoglio.clickSubTab("Polizze attive")
     Portafoglio.ordinaPolizze("Numero contratto")
     Portafoglio.checkPolizzaAttivaLite(nContratto)

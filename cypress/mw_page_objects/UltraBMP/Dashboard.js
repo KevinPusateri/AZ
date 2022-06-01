@@ -112,6 +112,7 @@ class Dashboard {
                 cy.get('#ambitiRischio', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
                     .should('be.visible').click()
 
+                //cy.get('[id="ultra-spinner"]').should('not.be.visible') //attende il caricamento
                 cy.wait(500)
 
                 //verifica che sia selezionato
@@ -461,7 +462,8 @@ class Dashboard {
     static procediHome() {
         ultraIFrame().within(() => {
             cy.get('[id="dashTable"]').should('be.visible')
-            cy.get('span').contains(' PROCEDI ', { timeout: 30000 }).should('be.visible').click().wait(500)
+            cy.get('span').contains(' PROCEDI ', { timeout: 30000 })
+                .scrollIntoView().should('be.visible').click().wait(500)
         })
     }
 
@@ -609,7 +611,13 @@ class Dashboard {
     //#endregion Vincoli
 
     //#region Convenzioni
-    static Convenzione(convenzione) {
+    /**
+     * inserisce la convenzione indicata. E' possibile indicare se chiudere il popup
+     * una volta finito o lasciare il popup aperto per altre operazioni
+     * @param {string} convenzione >convenzione da selezionare
+     * @param {bool} chiudi >se chiudere o meno il popup alla fine delle operazioni (default: si)
+     */
+    static Convenzione(convenzione, chiudi = true) {
         ultraIFrame().within(() => {
             cy.get('nx-header-actions').find("span")
                 .contains('Convenzioni').click()
@@ -628,48 +636,18 @@ class Dashboard {
 
             cy.get('ultra-convenzioni-modal').should('be.visible')
                 .find('.lista-convenzioni').find('span').contains(convenzione)
-                .parents('div').first().children('nx-radio').click()
+                .parents('ultra-convenzione-item').find('nx-radio').click()
 
             cy.get('ultra-convenzioni-modal').should('be.visible')
-                .find('#colonnaDettaglio').find('[class*="titolo-dettaglio"]')
+                .find('ultra-info-convenzione').find('h3')
                 .should('contain.text', convenzione)
 
-            cy.get('ultra-convenzioni-modal').should('be.visible')
-                .find('button').children('span').contains('Conferma').click()
+            if (chiudi) {
+                cy.get('ultra-convenzioni-modal').should('be.visible')
+                    .find('button').children('span').contains('Conferma').click()
 
-            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
-        })
-    }
-
-    static Convenzione(convenzione) {
-        ultraIFrame().within(() => {
-            cy.get('nx-header-actions').find("span")
-                .contains('Convenzioni').click()
-        })
-
-        //attesa
-        // cy.intercept({
-        //     method: 'GET',
-        //     url: '**/convenzioni'
-        // }).as('convenzioni')
-        // cy.wait('@convenzioni', { timeout: 30000 });
-
-        ultraIFrame().within(() => {
-            cy.get('ultra-convenzioni-modal').should('be.visible')
-                .find('#cercaConvenzione').find('input').type(convenzione)
-
-            cy.get('ultra-convenzioni-modal').should('be.visible')
-                .find('.lista-convenzioni').find('span').contains(convenzione)
-                .parents('div').first().children('nx-radio').click()
-
-            cy.get('ultra-convenzioni-modal').should('be.visible')
-                .find('#colonnaDettaglio').find('[class*="titolo-dettaglio"]')
-                .should('contain.text', convenzione)
-
-            cy.get('ultra-convenzioni-modal').should('be.visible')
-                .find('button').children('span').contains('Conferma').click()
-
-            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+                cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+            }
         })
     }
 
@@ -683,9 +661,9 @@ class Dashboard {
             }
         })
 
-        //verifica ambiti in popup Convensioni
+        //verifica ambiti in popup Convenzioni
         ultraIFrame().within(() => {
-            cy.get('ultra-convenzioni-modal').find('#colonnaDettaglio')
+            cy.get('ultra-convenzioni-modal').find('[data-testid="colonnaDettaglio"]')
                 .should('be.visible').find('span').contains('personalizza')
                 .click()
 
@@ -693,7 +671,7 @@ class Dashboard {
                 .should('be.visible')
 
             for (var i = 0; i < ambitiSelect.length; i++) {
-                cy.get('ultra-convenzioni-modal').find('.container-ambiti')
+                cy.get('ultra-convenzioni-modal').find('.container-ambiti').scrollIntoView()
                     .find('p').contains(ambitiSelect[i]).parents('div[class*="istanzaAmbitoButton"]')
                     .should('have.attr', 'class').and('contain', 'selected')
             }
@@ -715,7 +693,11 @@ class Dashboard {
             }
 
             cy.get('ultra-convenzioni-modal').should('be.visible')
-                .find('button').children('span').contains('Annulla').click()
+                .find('ultra-personalizzazione-convenzione')
+                .find('a').contains('Annulla').click().wait(500)
+
+            cy.get('ultra-convenzioni-modal').should('be.visible')
+                .find('button').children('span').contains('Conferma').click()
 
             cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
         })
@@ -724,8 +706,8 @@ class Dashboard {
         ultraIFrame().within(() => {
             for (var i = 0; i < ambitiSelect.length; i++) {
                 cy.get('ultra-dash-ambiti-istanze-table').first()
-                .should('be.visible').find('div').contains(ambitiSelect[i])
-                .parents('tr').find('.tooltip-text').contains('convenzione')
+                    .should('be.visible').find('div').contains(ambitiSelect[i])
+                    .parents('tr').find('.tooltip-text').contains('convenzione')
             }
         })
     }

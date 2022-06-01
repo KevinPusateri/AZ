@@ -4,6 +4,7 @@
 import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
@@ -88,11 +89,14 @@ describe("FABBRICATO E CONTENUTO", () => {
     })
 
     it("Selezione ambiti FastQuote", () => {
-        cy.get('#nx-tab-content-1-0 > app-ultra-fast-quote > div.content.ng-star-inserted', { timeout: 30000 }).should('be.visible')
+        SintesiCliente.FQ_tabUltra('Casa e Patrimonio')
+        //cy.get('.fast-quote-card', { timeout: 30000 }).should('be.visible')
 
         for (var i = 0; i < ambiti.length; i++) {
             cy.contains('div', ambiti[i]).parent().children('nx-icon').click()
         }
+
+        cy.pause()
         cy.get('span').contains('Calcola').click({ force: true })
         cy.get('lib-format-numbers').should('be.visible')
         cy.get('lib-da-link[calldaname$="Configura"]').should('be.visible').click()

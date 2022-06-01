@@ -207,6 +207,15 @@ class SintesiCliente {
         cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
     }
 
+    static FQ_tabUltra(tab) {
+        /* cy.get('.fast-quote-card').find('nx-tab-header')
+            .find('div').contains("Ultra").parent('button[class*="active"]').should('be.visible') */
+
+        const regex = new RegExp('\^' + tab + '\$');
+        cy.get('.fast-quote-card').find('app-ultra-parent-tabs')
+            .find('.nx-tab-label__content').contains(regex).click()
+    }
+
     /**
      * Effettua Check su Fast Quote Ultra
      */
@@ -482,7 +491,9 @@ class SintesiCliente {
         //scorre i sottomenù fino aselezionare l'opzione richiesta
         for (var i = 1; i < fixtureEmissione.length; i++) {
             cy.log(fixtureEmissione[i])
-            cy.get('button[role="menuitem"]').contains(fixtureEmissione[i])
+
+            const regex = new RegExp('\^' + fixtureEmissione[1] + '\$');
+            cy.get('button[role="menuitem"]').contains(regex)
                 .should('be.visible').click()
         }
     }

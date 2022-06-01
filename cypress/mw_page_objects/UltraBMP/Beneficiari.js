@@ -117,6 +117,7 @@ class Beneficiari {
                 cy.get('@popupAnagrafico').should("be.called")
 
                 cy.wait(2000)
+                cy.pause()
 
                 ultraIFrameAnagrafica().within(() => {
                     CensimentoAnagrafico.ricercaInPopupAnagrafico(persona).then(() => {
@@ -158,7 +159,7 @@ class Beneficiari {
                 cy.wait(500)
 
             //clicca sul nome del beneficiario per confermare il valore
-            cy.get('.row-title').click()
+            cy.get('.row-title').first().click()
 
             cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
             cy.wait(500)

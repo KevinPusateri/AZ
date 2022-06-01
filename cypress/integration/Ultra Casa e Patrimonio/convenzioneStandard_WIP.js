@@ -115,7 +115,6 @@ describe("CONVENZIONE STANDARD", () => {
   })
 
   it("Emissione Ultra Casa e Patrimonio", () => {
-    cy.pause()
     SintesiCliente.Emissione(prodotti.RamiVari.CasaPatrimonio)
     Common.canaleFromPopup()
     Dashboard.caricamentoDashboardUltra()
@@ -210,7 +209,7 @@ describe("CONVENZIONE STANDARD", () => {
   })
 
   it("Portafoglio", () => {
-    Portafoglio.clickTabPortafoglio()
+    Portafoglio.apriPortafoglioLite()
     Portafoglio.ordinaPolizze("Numero contratto")
     Portafoglio.menuContratto(nContratto, menuPolizzeAttive.modificaPolizza)    
     //Common.canaleFromPopup()
@@ -223,11 +222,11 @@ describe("CONVENZIONE STANDARD", () => {
     ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
     ConfigurazioneAmbito.selezionaSoluzione("Premium")
     ConfigurazioneAmbito.ClickButton("CONFERMA")
-    Dashboard.caricamentoDashboardUltra()
+    //Dashboard.caricamentoDashboardUltra()
   })
 
   it("Convenzioni", () => {
-    Dashboard.Convenzione('Abbonati Sky')
+    Dashboard.Convenzione('Abbonati Sky', false)
     Dashboard.VerificaAmbientiConvenzione(["Fabbricato", "Contenuto"],
                                           ["Catastrofi naturali", "Tutela legale"],
                                           ["Catastrofi naturali", "Tutela legale"])
