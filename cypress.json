@@ -55,7 +55,6 @@
     "multiUtenza": "5-851-0-100",
     "isAviva": false,
     "hostParsr": "H2017LE00038A",
-    "portParsr": "3001",
-    "isTFS": false
+    "portParsr": "3001"
   }
 }
