@@ -28,13 +28,26 @@ let options = {
         openMode: 0,
     }
 }
-
+const listColumnCaricoMancante = [
+    'Pt.',
+    'Contraente',
+    'Polizza',
+    'Via',
+    'Cp.',
+    'Agenzia',
+    'Sede',
+    'Fonte',
+    'Ramo',
+    'Fr.',
+    'Descrizione Prodotto',
+    'Targa'
+]
 let today = new Date()
 today.setMonth(4)
 today.setDate(1)
 let dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
 today.setMonth(5)
-today.setDate(31)
+today.setDate(30)
 let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
 //#endregion
 
@@ -63,7 +76,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Sfera 4.0', function () {
+describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () {
 
     it('age 01-712000 aprile maggio - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online', function () {
         let customImpersonification = {
@@ -81,13 +94,19 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.checkNotExistLob(Sfera.PORTAFOGLI.RAMI_VARI)
         Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
         Sfera.selezionaVistaSuggerita('Carico Mancante')
+        Sfera.espandiPannello()
+        Sfera.estrai(false)
+
     })
 
     it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_LoB MOTOR e RV', function () {
-        Sfera.selezionaVistaSuggerita('Carico Mancante')
         Sfera.espandiPannello()
         Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
         Sfera.checkLob(Sfera.PORTAFOGLI.RAMI_VARI)
         Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
+    })
+
+    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_colonne in tabella', function () {
+        Sfera.checkAllColonnePresenti(listColumnCaricoMancante)
     })
 }) 

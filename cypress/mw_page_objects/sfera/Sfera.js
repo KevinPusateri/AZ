@@ -802,11 +802,12 @@ class Sfera {
     /**
      * Effettua l'Estrai delle Quietanze
      */
-    static estrai() {
+    static estrai(request = true) {
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
         cy.contains('Estrai').should('exist').click()
 
-        cy.wait('@estraiQuietanze', { timeout: 120000 })
+        if (request)
+            cy.wait('@estraiQuietanze', { timeout: 120000 })
 
         //Verifichiamo che la tabella d'estrazione sia presente
         this.tableEstrazione()
@@ -1313,7 +1314,7 @@ class Sfera {
      * Seleziona la vista suggerita 
      * @param {string} nameVista - nome della Vista
      */
-     static selezionaVistaSuggerita(nameVista) {
+    static selezionaVistaSuggerita(nameVista) {
         // click Seleziona Vista tendina
         cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
@@ -2101,6 +2102,21 @@ class Sfera {
                     cy.wrap(number).as('clucsterLength')
                 })
             })
+        })
+    }
+
+    static checkAllColonnePresenti(listColumn) {
+        cy.get('table').then(($table) => {
+            const currentLinks = []
+            const checkLinks = Object.values(listColumn)
+
+            cy.wrap($table).find('div[class="table-component-th-name"]').each(($link, i) => {
+                currentLinks.push($link.text().trim())
+            }).then(() => {
+                debugger
+                expect(currentLinks.sort()).to.deep.eq(checkLinks.sort());
+            })
+
         })
     }
 }
