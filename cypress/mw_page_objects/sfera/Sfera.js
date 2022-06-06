@@ -1309,6 +1309,28 @@ class Sfera {
 
     }
 
+    /**
+     * Seleziona la vista suggerita 
+     * @param {string} nameVista - nome della Vista
+     */
+     static selezionaVistaSuggerita(nameVista) {
+        // click Seleziona Vista tendina
+        cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+
+        // Click Le mie viste
+        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+            cy.contains('Viste suggerite').click()
+        }).then(() => {
+
+            cy.get('div[class="cdk-overlay-pane"]').last()
+                .should('be.visible').within(() => {
+                    cy.get('button').contains(nameVista).click({ force: true }).wait(2000)
+                })
+        })
+        cy.get('h2[nxheadline="subsection-medium"]').should('include.text', nameVista)
+
+    }
+
     static eliminaVista(nameVista) {
         cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
