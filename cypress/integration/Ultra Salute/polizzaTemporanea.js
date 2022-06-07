@@ -101,6 +101,7 @@ describe("POLIZZA TEMPORANEA", () => {
   })
 
   it("Emissione Ultra Salute", () => {
+    cy.pause()
     Ultra.emissioneUltra(ultraRV.SALUTE)
     Ultra.selezionaPrimaAgenzia()
   })

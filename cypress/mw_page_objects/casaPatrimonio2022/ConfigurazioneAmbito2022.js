@@ -24,7 +24,7 @@ class ConfigurazioneAmbito {
   static ClickButton(azione) {
     ultraIFrame().within(() => {
       cy.contains('span', azione).scrollIntoView().should('be.visible').click().wait(500)
-      //cy.get('[id="alz-spinner"]').should('not.be.visible')
+      //cy.get('[id="ultra-spinner"]').should('not.be.visible')
       cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible') //attende il caricamento
     })
 
@@ -38,13 +38,13 @@ class ConfigurazioneAmbito {
    */
   static apriConfigurazioneAmbito(ambito) {
     ultraIFrame().within(() => {
-      cy.get('ultra-dash-ambiti-istanze-table')
+      cy.get('ultra-istanze-table')
         .find('nx-icon[class*="' + ambito + '"]')
         .parents('tr')
-        .find('nx-icon[name="pen"]')
+        .find('nx-icon[class$="pen"]')
         .click({force: true}) //clicca sull'icona della penna
 
-      cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible') //attende il caricamento
+        cy.get('[id="ultra-spinner"]').should('not.be.visible') //attende il caricamento
     })
   }
 
@@ -57,14 +57,12 @@ class ConfigurazioneAmbito {
 
   static aggiungiGaranzia(garanziaAgg) {
     ultraIFrame().within(() => {
-      cy.get('#caGaranzie').should('be.visible') //verifica che la sezione Garanzie Aggiuntive sia visibile
+      cy.get('ultra-garanzia-card-list').scrollIntoView()
 
-      cy.get('ultra-config-ambito-garanzia-aggiuntiva')
+      cy.get('ultra-garanzia-card').should('be.visible')
         .contains(garanziaAgg).should('be.visible')
-        //.parents('ultra-config-ambito-garanzia-aggiuntiva')
-        .parents('div[class="garanzia-principale ultra-centered nx-grid__row"]')
+        .parents('div[class="garanzia-card nx-grid"]')
         .find('button').should('be.enabled').click()
-        //.find('button').contains('Aggiungi').should('exist').click()
 
       cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
     })
@@ -861,10 +859,10 @@ class ConfigurazioneAmbito {
               cy.wait(500)
               cy.get('[class="search-professioni extended"]').should('be.visible')
                 .find('input[type="search"]').type(modifica)
-              cy.get('[id="alz-spinner"]').should('not.be.visible')
+              cy.get('[id="ultra-spinner"]').should('not.be.visible')
               cy.get('[class^="result-content"]').contains(modifica).click()
               cy.get('button').contains('CONFERMA').click()
-              cy.get('[id="alz-spinner"]').should('not.be.visible')
+              cy.get('[id="ultra-spinner"]').should('not.be.visible')
               cy.get('[class*="professioneDrop"]').children()
                 .should('contain.text', modifica)
               break;
@@ -894,7 +892,7 @@ class ConfigurazioneAmbito {
         }
         else {
           $element.trigger('click')
-          cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+          cy.get('[id="ultra-spinner"]').should('not.be.visible') //attende il caricamento
           cy.get('[class^="ca-col-soluzione selected"]').contains(soluzione)
             .should('be.visible') //verifica che la soluzione sia stata selezionata
         }
