@@ -59,6 +59,13 @@ before(() => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         })
     })
+    let customImpersonification = {
+        "agentId": "ARDEMILI1",
+        "agency": "010712000"
+    }
+    LoginPage.logInMWAdvanced(customImpersonification)
+    Sfera.accediSferaDaHomePageMW()
+    Sfera.espandiPannello()
 })
 
 beforeEach(() => {
@@ -79,13 +86,6 @@ after(function () {
 describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () {
 
     it('age 01-712000 aprile maggio - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online', function () {
-        let customImpersonification = {
-            "agentId": "ARDEMILI1",
-            "agency": "010712000"
-        }
-        LoginPage.logInMWAdvanced(customImpersonification)
-        Sfera.accediSferaDaHomePageMW()
-        Sfera.espandiPannello()
         Sfera.setDateEstrazione(true, dataInizio, dataFine)
     })
 
@@ -108,5 +108,16 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
 
     it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_colonne in tabella', function () {
         Sfera.checkAllColonnePresenti(listColumnCaricoMancante)
+    })
+
+    it.skip('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_colonne in tabella', function () {
+        // Sfera.selezionaVistaSuggerita('Carico Mancante')
+        // Sfera.estrai()
+        //TODO
+    })
+
+    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_colonne in tabella_filtri excel', function () {
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        Sfera.estrazioneReportExcel(listColumnCaricoMancante)
     })
 }) 

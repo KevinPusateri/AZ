@@ -801,6 +801,7 @@ class Sfera {
 
     /**
      * Effettua l'Estrai delle Quietanze
+     * @param {Boolean} request - default settato a true, altrimenti non intercetta Estrai Quietanze
      */
     static estrai(request = true) {
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
@@ -1409,42 +1410,84 @@ class Sfera {
     /**
      * Estrazione Excel e verifica dati estratti correttamente
      */
-    static estrazioneReportExcel() {
-        var currentColumn = [
-            "Info",
-            "Pt.",
-            "Contraente",
-            "Num.\nPolizza",
-            "Scad.",
-            "Inizio\nCopertura",
-            "Evo",
-            "Cod\nAgenzia",
-            "Cod.\nFraz",
-            "Sede",
-            "Fonte",
-            "Ramo",
-            "Premio\nLordo Rata",
-            "Gg.Mo.\n/Fuo.Mo.",
-            "Descrizione\nProdotto",
-            "Decorrenza\nPolizza",
-            "Scadenza\nPolizza",
-            "Vin",
-            "Delta pr.\nNetto RCA",
-            "Delta Premio\nNetto ARD",
-            "Importo Canone",
-            "Ind att.rin",
-            "R.abb",
-            "Coass.",
-            "Val. Extra",
-            "Avv Email",
-            "Nr Avv\nSms",
-            "Avv Pdf",
-            "Motivo Non Val.Extra",
-            "Targa",
-            "Pag",
-            "FQ\nTot",
-            "Dlt pr Qtz €"
-        ];
+    static estrazioneReportExcel(currentColumn = []) {
+        if (currentColumn.length === 0)
+            currentColumn = [
+                "Agenzia",
+                "Avv Email",
+                "Avv Pdf",
+                "Avv Sms",
+                "Canone",
+                "Coas",
+                "Cod.Fiscale / P.IVA",
+                "Contraente",
+                "Cp.",
+                "Decorrenza Pol.",
+                "Descrizione Prodotto",
+                "Dlt pr Net ARD",
+                "Dlt pr Net RCA",
+                "Dlt pr Qtz €",
+                "Evo",
+                "FQ",
+                "Fonte",
+                "Fr.",
+                "Gg. E/F Mora",
+                "Ind att.rin",
+                "Info",
+                "Inizio Cop.",
+                "Pag",
+                "Polizza",
+                "Pr. Lordo Rata",
+                "Prv Age",
+                "Pt.",
+                "Pub.le Area Pers.",
+                "Pub.ta Area Pers.",
+                "R.abb",
+                "Ramo",
+                "Scadenza",
+                "Scadenza Pol.",
+                "Sede",
+                "St. Tit.",
+                "Targa",
+                "Val. Extra",
+                "Vinc."
+            ]
+
+        // var currentColumn = [
+        //     "Info",
+        //     "Pt.",
+        //     "Contraente",
+        //     "Num.\nPolizza",
+        //     "Scad.",
+        //     "Inizio\nCopertura",
+        //     "Evo",
+        //     "Cod\nAgenzia",
+        //     "Cod.\nFraz",
+        //     "Sede",
+        //     "Fonte",
+        //     "Ramo",
+        //     "Premio\nLordo Rata",
+        //     "Gg.Mo.\n/Fuo.Mo.",
+        //     "Descrizione\nProdotto",
+        //     "Decorrenza\nPolizza",
+        //     "Scadenza\nPolizza",
+        //     "Vin",
+        //     "Delta pr.\nNetto RCA",
+        //     "Delta Premio\nNetto ARD",
+        //     "Importo Canone",
+        //     "Ind att.rin",
+        //     "R.abb",
+        //     "Coass.",
+        //     "Val. Extra",
+        //     "Avv Email",
+        //     "Nr Avv\nSms",
+        //     "Avv Pdf",
+        //     "Motivo Non Val.Extra",
+        //     "Targa",
+        //     "Pag",
+        //     "FQ\nTot",
+        //     "Dlt pr Qtz €"
+        // ];
         var rows = []
         cy.get('tr[class="nx-table-row ng-star-inserted selectedRow"]').each((rowsTable) => {
             cy.wrap(rowsTable).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($textCell) => {
@@ -1459,8 +1502,12 @@ class Sfera {
 
             cy.task('getFolderDownload').then((folderDownload) => {
                 cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
+                    console.log(Object.values(jsonData[0].data[0]).sort())
+                    console.log('---------')
+                    console.log(currentColumn.sort())
+                    debugger
                     // Verifica Colonne presenti
-                    expect(jsonData[0].data[0]).to.eqls(currentColumn);
+                    expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(currentColumn.sort());
                     for (let index = 0; index < rows.length; index++) {
                         // Verifica Clienti presenti
                         expect(jsonData[0].data[index + 1]).to.include(rows[index]);
@@ -2113,7 +2160,6 @@ class Sfera {
             cy.wrap($table).find('div[class="table-component-th-name"]').each(($link, i) => {
                 currentLinks.push($link.text().trim())
             }).then(() => {
-                debugger
                 expect(currentLinks.sort()).to.deep.eq(checkLinks.sort());
             })
 
