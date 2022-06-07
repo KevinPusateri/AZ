@@ -2152,6 +2152,12 @@ class Sfera {
         })
     }
 
+
+    /**
+     * It takes a list of column names, and checks that the table has those columns.
+     * @param {Object} listColumn - is an object that contains the list of columns that should be present in the
+     * table.
+     */
     static checkAllColonnePresenti(listColumn) {
         cy.get('table').then(($table) => {
             const currentLinks = []
@@ -2164,6 +2170,15 @@ class Sfera {
             })
 
         })
+    }
+
+
+    /**
+     * It checks that the dropdown menu contains the number of rows that you want to see on the page.
+     * @param {String} numberRows - the number of rows you want to display on the page
+     */
+    static checkRisultatiPaginaRighe(numberRows) {
+        cy.contains('Risultati per pagina').parent().find('nx-dropdown').should('contain.text', numberRows)
     }
 }
 export default Sfera
