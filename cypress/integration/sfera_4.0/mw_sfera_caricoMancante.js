@@ -128,4 +128,12 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
     it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_default 50 righe', function () {
         Sfera.checkRisultatiPaginaRighe('50')
     })
+
+    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_personalizza tabella', function () {
+        Sfera.eliminaColonna('Contraente')
+        Sfera.checkColonnaAssente('Contraente')
+        Sfera.gestisciColonne(['Contraente'])
+        Sfera.checkColonnaPresente('Contraente')
+        cy.wait(2000)
+    })
 }) 
