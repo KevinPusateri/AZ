@@ -108,6 +108,16 @@ const TipoTitoli = {
 }
 
 /**
+ * Enum Viste Suggerite
+ * @readonly
+ * @enum {Object}
+ * @private
+ */
+const VisteSuggerite = {
+    CARICO_MANCANTE: 'Carico Mancante'
+}
+
+/**
  * Enum Tipo Quietanze
  * @readonly
  * @enum {Object}
@@ -159,6 +169,11 @@ const VociMenuQuietanza = {
         root: 'Quietanza',
         parent: '',
         key: 'Stampa senza incasso'
+    },
+    QUIETANZAMENTO_ONLINE: {
+        root: 'Quietanzamento online',
+        parent: '',
+        key: 'Quietanzamento online'
     },
 }
 
@@ -545,6 +560,14 @@ class Sfera {
      */
     static get TIPOQUIETANZE() {
         return TipoQuietanze
+    }
+
+    /**
+     * Funzione che ritorna le viste suggerite
+     * @returns {VisteSuggerite} vista suggerita
+     */
+    static get VISTESUGGERITE() {
+        return VisteSuggerite
     }
 
     /**
@@ -2179,6 +2202,43 @@ class Sfera {
      */
     static checkRisultatiPaginaRighe(numberRows) {
         cy.contains('Risultati per pagina').parent().find('nx-dropdown').should('contain.text', numberRows)
+    }
+
+
+    /**
+     * Verifica se la voce non è presente
+     * @param {VociMenuEmissione} voce 
+     */
+    static checkVociMenuExist(voce) {
+        // Selezioniamo una riga a random
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+            let selected = Cypress._.random(rowsTable.length - 1);
+            cy.wrap(rowsTable).eq(selected).within(() => {
+                this.threeDotsMenuContestuale().click({ force: true })
+            })
+        })
+
+
+        //Andiamo a selezionare prima il menu contestuale 'padre' (se presente)
+        if (voce.parent !== '') {
+            this.menuContestualeParent().within(() => {
+                cy.contains(voce.parent).should('exist').and('be.visible').click()
+            })
+
+            //Andiamo a verificare che il menu contestuale 'figlio' sia ASSENTE
+            this.menuContestualeChild().within(() => {
+                cy.get('button[role="menuitem"]', { timeout: 10000 }).should('contain.text', voce.key)
+            })
+        } else {
+            if (voce.root === 'Cliente')
+                this.menuContestualeParent().within(() => {
+                    cy.contains(voce.root).should('exist').and('be.visible').click()
+                })
+            this.menuContestualeParent().within(() => {
+                cy.get('button[role="menuitem"]', { timeout: 10000 }).should('contain.text', voce.key)
+            })
+        }
+
     }
 }
 export default Sfera

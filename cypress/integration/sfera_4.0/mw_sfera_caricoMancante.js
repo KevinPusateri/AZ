@@ -93,7 +93,7 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
         Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
         Sfera.checkNotExistLob(Sfera.PORTAFOGLI.RAMI_VARI)
         Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
-        Sfera.selezionaVistaSuggerita('Carico Mancante')
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
         Sfera.espandiPannello()
         Sfera.estrai(false)
 
@@ -123,6 +123,8 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
     it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_colonne in tabella_report', function () {
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.estrazioneReportExcel(listColumnCaricoMancante)
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+
     })
 
     it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_default 50 righe', function () {
@@ -135,5 +137,13 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
         Sfera.gestisciColonne(['Contraente'])
         Sfera.checkColonnaPresente('Contraente')
         cy.wait(2000)
+    })
+
+    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_menu contestuale', function () {
+        Sfera.checkVociMenuExist(Sfera.VOCIMENUQUIETANZA.QUIETANZAMENTO_ONLINE)
+        Sfera.checkVociMenuExist(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_POLIZZA)
+        Sfera.checkVociMenuExist(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_DOCUMENTI_POLIZZA)
+        Sfera.checkVociMenuExist(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE)
+        Sfera.checkVociMenuExist(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI)
     })
 }) 
