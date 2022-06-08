@@ -178,6 +178,23 @@ const VociMenuQuietanza = {
 }
 
 /**
+ * Enum Voci Menu Consultazione
+ * @readonly
+ * @enum {Object}
+ */
+const VociMenuConsultazione = {
+    POLIZZA: {
+        root: 'Consultazione',
+        parent: '',
+        key: 'Polizza'
+    },
+    DOCUMENTI_POLIZZA: {
+        root: 'Consultazione',
+        parent: '',
+        key: 'Documenti di polizza'
+    },
+}
+/**
  * Enum Voci Menu Polizza
  * @readonly
  * @enum {Object}
@@ -483,6 +500,14 @@ class Sfera {
     }
 
     /**
+     * Funzione che ritorna le voci di menu Consultazioni disponibili su Sfera
+     * @returns {VociMenuConsultazione} Consultazioni disponibili
+     */
+    static get VOCIMENUCONSULTAZIONE() {
+        return VociMenuConsultazione
+    }
+
+    /**
      * Funzione che ritorna le Azioni Veloci disponibili
      * @returns {AzioniVeloci} AzioniVeloci disponibili
      */
@@ -731,7 +756,7 @@ class Sfera {
     /**
      * Verifica accesso a Sfera
      */
-    static verificaAccessoSfera() {
+    static verificaAccessoSfera(aggiornaCarico = true) {
         cy.intercept(infoUtente).as('infoUtente')
         cy.intercept(agenzieFonti).as('agenzieFonti')
         cy.intercept(caricaVista).as('caricaVista')
@@ -741,8 +766,10 @@ class Sfera {
         cy.wait('@infoUtente', { timeout: 60000 })
         cy.wait('@agenzieFonti', { timeout: 60000 })
         cy.wait('@caricaVista', { timeout: 60000 })
-        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+        if (aggiornaCarico) {
+            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+        }
 
         this.bodyTableEstrazione()
     }
@@ -871,9 +898,10 @@ class Sfera {
                 })
 
             //Andiamo a selezionare la root (Quietanza,Polizza...)
-            this.menuContestualeParent().within(() => {
-                cy.contains(voce.root).should('exist').and('be.visible').click()
-            })
+            if (voce.key !== VociMenuQuietanza.QUIETANZAMENTO_ONLINE.key)
+                this.menuContestualeParent().within(() => {
+                    cy.contains(voce.root).should('exist').and('be.visible').click()
+                })
 
             //Andiamo a selezionare prima il menu contestuale 'padre' (se presente)
             if (voce.parent !== '') {
@@ -881,7 +909,6 @@ class Sfera {
                     cy.contains(voce.parent).should('exist').and('be.visible').click()
                 })
             }
-
             //Andiamo a selezionare il menu contestuale 'figlio'
             this.menuContestualeChild().within(() => {
                 //? CONSULTAZIONE_DOCUMENTI_POLIZZA, Voci menu Cliente si apre su nuovo tab, quindi gestisto il _self
@@ -1021,6 +1048,21 @@ class Sfera {
                         this.verificaAccessoSfera()
                     }
                     break;
+                case VociMenuQuietanza.QUIETANZAMENTO_ONLINE:
+                    NGRA2013.verificaAccessoPagamento()
+                    cy.wait(10000)
+                    cy.screenshot('Verifica Accesso a Pagamenti NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        NGRA2013.flussoQuietanzamentoOnline()
+                        IncassoWAService.asmx
+                    }
+                    else {
+                        NGRA2013.home(true)
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                        break;
+                    }
+                    break;
                 case VociMenuPolizza.CONSULTAZIONE_POLIZZA:
                     InquiryAgenzia.verificaAccessoInquiryAgenzia()
                     cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1031,6 +1073,18 @@ class Sfera {
                         InquiryAgenzia.clickUscita()
                         //Verifichiamo il rientro in Sfera
                         this.verificaAccessoSfera()
+                    }
+                    break;
+                case VociMenuConsultazione.POLIZZA:
+                    InquiryAgenzia.verificaAccessoInquiryAgenzia()
+                    cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        InquiryAgenzia.clickUscita()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera(false)
                     }
                     break;
                 case VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA:
@@ -2218,6 +2272,7 @@ class Sfera {
             })
         })
 
+        //Andiamo a selezionare la root (Quietanza,Polizza...)
 
         //Andiamo a selezionare prima il menu contestuale 'padre' (se presente)
         if (voce.parent !== '') {
@@ -2230,7 +2285,7 @@ class Sfera {
                 cy.get('button[role="menuitem"]', { timeout: 10000 }).should('contain.text', voce.key)
             })
         } else {
-            if (voce.root === 'Cliente')
+            if (voce.root === 'Cliente' || voce.root === 'Consultazione')
                 this.menuContestualeParent().within(() => {
                     cy.contains(voce.root).should('exist').and('be.visible').click()
                 })

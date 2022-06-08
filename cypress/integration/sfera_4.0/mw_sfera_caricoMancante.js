@@ -140,10 +140,23 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
     })
 
     it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_menu contestuale', function () {
+        // Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        // Sfera.estrai(false)
         Sfera.checkVociMenuExist(Sfera.VOCIMENUQUIETANZA.QUIETANZAMENTO_ONLINE)
-        Sfera.checkVociMenuExist(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_POLIZZA)
-        Sfera.checkVociMenuExist(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_DOCUMENTI_POLIZZA)
+        Sfera.checkVociMenuExist(Sfera.VOCIMENUCONSULTAZIONE.POLIZZA)
+        Sfera.checkVociMenuExist(Sfera.VOCIMENUCONSULTAZIONE.DOCUMENTI_POLIZZA)
         Sfera.checkVociMenuExist(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE)
         Sfera.checkVociMenuExist(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI)
+    })
+
+
+    it.skip('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_menu contestuale_quietanzmaneto on line', function () {
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        Sfera.estrai(false)
+        Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.QUIETANZAMENTO_ONLINE, true, null, null, null, true)
+    })
+
+    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_menu contestuale_consultazione_polizza', function () {
+        Sfera.apriVoceMenu(Sfera.VOCIMENUCONSULTAZIONE.POLIZZA, false, null, null, null, true)
     })
 }) 
