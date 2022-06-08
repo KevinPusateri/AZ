@@ -100,7 +100,6 @@ describe("FABBRICATO E CONTENUTO", () => {
 
     it("Vai a preferiti", () => {
         SintesiCliente.FQ_tabUltra('Casa e Patrimonio')
-        cy.pause()
         SintesiCliente.VaiPreferiti()
         SintesiCliente.selezionaPrimaAgenzia()
         Preferiti.caricamentoPreferitiUltra()
