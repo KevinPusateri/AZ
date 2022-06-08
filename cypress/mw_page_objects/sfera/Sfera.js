@@ -1175,9 +1175,9 @@ class Sfera {
                     }
                     break;
                 case VociMenuCliente.LISTA_SINISTRI:
-                    Portafoglio.checkSinistri()
                     cy.screenshot('Lista Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
+                        Portafoglio.checkSinistri()
                         //TODO implementare flusso completo
                     }
                     else {

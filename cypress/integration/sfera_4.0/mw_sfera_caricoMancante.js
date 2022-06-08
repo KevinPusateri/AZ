@@ -168,4 +168,8 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
         Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE, false, null, null, null, true)
     })
 
+    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_menu contestuale_cliente_lista sinistri_call back applicativa', function () {
+        Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI, false, null, null, null, true)
+    })
+
 }) 
