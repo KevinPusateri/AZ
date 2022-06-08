@@ -1111,6 +1111,28 @@ class Sfera {
                         this.estrai()
                     }
                     break;
+                case Sfera.VOCIMENUCONSULTAZIONE.DOCUMENTI_POLIZZA:
+                    Folder.verificaCaricamentoFolder(false)
+                    cy.screenshot('Consultazione Documenti Polizza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        this.estrai()
+                    }
+                    break
                 case VociMenuPolizza.MODIFICA_MODALITA_PAGAMENTO:
                     cy.intercept(cambiaModalitaPagamentoPreferita).as('cambiaModalitaPagamentoPreferita')
                     this.dropdownModalitaPagamentoPreferita().click()
