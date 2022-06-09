@@ -48,21 +48,15 @@ class ConsultazioneSinistriPage {
     /**
      * Click on object defined by locator id
      * @param {string} id : locator object id
-     * replaced by clickFindByIdOnIframe
-    */
-   /*
-    static clickBtn_ById(id) {             
-        getIframe().find(id).should('be.visible').then((btn) => {    
-            expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
-            const $btn = Cypress.$(btn)
-            cy.wrap($btn)
-            .should('be.visible')
-            .wait(1000)
-            .click().log('>> object with id ['+id+'] is clicked')
-        })
-        cy.wait(1000)
-    }
+     * @param {string} href : url
      */
+     static InvokeRmvAttOnClick_ById(id, href) {   
+        getIframe().find(id).should('be.visible').then((btn) => {
+            cy.wrap(btn).invoke('removeAttr', 'onclick')
+            .invoke('attr', 'href', href).click()
+        }) 
+        cy.wait(2000)
+    }
   /**
      * Click on all objects defined by locator id
      * @param {string} id : locator objects id
