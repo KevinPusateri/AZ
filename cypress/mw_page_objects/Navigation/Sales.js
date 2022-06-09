@@ -101,7 +101,7 @@ const LinksRapidi = {
     deleteKey: function (keys) {
         if (!keys.NUOVO_SFERA) delete this.NUOVO_SFERA
         if (!keys.SFERA || Cypress.env('isAviva')) delete this.SFERA
-        if (!keys.CAMPAGNE_COMMERCIALI || Cypress.env('isAviva')) delete this.CAMPAGNE_COMMERCIALI
+        if (!keys.CAMPAGNE_COMMERCIALI) delete this.CAMPAGNE_COMMERCIALI
         if (!keys.RECUPERO_PREVENTIVI_E_QUOTAZIONI) delete this.RECUPERO_PREVENTIVI_E_QUOTAZIONI
         if (!keys.MONITORAGGIO_POLIZZE_PROPOSTE) delete this.MONITORAGGIO_POLIZZE_PROPOSTE
         if (!keys.GED_GESTIONE_DOCUMENTALE || Cypress.env('isAviva')) delete this.GED_GESTIONE_DOCUMENTALE
@@ -677,6 +677,7 @@ class Sales {
                 cy.wait('@getMotor', { timeout: 100000 });
                 getIFrame().find('button:contains("Calcola"):visible', { timeout: 120000 })
                 cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.PREVENTIVO_MOTOR, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true, disableTimersAndAnimations: false })
+                cy.task('log', 'Aggancio Preventivo Motor da Sales... OK!')
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO:
                 cy.intercept({

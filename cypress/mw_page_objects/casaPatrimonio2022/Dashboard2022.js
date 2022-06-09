@@ -65,21 +65,18 @@ class Dashboard {
      */
     static verificaAmbiti(ambiti) {
         cy.log(">>> VERIFICA AMBITI DASHBOARD <<<")
+
         ultraIFrame().within(() => {
+            //per ogni ambito verifica che sia stato selezionato
             for (var i = 0; i < ambiti.length; i++) {
                 cy.log("Verifica selezione " + ambiti[i])
-                //cy.pause()
-                cy.get('nx-indicator[class="nx-indicator ng-star-inserted"]').should('exist')
-                    //siblings('nx-icon').should('exist')
-                    .siblings('nx-icon[class*="' + ambiti[i] + '"]', { timeout: 10000 })
-                    //.contains(ambiti[i]).should('have.length', 1)
-                    //.siblings('nx-icon[class*=ambiti[i]]')
-                    .invoke('attr', 'class').should('contain', 'selected')
-                //cy.get('[class="ng-star-inserted"]').contains(ambiti[i]).should('be.visible')
-                //cy.get('div').contains(ambiti[i]).parent().parent().find('nx-icon[class*="selected"]')//[class="counter"]                
+
+                cy.get('ultra-ambiti-disponibili').should('exist')
+                .find('nx-icon[class*="' + ambiti[i] + '"]')
+                    .parents('ultra-ambito-button').find('ultra-icon-toggle')
+                    .find('nx-indicator').should('contain', "1") //verifica che l'ambito sia stato selezionato
             }
         })
-        //cy.pause()
     }
 
     /**
@@ -137,29 +134,35 @@ class Dashboard {
      */
     static selezionaFonteRandom() {
         ultraIFrame().within(() => {
-            cy.get('span').contains('Fonte').should('be.visible')
-                .next('nx-icon').dblclick() //click su pulsante Fonte
-            cy.wait(500)
-            cy.get('[id="fontePopover"]').should('be.visible') //verifica apertura popup fonte
-                .find('[name="pen"]').click() //click sull'icona della penna
-            cy.wait(2000)
+            cy.get('button[aria-label="burger-menu"]').should('be.visible').click()
+                .wait(500) //apre il burger menù e attende mezzo secondo
 
-            cy.get('[class*="fonti-table"]').should('exist') //verifica apertura popup per la scelta della fonte
 
-            //seleziona una fonte random
-            cy.get('[class*="fonti-table"]').find('[class*="sottofonte-semplice"]') //lista delle fonti
-                .then(($fonti) => {
+
+            cy.get('nx-sidepanel').should('be.visible') //verifica apertura del menù laterale
+                .find('nx-sidepanel-header').find('a').contains('Cambia fonte')
+                .click() //click su Cambia fonte
+
+            cy.get('ultra-fonte-modal').should('be.visible') //verifica apertura popup per la scelta della fonte
+                .find('tbody').find('tr').then(($fonti) => {
                     var rndFonte = Math.floor(Math.random() * $fonti.length)
-                    cy.get($fonti).eq(rndFonte).first().find('nx-radio').click() //click sul radio button di una fonte random
+                    cy.get($fonti).eq(rndFonte).first().click() //click su una fonte random
 
                     cy.get($fonti).eq(rndFonte).first().invoke('text').then(($text) => {
                         cy.log('fonte selezionata: ', $text)
                     })
                 });
 
-            cy.get('button').contains('CONFERMA').should('exist').click()
+            cy.get('ultra-fonte-modal').find('button').contains('CONFERMA')
+                .should('exist').click()
 
-            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+            //todo intercept GET *fonte-corrente ?
+            cy.intercept({
+                method: 'GET',
+                url: '**/fonte-corrente'
+            }).as('fonte')
+    
+            cy.wait('@fonte', { timeout: 120000 });
         })
     }
 
@@ -175,7 +178,7 @@ class Dashboard {
 
             cy.get('[id="pricePopover"]').find('button').click() //conferma
 
-            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+            cy.get('[id="ultra-spinner"]').should('not.be.visible') //attende il caricamento
         })
     }
 
@@ -234,7 +237,7 @@ class Dashboard {
 
     static modificaSoluzione(ambito, soluzione) {
         ultraIFrame().within(() => {
-            cy.get('ultra-dash-ambiti-istanze-table')
+            cy.get('ultra-istanze-table')
                 .find('nx-icon[class*="' + ambito + '"]')
                 .parents('tr')
                 .find('nx-dropdown')
@@ -243,11 +246,11 @@ class Dashboard {
             cy.wait(500)
             cy.get('nx-dropdown-item').contains(soluzione).should('be.visible').click() //seleziona Top
 
-            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+            cy.get('[id="ultra-spinner"]').should('not.be.visible') //attende il caricamento
         })
     }
 
-    static modificaSoluzioneHome(ambito, soluzione) {
+    /* static modificaSoluzioneHome(ambito, soluzione) {
         ultraIFrame().within(() => {
             cy.get('tr')
                 .contains(ambito)
@@ -261,7 +264,7 @@ class Dashboard {
 
             cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
         })
-    }
+    } */
 
     /**
      * apre il menù dot (tre puntini) di un determinato ambito
@@ -462,7 +465,7 @@ class Dashboard {
     static procediHome() {
         ultraIFrame().within(() => {
             cy.get('[id="dashTable"]').should('be.visible')
-            cy.get('span').contains(' PROCEDI ', { timeout: 30000 })
+            cy.get('span').contains('Procedi', { timeout: 30000 })
                 .scrollIntoView().should('be.visible').click().wait(500)
         })
     }

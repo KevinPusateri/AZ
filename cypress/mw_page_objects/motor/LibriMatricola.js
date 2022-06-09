@@ -68,7 +68,7 @@ class LibriMatricola {
             cy.get('#ButtonBackElencoLM').should('be.visible').within(() => {
                 cy.get('input[value="< Elenco Libri Matricola"]').should('be.visible').click()
             })
-            cy.wait('@getLibriMatricola', { requestTimeout: 40000 }).its('response.statusCode').should('eq', 200)
+            // cy.wait('@getLibriMatricola', { requestTimeout: 40000 }).its('response.statusCode').should('eq', 200)
         })
     }
 

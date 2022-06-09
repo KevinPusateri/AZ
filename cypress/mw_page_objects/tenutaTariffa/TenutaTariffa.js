@@ -109,7 +109,6 @@ class TenutaTariffa {
         })
     }
 
-
     static flussoATRScadenzaAltraCompagnia(caso) {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
@@ -205,6 +204,7 @@ class TenutaTariffa {
             })
         })
     }
+
     static compilaDatiQuotazione(currentCase, flowClients) {
 
         cy.getIFrame()
@@ -277,6 +277,9 @@ class TenutaTariffa {
                 cy.contains('Calcola').should('be.visible').click({ force: true })
             else
                 cy.contains('Non conosci la targa?').should('be.visible').click({ force: true })
+
+            cy.task('log', 'Dati Quotazione compilati correttamente')
+
         })
     }
 
@@ -362,6 +365,8 @@ class TenutaTariffa {
                 }
             })
         })
+
+        cy.task('log', 'Dati Contraente Proprietario compilati correttamente')
     }
 
     static compilaVeicolo(currentCase) {
@@ -470,12 +475,14 @@ class TenutaTariffa {
                     cy.get('input[formcontrolname="marcaModelloVersione"]').should('exist').type(currentCase.Marca + ' ' + currentCase.Modello + ' ' + currentCase.Versione)
                 }
                 else {
+                    cy.wait(3000)
+
                     //Modello
                     cy.get('nx-dropdown[formcontrolname="modello"]').should('exist').and('be.visible').click()
                     cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Modello)
                     cy.contains(currentCase.Modello).should('exist').and('be.visible').click()
                     cy.wait('@getMotor', { timeout: 30000 })
-
+                    cy.wait(3000)
                     //Allestimento
                     cy.get('nx-dropdown[formcontrolname="versione"]').should('exist').and('be.visible').click()
                     cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Versione)
@@ -533,6 +540,7 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
         });
+        cy.task('log', 'Dati Veicolo compilati correttamente')
     }
 
     static compilaProvenienza(currentCase) {
@@ -544,14 +552,14 @@ class TenutaTariffa {
 
         cy.getIFrame()
         cy.get('@iframe').within(() => {
-
+            cy.wait(5000)
             //#region Provenienza
             cy.get('nx-dropdown[aria-haspopup="listbox"]').first().should('be.visible').click()
             cy.get('nx-dropdown-item').should('be.visible').contains(currentCase.Provenienza).click()
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
-
+            cy.wait(4000)
             switch (currentCase.Provenienza) {
                 case "Precedentemente assicurato altra compagnia":
                     //Nel Dettaglio
@@ -713,6 +721,8 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
         })
+
+        cy.task('log', 'Dati Provenienza compilati correttamente')
     }
 
     static compilaOffertaRCA(currentCase) {
@@ -773,7 +783,7 @@ class TenutaTariffa {
             cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > div > p').should('exist').and('be.visible').invoke('text').then(currentDataDecorrenza => {
                 expect(currentDataDecorrenza).to.include(formattedDataDecorrenza)
             })
-
+            cy.wait(5000)
             //Espandiamo pannello RCA
             cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
                 cy.get('nx-icon[class~="clickAble"]').first().click()
@@ -790,6 +800,7 @@ class TenutaTariffa {
             //Dividiamo per tipologia di veicolo
             switch (currentCase.Settore) {
                 case '1':
+                    cy.wait(5000)
                     //Conducente/Tipo Guida -> per il caso autocarro è pre-impostato
                     cy.contains('Tipo Guida').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
                     cy.get('nx-dropdown-item').contains(currentCase.Tipo_Guida).click()
@@ -847,7 +858,7 @@ class TenutaTariffa {
                     // cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click()
                     // cy.wait('@getMotor', { timeout: 30000 })
 
-
+                    cy.wait(5000)
                     if (!Cypress.env('isAviva')) {
                         //Carico e scarico
                         cy.contains('Carico e scarico').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
@@ -880,6 +891,7 @@ class TenutaTariffa {
 
                     break
                 case '5':
+                    cy.wait(5000)
                     //Conducente/Tipo Guida
                     cy.contains('Tipo Guida').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
                     cy.get('nx-dropdown-item').contains(currentCase.Tipo_Guida).click()
@@ -901,6 +913,7 @@ class TenutaTariffa {
 
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible')
+                    cy.wait(5000)
 
                     //Opzione di sospendibilità
                     if (Cypress.env('isAviva')) {
@@ -941,9 +954,11 @@ class TenutaTariffa {
             cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
                 cy.get('p[class~="premio"]').first().invoke('text').then(premioLordo => {
                     expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
+                    cy.task('log', 'Dati Offerta compilati correttamente')
                 })
             })
         })
+
     }
 
     static compilaOffertaARD(currentCase) {
@@ -1013,6 +1028,7 @@ class TenutaTariffa {
                 })
                 cy.get('nx-spinner').should('not.be.visible')
                 //Assistenza Auto
+                cy.wait(5000)
                 cy.contains("Assistenza Auto").parent('div').parent('div').within(() => {
                     cy.get('nx-checkbox').click()
                 })
@@ -1027,6 +1043,7 @@ class TenutaTariffa {
                         cy.get('nx-checkbox').click()
                     })
                     cy.get('nx-spinner').should('not.be.visible')
+                    cy.wait(5000)
 
                     //Espandiamo pannello Garanzie Aggiuntive
                     cy.contains("Garanzie Aggiuntive").parent('div').parent('div').within(() => {
@@ -1038,6 +1055,7 @@ class TenutaTariffa {
                     cy.get('nx-dropdown-item').contains(currentCase.Tipo_Pacchetto_Garanzie_Aggiuntive).click()
                     cy.get('nx-spinner').should('not.be.visible')
                     //Limite rottura cristalli
+                    cy.contains(Tipo_Pacchetto_Garanzie_Aggiuntive).parents('div[nxrowalignitems="center"]').find('nx-icon').first().click()
                     cy.contains('Rottura cristalli con limite massimo').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
                     cy.get('nx-dropdown-item').contains(currentCase.Massimale_Rottura_Cristalli).click()
                     cy.get('nx-spinner').should('not.be.visible')
@@ -1068,6 +1086,7 @@ class TenutaTariffa {
                         cy.get('nx-checkbox').click()
                     })
                     cy.get('nx-spinner').should('not.be.visible')
+                    cy.wait(5000)
 
                     //Espandiamo pannello Kasko
                     cy.contains("Kasko").parent('div').parent('div').within(() => {
@@ -1174,8 +1193,10 @@ class TenutaTariffa {
 
                     //Radar_KeyID
                     expect(JSON.stringify(findKeyLogTariffa('Radar_KeyID'))).to.contain(currentCase.Versione_Tariffa_Radar)
+                    cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyLogTariffa('Radar_KeyID'))}`)
                     //CMC PUNTA FLEX
                     expect(JSON.stringify(findKeyLogTariffa('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
+                    cy.task('log', `Versione Radar_Punta_Flex_KeyID rilevata ${JSON.stringify(findKeyLogTariffa('Radar_Punta_Flex_KeyID'))}`)
                 })
                 //#endregion
 
@@ -1189,6 +1210,7 @@ class TenutaTariffa {
 
                     //Radar_KeyID
                     expect(JSON.stringify(findKeyRadarUW('Versione_Radar'))).to.contain(currentCase.Versione_Radar_UW)
+                    cy.task('log', `Versione Radar UW rilevata ${JSON.stringify(findKeyRadarUW('Versione_Radar'))}`)
 
                 })
 
@@ -1233,6 +1255,7 @@ class TenutaTariffa {
                         case "KASKO URTO CON ANIMALI":
                         //AZ e AVIVA
                         case "KASKO COLLISIONE":
+                            debugger
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
                             break
                         //AZ

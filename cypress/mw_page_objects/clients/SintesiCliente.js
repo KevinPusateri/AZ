@@ -81,9 +81,6 @@ const Auto = {
     EMISSIONE: 'Emissione',
     PRODOTTI_PARTICOLARI: 'Prodotti particolari',
     PASSIONE_BLU: !Cypress.env('isAviva') ? 'Passione BLU' : 'Natanti',
-    deleteKey: function () {
-        if (Cypress.env('isAviva')) delete this.PRODOTTI_PARTICOLARI
-    }
 }
 
 /**
@@ -205,6 +202,15 @@ class SintesiCliente {
         cy.contains('SINTESI CLIENTE').click()
         cy.wait('@gqlClient', { timeout: 30000 });
         cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
+    }
+
+    static FQ_tabUltra(tab) {
+        /* cy.get('.fast-quote-card').find('nx-tab-header')
+            .find('div').contains("Ultra").parent('button[class*="active"]').should('be.visible') */
+
+        const regex = new RegExp('\^' + tab + '\$');
+        cy.get('.fast-quote-card').find('app-ultra-parent-tabs')
+            .find('.nx-tab-label__content').contains(regex).click()
     }
 
     /**
@@ -482,7 +488,9 @@ class SintesiCliente {
         //scorre i sottomenù fino aselezionare l'opzione richiesta
         for (var i = 1; i < fixtureEmissione.length; i++) {
             cy.log(fixtureEmissione[i])
-            cy.get('button[role="menuitem"]').contains(fixtureEmissione[i])
+
+            const regex = new RegExp('\^' + fixtureEmissione[1] + '\$');
+            cy.get('button[role="menuitem"]').contains(regex)
                 .should('be.visible').click()
         }
     }
@@ -1304,7 +1312,7 @@ class SintesiCliente {
      */
     static checkLinksFromAuto(keys) {
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').first().should('exist').and('be.visible').within(() => {
-            Auto.deleteKey(keys)
+            // Auto.deleteKey(keys)
             const linksAuto = Object.values(Auto)
             cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
                 expect($buttonLinks).to.contain(linksAuto[i])

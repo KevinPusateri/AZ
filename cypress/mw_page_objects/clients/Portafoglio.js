@@ -106,8 +106,30 @@ class Portafoglio {
         cy.contains('PORTAFOGLIO').click().wait(2000)
         cy.wait('@gqlcontract', { timeout: 60000 });
         cy.screenshot('Verifica aggancio Portafoglio', { clip: { x: 0, y: 0, width: 1920, height: 900 } }, { overwrite: true })
+    }
 
+    static apriPortafoglioLite() {
+        let checkAperto
 
+        cy.get('app-client-profile-tabs').should('be.visible')
+            .find('a').contains("PORTAFOGLIO").then(($body) => {
+                checkAperto = $body.is('[class*="active"]')
+            })
+
+        if (!checkAperto) {
+            cy.get('app-client-profile-tabs')
+                .find('a').contains("PORTAFOGLIO").click()
+
+            cy.intercept({
+                method: 'POST',
+                url: '**/graphql'
+            }).as('caricamento')
+
+            cy.wait('@caricamento', { timeout: 120000 });
+        }
+        else {
+            cy.log("tab già aperto")
+        }
     }
 
     /**
@@ -151,7 +173,7 @@ class Portafoglio {
                 })
                 cy.get('lib-filter-button-with-modal').should('be.visible')
                 cy.wait(3000)
-                if(performAggancioApplicativo){
+                if (performAggancioApplicativo) {
                     cy.get('app-contract-card').should('be.visible').first().click()
                     cy.wait(3000)
                     Common.canaleFromPopup()

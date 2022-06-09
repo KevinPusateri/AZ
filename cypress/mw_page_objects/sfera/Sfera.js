@@ -108,6 +108,16 @@ const TipoTitoli = {
 }
 
 /**
+ * Enum Viste Suggerite
+ * @readonly
+ * @enum {Object}
+ * @private
+ */
+const VisteSuggerite = {
+    CARICO_MANCANTE: 'Carico Mancante'
+}
+
+/**
  * Enum Tipo Quietanze
  * @readonly
  * @enum {Object}
@@ -160,8 +170,30 @@ const VociMenuQuietanza = {
         parent: '',
         key: 'Stampa senza incasso'
     },
+    QUIETANZAMENTO_ONLINE: {
+        root: 'Quietanzamento online',
+        parent: '',
+        key: 'Quietanzamento online'
+    },
 }
 
+/**
+ * Enum Voci Menu Consultazione
+ * @readonly
+ * @enum {Object}
+ */
+const VociMenuConsultazione = {
+    POLIZZA: {
+        root: 'Consultazione',
+        parent: '',
+        key: 'Polizza'
+    },
+    DOCUMENTI_POLIZZA: {
+        root: 'Consultazione',
+        parent: '',
+        key: 'Documenti di polizza'
+    },
+}
 /**
  * Enum Voci Menu Polizza
  * @readonly
@@ -468,6 +500,14 @@ class Sfera {
     }
 
     /**
+     * Funzione che ritorna le voci di menu Consultazioni disponibili su Sfera
+     * @returns {VociMenuConsultazione} Consultazioni disponibili
+     */
+    static get VOCIMENUCONSULTAZIONE() {
+        return VociMenuConsultazione
+    }
+
+    /**
      * Funzione che ritorna le Azioni Veloci disponibili
      * @returns {AzioniVeloci} AzioniVeloci disponibili
      */
@@ -545,6 +585,14 @@ class Sfera {
      */
     static get TIPOQUIETANZE() {
         return TipoQuietanze
+    }
+
+    /**
+     * Funzione che ritorna le viste suggerite
+     * @returns {VisteSuggerite} vista suggerita
+     */
+    static get VISTESUGGERITE() {
+        return VisteSuggerite
     }
 
     /**
@@ -708,7 +756,7 @@ class Sfera {
     /**
      * Verifica accesso a Sfera
      */
-    static verificaAccessoSfera() {
+    static verificaAccessoSfera(aggiornaCarico = true) {
         cy.intercept(infoUtente).as('infoUtente')
         cy.intercept(agenzieFonti).as('agenzieFonti')
         cy.intercept(caricaVista).as('caricaVista')
@@ -718,8 +766,10 @@ class Sfera {
         cy.wait('@infoUtente', { timeout: 60000 })
         cy.wait('@agenzieFonti', { timeout: 60000 })
         cy.wait('@caricaVista', { timeout: 60000 })
-        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+        if (aggiornaCarico) {
+            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+        }
 
         this.bodyTableEstrazione()
     }
@@ -801,12 +851,14 @@ class Sfera {
 
     /**
      * Effettua l'Estrai delle Quietanze
+     * @param {Boolean} request - default settato a true, altrimenti non intercetta Estrai Quietanze
      */
-    static estrai() {
+    static estrai(request = true) {
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
         cy.contains('Estrai').should('exist').click()
 
-        cy.wait('@estraiQuietanze', { timeout: 120000 })
+        if (request)
+            cy.wait('@estraiQuietanze', { timeout: 120000 })
 
         //Verifichiamo che la tabella d'estrazione sia presente
         this.tableEstrazione()
@@ -846,9 +898,10 @@ class Sfera {
                 })
 
             //Andiamo a selezionare la root (Quietanza,Polizza...)
-            this.menuContestualeParent().within(() => {
-                cy.contains(voce.root).should('exist').and('be.visible').click()
-            })
+            if (voce.key !== VociMenuQuietanza.QUIETANZAMENTO_ONLINE.key)
+                this.menuContestualeParent().within(() => {
+                    cy.contains(voce.root).should('exist').and('be.visible').click()
+                })
 
             //Andiamo a selezionare prima il menu contestuale 'padre' (se presente)
             if (voce.parent !== '') {
@@ -856,7 +909,6 @@ class Sfera {
                     cy.contains(voce.parent).should('exist').and('be.visible').click()
                 })
             }
-
             //Andiamo a selezionare il menu contestuale 'figlio'
             this.menuContestualeChild().within(() => {
                 //? CONSULTAZIONE_DOCUMENTI_POLIZZA, Voci menu Cliente si apre su nuovo tab, quindi gestisto il _self
@@ -996,6 +1048,21 @@ class Sfera {
                         this.verificaAccessoSfera()
                     }
                     break;
+                case VociMenuQuietanza.QUIETANZAMENTO_ONLINE:
+                    NGRA2013.verificaAccessoPagamento()
+                    cy.wait(10000)
+                    cy.screenshot('Verifica Accesso a Pagamenti NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        NGRA2013.flussoQuietanzamentoOnline()
+                        IncassoWAService.asmx
+                    }
+                    else {
+                        NGRA2013.home(true)
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                        break;
+                    }
+                    break;
                 case VociMenuPolizza.CONSULTAZIONE_POLIZZA:
                     InquiryAgenzia.verificaAccessoInquiryAgenzia()
                     cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1006,6 +1073,18 @@ class Sfera {
                         InquiryAgenzia.clickUscita()
                         //Verifichiamo il rientro in Sfera
                         this.verificaAccessoSfera()
+                    }
+                    break;
+                case VociMenuConsultazione.POLIZZA:
+                    InquiryAgenzia.verificaAccessoInquiryAgenzia()
+                    cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        InquiryAgenzia.clickUscita()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera(false)
                     }
                     break;
                 case VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA:
@@ -1032,6 +1111,28 @@ class Sfera {
                         this.estrai()
                     }
                     break;
+                case Sfera.VOCIMENUCONSULTAZIONE.DOCUMENTI_POLIZZA:
+                    Folder.verificaCaricamentoFolder(false)
+                    cy.screenshot('Consultazione Documenti Polizza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        this.estrai()
+                    }
+                    break
                 case VociMenuPolizza.MODIFICA_MODALITA_PAGAMENTO:
                     cy.intercept(cambiaModalitaPagamentoPreferita).as('cambiaModalitaPagamentoPreferita')
                     this.dropdownModalitaPagamentoPreferita().click()
@@ -1096,9 +1197,9 @@ class Sfera {
                     }
                     break;
                 case VociMenuCliente.LISTA_SINISTRI:
-                    Portafoglio.checkSinistri()
                     cy.screenshot('Lista Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
+                        Portafoglio.checkSinistri()
                         //TODO implementare flusso completo
                     }
                     else {
@@ -1309,6 +1410,28 @@ class Sfera {
 
     }
 
+    /**
+     * Seleziona la vista suggerita 
+     * @param {string} nameVista - nome della Vista
+     */
+    static selezionaVistaSuggerita(nameVista) {
+        // click Seleziona Vista tendina
+        cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+
+        // Click Le mie viste
+        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+            cy.contains('Viste suggerite').click()
+        }).then(() => {
+
+            cy.get('div[class="cdk-overlay-pane"]').last()
+                .should('be.visible').within(() => {
+                    cy.get('button').contains(nameVista).click({ force: true }).wait(2000)
+                })
+        })
+        cy.get('h2[nxheadline="subsection-medium"]').should('include.text', nameVista)
+
+    }
+
     static eliminaVista(nameVista) {
         cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
@@ -1386,42 +1509,84 @@ class Sfera {
     /**
      * Estrazione Excel e verifica dati estratti correttamente
      */
-    static estrazioneReportExcel() {
-        var currentColumn = [
-            "Info",
-            "Pt.",
-            "Contraente",
-            "Num.\nPolizza",
-            "Scad.",
-            "Inizio\nCopertura",
-            "Evo",
-            "Cod\nAgenzia",
-            "Cod.\nFraz",
-            "Sede",
-            "Fonte",
-            "Ramo",
-            "Premio\nLordo Rata",
-            "Gg.Mo.\n/Fuo.Mo.",
-            "Descrizione\nProdotto",
-            "Decorrenza\nPolizza",
-            "Scadenza\nPolizza",
-            "Vin",
-            "Delta pr.\nNetto RCA",
-            "Delta Premio\nNetto ARD",
-            "Importo Canone",
-            "Ind att.rin",
-            "R.abb",
-            "Coass.",
-            "Val. Extra",
-            "Avv Email",
-            "Nr Avv\nSms",
-            "Avv Pdf",
-            "Motivo Non Val.Extra",
-            "Targa",
-            "Pag",
-            "FQ\nTot",
-            "Dlt pr Qtz €"
-        ];
+    static estrazioneReportExcel(currentColumn = []) {
+        if (currentColumn.length === 0)
+            currentColumn = [
+                "Agenzia",
+                "Avv Email",
+                "Avv Pdf",
+                "Avv Sms",
+                "Canone",
+                "Coas",
+                "Cod.Fiscale / P.IVA",
+                "Contraente",
+                "Cp.",
+                "Decorrenza Pol.",
+                "Descrizione Prodotto",
+                "Dlt pr Net ARD",
+                "Dlt pr Net RCA",
+                "Dlt pr Qtz €",
+                "Evo",
+                "FQ",
+                "Fonte",
+                "Fr.",
+                "Gg. E/F Mora",
+                "Ind att.rin",
+                "Info",
+                "Inizio Cop.",
+                "Pag",
+                "Polizza",
+                "Pr. Lordo Rata",
+                "Prv Age",
+                "Pt.",
+                "Pub.le Area Pers.",
+                "Pub.ta Area Pers.",
+                "R.abb",
+                "Ramo",
+                "Scadenza",
+                "Scadenza Pol.",
+                "Sede",
+                "St. Tit.",
+                "Targa",
+                "Val. Extra",
+                "Vinc."
+            ]
+
+        // var currentColumn = [
+        //     "Info",
+        //     "Pt.",
+        //     "Contraente",
+        //     "Num.\nPolizza",
+        //     "Scad.",
+        //     "Inizio\nCopertura",
+        //     "Evo",
+        //     "Cod\nAgenzia",
+        //     "Cod.\nFraz",
+        //     "Sede",
+        //     "Fonte",
+        //     "Ramo",
+        //     "Premio\nLordo Rata",
+        //     "Gg.Mo.\n/Fuo.Mo.",
+        //     "Descrizione\nProdotto",
+        //     "Decorrenza\nPolizza",
+        //     "Scadenza\nPolizza",
+        //     "Vin",
+        //     "Delta pr.\nNetto RCA",
+        //     "Delta Premio\nNetto ARD",
+        //     "Importo Canone",
+        //     "Ind att.rin",
+        //     "R.abb",
+        //     "Coass.",
+        //     "Val. Extra",
+        //     "Avv Email",
+        //     "Nr Avv\nSms",
+        //     "Avv Pdf",
+        //     "Motivo Non Val.Extra",
+        //     "Targa",
+        //     "Pag",
+        //     "FQ\nTot",
+        //     "Dlt pr Qtz €"
+        // ];
         var rows = []
         cy.get('tr[class="nx-table-row ng-star-inserted selectedRow"]').each((rowsTable) => {
             cy.wrap(rowsTable).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($textCell) => {
@@ -1436,8 +1601,12 @@ class Sfera {
 
             cy.task('getFolderDownload').then((folderDownload) => {
                 cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
+                    console.log(Object.values(jsonData[0].data[0]).sort())
+                    console.log('---------')
+                    console.log(currentColumn.sort())
+                    debugger
                     // Verifica Colonne presenti
-                    expect(jsonData[0].data[0]).to.eqls(currentColumn);
+                    expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(currentColumn.sort());
                     for (let index = 0; index < rows.length; index++) {
                         // Verifica Clienti presenti
                         expect(jsonData[0].data[index + 1]).to.include(rows[index]);
@@ -2080,6 +2249,73 @@ class Sfera {
                 })
             })
         })
+    }
+
+
+    /**
+     * It takes a list of column names, and checks that the table has those columns.
+     * @param {Object} listColumn - is an object that contains the list of columns that should be present in the
+     * table.
+     */
+    static checkAllColonnePresenti(listColumn) {
+        cy.get('table').then(($table) => {
+            const currentLinks = []
+            const checkLinks = Object.values(listColumn)
+
+            cy.wrap($table).find('div[class="table-component-th-name"]').each(($link, i) => {
+                currentLinks.push($link.text().trim())
+            }).then(() => {
+                expect(currentLinks.sort()).to.deep.eq(checkLinks.sort());
+            })
+
+        })
+    }
+
+
+    /**
+     * It checks that the dropdown menu contains the number of rows that you want to see on the page.
+     * @param {String} numberRows - the number of rows you want to display on the page
+     */
+    static checkRisultatiPaginaRighe(numberRows) {
+        cy.contains('Risultati per pagina').parent().find('nx-dropdown').should('contain.text', numberRows)
+    }
+
+
+    /**
+     * Verifica se la voce non è presente
+     * @param {VociMenuEmissione} voce 
+     */
+    static checkVociMenuExist(voce) {
+        // Selezioniamo una riga a random
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+            let selected = Cypress._.random(rowsTable.length - 1);
+            cy.wrap(rowsTable).eq(selected).within(() => {
+                this.threeDotsMenuContestuale().click({ force: true })
+            })
+        })
+
+        //Andiamo a selezionare la root (Quietanza,Polizza...)
+
+        //Andiamo a selezionare prima il menu contestuale 'padre' (se presente)
+        if (voce.parent !== '') {
+            this.menuContestualeParent().within(() => {
+                cy.contains(voce.parent).should('exist').and('be.visible').click()
+            })
+
+            //Andiamo a verificare che il menu contestuale 'figlio' sia ASSENTE
+            this.menuContestualeChild().within(() => {
+                cy.get('button[role="menuitem"]', { timeout: 10000 }).should('contain.text', voce.key)
+            })
+        } else {
+            if (voce.root === 'Cliente' || voce.root === 'Consultazione')
+                this.menuContestualeParent().within(() => {
+                    cy.contains(voce.root).should('exist').and('be.visible').click()
+                })
+            this.menuContestualeParent().within(() => {
+                cy.get('button[role="menuitem"]', { timeout: 10000 }).should('contain.text', voce.key)
+            })
+        }
+
     }
 }
 export default Sfera

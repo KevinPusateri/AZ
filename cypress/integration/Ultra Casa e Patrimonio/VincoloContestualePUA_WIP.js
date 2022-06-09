@@ -266,7 +266,7 @@ describe("Vincolo contestuale PUA ", () => {
   it("Portafoglio", () => {
     cy.log("Numero contratto: " + nContratto)
 
-    Portafoglio.clickTabPortafoglio()
+    Portafoglio.apriPortafoglioLite()
     Portafoglio.clickSubTab("Proposte")
     Portafoglio.ordinaPolizze("Numero contratto")
     Portafoglio.clickIncassaProposta(nContratto)
@@ -303,17 +303,20 @@ describe("Vincolo contestuale PUA ", () => {
   })
 
   it("Verifica polizza attiva", () => {
+    cy.pause()
     Portafoglio.clickSubTab("Polizze attive")
     Portafoglio.ordinaPolizze("Numero contratto")
     Portafoglio.checkPolizzaAttivaLite(nContratto)
   })
 
   it("Verifica ambiti", () => {
+    //todo chiudere popup?
     Portafoglio.checkAmbiti(nContratto, ["FABBRICATO MUTUO", "RESPONSABILITA' CIVILE ESSENTIAL"])
   })
 
 
   it("Fine", () => {
+    //todo folder?
     cy.pause()
   })
 })

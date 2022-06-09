@@ -99,6 +99,7 @@ describe("FABBRICATO E CONTENUTO", () => {
     })
 
     it("Vai a preferiti", () => {
+        SintesiCliente.FQ_tabUltra('Casa e Patrimonio')
         SintesiCliente.VaiPreferiti()
         SintesiCliente.selezionaPrimaAgenzia()
         Preferiti.caricamentoPreferitiUltra()
@@ -221,6 +222,7 @@ describe("FABBRICATO E CONTENUTO", () => {
     })
 
     it("Portafoglio", () => {
+        cy.pause()
         Portafoglio.clickTabPortafoglio()
         Portafoglio.ordinaPolizze("Numero contratto")
         Portafoglio.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
