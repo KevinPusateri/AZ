@@ -401,42 +401,46 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, i
         return el.partyCategory[0] === 'E'
       })
 
-      let currentClient = clientiEffettivi[clientToAnalyze]
-      cy.log('Cliente in analisi : ' + currentClient.customerNumber)
-      //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
-      cy.request({
-        method: 'GET',
-        retryOnStatusCodeFailure: true,
-        timeout: 60000,
-        log: false,
-        url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
-        headers: {
-          'x-allianz-user': tutf
-        }
-      }).then(responseContracts => {
-        //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
-        let contractsWithBranchId
-        if (isUltra)
-          contractsWithBranchId = responseContracts.body.filter(el => {
-            return (el.branchId.includes(branchId) && el.branchName.includes('ULTRA'))
-          })
-        else if (isAZ1)
-          contractsWithBranchId = responseContracts.body.filter(el => {
-            return (el.branchId.includes(branchId) && el.branchName.includes('ALLIANZ1'))
-          })
-        else
-          contractsWithBranchId = responseContracts.body.filter(el => {
-            return el.branchId.includes(branchId)
-          })
+      try {
+        let currentClient = clientiEffettivi[clientToAnalyze]
+        cy.log('Cliente in analisi : ' + currentClient.customerNumber)
+        //Andiamo a cercare i contratti attivi, filtrando poi in base al branchId
+        cy.request({
+          method: 'GET',
+          retryOnStatusCodeFailure: true,
+          timeout: 60000,
+          log: false,
+          url: be2beHost + '/daanagrafe/CISLCore/contracts?partyId=' + currentClient.customerNumber + '&contractProcessState=Contract&status=Live',
+          headers: {
+            'x-allianz-user': tutf
+          }
+        }).then(responseContracts => {
+          //Filtriamo per branchID per verificare che ci siano polizze con il branchId specificato
+          let contractsWithBranchId
+          if (isUltra)
+            contractsWithBranchId = responseContracts.body.filter(el => {
+              return (el.branchId.includes(branchId) && el.branchName.includes('ULTRA'))
+            })
+          else if (isAZ1)
+            contractsWithBranchId = responseContracts.body.filter(el => {
+              return (el.branchId.includes(branchId) && el.branchName.includes('ALLIANZ1'))
+            })
+          else
+            contractsWithBranchId = responseContracts.body.filter(el => {
+              return el.branchId.includes(branchId)
+            })
 
-        if (contractsWithBranchId.length > 0) {
-          return currentClient.firstName + ' ' + currentClient.name
-        }
-        else
-          cy.getClientWithPolizze(tutf, branchId, isUltra, isAZ1, clientType, true, clientToAnalyze + 1)
-      })
+          if (contractsWithBranchId.length > 0) {
+            return currentClient.firstName + ' ' + currentClient.name
+          }
+          else
+            cy.getClientWithPolizze(tutf, branchId, isUltra, isAZ1, clientType, true, clientToAnalyze + 1)
+        })
+
+      } catch (error) {
+        return ""
+      }
     })
-
   }
   else {
     cy.generateTwoLetters().then(nameRandom => {
