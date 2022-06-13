@@ -210,6 +210,34 @@ class CampagneCommerciali {
         })
     }
 
+    static campagneNuove() {
+        gqlCampaing()
+
+        getIFrame().within(() => {
+
+            cy.get('.lib-campaign-card').should('exist').within(() => {
+                //clicchiamo sulla prima disponibile
+                cy.contains('Vedi campagna').first().should('exist').click()
+            })
+        })
+
+        waitCheckGQL('gqlCampaign')
+        waitCheckGQL('gqlCampaignAgent')
+
+        //Verifichiamo che il pulsante 'Configura e attiva' sia abilitato
+        getIFrame().within(() => {
+            cy.get('button:contains("Configura e attiva")').should('exist').and('be.visible').and('not.have.attr', 'disabled')
+
+            cy.screenshot('Campagne Nuove', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+            cy.contains("Indietro").should('exist').and('be.visible').click()
+
+            waitCheckGQL('gqlCampaignList')
+            waitCheckGQL('gqlCampaignsMonitoring')
+            waitCheckGQL('gqlCampaignAgent')
+        })
+    }
+
     static suggerimentoCampagna() {
         getIFrame().within(() => {
             cy.contains('Suggerisci una campagna').should('exist').click()

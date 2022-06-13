@@ -94,4 +94,9 @@ describe('Matrix Web : Campagne Commerciali', optionsRetrials, function () {
     it('Suggerimento Campagna', function () {
         CampagneCommerciali.suggerimentoCampagna()
     })
+
+    it('Campagne Nuove', function () {
+        CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.TIPOLOGIA_CAMPAGNA)
+        CampagneCommerciali.campagneNuove()
+    })
 })
