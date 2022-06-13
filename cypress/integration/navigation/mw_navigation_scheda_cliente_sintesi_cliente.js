@@ -144,10 +144,13 @@ beforeEach(() => {
         TopBar.search('Pulini Francesco')
         SintesiCliente.wait()
     } else if (!Cypress.env('isAviva')) {
-        TopBar.search('SLZNLL54A04H431Q')
+        TopBar.search('SLZNLL54A04H431Q') 
+        SintesiCliente.wait()
+    } else if (!Cypress.env('isAvivaBroker')) { // Entra in Aviva
+        TopBar.search('DRLTMS95L21F257R')
         SintesiCliente.wait()
     } else {
-        TopBar.search('DRLTMS95L21F257R')
+        TopBar.search('VLLNLN57T42B872A')// Entra in Aviva Broker
         SintesiCliente.wait()
     }
 })

@@ -160,6 +160,37 @@ class Sales {
     }
 
     /**
+     * Imposta la data di inizio e fine sulla quale effettuare l'estrazione
+     * @param {Boolean} [performEstrai] default false, se true clicca su estrai
+     * @param {string} [dataInizio] default undefined; se non specificata, setta automaticamente la data 1 mese prima da oggi
+     * @param {string} [dataFine] default undefined; se non specificata, setta automaticamente la data odierna
+     */
+     static setDateEstrazione(dataInizio = undefined, dataFine = undefined) {
+
+        //Impostiamo la data di inizio estrazione
+        if (dataInizio === undefined) {
+            //Se non specificata la data, settiamo automaticamente la data a 1 mese prima rispetto ad oggi
+            let today = new Date()
+            today.setMonth(today.getMonth() - 1)
+            dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
+        }
+
+        cy.get('div[class="nx-formfield__flexfield"]').first().click().clear().wait(500).click().type(dataInizio).wait(500)
+
+        //Impostiamo la data di fine estrazione
+        if (dataFine === undefined) {
+            //Se non specificata la data, settiamo automaticamente la data odierna
+            let today = new Date()
+            dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
+        }
+
+        cy.get('div[class="nx-formfield__flexfield"]').last().click().clear().wait(500).type(dataFine).wait(500).type('{esc}')
+
+
+        cy.wait(3000)
+    }
+
+    /**
      * Verifica che le modifiche(colori e dati) siano corrette 
      */
     static checkEstraiModifiche(cluster) {

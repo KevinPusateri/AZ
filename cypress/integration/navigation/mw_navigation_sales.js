@@ -21,6 +21,15 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 //#endregion
 
+let today = new Date()
+today.setDate(1)
+today.setMonth(new Date().getMonth() - 1)
+let dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
+today.setMonth(new Date().getMonth())
+today.setDate(25)
+let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
+//#endregion
+
 let keys = {
     BMPenabled: true,
     UltraImpresaEnabled: true,
@@ -146,6 +155,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         if (Cypress.env('isAviva'))
             this.skip()
         TopBar.clickSales()
+        Sales.setDateEstrazione()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
@@ -314,13 +324,14 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it('Verifica ASSENZA Campagne Commerciali', function () {
-        if (!Cypress.env('isAviva'))
-            this.skip()
-        TopBar.clickSales()
-        Sales.checkNotExistLink('a', 'Campagne Commerciali')
-        Sales.backToSales()
-    })
+    // TOGLERE
+    // it('Verifica ASSENZA Campagne Commerciali', function () {
+    //     if (!Cypress.env('isAviva'))
+    //         this.skip()
+    //     TopBar.clickSales()
+    //     Sales.checkNotExistLink('a', 'Campagne Commerciali')
+    //     Sales.backToSales()
+    // })
 
     it('Verifica ASSENZA Sfera', function () {
         if (!Cypress.env('isAviva'))
@@ -466,7 +477,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
 
         it('Verifica aggancio Emetti Polizza - Trattative Auto Corporate', function () {
-            if (keys.TrattativeAutoCorporateEnabled)
+            if (!keys.TrattativeAutoCorporateEnabled)
                 this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Trattative Auto Corporate')
@@ -505,6 +516,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Motor', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
+            Sales.setDateEstrazione(dataInizio,dataFine)
             Sales.lobDiInteresse('Motor', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
@@ -516,6 +528,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Rami Vari', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
+            Sales.setDateEstrazione(dataInizio,dataFine)
             Sales.lobDiInteresse('Rami vari', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
@@ -528,6 +541,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         if (Cypress.env('isAviva'))
             this.skip()
         TopBar.clickSales()
+        Sales.setDateEstrazione(dataInizio,dataFine)
         Sales.lobDiInteresse('Vita', 'Estrai').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
@@ -538,6 +552,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Tutte', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
+            Sales.setDateEstrazione(dataInizio,dataFine)
             Sales.lobDiInteresse('Tutte', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
@@ -554,13 +569,14 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.clickTabCampagne()
     })
 
-    it('Verifica ASSENZA TAB: CAMPAGNE', function () {
-        if (!Cypress.env('isAviva'))
-            this.skip()
-        TopBar.clickSales()
-        Sales.checkNotExistLink('button[role="tab"]', 'CAMPAGNE')
-        Sales.backToSales()
-    })
+    // DA TOGLIERE
+    // it('Verifica ASSENZA TAB: CAMPAGNE', function () {
+    //     if (!Cypress.env('isAviva'))
+    //         this.skip()
+    //     TopBar.clickSales()
+    //     Sales.checkNotExistLink('button[role="tab"]', 'CAMPAGNE')
+    //     Sales.backToSales()
+    // })
 
     it('Verifica aggancio Appuntamento', function () {
         TopBar.clickSales()

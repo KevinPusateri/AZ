@@ -401,7 +401,8 @@ class TopBar extends HomePage {
     static clickIconUser() {
         cy.get('lib-user-header').click()
         cy.get('lib-user-name-container').should('be.visible')
-        cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
+        if (!Cypress.env('isAvivaBroker'))
+            cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
         if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
             cy.contains('Ci sono altri profili collegati')
         cy.contains('Cambio password')

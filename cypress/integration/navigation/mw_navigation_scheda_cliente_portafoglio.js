@@ -41,8 +41,10 @@ beforeEach(() => {
             let fileAgency
             if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
                 fileAgency = 'agencies'
-            else
+            else if (!Cypress.env('isAvivaBroker'))
                 fileAgency = 'agenciesAviva'
+            else
+                fileAgency = 'agenciesAvivaBroker'
 
             cy.fixture(fileAgency).then(agenciesFromFixture => {
                 var currentAgency = agenciesFromFixture.shift()
