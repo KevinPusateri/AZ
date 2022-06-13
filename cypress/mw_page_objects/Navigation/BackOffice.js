@@ -54,7 +54,7 @@ const LinksSinistri = {
     deleteKey: function (keys) {
         if (!keys.MOVIMENTAZIONE_SINISTRI) delete this.MOVIMENTAZIONE_SINISTRI
         if (!keys.DENUNCIA) delete this.DENUNCIA
-        if (Cypress.env('isAviva')) delete this.GESTIONE_CONTATTO_CARD
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.GESTIONE_CONTATTO_CARD
         if (!keys.DENUNCIA_BMP) delete this.DENUNCIA_BMP
         if (!keys.CONSULTAZIONE_SINISTRI) delete this.CONSULTAZIONE_SINISTRI
         if (!keys.SINISTRI_INCOMPLETI) delete this.SINISTRI_INCOMPLETI

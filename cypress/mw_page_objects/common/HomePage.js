@@ -46,14 +46,14 @@ class HomePage {
 
         }
 
-        if (mockedNews && !Cypress.env('isAviva')) {
+        if (mockedNews && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
 
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news')) {
                     req.reply({ fixture: 'mockNews.json' })
                 }
             })
-        } else if (!Cypress.env('isAviva')) {
+        } else if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             //Wait for news graphQL to be returned
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news')) {
@@ -86,7 +86,7 @@ class HomePage {
             }
         }
 
-        if (!mockedNews && !Cypress.env('isAviva'))
+        if (!mockedNews && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             cy.wait('@gqlNews')
 
         //Attendiamo caricamento dell'icona utente in alto a dx

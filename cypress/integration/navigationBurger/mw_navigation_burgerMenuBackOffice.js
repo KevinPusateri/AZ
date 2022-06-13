@@ -121,14 +121,13 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', function () {
     })
 
     it('Verifica aggancio Gestione Contatto Card', function () {
-        if (Cypress.env('isAviva')) //! NON si ha ancora la chiave i profilazione
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) //! NON si ha ancora la chiave i profilazione
             this.skip()
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Gestione Contatto Card')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    // if (!Cypress.env('isAviva')) {
     it('Verifica aggancio Denuncia', function () {
         if (!keys.DENUNCIA)
             this.skip()

@@ -60,7 +60,7 @@ describe('Buca di Ricerca - Risultati Clients', function () {
     })
 
 
-    if (Cypress.env('isAviva')) {
+    if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
 
         describe('Buca di Ricerca - Risultati Clients - AVIVA', function () {
 

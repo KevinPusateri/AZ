@@ -45,9 +45,9 @@ const CardsEmissioni = {
  * @enum {string}
  */
 const RamiVari = {
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio BMP' : 'Allianz Ultra Casa e Patrimonio BMP',
-    ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio BMP' : 'Allianz Ultra Casa e Patrimonio BMP',
+    ALLIANZ_ULTRA_SALUTE: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute',
     ALLIANZ_ULTRA_IMPRESA: 'Allianz Ultra Impresa',
     ALLIANZ1_BUSINESS: 'Allianz1 Business',
     FASQUOTE_UNIVERSO_PERSONA: 'Fastquote Universo Persona',
@@ -80,7 +80,7 @@ const RamiVari = {
 const Auto = {
     EMISSIONE: 'Emissione',
     PRODOTTI_PARTICOLARI: 'Prodotti particolari',
-    PASSIONE_BLU: !Cypress.env('isAviva') ? 'Passione BLU' : 'Natanti',
+    PASSIONE_BLU: (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))? 'Passione BLU' : 'Natanti',
 }
 
 /**
@@ -95,7 +95,7 @@ const linksEmissioneAuto = {
         FLOTTE_CONVENZIONI: 'Flotte e convenzioni',
         deleteKey: function (keys) {
             if (!keys.PREVENTIVO_MOTOR) delete this.PREVENTIVO_MOTOR
-            if (!keys.FLOTTE_CONVENZIONI || Cypress.env('isAviva')) delete this.FLOTTE_CONVENZIONI
+            if (!keys.FLOTTE_CONVENZIONI || Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.FLOTTE_CONVENZIONI
             if (!keys.SAFE_DRIVE_AUTOVETTURE) delete this.SAFE_DRIVE_AUTOVETTURE
         }
     },
@@ -119,7 +119,7 @@ const linksEmissioneAuto = {
         NUOVA_POLIZZA_COASSICURAZIONE: 'Nuova polizza Coassicurazione',
         deleteKey: function (keys) {
             if (!keys.NUOVA_POLIZZA) delete this.NUOVA_POLIZZA
-            if (!keys.NUOVA_POLIZZA_GUIDATA || Cypress.env('isAviva')) delete this.NUOVA_POLIZZA_GUIDATA
+            if (!keys.NUOVA_POLIZZA_GUIDATA || Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.NUOVA_POLIZZA_GUIDATA
             if (!keys.NUOVA_POLIZZA_COASSICURAZIONE) delete this.NUOVA_POLIZZA_COASSICURAZIONE
         }
     }
@@ -179,7 +179,7 @@ class SintesiCliente {
                     cy.wrap($situazione).find('.content').should(($subtitle) => {
                         expect($subtitle).to.contain('Totale premi annui')
                         expect($subtitle).to.contain('Totale danni')
-                        if (!Cypress.env('isAviva'))
+                        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
                             expect($subtitle).to.contain('Vita puro rischio')
                         expect($subtitle).to.contain('Polizze attive')
                     })
@@ -248,7 +248,7 @@ class SintesiCliente {
                     'Casa e Patrimonio',
                     'Salute'
                 ]
-                if (Cypress.env('isAviva'))
+                if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
                     tabUltraFastQuote = ['Salute']
                 cy.get('app-ultra-parent-tabs').find('nx-tab-header').each(($checkTabUltraFastQuote, i) => {
                     expect($checkTabUltraFastQuote.text().trim()).to.include(tabUltraFastQuote[i]);
@@ -256,7 +256,7 @@ class SintesiCliente {
                 //#endregion
 
                 //#region SubTab Casa e Patrimonio
-                if (!Cypress.env('isAviva')) {
+                if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
 
                     cy.get('app-ultra-parent-tabs').find('nx-tab-header').contains('Casa e Patrimonio').click()
                     const scopesUltra = [
@@ -301,7 +301,7 @@ class SintesiCliente {
                     'Invalidità permanente da infortunio',
                     'Invalidità permanente da malattia'
                 ]
-                if (Cypress.env('isAviva'))
+                if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
                     var scopesSalute = [
                         'Spese mediche',
                         'Diaria da ricovero',
@@ -322,7 +322,7 @@ class SintesiCliente {
                 cy.get('app-ultra-health-fast-quote').contains('Vai a Preferiti').click()
                 Common.canaleFromPopup()
                 getIFrame().find('#dashBody').should('be.visible')
-                if (!Cypress.env('isAviva'))
+                if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
                     getIFrame().find('img[src="./assets/img/allianz-logo-salute.png"]').should('be.visible')
                 else
                     getIFrame().find('#tab_agenzia').should('be.visible')
@@ -350,7 +350,7 @@ class SintesiCliente {
                 cy.wait('@gqldataSettings', { timeout: 60000 })
                 cy.get('app-new-auto-fast-quote').contains('Tipo veicolo').should('be.visible')
                 cy.get('app-new-auto-fast-quote').contains('Targa').should('be.visible')
-                if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+                if (!Cypress.env('monoUtenza') && (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))) {
                     cy.get('app-new-auto-fast-quote').contains('Agenzia').should('be.visible')
                 }
                 cy.get('img[src$="preventivoMotor.jpg"]').should('be.visible')
@@ -705,7 +705,7 @@ class SintesiCliente {
      */
     static clickNuovaPolizza() {
         cy.wait(2000)
-        if (!Cypress.env('isAviva'))
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
         else
             cy.get('.cdk-overlay-container').find('button').contains('Natanti').click()
@@ -737,7 +737,7 @@ class SintesiCliente {
      */
     static clickNuovaPolizzaCoassicurazione() {
         cy.wait(2000)
-        if (!Cypress.env('isAviva'))
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             cy.get('.cdk-overlay-container').find('button').contains('Passione BLU').click()
         else
             cy.get('.cdk-overlay-container').find('button').contains('Natanti').click()
@@ -767,7 +767,7 @@ class SintesiCliente {
      */
     static clickAllianzUltraCasaPatrimonio() {
         cy.wait(2000)
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio').click()
         } else
             cy.get('.cdk-overlay-container').find('button').contains('Ultra Casa e Patrimonio').click()
@@ -780,7 +780,7 @@ class SintesiCliente {
         cy.wait('@getFonti', { timeout: 50000 });
         getIFrame().find('ultra-ambiti-disponibili').should('be.visible')
         getIFrame().find('span:contains("PROCEDI")').should('be.visible')
-        getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
+        getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
         cy.screenshot('Verifica aggancio Ultra Casa e Patrimonio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
@@ -789,7 +789,7 @@ class SintesiCliente {
      */
     static clickAllianzUltraCasaPatrimonioBMP() {
         cy.wait(2000)
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio BMP').click()
         } else
             cy.get('.cdk-overlay-container').find('button').contains('Ultra Casa e Patrimonio BMP').click()
@@ -812,7 +812,7 @@ class SintesiCliente {
      */
     static clickAllianzUltraSalute() {
         cy.wait(2000)
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Salute').click()
         } else
             cy.get('.cdk-overlay-container').find('button').contains('Ultra Salute').click()
@@ -824,7 +824,7 @@ class SintesiCliente {
         }).as('getFonti');
         Common.canaleFromPopup()
         cy.wait('@getFonti', { timeout: 50000 });
-        getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-salute.png' : './assets/img/aviva-logo-salute.png')
+        getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) ? './assets/img/allianz-logo-salute.png' : './assets/img/aviva-logo-salute.png')
         getIFrame().find('ultra-ambiti-disponibili').should('be.visible')
         getIFrame().find('span:contains("PROCEDI"):visible')
         cy.screenshot('Verifica aggancio Ultra Salute', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })

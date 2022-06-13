@@ -67,14 +67,14 @@ class LoginPage {
 
         }
 
-        if (mockedNews && !Cypress.env('isAviva')) {
+        if (mockedNews && (!Cypress.env('isAviva') || !Cypress.env('isAvivaBroker'))) {
 
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news')) {
                     req.reply({ fixture: 'mockNews.json' })
                 }
             })
-        } else if (!Cypress.env('isAviva')) {
+        } else if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             //Wait for news graphQL to be returned
             cy.intercept('POST', '**/graphql', (req) => {
                 if (req.body.operationName.includes('news'))
@@ -115,6 +115,11 @@ class LoginPage {
                                 "agentId": data.aviva.agentId,
                                 "agency": data.aviva.agency,
                             }
+                        else if (Cypress.env('isAvivaBroker'))
+                            currentImpersonificationToPerform = {
+                                "agentId": data.avivaBroker.agentId,
+                                "agency": data.avivaBroker.agency,
+                            }
                         else
                             currentImpersonificationToPerform = {
                                 "agentId": user.agentId,
@@ -133,7 +138,7 @@ class LoginPage {
 
                         if (!Cypress.env('monoUtenza'))
                             Common.checkUrlEnv()
-                        if (!mockedNews && !Cypress.env('isAviva'))
+                        if (!mockedNews && (!Cypress.env('isAviva') || !Cypress.env('isAvivaBroker')))
                             cy.wait('@gqlNews')
 
                         if (Cypress.env('currentEnv') !== 'TEST')

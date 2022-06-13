@@ -22,7 +22,7 @@ const LinksRapidi = {
         if (!keys.PANNELLO_ANOMALIE) delete this.PANNELLO_ANOMALIE
         if (!keys.CLIENTI_DUPLICATI) delete this.CLIENTI_DUPLICATI
         if (!keys.ANTIRICICLAGGIO) delete this.ANTIRICICLAGGIO
-        if (Cypress.env('isAviva')) delete this.ANALISI_DEI_BISOGNI
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.ANALISI_DEI_BISOGNI
     }
 }
 

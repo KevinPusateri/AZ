@@ -18,10 +18,10 @@ const LinksBurgerMenu = {
     FLOTTE_E_CONVENZIONI: 'Flotte e Convenzioni',
     MINIFLOTTE: 'MiniFlotte',
     TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio BMP' : 'Allianz Ultra Casa e Patrimonio BMP',
-    ALLIANZ_ULTRA_SALUTE: Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute',
-    ALLIANZ_ULTRA_IMPRESA: Cypress.env('isAviva') ? 'Ultra Impresa' : 'Allianz Ultra Impresa',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio BMP' : 'Allianz Ultra Casa e Patrimonio BMP',
+    ALLIANZ_ULTRA_SALUTE: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute',
+    ALLIANZ_ULTRA_IMPRESA: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Impresa' : 'Allianz Ultra Impresa',
     ALLIANZ1_BUSINESS: 'Allianz1 Business',
     FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE: 'FastQuote Infortuni da circolazione',
     FASTQUOTE_UNIVERSO_PERSONA: 'FastQuote Universo Persona',
@@ -58,14 +58,14 @@ const LinksBurgerMenu = {
     deleteKey: function (keys) {
         if (!keys.PREVENTIVO_MOTOR) delete this.PREVENTIVO_MOTOR
         if (!keys.SAFE_DRIVE_AUTOVETTURE) delete this.SAFE_DRIVE_AUTOVETTURE
-        if ((!keys.FLOTTE_E_CONVENZIONI || Cypress.env('isAviva'))) delete this.FLOTTE_E_CONVENZIONI
+        if ((!keys.FLOTTE_E_CONVENZIONI || Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))) delete this.FLOTTE_E_CONVENZIONI
         if (!keys.MINIFLOTTE) delete this.MINIFLOTTE
         if (!keys.TRATTATIVE_AUTO_CORPORATE) delete this.TRATTATIVE_AUTO_CORPORATE
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
         if (!keys.ALLIANZ_ULTRA_SALUTE) delete this.ALLIANZ_ULTRA_SALUTE
         if (!keys.ALLIANZ1_BUSINESS) delete this.ALLIANZ1_BUSINESS
-        if (!keys.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE || Cypress.env('isAviva')) delete this.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE
+        if (!keys.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE || Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE
         if (!keys.FASTQUOTE_UNIVERSO_PERSONA) delete this.FASTQUOTE_UNIVERSO_PERSONA
         if (!keys.FASTQUOTE_UNIVERSO_SALUTE) delete this.FASTQUOTE_UNIVERSO_SALUTE
         if (!keys.ALLIANZ_ULTRA_IMPRESA) delete this.ALLIANZ_ULTRA_IMPRESA
@@ -75,7 +75,7 @@ const LinksBurgerMenu = {
         if (!keys.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI) delete this.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI
         if (!keys.GESTIONE_RICHIESTE_PER_PA) delete this.GESTIONE_RICHIESTE_PER_PA
         if (!keys.NUOVO_SFERA) delete this.NUOVO_SFERA
-        if (!keys.SFERA || Cypress.env('isAviva')) delete this.SFERA
+        if (!keys.SFERA || Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.SFERA
         if (!keys.CAMPAGNE_COMMERCIALI) delete this.CAMPAGNE_COMMERCIALI
         if (!keys.RECUPERO_PREVENTIVI_E_QUOTAZIONI) delete this.RECUPERO_PREVENTIVI_E_QUOTAZIONI
         if (!keys.DOCUMENTI_DA_FIRMARE) delete this.DOCUMENTI_DA_FIRMARE
@@ -227,7 +227,7 @@ class BurgerMenuSales extends Sales {
                 break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO:
                 Common.canaleFromPopup()
-                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -239,7 +239,7 @@ class BurgerMenuSales extends Sales {
                 break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_SALUTE:
                 Common.canaleFromPopup()
-                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva')) ? './assets/img/allianz-logo-salute.png' : './assets/img/aviva-logo-salute.png')
+                getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) ? './assets/img/allianz-logo-salute.png' : './assets/img/aviva-logo-salute.png')
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;

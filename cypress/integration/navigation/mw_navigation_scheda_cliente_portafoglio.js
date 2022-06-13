@@ -39,7 +39,7 @@ beforeEach(() => {
     if (!Cypress.env('monoUtenza'))
         cy.getUserWinLogin().then(data => {
             let fileAgency
-            if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
+            if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
                 fileAgency = 'agencies'
             else if (!Cypress.env('isAvivaBroker'))
                 fileAgency = 'agenciesAviva'

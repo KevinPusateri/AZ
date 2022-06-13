@@ -133,7 +133,7 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', {
 
 
   it('Emettere una Plein Air e verifica presenza in Folder', function () {
-    if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
       SintesiCliente.emettiPleinAir()
       SintesiCliente.visitUrlClient(urlClient)
       SintesiCliente.verificaInFolderDocumentiAnagrafici(["PleinAir"])

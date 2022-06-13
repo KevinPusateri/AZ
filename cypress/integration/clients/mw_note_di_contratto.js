@@ -63,7 +63,7 @@ describe('Matrix Web : Note di contratto', function () {
 
         it('Verifica Aggiungi Nota', function () {
             //('Retriving client with polizze auto, please wait...')
-            cy.getClientWithPolizze(currentTutf, '31', false, false, 'PF', (Cypress.env('isAviva')) ? true : false).then(customerFullName => {
+            cy.getClientWithPolizze(currentTutf, '31', false, false, 'PF', (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? true : false).then(customerFullName => {
                 currentCustomerFullName = customerFullName
                 TopBar.search(currentCustomerFullName)
                 LandingRicerca.clickClientePF(currentCustomerFullName)
@@ -133,7 +133,7 @@ describe('Matrix Web : Note di contratto', function () {
         })
     })
 
-    if (!Cypress.env('isAviva'))
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker') && !Cypress.env('isAvivaBroker'))
         context('Polizza Rami Vari', function () {
             it('Verifica Aggiungi Nota', function () {
                 //('Retriving client with polizze rami vari, please wait...')
@@ -212,7 +212,7 @@ describe('Matrix Web : Note di contratto', function () {
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')
-                Portafoglio.filtraPolizze(Cypress.env('isAviva') ? 'Ultra' : 'Allianz Ultra')
+                Portafoglio.filtraPolizze((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra' : 'Allianz Ultra')
                 NoteContratto.inserisciNotaContratto()
             })
         })
@@ -263,7 +263,7 @@ describe('Matrix Web : Note di contratto', function () {
             LandingRicerca.clickClientePF(currentCustomerFullName)
             Portafoglio.clickTabPortafoglio()
             Portafoglio.clickSubTab('Polizze attive')
-            Portafoglio.filtraPolizze(Cypress.env('isAviva') ? 'Ultra' : 'Allianz Ultra')
+            Portafoglio.filtraPolizze((Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))? 'Ultra' : 'Allianz Ultra')
             NoteContratto.checkNotaModificata('TEST DESCRIZIONE MODIFICATO DA SALES')
         })
 
@@ -274,7 +274,7 @@ describe('Matrix Web : Note di contratto', function () {
 
     context('Polizza Vita', function () {
         it('Verifica Aggiungi Nota', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 //('Retriving client with polizze vita, please wait...')
                 cy.getClientWithPolizze(currentTutf, '86').then(customerFullName => {
                     currentCustomerFullName = customerFullName
@@ -293,56 +293,56 @@ describe('Matrix Web : Note di contratto', function () {
         })
 
         it('Verifica Tooltip numero di note presenti(1 nota)', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.checkTooltipNote('1')
             } else
                 this.skip()
         })
 
         it('Verifica Badge Nota', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.checkBadgeNota()
             } else
                 this.skip()
         })
 
         it('Verifica Modifica di una nota', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.modificaNota()
             } else
                 this.skip()
         })
 
         it('Verifica "Aggiungi nota" dal badge Note', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.inserisciNotaFromBadge()
             } else
                 this.skip()
         })
 
         it('Verifica Tooltip numero di note presenti(2 note)', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.checkTooltipNote('2')
             } else
                 this.skip()
         })
 
         it('Verifica Flag Importante', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.checkImportante()
             } else
                 this.skip()
         })
 
         it('Verifica Tooltip numero di note presenti(2 note) di cui 1 importante', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.checkTooltipNote('3')
             } else
                 this.skip()
         })
 
         it('Verifica Da Sales La presenza delle note di contratto', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.getPolizza().then((polizza) => {
                     HomePage.reloadMWHomePage()
                     TopBar.clickSales()
@@ -354,14 +354,14 @@ describe('Matrix Web : Note di contratto', function () {
         })
 
         it('Verifica modifica nota da Sales', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 SCUSalesNoteContratto.modificaNota()
             } else
                 this.skip()
         })
 
         it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 TopBar.search(currentCustomerFullName)
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
@@ -373,7 +373,7 @@ describe('Matrix Web : Note di contratto', function () {
         })
 
         it('Verifica l\'eliminazione delle note', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.cancellaNote()
             } else
                 this.skip()
@@ -383,7 +383,7 @@ describe('Matrix Web : Note di contratto', function () {
     context('Polizza Allianz1 Business', function () {
         //('Retriving client with polizze allianz 1 business, please wait...')
         it('Verifica Aggiungi Nota', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 cy.getClientWithPolizze(currentTutf, '42', false, true).then(customerFullName => {
                     currentCustomerFullName = customerFullName
                     TopBar.search(currentCustomerFullName)
@@ -398,56 +398,56 @@ describe('Matrix Web : Note di contratto', function () {
         })
 
         it('Verifica Tooltip numero di note presenti(1 nota)', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.checkTooltipNote('1')
             } else
                 this.skip()
         })
 
         it('Verifica Badge Nota', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.checkBadgeNota()
             } else
                 this.skip()
         })
 
         it('Verifica Modifica di una nota', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.modificaNota()
             } else
                 this.skip()
         })
 
         it('Verifica "Aggiungi nota" dal badge Note', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.inserisciNotaFromBadge()
             } else
                 this.skip()
         })
 
         it('Verifica Tooltip numero di note presenti(2 note)', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.checkTooltipNote('2')
             } else
                 this.skip()
         })
 
         it('Verifica Flag Importante', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.checkImportante()
             } else
                 this.skip()
         })
 
         it('Verifica Tooltip numero di note presenti(2 note) di cui 1 importante', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.checkTooltipNote('3')
             } else
                 this.skip()
         })
 
         it('Verifica Da Sales La presenza delle note di contratto', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.getPolizza().then((polizza) => {
                     HomePage.reloadMWHomePage()
                     TopBar.clickSales()
@@ -459,14 +459,14 @@ describe('Matrix Web : Note di contratto', function () {
         })
 
         it('Verifica modifica nota da Sales', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 SCUSalesNoteContratto.modificaNota()
             } else
                 this.skip()
         })
 
         it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 TopBar.search(currentCustomerFullName)
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
@@ -478,7 +478,7 @@ describe('Matrix Web : Note di contratto', function () {
         })
 
         it('Verifica l\'eliminazione delle note', function () {
-            if (!Cypress.env('isAviva')) {
+            if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 NoteContratto.cancellaNote()
             } else
                 this.skip()

@@ -169,7 +169,7 @@ class Common {
             else
                 cy.visit(Cypress.env('urlSecondWindowPreprod'), { responseTimeout: 31000 })
         }
-        if (!mockedNews && !Cypress.env('isAviva'))
+        if (!mockedNews && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             cy.wait('@gqlNews')
     }
 

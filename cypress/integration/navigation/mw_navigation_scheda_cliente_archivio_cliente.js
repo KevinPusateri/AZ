@@ -32,7 +32,7 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
     Common.visitUrlOnEnv()
-    if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+    if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva') && Cypress.env('isAvivaBroker')) {
         TopBar.search('Pulini Francesco')
         SintesiCliente.wait()
     } else if (!Cypress.env('isAviva')) {
