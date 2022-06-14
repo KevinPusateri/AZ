@@ -77,10 +77,14 @@ describe('Matrix Web : Campagne Commerciali', optionsRetrials, function () {
     })
 
     it('Filtri - Campagne Disponibili', function () {
+        //? Inserito nel caso in cui il precedente test vada in failed
+        CampagneCommerciali.visitCampaignManager()
         CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.PERIODO)
         CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.TIPOLOGIA_CAMPAGNA)
         CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.LINEA_BUSINESS)
         CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.SORGENTE_DATI)
+
+        CampagneCommerciali.resetFiltri()
     })
 
     it('Campagne Attive', function () {
@@ -88,7 +92,10 @@ describe('Matrix Web : Campagne Commerciali', optionsRetrials, function () {
     })
 
     it('Campagne in Arrivo', function () {
-        CampagneCommerciali.campagneInArrivo()
+        CampagneCommerciali.campagneInArrivo().then(isCampagneArrivoPresent => {
+            if (!isCampagneArrivoPresent)
+                this.skip()
+        })
     })
 
     it('Suggerimento Campagna', function () {
@@ -97,6 +104,9 @@ describe('Matrix Web : Campagne Commerciali', optionsRetrials, function () {
 
     it('Campagne Nuove', function () {
         CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.TIPOLOGIA_CAMPAGNA)
-        CampagneCommerciali.campagneNuove()
+        CampagneCommerciali.campagneNuove().then(isCampagneNuovePresent => {
+            if (!isCampagneNuovePresent)
+                this.skip()
+        })
     })
 })
