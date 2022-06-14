@@ -878,7 +878,7 @@ class Sfera {
      * 
      * @returns {Promise} polizza su cui sono state effettuate le operazioni
      */
-    static apriVoceMenu(voce, flussoCompleto = true, polizza = null, tipoSostituzioneRiattivazione = null, modalitaPagamentoPreferita = null, random = false) {
+    static apriVoceMenu(voce, flussoCompleto = true, polizza = null, tipoSostituzioneRiattivazione = null, modalitaPagamentoPreferita = null, random = false, vista = null) {
         return new Cypress.Promise(resolve => {
             if (polizza === null)
                 if (random)
@@ -1054,7 +1054,6 @@ class Sfera {
                     cy.screenshot('Verifica Accesso a Pagamenti NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
                         NGRA2013.flussoQuietanzamentoOnline()
-                        IncassoWAService.asmx
                     }
                     else {
                         NGRA2013.home(true)
@@ -1076,7 +1075,6 @@ class Sfera {
                     }
                     break;
                 case VociMenuConsultazione.POLIZZA:
-                    InquiryAgenzia.verificaAccessoInquiryAgenzia()
                     cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
                         //TODO implementare flusso completo
@@ -1111,7 +1109,7 @@ class Sfera {
                         this.estrai()
                     }
                     break;
-                case Sfera.VOCIMENUCONSULTAZIONE.DOCUMENTI_POLIZZA:
+                case VociMenuConsultazione.DOCUMENTI_POLIZZA:
                     Folder.verificaCaricamentoFolder(false)
                     cy.screenshot('Consultazione Documenti Polizza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
@@ -1166,10 +1164,12 @@ class Sfera {
                         cy.wait('@infoUtente', { timeout: 60000 })
                         cy.wait('@agenzieFonti', { timeout: 60000 })
                         cy.wait('@caricaVista', { timeout: 60000 })
-                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
-                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                        this.estrai()
+                        if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                            this.estrai()
+                        }
                     }
                     break;
                 case VociMenuCliente.LISTA_POLIZZE:
@@ -1190,10 +1190,12 @@ class Sfera {
                         cy.wait('@infoUtente', { timeout: 60000 })
                         cy.wait('@agenzieFonti', { timeout: 60000 })
                         cy.wait('@caricaVista', { timeout: 60000 })
-                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
-                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                        this.estrai()
+                        if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                            this.estrai()
+                        }
                     }
                     break;
                 case VociMenuCliente.LISTA_SINISTRI:
@@ -1214,10 +1216,12 @@ class Sfera {
                         cy.wait('@infoUtente', { timeout: 60000 })
                         cy.wait('@agenzieFonti', { timeout: 60000 })
                         cy.wait('@caricaVista', { timeout: 60000 })
-                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
-                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                        this.estrai()
+                        if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                            this.estrai()
+                        }
                     }
                     break;
             }
@@ -1265,7 +1269,7 @@ class Sfera {
             dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).click().type(dataInizio).wait(500)
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).click().type(dataInizio).wait(1000)
 
         //Impostiamo la data di fine estrazione
         if (dataFine === undefined) {
@@ -1274,7 +1278,7 @@ class Sfera {
             dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type(dataFine).wait(500).type('{esc}')
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type(dataFine).wait(500).type('{esc}').wait(1000)
 
         //Clicchiamo su estrai
         if (performEstrai) this.estrai()
@@ -2316,6 +2320,17 @@ class Sfera {
             })
         }
 
+    }
+
+    /**
+     * It checks if a table is visible and if it is, it takes a screenshot.
+     * @param vista - the name of the view you want to check
+     */
+    static checkVistaExist(vista) {
+        cy.get('app-view').should('be.visible').find('h2:first').should('be.visible').and('contain.text', vista)
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then(() => {
+            cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        })
     }
 }
 export default Sfera
