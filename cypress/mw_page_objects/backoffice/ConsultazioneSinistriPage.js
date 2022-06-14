@@ -1,6 +1,5 @@
 /// <reference types="Cypress" />
 
-
 import Common from "../common/Common"
 
 
@@ -50,21 +49,21 @@ class ConsultazioneSinistriPage {
      * @param {string} id : locator object id
      * @param {string} href : url
      */
-     static InvokeRmvAttOnClick_ById(id, href) {   
+    static InvokeRmvAttOnClick_ById(id, href) {   
         getIframe().find(id).should('be.visible').then((btn) => {
             cy.wrap(btn).invoke('removeAttr', 'onclick')
             .invoke('attr', 'href', href).click()
         }) 
         cy.wait(2000)
     }
-  /**
+    /**
      * Click on all objects defined by locator id
      * @param {string} id : locator objects id
      */
-   static clickOnMultiObj_ById(id) {             
-    getIframe().find(id).click({ multiple: true });
-    cy.wait(1000)
-}
+    static clickOnMultiObj_ById(id) {             
+        getIframe().find(id).click({ multiple: true });
+        cy.wait(1000)
+    }
     /**
      * Click on object defined by html tag and content text displayed as label
      * @param {string} tag : html element (button, etc...)
@@ -109,9 +108,10 @@ class ConsultazioneSinistriPage {
     static checkObj_ByClassAndText(classvalue, label) {     
         let obj = getIframe().find('[class="'+classvalue+'"]', { timeout: 9000 }).should('exist')            
         if (obj.contains(label))
-        cy.log('>> object with label: "' + label +'" is defined')
+            cy.log('>> object with label: "' + label +'" is defined')
         cy.wait(1000)                 
     }
+    
     /**
      * Check if an object identified by id attribute and its label is displayed
      * @param {string} id : id attribute 
@@ -122,6 +122,19 @@ class ConsultazioneSinistriPage {
         cy.log('>> object with label: "' + label +'" is defined')
 
         cy.wait(3000)                 
+    }
+
+    static isVisibleText(id, text) {
+         
+            getIframe().find(id, { timeout: 5000 }).should('exist').and('be.visible').invoke('val').then($val => {  
+                let txt = $val.text().trim()
+                let txt2 =$val.innerText
+                cy.log('>> '+ txt + ' >> '+txt2)      
+                if (txt.includes(text))
+                    cy.log('>> object with text: "' + text +'" is defined')  
+            });
+
+        cy.wait(1000) 
     }
     /**
      * Check if an object identified by class attribute and its label is displayed

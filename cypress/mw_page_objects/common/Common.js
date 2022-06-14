@@ -376,7 +376,19 @@ class Common {
             }
         })
     }
-
+    /**
+    * Check if an img is displayed
+    * @param {string} locator : class attribute 
+    * @param {string} src : source img file
+    */
+    static isVisibleImg(locator, src) {     
+        
+        let check = getIframe().find(locator, { timeout: 9000 }).should('be.visible').should('have.attr','src').and('contain', src);
+        if (check)           
+            cy.log('>> img with attribute src=' +src+ ' is defined and visible ')
+        
+        cy.wait(1000)                 
+    }
     /**
      * Defined @regexExp a regular expression is verified if the string @str 
      * matches the reg. ex.
