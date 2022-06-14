@@ -121,7 +121,7 @@ class Numbers {
                     if (checkPopup)
                         cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
                 })
-                // if ((link.includes('Portafoglio') || link.includes('Retention')) && Cypress.env('isAviva'))
+                // if ((link.includes('Portafoglio') || link.includes('Retention')) && (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')))
                 //     cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
                 cy.wait('@postDacommerciale', { requestTimeout: 180000 });
                 break;
@@ -201,7 +201,7 @@ class Numbers {
             })
 
         })
-        if (Cypress.env('isAviva') !== true)
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             cy.contains('VITA').click().then(() => {
                 cy.get('app-kpi-card').each((link) => {
                     cy.wrap(link).find('[class="title"]').then((title) => {

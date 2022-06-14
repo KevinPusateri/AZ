@@ -22,6 +22,7 @@
 require('cypress-plugin-tab')
 
 import 'cypress-mochawesome-reporter/register'
+import "cypress-real-events/support"
 
 const customCommands = require('./commands.js')
 

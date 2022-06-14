@@ -56,7 +56,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
 
     it('Verifica Ricerca Incasso', function () {
         LandingRicerca.search('incasso')
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             LandingRicerca.clickTabMieInfo()
             LandingRicerca.checkSubTabMieInfo()
         } else
@@ -68,7 +68,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
 
     it('Verifica Ricerca Fastquote', function () {
         LandingRicerca.search('fastquote')
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             LandingRicerca.clickTabMieInfo()
             LandingRicerca.checkSubTabMieInfo()
             LandingRicerca.checkSuggestedLinks('fastquote')
@@ -82,7 +82,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
         cy.filterProfile(currentProfiling, 'COMMON_ULTRA_BMP').then(profiled => {
             if (profiled) {
                 LandingRicerca.search('bmp')
-                if (!Cypress.env('isAviva')) {
+                if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                     LandingRicerca.clickTabMieInfo()
                     LandingRicerca.checkSubTabMieInfo()
                 } else
@@ -96,7 +96,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
 
     it('Verifica Ricerca Prodotto: Ultra', function () {
         LandingRicerca.search('ultra')
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             LandingRicerca.clickTabMieInfo()
             LandingRicerca.checkSubTabMieInfo()
         } else

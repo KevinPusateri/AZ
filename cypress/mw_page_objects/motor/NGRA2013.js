@@ -15,6 +15,11 @@ const getIncassoWAService = {
     method: 'POST',
     url: '**/IncassoWAService.asmx/**'
 }
+
+const getCalcolaPremiCM = {
+    method: 'POST',
+    url: '**/CalcolaPremiCM'
+}
 //#endregion
 
 /**
@@ -98,16 +103,18 @@ class NGRA2013 {
 
     static flussoQuietanzamentoOnline() {
         cy.intercept(getIncassoWAService).as('getIncassoWAService')
+        cy.intercept(getCalcolaPremiCM).as('getCalcolaPremiCM')
         cy.get('#pnlbtnConfermaPremi').should('be.visible').click()
         cy.wait('@getIncassoWAService', { timeout: 60000 })
-        cy.wait(15000)
+        cy.wait('@getCalcolaPremiCM', { timeout: 60000 })
+        cy.wait(10000)
 
         cy.screenshot('Verifica Accesso Inizio Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         // incassa
         cy.get('#pnlBtnIncasso').should('be.visible').click()
         cy.wait('@getIncassoWAService', { timeout: 60000 })
-        cy.wait(15000)
+        cy.wait(10000)
 
         cy.get('body').then(($body) => {
             const popupWarning = $body.find('div[role="dialog"]').is(':visible')
@@ -122,6 +129,7 @@ class NGRA2013 {
                     }
                 })
         })
+        cy.wait('@getIncassoWAService', { timeout: 60000 })
     }
 
 }

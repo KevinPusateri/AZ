@@ -71,7 +71,7 @@ const LinksBurgerMenu = {
         if (!keys.MONITORAGGIO_CARICO) delete this.MONITORAGGIO_CARICO
         if (!keys.MONITORAGGIO_CARICO_FONTE) delete this.MONITORAGGIO_CARICO_FONTE
         if (!keys.X_ADVISOR) delete this.X_ADVISOR
-        if (!keys.INCENTIVAZIONE && !Cypress.env('isAviva')) delete this.INCENTIVAZIONE
+        if (!keys.INCENTIVAZIONE && !Cypress.env('isAviva')  && !Cypress.env('isAvivaBroker')) delete this.INCENTIVAZIONE
         if (!keys.INCENTIVAZIONE_RECRUITING) delete this.INCENTIVAZIONE_RECRUITING
         if (!keys.ANDAMENTI_TECNICI) delete this.ANDAMENTI_TECNICI
         if (!keys.ESTRAZIONI_AVANZATE) delete this.ESTRAZIONI_AVANZATE
@@ -209,7 +209,7 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.INCENTIVAZIONE:
                 cy.wait('@getDacommercialeGET', { timeout: 150000 })
                 cy.wait(10000)
-                getIFrame().find('h1').should('contain.text', (Cypress.env('isAviva')) ? 'Incentivazioni Allianz Viva' : 'Cruscotto Incentivazione')
+                getIFrame().find('h1').should('contain.text', (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Incentivazioni Allianz Viva' : 'Cruscotto Incentivazione')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.INCENTIVAZIONE_RECRUITING:

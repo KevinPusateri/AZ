@@ -207,12 +207,12 @@ class DettaglioAnagrafica {
                 expect(label.text().trim()).to.include('Titolo');
                 expect(label.text().trim()).to.include('Cittadinanza');
                 expect(label.text().trim()).to.include('Nome*');
-                if (Cypress.env('isAviva'))
+                if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
                     expect(label.text().trim()).to.include('Professione');
                 else
                     expect(label.text().trim()).to.include('Professione*');
                 expect(label.text().trim()).to.include('Cognome*');
-                if (Cypress.env('isAviva'))
+                if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
                     expect(label.text().trim()).to.include('Unità di mercato');
                 else
                     expect(label.text().trim()).to.include('Unità di mercato*');
@@ -243,7 +243,7 @@ class DettaglioAnagrafica {
             cy.get('app-client-risk-profiles').find('[class^="label"]').then((label) => {
                 expect(label.text().trim()).to.include('Profilo rischio riciclaggio');
                 expect(label.text().trim()).to.include('Profilo FATCA');
-                if (!Cypress.env('isAviva'))
+                if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
                     expect(label.text().trim()).to.include('Stato operativo Vita');
                 expect(label.text().trim()).to.include('Profilo CRS');
             })
@@ -281,7 +281,7 @@ class DettaglioAnagrafica {
                                 expect(label.text().trim()).to.include('Questionario adeguatezza cliente - Prodotti IBIPs');
                                 expect(label.text().trim()).to.include('Profilo di esperienza & conoscenza');
                                 expect(label.text().trim()).to.include('Attività promozionali relative al gruppo Allianz');
-                                if (!Cypress.env('isAviva'))
+                                if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
                                     expect(label.text().trim()).to.include('Attività di profilazione realizzate da Allianz S.p.A.');
                                 else
                                     expect(label.text().trim()).to.include('Attività di profilazione realizzate da Allianz Viva S.p.A.');

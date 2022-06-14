@@ -23,7 +23,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 //#endregion
 before(() => {
-    console.log(Cypress.env('isAviva'))
+    console.log(Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
     console.log(Cypress.env('isSecondWindow'))
     console.log(Cypress.env('monoUtenza'))
     console.log(Cypress.env('currentEnv'))
@@ -56,7 +56,7 @@ describe('Buca di Ricerca', {
         openMode: 0,
     }
 }, function () {
-    if (Cypress.env('isAviva'))
+    if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
         it('Verifica che sia assente "Ricerca Classica"', function () {
             LandingRicerca.searchRandomClient(false)
             LandingRicerca.checkNotExistRicercaClassica()

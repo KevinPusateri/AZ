@@ -78,7 +78,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
     });
 
     it('Verifica aggancio Analisi dei bisogni', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName

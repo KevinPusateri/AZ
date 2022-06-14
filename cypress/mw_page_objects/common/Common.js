@@ -169,7 +169,7 @@ class Common {
             else
                 cy.visit(Cypress.env('urlSecondWindowPreprod'), { responseTimeout: 31000 })
         }
-        if (!mockedNews && !Cypress.env('isAviva'))
+        if (!mockedNews && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             cy.wait('@gqlNews')
     }
 
@@ -319,7 +319,7 @@ class Common {
     static clickFindByIdOnIframe(path) {
         return getIframe().find(path, { timeout: 5000 }).click()
     }
-    
+
     /**
      * Trova l'elemento tramite la sua path all'interno di un iFrame ed effettua il click
      * @param {*} idIframe del child frame
@@ -340,9 +340,9 @@ class Common {
         })
      */
     static getObjByTextOnIframe(text) {
-        return getIframe().within(() => {              
+        return getIframe().within(() => {
             cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
-            cy.log('>> object with label [' +text+ '] is defined')         
+            cy.log('>> object with label [' + text + '] is defined')
         })
     }
 
@@ -355,9 +355,9 @@ class Common {
         })
      */
     static getObjByTextOnIframeChild(idIframe, text) {
-        return findIframeChild(idIframe).within(() => {              
+        return findIframeChild(idIframe).within(() => {
             cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
-            cy.log('>> object with label [' +text+ '] is defined')         
+            cy.log('>> object with label [' + text + '] is defined')
         })
     }
 
@@ -371,8 +371,8 @@ class Common {
     static getObjByIdAndTextOnIframeChild(idIframe, id, text) {
         return findIframeChild(idIframe).find(id).should('exist').then(($obj) => {
             const value = $obj.val().toUpperCase();
-            if (value.includes(text.toUpperCase())) {                   
-                cy.log('>> object with id=' +id+ ' and label: "' +text+ '" is defined')           
+            if (value.includes(text.toUpperCase())) {
+                cy.log('>> object with id=' + id + ' and label: "' + text + '" is defined')
             }
         })
     }
@@ -399,14 +399,21 @@ class Common {
      * @returns assert.isTrue(the string @str respects the rule, [message])
      * @link https://docs.cypress.io/guides/references/assertions#TDD-Assertions
      */
-    static isValidCheck(regexExp, str, msg)
-    {
+    static isValidCheck(regexExp, str, msg) {
         var pattern = new RegExp(regexExp)
         //Tests for a match in a string. It returns true or false.       
         cy.wrap(str).then((validation) => {
-            validation = pattern.test(str)                          
-            assert.isTrue(validation,'>> The string: "' +str+ '" ' + msg)
+            validation = pattern.test(str)
+            assert.isTrue(validation, '>> The string: "' + str + '" ' + msg)
         });
+    }
+
+    static setDate(date, month) {
+        let today = new Date()
+        today.setDate(date)
+        today.setMonth(month)
+        let data = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
+        return data
     }
 
 }

@@ -21,6 +21,15 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 //#endregion
 
+let today = new Date()
+today.setDate(1)
+today.setMonth(new Date().getMonth() - 1)
+let dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
+today.setMonth(new Date().getMonth())
+today.setDate(25)
+let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
+//#endregion
+
 let keys = {
     BMPenabled: true,
     UltraImpresaEnabled: true,
@@ -109,7 +118,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
 
     it('Verifica Refresh Quietanzamento', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.selectFirstDay('1')
@@ -117,7 +126,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Filtro Quietanzamento', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.selectFirstDay('1')
@@ -125,7 +134,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Gestisci Preferiti Quietanzamento', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.selectFirstDay('1')
@@ -133,7 +142,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Carico Totale', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.selectFirstDay('1')
@@ -143,9 +152,10 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Azioni Veloci Motor', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
+        Sales.setDateEstrazione()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
@@ -158,7 +168,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Azioni Veloci Rami Vari', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Rami vari', 'Azioni Veloci').then((checkEnabled) => {
@@ -173,7 +183,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Azioni Veloci Vita', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Vita', 'Azioni Veloci').then((checkEnabled) => {
@@ -188,7 +198,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Azioni Veloci Tutte', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Tutte', 'Azioni Veloci').then((checkEnabled) => {
@@ -203,7 +213,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica Azioni Veloci: "Eliminazione Sconto Commerciale"', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
@@ -217,7 +227,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     });
 
     it('Verifica Azioni Veloci: "Verifica possibilità di incremento premio"', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
@@ -231,7 +241,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     });
 
     it('Verifica Estrai', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
@@ -259,7 +269,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     // });
 
     it('Verifica Azioni Veloci: "Vai a vista Quietanzamento"', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
@@ -273,7 +283,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     });
 
     it('Verifica Azioni Veloci: "Assegna Colore"', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
@@ -299,7 +309,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         } else this.skip()
     })
 
-    if (!Cypress.env('isAviva'))
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
         it('Verifica aggancio Sfera', function () {
             TopBar.clickSales()
             Sales.clickLinkRapido('Sfera')
@@ -314,16 +324,17 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    it('Verifica ASSENZA Campagne Commerciali', function () {
-        if (!Cypress.env('isAviva'))
-            this.skip()
-        TopBar.clickSales()
-        Sales.checkNotExistLink('a', 'Campagne Commerciali')
-        Sales.backToSales()
-    })
+    // TOGLERE
+    // it('Verifica ASSENZA Campagne Commerciali', function () {
+    //     if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
+    //         this.skip()
+    //     TopBar.clickSales()
+    //     Sales.checkNotExistLink('a', 'Campagne Commerciali')
+    //     Sales.backToSales()
+    // })
 
     it('Verifica ASSENZA Sfera', function () {
-        if (!Cypress.env('isAviva'))
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.checkNotExistLink('a', /^Sfera$/)
@@ -331,7 +342,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica ASSENZA GED – Gestione Documentale', function () {
-        if (!Cypress.env('isAviva'))
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         Sales.checkNotExistLink('a', 'GED – Gestione Documentale')
@@ -373,7 +384,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
 
     //TODO: Implement profiling keys for Emmetti Polizza
     https://github.developer.allianz.io/az-italy/matrix-web-fe-tests/issues/65
-    if (Cypress.env('isAviva')) {
+    if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
         it('Verifica aggancio Emetti Polizza - Ultra Salute', function () {
             if (!keys.UltraSaluteEnabled)
                 this.skip()
@@ -466,7 +477,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
 
         it('Verifica aggancio Emetti Polizza - Trattative Auto Corporate', function () {
-            if (keys.TrattativeAutoCorporateEnabled)
+            if (!keys.TrattativeAutoCorporateEnabled)
                 this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Trattative Auto Corporate')
@@ -491,7 +502,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica aggancio Attività in scadenza - Estrai dettaglio', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
         if (!Cypress.env('monoUtenza')) {
@@ -505,6 +516,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Motor', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
+            Sales.setDateEstrazione(dataInizio,dataFine)
             Sales.lobDiInteresse('Motor', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
@@ -516,6 +528,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Rami Vari', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
+            Sales.setDateEstrazione(dataInizio,dataFine)
             Sales.lobDiInteresse('Rami vari', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
@@ -525,9 +538,10 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica "Quietanzamento" - lob di interesse: Vita', function () {
-        if (Cypress.env('isAviva'))
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
+        Sales.setDateEstrazione(dataInizio,dataFine)
         Sales.lobDiInteresse('Vita', 'Estrai').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
@@ -538,6 +552,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Tutte', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
+            Sales.setDateEstrazione(dataInizio,dataFine)
             Sales.lobDiInteresse('Tutte', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
@@ -554,13 +569,14 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.clickTabCampagne()
     })
 
-    it('Verifica ASSENZA TAB: CAMPAGNE', function () {
-        if (!Cypress.env('isAviva'))
-            this.skip()
-        TopBar.clickSales()
-        Sales.checkNotExistLink('button[role="tab"]', 'CAMPAGNE')
-        Sales.backToSales()
-    })
+    // DA TOGLIERE
+    // it('Verifica ASSENZA TAB: CAMPAGNE', function () {
+    //     if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
+    //         this.skip()
+    //     TopBar.clickSales()
+    //     Sales.checkNotExistLink('button[role="tab"]', 'CAMPAGNE')
+    //     Sales.backToSales()
+    // })
 
     it('Verifica aggancio Appuntamento', function () {
         TopBar.clickSales()
@@ -580,7 +596,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
 
         it('Verifica aggancio Preventivi e quotazioni - Card Vita', function () {
             TopBar.clickSales()
@@ -615,7 +631,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         it('Verifica aggancio Proposte Vita - Card Vita', function () {
             TopBar.clickSales()
             Sales.clickTabVitaOnProposte()

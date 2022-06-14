@@ -144,7 +144,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
     })
 
     it('Verifica aggancio Gestione Contatto Card', function () {
-        if (Cypress.env('isAviva')) //! NON si ha ancora la chiave i profilazione
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) //! NON si ha ancora la chiave i profilazione
             this.skip()
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Gestione Contatto Card')

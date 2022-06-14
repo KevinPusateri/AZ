@@ -27,7 +27,7 @@ before(() => {
 
         //Andiamo a cercare un cliente in prima istanza per lavorare su Clients
         HomePage.reloadMWHomePage()
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+        if (!Cypress.env('monoUtenza') && (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))) {
             TopBar.search('Pulini Francesco')
             SintesiCliente.wait()
         } else if (!Cypress.env('isAviva')) {

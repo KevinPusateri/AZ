@@ -113,7 +113,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     });
 
     it('Verifica aggancio Flotte e Convenzioni', function () {
-        if (!keys.FLOTTE_E_CONVENZIONI || Cypress.env('isAviva'))
+        if (!keys.FLOTTE_E_CONVENZIONI || (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')))
             this.skip()
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Flotte e Convenzioni')
@@ -139,11 +139,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     // #endregion
 
     // #region  Rami Vari
-    it('Verifica aggancio ' + (Cypress.env('isAviva')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio', function () {
+    it('Verifica aggancio ' + (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio', function () {
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO)
             this.skip()
         TopBar.clickSales()
-        BurgerMenuSales.clickLink(Cypress.env('isAviva') ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio')
+        BurgerMenuSales.clickLink((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio')
         BurgerMenuSales.backToSales()
     });
 
@@ -155,19 +155,19 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     });
 
-    it('Verifica aggancio ' + (Cypress.env('isAviva')) ? 'Ultra Salute' : 'Allianz Ultra Salute', function () {
+    it('Verifica aggancio ' + (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute', function () {
         if (!keys.ALLIANZ_ULTRA_SALUTE)
             this.skip()
         TopBar.clickSales()
-        BurgerMenuSales.clickLink(Cypress.env('isAviva') ? 'Ultra Salute' : 'Allianz Ultra Salute')
+        BurgerMenuSales.clickLink((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute')
         BurgerMenuSales.backToSales()
     });
 
-    it('Verifica aggancio ' + (Cypress.env('isAviva')) ? 'Ultra Impresa' : 'Allianz Ultra Impresa', function () {
+    it('Verifica aggancio ' + (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Impresa' : 'Allianz Ultra Impresa', function () {
         if (!keys.ALLIANZ_ULTRA_IMPRESA)
             this.skip()
         TopBar.clickSales()
-        BurgerMenuSales.clickLink(Cypress.env('isAviva') ? 'Ultra Impresa' : 'Allianz Ultra Impresa')
+        BurgerMenuSales.clickLink((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Impresa' : 'Allianz Ultra Impresa')
         BurgerMenuSales.backToSales()
     });
 
@@ -180,7 +180,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
-        if (!keys.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE || Cypress.env('isAviva'))
+        if (!keys.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE || (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')))
             this.skip()
         TopBar.clickSales()
         BurgerMenuSales.clickLink('FastQuote Infortuni da circolazione')
@@ -235,7 +235,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     })
 
     it('Verifica aggancio Sfera', function () {
-        if (!keys.SFERA || Cypress.env('isAviva'))
+        if (!keys.SFERA || (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')))
             this.skip()
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Sfera')

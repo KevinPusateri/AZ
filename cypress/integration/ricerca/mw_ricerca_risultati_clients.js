@@ -16,7 +16,7 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-    //#endregion
+//#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
@@ -36,42 +36,49 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-after(function() {
+after(function () {
     TopBar.logOutMW()
-        //#region Mysql
+    //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-            let tests = testsInfo
-            cy.finishMysql(dbConfig, insertedId, tests)
-        })
-        //#endregion
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
 
 })
 
-describe('Buca di Ricerca - Risultati Clients', function() {
+describe('Buca di Ricerca - Risultati Clients', function () {
 
-    it('Verifica Ricerca Cliente: nome o cognome ', function() {
+    it('Verifica Ricerca Cliente: nome o cognome ', function () {
         LandingRicerca.searchRandomClient(true, 'PF', 'E')
         LandingRicerca.checkRisultatiRicerca()
     })
 
-    it('Verifica Modifica filtri', function() {
+    it('Verifica Modifica filtri', function () {
         LandingRicerca.searchRandomClient(false)
         LandingRicerca.filtraRicerca("P")
     })
 
 
-    if (Cypress.env('isAviva')) {
+    if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
 
-        describe('Buca di Ricerca - Risultati Clients - AVIVA', function() {
+        describe('Buca di Ricerca - Risultati Clients - AVIVA', function () {
 
-            it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function() {
-                TopBar.search('CRISTINA PO')
-                LandingRicerca.clickFirstResult()
-                SintesiCliente.checkAtterraggioSintesiCliente('CRISTINA PO')
+            it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function () {
+                if (Cypress.env('isAvivaBroker')) {
+                    TopBar.search('CRISTINA PENACCHIONI')
+                    LandingRicerca.clickFirstResult()
+                    SintesiCliente.checkAtterraggioSintesiCliente('CRISTINA PENACCHIONI')
+                }
+                else {
+                    TopBar.search('CRISTINA PO')
+                    LandingRicerca.clickFirstResult()
+                    SintesiCliente.checkAtterraggioSintesiCliente('CRISTINA PO')
+                }
             })
         })
     } else {
-        it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function() {
+        it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function () {
 
             if (!Cypress.env('monoUtenza')) {
                 TopBar.search('PULINI')

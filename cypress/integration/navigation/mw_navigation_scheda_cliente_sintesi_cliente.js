@@ -110,7 +110,7 @@ before(() => {
                     cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.PASSIONE_BLU = profiled })
                     cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.NUOVA_POLIZZA = profiled })
                     cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => {
-                        if (Cypress.env('isAviva'))
+                        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
                             keysAuto.NUOVA_POLIZZA_GUIDATA = false
                         else
                             keysAuto.NUOVA_POLIZZA_GUIDATA = profiled
@@ -140,14 +140,17 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
     HomePage.reloadMWHomePage()
-    if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+    if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         TopBar.search('Pulini Francesco')
         SintesiCliente.wait()
     } else if (!Cypress.env('isAviva')) {
-        TopBar.search('SLZNLL54A04H431Q')
+        TopBar.search('SLZNLL54A04H431Q') 
+        SintesiCliente.wait()
+    } else if (!Cypress.env('isAvivaBroker')) { // Entra in Aviva
+        TopBar.search('DRLTMS95L21F257R')
         SintesiCliente.wait()
     } else {
-        TopBar.search('DRLTMS95L21F257R')
+        TopBar.search('VLLNLN57T42B872A')// Entra in Aviva Broker
         SintesiCliente.wait()
     }
 })
@@ -180,7 +183,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica FastQuote: Tab Albergo', function () {
-        if (!Cypress.env('isAviva'))
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             SintesiCliente.checkFastQuoteAlbergo()
         else this.skip()
     })
@@ -202,35 +205,35 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Link da Card Auto -> Prodotti particolari', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.checkLinksFromAutoOnProdottiParticolari(keysAuto)
         } else this.skip()
     })
 
     it('Verifica Link da Card Auto -> Prodotti particolari -> Kasko e ARD per Dipendenti in Missione', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.checkLinksFromAutoOnProdottiParticolariKasko()
         } else this.skip()
     })
 
     it('Verifica Link da Card Auto -> Prodotti particolari -> Polizza aperta', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.checkLinksFromAutoOnProdottiParticolariPolizzaAperta()
         } else this.skip()
     })
 
     it('Verifica Link da Card Auto -> Passione BLU', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.checkLinksFromAutoOnPassioneBlu()
         } else this.skip()
     })
 
     it('Verifica Link da Card Auto -> Natanti(AVIVA)', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             cy.log('Test Per AVIVA')
             this.skip()
         }
@@ -241,7 +244,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     it('Verifica Link da Card Vita', function () {
         if (!keysCards.VITA)
             this.skip()
-        // if (!Cypress.env('isAviva')) {
+        // if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         SintesiCliente.clickVita()
         SintesiCliente.checkLinksFromVita()
         // } else this.skip()
@@ -262,7 +265,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Auto: Emissione -> Flotte e Convenzioni', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickFlotteConvenzioni()
             SintesiCliente.back()
@@ -270,7 +273,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Auto: Prodotti particolari -> Assunzione Guidata', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickAssunzioneGuidata()
             SintesiCliente.back()
@@ -278,7 +281,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Auto: Prodotti particolari -> Veicoli d\'epoca durata 10 giorni', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickVeicoliEpoca()
             SintesiCliente.back()
@@ -286,7 +289,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Auto: Prodotti particolari -> Libri matricola', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickLibriMatricola()
             SintesiCliente.back()
@@ -295,7 +298,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
 
 
     it('Verifica Card Auto: Prodotti particolari -> Kasko e ARD al Chilometro', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickKaskoARDChilometro()
             SintesiCliente.back()
@@ -304,7 +307,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Auto: Prodotti particolari -> Kasko e ARD a Giornata', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickKaskoARDGiornata()
             SintesiCliente.back()
@@ -312,7 +315,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Auto: Prodotti particolari -> Kasko e ARD a Veicolo', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickKaskoARDVeicolo()
             SintesiCliente.back()
@@ -321,7 +324,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Auto: Prodotti particolari -> Polizza aperta(base)', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickPolizzaBase()
             SintesiCliente.back()
@@ -329,7 +332,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Auto: Prodotti particolari -> Coassicurazione', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickCoassicurazione()
             SintesiCliente.back()
@@ -337,7 +340,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Auto: Passione Blu -> Nuova polizza', function () {
-        if (!Cypress.env('isAviva')) {
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             SintesiCliente.clickAuto()
             SintesiCliente.clickNuovaPolizza()
             SintesiCliente.back()
@@ -345,7 +348,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Auto: Natanti(AVIVA) -> Nuova polizza', function () {
-        if (!Cypress.env('isAviva'))
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             this.skip()
         SintesiCliente.clickAuto()
         SintesiCliente.clickNuovaPolizza()
@@ -360,9 +363,8 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.back()
     })
 
-    // if (Cypress.env('isAviva')) {
     it('Verifica Card Auto: Natanti(AVIVA) -> Nuova polizza Coassicurazione', function () {
-        if (!keysAuto.NUOVA_POLIZZA_COASSICURAZIONE || !Cypress.env('isAviva'))
+        if (!keysAuto.NUOVA_POLIZZA_COASSICURAZIONE || (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')))
             this.skip()
         SintesiCliente.clickAuto()
         SintesiCliente.clickNuovaPolizzaCoassicurazione()
@@ -370,7 +372,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
     })
 
     it('Verifica Card Auto: Passione Blu -> Nuova polizza Coassicurazione', function () {
-        if (!keysAuto.NUOVA_POLIZZA_COASSICURAZIONE || Cypress.env('isAviva'))
+        if (!keysAuto.NUOVA_POLIZZA_COASSICURAZIONE || (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')))
             this.skip()
         SintesiCliente.clickAuto()
         SintesiCliente.clickNuovaPolizzaCoassicurazione()
