@@ -129,9 +129,11 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
         Sfera.checkAllColonnePresenti(listColumnCaricoMancante)
     })
 
-    it.skip('Colonne in tabella_Tooltip', function () {
-        // Sfera.selezionaVistaSuggerita('Carico Mancante')
-        // Sfera.estrai()
+    it.only('Colonne in tabella_Tooltip', function () {
+        Sfera.selezionaVistaSuggerita('Carico Mancante')
+        Sfera.estrai(false)
+        cy.pause()
+        Sfera.checkTooltipHeadersColonne()
         //TODO
     })
 

@@ -484,6 +484,26 @@ const Pannelli = {
     FASTQUOTE: "Fastquote",
     DISDETTE: "Disdette"
 }
+
+/**
+ * Enum Colonne in vista Carico Mancante
+ * @enum {Object}
+ */
+const ColumnCaricoMancante = {
+    PT: 'Pt.',
+    CONTRAENTE: 'Contraente',
+    POLIZZA: 'Polizza',
+    VIA: 'Via',
+    CP: 'Cp.',
+    AGENZIA: 'Agenzia',
+    SEDE: 'Sede',
+    FONTE: 'Fonte',
+    RAMO: 'Ramo',
+    FR: 'Fr.',
+    DESC_PRODOTTO: 'Descrizione Prodotto',
+    TARGA: 'Targa'
+}
+
 /**
  * @class
  * @classdesc Classe per interagire con Sfera 4.0 da Matrix Web
@@ -2331,6 +2351,16 @@ class Sfera {
         cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then(() => {
             cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
+    }
+
+    static checkTooltipHeadersColonne() {
+
+        for (const [key, value] of Object.entries(ColumnCaricoMancante)) {
+
+            cy.contains(value).should('exist').invoke('show')
+            .trigger('mouseover')
+            .wait(1000)
+        }
     }
 }
 export default Sfera

@@ -215,7 +215,7 @@ class HomePage {
         })
     }
 
-    static closeIndidentBox() {
+    static closeIncidentBox() {
         cy.wait(4000)
         cy.get('body').then($body => {
             if ($body.find('.lib-incident-notification').length > 0)
