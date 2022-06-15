@@ -92,30 +92,30 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
     it('Sinistri canalizzati: verifica strutturale degli elementi dello header di pagina', function () {              
         const clssTtl = ".breadCrumbs_ActPos"
         // Verifica presenza titolo di pagina
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(clssTtl, dscr_titlePage)
+        ConsultazioneSinistriPage.isVisibleText(clssTtl, dscr_titlePage)
         //Verifica della label " Compagnia selezionata:"
         const clssLbl = ".lblTitle4"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(clssLbl, dscr_lblCmpgn)
+        ConsultazioneSinistriPage.isVisibleText(clssLbl, dscr_lblCmpgn)
         //Verifica presenza della Descrizione della compagnia
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(clssLbl, dscr_Cmpgn)
+        ConsultazioneSinistriPage.isVisibleText(clssLbl, dscr_Cmpgn)
         //Verifica presenza della label di della data di aggiornamento
         const clssDtAggrnmnt = ".lblTitle4"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(clssLbl, dscr_lblDtAggrnmnt)
+        ConsultazioneSinistriPage.isVisibleText(clssLbl, dscr_lblDtAggrnmnt)
         //Verifica presenza della label "Seleziona Fonti"
         const clssSlznFnt = '.tdEtichettaMEFP' 
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(clssSlznFnt, dscr_lblFnt)
+        ConsultazioneSinistriPage.isVisibleText(clssSlznFnt, dscr_lblFnt)
         //Verifica presenza della label "Seleziona Periodo"
         const clssSlznPrd = '.tdEtichettaMEFD' 
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(clssSlznPrd, dscr_lblPrd)
+        ConsultazioneSinistriPage.isVisibleText(clssSlznPrd, dscr_lblPrd)
         //Verifica presenza della label posizionata in alto a destra riportante la descrizione: ' Glossario'
         const clssGlssr = '.btnDownloadPDF'
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(clssGlssr, dscr_lblGlssr)
+        ConsultazioneSinistriPage.isVisibleText(clssGlssr, dscr_lblGlssr)
         //Verifica della presenza del pulsante 'Filtra' 
         const clssBtnFltr = '.btnFiltra'
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(clssBtnFltr, dscr_btnFltr)
+        ConsultazioneSinistriPage.isVisibleText(clssBtnFltr, dscr_btnFltr)
          //Verifica della presenza del pulsante 'Chiudi Filtri' 
         const clssBtnClsFltr = '.filter-close'
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(clssBtnClsFltr, dscr_btn_ClsFltr)
+        ConsultazioneSinistriPage.isVisibleText(clssBtnClsFltr, dscr_btn_ClsFltr)
         //Verifica formale sulla data di aggiornamento
         const cssdtAggrmnt = "#dataRiferimentoInt"  
         ConsultazioneSinistriPage.getPromiseText_ById(cssdtAggrmnt).then((val) => {
@@ -130,37 +130,54 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
 
         // Verifica presenza titolo di pagina
         const cssLblBody = ".labelSchedaFonteIndicatori"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssLblBody, dscr_titleBdyPg)
+        ConsultazioneSinistriPage.isVisibleText(cssLblBody, dscr_titleBdyPg)
         // Verifica della descrizione del tab Sinistri
         const cssTbSinistri = ".tabSelezionato"        
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssTbSinistri, dscr_tb_Sinistri)
+        ConsultazioneSinistriPage.isVisibleText(cssTbSinistri, dscr_tb_Sinistri)
         //Verifica descrizione sul filtro temporale presente in tabella 
         const cssFltrTmp = ".tdEtichettaMEFP"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssFltrTmp, dscr_fltr_tmp)
+        ConsultazioneSinistriPage.isVisibleText(cssFltrTmp, dscr_fltr_tmp)
         //Verifica presenza descrizione esporta tabella in excel 
         const cssDcrExpTbl = "#example > div:nth-child(3) > a:nth-child(1)"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssDcrExpTbl, dscr_xprt_tbl)
+        ConsultazioneSinistriPage.isVisibleText(cssDcrExpTbl, dscr_xprt_tbl)
          //Verifica presenza immagine "Excel"
         const cssImgXls = "#example > div:nth-child(3) > a:nth-child(2) > img"  
         Common.isVisibleImg(cssImgXls, "excel.png")
         //Verifica presenza immagine "Euro"
         const cssImgEuro = "#imgEuro"
         Common.isVisibleImg(cssImgEuro, "Euro.gif")
-        ConsultazioneSinistriPage.isVisibleText(cssImgEuro, "Importo")
+        //ConsultazioneSinistriPage.isVisibleText(cssImgEuro, "Importo")
         //Verifica presenza immagine "Pezzi"
         const cssImgPezzi = "#imgPezzi"
         Common.isVisibleImg(cssImgPezzi, "Pezzi.gif")
-        ConsultazioneSinistriPage.isVisibleText("#dataAl", "Pezzo")
+        //ConsultazioneSinistriPage.isVisibleText("#dataAl", "Pezzo")
         //Verifica presenza immagine "Delta"
         const cssImgDelta = "#imgDelta"
         Common.isVisibleImg(cssImgDelta, "Delta.gif")
-        ConsultazioneSinistriPage.isVisibleText("#dataAl", "Percentuale")
+        //ConsultazioneSinistriPage.isVisibleText("#dataAl", "Percentuale")
     });
 
-    it('Sinistri canalizzati verifica dati di tabella in homepage', function () {
+    it('Sinistri canalizzati verifica header di tabella in homepage', function () {
 
-        
-        
+        const cssHdrTbl =  "#tableDestraLabel > tbody > tr.headersNew"
+        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "CANALIZZABILI")
+        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "CANALIZZATI")
+        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "% CANALIZZATI")
+        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "QUARTILE")
+        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "% POTENZIALE MIGLIORAMENTO")
+        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "INCENTIVO RAGGIUNTO")
+        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "ULTERIORE INCENTIVO POTENZIALE")
+        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "IMPORTO  INCENTIVO A.P.") 
+        //Controllo sulla visibilità delle immagini di legenda poste sotto la riga intestazioni di colonna
+        Common.isVisibleImg("tr.headersSimboli > th:nth-child(1) > #imgPezzi ", "Pezzi.gif")
+        Common.isVisibleImg("tr.headersSimboli > th:nth-child(2) > #imgPezzi ", "Pezzi.gif")
+        Common.isVisibleImg("tr.headersSimboli > th:nth-child(3) > #imgPercentuale ", "Delta.gif")
+        Common.isVisibleImg("tr.headersSimboli > th:nth-child(4) > #imgPezzi ", "Pezzi.gif")
+        Common.isVisibleImg("tr.headersSimboli > th:nth-child(5) > #imgPercentuale ", "Delta.gif")
+        Common.isVisibleImg("tr.headersSimboli > th:nth-child(6) > #imgImporto ", "Euro.gif")
+        Common.isVisibleImg("tr.headersSimboli > th:nth-child(7) > #imgImporto ", "Euro.gif")
+        Common.isVisibleImg("tr.headersSimboli > th:nth-child(8) > #imgPercentuale ", "Delta.gif")
+        Common.isVisibleImg("tr.headersSimboli > th:nth-child(9) > #imgImporto ", "Euro.gif")
     });
 
 });

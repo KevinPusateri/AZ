@@ -124,16 +124,16 @@ class ConsultazioneSinistriPage {
         cy.wait(3000)                 
     }
 
-    static isVisibleText(id, text) {
-         
-            getIframe().find(id, { timeout: 5000 }).should('exist').and('be.visible').invoke('val').then($val => {  
-                let txt = $val.text().trim()
-                let txt2 =$val.innerText
-                cy.log('>> '+ txt + ' >> '+txt2)      
-                if (txt.includes(text))
-                    cy.log('>> object with text: "' + text +'" is defined')  
-            });
-
+    static isVisibleText(id, text) {         
+        getIframe().find(id, { timeout: 5000 }).should('exist').and('be.visible').then(($tag) => { 
+            debugger
+            let txt = $tag.text().trim()
+            cy.log('>> the text value is:  '+ txt) 
+            if (txt.includes(text))
+                    cy.log('>> object with text value : "' + text +'" is defined')  
+            else
+                assert.fail('object with text value: "' + text +'" is not defined')    
+        });
         cy.wait(1000) 
     }
     /**

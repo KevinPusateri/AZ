@@ -144,10 +144,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, numsin)
         // Verifica (2): Valore della data avvenimento      
         const cssDtAvv = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.clock"      
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento)         
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(cssDtAvv, dtAvvenimento)         
         // Verifica (3): Cliente
         const cssCliente = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.people > a"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssCliente, clienteAssicurato);
+        ConsultazioneSinistriPage.checkObj_ByIdAndText(cssCliente, clienteAssicurato);
     });
     
     it('"Pagina di dettaglio" è verificata la sezione INTESTAZIONE con valorizzazione dei campi ' +

@@ -92,10 +92,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let classvalue = "search_submit claim_number k-button"
 
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
-        ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')       
+        ConsultazioneSinistriPage.isVisibleText(classvalue, 'Cerca')       
 
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, stato_sin)       
+        ConsultazioneSinistriPage.isVisibleText(lblnumsin, numsin)
+        ConsultazioneSinistriPage.isVisibleText(lblnumsin, stato_sin)       
     });
 
     it('"Pagina di ricerca" è verificato che il nome associato al cliente assicurato, la targa, la polizza e la data di avvenimento del sinistro non siano nulli.', function () {
@@ -141,15 +141,15 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
        cy.wait(2000) 
         // Verifica (1) : numero di sinistro in alto alla pagina di dettaglio       
        const clssDtl = "#sx-detail > h2"
-       ConsultazioneSinistriPage.isTextIncluded_ByIdAndText(clssDtl, numsin)
+       ConsultazioneSinistriPage.isVisibleText(clssDtl, numsin)
 
         // Verifica (2): Valore della data avvenimento           
         const cssDtAvv = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.clock"      
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssDtAvv, dtAvvenimento) 
+        ConsultazioneSinistriPage.isVisibleText(cssDtAvv, dtAvvenimento) 
         
         // Verifica (3): Cliente
         const cssCliente = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.people > a"
-        ConsultazioneSinistriPage.checkObj_ByLocatorAndText(cssCliente, clienteAssicurato);
+        ConsultazioneSinistriPage.isVisibleText(cssCliente, clienteAssicurato);
 
     });
     
