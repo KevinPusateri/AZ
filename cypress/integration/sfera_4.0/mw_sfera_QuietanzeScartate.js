@@ -80,4 +80,8 @@ describe('Matrix Web : Sfera 4.0 - Operatività - vista Quietanze Scartete', fun
         Sfera.estrai()
     })
 
+    it('Verifica Vista Quietanze Scartate', function () {
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
+        Sfera.checkVistaExist(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
+    })
 })
