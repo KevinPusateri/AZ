@@ -111,7 +111,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.backToNumbers('business-lines')
     })
 
-    if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a Retention', function () {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
@@ -141,7 +141,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.backToNumbers('business-lines')
     })
 
-    if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a Retention', function () {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
@@ -150,7 +150,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         })
     }
 
-    if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a New business', function () {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
@@ -201,7 +201,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.backToNumbers('products')
     })
 
-    if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         it('Verifica su Indicatori Operativi aggancio  Monitoraggio carico', function () {
             TopBar.clickNumbers()
             Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')

@@ -522,7 +522,7 @@ class LandingRicerca {
                         'Allianz Ultra Salute'
                     ]
                     linkLength = 2
-                } else if (Cypress.env('isAviva')) {
+                } else if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
                     suggLinks = [
                         'Ultra Casa e Patrimonio',
                         'Ultra Salute'
@@ -546,7 +546,7 @@ class LandingRicerca {
                 linkLength = 2
                 break;
             case 'ro':
-                if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+                if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                     suggLinks = [
                         'Provvigioni',
                         'Quattroruote - Calcolo valore Veicolo',
@@ -555,7 +555,7 @@ class LandingRicerca {
                         'Monitoraggio Polizze Proposte'
                     ]
                     linkLength = 5
-                } else if (Cypress.env('isAviva')) {
+                } else if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
                     suggLinks = [
                         'Quattroruote - Calcolo valore Veicolo',
                         'Interrogazioni Centralizzate',

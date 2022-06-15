@@ -178,6 +178,23 @@ const VociMenuQuietanza = {
 }
 
 /**
+ * Enum Voci Menu Consultazione
+ * @readonly
+ * @enum {Object}
+ */
+const VociMenuConsultazione = {
+    POLIZZA: {
+        root: 'Consultazione',
+        parent: '',
+        key: 'Polizza'
+    },
+    DOCUMENTI_POLIZZA: {
+        root: 'Consultazione',
+        parent: '',
+        key: 'Documenti di polizza'
+    },
+}
+/**
  * Enum Voci Menu Polizza
  * @readonly
  * @enum {Object}
@@ -467,6 +484,26 @@ const Pannelli = {
     FASTQUOTE: "Fastquote",
     DISDETTE: "Disdette"
 }
+
+/**
+ * Enum Colonne in vista Carico Mancante
+ * @enum {Object}
+ */
+const ColumnCaricoMancante = {
+    PT: 'Pt.',
+    CONTRAENTE: 'Contraente',
+    POLIZZA: 'Polizza',
+    VIA: 'Via',
+    CP: 'Cp.',
+    AGENZIA: 'Agenzia',
+    SEDE: 'Sede',
+    FONTE: 'Fonte',
+    RAMO: 'Ramo',
+    FR: 'Fr.',
+    DESC_PRODOTTO: 'Descrizione Prodotto',
+    TARGA: 'Targa'
+}
+
 /**
  * @class
  * @classdesc Classe per interagire con Sfera 4.0 da Matrix Web
@@ -480,6 +517,14 @@ class Sfera {
      */
     static get PORTAFOGLI() {
         return Portafogli
+    }
+
+    /**
+     * Funzione che ritorna le voci di menu Consultazioni disponibili su Sfera
+     * @returns {VociMenuConsultazione} Consultazioni disponibili
+     */
+    static get VOCIMENUCONSULTAZIONE() {
+        return VociMenuConsultazione
     }
 
     /**
@@ -731,7 +776,7 @@ class Sfera {
     /**
      * Verifica accesso a Sfera
      */
-    static verificaAccessoSfera() {
+    static verificaAccessoSfera(aggiornaCarico = true) {
         cy.intercept(infoUtente).as('infoUtente')
         cy.intercept(agenzieFonti).as('agenzieFonti')
         cy.intercept(caricaVista).as('caricaVista')
@@ -741,8 +786,10 @@ class Sfera {
         cy.wait('@infoUtente', { timeout: 60000 })
         cy.wait('@agenzieFonti', { timeout: 60000 })
         cy.wait('@caricaVista', { timeout: 60000 })
-        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+        if (aggiornaCarico) {
+            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+        }
 
         this.bodyTableEstrazione()
     }
@@ -851,7 +898,7 @@ class Sfera {
      * 
      * @returns {Promise} polizza su cui sono state effettuate le operazioni
      */
-    static apriVoceMenu(voce, flussoCompleto = true, polizza = null, tipoSostituzioneRiattivazione = null, modalitaPagamentoPreferita = null, random = false) {
+    static apriVoceMenu(voce, flussoCompleto = true, polizza = null, tipoSostituzioneRiattivazione = null, modalitaPagamentoPreferita = null, random = false, vista = null) {
         return new Cypress.Promise(resolve => {
             if (polizza === null)
                 if (random)
@@ -871,9 +918,10 @@ class Sfera {
                 })
 
             //Andiamo a selezionare la root (Quietanza,Polizza...)
-            this.menuContestualeParent().within(() => {
-                cy.contains(voce.root).should('exist').and('be.visible').click()
-            })
+            if (voce.key !== VociMenuQuietanza.QUIETANZAMENTO_ONLINE.key)
+                this.menuContestualeParent().within(() => {
+                    cy.contains(voce.root).should('exist').and('be.visible').click()
+                })
 
             //Andiamo a selezionare prima il menu contestuale 'padre' (se presente)
             if (voce.parent !== '') {
@@ -881,7 +929,6 @@ class Sfera {
                     cy.contains(voce.parent).should('exist').and('be.visible').click()
                 })
             }
-
             //Andiamo a selezionare il menu contestuale 'figlio'
             this.menuContestualeChild().within(() => {
                 //? CONSULTAZIONE_DOCUMENTI_POLIZZA, Voci menu Cliente si apre su nuovo tab, quindi gestisto il _self
@@ -1021,6 +1068,20 @@ class Sfera {
                         this.verificaAccessoSfera()
                     }
                     break;
+                case VociMenuQuietanza.QUIETANZAMENTO_ONLINE:
+                    NGRA2013.verificaAccessoPagamento()
+                    cy.wait(10000)
+                    cy.screenshot('Verifica Accesso a Pagamenti NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        NGRA2013.flussoQuietanzamentoOnline()
+                    }
+                    else {
+                        NGRA2013.home(true)
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera()
+                        break;
+                    }
+                    break;
                 case VociMenuPolizza.CONSULTAZIONE_POLIZZA:
                     InquiryAgenzia.verificaAccessoInquiryAgenzia()
                     cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1031,6 +1092,17 @@ class Sfera {
                         InquiryAgenzia.clickUscita()
                         //Verifichiamo il rientro in Sfera
                         this.verificaAccessoSfera()
+                    }
+                    break;
+                case VociMenuConsultazione.POLIZZA:
+                    cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        InquiryAgenzia.clickUscita()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera(false)
                     }
                     break;
                 case VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA:
@@ -1057,6 +1129,28 @@ class Sfera {
                         this.estrai()
                     }
                     break;
+                case VociMenuConsultazione.DOCUMENTI_POLIZZA:
+                    Folder.verificaCaricamentoFolder(false)
+                    cy.screenshot('Consultazione Documenti Polizza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        cy.wait('@infoUtente', { timeout: 60000 })
+                        cy.wait('@agenzieFonti', { timeout: 60000 })
+                        cy.wait('@caricaVista', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        this.estrai()
+                    }
+                    break
                 case VociMenuPolizza.MODIFICA_MODALITA_PAGAMENTO:
                     cy.intercept(cambiaModalitaPagamentoPreferita).as('cambiaModalitaPagamentoPreferita')
                     this.dropdownModalitaPagamentoPreferita().click()
@@ -1090,10 +1184,12 @@ class Sfera {
                         cy.wait('@infoUtente', { timeout: 60000 })
                         cy.wait('@agenzieFonti', { timeout: 60000 })
                         cy.wait('@caricaVista', { timeout: 60000 })
-                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
-                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                        this.estrai()
+                        if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                            this.estrai()
+                        }
                     }
                     break;
                 case VociMenuCliente.LISTA_POLIZZE:
@@ -1114,16 +1210,18 @@ class Sfera {
                         cy.wait('@infoUtente', { timeout: 60000 })
                         cy.wait('@agenzieFonti', { timeout: 60000 })
                         cy.wait('@caricaVista', { timeout: 60000 })
-                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
-                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                        this.estrai()
+                        if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                            this.estrai()
+                        }
                     }
                     break;
                 case VociMenuCliente.LISTA_SINISTRI:
-                    Portafoglio.checkSinistri()
                     cy.screenshot('Lista Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
+                        Portafoglio.checkSinistri()
                         //TODO implementare flusso completo
                     }
                     else {
@@ -1138,10 +1236,12 @@ class Sfera {
                         cy.wait('@infoUtente', { timeout: 60000 })
                         cy.wait('@agenzieFonti', { timeout: 60000 })
                         cy.wait('@caricaVista', { timeout: 60000 })
-                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
-                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                        this.estrai()
+                        if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                            this.estrai()
+                        }
                     }
                     break;
             }
@@ -1189,7 +1289,7 @@ class Sfera {
             dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).click().type(dataInizio).wait(500)
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).click().type(dataInizio).wait(1000)
 
         //Impostiamo la data di fine estrazione
         if (dataFine === undefined) {
@@ -1198,7 +1298,7 @@ class Sfera {
             dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type(dataFine).wait(500).type('{esc}')
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type(dataFine).wait(500).type('{esc}').wait(1000)
 
         //Clicchiamo su estrai
         if (performEstrai) this.estrai()
@@ -2218,6 +2318,7 @@ class Sfera {
             })
         })
 
+        //Andiamo a selezionare la root (Quietanza,Polizza...)
 
         //Andiamo a selezionare prima il menu contestuale 'padre' (se presente)
         if (voce.parent !== '') {
@@ -2230,7 +2331,7 @@ class Sfera {
                 cy.get('button[role="menuitem"]', { timeout: 10000 }).should('contain.text', voce.key)
             })
         } else {
-            if (voce.root === 'Cliente')
+            if (voce.root === 'Cliente' || voce.root === 'Consultazione')
                 this.menuContestualeParent().within(() => {
                     cy.contains(voce.root).should('exist').and('be.visible').click()
                 })
@@ -2239,6 +2340,27 @@ class Sfera {
             })
         }
 
+    }
+
+    /**
+     * It checks if a table is visible and if it is, it takes a screenshot.
+     * @param vista - the name of the view you want to check
+     */
+    static checkVistaExist(vista) {
+        cy.get('app-view').should('be.visible').find('h2:first').should('be.visible').and('contain.text', vista)
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then(() => {
+            cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        })
+    }
+
+    static checkTooltipHeadersColonne() {
+
+        for (const [key, value] of Object.entries(ColumnCaricoMancante)) {
+
+            cy.contains(value).should('exist').invoke('show')
+            .trigger('mouseover')
+            .wait(1000)
+        }
     }
 }
 export default Sfera

@@ -130,14 +130,14 @@ describe('Matrix Web : Navigazioni da Clients', function () {
     })
 
     it('Verifica aggancio Vai a visione globale', function () {
-        if (!keyVisione.VISIONE_GLOBALE_CLIENTE || Cypress.env('isAviva'))
+        if (!keyVisione.VISIONE_GLOBALE_CLIENTE || (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')))
             this.skip()
         TopBar.clickClients()
         Clients.clickVisioneGlobale()
     });
 
     //! Solo Per Aviva il button non è presente
-    if (Cypress.env('isAviva'))
+    if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
         it('Verifica Assenza "Vai a visione globale"', function () {
             TopBar.clickClients()
             Clients.checkAssenzaVisioneGlobale()

@@ -21,7 +21,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 //#endregion
 let notExist = ''
-if (Cypress.env('isAviva'))
+if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
     notExist = 'ASSENTE '
 before(() => {
     cy.getUserWinLogin().then(data => {
@@ -74,7 +74,7 @@ describe('Matrix Ricerca', {
         TopBar.clickMatrixHome()
     })
 
-    if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         it(notExist + 'Verifica Ricerca Da Landing News e Info', function() {
             TopBar.clickNewsInfo()
             LandingRicerca.checkBucaRicercaSuggerrimenti()
@@ -91,7 +91,7 @@ describe('Matrix Ricerca', {
 
 })
 
-if (Cypress.env('isAviva')) {
+if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
     describe('Matrix Ricerca - AVIVA', {
         retries: {
             runMode: 1,

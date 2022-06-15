@@ -137,8 +137,8 @@ class CampagneCommerciali {
 
             cy.contains("Risultati di vendita di campagne attive").should('exist').and('be.visible')
 
-            //Tabella con le campagne attive
-            cy.get('.lib-active-campaigns-table').should('exist').and('be.visible')
+            //Tabella con il contributo mensile delle campagne
+            cy.get('.lib-bar-chart').should('exist').and('be.visible')
 
             cy.screenshot('Risultati Delle Vendite', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
@@ -156,6 +156,18 @@ class CampagneCommerciali {
 
             //clicchiamo sull'ultima voce disponible
             cy.get('nx-dropdown-item:visible').last().click()
+        })
+    }
+
+    static resetFiltri() {
+        getIFrame().within(() => {
+            for (const [key, value] of Object.entries(Filtro)) {
+
+                cy.contains(value).should('exist').parent().parent().find('nx-dropdown').click()
+
+                //clicchiamo sulla prima voce
+                cy.get('nx-dropdown-item:visible').first().click()
+            }
         })
     }
 
@@ -183,30 +195,78 @@ class CampagneCommerciali {
     }
 
     static campagneInArrivo() {
-        gqlCampaing()
 
-        getIFrame().within(() => {
+        return new Cypress.Promise((resolve) => {
+            gqlCampaing()
 
-            cy.get('.lib-upcoming-campaigns-carousel').should('exist').within(() => {
-                //clicchiamo sulla prima disponibile
-                cy.contains('Vedi campagna').first().should('exist').click()
+            let present = false
+            getIFrame().within(($body) => {
+                cy.wrap($body).find('div[class="lib-upcoming-campaigns-carousel"]').within(($inArrivo) => {
+                    if ($inArrivo.find('span:contains("Vedi campagna")').length > 0) {
+                        cy.wrap($inArrivo).find('span:contains("Vedi campagna")').first().should('exist').click()
+                        waitCheckGQL('gqlCampaign')
+                        waitCheckGQL('gqlCampaignAgent')
+                    }
+                    else
+                        resolve(false)
+                })
+            }).then(() => {
+                if (present)
+                    //Verifichiamo che il pulsante 'Configura e attiva' sia disabilitato
+                    getIFrame().within(() => {
+                        cy.get('button:contains("Configura e attiva")').should('exist').and('be.visible').and('have.attr', 'disabled')
+
+                        cy.screenshot('Campagne in Arrivo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+                        cy.contains("Indietro").should('exist').and('be.visible').click()
+
+                        waitCheckGQL('gqlCampaignList')
+                        waitCheckGQL('gqlCampaignsMonitoring')
+                        waitCheckGQL('gqlCampaignAgent')
+
+                        resolve(true)
+                    })
             })
         })
+    }
 
-        waitCheckGQL('gqlCampaign')
-        waitCheckGQL('gqlCampaignAgent')
+    static campagneNuove() {
 
-        //Verifichiamo che il pulsante 'Configura e attiva' sia disabilitato
-        getIFrame().within(() => {
-            cy.get('button:contains("Configura e attiva")').should('exist').and('be.visible').and('have.attr', 'disabled')
+        return new Cypress.Promise((resolve) => {
+            gqlCampaing()
 
-            cy.screenshot('Campagne in Arrivo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            let present = false
+            getIFrame().within(($body) => {
+                cy.wrap($body).find('div[class="lib-campaign-card"]').within(($campagneNuove) => {
+                    if ($campagneNuove.find('span:contains("Vedi campagna")').length > 0) {
+                        cy.wrap($campagneNuove).find('span:contains("Vedi campagna")').first().should('exist').click()
 
-            cy.contains("Indietro").should('exist').and('be.visible').click()
+                        //Verifichiamo che il pulsante 'Configura e attiva' sia disabilitato
+                        waitCheckGQL('gqlCampaign')
+                        waitCheckGQL('gqlCampaignAgent')
 
-            waitCheckGQL('gqlCampaignList')
-            waitCheckGQL('gqlCampaignsMonitoring')
-            waitCheckGQL('gqlCampaignAgent')
+                        present = true
+                    }
+                    else
+                        resolve(false)
+                })
+            }).then(() => {
+                if (present)
+                    //Verifichiamo che il pulsante 'Configura e attiva' sia abilitato
+                    getIFrame().within(() => {
+                        cy.get('button:contains("Configura e attiva")').should('exist').and('be.visible').and('not.have.attr', 'disabled')
+
+                        cy.screenshot('Campagne Nuove', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+                        cy.contains("Indietro").should('exist').and('be.visible').click()
+
+                        waitCheckGQL('gqlCampaignList')
+                        waitCheckGQL('gqlCampaignsMonitoring')
+                        waitCheckGQL('gqlCampaignAgent')
+
+                        resolve(true)
+                    })
+            })
         })
     }
 
@@ -221,6 +281,20 @@ class CampagneCommerciali {
                 cy.contains('Annulla').should('exist').and('be.visible').click()
             })
         })
+    }
+
+    static visitCampaignManager() {
+
+        gqlCampaing()
+        
+        cy.visit(Common.getBaseUrl() + 'sales/campaign-manager', { responseTimeout: 31000 })
+
+        waitCheckGQL('gqlCampaignUser')
+        waitCheckGQL('gqlCampaignList')
+        waitCheckGQL('gqlCampaignsMonitoring')
+        waitCheckGQL('gqlCampaignAgent')
+        
+        cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
     }
 }
 

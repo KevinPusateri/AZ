@@ -401,8 +401,9 @@ class TopBar extends HomePage {
     static clickIconUser() {
         cy.get('lib-user-header').click()
         cy.get('lib-user-name-container').should('be.visible')
-        cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva'))
+        if (!Cypress.env('isAvivaBroker'))
+            cy.get('lib-user-role-container').should('be.visible').and('contain.text', 'DELEGATO ASSICURATIVO')
+        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             cy.contains('Ci sono altri profili collegati')
         cy.contains('Cambio password')
         cy.contains('Configurazione stampanti')
@@ -417,7 +418,7 @@ class TopBar extends HomePage {
      */
     static clickIconSwitchPage(page) {
         cy.get('lib-switch-button').click().wait(500)
-        cy.get('.lib-switch-button-list-column').should('have.length', !(Cypress.env('isAviva')) ? 5 : 4)
+        cy.get('.lib-switch-button-list-column').should('have.length', (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) ? 5 : 4)
         switch (page) {
             case LandingPage.CLIENTS:
                 interceptPageClients()
@@ -467,11 +468,11 @@ class TopBar extends HomePage {
             deleteKey: function (keys) {
                 if (!keys.srmOnlineEnabled) delete this.SRM
                 if (!keys.siscoEnabled) delete this.SISCO
-                if (!keys.SERVICENOW || Cypress.env('isAviva')) {
+                if (!keys.SERVICENOW || (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))) {
                     delete this.SERVICENOW_NUOVA_RICHIESTA
                     delete this.SERVICENOW_ELENCO_RICHIESTE
                 }
-                if (Cypress.env('isAviva')) delete this.ELENCO_TELEFONICO
+                if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.ELENCO_TELEFONICO
             }
         }
         LinksIncident.deleteKey(keys)

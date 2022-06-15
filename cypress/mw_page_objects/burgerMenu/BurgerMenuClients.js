@@ -41,7 +41,7 @@ const LinksBurgerMenu = {
         if (!keys.GESTIONE_FONTE_PRINCIPALE) delete this.GESTIONE_FONTE_PRINCIPALE
         if (!keys.ANTIRICICLAGGIO) delete this.ANTIRICICLAGGIO
         if (!keys.HOSPITAL_SCANNER) delete this.HOSPITAL_SCANNER
-        if (Cypress.env('isAviva')) delete this.ANALISI_DEI_BISOGNI
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.ANALISI_DEI_BISOGNI
         if (!keys.CONSENSI_EMAIL_SUI_CONTRATTI) delete this.CONSENSI_EMAIL_SUI_CONTRATTI
     }
 }

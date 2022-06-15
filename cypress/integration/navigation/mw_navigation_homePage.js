@@ -64,7 +64,7 @@ before(() => {
                 //? Rimosso dalla Release 124, default a false
 
                 cy.filterProfile(profiling, 'PO_LE_MIE_INFO_OM').then(profiled => {
-                    if (Cypress.env('isAviva'))
+                    if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
                         keys.newsMieInfo = false
                     else
                         keys.newsMieInfo = profiled
@@ -153,7 +153,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     })
 
     it('Verifica Top Menu incident - Verifica atterraggio Elenco telefonico', function () {
-        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva')) {
+        if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
             cy.task('getHostName').then(hostName => {
                 let currentHostName = hostName
                 if (!currentHostName.includes('SM'))
@@ -298,7 +298,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     });
 
 
-    if (Cypress.env('isAviva')) {
+    if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
         it('Verifica assenza Button News e Info', function () {
             TopBar.checkNotExistLanding('News e Info')
         });
@@ -312,7 +312,8 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         HomePage.clickVaiAlCentroNotifiche()
     });
 
-    if (!Cypress.env('isAviva')) {
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) 
+     {
         it('Verifica link: "Vedi tutte"', function () {
             HomePage.clickVediTutte()
         });

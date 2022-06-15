@@ -43,12 +43,12 @@ after(function() {
 })
 
 let notExist = ''
-if (Cypress.env('isAviva'))
+if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
     notExist = 'ASSENTE '
 
 
 
-if (Cypress.env('isAviva')) {
+if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
     describe('Buca di Ricerca - Risultati - AVIVA', function() {
 
         it('Verifica Atterraggio nella Pagina', function() {

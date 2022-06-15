@@ -5,6 +5,7 @@
 /// <reference types="Cypress" />
 
 //#region import
+import Common from "../../mw_page_objects/common/Common"
 import HomePage from "../../mw_page_objects/common/HomePage"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -28,6 +29,8 @@ let options = {
         openMode: 0,
     }
 }
+
+let flusso = true
 const listColumnCaricoMancante = [
     'Pt.',
     'Contraente',
@@ -42,17 +45,19 @@ const listColumnCaricoMancante = [
     'Descrizione Prodotto',
     'Targa'
 ]
-let today = new Date()
-today.setMonth(4)
-today.setDate(1)
-let dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
-today.setMonth(5)
-today.setDate(30)
-let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
+
+let dataInizio = Common.setDate(1, 4)
+let dataFine = Common.setDate(30, 5)
+let date = {
+    dataInizio,
+    dataFine
+}
 //#endregion
 
 //#region Before After
 before(() => {
+    //! UTILIZZARE CHROME PER LA POSSIBILITA' DI FARE L'EXCEL
+    expect(Cypress.browser.name).to.contain('chrome')
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
@@ -72,6 +77,20 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
+if (flusso)
+    afterEach(function () {
+        if (this.currentTest.state !== 'passed') {
+            TopBar.logOutMW()
+            //#region Mysql
+            cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+                let tests = testsInfo
+                cy.finishMysql(dbConfig, insertedId, tests)
+            })
+            //#endregion
+            Cypress.runner.stop();
+        }
+    })
+
 after(function () {
     TopBar.logOutMW()
     //#region Mysql
@@ -85,11 +104,11 @@ after(function () {
 
 describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () {
 
-    it('age 01-712000 aprile maggio - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online', function () {
-        Sfera.setDateEstrazione(true, dataInizio, dataFine)
+    it('Age 01-712000 aprile maggio - Corretto caricamento dati', function () {
+        Sfera.setDateEstrazione(true, date.dataInizio, date.dataFine)
     })
 
-    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante', function () {
+    it('Vista Carico Mancante', function () {
         Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
         Sfera.checkNotExistLob(Sfera.PORTAFOGLI.RAMI_VARI)
         Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
@@ -99,39 +118,42 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
 
     })
 
-    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_LoB MOTOR e RV', function () {
+    it('LoB MOTOR e RV default', function () {
         Sfera.espandiPannello()
         Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
         Sfera.checkLob(Sfera.PORTAFOGLI.RAMI_VARI)
         Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
     })
 
-    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_colonne in tabella', function () {
+    it('Verifica colonne corrette in tabella', function () {
         Sfera.checkAllColonnePresenti(listColumnCaricoMancante)
     })
 
-    it.skip('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_colonne in tabella', function () {
-        // Sfera.selezionaVistaSuggerita('Carico Mancante')
-        // Sfera.estrai()
+    it.only('Colonne in tabella_Tooltip', function () {
+        Sfera.selezionaVistaSuggerita('Carico Mancante')
+        Sfera.estrai(false)
+        cy.pause()
+        Sfera.checkTooltipHeadersColonne()
         //TODO
     })
 
-    it.skip('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_colonne in tabella_filtri excel', function () {
+    it.skip('Colonne in tabella_filtri excel', function () {
         //TODO DA CHIARIRE
+        // !NON APPLICABILE SUL File excel i filtri
     })
 
-    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_colonne in tabella_report', function () {
+    it('Colonne in tabella_report excel', function () {
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.estrazioneReportExcel(listColumnCaricoMancante)
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
 
     })
 
-    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_default 50 righe', function () {
+    it('Verifica default 50 righe', function () {
         Sfera.checkRisultatiPaginaRighe('50')
     })
 
-    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_personalizza tabella', function () {
+    it('Personalizza tabella', function () {
         Sfera.eliminaColonna('Contraente')
         Sfera.checkColonnaAssente('Contraente')
         Sfera.gestisciColonne(['Contraente'])
@@ -139,11 +161,61 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
         cy.wait(2000)
     })
 
-    it('Sfera 4.0 - Operatività - CARICO MANCANTE - Carico Mancante  e quietanzamento online_nuova label_carico mancante_menu contestuale', function () {
+    it('Menu contestuale verifica voci presenti', function () {
         Sfera.checkVociMenuExist(Sfera.VOCIMENUQUIETANZA.QUIETANZAMENTO_ONLINE)
-        Sfera.checkVociMenuExist(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_POLIZZA)
-        Sfera.checkVociMenuExist(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_DOCUMENTI_POLIZZA)
+        Sfera.checkVociMenuExist(Sfera.VOCIMENUCONSULTAZIONE.POLIZZA)
+        Sfera.checkVociMenuExist(Sfera.VOCIMENUCONSULTAZIONE.DOCUMENTI_POLIZZA)
         Sfera.checkVociMenuExist(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE)
         Sfera.checkVociMenuExist(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI)
     })
+
+
+    it.skip('contestuale_quietanzmaneto on line', function () { //! BUG aperto
+        Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.QUIETANZAMENTO_ONLINE, true, null, null, null, true)
+    })
+
+    it('Menu Contestuale -> Consultazione Polizza_call back applicativa', function () {
+        Sfera.apriVoceMenu(Sfera.VOCIMENUCONSULTAZIONE.POLIZZA, false, null, null, null, true)
+        Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+    })
+
+    it('Menu Contestuale -> Cliente -> Scheda Cliente_call back applicativa', function () {
+        Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.SCHEDA_CLIENTE, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        if (flusso) {
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+            Sfera.espandiPannello()
+            Sfera.estrai(false)
+        }
+    })
+
+    it('Menu Contestuale -> Cliente -> Lista polizze_call back applicativa', function () {
+        Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        if (flusso) {
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+            Sfera.espandiPannello()
+            Sfera.estrai(false)
+        }
+    })
+
+    it('Menu Contestuale -> Cliente -> Lista Sinistri_call back applicativa', function () {
+        Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        if (flusso) {
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+            Sfera.espandiPannello()
+            Sfera.estrai(false)
+        }
+    })
+
+    it('Menu Contestuale -> Consultazione Documenti di polizza_call back applicativa', function () {
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        Sfera.estrai(false)
+        Sfera.apriVoceMenu(Sfera.VOCIMENUCONSULTAZIONE.DOCUMENTI_POLIZZA, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        cy.pause()
+        Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+    })
+
+    //? Sfera 4.0 - Operatività - CARICO MANCANTE -
+    //? Carico Mancante  e quietanzamento online_quietanzamento online ok>verificare in vista standard  il quietanzamento 
+
+
 }) 

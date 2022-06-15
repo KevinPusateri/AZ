@@ -78,6 +78,11 @@ before(() => {
                                 "agentId": data.aviva.agentId,
                                 "agency": data.aviva.agency,
                             }
+                            else if (Cypress.env('isAvivaBroker'))
+                            currentImpersonificationToPerform = {
+                                "agentId": data.avivaBroker.agentId,
+                                "agency": data.avivaBroker.agency,
+                            }
                         else
                             currentImpersonificationToPerform = {
                                 "agentId": user.agentId,

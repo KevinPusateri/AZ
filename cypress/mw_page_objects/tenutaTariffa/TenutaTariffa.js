@@ -1055,7 +1055,6 @@ class TenutaTariffa {
                     cy.get('nx-dropdown-item').contains(currentCase.Tipo_Pacchetto_Garanzie_Aggiuntive).click()
                     cy.get('nx-spinner').should('not.be.visible')
                     //Limite rottura cristalli
-                    cy.contains(Tipo_Pacchetto_Garanzie_Aggiuntive).parents('div[nxrowalignitems="center"]').find('nx-icon').first().click()
                     cy.contains('Rottura cristalli con limite massimo').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
                     cy.get('nx-dropdown-item').contains(currentCase.Massimale_Rottura_Cristalli).click()
                     cy.get('nx-spinner').should('not.be.visible')
