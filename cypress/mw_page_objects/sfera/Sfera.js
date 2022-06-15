@@ -114,7 +114,8 @@ const TipoTitoli = {
  * @private
  */
 const VisteSuggerite = {
-    CARICO_MANCANTE: 'Carico Mancante'
+    CARICO_MANCANTE: 'Carico Mancante',
+    QUIETANZE_SCARTATE: 'Quietanze Scartate'
 }
 
 /**
@@ -2390,6 +2391,7 @@ class Sfera {
     static checkVistaExist(vista) {
         cy.get('app-view').should('be.visible').find('h2:first').should('be.visible').and('contain.text', vista)
         cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(5000)
     }
 
     static checkTooltipHeadersColonne() {
