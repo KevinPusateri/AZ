@@ -36,12 +36,12 @@ let insertedId
 
 //#region enum
 const ultraRV = {
-  CASAPATRIMONIO: "Allianz Ultra Casa e Patrimonio",
-  CASAPATRIMONIO_BMP: "Allianz Ultra Casa e Patrimonio BMP",
-  SALUTE: "Allianz Ultra Salute",
+    CASAPATRIMONIO: "Allianz Ultra Casa e Patrimonio",
+    CASAPATRIMONIO_BMP: "Allianz Ultra Casa e Patrimonio BMP",
+    SALUTE: "Allianz Ultra Salute",
 }
 
-  
+
 //#endregion
 
 //#region Configuration
@@ -96,46 +96,44 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-after(function() {
+after(function () {
     TopBar.logOutMW()
-        //#region Mysql
+    //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-            let tests = testsInfo
-            cy.finishMysql(dbConfig, insertedId, tests)
-        })
-        //#endregion
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
 })
 
-describe('Ultra BMP : Emissione BMP Caso1', function() {
+describe('Ultra BMP : Emissione BMP Caso1', function () {
 
     it('Seleziona Ultra BMP', () => {
         TopBar.clickSales()
-        cy.pause()
         //BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO_BMP)
         BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO)
     })
-     
+
     it("Verifica valori default FQ e accesso alla dashboard", () => {
         StartPage.VerificaDefaultFQ(defaultFQ)
         StartPage.startScopriProtezione()
         //Dashboard.caricamentoDashboardUltra()    
     })
-    
+
     it("Seleziona ambiti", () => {
         cy.log('Seleziona ambito')
         Dashboard.selezionaAmbiti(ambiti)
     })
-    
-    
+
+
     it("Cambia Soluzioni", () => {
-    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, soluzione.TOP)
-    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile, soluzione.PREMIUM)
-    Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici, soluzione.ESSENTIAL)
-    
+        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, soluzione.TOP)
+        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile, soluzione.PREMIUM)
+        Dashboard.modificaSoluzione(ambitiUltra.ambitiUltraCasaPatrimonio.animali_domestici, soluzione.ESSENTIAL)
     })
-    
-    it("Accesso Dati Quotazione da menù", ()=>{
-        Dashboard.selezionaVoceHeader('Dati quotazione')    
+
+    it("Accesso Dati Quotazione da menù", () => {
+        Dashboard.selezionaVoceHeader('Dati quotazione')
 
         DatiQuotazione.VerificaDefaultCasa('Casa 1', daVerificareCasa, defaultCasa)
         DatiQuotazione.VerificaDefaultAnimaleDomestico('Animale domestico 1', daVerificareAnimale, defaultAnimale)
@@ -145,11 +143,10 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         //Dashboard.caricamentoDashboardUltra()  <<< non trova 
     })
 
-    it("Accesso Configurazione ambito 'Fabbricato'", ()=>{
-        
+    it("Accesso Configurazione ambito 'Fabbricato'", () => {
         Dashboard.leggiPremioTot()     //>> premioTotDashboard    
         cy.get('@premioTotDashboard').then(premioTot => {
-            premioTotPrima = parseFloat(premioTot.replace(/,/,"."))
+            premioTotPrima = parseFloat(premioTot.replace(/,/, "."))
             cy.log('Premio totale prima di aggiungere la garanzia: ' + premioTotPrima)
         })
 
@@ -157,16 +154,16 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
 
         ConfigurazioneAmbito.VerificaDefaultCasa(daVerificareFabbricato, modificheCasa)
         ConfigurazioneAmbito.verificaSoluzioneSelezionata(soluzione.TOP)
-        
+
         ConfigurazioneAmbito.leggiPremio('Ambito')   //>> premioAmbito
         cy.get('@premioAmbito').then(premioAmbito => {
-            premioFA = parseFloat(premioAmbito.replace(/,/,"."))
+            premioFA = parseFloat(premioAmbito.replace(/,/, "."))
             cy.log('Premio Ambito Fabbricato: ' + premioFA)
         })
 
         ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('Danni da fenomeno elettrico')    //>> premioGarAgg
         cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
-            premioFA_FenomenoElettrico = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
+            premioFA_FenomenoElettrico = parseFloat(premioGaranziaAggiuntiva.replace(/,/, "."))
             cy.log('Premio Garanzia Aggiuntiva: ' + premioFA_FenomenoElettrico)
         })
 
@@ -175,13 +172,13 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
 
         Dashboard.leggiPremioTot()     //>> premioTotDashboard    
         cy.get('@premioTotDashboard').then(premioTot => {
-            premioTotDopo = parseFloat(premioTot.replace(/,/,"."))
+            premioTotDopo = parseFloat(premioTot.replace(/,/, "."))
             cy.log('Premio totale dopo aver aggiunto la garanzia: ' + premioTotDopo)
         })
 
     })
 
-    it("Verifica premio totale in Dashboard dopo variazioni ambito 'Fabbricato'", ()=>{
+    it("Verifica premio totale in Dashboard dopo variazioni ambito 'Fabbricato'", () => {
         cy.log('********* VERIFICA PREMIO **************')
         cy.log('premioTotPrima: ' + premioTotPrima)
         cy.log('premioTotDopo: ' + premioTotDopo)
@@ -189,11 +186,11 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         Dashboard.verificaPremio(premioTotPrima, premioTotDopo, premioFA_FenomenoElettrico)
     })
 
-    it("Accesso Configurazione ambito 'Responsabilità civile'", ()=>{
+    it("Accesso Configurazione ambito 'Responsabilità civile'", () => {
 
         Dashboard.leggiPremioTot()     //>> premioTotDashboard    
         cy.get('@premioTotDashboard').then(premioTot => {
-            premioTotPrima = parseFloat(premioTot.replace(/,/,"."))
+            premioTotPrima = parseFloat(premioTot.replace(/,/, "."))
             cy.log('Premio totale prima di aggiungere la garanzia: ' + premioTotPrima)
         })
 
@@ -204,27 +201,27 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
 
         ConfigurazioneAmbito.leggiPremio('Ambito')   //>> premioAmbito
         cy.get('@premioAmbito').then(premioAmbito => {
-            premioRC_Prima = parseFloat(premioAmbito.replace(/,/,"."))
+            premioRC_Prima = parseFloat(premioAmbito.replace(/,/, "."))
             cy.log('Premio Ambito Responsabilità Civile - Prima delle modifiche: ' + premioRC_Prima)
         })
 
         ConfigurazioneAmbito.ModificaConfigurazioneAmbito(daModificareRC, modificheRC)
-        
+
         ConfigurazioneAmbito.leggiPremio('Ambito')   //>> premioAmbito
         cy.get('@premioAmbito').then(premioAmbito => {
-            premioRC_Dopo = parseFloat(premioAmbito.replace(/,/,"."))
+            premioRC_Dopo = parseFloat(premioAmbito.replace(/,/, "."))
             cy.log('Premio Ambito Responsabilità Civile - Dopo le modifiche: ' + premioRC_Dopo)
         })
 
         ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('attività di affittacamere e Bed & Breakfast')    //>> premioGarAgg
         cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
-            premioRC_Affittacamere = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
+            premioRC_Affittacamere = parseFloat(premioGaranziaAggiuntiva.replace(/,/, "."))
             cy.log('Premio Garanzia Aggiuntiva Affittacamere: ' + premioRC_Affittacamere)
         })
 
         ConfigurazioneAmbito.leggiPremioGaranziaAggiuntiva('proprietà di cavalli ed altri animali da sella')    //>> premioGarAgg
         cy.get('@premioGarAgg').then(premioGaranziaAggiuntiva => {
-            premioRC_ProprietàAnimali = parseFloat(premioGaranziaAggiuntiva.replace(/,/,"."))
+            premioRC_ProprietàAnimali = parseFloat(premioGaranziaAggiuntiva.replace(/,/, "."))
             cy.log('Premio Garanzia Aggiuntiva Cavalli: ' + premioRC_ProprietàAnimali)
         })
 
@@ -234,28 +231,28 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
 
         Dashboard.leggiPremioTot()     //>> premioTotDashboard    
         cy.get('@premioTotDashboard').then(premioTot => {
-            premioTotDopo = parseFloat(premioTot.replace(/,/,"."))
+            premioTotDopo = parseFloat(premioTot.replace(/,/, "."))
             cy.log('Premio totale dopo aver aggiunto le garanzie: ' + premioTotDopo)
         })
-        
+
     })
 
-    it("Verifica premio totale in Dashboard dopo variazioni ambito 'Responsabilità Civile'", ()=>{
+    it("Verifica premio totale in Dashboard dopo variazioni ambito 'Responsabilità Civile'", () => {
         var deltaPremio = (premioRC_Dopo - premioRC_Prima) + premioRC_Affittacamere + premioRC_ProprietàAnimali
         Dashboard.verificaPremio(premioTotPrima, premioTotDopo, deltaPremio)
     })
 
-    it("Seleziona frazionamento", ()=>{
+    it("Seleziona frazionamento", () => {
         Ultra.selezionaFrazionamento(frazionamento)
     })
 
     // Al momento bypasso perchè non compare il messaggio di salvataggio e non va la condivisione
-    
+
     it("Salva Quotazione e Condividi", () => {
         Dashboard.salvaQuotazione()
         Dashboard.condividiQuotazione('Catastrofi naturali')
     })
-    
+
 
     it("Procedi", () => {
         Dashboard.procediHome()
@@ -275,7 +272,7 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         Riepilogo.verificaAmbito(ambitoUltra.ANIMALI_DOMESTICI, modificheAnimale.Nome, soluzione.ESSENTIAL, '1', '')
         Riepilogo.verificaFrazionamento('annuale')
         Riepilogo.EmissionePolizza()
-        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()   
+        CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
     })
 
     it("Censimento anagrafico", () => {
@@ -287,7 +284,6 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
     })
 
     it("Dati integrativi", () => {
-        cy.pause()
         DatiIntegrativi.verificaDataDecorrenza()
         DatiIntegrativi.verificaDataScadenza()
         DatiIntegrativi.verificaDatoPolizzaModificabile("Tacito rinnovo", true)
@@ -314,6 +310,10 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         ControlliProtocollazione.verificaPresenzaDocumento("Allegato 3 - Informativa sul distributore")
         ControlliProtocollazione.verificaPresenzaDocumento("Allegato 4 - Informazioni sulla distribuzione del prodotto assicurativo non-IBIP")
         ControlliProtocollazione.Avanti()    // Non prosegue prima della visualizzazione dei documenti
+    })
+
+    it("Intermediario", () => {
+        ControlliProtocollazione.inserimentoIntermediario()
     })
 
     it("Visualizza documenti e prosegui", () => {
@@ -358,7 +358,7 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         Ultra.chiudiFinale()
         StartPage.caricamentoPagina()
         cy.pause()
-        
+
         // Ricerca anagrafica
         /*
         cy.get('body').within(() => {
@@ -375,7 +375,7 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
             }
         })
         */
-        TopBar.search(personaFisica.nomeCognome()) 
+        TopBar.search(personaFisica.nomeCognome())
         LandingRicerca.clickClientePF(personaFisica.nomeCognome())
         SintesiCliente.checkAtterraggioSintesiCliente(personaFisica.nomeCognome())
     })
@@ -399,7 +399,7 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
             Portafoglio.clickSubTab('Non in vigore')
             Portafoglio.checkPolizzaIsPresentOnNonInVigore(nContratto, "16 - ANNULLAMENTO DALL'ORIGINE IN AGENZIA")
             cy.pause()
-    })
+        })
 
     it("Accesso folder", () => {
         var arrPath = ['Polizze Allianz Ultra', nContratto, 'Versione 1', 'Appendici']
@@ -407,6 +407,6 @@ describe('Ultra BMP : Emissione BMP Caso1', function() {
         SintesiCliente.verificaInFolderDocumenti(arrPath, arrDoc)
         cy.pause()
     })
-    
+
 
 })

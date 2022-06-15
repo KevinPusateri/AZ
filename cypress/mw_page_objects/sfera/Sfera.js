@@ -490,18 +490,54 @@ const Pannelli = {
  * @enum {Object}
  */
 const ColumnCaricoMancante = {
-    PT: 'Pt.',
-    CONTRAENTE: 'Contraente',
-    POLIZZA: 'Polizza',
-    VIA: 'Via',
-    CP: 'Cp.',
-    AGENZIA: 'Agenzia',
-    SEDE: 'Sede',
-    FONTE: 'Fonte',
-    RAMO: 'Ramo',
-    FR: 'Fr.',
-    DESC_PRODOTTO: 'Descrizione Prodotto',
-    TARGA: 'Targa'
+    PT: {
+        key: 'Pt.',
+        tooltip: 'Area Portafoglio (Auto, Rami Vari, Vita, Modulari)'
+    },
+    CONTRAENTE: {
+        key: 'Contraente',
+        tooltip: 'Denominazione Cliente'
+    },
+    POLIZZA: {
+        key: 'Polizza',
+        tooltip: 'Numero Polizza'
+    },
+    VIA: {
+        key: 'Via',
+        tooltip: 'Via e n° civico'
+    },
+    CP: {
+        key: 'Cp.',
+        tooltip: 'Compagnia'
+    },
+    AGENZIA: {
+        key: 'Agenzia',
+        tooltip: 'Agenzia'
+    },
+    SEDE: {
+        key: 'Sede',
+        tooltip: 'Codice Sede di appartenenza della fonte'
+    },
+    FONTE: {
+        key: 'Fonte',
+        tooltip: 'Fonte'
+    },
+    RAMO: {
+        key: 'Ramo',
+        tooltip: 'Ramo'
+    },
+    FR: {
+        key: 'Fr.',
+        tooltip: 'Frazionamento'
+    },
+    DESC_PRODOTTO: {
+        key: 'Descrizione Prodotto',
+        tooltip: 'Descrizione Prodotto'
+    },
+    TARGA: {
+        key: 'Targa',
+        tooltip: 'Numero di Targa'
+    },
 }
 
 /**
@@ -1148,7 +1184,12 @@ class Sfera {
                         cy.wait('@agenzieFonti', { timeout: 60000 })
                         cy.wait('@caricaVista', { timeout: 60000 })
                         //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                        this.estrai()
+                        if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                            this.estrai()
+                        }
                     }
                     break
                 case VociMenuPolizza.MODIFICA_MODALITA_PAGAMENTO:
@@ -2348,18 +2389,17 @@ class Sfera {
      */
     static checkVistaExist(vista) {
         cy.get('app-view').should('be.visible').find('h2:first').should('be.visible').and('contain.text', vista)
-        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then(() => {
-            cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        })
+        cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     static checkTooltipHeadersColonne() {
 
         for (const [key, value] of Object.entries(ColumnCaricoMancante)) {
 
-            cy.contains(value).should('exist').invoke('show')
-            .trigger('mouseover')
-            .wait(1000)
+            cy.get('th:contains("' + value.key + '")').should('exist').rightclick().focused().wait(1500)
+            cy.get('.cdk-overlay-container').within((tooltip) => {
+                expect(tooltip.text()).to.contain(value.tooltip)
+            })
         }
     }
 }

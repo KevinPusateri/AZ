@@ -160,6 +160,7 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
     it("Dati integrativi", () => {
         //todo dati integrativi 2022 non cambia
         DatiIntegrativi2022.selezionaTuttiNo()
+        cy.pause()
         DatiIntegrativi2022.ClickButtonAvanti()
         DatiIntegrativi2022.confermaDichiarazioniContraente()
         ConsensiPrivacy2022.caricamentoPagina()
