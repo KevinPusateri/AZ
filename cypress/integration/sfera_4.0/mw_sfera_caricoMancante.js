@@ -30,7 +30,9 @@ let options = {
     }
 }
 
-let flusso = true
+//! settato default a true, altrimenti a false se viene utilizzato uno o piu only nei test
+const flusso = true
+
 const listColumnCaricoMancante = [
     'Pt.',
     'Contraente',
@@ -71,6 +73,11 @@ before(() => {
     LoginPage.logInMWAdvanced(customImpersonification)
     Sfera.accediSferaDaHomePageMW()
     Sfera.espandiPannello()
+    if (!flusso) {
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        Sfera.setDateEstrazione(false, date.dataInizio, date.dataFine)
+        Sfera.estrai(false)
+    }
 })
 
 beforeEach(() => {
@@ -129,12 +136,8 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
         Sfera.checkAllColonnePresenti(listColumnCaricoMancante)
     })
 
-    it.only('Colonne in tabella_Tooltip', function () {
-        Sfera.selezionaVistaSuggerita('Carico Mancante')
-        Sfera.estrai(false)
-        cy.pause()
+    it('Colonne in tabella_Tooltip', function () {
         Sfera.checkTooltipHeadersColonne()
-        //TODO
     })
 
     it.skip('Colonne in tabella_filtri excel', function () {
@@ -181,41 +184,35 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
 
     it('Menu Contestuale -> Cliente -> Scheda Cliente_call back applicativa', function () {
         Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.SCHEDA_CLIENTE, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-        if (flusso) {
-            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-            Sfera.espandiPannello()
-            Sfera.estrai(false)
-        }
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        Sfera.setDateEstrazione(false, date.dataInizio, date.dataFine)
+        Sfera.estrai(false)
     })
 
     it('Menu Contestuale -> Cliente -> Lista polizze_call back applicativa', function () {
         Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-        if (flusso) {
-            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-            Sfera.espandiPannello()
-            Sfera.estrai(false)
-        }
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        Sfera.setDateEstrazione(false, date.dataInizio, date.dataFine)
+        Sfera.estrai(false)
     })
 
     it('Menu Contestuale -> Cliente -> Lista Sinistri_call back applicativa', function () {
         Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-        if (flusso) {
-            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-            Sfera.espandiPannello()
-            Sfera.estrai(false)
-        }
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        Sfera.setDateEstrazione(false, date.dataInizio, date.dataFine)
+        Sfera.estrai(false)
     })
 
     it('Menu Contestuale -> Consultazione Documenti di polizza_call back applicativa', function () {
-        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-        Sfera.estrai(false)
         Sfera.apriVoceMenu(Sfera.VOCIMENUCONSULTAZIONE.DOCUMENTI_POLIZZA, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-        cy.pause()
-        Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
     })
 
     //? Sfera 4.0 - Operatività - CARICO MANCANTE -
     //? Carico Mancante  e quietanzamento online_quietanzamento online ok>verificare in vista standard  il quietanzamento 
+    //! Da inizia appena il bug verrà risolto
 
 
 }) 
