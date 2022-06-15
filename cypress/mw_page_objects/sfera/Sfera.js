@@ -115,6 +115,7 @@ const TipoTitoli = {
  */
 const VisteSuggerite = {
     CARICO_MANCANTE: 'Carico Mancante',
+    DELTA_PREMIO: 'Delta premio – riduzione premio a cura dell’agenzia',
     QUIETANZE_SCARTATE: 'Quietanze Scartate'
 }
 
@@ -711,6 +712,24 @@ class Sfera {
      */
     static threeDotsMenuContestuale() {
         return cy.get('nx-icon[name="ellipsis-h"]').should('exist')
+    }
+
+    /**
+     * Ritorna il check box control delle righe di estrazione
+     * @returns {Object} ritorna il check box control delle righe di estrazione
+     * @private
+     */
+    static checkBoxControl() {
+        return cy.get('span[class="nx-checkbox__control"]').should('exist')
+    }
+
+    /**
+     * Ritorna la sezione di Sfera Delta Premio
+     * @returns {Object} ritorna la sezione di Sfera Delta Premio
+     * @private
+     */
+    static sferaDeltaPremioSection() {
+        return cy.get('sfera-deltapremio').should('exist').and('be.visible')
     }
 
     /**
@@ -2337,7 +2356,6 @@ class Sfera {
         })
     }
 
-
     /**
      * It checks that the dropdown menu contains the number of rows that you want to see on the page.
      * @param {String} numberRows - the number of rows you want to display on the page
@@ -2403,6 +2421,31 @@ class Sfera {
                 expect(tooltip.text()).to.contain(value.tooltip)
             })
         }
+    }
+
+    /**
+    * It selects a random row from a table and clicks on the checkbox in that row.
+    * 
+    */
+    static selezionaRigaRandom() {
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+            let selected = Cypress._.random(rowsTable.length - 1);
+            cy.wrap(rowsTable).eq(selected).within(() => {
+                this.checkBoxControl().click({ force: true })
+            })
+        })
+    }
+
+    /**
+     * It checks if the section "Delta Premio" is visible and if it contains the text "Plafond", "Calcolo
+     * prenotazione Riduzione Premi" and the refresh icon.
+     */
+    static verificaSezioneDeltaPremio() {
+        this.sferaDeltaPremioSection().within(() => {
+            cy.contains("Plafond").should('exist').and('be.visible')
+            cy.contains("Calcolo prenotazione Riduzione Premi").should('exist').and('be.visible')
+            cy.get('nx-icon[class="refresh-icon nx-icon--auto"]').should('exist').and('be.visible')
+        })
     }
 }
 export default Sfera
