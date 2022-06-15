@@ -84,4 +84,10 @@ describe('Matrix Web : Sfera 4.0 - Operatività - vista Quietanze Scartete', fun
         Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
         Sfera.checkVistaExist(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
     })
+
+    it('Verifica LoB', function () {
+        Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
+        Sfera.checkNotExistLob(Sfera.PORTAFOGLI.RAMI_VARI)
+        Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
+    })
 })
