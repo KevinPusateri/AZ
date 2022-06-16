@@ -114,7 +114,9 @@ const TipoTitoli = {
  * @private
  */
 const VisteSuggerite = {
-    CARICO_MANCANTE: 'Carico Mancante'
+    CARICO_MANCANTE: 'Carico Mancante',
+    DELTA_PREMIO: 'Delta premio – riduzione premio a cura dell’agenzia',
+    QUIETANZE_SCARTATE: 'Quietanze Scartate'
 }
 
 /**
@@ -486,6 +488,74 @@ const Pannelli = {
 }
 
 /**
+ * Enum Colonne in vista Quietanze Scartate
+ * @enum {Object}
+ */
+const ColumnQuietanzeScartate = {
+    CONTRAENTE: {
+        key: 'Contraente',
+        tooltip: 'Denominazione Cliente'
+    },
+    POLIZZA: {
+        key: 'Polizza',
+        tooltip: 'Numero Polizza'
+    },
+    CP: {
+        key: 'Cp.',
+        tooltip: 'Compagnia'
+    },
+    AGENZIA: {
+        key: 'Agenzia',
+        tooltip: 'Agenzia'
+    },
+    FONTE: {
+        key: 'Fonte',
+        tooltip: 'Fonte'
+    },
+    RAMO: {
+        key: 'Ramo',
+        tooltip: 'Ramo'
+    },
+    INIZIO_COP: {
+        key: 'Inizio Cop.',
+        tooltip: 'Data Inizio Copertura'
+    },
+    CONV_TECN: {
+        key: 'Conv. Tecn.',
+        tooltip: 'Convenzione Tecnica'
+    },
+    TARGA: {
+        key: 'Targa',
+        tooltip: 'Numero di Targa'
+    },
+    ERRORE_QUIET: {
+        key: 'Errore Quiet',
+        tooltip: 'Errore per il mancato Quietanzamento'
+    },
+    NOTE: {
+        key: 'Note',
+        tooltip: 'Motivazione per il mancato Quietanzamento'
+    },
+    SOLUZIONE_PER_AGENZIA: {
+        key: 'Soluzione per Agenzia',
+        tooltip: 'Soluzione per Agenzia'
+    },
+    CLA_BM_CIP_PROV: {
+        key: 'Cla. BM CIP Prov.',
+        tooltip: 'Classe Bonus CIP di provenienza'
+    },
+    CLA_BM_RINN: {
+        key: 'Cla. BM Rinn.',
+        tooltip: 'Classe Bonus Malus di Rinnovo'
+    },
+    CLA_BM_CIP: {
+        key: 'Cla. BM CIP',
+        tooltip: 'Classe Bonus CIP'
+    }
+
+}
+
+/**
  * Enum Colonne in vista Carico Mancante
  * @enum {Object}
  */
@@ -553,6 +623,21 @@ class Sfera {
      */
     static get PORTAFOGLI() {
         return Portafogli
+    }
+
+    /**
+     * Funzione che ritorna le colonne della vista Quietanze Scartate
+     * @returns {ColumnQuietanzeScartate} Colonne disponibili
+     */
+    static get COLUMNQUIETANZESCARTATE() {
+        return ColumnQuietanzeScartate
+    }
+    /**
+     * Funzione che ritorna le colonne della vista Carico Mancante
+     * @returns {ColumnCaricoMancante} Colonne disponibili
+     */
+    static get COLUMNCARICOMANCANTE() {
+        return ColumnCaricoMancante
     }
 
     /**
@@ -710,6 +795,24 @@ class Sfera {
      */
     static threeDotsMenuContestuale() {
         return cy.get('nx-icon[name="ellipsis-h"]').should('exist')
+    }
+
+    /**
+     * Ritorna il check box control delle righe di estrazione
+     * @returns {Object} ritorna il check box control delle righe di estrazione
+     * @private
+     */
+    static checkBoxControl() {
+        return cy.get('span[class="nx-checkbox__control"]').should('exist')
+    }
+
+    /**
+     * Ritorna la sezione di Sfera Delta Premio
+     * @returns {Object} ritorna la sezione di Sfera Delta Premio
+     * @private
+     */
+    static sferaDeltaPremioSection() {
+        return cy.get('sfera-deltapremio').should('exist').and('be.visible')
     }
 
     /**
@@ -892,17 +995,27 @@ class Sfera {
      */
     static filtraSuColonna(filtro, valore) {
         cy.get('thead').within(() => {
+            if (filtro === Filtri.INFO)
+                cy.get('th[nxtooltip="Premere l\'icona per aprire la legenda"]').find('nx-icon:last').click()
+            else
+                cy.get(`div:contains(${filtro.key})`).parent().find('nx-icon:last').click()
+        })
 
-            cy.get(`div:contains(${filtro.key})`).parent().find('nx-icon:last').click()
+        if (filtro === Filtri.INFO)
+            cy.get('div[class="filterPopover filterPopoverV2 ng-star-inserted"]').within(() => {
+                cy.get(`span:contains(${valore})`).click()
+            })
+        else
             cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
+
                 cy.get('input:visible').type(valore)
                 cy.wait(500)
                 cy.get('span[class="nx-checkbox__control"]:visible').click()
-                cy.intercept(estraiQuietanze).as('estraiQuietanze')
-                cy.contains('Applica').should('be.enabled').click()
-                cy.wait('@estraiQuietanze', { timeout: 120000 })
             })
-        })
+
+        cy.intercept(estraiQuietanze).as('estraiQuietanze')
+        cy.contains('Applica').should('be.enabled').click()
+        cy.wait('@estraiQuietanze', { timeout: 120000 })
     }
 
     /**
@@ -2325,17 +2438,21 @@ class Sfera {
     static checkAllColonnePresenti(listColumn) {
         cy.get('table').then(($table) => {
             const currentLinks = []
-            const checkLinks = Object.values(listColumn)
-
+            const checkLinks = []
+            for (const [key, value] of Object.entries(listColumn)) {
+                checkLinks.push(value.key)
+            }
             cy.wrap($table).find('div[class="table-component-th-name"]').each(($link, i) => {
                 currentLinks.push($link.text().trim())
             }).then(() => {
+                var difference = checkLinks.filter(x => currentLinks.indexOf(x) === -1);
+                console.log(difference);
+
                 expect(currentLinks.sort()).to.deep.eq(checkLinks.sort());
             })
 
         })
     }
-
 
     /**
      * It checks that the dropdown menu contains the number of rows that you want to see on the page.
@@ -2390,17 +2507,46 @@ class Sfera {
     static checkVistaExist(vista) {
         cy.get('app-view').should('be.visible').find('h2:first').should('be.visible').and('contain.text', vista)
         cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(5000)
     }
 
-    static checkTooltipHeadersColonne() {
+    static checkTooltipHeadersColonne(columns) {
+        let regexKey
+        for (const [key, value] of Object.entries(columns)) {
+            cy.get('table').within(() => {
 
-        for (const [key, value] of Object.entries(ColumnCaricoMancante)) {
-
-            cy.get('th:contains("' + value.key + '")').should('exist').rightclick().focused().wait(1500)
+                regexKey = new RegExp('\^' + value.key + '\$');
+                cy.contains(regexKey).should('exist').rightclick().focused().wait(1500)
+            })
             cy.get('.cdk-overlay-container').within((tooltip) => {
                 expect(tooltip.text()).to.contain(value.tooltip)
             })
         }
+    }
+
+    /**
+    * It selects a random row from a table and clicks on the checkbox in that row.
+    * 
+    */
+    static selezionaRigaRandom() {
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+            let selected = Cypress._.random(rowsTable.length - 1);
+            cy.wrap(rowsTable).eq(selected).within(() => {
+                this.checkBoxControl().click({ force: true })
+            })
+        })
+    }
+
+    /**
+     * It checks if the section "Delta Premio" is visible and if it contains the text "Plafond", "Calcolo
+     * prenotazione Riduzione Premi" and the refresh icon.
+     */
+    static verificaSezioneDeltaPremio() {
+        this.sferaDeltaPremioSection().within(() => {
+            cy.contains("Plafond").should('exist').and('be.visible')
+            cy.contains("Calcolo prenotazione Riduzione Premi").should('exist').and('be.visible')
+            cy.get('nx-icon[class="refresh-icon nx-icon--auto"]').should('exist').and('be.visible')
+        })
     }
 }
 export default Sfera
