@@ -90,4 +90,14 @@ describe('Matrix Web : Sfera 4.0 - Operatività - vista Quietanze Scartete', fun
         Sfera.checkNotExistLob(Sfera.PORTAFOGLI.RAMI_VARI)
         Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
     })
+
+    it('Verifica Colonne corrette in tabella', function () {
+        Sfera.espandiPannello()
+        Sfera.estrai(false)
+        Sfera.checkAllColonnePresenti(Sfera.COLUMNQUIETANZESCARTATE)
+    })
+
+    it('Verifica Colonne in tabella: Tooltip', function () {
+        Sfera.checkTooltipHeadersColonne(Sfera.COLUMNQUIETANZESCARTATE)
+    })
 })

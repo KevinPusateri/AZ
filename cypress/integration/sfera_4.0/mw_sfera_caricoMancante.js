@@ -133,11 +133,11 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
     })
 
     it('Verifica colonne corrette in tabella', function () {
-        Sfera.checkAllColonnePresenti(listColumnCaricoMancante)
+        Sfera.checkAllColonnePresenti(Sfera.COLUMNCARICOMANCANTE)
     })
 
     it('Colonne in tabella_Tooltip', function () {
-        Sfera.checkTooltipHeadersColonne()
+        Sfera.checkTooltipHeadersColonne(Sfera.COLUMNCARICOMANCANTE)
     })
 
     it.skip('Colonne in tabella_filtri excel', function () {
@@ -173,7 +173,7 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
     })
 
 
-    it.skip('contestuale_quietanzmaneto on line', function () { //! BUG aperto
+    it.skip('Menu contestuale -> Quietanzmaneto online', function () { //! BUG aperto
         Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.QUIETANZAMENTO_ONLINE, true, null, null, null, true)
     })
 
