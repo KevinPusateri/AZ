@@ -158,7 +158,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
     });
 
     it('Sinistri canalizzati:  Verifica elementi in tabella', function () {
-
+        //Controllo sui titoli di colonna della tabella dei sinistri canalizzati
         const cssHdrTbl =  "#tableDestraLabel > tbody > tr.headersNew"
         Common.isVisibleText(cssHdrTbl, "CANALIZZABILI")
         Common.isVisibleText(cssHdrTbl, "CANALIZZATI")
@@ -178,6 +178,26 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
         Common.isVisibleImg("tr.headersSimboli > th:nth-child(7) > #imgImporto ", "Euro.gif")
         Common.isVisibleImg("tr.headersSimboli > th:nth-child(8) > #imgPercentuale ", "Delta.gif")
         Common.isVisibleImg("tr.headersSimboli > th:nth-child(9) > #imgImporto ", "Euro.gif")
+    });
+
+    it('Sinistri canalizzati:  Controllo tra il valore totale di AGENZIA dei sinistri "CANALIZZABILI" riportato in Tabella e la corrispondente somma dei singoli valori riporti per fonte', function () {
+        //Identificatore css del valore del campo totale
+        const cssTtlLctr = "#tableDestraLabel > tbody > tr.row_0 > td:nth-child(1)"
+        //Identificatore css di riga in tabella
+        const cssRwLctr = "#tableDestraDati > tbody > tr"
+        //Identificatore dell'indice di colonna su cui effettuare la somma
+        const idxclmn = 1
+        ConsultazioneSinistriPage.checkTotalVsSumEachLineItem(cssTtlLctr, cssRwLctr, idxclmn)     
+    });
+
+    it('Sinistri canalizzati:  Controllo tra il valore totale di AGENZIA dei sinistri "CANALIZZATI" riportato in Tabella e la corrispondente somma dei singoli valori riporti per fonte', function () {
+          //Identificatore css del valore del campo totale
+        const cssTtlLctr = "#tableDestraLabel > tbody > tr.row_0 > td:nth-child(2)"
+        //Identificatore css di riga in tabella
+        const cssRwLctr = "#tableDestraDati > tbody > tr"
+        //Identificatore dell'indice di colonna su cui effettuare la somma
+        const idxclmn = 2
+        ConsultazioneSinistriPage.checkTotalVsSumEachLineItem(cssTtlLctr, cssRwLctr, idxclmn)
     });
 
 });

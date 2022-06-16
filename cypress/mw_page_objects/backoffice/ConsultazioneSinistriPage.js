@@ -287,6 +287,27 @@ class ConsultazioneSinistriPage {
             });
         //getIframe().find('#results > div.k-grid-content > table > tbody > tr').should('exist').log()
     }
+
+    static checkTotalVsSumEachLineItem(IdTotalLocator, locator, idx){
+
+        debugger
+        let sum = 0
+        let total = 0
+        getIframe().find(IdTotalLocator, { timeout: 6000 }).should('exist').and('be.visible').then(($tag) => {     
+            total = parseFloat($tag.text().trim())        
+        })
+        
+        getIframe().find(locator, { timeout: 5000 }).should('be.visible').each(($tr, index, $lis) => {
+            var value = parseFloat($tr.find("td:nth-child("+idx+")").text()) 
+            debugger
+            sum += value
+            if(index == $lis.length - 1) {
+                assert.equal(total, sum, 'Expected value equals sum of each line item')
+            }
+        })
+        
+
+    }
 }
 
 
