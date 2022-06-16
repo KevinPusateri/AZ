@@ -70,6 +70,7 @@ describe('Matrix Web : Profilare la visualizzazione delle colonne tramite tabell
     it('Accedere a Sfera 4.0 - Estrai con Corretto Caricamento Dati', options, function () {
         Sfera.setDateEstrazione()
         Sfera.estrai()
+        Sfera.checkValoreInColonna()
     })
 
     it('Selezionare due colonne ed inserire due diversi filtri', options, function () {
@@ -78,6 +79,15 @@ describe('Matrix Web : Profilare la visualizzazione delle colonne tramite tabell
     })
 
     it('Salva vista', options, function () {
-        cy.pause()
+        Sfera.salvaVistaPersonalizzata('Automatici_EM_31')
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
+        Sfera.espandiPannello()
+        Sfera.estrai()
     })
+
+    it('Selezoinare vista Automatici_EM_31 e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente', options, function () {
+        Sfera.selezionaVista('Automatici_EM_31')
+        cy.pause()
+        Sfera.eliminaVista('Automatici_EM_31')
+    })   
 })

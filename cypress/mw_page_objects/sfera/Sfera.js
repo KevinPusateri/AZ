@@ -114,6 +114,7 @@ const TipoTitoli = {
  * @private
  */
 const VisteSuggerite = {
+    VISTA_STANDARD: 'Vista Standard',
     CARICO_MANCANTE: 'Carico Mancante',
     DELTA_PREMIO: 'Delta premio – riduzione premio a cura dell’agenzia',
     QUIETANZE_SCARTATE: 'Quietanze Scartate'
@@ -2547,6 +2548,19 @@ class Sfera {
             cy.contains("Calcolo prenotazione Riduzione Premi").should('exist').and('be.visible')
             cy.get('nx-icon[class="refresh-icon nx-icon--auto"]').should('exist').and('be.visible')
         })
+    }
+
+    static checkValoreInColonna() {
+        cy.contains('th', 'Ramo').invoke('index').then((i) => {
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').each((rowsTable) => {
+            cy.wrap(rowsTable).find(`td[${i-1}]`).then(($textCell) => {
+                debugger
+                console.log($textCell)
+            })
+        })
+        })
+
+
     }
 }
 export default Sfera
