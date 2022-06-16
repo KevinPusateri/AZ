@@ -27,6 +27,13 @@ let options = {
 }
 //#endregion
 
+let today = new Date()
+today.setDate(today.getDate() + 1)
+let dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
+today.setMonth(today.getMonth() + 1)
+let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 2)).slice(-2) + '/' + today.getFullYear()
+
+
 //#region Before After
 before(() => {
     Cypress.env('isAviva', true)
@@ -65,17 +72,12 @@ describe('Matrix Web : Profilare la visualizzazione delle colonne tramite tabell
         Sfera.estrai()
     })
 
-    it('In colonne verificare sia presente la colonna Polizza e la colonna Polizza originale', options, function () {
-        Sfera.checkColonnaPresente('Polizza')
-        Sfera.checkColonnaPresente('Polizza originale')
+    it('Selezionare due colonne ed inserire due diversi filtri', options, function () {
+        Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
+        Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
     })
 
-    it('Selezionare Viste Suggerite - "Delta premio - riduzione premio a cura dell\'agenzia"', options, function () {
-        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.DELTA_PREMIO)
-    })
-    
-    it('Delta premio - Verificare corretta visualizzazione della vista selezionata con schermata riepilogativa in basso', options, function () {
-        Sfera.selezionaRigaRandom()
-        Sfera.verificaSezioneDeltaPremio()
+    it('Salva vista', options, function () {
+        cy.pause()
     })
 })

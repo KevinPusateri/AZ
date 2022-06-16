@@ -912,17 +912,27 @@ class Sfera {
      */
     static filtraSuColonna(filtro, valore) {
         cy.get('thead').within(() => {
+            if (filtro === Filtri.INFO)
+                cy.get('th[nxtooltip="Premere l\'icona per aprire la legenda"]').find('nx-icon:last').click()
+            else
+                cy.get(`div:contains(${filtro.key})`).parent().find('nx-icon:last').click()
+        })
 
-            cy.get(`div:contains(${filtro.key})`).parent().find('nx-icon:last').click()
+        if (filtro === Filtri.INFO)
+            cy.get('div[class="filterPopover filterPopoverV2 ng-star-inserted"]').within(() => {
+                cy.get(`span:contains(${valore})`).click()
+            })
+        else
             cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
+
                 cy.get('input:visible').type(valore)
                 cy.wait(500)
                 cy.get('span[class="nx-checkbox__control"]:visible').click()
-                cy.intercept(estraiQuietanze).as('estraiQuietanze')
-                cy.contains('Applica').should('be.enabled').click()
-                cy.wait('@estraiQuietanze', { timeout: 120000 })
             })
-        })
+
+        cy.intercept(estraiQuietanze).as('estraiQuietanze')
+        cy.contains('Applica').should('be.enabled').click()
+        cy.wait('@estraiQuietanze', { timeout: 120000 })
     }
 
     /**
