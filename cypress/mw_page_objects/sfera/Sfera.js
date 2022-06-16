@@ -114,6 +114,7 @@ const TipoTitoli = {
  * @private
  */
 const VisteSuggerite = {
+    VISTA_STANDARD: 'Vista Standard',
     CARICO_MANCANTE: 'Carico Mancante',
     DELTA_PREMIO: 'Delta premio – riduzione premio a cura dell’agenzia',
     QUIETANZE_SCARTATE: 'Quietanze Scartate'
@@ -1688,6 +1689,7 @@ class Sfera {
      * Estrazione Excel e verifica dati estratti correttamente
      */
     static estrazioneReportExcel(currentColumn = []) {
+        let columnView = []
         if (currentColumn.length === 0)
             currentColumn = [
                 "Agenzia",
@@ -1729,42 +1731,12 @@ class Sfera {
                 "Val. Extra",
                 "Vinc."
             ]
+        else {
+            for (const [key, value] of Object.entries(currentColumn)) {
+                columnView.push(value.key)
+            }
 
-        // var currentColumn = [
-        //     "Info",
-        //     "Pt.",
-        //     "Contraente",
-        //     "Num.\nPolizza",
-        //     "Scad.",
-        //     "Inizio\nCopertura",
-        //     "Evo",
-        //     "Cod\nAgenzia",
-        //     "Cod.\nFraz",
-        //     "Sede",
-        //     "Fonte",
-        //     "Ramo",
-        //     "Premio\nLordo Rata",
-        //     "Gg.Mo.\n/Fuo.Mo.",
-        //     "Descrizione\nProdotto",
-        //     "Decorrenza\nPolizza",
-        //     "Scadenza\nPolizza",
-        //     "Vin",
-        //     "Delta pr.\nNetto RCA",
-        //     "Delta Premio\nNetto ARD",
-        //     "Importo Canone",
-        //     "Ind att.rin",
-        //     "R.abb",
-        //     "Coass.",
-        //     "Val. Extra",
-        //     "Avv Email",
-        //     "Nr Avv\nSms",
-        //     "Avv Pdf",
-        //     "Motivo Non Val.Extra",
-        //     "Targa",
-        //     "Pag",
-        //     "FQ\nTot",
-        //     "Dlt pr Qtz €"
-        // ];
+        }
         var rows = []
         cy.get('tr[class="nx-table-row ng-star-inserted selectedRow"]').each((rowsTable) => {
             cy.wrap(rowsTable).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($textCell) => {
@@ -1780,11 +1752,12 @@ class Sfera {
             cy.task('getFolderDownload').then((folderDownload) => {
                 cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
                     console.log(Object.values(jsonData[0].data[0]).sort())
-                    console.log('---------')
-                    console.log(currentColumn.sort())
-                    debugger
                     // Verifica Colonne presenti
-                    expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(currentColumn.sort());
+                    if (columnView.length > 0)
+                        expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(columnView.sort());
+                    else
+                        expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(currentColumn.sort());
+
                     for (let index = 0; index < rows.length; index++) {
                         // Verifica Clienti presenti
                         expect(jsonData[0].data[index + 1]).to.include(rows[index]);
@@ -2510,6 +2483,10 @@ class Sfera {
         cy.wait(5000)
     }
 
+    /**
+     * It checks if the tooltip of a column header is correct.
+     * @param {Object} columns - columns of the view 
+     */
     static checkTooltipHeadersColonne(columns) {
         let regexKey
         for (const [key, value] of Object.entries(columns)) {
@@ -2547,6 +2524,19 @@ class Sfera {
             cy.contains("Calcolo prenotazione Riduzione Premi").should('exist').and('be.visible')
             cy.get('nx-icon[class="refresh-icon nx-icon--auto"]').should('exist').and('be.visible')
         })
+    }
+
+    static checkValoreInColonna(valore) {
+        cy.contains('th', 'Ramo').invoke('index').then((i) => {
+            cy.get('tr[class="nx-table-row ng-star-inserted"]').each((rowsTable) => {
+                cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
+                    console.log($textCell.text().trim())
+                    expect($textCell.text().trim()).to.contain(valore)
+                })
+            })
+        })
+
+
     }
 }
 export default Sfera
