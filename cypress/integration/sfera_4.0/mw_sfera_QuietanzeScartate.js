@@ -30,6 +30,8 @@ let options = {
 }
 //#endregion
 
+let dataInizio = Common.setDate(1, 2, false)
+
 //#region Before After
 before(() => {
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
@@ -99,5 +101,13 @@ describe('Matrix Web : Sfera 4.0 - Operatività - vista Quietanze Scartete', fun
 
     it('Verifica Colonne in tabella: Tooltip', function () {
         Sfera.checkTooltipHeadersColonne(Sfera.COLUMNQUIETANZESCARTATE)
+    })
+
+    it('Colonne in tabella: Report excel', function () {
+        Sfera.espandiPannello()
+        Sfera.setDateEstrazione(false, dataInizio)
+        Sfera.estrai(false)
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        Sfera.estrazioneReportExcel(Sfera.COLUMNQUIETANZESCARTATE)
     })
 })
