@@ -67,7 +67,7 @@ after(function () {
 var numsin = '927646275'
 
 
-const lblnumsin = "k-grid-content"
+const lblnumsin = ".k-grid-content"
 let dtAvvenimento 
 let clienteAssicurato
 let targaAssicurato
@@ -96,7 +96,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')       
 
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
+        Common.isVisibleText(lblnumsin, numsin)
     });
 
     it('"Pagina di ricerca" è verificato che il nome associato al cliente assicurato, la targa, la polizza e la data di avvenimento del sinistro non siano nulli.', function () {
@@ -140,8 +140,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Seleziona il sinistro dalla pagina di ricerca
         ConsultazioneSinistriPage.clickLnk_ByHref(numsin)        
         // Verifica (1) : numero di sinistro in alto alla pagina di dettaglio
-        const clssDtl = "pageTitle"
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(clssDtl, numsin)
+        const clssDtl = ".pageTitle"
+        Common.isVisibleText(clssDtl, numsin)
         // Verifica (2): Valore della data avvenimento      
         const cssDtAvv = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.clock"      
         ConsultazioneSinistriPage.checkObj_ByIdAndText(cssDtAvv, dtAvvenimento)         

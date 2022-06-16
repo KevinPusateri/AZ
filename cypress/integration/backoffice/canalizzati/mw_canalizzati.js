@@ -92,30 +92,30 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
     it('Sinistri canalizzati: verifica strutturale degli elementi dello header di pagina', function () {              
         const clssTtl = ".breadCrumbs_ActPos"
         // Verifica presenza titolo di pagina
-        ConsultazioneSinistriPage.isVisibleText(clssTtl, dscr_titlePage)
+        Common.isVisibleText(clssTtl, dscr_titlePage)
         //Verifica della label " Compagnia selezionata:"
         const clssLbl = ".lblTitle4"
-        ConsultazioneSinistriPage.isVisibleText(clssLbl, dscr_lblCmpgn)
+        Common.isVisibleText(clssLbl, dscr_lblCmpgn)
         //Verifica presenza della Descrizione della compagnia
-        ConsultazioneSinistriPage.isVisibleText(clssLbl, dscr_Cmpgn)
+        Common.isVisibleText(clssLbl, dscr_Cmpgn)
         //Verifica presenza della label di della data di aggiornamento
         const clssDtAggrnmnt = ".lblTitle4"
-        ConsultazioneSinistriPage.isVisibleText(clssLbl, dscr_lblDtAggrnmnt)
+        Common.isVisibleText(clssLbl, dscr_lblDtAggrnmnt)
         //Verifica presenza della label "Seleziona Fonti"
         const clssSlznFnt = '.tdEtichettaMEFP' 
-        ConsultazioneSinistriPage.isVisibleText(clssSlznFnt, dscr_lblFnt)
+        Common.isVisibleText(clssSlznFnt, dscr_lblFnt)
         //Verifica presenza della label "Seleziona Periodo"
         const clssSlznPrd = '.tdEtichettaMEFD' 
-        ConsultazioneSinistriPage.isVisibleText(clssSlznPrd, dscr_lblPrd)
+        Common.isVisibleText(clssSlznPrd, dscr_lblPrd)
         //Verifica presenza della label posizionata in alto a destra riportante la descrizione: ' Glossario'
         const clssGlssr = '.btnDownloadPDF'
-        ConsultazioneSinistriPage.isVisibleText(clssGlssr, dscr_lblGlssr)
+        Common.isVisibleText(clssGlssr, dscr_lblGlssr)
         //Verifica della presenza del pulsante 'Filtra' 
         const clssBtnFltr = '.btnFiltra'
-        ConsultazioneSinistriPage.isVisibleText(clssBtnFltr, dscr_btnFltr)
+        Common.isVisibleText(clssBtnFltr, dscr_btnFltr)
          //Verifica della presenza del pulsante 'Chiudi Filtri' 
         const clssBtnClsFltr = '.filter-close'
-        ConsultazioneSinistriPage.isVisibleText(clssBtnClsFltr, dscr_btn_ClsFltr)
+        Common.isVisibleText(clssBtnClsFltr, dscr_btn_ClsFltr)
         //Verifica formale sulla data di aggiornamento
         const cssdtAggrmnt = "#dataRiferimentoInt"  
         ConsultazioneSinistriPage.getPromiseText_ById(cssdtAggrmnt).then((val) => {
@@ -126,48 +126,48 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
         });       
     });
     
-    it('Sinistri canalizzati verifica strutturale degli elementi del body di pagina', function () {
+    it('Sinistri canalizzati: verifica strutturale degli elementi del body di pagina', function () {
 
         // Verifica presenza titolo di pagina
         const cssLblBody = ".labelSchedaFonteIndicatori"
-        ConsultazioneSinistriPage.isVisibleText(cssLblBody, dscr_titleBdyPg)
+        Common.isVisibleText(cssLblBody, dscr_titleBdyPg)
         // Verifica della descrizione del tab Sinistri
         const cssTbSinistri = ".tabSelezionato"        
-        ConsultazioneSinistriPage.isVisibleText(cssTbSinistri, dscr_tb_Sinistri)
-        //Verifica descrizione sul filtro temporale presente in tabella 
-        const cssFltrTmp = ".tdEtichettaMEFP"
-        ConsultazioneSinistriPage.isVisibleText(cssFltrTmp, dscr_fltr_tmp)
+        Common.isVisibleText(cssTbSinistri, dscr_tb_Sinistri)
         //Verifica presenza descrizione esporta tabella in excel 
         const cssDcrExpTbl = "#example > div:nth-child(3) > a:nth-child(1)"
-        ConsultazioneSinistriPage.isVisibleText(cssDcrExpTbl, dscr_xprt_tbl)
+        Common.isVisibleText(cssDcrExpTbl, dscr_xprt_tbl)
          //Verifica presenza immagine "Excel"
         const cssImgXls = "#example > div:nth-child(3) > a:nth-child(2) > img"  
         Common.isVisibleImg(cssImgXls, "excel.png")
+         //Verifica descrizione sul filtro temporale presente in tabella 
+         const cssFltrTmp = ".tdEtichettaMEFP"
+         Common.isVisibleText(cssFltrTmp, dscr_fltr_tmp)
         //Verifica presenza immagine "Euro"
         const cssImgEuro = "#imgEuro"
         Common.isVisibleImg(cssImgEuro, "Euro.gif")
-        //ConsultazioneSinistriPage.isVisibleText(cssImgEuro, "Importo")
+        //Common.isVisibleText(cssImgEuro, "Importo")
         //Verifica presenza immagine "Pezzi"
         const cssImgPezzi = "#imgPezzi"
         Common.isVisibleImg(cssImgPezzi, "Pezzi.gif")
-        //ConsultazioneSinistriPage.isVisibleText("#dataAl", "Pezzo")
+        //Common.isVisibleText("#dataAl", "Pezzo")
         //Verifica presenza immagine "Delta"
         const cssImgDelta = "#imgDelta"
         Common.isVisibleImg(cssImgDelta, "Delta.gif")
-        //ConsultazioneSinistriPage.isVisibleText("#dataAl", "Percentuale")
+        //Common.isVisibleText("#dataAl", "Percentuale")
     });
 
-    it('Sinistri canalizzati verifica header di tabella in homepage', function () {
+    it('Sinistri canalizzati:  Verifica elementi in tabella', function () {
 
         const cssHdrTbl =  "#tableDestraLabel > tbody > tr.headersNew"
-        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "CANALIZZABILI")
-        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "CANALIZZATI")
-        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "% CANALIZZATI")
-        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "QUARTILE")
-        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "% POTENZIALE MIGLIORAMENTO")
-        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "INCENTIVO RAGGIUNTO")
-        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "ULTERIORE INCENTIVO POTENZIALE")
-        ConsultazioneSinistriPage.isVisibleText(cssHdrTbl, "IMPORTO  INCENTIVO A.P.") 
+        Common.isVisibleText(cssHdrTbl, "CANALIZZABILI")
+        Common.isVisibleText(cssHdrTbl, "CANALIZZATI")
+        Common.isVisibleText(cssHdrTbl, "% CANALIZZATI")
+        Common.isVisibleText(cssHdrTbl, "QUARTILE")
+        Common.isVisibleText(cssHdrTbl, "% POTENZIALE MIGLIORAMENTO")
+        Common.isVisibleText(cssHdrTbl, "INCENTIVO RAGGIUNTO")
+        Common.isVisibleText(cssHdrTbl, "ULTERIORE INCENTIVO POTENZIALE")
+        Common.isVisibleText(cssHdrTbl, "IMPORTO  INCENTIVO A.P.") 
         //Controllo sulla visibilità delle immagini di legenda poste sotto la riga intestazioni di colonna
         Common.isVisibleImg("tr.headersSimboli > th:nth-child(1) > #imgPezzi ", "Pezzi.gif")
         Common.isVisibleImg("tr.headersSimboli > th:nth-child(2) > #imgPezzi ", "Pezzi.gif")

@@ -76,7 +76,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     const cf_CTP = "VVNGLD86A14Z222H"
     const dt_avv = "11/07/2020"
 
-    const lblnumsin = "k-grid-content"
+    const lblnumsin = ".k-grid-content"
 
     it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
         TopBar.clickBackOffice()
@@ -89,10 +89,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
+        Common.isVisibleText(lblnumsin, numsin)
+        Common.isVisibleText(lblnumsin, numpol)
+        Common.isVisibleText(lblnumsin, targa_assicurato)
+        Common.isVisibleText(lblnumsin, dt_avv)
     });
 
     it('Consultazione Sinistri: Ricerca per polizza assicurato  ', function () {
@@ -101,10 +101,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#policy_number', numpol)
         let classvalue = "search_submit polizza k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
+        Common.isVisibleText(lblnumsin, numsin)
+        Common.isVisibleText(lblnumsin, numpol)
+        Common.isVisibleText(lblnumsin, targa_assicurato)
+        Common.isVisibleText(lblnumsin, dt_avv)
     });
 
     it('Consultazione Sinistri: Ricerca per targa assicurato  ', function () {
@@ -113,10 +113,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#plate', targa_assicurato)
         let classvalue = "search_submit targa k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
+        Common.isVisibleText(lblnumsin, numsin)
+        Common.isVisibleText(lblnumsin, numpol)
+        Common.isVisibleText(lblnumsin, targa_assicurato)
+        Common.isVisibleText(lblnumsin, dt_avv)
     });
 
     it('Consultazione Sinistri: Ricerca per dati anagrafici del cliente persona fisica ', function () {
@@ -126,10 +126,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#nome', nome_assicurato)
         let classvalue = "search_submit anagrafica k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
+        Common.isVisibleText(lblnumsin, numsin)
+        Common.isVisibleText(lblnumsin, numpol)        
+        Common.isVisibleText(lblnumsin, targa_assicurato)
+        Common.isVisibleText(lblnumsin, dt_avv)
     });
 
     it('Consultazione Sinistri: Ricerca per codice fiscale del cliente persona fisica ', function () {
@@ -140,10 +140,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#cf', cf_assicurato)
         let classvalue = "search_submit anagrafica k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')                
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numsin)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, numpol)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, targa_assicurato)
-        ConsultazioneSinistriPage.checkObj_ByClassAndText(lblnumsin, dt_avv)
+        Common.isVisibleText(lblnumsin, numsin)
+        Common.isVisibleText(lblnumsin, numpol)
+        Common.isVisibleText(lblnumsin, targa_assicurato)
+        Common.isVisibleText(lblnumsin, dt_avv)
     });
 
     it('Consultazione Sinistri: Ricerca per denominazione del cliente come persona giuridica ', function () {

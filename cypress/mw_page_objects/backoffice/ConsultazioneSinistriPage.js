@@ -91,28 +91,6 @@ class ConsultazioneSinistriPage {
         cy.wait(1000)        
     }
     /**
-     * Check if an object identified by its label is displayed    
-     * @param {string} label : text displayed
-     */
-    /*
-    static checkObjVisible_ByText(label) {    
-        getIframe().contains(label).should('be.visible').log('>> object with label: "' + label +'" is defined')
-        cy.wait(1000)        
-    }
-    */
-    /**
-     * Check if an object identified by class attribute and its label is displayed
-     * @param {string} classvalue : class attribute 
-     * @param {string} label : text displayed
-     */
-    static checkObj_ByClassAndText(classvalue, label) {     
-        let obj = getIframe().find('[class="'+classvalue+'"]', { timeout: 9000 }).should('exist')            
-        if (obj.contains(label))
-            cy.log('>> object with label: "' + label +'" is defined')
-        cy.wait(1000)                 
-    }
-    
-    /**
      * Check if an object identified by id attribute and its label is displayed
      * @param {string} id : id attribute 
      * @param {string} label : text displayed
@@ -122,19 +100,6 @@ class ConsultazioneSinistriPage {
         cy.log('>> object with label: "' + label +'" is defined')
 
         cy.wait(3000)                 
-    }
-
-    static isVisibleText(id, text) {         
-        getIframe().find(id, { timeout: 5000 }).should('exist').and('be.visible').then(($tag) => { 
-            debugger
-            let txt = $tag.text().trim()
-            cy.log('>> the text value is:  '+ txt) 
-            if (txt.includes(text))
-                    cy.log('>> object with text value : "' + text +'" is defined')  
-            else
-                assert.fail('object with text value: "' + text +'" is not defined')    
-        });
-        cy.wait(1000) 
     }
     /**
      * Check if an object identified by class attribute and its label is displayed
@@ -152,7 +117,6 @@ class ConsultazioneSinistriPage {
         });
         cy.wait(1000)                 
     }
-    
     /**
      * Check if an object identified by locator and its label is displayed
      * @param {string} locator : class attribute 

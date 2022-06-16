@@ -390,6 +390,24 @@ class Common {
         cy.wait(1000)                 
     }
     /**
+     * Checks if the text associated with an object identified by its locator is displayed
+     * @param {string} id : locator attribute 
+     * @param {string} text : text displayed
+     */
+     static isVisibleText(id, text) {         
+        getIframe().find(id, { timeout: 6000 }).should('exist').and('be.visible').then(($tag) => { 
+            debugger
+            let txt = $tag.text().trim()
+            cy.log('>> the text value is:  '+ txt) 
+            if (txt.includes(text))
+                    cy.log('>> object with text value : "' + text +'" is defined')  
+            else
+                assert.fail('object with text value: "' + text +'" is not defined')    
+        });
+        cy.wait(1000) 
+    }
+    /**
+    /**
      * Defined @regexExp a regular expression is verified if the string @str 
      * matches the reg. ex.
      * @param {string} regexExp : regular expression string 
