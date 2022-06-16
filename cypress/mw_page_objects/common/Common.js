@@ -395,8 +395,7 @@ class Common {
      * @param {string} text : text displayed
      */
      static isVisibleText(id, text) {         
-        getIframe().find(id, { timeout: 6000 }).should('exist').and('be.visible').then(($tag) => { 
-            debugger
+        getIframe().find(id, { timeout: 6000 }).should('exist').and('be.visible').then(($tag) => {            
             let txt = $tag.text().trim()
             cy.log('>> the text value is:  '+ txt) 
             if (txt.includes(text))
