@@ -70,12 +70,13 @@ describe('Matrix Web : Profilare la visualizzazione delle colonne tramite tabell
     it('Accedere a Sfera 4.0 - Estrai con Corretto Caricamento Dati', options, function () {
         Sfera.setDateEstrazione()
         Sfera.estrai()
-        Sfera.checkValoreInColonna()
     })
 
     it('Selezionare due colonne ed inserire due diversi filtri', options, function () {
         Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
         Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
+        Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO.values.RAMO_31)
+
     })
 
     it('Salva vista', options, function () {
