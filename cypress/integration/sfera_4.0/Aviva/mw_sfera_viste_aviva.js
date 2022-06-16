@@ -5,6 +5,7 @@
 /// <reference types="Cypress" />
 
 //#region import
+import Common from "../../../mw_page_objects/common/Common"
 import LoginPage from "../../../mw_page_objects/common/LoginPage"
 import TopBar from "../../../mw_page_objects/common/TopBar"
 import Sfera from "../../../mw_page_objects/sfera/Sfera"
@@ -65,30 +66,67 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Profilare la visualizzazione delle colonne tramite tabella di configurazione. Lo stesso per i cluster', function () {
+describe('Matrix Web : Inserire le impostazioni sui filtri in colonna tra i criteri salvati nel salvataggio vista', function () {
 
-    it('Accedere a Sfera 4.0 - Estrai con Corretto Caricamento Dati', options, function () {
-        Sfera.setDateEstrazione()
-        Sfera.estrai()
+    context('No Cluster', function () {
+        it('Accedere a Sfera 4.0 - Estrai con Corretto Caricamento Dati', options, function () {
+            Sfera.setDateEstrazione()
+            Sfera.estrai()
+        })
+
+        it('Selezionare due colonne ed inserire due diversi filtri', options, function () {
+            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
+            Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
+            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
+        })
+
+        it('Salva vista', options, function () {
+            Sfera.salvaVistaPersonalizzata('Automatici_EM_31')
+            //? Effettuiamo un RESET della view
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
+            Sfera.espandiPannello()
+            Sfera.estrai()
+        })
+
+        it('Selezoinare vista Automatici_EM_31 e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente', options, function () {
+            Sfera.selezionaVista('Automatici_EM_31')
+            Sfera.espandiPannello()
+            Sfera.estrai()
+            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
+            Sfera.eliminaVista('Automatici_EM_31')
+        })
     })
 
-    it('Selezionare due colonne ed inserire due diversi filtri', options, function () {
-        Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
-        Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
-        Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO.values.RAMO_31)
+    context('Cluster', function () {
 
+        it('Accedere a Sfera 4.0 :\n- Estrai con Corretto Caricamento Dati \n- Selezionare due colonne ed inserire due diversi filtri \n- Selezionare un cluster desiderato', options, function () {
+            Common.visitUrlOnEnv()
+            Sfera.accediSferaDaHomePageMW()  
+            Sfera.setDateEstrazione()
+            Sfera.selectRandomCluster()
+            Sfera.estrai()
+
+            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ALTRE_SCADENZE_IN_QUIETANZAMENTO)
+            Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+
+            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+        })
+
+        it('Salva vista', options, function () {
+            Sfera.salvaVistaPersonalizzata('Automatici_AQ_35_Cluster')
+            //? Effettuiamo un RESET della view
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
+            Sfera.espandiPannello()
+            Sfera.estrai()
+        })
+
+        it('Selezoinare vista Automatici_AQ_35_Cluster e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente', options, function () {
+            Sfera.selezionaVista('Automatici_AQ_35_Cluster')
+            Sfera.espandiPannello()
+            Sfera.estrai()
+            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+            Sfera.eliminaVista('Automatici_AQ_35_Cluster')
+        })
+        
     })
-
-    it('Salva vista', options, function () {
-        Sfera.salvaVistaPersonalizzata('Automatici_EM_31')
-        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
-        Sfera.espandiPannello()
-        Sfera.estrai()
-    })
-
-    it('Selezoinare vista Automatici_EM_31 e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente', options, function () {
-        Sfera.selezionaVista('Automatici_EM_31')
-        cy.pause()
-        Sfera.eliminaVista('Automatici_EM_31')
-    })   
 })

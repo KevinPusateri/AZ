@@ -418,6 +418,7 @@ const Filtri = {
         values: {
             RAMO_31: '31',
             RAMO_32: '32',
+            RAMO_35: '35',
             RAMO_13: '13',
             VUOTO: "Vuoto"
         }
@@ -990,10 +991,12 @@ class Sfera {
         }
     }
 
+
     /**
-     * @param {Filtri} filtro da utilizzare
-     * @param {String} valore da ricercare
-     */
+    * It clicks on a column header, then it clicks on a checkbox in a popover.
+    * @param {Filtri} filtro da utilizzare
+    * @param {String} valore da ricercare
+    */
     static filtraSuColonna(filtro, valore) {
         cy.get('thead').within(() => {
             if (filtro === Filtri.INFO)
@@ -2386,6 +2389,10 @@ class Sfera {
         })
     }
 
+    /**
+     * It selects a random cluster from a list of clusters, and then it gets the number of elements in that
+     * cluster and stores it in a variable.
+     */
     static selectRandomCluster() {
         cy.get('app-cluster').should('be.visible').within(($appCluster) => {
             const checkCluster = $appCluster.is(':contains("Avviso da Inviare")')
@@ -2396,7 +2403,7 @@ class Sfera {
                 cy.wrap($clusterEnabled).eq(selected).click()
                 cy.wrap($clusterEnabled).eq(selected).invoke('text').then((nameCluster) => {
                     var number = nameCluster.replace(/\D/g, "");
-                    cy.wrap(number).as('clucsterLength')
+                    cy.wrap(number).as('clusterLength')
                 })
             })
         })
@@ -2526,8 +2533,14 @@ class Sfera {
         })
     }
 
-    static checkValoreInColonna(valore) {
-        cy.contains('th', 'Ramo').invoke('index').then((i) => {
+    /**
+     * It takes a column name and a value, finds the column index, then iterates through each row and
+     * checks if the value is present in the column.
+     * @param colonna - is the column name
+     * @param valore - the value to be checked
+     */
+    static checkValoreInColonna(colonna, valore) {
+        cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
             cy.get('tr[class="nx-table-row ng-star-inserted"]').each((rowsTable) => {
                 cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
                     console.log($textCell.text().trim())
@@ -2535,8 +2548,6 @@ class Sfera {
                 })
             })
         })
-
-
     }
 }
 export default Sfera

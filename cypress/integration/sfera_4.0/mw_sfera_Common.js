@@ -194,7 +194,7 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.accediSferaDaHomePageMW()
         Sfera.setDateEstrazione(false, dataInizio, dataFine)
         Sfera.selectRandomCluster()
-        cy.get('@clucsterLength').then((clusterLength)=>{
+        cy.get('@clusterLength').then((clusterLength)=>{
             Sfera.azioniVeloci(Sfera.AZIONIVELOCI.ESPORTA_PDF_EXCEL)
             Sfera.checkExcel(clusterLength)
         })
