@@ -99,10 +99,14 @@ describe('Matrix Web : Inserire le impostazioni sui filtri in colonna tra i crit
 
     context('Cluster', function () {
 
-        it('Accedere a Sfera 4.0 :\n- Estrai con Corretto Caricamento Dati \n- Selezionare due colonne ed inserire due diversi filtri \n- Selezionare un cluster desiderato', options, function () {
+        it('Accedere a Sfera 4.0 :\n- Estrai con Corretto Caricamento Dati', options, function () {
             Common.visitUrlOnEnv()
             Sfera.accediSferaDaHomePageMW()  
             Sfera.setDateEstrazione()
+        })
+
+        
+        it('- Selezionare due colonne ed inserire due diversi filtri \n- Selezionare un cluster desiderato', options, function () {
             Sfera.selectRandomCluster()
             Sfera.estrai()
 
