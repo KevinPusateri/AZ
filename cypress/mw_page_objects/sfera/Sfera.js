@@ -1755,6 +1755,8 @@ class Sfera {
             cy.task('getFolderDownload').then((folderDownload) => {
                 cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
                     console.log(Object.values(jsonData[0].data[0]).sort())
+                    cy.pause()
+                    debugger
                     // Verifica Colonne presenti
                     if (columnView.length > 0)
                         expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(columnView.sort());

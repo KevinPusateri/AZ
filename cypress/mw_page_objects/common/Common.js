@@ -12,6 +12,32 @@ const findIframeChild = (subFrame) => {
     return iframeChild.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+
+/**
+ * Subtracts the given number of months from the given date, or the current date if no date is given.
+ * @param numOfMonths - The number of months to subtract from the date.
+ * @param [date] - The date to subtract the months from. Defaults to the current date.
+ * @returns A date object.
+ */
+function subtractMonths(numOfMonths, date = new Date()) {
+    date.setMonth(date.getMonth() - numOfMonths);
+
+    return date;
+}
+
+/**
+ * Add a number of months to a date and return the new date.
+ * @param numOfMonths - The number of months to add to the date.
+ * @param [date] - The date to add the months to.
+ * @returns A date object.
+ */
+function sumMonths(numOfMonths, date = new Date()) {
+    date.setMonth(date.getMonth() + numOfMonths);
+
+    return date;
+}
+
+
 /**
  * @class
  * @classdesc Classe Common per varie funzioni Cross Matrix Web
@@ -381,29 +407,30 @@ class Common {
     * @param {string} locator : class attribute 
     * @param {string} src : source img file
     */
-    static isVisibleImg(locator, src) {     
-        
-        let check = getIframe().find(locator, { timeout: 9000 }).should('be.visible').should('have.attr','src').and('contain', src);
-        if (check)           
-            cy.log('>> img with attribute src=' +src+ ' is defined and visible ')
-        
-        cy.wait(1000)                 
+    static isVisibleImg(locator, src) {
+
+        let check = getIframe().find(locator, { timeout: 9000 }).should('be.visible').should('have.attr', 'src').and('contain', src);
+        if (check)
+            cy.log('>> img with attribute src=' + src + ' is defined and visible ')
+
+        cy.wait(1000)
     }
     /**
      * Checks if the text associated with an object identified by its locator is displayed
      * @param {string} id : locator attribute 
      * @param {string} text : text displayed
      */
-     static isVisibleText(id, text) {         
-        getIframe().find(id, { timeout: 6000 }).should('exist').and('be.visible').then(($tag) => {            
+    static isVisibleText(id, text) {
+        getIframe().find(id, { timeout: 6000 }).should('exist').and('be.visible').then(($tag) => {
+            debugger
             let txt = $tag.text().trim()
-            cy.log('>> the text value is:  '+ txt) 
+            cy.log('>> the text value is:  ' + txt)
             if (txt.includes(text))
-                    cy.log('>> object with text value : "' + text +'" is defined')  
+                cy.log('>> object with text value : "' + text + '" is defined')
             else
-                assert.fail('object with text value: "' + text +'" is not defined')    
+                assert.fail('object with text value: "' + text + '" is not defined')
         });
-        cy.wait(1000) 
+        cy.wait(1000)
     }
     /**
     /**
@@ -425,13 +452,27 @@ class Common {
         });
     }
 
-    static setDate(date, month) {
-        let today = new Date()
+    /**
+     * It takes a date, a month, and a boolean, and returns a date.
+     * @param {Number} date - the day of the month
+     * @param {Number} month - number of months to add or subtract
+     * @param {Boolean} operation default true add months else substract month
+     * @returns The date in the format dd/mm/yyyy
+     */
+    static setDate(date, month, operation = true) {
+
+        const today = new Date();
+        if (operation)
+            console.log(sumMonths(month, today));
+        else
+            console.log(subtractMonths(month, today));
+
         today.setDate(date)
-        today.setMonth(month)
-        let data = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
+        let data = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         return data
     }
+
+
 
 }
 
