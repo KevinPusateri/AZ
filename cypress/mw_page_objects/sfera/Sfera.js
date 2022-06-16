@@ -488,6 +488,74 @@ const Pannelli = {
 }
 
 /**
+ * Enum Colonne in vista Quietanze Scartate
+ * @enum {Object}
+ */
+const ColumnQuietanzeScartate = {
+    CONTRAENTE: {
+        key: 'Contraente',
+        tooltip: 'Denominazione Cliente'
+    },
+    POLIZZA: {
+        key: 'Polizza',
+        tooltip: 'Numero Polizza'
+    },
+    CP: {
+        key: 'Cp.',
+        tooltip: 'Compagnia'
+    },
+    AGENZIA: {
+        key: 'Agenzia',
+        tooltip: 'Agenzia'
+    },
+    FONTE: {
+        key: 'Fonte',
+        tooltip: 'Fonte'
+    },
+    RAMO: {
+        key: 'Ramo',
+        tooltip: 'Ramo'
+    },
+    INIZIO_COP: {
+        key: 'Inizio Cop.',
+        tooltip: 'Data Inizio Copertura'
+    },
+    CONV_TECN: {
+        key: 'Conv. Tecn.',
+        tooltip: 'Convenzione Tecnica'
+    },
+    TARGA: {
+        key: 'Targa',
+        tooltip: 'Numero di Targa'
+    },
+    ERRORE_QUIET: {
+        key: 'Errore Quiet',
+        tooltip: 'Errore per il mancato Quietanzamento'
+    },
+    NOTE: {
+        key: 'Note',
+        tooltip: 'Motivazione per il mancato Quietanzamento'
+    },
+    SOLUZIONE_PER_AGENZIA: {
+        key: 'Soluzione per Agenzia',
+        tooltip: 'Soluzione per Agenzia'
+    },
+    CLA_BM_CIP_PROV: {
+        key: 'Cla. BM CIP Prov.',
+        tooltip: 'Classe Bonus CIP di provenienza'
+    },
+    CLA_BM_RINN: {
+        key: 'Cla. BM Rinn.',
+        tooltip: 'Classe Bonus Malus di Rinnovo'
+    },
+    CLA_BM_CIP: {
+        key: 'Cla. BM CIP',
+        tooltip: 'Classe Bonus CIP'
+    }
+
+}
+
+/**
  * Enum Colonne in vista Carico Mancante
  * @enum {Object}
  */
@@ -555,6 +623,21 @@ class Sfera {
      */
     static get PORTAFOGLI() {
         return Portafogli
+    }
+
+    /**
+     * Funzione che ritorna le colonne della vista Quietanze Scartate
+     * @returns {ColumnQuietanzeScartate} Colonne disponibili
+     */
+    static get COLUMNQUIETANZESCARTATE() {
+        return ColumnQuietanzeScartate
+    }
+    /**
+     * Funzione che ritorna le colonne della vista Carico Mancante
+     * @returns {ColumnCaricoMancante} Colonne disponibili
+     */
+    static get COLUMNCARICOMANCANTE() {
+        return ColumnCaricoMancante
     }
 
     /**
@@ -2355,11 +2438,16 @@ class Sfera {
     static checkAllColonnePresenti(listColumn) {
         cy.get('table').then(($table) => {
             const currentLinks = []
-            const checkLinks = Object.values(listColumn)
-
+            const checkLinks = []
+            for (const [key, value] of Object.entries(listColumn)) {
+                checkLinks.push(value.key)
+            }
             cy.wrap($table).find('div[class="table-component-th-name"]').each(($link, i) => {
                 currentLinks.push($link.text().trim())
             }).then(() => {
+                var difference = checkLinks.filter(x => currentLinks.indexOf(x) === -1);
+                console.log(difference);
+
                 expect(currentLinks.sort()).to.deep.eq(checkLinks.sort());
             })
 
@@ -2422,11 +2510,14 @@ class Sfera {
         cy.wait(5000)
     }
 
-    static checkTooltipHeadersColonne() {
+    static checkTooltipHeadersColonne(columns) {
+        let regexKey
+        for (const [key, value] of Object.entries(columns)) {
+            cy.get('table').within(() => {
 
-        for (const [key, value] of Object.entries(ColumnCaricoMancante)) {
-
-            cy.get('th:contains("' + value.key + '")').should('exist').rightclick().focused().wait(1500)
+                regexKey = new RegExp('\^' + value.key + '\$');
+                cy.contains(regexKey).should('exist').rightclick().focused().wait(1500)
+            })
             cy.get('.cdk-overlay-container').within((tooltip) => {
                 expect(tooltip.text()).to.contain(value.tooltip)
             })
