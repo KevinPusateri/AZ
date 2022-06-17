@@ -1524,7 +1524,7 @@ class Sfera {
 
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
-        this.lobPortafogli().click().wait(500)
+        this.lobPortafogli().click({ force: true }).wait(1000)
 
         cy.get('div[class="nx-dropdown__panel nx-dropdown__panel--in-outline-field ng-star-inserted"]').within(() => {
             //Selezioniamo
@@ -1554,14 +1554,15 @@ class Sfera {
                         cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
-            if (!portafogli.includes(Portafogli.VITA))
-                cy.get(`div:contains(${Portafogli.VITA})`).parents('label').then($chekcBoxChecked => {
+            if (!Cypress.env('isAviva'))
+                if (!portafogli.includes(Portafogli.VITA))
+                    cy.get(`div:contains(${Portafogli.VITA})`).parents('label').then($chekcBoxChecked => {
 
-                    if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
-                        cy.get(`div:contains(${Portafogli.VITA})`).parents('nx-dropdown-item').click()
-                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
-                    }
-                })
+                        if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
+                            cy.get(`div:contains(${Portafogli.VITA})`).parents('nx-dropdown-item').click()
+                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        }
+                    })
         })
 
         cy.get('body').click()
@@ -2437,13 +2438,14 @@ class Sfera {
     }
 
     /**
-     * It checks that the dropdown menu contains the number of rows that you want to see on the page.
-     * @param {String} numberRows - the number of rows you want to display on the page
+     * It checks that the number of rows in the table is equal to the number of rows per page.
+     * @param numberRows - the number of rows you want to check
+     * @param checkTable - default true, verifica le righe totali della tabella
      */
-    static checkRisultatiPaginaRighe(numberRows) {
+    static checkRisultatiPaginaRighe(numberRows, checkTable = true) {
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('have.length', numberRows)
         cy.contains('Risultati per pagina').parent().find('nx-dropdown').should('contain.text', numberRows)
     }
-
 
     /**
      * Verifica se la voce non è presente
