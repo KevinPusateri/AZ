@@ -184,7 +184,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
             this.skip()
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Scheda Sinistri per Gestione')
-        BurgerMenuBackOffice.backToBackOffice()
+        BackOffice.backToBackOffice()
     })
 
     it('Verifica apertura disambiguazione: Sintesi Contabilità', function () {
