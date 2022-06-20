@@ -51,6 +51,7 @@ const LinksSinistri = {
     CONSULTAZIONE_SINISTRI: 'Consultazione sinistri',
     SINISTRI_INCOMPLETI: 'Sinistri incompleti',
     SINISTRI_CANALIZZATI: 'Sinistri canalizzati',
+    SCHEDA_SINISTRI_GESTIONE: 'Scheda Sinistri per Gestione',
     deleteKey: function (keys) {
         if (!keys.MOVIMENTAZIONE_SINISTRI) delete this.MOVIMENTAZIONE_SINISTRI
         if (!keys.DENUNCIA) delete this.DENUNCIA
@@ -59,6 +60,7 @@ const LinksSinistri = {
         if (!keys.CONSULTAZIONE_SINISTRI) delete this.CONSULTAZIONE_SINISTRI
         if (!keys.SINISTRI_INCOMPLETI) delete this.SINISTRI_INCOMPLETI
         if (!keys.SINISTRI_CANALIZZATI) delete this.SINISTRI_CANALIZZATI
+        if(!keys.SCHEDA_SINISTRI_GESTIONE || Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.SCHEDA_SINISTRI_GESTIONE
     }
 }
 
