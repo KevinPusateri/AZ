@@ -60,7 +60,7 @@ const LinksSinistri = {
         if (!keys.CONSULTAZIONE_SINISTRI) delete this.CONSULTAZIONE_SINISTRI
         if (!keys.SINISTRI_INCOMPLETI) delete this.SINISTRI_INCOMPLETI
         if (!keys.SINISTRI_CANALIZZATI) delete this.SINISTRI_CANALIZZATI
-        if(!keys.SCHEDA_SINISTRI_GESTIONE || Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.SCHEDA_SINISTRI_GESTIONE
+        if (!keys.SCHEDA_SINISTRI_GESTIONE || Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.SCHEDA_SINISTRI_GESTIONE
     }
 }
 
@@ -185,6 +185,10 @@ class BackOffice {
                 break;
             case LinksSinistri.SINISTRI_CANALIZZATI:
                 getIFrame().find('a:contains("Filtra"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                break;
+            case LinksSinistri.SCHEDA_SINISTRI_GESTIONE:
+                getIFrame().find('h4:contains("Scheda Sinistri Gestione Agenziale"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.SINTESI_CONTABILITA:

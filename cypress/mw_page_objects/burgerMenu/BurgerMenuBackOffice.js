@@ -11,6 +11,7 @@ const LinksBurgerMenu = {
     CONSULTAZIONE_SINISTRI: 'Consultazione sinistri',
     SINISTRI_INCOMPLETI: 'Sinistri incompleti',
     SINISTRI_CANALIZZATI: 'Sinistri canalizzati',
+    SCHEDA_SINISTRI_GESTIONE: 'Scheda Sinistri per Gestione',
     SINTESI_CONTABILITÀ: 'Sintesi Contabilità',
     GIORNATA_CONTABILE: 'Giornata contabile',
     CONSULTAZIONE_MOVIMENTI: 'Consultazione Movimenti',
@@ -23,7 +24,6 @@ const LinksBurgerMenu = {
     IMPOSTAZIONE_CONTABILITA: 'Impostazione contabilità',
     CONVENZIONI_IN_TRATTENUTA: 'Convenzioni in trattenuta',
     MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart',
-    SCHEDA_SINISTRI_GESTIONE: 'Scheda Sinistri per Gestione',
     deleteKey: function(keys) {  
         if(!keys.HOME_BACKOFFICE) delete this.HOME_BACKOFFICE
         if(!keys.MOVIMENTAZIONE_SINISTRI) delete this.MOVIMENTAZIONE_SINISTRI

@@ -77,7 +77,7 @@ before(() => {
                         cy.filterProfile(profiling, 'REPORTING_INCENTIVAZIONI_DI_AGENZIA').then(profiledIncentivazioniAgenzia => {
                             debugger
                             if (!(profiledReportingInterrogazioniCentralizzate && profiledDatiSensibili && profiledIncentivazioniAgenzia))
-                                keys.SCHEDA_SINISTRI_GESTIONE = true
+                                keys.SCHEDA_SINISTRI_GESTIONE = false
                         })
                     })
                 })
@@ -177,6 +177,14 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Sinistri canalizzati')
         BackOffice.backToBackOffice()
+    })
+
+    it('Verifica aggancio Scheda Sinistri per Gestione', function () {
+        if (!keys.SCHEDA_SINISTRI_GESTIONE)
+            this.skip()
+        TopBar.clickBackOffice()
+        BurgerMenuBackOffice.clickLink('Scheda Sinistri per Gestione')
+        BurgerMenuBackOffice.backToBackOffice()
     })
 
     it('Verifica apertura disambiguazione: Sintesi Contabilità', function () {
