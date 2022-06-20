@@ -91,7 +91,7 @@ describe('Matrix Web : Sfera 4.0 AVIVA', function () {
         Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
     })
 
-    it('Verifica verifica menu contestuale - Assenza link Vita', options, function () {
+    it('Verifica menu contestuale - Assenza link Vita', options, function () {
         Sfera.espandiPannello()
         Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
         Sfera.checkVociMenuNotExist(Sfera.VOCIMENUEMISSIONE.SERVIZIO_CONSULENZA_VITA)
