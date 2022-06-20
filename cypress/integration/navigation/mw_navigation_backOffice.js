@@ -183,7 +183,7 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         if (!keys.SCHEDA_SINISTRI_GESTIONE)
             this.skip()
         TopBar.clickBackOffice()
-        BurgerMenuBackOffice.clickLink('Scheda Sinistri per Gestione')
+        BackOffice.clickCardLink('Scheda Sinistri per Gestione')
         BurgerMenuBackOffice.backToBackOffice()
     })
 
