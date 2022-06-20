@@ -609,7 +609,8 @@ class SintesiCliente {
             url: '**/GestioneLibriMatricolaDA/**'
         }).as('getLibriMatricola');
         Common.canaleFromPopup()
-        cy.wait('@getLibriMatricola', { timeout: 40000 }).its('response.statusCode').should('eq', 200)
+        // cy.wait('@getLibriMatricola', { timeout: 40000 }).its('response.statusCode').should('eq', 200)
+        cy.wait(10000)
         matrixFrame().within(() => {
             cy.get('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
             cy.screenshot('Verifica aggancio Libri matricola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1025,8 +1026,8 @@ class SintesiCliente {
         getIFrame().find('#ButtonQuestOk').click().wait(10000)
         cy.wait('@dacontabilita', { timeout: 60000 })
 
-        getIFrame().find('#TabVarieInserimentoTipoPagamento').click()
-        getIFrame().find('li').contains("Contanti").click()
+        getIFrame().find('#TabVarieInserimentoTipoPagamento').click().wait(1000)
+        getIFrame().find('li:visible').contains("Contanti").click()
         getIFrame().find('#FiltroTabVarieInserimentoDescrizione').type("TEST AUTOMATICO")
         getIFrame().find('#TabVarieInserimentoCassetto').click()
         getIFrame().find('li').contains("Cassa").first().click()

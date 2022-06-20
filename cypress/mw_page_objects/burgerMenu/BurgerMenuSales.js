@@ -195,7 +195,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/assuntivomotor/**'
                 }).as('getMotor');
                 Common.canaleFromPopup()
-                cy.wait('@getMotor', { requestTimeout: 50000 });
+                cy.wait('@getMotor', { timeout: 50000 });
                 getIFrame().find('button:contains("Calcola"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -205,7 +205,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/assuntivomotor/**'
                 }).as('getMotor');
                 Common.canaleFromPopup()
-                cy.wait('@getMotor', { requestTimeout: 50000 });
+                cy.wait('@getMotor', { timeout: 50000 });
                 getIFrame().find('button:contains("Calcola"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -278,16 +278,21 @@ class BurgerMenuSales extends Sales {
                 }).as('getSalesPremo');
                 // cy.wait(5000)
                 Common.canaleFromPopup()
-                cy.wait('@getSalesPremo', { requestTimeout: 40000 });
+                cy.wait('@getSalesPremo', { timeout: 40000 });
                 cy.wait(30000)
                 getIFrame().should('be.visible')
                 getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text', 'Ricerca')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
+                cy.intercept({
+                    method:'GET',
+                    url: '**/ImagesArch/**'
+                }).as('getImage');
                 Common.canaleFromPopup()
-                cy.wait(20000)
-                getIFrame().find('input[value="Home"]').should('be.visible').invoke('attr', 'value').should('equal', 'Home')
+                cy.wait('@getImage', { timeout: 40000 });
+                // cy.wait(25000)
+                getIFrame().find('input[value="Home"]').invoke('attr', 'value').should('equal', 'Home')
                 getIFrame().find('input[value="Indietro"]').invoke('attr', 'value').should('equal', 'Indietro')
                 getIFrame().find('input[value="Avanti"]').invoke('attr', 'value').should('equal', 'Avanti')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -318,7 +323,7 @@ class BurgerMenuSales extends Sales {
                     url: /InizializzaApplicazione/
                 }).as('inizializzaApplicazione');
                 Common.canaleFromPopup()
-                cy.wait('@inizializzaApplicazione', { requestTimeout: 30000 });
+                cy.wait('@inizializzaApplicazione', { timeout: 30000 });
                 getIFrame().find('button:contains("Cerca"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -333,7 +338,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/dacommerciale/**'
                 }).as('getDacommerciale');
                 Common.canaleFromPopup()
-                cy.wait('@getDacommerciale', { requestTimeout: 50000 });
+                cy.wait('@getDacommerciale', { timeout: 50000 });
                 getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -344,7 +349,7 @@ class BurgerMenuSales extends Sales {
                 }).as('Danni');
 
                 Common.canaleFromPopup()
-                cy.wait('@Danni', { requestTimeout: 40000 })
+                cy.wait('@Danni', { timeout: 40000 })
                 cy.wait(5000)
                 getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -355,7 +360,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/SUV/**'
                 }).as('getSUV');
                 Common.canaleFromPopup()
-                cy.wait('@getSUV', { requestTimeout: 40000 });
+                cy.wait('@getSUV', { timeout: 40000 });
                 cy.wait(10000)
                 getIFrame().find('.k-link:contains("Consultazione Collettive e Versamenti"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -391,7 +396,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/Vita/**'
                 }).as('vita');
                 Common.canaleFromPopup()
-                cy.wait('@vita', { requestTimeout: 30000 });
+                cy.wait('@vita', { timeout: 30000 });
                 cy.wait(6000)
                 getIFrame().find('input[value="Ricerca"]:visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
