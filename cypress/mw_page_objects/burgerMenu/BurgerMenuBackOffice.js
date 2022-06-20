@@ -23,6 +23,7 @@ const LinksBurgerMenu = {
     IMPOSTAZIONE_CONTABILITA: 'Impostazione contabilità',
     CONVENZIONI_IN_TRATTENUTA: 'Convenzioni in trattenuta',
     MONITORAGGIO_GUIDA_SMART: 'Monitoraggio Guida Smart',
+    SCHEDA_SINISTRI_GESTIONE: 'Scheda Sinistri per Gestione',
     deleteKey: function(keys) {  
         if(!keys.HOME_BACKOFFICE) delete this.HOME_BACKOFFICE
         if(!keys.MOVIMENTAZIONE_SINISTRI) delete this.MOVIMENTAZIONE_SINISTRI
@@ -44,6 +45,7 @@ const LinksBurgerMenu = {
         if(!keys.IMPOSTAZIONE_CONTABILITA) delete this.IMPOSTAZIONE_CONTABILITA
         if(!keys.CONVENZIONI_IN_TRATTENUTA) delete this.CONVENZIONI_IN_TRATTENUTA
         if(!keys.MONITORAGGIO_GUIDA_SMART) delete this.MONITORAGGIO_GUIDA_SMART
+        if(!keys.SCHEDA_SINISTRI_GESTIONE || Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.SCHEDA_SINISTRI_GESTIONE
     }
 }
 
