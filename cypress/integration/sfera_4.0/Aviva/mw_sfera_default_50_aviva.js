@@ -72,7 +72,7 @@ describe('Matrix Web : Default 50 righe', function () {
 
     it('Selezionare un cluster e Verifica che ci siano 50 righe post selezione cluster', options, function () {
         Sfera.espandiPannello()
-        Sfera.selectRandomCluster()
+        Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.FUORI_MORA)
         Sfera.estrai()
         Sfera.checkRisultatiPaginaRighe('50', false)
     })

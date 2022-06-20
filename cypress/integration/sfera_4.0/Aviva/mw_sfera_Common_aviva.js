@@ -77,7 +77,7 @@ describe('Matrix Web : Sfera 4.0 AVIVA', function () {
 
     it('Verifica Tasto Azioni Veloci Cluster Sinistrose', options, function () {
         Sfera.setDateEstrazione()
-        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.SINISTROSE)
+        Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.SINISTROSE)
         Sfera.checkVoceAzioniVeloci(Sfera.CLUSTERMOTOR.SINISTROSE)
     })
 

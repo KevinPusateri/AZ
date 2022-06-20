@@ -333,6 +333,7 @@ const ClusterMotor = {
     QUIETANZE_STAMPABILI: "Quietanze Stampabili",
     QUIETANZE_STAMPATE: "Quietanze Stampate",
     IN_MORA: "In mora",
+    FUORI_MORA: "Fuori mora",
     SINISTROSE: "Sinistrose",
 }
 
@@ -1411,7 +1412,7 @@ class Sfera {
      * @param {ClusterMotor} clusterMotor tipo di cluster da selezionare
      * @param {Boolean} [performEstrai] default false, se true clicca su estrai
      */
-    static selezionaCluserMotor(clusterMotor, performEstrai = false) {
+    static selezionaClusterMotor(clusterMotor, performEstrai = false) {
         cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
