@@ -36,6 +36,11 @@ const estraiQuietanze = {
     url: /estraiQuietanze/
 }
 
+const estraiTotaleQuietanzeScartate = {
+    method: 'POST',
+    url: /estraiTotaleQuietanzeScartate/
+}
+
 const interceptContraenteScheda = () => {
     cy.intercept({
         method: 'POST',
@@ -114,7 +119,10 @@ const TipoTitoli = {
  * @private
  */
 const VisteSuggerite = {
-    CARICO_MANCANTE: 'Carico Mancante'
+    VISTA_STANDARD: 'Vista Standard',
+    CARICO_MANCANTE: 'Carico Mancante',
+    DELTA_PREMIO: 'Delta premio – riduzione premio a cura dell’agenzia',
+    QUIETANZE_SCARTATE: 'Quietanze Scartate'
 }
 
 /**
@@ -330,6 +338,7 @@ const ClusterMotor = {
     QUIETANZE_STAMPABILI: "Quietanze Stampabili",
     QUIETANZE_STAMPATE: "Quietanze Stampate",
     IN_MORA: "In mora",
+    FUORI_MORA: "Fuori mora",
     SINISTROSE: "Sinistrose",
 }
 
@@ -415,6 +424,7 @@ const Filtri = {
         values: {
             RAMO_31: '31',
             RAMO_32: '32',
+            RAMO_35: '35',
             RAMO_13: '13',
             VUOTO: "Vuoto"
         }
@@ -486,6 +496,74 @@ const Pannelli = {
 }
 
 /**
+ * Enum Colonne in vista Quietanze Scartate
+ * @enum {Object}
+ */
+const ColumnQuietanzeScartate = {
+    CONTRAENTE: {
+        key: 'Contraente',
+        tooltip: 'Denominazione Cliente'
+    },
+    POLIZZA: {
+        key: 'Polizza',
+        tooltip: 'Numero Polizza'
+    },
+    CP: {
+        key: 'Cp.',
+        tooltip: 'Compagnia'
+    },
+    AGENZIA: {
+        key: 'Agenzia',
+        tooltip: 'Agenzia'
+    },
+    FONTE: {
+        key: 'Fonte',
+        tooltip: 'Fonte'
+    },
+    RAMO: {
+        key: 'Ramo',
+        tooltip: 'Ramo'
+    },
+    INIZIO_COP: {
+        key: 'Inizio Cop.',
+        tooltip: 'Data Inizio Copertura'
+    },
+    CONV_TECN: {
+        key: 'Conv. Tecn.',
+        tooltip: 'Convenzione Tecnica'
+    },
+    TARGA: {
+        key: 'Targa',
+        tooltip: 'Numero di Targa'
+    },
+    ERRORE_QUIET: {
+        key: 'Errore Quiet',
+        tooltip: 'Errore per il mancato Quietanzamento'
+    },
+    NOTE: {
+        key: 'Note',
+        tooltip: 'Motivazione per il mancato Quietanzamento'
+    },
+    SOLUZIONE_PER_AGENZIA: {
+        key: 'Soluzione per Agenzia',
+        tooltip: 'Soluzione per Agenzia'
+    },
+    CLA_BM_CIP_PROV: {
+        key: 'Cla. BM CIP Prov.',
+        tooltip: 'Classe Bonus CIP di provenienza'
+    },
+    CLA_BM_RINN: {
+        key: 'Cla. BM Rinn.',
+        tooltip: 'Classe Bonus Malus di Rinnovo'
+    },
+    CLA_BM_CIP: {
+        key: 'Cla. BM CIP',
+        tooltip: 'Classe Bonus CIP'
+    }
+
+}
+
+/**
  * Enum Colonne in vista Carico Mancante
  * @enum {Object}
  */
@@ -553,6 +631,21 @@ class Sfera {
      */
     static get PORTAFOGLI() {
         return Portafogli
+    }
+
+    /**
+     * Funzione che ritorna le colonne della vista Quietanze Scartate
+     * @returns {ColumnQuietanzeScartate} Colonne disponibili
+     */
+    static get COLUMNQUIETANZESCARTATE() {
+        return ColumnQuietanzeScartate
+    }
+    /**
+     * Funzione che ritorna le colonne della vista Carico Mancante
+     * @returns {ColumnCaricoMancante} Colonne disponibili
+     */
+    static get COLUMNCARICOMANCANTE() {
+        return ColumnCaricoMancante
     }
 
     /**
@@ -713,6 +806,24 @@ class Sfera {
     }
 
     /**
+     * Ritorna il check box control delle righe di estrazione
+     * @returns {Object} ritorna il check box control delle righe di estrazione
+     * @private
+     */
+    static checkBoxControl() {
+        return cy.get('span[class="nx-checkbox__control"]').should('exist')
+    }
+
+    /**
+     * Ritorna la sezione di Sfera Delta Premio
+     * @returns {Object} ritorna la sezione di Sfera Delta Premio
+     * @private
+     */
+    static sferaDeltaPremioSection() {
+        return cy.get('sfera-deltapremio').should('exist').and('be.visible')
+    }
+
+    /**
      * Ritorna il menu contestuale principale (Quietanza, Polizza, Cliente, Emissione, Sinistri)
      * @returns {Object} menu contestuale principale
      * @private
@@ -788,25 +899,42 @@ class Sfera {
     }
     //#endregion
 
-    /**s
-     * Effettua accesso al Nuovo Sfera (da Sales)
-     * ed attende il caricameto di vari servizi di BE
+    /**
+     * Accedi a Sfera da Home Page MW
+     * @param [reloadMW=false] - boolean; se true, evita di intercettare alcune BFF call (che non avviene su reload di MW)
      */
-    static accediSferaDaHomePageMW() {
-        cy.intercept(infoUtente).as('infoUtente')
-        cy.intercept(agenzieFonti).as('agenzieFonti')
-        cy.intercept(caricaVista).as('caricaVista')
-        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
-        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+    static accediSferaDaHomePageMW(reloadMW = false) {
 
-        TopBar.clickSales()
-        Sales.clickLinkRapido('Nuovo Sfera')
+        if (!reloadMW) {
+            cy.intercept(infoUtente).as('infoUtente')
+            cy.intercept(agenzieFonti).as('agenzieFonti')
+            cy.intercept(caricaVista).as('caricaVista')
+            cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+            cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
 
-        cy.wait('@infoUtente', { timeout: 60000 })
-        cy.wait('@agenzieFonti', { timeout: 60000 })
-        cy.wait('@caricaVista', { timeout: 60000 })
-        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+            TopBar.clickSales()
+            Sales.clickLinkRapido('Nuovo Sfera')
+
+            cy.wait('@infoUtente', { timeout: 60000 })
+            cy.wait('@agenzieFonti', { timeout: 60000 })
+            cy.wait('@caricaVista', { timeout: 60000 })
+            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+        }
+        //? su reload skippo agenzieFonti e caricaVista
+        else
+        {
+            cy.intercept(infoUtente).as('infoUtente')
+            cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+            cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+            TopBar.clickSales()
+            Sales.clickLinkRapido('Nuovo Sfera')
+
+            cy.wait('@infoUtente', { timeout: 60000 })
+            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+        }
     }
 
     /**
@@ -886,23 +1014,35 @@ class Sfera {
         }
     }
 
+
     /**
-     * @param {Filtri} filtro da utilizzare
-     * @param {String} valore da ricercare
-     */
+    * It clicks on a column header, then it clicks on a checkbox in a popover.
+    * @param {Filtri} filtro da utilizzare
+    * @param {String} valore da ricercare
+    */
     static filtraSuColonna(filtro, valore) {
         cy.get('thead').within(() => {
+            if (filtro === Filtri.INFO)
+                cy.get('th[class~="customBandierinaSticky"]').find('nx-icon:last').click()
+            else
+                cy.get(`div:contains(${filtro.key})`).parent().find('nx-icon:last').click()
+        })
 
-            cy.get(`div:contains(${filtro.key})`).parent().find('nx-icon:last').click()
+        if (filtro === Filtri.INFO)
+            cy.get('div[class="filterPopover filterPopoverV2 ng-star-inserted"]').within(() => {
+                cy.get(`span:contains(${valore})`).click()
+            })
+        else
             cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
+
                 cy.get('input:visible').type(valore)
                 cy.wait(500)
                 cy.get('span[class="nx-checkbox__control"]:visible').click()
-                cy.intercept(estraiQuietanze).as('estraiQuietanze')
-                cy.contains('Applica').should('be.enabled').click()
-                cy.wait('@estraiQuietanze', { timeout: 120000 })
             })
-        })
+
+        cy.intercept(estraiQuietanze).as('estraiQuietanze')
+        cy.contains('Applica').should('be.enabled').click()
+        cy.wait('@estraiQuietanze', { timeout: 120000 })
     }
 
     /**
@@ -1294,7 +1434,7 @@ class Sfera {
      * @param {ClusterMotor} clusterMotor tipo di cluster da selezionare
      * @param {Boolean} [performEstrai] default false, se true clicca su estrai
      */
-    static selezionaCluserMotor(clusterMotor, performEstrai = false) {
+    static selezionaClusterMotor(clusterMotor, performEstrai = false) {
         cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
@@ -1575,6 +1715,7 @@ class Sfera {
      * Estrazione Excel e verifica dati estratti correttamente
      */
     static estrazioneReportExcel(currentColumn = []) {
+        let columnView = []
         if (currentColumn.length === 0)
             currentColumn = [
                 "Agenzia",
@@ -1616,42 +1757,12 @@ class Sfera {
                 "Val. Extra",
                 "Vinc."
             ]
+        else {
+            for (const [key, value] of Object.entries(currentColumn)) {
+                columnView.push(value.key)
+            }
 
-        // var currentColumn = [
-        //     "Info",
-        //     "Pt.",
-        //     "Contraente",
-        //     "Num.\nPolizza",
-        //     "Scad.",
-        //     "Inizio\nCopertura",
-        //     "Evo",
-        //     "Cod\nAgenzia",
-        //     "Cod.\nFraz",
-        //     "Sede",
-        //     "Fonte",
-        //     "Ramo",
-        //     "Premio\nLordo Rata",
-        //     "Gg.Mo.\n/Fuo.Mo.",
-        //     "Descrizione\nProdotto",
-        //     "Decorrenza\nPolizza",
-        //     "Scadenza\nPolizza",
-        //     "Vin",
-        //     "Delta pr.\nNetto RCA",
-        //     "Delta Premio\nNetto ARD",
-        //     "Importo Canone",
-        //     "Ind att.rin",
-        //     "R.abb",
-        //     "Coass.",
-        //     "Val. Extra",
-        //     "Avv Email",
-        //     "Nr Avv\nSms",
-        //     "Avv Pdf",
-        //     "Motivo Non Val.Extra",
-        //     "Targa",
-        //     "Pag",
-        //     "FQ\nTot",
-        //     "Dlt pr Qtz €"
-        // ];
+        }
         var rows = []
         cy.get('tr[class="nx-table-row ng-star-inserted selectedRow"]').each((rowsTable) => {
             cy.wrap(rowsTable).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($textCell) => {
@@ -1667,11 +1778,14 @@ class Sfera {
             cy.task('getFolderDownload').then((folderDownload) => {
                 cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
                     console.log(Object.values(jsonData[0].data[0]).sort())
-                    console.log('---------')
-                    console.log(currentColumn.sort())
+                    cy.pause()
                     debugger
                     // Verifica Colonne presenti
-                    expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(currentColumn.sort());
+                    if (columnView.length > 0)
+                        expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(columnView.sort());
+                    else
+                        expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(currentColumn.sort());
+
                     for (let index = 0; index < rows.length; index++) {
                         // Verifica Clienti presenti
                         expect(jsonData[0].data[index + 1]).to.include(rows[index]);
@@ -2052,7 +2166,9 @@ class Sfera {
                         '% CMC',
                         '% commerciale',
                         '% totale',
-                        'Rid. Premio'
+                        'Rid. Premio',
+                        'Da Rid. Premio',
+                        'Da preventivo'
                     ]
                     cy.get('td[class="nx-font-weight-bold"]').each(($titleRow) => {
                         if ($titleRow.text().length > 0) {
@@ -2300,6 +2416,10 @@ class Sfera {
         })
     }
 
+    /**
+     * It selects a random cluster from a list of clusters, and then it gets the number of elements in that
+     * cluster and stores it in a variable.
+     */
     static selectRandomCluster() {
         cy.get('app-cluster').should('be.visible').within(($appCluster) => {
             const checkCluster = $appCluster.is(':contains("Avviso da Inviare")')
@@ -2310,7 +2430,7 @@ class Sfera {
                 cy.wrap($clusterEnabled).eq(selected).click()
                 cy.wrap($clusterEnabled).eq(selected).invoke('text').then((nameCluster) => {
                     var number = nameCluster.replace(/\D/g, "");
-                    cy.wrap(number).as('clucsterLength')
+                    cy.wrap(number).as('clusterLength')
                 })
             })
         })
@@ -2325,17 +2445,21 @@ class Sfera {
     static checkAllColonnePresenti(listColumn) {
         cy.get('table').then(($table) => {
             const currentLinks = []
-            const checkLinks = Object.values(listColumn)
-
+            const checkLinks = []
+            for (const [key, value] of Object.entries(listColumn)) {
+                checkLinks.push(value.key)
+            }
             cy.wrap($table).find('div[class="table-component-th-name"]').each(($link, i) => {
                 currentLinks.push($link.text().trim())
             }).then(() => {
+                var difference = checkLinks.filter(x => currentLinks.indexOf(x) === -1);
+                console.log(difference);
+
                 expect(currentLinks.sort()).to.deep.eq(checkLinks.sort());
             })
 
         })
     }
-
 
     /**
      * It checks that the dropdown menu contains the number of rows that you want to see on the page.
@@ -2390,16 +2514,84 @@ class Sfera {
     static checkVistaExist(vista) {
         cy.get('app-view').should('be.visible').find('h2:first').should('be.visible').and('contain.text', vista)
         cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(5000)
     }
 
-    static checkTooltipHeadersColonne() {
+    /**
+     * It checks if the tooltip of a column header is correct.
+     * @param {Object} columns - columns of the view 
+     */
+    static checkTooltipHeadersColonne(columns) {
+        let regexKey
+        for (const [key, value] of Object.entries(columns)) {
+            cy.get('table').within(() => {
 
-        for (const [key, value] of Object.entries(ColumnCaricoMancante)) {
-
-            cy.get('th:contains("' + value.key + '")').should('exist').rightclick().focused().wait(1500)
+                regexKey = new RegExp('\^' + value.key + '\$');
+                cy.contains(regexKey).should('exist').rightclick().focused().wait(1500)
+            })
             cy.get('.cdk-overlay-container').within((tooltip) => {
                 expect(tooltip.text()).to.contain(value.tooltip)
             })
+        }
+    }
+
+    /**
+    * It selects a random row from a table and clicks on the checkbox in that row.
+    * 
+    */
+    static selezionaRigaRandom() {
+        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+            let selected = Cypress._.random(rowsTable.length - 1);
+            cy.wrap(rowsTable).eq(selected).within(() => {
+                this.checkBoxControl().click({ force: true })
+            })
+        })
+    }
+
+    /**
+     * It checks if the section "Delta Premio" is visible and if it contains the text "Plafond", "Calcolo
+     * prenotazione Riduzione Premi" and the refresh icon.
+     */
+    static verificaSezioneDeltaPremio() {
+        this.sferaDeltaPremioSection().within(() => {
+            cy.contains("Plafond").should('exist').and('be.visible')
+            cy.contains("Calcolo prenotazione Riduzione Premi").should('exist').and('be.visible')
+            cy.get('nx-icon[class="refresh-icon nx-icon--auto"]').should('exist').and('be.visible')
+        })
+    }
+
+    /**
+     * It takes a column name and a value, finds the column index, then iterates through each row and
+     * checks if the value is present in the column.
+     * @param colonna - is the column name
+     * @param valore - the value to be checked
+     */
+    static checkValoreInColonna(colonna, valore) {
+        cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
+            cy.get('tr[class="nx-table-row ng-star-inserted"]').each((rowsTable) => {
+                cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
+                    console.log($textCell.text().trim())
+                    expect($textCell.text().trim()).to.contain(valore)
+                })
+            })
+        })
+    }
+
+    static checkExistRipetitoreDati(vista) {
+        this.espandiPannello()
+        this.estrai(false)
+        cy.intercept(estraiTotaleQuietanzeScartate).as('estraiTotaleQuietanzeScartate')
+        switch (vista) {
+            case VisteSuggerite.QUIETANZE_SCARTATE:
+                cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').then((dati) => {
+                    expect(dati).to.include('Elementi')
+                    expect(dati).to.include('Selezionati')
+                    cy.pause()
+                })
+                break;
+
+            default: throw new Error('Vista non presente')
+                break;
         }
     }
 }

@@ -33,27 +33,7 @@ let options = {
 //! settato default a true, altrimenti a false se viene utilizzato uno o piu only nei test
 const flusso = true
 
-const listColumnCaricoMancante = [
-    'Pt.',
-    'Contraente',
-    'Polizza',
-    'Via',
-    'Cp.',
-    'Agenzia',
-    'Sede',
-    'Fonte',
-    'Ramo',
-    'Fr.',
-    'Descrizione Prodotto',
-    'Targa'
-]
-
-let dataInizio = Common.setDate(1, 4)
-let dataFine = Common.setDate(30, 5)
-let date = {
-    dataInizio,
-    dataFine
-}
+let dataInizio = Common.setDate(1, 2, false)
 //#endregion
 
 //#region Before After
@@ -75,7 +55,7 @@ before(() => {
     Sfera.espandiPannello()
     if (!flusso) {
         Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-        Sfera.setDateEstrazione(false, date.dataInizio, date.dataFine)
+        Sfera.setDateEstrazione(false, dataInizio)
         Sfera.estrai(false)
     }
 })
@@ -112,7 +92,7 @@ after(function () {
 describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () {
 
     it('Age 01-712000 aprile maggio - Corretto caricamento dati', function () {
-        Sfera.setDateEstrazione(true, date.dataInizio, date.dataFine)
+        Sfera.setDateEstrazione(true, dataInizio)
     })
 
     it('Vista Carico Mancante', function () {
@@ -133,11 +113,11 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
     })
 
     it('Verifica colonne corrette in tabella', function () {
-        Sfera.checkAllColonnePresenti(listColumnCaricoMancante)
+        Sfera.checkAllColonnePresenti(Sfera.COLUMNCARICOMANCANTE)
     })
 
     it('Colonne in tabella_Tooltip', function () {
-        Sfera.checkTooltipHeadersColonne()
+        Sfera.checkTooltipHeadersColonne(Sfera.COLUMNCARICOMANCANTE)
     })
 
     it.skip('Colonne in tabella_filtri excel', function () {
@@ -147,7 +127,7 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
 
     it('Colonne in tabella_report excel', function () {
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-        Sfera.estrazioneReportExcel(listColumnCaricoMancante)
+        Sfera.estrazioneReportExcel(Sfera.COLUMNCARICOMANCANTE)
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
 
     })
@@ -173,7 +153,7 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
     })
 
 
-    it.skip('contestuale_quietanzmaneto on line', function () { //! BUG aperto
+    it.skip('Menu contestuale -> Quietanzmaneto online', function () { //! BUG aperto
         Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.QUIETANZAMENTO_ONLINE, true, null, null, null, true)
     })
 
@@ -186,7 +166,7 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
         Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.SCHEDA_CLIENTE, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
         Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
         Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-        Sfera.setDateEstrazione(false, date.dataInizio, date.dataFine)
+        Sfera.setDateEstrazione(false, dataInizio)
         Sfera.estrai(false)
     })
 
@@ -194,7 +174,7 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
         Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
         Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
         Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-        Sfera.setDateEstrazione(false, date.dataInizio, date.dataFine)
+        Sfera.setDateEstrazione(false, dataInizio)
         Sfera.estrai(false)
     })
 
@@ -202,7 +182,7 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
         Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
         Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
         Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-        Sfera.setDateEstrazione(false, date.dataInizio, date.dataFine)
+        Sfera.setDateEstrazione(false, dataInizio)
         Sfera.estrai(false)
     })
 

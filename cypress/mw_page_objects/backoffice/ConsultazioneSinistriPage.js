@@ -91,28 +91,6 @@ class ConsultazioneSinistriPage {
         cy.wait(1000)        
     }
     /**
-     * Check if an object identified by its label is displayed    
-     * @param {string} label : text displayed
-     */
-    /*
-    static checkObjVisible_ByText(label) {    
-        getIframe().contains(label).should('be.visible').log('>> object with label: "' + label +'" is defined')
-        cy.wait(1000)        
-    }
-    */
-    /**
-     * Check if an object identified by class attribute and its label is displayed
-     * @param {string} classvalue : class attribute 
-     * @param {string} label : text displayed
-     */
-    static checkObj_ByClassAndText(classvalue, label) {     
-        let obj = getIframe().find('[class="'+classvalue+'"]', { timeout: 9000 }).should('exist')            
-        if (obj.contains(label))
-            cy.log('>> object with label: "' + label +'" is defined')
-        cy.wait(1000)                 
-    }
-    
-    /**
      * Check if an object identified by id attribute and its label is displayed
      * @param {string} id : id attribute 
      * @param {string} label : text displayed
@@ -122,19 +100,6 @@ class ConsultazioneSinistriPage {
         cy.log('>> object with label: "' + label +'" is defined')
 
         cy.wait(3000)                 
-    }
-
-    static isVisibleText(id, text) {
-         
-            getIframe().find(id, { timeout: 5000 }).should('exist').and('be.visible').invoke('val').then($val => {  
-                let txt = $val.text().trim()
-                let txt2 =$val.innerText
-                cy.log('>> '+ txt + ' >> '+txt2)      
-                if (txt.includes(text))
-                    cy.log('>> object with text: "' + text +'" is defined')  
-            });
-
-        cy.wait(1000) 
     }
     /**
      * Check if an object identified by class attribute and its label is displayed
@@ -152,7 +117,6 @@ class ConsultazioneSinistriPage {
         });
         cy.wait(1000)                 
     }
-    
     /**
      * Check if an object identified by locator and its label is displayed
      * @param {string} locator : class attribute 
@@ -322,6 +286,27 @@ class ConsultazioneSinistriPage {
                 cy.log(someText);               
             });
         //getIframe().find('#results > div.k-grid-content > table > tbody > tr').should('exist').log()
+    }
+
+    static checkTotalVsSumEachLineItem(IdTotalLocator, locator, idx){
+
+        debugger
+        let sum = 0
+        let total = 0
+        getIframe().find(IdTotalLocator, { timeout: 6000 }).should('exist').and('be.visible').then(($tag) => {     
+            total = parseFloat($tag.text().trim())        
+        })
+        
+        getIframe().find(locator, { timeout: 5000 }).should('be.visible').each(($tr, index, $lis) => {
+            var value = parseFloat($tr.find("td:nth-child("+idx+")").text()) 
+            debugger
+            sum += value
+            if(index == $lis.length - 1) {
+                assert.equal(total, sum, 'Expected value equals sum of each line item')
+            }
+        })
+        
+
     }
 }
 

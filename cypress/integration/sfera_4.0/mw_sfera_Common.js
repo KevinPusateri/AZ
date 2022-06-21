@@ -68,9 +68,9 @@ describe('Matrix Web : Sfera 4.0', function () {
 
     it('Verificare Cluster Motor Delta Premio Positivo e Negativo', function () {
         Sfera.setDateEstrazione()
-        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_NEGATIVO, true)
+        Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_NEGATIVO, true)
         Sfera.espandiPannello()
-        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
+        Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
     })
 
     //! Necessari chiarimenti con Visentin
@@ -84,7 +84,7 @@ describe('Matrix Web : Sfera 4.0', function () {
 
     it('Quietanzamento Vista Operativa - Gestisci colora riga : Assegna colore', function () {
         Sfera.setDateEstrazione()
-        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
+        Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.assegnaColoreRighe(Sfera.COLORI.SIGNIFICATO_ALFA)
     })
@@ -98,7 +98,7 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
         Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
-        Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
+        Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
         Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO).then((polizza) => {
             cy.log(`Stampa Senza Incasso effettuata su contratto ${polizza}`)
         })
@@ -194,7 +194,7 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.accediSferaDaHomePageMW()
         Sfera.setDateEstrazione(false, dataInizio, dataFine)
         Sfera.selectRandomCluster()
-        cy.get('@clucsterLength').then((clusterLength)=>{
+        cy.get('@clusterLength').then((clusterLength)=>{
             Sfera.azioniVeloci(Sfera.AZIONIVELOCI.ESPORTA_PDF_EXCEL)
             Sfera.checkExcel(clusterLength)
         })

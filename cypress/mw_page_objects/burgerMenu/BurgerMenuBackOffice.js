@@ -11,6 +11,7 @@ const LinksBurgerMenu = {
     CONSULTAZIONE_SINISTRI: 'Consultazione sinistri',
     SINISTRI_INCOMPLETI: 'Sinistri incompleti',
     SINISTRI_CANALIZZATI: 'Sinistri canalizzati',
+    SCHEDA_SINISTRI_GESTIONE: 'Scheda Sinistri per Gestione',
     SINTESI_CONTABILITÀ: 'Sintesi Contabilità',
     GIORNATA_CONTABILE: 'Giornata contabile',
     CONSULTAZIONE_MOVIMENTI: 'Consultazione Movimenti',
@@ -44,6 +45,7 @@ const LinksBurgerMenu = {
         if(!keys.IMPOSTAZIONE_CONTABILITA) delete this.IMPOSTAZIONE_CONTABILITA
         if(!keys.CONVENZIONI_IN_TRATTENUTA) delete this.CONVENZIONI_IN_TRATTENUTA
         if(!keys.MONITORAGGIO_GUIDA_SMART) delete this.MONITORAGGIO_GUIDA_SMART
+        if(!keys.SCHEDA_SINISTRI_GESTIONE || Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.SCHEDA_SINISTRI_GESTIONE
     }
 }
 

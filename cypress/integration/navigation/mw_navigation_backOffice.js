@@ -40,7 +40,8 @@ let keys = {
     SOLLECITO_TITOLI: true,
     IMPOSTAZIONE_CONTABILITA: true,
     CONVENZIONI_IN_TRATTENUTA: true,
-    MONITORAGGIO_GUIDA_SMART: true
+    MONITORAGGIO_GUIDA_SMART: true,
+    SCHEDA_SINISTRI_GESTIONE: true
 }
 
 
@@ -69,6 +70,17 @@ before(() => {
                 cy.filterProfile(profiling, 'MONITORAGGIO_CDF').then(profiled => { keys.MONITORAGGIO_GUIDA_SMART = profiled })
                 cy.filterProfile(profiling, 'COMMON_CAD_CONVENZIONI_IN_TRATTENUTA').then(profiled => { keys.CONVENZIONI_IN_TRATTENUTA = profiled })
                 cy.filterProfile(profiling, 'COMMON_CONTABILITA_CONSULTAZIONE_MOVIMENTI').then(profiled => { keys.IMPOSTAZIONE_CONTABILITA = profiled })
+
+                //20.06.22 Scheda Sinistri per Gestione
+                cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiledReportingInterrogazioniCentralizzate => {
+                    cy.filterProfile(profiling, 'REPORTING_DATI_SENSIBILI').then(profiledDatiSensibili => {
+                        cy.filterProfile(profiling, 'REPORTING_INCENTIVAZIONI_DI_AGENZIA').then(profiledIncentivazioniAgenzia => {
+                            debugger
+                            if (!(profiledReportingInterrogazioniCentralizzate && profiledDatiSensibili && profiledIncentivazioniAgenzia))
+                                keys.SCHEDA_SINISTRI_GESTIONE = false
+                        })
+                    })
+                })
             })
         })
     })
@@ -164,6 +176,14 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
             this.skip()
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Sinistri canalizzati')
+        BackOffice.backToBackOffice()
+    })
+
+    it('Verifica aggancio Scheda Sinistri per Gestione', function () {
+        if (!keys.SCHEDA_SINISTRI_GESTIONE)
+            this.skip()
+        TopBar.clickBackOffice()
+        BackOffice.clickCardLink('Scheda Sinistri per Gestione')
         BackOffice.backToBackOffice()
     })
 
