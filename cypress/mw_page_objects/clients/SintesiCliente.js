@@ -80,7 +80,7 @@ const RamiVari = {
 const Auto = {
     EMISSIONE: 'Emissione',
     PRODOTTI_PARTICOLARI: 'Prodotti particolari',
-    PASSIONE_BLU: (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))? 'Passione BLU' : 'Natanti',
+    PASSIONE_BLU: (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) ? 'Passione BLU' : 'Natanti',
 }
 
 /**
@@ -1460,6 +1460,17 @@ class SintesiCliente {
                 expect($buttonLinks).to.contain(linksProdottiParticolariPolizzaAperta[i])
             })
         })
+    }
+
+    /**
+     * ricarica la scheda cliente
+     */
+    static ricarica() {
+        cy.get('app-client-resume-card').should('be.visible')
+            .find('[aria-label="Open menu"]').click()
+
+        cy.get('.cdk-overlay-container').find('[role="menu"]').should('be.visible')
+            .find('button').contains('Ricarica scheda cliente').click()
     }
 }
 export default SintesiCliente

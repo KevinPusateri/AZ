@@ -79,7 +79,7 @@ after(function () {
     }
 }) */
 
-describe("FABBRICATO E CONTENUTO", () => {
+describe("PREFERITI, APPENDICE E VINCOLO DIFFERITI", () => {
 
     it("Ricerca cliente", () => {
         cy.get('body').within(() => {
@@ -222,7 +222,6 @@ describe("FABBRICATO E CONTENUTO", () => {
     })
 
     it("Portafoglio", () => {
-        cy.pause()
         Portafoglio.clickTabPortafoglio()
         Portafoglio.ordinaPolizze("Numero contratto")
         Portafoglio.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
@@ -265,24 +264,22 @@ describe("FABBRICATO E CONTENUTO", () => {
     it("Vincoli - aggiunta vincolo", () => {        
         Vincoli.SelezionaAmbito("Fabbricato")
         Vincoli.AggiungiVincolo()
-        Vincoli.caricamentoPagina()
+        Vincoli.updateAppendice()
     })
 
     it("Vincoli - ente vincolatario", () => {
         Vincoli.SelezionaEnteVincolatario("Banca")
         Vincoli.attesaRicerca()
-        cy.pause()
         Vincoli.RicercaBanca("Banca", "Unicredit")
         //Vincoli.updateAppendice()
+        Vincoli.ChiudiPopupAnagrafico()
     })
 
     it("Vincoli - Testi direzionali", () => {
-        cy.pause()
         Vincoli.TestiDirezionali("Vincolo 42")
     })
 
     it("Vincoli - Dati vincolo", () => {
-        cy.pause()
         Vincoli.DatiVincolo(datiVincoli.datiVincolo_test1)
     })
 
@@ -296,6 +293,6 @@ describe("FABBRICATO E CONTENUTO", () => {
     })
 
     it("end", () => {
-        cy.pause()
+        Vincoli.ConfermaCreazioneDocumento()
     })
 })
