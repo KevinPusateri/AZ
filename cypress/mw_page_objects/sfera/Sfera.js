@@ -894,25 +894,42 @@ class Sfera {
     }
     //#endregion
 
-    /**s
-     * Effettua accesso al Nuovo Sfera (da Sales)
-     * ed attende il caricameto di vari servizi di BE
+    /**
+     * Accedi a Sfera da Home Page MW
+     * @param [reloadMW=false] - boolean; se true, evita di intercettare alcune BFF call (che non avviene su reload di MW)
      */
-    static accediSferaDaHomePageMW() {
-        cy.intercept(infoUtente).as('infoUtente')
-        cy.intercept(agenzieFonti).as('agenzieFonti')
-        cy.intercept(caricaVista).as('caricaVista')
-        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
-        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+    static accediSferaDaHomePageMW(reloadMW = false) {
 
-        TopBar.clickSales()
-        Sales.clickLinkRapido('Nuovo Sfera')
+        if (!reloadMW) {
+            cy.intercept(infoUtente).as('infoUtente')
+            cy.intercept(agenzieFonti).as('agenzieFonti')
+            cy.intercept(caricaVista).as('caricaVista')
+            cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+            cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
 
-        cy.wait('@infoUtente', { timeout: 60000 })
-        cy.wait('@agenzieFonti', { timeout: 60000 })
-        cy.wait('@caricaVista', { timeout: 60000 })
-        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+            TopBar.clickSales()
+            Sales.clickLinkRapido('Nuovo Sfera')
+
+            cy.wait('@infoUtente', { timeout: 60000 })
+            cy.wait('@agenzieFonti', { timeout: 60000 })
+            cy.wait('@caricaVista', { timeout: 60000 })
+            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+        }
+        //? su reload skippo agenzieFonti e caricaVista
+        else
+        {
+            cy.intercept(infoUtente).as('infoUtente')
+            cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+            cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+            TopBar.clickSales()
+            Sales.clickLinkRapido('Nuovo Sfera')
+
+            cy.wait('@infoUtente', { timeout: 60000 })
+            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+        }
     }
 
     /**
