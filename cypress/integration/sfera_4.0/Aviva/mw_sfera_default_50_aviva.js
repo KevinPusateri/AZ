@@ -79,7 +79,7 @@ describe('Matrix Web : Default 50 righe', function () {
 
     it('Selezionare una quietanza\n- Menù Contestuale > Quietanza > Delta Premio \n- Verifica che ci siano 50 righe dopo la chiamata e il rientro dalla call applicativa delta premio', options, function () {
         Common.visitUrlOnEnv()
-        Sfera.accediSferaDaHomePageMW()  
+        Sfera.accediSferaDaHomePageMW(true)  
         Sfera.setDateEstrazione()
         Sfera.estrai()
         //? Per Trovare delle Quietanze con Delta Premio applicabile filtriamo quelle Entro il periodo di mora

@@ -1018,7 +1018,7 @@ class Sfera {
     static filtraSuColonna(filtro, valore) {
         cy.get('thead').within(() => {
             if (filtro === Filtri.INFO)
-                cy.get('th[nxtooltip="Premere l\'icona per aprire la legenda"]').find('nx-icon:last').click()
+                cy.get('th[class~="customBandierinaSticky"]').find('nx-icon:last').click()
             else
                 cy.get(`div:contains(${filtro.key})`).parent().find('nx-icon:last').click()
         })
