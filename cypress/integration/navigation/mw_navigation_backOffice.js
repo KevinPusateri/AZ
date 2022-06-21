@@ -183,8 +183,8 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         if (!keys.SCHEDA_SINISTRI_GESTIONE)
             this.skip()
         TopBar.clickBackOffice()
-        BurgerMenuBackOffice.clickLink('Scheda Sinistri per Gestione')
-        BurgerMenuBackOffice.backToBackOffice()
+        BackOffice.clickCardLink('Scheda Sinistri per Gestione')
+        BackOffice.backToBackOffice()
     })
 
     it('Verifica apertura disambiguazione: Sintesi Contabilità', function () {
