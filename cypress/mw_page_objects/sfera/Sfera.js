@@ -2166,7 +2166,9 @@ class Sfera {
                         '% CMC',
                         '% commerciale',
                         '% totale',
-                        'Rid. Premio'
+                        'Rid. Premio',
+                        'Da Rid. Premio',
+                        'Da preventivo'
                     ]
                     cy.get('td[class="nx-font-weight-bold"]').each(($titleRow) => {
                         if ($titleRow.text().length > 0) {
@@ -2575,19 +2577,19 @@ class Sfera {
         })
     }
 
-    static checkExistRipetitoreDati(vista){
+    static checkExistRipetitoreDati(vista) {
         this.espandiPannello()
         this.estrai(false)
         cy.intercept(estraiTotaleQuietanzeScartate).as('estraiTotaleQuietanzeScartate')
         switch (vista) {
             case VisteSuggerite.QUIETANZE_SCARTATE:
-                cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').then((dati)=>{
+                cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').then((dati) => {
                     expect(dati).to.include('Elementi')
                     expect(dati).to.include('Selezionati')
                     cy.pause()
                 })
                 break;
-        
+
             default: throw new Error('Vista non presente')
                 break;
         }
