@@ -75,8 +75,7 @@ before(() => {
                 cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiledReportingInterrogazioniCentralizzate => {
                     cy.filterProfile(profiling, 'REPORTING_DATI_SENSIBILI').then(profiledDatiSensibili => {
                         cy.filterProfile(profiling, 'REPORTING_INCENTIVAZIONI_DI_AGENZIA').then(profiledIncentivazioniAgenzia => {
-                            debugger
-                            if (!(profiledReportingInterrogazioniCentralizzate && profiledDatiSensibili && profiledIncentivazioniAgenzia))
+                            if (!(profiledReportingInterrogazioniCentralizzate && profiledDatiSensibili && profiledIncentivazioniAgenzia) || Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
                                 keys.SCHEDA_SINISTRI_GESTIONE = false
                         })
                     })
