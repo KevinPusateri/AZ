@@ -297,7 +297,7 @@ class TenutaTariffa {
                         cy.get('input[formcontrolname="cognomeRagioneSociale"]').should('exist').and('be.visible').type(currentPersonaFisica.cognome.toUpperCase())
                         cy.get('input[formcontrolname="luogoNascita"]').should('exist').and('be.visible').type(currentCase.Comune).wait(1000)
                         cy.get('nx-autocomplete-option:visible').within(() => {
-                            cy.get('.nx-autocomplete-option__label').click()
+                            cy.get('.nx-autocomplete-option__label').first().click()
                         })
 
                         cy.get('nx-dropdown[formcontrolname="toponimo"]').should('exist').and('be.visible').click()
@@ -1230,7 +1230,7 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
-            cy.get('motor-footer').should('exist').find('button').click().wait(6000)
+            cy.get('motor-footer').should('exist').find('button').click().wait(8000)
             cy.getTariffaLog(currentCase).then(logFolder => {
                 //#region LogTariffa
                 cy.readFile(logFolder + "\\logTariffa.xml").then(fileContent => {
