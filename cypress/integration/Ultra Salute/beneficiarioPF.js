@@ -88,7 +88,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
+describe("BENEFICIARI REFERENTE", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()

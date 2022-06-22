@@ -92,7 +92,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
+describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
@@ -207,7 +207,6 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Incasso - parte 2", () => {
-    cy.pause()
     Incasso.SelezionaMetodoPagamento('Assegno')
     Incasso.ConfermaIncasso()
     Incasso.caricamentoEsito()

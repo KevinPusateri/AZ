@@ -297,31 +297,17 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
         TopBar.clickBackOffice()
     });
 
-
-    if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
-        it('Verifica assenza Button News e Info', function () {
-            TopBar.checkNotExistLanding('News e Info')
-        });
-    } else
-        it('Verifica Button News e Info', function () {
-            TopBar.clickNewsInfo()
-        });
-
+    it('Verifica Button News e Info', function () {
+        TopBar.clickNewsInfo()
+    });
 
     it('Verifica link "Vai al Centro notifiche"', function () {
         HomePage.clickVaiAlCentroNotifiche()
     });
-
-    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) 
-     {
-        it('Verifica link: "Vedi tutte"', function () {
-            HomePage.clickVediTutte()
-        });
-    } else {
-        it('Verifica assenza link: "Vedi tutte"', function () {
-            HomePage.checkNotExistVediTutte()
-        });
-    }
+    
+    it('Verifica link: "Vedi tutte"', function () {
+        HomePage.clickVediTutte()
+    });
 
     it('Verifica Click Pannello "Notifiche in evidenza"', function () {
         HomePage.clickPanelNotifiche()

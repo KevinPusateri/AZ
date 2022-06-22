@@ -295,9 +295,11 @@ class TenutaTariffa {
 
                         cy.get('input[formcontrolname="nome"]').should('exist').and('be.visible').type(currentPersonaFisica.nome.toUpperCase())
                         cy.get('input[formcontrolname="cognomeRagioneSociale"]').should('exist').and('be.visible').type(currentPersonaFisica.cognome.toUpperCase())
-                        cy.get('nx-dropdown[formcontrolname="sesso"]').should('exist').and('be.visible').click()
-                        cy.contains('Maschio').should('exist').and('be.visible').click()
-                        cy.get('input[formcontrolname="luogoNascita"]').should('exist').and('be.visible').type(currentCase.Comune)
+                        cy.get('input[formcontrolname="luogoNascita"]').should('exist').and('be.visible').type(currentCase.Comune).wait(1000)
+                        cy.get('nx-autocomplete-option:visible').within(() => {
+                            cy.get('.nx-autocomplete-option__label').click()
+                        })
+
                         cy.get('nx-dropdown[formcontrolname="toponimo"]').should('exist').and('be.visible').click()
                         let re = new RegExp("\^ " + currentCase.Toponimo.toLowerCase() + " \$")
                         cy.contains(re).should('exist').and('be.visible').click()
@@ -314,14 +316,18 @@ class TenutaTariffa {
                             cy.contains(re).should('exist').click()
                         }
 
-                        //Generiamo il codice fiscale
-                        let formattedDataNascita = currentDataNascita.getFullYear() + '-' +
-                            String(currentDataNascita.getMonth() + 1).padStart(2, '0') + '-' +
-                            String(currentDataNascita.getDate()).padStart(2, '0')
+                        //? Dal rilascio del 21.06.22 viene calcolato in automatico il CF
+                        cy.get('nx-dropdown[formcontrolname="sesso"]').should('exist').and('be.visible').click()
+                        cy.contains('Maschio').should('exist').and('be.visible').click()
 
-                        cy.getSSN(currentCognome, currentNome, currentCase.Comune, currentCase.Cod_Comune, formattedDataNascita, 'M').then(currentSSN => {
-                            cy.get('input[formcontrolname="cfIva"]').should('exist').and('be.visible').type(currentSSN)
-                        })
+                        // //Generiamo il codice fiscale
+                        // let formattedDataNascita = currentDataNascita.getFullYear() + '-' +
+                        //     String(currentDataNascita.getMonth() + 1).padStart(2, '0') + '-' +
+                        //     String(currentDataNascita.getDate()).padStart(2, '0')
+
+                        // cy.getSSN(currentCognome, currentNome, currentCase.Comune, currentCase.Cod_Comune, formattedDataNascita, 'M').then(currentSSN => {
+                        //     cy.get('input[formcontrolname="cfIva"]').should('exist').and('be.visible').type(currentSSN)
+                        // })
 
 
                     })
@@ -492,7 +498,8 @@ class TenutaTariffa {
             }
 
             currentCase.Targa !== '' ? cy.contains('Informazioni Generali').click() : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click()
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            //TODO vedi error on size
+            //cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             //#endregion
 
             //#region Dati Veicolo Tecnici
@@ -845,7 +852,6 @@ class TenutaTariffa {
                         cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click()
                         cy.wait('@getMotor', { timeout: 30000 })
                     }
-
                     break
                 case '4':
                     //? Conducente/Tipo Guida -> per il caso autocarro è pre-impostato
@@ -930,6 +936,7 @@ class TenutaTariffa {
                         cy.wait('@getMotor', { timeout: 30000 })
                     }
 
+                    cy.wait(2000)
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible')
                     break

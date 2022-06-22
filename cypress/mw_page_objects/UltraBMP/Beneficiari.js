@@ -117,7 +117,7 @@ class Beneficiari {
                 cy.get('@popupAnagrafico').should("be.called")
 
                 cy.wait(2000)
-                cy.pause()
+                //cy.pause()
 
                 ultraIFrameAnagrafica().within(() => {
                     CensimentoAnagrafico.ricercaInPopupAnagrafico(persona).then(() => {
