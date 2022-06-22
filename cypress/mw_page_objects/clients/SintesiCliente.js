@@ -610,9 +610,9 @@ class SintesiCliente {
         }).as('getLibriMatricola');
         Common.canaleFromPopup()
         // cy.wait('@getLibriMatricola', { timeout: 40000 }).its('response.statusCode').should('eq', 200)
-        cy.wait(10000)
+        cy.wait(15000)
         matrixFrame().within(() => {
-            cy.get('input[value="Nuovo"]').invoke('attr', 'value').should('equal', 'Nuovo')
+            cy.get('#ButtonNuovo').should('be.visible')
             cy.screenshot('Verifica aggancio Libri matricola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
     }
