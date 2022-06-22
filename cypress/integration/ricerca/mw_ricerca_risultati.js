@@ -42,12 +42,6 @@ after(function() {
         //#endregion
 })
 
-let notExist = ''
-if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
-    notExist = 'ASSENTE '
-
-
-
 if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
     describe('Buca di Ricerca - Risultati - AVIVA', function() {
 
