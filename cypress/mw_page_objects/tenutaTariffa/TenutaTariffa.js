@@ -1187,7 +1187,7 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
-            cy.get('motor-footer').should('exist').find('button').click().wait(5000)
+            cy.get('motor-footer').should('exist').find('button').click().wait(8000)
             cy.getTariffaLog(currentCase).then(logFolder => {
                 //#region LogTariffa
                 cy.readFile(logFolder + "\\logTariffa.xml").then(fileContent => {
