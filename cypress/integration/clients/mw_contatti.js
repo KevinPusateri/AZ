@@ -226,136 +226,133 @@ describe('Matrix Web : Creazione Contatto', function () {
         SCUContatti.eliminaContatto(contatto)
     })
 
-    describe.only('Matrix Web : Creazione Contatto', function () {
-
-        it('Verifica l\'operazione di inserimento - tipo: Numero Verde', function () {
-            SCUContatti.aggiungiContattoNumeroVerde(contatto).then((contact) => {
-                contatto = contact
-            })
+    it('Verifica l\'operazione di inserimento - tipo: Numero Verde', function () {
+        SCUContatti.aggiungiContattoNumeroVerde(contatto).then((contact) => {
+            contatto = contact
         })
+    })
 
-        it('Verifica Numero Verde sia inserito nella tabella', function () {
-            TopBar.search(client.name)
-            LandingRicerca.clickClientePF(client.name)
+    it('Verifica Numero Verde sia inserito nella tabella', function () {
+        TopBar.search(client.name)
+        LandingRicerca.clickClientePF(client.name)
 
 
-            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-            DettaglioAnagrafica.clickSubTab('Contatti')
-            DettaglioAnagrafica.checkContatti(contatto)
+        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+        DettaglioAnagrafica.clickSubTab('Contatti')
+        DettaglioAnagrafica.checkContatti(contatto)
+    })
+
+    it('Verifica la modifica: Numero Verde ', function () {
+        SCUContatti.modificaContatti(contatto).then(contact => {
+            contatto = contact
         })
-
-        it('Verifica la modifica: Numero Verde ', function () {
-            SCUContatti.modificaContatti(contatto).then(contact => {
-                contatto = contact
-            })
-            TopBar.search(client.name)
-            LandingRicerca.clickClientePF(client.name)
+        TopBar.search(client.name)
+        LandingRicerca.clickClientePF(client.name)
 
 
-            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-            DettaglioAnagrafica.clickSubTab('Contatti')
-            DettaglioAnagrafica.checkContatti(contatto)
+        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+        DettaglioAnagrafica.clickSubTab('Contatti')
+        DettaglioAnagrafica.checkContatti(contatto)
+    })
+
+    it('Verifica l\'eliminazione del Numero Verde', function () {
+        SCUContatti.eliminaContatto(contatto)
+    })
+
+    it('Verifica l\'operazione di inserimento - tipo: Fax Verde', function () {
+
+        SCUContatti.aggiungiContattoFaxVerde(contatto).then((contact) => {
+            contatto = contact
         })
+    })
 
-        it('Verifica l\'eliminazione del Numero Verde', function () {
-            SCUContatti.eliminaContatto(contatto)
+    it('Verifica Fax Verde sia inserito nella tabella', function () {
+        TopBar.search(client.name)
+        LandingRicerca.clickClientePF(client.name)
+
+
+        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+        DettaglioAnagrafica.clickSubTab('Contatti')
+        DettaglioAnagrafica.checkContatti(contatto)
+    })
+
+    it('Verifica la modifica: Fax Verde ', function () {
+        SCUContatti.modificaContatti(contatto).then(contact => {
+            contatto = contact
         })
+        TopBar.search(client.name)
+        LandingRicerca.clickClientePF(client.name)
 
-        it('Verifica l\'operazione di inserimento - tipo: Fax Verde', function () {
 
-            SCUContatti.aggiungiContattoFaxVerde(contatto).then((contact) => {
-                contatto = contact
-            })
+        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+        DettaglioAnagrafica.clickSubTab('Contatti')
+        DettaglioAnagrafica.checkContatti(contatto)
+    })
+
+    it('Verifica l\'eliminazione del Fax Verde', function () {
+        SCUContatti.eliminaContatto(contatto)
+    })
+
+    it('Verifica l\'operazione di inserimento - tipo: Ufficio', function () {
+
+        SCUContatti.aggiungiContattoUfficio(contatto).then((contact) => {
+            contatto = contact
         })
+    })
 
-        it('Verifica Fax Verde sia inserito nella tabella', function () {
-            TopBar.search(client.name)
-            LandingRicerca.clickClientePF(client.name)
+    it('Verifica Ufficio sia inserito nella tabella', function () {
+        TopBar.search(client.name)
+        LandingRicerca.clickClientePF(client.name)
 
 
-            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-            DettaglioAnagrafica.clickSubTab('Contatti')
-            DettaglioAnagrafica.checkContatti(contatto)
+        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+        DettaglioAnagrafica.clickSubTab('Contatti')
+        DettaglioAnagrafica.checkContatti(contatto)
+    })
+
+    it('Verifica la modifica: Ufficio ', function () {
+        SCUContatti.modificaContatti(contatto).then(contact => {
+            contatto = contact
         })
-
-        it('Verifica la modifica: Fax Verde ', function () {
-            SCUContatti.modificaContatti(contatto).then(contact => {
-                contatto = contact
-            })
-            TopBar.search(client.name)
-            LandingRicerca.clickClientePF(client.name)
+        TopBar.search(client.name)
+        LandingRicerca.clickClientePF(client.name)
 
 
-            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-            DettaglioAnagrafica.clickSubTab('Contatti')
-            DettaglioAnagrafica.checkContatti(contatto)
+        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+        DettaglioAnagrafica.clickSubTab('Contatti')
+        DettaglioAnagrafica.checkContatti(contatto)
+    })
+
+    it('Verifica l\'eliminazione dell\'Ufficio', function () {
+        SCUContatti.eliminaContatto(contatto)
+    })
+
+    it('Verifica l\'operazione di inserimento - tipo: PEC', function () {
+        SCUContatti.aggiungiContattoPEC(contatto).then((contact) => {
+            contatto = contact
         })
+    })
 
-        it('Verifica l\'eliminazione del Fax Verde', function () {
-            SCUContatti.eliminaContatto(contatto)
+    it('Verifica PEC sia inserito nella tabella', function () {
+        TopBar.search(client.name)
+        LandingRicerca.clickClientePF(client.name)
+        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+        DettaglioAnagrafica.clickSubTab('Contatti')
+        DettaglioAnagrafica.checkContatti(contatto)
+    })
+
+    it('Verifica la modifica: PEC ', function () {
+        SCUContatti.modificaContatti(contatto).then(contact => {
+            contatto = contact
         })
+        TopBar.search(client.name)
+        LandingRicerca.clickClientePF(client.name)
+        DettaglioAnagrafica.clickTabDettaglioAnagrafica()
+        DettaglioAnagrafica.clickSubTab('Contatti')
+        DettaglioAnagrafica.checkContatti(contatto)
+    })
 
-        it('Verifica l\'operazione di inserimento - tipo: Ufficio', function () {
-
-            SCUContatti.aggiungiContattoUfficio(contatto).then((contact) => {
-                contatto = contact
-            })
-        })
-
-        it('Verifica Ufficio sia inserito nella tabella', function () {
-            TopBar.search(client.name)
-            LandingRicerca.clickClientePF(client.name)
-
-
-            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-            DettaglioAnagrafica.clickSubTab('Contatti')
-            DettaglioAnagrafica.checkContatti(contatto)
-        })
-
-        it('Verifica la modifica: Ufficio ', function () {
-            SCUContatti.modificaContatti(contatto).then(contact => {
-                contatto = contact
-            })
-            TopBar.search(client.name)
-            LandingRicerca.clickClientePF(client.name)
-
-
-            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-            DettaglioAnagrafica.clickSubTab('Contatti')
-            DettaglioAnagrafica.checkContatti(contatto)
-        })
-
-        it('Verifica l\'eliminazione dell\'Ufficio', function () {
-            SCUContatti.eliminaContatto(contatto)
-        })
-
-        it('Verifica l\'operazione di inserimento - tipo: PEC', function () {
-            SCUContatti.aggiungiContattoPEC(contatto).then((contact) => {
-                contatto = contact
-            })
-        })
-
-        it('Verifica PEC sia inserito nella tabella', function () {
-            TopBar.search(client.name)
-            LandingRicerca.clickClientePF(client.name)
-            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-            DettaglioAnagrafica.clickSubTab('Contatti')
-            DettaglioAnagrafica.checkContatti(contatto)
-        })
-
-        it('Verifica la modifica: PEC ', function () {
-            SCUContatti.modificaContatti(contatto).then(contact => {
-                contatto = contact
-            })
-            TopBar.search(client.name)
-            LandingRicerca.clickClientePF(client.name)
-            DettaglioAnagrafica.clickTabDettaglioAnagrafica()
-            DettaglioAnagrafica.clickSubTab('Contatti')
-            DettaglioAnagrafica.checkContatti(contatto)
-        })
-
-        it('Verifica l\'eliminazione della PEC', function () {
-            SCUContatti.eliminaContatto(contatto)
-        })
+    it('Verifica l\'eliminazione della PEC', function () {
+        SCUContatti.eliminaContatto(contatto)
     })
 })

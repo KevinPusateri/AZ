@@ -18,6 +18,7 @@ const LinksBurgerMenu = {
     FLOTTE_E_CONVENZIONI: 'Flotte e Convenzioni',
     MINIFLOTTE: 'MiniFlotte',
     TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio 2022' : 'Allianz Ultra Casa e Patrimonio 2022',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio BMP' : 'Allianz Ultra Casa e Patrimonio BMP',
     ALLIANZ_ULTRA_SALUTE: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute',
@@ -62,6 +63,7 @@ const LinksBurgerMenu = {
         if (!keys.MINIFLOTTE) delete this.MINIFLOTTE
         if (!keys.TRATTATIVE_AUTO_CORPORATE) delete this.TRATTATIVE_AUTO_CORPORATE
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
         if (!keys.ALLIANZ_ULTRA_SALUTE) delete this.ALLIANZ_ULTRA_SALUTE
         if (!keys.ALLIANZ1_BUSINESS) delete this.ALLIANZ1_BUSINESS
@@ -112,6 +114,7 @@ class BurgerMenuSales extends Sales {
             cy.filterProfile(profiling, 'COMMON_TOOL_TRATTATIVE').then(profiled => { keys.TRATTATIVE_AUTO_CORPORATE = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRACASA2022').then(profiled => { keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022 = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.ALLIANZ_ULTRA_SALUTE = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.ALLIANZ_ULTRA_IMPRESA = profiled })
             cy.filterProfile(profiling, 'COMMON_ALLIANZ1_BUSINESS').then(profiled => { keys.ALLIANZ1_BUSINESS = profiled })
@@ -231,6 +234,13 @@ class BurgerMenuSales extends Sales {
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
+            case LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022:
+                Common.canaleFromPopup()
+                cy.wait(15000)
+                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
+                getIFrame().find('img[alt="immagine_attivita"]').should('have.attr', 'src', './assets/img/tipo_edificio/appartamento.svg')
+                cy.screenshot('Verifica aggancio' + LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
+                break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP:
                 Common.canaleFromPopup()
                 cy.wait(8000)
@@ -286,7 +296,7 @@ class BurgerMenuSales extends Sales {
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
                 cy.intercept({
-                    method:'GET',
+                    method: 'GET',
                     url: '**/ImagesArch/**'
                 }).as('getImage');
                 Common.canaleFromPopup()

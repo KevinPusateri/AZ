@@ -459,15 +459,17 @@ class Common {
      * @param {Boolean} operation default true add months else substract month
      * @returns The date in the format dd/mm/yyyy
      */
-    static setDate(date, month, operation = true) {
+    static setDate(date = undefined, month = undefined, operation = true) {
 
         const today = new Date();
-        if (operation)
-            console.log(sumMonths(month, today));
-        else
-            console.log(subtractMonths(month, today));
-
-        today.setDate(date)
+        if (month !== undefined) {
+            if (operation)
+                console.log(sumMonths(month, today));
+            else
+                console.log(subtractMonths(month, today));
+        }
+        if (date !== undefined)
+            today.setDate(date)
         let data = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         return data
     }

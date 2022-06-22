@@ -26,6 +26,7 @@ let keys = {
     TRATTATIVE_AUTO_CORPORATE: true,
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: true,
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: true,
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022: true,
     ALLIANZ_ULTRA_SALUTE: true,
     ALLIANZ_ULTRA_IMPRESA: true,
     ALLIANZ1_BUSINESS: true,
@@ -152,6 +153,14 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
             this.skip()
         TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
+        BurgerMenuSales.backToSales()
+    });
+
+    it('Verifica aggancio Allianz Ultra Casa e Patrimonio 2022', function () {
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022)
+            this.skip()
+        TopBar.clickSales()
+        BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio 2022')
         BurgerMenuSales.backToSales()
     });
 

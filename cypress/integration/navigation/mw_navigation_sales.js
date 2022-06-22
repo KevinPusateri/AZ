@@ -42,7 +42,8 @@ let keys = {
     PreventivoAnonimoVitaenabled: true,
     MiniflotteEnabled: true,
     TrattativeAutoCorporateEnabled: true,
-    SAFE_DRIVE_AUTOVETTURE: true
+    SAFE_DRIVE_AUTOVETTURE: true,
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022: true
 }
 
 let keysRapidi = {
@@ -69,7 +70,8 @@ before(() => {
                 cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.UltraImpresaEnabled = profiled })
                 cy.filterProfile(profiling, 'AUTO_PREVENTIVO').then(profiled => { keys.PreventivoMotorEnabled = profiled })
                 cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.UltraSaluteEnabled = profiled })
-                cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.UltraUltraCasaPatrimonioEnabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.UltraCasaPatrimonioEnabled = profiled })
+                cy.filterProfile(profiling, 'COMMON_ULTRACASA2022').then(profiled => { keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022 = profiled })
                 cy.filterProfile(profiling, 'COMMON_ALLIANZ1_BUSINESS').then(profiled => { keys.Allianz1BusinessEnabled = profiled })
                 cy.filterProfile(profiling, 'COMMON_FASTQUOTE_IMPRESA_SICURA').then(profiled => { keys.FasquoteImpresaAlbergoEnabled = profiled })
                 cy.filterProfile(profiling, 'AUTO_PREVENTIVO').then(profiled => { keys.FlotteConvenzioniEnabled = profiled })
@@ -361,6 +363,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
+
     it('Verifica la presenza dei link su "Emetti Polizza"', function () {
         TopBar.clickSales()
         Sales.checkLinksOnEmettiPolizza(keys)
@@ -394,7 +397,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
 
         it('Verifica aggancio Emetti Polizza - Ultra Casa e Patrimonio', function () {
-            if (!keys.UltraUltraCasaPatrimonioEnabled)
+            if (!keys.UltraCasaPatrimonioEnabled)
                 this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Ultra Casa e Patrimonio')
@@ -412,15 +415,23 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
 
         it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio', function () {
-            if (!keys.UltraUltraCasaPatrimonioEnabled)
+            if (!keys.UltraCasaPatrimonioEnabled)
                 this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio')
             Sales.backToSales()
         })
 
+        it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio 2022', function () {
+            if (!keys.UltraCasaPatrimonio2022)
+                this.skip()
+            TopBar.clickSales()
+            Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio 2022')
+            Sales.backToSales()
+        })
 
-        it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function () {
+        //! Fino a settembre non funzionerà
+        it.skip('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function () {
             if (!keys.BMPenabled)
                 this.skip()
             TopBar.clickSales()
@@ -516,7 +527,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Motor', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
-            Sales.setDateEstrazione(dataInizio,dataFine)
+            Sales.setDateEstrazione(dataInizio, dataFine)
             Sales.lobDiInteresse('Motor', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
@@ -528,7 +539,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Rami Vari', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
-            Sales.setDateEstrazione(dataInizio,dataFine)
+            Sales.setDateEstrazione(dataInizio, dataFine)
             Sales.lobDiInteresse('Rami vari', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
@@ -541,7 +552,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
-        Sales.setDateEstrazione(dataInizio,dataFine)
+        Sales.setDateEstrazione(dataInizio, dataFine)
         Sales.lobDiInteresse('Vita', 'Estrai').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
@@ -552,7 +563,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     it('Verifica "Quietanzamento" - lob di interesse: Tutte', function () {
         if (!Cypress.env('monoUtenza')) {
             TopBar.clickSales()
-            Sales.setDateEstrazione(dataInizio,dataFine)
+            Sales.setDateEstrazione(dataInizio, dataFine)
             Sales.lobDiInteresse('Tutte', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
                     this.skip()
@@ -560,7 +571,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
             Sales.backToSales()
         } else this.skip()
     })
-
 
     it('Verifica TAB: "Campagne"', function () {
         if (!keys.CAMPAGNE_COMMERCIALI)

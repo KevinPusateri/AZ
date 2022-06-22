@@ -39,6 +39,8 @@ let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth(
 
 //#region Before After
 before(() => {
+    expect(Cypress.browser.name).to.contain('chrome')
+
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {

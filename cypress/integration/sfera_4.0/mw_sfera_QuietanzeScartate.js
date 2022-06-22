@@ -31,6 +31,7 @@ let options = {
 //#endregion
 
 let dataInizio = Common.setDate(1, 2, false)
+let dataFine = Common.setDate()
 
 //#region Before After
 before(() => {
@@ -76,7 +77,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Sfera 4.0 - Operatività - vista Quietanze Scartete', function () {
+describe('Matrix Web : Sfera 4.0 - Operatività - vista Quietanze Scartate', function () {
 
     it('Verifica caricamento dati', function () {
         Sfera.estrai()
@@ -108,6 +109,11 @@ describe('Matrix Web : Sfera 4.0 - Operatività - vista Quietanze Scartete', fun
         Sfera.setDateEstrazione(false, dataInizio)
         Sfera.estrai(false)
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-        Sfera.estrazioneReportExcel(Sfera.COLUMNQUIETANZESCARTATE)
+        // Sfera.estrazioneReportExcel(Sfera.COLUMNQUIETANZESCARTATE)
+    })
+
+    //! DA AGGIUNGERE SU TFS
+    it.skip('Verifica Ripetitore dati', function () {
+        Sfera.checkExistRipetitoreDati(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
     })
 })
