@@ -285,7 +285,7 @@ Cypress.Commands.add('slugMieInfo', (tutf, section) => {
     },
     body: '["' + section + '"]'
   }).then(resp => {
-    if (resp.status === 404)
+    if (resp.status === 404 || resp.status === 403)
       return false
     else if (resp.status === 200) {
       let jsonReponse = JSON.parse(resp.body)
