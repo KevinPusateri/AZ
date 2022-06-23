@@ -1514,11 +1514,11 @@ class Sfera {
     static assegnaColoreRandom() {
         this.assegnaColore().click()
 
+        cy.wait(3000)
         cy.get('sfera-assegna-colore').should('be.visible').within(() => {
             cy.get('nx-card').then((colori) => {
                 let selected = Math.floor(Math.random() * (colori.length - 1)) + 1;
-
-                debugger
+                
                 cy.get('nx-card').eq(selected).find('nx-radio').click()
                 cy.get('nx-card').eq(selected).find('div:first').invoke('attr', 'style').as('styleColor')
                 cy.contains('Procedi').click()
