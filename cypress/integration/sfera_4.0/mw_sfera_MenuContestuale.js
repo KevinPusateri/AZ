@@ -30,9 +30,8 @@ before(() => {
 
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
         Sfera.setDateEstrazione()
-        //Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-        //Sfera.selezionaCluserMotor(Sfera.CLUSTERMOTOR.IN_MORA, true)
-        //Sfera.estrai()
+        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
+        Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.IN_MORA, true)
     })
 })
 
@@ -64,6 +63,11 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
         })
 
         it('Riduzione premi > Variazione riduzione premi', function () {
+            //? Verificare sempre che ci sia plafond assegnato alla 1-710000 (chiedi simone.sergas@allianz.it)
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.DELTA_PREMIO)
+            Sfera.espandiPannello()
+            Sfera.estrai()
+            Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_710000)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.VARIAZIONE_RIDUZIONE_PREMI, false)
         })
 

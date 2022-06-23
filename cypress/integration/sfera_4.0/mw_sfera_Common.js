@@ -46,7 +46,7 @@ before(() => {
         cy.getUserWinLogin().then(data => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
             LoginPage.logInMWAdvanced()
-            Sfera.accediSferaDaHomePageMW()
+            Sfera.accediSferaDaHomePageMW(true)
         })
     })
 })
@@ -75,7 +75,7 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
     })
 
-    //! Necessari chiarimenti con Visentin
+    // //! Necessari chiarimenti con Visentin
     // it('Sostituzione stesso veicolo Titolo 2 e Verifica in Sfera', function () {
     //     Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
     //     Sfera.estrai()
@@ -88,19 +88,21 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.setDateEstrazione()
         Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-        Sfera.assegnaColoreRighe(Sfera.COLORI.SIGNIFICATO_ALFA)
+        Sfera.assegnaColoreRandom()
     })
 
     it('Quietanzamento Vista Operativa - Gestisci colora riga : Rimuovi colore', function () {
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-        Sfera.assegnaColoreRighe(Sfera.COLORI.NESSUN_COLORE)
+        Sfera.assegnaNessunColore()
     })
 
     it('Effettua Stampa Senza Incasso per Quietanze Motor Allianz', function () {
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.STAMPA_QUIETANZE)
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
         Sfera.setDateEstrazione()
-        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
-        Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
+        // Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
+        // Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
+        Sfera.estrai()
         Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO).then((polizza) => {
             cy.log(`Stampa Senza Incasso effettuata su contratto ${polizza}`)
         })
@@ -117,7 +119,7 @@ describe('Matrix Web : Sfera 4.0', function () {
     // })
 
     // TODO: ATTENDERE
-    // it('verificare corretto layout del pannello scontistica su visat delta premio', function () {
+    // it('verificare corretto layout del pannello scontistica su vista delta premio', function () {
     //     Sfera.setDateEstrazione()
     //     Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
     //     Sfera.estrai()
@@ -134,7 +136,7 @@ describe('Matrix Web : Sfera 4.0', function () {
         Sfera.estrazioneReportExcel()
     })
 
-    context('🖕🔥Verifica Rotella Gestione Colonne', () => {
+    context('Verifica Rotella Gestione Colonne', () => {
 
         it('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
             Sfera.setDateEstrazione()
@@ -147,18 +149,18 @@ describe('Matrix Web : Sfera 4.0', function () {
             Sfera.checkColonnaAssente('Cod. AZPay')
             Sfera.salvaVistaPersonalizzata('Automatici')
             Sfera.selezionaVista('Automatici')
-            Sfera.eliminaVista('Automatici')
+            Sfera.espandiPannello()
+            Sfera.estrai()
         })
 
         it('Verifica Sostituisci Vista', function () {
             Sfera.gestisciColonne(['Cod. AZPay'])
-            Sfera.sostituisciVista('prova 1')
-            Sfera.selezionaVista('prova 1')
+            Sfera.sostituisciVista('Automatici')
+            Sfera.selezionaVista('Automatici')
             Sfera.checkColonnaPresente('Cod. AZPay')
+            Sfera.eliminaVista('Automatici')
         })
-
-    });
-
+    })
 
     it('Verifica Filtro Fonti e Filtro Agenzie Tutte Selezionate', options, function () {
         Sfera.fontiAllSelezionati()
@@ -167,13 +169,6 @@ describe('Matrix Web : Sfera 4.0', function () {
 
 
     it('Verifica incasso T2 motor Ramo 31', options, function () {
-        TopBar.logOutMW()
-        let customImpersonification = {
-            "agentId": "ARALONGO7",
-            "agency": "010375000"
-        }
-        LoginPage.logInMWAdvanced(customImpersonification)
-        Sfera.accediSferaDaHomePageMW()
         Sfera.setDateEstrazione(false, dataInizio, dataFine)
         Sfera.estrai()
         Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
@@ -181,9 +176,8 @@ describe('Matrix Web : Sfera 4.0', function () {
     })
 
     it('Verifica incasso T2 motor Ramo 32', options, function () {
-        //age 01-375000
         HomePage.reloadMWHomePage()
-        Sfera.accediSferaDaHomePageMW()
+        Sfera.accediSferaDaHomePageMW(true)
         Sfera.setDateEstrazione(false, dataInizio, dataFine)
         Sfera.estrai()
         Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_32)
@@ -191,12 +185,11 @@ describe('Matrix Web : Sfera 4.0', function () {
     })
 
     it('Verifica Azioni Veloci > Esporta Excel', options, function () {
-        //age 01-375000
         HomePage.reloadMWHomePage()
-        Sfera.accediSferaDaHomePageMW()
+        Sfera.accediSferaDaHomePageMW(true)
         Sfera.setDateEstrazione(false, dataInizio, dataFine)
         Sfera.selectRandomCluster()
-        cy.get('@clusterLength').then((clusterLength)=>{
+        cy.get('@clusterLength').then((clusterLength) => {
             Sfera.azioniVeloci(Sfera.AZIONIVELOCI.ESPORTA_PDF_EXCEL)
             Sfera.checkExcel(clusterLength)
         })
