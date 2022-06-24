@@ -288,9 +288,7 @@ class ConsultazioneSinistriPage {
         //getIframe().find('#results > div.k-grid-content > table > tbody > tr').should('exist').log()
     }
 
-    static checkTotalVsSumEachLineItem(IdTotalLocator, locator, idx){
-
-        debugger
+    static checkTotalVsSumEachLineItem(IdTotalLocator, locator, idx) {        
         let sum = 0
         let total = 0
         getIframe().find(IdTotalLocator, { timeout: 6000 }).should('exist').and('be.visible').then(($tag) => {     
@@ -298,16 +296,31 @@ class ConsultazioneSinistriPage {
         })
         
         getIframe().find(locator, { timeout: 5000 }).should('be.visible').each(($tr, index, $lis) => {
-            var value = parseFloat($tr.find("td:nth-child("+idx+")").text()) 
-            debugger
+            var value = parseFloat($tr.find("td:nth-child("+idx+")").text())             
             sum += value
             if(index == $lis.length - 1) {
                 assert.equal(total, sum, 'Expected value equals sum of each line item')
             }
-        })
-        
-
+        })        
     }
+    static checkFonti(idFnt, idx ) {
+        var elements = new Array(); 
+        debugger
+        //getIframe().find(".k-dropdown-wrap k-state-default").should('be.visible').click();
+        cy.wait(1000)
+       
+        getIframe().find(idFnt, { timeout: 5000 }).should('be.visible').each(($tr, index, $lis) => {
+            debugger
+            var value = $tr.find("td:nth-child(1)").text()
+        })
+       
+        getIframe().find(idFnt+" > td").should('exist').then(($els) => {             
+            expect(Cypress.dom.isJquery($els), 'jQuery object').to.be.true
+            debugger
+            elements = Cypress.$.makeArray($els)
+        })
+    }
+    
 }
 
 
