@@ -791,8 +791,17 @@ class TenutaTariffa {
                 expect(currentDataDecorrenza).to.include(formattedDataDecorrenza)
             })
             cy.wait(5000)
+
             //Espandiamo pannello RCA
-            cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
+            var rcaLabel
+            if (currentCase.Settore == 3)
+                rcaLabel = "RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA"
+            else if (currentCase.Settore == 6 || currentCase.Settore == 7)
+                rcaLabel = "RCA - PREMIO FISSO UNIFICATA"
+            else
+                rcaLabel = "RCA - BONUS MALUS"
+
+            cy.contains(rcaLabel).parents('form').within(() => {
                 cy.get('nx-icon[class~="clickAble"]').first().click()
             })
 
@@ -958,7 +967,7 @@ class TenutaTariffa {
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il premio lordo a video
-            cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
+            cy.contains(rcaLabel).parents('form').within(() => {
                 cy.get('p[class~="premio"]').first().invoke('text').then(premioLordo => {
 
                     //expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
@@ -1229,7 +1238,6 @@ class TenutaTariffa {
                     cy.task('log', `Versione Radar UW rilevata ${JSON.stringify(findKeyRadarUW('Versione_Radar'))}`)
 
                 })
-
                 //#endregion
             })
         })
