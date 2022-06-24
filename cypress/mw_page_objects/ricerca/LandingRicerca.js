@@ -531,11 +531,12 @@ class LandingRicerca {
                 } else {
                     suggLinks = [
                         'Allianz Ultra Casa e Patrimonio',
+                        'Allianz Ultra Casa e Patrimonio 2022',
                         'Allianz Ultra Casa e Patrimonio BMP',
                         'Allianz Ultra Salute',
                         'Allianz Ultra Impresa'
                     ]
-                    linkLength = 4
+                    linkLength = 5
                 }
                 break
             case 'bmp':

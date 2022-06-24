@@ -14,15 +14,13 @@ const testName = Cypress.spec.name.split('/')[1].split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-    //#endregion
+//#endregion
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 
 //#endregion
-let notExist = ''
-if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
-    notExist = 'ASSENTE '
+
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
@@ -35,14 +33,14 @@ beforeEach(() => {
     Common.visitUrlOnEnv()
 })
 
-after(function() {
+after(function () {
     TopBar.logOutMW()
-        //#region Mysql
+    //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-            let tests = testsInfo
-            cy.finishMysql(dbConfig, insertedId, tests)
-        })
-        //#endregion
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
 
 })
 
@@ -51,58 +49,37 @@ describe('Matrix Ricerca', {
         runMode: 1,
         openMode: 0,
     }
-}, function() {
+}, function () {
 
-    it('Verifica Ricerca Da Switch Page', function() {
+    it('Verifica Ricerca Da Switch Page', function () {
         LandingRicerca.checkBucaRicercaSuggerrimenti()
     })
 
-    it('Verifica Ricerca Da Landing Clients', function() {
+    it('Verifica Ricerca Da Landing Clients', function () {
         TopBar.clickClients()
         LandingRicerca.checkBucaRicercaSuggerrimenti()
     })
 
-    it('Verifica Ricerca Da Landing Sales', function() {
+    it('Verifica Ricerca Da Landing Sales', function () {
         TopBar.clickSales()
         LandingRicerca.checkBucaRicercaSuggerrimenti()
         TopBar.clickMatrixHome()
     })
 
-    it('Verifica Ricerca Da Landing Numbers', function() {
+    it('Verifica Ricerca Da Landing Numbers', function () {
         TopBar.clickNumbers()
         LandingRicerca.checkBucaRicercaSuggerrimenti()
         TopBar.clickMatrixHome()
     })
-
-    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
-        it(notExist + 'Verifica Ricerca Da Landing News e Info', function() {
-            TopBar.clickNewsInfo()
-            LandingRicerca.checkBucaRicercaSuggerrimenti()
-            TopBar.clickMatrixHome()
-        })
-
-    }
-
-    it('Verifica Ricerca Da Landing BackOffice', function() {
-        TopBar.clickBackOffice()
+    it('Verifica Ricerca Da Landing News e Info', function () {
+        TopBar.clickNewsInfo()
         LandingRicerca.checkBucaRicercaSuggerrimenti()
         TopBar.clickMatrixHome()
     })
 
-})
-
-if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
-    describe('Matrix Ricerca - AVIVA', {
-        retries: {
-            runMode: 1,
-            openMode: 0,
-        }
-    }, function() {
-
-
-        it(notExist + 'Verifica Ricerca Da Landing News e Info', function() {
-            TopBar.checkNotExistLanding('News e Info')
-        })
-
+    it('Verifica Ricerca Da Landing BackOffice', function () {
+        TopBar.clickBackOffice()
+        LandingRicerca.checkBucaRicercaSuggerrimenti()
+        TopBar.clickMatrixHome()
     })
-}
+})

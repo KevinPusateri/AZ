@@ -18,6 +18,7 @@ const LinksBurgerMenu = {
     FLOTTE_E_CONVENZIONI: 'Flotte e Convenzioni',
     MINIFLOTTE: 'MiniFlotte',
     TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio 2022' : 'Allianz Ultra Casa e Patrimonio 2022',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio BMP' : 'Allianz Ultra Casa e Patrimonio BMP',
     ALLIANZ_ULTRA_SALUTE: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute',
@@ -62,6 +63,7 @@ const LinksBurgerMenu = {
         if (!keys.MINIFLOTTE) delete this.MINIFLOTTE
         if (!keys.TRATTATIVE_AUTO_CORPORATE) delete this.TRATTATIVE_AUTO_CORPORATE
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
         if (!keys.ALLIANZ_ULTRA_SALUTE) delete this.ALLIANZ_ULTRA_SALUTE
         if (!keys.ALLIANZ1_BUSINESS) delete this.ALLIANZ1_BUSINESS
@@ -112,6 +114,7 @@ class BurgerMenuSales extends Sales {
             cy.filterProfile(profiling, 'COMMON_TOOL_TRATTATIVE').then(profiled => { keys.TRATTATIVE_AUTO_CORPORATE = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRACASA2022').then(profiled => { keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022 = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keys.ALLIANZ_ULTRA_SALUTE = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.ALLIANZ_ULTRA_IMPRESA = profiled })
             cy.filterProfile(profiling, 'COMMON_ALLIANZ1_BUSINESS').then(profiled => { keys.ALLIANZ1_BUSINESS = profiled })
@@ -195,7 +198,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/assuntivomotor/**'
                 }).as('getMotor');
                 Common.canaleFromPopup()
-                cy.wait('@getMotor', { requestTimeout: 50000 });
+                cy.wait('@getMotor', { timeout: 50000 });
                 getIFrame().find('button:contains("Calcola"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -205,7 +208,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/assuntivomotor/**'
                 }).as('getMotor');
                 Common.canaleFromPopup()
-                cy.wait('@getMotor', { requestTimeout: 50000 });
+                cy.wait('@getMotor', { timeout: 50000 });
                 getIFrame().find('button:contains("Calcola"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -230,6 +233,13 @@ class BurgerMenuSales extends Sales {
                 getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
                 getIFrame().find('span:contains("Calcola nuovo preventivo"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                break;
+            case LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022:
+                Common.canaleFromPopup()
+                cy.wait(15000)
+                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
+                getIFrame().find('img[alt="immagine_attivita"]').should('have.attr', 'src', './assets/img/tipo_edificio/appartamento.svg')
+                cy.screenshot('Verifica aggancio' + LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                 break;
             case LinksBurgerMenu.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP:
                 Common.canaleFromPopup()
@@ -278,16 +288,21 @@ class BurgerMenuSales extends Sales {
                 }).as('getSalesPremo');
                 // cy.wait(5000)
                 Common.canaleFromPopup()
-                cy.wait('@getSalesPremo', { requestTimeout: 40000 });
+                cy.wait('@getSalesPremo', { timeout: 40000 });
                 cy.wait(30000)
                 getIFrame().should('be.visible')
                 getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text', 'Ricerca')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
+                cy.intercept({
+                    method: 'GET',
+                    url: '**/ImagesArch/**'
+                }).as('getImage');
                 Common.canaleFromPopup()
-                cy.wait(20000)
-                getIFrame().find('input[value="Home"]').should('be.visible').invoke('attr', 'value').should('equal', 'Home')
+                cy.wait('@getImage', { timeout: 40000 });
+                // cy.wait(25000)
+                getIFrame().find('input[value="Home"]').invoke('attr', 'value').should('equal', 'Home')
                 getIFrame().find('input[value="Indietro"]').invoke('attr', 'value').should('equal', 'Indietro')
                 getIFrame().find('input[value="Avanti"]').invoke('attr', 'value').should('equal', 'Avanti')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -318,7 +333,7 @@ class BurgerMenuSales extends Sales {
                     url: /InizializzaApplicazione/
                 }).as('inizializzaApplicazione');
                 Common.canaleFromPopup()
-                cy.wait('@inizializzaApplicazione', { requestTimeout: 30000 });
+                cy.wait('@inizializzaApplicazione', { timeout: 30000 });
                 getIFrame().find('button:contains("Cerca"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -333,7 +348,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/dacommerciale/**'
                 }).as('getDacommerciale');
                 Common.canaleFromPopup()
-                cy.wait('@getDacommerciale', { requestTimeout: 50000 });
+                cy.wait('@getDacommerciale', { timeout: 50000 });
                 getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -344,7 +359,7 @@ class BurgerMenuSales extends Sales {
                 }).as('Danni');
 
                 Common.canaleFromPopup()
-                cy.wait('@Danni', { requestTimeout: 40000 })
+                cy.wait('@Danni', { timeout: 40000 })
                 cy.wait(5000)
                 getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -355,7 +370,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/SUV/**'
                 }).as('getSUV');
                 Common.canaleFromPopup()
-                cy.wait('@getSUV', { requestTimeout: 40000 });
+                cy.wait('@getSUV', { timeout: 40000 });
                 cy.wait(10000)
                 getIFrame().find('.k-link:contains("Consultazione Collettive e Versamenti"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -391,7 +406,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/Vita/**'
                 }).as('vita');
                 Common.canaleFromPopup()
-                cy.wait('@vita', { requestTimeout: 30000 });
+                cy.wait('@vita', { timeout: 30000 });
                 cy.wait(6000)
                 getIFrame().find('input[value="Ricerca"]:visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })

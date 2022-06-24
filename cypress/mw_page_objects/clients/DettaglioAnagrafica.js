@@ -90,7 +90,7 @@ class DettaglioAnagrafica {
             }
         })
         cy.contains('DETTAGLIO ANAGRAFICA').click()
-        cy.contains('Documenti').click({force:true})
+        cy.contains('Documenti').click({ force: true })
 
         cy.wait('@gqlIdentityDocuments', { requestTimeout: 30000 })
     }
@@ -121,7 +121,7 @@ class DettaglioAnagrafica {
         });
 
         cy.contains('DETTAGLIO ANAGRAFICA').click()
-        
+
         cy.wait('@gqlClient', { timeout: 15000 }).its('response.statusCode').should('eq', 200)
         cy.get('app-section-title:contains("Dati principali")').should('be.visible').wait(3000)
         cy.screenshot('Dettaglio Anagrafica', { clip: { x: 0, y: 0, width: 1920, height: 700 } })
@@ -183,7 +183,7 @@ class DettaglioAnagrafica {
             cy.get('app-client-other-contacts').find('app-client-contact-table-row').then((list) => {
                 console.log(list.text())
                 expect(list.text()).to.include(contatto.tipo)
-                expect(list.text()).to.include(contatto.principale)
+                expect(list.text()).to.include('Sì')
                 if (contatto.tipo === 'E-Mail' || contatto.tipo === 'PEC') {
                     expect(list.text()).to.include(contatto.email)
                 } else if (contatto.tipo === 'Sito Web') {
@@ -399,7 +399,7 @@ class DettaglioAnagrafica {
         cy.contains('Aggiungi Convenzione').should('be.visible').click()
         if (!convenzionePresente) {
             cy.get('h4').should('contain.text', 'Nessuna convenzione disponibile per l\'agenzia selezionata')
-            cy.screenshot('Nessuna convenzione disponibile ', { clip: { x: 0, y: 0, width: 1920, height: 900 }})
+            cy.screenshot('Nessuna convenzione disponibile ', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
             cy.contains('Annulla').click().wait(5000)
         } else {
             return new Cypress.Promise((resolve, reject) => {
@@ -562,5 +562,25 @@ class DettaglioAnagrafica {
         })
     }
 
+    static removeAllContatti() {
+        cy.wait(5000)
+        const loopRemove = () => {
+
+        cy.get('app-client-other-contacts').should('be.visible').then(($bodyContatti) => {
+            if ($bodyContatti.find('app-client-contact-table-row').length > 0) {
+                cy.get('app-client-contact-table-row').first().find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
+                    .click()
+                    .wait(3000);
+                cy.get("button").contains("Elimina contatto").should('be.visible').click();
+                cy.get('nx-modal-container').should('be.visible')
+                cy.get('nx-modal-container').find('span:contains("Conferma"):visible').click()
+                cy.wait(5000)
+                loopRemove()
+            }
+        })
+    }
+
+    loopRemove()
+}
 }
 export default DettaglioAnagrafica

@@ -43,7 +43,8 @@ let keys = {
     ESTRAZIONE_CONTABILITA: true,
     CONVENZIONI_IN_TRATTENUTA: true,
     MONITORAGGIO_GUIDA_SMART: true,
-    IMPOSTAZIONE_CONTABILITA: true
+    IMPOSTAZIONE_CONTABILITA: true,
+    SCHEDA_SINISTRI_GESTIONE: true
 }
 
 
@@ -73,10 +74,20 @@ before(() => {
                 cy.filterProfile(profiling, 'MONITORAGGIO_CDF').then(profiled => { keys.MONITORAGGIO_GUIDA_SMART = profiled })
                 cy.filterProfile(profiling, 'COMMON_CAD_CONVENZIONI_IN_TRATTENUTA').then(profiled => { keys.CONVENZIONI_IN_TRATTENUTA = profiled })
                 cy.filterProfile(profiling, 'COMMON_CONTABILITA_CONSULTAZIONE_MOVIMENTI').then(profiled => { keys.IMPOSTAZIONE_CONTABILITA = profiled })
+
+                //20.06.22 Scheda Sinistri per Gestione
+                cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiledReportingInterrogazioniCentralizzate => {
+                    cy.filterProfile(profiling, 'REPORTING_DATI_SENSIBILI').then(profiledDatiSensibili => {
+                        cy.filterProfile(profiling, 'REPORTING_INCENTIVAZIONI_DI_AGENZIA').then(profiledIncentivazioniAgenzia => {
+                            debugger
+                            if (!(profiledReportingInterrogazioniCentralizzate && profiledDatiSensibili && profiledIncentivazioniAgenzia) || Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
+                                keys.SCHEDA_SINISTRI_GESTIONE = false
+                        })
+                    })
+                })
             })
         })
     })
-
 })
 
 beforeEach(() => {
@@ -157,6 +168,14 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', function () {
             this.skip()
         TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Sinistri canalizzati')
+        BurgerMenuBackOffice.backToBackOffice()
+    })
+
+    it('Verifica aggancio Scheda Sinistri per Gestione', function () {
+        if (!keys.SCHEDA_SINISTRI_GESTIONE)
+            this.skip()
+        TopBar.clickBackOffice()
+        BurgerMenuBackOffice.clickLink('Scheda Sinistri per Gestione')
         BurgerMenuBackOffice.backToBackOffice()
     })
     // }

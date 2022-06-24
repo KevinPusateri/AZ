@@ -95,8 +95,7 @@ describe("FABBRICATO E CONTENUTO", () => {
         for (var i = 0; i < ambiti.length; i++) {
             cy.contains('div', ambiti[i]).parent().children('nx-icon').click()
         }
-
-        cy.pause()
+ 
         cy.get('span').contains('Calcola').click({ force: true })
         cy.get('lib-format-numbers').should('be.visible')
         cy.get('lib-da-link[calldaname$="Configura"]').should('be.visible').click()

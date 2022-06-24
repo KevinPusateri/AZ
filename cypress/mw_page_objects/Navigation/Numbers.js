@@ -245,11 +245,12 @@ class Numbers {
 
     /**
      * Filtro Cambiando il periodo
+     * @param {string} year - data: anno
      */
-    static filtriPeriodo() {
+    static filtriPeriodo(year) {
         cy.get('nx-icon[name="filter"]').click()
         cy.get('app-filters').should('be.visible').within(() => {
-            cy.contains('2022').click()
+            cy.contains(year).click()
             cy.contains('APPLICA').click()
         })
     }

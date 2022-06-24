@@ -100,7 +100,7 @@ after(function () {
     }
 }) */
 
-describe("Vincolo contestuale PUA ", () => {
+describe("VINCOLO CONTESTUALE PUA ", () => {
   it("Accesso Ultra Casa e Patrimonio", () => {
     cy.log("oggi: " + dataOggi)
     TopBar.clickSales()
@@ -300,10 +300,11 @@ describe("Vincolo contestuale PUA ", () => {
     }).as('clients')
 
     cy.wait('@clients', { requestTimeout: 60000 })
+
+    SintesiCliente.ricarica()
   })
 
   it("Verifica polizza attiva", () => {
-    cy.pause()
     Portafoglio.clickSubTab("Polizze attive")
     Portafoglio.ordinaPolizze("Numero contratto")
     Portafoglio.checkPolizzaAttivaLite(nContratto)

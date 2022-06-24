@@ -56,11 +56,11 @@ class Vincoli {
         cy.wait('@documenti', { requestTimeout: 60000 })
     }
 
-    static attendiCaricamento() {
+    /* static attendiCaricamento() {
         ultraIFrame().within(() => {
             cy.get('.')
         })
-    }
+    } */
     //#endregion caricamenti
 
     /**
@@ -128,6 +128,16 @@ class Vincoli {
             IFrameAnagrafe().within(() => {
                 cy.get('input[value="Conferma"]').click()
             })
+        })
+    }
+
+    static ChiudiPopupAnagrafico(dati) {
+        ultraIFrame().within(() => {
+            cy.get('div[aria-labelledby="ui-dialog-title-anag"]')
+                .should('be.visible').scrollIntoView()
+                .find('[class^="ui-dialog-titlebar-close"]').click()
+
+            cy.wait(500)
         })
     }
 
@@ -236,6 +246,13 @@ class Vincoli {
         ultraIFrame().within(() => {
             cy.get('#btnConferma')
                 .should('be.visible').click()
+        })
+    }
+
+    static ConfermaCreazioneDocumento() {
+        ultraIFrame().within(() => {
+            cy.get('#ctl00_cont_documentOkPnl')
+                .should('be.visible').and('contain', 'Il documento è stato creato con numero')
         })
     }
     //#endregion Gestione Vincoli Ultra 

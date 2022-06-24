@@ -110,8 +110,9 @@ const LinksRapidi = {
 
 const LinksOnEmettiPolizza = {
     PREVENTIVO_MOTOR: 'Preventivo Motor',
-    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022: 'Allianz Ultra Casa e Patrimonio 2022',
     ALLIANZ_ULTRA_SALUTE: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute',
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
     SAFE_DRIVE_AUTOVETTURE: 'Safe Drive Autovetture',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
     ALLIANZ_ULTRA_IMPRESA: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Impresa' : 'Allianz Ultra Impresa',
@@ -123,7 +124,8 @@ const LinksOnEmettiPolizza = {
     TRATTATIVE_AUTO_CORPORATE: 'Trattative Auto Corporate',
     deleteKey: function (keys) {
         if (!keys.PreventivoMotorEnabled) delete this.PREVENTIVO_MOTOR
-        if (!keys.UltraUltraCasaPatrimonioEnabled) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
+        if (!keys.UltraCasaPatrimonioEnabled) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022
         if (!keys.UltraSaluteEnabled) delete this.ALLIANZ_ULTRA_SALUTE
         // if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) delete this.SAFE_DRIVE_AUTOVETTURE
         if (!keys.BMPenabled) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
@@ -165,7 +167,7 @@ class Sales {
      * @param {string} [dataInizio] default undefined; se non specificata, setta automaticamente la data 1 mese prima da oggi
      * @param {string} [dataFine] default undefined; se non specificata, setta automaticamente la data odierna
      */
-     static setDateEstrazione(dataInizio = undefined, dataFine = undefined) {
+    static setDateEstrazione(dataInizio = undefined, dataFine = undefined) {
 
         //Impostiamo la data di inizio estrazione
         if (dataInizio === undefined) {
@@ -685,7 +687,6 @@ class Sales {
             })
         } else
             cy.get('div[class^="card-container"').should('be.visible').find('lib-da-link').each(($link, i) => {
-
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
     }
@@ -697,7 +698,10 @@ class Sales {
     static clickLinkOnEmettiPolizza(page) {
         cy.wait(3000)
         cy.contains('Emetti polizza').click({ force: true })
-        cy.get('.card-container').find('lib-da-link').contains(page).click()
+        if (page === LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022)
+            cy.get('.card-container').find('lib-da-link').contains('2022').click()
+        else
+            cy.get('.card-container').find('lib-da-link').not(':contains("2022")').contains(page).click()
         switch (page) {
             case LinksOnEmettiPolizza.PREVENTIVO_MOTOR:
                 cy.intercept({
@@ -711,12 +715,12 @@ class Sales {
                 cy.task('log', 'Aggancio Preventivo Motor da Sales... OK!')
                 break;
             case LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO:
-                cy.intercept({
-                    method: 'GET',
-                    url: '**/ultra/**'
-                }).as('getUltra');
+                // cy.intercept({
+                //     method: 'GET',
+                //     url: '**/ultra/**'
+                // }).as('getUltra');
                 Common.canaleFromPopup()
-                cy.wait('@getUltra', { timeout: 30000 });
+                // cy.wait('@getUltra', { timeout: 30000 });
                 cy.wait(5000)
                 getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
@@ -750,6 +754,13 @@ class Sales {
                 cy.wait(15000)
                 getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
                 cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
+                break;
+            case LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022:
+                Common.canaleFromPopup()
+                cy.wait(15000)
+                getIFrame().find('app-root span:contains("Calcola nuovo preventivo"):visible', { timeout: 10000 })
+                getIFrame().find('img[alt="immagine_attivita"]').should('have.attr', 'src', './assets/img/tipo_edificio/appartamento.svg')
+                cy.screenshot('Verifica aggancio' + LinksOnEmettiPolizza.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022, { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                 break;
             case LinksOnEmettiPolizza.ALLIANZ1_BUSINESS:
                 cy.intercept({
@@ -1090,7 +1101,7 @@ class Sales {
         cy.wait('@digitalAgencyLink', { timeout: 30000 });
         cy.wait(20000)
         getIFrame().within(() => {
-            cy.get('td[class="AZBasicButtons"]').should('be.visible').within(()=>{
+            cy.get('td[class="AZBasicButtons"]').should('be.visible').within(() => {
                 cy.get('input[value="  Esci  "]').should('be.visible')
             })
         })
