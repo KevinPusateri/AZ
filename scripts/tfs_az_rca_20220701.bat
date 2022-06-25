@@ -1,0 +1,3 @@
+set HTTP_PROXY=
+set HTTPS_PROXY=
+.\\node_modules\\.bin\\cypress run --browser E:\browsers_for_testing\GoogleChromePortable\App\Chrome-bin\chrome.exe --quiet --spec cypress/integration/motor_RCA/AZ/mw_RCA_20220701.js --env currentEnv=%1,selectedSettori=%2 --reporter cypress-mochawesome-reporter --reporter-options "reportDir=cypress/reports/az_rca_20220701, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='AZ RCA Luglio 2022'"
