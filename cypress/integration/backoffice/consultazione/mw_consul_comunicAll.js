@@ -125,10 +125,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrDocumentiComuni, "Documenti Comuni")
 
         const cssFldrIncarichi =  "#Nodo_1_inc_NodeText"
-        Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrDocumentiComuni, "Incarichi")
+        Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrIncarichi, "Incarichi")
 
         const cssFldrComunicAll =  "#Nodo_ComunicAll1_NodeText"
-        Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrDocumentiComuni, "ComunicAll")
+        Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrComunicAll, "ComunicAll")
     });
 
 });
