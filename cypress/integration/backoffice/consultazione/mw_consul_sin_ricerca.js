@@ -93,9 +93,10 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         Common.isVisibleText(lblnumsin, numpol)
         Common.isVisibleText(lblnumsin, targa_assicurato)
         Common.isVisibleText(lblnumsin, dt_avv)
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per num sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
-    it('Consultazione Sinistri: Ricerca per polizza assicurato  ', function () {
+    it('Consultazione Sinistri: Ricerca per polizza assicurato ', function () {
                 
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Polizza');
         ConsultazioneSinistriPage.setValue_ById('#policy_number', numpol)
@@ -105,6 +106,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         Common.isVisibleText(lblnumsin, numpol)
         Common.isVisibleText(lblnumsin, targa_assicurato)
         Common.isVisibleText(lblnumsin, dt_avv)
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per polizza assicurato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Consultazione Sinistri: Ricerca per targa assicurato  ', function () {
@@ -117,6 +119,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         Common.isVisibleText(lblnumsin, numpol)
         Common.isVisibleText(lblnumsin, targa_assicurato)
         Common.isVisibleText(lblnumsin, dt_avv)
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per targa assicurato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Consultazione Sinistri: Ricerca per dati anagrafici del cliente persona fisica ', function () {
@@ -130,6 +133,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         Common.isVisibleText(lblnumsin, numpol)        
         Common.isVisibleText(lblnumsin, targa_assicurato)
         Common.isVisibleText(lblnumsin, dt_avv)
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per dati anagrafici del cliente persona fisica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Consultazione Sinistri: Ricerca per codice fiscale del cliente persona fisica ', function () {
@@ -144,6 +148,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         Common.isVisibleText(lblnumsin, numpol)
         Common.isVisibleText(lblnumsin, targa_assicurato)
         Common.isVisibleText(lblnumsin, dt_avv)
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per codice fiscale del cliente persona fisica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Consultazione Sinistri: Ricerca per denominazione del cliente come persona giuridica ', function () {
@@ -153,6 +158,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#cognome','GIRASOLE INDUSTRIE')
         let classvalue = "search_submit anagrafica k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        cy.wait(1000)
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per denominazione del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Consultazione Sinistri: Ricerca per codice fiscale / partita IVA del cliente persona giuridica ', function () {
@@ -162,5 +169,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#cf','04922730264')
         let classvalue = "search_submit anagrafica k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
+        cy.wait(1000)
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per codice fiscale / partita IVA del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 });

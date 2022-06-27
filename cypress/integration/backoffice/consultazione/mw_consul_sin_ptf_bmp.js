@@ -110,7 +110,8 @@ describe('Matrix Web - Ricerca e verifica sinistro chiuso/pagato, da Cliente-->P
         Portafoglio.checkObj_ByLocatorAndText(".ng-star-inserted", dtAvvenimento)
         Portafoglio.checkObj_ByLocatorAndText(".ng-star-inserted", dtDenuncia)
         Portafoglio.checkObj_ByLocatorAndText(".ng-star-inserted", dtChiusura)
-        Portafoglio.checkObj_ByLocatorAndText(".lib-format-numbers", liquidato)        
+        Portafoglio.checkObj_ByLocatorAndText(".lib-format-numbers", liquidato) 
+        cy.screenshot('Pagina Sezione Portafoglio --> Sinistri ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true }) 
     })
    
 });

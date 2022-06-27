@@ -82,6 +82,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
         Common.getObjByTextOnIframe(stato_sin)
         ConsultazioneSinistriPage.printClaimDetailsValue()
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
     
     it('Recupero e controllo preliminare della valorizzazione delle informazioni del cliente e della data avveninmento sinistro', function () {
@@ -104,26 +105,37 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
         Common.clickByIdOnIframe(css_ico_arrow_right)
         cy.wait(3000)
+        cy.screenshot('Pagina Dettaglio sinistro - Atterraggio pagina', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
+
     it('Verifica presenza pulsante immagine \'Megafono\' associata al comunicAll e raggiungibilità pagina comunicAll', function () {
 
         // Verifica presenza immagine megafono
-        const css_ico_mega = "li.listen.off > span"
-        Common.isVisibleTitleTag("a", "ComunicAll")
-        
-        cy.screenshot('Verifica aggancio ' + "Dettaglio sinistro", { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
+        const css_ico_mega = 'td.actions > ul > li.listen.off > a'
+        Common.isVisibleTitleTag("a", "ComunicAll")       
+        cy.screenshot('Pagina Dettaglio sinistro - Presenza icona megafono', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         // Seleziona il link del comunicAll ver
-        ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dafolder/?FORWARD=folder&TRANS_KEY=ingresso&C_SYS_USER_ID=&RELOAD_SUSPEND_PARAMS=S&Name=&ARCH_APPLICATION_RETURN=SINISTRI&APPL_NAME_RETURN=SINISTRI")        
+        ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dasinconfe/OpenFolder?counter=1")
+        cy.wait(3000) 
+        cy.screenshot('Pagina Dettaglio sinistro - Atterraggio comunicAll', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
-    it('Atterraggio pagina nella gestione del comunicAll' , function () {
 
-        // Verifica struttura 
-        const css_ico_mega = ".listen > a:nth-child(2)"
-        //ConsultazioneSinistriPage.isTextIncluded_ByIdAndText(clssDtl, numsin)
+    it('Contollo struttura ad Albero pagina del comunicAll' , function () {
 
-        // Seleziona il link del comunicAll
-        ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dafolder/?FORWARD=folder&TRANS_KEY=ingresso&C_SYS_USER_ID=&RELOAD_SUSPEND_PARAMS=S&Name=&ARCH_APPLICATION_RETURN=SINISTRI&APPL_NAME_RETURN=SINISTRI")        
+        const cssFldrDocumentiComuni =  '#Nodo_Sinistro_NodeText'
+        Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrDocumentiComuni, "Documenti Comuni")
+
+        const cssFldrIncarichi =  '#Nodo_1_inc > table > tbody > tr > td > span#Nodo_1_inc_NodeText'
+        Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrIncarichi, "Incarichi")
+
+        const cssFldrComunicAll =  '#Nodo_ComunicAll1_NodeText'
+        Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrComunicAll, "ComunicAll")
+        const cssNewTrattazione = "#Nodo_ComunicAll1_NodePlus"
+        cy.screenshot('pagina comunicAll - Contollo struttura pagina ad albero', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(2000)
+        Common.clickFindByIdOnIframeChild('#MAIN_IFRAME', cssNewTrattazione)
+        cy.screenshot('Pagina comunicAll - Atterraggio pagina nuova comunicazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)
     });
 
 });

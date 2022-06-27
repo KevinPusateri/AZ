@@ -95,7 +95,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')       
 
         Common.isVisibleText(lblnumsin, numsin)
-        Common.isVisibleText(lblnumsin, stato_sin)       
+        Common.isVisibleText(lblnumsin, stato_sin)   
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
     });
 
     it('"Pagina di ricerca" è verificato che il nome associato al cliente assicurato, la targa, la polizza e la data di avvenimento del sinistro non siano nulli.', function () {
@@ -150,6 +151,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Verifica (3): Cliente
         const cssCliente = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.people > a"
         Common.isVisibleText(cssCliente, clienteAssicurato);
+        cy.screenshot('Pagina Dettaglio sinistro - Atterraggio pagina', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     });
     

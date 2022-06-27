@@ -388,7 +388,7 @@ class Common {
     }
 
     /**
-     * Check if an object identified by locator and its label is displayed
+     * Check if an child object identified by locator and its label is displayed
      * @param {*} idIframe id child frame
      * @param {string} id : id attribute 
      * @param {string} text : text displayed
@@ -421,7 +421,25 @@ class Common {
      * @param {string} text : text displayed
      */
     static isVisibleText(id, text) {
-        getIframe().find(id, { timeout: 6000 }).should('exist').and('be.visible').then(($tag) => {            
+        getIframe().find(id, { timeout: 6000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {            
+            let txt = $tag.text().trim()
+            cy.log('>> the text value is:  ' + txt)
+            if (txt.includes(text))
+                cy.log('>> object with text value : "' + text + '" is defined')
+            else
+                assert.fail('object with text value: "' + text + '" is not defined')
+        });
+        cy.wait(1000)
+    }
+    /**
+     * Checks if the text associated with an object identified by its locator is displayed
+     * @param {*} idIframe id child frame
+     * @param {string} id : locator attribute 
+     * @param {string} text : text displayed
+     */
+     static isVisibleTextOnIframeChild(idIframe, id, text) {
+       
+        findIframeChild(idIframe).find(id, { timeout: 8000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {      
             let txt = $tag.text().trim()
             cy.log('>> the text value is:  ' + txt)
             if (txt.includes(text))
@@ -438,8 +456,19 @@ class Common {
      */
     static isVisibleTitleTag(tag, title)
     {
-        getIframe().find(tag + '[title="' + title + '"]').should('be.visible')
+        getIframe().find(tag + '[title="' + title + '"]').scrollIntoView().should('be.visible')
     }
+    /**
+     * Check if an object identified by tag and its title attribute is displayed
+     * @param {*} idIframe id child frame
+     * @param {string} locator : class attribute 
+     * @param {string} label : text displayed
+     */
+    static isVisibleTitleTagOnIframeChild(idIframe, tag, title)
+    {
+        findIframeChild(idIframe).find(tag + '[title="' + title + '"]').scrollIntoView().should('be.visible')
+    }
+
     /**
     /**
      * Defined @regexExp a regular expression is verified if the string @str 
