@@ -303,6 +303,9 @@ class ConsultazioneSinistriPage {
             }
         })        
     }
+    
+    
+
     static checkFonti(idFnt, idx ) {
         var elements = new Array(); 
         debugger
