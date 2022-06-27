@@ -109,26 +109,28 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('Verifica presenza pulsante immagine \'Megafono\' associata al comunicAll e raggiungibilità pagina comunicAll', function () {
 
         // Verifica presenza immagine megafono
-        const css_ico_mega = ".actions > ul > li.listen.off > a"
+        const css_ico_mega = 'td.actions > ul > li.listen.off > a'
         Common.isVisibleTitleTag("a", "ComunicAll")
         
         cy.screenshot('Verifica aggancio ' + "Dettaglio sinistro", { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         // Seleziona il link del comunicAll ver
-        ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dasinconfe/OpenFolder?counter=1")        
-        Common.clickFindByIdOnIframe(css_ico_mega)
+        ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dasinconfe/OpenFolder?counter=1")
+        cy.wait(3000)          
     });
 
     it('Contollo struttura ad Albero pagina del comunicAll' , function () {
 
-        const cssFldrDocumentiComuni =  "#Nodo_Sinistro_NodeText"
+        const cssFldrDocumentiComuni =  '#Nodo_Sinistro_NodeText'
         Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrDocumentiComuni, "Documenti Comuni")
 
-        const cssFldrIncarichi =  "#Nodo_1_inc_NodeText"
+        const cssFldrIncarichi =  '#Nodo_1_inc > table > tbody > tr > td > span#Nodo_1_inc_NodeText'
         Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrIncarichi, "Incarichi")
 
-        const cssFldrComunicAll =  "#Nodo_ComunicAll1_NodeText"
+        const cssFldrComunicAll =  '#Nodo_ComunicAll1_NodeText'
         Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrComunicAll, "ComunicAll")
+
+      
     });
 
 });
