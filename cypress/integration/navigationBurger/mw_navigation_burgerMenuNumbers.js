@@ -31,6 +31,7 @@ let keys = {
     SCARICO_DATI: true,
     INDICI_DIGITALI: true,
     NEW_BUSINESS_DANNI: true,
+    NEW_BUSINESS_ULTRA_CASA_PATRIMONIO_2022: true,
     NEW_BUSINESS_ULTRA_CASA_PATRIMONIO: true,
     NEW_BUSINESS_ULTRA_SALUTE: true,
     NEW_BUSINESS_ULTRA_IMPRESA: true,
@@ -158,6 +159,14 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
             this.skip()
         TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('New Business Danni')
+        BurgerMenuNumbers.backToNumbers()
+    })
+
+    it('Verifica aggancio New Business Ultra Casa e Patrimonio 2022', function () {
+        if (!keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO_2022)
+            this.skip()
+        TopBar.clickNumbers()
+        BurgerMenuNumbers.clickLink('New Business Ultra Casa e Patrimonio 2022')
         BurgerMenuNumbers.backToNumbers()
     })
 

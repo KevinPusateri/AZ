@@ -423,7 +423,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
 
         it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio 2022', function () {
-            if (!keys.UltraCasaPatrimonio2022)
+            if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022)
                 this.skip()
             TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio 2022')
