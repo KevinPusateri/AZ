@@ -81,7 +81,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
         Common.getObjByTextOnIframe(stato_sin)
         ConsultazioneSinistriPage.printClaimDetailsValue()
-
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        
         const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
         cliente = ConsultazioneSinistriPage.getPromiseText_ById(cssCliente1)
     

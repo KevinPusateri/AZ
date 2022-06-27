@@ -93,6 +93,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, numpol)
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, targa_assicurato)
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, dt_avv)
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per Targa CTP', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Consultazione Sinistri: Ricerca per dati anagrafici della CTP persona fisica ', function () {
@@ -108,6 +109,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, cognome_CTP)       
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, nome_CTP) 
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per dati anagrafici della CTP persona fisica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"
         Common.clickFindByIdOnIframe(locRArrow).wait(1000).log('>> object with id ['+locRArrow+'] is clicked')
@@ -129,6 +131,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let classvalue = "search_submit anagraficaCTP k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')       
         ConsultazioneSinistriPage.checkObj_ByIdAndText(lblnumsin, cf_CTP) 
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per codice fiscale della  CTP persona fisica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         
         const locRArrow = "#results > div.k-grid-content > table > tbody > tr:nth-child(1) > td:nth-child(5) > a"       
         Common.clickFindByIdOnIframe(locRArrow).wait(1000).log('>> object with id ['+locRArrow+'] is clicked')
