@@ -1,0 +1,3 @@
+set HTTP_PROXY=
+set HTTPS_PROXY=
+.\\node_modules\\.bin\\cypress run --quiet --spec cypress/integration/navigation/mw_navigation_scheda_cliente_sintesi.js --env currentEnv=%1,isAviva=%2 --reporter cypress-mochawesome-reporter --reporter-options "reportDir=cypress/reports/mw_navigation_scheda_cliente_sintesi, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Navigation Scheda Cliente Sintesi'"
