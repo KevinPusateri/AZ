@@ -84,7 +84,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.printClaimDetailsValue()
     });
     
-    it(' Recupero e controllo preliminare della valorizzazione delle informazioni del cliente e della data avveninmento sinistro', function () {
+    it('Recupero e controllo preliminare della valorizzazione delle informazioni del cliente e della data avveninmento sinistro', function () {
         const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
         ConsultazioneSinistriPage.getPromiseText_ById(cssCliente1).then((val) => {
             cliente = val;         
@@ -105,17 +105,25 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         Common.clickByIdOnIframe(css_ico_arrow_right)
         cy.wait(3000)
     });
+    it('Verifica presenza pulsante immagine \'Megafono\' associata al comunicAll e raggiungibilità pagina comunicAll', function () {
 
-    it('Selezionando l\'icona megafono si verifica l\'atterraggio sulla sezione di pagina del comunicAll  ', function () {
+        // Verifica presenza immagine megafono
+        const css_ico_mega = "li.listen.off > span"
+        Common.isVisibleTitleTag("a", "ComunicAll")
+        
+        cy.screenshot('Verifica aggancio ' + "Dettaglio sinistro", { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-        // Verifica : numero di sinistro in alto alla pagina di dettaglio
+        // Seleziona il link del comunicAll ver
+        ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dafolder/?FORWARD=folder&TRANS_KEY=ingresso&C_SYS_USER_ID=&RELOAD_SUSPEND_PARAMS=S&Name=&ARCH_APPLICATION_RETURN=SINISTRI&APPL_NAME_RETURN=SINISTRI")        
+    });
+    it('Atterraggio pagina nella gestione del comunicAll' , function () {
+
+        // Verifica struttura 
         const css_ico_mega = ".listen > a:nth-child(2)"
         //ConsultazioneSinistriPage.isTextIncluded_ByIdAndText(clssDtl, numsin)
 
         // Seleziona il link del comunicAll
-        ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dafolder/?FORWARD=folder&TRANS_KEY=ingresso&C_SYS_USER_ID=&RELOAD_SUSPEND_PARAMS=S&Name=&ARCH_APPLICATION_RETURN=SINISTRI&APPL_NAME_RETURN=SINISTRI")
-
-        
+        ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dafolder/?FORWARD=folder&TRANS_KEY=ingresso&C_SYS_USER_ID=&RELOAD_SUSPEND_PARAMS=S&Name=&ARCH_APPLICATION_RETURN=SINISTRI&APPL_NAME_RETURN=SINISTRI")        
     });
 
 });

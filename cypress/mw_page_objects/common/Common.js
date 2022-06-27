@@ -421,8 +421,7 @@ class Common {
      * @param {string} text : text displayed
      */
     static isVisibleText(id, text) {
-        getIframe().find(id, { timeout: 6000 }).should('exist').and('be.visible').then(($tag) => {
-            debugger
+        getIframe().find(id, { timeout: 6000 }).should('exist').and('be.visible').then(($tag) => {            
             let txt = $tag.text().trim()
             cy.log('>> the text value is:  ' + txt)
             if (txt.includes(text))
@@ -431,6 +430,15 @@ class Common {
                 assert.fail('object with text value: "' + text + '" is not defined')
         });
         cy.wait(1000)
+    }
+    /**
+     * Check if an object identified by tag and its title attribute is displayed
+     * @param {string} locator : class attribute 
+     * @param {string} label : text displayed
+     */
+    static isVisibleTitleTag(tag, title)
+    {
+        getIframe().find(tag + '[title="' + title + '"]').should('be.visible')
     }
     /**
     /**
