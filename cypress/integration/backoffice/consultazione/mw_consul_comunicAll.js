@@ -105,25 +105,30 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         Common.clickByIdOnIframe(css_ico_arrow_right)
         cy.wait(3000)
     });
+
     it('Verifica presenza pulsante immagine \'Megafono\' associata al comunicAll e raggiungibilità pagina comunicAll', function () {
 
         // Verifica presenza immagine megafono
-        const css_ico_mega = "li.listen.off > span"
+        const css_ico_mega = ".actions > ul > li.listen.off > a"
         Common.isVisibleTitleTag("a", "ComunicAll")
         
         cy.screenshot('Verifica aggancio ' + "Dettaglio sinistro", { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         // Seleziona il link del comunicAll ver
-        ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dafolder/?FORWARD=folder&TRANS_KEY=ingresso&C_SYS_USER_ID=&RELOAD_SUSPEND_PARAMS=S&Name=&ARCH_APPLICATION_RETURN=SINISTRI&APPL_NAME_RETURN=SINISTRI")        
+        ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dasinconfe/OpenFolder?counter=1")        
+        Common.clickFindByIdOnIframe(css_ico_mega)
     });
-    it('Atterraggio pagina nella gestione del comunicAll' , function () {
 
-        // Verifica struttura 
-        const css_ico_mega = ".listen > a:nth-child(2)"
-        //ConsultazioneSinistriPage.isTextIncluded_ByIdAndText(clssDtl, numsin)
+    it('Contollo struttura ad Albero pagina del comunicAll' , function () {
 
-        // Seleziona il link del comunicAll
-        ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dafolder/?FORWARD=folder&TRANS_KEY=ingresso&C_SYS_USER_ID=&RELOAD_SUSPEND_PARAMS=S&Name=&ARCH_APPLICATION_RETURN=SINISTRI&APPL_NAME_RETURN=SINISTRI")        
+        const cssFldrDocumentiComuni =  "#Nodo_Sinistro_NodeText"
+        Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrDocumentiComuni, "Documenti Comuni")
+
+        const cssFldrIncarichi =  "#Nodo_1_inc_NodeText"
+        Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrDocumentiComuni, "Incarichi")
+
+        const cssFldrComunicAll =  "#Nodo_ComunicAll1_NodeText"
+        Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrDocumentiComuni, "ComunicAll")
     });
 
 });
