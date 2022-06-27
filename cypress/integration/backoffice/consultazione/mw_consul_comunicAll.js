@@ -82,6 +82,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
         Common.getObjByTextOnIframe(stato_sin)
         ConsultazioneSinistriPage.printClaimDetailsValue()
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
     
     it('Recupero e controllo preliminare della valorizzazione delle informazioni del cliente e della data avveninmento sinistro', function () {
@@ -104,18 +105,18 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
         Common.clickByIdOnIframe(css_ico_arrow_right)
         cy.wait(3000)
+        cy.screenshot('Pagina Dettaglio sinistro - Atterraggio pagina', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Verifica presenza pulsante immagine \'Megafono\' associata al comunicAll e raggiungibilità pagina comunicAll', function () {
 
         // Verifica presenza immagine megafono
         const css_ico_mega = 'td.actions > ul > li.listen.off > a'
-        Common.isVisibleTitleTag("a", "ComunicAll")
-        
-        cy.screenshot('Verifica aggancio ' + "Dettaglio sinistro", { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
+        Common.isVisibleTitleTag("a", "ComunicAll")       
+        cy.screenshot('Pagina Dettaglio sinistro - Presenza icona megafono', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         // Seleziona il link del comunicAll ver
         ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dasinconfe/OpenFolder?counter=1")
+        cy.screenshot('Pagina Dettaglio sinistro - Atterraggio comunicAll', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000)          
     });
 
@@ -129,7 +130,13 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
         const cssFldrComunicAll =  '#Nodo_ComunicAll1_NodeText'
         Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrComunicAll, "ComunicAll")
-
+        const cssNewTrattazione = "#Nodo_ComunicAll1_NodePlus"
+        cy.screenshot('pagina comunicAll - Contollo struttura pagina ad albero', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(2000)
+        Common.clickFindByIdOnIframeChild('#MAIN_IFRAME', cssNewTrattazione)
+        cy.screenshot('Pagina Dettaglio sinistro - Atterraggio pagina', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)
+       
       
     });
 

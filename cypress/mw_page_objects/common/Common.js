@@ -440,7 +440,6 @@ class Common {
      static isVisibleTextOnIframeChild(idIframe, id, text) {
        
         findIframeChild(idIframe).find(id, { timeout: 8000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {      
-             
             let txt = $tag.text().trim()
             cy.log('>> the text value is:  ' + txt)
             if (txt.includes(text))
@@ -457,7 +456,7 @@ class Common {
      */
     static isVisibleTitleTag(tag, title)
     {
-        getIframe().find(tag + '[title="' + title + '"]').should('be.visible')
+        getIframe().find(tag + '[title="' + title + '"]').scrollIntoView().should('be.visible')
     }
     /**
      * Check if an object identified by tag and its title attribute is displayed
@@ -467,7 +466,7 @@ class Common {
      */
     static isVisibleTitleTagOnIframeChild(idIframe, tag, title)
     {
-        findIframeChild(idIframe).find(tag + '[title="' + title + '"]').should('be.visible')
+        findIframeChild(idIframe).find(tag + '[title="' + title + '"]').scrollIntoView().should('be.visible')
     }
 
     /**
