@@ -202,7 +202,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         Common.getObjByTextOnIframeChild(IframeDen, 'Contraente');       
         Common.getObjByTextOnIframeChild(IframeDen, cliente_cognome + " " +cliente_nome)       
         Common.getObjByTextOnIframeChild(IframeDen, cliente_targa)
-    
+        cy.screenshot('Soggetti coinvolti nel sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)
         Common.clickFindByIdOnIframeChild(IframeDen, '#avantiListaDanni')    
         cy.wait(4000)            
     });

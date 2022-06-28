@@ -311,10 +311,10 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.clickFindByIdOnIframeChild(IframeDen, '#cercaRuolo')
         cy.wait(4000)
          //Salva i dati anagrafici del conducente
-         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdSalva');
-         cy.wait(1000)
-         Common.clickFindByIdOnIframeChild(IframeDen, '#avantiVeicolo');
-         cy.wait(2000)              
+        Common.clickFindByIdOnIframeChild(IframeDen, '#CmdSalva');
+        cy.wait(1000)
+        Common.clickFindByIdOnIframeChild(IframeDen, '#avantiVeicolo');
+        cy.wait(2000)              
     });
     
     it('Verifica dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {        
@@ -327,11 +327,12 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.getObjByTextOnIframeChild(IframeDen, "Conducente Veicolo Cliente");
         Common.getObjByTextOnIframeChild(IframeDen, cliente_cognome)
         Common.getObjByTextOnIframeChild(IframeDen, cliente_nome)
-
+        cy.screenshot('Soggetti coinvolti nel sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)
         Common.clickFindByIdOnIframeChild(IframeDen, '#avantiListaDanni')    
         cy.wait(2000)          
     });
-   
+
     it('Riepilogo denuncia - verifica dati danneggiato ', function () {
         // il Mandatario
         Common.getObjByTextOnIframeChild(IframeDen, "Veicolo");

@@ -207,17 +207,17 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
     it('Inserimento dati per il risarcimento diretto con 2 veicoli conivolti e con la ' +
     'seguente dichiarazione di responsabilità del cliente: "'+sinistro_dichiarazione+'"', function () {
      // Selezione della dichiarazione di responsabilità
-     DenunciaSinistriPage.clickSelect_ById('#GARANZIE_dichiarazioneRespons', sinistro_dichiarazione)
-     // Selezione dei veicoli coinvolti
-     DenunciaSinistriPage.clickSelect_ById('#GARANZIE_numVeicoli', '2')        
-     // Selezione della firma cai
-     DenunciaSinistriPage.clickSelect_ById('#GARANZIE_flagCAI2firme', sinistro_firma_cai)
- 
-     //Il Conducente veicolo cliente è anche il contraente
-     DenunciaSinistriPage.clickObj_ByIdAndAttr('#GARANZIE_contraente', 'value', 'si');
-     cy.wait(3000)
-     Common.clickFindByIdOnIframeChild(IframeDen, '#cmdAvanti');
-     cy.wait(2000)        
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_dichiarazioneRespons', sinistro_dichiarazione)
+        // Selezione dei veicoli coinvolti
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_numVeicoli', '2')        
+        // Selezione della firma cai
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_flagCAI2firme', sinistro_firma_cai)
+    
+        //Il Conducente veicolo cliente è anche il contraente
+        DenunciaSinistriPage.clickObj_ByIdAndAttr('#GARANZIE_contraente', 'value', 'si');
+        cy.wait(3000)
+        Common.clickFindByIdOnIframeChild(IframeDen, '#cmdAvanti');
+        cy.wait(2000)        
     });
 
     it('Lista veicolo/soggetti coinvolti --> selezionare "veicolo"', function () {
@@ -303,7 +303,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.getObjByTextOnIframeChild(IframeDen, "Conducente Veicolo Cliente");
         Common.getObjByTextOnIframeChild(IframeDen, cliente_cognome)
         Common.getObjByTextOnIframeChild(IframeDen, cliente_nome)
-
+        cy.screenshot('Soggetti coinvolti nel sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)
         Common.clickFindByIdOnIframeChild(IframeDen, '#avantiListaDanni')    
         cy.wait(2000)   
     });
