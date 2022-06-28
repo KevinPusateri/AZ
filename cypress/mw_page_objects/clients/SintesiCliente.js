@@ -45,6 +45,7 @@ const CardsEmissioni = {
  * @enum {string}
  */
 const RamiVari = {
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio 2022' : 'Allianz Ultra Casa e Patrimonio 2022',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio BMP' : 'Allianz Ultra Casa e Patrimonio BMP',
     ALLIANZ_ULTRA_SALUTE: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute',
@@ -58,6 +59,7 @@ const RamiVari = {
     GESTIONE_GRANDINE: 'Gestione Grandine',
     EMISSIONE: 'Emissione',
     deleteKey: function (keys) {
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
         if (!keys.ALLIANZ_ULTRA_SALUTE) delete this.ALLIANZ_ULTRA_SALUTE
@@ -216,7 +218,7 @@ class SintesiCliente {
     /**
      * Effettua Check su Fast Quote Ultra
      */
-    static checkFastQuoteUltra() {
+    static checkFastQuoteUltra(keys) {
         cy.get('app-fast-quote').find('app-scope-element').should('be.visible')
         cy.get('lib-container').find('app-client-resume:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Fast Quote")').is(':visible')
@@ -245,20 +247,50 @@ class SintesiCliente {
                 //#region Verifica presenza SubTab Ultra
                 cy.get('nx-tab-header').find('button').contains('Ultra').click()
                 var tabUltraFastQuote = [
-                    'Casa e Patrimonio',
-                    'Salute'
+                    'Casa e Patrimonio 2022',
+                    'Salute',
+                    'Impresa',
+                    'Casa e Patrimonio'
                 ]
                 if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
-                    tabUltraFastQuote = ['Salute']
+                    tabUltraFastQuote = ['Casa e Patrimonio','Salute']
                 cy.get('app-ultra-parent-tabs').find('nx-tab-header').each(($checkTabUltraFastQuote, i) => {
                     expect($checkTabUltraFastQuote.text().trim()).to.include(tabUltraFastQuote[i]);
                 })
                 //#endregion
 
+                //#region SubTab Casa e Patrimonio 2022
+                if (keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022) {
+                    cy.get('app-ultra-parent-tabs').find('nx-tab-header')
+                        .contains('Casa e Patrimonio 2022').click()
+
+                    const scopesUltra = [
+                        'Fabbricato',
+                        'Contenuto',
+                        'Furto e rapina',
+                        'Catastrofi naturali',
+                        'Responsabilità civile della casa',
+                        'Responsabilità civile della famiglia',
+                        'Tutela legale',
+                        'Animali domestici',
+                    ]
+                    cy.get('app-ultra-fast-quote-2022').find('.scope-name').each(($checkScopes, i) => {
+                        expect($checkScopes.text().trim()).to.include(scopesUltra[i]);
+                    })
+                    cy.get('app-scope-element').find('nx-icon').each($scopeIcon => {
+                        cy.wrap($scopeIcon).click()
+                    })
+                    cy.get('app-scope-element').find('nx-icon').each($scopeIcon => {
+                        cy.wrap($scopeIcon).click()
+                    })
+                }
+                //#endregion
+
                 //#region SubTab Casa e Patrimonio
                 if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
+                    cy.get('app-ultra-parent-tabs').find('nx-tab-header')
+                    find('button').not(':contains("2022")').contains(/^Casa e Patrimonio$/).click()
 
-                    cy.get('app-ultra-parent-tabs').find('nx-tab-header').contains('Casa e Patrimonio').click()
                     const scopesUltra = [
                         'Fabbricato',
                         'Contenuto',
@@ -769,9 +801,9 @@ class SintesiCliente {
     static clickAllianzUltraCasaPatrimonio() {
         cy.wait(2000)
         if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
-            cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio').click()
+            cy.get('.cdk-overlay-container').find('button').not(':contains("2022")').contains('Allianz Ultra Casa e Patrimonio').click()
         } else
-            cy.get('.cdk-overlay-container').find('button').contains('Ultra Casa e Patrimonio').click()
+            cy.get('.cdk-overlay-container').find('button').not(':contains("2022")').contains('Ultra Casa e Patrimonio').click()
         cy.wait(2000)
         cy.intercept({
             method: 'GET',
@@ -783,6 +815,27 @@ class SintesiCliente {
         getIFrame().find('span:contains("PROCEDI")').should('be.visible')
         getIFrame().find('ultra-product-logo').find('img').should('have.attr', 'src', (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) ? './assets/img/allianz-logo-casa.png' : './assets/img/aviva-logo-cp.png')
         cy.screenshot('Verifica aggancio Ultra Casa e Patrimonio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+    }
+
+    /**
+     * Click Allianz Ultra Casa Patrimonio 2022
+     */
+    static clickAllianzUltraCasaPatrimonio2022() {
+        cy.wait(2000)
+        if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
+            cy.get('.cdk-overlay-container').find('button').contains('Allianz Ultra Casa e Patrimonio 2022').click()
+        } else
+            cy.get('.cdk-overlay-container').find('button').contains('Ultra Casa e Patrimonio 2022').click()
+        cy.wait(2000)
+        cy.intercept({
+            method: 'GET',
+            url: '**/fonti'
+        }).as('getFonti');
+        Common.canaleFromPopup()
+        cy.wait('@getFonti', { timeout: 50000 });
+        getIFrame().find('ultra-ambiti-disponibili').should('be.visible')
+        getIFrame().find('span:contains("Procedi")').should('be.visible')
+        getIFrame().find('ultra-product-logo')
     }
 
     /**

@@ -18,6 +18,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 
 
 let keysRamivari = {
+    ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022: true,
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: true,
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: true,
     ALLIANZ_ULTRA_SALUTE: true,
@@ -120,6 +121,7 @@ before(() => {
 
                 // RAMI VARI
                 if (keysCards.RAMIVARI) {
+                    cy.filterProfile(profiling, 'COMMON_ULTRACASA2022').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022 = profiled })
                     cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO = profiled })
                     cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP = profiled })
                     cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keysRamivari.ALLIANZ_ULTRA_IMPRESA = profiled })
@@ -174,8 +176,8 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.checkSituazioneCliente()
     })
 
-    it('Verifica FastQuote: Tab Utra - subTabs', function () {
-        SintesiCliente.checkFastQuoteUltra()
+    it.only('Verifica FastQuote: Tab Utra - subTabs', function () {
+        SintesiCliente.checkFastQuoteUltra(keysRamivari)
     })
 
     it('Verifica FastQuote: Tab Auto', function () {
@@ -392,6 +394,14 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.checkLinksFromRamiVariOnEmissione()
     })
 
+    it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio 2022', function () {
+        if (!keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022)
+            this.skip()
+        SintesiCliente.clickRamiVari()
+        SintesiCliente.clickAllianzUltraCasaPatrimonio2022()
+        SintesiCliente.back()
+    })
+
     it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio', function () {
         if (!keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO)
             this.skip()
@@ -399,6 +409,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.clickAllianzUltraCasaPatrimonio()
         SintesiCliente.back()
     })
+
     it('Verifica Card Rami Vari: Allianz Ultra Casa e Patrimonio BMP', function () {
         if (!keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP)
             this.skip()

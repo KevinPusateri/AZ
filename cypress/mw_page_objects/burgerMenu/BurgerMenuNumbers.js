@@ -54,6 +54,7 @@ const LinksBurgerMenu = {
     SCARICO_DATI: 'Scarico Dati',
     INDICI_DIGITALI: 'Indici Digitali',
     NEW_BUSINESS_DANNI: 'New Business Danni',
+    NEW_BUSINESS_ULTRA_CASA_PATRIMONIO_2022: 'New Business Ultra Casa e Patrimonio 2022',
     NEW_BUSINESS_ULTRA_CASA_PATRIMONIO: 'New Business Ultra Casa e Patrimonio',
     NEW_BUSINESS_ULTRA_SALUTE: 'New Business Ultra Salute',
     NEW_BUSINESS_ULTRA_IMPRESA: 'New Business Ultra Impresa',
@@ -71,7 +72,7 @@ const LinksBurgerMenu = {
         if (!keys.MONITORAGGIO_CARICO) delete this.MONITORAGGIO_CARICO
         if (!keys.MONITORAGGIO_CARICO_FONTE) delete this.MONITORAGGIO_CARICO_FONTE
         if (!keys.X_ADVISOR) delete this.X_ADVISOR
-        if (!keys.INCENTIVAZIONE && !Cypress.env('isAviva')  && !Cypress.env('isAvivaBroker')) delete this.INCENTIVAZIONE
+        if (!keys.INCENTIVAZIONE && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) delete this.INCENTIVAZIONE
         if (!keys.INCENTIVAZIONE_RECRUITING) delete this.INCENTIVAZIONE_RECRUITING
         if (!keys.ANDAMENTI_TECNICI) delete this.ANDAMENTI_TECNICI
         if (!keys.ESTRAZIONI_AVANZATE) delete this.ESTRAZIONI_AVANZATE
@@ -79,6 +80,7 @@ const LinksBurgerMenu = {
         if (!keys.INDICI_DIGITALI) delete this.INDICI_DIGITALI
         if (!keys.NEW_BUSINESS_DANNI) delete this.NEW_BUSINESS_DANNI
         if (!keys.NEW_BUSINESS_ULTRA_IMPRESA) delete this.NEW_BUSINESS_ULTRA_IMPRESA
+        if (!keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO_2022) delete this.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO_2022
         if (!keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO) delete this.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO
         if (!keys.NEW_BUSINESS_ULTRA_SALUTE) delete this.NEW_BUSINESS_ULTRA_SALUTE
         if (!keys.NEW_BUSINESS_VITA) delete this.NEW_BUSINESS_VITA
@@ -115,6 +117,7 @@ class BurgerMenuNumbers extends Numbers {
             cy.filterProfile(profiling, 'COMMON_REPORTING_SCARICO_AGENZIA').then(profiled => { keys.SCARICO_DATI = profiled })
             cy.filterProfile(profiling, 'COMMON_REPORTING_INDICEDIGITALE').then(profiled => { keys.INDICI_DIGITALI = profiled })
             cy.filterProfile(profiling, 'REPORTING_NB_DANNI').then(profiled => { keys.NEW_BUSINESS_DANNI = profiled })
+            cy.filterProfile(profiling, 'COMMON_ULTRACASA2022').then(profiled => { keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO_2022 = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO = profiled })
             cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keys.NEW_BUSINESS_ULTRA_IMPRESA = profiled })
             cy.filterProfile(profiling, 'REPORTING_NB_VITA').then(profiled => { keys.NEW_BUSINESS_VITA = profiled })
@@ -200,8 +203,8 @@ class BurgerMenuNumbers extends Numbers {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.X_ADVISOR:
-                cy.contains('Advisor',{timeout:20000})
-                cy.contains('Dashboard',{timeout:20000})
+                cy.contains('Advisor', { timeout: 20000 })
+                cy.contains('Dashboard', { timeout: 20000 })
                 cy.get('textarea').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 Common.visitUrlOnEnv()
@@ -250,6 +253,7 @@ class BurgerMenuNumbers extends Numbers {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO:
+            case LinksBurgerMenu.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO_2022:
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_SALUTE:
                 cy.wait('@getDacommercialeGET', { timeout: 150000 });
                 cy.wait('@gqlsaveoperation', { timeout: 40000 });
