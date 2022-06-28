@@ -198,7 +198,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
          DenunciaSinistriPage.clickObj_ByLabel('a','Avanti')   
          cy.wait(3000);  
     });
-    
+
     it('Verifica dei dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {        
         Common.getObjByTextOnIframeChild(IframeDen, 'Contraente');       
         Common.getObjByTextOnIframeChild(IframeDen, cliente_cognome + " " +cliente_nome)       
@@ -250,7 +250,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             Common.isValidCheck(/^-?(0|[1-9]\d*)$/, numsin, 'is valid number')
         });
 
-        // il dannegiato 
+        // il danneggiato 
         Common.getObjByTextOnIframeChild(IframeDen, 'Veicolo');
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_cognome + " " + cliente_nome);
 

@@ -248,7 +248,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             Common.isValidCheck(/^-?(0|[1-9]\d*)$/, numsin, 'is valid number')
         });
 
-        // il dannegiato 
+        // il danneggiato 
         Common.getObjByTextOnIframeChild(IframeDen, "Veicolo");
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_cognome + " " +cliente_nome);
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
