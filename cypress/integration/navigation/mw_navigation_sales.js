@@ -157,7 +157,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         TopBar.clickSales()
-        Sales.setDateEstrazione()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()

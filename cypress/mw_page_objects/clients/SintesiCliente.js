@@ -253,7 +253,7 @@ class SintesiCliente {
                     'Casa e Patrimonio'
                 ]
                 if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
-                    tabUltraFastQuote = ['Casa e Patrimonio','Salute']
+                    tabUltraFastQuote = ['Casa e Patrimonio', 'Salute']
                 cy.get('app-ultra-parent-tabs').find('nx-tab-header').each(($checkTabUltraFastQuote, i) => {
                     expect($checkTabUltraFastQuote.text().trim()).to.include(tabUltraFastQuote[i]);
                 })
@@ -289,7 +289,7 @@ class SintesiCliente {
                 //#region SubTab Casa e Patrimonio
                 if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                     cy.get('app-ultra-parent-tabs').find('nx-tab-header')
-                    find('button').not(':contains("2022")').contains(/^Casa e Patrimonio$/).click()
+                        .find('button').not(':contains("2022")').contains(/^Casa e Patrimonio$/).click()
 
                     const scopesUltra = [
                         'Fabbricato',
