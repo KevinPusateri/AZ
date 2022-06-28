@@ -322,7 +322,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         
         Common.clickFindByIdOnIframeChild(IframeDen, '#CAI_A1');
         Common.clickFindByIdOnIframeChild(IframeDen, '#CAI_B2');
-        
+        cy.screenshot('Pagina Cai', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000) 
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdAvantiCai');
         cy.wait(2000)
     });
