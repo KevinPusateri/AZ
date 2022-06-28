@@ -8,6 +8,7 @@ import 'cypress-iframe';
 const IframeDen = 'iframe[src="cliente.jsp"]'
 const IframePopUp = '#popup'
 const getIframe = () => cy.get('iframe').its('0.contentDocument.body')
+//getIframe().find(locator, { timeout: 9000 }).should('be.visible').should('have.attr', 'src').and('contain', src);
 
 /*
 const getIFrame = () => {

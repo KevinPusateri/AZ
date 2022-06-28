@@ -113,6 +113,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
         Common.clickFindByIdOnIframeChild(IframeDen, '#eseguiRicerca');
         cy.wait(1000)
+        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Dati cliente (ai fini della gestione del sinistro): inserimento dati obbligatori di denuncia: ' +
@@ -135,6 +136,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
                 DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
             }); 
             cy.wait(1000)
+            cy.screenshot('Pagina Dati denuncia - date del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.wait(1000) 
 
     });
 
@@ -147,7 +150,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.getPromiseValue_ByID('#CLIENTE_capAvv').then((sin_cap) => {                                
             cy.log('[it]>> [CAP]: '+sin_cap);
             DenunciaSinistriPage.isNotNullOrEmpty(sin_cap)
-        });             
+        });
+        cy.screenshot('Pagina Dati denuncia - Località ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)              
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdAvanti');
         cy.wait(2000)
     });
@@ -163,8 +168,10 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
     it('Dettaglio di polizza: visualizzazione e selezione', function () {     
         // Nel caso la polizza sia in periodo di mora si attiva la
          //pagina di dettaglio polizza
-        DenunciaSinistriPage.clickObj_ByLabel('a','Avanti') 
-        cy.wait(3000)  
+        cy.screenshot('Pagina Dettaglio di polizza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)      
+        DenunciaSinistriPage.clickObj_ByLabel('a','Avanti')  
+        cy.wait(1000)  
     });
 
     it('Sinistri potenzialmente doppi', function () {
