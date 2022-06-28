@@ -138,4 +138,25 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.wait(1000)
     });
 
+    it('Controllo formale struttura della pagina di nuova comunicazione', function () {
+        
+        const cssLblCategoria =  '#lblCategoriaComunicAll'
+        Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssLblCategoria, "Categoria Pratica")
+
+        const cssLblOggetto =  '#lblCategoriaComunicAll'
+        Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssLblOggetto, "Oggetto")
+        window_1656339124196_content
+        const cssLblMessaggio =  '#lblMessaggio'
+        Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssLblOggetto, "Messaggio")
+       
+        const cssBtnAnnulla =  '#btnAnnullaComunicAll'
+        Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssBtnAnnulla, "Annulla")
+
+        const cssBtnInviaPratica =  '#btnInviaComunicAll'
+        Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssBtnInviaPratica, "Invia Pratica")
+        
+        cy.wait(1000)
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per codice fiscale / partita IVA del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+    });
+
 });

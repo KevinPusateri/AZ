@@ -109,6 +109,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
         Common.clickFindByIdOnIframeChild(IframeDen, '#eseguiRicerca');
         cy.wait(1000)
+        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Dati cliente (ai fini della gestione del sinistro): inserimento dati obbligatori di denuncia: ' +
