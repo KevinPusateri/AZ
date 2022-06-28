@@ -157,12 +157,12 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         cy.wait(2000)
     });
 
-    it('Lista polizze: Selezione della polizza'+
-    '', function () {
-
-        // Selezione della polizza  
-        Common.clickFindByIdOnIframeChild(IframeDen, '#avantiListaPolizze');
-        cy.wait(3000)
+    it('Lista polizze: Selezione della polizza', function () {
+        // Selezione della polizza 
+        cy.screenshot('Pagina Lista polizze', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)      
+        Common.clickFindByIdOnIframeChild(IframeDen, '#avantiListaPolizze'); 
+        cy.wait(3000)     
     });
 
     it('Dettaglio di polizza: visualizzazione e selezione', function () {     
