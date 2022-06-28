@@ -233,7 +233,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdSalva');
         cy.wait(3000)  
         DenunciaSinistriPage.clickObjPopUpChiudi_ByLabel('a','Chiudi')
-        cy.wait(1000)  
+        cy.wait(1000) 
+        cy.screenshot('Riepilogo dati di denuncia - Salvataggio e chiusura', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000) 
     });
 
     it('Riepilogo - Verifica dati di sinistro', function () {
@@ -246,7 +248,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             Common.isValidCheck(/^-?(0|[1-9]\d*)$/, numsin, 'is valid number')
         });
 
-        // il dannegiato 
+        // il danneggiato 
         Common.getObjByTextOnIframeChild(IframeDen, "Veicolo");
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_cognome + " " +cliente_nome);
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);

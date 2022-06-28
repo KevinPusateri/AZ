@@ -226,6 +226,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         //Il Conducente veicolo cliente è anche il contraente
         DenunciaSinistriPage.clickObj_ByIdAndAttr('#GARANZIE_contraente', 'value', 'si');
         cy.wait(3000)
+        cy.screenshot('Pagina Dichiarazione di responsabilità', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000) 
         Common.clickFindByIdOnIframeChild(IframeDen, '#cmdAvanti');
         cy.wait(2000)
     });
@@ -257,7 +259,10 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.getPromiseValue_ByID('#VEICOLO_marcaVeicolo').then((val) => {  
             controparte_marca = val
             cy.log('[it]>> marca vettura: ' + controparte_marca)
-        })       
+        })
+        cy.wait(1000)
+        cy.screenshot('Dati del veicolo controparte', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)   
     });
 
     it('Dati del conducente di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
@@ -275,12 +280,14 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
         Common.clickFindByIdOnIframeChild(IframeDen, '#cercaRuolo')
         cy.wait(4000)
+        cy.screenshot('Dati del conducente di controparte', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)
         //Salva i dati anagrafici del conducente
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdSalva');
         cy.wait(1000)               
     });
 
-    it('Dati dell\'assicurato di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
+    it('Dati assicurato di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
     controparte_conducente_nome + '") ', function () {
 
         Common.clickFindByIdOnIframeChild(IframeDen, '#VEICOLO_soggettoAssicuratoControparte')
@@ -294,9 +301,11 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         cy.wait(3000)
         DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
         Common.clickFindByIdOnIframeChild(IframeDen, '#cercaRuolo')
-        cy.wait(4000)
+        cy.wait(4000)       
         //Salva i dati anagrafici del conducente
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdSalva');
+        cy.wait(1000)
+        cy.screenshot('Dati assicurato di controparte', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000)
         Common.clickFindByIdOnIframeChild(IframeDen, '#avantiVeicolo');
         cy.wait(2000)              
@@ -320,7 +329,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
     });
 
     it('Riepilogo denuncia - verifica dati danneggiato ', function () {
-        // il dannegiato 
+        // il danneggiato 
         Common.getObjByTextOnIframeChild(IframeDen, "Veicolo");
         //Common.getObjByTextOnIframeChild(IframeDen, controparte_conducente_cognome + " " + controparte_conducente_nome);
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', controparte_targa);
@@ -347,7 +356,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdSalva');
         cy.wait(3000)  
         DenunciaSinistriPage.clickObjPopUpChiudi_ByLabel('a','Chiudi')
-        cy.wait(1000)  
+        cy.wait(1000) 
+        cy.screenshot('Riepilogo dati di denuncia - Salvataggio e chiusura', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000) 
     });
 
     it('Riepilogo - Verifica dati di sinistro  ', function () {
@@ -360,7 +371,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             Common.isValidCheck(/^-?(0|[1-9]\d*)$/, numsin, 'is valid number')
         });
 
-        // il dannegiato 
+        // il danneggiato 
         Common.getObjByTextOnIframeChild(IframeDen, "Veicolo");
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF',controparte_conducente_cognome + " " + controparte_conducente_nome);
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', controparte_targa);
