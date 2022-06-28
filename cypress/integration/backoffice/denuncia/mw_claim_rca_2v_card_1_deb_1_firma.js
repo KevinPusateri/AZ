@@ -226,6 +226,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         //Il Conducente veicolo cliente è anche il contraente
         DenunciaSinistriPage.clickObj_ByIdAndAttr('#GARANZIE_contraente', 'value', 'si');
         cy.wait(3000)
+        cy.screenshot('Pagina Dichiarazione di responsabilità', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000) 
         Common.clickFindByIdOnIframeChild(IframeDen, '#cmdAvanti');
         cy.wait(2000)
     });
@@ -257,7 +259,10 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.getPromiseValue_ByID('#VEICOLO_marcaVeicolo').then((val) => {  
             controparte_marca = val
             cy.log('[it]>> marca vettura: ' + controparte_marca)
-        })       
+        })
+        cy.wait(1000)
+        cy.screenshot('Dati del veicolo controparte', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)   
     });
 
     it('Dati del conducente di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
