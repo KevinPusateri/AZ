@@ -345,18 +345,19 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdSalva');
         cy.wait(3000)  
         DenunciaSinistriPage.clickObjPopUpChiudi_ByLabel('a','Chiudi')
-        cy.wait(1000)  
+        cy.wait(1000) 
+        cy.screenshot('Riepilogo dati di denuncia - Salvataggio e chiusura', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000) 
     });
 
-    it('Riepilogo - Verifica dati di sinistro ', function () {
-               
+    it('Riepilogo - Verifica dati di sinistro ', function () {               
         const cssNumSin = "#PRECOMMIT_listaDanneggiatiBUFF > table > tbody > tr > td:nth-child(1)"
         DenunciaSinistriPage.getPromiseText_ById(cssNumSin).then((numsin) => {                 
             cy.log('[it]>> numero di sinistro: ' + numsin)
             numsin = numsin.substring(0,9)
             DenunciaSinistriPage.isNotNullOrEmpty(numsin)                 
            //Reg exp. for valid signed integer
-           Common.isValidCheck(/^-?(0|[1-9]\d*)$/, numsin, 'is valid number')
+            Common.isValidCheck(/^-?(0|[1-9]\d*)$/, numsin, 'is valid number')
            //DenunciaSinistriPage.isPositiveNumber(numsin) 
         });
 
