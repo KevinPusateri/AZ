@@ -210,6 +210,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             }
         });
         cy.wait(2000)
+        cy.screenshot('Elenco coperture - Selezione della garanzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)        
     });
 
     it('Inserimento dati per il risarcimento diretto con 2 veicoli conivolti e con la ' +
