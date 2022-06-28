@@ -145,7 +145,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         DenunciaSinistriPage.getPromiseValue_ByID('#CLIENTE_capAvv').then((sin_cap) => {                                
             cy.log('[it]>> [CAP]: '+sin_cap);
             DenunciaSinistriPage.isNotNullOrEmpty(sin_cap)
-        });             
+        });
+        cy.screenshot('Pagina Dati denuncia - ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)              
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdAvanti');
         cy.wait(2000)
     });
