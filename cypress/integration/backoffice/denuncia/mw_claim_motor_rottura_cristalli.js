@@ -132,6 +132,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
                 DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
             }); 
             cy.wait(1000)
+            cy.screenshot('Pagina Dati denuncia - date del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.wait(1000) 
     });
 
     it('Dati cliente altri dati di denuncia: ' +
@@ -144,7 +146,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             cy.log('[it]>> [CAP]: '+sin_cap);
             DenunciaSinistriPage.isNotNullOrEmpty(sin_cap)
         });
-        cy.screenshot('Pagina Dati denuncia - ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Pagina Dati denuncia - Località ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000)              
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdAvanti')
         cy.wait(2000)

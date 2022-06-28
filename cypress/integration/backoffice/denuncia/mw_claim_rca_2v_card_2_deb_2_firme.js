@@ -136,6 +136,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
                 DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
             }); 
             cy.wait(1000)
+            cy.screenshot('Pagina Dati denuncia - Località ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.wait(1000) 
 
     });
 
