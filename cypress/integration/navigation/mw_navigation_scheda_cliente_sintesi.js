@@ -176,7 +176,7 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.checkSituazioneCliente()
     })
 
-    it.only('Verifica FastQuote: Tab Utra - subTabs', function () {
+    it('Verifica FastQuote: Tab Utra - subTabs', function () {
         SintesiCliente.checkFastQuoteUltra(keysRamivari)
     })
 

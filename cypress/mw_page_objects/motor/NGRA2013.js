@@ -130,6 +130,15 @@ class NGRA2013 {
                 })
         })
         cy.wait('@getIncassoWAService', { timeout: 60000 })
+
+
+        // Digital Accounting System (DAS) sezione incassi
+        cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').should('be.visible').click()
+        cy.get('#TabIncassoModPagCombo_listbox').find('li').should('be.visible')
+            .contains('Assegno').first().click()
+
+        // INCASSA
+        cy.get('#btnTabIncassoConfirm').click()
     }
 
 }
