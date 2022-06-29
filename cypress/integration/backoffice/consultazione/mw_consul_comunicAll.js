@@ -66,6 +66,7 @@ let numsin = '929538074'
 let stato_sin = 'CHIUSO PAGATO'
 let dtAvvenimento 
 let cliente
+var categorieComunicazioni = ['Fiduciari', 'Stato Pratica', ' Info Pagamento', 'Storno Pagamento', 'Richiesta Info Generiche', 'Condizioni Di Polizza', 'Varie']
 //#endregion
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
@@ -142,13 +143,13 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         
         const cssLblCategoria =  '#lblCategoriaComunicAll'
         Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssLblCategoria, "Categoria Pratica")
-
+        
         const cssLblOggetto =  '#lblCategoriaComunicAll'
         Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssLblOggetto, "Oggetto")
         window_1656339124196_content
         const cssLblMessaggio =  '#lblMessaggio'
         Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssLblOggetto, "Messaggio")
-       
+    
         const cssBtnAnnulla =  '#btnAnnullaComunicAll'
         Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssBtnAnnulla, "Annulla")
 
@@ -159,4 +160,21 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per codice fiscale / partita IVA del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
+     //TODO : Controllo delle categorie  impostate per l'apertura di una nuova pratica
+    // it('Controllo delle categorie nuova pratica', function () {
+
+        ConsultazioneSinistriPage.verificaCategorie(categorieComunicazioni)
+    // })
+
+      //TODO : Controllo dell'oggetto della pratica e utilizzo dei caratteri speciali
+    // it('Controllo delle categorie nuova pratica', function () {
+    // })
+
+    //TODO : Controllo del messaggio  della pratica e utilizzo dei caratteri speciali
+    // it('Controllo delle categorie nuova pratica', function () {
+    // })
+
+    //TODO : Abilitazione e predisposizione nuovo invio
+    // it('Controllo delle categorie nuova pratica', function () {
+    // })
 });

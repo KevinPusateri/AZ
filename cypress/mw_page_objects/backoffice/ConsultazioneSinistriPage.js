@@ -323,6 +323,22 @@ class ConsultazioneSinistriPage {
             elements = Cypress.$.makeArray($els)
         })
     }
+
+    /**
+     * Verifica che siano selezionabili e presenti le voci di 
+     * categoria per nuova comunicazione comunicAll
+     * @param {array} categorie 
+     */
+     static verificaCategorie(categorie) {
+        cy.log(">>> VERIFICA AMBITI DASHBOARD <<<")
+
+        getIframe(). cy.find('cmbCategoriaComunicAll').should('exist').each(($el, index, $list) => {
+            const text = $el.text()
+            cy.log('>> Element('+(index)+ ') value: '+text + ' array categorie '+categorie[index] )
+            
+            ConsultazioneSinistriPage.isNotNullOrEmpty(text)           
+        })          
+    }
     
 }
 
