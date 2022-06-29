@@ -1439,8 +1439,13 @@ class TenutaTariffa {
         
         cy.get('td').last().should('exist').and('be.visible').click()
         cy.wait('@caricaLog', { timeout: 15000 })
-
-        cy.get('#ButtonLogProxy').should('exist').and('be.visible').click()
+        cy.window().document().then(function (doc) {
+            doc.addEventListener('click', () => {
+              setTimeout(function () { doc.location.reload() }, 5000)
+            })
+            cy.get('#ButtonLogProxy').should('exist').and('be.visible').click()
+        })
+        cy.pause()
 
         // cy.getProxyLog(currentCase).then(logFolder => {
         //     cy.pause()
