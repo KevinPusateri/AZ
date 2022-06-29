@@ -157,7 +157,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
     });
 
     it('Lista polizze: Selezione della polizza', function () {
-        // Selezione della polizza  
+        // Selezione della polizza 
+        cy.screenshot('Pagina Lista polizze', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)      
         Common.clickFindByIdOnIframeChild(IframeDen, '#avantiListaPolizze'); 
         cy.wait(3000)     
     });
@@ -208,6 +210,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             }
         });
         cy.wait(2000)
+        cy.screenshot('Elenco coperture - Selezione della garanzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)          
     });
 
     it('Inserimento dati per il risarcimento diretto con 2 veicoli conivolti e con la ' +
@@ -222,6 +226,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         //Il Conducente veicolo cliente è anche il contraente
         DenunciaSinistriPage.clickObj_ByIdAndAttr('#GARANZIE_contraente', 'value', 'si');
         cy.wait(3000)
+        cy.screenshot('Pagina Dichiarazione di responsabilità', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000) 
         Common.clickFindByIdOnIframeChild(IframeDen, '#cmdAvanti');
         cy.wait(2000)        
     });
@@ -253,6 +259,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             cy.log('[it]>> marca vettura: ' + controparte_marca)
         })              
         cy.wait(1000)
+        cy.screenshot('Dati del veicolo controparte', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)
     });
 
     it('Dati del conducente di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
@@ -270,12 +278,14 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.setValue_ById('#SOGGETTO_codiceFisIVA', controparte_conducente_cod_fis)        
         Common.clickFindByIdOnIframeChild(IframeDen, '#cercaRuolo')
         cy.wait(4000)
+        cy.screenshot('Dati del conducente di controparte', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)
         //Salva i dati anagrafici del conducente
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdSalva');
         cy.wait(1000)                     
     });
 
-    it('Dati dell\'assicurato di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
+    it('Dati assicurato di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
     controparte_conducente_nome + '") ', function () {
 
         Common.clickFindByIdOnIframeChild(IframeDen, '#VEICOLO_soggettoAssicuratoControparte')
@@ -291,10 +301,12 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.clickFindByIdOnIframeChild(IframeDen, '#cercaRuolo')
         cy.wait(4000)
          //Salva i dati anagrafici del conducente
-         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdSalva');
-         cy.wait(1000)
-         Common.clickFindByIdOnIframeChild(IframeDen, '#avantiVeicolo');
-         cy.wait(2000)    
+        Common.clickFindByIdOnIframeChild(IframeDen, '#CmdSalva');
+        cy.wait(1000)
+        cy.screenshot('Dati assicurato di controparte', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)
+        Common.clickFindByIdOnIframeChild(IframeDen, '#avantiVeicolo');
+        cy.wait(2000)    
     });
     
     it('Verifica dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {
@@ -308,7 +320,8 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.getObjByTextOnIframeChild(IframeDen, "Conducente Veicolo Cliente");
         Common.getObjByTextOnIframeChild(IframeDen, cliente_cognome)
         Common.getObjByTextOnIframeChild(IframeDen, cliente_nome)
-
+        cy.screenshot('Soggetti coinvolti nel sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000)
         Common.clickFindByIdOnIframeChild(IframeDen, '#avantiListaDanni')    
         cy.wait(2000)             
     });
@@ -317,11 +330,12 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         
         Common.clickFindByIdOnIframeChild(IframeDen, '#CAI_A1');
         Common.clickFindByIdOnIframeChild(IframeDen, '#CAI_B2');
-        
+        cy.screenshot('Pagina Cai', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000) 
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdAvantiCai');
         cy.wait(2000)
     });
-   
+
     it('Riepilogo denuncia - verifica dati danneggiato ', function () {
         // il Mandatario
         Common.getObjByTextOnIframeChild(IframeDen, "Veicolo");
@@ -350,10 +364,12 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.clickFindByIdOnIframeChild(IframeDen, '#CmdSalva');
         cy.wait(3000)  
         DenunciaSinistriPage.clickObjPopUpChiudi_ByLabel('a','Chiudi')
-        cy.wait(1000)  
+        cy.wait(1000)
+        cy.screenshot('Riepilogo dati di denuncia - Salvataggio e chiusura', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000) 
     });
 
-   it('Riepilogo -Verifica dati di sinistro ', function () {              
+    it('Riepilogo -Verifica dati di sinistro ', function () {              
 
         const cssNumSin = "#PRECOMMIT_listaDanneggiatiBUFF > table > tbody > tr > td:nth-child(1)"
         DenunciaSinistriPage.getPromiseText_ById(cssNumSin).then((numsin) => {                 
@@ -363,7 +379,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             Common.isValidCheck(/^-?(0|[1-9]\d*)$/, numsin, 'is valid number') 
         });
 
-        // il dannegiato 
+        // il danneggiato 
         Common.getObjByTextOnIframeChild(IframeDen, "Veicolo");
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF',cliente_cognome + " " + cliente_nome);
         Common.getObjByIdAndTextOnIframeChild(IframeDen, '#PRECOMMIT_listaDanneggiatiBUFF', cliente_targa);
