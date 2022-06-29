@@ -401,9 +401,12 @@ module.exports = (on, config) => {
 
     on("task", {
         moveToLogFolder({ filePath, currentCase, specName }) {
-            const screenshotFolderCurrentCase = process.cwd() + "\\cypress\\screenshots\\" + specName + "\\" + currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + "\\logs\\LogTariffa.xml"
+            const screenshotFolderCurrentCase = process.cwd() + "\\cypress\\screenshots\\" + specName + "\\" + currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore
 
-            fs.rename(filePath, screenshotFolderCurrentCase, function (err) {
+            if (!fs.existsSync(screenshotFolderCurrentCase)){
+                fs.mkdirSync(screenshotFolderCurrentCase, { recursive: true });
+            }
+            fs.rename(filePath, screenshotFolderCurrentCase + "\\LogProxy.xml", function (err) {
             })
 
             return screenshotFolderCurrentCase

@@ -7,11 +7,16 @@
 
 const { XMLParser } = require('fast-xml-parser')
 const moment = require('moment')
+const jsonDiff = require('../../../node_modules/json-diff/lib/index.js')
+
+const motorAICertified = require('../../fixtures/Controllo_Fattori/motor_ai_Certified.json')
 
 let parsedLogTariffa
 let parsedRadarUW
+let parsedLogProxy
 
-function findKeyLogTariffa(key, logTariffa = parsedLogTariffa) {
+
+function findKeyInLog(key, logTariffa = parsedLogTariffa) {
     var result
 
     for (var property in logTariffa) {
@@ -21,7 +26,7 @@ function findKeyLogTariffa(key, logTariffa = parsedLogTariffa) {
             }
             else if (typeof logTariffa[property] === "object") {
                 // in case it is an object
-                result = findKeyLogTariffa(key, logTariffa[property]);
+                result = findKeyInLog(key, logTariffa[property]);
 
                 if (typeof result !== "undefined") {
                     return result;
@@ -56,11 +61,11 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
         //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA
         debugger
         if (descSettore === 'KASKO COMPLETA')
-            garanziaARD = findKeyLogTariffa('Garanzia')[2]
+            garanziaARD = findKeyInLog('Garanzia')[2]
         else if (descSettore === 'AVENS')
-            garanziaARD = findKeyLogTariffa('Garanzia')[4]
+            garanziaARD = findKeyInLog('Garanzia')[4]
         else
-            garanziaARD = findKeyLogTariffa('Garanzia')[1]
+            garanziaARD = findKeyInLog('Garanzia')[1]
     }
     else
         garanziaARD = currentGaranziaARD
@@ -812,14 +817,14 @@ class TenutaTariffa {
         })
     }
 
-    static getNumeroPreventivo(){
+    static getNumeroPreventivo() {
         return new Cypress.Promise(resolve => {
             cy.getIFrame()
             cy.get('@iframe').within(() => {
-                cy.get('motor-footer').should('exist').and('be.visible').find('button').invoke('text').then(logText =>{
+                cy.get('motor-footer').should('exist').and('be.visible').find('button').invoke('text').then(logText => {
                     resolve((logText.substring(logText.indexOf('P: ') + 3)).split(' ')[0])
                 })
-            })                
+            })
         })
     }
 
@@ -1308,11 +1313,11 @@ class TenutaTariffa {
                     parsedLogTariffa = parser.parse(fileContent)
 
                     //Radar_KeyID
-                    expect(JSON.stringify(findKeyLogTariffa('Radar_KeyID'))).to.contain(currentCase.Versione_Tariffa_Radar)
-                    cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyLogTariffa('Radar_KeyID'))}`)
+                    expect(JSON.stringify(findKeyInLog('Radar_KeyID'))).to.contain(currentCase.Versione_Tariffa_Radar)
+                    cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyInLog('Radar_KeyID'))}`)
                     //CMC PUNTA FLEX
-                    expect(JSON.stringify(findKeyLogTariffa('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
-                    cy.task('log', `Versione Radar_Punta_Flex_KeyID rilevata ${JSON.stringify(findKeyLogTariffa('Radar_Punta_Flex_KeyID'))}`)
+                    expect(JSON.stringify(findKeyInLog('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
+                    cy.task('log', `Versione Radar_Punta_Flex_KeyID rilevata ${JSON.stringify(findKeyInLog('Radar_Punta_Flex_KeyID'))}`)
                 })
                 //#endregion
 
@@ -1428,7 +1433,7 @@ class TenutaTariffa {
         cy.visit(Cypress.env('urlDebugProxyPreprod'))
 
         cy.getUserWinLogin().then(data => {
-            cy.get('#txtCompagnia').should('exist').and('be.visible').type(data.agency.substr(0,2)).wait(500)
+            cy.get('#txtCompagnia').should('exist').and('be.visible').type(data.agency.substr(0, 2)).wait(500)
             cy.get('#txtAgenzia').should('exist').and('be.visible').type(data.agency.substr(2)).wait(500)
             cy.get('#txtPreventivo').should('exist').and('be.visible').type(numeroPreventivo).wait(500)
 
@@ -1436,20 +1441,46 @@ class TenutaTariffa {
 
             cy.wait('@caricaPrev', { timeout: 15000 })
         })
-        
+
         cy.get('td').last().should('exist').and('be.visible').click()
         cy.wait('@caricaLog', { timeout: 15000 })
         cy.window().document().then(function (doc) {
             doc.addEventListener('click', () => {
-              setTimeout(function () { doc.location.reload() }, 5000)
+                setTimeout(function () { doc.location.reload() }, 5000)
             })
             cy.get('#ButtonLogProxy').should('exist').and('be.visible').click()
         })
-        cy.pause()
 
-        // cy.getProxyLog(currentCase).then(logFolder => {
-        //     cy.pause()
-        // })
+        cy.getProxyLog(currentCase).then(logFolder => {
+            cy.readFile(logFolder + "\\LogProxy.xml").then(fileContent => {
+
+                const options = {
+                    ignoreAttributes: false
+                }
+                const parser = new XMLParser(options)
+                parsedLogProxy = parser.parse(fileContent)
+
+                let fattoriDic = JSON.parse(findKeyInLog('_factoryFattoriDic', parsedLogProxy)).A
+                let elencoFattori = fattoriDic.ElencoFattori
+
+                //#region Fattore MOTOR_AI
+                let motor_ai = JSON.parse(elencoFattori.filter(obj => { return obj.NomeFattore === 'MOTOR_AI' })[0].Valore)
+                let currentCaseNumber = currentCase.Identificativo_Caso
+
+                let getDifferences = jsonDiff.diffString(motor_ai, motorAICertified[currentCaseNumber], { color: false })
+                if (getDifferences === '') {
+                    cy.log('Modelli MOTORE_AI corretti')
+                    cy.task('log', 'Modelli MOTORE_AI corretti')
+                }
+                else 
+                    assert.fail(`Modelli MOTORE_AI non corretti : \n ${getDifferences}`)
+                //#endregion
+
+                cy.pause()
+                
+            })
+
+        })
     }
 }
 

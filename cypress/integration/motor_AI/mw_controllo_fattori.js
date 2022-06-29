@@ -30,32 +30,32 @@ let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
 let caseToExecute = ['1']
 
-// before(() => {
-//     Cypress.env('isAviva', false)
-//     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
-//     expect(Cypress.browser.name).to.contain('chrome')
+before(() => {
+    Cypress.env('isAviva', false)
+    //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
+    expect(Cypress.browser.name).to.contain('chrome')
 
-//     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
-//         cy.log(folderToDelete + ' rimossa!')
-//         cy.getUserWinLogin().then(data => {
-//             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-//             LoginPage.logInMWAdvanced()
-//         })
-//     })
-// })
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+        })
+    })
+})
 
-// beforeEach(() => {
-//     cy.preserveCookies()
-// })
+beforeEach(() => {
+    cy.preserveCookies()
+})
 
-// after(function () {
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
+after(function () {
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+})
 
 var currentPreventivo = '279773'
 describe('Controllo Fattori Motore AI e LogProxy: ', {
