@@ -1519,6 +1519,14 @@ Cypress.Commands.add('getTariffaLog', (currentCase) => {
     })
   })
 })
+Cypress.Commands.add('getProxyLog', (currentCase) => {
+  cy.task('getLatestDownloadedFile', Cypress.browser.name).then(latestDownload => {
+    cy.task('moveToLogFolder', { filePath: latestDownload, currentCase: currentCase, specName: Cypress.spec.name }).then(logFolder => {
+      return logFolder
+    })
+  })
+})
+
 
 //#region PDF Parse
 Cypress.Commands.add('parsePdf', () => {

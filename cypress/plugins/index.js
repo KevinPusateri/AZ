@@ -400,6 +400,17 @@ module.exports = (on, config) => {
     })
 
     on("task", {
+        moveToLogFolder({ filePath, currentCase, specName }) {
+            const screenshotFolderCurrentCase = process.cwd() + "\\cypress\\screenshots\\" + specName + "\\" + currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + "\\logs\\LogTariffa.xml"
+
+            fs.rename(filePath, screenshotFolderCurrentCase, function (err) {
+            })
+
+            return screenshotFolderCurrentCase
+        }
+    })
+
+    on("task", {
         cleanScreenshotLog(specName) {
             let folderToDelete = process.cwd() + "\\cypress\\screenshots\\" + specName.replace('/', '\\')
             rimraf.sync(folderToDelete)
