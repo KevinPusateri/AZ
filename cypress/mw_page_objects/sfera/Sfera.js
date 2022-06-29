@@ -920,8 +920,8 @@ class Sfera {
             cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
             cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
 
-            TopBar.clickSales()
-            Sales.clickLinkRapido('Nuovo Sfera')
+            TopBar.searchAndClickSuggestedNavigations('Nuovo Sfera')
+
 
             cy.wait('@infoUtente', { timeout: 60000 })
             cy.wait('@agenzieFonti', { timeout: 60000 })
@@ -935,8 +935,7 @@ class Sfera {
             cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
             cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
 
-            TopBar.clickSales()
-            Sales.clickLinkRapido('Nuovo Sfera')
+            TopBar.searchAndClickSuggestedNavigations('Nuovo Sfera')
 
             cy.wait('@infoUtente', { timeout: 60000 })
             cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
@@ -1518,7 +1517,7 @@ class Sfera {
         cy.get('sfera-assegna-colore').should('be.visible').within(() => {
             cy.get('nx-card').then((colori) => {
                 let selected = Math.floor(Math.random() * (colori.length - 1)) + 1;
-                
+
                 cy.get('nx-card').eq(selected).find('nx-radio').click()
                 cy.get('nx-card').eq(selected).find('div:first').invoke('attr', 'style').as('styleColor')
                 cy.contains('Procedi').click()
@@ -2563,21 +2562,27 @@ class Sfera {
         })
     }
 
-    static checkExistRipetitoreDati(vista) {
-        this.espandiPannello()
-        this.estrai(false)
+    static checkExistRipetitoreDati(vista,dataInizio,dataFine) {
         cy.intercept(estraiTotaleQuietanzeScartate).as('estraiTotaleQuietanzeScartate')
         switch (vista) {
             case VisteSuggerite.QUIETANZE_SCARTATE:
-                cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').then((dati) => {
-                    expect(dati).to.include('Elementi')
-                    expect(dati).to.include('Selezionati')
-                    cy.pause()
+                cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').should('be.visible').then((title) => {
+                    expect(title.text().trim()).to.include('Elementi')
+                    expect(title.text().trim()).to.include('Selezionati')
+                    expect(title.text().trim()).to.include('Data:')
+                    expect(title.text().trim()).to.include('Cluster:')
+                    expect(title.text().trim()).to.include('Fonti:')
                 })
-                break;
+                cy.get('div[class="row-total-2 nx-grid__row"]').should('be.visible')
+                    .then(contents => {
+                        expect(contents.text().trim()).to.include(dataInizio)
+                        expect(contents.text().trim()).to.include(dataFine)
+                        expect(contents.text().trim()).to.include('Motor')
+                        expect(contents.text().trim()).to.include('ATTENZIONE! - Effettuare l’eventuale quietanzamento on-line in: Viste suggerite > Carico Mancante')
 
-            default: throw new Error('Vista non presente')
+                    })
                 break;
+            default: throw new Error('Vista non presente')
         }
     }
 }

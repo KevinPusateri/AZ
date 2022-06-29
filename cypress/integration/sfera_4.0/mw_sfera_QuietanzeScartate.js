@@ -46,7 +46,12 @@ before(() => {
         "agency": "010712000"
     }
     LoginPage.logInMWAdvanced(customImpersonification)
-    Sfera.accediSferaDaHomePageMW()
+    Sfera.accediSferaDaHomePageMW(true)
+    Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
+    Sfera.checkVistaExist(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
+    Sfera.espandiPannello()
+    Sfera.setDateEstrazione(false, dataInizio)
+    Sfera.estrai(false)
 })
 
 beforeEach(() => {
@@ -80,7 +85,8 @@ after(function () {
 describe('Matrix Web : Sfera 4.0 - Operatività - vista Quietanze Scartate', function () {
 
     it('Verifica caricamento dati', function () {
-        Sfera.estrai()
+        Sfera.espandiPannello()
+        Sfera.estrai(false)
     })
 
     it('Verifica Vista Quietanze Scartate', function () {
@@ -109,11 +115,11 @@ describe('Matrix Web : Sfera 4.0 - Operatività - vista Quietanze Scartate', fun
         Sfera.setDateEstrazione(false, dataInizio)
         Sfera.estrai(false)
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-        // Sfera.estrazioneReportExcel(Sfera.COLUMNQUIETANZESCARTATE)
+        Sfera.estrazioneReportExcel(Sfera.COLUMNQUIETANZESCARTATE)
     })
 
     //! DA AGGIUNGERE SU TFS
-    it.skip('Verifica Ripetitore dati', function () {
-        Sfera.checkExistRipetitoreDati(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
+    it('Verifica Ripetitore dati', function () {
+        Sfera.checkExistRipetitoreDati(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE, dataInizio, dataFine)
     })
 })
