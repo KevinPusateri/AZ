@@ -209,23 +209,6 @@ class ConsultazioneSinistriPage {
     }
     
     /**
-     * Puts a @str value and is verified if its a valid IBAN 
-     * @param {string} str : string date format
-     */
-    /*
-    static isValidIBAN(str)
-    {       
-        const regexExp = /^[A-Z]{2}[0-9A-Z]*$/; //Reg exp. for valid IBAN
-        var pattern = new RegExp(regexExp)
-        //Tests for a match in a string. It returns true or false.
-        validation = pattern.test(str)
-        cy.wrap(str).then((validation) => {  
-            assert.isTrue(validation,'>> IBAN Validation on string "'+str+'". (IBAN '+myString[0]+') is included.')                
-        });
-    }
-    */
-    
-    /**
      * Puts a @str value and is verified if its a valid EURO currency @str (ex.: "EURO") 
      * @param {string} str : string value
      */
@@ -296,7 +279,7 @@ class ConsultazioneSinistriPage {
             var value = parseFloat($tr.find("td:nth-child("+idx+")").text())             
             sum += value
             if(index == $lis.length - 1) {
-                assert.equal(total, sum, 'Expected value equals sum of each line item')
+                assert.equal(total, sum, 'Expected equals value sum for each line item')
             }
         })        
     }
@@ -326,14 +309,29 @@ class ConsultazioneSinistriPage {
      * categoria per nuova comunicazione comunicAll
      * @param {array} categorie 
      */
-     static categoryCheck(categorie) {
+     static comunicAllCategoryCheck(categorie) {
         cy.log(">>> Verifica delle categorie per nuova pratica di comunicazione comunicall <<<")
         cy.wait(1000)
-        let textCategorie 
+        
         for (let i = 0; i < categorie.length; i++) {
             Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]').find('#cmbCategoriaComunicAll', { timeout: 3000 }).should('exist')
             .contains(categorie[i])          
         }
+    }
+    /**
+     * Checks if the text object xwith special chars
+     * @param {string} id : locator attribute  
+     */
+    static comunicAllObjectCheck(id) {
+        cy.log(">>> Verifica caratteri speciali nel campo oggetto per la pratica di comunicazione comunicall <<<")
+        // Stringa dei caratteri speciali da verificare
+        let value = '\\|!£$%&/()=\'?ì^è+òàù-€é*ç°§@#-.'
+        let obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]')
+        obj.find(id, { timeout: 3000 }).should('exist').scrollIntoView().select('Stato Pratica');
+        cy.wait(1000);
+        obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]')
+        obj.find(id, { timeout: 3000 } ).should('exist').type(value, { timeout: 3000 }).should('have.value', value)
+        cy.log('>> value: [' + value +'] compared')
     }
     
     /**

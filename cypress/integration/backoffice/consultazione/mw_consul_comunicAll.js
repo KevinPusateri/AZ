@@ -118,7 +118,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.screenshot('Pagina Dettaglio sinistro - Presenza icona megafono', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         // Seleziona il link del comunicAll ver
         ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dasinconfe/OpenFolder?counter=1")
-        cy.wait(3000) 
+        cy.wait(4000) 
         cy.screenshot('Pagina Dettaglio sinistro - Atterraggio comunicAll', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
@@ -161,12 +161,17 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
     it('Controllo delle categorie per nuova pratica di comunicazione comunicAll', function () {
     
-        ConsultazioneSinistriPage.categoryCheck(categorieComunicazioni)
+        ConsultazioneSinistriPage.comunicAllCategoryCheck(categorieComunicazioni)
     })
 
     //TODO : Controllo dell'oggetto della pratica e utilizzo dei caratteri speciali
-    // it('Controllo delle categorie nuova pratica', function () {
-    // })
+     it('Controllo dell\'oggetto della pratica e utilizzo dei caratteri speciali', function () {
+
+        let obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]').find('#cmbCategoriaComunicAll', { timeout: 3000 }).should('exist')
+        obj.scrollIntoView().select('Stato Pratica');
+
+        ConsultazioneSinistriPage.comunicAllObjectCheck('#txtComunicAllObject')
+     })
 
     //TODO : Controllo del messaggio  della pratica e utilizzo dei caratteri speciali
     // it('Controllo delle categorie nuova pratica', function () {

@@ -212,12 +212,6 @@ class MovimentazioneSinistriPage {
         })         
     }
 
-    static selectionText(id, text)
-    { 
-        getIFrameAcqDoc().get(id).click()
-        getIFrameAcqDoc().get('option').contains(text).click();
-    }
-
     static UploadFile()
     {        
         const fileName = 'CI_Test.pdf'
