@@ -400,6 +400,20 @@ module.exports = (on, config) => {
     })
 
     on("task", {
+        moveToLogFolder({ filePath, currentCase, specName }) {
+            const screenshotFolderCurrentCase = process.cwd() + "\\cypress\\screenshots\\" + specName + "\\" + currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore
+
+            if (!fs.existsSync(screenshotFolderCurrentCase)){
+                fs.mkdirSync(screenshotFolderCurrentCase, { recursive: true });
+            }
+            fs.rename(filePath, screenshotFolderCurrentCase + "\\LogProxy.xml", function (err) {
+            })
+
+            return screenshotFolderCurrentCase
+        }
+    })
+
+    on("task", {
         cleanScreenshotLog(specName) {
             let folderToDelete = process.cwd() + "\\cypress\\screenshots\\" + specName.replace('/', '\\')
             rimraf.sync(folderToDelete)

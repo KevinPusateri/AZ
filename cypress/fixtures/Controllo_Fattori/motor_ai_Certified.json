@@ -1,0 +1,36 @@
+{
+    "1" : {
+        "GRUPPO_VEICOLO_F_RCA_C": {
+            "version": 20201016,
+            "output": 32
+        },
+        "STIMA_SELEZIONE_RR": {
+            "version": 20220203,
+            "output": 1
+        },
+        "STIMA_FRAZIONAMENTO": {
+            "version": 20220519,
+            "output": 1
+        },
+        "CONVERSION_NP": {
+            "version": 20220515,
+            "output": 1147
+        },
+        "STIMA_SELEZIONE_MAX_MINIMO": {
+            "version": 20220203,
+            "output": 0
+        },
+        "CLUSTER_AGENZIA_AI": {
+            "version": 20220624,
+            "output": 4
+        },
+        "COD_CONTRATTI_FAMIGLIARI": {
+            "version": 20210520,
+            "output": 0
+        },
+        "COD_SUBAGENTE_FONTE": {
+            "version": 20210715,
+            "output": 405000
+        }
+    }
+}

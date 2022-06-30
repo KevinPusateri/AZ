@@ -7,11 +7,16 @@
 
 const { XMLParser } = require('fast-xml-parser')
 const moment = require('moment')
+const jsonDiff = require('../../../node_modules/json-diff/lib/index.js')
+
+const motorAICertified = require('../../fixtures/Controllo_Fattori/motor_ai_Certified.json')
 
 let parsedLogTariffa
 let parsedRadarUW
+let parsedLogProxy
 
-function findKeyLogTariffa(key, logTariffa = parsedLogTariffa) {
+
+function findKeyInLog(key, logTariffa = parsedLogTariffa) {
     var result
 
     for (var property in logTariffa) {
@@ -21,7 +26,7 @@ function findKeyLogTariffa(key, logTariffa = parsedLogTariffa) {
             }
             else if (typeof logTariffa[property] === "object") {
                 // in case it is an object
-                result = findKeyLogTariffa(key, logTariffa[property]);
+                result = findKeyInLog(key, logTariffa[property]);
 
                 if (typeof result !== "undefined") {
                     return result;
@@ -56,11 +61,11 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
         //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA
         debugger
         if (descSettore === 'KASKO COMPLETA')
-            garanziaARD = findKeyLogTariffa('Garanzia')[2]
+            garanziaARD = findKeyInLog('Garanzia')[2]
         else if (descSettore === 'AVENS')
-            garanziaARD = findKeyLogTariffa('Garanzia')[4]
+            garanziaARD = findKeyInLog('Garanzia')[4]
         else
-            garanziaARD = findKeyLogTariffa('Garanzia')[1]
+            garanziaARD = findKeyInLog('Garanzia')[1]
     }
     else
         garanziaARD = currentGaranziaARD
@@ -290,12 +295,14 @@ class TenutaTariffa {
             if (!flowClients) {
                 if (currentCase.Tipologia_Entita === 'Persona')
                     cy.task('nuovoClientePersonaFisica').then((currentPersonaFisica) => {
-                        let currentCognome = currentPersonaFisica.cognome
-                        let currentNome = currentPersonaFisica.nome
+                        // let currentCognome = currentPersonaFisica.cognome
+                        // let currentNome = currentPersonaFisica.nome
 
-                        cy.get('input[formcontrolname="nome"]').should('exist').and('be.visible').type(currentPersonaFisica.nome.toUpperCase())
-                        cy.get('input[formcontrolname="cognomeRagioneSociale"]').should('exist').and('be.visible').type(currentPersonaFisica.cognome.toUpperCase())
-                        cy.get('input[formcontrolname="luogoNascita"]').should('exist').and('be.visible').type(currentCase.Comune).wait(1000)
+                        cy.get('input[formcontrolname="nome"]').should('exist').and('be.visible').type((currentCase.Nome === undefined && currentCase.Cognome === undefined) ? currentPersonaFisica.nome.toUpperCase() : currentCase.Nome)
+                        cy.get('input[formcontrolname="cognomeRagioneSociale"]').should('exist').and('be.visible').type((currentCase.Nome === undefined && currentCase.Cognome === undefined) ? currentPersonaFisica.cognome.toUpperCase() : currentCase.Cognome)
+
+                        cy.get('input[formcontrolname="luogoNascita"]').should('exist').and('be.visible').type((currentCase.Comune_Nascita === undefined) ? currentCase.Comune : currentCase.Comune_Nascita).wait(2000)
+
                         cy.get('nx-autocomplete-option:visible').within(() => {
                             cy.get('.nx-autocomplete-option__label').first().click()
                         })
@@ -318,7 +325,7 @@ class TenutaTariffa {
 
                         //? Dal rilascio del 21.06.22 viene calcolato in automatico il CF
                         cy.get('nx-dropdown[formcontrolname="sesso"]').should('exist').and('be.visible').click()
-                        cy.contains('Maschio').should('exist').and('be.visible').click()
+                        cy.contains((currentCase.Sesso === undefined) ? 'Maschio' : currentCase.Sesso).should('exist').and('be.visible').click()
 
                         // //Generiamo il codice fiscale
                         // let formattedDataNascita = currentDataNascita.getFullYear() + '-' +
@@ -730,6 +737,95 @@ class TenutaTariffa {
         })
 
         cy.task('log', 'Dati Provenienza compilati correttamente')
+    }
+
+    static provenienzaVoltura(currentCase) {
+        cy.intercept({
+            method: '+(GET|PUT)',
+            url: '**/assuntivomotor/**'
+        }).as('getMotor')
+
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+
+            //Andiamo a settare la Voltura
+            cy.get('nx-dropdown[aria-haspopup="listbox"]').first().should('be.visible').click()
+            cy.get('nx-dropdown-item').should('be.visible').contains("Voltura").click()
+
+            //Veicolo aggiuntivo o trasferimento classe per cessazione di rischio (solo se Targa_Provenienza popolato)
+            if (currentCase.Targa_Provenienza !== "") {
+                cy.get('nx-checkbox[formcontrolname="isVeicoloAggiuntivoTraferimentoRischio"]').should('exist').and('be.visible').click()
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
+
+            //Data Voltura
+            if (currentCase.Data_Voltura === 'DATA DECORRENZA') {
+                let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+
+                let formattedDataVoltura = String(dataDecorrenza.getDate()).padStart(2, '0') + '/' +
+                    String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
+                    dataDecorrenza.getFullYear()
+
+                cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').clear()
+                cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').type(formattedDataVoltura).type('{enter}')
+
+                cy.wait('@getMotor', { timeout: 30000 })
+            }
+            else
+                throw new Error('Data Voltura non riconosciuta')
+
+            //Primo Proprietario
+            cy.get('input[formcontrolname="primoProprietario"]').should('exist').and('be.visible').type(currentCase.Primo_Proprietario)
+
+            //Provenienza
+            if (currentCase.Sotto_Provenienza !== "") {
+                cy.get('nx-dropdown[aria-haspopup="listbox"]').last().should('be.visible').click()
+                cy.get('nx-dropdown-item').should('be.visible').contains(currentCase.Sotto_Provenienza).click()
+                //Targa di Provenienza
+                cy.contains('targa').should('exist').and('be.visible').parents('div[class="nx-formfield__input"]').find('input').first().type(currentCase.Targa_Provenienza)
+
+                cy.contains('CERCA IN ANIA').click()
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
+
+            //Nessun proprietario della polizza indicata corrisponde a quello della nuova polizza.Trattasi di familiare convivente?
+            cy.get('@iframe').then((iframe) => {
+                if (iframe.find(':contains("Trattasi di familiare convivente?")').length > 0) {
+                    cy.contains('Trattasi di familiare convivente?').should('exist').and('be.visible').parents('form').find('span:contains("Si")').click()
+                    cy.contains('CONTINUA').should('exist').and('be.visible').click()
+                    cy.wait('@getMotor', { timeout: 30000 })
+                    cy.wait(3000)
+                }
+            })
+
+            //i due soggetti non siano conviventi
+            cy.get('@iframe').then((iframe) => {
+                if (iframe.find(':contains("i due soggetti non siano conviventi")').length > 0) {
+                    cy.contains('i due soggetti non siano conviventi').should('exist').and('be.visible').parents('form').find('span:contains("Si")').click()
+                    cy.contains('CONTINUA').should('exist').and('be.visible').click()
+                    cy.wait('@getMotor', { timeout: 30000 })
+                    cy.wait(1000)
+                }
+            })
+
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+        })
+    }
+
+    static getNumeroPreventivo() {
+        return new Cypress.Promise(resolve => {
+            cy.getIFrame()
+            cy.get('@iframe').within(() => {
+                cy.get('motor-footer').should('exist').and('be.visible').find('button').invoke('text').then(logText => {
+                    resolve((logText.substring(logText.indexOf('P: ') + 3)).split(' ')[0])
+                })
+            })
+        })
     }
 
     static compilaOffertaRCA(currentCase) {
@@ -1217,11 +1313,11 @@ class TenutaTariffa {
                     parsedLogTariffa = parser.parse(fileContent)
 
                     //Radar_KeyID
-                    expect(JSON.stringify(findKeyLogTariffa('Radar_KeyID'))).to.contain(currentCase.Versione_Tariffa_Radar)
-                    cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyLogTariffa('Radar_KeyID'))}`)
+                    expect(JSON.stringify(findKeyInLog('Radar_KeyID'))).to.contain(currentCase.Versione_Tariffa_Radar)
+                    cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyInLog('Radar_KeyID'))}`)
                     //CMC PUNTA FLEX
-                    expect(JSON.stringify(findKeyLogTariffa('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
-                    cy.task('log', `Versione Radar_Punta_Flex_KeyID rilevata ${JSON.stringify(findKeyLogTariffa('Radar_Punta_Flex_KeyID'))}`)
+                    expect(JSON.stringify(findKeyInLog('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
+                    cy.task('log', `Versione Radar_Punta_Flex_KeyID rilevata ${JSON.stringify(findKeyInLog('Radar_Punta_Flex_KeyID'))}`)
                 })
                 //#endregion
 
@@ -1230,6 +1326,7 @@ class TenutaTariffa {
                     const options = {
                         ignoreAttributes: false
                     }
+                    debugger
                     const parser = new XMLParser(options)
                     parsedRadarUW = parser.parse(fileContent)
 
@@ -1317,6 +1414,72 @@ class TenutaTariffa {
                 })
                 //#endregion
             })
+        })
+    }
+
+    static checkLogProxy(currentCase, numeroPreventivo) {
+
+        cy.intercept({
+            method: 'POST',
+            url: /CaricaPrev/
+        }).as('caricaPrev')
+
+        cy.intercept({
+            method: 'POST',
+            url: /CaricaLog/
+        }).as('caricaLog')
+
+
+        cy.visit(Cypress.env('urlDebugProxyPreprod'))
+
+        cy.getUserWinLogin().then(data => {
+            cy.get('#txtCompagnia').should('exist').and('be.visible').type(data.agency.substr(0, 2)).wait(500)
+            cy.get('#txtAgenzia').should('exist').and('be.visible').type(data.agency.substr(2)).wait(500)
+            cy.get('#txtPreventivo').should('exist').and('be.visible').type(numeroPreventivo).wait(500)
+
+            cy.get('button:contains("Carica")').should('exist').and('be.visible').click()
+
+            cy.wait('@caricaPrev', { timeout: 15000 })
+        })
+
+        cy.get('td').last().should('exist').and('be.visible').click()
+        cy.wait('@caricaLog', { timeout: 15000 })
+        cy.window().document().then(function (doc) {
+            doc.addEventListener('click', () => {
+                setTimeout(function () { doc.location.reload() }, 5000)
+            })
+            cy.get('#ButtonLogProxy').should('exist').and('be.visible').click()
+        })
+
+        cy.getProxyLog(currentCase).then(logFolder => {
+            cy.readFile(logFolder + "\\LogProxy.xml").then(fileContent => {
+
+                const options = {
+                    ignoreAttributes: false
+                }
+                const parser = new XMLParser(options)
+                parsedLogProxy = parser.parse(fileContent)
+
+                let fattoriDic = JSON.parse(findKeyInLog('_factoryFattoriDic', parsedLogProxy)).A
+                let elencoFattori = fattoriDic.ElencoFattori
+
+                //#region Fattore MOTOR_AI
+                let motor_ai = JSON.parse(elencoFattori.filter(obj => { return obj.NomeFattore === 'MOTOR_AI' })[0].Valore)
+                let currentCaseNumber = currentCase.Identificativo_Caso
+
+                let getDifferences = jsonDiff.diffString(motor_ai, motorAICertified[currentCaseNumber], { color: false })
+                if (getDifferences === '') {
+                    cy.log('Modelli MOTORE_AI corretti')
+                    cy.task('log', 'Modelli MOTORE_AI corretti')
+                }
+                else 
+                    assert.fail(`Modelli MOTORE_AI non corretti : \n ${getDifferences}`)
+                //#endregion
+
+                cy.pause()
+                
+            })
+
         })
     }
 }
