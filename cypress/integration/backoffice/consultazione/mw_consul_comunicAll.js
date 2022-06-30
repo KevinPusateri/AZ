@@ -140,7 +140,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.wait(1000)
     });
 
-    it('Controllo formale struttura della pagina di nuova comunicazione', function () {
+    it('Controllo formale sulla struttura di pagina per una nuova comunicazione', function () {
         
         const cssLblCategoria =  '#lblCategoriaComunicAll'
         const cssLblOggetto =  '#lblOggettoComunicAll'
@@ -159,13 +159,12 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per codice fiscale / partita IVA del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
-     //TODO : Controllo delle categorie  impostate per l'apertura di una nuova pratica
-    it('Controllo delle categorie nuova pratica', function () {
+    it('Controllo delle categorie per nuova pratica di comunicazione comunicAll', function () {
     
-                ConsultazioneSinistriPage.verificaCategorie(categorieComunicazioni)
+        ConsultazioneSinistriPage.categoryCheck(categorieComunicazioni)
     })
 
-      //TODO : Controllo dell'oggetto della pratica e utilizzo dei caratteri speciali
+    //TODO : Controllo dell'oggetto della pratica e utilizzo dei caratteri speciali
     // it('Controllo delle categorie nuova pratica', function () {
     // })
 

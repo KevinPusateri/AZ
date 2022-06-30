@@ -456,7 +456,7 @@ class Common {
      */
      static isVisibleTextOnIframeChild(idIframe, id, text) {
        
-        findIframeChild(idIframe).find(id, { timeout: 8000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {      
+        findIframeChild(idIframe).find(id, { timeout: 5000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {      
             let txt = $tag.text().trim()
             cy.log('>> the text value is:  ' + txt)
             if (txt.includes(text))
@@ -483,7 +483,7 @@ class Common {
      */
     static isVisibleTitleTagOnIframeChild(idIframe, tag, title)
     {
-        findIframeChild(idIframe).find(tag + '[title="' + title + '"]').scrollIntoView().should('be.visible')
+        findIframeChild(idIframe).find(tag + '[title="' + title + '"]', { timeout: 5000 }).scrollIntoView().should('be.visible')
     }
 
     /**

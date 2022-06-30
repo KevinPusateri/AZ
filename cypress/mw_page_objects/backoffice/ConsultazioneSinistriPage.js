@@ -326,38 +326,19 @@ class ConsultazioneSinistriPage {
      * categoria per nuova comunicazione comunicAll
      * @param {array} categorie 
      */
-     static verificaCategorie(categorie) {
-        cy.log(">>> VERIFICA CATEGORIE  <<<")
-        
-        getIframe().find('.mid table_window').should('exist').find('iframe[frameborder="0"]').find('cmbCategoriaComunicAll', { timeout: 3000 }).should('exist').each(($el, index, $list) => {
-            const text = $el.text()
-            cy.log('>> Element('+(index)+ ') value: '+text + ' array categorie '+categorie[index] )
-            
-            ConsultazioneSinistriPage.isNotNullOrEmpty(text)           
-        })
-    }
-    /**
-     * Checks if the text associated with an object identified by its locator is displayed
-    
-     * @param {string} id : locator attribute 
-     * @param {string} text : text displayed
-     */
-     static isVisibleTextOnIframeChild(id, text) {
-       
-        getIFrameNuovaComunicazione().find(id, { timeout: 5000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {      
-            let txt = $tag.text().trim()
-            cy.log('>> the text value is:  ' + txt)
-            if (txt.includes(text))
-                cy.log('>> object with text value : "' + text + '" is defined')
-            else
-                assert.fail('object with text value: "' + text + '" is not defined')
-        });
+     static categoryCheck(categorie) {
+        cy.log(">>> Verifica delle categorie per nuova pratica di comunicazione comunicall <<<")
         cy.wait(1000)
+        let textCategorie 
+        for (let i = 0; i < categorie.length; i++) {
+            Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]').find('#cmbCategoriaComunicAll', { timeout: 3000 }).should('exist')
+            .contains(categorie[i])          
+        }
     }
-
+    
     /**
      * Checks if the text associated with an object identified by its locator is displayed
-    
+     * @param {*} obj : iframe object
      * @param {string} id : locator attribute 
      * @param {string} text : text displayed
      */
