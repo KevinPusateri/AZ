@@ -163,15 +163,14 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     
         ConsultazioneSinistriPage.comunicAllCategoryCheck(categorieComunicazioni)
     })
-
-    //TODO : Controllo dell'oggetto della pratica e utilizzo dei caratteri speciali
-     it('Controllo dell\'oggetto della pratica e utilizzo dei caratteri speciali', function () {
+    
+    it('Controllo dell\'oggetto della pratica e utilizzo dei caratteri speciali', function () {
 
         let obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]').find('#cmbCategoriaComunicAll', { timeout: 3000 }).should('exist')
         obj.scrollIntoView().select('Stato Pratica');
 
         ConsultazioneSinistriPage.comunicAllObjectCheck('#txtComunicAllObject')
-     })
+    })
 
     //TODO : Controllo del messaggio  della pratica e utilizzo dei caratteri speciali
     // it('Controllo delle categorie nuova pratica', function () {
