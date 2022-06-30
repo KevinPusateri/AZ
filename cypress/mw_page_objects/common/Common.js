@@ -222,7 +222,6 @@ class Common {
         return cy.get(id).should('exist').and('be.visible').click()
     }
 
-
     /**
      * Click su un testo dentro l'iframe
      * @param {string} text - testo
@@ -348,15 +347,15 @@ class Common {
 
     /**
      * Trova l'elemento tramite la sua path all'interno di un iFrame ed effettua il click
-     * @param {*} idIframe del child frame
-     * @param {*} path 
+     * @param {*} idIframe child frame
+     * @param {*} path locator
      * @returns elemento cliccato per poter effettuare altre operazioni concatenate
      * @example Common.clickFindByIdOnIframeChild('iframe[src="cliente.jsp"]', '#eseguiRicerca')
      */
     static clickFindByIdOnIframeChild(idIframe, path) {
         return findIframeChild(idIframe).find(path, { timeout: 5000 }).should('exist').scrollIntoView().click()
     }
-/**
+    /**
      * Gets an object in iframe child by iframe parent
      * @param {*} IframeParent frame locator
      * @param {*} IframeChild - frame locator

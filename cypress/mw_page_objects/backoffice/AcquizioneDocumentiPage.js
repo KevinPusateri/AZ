@@ -91,11 +91,6 @@ class AcquizioneDocumentiPage {
         cy.wait(1000)        
     }
  
-    static selectionText(id, text)
-    { 
-        getIFrameAcqDoc().get('option').contains(text).click();
-    }
-
     static UploadFile()
     {        
         const fileName = 'CI_Test.pdf'
