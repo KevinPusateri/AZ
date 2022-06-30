@@ -6,26 +6,23 @@ import Common from "../common/Common"
 const mainFrame = '#matrixIframe'
 const subFrame = 'iframe[src="/dasincruscotto/cruscotto/cruscotto.jsp"]'
 const getIframe = () => cy.get('iframe').its('0.contentDocument.body')
-/*
-const getIframe = (iframe) => {    
-    cy
-        .get(iframe).iframe();
-    let iframeSin = cy.get(iframe)
-        .its('0.contentDocument').should('exist');
-
-    return iframeSin.its('body').should('not.be.undefined').then(cy.wrap)
-}
-*/
 const findIframeChild = (subFrame) => {
     getIframe().find(subFrame)
         .iframe();
 
-    let iframeChild =  getIframe().find(subFrame)
+    let iframeChild =  getIframe().find(subFrame, { timeout: 3000 })
         .its('0.contentDocument').should('exist');
 
     return iframeChild.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+const getIFrameNuovaComunicazione = () => {
+    let iframe = getIframe().find('iframe').should('have.attr', 'src').and('contain', '/dafolder/folderNewComunicAll.do')
+        .iframe('body').should('exist');
+
+
+    return iframe.should('not.be.undefined').then(cy.wrap)
+}
 class ConsultazioneSinistriPage {
     
 
@@ -330,16 +327,52 @@ class ConsultazioneSinistriPage {
      * @param {array} categorie 
      */
      static verificaCategorie(categorie) {
-        cy.log(">>> VERIFICA AMBITI DASHBOARD <<<")
-
-        getIframe(). cy.find('cmbCategoriaComunicAll').should('exist').each(($el, index, $list) => {
+        cy.log(">>> VERIFICA CATEGORIE  <<<")
+        
+        getIframe().find('.mid table_window').should('exist').find('iframe[frameborder="0"]').find('cmbCategoriaComunicAll', { timeout: 3000 }).should('exist').each(($el, index, $list) => {
             const text = $el.text()
             cy.log('>> Element('+(index)+ ') value: '+text + ' array categorie '+categorie[index] )
             
             ConsultazioneSinistriPage.isNotNullOrEmpty(text)           
-        })          
+        })
     }
+    /**
+     * Checks if the text associated with an object identified by its locator is displayed
     
+     * @param {string} id : locator attribute 
+     * @param {string} text : text displayed
+     */
+     static isVisibleTextOnIframeChild(id, text) {
+       
+        getIFrameNuovaComunicazione().find(id, { timeout: 5000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {      
+            let txt = $tag.text().trim()
+            cy.log('>> the text value is:  ' + txt)
+            if (txt.includes(text))
+                cy.log('>> object with text value : "' + text + '" is defined')
+            else
+                assert.fail('object with text value: "' + text + '" is not defined')
+        });
+        cy.wait(1000)
+    }
+
+    /**
+     * Checks if the text associated with an object identified by its locator is displayed
+    
+     * @param {string} id : locator attribute 
+     * @param {string} text : text displayed
+     */
+     static isVisibleTextOnIframeChild(obj, id, text) {
+       
+        obj.find(id, { timeout: 5000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {      
+            let txt = $tag.text().trim()
+            cy.log('>> the text value is:  ' + txt)
+            if (txt.includes(text))
+                cy.log('>> object with text value : "' + text + '" is defined')
+            else
+                assert.fail('object with text value: "' + text + '" is not defined')
+        });
+        cy.wait(1000)
+    }
 }
 
 

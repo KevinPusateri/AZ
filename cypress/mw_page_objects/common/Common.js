@@ -3,10 +3,10 @@
 const getIframe = () => cy.get('iframe').its('0.contentDocument.body')
 
 const findIframeChild = (subFrame) => {
-    getIframe().find(subFrame)
+    getIframe().find(subFrame, { timeout: 6000 })
         .iframe();
 
-    let iframeChild = getIframe().find(subFrame)
+    let iframeChild = getIframe().find(subFrame, { timeout: 6000 })
         .its('0.contentDocument').should('exist');
 
     return iframeChild.its('body').should('not.be.undefined').then(cy.wrap)
@@ -209,7 +209,7 @@ class Common {
      */
     static clickByIdOnIframe(id) {
         return getIframe().within(() => {
-            cy.get(id).should('exist').and('be.visible').click()
+            cy.get(id).should('exist').scrollIntoView().and('be.visible').click()
         })
     }
 
@@ -340,10 +340,10 @@ class Common {
      * Trova l'elemento tramite la sua path all'interno di un iFrame ed effettua il click
      * @param {*} path 
      * @returns elemento cliccato per poter effettuare altre operazioni concatenate
-     * @example Common.clickFindByIdOnIframe('button:contains("Cancella"):visible')
+     * @example Common.clickFindByIdOnIframe('#eseguiRicerca')
      */
     static clickFindByIdOnIframe(path) {
-        return getIframe().find(path, { timeout: 5000 }).click()
+        return getIframe().find(path, { timeout: 5000 }).should('exist').scrollIntoView().click()
     }
 
     /**
@@ -351,12 +351,29 @@ class Common {
      * @param {*} idIframe del child frame
      * @param {*} path 
      * @returns elemento cliccato per poter effettuare altre operazioni concatenate
-     * @example Common.clickFindByIdOnIframeChild('button:contains("Cancella"):visible')
+     * @example Common.clickFindByIdOnIframeChild('iframe[src="cliente.jsp"]', '#eseguiRicerca')
      */
     static clickFindByIdOnIframeChild(idIframe, path) {
-        return findIframeChild(idIframe).find(path, { timeout: 5000 }).click()
+        return findIframeChild(idIframe).find(path, { timeout: 5000 }).should('exist').scrollIntoView().click()
     }
-
+/**
+     * Gets an object in iframe child by iframe parent
+     * @param {*} IframeParent frame locator
+     * @param {*} IframeChild - frame locator
+     * @returns   findIframeChild(IframeParent).find(IframeChild)
+            .iframe();
+        })
+     */
+    static getIFrameChildByParent(IframeParent, IframeChild) {
+        findIframeChild(IframeParent).find(IframeChild)
+            .iframe();
+    
+        let iframe = findIframeChild(IframeParent).find(IframeChild)
+            .its('0.contentDocument').should('exist');
+    
+        return iframe.its('body').should('not.be.undefined').then(cy.wrap)
+    }
+    
     /**
      * Gets an object in iframe  by text
      * @param {*} idIframe del  frame

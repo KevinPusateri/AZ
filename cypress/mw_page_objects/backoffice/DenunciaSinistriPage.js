@@ -62,6 +62,7 @@ const getIFrameGeo = () => {
 
     return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
+
 class DenunciaSinistriPage {  
     
     static manageDialogWin(confirm)
