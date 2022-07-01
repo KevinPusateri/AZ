@@ -73,17 +73,17 @@ after(function () {
 
 describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
 
-    it('Gestione Stampa avvisi modalità massiva_gestione ente NON presente su age HUB SENZA age CP 73', function () {
-        let customImpersonification = {
-            "agentId": "ARFBOSIO",
-            "agency": "010119000"
-        }
-        LoginPage.logInMWAdvanced(customImpersonification)
-        Sfera.accediSferaDaHomePageMW(true)
-        Sfera.checkVistaSuggeriteNotExistByMenu(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
-        TopBar.logOutMW()
-        cy.wait(5000)
-    })
+    // it('Gestione Stampa avvisi modalità massiva_gestione ente NON presente su age HUB SENZA age CP 73', function () {
+    //     let customImpersonification = {
+    //         "agentId": "ARFBOSIO",
+    //         "agency": "010119000"
+    //     }
+    //     LoginPage.logInMWAdvanced(customImpersonification)
+    //     Sfera.accediSferaDaHomePageMW(true)
+    //     Sfera.checkVistaSuggeriteNotExistByMenu(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
+    //     TopBar.logOutMW()
+    //     cy.wait(5000)
+    // })
 
     it('Gestione Stampa avvisi modalità massiva_gestione ente presente su age HUB CON age CP 73', function () {
         let customImpersonification = {
@@ -104,5 +104,15 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
         Sfera.checkDateModifiedOneMonthLater()
         Sfera.checkTipoQuietanzeCheckedDefault(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
         Sfera.checkClusterAllUnchecked()
+    })
+
+    it('Gestione Stampa avvisi modalità massiva_gestione ente_colonna ente di genarazione avvisi', function () {
+        Sfera.estrai()
+        Sfera.checkColonnaPresente('Ente gen Avv')
+    })
+
+    it('Gestione Stampa avvisi modalità massiva_gestione ente_colonna ente di genarazione avvisi_report', function () {
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        Sfera.estrazioneReportExcel(Sfera.COLUMNGESTIONEENTE)
     })
 })

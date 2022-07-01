@@ -319,17 +319,14 @@ class ConsultazioneSinistriPage {
         }
     }
     /**
-     * Checks if the text object xwith special chars
+     * Checks if the text object in comunicAll can use special chars
      * @param {string} id : locator attribute  
      */
-    static comunicAllObjectCheck(id) {
+    static comunicAllSpecialCharsCheck(id) {
         cy.log(">>> Verifica caratteri speciali nel campo oggetto per la pratica di comunicazione comunicall <<<")
         // Stringa dei caratteri speciali da verificare
-        let value = '\\|!£$%&/()=\'?ì^è+òàù-€é*ç°§@#-.'
+        let value = '\\|!£$%&/()=\'?ì^è+òàù-€éç°§@#-[*].'
         let obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]')
-        obj.find(id, { timeout: 3000 }).should('exist').scrollIntoView().select('Stato Pratica');
-        cy.wait(1000);
-        obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]')
         obj.find(id, { timeout: 3000 } ).should('exist').type(value, { timeout: 3000 }).should('have.value', value)
         cy.log('>> value: [' + value +'] compared')
     }
