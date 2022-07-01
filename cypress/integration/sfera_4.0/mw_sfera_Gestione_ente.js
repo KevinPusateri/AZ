@@ -109,6 +109,10 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
     it('Gestione Stampa avvisi modalità massiva_gestione ente_colonna ente di genarazione avvisi', function () {
         Sfera.estrai()
         Sfera.checkColonnaPresente('Ente gen Avv')
-        cy.pause()
+    })
+
+    it('Gestione Stampa avvisi modalità massiva_gestione ente_colonna ente di genarazione avvisi_report', function () {
+        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        Sfera.estrazioneReportExcel(Sfera.COLUMNGESTIONEENTE)
     })
 })

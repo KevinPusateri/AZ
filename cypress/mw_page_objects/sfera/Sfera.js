@@ -573,6 +573,105 @@ const ColumnQuietanzeScartate = {
 }
 
 /**
+ * Enum Colonne in vista Gestione Ente
+ * @enum {Object}
+ */
+ const ColumnGestioneEnte = {
+    DEC: {
+        key: 'Dec.',
+        tooltip: 'Decade'
+    },
+    PT: {
+        key: 'Pt.',
+        tooltip: 'Area Portafoglio (Auto, Rami Vari, Vita, Modulari)'
+    },
+    CONTRAENTE: {
+        key: 'Contraente',
+        tooltip: 'Denominazione Cliente'
+    },
+    POLIZZA: {
+        key: 'Polizza',
+        tooltip: 'Numero Polizza'
+    },
+    ENTE_GEN_AVV: {
+        key: 'Ente gen Avv',
+        tooltip: 'Ente di generazione avvisi'
+    },
+    FR: {
+        key: 'Fr.',
+        tooltip: 'Frazionamento'
+    },
+    MENS: {
+        key: 'Mens.',
+        tooltip: 'Informazioni sulla Mensilizzazione'
+    },
+    PAG: {
+        key: 'Pag',
+        tooltip: 'Tipo Pagamento'
+    },
+    PREF: {
+        key: 'Pref',
+        tooltip: 'Tipo Pagamento Preferito della Polizza'
+    },
+    E_P: {
+        key: 'e-P',
+        tooltip: 'e-Payment'
+    },
+    SC: {
+        key: 'Sc.',
+        tooltip: 'Tipo Scadenza (Rata, Annuale, Promemoria, Simulazione)'
+    },
+    INIZIO_COP: {
+        key: 'Inizio Cop.',
+        tooltip: 'Data Inizio Copertura'
+    },
+    ST_TIT: {
+        key: 'St. Tit.',
+        tooltip: 'Stato Titolo'
+    },
+    CP: {
+        key: 'Cp.',
+        tooltip: 'Compagnia'
+    },
+    AGENZIA: {
+        key: 'Agenzia',
+        tooltip: 'Agenzia'
+    },
+    FONTE: {
+        key: 'Fonte',
+        tooltip: 'Fonte'
+    },
+    RAMO: {
+        key: 'Ramo',
+        tooltip: 'Ramo'
+    },
+    AVRI: {
+        key: 'AVRI',
+        tooltip: 'Polizza AVRI Trasporti'
+    },
+    VINC: {
+        key: 'Vinc.',
+        tooltip: 'Presenza di Vincolo'
+    },
+    INDIRIZZO: {
+        key: 'Indirizzo',
+        tooltip: 'Indirizzo Contraente'
+    },
+    EMAIL: {
+        key: 'Email',
+        tooltip: 'Indirizzo Email'
+    },
+    CONS_EMAIL_POL: {
+        key: 'Cons. Email Pol',
+        tooltip: 'Consenso Invio Email di polizza'
+    },
+    CONS_EMAIL_CL: {
+        key: 'Cons. Email Cl',
+        tooltip: 'Consenso Invio Email del Cliente'
+    },
+}
+
+/**
  * Enum Colonne in vista Carico Mancante
  * @enum {Object}
  */
@@ -649,6 +748,15 @@ class Sfera {
     static get COLUMNQUIETANZESCARTATE() {
         return ColumnQuietanzeScartate
     }
+
+    /**
+     * Funzione che ritorna le colonne della vista Gestione Ente
+     * @returns {ColumnGestioneEnte} Colonne disponibili
+     */
+     static get COLUMNGESTIONEENTE() {
+        return ColumnGestioneEnte
+    }
+
     /**
      * Funzione che ritorna le colonne della vista Carico Mancante
      * @returns {ColumnCaricoMancante} Colonne disponibili
