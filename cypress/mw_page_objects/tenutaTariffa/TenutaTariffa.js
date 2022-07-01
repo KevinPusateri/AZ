@@ -326,7 +326,7 @@ class TenutaTariffa {
 
                         //? Dal rilascio del 21.06.22 viene calcolato in automatico il CF
                         cy.get('nx-dropdown[formcontrolname="sesso"]').should('exist').and('be.visible').click()
-                        cy.contains((currentCase.Sesso === undefined) ? 'Maschio' : currentCase.Sesso).should('exist').and('be.visible').click()
+                        cy.contains((currentCase.Sesso === undefined || currentCase.Sesso === "") ? 'Maschio' : currentCase.Sesso).should('exist').and('be.visible').click()
 
                         // //Generiamo il codice fiscale
                         // let formattedDataNascita = currentDataNascita.getFullYear() + '-' +
@@ -1463,10 +1463,10 @@ class TenutaTariffa {
                 let fattoriDic = JSON.parse(findKeyInLog('_factoryFattoriDic', parsedLogProxy)).A
                 let elencoFattori = fattoriDic.ElencoFattori
 
-                console.log(elencoFattori)
+                debugger
                 //#region Fattore MOTOR_AI
                 let motor_ai = JSON.parse(elencoFattori.filter(obj => { return obj.NomeFattore === 'MOTOR_AI' })[0].Valore)
-
+                console.log(motor_ai)
                 let getDifferences = jsonDiff.diffString(motor_ai, motorAICertified[currentCase.Identificativo_Caso], { color: false })
                 if (getDifferences === '')
                     cy.task('log', 'Modelli MOTORE_AI corretti')
@@ -1476,7 +1476,7 @@ class TenutaTariffa {
 
                 //#region Altri Fattori
                 let fattoriWithOutMotorAI = elencoFattori.filter(obj => { return obj.NomeFattore !== 'MOTOR_AI' })
-
+                console.log(fattoriWithOutMotorAI)
                 getDifferences = jsonDiff.diffString(fattoriWithOutMotorAI, controlloFattoriCert[currentCase.Identificativo_Caso], { color: false })
                 if (getDifferences === '')
                     cy.task('log', 'Fattori corretti')
