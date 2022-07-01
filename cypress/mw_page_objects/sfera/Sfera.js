@@ -2783,6 +2783,7 @@ class Sfera {
      * tag(Estrai). => Check Cluster are unchecked
      */
     static checkClusterAllUnchecked() {
+        cy.wait(10000)
         cy.get('app-card-panel').should('be.visible').then(() => {
             let numQuietanze = []
             cy.get('h3[class="big-num nx-font-weight-semibold nx-heading--subsection-small"]').each(($num, i) => {
@@ -2816,6 +2817,17 @@ class Sfera {
 
         cy.get('nx-icon[name="close"]:last').click()
 
+    }
+
+    static checkTrePuntiniLink(link){
+        //Click tre puntini
+        cy.get('nx-icon[class="ndbx-icon nx-icon--ellipsis-v nx-link__icon nx-icon--auto"]')
+            .should('be.visible')
+            .click().wait(2000)
+
+        cy.get('div[role="menu"]').should('be.visible').within(()=>{
+            cy.get('button[role="menuitem"]').should('include.text',link)
+        })
     }
 }
 export default Sfera
