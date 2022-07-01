@@ -28,7 +28,7 @@ import { controlloFattoriCases } from '../../fixtures/Controllo_Fattori/Controll
 //?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
-let caseToExecute = ['1']
+let caseToExecute = []
 
 before(() => {
     Cypress.env('isAviva', false)
@@ -57,7 +57,7 @@ after(function () {
     //#endregion
 })
 
-var currentPreventivo = '279773'
+var currentPreventivo
 describe('Controllo Fattori Motore AI e LogProxy: ', {
     retries: {
         runMode: 0,
@@ -86,7 +86,7 @@ describe('Controllo Fattori Motore AI e LogProxy: ', {
                     TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
                     TenutaTariffa.compilaVeicolo(currentCase)
                     TenutaTariffa.provenienzaVoltura(currentCase)
-                    TenutaTariffa.getNumeroPreventivo().then(numPreventivo =>{
+                    TenutaTariffa.getNumeroPreventivo().then(numPreventivo => {
                         currentPreventivo = numPreventivo
                         cy.log(`Numero preventivo : ${numPreventivo}`)
                     })
@@ -95,19 +95,12 @@ describe('Controllo Fattori Motore AI e LogProxy: ', {
                     this.skip()
             })
 
-            it.only("LogProxy", function () {
-                TenutaTariffa.checkLogProxy(currentCase, currentPreventivo)
+            it("LogProxy", function () {
+                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
+                    TenutaTariffa.checkLogProxy(currentCase, currentPreventivo)
+                else
+                    this.skip()
             })
-
-            // it("LogTariffa", function () {
-            //     if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
-            //         if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
-            //             TenutaTariffa.checkTariffaRCA(currentCase)
-            //         else
-            //             this.skip()
-            //     else
-            //         this.skip()
-            // })
         })
     })
 })
