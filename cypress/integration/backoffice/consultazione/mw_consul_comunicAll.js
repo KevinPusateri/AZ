@@ -67,6 +67,7 @@ let stato_sin = 'CHIUSO PAGATO'
 let dtAvvenimento 
 let cliente
 var categorieComunicazioni = ['Fiduciari', 'Stato Pratica', ' Info Pagamento', 'Storno Pagamento', 'Richiesta Info Generiche', 'Condizioni Di Polizza', 'Varie']
+
 //#endregion
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
@@ -117,7 +118,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.screenshot('Pagina Dettaglio sinistro - Presenza icona megafono', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         // Seleziona il link del comunicAll ver
         ConsultazioneSinistriPage.InvokeRmvAttOnClick_ById(css_ico_mega, "https://portaleagenzie.pp.azi.allianz.it/dasinconfe/OpenFolder?counter=1")
-        cy.wait(3000) 
+        cy.wait(4000) 
         cy.screenshot('Pagina Dettaglio sinistro - Atterraggio comunicAll', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
@@ -139,36 +140,38 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.wait(1000)
     });
 
-    it('Controllo formale struttura della pagina di nuova comunicazione', function () {
+    it('Controllo formale sulla struttura di pagina per una nuova comunicazione', function () {
         
         const cssLblCategoria =  '#lblCategoriaComunicAll'
-        Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssLblCategoria, "Categoria Pratica")
-        
-        const cssLblOggetto =  '#lblCategoriaComunicAll'
-        Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssLblOggetto, "Oggetto")
-        window_1656339124196_content
+        const cssLblOggetto =  '#lblOggettoComunicAll'
         const cssLblMessaggio =  '#lblMessaggio'
-        Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssLblOggetto, "Messaggio")
-    
         const cssBtnAnnulla =  '#btnAnnullaComunicAll'
-        Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssBtnAnnulla, "Annulla")
-
         const cssBtnInviaPratica =  '#btnInviaComunicAll'
-        Common.isVisibleTextOnIframeChild('#window_1656335944853_content', cssBtnInviaPratica, "Invia Pratica")
-        
+
+        ConsultazioneSinistriPage.isVisibleTextOnIframeChild(Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]'),  cssLblCategoria, "Categoria Pratica")
+        ConsultazioneSinistriPage.isVisibleTextOnIframeChild(Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]'),  cssLblOggetto, "Oggetto")
+        ConsultazioneSinistriPage.isVisibleTextOnIframeChild(Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]'),  cssLblMessaggio, "Messaggio")
+        ConsultazioneSinistriPage.isVisibleTextOnIframeChild(Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]'),  cssBtnAnnulla, "Annulla")
+        ConsultazioneSinistriPage.isVisibleTextOnIframeChild(Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]'),  cssBtnInviaPratica, "Invia Pratica")
+
         cy.wait(1000)
+        
         cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per codice fiscale / partita IVA del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
-     //TODO : Controllo delle categorie  impostate per l'apertura di una nuova pratica
-    // it('Controllo delle categorie nuova pratica', function () {
+    it('Controllo delle categorie per nuova pratica di comunicazione comunicAll', function () {
+    
+        ConsultazioneSinistriPage.comunicAllCategoryCheck(categorieComunicazioni)
+    })
 
-        ConsultazioneSinistriPage.verificaCategorie(categorieComunicazioni)
-    // })
+    //TODO : Controllo dell'oggetto della pratica e utilizzo dei caratteri speciali
+     it('Controllo dell\'oggetto della pratica e utilizzo dei caratteri speciali', function () {
 
-      //TODO : Controllo dell'oggetto della pratica e utilizzo dei caratteri speciali
-    // it('Controllo delle categorie nuova pratica', function () {
-    // })
+        let obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]').find('#cmbCategoriaComunicAll', { timeout: 3000 }).should('exist')
+        obj.scrollIntoView().select('Stato Pratica');
+
+        ConsultazioneSinistriPage.comunicAllObjectCheck('#txtComunicAllObject')
+     })
 
     //TODO : Controllo del messaggio  della pratica e utilizzo dei caratteri speciali
     // it('Controllo delle categorie nuova pratica', function () {

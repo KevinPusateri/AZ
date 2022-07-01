@@ -10,6 +10,7 @@ const moment = require('moment')
 const jsonDiff = require('../../../node_modules/json-diff/lib/index.js')
 
 const motorAICertified = require('../../fixtures/Controllo_Fattori/motor_ai_Certified.json')
+const controlloFattoriCert = require('../../fixtures/Controllo_Fattori/Controllo_Fattori_Cert.json')
 
 let parsedLogTariffa
 let parsedRadarUW
@@ -1453,7 +1454,6 @@ class TenutaTariffa {
 
         cy.getProxyLog(currentCase).then(logFolder => {
             cy.readFile(logFolder + "\\LogProxy.xml").then(fileContent => {
-
                 const options = {
                     ignoreAttributes: false
                 }
@@ -1463,23 +1463,27 @@ class TenutaTariffa {
                 let fattoriDic = JSON.parse(findKeyInLog('_factoryFattoriDic', parsedLogProxy)).A
                 let elencoFattori = fattoriDic.ElencoFattori
 
+                console.log(elencoFattori)
                 //#region Fattore MOTOR_AI
                 let motor_ai = JSON.parse(elencoFattori.filter(obj => { return obj.NomeFattore === 'MOTOR_AI' })[0].Valore)
-                let currentCaseNumber = currentCase.Identificativo_Caso
 
-                let getDifferences = jsonDiff.diffString(motor_ai, motorAICertified[currentCaseNumber], { color: false })
-                if (getDifferences === '') {
-                    cy.log('Modelli MOTORE_AI corretti')
+                let getDifferences = jsonDiff.diffString(motor_ai, motorAICertified[currentCase.Identificativo_Caso], { color: false })
+                if (getDifferences === '')
                     cy.task('log', 'Modelli MOTORE_AI corretti')
-                }
-                else 
+                else
                     assert.fail(`Modelli MOTORE_AI non corretti : \n ${getDifferences}`)
                 //#endregion
 
-                cy.pause()
-                
-            })
+                //#region Altri Fattori
+                let fattoriWithOutMotorAI = elencoFattori.filter(obj => { return obj.NomeFattore !== 'MOTOR_AI' })
 
+                getDifferences = jsonDiff.diffString(fattoriWithOutMotorAI, controlloFattoriCert[currentCase.Identificativo_Caso], { color: false })
+                if (getDifferences === '')
+                    cy.task('log', 'Fattori corretti')
+                else
+                    assert.fail(`Fattori variati: \n ${getDifferences}`)
+                //#endregion
+            })
         })
     }
 }
