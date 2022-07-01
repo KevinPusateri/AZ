@@ -122,7 +122,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.screenshot('Pagina Dettaglio sinistro - Atterraggio comunicAll', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
-    it('Contollo struttura ad Albero pagina del comunicAll' , function () {
+    it('Controllo struttura ad Albero pagina del comunicAll' , function () {
 
         const cssFldrDocumentiComuni =  '#Nodo_Sinistro_NodeText'
         Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrDocumentiComuni, "Documenti Comuni")
@@ -133,7 +133,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const cssFldrComunicAll =  '#Nodo_ComunicAll1_NodeText'
         Common.isVisibleTextOnIframeChild('#MAIN_IFRAME', cssFldrComunicAll, "ComunicAll")
         const cssNewTrattazione = "#Nodo_ComunicAll1_NodePlus"
-        cy.screenshot('pagina comunicAll - Contollo struttura pagina ad albero', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('pagina comunicAll - Controllo struttura pagina ad albero', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(2000)
         Common.clickFindByIdOnIframeChild('#MAIN_IFRAME', cssNewTrattazione)
         cy.screenshot('Pagina comunicAll - Atterraggio pagina nuova comunicazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -164,19 +164,23 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.comunicAllCategoryCheck(categorieComunicazioni)
     })
     
-    it('Controllo dell\'oggetto della pratica e utilizzo dei caratteri speciali', function () {
+    it('Controllo e utilizzo dei caratteri speciali nel testo dell\'oggetto della comunicazione comunicAll', function () {
 
         let obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]').find('#cmbCategoriaComunicAll', { timeout: 3000 }).should('exist')
         obj.scrollIntoView().select('Stato Pratica');
 
-        ConsultazioneSinistriPage.comunicAllObjectCheck('#txtComunicAllObject')
+        ConsultazioneSinistriPage.comunicAllSpecialCharsCheck('#txtComunicAllObject')
     })
 
-    //TODO : Controllo del messaggio  della pratica e utilizzo dei caratteri speciali
-    // it('Controllo delle categorie nuova pratica', function () {
-    // })
+    
+    it('Controllo utilizzo dei caratteri speciali nell\'area di testo della comunicazione comunicAll,', function () {
+       
+        ConsultazioneSinistriPage.comunicAllSpecialCharsCheck('#txtComunicAllMessage')        
+    })
 
     //TODO : Abilitazione e predisposizione nuovo invio
     // it('Controllo delle categorie nuova pratica', function () {
+
+    //btnInviaComunicAll
     // })
 });
