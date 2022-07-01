@@ -99,8 +99,7 @@ describe('Controllo Fattori Motore AI e LogProxy: ', {
                 if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
                     TenutaTariffa.checkLogProxy(currentCase, currentPreventivo)
                 else
-                    this.skip
-                        ()
+                    this.skip()
             })
         })
     })
