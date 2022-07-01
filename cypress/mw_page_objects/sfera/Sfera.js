@@ -123,7 +123,8 @@ const VisteSuggerite = {
     CARICO_MANCANTE: 'Carico Mancante',
     DELTA_PREMIO: 'Delta premio – riduzione premio a cura dell’agenzia',
     QUIETANZE_SCARTATE: 'Quietanze Scartate',
-    STAMPA_QUIETANZE: 'Stampa Quietanze'
+    STAMPA_QUIETANZE: 'Stampa Quietanze',
+    GESTIONE_ENTE: 'Gestione Ente'
 }
 
 /**
@@ -2282,6 +2283,28 @@ class Sfera {
     }
 
     /**
+     * It checks if the checkbox of the agency passed as parameter is checked and if all the other
+     * checkboxes are disabled.
+     * @param {String} agenzia - the name of the agency
+     */
+    static checkAgenzieSabbiate(agenzia) {
+        cy.get('h3').contains('Agenzie').click()
+        cy.get('nx-modal-container[role="dialog"]').should('be.visible').within(() => {
+            cy.screenshot('Agenzie Sabbiate', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.get('div[class="container-list ng-star-inserted"]').within(() => {
+                cy.get('nx-checkbox:contains("' + agenzia + '")').within(() => {
+                    cy.get('input[type="checkbox"]').should('have.attr', 'value', 'true').and('not.have.attr', 'disabled')
+                })
+
+                cy.get('nx-checkbox').not(':contains("' + agenzia + '")').within(() => {
+                    cy.get('input[type="checkbox"]').should('have.attr', 'value', 'false').and('have.attr', 'disabled')
+                })
+            })
+            cy.contains('Annulla').click()
+        })
+    }
+
+    /**
      * Verifica se su AVIVA è selezionato solo Motor
      * @param {Portafogli} portafoglio
      */
@@ -2502,6 +2525,47 @@ class Sfera {
         cy.wait(5000)
     }
 
+
+    /**
+     * It clicks on a dropdown menu, then clicks on a submenu, then checks if the submenu contains a
+     * specific text.
+     * @param {VisteSuggerite} vista - the name of the view
+     */
+    static checkVistaSuggeriteExistByMenu(vista) {
+        cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+
+        // Click Le mie viste
+        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+            cy.contains('Viste suggerite').click()
+        }).then(() => {
+            cy.get('div[class="cdk-overlay-pane"]').last()
+                .should('be.visible').within(($menuVisteSuggerite) => {
+                    expect($menuVisteSuggerite).to.contain(vista)
+                })
+
+        })
+    }
+
+    /**
+     * It clicks on a menu, then clicks on a submenu, then checks that the submenu does not contain a
+     * certain string.
+     * @param {VisteSuggerite} vista - the name of the view
+     */
+    static checkVistaSuggeriteNotExistByMenu(vista) {
+        cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+
+        // Click Le mie viste
+        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+            cy.contains('Viste suggerite').click()
+        }).then(() => {
+            cy.get('div[class="cdk-overlay-pane"]').last()
+                .should('be.visible').within(($menuVisteSuggerite) => {
+                    expect($menuVisteSuggerite).to.not.contain(vista)
+                })
+
+        })
+    }
+
     /**
      * It checks if the tooltip of a column header is correct.
      * @param {Object} columns - columns of the view 
@@ -2555,14 +2619,13 @@ class Sfera {
         cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
             cy.get('tr[class="nx-table-row ng-star-inserted"]').each((rowsTable) => {
                 cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
-                    console.log($textCell.text().trim())
                     expect($textCell.text().trim()).to.contain(valore)
                 })
             })
         })
     }
 
-    static checkExistRipetitoreDati(vista,dataInizio,dataFine) {
+    static checkExistRipetitoreDati(vista, dataInizio, dataFine) {
         cy.intercept(estraiTotaleQuietanzeScartate).as('estraiTotaleQuietanzeScartate')
         switch (vista) {
             case VisteSuggerite.QUIETANZE_SCARTATE:
@@ -2584,6 +2647,67 @@ class Sfera {
                 break;
             default: throw new Error('Vista non presente')
         }
+    }
+
+    /**
+     * It checks if the checkboxes are checked or not.
+     * @param {VisteSuggerite} vista - the name of the view
+     */
+    static checkTipoQuietanzeCheckedDefault(vista) {
+        switch (vista) {
+            case VisteSuggerite.GESTIONE_ENTE:
+                cy.get('nx-checkbox[formcontrolname="' + TipoQuietanze.IN_LAVORAZIONE + '"]').within(() => {
+                    cy.get('input').invoke('attr', 'value', 'true')
+                })
+                cy.get('nx-checkbox[formcontrolname="' + TipoQuietanze.DA_LAVORARE + '"]').within(() => {
+                    cy.get('input').invoke('attr', 'value', 'true')
+                })
+                cy.get('nx-checkbox[formcontrolname="' + TipoQuietanze.INCASSATE + '"]').within(() => {
+                    cy.get('input').invoke('attr', 'value', 'false')
+                })
+                break;
+            default: throw new Error('Errore vista non ')
+        }
+    }
+
+    /**
+     * It checks that the sum of the numbers in the "h3"(tipoQuietanze) tags is equal to the number in the "button"
+     * tag(Estrai). => Check Cluster are unchecked
+     */
+    static checkClusterAllUnchecked() {
+        cy.get('app-card-panel').should('be.visible').then(() => {
+            let numQuietanze = []
+            cy.get('h3[class="big-num nx-font-weight-semibold nx-heading--subsection-small"]').each(($num, i) => {
+                numQuietanze.push(parseInt($num.text().trim()))
+            }).then(() => {
+                cy.get('footer').find('button:contains("Estrai") > span').then((numEstrai) => {
+                    const sum = numQuietanze.reduce((partialSum, a) => partialSum + a, 0);
+                    var number = parseInt(numEstrai.text().trim().replace(/\D/g, ""))
+                    expect(sum.toString()).to.eq(number.toString())
+                })
+            })
+        })
+    }
+
+    static setDateInizio(dataInizio) {
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).click().type(dataInizio).wait(1000)
+    }
+
+    /**
+     * It checks if the date is one month later than the current date.
+     */
+    static checkDateModifiedOneMonthLater() {
+        cy.get('nx-icon[name="calendar"]:last').click()
+        cy.get('tbody[class="nx-calendar-body"]').should('be.visible').find('tr[role="row"]:last')
+            .find('div[class="nx-calendar-body-cell-content nx-calendar-body-selected"]').then((day) => {
+                if (day.text().includes('30') || day.text().includes('28') || day.text().includes('29') || day.text().includes('31'))
+                    assert.isOk('Data Cambiata correttamente')
+                else
+                    assert.fail('ERRORE -> Data non cambiata automaticamente')
+            })
+
+        cy.get('nx-icon[name="close"]:last').click()
+
     }
 }
 export default Sfera
