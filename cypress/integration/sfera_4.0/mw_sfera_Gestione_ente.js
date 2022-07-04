@@ -96,12 +96,11 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
     })
 
     it('Verifica Parametri di default associati alla vista', function () {
-        Sfera.setDateInizio(dataInizio)
         Sfera.checkAgenzieSabbiate('552 - FRASCATI FC GROUP')
         Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
         Sfera.checkLob(Sfera.PORTAFOGLI.RAMI_VARI)
         Sfera.checkLob(Sfera.PORTAFOGLI.VITA)
-        Sfera.checkDateModifiedOneMonthLater()
+        Sfera.checkDateModifiedOneMonthLater(dataInizio)
         Sfera.checkTipoQuietanzeCheckedDefault(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
         Sfera.checkClusterAllUnchecked()
     })
@@ -141,5 +140,11 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
 
     it('Verifica sezioni decadi -> Tooltip', function () {
         Sfera.checkTooltipSezioniDecadi()
+    })
+
+    it('Verifica aggiornamento decadi cambiando periodo', function () {
+        Sfera.espandiPannello()
+        Sfera.checkVaraziazioneDecadiByCalendar()
+
     })
 })
