@@ -1107,6 +1107,13 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
 
+            //La data di decorrenza non pemetterà il salvataggio del preventivo
+            cy.get('@iframe').then((iframe) => {
+                if (iframe.find(':contains("La data di decorrenza non pemetterà il salvataggio del preventivo")').length > 0) {
+                    cy.contains('La data di decorrenza non pemetterà il salvataggio del preventivo').should('exist').and('be.visible').parents('nx-modal-container').find('span:contains("CONFERMA")').click()
+                }
+            })
+
             cy.intercept({
                 method: 'GET',
                 url: '**/optional-pacchetti'

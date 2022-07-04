@@ -4,7 +4,7 @@
       "Identificativo_Caso": "1",
       "Settore": "1",
       "Descrizione_Settore": "ATTI VANDALICI ED EVENTI SOCIOPOLITICI",
-      "Periodo_Tariffazione": "07-07",
+      "Periodo_Tariffazione": "09-09",
       "Anno_Periodo_Tariffazione": "2022",
       "Tipologia_Entita": "Persona",
       "Partita_Iva": "",
@@ -105,13 +105,13 @@
       "Tipo_Kasko": "",
       "Versione_Kasko": "",
       "Calcolo_Kasko": "",
-      "Versione_Avens": "t14_3120_016000_20220401_000000000000_000001",
+      "Versione_Avens": "t14_3120_016000_20220901_000000000000_000001",
       "Calcolo_Avens": "",
-      "Totale_Premio": "309,83",
+      "Totale_Premio": "277,00",
       "Punta_Flex_Ard": "0"
     },
     {
-      "Identificativo_Caso": "2",
+      "Identificativo_Caso": "SKIP",
       "Settore": "1",
       "Descrizione_Settore": "EVENTI NATURALI",
       "Periodo_Tariffazione": "07-07",
@@ -224,7 +224,7 @@
       "Identificativo_Caso": "3",
       "Settore": "1",
       "Descrizione_Settore": "KASKO TOTALE",
-      "Periodo_Tariffazione": "07-07",
+      "Periodo_Tariffazione": "09-09",
       "Anno_Periodo_Tariffazione": "2022",
       "Tipologia_Entita": "Persona",
       "Partita_Iva": "",
@@ -323,18 +323,18 @@
       "Calcolo_Garanzie_Aggiuntive": "",
       "Calcolo_Massimale_Rottura_Cristalli": "",
       "Tipo_Kasko": "Kasko Totale",
-      "Versione_Kasko": "t14_3120_013000_20220401_000000000000_000001",
+      "Versione_Kasko": "t14_3120_013000_20220901_000000000000_000001",
       "Calcolo_Kasko": "",
       "Versione_Avens": "",
       "Calcolo_Avens": "",
-      "Totale_Premio": "1.028,03",
+      "Totale_Premio": "1.007,12",
       "Punta_Flex_Ard": "0"
     },
     {
       "Identificativo_Caso": "4",
       "Settore": "1",
       "Descrizione_Settore": "KASKO COLLISIONE",
-      "Periodo_Tariffazione": "07-07",
+      "Periodo_Tariffazione": "09-09",
       "Anno_Periodo_Tariffazione": "2022",
       "Tipologia_Entita": "Persona",
       "Partita_Iva": "",
@@ -433,18 +433,18 @@
       "Calcolo_Garanzie_Aggiuntive": "",
       "Calcolo_Massimale_Rottura_Cristalli": "",
       "Tipo_Kasko": "Kasko Collisione",
-      "Versione_Kasko": "t14_3120_013000_20220401_000000000000_000001",
+      "Versione_Kasko": "t14_3120_013000_20220901_000000000000_000001",
       "Calcolo_Kasko": "",
       "Versione_Avens": "",
       "Calcolo_Avens": "",
-      "Totale_Premio": "400,66",
+      "Totale_Premio": "377,76",
       "Punta_Flex_Ard": "0"
     },
     {
       "Identificativo_Caso": "5",
       "Settore": "1",
       "Descrizione_Settore": "KASKO URTO CON ANIMALI",
-      "Periodo_Tariffazione": "07-07",
+      "Periodo_Tariffazione": "09-09",
       "Anno_Periodo_Tariffazione": "2022",
       "Tipologia_Entita": "Persona",
       "Partita_Iva": "",
@@ -543,7 +543,7 @@
       "Calcolo_Garanzie_Aggiuntive": "",
       "Calcolo_Massimale_Rottura_Cristalli": "",
       "Tipo_Kasko": "Kasko Urto con Animali",
-      "Versione_Kasko": "t14_3120_013000_20220401_000000000000_000001",
+      "Versione_Kasko": "t14_3120_013000_20220901_000000000000_000001",
       "Calcolo_Kasko": "",
       "Versione_Avens": "",
       "Calcolo_Avens": "",
@@ -551,7 +551,7 @@
       "Punta_Flex_Ard": "0"
     },
     {
-      "Identificativo_Caso": "6",
+      "Identificativo_Caso": "SKIP",
       "Settore": "1",
       "Descrizione_Settore": "CRISTALLI",
       "Periodo_Tariffazione": "07-07",
@@ -663,7 +663,7 @@
       "Punta_Flex_Ard": "0"
     },
     {
-      "Identificativo_Caso": "7",
+      "Identificativo_Caso": "SKIP",
       "Settore": "1",
       "Descrizione_Settore": "IMPREVISTI",
       "Periodo_Tariffazione": "07-07",
@@ -776,7 +776,7 @@
       "Punta_Flex_Ard": "0"
     },
     {
-      "Identificativo_Caso": "8",
+      "Identificativo_Caso": "SKIP",
       "Settore": "1",
       "Descrizione_Settore": "INCENDIO",
       "Periodo_Tariffazione": "07-07",
@@ -886,7 +886,7 @@
       "Punta_Flex_Ard": "0"
     },
     {
-      "Identificativo_Caso": "9",
+      "Identificativo_Caso": "SKIP",
       "Settore": "1",
       "Descrizione_Settore": "INCENDIO E FURTO",
       "Periodo_Tariffazione": "07-07",
@@ -996,7 +996,7 @@
       "Punta_Flex_Ard": "0"
     },
     {
-      "Identificativo_Caso": "10",
+      "Identificativo_Caso": "SKIP",
       "Settore": "1",
       "Descrizione_Settore": "INFORTUNI",
       "Periodo_Tariffazione": "07-07",
@@ -1107,7 +1107,7 @@
       "Punta_Flex_Ard": "0"
     },
     {
-      "Identificativo_Caso": "11",
+      "Identificativo_Caso": "SKIP",
       "Settore": "1",
       "Descrizione_Settore": "ASSISTENZA",
       "Periodo_Tariffazione": "07-07",
@@ -1221,7 +1221,7 @@
       "Punta_Flex_Ard": "0"
     },
     {
-      "Identificativo_Caso": "12",
+      "Identificativo_Caso": "SKIP",
       "Settore": "1",
       "Descrizione_Settore": "TUTELA GIUDIZIARIA",
       "Periodo_Tariffazione": "07-07",
