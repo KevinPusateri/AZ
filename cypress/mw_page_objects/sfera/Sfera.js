@@ -576,7 +576,7 @@ const ColumnQuietanzeScartate = {
  * Enum Colonne in vista Gestione Ente
  * @enum {Object}
  */
- const ColumnGestioneEnte = {
+const ColumnGestioneEnte = {
     DEC: {
         key: 'Dec.',
         tooltip: 'Decade'
@@ -753,7 +753,7 @@ class Sfera {
      * Funzione che ritorna le colonne della vista Gestione Ente
      * @returns {ColumnGestioneEnte} Colonne disponibili
      */
-     static get COLUMNGESTIONEENTE() {
+    static get COLUMNGESTIONEENTE() {
         return ColumnGestioneEnte
     }
 
@@ -2684,7 +2684,7 @@ class Sfera {
             cy.get('table').within(() => {
 
                 regexKey = new RegExp('\^' + value.key + '\$');
-                cy.contains(regexKey).should('exist').rightclick().focused().wait(1500)
+                cy.contains(regexKey).scrollIntoView().should('exist').rightclick().focused().wait(1500)
             })
             cy.get('.cdk-overlay-container').within((tooltip) => {
                 expect(tooltip.text()).to.contain(value.tooltip)
@@ -2819,15 +2819,25 @@ class Sfera {
 
     }
 
-    static checkTrePuntiniLink(link){
+    /**
+     * Click the ellipsis icon, check that the menu is visible, check that the menu contains the link
+     * text, click the ellipsis icon again.
+     * @param {String} link - the text of the link you want to check if exist
+     */
+    static checkTrePuntiniLink(link) {
         //Click tre puntini
         cy.get('nx-icon[class="ndbx-icon nx-icon--ellipsis-v nx-link__icon nx-icon--auto"]')
             .should('be.visible')
             .click().wait(2000)
 
-        cy.get('div[role="menu"]').should('be.visible').within(()=>{
-            cy.get('button[role="menuitem"]').should('include.text',link)
+        cy.get('div[role="menu"]').should('be.visible').within(() => {
+            cy.get('button[role="menuitem"]').should('include.text', link)
         })
+
+        cy.get('nx-icon[class="ndbx-icon nx-icon--ellipsis-v nx-link__icon nx-icon--auto"]')
+            .should('be.visible')
+            .click().wait(2000)
+
     }
 }
 export default Sfera

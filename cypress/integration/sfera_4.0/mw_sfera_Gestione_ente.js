@@ -73,7 +73,7 @@ after(function () {
 
 describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
 
-    // it('Gestione Stampa avvisi modalità massiva_gestione ente NON presente su age HUB SENZA age CP 73', function () {
+    // it('Gestione ente NON presente su age HUB SENZA age CP 73', function () {
     //     let customImpersonification = {
     //         "agentId": "ARFBOSIO",
     //         "agency": "010119000"
@@ -85,7 +85,7 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
     //     cy.wait(5000)
     // })
 
-    it('Gestione Stampa avvisi modalità massiva_gestione ente presente su age HUB CON age CP 73', function () {
+    it('Verifica Gestione ente presente su age HUB CON age CP 73', function () {
         let customImpersonification = {
             "agentId": "ARFPULINI2",
             "agency": "010710000"
@@ -95,7 +95,7 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
         Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
     })
 
-    it('Gestione Stampa avvisi modalità massiva_gestione ente_parametri di default associati alla vista', function () {
+    it('Verifica Parametri di default associati alla vista', function () {
         Sfera.setDateInizio(dataInizio)
         Sfera.checkAgenzieSabbiate('552 - FRASCATI FC GROUP')
         Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
@@ -106,21 +106,24 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
         Sfera.checkClusterAllUnchecked()
     })
 
-    it('Gestione Stampa avvisi modalità massiva_gestione ente_colonna ente di genarazione avvisi', function () {
+    it('Verifica Colonna ente di genarazione avvisi', function () {
         Sfera.estrai()
         Sfera.checkColonnaPresente('Ente gen Avv')
     })
 
-    it('Gestione Stampa avvisi modalità massiva_gestione ente_colonna ente di genarazione avvisi_report', function () {
+    it('Verifica Colonna ente di generazione avvisi_report', function () {
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
         Sfera.estrazioneReportExcel(Sfera.COLUMNGESTIONEENTE)
         Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
     })
 
-    it('Gestione Stampa avvisi modalità massiva_gestione ente_azioni veloci tre puntini', function () {
-        cy.pause()
+    it('Verifica Azioni veloci tre puntini', function () {
         Sfera.selezionaRigaRandom()
         Sfera.selezionaRigaRandom()
         Sfera.checkTrePuntiniLink('Gestione ente')
+    })
+
+    it('Verifica Colonne in tabella: Tooltip', function () {
+        Sfera.checkTooltipHeadersColonne(Sfera.COLUMNGESTIONEENTE)
     })
 })
