@@ -2863,12 +2863,31 @@ class Sfera {
     /**
      * This function checks if the three flags are visible on the page.
      */
-    static chechLimitiDecadi() {
+    static checkSezioniDecadi() {
         cy.get('p:contains("Limiti decadi:")').parent().within(() => {
             cy.get('div[class="LD1 bandierinaPiccola ng-star-inserted"]').should('be.visible')
             cy.get('div[class="LD2 bandierinaPiccola ng-star-inserted"]').should('be.visible')
             cy.get('div[class="LD3 bandierinaPiccola ng-star-inserted"]').should('be.visible')
             cy.screenshot('Verifica Limiti Decadi')
+        })
+    }
+
+    /**
+     * It checks if the tooltip is visible and then it checks if the tooltip contains the correct text.
+     */
+    static checkTooltipSezioniDecadi() {
+        cy.get('p:contains("Limiti decadi:")').parent().then(() => {
+            const tooltipDecadi = [
+                'Limite prima decade',
+                'Limite seconda decade',
+                'Limite terza decade'
+            ]
+            cy.get('p[class="nx-margin-right-s nx-copy nx-copy--normal ng-star-inserted"]').should('be.visible').each(($sezione,i)=>{
+                cy.wrap($sezione).rightclick().wait(1500)
+                cy.get('.cdk-overlay-container').within((tooltip) => {
+                    expect(tooltip.text()).to.contain(tooltipDecadi[i])
+                })
+            })
         })
     }
 }

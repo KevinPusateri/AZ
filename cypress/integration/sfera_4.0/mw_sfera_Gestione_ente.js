@@ -136,6 +136,10 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
 
     it('Verifica sezioni decadi', function () {
         Sfera.estrai()
-        Sfera.chechLimitiDecadi()
+        Sfera.checkSezioniDecadi()
+    })
+
+    it('Verifica sezioni decadi -> Tooltip', function () {
+        Sfera.checkTooltipSezioniDecadi()
     })
 })
