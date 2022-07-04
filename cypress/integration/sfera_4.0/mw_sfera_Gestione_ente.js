@@ -126,4 +126,11 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
     it('Verifica Colonne in tabella: Tooltip', function () {
         Sfera.checkTooltipHeadersColonne(Sfera.COLUMNGESTIONEENTE)
     })
+
+    it('Verifica filtro calendario t+2 mesi', function () {
+        Sfera.espandiPannello()
+        let dataInizio = Common.setDate(undefined, 1, false)
+        Sfera.setDateInizio(dataInizio)
+        Sfera.checkCalendarNextOnlyTwoMonth(Sfera.COLUMNGESTIONEENTE)
+    })
 })

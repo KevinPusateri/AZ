@@ -2839,5 +2839,24 @@ class Sfera {
             .click().wait(2000)
 
     }
+
+    /**
+     * It clicks on the calendar icon, then clicks on the next month button twice, and then closes the
+     * calendar.
+     */
+    static checkCalendarNextOnlyTwoMonth() {
+        cy.get('nx-icon[name="calendar"]:last').click()
+        cy.get('nx-calendar').should('be.visible').within(() => {
+            cy.get('button[aria-label="Next month"]').click()
+            cy.get('button[aria-label="Next month"]').should('not.have.attr', 'disabled')
+            cy.get('button[aria-label="Next month"]').click()
+            cy.get('button[aria-label="Next month"]').should('have.attr', 'disabled')
+
+        })
+
+        cy.get('nx-datepicker-content').should('be.visible').within(() => {
+            cy.get('nx-icon[name="close"]').should('be.visible').click()
+        })
+    }
 }
 export default Sfera
