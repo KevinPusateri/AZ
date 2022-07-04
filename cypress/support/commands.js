@@ -1477,10 +1477,10 @@ Cypress.Commands.add('getUserWinLogin', () => {
   })
 })
 
-Cypress.Commands.add('decryptLoginPsw', (isTFS = false) => {
+Cypress.Commands.add('decryptLoginPsw', () => {
   cy.fixture("tutf").then(data => {
     const psw = unescape(Cypress.env('secretKey').replace(/\\/g, "%"));
-    const bytes = CryptoJS.AES.decrypt((!isTFS) ? data.psw : data.psw078, psw);
+    const bytes = CryptoJS.AES.decrypt(data.psw, psw);
     return bytes.toString(CryptoJS.enc.Utf8);
   })
 })

@@ -96,11 +96,7 @@ class LoginPage {
                 })[0]
 
                 cy.log('Retrived username : ' + loggedUser.username)
-
-                //Verifichiamo se siamo su TFS oppure no
-                let isTFS = (loggedUser.username.toUpperCase() === 'TFSSETUP') ? true : false
-
-                cy.decryptLoginPsw(isTFS).then(psw => {
+                cy.decryptLoginPsw().then(psw => {
                     let currentImpersonificationToPerform
                     //Verifichiamo se ho customImpersonification valorizzato
                     if (Cypress.$.isEmptyObject(customImpersonification)) {
