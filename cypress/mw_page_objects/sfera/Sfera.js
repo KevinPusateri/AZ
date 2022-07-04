@@ -2858,5 +2858,18 @@ class Sfera {
             cy.get('nx-icon[name="close"]').should('be.visible').click()
         })
     }
+
+
+    /**
+     * This function checks if the three flags are visible on the page.
+     */
+    static chechLimitiDecadi() {
+        cy.get('p:contains("Limiti decadi:")').parent().within(() => {
+            cy.get('div[class="LD1 bandierinaPiccola ng-star-inserted"]').should('be.visible')
+            cy.get('div[class="LD2 bandierinaPiccola ng-star-inserted"]').should('be.visible')
+            cy.get('div[class="LD3 bandierinaPiccola ng-star-inserted"]').should('be.visible')
+            cy.screenshot('Verifica Limiti Decadi')
+        })
+    }
 }
 export default Sfera

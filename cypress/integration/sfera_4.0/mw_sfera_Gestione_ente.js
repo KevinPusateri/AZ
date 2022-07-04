@@ -133,4 +133,9 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
         Sfera.setDateInizio(dataInizio)
         Sfera.checkCalendarNextOnlyTwoMonth(Sfera.COLUMNGESTIONEENTE)
     })
+
+    it('Verifica sezioni decadi', function () {
+        Sfera.estrai()
+        Sfera.chechLimitiDecadi()
+    })
 })
