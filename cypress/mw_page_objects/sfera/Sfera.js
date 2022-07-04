@@ -2805,7 +2805,9 @@ class Sfera {
     /**
      * It checks if the date is one month later than the current date.
      */
-    static checkDateModifiedOneMonthLater() {
+    static checkDateModifiedOneMonthLater(dataInizio) {
+        this.setDateInizio(dataInizio)
+
         cy.get('nx-icon[name="calendar"]:last').click()
         cy.get('tbody[class="nx-calendar-body"]').should('be.visible').find('tr[role="row"]:last')
             .find('div[class="nx-calendar-body-cell-content nx-calendar-body-selected"]').then((day) => {
@@ -2882,12 +2884,40 @@ class Sfera {
                 'Limite seconda decade',
                 'Limite terza decade'
             ]
-            cy.get('p[class="nx-margin-right-s nx-copy nx-copy--normal ng-star-inserted"]').should('be.visible').each(($sezione,i)=>{
+            cy.get('p[class="nx-margin-right-s nx-copy nx-copy--normal ng-star-inserted"]').should('be.visible').each(($sezione, i) => {
                 cy.wrap($sezione).rightclick().wait(1500)
                 cy.get('.cdk-overlay-container').within((tooltip) => {
                     expect(tooltip.text()).to.contain(tooltipDecadi[i])
                 })
             })
+        })
+    }
+
+    /**
+     * Check if the decade section also changes as the calendar changes
+     */
+    static checkVaraziazioneDecadiByCalendar() {
+        let dataInizio = Common.setDate(undefined, 1, false)
+        this.setDateInizio(dataInizio)
+        this.estrai()
+        cy.get('p:contains("Limiti decadi:")').parent().within(() => {
+            cy.screenshot('Verifica Limiti Decadi Mese Corrente')
+        })
+        let decadi = []
+        cy.get('p[class="nx-margin-right-s nx-copy nx-copy--normal ng-star-inserted"]').should('be.visible').each(($sezione) => {
+            decadi.push($sezione.text().trim())
+        })
+
+        dataInizio = Common.setDate(undefined, 1, true)
+        this.espandiPannello()
+        this.setDateInizio(dataInizio)
+        this.estrai()
+
+        cy.get('p:contains("Limiti decadi:")').parent().within(() => {
+            cy.screenshot('Verifica Limiti Decadi Mese Successivo')
+        })
+        cy.get('p[class="nx-margin-right-s nx-copy nx-copy--normal ng-star-inserted"]').should('be.visible').each(($sezione, i) => {
+            expect($sezione.text().trim()).not.eq(decadi[i])
         })
     }
 }
