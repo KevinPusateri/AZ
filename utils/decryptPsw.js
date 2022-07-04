@@ -9,8 +9,10 @@ var rl = readline.createInterface({
 
 rl.stdoutMuted = true
 
-rl.question('Password to encrypt: ', function (password) {
-    console.log('\n\nYour encrypted psw is : ' + CryptoJS.AES.encrypt(password, secret))
+//? For long encrypted psw, copy it and paste over the question ;)
+rl.question('Password to decrypt: ', function (password) {
+    const bytes = CryptoJS.AES.decrypt(password, secret)
+    console.log('\n\nYour decrypted psw is : ' + bytes.toString(CryptoJS.enc.Utf8))
     rl.close()
 })
 
