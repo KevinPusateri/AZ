@@ -547,6 +547,17 @@ class TenutaTariffa {
                 cy.get('nx-spinner').should('not.be.visible')
             }
 
+            //Valore Veicolo
+            if (currentCase.Valore_Veicolo !== "") {
+                //! fa schifo, lo so, ma al momento non c'è strada migliore
+                cy.get('#nx-input-19').should('exist').and('be.visible').click()
+                cy.get('#nx-input-19').clear().wait(500)
+                cy.get('#nx-input-19').type(currentCase.Valore_Veicolo).wait(500)
+                cy.get('strong:contains("Valore del veicolo")').click()
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
+
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             //#endregion
 
@@ -1071,10 +1082,10 @@ class TenutaTariffa {
                     if (!premioLordo.includes(currentCase.Totale_Premio_Lordo)) {
                         cy.log('Attenzione : verificare differenza premi')
                         cy.log(`--> Valore rilevato : ${premioLordo}`)
-                        cy.log(`--> Valore rilevato : ${currentCase.Totale_Premio_Lordo}`)
+                        cy.log(`--> Valore certificato : ${currentCase.Totale_Premio_Lordo}`)
                         cy.task('log', 'Attenzione : verificare differenza premi')
                         cy.task('log', `--> Valore rilevato : ${premioLordo}`)
-                        cy.task('log', `--> Valore rilevato : ${currentCase.Totale_Premio_Lordo}`)
+                        cy.task('log', `--> Valore certificato : ${currentCase.Totale_Premio_Lordo}`)
                     }
                     else
                         cy.task('log', 'Dati Offerta compilati correttamente')
@@ -1231,6 +1242,9 @@ class TenutaTariffa {
                 case "AVENS":
                 //AVIVA
                 case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI":
+                case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOVETTURA":
+                case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOCARRO":
+                case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOBUS":
                     //? Su AZ Attiva Vandalidi ed Eventi Naturali compare attivando Furto, su Aviva è visibile by default
                     if (!Cypress.env('isAviva')) {
                         cy.contains("Furto").parent('div').parent('div').within(() => {
@@ -1391,6 +1405,9 @@ class TenutaTariffa {
                         case "AVENS":
                         //AVIVA
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI":
+                        case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOVETTURA":
+                        case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOCARRO":
+                        case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOBUS":
                         case "EVENTI NATURALI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
                             break
