@@ -156,7 +156,7 @@ class Beneficiari {
                 .parents('.beneficiario-row').find('input').click()
                 .clear().type(percentuale)
 
-                cy.wait(500)
+            cy.wait(500)
 
             //clicca sul nome del beneficiario per confermare il valore
             cy.get('.row-title').first().click()

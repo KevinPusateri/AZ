@@ -105,7 +105,7 @@ class Portafoglio {
         })
         cy.contains('PORTAFOGLIO').click().wait(2000)
         cy.wait('@gqlcontract', { timeout: 60000 });
-        cy.screenshot('Verifica aggancio Portafoglio', { clip: { x: 0, y: 0, width: 1920, height: 900 } }, { overwrite: true })
+        //cy.screenshot('Verifica aggancio Portafoglio', { clip: { x: 0, y: 0, width: 1920, height: 900 } }, { overwrite: true })
     }
 
     static apriPortafoglioLite() {

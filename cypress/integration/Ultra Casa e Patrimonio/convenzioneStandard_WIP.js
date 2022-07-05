@@ -211,9 +211,10 @@ describe("CONVENZIONE STANDARD", () => {
   it("Portafoglio", () => {
     Portafoglio.apriPortafoglioLite()
     Portafoglio.ordinaPolizze("Numero contratto")
-    Portafoglio.menuContratto(nContratto, menuPolizzeAttive.modificaPolizza)    
+    cy.pause()
+    //Portafoglio.menuContratto(nContratto, menuPolizzeAttive.modificaPolizza)    
     //Common.canaleFromPopup()
-    Dashboard.caricamentoAmbitiAcquistati()
+    //Dashboard.caricamentoAmbitiAcquistati()
   })
 
   it("configurazione ambito", () => {
@@ -297,7 +298,7 @@ describe("CONVENZIONE STANDARD", () => {
 
   it("Incasso - parte 2", () => {
     Incasso.SelezionaMetodoPagamento('Assegno')
-    Incasso.SelezionaTipoDelega("Nessuna Delega")
+    //Incasso.SelezionaTipoDelega("Nessuna Delega")
     Incasso.ConfermaIncasso()
     Incasso.caricamentoEsito()
   })
@@ -307,7 +308,7 @@ describe("CONVENZIONE STANDARD", () => {
     Incasso.Chiudi()
   })
 
-  it("Fine", () => {h
+  it("Fine", () => {
     cy.pause()
     //todo: controllare come cercare vecchia polizza senza convenzione o retrodatare la scadenza
     //todo: usare database?

@@ -111,6 +111,7 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
   })
 
   it("Emissione Ultra Salute", () => {
+    cy.pause()
     SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
     Ultra.selezionaPrimaAgenzia()
     Dashboard.caricamentoDashboardUltra()

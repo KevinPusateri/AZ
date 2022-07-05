@@ -152,6 +152,7 @@ describe("BENEFICIARI REFERENTE", () => {
     Beneficiari.inserisciBeneficiarioNew(personaBeneficiario)
     Beneficiari.tipoBeneficiario('Eredi legittimi')
     Beneficiari.clickInserisci()
+    cy.pause()
     Beneficiari.percentualeCapitale(personaBeneficiario.nomeCognome(), "60")
     Beneficiari.percentualeCapitale("Eredi legittimi", "40")
     // cy.get('#nx-input-5').should('be.visible').clear().type('100');

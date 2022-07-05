@@ -110,8 +110,8 @@ describe('Ultra BMP : Emissione BMP Caso1', function () {
 
     it('Seleziona Ultra BMP', () => {
         TopBar.clickSales()
-        //BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO_BMP)
-        BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO)
+        BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO_BMP)
+        //BurgerMenuSales.clickLink(ultraRV.CASAPATRIMONIO)
     })
 
     it("Verifica valori default FQ e accesso alla dashboard", () => {
