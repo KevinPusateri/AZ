@@ -218,7 +218,7 @@ class TenutaTariffa {
 
             //Tipologia Veicolo
             // * auto è già selezionato di default quindi lo skippo
-            if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada' && currentCase.Tipo_Veicolo !== 'taxi') {
+            if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada' && currentCase.Tipo_Veicolo !== 'taxi' && currentCase.Tipo_Veicolo !== 'Auto Storica') {
                 cy.contains('un\'auto').parent().should('exist').and('be.visible').click()
                 if (currentCase.Tipo_Veicolo === 'ciclomotore' || currentCase.Tipo_Veicolo === 'autobus' || currentCase.Tipo_Veicolo === 'macchina operatrice' || currentCase.Tipo_Veicolo === 'macchina agricola')
                     cy.contains('altro').should('exist').and('be.visible').click().wait(2000)
@@ -429,6 +429,13 @@ class TenutaTariffa {
                 expect(currentDataPrimaImmatricolazione).to.include(formattedPrimaImmatricolazione)
             })
 
+            //Verifichiamo se Veicolo Storico
+            if (currentCase.Descrizione_Settore.includes("STORICO")) {
+                cy.get('nx-checkbox[formcontrolname="veicoloStorico"]').should('exist').and('be.visible').click()
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
+
             //Tipo Veicolo
             cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').invoke('text').then(tipVeicolo => {
                 if (tipVeicolo.toLocaleLowerCase() !== currentCase.Tipo_Veicolo) {
@@ -497,6 +504,7 @@ class TenutaTariffa {
                     cy.contains(currentCase.Modello).should('exist').and('be.visible').click()
                     cy.wait('@getMotor', { timeout: 30000 })
                     cy.wait(3000)
+                    cy.pause()
                     //Allestimento
                     cy.get('nx-dropdown[formcontrolname="versione"]').should('exist').and('be.visible').click()
                     cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Versione)
@@ -549,10 +557,9 @@ class TenutaTariffa {
 
             //Valore Veicolo
             if (currentCase.Valore_Veicolo !== "") {
-                //! fa schifo, lo so, ma al momento non c'è strada migliore
-                cy.get('#nx-input-19').should('exist').and('be.visible').click()
-                cy.get('#nx-input-19').clear().wait(500)
-                cy.get('#nx-input-19').type(currentCase.Valore_Veicolo).wait(500)
+                cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
+                cy.get('input[motoronlynumbers=""]').clear().wait(500)
+                cy.get('input[motoronlynumbers=""]').type(currentCase.Valore_Veicolo).wait(500)
                 cy.get('strong:contains("Valore del veicolo")').click()
                 //Attendiamo che il caricamento non sia più visibile
                 cy.get('nx-spinner').should('not.be.visible')
@@ -1245,6 +1252,8 @@ class TenutaTariffa {
                 case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOVETTURA":
                 case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOCARRO":
                 case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOBUS":
+                case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA OPERATRICE":
+                case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA AGRICOLA":
                     //? Su AZ Attiva Vandalidi ed Eventi Naturali compare attivando Furto, su Aviva è visibile by default
                     if (!Cypress.env('isAviva')) {
                         cy.contains("Furto").parent('div').parent('div').within(() => {
@@ -1408,6 +1417,8 @@ class TenutaTariffa {
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOVETTURA":
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOCARRO":
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOBUS":
+                        case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA OPERATRICE":
+                        case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA AGRICOLA":
                         case "EVENTI NATURALI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
                             break
