@@ -145,6 +145,9 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
     it('Verifica aggiornamento decadi cambiando periodo', function () {
         Sfera.espandiPannello()
         Sfera.checkVaraziazioneDecadiByCalendar()
+    })
 
+    it('Verifica colonna decade in tabella', function () {
+        Sfera.checkColonnaPresente('Dec.')
     })
 })
