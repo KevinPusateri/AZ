@@ -2920,5 +2920,22 @@ class Sfera {
             expect($sezione.text().trim()).not.eq(decadi[i])
         })
     }
+
+    /**
+     * It checks if the tooltip of a single column header is correct.
+     * @param {Object} column - One columns of the view 
+     */
+    static checkTooltipSingleColumn(column) {
+        let regexKey
+        cy.get('table').within(() => {
+            debugger
+
+            regexKey = new RegExp('\^' + column.key + '\$');
+            cy.contains(regexKey).scrollIntoView().should('exist').rightclick().focused().wait(1500)
+        })
+        cy.get('.cdk-overlay-container').within((tooltip) => {
+            expect(tooltip.text()).to.contain(column.tooltip)
+        })
+    }
 }
 export default Sfera

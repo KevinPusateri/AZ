@@ -47,28 +47,28 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-afterEach(function () {
-    if (this.currentTest.state !== 'passed') {
-        TopBar.logOutMW()
-        //#region Mysql
-        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-            let tests = testsInfo
-            cy.finishMysql(dbConfig, insertedId, tests)
-        })
-        //#endregion
-        Cypress.runner.stop();
-    }
-})
+// afterEach(function () {
+//     if (this.currentTest.state !== 'passed') {
+//         TopBar.logOutMW()
+//         //#region Mysql
+//         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//             let tests = testsInfo
+//             cy.finishMysql(dbConfig, insertedId, tests)
+//         })
+//         //#endregion
+//         Cypress.runner.stop();
+//     }
+// })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
-})
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
+// })
 //#endregion Before After
 
 describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
@@ -107,7 +107,7 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
 
     it('Verifica Colonna ente di genarazione avvisi', function () {
         Sfera.estrai()
-        Sfera.checkColonnaPresente('Ente gen Avv')
+        Sfera.checkColonnaPresente(Sfera.COLUMNGESTIONEENTE.ENTE_GEN_AVV.key)
     })
 
     it('Verifica Colonna ente di generazione avvisi_report', function () {
@@ -148,6 +148,10 @@ describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
     })
 
     it('Verifica colonna decade in tabella', function () {
-        Sfera.checkColonnaPresente('Dec.')
+        Sfera.checkColonnaPresente(Sfera.COLUMNGESTIONEENTE.DEC.key)
+    })
+
+    it('Verifica colonna decade -> Tooltip', function () {
+        Sfera.checkTooltipSingleColumn(Sfera.COLUMNGESTIONEENTE.DEC)
     })
 })
