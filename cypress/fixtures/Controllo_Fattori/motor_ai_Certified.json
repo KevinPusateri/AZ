@@ -1,11 +1,23 @@
 {
     "1" : {
+        "AUTO_APP_P040": {
+            "version": 20201016,
+            "output": 1
+        },
+        "USO_SIVI": {
+            "version": 20201016,
+            "output": 99
+        },
         "GRUPPO_VEICOLO_F_RCA_C": {
             "version": 20201016,
             "output": 32
         },
+        "NUMERO_SFORATURE": {
+            "version": 20201016,
+            "output": 0
+        },
         "STIMA_SELEZIONE_RR": {
-            "version": 20220203,
+            "version": 20220707,
             "output": 1
         },
         "STIMA_FRAZIONAMENTO": {
