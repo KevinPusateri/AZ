@@ -28,7 +28,7 @@ import { controlloFattoriCases } from '../../fixtures/Controllo_Fattori/Controll
 //?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
-let caseToExecute = []
+let caseToExecute = ['1']
 
 before(() => {
     Cypress.env('isAviva', false)
