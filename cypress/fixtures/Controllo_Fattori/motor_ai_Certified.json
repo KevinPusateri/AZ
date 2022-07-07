@@ -78,5 +78,35 @@
             "version": 20210715,
             "output": 405000
         }
+    },
+    "3": {
+        "AUTO_APP_P040": {
+            "version": 20201016,
+            "output": 1
+        },
+        "USO_SIVI": {
+            "version": 20201016,
+            "output": 99
+        },
+        "NUMERO_SFORATURE": {
+            "version": 20201016,
+            "output": 0
+        },
+        "CONVERSION_NP_2RUOTE": {
+            "version": 20211009,
+            "output": 2200
+        },
+        "CLUSTER_AGENZIA_AI": {
+            "version": 20220624,
+            "output": 4
+        },
+        "COD_CONTRATTI_FAMIGLIARI": {
+            "version": 20210520,
+            "output": 0
+        },
+        "COD_SUBAGENTE_FONTE": {
+            "version": 20210715,
+            "output": 405000
+        }
     }
 }
