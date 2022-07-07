@@ -33,7 +33,7 @@ let options = {
 //! settato default a true, altrimenti a false se viene utilizzato uno o piu only nei test
 const flusso = true
 
-let dataInizio = Common.setDate(1, 2, false)
+let dataInizio = Common.setDate(1, undefined, false)
 //#endregion
 
 //#region Before After
@@ -51,7 +51,7 @@ before(() => {
         "agency": "010712000"
     }
     LoginPage.logInMWAdvanced(customImpersonification)
-    Sfera.accediSferaDaHomePageMW()
+    Sfera.accediSferaDaHomePageMW(true)
     Sfera.espandiPannello()
     if (!flusso) {
         Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
@@ -153,8 +153,9 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
     })
 
 
-    it.skip('Menu contestuale -> Quietanzmaneto online', function () { //! BUG aperto
+    it('Menu contestuale -> Quietanzmaneto online', function () { 
         Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.QUIETANZAMENTO_ONLINE, true, null, null, null, true)
+        Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
     })
 
     it('Menu Contestuale -> Consultazione Polizza_call back applicativa', function () {
@@ -188,6 +189,7 @@ describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () 
 
     it('Menu Contestuale -> Consultazione Documenti di polizza_call back applicativa', function () {
         Sfera.apriVoceMenu(Sfera.VOCIMENUCONSULTAZIONE.DOCUMENTI_POLIZZA, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+        Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
     })
 
     //? Sfera 4.0 - Operatività - CARICO MANCANTE -

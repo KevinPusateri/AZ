@@ -124,7 +124,20 @@ const VisteSuggerite = {
     DELTA_PREMIO: 'Delta premio – riduzione premio a cura dell’agenzia',
     QUIETANZE_SCARTATE: 'Quietanze Scartate',
     STAMPA_QUIETANZE: 'Stampa Quietanze',
-    GESTIONE_ENTE: 'Gestione Ente'
+    GESTIONE_ENTE: 'Gestione Ente',
+    AVVISI_SCADENZA: 'Avvisi Scadenza'
+}
+
+/**
+ * Enum Tipo avviso
+ * @readonly
+ * @enum {Object}
+ * @private
+ */
+const TipoAvviso = {
+    AVVISI_CARTACEI: 'Avvisi Cartacei',
+    EMAIL: 'E-mail',
+    SMS: 'Sms',
 }
 
 /**
@@ -436,6 +449,19 @@ const Filtri = {
         values: {
             VUOTO: "Vuoto",
             A_710000: "710000"
+        }
+    },
+    ULT_TIPO_INVIO: {
+        key: "Ult. Tipo Invio",
+        values: {
+            VUOTO: "Vuoto",
+            SMS: "Sms"
+        }
+    },
+    ULT_RICH_AVVISO_CPP: {
+        key: "Ult. Rich. Avviso / CCP",
+        values: {
+            VUOTO: "Vuoto",
         }
     }
 }
@@ -847,6 +873,13 @@ class Sfera {
 
     /**
      * Funzione che ritorna i tipi di quietanze
+     * @returns {TipoAvviso} tipo di Quietanze
+     */
+    static get TIPOAVVISO() {
+        return TipoAvviso
+    }
+    /**
+     * Funzione che ritorna i tipi di quietanze
      * @returns {TipoQuietanze} tipo di Quietanze
      */
     static get TIPOQUIETANZE() {
@@ -1140,21 +1173,29 @@ class Sfera {
             if (filtro === Filtri.INFO)
                 cy.get('th[class~="customBandierinaSticky"]').find('nx-icon:last').click()
             else
-                cy.get(`div:contains(${filtro.key})`).parent().find('nx-icon:last').click()
+                cy.get(`div:contains(${filtro.key}):first`).scrollIntoView().parent().find('nx-icon:last').click()
         })
 
-        if (filtro === Filtri.INFO)
-            cy.get('div[class="filterPopover filterPopoverV2 ng-star-inserted"]').within(() => {
-                cy.get(`span:contains(${valore})`).click()
-            })
-        else
+        if (filtro === Filtri.ULT_RICH_AVVISO_CPP) {
+            cy.pause()
             cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
-
-                cy.get('input:visible').type(valore)
+                cy.get('input').type(valore)
                 cy.wait(500)
-                cy.get('span[class="nx-checkbox__control"]:visible').click()
+                cy.get('span[class="nx-checkbox__control"]:first:visible').click()
             })
+        } else {
+            if (filtro === Filtri.INFO)
+                cy.get('div[class="filterPopover filterPopoverV2 ng-star-inserted"]').within(() => {
+                    cy.get(`span:contains(${valore})`).click()
+                })
+            else
+                cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
 
+                    cy.get('input:visible').type(valore)
+                    cy.wait(500)
+                    cy.get('span[class="nx-checkbox__control"]:visible').click()
+                })
+        }
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
         cy.contains('Applica').should('be.enabled').click()
         cy.wait('@estraiQuietanze', { timeout: 120000 })
@@ -1365,6 +1406,7 @@ class Sfera {
                     cy.screenshot('Verifica Accesso a Pagamenti NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
                         NGRA2013.flussoQuietanzamentoOnline()
+                        this.verificaAccessoSfera(false)
                     }
                     else {
                         NGRA2013.home(true)
@@ -1436,10 +1478,10 @@ class Sfera {
                         cy.go('back')
 
                         cy.wait('@infoUtente', { timeout: 60000 })
-                        cy.wait('@agenzieFonti', { timeout: 60000 })
-                        cy.wait('@caricaVista', { timeout: 60000 })
                         //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
                         if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            cy.wait('@agenzieFonti', { timeout: 60000 })
+                            cy.wait('@caricaVista', { timeout: 60000 })
                             cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                             cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
@@ -1478,9 +1520,9 @@ class Sfera {
                         cy.go('back')
 
                         cy.wait('@infoUtente', { timeout: 60000 })
-                        cy.wait('@agenzieFonti', { timeout: 60000 })
-                        cy.wait('@caricaVista', { timeout: 60000 })
                         if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            cy.wait('@agenzieFonti', { timeout: 60000 })
+                            cy.wait('@caricaVista', { timeout: 60000 })
                             cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                             cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
@@ -1504,9 +1546,9 @@ class Sfera {
                         cy.go('back')
 
                         cy.wait('@infoUtente', { timeout: 60000 })
-                        cy.wait('@agenzieFonti', { timeout: 60000 })
-                        cy.wait('@caricaVista', { timeout: 60000 })
                         if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            cy.wait('@agenzieFonti', { timeout: 60000 })
+                            cy.wait('@caricaVista', { timeout: 60000 })
                             cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                             cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
@@ -1530,9 +1572,9 @@ class Sfera {
                         cy.go('back')
 
                         cy.wait('@infoUtente', { timeout: 60000 })
-                        cy.wait('@agenzieFonti', { timeout: 60000 })
-                        cy.wait('@caricaVista', { timeout: 60000 })
                         if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            cy.wait('@agenzieFonti', { timeout: 60000 })
+                            cy.wait('@caricaVista', { timeout: 60000 })
                             cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                             cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
@@ -1773,6 +1815,7 @@ class Sfera {
                 })
         })
         cy.get('h2[nxheadline="subsection-medium"]').should('include.text', nameVista)
+        cy.screenshot('Verifica Vista ' + nameVista, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     }
 
@@ -2611,6 +2654,7 @@ class Sfera {
             this.menuContestualeChild().within(() => {
                 cy.get('button[role="menuitem"]', { timeout: 10000 }).should('contain.text', voce.key)
             })
+            cy.get('div[class="row-search nx-grid__row"]').next('div').click()
         } else {
             if (voce.root === 'Cliente' || voce.root === 'Consultazione')
                 this.menuContestualeParent().within(() => {
@@ -2619,7 +2663,9 @@ class Sfera {
             this.menuContestualeParent().within(() => {
                 cy.get('button[role="menuitem"]', { timeout: 10000 }).should('contain.text', voce.key)
             })
+            cy.get('div[class="row-search nx-grid__row"]').click().next('div').click()
         }
+
 
     }
 
@@ -2629,7 +2675,7 @@ class Sfera {
      */
     static checkVistaExist(vista) {
         cy.get('app-view').should('be.visible').find('h2:first').should('be.visible').and('contain.text', vista)
-        cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Conferma Vista', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(5000)
     }
 
@@ -2699,6 +2745,7 @@ class Sfera {
     static selezionaRigaRandom() {
         cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
             let selected = Cypress._.random(rowsTable.length - 1);
+            cy.wrap(rowsTable).eq(selected).as('selectRiga')
             cy.wrap(rowsTable).eq(selected).within(() => {
                 this.checkBoxControl().click({ force: true })
             })
@@ -2936,6 +2983,123 @@ class Sfera {
         cy.get('.cdk-overlay-container').within((tooltip) => {
             expect(tooltip.text()).to.contain(column.tooltip)
         })
+    }
+
+
+
+    static selezionaRigaIndex(riga) {
+        debugger
+        cy.wrap(riga).within(() => {
+            this.checkBoxControl().click({ force: true })
+        })
+    }
+
+    static checkExistUltTipoInvio(RigaConAvviso) {
+        cy.get(RigaConAvviso).then($riga => {
+            debugger
+            let checkExist = $riga.find('td').is(':contains(Sms)')
+            console.log(checkExist)
+        })
+    }
+
+    static checkAvvisoInviato(tipo) {
+        switch (tipo) {
+            case Sfera.TIPOAVVISO.SMS:
+                selectRandomClientWithPhone().then(contraente => {
+                    sendAvviso(Sfera.TIPOAVVISO.SMS)
+                    this.espandiPannello()
+                    this.estrai()
+                    checkAvviso(Sfera.TIPOAVVISO.SMS, contraente)
+                })
+                break;
+            default:
+                break;
+        }
+
+        /**
+         * It selects a random row With Number Phone(+39-) from a table, then clicks on the checkbox in that row.
+         * @returns {Promise<string>} Promise (Contraente)
+         */
+        function selectRandomClientWithPhone() {
+            return new Cypress.Promise(resolve => {
+                cy.get('tr[class="nx-table-row ng-star-inserted"]')
+                    .filter(':contains("+39-")').not('Sms')
+                    .should('be.visible')
+                    .then(($tr) => {
+                        const items = $tr.toArray()
+                        return Cypress._.sample(items)
+                    })
+                    .then(($tr) => {
+                        expect(Cypress.dom.isJquery($tr), 'jQuery element').to.be.true
+                        cy.log(`you picked "${$tr.text()}"`)
+                        const contraente = $tr.find('a').text().trim()
+                        cy.wrap($tr).within(() => {
+                            Sfera.checkBoxControl().click({ force: true })
+                        })
+                        resolve(contraente)
+                    })
+            })
+        }
+
+        /**
+         *  Send Advise  
+         * @param {TipoAvviso} type - Sms, Email, Cartacei
+         */
+        function sendAvviso(type) {
+            cy.get('nx-icon[class="ndbx-icon nx-icon--ellipsis-v nx-link__icon nx-icon--auto"]')
+                .should('be.visible')
+                .click().wait(2000)
+
+            cy.contains('Invia avviso').click()
+
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                switch (type) {
+                    case TipoAvviso.AVVISI_CARTACEI:
+                        cy.get('nx-radio[nxvalue="Avvisi Cartacei"]').click()
+                        break;
+                    case TipoAvviso.EMAIL:
+                        cy.get('nx-radio[nxvalue="Avvisi via e-mail"]').click()
+                        break;
+                    case TipoAvviso.SMS:
+                        cy.get('nx-radio[nxvalue="Avvisi via sms"]').click()
+                        break;
+                    default: throw new Error('Tipo avviso Errato')
+                }
+                cy.contains('Procedi').click()
+            })
+
+            cy.contains('Invia sms selezionati').click()
+
+            cy.get('h3[nxheadline="subsection-small"]').should('include.text', 'Sms accodati con successo')
+            cy.contains('Chiudi').click()
+        }
+
+        /**
+         * "Check if the Notification has been sent in the table
+         * @param type - TipoAvviso.AVVISI_CARTACEI, TipoAvviso.EMAIL, TipoAvviso.SMS
+         * @param contraente - the name of the person
+         */
+        function checkAvviso(type, contraente) {
+            let dataInizio = Common.setDate()
+            cy.get('tr[class="nx-table-row ng-star-inserted"]')
+                .filter(':contains("' + contraente + '")').then(($tr) => {
+                    let someText = $tr.text().trim().replace(/(\r\n|\n|\r)/gm, "");
+                    console.log(someText)
+                    expect(someText).to.include(dataInizio)
+                    expect(someText).to.include(type)
+                })
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                switch (type) {
+                    case TipoAvviso.AVVISI_CARTACEI:
+                        break;
+                    case TipoAvviso.EMAIL:
+                        break;
+                    case TipoAvviso.SMS:
+                        break;
+                    default: throw new Error('Tipo avviso Errato')
+                }
+            })
+        }
     }
 }
 export default Sfera
