@@ -10,7 +10,6 @@ const moment = require('moment')
 const jsonDiff = require('../../../node_modules/json-diff/lib/index.js')
 
 const motorAICertified = require('../../fixtures/Controllo_Fattori/motor_ai_Certified.json')
-const controlloFattoriCert = require('../../fixtures/Controllo_Fattori/Controllo_Fattori_Cert.json')
 
 let parsedLogTariffa
 let parsedRadarUW
@@ -1534,25 +1533,47 @@ class TenutaTariffa {
                 let fattoriDic = JSON.parse(findKeyInLog('_factoryFattoriDic', parsedLogProxy)).A
                 let elencoFattori = fattoriDic.ElencoFattori
 
-                debugger
                 //#region Fattore MOTOR_AI
                 let motor_ai = JSON.parse(elencoFattori.filter(obj => { return obj.NomeFattore === 'MOTOR_AI' })[0].Valore)
                 console.log(motor_ai)
+
+                //Verifichiamo che output non assuma il valore -1
+                for (const [key, value] of Object.entries(motor_ai))
+                    if (value.output === -1)
+                        assert.fail(`Fattore ${key} a -1`)
+
+                //Andiamo a rimuovere output in quanto non necessita per il raffronto tra versioni
+                for (const [key, value] of Object.entries(motor_ai))
+                    delete value.output
+
                 let getDifferences = jsonDiff.diffString(motor_ai, motorAICertified[currentCase.Identificativo_Caso], { color: false })
-                if (getDifferences === '')
-                    cy.task('log', 'Modelli MOTORE_AI corretti')
+                if (getDifferences === ''){
+                    cy.task('log', 'Versione modelli MOTORE_AI corretti con i valori certificati')
+                    cy.task('log', JSON.stringify(motor_ai))
+                }
                 else
                     assert.fail(`Modelli MOTORE_AI non corretti : \n ${getDifferences}`)
                 //#endregion
 
                 //#region Altri Fattori
+                //Prendiamo tutti i fattori tranne MOTOR_AI
                 let fattoriWithOutMotorAI = elencoFattori.filter(obj => { return obj.NomeFattore !== 'MOTOR_AI' })
                 console.log(fattoriWithOutMotorAI)
-                getDifferences = jsonDiff.diffString(fattoriWithOutMotorAI, controlloFattoriCert[currentCase.Identificativo_Caso], { color: false })
-                if (getDifferences === '')
-                    cy.task('log', 'Fattori corretti')
-                else
-                    assert.fail(`Fattori variati: \n ${getDifferences}`)
+
+                debugger
+                //Togliamo i fattori che sono stati volutamente settati a -1 e verifichiamo che gli altri non siano a -1
+                //? Da Maggio 2022, come da comunicazione di Marcialis, è stato chiuso l'accesso alla banca dati card
+                //? Se stai leggendo questa riga sei stato fregato! Scappa!
+                var closedBancaDatiCard = ["SINISTRI_TOT_RCA_ANIA", "SINISTRI_TOT_RCA_ULT_ANNO_ANIA", "SINISTRI_TOT_RCA_ULT_2_ANNI_ANIA", "SINISTRI_TOT_RCA_ULT_5_ANNI_ANIA", "SINISTRI_RC_ULT_ANNO_ANIA", "SINISTRI_RC_ULT_2_ANNI_ANIA", "SINISTRI_RC_ULT_5_ANNI_ANIA",
+                    "SINISTRI_ARD_ULT_ANNO_ANIA", "SINISTRI_ARD_ULT_2_ANNI_ANIA", "SINISTRI_ARD_ULT_5_ANNI_ANIA", "SINISTRI_TOT_RCA_SCADENZA_ATR_ANIA", "SINISTRI_RC_ULT_2_ANNI_ANIA_R", "SINISTRI_RC_ULT_5_ANNI_ANIA_R", "SINISTRI_ARD_ULT_ANNO_ANIA_R",
+                    "SINISTRI_ARD_ULT_2_ANNI_ANIA_R", "SINISTRI_ARD_ULT_5_ANNI_ANIA_R", "SINISTRI_TOT_RCA_SCADENZA_ATR_ANIA_R", "SINISTRI_TOT_RCA_ANIA_R", "SINISTRI_TOT_RCA_ULT_ANNO_ANIA_R", "SINISTRI_TOT_RCA_ULT_2_ANNI_ANIA_R", "SINISTRI_TOT_RCA_ULT_5_ANNI_ANIA_R",
+                    "SINISTRI_RC_ULT_ANNO_ANIA_R", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA_R"]
+                for (const [key, value] of Object.entries(fattoriWithOutMotorAI)) {
+                    if (!closedBancaDatiCard.includes(value.NomeFattore)){
+                        if (value.Valore === -1)
+                            assert.fail(`Fattore ${value.NomeFattore} a -1`)
+                    }
+                }
                 //#endregion
             })
         })

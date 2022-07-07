@@ -1,112 +1,86 @@
 {
     "1" : {
         "AUTO_APP_P040": {
-            "version": 20201016,
-            "output": 1
+            "version": 20201016
         },
         "USO_SIVI": {
-            "version": 20201016,
-            "output": 99
+            "version": 20201016
         },
         "GRUPPO_VEICOLO_F_RCA_C": {
-            "version": 20201016,
-            "output": 32
+            "version": 20201016
         },
         "NUMERO_SFORATURE": {
-            "version": 20201016,
-            "output": 0
+            "version": 20201016
         },
         "STIMA_SELEZIONE_RR": {
-            "version": 20220707,
-            "output": 1
+            "version": 20220707
         },
         "STIMA_FRAZIONAMENTO": {
-            "version": 20220519,
-            "output": 1
+            "version": 20220519
         },
         "CONVERSION_NP": {
-            "version": 20220515,
-            "output": 1147
+            "version": 20220515
         },
         "STIMA_SELEZIONE_MAX_MINIMO": {
-            "version": 20220203,
-            "output": 0
+            "version": 20220203
         },
         "CLUSTER_AGENZIA_AI": {
-            "version": 20220624,
-            "output": 4
+            "version": 20220624
         },
         "COD_CONTRATTI_FAMIGLIARI": {
-            "version": 20210520,
-            "output": 0
+            "version": 20210520
         },
         "COD_SUBAGENTE_FONTE": {
-            "version": 20210715,
-            "output": 405000
+            "version": 20210715
         }
     },
     "2": {
         "AUTO_APP_P040": {
-            "version": 20201016,
-            "output": 1
+            "version": 20201016
         },
         "USO_SIVI": {
-            "version": 20201016,
-            "output": 99
+            "version": 20201016
         },
         "NUMERO_SFORATURE": {
-            "version": 20201016,
-            "output": 0
+            "version": 20201016
         },
         "CONVERSION_NP_AUTOCARRI": {
-            "version": 20220624,
-            "output": 2403
+            "version": 20220624
         },
         "STIMA_SELEZIONE_MAX_MINIMO_AUTOCARRI": {
-            "version": 20211014,
-            "output": 0
+            "version": 20211014
         },
         "CLUSTER_AGENZIA_AI": {
-            "version": 20220624,
-            "output": 4
+            "version": 20220624
         },
         "COD_CONTRATTI_FAMIGLIARI": {
-            "version": 20210520,
-            "output": 0
+            "version": 20210520
         },
         "COD_SUBAGENTE_FONTE": {
-            "version": 20210715,
-            "output": 405000
+            "version": 20210715
         }
     },
     "3": {
         "AUTO_APP_P040": {
-            "version": 20201016,
-            "output": 1
+            "version": 20201016
         },
         "USO_SIVI": {
-            "version": 20201016,
-            "output": 99
+            "version": 20201016
         },
         "NUMERO_SFORATURE": {
-            "version": 20201016,
-            "output": 0
+            "version": 20201016
         },
         "CONVERSION_NP_2RUOTE": {
-            "version": 20211009,
-            "output": 2200
+            "version": 20211009
         },
         "CLUSTER_AGENZIA_AI": {
-            "version": 20220624,
-            "output": 4
+            "version": 20220624
         },
         "COD_CONTRATTI_FAMIGLIARI": {
-            "version": 20210520,
-            "output": 0
+            "version": 20210520
         },
         "COD_SUBAGENTE_FONTE": {
-            "version": 20210715,
-            "output": 405000
+            "version": 20210715
         }
     }
 }
