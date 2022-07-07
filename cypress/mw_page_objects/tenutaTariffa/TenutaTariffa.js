@@ -1547,7 +1547,7 @@ class TenutaTariffa {
                     delete value.output
 
                 let getDifferences = jsonDiff.diffString(motor_ai, motorAICertified[currentCase.Identificativo_Caso], { color: false })
-                if (getDifferences === ''){
+                if (getDifferences === '') {
                     cy.task('log', 'Versione modelli MOTORE_AI corretti con i valori certificati')
                     cy.task('log', JSON.stringify(motor_ai))
                 }
@@ -1567,13 +1567,20 @@ class TenutaTariffa {
                 var closedBancaDatiCard = ["SINISTRI_TOT_RCA_ANIA", "SINISTRI_TOT_RCA_ULT_ANNO_ANIA", "SINISTRI_TOT_RCA_ULT_2_ANNI_ANIA", "SINISTRI_TOT_RCA_ULT_5_ANNI_ANIA", "SINISTRI_RC_ULT_ANNO_ANIA", "SINISTRI_RC_ULT_2_ANNI_ANIA", "SINISTRI_RC_ULT_5_ANNI_ANIA",
                     "SINISTRI_ARD_ULT_ANNO_ANIA", "SINISTRI_ARD_ULT_2_ANNI_ANIA", "SINISTRI_ARD_ULT_5_ANNI_ANIA", "SINISTRI_TOT_RCA_SCADENZA_ATR_ANIA", "SINISTRI_RC_ULT_2_ANNI_ANIA_R", "SINISTRI_RC_ULT_5_ANNI_ANIA_R", "SINISTRI_ARD_ULT_ANNO_ANIA_R",
                     "SINISTRI_ARD_ULT_2_ANNI_ANIA_R", "SINISTRI_ARD_ULT_5_ANNI_ANIA_R", "SINISTRI_TOT_RCA_SCADENZA_ATR_ANIA_R", "SINISTRI_TOT_RCA_ANIA_R", "SINISTRI_TOT_RCA_ULT_ANNO_ANIA_R", "SINISTRI_TOT_RCA_ULT_2_ANNI_ANIA_R", "SINISTRI_TOT_RCA_ULT_5_ANNI_ANIA_R",
-                    "SINISTRI_RC_ULT_ANNO_ANIA_R", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA_R","NUM_ANNI_POSS_VEICOLO_ANIA","NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA_VA_R","ETA_VEICOLO_DA_ACQUISTO_ANIA"]
+                    "SINISTRI_RC_ULT_ANNO_ANIA_R", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA_R"]
+
+                let currentFattoriFailed = []
                 for (const [key, value] of Object.entries(fattoriWithOutMotorAI)) {
-                    if (!closedBancaDatiCard.includes(value.NomeFattore)){
+                    if (!closedBancaDatiCard.includes(value.NomeFattore)) {
                         if (value.Valore === -1)
-                            assert.fail(`Fattore ${value.NomeFattore} a -1`)
+                            currentFattoriFailed.push(value.NomeFattore)
                     }
                 }
+
+                if (currentFattoriFailed.length > 0)
+                    cy.task('log', `Fattori valorizzati a -1 : ${JSON.stringify(currentFattoriFailed)}`)
+                else
+                    cy.task('log', 'Fattori OK')
                 //#endregion
             })
         })
