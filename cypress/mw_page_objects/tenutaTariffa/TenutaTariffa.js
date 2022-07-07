@@ -504,7 +504,6 @@ class TenutaTariffa {
                     cy.contains(currentCase.Modello).should('exist').and('be.visible').click()
                     cy.wait('@getMotor', { timeout: 30000 })
                     cy.wait(3000)
-                    cy.pause()
                     //Allestimento
                     cy.get('nx-dropdown[formcontrolname="versione"]').should('exist').and('be.visible').click()
                     cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Versione)
@@ -519,6 +518,42 @@ class TenutaTariffa {
             //#endregion
 
             //#region Dati Veicolo Tecnici
+            //Numero iscrizione (per auto storica)
+            if (currentCase.Numero_Iscrizione !== undefined && currentCase.Numero_Iscrizione !== "") {
+                cy.get('input[formcontrolname="numeroIscrizione"]').should('exist').and('be.visible').clear().type(currentCase.Numero_Iscrizione).type('{enter}')
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
+
+            //Data iscrzione (per auto storica)
+            if (currentCase.Data_Iscrizione !== undefined && currentCase.Data_Iscrizione !== "") {
+                cy.get('input[formcontrolname="dataIscrizione"]').should('exist').and('be.visible').clear().wait(500)
+                cy.get('input[formcontrolname="dataIscrizione"]').should('exist').and('be.visible').type(currentCase.Data_Iscrizione).type('{enter}').wait(500)
+
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
+
+            //Registo automobilistico / Club federato (per auto storica)
+            if (currentCase.Descrizione_Settore.includes("STORICO")) {
+                cy.get('nx-dropdown[formcontrolname="registroAutomobilisticoClubFederato"]').should('exist').and('be.visible').click()
+                cy.contains('AUTOMOTOCLUB').should('exist').and('be.visible').click()
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
+
+            //Potenza
+            if (currentCase.Potenza !== "") {
+                cy.get('input[formcontrolname="potenza"]').should('exist').and('be.visible').clear().type(currentCase.Potenza).type('{enter}')
+                cy.wait('@getMotor', { timeout: 30000 })
+            }
+
+            //Cavalli Fiscali
+            if (currentCase.Cavalli_Fiscali !== undefined && currentCase.Cavalli_Fiscali !== "") {
+                cy.get('input[formcontrolname="cavalli"]').should('exist').and('be.visible').clear().type(currentCase.Cavalli_Fiscali).type('{enter}')
+                cy.wait('@getMotor', { timeout: 30000 })
+            }
+
             //Posti
             if (currentCase.Posti !== "") {
                 cy.get('input[formcontrolname="posti"]').should('exist').and('be.visible').clear().type(currentCase.Posti).type('{enter}')
@@ -559,6 +594,7 @@ class TenutaTariffa {
             if (currentCase.Valore_Veicolo !== "") {
                 cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
                 cy.get('input[motoronlynumbers=""]').clear().wait(500)
+                cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
                 cy.get('input[motoronlynumbers=""]').type(currentCase.Valore_Veicolo).wait(500)
                 cy.get('strong:contains("Valore del veicolo")').click()
                 //Attendiamo che il caricamento non sia più visibile
