@@ -869,6 +869,8 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
         })
+
+        cy.task('log', 'Dati Provenienza compilati correttamente')
     }
 
     static getNumeroPreventivo() {
@@ -1513,6 +1515,8 @@ class TenutaTariffa {
             cy.wait('@caricaPrev', { timeout: 15000 })
         })
 
+        cy.task('log', 'Pagina LogProxy caricata correttamente')
+
         cy.get('td').last().should('exist').and('be.visible').click()
         cy.wait('@caricaLog', { timeout: 15000 })
         cy.window().document().then(function (doc) {
@@ -1527,6 +1531,8 @@ class TenutaTariffa {
                 const options = {
                     ignoreAttributes: false
                 }
+
+                cy.task('log', 'In analisi di LogProxy.xml...')
                 const parser = new XMLParser(options)
                 parsedLogProxy = parser.parse(fileContent)
 
@@ -1547,12 +1553,10 @@ class TenutaTariffa {
                     delete value.output
 
                 let getDifferences = jsonDiff.diffString(motor_ai, motorAICertified[currentCase.Identificativo_Caso], { color: false })
-                if (getDifferences === '') {
-                    cy.task('log', 'Versione modelli MOTORE_AI corretti con i valori certificati')
-                    cy.task('log', JSON.stringify(motor_ai, null, "\t"))
-                }
+                if (getDifferences === '')
+                    cy.task('log', `Versione modelli MOTORE_AI corretti con i valori certificati\n\n${JSON.stringify(motor_ai, null, "\t")}`)
                 else
-                    assert.fail(`Modelli MOTORE_AI non corretti : \n ${getDifferences}`)
+                    assert.fail(`Modelli MOTORE_AI non corretti\n\n ${getDifferences}`)
                 //#endregion
 
                 //#region Altri Fattori
@@ -1569,16 +1573,22 @@ class TenutaTariffa {
                     "SINISTRI_ARD_ULT_2_ANNI_ANIA_R", "SINISTRI_ARD_ULT_5_ANNI_ANIA_R", "SINISTRI_TOT_RCA_SCADENZA_ATR_ANIA_R", "SINISTRI_TOT_RCA_ANIA_R", "SINISTRI_TOT_RCA_ULT_ANNO_ANIA_R", "SINISTRI_TOT_RCA_ULT_2_ANNI_ANIA_R", "SINISTRI_TOT_RCA_ULT_5_ANNI_ANIA_R",
                     "SINISTRI_RC_ULT_ANNO_ANIA_R", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA_R"]
 
+                //? Da Dicembre 2021 in PP COD_VERIF_STATO_FAMIGLIA ritorna -1 (problemi lato sistemistico)
+                //? REGOLE_CASO_ASSUNTIVO a -1 skip by default
+                var otherCertifiedNotWorkingFattori = ["COD_VERIF_STATO_FAMIGLIA", "REGOLE_CASO_ASSUNTIVO"]
+
+                var allSkippedFattori = closedBancaDatiCard.concat(otherCertifiedNotWorkingFattori)
+
                 let currentFattoriFailed = []
                 for (const [key, value] of Object.entries(fattoriWithOutMotorAI)) {
-                    if (!closedBancaDatiCard.includes(value.NomeFattore)) {
+                    if (!allSkippedFattori.includes(value.NomeFattore)) {
                         if (value.Valore === -1)
                             currentFattoriFailed.push(value.NomeFattore)
                     }
                 }
 
                 if (currentFattoriFailed.length > 0)
-                    cy.task('log', `Fattori valorizzati a -1 : ${JSON.stringify(currentFattoriFailed, null, "\t")}`)
+                    cy.task('log', `Fattori valorizzati a -1\n\n${JSON.stringify(currentFattoriFailed, null, "\t")}`)
                 else
                     cy.task('log', 'Fattori OK')
                 //#endregion
