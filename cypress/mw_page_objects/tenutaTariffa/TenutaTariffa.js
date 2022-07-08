@@ -1572,10 +1572,12 @@ class TenutaTariffa {
                     "SINISTRI_ARD_ULT_ANNO_ANIA", "SINISTRI_ARD_ULT_2_ANNI_ANIA", "SINISTRI_ARD_ULT_5_ANNI_ANIA", "SINISTRI_TOT_RCA_SCADENZA_ATR_ANIA", "SINISTRI_RC_ULT_2_ANNI_ANIA_R", "SINISTRI_RC_ULT_5_ANNI_ANIA_R", "SINISTRI_ARD_ULT_ANNO_ANIA_R",
                     "SINISTRI_ARD_ULT_2_ANNI_ANIA_R", "SINISTRI_ARD_ULT_5_ANNI_ANIA_R", "SINISTRI_TOT_RCA_SCADENZA_ATR_ANIA_R", "SINISTRI_TOT_RCA_ANIA_R", "SINISTRI_TOT_RCA_ULT_ANNO_ANIA_R", "SINISTRI_TOT_RCA_ULT_2_ANNI_ANIA_R", "SINISTRI_TOT_RCA_ULT_5_ANNI_ANIA_R",
                     "SINISTRI_RC_ULT_ANNO_ANIA_R", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA_R"]
+                cy.task('log', 'NOTA : Skip Check su Fattori Banca Dati Card')
 
                 //? Da Dicembre 2021 in PP COD_VERIF_STATO_FAMIGLIA ritorna -1 (problemi lato sistemistico)
                 //? REGOLE_CASO_ASSUNTIVO a -1 skip by default
                 var otherCertifiedNotWorkingFattori = ["COD_VERIF_STATO_FAMIGLIA", "REGOLE_CASO_ASSUNTIVO"]
+                cy.task('log', 'NOTA : Skip Check su COD_VERIF_STATO_FAMIGLIA e REGOLE_CASO_ASSUNTIVO')
 
                 var allSkippedFattori = closedBancaDatiCard.concat(otherCertifiedNotWorkingFattori)
 
