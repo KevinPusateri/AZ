@@ -1549,7 +1549,7 @@ class TenutaTariffa {
                 let getDifferences = jsonDiff.diffString(motor_ai, motorAICertified[currentCase.Identificativo_Caso], { color: false })
                 if (getDifferences === '') {
                     cy.task('log', 'Versione modelli MOTORE_AI corretti con i valori certificati')
-                    cy.task('log', JSON.stringify(motor_ai))
+                    cy.task('log', JSON.stringify(motor_ai, null, "\t"))
                 }
                 else
                     assert.fail(`Modelli MOTORE_AI non corretti : \n ${getDifferences}`)
@@ -1578,7 +1578,7 @@ class TenutaTariffa {
                 }
 
                 if (currentFattoriFailed.length > 0)
-                    cy.task('log', `Fattori valorizzati a -1 : ${JSON.stringify(currentFattoriFailed)}`)
+                    cy.task('log', `Fattori valorizzati a -1 : ${JSON.stringify(currentFattoriFailed, null, "\t")}`)
                 else
                     cy.task('log', 'Fattori OK')
                 //#endregion
