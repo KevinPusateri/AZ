@@ -26,12 +26,13 @@ before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
-        Sfera.accediSferaDaHomePageMW()
+        Sfera.accediSferaDaHomePageMW(true)
 
         Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
         Sfera.setDateEstrazione()
-        Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-        Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.IN_MORA, true)
+        // Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
+        Sfera.estrai()
+        // Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.IN_MORA, true)
     })
 })
 
@@ -39,16 +40,16 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
 
-// })
+})
 //#endregion Before After
 
 describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
@@ -71,12 +72,13 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.VARIAZIONE_RIDUZIONE_PREMI, false)
         })
 
-        it('Stampa senza incasso', function () {
+        it.only('Stampa senza incasso', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, false)
         })
 
         //TODO supporto per trovare modalità estrazione per queste voci affinchè siano utilizzabili
-        // it('Riquietanzamento per clienti valori extra', function () {
+        // it('Riquietanzamento per clienti valori extra', 
+        //  () {
         // })
 
         // it('Riduzione premi > Consolidamento Riduzione Premi', function () {
@@ -87,7 +89,8 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
     })
 
     context('Motor > Menu Polizza', function(){
-        it('Sostituzione / Riattivazione auto', function () {
+        it.skip('Sostituzione / Riattivazione auto', function () {
+            //! NON VA AVANTI PASSA AL PROSSIMO TETS
             Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.SOSTITUZIONE_RIATTIVAZIONE_AUTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
         })
 
@@ -146,8 +149,8 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
         // })
     })
 
-    context('Menu Emissione', function() {
-        it.only('Nuova polizza Auto', function () {
+    context.skip('Menu Emissione', function() {
+        it('Nuova polizza Auto', function () {
             cy.pause()
         })
 

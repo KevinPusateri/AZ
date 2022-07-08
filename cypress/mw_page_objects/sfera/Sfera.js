@@ -1329,9 +1329,10 @@ class Sfera {
 
                     }
                     else {
+                        IncassoDA.ClosePopupWarning()
                         IncassoDA.clickCHIUDI()
                         //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera()
+                        this.verificaAccessoSfera(false)
                     }
                     break;
                 case VociMenuQuietanza.DELTA_PREMIO:
@@ -1344,7 +1345,7 @@ class Sfera {
                     else {
                         NGRA2013.home(true)
                         //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera()
+                        this.verificaAccessoSfera(false)
                         break;
                     }
                 case VociMenuQuietanza.VARIAZIONE_RIDUZIONE_PREMI:
@@ -1369,6 +1370,7 @@ class Sfera {
                     cy.contains(tipoSostituzioneRiattivazione).should('exist').click()
                     this.procedi().click()
                     Common.canaleFromPopup()
+                    cy.pause() //! SALTA QUI IN AVANTI
                     NGRA2013.verificaAccessoDatiAmministrativi()
                     cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
@@ -1377,7 +1379,7 @@ class Sfera {
                     else {
                         NGRA2013.home(true)
                         //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera()
+                        this.verificaAccessoSfera(false)
                     }
                     break;
                 case VociMenuQuietanza.STAMPA_SENZA_INCASSO:
@@ -1390,7 +1392,7 @@ class Sfera {
                             numPolizza = numContratto
                             IncassoDA.clickCHIUDI()
                             //Verifichiamo il rientro in Sfera
-                            this.verificaAccessoSfera()
+                            this.verificaAccessoSfera(false)
                             resolve(numPolizza)
                         })
                     }
@@ -1411,7 +1413,7 @@ class Sfera {
                     else {
                         NGRA2013.home(true)
                         //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera()
+                        this.verificaAccessoSfera(false)
                         break;
                     }
                     break;
@@ -1424,7 +1426,7 @@ class Sfera {
                     else {
                         InquiryAgenzia.clickUscita()
                         //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera()
+                        this.verificaAccessoSfera(false)
                     }
                     break;
                 case VociMenuConsultazione.POLIZZA:
@@ -1453,13 +1455,14 @@ class Sfera {
 
                         cy.go('back')
 
-                        cy.wait('@infoUtente', { timeout: 60000 })
-                        cy.wait('@agenzieFonti', { timeout: 60000 })
-                        cy.wait('@caricaVista', { timeout: 60000 })
-                        cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                        cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        // cy.wait('@infoUtente', { timeout: 60000 })
+                        // cy.wait('@agenzieFonti', { timeout: 60000 })
+                        // cy.wait('@caricaVista', { timeout: 60000 })
+                        // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                        // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                         //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                        this.estrai()
+                        // this.estrai()
+                        this.verificaAccessoSfera(false)
                     }
                     break;
                 case VociMenuConsultazione.DOCUMENTI_POLIZZA:
@@ -1477,15 +1480,16 @@ class Sfera {
 
                         cy.go('back')
 
-                        cy.wait('@infoUtente', { timeout: 60000 })
+                        // cy.wait('@infoUtente', { timeout: 60000 })
                         //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
                         if (vista !== VisteSuggerite.CARICO_MANCANTE) {
-                            cy.wait('@agenzieFonti', { timeout: 60000 })
-                            cy.wait('@caricaVista', { timeout: 60000 })
-                            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            // cy.wait('@agenzieFonti', { timeout: 60000 })
+                            // cy.wait('@caricaVista', { timeout: 60000 })
+                            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                            this.estrai()
+                            // this.estrai()
+                            this.verificaAccessoSfera(false)
                         }
                     }
                     break
@@ -1519,14 +1523,16 @@ class Sfera {
 
                         cy.go('back')
 
-                        cy.wait('@infoUtente', { timeout: 60000 })
+                        // cy.wait('@infoUtente', { timeout: 60000 })
                         if (vista !== VisteSuggerite.CARICO_MANCANTE) {
-                            cy.wait('@agenzieFonti', { timeout: 60000 })
-                            cy.wait('@caricaVista', { timeout: 60000 })
-                            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            // cy.wait('@agenzieFonti', { timeout: 60000 })
+                            // cy.wait('@caricaVista', { timeout: 60000 })
+                            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                            this.estrai()
+                            // this.estrai()
+                            this.verificaAccessoSfera(false)
+
                         }
                     }
                     break;
@@ -1545,14 +1551,15 @@ class Sfera {
 
                         cy.go('back')
 
-                        cy.wait('@infoUtente', { timeout: 60000 })
+                        // cy.wait('@infoUtente', { timeout: 60000 })
                         if (vista !== VisteSuggerite.CARICO_MANCANTE) {
-                            cy.wait('@agenzieFonti', { timeout: 60000 })
-                            cy.wait('@caricaVista', { timeout: 60000 })
-                            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            // cy.wait('@agenzieFonti', { timeout: 60000 })
+                            // cy.wait('@caricaVista', { timeout: 60000 })
+                            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                            this.estrai()
+                            // this.estrai()
+                            this.verificaAccessoSfera(false)
                         }
                     }
                     break;
@@ -1571,14 +1578,16 @@ class Sfera {
 
                         cy.go('back')
 
-                        cy.wait('@infoUtente', { timeout: 60000 })
+                        // cy.wait('@infoUtente', { timeout: 60000 })
                         if (vista !== VisteSuggerite.CARICO_MANCANTE) {
-                            cy.wait('@agenzieFonti', { timeout: 60000 })
-                            cy.wait('@caricaVista', { timeout: 60000 })
-                            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            // cy.wait('@agenzieFonti', { timeout: 60000 })
+                            // cy.wait('@caricaVista', { timeout: 60000 })
+                            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                            this.estrai()
+                            // this.estrai()
+                            this.verificaAccessoSfera(false)
+
                         }
                     }
                     break;

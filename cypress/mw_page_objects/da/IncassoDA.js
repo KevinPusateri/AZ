@@ -117,6 +117,17 @@ class IncassoDA {
             })
         })
     }
+
+
+    static ClosePopupWarning() {
+        cy.get('body').should('be.visible').then(($form) => {
+
+            const popupExist = $form.find('div[role="dialog"]').is(':contains("Attenzione")')
+            debugger
+            if (popupExist)
+                cy.contains('button', 'NO').click()
+        })
+    }
 }
 
 export default IncassoDA
