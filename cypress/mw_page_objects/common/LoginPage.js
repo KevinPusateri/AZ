@@ -47,10 +47,12 @@ class LoginPage {
         this.launchMW()
 
         //Skip this two requests that blocks on homepage
-        cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
-        cy.intercept(/launch-*/, 'ignore').as('launchStaging')
-        cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
-        cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
+        if (!Cypress.env('isSecondWindow')){
+            cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
+            cy.intercept(/launch-*/, 'ignore').as('launchStaging')
+            cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
+            cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
+        }
 
         if (mockedNotifications) {
 
