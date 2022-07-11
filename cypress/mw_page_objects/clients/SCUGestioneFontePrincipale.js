@@ -113,6 +113,12 @@ class SCUGestioneFontePrincipale {
       getIFrame().find('div:contains("Fonte principale impostata")').parent().find('button:contains("Chiudi")').click()
     })
 
+    cy.intercept({
+      method: 'POST',
+      url: '**/clients/**'
+    }).as('pageClient');
+
+
     // Verifico dalla scheda cliente che la fonte impostata si trovi nei referenti
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
@@ -125,19 +131,14 @@ class SCUGestioneFontePrincipale {
         cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
         cy.get('lib-client-item').next().click()
       }
-      cy.wait(15000)
 
-      cy.get('#cdk-describedby-message-container').find('div').then(divMessages => {
-        let referenteUpdated = false
-        for (let i = 0; i < divMessages.length; i++) {
 
-          referenteUpdated = divMessages[i].innerHTML.includes(nameAgente)
+      cy.wait('@pageClient', { timeout: 60000 });
+      cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
 
-          if (referenteUpdated)
-            break
-        }
-        assert(referenteUpdated === true)
-        cy.screenshot('Referente presente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
+      cy.get('.referent-box').find('span').invoke('text').then(contraente => {
+        expect(contraente).to.include(nameAgente)
+        cy.screenshot('Referente aggiornato correttamente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
       })
     })
   }
@@ -233,6 +234,11 @@ class SCUGestioneFontePrincipale {
       getIFrame().find('div:contains("Fonte principale impostata")').parent().find('button:contains("Chiudi")').click()
     })
 
+    cy.intercept({
+      method: 'POST',
+      url: '**/clients/**'
+    }).as('pageClient');
+
     // Verifico dalla scheda cliente che la fonte impostata si trovi nei referenti
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
@@ -245,20 +251,12 @@ class SCUGestioneFontePrincipale {
         cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
         cy.get('lib-client-item').next().click()
       }
-      cy.wait(15000)
-      cy.get('#cdk-describedby-message-container').find('div').then(divMessages => {
-        let referenteUpdated = false
-        for (let i = 0; i < divMessages.length; i++) {
-
-          referenteUpdated = divMessages[i].innerHTML.includes(nameAgente)
-
-          if (referenteUpdated)
-            break
-        }
-        assert(referenteUpdated === true)
-        cy.screenshot('Referente presente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
+      cy.wait('@pageClient', { timeout: 60000 });
+      cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
+      cy.get('.referent-box').find('span').invoke('text').then(contraente => {
+        expect(contraente).to.include(nameAgente)
+        cy.screenshot('Referente aggiornato correttamente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
       })
-
     })
   }
 
