@@ -1,5 +1,5 @@
 {
-  "experimentalSessionAndOrigin": true,
+  "experimentalSessionAndOrigin": false,
   "retries": 1,
   "video": false,
   "videoCompression": 25,
