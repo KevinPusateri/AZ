@@ -36,7 +36,7 @@ before(() => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
             LoginPage.logInMWAdvanced()
             Sfera.accediSferaDaHomePageMW()
-            // Sfera.setDateEstrazione()
+            Sfera.setDateEstrazione()
             Sfera.estrai()
             Sfera.selectRandomContraente()
         })
@@ -58,41 +58,59 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Sfera 4.0', options, function () {
+if (!Cypress.env('isSecondWindow'))
+    describe('Matrix Web : Sfera 4.0', options, function () {
 
-    context(Sfera.TABSCHEDA.PANORAMICA, () => {
+        context(Sfera.TABSCHEDA.PANORAMICA, () => {
 
-        it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.PANORAMICA, options, function () {
+            it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.PANORAMICA, options, function () {
+                Sfera.checkDatiComplementari(Sfera.TABSCHEDA.PANORAMICA)
+            })
+
+            it('Verifica Ripetitore cliente griglia valore cliente', options, function () {
+                Sfera.checkGrigliaValoreCliente()
+            })
+
+            it('Verifica Ripetitore cliente Polizze', options, function () {
+                Sfera.checkPolizze()
+            })
+        });
+
+        context(Sfera.TABSCHEDA.NOTE, () => {
+
+            it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.NOTE, options, function () {
+                Sfera.checkDatiComplementari(Sfera.TABSCHEDA.NOTE)
+            })
+        })
+
+        context(Sfera.TABSCHEDA.DETTAGLIO_PREMI, () => {
+            it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.DETTAGLIO_PREMI, options, function () {
+                Sfera.checkDatiComplementari(Sfera.TABSCHEDA.DETTAGLIO_PREMI)
+            })
+        })
+
+        context(Sfera.TABSCHEDA.INIZIATIVE, () => {
+
+            it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.INIZIATIVE, options, function () {
+                Sfera.checkDatiComplementari(Sfera.TABSCHEDA.INIZIATIVE)
+            })
+        })
+
+    })
+else
+    describe('Matrix Web : Sfera 4.0 -> Seconda Finestra', options, function () {
+        it('Dati Complementari ' + Sfera.TABSCHEDA.PANORAMICA, options, function () {
+            //Verifica Dati Complementari Panoramica
             Sfera.checkDatiComplementari(Sfera.TABSCHEDA.PANORAMICA)
-        })
-
-        it('Verifica Ripetitore cliente griglia valore cliente', options, function () {
+            //Verifica Ripetitore cliente griglia valore cliente
             Sfera.checkGrigliaValoreCliente()
-        })
-
-        it('Verifica Ripetitore cliente Polizze', options, function () {
+            //Verifica Ripetitore cliente Polizze
             Sfera.checkPolizze()
-        })
-    });
-
-    context(Sfera.TABSCHEDA.NOTE, () => {
-
-        it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.NOTE, options, function () {
+            //Verifica Dati Complementari Note
             Sfera.checkDatiComplementari(Sfera.TABSCHEDA.NOTE)
-        })
-    })
-
-    context(Sfera.TABSCHEDA.DETTAGLIO_PREMI, () => {
-        it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.DETTAGLIO_PREMI, options, function () {
+            //Verifica Dati Complementari Dettaglio Premi
             Sfera.checkDatiComplementari(Sfera.TABSCHEDA.DETTAGLIO_PREMI)
-        })
-    })
-
-    context(Sfera.TABSCHEDA.INIZIATIVE, () => {
-
-        it('Verifica Dati Complementari ' + Sfera.TABSCHEDA.INIZIATIVE, options, function () {
+            //Verifica Dati Complementari Iniziative
             Sfera.checkDatiComplementari(Sfera.TABSCHEDA.INIZIATIVE)
         })
     })
-
-})
