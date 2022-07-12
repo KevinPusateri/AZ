@@ -1,7 +1,6 @@
 /// <reference types="Cypress" />
 
 import TopBar from "../../mw_page_objects/common/TopBar"
-import Sales from "../../mw_page_objects/Navigation/Sales"
 import NGRA2013 from "../../mw_page_objects/motor/NGRA2013"
 import Common from "../../mw_page_objects/common/Common"
 import IncassoDA from "../../mw_page_objects/da/IncassoDA"
@@ -9,6 +8,17 @@ import InquiryAgenzia from "../../mw_page_objects/da/InquiryAgenzia"
 import Folder from "../../mw_page_objects/common/Folder"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
+
+
+const getAppJump = () => {
+    cy.get('iframe[title="app jump"]')
+        .iframe()
+
+    let iframeSCU = cy.get('iframe[title="app jump"]')
+        .its('0.contentDocument').should('exist')
+
+    return iframeSCU.its('body').should('not.be.undefined').then(cy.wrap)
+}
 
 //#region Intercept
 const infoUtente = {
@@ -1460,6 +1470,363 @@ class Sfera {
             //Verifichiamo gli accessi in base al tipo di menu selezionato
             switch (voce) {
                 case VociMenuQuietanza.INCASSO:
+                    IncassoDA.accessoMezziPagam()
+                    cy.wait(2000)
+                    if (Cypress.env('isSecondWindow')) {
+                        getAppJump().within(() => {
+                            IncassoDA.ClickIncassa()
+                        })
+                        getAppJump().within(() => {
+                            IncassoDA.SelezionaIncassa()
+                        })
+
+                        getAppJump().within(() => {
+                            IncassoDA.TerminaIncasso()
+                        })
+                    }
+                    else
+                    {
+                        IncassoDA.ClickIncassa()
+                        IncassoDA.SelezionaIncassa()
+                        IncassoDA.TerminaIncasso()
+                    }
+
+                    cy.wait('@estraiQuietanze', { timeout: 120000 })
+                    cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
+                    cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then(() => {
+                        cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    })
+
+                    break;
+                case VociMenuQuietanza.DELTA_PREMIO:
+                    NGRA2013.verificaAccessoRiepilogo()
+                    cy.wait(2000)
+                    cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di delta premio
+                    }
+                    else {
+                        NGRA2013.home(true)
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera(false)
+                        break;
+                    }
+                case VociMenuQuietanza.VARIAZIONE_RIDUZIONE_PREMI:
+                    IncassoDA.accessoGestioneFlex()
+                    IncassoDA.salvaSimulazione()
+                    cy.wait(200)
+                    cy.screenshot('Variazione Riduzione Premi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di incasso completo
+                    }
+                    else {
+                        IncassoDA.clickCHIUDI()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera(false)
+                    }
+                    break;
+                case VociMenuQuietanza.RIQUIETANZAMENTO:
+                    break;
+                case VociMenuPolizza.SOSTITUZIONE_RIATTIVAZIONE_AUTO:
+                    //Scegliamo il Tipo di sostituzione dal popup
+                    this.dropdownSostituzioneRiattivazione().click()
+                    cy.contains(tipoSostituzioneRiattivazione).should('exist').click()
+                    this.procedi().click()
+                    Common.canaleFromPopup()
+                    NGRA2013.verificaAccessoDatiAmministrativi()
+                    cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di incasso completo
+                    }
+                    else {
+                        NGRA2013.home(true)
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera(false)
+                    }
+                    break;
+                case VociMenuQuietanza.STAMPA_SENZA_INCASSO:
+                    IncassoDA.accessoMezziPagam()
+                    cy.wait(200)
+                    cy.screenshot('Stampa Senza Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        IncassoDA.clickStampa()
+                        IncassoDA.getNumeroContratto().then(numContratto => {
+                            numPolizza = numContratto
+                            IncassoDA.clickCHIUDI()
+                            //Verifichiamo il rientro in Sfera
+                            this.verificaAccessoSfera(false)
+                            resolve(numPolizza)
+                        })
+                    }
+                    else {
+                        IncassoDA.clickCHIUDI()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera(false)
+                    }
+                    break;
+                case VociMenuQuietanza.QUIETANZAMENTO_ONLINE:
+                    NGRA2013.verificaAccessoPagamento()
+                    cy.wait(10000)
+                    cy.screenshot('Verifica Accesso a Pagamenti NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        NGRA2013.flussoQuietanzamentoOnline()
+                        this.verificaAccessoSfera(false)
+                    }
+                    else {
+                        NGRA2013.home(true)
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera(false)
+                        break;
+                    }
+                    break;
+                case VociMenuPolizza.CONSULTAZIONE_POLIZZA:
+                    InquiryAgenzia.verificaAccessoInquiryAgenzia()
+                    cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        InquiryAgenzia.clickUscita()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera(false)
+                    }
+                    break;
+                case VociMenuConsultazione.POLIZZA:
+                    cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        InquiryAgenzia.clickUscita()
+                        //Verifichiamo il rientro in Sfera
+                        this.verificaAccessoSfera(false)
+                    }
+                    break;
+                case VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA:
+                    Folder.verificaCaricamentoFolder(false)
+                    cy.screenshot('Consultazione Documenti Polizza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        // cy.wait('@infoUtente', { timeout: 60000 })
+                        // cy.wait('@agenzieFonti', { timeout: 60000 })
+                        // cy.wait('@caricaVista', { timeout: 60000 })
+                        // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                        // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        // this.estrai()
+                        this.verificaAccessoSfera(false)
+                    }
+                    break;
+                case VociMenuConsultazione.DOCUMENTI_POLIZZA:
+                    Folder.verificaCaricamentoFolder(false)
+                    cy.screenshot('Consultazione Documenti Polizza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        // cy.wait('@infoUtente', { timeout: 60000 })
+                        //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                        if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            // cy.wait('@agenzieFonti', { timeout: 60000 })
+                            // cy.wait('@caricaVista', { timeout: 60000 })
+                            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                            // this.estrai()
+                            this.verificaAccessoSfera(false)
+                        }
+                    }
+                    break
+                case VociMenuPolizza.MODIFICA_MODALITA_PAGAMENTO:
+                    cy.intercept(cambiaModalitaPagamentoPreferita).as('cambiaModalitaPagamentoPreferita')
+                    this.dropdownModalitaPagamentoPreferita().click()
+                    cy.contains(modalitaPagamentoPreferita).should('exist').click()
+                    cy.screenshot('Setta Modalità Pagamento Preferita', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    this.procedi().click()
+                    //Verifichiamo che sia andato a compimento
+                    cy.wait('@cambiaModalitaPagamentoPreferita', { timeout: 120000 }).then(bffCambiaModalitaPagamento => {
+                        expect(bffCambiaModalitaPagamento.response.statusCode).to.be.eq(200)
+                        expect(bffCambiaModalitaPagamento.response.body.esito).to.include("Effettuato ScriviModalitaPagamentoPreferita")
+                        cy.screenshot('Modalità Pagamento Preferita settata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        cy.contains('Chiudi').click()
+                    })
+                    break;
+                case VociMenuCliente.SCHEDA_CLIENTE:
+                    SintesiCliente.checkAtterraggioSintesiCliente()
+                    cy.screenshot('Scheda Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        // cy.wait('@infoUtente', { timeout: 60000 })
+                        if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            // cy.wait('@agenzieFonti', { timeout: 60000 })
+                            // cy.wait('@caricaVista', { timeout: 60000 })
+                            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                            // this.estrai()
+                            this.verificaAccessoSfera(false)
+
+                        }
+                    }
+                    break;
+                case VociMenuCliente.LISTA_POLIZZE:
+                    Portafoglio.checkPolizzeAttive(false)
+                    cy.screenshot('Lista Polizze', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        // cy.wait('@infoUtente', { timeout: 60000 })
+                        if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            // cy.wait('@agenzieFonti', { timeout: 60000 })
+                            // cy.wait('@caricaVista', { timeout: 60000 })
+                            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                            // this.estrai()
+                            this.verificaAccessoSfera(false)
+                        }
+                    }
+                    break;
+                case VociMenuCliente.LISTA_SINISTRI:
+                    cy.screenshot('Lista Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    if (flussoCompleto) {
+                        Portafoglio.checkSinistri()
+                        //TODO implementare flusso completo
+                    }
+                    else {
+                        cy.intercept(infoUtente).as('infoUtente')
+                        cy.intercept(agenzieFonti).as('agenzieFonti')
+                        cy.intercept(caricaVista).as('caricaVista')
+                        cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+                        cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
+
+                        cy.go('back')
+
+                        // cy.wait('@infoUtente', { timeout: 60000 })
+                        if (vista !== VisteSuggerite.CARICO_MANCANTE) {
+                            // cy.wait('@agenzieFonti', { timeout: 60000 })
+                            // cy.wait('@caricaVista', { timeout: 60000 })
+                            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+                            //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
+                            // this.estrai()
+                            this.verificaAccessoSfera(false)
+
+                        }
+                    }
+                    break;
+            }
+        })
+    }
+
+    /**
+ * Effettua l'accesso al menu contestuale della prima riga o della polizza specificata
+ * @param {VociMenuQuietanza} voce 
+ * @param {Boolean} [flussoCompleto] default true, se a false effettua solo verifica aggancio applicativo
+ * @param {number} [polizza] default null, se specificato clicca sul menu contestuale della polizza passata
+ * @param {TipoSostituzioneRiattivazione} [tipoSostituzioneRiattivazione] default null, tipo di sostituzione/riattivazione auto da effettuare
+ * @param {TipoModalitaPagamento} [modalitaPagamentoPreferita] default null, tipo di modalità di pagamento preferita
+ * @param {Boolean} [random] default false, se a true seleziona una quietanza random
+ * @param {Number} [index] default false, se a true seleziona una quietanza random
+ * 
+ * @returns {Promise} polizza su cui sono state effettuate le operazioni
+ */
+    static accessiApplicativi(voce, flussoCompleto = true, polizza = null, tipoSostituzioneRiattivazione = null, modalitaPagamentoPreferita = null, random = false, vista = null) {
+        return new Cypress.Promise(resolve => {
+            if (polizza === null)
+                if (random)
+                    cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+                        let selected = Cypress._.random(rowsTable.length - 1);
+                        cy.wrap(rowsTable).eq(selected).within(() => {
+                            this.threeDotsMenuContestuale().click({ force: true })
+                        })
+                    })
+                else
+                    this.bodyTableEstrazione().find('tr:first').within(() => {
+                        this.threeDotsMenuContestuale().click({ force: true })
+                    })
+            else
+                this.bodyTableEstrazione().find('tr').contains(polizza).parents('tr').within(() => {
+                    this.threeDotsMenuContestuale().click({ force: true })
+                })
+
+            //Andiamo a selezionare la root (Quietanza,Polizza...)
+            if (voce.key !== VociMenuQuietanza.QUIETANZAMENTO_ONLINE.key)
+                this.menuContestualeParent().within(() => {
+                    cy.contains(voce.root).should('exist').and('be.visible').click()
+                })
+
+            //Andiamo a selezionare prima il menu contestuale 'padre' (se presente)
+            if (voce.parent !== '') {
+                this.menuContestualeParent().within(() => {
+                    cy.contains(voce.parent).should('exist').and('be.visible').click()
+                })
+            }
+            //Andiamo a selezionare il menu contestuale 'figlio'
+            this.menuContestualeChild().within(() => {
+                //? CONSULTAZIONE_DOCUMENTI_POLIZZA, Voci menu Cliente si apre su nuovo tab, quindi gestisto il _self
+                if (voce.key === VociMenuPolizza.CONSULTAZIONE_DOCUMENTI_POLIZZA.key ||
+                    voce.root === 'Cliente') {
+                    cy.window().then(win => {
+                        cy.stub(win, 'open').callsFake((url) => {
+                            return win.open.wrappedMethod.call(win, url, '_self');
+                        }).as('Open');
+                    })
+                    cy.contains(voce.key).click()
+                    cy.get('@Open')
+                }
+                else
+                    cy.contains(voce.key).click()
+            })
+
+            Common.canaleFromPopup()
+
+            //Salviamo la polizza sulla quale effettuiamo le operazioni per poterla utilizzare successivamente
+            let numPolizza = ''
+            //Verifichiamo gli accessi in base al tipo di menu selezionato
+            switch (voce) {
+                case VociMenuQuietanza.INCASSO:
+                    if (Cypress.env('isSecondWindow'))
+                        this.frameSecondaFinestraAppliativi().within(() => {
+
+                        })
                     IncassoDA.accessoMezziPagam()
                     cy.wait(2000)
                     cy.screenshot('Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })

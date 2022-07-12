@@ -99,7 +99,7 @@ if (!Cypress.env('isSecondWindow'))
     })
 else
     describe('Matrix Web : Sfera 4.0 -> Seconda Finestra', options, function () {
-        it('Dati Complementari ' + Sfera.TABSCHEDA.PANORAMICA, options, function () {
+        it('Dati Complementari', options, function () {
             //Verifica Dati Complementari Panoramica
             Sfera.checkDatiComplementari(Sfera.TABSCHEDA.PANORAMICA)
             //Verifica Ripetitore cliente griglia valore cliente
