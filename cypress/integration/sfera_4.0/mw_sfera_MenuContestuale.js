@@ -32,7 +32,6 @@ before(() => {
         Sfera.setDateEstrazione()
         // Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
         Sfera.estrai()
-        // Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.IN_MORA, true)
     })
 })
 
@@ -72,7 +71,7 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.VARIAZIONE_RIDUZIONE_PREMI, false)
         })
 
-        it.only('Stampa senza incasso', function () {
+        it('Stampa senza incasso', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, false)
         })
 
@@ -88,7 +87,7 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
         // })
     })
 
-    context('Motor > Menu Polizza', function(){
+    context.only('Motor > Menu Polizza', function () {
         it.skip('Sostituzione / Riattivazione auto', function () {
             //! NON VA AVANTI PASSA AL PROSSIMO TETS
             Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.SOSTITUZIONE_RIATTIVAZIONE_AUTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
@@ -123,15 +122,15 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
     //     })
 
     //     it('Consultazione > Comparatore AZ ultra', function () {
-            
+
     //     })
 
     //     it('Modulari', function () {
-            
+
     //     });
     // }
 
-    context('Menu Cliente', function() {
+    context.only('Menu Cliente', function () {
         it('Scheda cliente', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.SCHEDA_CLIENTE, false)
         })
@@ -149,7 +148,7 @@ describe('Matrix Web : Sfera 4.0 - Menu Contestuale', function () {
         // })
     })
 
-    context.skip('Menu Emissione', function() {
+    context.skip('Menu Emissione', function () {
         it('Nuova polizza Auto', function () {
             cy.pause()
         })

@@ -48,28 +48,28 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-afterEach(function () {
-    if (this.currentTest.state !== 'passed') {
-        TopBar.logOutMW()
-        //#region Mysql
-        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-            let tests = testsInfo
-            cy.finishMysql(dbConfig, insertedId, tests)
-        })
-        //#endregion
-        Cypress.runner.stop();
-    }
-})
+// afterEach(function () {
+//     if (this.currentTest.state !== 'passed') {
+//         TopBar.logOutMW()
+//         //#region Mysql
+//         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//             let tests = testsInfo
+//             cy.finishMysql(dbConfig, insertedId, tests)
+//         })
+//         //#endregion
+//         Cypress.runner.stop();
+//     }
+// })
 
-after(function () {
-    TopBar.logOutMW()
-    //#region Mysql
-    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-        let tests = testsInfo
-        cy.finishMysql(dbConfig, insertedId, tests)
-    })
-    //#endregion
-})
+// after(function () {
+//     TopBar.logOutMW()
+//     //#region Mysql
+//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+//         let tests = testsInfo
+//         cy.finishMysql(dbConfig, insertedId, tests)
+//     })
+//     //#endregion
+// })
 //#endregion Before After
 
 describe("LIBRI MATRICOLA", {
@@ -203,9 +203,9 @@ describe("LIBRI MATRICOLA", {
     })
 
 
-    // context.only('INCLUSIONE APPLICAZIONI', function () {
-    //     //! impostare Come primo parametro : 1 caso di test 
-    //     InclusioneApplicazione('Auto', Veicoli.Auto_Applicazione1(), ['Furto'])
-    // })
+    context('INCLUSIONE APPLICAZIONI', function () {
+        //! impostare Come primo parametro : 1 caso di test 
+        InclusioneApplicazione('Auto', Veicoli.Auto_Applicazione1(), ['Furto'])
+    })
 
 })

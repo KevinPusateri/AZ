@@ -1370,7 +1370,6 @@ class Sfera {
                     cy.contains(tipoSostituzioneRiattivazione).should('exist').click()
                     this.procedi().click()
                     Common.canaleFromPopup()
-                    cy.pause() //! SALTA QUI IN AVANTI
                     NGRA2013.verificaAccessoDatiAmministrativi()
                     cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     if (flussoCompleto) {
@@ -1501,7 +1500,6 @@ class Sfera {
                     this.procedi().click()
                     //Verifichiamo che sia andato a compimento
                     cy.wait('@cambiaModalitaPagamentoPreferita', { timeout: 120000 }).then(bffCambiaModalitaPagamento => {
-                        debugger
                         expect(bffCambiaModalitaPagamento.response.statusCode).to.be.eq(200)
                         expect(bffCambiaModalitaPagamento.response.body.esito).to.include("Effettuato ScriviModalitaPagamentoPreferita")
                         cy.screenshot('Modalità Pagamento Preferita settata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -2984,7 +2982,6 @@ class Sfera {
     static checkTooltipSingleColumn(column) {
         let regexKey
         cy.get('table').within(() => {
-            debugger
 
             regexKey = new RegExp('\^' + column.key + '\$');
             cy.contains(regexKey).scrollIntoView().should('exist').rightclick().focused().wait(1500)
@@ -2997,7 +2994,6 @@ class Sfera {
 
 
     static selezionaRigaIndex(riga) {
-        debugger
         cy.wrap(riga).within(() => {
             this.checkBoxControl().click({ force: true })
         })
@@ -3005,7 +3001,6 @@ class Sfera {
 
     static checkExistUltTipoInvio(RigaConAvviso) {
         cy.get(RigaConAvviso).then($riga => {
-            debugger
             let checkExist = $riga.find('td').is(':contains(Sms)')
             console.log(checkExist)
         })

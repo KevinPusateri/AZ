@@ -46,10 +46,6 @@ class NGRA2013 {
     }
 
     static verificaAccessoDatiAmministrativi() {
-        cy.intercept(getDettaglioConvenzione).as('getDettaglioConvenzione')
-        cy.intercept(getDatiAggiuntiviConvenzione).as('getDatiAggiuntiviConvenzione')
-        cy.wait('@getDettaglioConvenzione', { timeout: 60000 })
-        cy.wait('@getDatiAggiuntiviConvenzione', { timeout: 60000 })
 
         this.sostituzioneAScadenza()
     }
@@ -82,7 +78,6 @@ class NGRA2013 {
 
         if (performeClick) {
             cy.get('[value="› Home"]').click()
-
             //Popup Si è sicuri di vole ruscire?
             cy.get('label:contains("Si è sicuri di voler uscire?")')
                 .parents('.ui-dialog').find('span[class="ui-button-text"]').contains('Si').click() //Risponde SI al popup di attenzione
