@@ -61,40 +61,68 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Sfera 4.0 AVIVA', function () {
+if (!Cypress.env('isSecondWindow'))
+    describe('Matrix Web : Sfera 4.0 AVIVA', function () {
 
-    it('Verifica Filtro Fonti e Filtro Agenzie Tutte Selezionate', options, function () {
-        Sfera.fontiAllSelezionati()
-        Sfera.agenzieAllSelezionati()
+        it('Verifica Filtro Fonti e Filtro Agenzie Tutte Selezionate', options, function () {
+            Sfera.fontiAllSelezionati()
+            Sfera.agenzieAllSelezionati()
+        })
+
+        it('Verifica rimozione AZPay', options, function () {
+            Sfera.setDateEstrazione()
+            Sfera.estrai()
+            Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+            Sfera.checkLinkMenu('Crea e invia codici AzPay')
+        })
+
+        it('Verifica Tasto Azioni Veloci Cluster Sinistrose', options, function () {
+            Sfera.setDateEstrazione()
+            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.SINISTROSE)
+            Sfera.checkVoceAzioniVeloci(Sfera.CLUSTERMOTOR.SINISTROSE)
+        })
+
+        it('Verifica Lob', options, function () {
+            Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
+        })
+
+        it('Verifica incasso T2 motor', options, function () {
+            Sfera.setDateEstrazione(false, dataInizio, dataFine)
+            Sfera.estrai()
+            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
+        })
+
+        it('Verifica menu contestuale - Assenza link Vita', options, function () {
+            Sfera.espandiPannello()
+            Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
+            Sfera.checkVociMenuNotExist(Sfera.VOCIMENUEMISSIONE.SERVIZIO_CONSULENZA_VITA)
+        })
+
     })
-
-    it('Verifica rimozione AZPay', options, function () {
-        Sfera.setDateEstrazione()
-        Sfera.estrai()
-        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-        Sfera.checkLinkMenu('Crea e invia codici AzPay')
+else
+    describe('Matrix Web : Sfera 4.0 -> Seconda Finestra', function () {
+        it('AVIVA Common', function () {
+            //Verifica Filtro Fonti e Filtro Agenzie Tutte Selezionate
+            Sfera.fontiAllSelezionati()
+            Sfera.agenzieAllSelezionati()
+            //Verifica rimozione AZPay
+            Sfera.setDateEstrazione()
+            Sfera.estrai()
+            Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+            Sfera.checkLinkMenu('Crea e invia codici AzPay')
+            //Verifica Tasto Azioni Veloci Cluster Sinistrose
+            Sfera.setDateEstrazione()
+            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.SINISTROSE)
+            Sfera.checkVoceAzioniVeloci(Sfera.CLUSTERMOTOR.SINISTROSE)
+            //Verifica Lob
+            Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
+            //Verifica incasso T2 motor
+            Sfera.setDateEstrazione(false, dataInizio, dataFine)
+            Sfera.estrai()
+            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
+            //Verifica menu contestuale - Assenza link Vita
+            Sfera.espandiPannello()
+            Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
+            Sfera.checkVociMenuNotExist(Sfera.VOCIMENUEMISSIONE.SERVIZIO_CONSULENZA_VITA)
+        })
     })
-
-    it('Verifica Tasto Azioni Veloci Cluster Sinistrose', options, function () {
-        Sfera.setDateEstrazione()
-        Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.SINISTROSE)
-        Sfera.checkVoceAzioniVeloci(Sfera.CLUSTERMOTOR.SINISTROSE)
-    })
-
-    it('Verifica Lob', options, function () {
-        Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
-    })
-
-    it('Verifica incasso T2 motor', options, function () {
-        Sfera.setDateEstrazione(false, dataInizio, dataFine)
-        Sfera.estrai()
-        Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
-    })
-
-    it('Verifica menu contestuale - Assenza link Vita', options, function () {
-        Sfera.espandiPannello()
-        Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
-        Sfera.checkVociMenuNotExist(Sfera.VOCIMENUEMISSIONE.SERVIZIO_CONSULENZA_VITA)
-    })
-
-})

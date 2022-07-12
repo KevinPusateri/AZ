@@ -128,6 +128,56 @@ class IncassoDA {
                 cy.contains('button', 'NO').click()
         })
     }
+
+    static ClickIncassa() {
+        cy.screenshot('Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+        // Inizio flusso incasso
+        cy.wait(5000)
+        cy.intercept({
+            method: '+(GET|POST)',
+            url: '**/Incasso/**'
+        }).as('getIncasso');
+        cy.get('#pnlBtnIncasso').should('be.visible').click()
+        cy.wait(3000)
+
+        cy.wait('@getIncasso', { timeout: 40000 })
+        // if(cy.get('div[role="dialog"]').is(':visible'))
+        //     cy.get('div[role="dialog"]').find('button:contains("Procedi")').click()
+    }
+
+    static SelezionaIncassa() {
+        cy.intercept({
+            method: 'POST',
+            url: /Incassa/
+        }).as('incassa');
+
+        cy.wait(5000)
+        // Seleziono il metodo di pagamento
+        cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').should('be.visible').click().wait(1000)
+        cy.get('#TabIncassoModPagCombo_listbox').should('be.visible')
+            .find('li').contains(/^Assegno$/).click()
+
+        //Conferma incasso
+        cy.screenshot('Conferma incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.get('#btnTabIncassoConfirm').should('be.visible').click()
+
+        cy.wait('@incassa', { timeout: 40000 })
+    }
+
+    static TerminaIncasso() {
+
+        // Verifica incasso confermato
+        cy.get('h2[class="page-title"]').should('be.visible').then(() => {
+            cy.wait(5000)
+            cy.screenshot('Verifica incasso conferrmato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.wait(5000)
+        })
+
+        cy.get('img[src="css/ultra/Images/Shape.png"]').should('be.visible')
+
+        cy.get('input[value="CHIUDI"]').click()
+    }
 }
 
 export default IncassoDA
