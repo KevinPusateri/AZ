@@ -531,6 +531,173 @@ const Pannelli = {
 }
 
 /**
+ * Enum Colonne in vista Standard
+ * @enum {Object}
+ */
+const ColumnStandard = {
+    PT: {
+        key: 'Pt.',
+        tooltip: 'Area Portafoglio (Auto, Rami Vari, Vita, Modulari)'
+    },
+    CONTRAENTE: {
+        key: 'Contraente',
+        tooltip: 'Denominazione Cliente'
+    },
+    POLIZZA: {
+        key: 'Polizza',
+        tooltip: 'Numero Polizza'
+    },
+    TARGA: {
+        key: 'Targa',
+        tooltip: 'Numero di Targa'
+    },
+    FR: {
+        key: 'Fr.',
+        tooltip: 'Frazionamento'
+    },
+    EVO: {
+        key: 'Evo',
+        tooltip: ''
+    },
+    CP: {
+        key: 'Cp.',
+        tooltip: 'Compagnia'
+    },
+    AGENZIA: {
+        key: 'Agenzia',
+        tooltip: 'Agenzia'
+    },
+    SEDE: {
+        key: 'Sede',
+        tooltip: 'Codice Sede di appartenenza della fonte'
+    },
+    FONTE: {
+        key: 'Fonte',
+        tooltip: 'Fonte'
+    },
+    RAMO: {
+        key: 'Ramo',
+        tooltip: 'Ramo'
+    },
+    PR_LORDO_RATA: {
+        key: 'Pr. Lordo Rata',
+        tooltip: ''
+    },
+    ST_TIT: {
+        key: 'St. Tit.',
+        tooltip: 'Stato Titolo'
+    },
+    INIZIO_COP: {
+        key: 'Inizio Cop.',
+        tooltip: 'Data Inizio Copertura'
+    },
+    AP_CL: {
+        key: 'Ap. Cl',
+        tooltip: ''
+    },
+    INIZIATIVE_CL: {
+        key: 'Iniziative Cl',
+        tooltip: ''
+    },
+    PRV_AGE: {
+        key: 'Prv Age',
+        tooltip: ''
+    },
+    GG_EF_MORA: {
+        key: 'Gg. E/F Mora',
+        tooltip: ''
+    },
+    PAG: {
+        key: 'Pag',
+        tooltip: 'Tipo Pagamento'
+    },
+    EMAIL: {
+        key: 'Email',
+        tooltip: 'Indirizzo Email'
+    },
+    CELLULARE: {
+        key: 'Cellulare',
+        tooltip: ''
+    },
+    DESC_PRODOTTO: {
+        key: 'Descrizione Prodotto',
+        tooltip: 'Descrizione Prodotto'
+    },
+    DECORRENZA_POL: {
+        key: 'Decorrenza Pol.',
+        tooltip: ''
+    },
+    SCADENZA_POL: {
+        key: 'Scadenza Pol.',
+        tooltip: ''
+    },
+    VINC: {
+        key: 'Vinc.',
+        tooltip: ''
+    },
+    FQ: {
+        key: 'FQ',
+        tooltip: ''
+    },
+    AVV_EMAIL: {
+        key: 'Avv Email',
+        tooltip: ''
+    },
+    AVV_SMS: {
+        key: 'Avv Sms',
+        tooltip: ''
+    },
+    AVV_PDF: {
+        key: 'Avv Pdf',
+        tooltip: ''
+    },
+    DLT_PR_QTZ: {
+        key: 'Dlt pr Qtz €',
+        tooltip: ''
+    },
+    DLT_PR_NET_ARD: {
+        key: 'Dlt pr Net ARD',
+        tooltip: ''
+    },
+    DLT_PR_NET_RCA: {
+        key: 'Dlt pr Net RCA',
+        tooltip: ''
+    },
+    PUBLE_AREA_PERS: {
+        key: 'Pub.le Area Pers.',
+        tooltip: ''
+    },
+    PUBTA_AREA_PERS: {
+        key: 'Pub.ta Area Pers.',
+        tooltip: ''
+    },
+    CODFISC_IVA: {
+        key: 'Cod.Fiscale / P.IVA',
+        tooltip: ''
+    },
+    CANONE: {
+        key: 'Canone',
+        tooltip: ''
+    },
+    IND_ATT_RIN: {
+        key: 'Ind att.rin',
+        tooltip: ''
+    },
+    VAL_EXTRA: {
+        key: 'Val. Extra',
+        tooltip: ''
+    },
+    R_ABB: {
+        key: 'R.abb',
+        tooltip: ''
+    },
+    COAS: {
+        key: 'Coas',
+        tooltip: ''
+    },
+}
+
+/**
  * Enum Colonne in vista Quietanze Scartate
  * @enum {Object}
  */
@@ -773,6 +940,14 @@ class Sfera {
      */
     static get COLUMNQUIETANZESCARTATE() {
         return ColumnQuietanzeScartate
+    }
+
+    /**
+     * Funzione che ritorna le colonne della vista Quietanze Scartate
+     * @returns {ColumnStandard} Colonne disponibili
+     */
+     static get COLUMNSTANDARD() {
+        return ColumnStandard
     }
 
     /**
@@ -1643,7 +1818,7 @@ class Sfera {
             dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         }
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(500).type(dataFine).wait(500).type('{esc}').wait(1000)
+        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(700).type(dataFine).wait(700).type('{esc}').wait(1000)
 
         //Clicchiamo su estrai
         if (performEstrai) this.estrai()
@@ -1923,7 +2098,8 @@ class Sfera {
 
             cy.task('getFolderDownload').then((folderDownload) => {
                 cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
-                    console.log(Object.values(jsonData[0].data[0]).sort())
+                    // console.log(Object.values(jsonData[0].data[0]).sort())
+                    // console.log(columnView.sort())
                     // Verifica Colonne presenti
                     if (columnView.length > 0)
                         expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(columnView.sort());
