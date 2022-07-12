@@ -542,7 +542,7 @@ class TopBar extends HomePage {
             cy.get('nx-icon[name="launch"]').click()
         })
 
-        if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
+        if ((Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) || Cypress.env('isAviva')) {
             cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(() => {
                 cy.origin((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'), () => {
                     cy.visit((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'));
