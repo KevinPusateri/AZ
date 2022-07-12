@@ -525,9 +525,14 @@ class TopBar extends HomePage {
     }
 
     /**
-     * Permettere di aprire la seconda finestra di MW
+     * Permettere di aprire la seconda finestra di MW, selezionando il relativo canale
+     * @param {object} customImpersonification default empty, if specified select the relative entry in canaleFromPopup
+     * @example let customImpersonification = {
+            "agentId": "ARDEMILI1",
+            "agency": "010712000"
+        }
      */
-    static clickSecondWindow() {
+    static clickSecondWindow(customImpersonification = {}) {
 
         cy.window().then(win => {
             cy.stub(win, 'open').as('windowOpen');
@@ -544,7 +549,7 @@ class TopBar extends HomePage {
                 })
             })
         } else
-            Common.canaleFromPopup(true)
+            Common.canaleFromPopup(customImpersonification)
     }
 }
 

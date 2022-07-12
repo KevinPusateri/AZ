@@ -47,9 +47,13 @@ class Common {
 
     /**
      * Dal popup clicca sulla prima agenzia per accedere alla pagina
-     * @param {boolean} chooseUtenza : default a false, effettua l'accesso alla seconda finestra dalla homepage
+     * @param {object} customImpersonification default empty, if specified select the relative entry in the popup
+     * @example let customImpersonification = {
+            "agentId": "ARDEMILI1",
+            "agency": "010712000"
+        }
      */
-    static canaleFromPopup(chooseUtenza = false) {
+    static canaleFromPopup(customImpersonification = {}) {
         cy.wait(3000)
 
         if (Cypress.env('monoUtenza')) {
@@ -63,12 +67,28 @@ class Common {
         }
 
         // Scegli utenza se siamo su finestra principale e procediamo dall'icona sulla seconda finestra
-        if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && chooseUtenza) {
+        if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
             cy.get('body').then($body => {
                 if ($body.find('div[ngclass="agency-row"]').length > 0) {
                     cy.wait(2000)
                     cy.get('div[ngclass="agency-row"]').should('be.visible')
-                    cy.get('div[ngclass="agency-row"]').contains(Cypress.env('multiUtenza')).click()
+
+                    if (Cypress.$.isEmptyObject(customImpersonification))
+                        cy.get('div[ngclass="agency-row"]').contains(Cypress.env('multiUtenza')).click()
+                    else {
+                        debugger
+                        //Formattiamo la entry
+                        let comp = customImpersonification.agency.substr(0, 2)
+                        if (comp.startsWith('0', 0))
+                            comp = comp.substr(1, 1)
+
+                        let ag = customImpersonification.agency.substr(2)
+                        if (ag.startsWith('0', 0))
+                            ag = ag.substr(1)
+
+                        cy.get('div[ngclass="agency-row"]').contains(`${comp}-${ag}`).click()
+                    }
+
                     cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(() => {
                         cy.origin((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'), () => {
                             cy.visit((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'));
@@ -78,7 +98,7 @@ class Common {
             })
         }
 
-        if (!Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && !chooseUtenza) {
+        if (!Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
             cy.get('body').then($body => {
                 if ($body.find('div[ngclass="agency-row"]').length > 0) {
                     cy.wait(2000)

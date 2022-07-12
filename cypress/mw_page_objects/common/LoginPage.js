@@ -143,7 +143,7 @@ class LoginPage {
                             cy.wait('@gqlUserDetails')
 
                         if (Cypress.env('isSecondWindow'))
-                            TopBar.clickSecondWindow()
+                            TopBar.clickSecondWindow(customImpersonification)
                     })
                 })
             })
