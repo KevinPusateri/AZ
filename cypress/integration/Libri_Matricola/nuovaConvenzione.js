@@ -74,7 +74,7 @@ before(() => {
                                 "agentId": data.aviva.agentId,
                                 "agency": data.aviva.agency,
                             }
-                            else if (Cypress.env('isAvivaBroker'))
+                        else if (Cypress.env('isAvivaBroker'))
                             currentImpersonificationToPerform = {
                                 "agentId": data.avivaBroker.agentId,
                                 "agency": data.avivaBroker.agency,
@@ -132,7 +132,7 @@ beforeEach(() => {
 describe("LIBRI MATRICOLA", function () {
     // Ultimo Codice LM
     //! Da modificare dopo il flusso  
-    let codice = '611982'
+    // let codice = '611982'
 
     it('Flusso', () => {
         cy.get('#ambienteTargetLabel').should('be.visible').click()
@@ -145,7 +145,10 @@ describe("LIBRI MATRICOLA", function () {
         cy.get('#ctl00_ContentPlaceHolder1_txtSrcDescrizione').should('be.visible').type('SALA TEST LM AUTOMATICI')
         cy.get('#ctl00_ContentPlaceHolder1_ImageButton1').click()
         cy.get('#ctl00_ContentPlaceHolder1_GridView1').within(() => {
-            cy.contains(codice).click()
+            cy.fixture('LibriMatricolaConvenzione.json').then((data) => {
+                debugger //! da vedere
+                cy.contains(data.convenzione).click()
+              })
         })
 
 
@@ -158,19 +161,37 @@ describe("LIBRI MATRICOLA", function () {
         var afterTwoMonth = new Date();
         afterTwoMonth.setMonth(afterTwoMonth.getMonth() + 2);
         afterTwoMonth.setDate(1)
-        
+
         afterTwoMonth.toLocaleDateString();
         let formattedDate = String(afterTwoMonth.getDate()).padStart(2, '0') + '/' +
             String(afterTwoMonth.getMonth()).padStart(2, '0') + '/' +
             afterTwoMonth.getFullYear()
         cy.log(formattedDate)
-        cy.pause()
 
         cy.get('#ctl00_ContentPlaceHolder1_dtDecorrenza').should('be.visible').clear().type(formattedDate)
-        
-        cy.get('#ctl00$ContentPlaceHolder1$txtDescrizione').should('be.visible').type('SALA TEST LM AUTOMATICI')
+
+        cy.get('#ctl00_ContentPlaceHolder1_txtDescrizione').should('be.visible').type('SALA TEST LM AUTOMATICI')
         cy.pause()
 
+        //CONFERMA
+        //! DA PROVARE
+        cy.get('#ctl00_commandBar_btnConferma').click()
+        cy.get('#ctl00_contentMenuSx_MainMenu').within(() => {
+            cy.contains('Salva').click()
+        })
+
+
+        // SPOSTA IN SVILIPPO
+        cy.contains('Operazioni specifiche per l\'ambiente corrente').click()
+        cy.get('#tendinaOperazioniAmbienteSviluppo_option_1').should('be.visible').click()
+
+        cy.get('li:contains("Codice Motor:")').parent().find('b:first').then(($codiceConvenzione)=>{
+            debugger //!VERIFICA SE CODICE è stato preso
+            cy.writeFile('cypress/fixtures/LibriMatricola/Convenzione.json', {
+                convenzione : $codiceConvenzione.text(),
+                dataConvenzione : formattedDate
+            })
+        })
     });
 
 

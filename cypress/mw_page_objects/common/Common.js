@@ -47,9 +47,13 @@ class Common {
 
     /**
      * Dal popup clicca sulla prima agenzia per accedere alla pagina
-     * @param {boolean} chooseUtenza : default a false, effettua l'accesso alla seconda finestra dalla homepage
+     * @param {object} customImpersonification default empty, if specified select the relative entry in the popup
+     * @example let customImpersonification = {
+            "agentId": "ARDEMILI1",
+            "agency": "010712000"
+        }
      */
-    static canaleFromPopup(chooseUtenza = false) {
+    static canaleFromPopup(customImpersonification = {}) {
         cy.wait(3000)
 
         if (Cypress.env('monoUtenza')) {
@@ -63,37 +67,33 @@ class Common {
         }
 
         // Scegli utenza se siamo su finestra principale e procediamo dall'icona sulla seconda finestra
-        if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && chooseUtenza) {
+        if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
             cy.get('body').then($body => {
                 if ($body.find('div[ngclass="agency-row"]').length > 0) {
                     cy.wait(2000)
                     cy.get('div[ngclass="agency-row"]').should('be.visible')
 
-                    cy.get('div[ngclass="agency-row"]').contains(Cypress.env('multiUtenza')).click()
-                    cy.window().then(win => {
-                        cy.stub(win, 'open').as('windowOpen');
-                    });
-                    cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(stub => {
-                        cy.visit(stub.args[0][0]);
-                        stub.restore;
-                    });
+                    if (Cypress.$.isEmptyObject(customImpersonification))
+                        cy.get('div[ngclass="agency-row"]').contains(Cypress.env('multiUtenza')).click()
+                    else {
+                        debugger
+                        //Formattiamo la entry
+                        let comp = customImpersonification.agency.substr(0, 2).replace(/^0+/,'')
+                        let ag = customImpersonification.agency.substr(2).replace(/^0+/,'')
+
+                        cy.get('div[ngclass="agency-row"]').contains(`${comp}-${ag}`).click()
+                    }
+
+                    cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(() => {
+                        cy.origin((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'), () => {
+                            cy.visit((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'));
+                        })
+                    })
                 }
             })
         }
 
-        // Scegli utenza se siamo su finestra principale multiutenza
-        if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && chooseUtenza) {
-            cy.get('body').then($body => {
-                if ($body.find('div[ngclass="agency-row"]').length > 0) {
-                    cy.wait(2000)
-                    cy.get('div[ngclass="agency-row"]').should('be.visible')
-
-                    cy.get('div[ngclass="agency-row"]').contains(Cypress.env('multiUtenza')).click()
-                }
-            })
-        }
-
-        if (!Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza') && !chooseUtenza) {
+        if (!Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
             cy.get('body').then($body => {
                 if ($body.find('div[ngclass="agency-row"]').length > 0) {
                     cy.wait(2000)
@@ -366,13 +366,13 @@ class Common {
     static getIFrameChildByParent(IframeParent, IframeChild) {
         findIframeChild(IframeParent).find(IframeChild)
             .iframe();
-    
+
         let iframe = findIframeChild(IframeParent).find(IframeChild)
             .its('0.contentDocument').should('exist');
-    
+
         return iframe.its('body').should('not.be.undefined').then(cy.wrap)
     }
-    
+
     /**
      * Gets an object in iframe  by text
      * @param {*} idIframe del  frame
@@ -437,7 +437,7 @@ class Common {
      * @param {string} text : text displayed
      */
     static isVisibleText(id, text) {
-        getIframe().find(id, { timeout: 6000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {            
+        getIframe().find(id, { timeout: 6000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {
             let txt = $tag.text().trim()
             cy.log('>> the text value is:  ' + txt)
             if (txt.includes(text))
@@ -453,9 +453,9 @@ class Common {
      * @param {string} id : locator attribute 
      * @param {string} text : text displayed
      */
-     static isVisibleTextOnIframeChild(idIframe, id, text) {
-       
-        findIframeChild(idIframe).find(id, { timeout: 5000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {      
+    static isVisibleTextOnIframeChild(idIframe, id, text) {
+
+        findIframeChild(idIframe).find(id, { timeout: 5000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {
             let txt = $tag.text().trim()
             cy.log('>> the text value is:  ' + txt)
             if (txt.includes(text))
@@ -470,8 +470,7 @@ class Common {
      * @param {string} locator : class attribute 
      * @param {string} label : text displayed
      */
-    static isVisibleTitleTag(tag, title)
-    {
+    static isVisibleTitleTag(tag, title) {
         getIframe().find(tag + '[title="' + title + '"]').scrollIntoView().should('be.visible')
     }
     /**
@@ -480,8 +479,7 @@ class Common {
      * @param {string} locator : class attribute 
      * @param {string} label : text displayed
      */
-    static isVisibleTitleTagOnIframeChild(idIframe, tag, title)
-    {
+    static isVisibleTitleTagOnIframeChild(idIframe, tag, title) {
         findIframeChild(idIframe).find(tag + '[title="' + title + '"]', { timeout: 5000 }).scrollIntoView().should('be.visible')
     }
 

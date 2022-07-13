@@ -10,7 +10,6 @@ const moment = require('moment')
 const jsonDiff = require('../../../node_modules/json-diff/lib/index.js')
 
 const motorAICertified = require('../../fixtures/Controllo_Fattori/motor_ai_Certified.json')
-const controlloFattoriCert = require('../../fixtures/Controllo_Fattori/Controllo_Fattori_Cert.json')
 
 let parsedLogTariffa
 let parsedRadarUW
@@ -218,7 +217,7 @@ class TenutaTariffa {
 
             //Tipologia Veicolo
             // * auto è già selezionato di default quindi lo skippo
-            if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada' && currentCase.Tipo_Veicolo !== 'taxi') {
+            if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada' && currentCase.Tipo_Veicolo !== 'taxi' && currentCase.Tipo_Veicolo !== 'Auto Storica') {
                 cy.contains('un\'auto').parent().should('exist').and('be.visible').click()
                 if (currentCase.Tipo_Veicolo === 'ciclomotore' || currentCase.Tipo_Veicolo === 'autobus' || currentCase.Tipo_Veicolo === 'macchina operatrice' || currentCase.Tipo_Veicolo === 'macchina agricola')
                     cy.contains('altro').should('exist').and('be.visible').click().wait(2000)
@@ -429,6 +428,13 @@ class TenutaTariffa {
                 expect(currentDataPrimaImmatricolazione).to.include(formattedPrimaImmatricolazione)
             })
 
+            //Verifichiamo se Veicolo Storico
+            if (currentCase.Descrizione_Settore.includes("STORICO")) {
+                cy.get('nx-checkbox[formcontrolname="veicoloStorico"]').should('exist').and('be.visible').click()
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
+
             //Tipo Veicolo
             cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').invoke('text').then(tipVeicolo => {
                 if (tipVeicolo.toLocaleLowerCase() !== currentCase.Tipo_Veicolo) {
@@ -511,6 +517,42 @@ class TenutaTariffa {
             //#endregion
 
             //#region Dati Veicolo Tecnici
+            //Numero iscrizione (per auto storica)
+            if (currentCase.Numero_Iscrizione !== undefined && currentCase.Numero_Iscrizione !== "") {
+                cy.get('input[formcontrolname="numeroIscrizione"]').should('exist').and('be.visible').clear().type(currentCase.Numero_Iscrizione).type('{enter}')
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
+
+            //Data iscrzione (per auto storica)
+            if (currentCase.Data_Iscrizione !== undefined && currentCase.Data_Iscrizione !== "") {
+                cy.get('input[formcontrolname="dataIscrizione"]').should('exist').and('be.visible').clear().wait(500)
+                cy.get('input[formcontrolname="dataIscrizione"]').should('exist').and('be.visible').type(currentCase.Data_Iscrizione).type('{enter}').wait(500)
+
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
+
+            //Registo automobilistico / Club federato (per auto storica)
+            if (currentCase.Descrizione_Settore.includes("STORICO")) {
+                cy.get('nx-dropdown[formcontrolname="registroAutomobilisticoClubFederato"]').should('exist').and('be.visible').click()
+                cy.contains('AUTOMOTOCLUB').should('exist').and('be.visible').click()
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
+            }
+
+            //Potenza
+            if (currentCase.Potenza !== "") {
+                cy.get('input[formcontrolname="potenza"]').should('exist').and('be.visible').clear().type(currentCase.Potenza).type('{enter}')
+                cy.wait('@getMotor', { timeout: 30000 })
+            }
+
+            //Cavalli Fiscali
+            if (currentCase.Cavalli_Fiscali !== undefined && currentCase.Cavalli_Fiscali !== "") {
+                cy.get('input[formcontrolname="cavalli"]').should('exist').and('be.visible').clear().type(currentCase.Cavalli_Fiscali).type('{enter}')
+                cy.wait('@getMotor', { timeout: 30000 })
+            }
+
             //Posti
             if (currentCase.Posti !== "") {
                 cy.get('input[formcontrolname="posti"]').should('exist').and('be.visible').clear().type(currentCase.Posti).type('{enter}')
@@ -549,10 +591,10 @@ class TenutaTariffa {
 
             //Valore Veicolo
             if (currentCase.Valore_Veicolo !== "") {
-                //! fa schifo, lo so, ma al momento non c'è strada migliore
-                cy.get('#nx-input-19').should('exist').and('be.visible').click()
-                cy.get('#nx-input-19').clear().wait(500)
-                cy.get('#nx-input-19').type(currentCase.Valore_Veicolo).wait(500)
+                cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
+                cy.get('input[motoronlynumbers=""]').clear().wait(500)
+                cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
+                cy.get('input[motoronlynumbers=""]').type(currentCase.Valore_Veicolo).wait(500)
                 cy.get('strong:contains("Valore del veicolo")').click()
                 //Attendiamo che il caricamento non sia più visibile
                 cy.get('nx-spinner').should('not.be.visible')
@@ -827,6 +869,8 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
         })
+
+        cy.task('log', 'Dati Provenienza compilati correttamente')
     }
 
     static getNumeroPreventivo() {
@@ -1245,6 +1289,8 @@ class TenutaTariffa {
                 case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOVETTURA":
                 case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOCARRO":
                 case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOBUS":
+                case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA OPERATRICE":
+                case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA AGRICOLA":
                     //? Su AZ Attiva Vandalidi ed Eventi Naturali compare attivando Furto, su Aviva è visibile by default
                     if (!Cypress.env('isAviva')) {
                         cy.contains("Furto").parent('div').parent('div').within(() => {
@@ -1408,6 +1454,8 @@ class TenutaTariffa {
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOVETTURA":
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOCARRO":
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI AUTOBUS":
+                        case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA OPERATRICE":
+                        case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA AGRICOLA":
                         case "EVENTI NATURALI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
                             break
@@ -1467,6 +1515,8 @@ class TenutaTariffa {
             cy.wait('@caricaPrev', { timeout: 15000 })
         })
 
+        cy.task('log', 'Pagina LogProxy caricata correttamente')
+
         cy.get('td').last().should('exist').and('be.visible').click()
         cy.wait('@caricaLog', { timeout: 15000 })
         cy.window().document().then(function (doc) {
@@ -1481,31 +1531,68 @@ class TenutaTariffa {
                 const options = {
                     ignoreAttributes: false
                 }
+
+                cy.task('log', 'In analisi di LogProxy.xml...')
                 const parser = new XMLParser(options)
                 parsedLogProxy = parser.parse(fileContent)
 
                 let fattoriDic = JSON.parse(findKeyInLog('_factoryFattoriDic', parsedLogProxy)).A
                 let elencoFattori = fattoriDic.ElencoFattori
 
-                debugger
                 //#region Fattore MOTOR_AI
                 let motor_ai = JSON.parse(elencoFattori.filter(obj => { return obj.NomeFattore === 'MOTOR_AI' })[0].Valore)
                 console.log(motor_ai)
+
+                //Verifichiamo che output non assuma il valore -1
+                for (const [key, value] of Object.entries(motor_ai))
+                    if (value.output === -1)
+                        assert.fail(`Fattore ${key} a -1`)
+
+                //Andiamo a rimuovere output in quanto non necessita per il raffronto tra versioni
+                for (const [key, value] of Object.entries(motor_ai))
+                    delete value.output
+
                 let getDifferences = jsonDiff.diffString(motor_ai, motorAICertified[currentCase.Identificativo_Caso], { color: false })
                 if (getDifferences === '')
-                    cy.task('log', 'Modelli MOTORE_AI corretti')
+                    cy.task('log', `Versione modelli MOTORE_AI corretti con i valori certificati\n\n${JSON.stringify(motor_ai, null, "\t")}`)
                 else
-                    assert.fail(`Modelli MOTORE_AI non corretti : \n ${getDifferences}`)
+                    assert.fail(`Modelli MOTORE_AI non corretti\n\n ${getDifferences}`)
                 //#endregion
 
                 //#region Altri Fattori
+                //Prendiamo tutti i fattori tranne MOTOR_AI
                 let fattoriWithOutMotorAI = elencoFattori.filter(obj => { return obj.NomeFattore !== 'MOTOR_AI' })
                 console.log(fattoriWithOutMotorAI)
-                getDifferences = jsonDiff.diffString(fattoriWithOutMotorAI, controlloFattoriCert[currentCase.Identificativo_Caso], { color: false })
-                if (getDifferences === '')
-                    cy.task('log', 'Fattori corretti')
+
+                debugger
+                //Togliamo i fattori che sono stati volutamente settati a -1 e verifichiamo che gli altri non siano a -1
+                //? Da Maggio 2022, come da comunicazione di Marcialis, è stato chiuso l'accesso alla banca dati card
+                //? Se stai leggendo questa riga sei stato fregato! Scappa!
+                var closedBancaDatiCard = ["SINISTRI_TOT_RCA_ANIA", "SINISTRI_TOT_RCA_ULT_ANNO_ANIA", "SINISTRI_TOT_RCA_ULT_2_ANNI_ANIA", "SINISTRI_TOT_RCA_ULT_5_ANNI_ANIA", "SINISTRI_RC_ULT_ANNO_ANIA", "SINISTRI_RC_ULT_2_ANNI_ANIA", "SINISTRI_RC_ULT_5_ANNI_ANIA",
+                    "SINISTRI_ARD_ULT_ANNO_ANIA", "SINISTRI_ARD_ULT_2_ANNI_ANIA", "SINISTRI_ARD_ULT_5_ANNI_ANIA", "SINISTRI_TOT_RCA_SCADENZA_ATR_ANIA", "SINISTRI_RC_ULT_2_ANNI_ANIA_R", "SINISTRI_RC_ULT_5_ANNI_ANIA_R", "SINISTRI_ARD_ULT_ANNO_ANIA_R",
+                    "SINISTRI_ARD_ULT_2_ANNI_ANIA_R", "SINISTRI_ARD_ULT_5_ANNI_ANIA_R", "SINISTRI_TOT_RCA_SCADENZA_ATR_ANIA_R", "SINISTRI_TOT_RCA_ANIA_R", "SINISTRI_TOT_RCA_ULT_ANNO_ANIA_R", "SINISTRI_TOT_RCA_ULT_2_ANNI_ANIA_R", "SINISTRI_TOT_RCA_ULT_5_ANNI_ANIA_R",
+                    "SINISTRI_RC_ULT_ANNO_ANIA_R", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA", "NUM_SIN_RCA_ANNI_POSS_VEICOLO_ANIA_R"]
+                cy.task('log', 'NOTA : Skip Check su Fattori Banca Dati Card')
+
+                //? Da Dicembre 2021 in PP COD_VERIF_STATO_FAMIGLIA ritorna -1 (problemi lato sistemistico)
+                //? REGOLE_CASO_ASSUNTIVO a -1 skip by default
+                var otherCertifiedNotWorkingFattori = ["COD_VERIF_STATO_FAMIGLIA", "REGOLE_CASO_ASSUNTIVO"]
+                cy.task('log', 'NOTA : Skip Check su COD_VERIF_STATO_FAMIGLIA e REGOLE_CASO_ASSUNTIVO')
+
+                var allSkippedFattori = closedBancaDatiCard.concat(otherCertifiedNotWorkingFattori)
+
+                let currentFattoriFailed = []
+                for (const [key, value] of Object.entries(fattoriWithOutMotorAI)) {
+                    if (!allSkippedFattori.includes(value.NomeFattore)) {
+                        if (value.Valore === -1)
+                            currentFattoriFailed.push(value.NomeFattore)
+                    }
+                }
+
+                if (currentFattoriFailed.length > 0)
+                    cy.task('log', `Fattori valorizzati a -1\n\n${JSON.stringify(currentFattoriFailed, null, "\t")}`)
                 else
-                    assert.fail(`Fattori variati: \n ${getDifferences}`)
+                    cy.task('log', 'Fattori OK')
                 //#endregion
             })
         })

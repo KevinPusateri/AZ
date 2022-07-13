@@ -82,44 +82,74 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Sfera 4.0 - Operatività - vista Quietanze Scartate', function () {
+if (!Cypress.env('isSecondWindow'))
+    describe('Matrix Web : Sfera 4.0 - Operatività - Vista Quietanze Scartate', function () {
 
-    it('Verifica caricamento dati', function () {
-        Sfera.espandiPannello()
-        Sfera.estrai(false)
-    })
+        it('Verifica caricamento dati', function () {
+            Sfera.espandiPannello()
+            Sfera.estrai(false)
+        })
 
-    it('Verifica Vista Quietanze Scartate', function () {
-        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
-        Sfera.checkVistaExist(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
-    })
+        it('Verifica Vista Quietanze Scartate', function () {
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
+            Sfera.checkVistaExist(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
+        })
 
-    it('Verifica LoB', function () {
-        Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
-        Sfera.checkNotExistLob(Sfera.PORTAFOGLI.RAMI_VARI)
-        Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
-    })
+        it('Verifica LoB', function () {
+            Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
+            Sfera.checkNotExistLob(Sfera.PORTAFOGLI.RAMI_VARI)
+            Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
+        })
 
-    it('Verifica Colonne corrette in tabella', function () {
-        Sfera.espandiPannello()
-        Sfera.estrai(false)
-        Sfera.checkAllColonnePresenti(Sfera.COLUMNQUIETANZESCARTATE)
-    })
+        it('Verifica Colonne corrette in tabella', function () {
+            Sfera.espandiPannello()
+            Sfera.estrai(false)
+            Sfera.checkAllColonnePresenti(Sfera.COLUMNQUIETANZESCARTATE)
+        })
 
-    it('Verifica Colonne in tabella: Tooltip', function () {
-        Sfera.checkTooltipHeadersColonne(Sfera.COLUMNQUIETANZESCARTATE)
-    })
+        it('Verifica Colonne in tabella: Tooltip', function () {
+            Sfera.checkTooltipHeadersColonne(Sfera.COLUMNQUIETANZESCARTATE)
+        })
 
-    it('Colonne in tabella: Report excel', function () {
-        Sfera.espandiPannello()
-        Sfera.setDateEstrazione(false, dataInizio)
-        Sfera.estrai(false)
-        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-        Sfera.estrazioneReportExcel(Sfera.COLUMNQUIETANZESCARTATE)
-    })
+        it('Colonne in tabella: Report excel', function () {
+            Sfera.espandiPannello()
+            Sfera.setDateEstrazione(false, dataInizio)
+            Sfera.estrai(false)
+            Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+            Sfera.estrazioneReportExcel(Sfera.COLUMNQUIETANZESCARTATE)
+        })
 
-    //! DA AGGIUNGERE SU TFS
-    it('Verifica Ripetitore dati', function () {
-        Sfera.checkExistRipetitoreDati(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE, dataInizio, dataFine)
+        //! DA AGGIUNGERE SU TFS
+        it('Verifica Ripetitore dati', function () {
+            Sfera.checkExistRipetitoreDati(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE, dataInizio, dataFine)
+        })
     })
-})
+else
+    describe('Matrix Web : Sfera 4.0 -> Seconda Finestra', function () {
+        it('Operatività - Vista Quietanze Scartate', function () {
+            //Verifica caricamento dati
+            Sfera.espandiPannello()
+            Sfera.estrai(false)
+            //Verifica Vista Quietanze Scartate
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
+            Sfera.checkVistaExist(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE)
+            //Verifica LoB
+            Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
+            Sfera.checkNotExistLob(Sfera.PORTAFOGLI.RAMI_VARI)
+            Sfera.checkNotExistLob(Sfera.PORTAFOGLI.VITA)
+            //Verifica Colonne corrette in tabella
+            Sfera.espandiPannello()
+            Sfera.estrai(false)
+            Sfera.checkAllColonnePresenti(Sfera.COLUMNQUIETANZESCARTATE)
+            //Verifica Colonne in tabella: Tooltip
+            Sfera.checkTooltipHeadersColonne(Sfera.COLUMNQUIETANZESCARTATE)
+            //Colonne in tabella: Report excel
+            Sfera.espandiPannello()
+            Sfera.setDateEstrazione(false, dataInizio)
+            Sfera.estrai(false)
+            Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+            Sfera.estrazioneReportExcel(Sfera.COLUMNQUIETANZESCARTATE)
+            //Verifica Ripetitore dati
+            Sfera.checkExistRipetitoreDati(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE, dataInizio, dataFine)
+        })
+    })

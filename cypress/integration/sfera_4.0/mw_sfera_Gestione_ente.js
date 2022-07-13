@@ -60,98 +60,160 @@ beforeEach(() => {
 //     }
 // })
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+})
 //#endregion Before After
 
-describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
+if (!Cypress.env('isSecondWindow'))
+    describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
 
-    // it('Gestione ente NON presente su age HUB SENZA age CP 73', function () {
-    //     let customImpersonification = {
-    //         "agentId": "ARFBOSIO",
-    //         "agency": "010119000"
-    //     }
-    //     LoginPage.logInMWAdvanced(customImpersonification)
-    //     Sfera.accediSferaDaHomePageMW(true)
-    //     Sfera.checkVistaSuggeriteNotExistByMenu(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
-    //     TopBar.logOutMW()
-    //     cy.wait(5000)
-    // })
+        it('Gestione ente NON presente su age HUB SENZA age CP 73', function () {
+            let customImpersonification = {
+                "agentId": "ARFBOSIO",
+                "agency": "010119000"
+            }
+            LoginPage.logInMWAdvanced(customImpersonification)
+            Sfera.accediSferaDaHomePageMW(true)
+            Sfera.checkVistaSuggeriteNotExistByMenu(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
+            TopBar.logOutMW()
+            cy.wait(5000)
+        })
 
-    it('Verifica Gestione ente presente su age HUB CON age CP 73', function () {
-        let customImpersonification = {
-            "agentId": "ARFPULINI2",
-            "agency": "010710000"
-        }
-        LoginPage.logInMWAdvanced(customImpersonification)
-        Sfera.accediSferaDaHomePageMW(true)
-        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
+        it('Verifica Gestione ente presente su age HUB CON age CP 73', function () {
+            let customImpersonification = {
+                "agentId": "ARFPULINI2",
+                "agency": "010710000"
+            }
+            LoginPage.logInMWAdvanced(customImpersonification)
+            Sfera.accediSferaDaHomePageMW(true)
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
+        })
+
+        it('Verifica Parametri di default associati alla vista', function () {
+            Sfera.checkAgenzieSabbiate('552 - FRASCATI FC GROUP')
+            Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
+            Sfera.checkLob(Sfera.PORTAFOGLI.RAMI_VARI)
+            Sfera.checkLob(Sfera.PORTAFOGLI.VITA)
+            Sfera.checkDateModifiedOneMonthLater(dataInizio)
+            Sfera.checkTipoQuietanzeCheckedDefault(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
+            Sfera.checkClusterAllUnchecked()
+        })
+
+        it('Verifica Colonna ente di genarazione avvisi', function () {
+            Sfera.estrai()
+            Sfera.checkColonnaPresente(Sfera.COLUMNGESTIONEENTE.ENTE_GEN_AVV.key)
+        })
+
+        it('Verifica Colonna ente di generazione avvisi_report', function () {
+            Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+            Sfera.estrazioneReportExcel(Sfera.COLUMNGESTIONEENTE)
+            Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+        })
+
+        it('Verifica Azioni veloci tre puntini', function () {
+            Sfera.selezionaRigaRandom()
+            Sfera.selezionaRigaRandom()
+            Sfera.checkTrePuntiniLink('Gestione ente')
+        })
+
+        it('Verifica Colonne in tabella: Tooltip', function () {
+            Sfera.checkTooltipHeadersColonne(Sfera.COLUMNGESTIONEENTE)
+        })
+
+        it('Verifica filtro calendario t+2 mesi', function () {
+            Sfera.espandiPannello()
+            let dataInizio = Common.setDate(undefined, 1, false)
+            Sfera.setDateInizio(dataInizio)
+            Sfera.checkCalendarNextOnlyTwoMonth(Sfera.COLUMNGESTIONEENTE)
+        })
+
+        it('Verifica sezioni decadi', function () {
+            Sfera.estrai()
+            Sfera.checkSezioniDecadi()
+        })
+
+        it('Verifica sezioni decadi -> Tooltip', function () {
+            Sfera.checkTooltipSezioniDecadi()
+        })
+
+        it('Verifica aggiornamento decadi cambiando periodo', function () {
+            Sfera.espandiPannello()
+            Sfera.checkVaraziazioneDecadiByCalendar()
+        })
+
+        it('Verifica colonna decade in tabella', function () {
+            Sfera.checkColonnaPresente(Sfera.COLUMNGESTIONEENTE.DEC.key)
+        })
+
+        it('Verifica colonna decade -> Tooltip', function () {
+            Sfera.checkTooltipSingleColumn(Sfera.COLUMNGESTIONEENTE.DEC)
+        })
     })
-
-    it('Verifica Parametri di default associati alla vista', function () {
-        Sfera.checkAgenzieSabbiate('552 - FRASCATI FC GROUP')
-        Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
-        Sfera.checkLob(Sfera.PORTAFOGLI.RAMI_VARI)
-        Sfera.checkLob(Sfera.PORTAFOGLI.VITA)
-        Sfera.checkDateModifiedOneMonthLater(dataInizio)
-        Sfera.checkTipoQuietanzeCheckedDefault(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
-        Sfera.checkClusterAllUnchecked()
+else
+    describe('Matrix Web : Sfera 4.0 -> Seconda Finestra', function () {
+        it('Gestione Ente', function () {
+            //Gestione ente NON presente su age HUB SENZA age CP 73
+            let customImpersonification = {
+                "agentId": "ARFBOSIO",
+                "agency": "010119000"
+            }
+            LoginPage.logInMWAdvanced(customImpersonification)
+            Sfera.accediSferaDaHomePageMW(true)
+            Sfera.checkVistaSuggeriteNotExistByMenu(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
+            TopBar.logOutMW()
+            cy.wait(5000)
+            //Verifica Gestione ente presente su age HUB CON age CP 73
+            customImpersonification = {
+                "agentId": "ARFPULINI2",
+                "agency": "010710000"
+            }
+            LoginPage.logInMWAdvanced(customImpersonification)
+            Sfera.accediSferaDaHomePageMW(true)
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
+            //Verifica Parametri di default associati alla vista
+            Sfera.checkAgenzieSabbiate('552 - FRASCATI FC GROUP')
+            Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
+            Sfera.checkLob(Sfera.PORTAFOGLI.RAMI_VARI)
+            Sfera.checkLob(Sfera.PORTAFOGLI.VITA)
+            Sfera.checkDateModifiedOneMonthLater(dataInizio)
+            Sfera.checkTipoQuietanzeCheckedDefault(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
+            Sfera.checkClusterAllUnchecked()
+            //Verifica Colonna ente di genarazione avvisi
+            Sfera.estrai()
+            Sfera.checkColonnaPresente(Sfera.COLUMNGESTIONEENTE.ENTE_GEN_AVV.key)
+            //Verifica Colonna ente di generazione avvisi_report
+            Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+            Sfera.estrazioneReportExcel(Sfera.COLUMNGESTIONEENTE)
+            Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
+            //Verifica Azioni veloci tre puntini
+            Sfera.selezionaRigaRandom()
+            Sfera.selezionaRigaRandom()
+            Sfera.checkTrePuntiniLink('Gestione ente')
+            //Verifica Colonne in tabella: Tooltip
+            Sfera.checkTooltipHeadersColonne(Sfera.COLUMNGESTIONEENTE)
+            //Verifica filtro calendario t+2 mesi
+            Sfera.espandiPannello()
+            let dataInizio = Common.setDate(undefined, 1, false)
+            Sfera.setDateInizio(dataInizio)
+            Sfera.checkCalendarNextOnlyTwoMonth(Sfera.COLUMNGESTIONEENTE)
+            //Verifica sezioni decadi
+            Sfera.estrai()
+            Sfera.checkSezioniDecadi()
+            //Verifica sezioni decadi -> Tooltip
+            Sfera.checkTooltipSezioniDecadi()
+            //Verifica aggiornamento decadi cambiando periodo
+            Sfera.espandiPannello()
+            Sfera.checkVaraziazioneDecadiByCalendar()
+            //Verifica colonna decade in tabella
+            Sfera.checkColonnaPresente(Sfera.COLUMNGESTIONEENTE.DEC.key)
+            //Verifica colonna decade -> Tooltip
+            Sfera.checkTooltipSingleColumn(Sfera.COLUMNGESTIONEENTE.DEC)
+        })
     })
-
-    it('Verifica Colonna ente di genarazione avvisi', function () {
-        Sfera.estrai()
-        Sfera.checkColonnaPresente(Sfera.COLUMNGESTIONEENTE.ENTE_GEN_AVV.key)
-    })
-
-    it('Verifica Colonna ente di generazione avvisi_report', function () {
-        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-        Sfera.estrazioneReportExcel(Sfera.COLUMNGESTIONEENTE)
-        Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-    })
-
-    it('Verifica Azioni veloci tre puntini', function () {
-        Sfera.selezionaRigaRandom()
-        Sfera.selezionaRigaRandom()
-        Sfera.checkTrePuntiniLink('Gestione ente')
-    })
-
-    it('Verifica Colonne in tabella: Tooltip', function () {
-        Sfera.checkTooltipHeadersColonne(Sfera.COLUMNGESTIONEENTE)
-    })
-
-    it('Verifica filtro calendario t+2 mesi', function () {
-        Sfera.espandiPannello()
-        let dataInizio = Common.setDate(undefined, 1, false)
-        Sfera.setDateInizio(dataInizio)
-        Sfera.checkCalendarNextOnlyTwoMonth(Sfera.COLUMNGESTIONEENTE)
-    })
-
-    it('Verifica sezioni decadi', function () {
-        Sfera.estrai()
-        Sfera.checkSezioniDecadi()
-    })
-
-    it('Verifica sezioni decadi -> Tooltip', function () {
-        Sfera.checkTooltipSezioniDecadi()
-    })
-
-    it('Verifica aggiornamento decadi cambiando periodo', function () {
-        Sfera.espandiPannello()
-        Sfera.checkVaraziazioneDecadiByCalendar()
-    })
-
-    it('Verifica colonna decade in tabella', function () {
-        Sfera.checkColonnaPresente(Sfera.COLUMNGESTIONEENTE.DEC.key)
-    })
-
-    it('Verifica colonna decade -> Tooltip', function () {
-        Sfera.checkTooltipSingleColumn(Sfera.COLUMNGESTIONEENTE.DEC)
-    })
-})

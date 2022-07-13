@@ -525,25 +525,31 @@ class TopBar extends HomePage {
     }
 
     /**
-     * Permettere di aprire la seconda finestra di MW
+     * Permettere di aprire la seconda finestra di MW, selezionando il relativo canale
+     * @param {object} customImpersonification default empty, if specified select the relative entry in canaleFromPopup
+     * @example let customImpersonification = {
+            "agentId": "ARDEMILI1",
+            "agency": "010712000"
+        }
      */
-    static clickSecondWindow() {
-        cy.get('lib-header-right').should('be.visible').within(() => {
+    static clickSecondWindow(customImpersonification = {}) {
 
-            if (Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) {
-                cy.get('nx-icon[name="launch"]').click()
-                cy.window().then(win => {
-                    cy.stub(win, 'open').as('windowOpen');
-                });
-                cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(stub => {
-                    cy.visit(stub.args[0][0]);
-                    stub.restore;
-                });
-            } else {
-                cy.get('nx-icon[name="launch"]').click()
-                Common.canaleFromPopup(true)
-            }
+        cy.window().then(win => {
+            cy.stub(win, 'open').as('windowOpen');
         })
+
+        cy.get('lib-header-right').should('be.visible').within(() => {
+            cy.get('nx-icon[name="launch"]').click()
+        })
+
+        if ((Cypress.env('isSecondWindow') && Cypress.env('monoUtenza')) || (Cypress.env('isAviva') && Cypress.$.isEmptyObject(customImpersonification))) {
+            cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(() => {
+                cy.origin((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'), () => {
+                    cy.visit((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'));
+                })
+            })
+        } else
+            Common.canaleFromPopup(customImpersonification)
     }
 }
 

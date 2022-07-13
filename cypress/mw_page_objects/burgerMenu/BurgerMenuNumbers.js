@@ -72,7 +72,7 @@ const LinksBurgerMenu = {
         if (!keys.MONITORAGGIO_CARICO) delete this.MONITORAGGIO_CARICO
         if (!keys.MONITORAGGIO_CARICO_FONTE) delete this.MONITORAGGIO_CARICO_FONTE
         if (!keys.X_ADVISOR) delete this.X_ADVISOR
-        if (!keys.INCENTIVAZIONE && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) delete this.INCENTIVAZIONE
+        if (!keys.INCENTIVAZIONE) delete this.INCENTIVAZIONE
         if (!keys.INCENTIVAZIONE_RECRUITING) delete this.INCENTIVAZIONE_RECRUITING
         if (!keys.ANDAMENTI_TECNICI) delete this.ANDAMENTI_TECNICI
         if (!keys.ESTRAZIONI_AVANZATE) delete this.ESTRAZIONI_AVANZATE
@@ -110,7 +110,11 @@ class BurgerMenuNumbers extends Numbers {
             cy.filterProfile(profiling, 'SCAD_MONITORA_CARICO_FONTE').then(profiled => { keys.MONITORAGGIO_CARICO_FONTE = profiled })
             cy.filterProfile(profiling, 'COMMON_CRYSTAL').then(profiled => { keys.X_ADVISOR = profiled })
 
-            cy.filterProfile(profiling, 'COMMON_REPORTING_INCENTIVAZIONE').then(profiled => { keys.INCENTIVAZIONE = profiled })
+            if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
+                cy.filterProfile(profiling, 'COMMON_REPORTING_INCENTIVAZIONE_AVIVA').then(profiled => { keys.INCENTIVAZIONE = profiled })
+            else
+                cy.filterProfile(profiling, 'COMMON_REPORTING_INCENTIVAZIONE').then(profiled => { keys.INCENTIVAZIONE = profiled })
+
             cy.filterProfile(profiling, 'COMMON_REPORTING_INCENTIVAZIONE_RECRUITING').then(profiled => { keys.INCENTIVAZIONE_RECRUITING = profiled })
             cy.filterProfile(profiling, 'COMMON_REPORTING_ANDAMENTI_TECNICI').then(profiled => { keys.ANDAMENTI_TECNICI = profiled })
             cy.filterProfile(profiling, 'COMMON_REPORTING_ESTRAZIONI_AVANZATE').then(profiled => { keys.ESTRAZIONI_AVANZATE = profiled })

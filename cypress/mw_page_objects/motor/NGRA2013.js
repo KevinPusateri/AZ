@@ -46,10 +46,6 @@ class NGRA2013 {
     }
 
     static verificaAccessoDatiAmministrativi() {
-        cy.intercept(getDettaglioConvenzione).as('getDettaglioConvenzione')
-        cy.intercept(getDatiAggiuntiviConvenzione).as('getDatiAggiuntiviConvenzione')
-        cy.wait('@getDettaglioConvenzione', { timeout: 60000 })
-        cy.wait('@getDatiAggiuntiviConvenzione', { timeout: 60000 })
 
         this.sostituzioneAScadenza()
     }
@@ -82,7 +78,6 @@ class NGRA2013 {
 
         if (performeClick) {
             cy.get('[value="› Home"]').click()
-
             //Popup Si è sicuri di vole ruscire?
             cy.get('label:contains("Si è sicuri di voler uscire?")')
                 .parents('.ui-dialog').find('span[class="ui-button-text"]').contains('Si').click() //Risponde SI al popup di attenzione
@@ -103,10 +98,8 @@ class NGRA2013 {
 
     static flussoQuietanzamentoOnline() {
         cy.intercept(getIncassoWAService).as('getIncassoWAService')
-        cy.intercept(getCalcolaPremiCM).as('getCalcolaPremiCM')
         cy.get('#pnlbtnConfermaPremi').should('be.visible').click()
         cy.wait('@getIncassoWAService', { timeout: 60000 })
-        cy.wait('@getCalcolaPremiCM', { timeout: 60000 })
         cy.wait(10000)
 
         cy.screenshot('Verifica Accesso Inizio Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -114,7 +107,7 @@ class NGRA2013 {
         // incassa
         cy.get('#pnlBtnIncasso').should('be.visible').click()
         cy.wait('@getIncassoWAService', { timeout: 60000 })
-        cy.wait(10000)
+        cy.wait(15000)
 
         cy.get('body').then(($body) => {
             const popupWarning = $body.find('div[role="dialog"]').is(':visible')
@@ -124,21 +117,32 @@ class NGRA2013 {
                     if ($dialog.text().includes('relativo alla quietanza'))
                         cy.contains('Procedi').click()
                     else {
-                        cy.contains('button', 'Contr.Convenzionabile').click()
+                        cy.contains('button', 'Contr.Convenzionabile').click().wait(4000)
                         cy.contains('Procedi').click()
                     }
                 })
         })
         cy.wait('@getIncassoWAService', { timeout: 60000 })
-
-
+        cy.wait(15000)
         // Digital Accounting System (DAS) sezione incassi
-        cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').should('be.visible').click()
-        cy.get('#TabIncassoModPagCombo_listbox').find('li').should('be.visible')
-            .contains('Assegno').first().click()
-
+        cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').should('be.visible').within(()=>{
+            cy.get('span[aria-label="select"]').click({force:true})
+        })
+        // cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').click().wait(3000)
+        cy.get('#TabIncassoModPagCombo_listbox').should('be.visible').within(()=>{
+            cy.wait(4000)
+            cy.get('li:contains("Assegno"):first').click({force:true})
+        })
+        cy.screenshot('Digital Accounting System (DAS) sezione incassi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         // INCASSA
         cy.get('#btnTabIncassoConfirm').click()
+
+        // Verifica Flag Confermati
+        cy.get('#content-area-esa').should('be.visible').wait(5000)
+        cy.get('img[src="Images/iconImagesBlue/confirm_green.gif"]').should('be.visible')
+        cy.screenshot('Verifica Flag', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        // Chiudi
+        cy.get('#ctl00_pHolderMain1_btnChiudi').click()
     }
 
 }

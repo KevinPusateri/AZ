@@ -60,6 +60,7 @@ class LibriMatricola {
      * Torno Indietro Elenco Libri Matricola
      */
     static backElencoLibriMatricola() {
+        cy.wait(10000)
         matrixFrame().within(() => {
             cy.intercept({
                 method: 'POST',
@@ -1400,11 +1401,11 @@ export function InclusioneApplicazione(nomeApplicazione, veicolo, garanzie, cope
 
         // })
 
-        it.only("Autorizza Preventivo (VPS)", function () {
+        it("Autorizza Preventivo (VPS)", function () {
             PageVPS.launchLoginVPS()
         })
 
-        it.only("aa", function () {
+        it("aa", function () {
             cy.reload()
         })
 

@@ -107,7 +107,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
     })
 
     it('Verifica aggancio Incentivazione', function () {
-        if (!keys.INCENTIVAZIONE && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
+        if (!keys.INCENTIVAZIONE)
             this.skip()
         TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Incentivazione')
