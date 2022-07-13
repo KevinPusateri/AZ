@@ -53,7 +53,7 @@ class Common {
             "agency": "010712000"
         }
      */
-    static canaleFromPopup(customImpersonification = {}) {
+    static canaleFromPopup(customImpersonification = {}, notWindowOpen = false) {
         cy.wait(3000)
 
         if (Cypress.env('monoUtenza')) {
@@ -89,11 +89,12 @@ class Common {
                         cy.get('div[ngclass="agency-row"]').contains(`${comp}-${ag}`).click()
                     }
 
-                    cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(() => {
-                        cy.origin((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'), () => {
-                            cy.visit((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'));
+                    if (!notWindowOpen)
+                        cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(() => {
+                            cy.origin((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'), () => {
+                                cy.visit((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'));
+                            })
                         })
-                    })
                 }
             })
         }

@@ -88,7 +88,7 @@ if (!Cypress.env('isSecondWindow'))
         })
 
         context('Motor > Menu Polizza', function () {
-            it.skip('Sostituzione / Riattivazione auto', function () {
+            it('Sostituzione / Riattivazione auto', function () {
                 //! NON VA AVANTI PASSA AL PROSSIMO TESTS
                 Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.SOSTITUZIONE_RIATTIVAZIONE_AUTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
             })
@@ -175,15 +175,30 @@ if (!Cypress.env('isSecondWindow'))
 else
     describe('Matrix Web : Sfera 4.0 -> Seconda Finestra', function () {
         it('Menu Contestuale', function () {
+            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
+
             //Menu Quietanza
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, false)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO, false)
-            //? Verificare sempre che ci sia plafond assegnato alla 1-710000 (chiedi simone.sergas@allianz.it)
+            // ? Verificare sempre che ci sia plafond assegnato alla 1-710000 (chiedi simone.sergas@allianz.it)
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.DELTA_PREMIO)
             Sfera.espandiPannello()
             Sfera.estrai()
             Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_710000)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.VARIAZIONE_RIDUZIONE_PREMI, false)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, false)
+
+            // Menu Polizza
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.SOSTITUZIONE_RIATTIVAZIONE_AUTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_POLIZZA, false)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_DOCUMENTI_POLIZZA, false)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.MODIFICA_MODALITA_PAGAMENTO, false, null, null, Sfera.TIPOMODALITAPAGAMENTO.CONTANTI)
+
+            //Menu Cliente
+            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.SCHEDA_CLIENTE, false)
+            Sfera.estrai()
+            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE, false)
+            Sfera.estrai()
+            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI, false)
         })
     })
