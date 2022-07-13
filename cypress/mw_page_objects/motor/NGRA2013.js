@@ -16,6 +16,16 @@ const getIncassoWAService = {
     url: '**/IncassoWAService.asmx/**'
 }
 
+const getDas = {
+    method: 'GET',
+    url: '**/DAS_FE/**'
+}
+
+const getAjaxResp = {
+    method: '+(GET|POST)',
+    url: '**/AjaxResp.asmx/**'
+}
+
 const getCalcolaPremiCM = {
     method: 'POST',
     url: '**/CalcolaPremiCM'
@@ -34,10 +44,9 @@ class NGRA2013 {
      */
     static verificaAccessoRiepilogo() {
         cy.intercept(riepilogo).as('riepilogo')
-        cy.wait('@riepilogo', { timeout: 60000 })
-        cy.wait(2000)
-        cy.screenshot('Verifica Accesso a Riepilogo NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait('@riepilogo', { timeout: 100000 })
     }
+
 
     static verificaAccessoPagamento() {
         cy.intercept(getIncassoWAService).as('getIncassoWAService')
@@ -45,8 +54,8 @@ class NGRA2013 {
     }
 
     static verificaAccessoDatiAmministrativi() {
-
-        this.sostituzioneAScadenza()
+        cy.intercept(getAjaxResp).as('riepilogo')
+        cy.wait('@riepilogo', { timeout: 100000 })
     }
 
     /**
@@ -56,9 +65,11 @@ class NGRA2013 {
      */
     static avanti(performeClick = false) {
         cy.get('[value="› Avanti"]').should('exist').and('be.visible')
-
+        cy.wait(2000)
+        cy.screenshot('Verifica Accesso a Riepilogo NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         if (performeClick)
             cy.get('[value="› Avanti"]').click()
+
     }
 
     /**
@@ -95,21 +106,43 @@ class NGRA2013 {
             cy.get('Annulla Modifiche').click()
     }
 
-    static flussoQuietanzamentoOnline() {
+    static ClickConfermaPagamento() {
         cy.intercept(getIncassoWAService).as('getIncassoWAService')
+        cy.intercept(getDas).as('getDAS_FE')
         cy.get('#pnlbtnConfermaPremi').should('be.visible').click()
         cy.wait('@getIncassoWAService', { timeout: 60000 })
-        cy.wait(10000)
+        cy.wait(15000)
+    }
 
+    static ClickIncassa() {
         cy.screenshot('Verifica Accesso Inizio Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         // incassa
         cy.get('#pnlBtnIncasso').should('be.visible').click()
         cy.wait('@getIncassoWAService', { timeout: 60000 })
         cy.wait(15000)
+    }
 
-        cy.get('body').then(($body) => {
-            const popupWarning = $body.find('div[role="dialog"]').is(':visible')
+    static ClickPopupWarning($iframe = undefined) {
+        if ($iframe === undefined) {
+            cy.get('body').then(($body) => {
+                const popupWarning = $body.find('div[role="dialog"]').is(':visible')
+                if (popupWarning)
+                    cy.get('div[role="dialog"]').should('be.visible').within(($dialog) => {
+                        cy.wait(4000)
+                        if ($dialog.text().includes('relativo alla quietanza'))
+                            cy.contains('Procedi').click()
+                        else {
+                            cy.contains('button', 'Contr.Convenzionabile').click().wait(4000)
+                            cy.contains('Procedi').click()
+                        }
+                    })
+                cy.wait('@getDAS_FE', { timeout: 60000 })
+                cy.wait(10000)
+            })
+        }
+        else {
+            const popupWarning = $iframe.find('div[role="dialog"]').is(':visible')
             if (popupWarning)
                 cy.get('div[role="dialog"]').should('be.visible').within(($dialog) => {
                     cy.wait(4000)
@@ -120,22 +153,13 @@ class NGRA2013 {
                         cy.contains('Procedi').click()
                     }
                 })
-        })
-        cy.wait('@getIncassoWAService', { timeout: 60000 })
-        cy.wait(15000)
-        // Digital Accounting System (DAS) sezione incassi
-        cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').should('be.visible').within(()=>{
-            cy.get('span[aria-label="select"]').click({force:true})
-        })
-        // cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').click().wait(3000)
-        cy.get('#TabIncassoModPagCombo_listbox').should('be.visible').within(()=>{
-            cy.wait(4000)
-            cy.get('li:contains("Assegno"):first').click({force:true})
-        })
-        cy.screenshot('Digital Accounting System (DAS) sezione incassi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        // INCASSA
-        cy.get('#btnTabIncassoConfirm').click()
+            cy.wait('@getDAS_FE', { timeout: 60000 })
+            cy.wait(10000)
+        }
 
+    }
+
+    static TerminaIncasso() {
         // Verifica Flag Confermati
         cy.get('#content-area-esa').should('be.visible').wait(5000)
         cy.get('img[src="Images/iconImagesBlue/confirm_green.gif"]').should('be.visible')

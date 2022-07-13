@@ -384,8 +384,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.backToSales()
     })
 
-    //TODO: Implement profiling keys for Emmetti Polizza
-    https://github.developer.allianz.io/az-italy/matrix-web-fe-tests/issues/65
     if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
         it('Verifica aggancio Emetti Polizza - Ultra Salute', function () {
             if (!keys.UltraSaluteEnabled)

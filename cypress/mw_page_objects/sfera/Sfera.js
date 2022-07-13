@@ -459,7 +459,8 @@ const Filtri = {
         values: {
             VUOTO: "Vuoto",
             A_710000: "710000",
-            A_1960: "1960"
+            A_1960: "1960",
+            A_712000: "712000"
         }
     },
     ULT_TIPO_INVIO: {
@@ -1383,9 +1384,8 @@ class Sfera {
                 })
         }
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
-        cy.contains('Applica').should('be.enabled').click()
-        cy.wait('@estraiQuietanze', { timeout: 120000 })
-        cy.wait(3000)
+        cy.contains('Applica').should('be.enabled').click().wait(5000)
+        // cy.wait('@estraiQuietanze', { timeout: 120000 }) //?SERVE?
     }
 
     /**
@@ -1423,7 +1423,8 @@ class Sfera {
                 if (random)
                     cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
                         let selected = Cypress._.random(rowsTable.length - 1);
-                        cy.wrap(rowsTable).eq(selected).within(() => {
+                        cy.wrap(rowsTable).eq(selected).within(($sa) => {
+                            cy.log($sa.text())
                             this.threeDotsMenuContestuale().click({ force: true })
                         })
                     })
@@ -1465,7 +1466,7 @@ class Sfera {
                     cy.contains(voce.key).click()
             })
 
-            Common.canaleFromPopup()
+            Common.canaleFromPopup({}, true)
 
             //Salviamo la polizza sulla quale effettuiamo le operazioni per poterla utilizzare successivamente
             let numPolizza = ''
@@ -1500,31 +1501,56 @@ class Sfera {
 
                     break;
                 case VociMenuQuietanza.DELTA_PREMIO:
-                    NGRA2013.verificaAccessoRiepilogo()
-                    cy.wait(2000)
-                    cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (flussoCompleto) {
-                        //TODO implementare flusso di delta premio
+                    if (Cypress.env('currentEnv') === 'TEST') {
+                        if (flussoCompleto) {
+                            //TODO implementare flusso di delta premio
+                        }
+                        else {
+                            NGRA2013.verificaAccessoRiepilogo()
+                            getAppJump().within(() => {
+                                NGRA2013.avanti()
+                                cy.wait(2000)
+                                cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                                NGRA2013.home(true)
+                            })
+                        }
+                    } else {
+                        if (flussoCompleto) {
+                            //TODO implementare flusso di delta premio
+                        } else {
+                            NGRA2013.verificaAccessoRiepilogo()
+                            NGRA2013.avanti()
+                            cy.wait(2000)
+                            cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        }
                     }
-                    else {
-                        NGRA2013.home(true)
-                        //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera(false)
-                        break;
-                    }
+                    this.verificaAccessoSfera(false)
+                    break;
                 case VociMenuQuietanza.VARIAZIONE_RIDUZIONE_PREMI:
                     IncassoDA.accessoGestioneFlex()
-                    IncassoDA.salvaSimulazione()
-                    cy.wait(200)
-                    cy.screenshot('Variazione Riduzione Premi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (flussoCompleto) {
-                        //TODO implementare flusso di incasso completo
+                    if (Cypress.env('currentEnv') === 'TEST') {
+                        if (flussoCompleto) {
+                            //TODO implementare flusso di delta premio
+                        }
+                        else {
+                            getAppJump().within(() => {
+                                IncassoDA.salvaSimulazione()
+                                cy.wait(200)
+                                cy.screenshot('Variazione Riduzione Premi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+                                IncassoDA.clickCHIUDI()
+                                //Verifichiamo il rientro in Sfera
+                            })
+                        }
+                    } else {
+                        if (flussoCompleto) {
+                            //TODO implementare flusso di delta premio
+                        } else {
+                            IncassoDA.clickCHIUDI()
+                            //Verifichiamo il rientro in Sfera
+                        }
                     }
-                    else {
-                        IncassoDA.clickCHIUDI()
-                        //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera(false)
-                    }
+                    this.verificaAccessoSfera(false)
                     break;
                 case VociMenuQuietanza.RIQUIETANZAMENTO:
                     break;
@@ -1533,64 +1559,124 @@ class Sfera {
                     this.dropdownSostituzioneRiattivazione().click()
                     cy.contains(tipoSostituzioneRiattivazione).should('exist').click()
                     this.procedi().click()
-                    Common.canaleFromPopup()
+                    Common.canaleFromPopup({}, true)
                     NGRA2013.verificaAccessoDatiAmministrativi()
-                    cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (flussoCompleto) {
-                        //TODO implementare flusso di incasso completo
+                    if (Cypress.env('currentEnv') === 'TEST') {
+                        if (flussoCompleto) {
+                            getAppJump().within(() => {
+                                NGRA2013.sostituzioneAScadenza()
+                                cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                            })
+                        }
+                        else {
+                            getAppJump().within(() => {
+                                NGRA2013.home(true)
+                            })
+                        }
                     }
                     else {
-                        NGRA2013.home(true)
-                        //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera(false)
+                        if (flussoCompleto) {
+                            NGRA2013.verificaAccessoDatiAmministrativi()
+                            cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        }
+                        else {
+                            NGRA2013.home(true)
+                        }
                     }
+                    //Verifichiamo il rientro in Sfera
+                    this.verificaAccessoSfera(false)
                     break;
                 case VociMenuQuietanza.STAMPA_SENZA_INCASSO:
                     IncassoDA.accessoMezziPagam()
                     cy.wait(200)
                     cy.screenshot('Stampa Senza Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (flussoCompleto) {
-                        IncassoDA.clickStampa()
-                        IncassoDA.getNumeroContratto().then(numContratto => {
-                            numPolizza = numContratto
-                            IncassoDA.clickCHIUDI()
-                            //Verifichiamo il rientro in Sfera
+                    if (Cypress.env('currentEnv') === 'TEST') {
+                        if (flussoCompleto) {
+                            //! DA VERIFICA SE FUNZIONA il FLUSSO
+                            getAppJump().within(() => {
+                                IncassoDA.clickStampa()
+                            })
+                            getAppJump().within(() => {
+                                IncassoDA.getNumeroContratto().then(numContratto => {
+                                    numPolizza = numContratto
+                                    IncassoDA.clickCHIUDI()
+                                })
+                            })
                             this.verificaAccessoSfera(false)
                             resolve(numPolizza)
-                        })
-                    }
-                    else {
-                        IncassoDA.clickCHIUDI()
-                        //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera(false)
+                        }
+                        else {
+                            getAppJump().within(() => {
+                                IncassoDA.clickCHIUDI()
+                            })
+                            this.verificaAccessoSfera(false)
+                        }
+                    } else {
+                        if (flussoCompleto) {
+                            IncassoDA.clickStampa()
+                            IncassoDA.getNumeroContratto().then(numContratto => {
+                                numPolizza = numContratto
+                                IncassoDA.clickCHIUDI()
+                                //Verifichiamo il rientro in Sfera
+                                this.verificaAccessoSfera(false)
+                                resolve(numPolizza)
+                            })
+                        }
+                        else {
+                            IncassoDA.clickCHIUDI()
+                            this.verificaAccessoSfera(false)
+                        }
                     }
                     break;
                 case VociMenuQuietanza.QUIETANZAMENTO_ONLINE:
                     NGRA2013.verificaAccessoPagamento()
-                    cy.wait(10000)
+                    cy.wait(15000)
                     cy.screenshot('Verifica Accesso a Pagamenti NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (flussoCompleto) {
-                        NGRA2013.flussoQuietanzamentoOnline()
-                        this.verificaAccessoSfera(false)
+                    if (Cypress.env('currentEnv') === 'TEST') {
+                        if (flussoCompleto) {
+                            getAppJump().within(() => { NGRA2013.ClickConfermaPagamento() })
+                            getAppJump().within(() => { NGRA2013.ClickIncassa() })
+                            getAppJump().within(($iframe) => { NGRA2013.ClickPopupWarning($iframe) })
+                            getAppJump().within(() => { IncassoDA.SelezionaIncassa() })
+                            getAppJump().within(() => { NGRA2013.TerminaIncasso() })
+                        } else
+                            getAppJump().within(() => { NGRA2013.home(true) })
+                    } else {
+                        if (flussoCompleto) {
+                            NGRA2013.ClickConfermaPagamento()
+                            NGRA2013.ClickIncassa()
+                            NGRA2013.ClickPopupWarning(undefined)
+                            IncassoDA.SelezionaIncassa()
+                            NGRA2013.TerminaIncasso()
+                        }
+                        else
+                            NGRA2013.home(true)
                     }
-                    else {
-                        NGRA2013.home(true)
-                        //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera(false)
-                        break;
-                    }
+                    cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
+                    cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then(() => {
+                        cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    })
                     break;
                 case VociMenuPolizza.CONSULTAZIONE_POLIZZA:
+
                     InquiryAgenzia.verificaAccessoInquiryAgenzia()
                     cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (flussoCompleto) {
-                        //TODO implementare flusso completo
+                    if (Cypress.env('currentEnv') === 'TEST') {
+                        if (flussoCompleto) {
+                            //TODO implementare flusso completo
+                        }
+                        else {
+                            getAppJump().within(() => { InquiryAgenzia.clickUscita() })
+                        }
+                    }else{
+                        if (flussoCompleto) {
+                            //TODO implementare flusso completo
+                        }
+                        else {
+                            InquiryAgenzia.clickUscita()
+                        }
                     }
-                    else {
-                        InquiryAgenzia.clickUscita()
-                        //Verifichiamo il rientro in Sfera
-                        this.verificaAccessoSfera(false)
-                    }
+                    this.verificaAccessoSfera(false)
                     break;
                 case VociMenuConsultazione.POLIZZA:
                     cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1598,7 +1684,11 @@ class Sfera {
                         //TODO implementare flusso completo
                     }
                     else {
-                        InquiryAgenzia.clickUscita()
+                        if (Cypress.env('currentEnv') === 'TEST') {
+                            getAppJump().within(() => { InquiryAgenzia.clickUscita() })
+                        } else {
+                            InquiryAgenzia.clickUscita()
+                        }
                         //Verifichiamo il rientro in Sfera
                         this.verificaAccessoSfera(false)
                     }
@@ -2278,7 +2368,7 @@ class Sfera {
      */
     static selezionaVista(nameVista) {
         // click Seleziona Vista tendina
-        cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+        cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
         // Click Le mie viste
         cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
@@ -2300,7 +2390,7 @@ class Sfera {
      */
     static selezionaVistaSuggerita(nameVista) {
         // click Seleziona Vista tendina
-        cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+        cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
         // Click Le mie viste
         cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
@@ -2318,7 +2408,7 @@ class Sfera {
     }
 
     static eliminaVista(nameVista) {
-        cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+        cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
         // Click Le mie viste
         cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
@@ -3185,7 +3275,7 @@ class Sfera {
      * @param {VisteSuggerite} vista - the name of the view
      */
     static checkVistaSuggeriteExistByMenu(vista) {
-        cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+        cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
         // Click Le mie viste
         cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
@@ -3205,7 +3295,7 @@ class Sfera {
      * @param {VisteSuggerite} vista - the name of the view
      */
     static checkVistaSuggeriteNotExistByMenu(vista) {
-        cy.get('nx-icon[class="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+        cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
         // Click Le mie viste
         cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
@@ -3295,7 +3385,7 @@ class Sfera {
                         expect(contents.text().trim()).to.include(dataInizio)
                         expect(contents.text().trim()).to.include(dataFine)
                         expect(contents.text().trim()).to.include('Motor')
-                        expect(contents.text().trim()).to.include('ATTENZIONE! - Effettuare l’eventuale quietanzamento on-line in: Viste suggerite > Carico Mancante')
+                        expect(contents.text().trim()).to.include('ATTENZIONE! - Effettuare l\'eventuale quietanzamento on-line in: Viste suggerite > Carico Mancante')
 
                     })
                 break;
