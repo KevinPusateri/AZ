@@ -63,6 +63,7 @@ class CensimentoAnagrafico {
     static Avanti() {
         ultraIFrame().within(() => {
             cy.get('[id="btnAvanti"]').should('be.visible').click()
+            //.and('not.have.attr', 'disabled')
         })
     }
 
@@ -104,6 +105,49 @@ class CensimentoAnagrafico {
         })
     }
 
+    /**
+     * Completa la sezione Casa della pagina Censimento Anagrafico
+     * @param {*} cliente
+     */
+    static censimentoAnagraficoImpresa(cliente) {
+        ultraIFrame().within(() => {
+            cy.get('#tabsAnagrafiche', { timeout: 30000 }).should('be.visible') //attende la comparsa del form con i dati quotazione
+
+            cy.get('div').contains('Impresa').should('be.visible').click() //tab Impresa
+
+            cy.get('[class*="accordion-censimento-anag"]')
+                .find('span').contains('Assicurato')
+                .parents('div[class*="table--row__container"]')
+                .find('select').select(cliente.denominazione)
+
+            cy.wait(500)
+
+            cy.get('div').contains('Fabbricato').should('be.visible').click() //tab Fabbricato
+
+            cy.get('[class*="accordion-censimento-anag"]')
+                .find('span').contains('Ubicazione')
+                .parents('div[class*="table--row__container"]')
+                .find('select').select(cliente.ubicazione())
+
+            cy.wait(500)
+
+            cy.get('[class="page-footer"]').then(($body) => {
+                // synchronously query from body
+                // to find which element was created
+                if ($body.find('[value="Recupera dati esterni"][class$="has-error"]')
+                    .is(':visible')) {
+                    cy.get('[value="Recupera dati esterni"]').click()
+
+                    cy.get('#popupDatiCRIF').should('be.visible')
+                    .find('a').contains('AVANTI').click()
+                }
+                else {
+                    cy.log('Recupero dati esterni non necessario')
+                }
+            })
+        })
+    }
+
     static aggiungiClienteCensimentoAnagrafico(cliente) {
         ultraIFrame().within(() => {
             cy.get('[role="tabpanel"][aria-hidden="false"]')
@@ -133,7 +177,7 @@ class CensimentoAnagrafico {
                 .should('be.visible')
                 .find('button').contains('AGGIORNA')
                 .click()
-            })
+        })
     }
 
     static aggiungiClienteCensimentoAnagrafico(cliente, tab) {
@@ -222,7 +266,7 @@ class CensimentoAnagrafico {
         ultraIFrame().within(() => {
             //popup attenzione CAP
             cy.get('.tabs-title').contains('Casa').click()
-            
+
             cy.get('.tabs-title').contains('Casa').siblings('div')
                 .should('be.visible').and('have.class', 'tabs-title-contraente')
                 .contains(cliente.via + " " + cliente.numero)
@@ -521,8 +565,8 @@ class CensimentoAnagrafico {
 
             //Panel messaggi errore
             cy.get('div[class="error-panel"]').should('exist')
-              .find('li[class="error-txt"]').should('exist')
-              .contains("Attenzione: Per proseguire con l'emissione del contratto e' necessario inserire il cellulare e l'email del cliente.").should('be.visible')
+                .find('li[class="error-txt"]').should('exist')
+                .contains("Attenzione: Per proseguire con l'emissione del contratto e' necessario inserire il cellulare e l'email del cliente.").should('be.visible')
 
             //Campi evidenziati in rosso
             CensimentoAnagrafico.verificaCampoInRosso('Cellulare')
@@ -535,7 +579,7 @@ class CensimentoAnagrafico {
     * Entra in Dati Cliente per modificare i dati del contraente
     * Al momento aggiunge numero di telefono e email. Sarebbe da generalizzare
     */
-     static modificaDatiCLiente() {
+    static modificaDatiCLiente() {
         ultraIFrame().within(() => {
             cy.intercept({
                 method: 'POST',
@@ -559,32 +603,32 @@ class CensimentoAnagrafico {
 
                 //email
                 cy.get('form[id="aggiungi-cliente"]').should('exist')
-                  .find('input[id="email"]').should('be.enabled')
-                  .clear()
-                  .wait(1000)
-                  .type(mail)
-                  .wait(1000)
-                
+                    .find('input[id="email"]').should('be.enabled')
+                    .clear()
+                    .wait(1000)
+                    .type(mail)
+                    .wait(1000)
+
                 //Checkbox invio documenti
                 cy.get('input[id="invio-documenti-no"]').should('be.enabled').check().wait(500)
 
                 //Prefisso interno
                 cy.get('input[name="tel-pr-int-3_input"]').should('exist').type(pref_int).wait(500)
                 cy.get('ul[id="tel-pr-int-3_listbox"]').should('exist')
-                .contains(pref_int).click().wait(500)
+                    .contains(pref_int).click().wait(500)
 
                 //Prefisso
                 cy.get('input[name="tel-pref-3_input"]').should('exist').type(pref).wait(500)
                 cy.get('ul[id="tel-pref-3_listbox"]').should('exist')
-                .contains(pref).click().wait(500)
+                    .contains(pref).click().wait(500)
 
                 //Numero  
                 cy.get('form[id="aggiungi-cliente"]').should('exist')
-                  .find('input[id="tel-num-3"]').should('be.enabled')
-                  .clear()
-                  .wait(1000)
-                  .type(numero)
-                  .wait(1000)
+                    .find('input[id="tel-num-3"]').should('be.enabled')
+                    .clear()
+                    .wait(1000)
+                    .type(numero)
+                    .wait(1000)
 
                 //Conferma
                 //cy.intercept({
@@ -593,7 +637,7 @@ class CensimentoAnagrafico {
                 //}).as('GetAppCallToWA')
 
                 cy.get('div[class="cols cols-button"]').should('exist')
-                  .find('button').contains('Conferma').should('be.visible').click()
+                    .find('button').contains('Conferma').should('be.visible').click()
 
                 //cy.wait('@GetAppCallToWA', { requestTimeout: 60000 });
                 //cy.get('[class="loader-img"]').should('not.be.visible')
@@ -613,12 +657,12 @@ class CensimentoAnagrafico {
                 }).as('getCustomerTree')
 
                 cy.get('div[class="allianz-alert-window k-window-content k-content"]').should('exist')
-                  .find('button').contains('Conferma').should('be.visible').click().wait(500)
-                  //.wait(20000)
-                
+                    .find('button').contains('Conferma').should('be.visible').click().wait(500)
+                //.wait(20000)
+
                 cy.wait('@getCustomerTree', { requestTimeout: 60000 });
                 cy.wait(10000)
-                
+
             })
 
         })
@@ -627,7 +671,7 @@ class CensimentoAnagrafico {
         ultraIFrame().within(() => {
             ultraIFrameAnagrafica().within(() => {
                 cy.get('h1[class="url-back"]').should('exist')
-                  .find('a[id="idUrlBack"]').should('be.visible').click().wait(2000)
+                    .find('a[id="idUrlBack"]').should('be.visible').click().wait(2000)
             })
         })
 
@@ -635,7 +679,7 @@ class CensimentoAnagrafico {
 
     static verificaCampoInRosso(campo) {
         cy.get('span[data-bind*="HasBloccoDigitalID"]').should('be.visible').and('have.attr', 'style', 'color: red;')
-          .contains(campo).should('have.length', 1)
+            .contains(campo).should('have.length', 1)
     }
 
 }

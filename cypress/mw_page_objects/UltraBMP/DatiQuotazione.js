@@ -14,12 +14,12 @@ class DatiQuotazione {
   static CaricamentoPagina() {
     cy.log('***** CARICAMENTO PAGINA DATI QUOTAZIONE *****')
     cy.intercept({
-        method: 'GET',
-        url: '**/conferma-dati/**'
+      method: 'GET',
+      url: '**/conferma-dati/**'
     }).as('datiQuotazione')
 
     cy.wait('@datiQuotazione', { requestTimeout: 60000 });
-}
+  }
 
   //#region ClickButton
   /**
@@ -37,13 +37,20 @@ class DatiQuotazione {
 
   /**
    * Clicca sul pulsante Conferma
+   * @param {bool} impresa //per i flussi Ultra Impresa
    */
-  static confermaDatiQuotazione() {
+  static confermaDatiQuotazione(impresa = false) {
     ultraIFrame().within(() => {
       //apertura menù scelta soluzione
-      cy.get('ultra-form-dati-quotazione', { timeout: 30000 }).should('be.visible') //attende la comparsa del form con i dati quotazione
+      var tag = 'ultra-form-dati-quotazione'
+      if (impresa) {
+        tag = 'ultra-dati-quotazione-card'
+      }
 
-      cy.get('button').contains('CONFERMA').should('be.visible').click() //conferma
+      cy.get(tag, { timeout: 30000 }).should('be.visible') //attende la comparsa del form con i dati quotazione
+
+      cy.get('button').contains('CONFERMA', { matchCase: false })
+        .scrollIntoView().should('be.visible').click() //conferma
       //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
     })
   }

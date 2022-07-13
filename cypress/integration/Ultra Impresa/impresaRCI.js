@@ -12,7 +12,7 @@ import 'cypress-iframe';
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
 
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+import PersonaGiuridica from "../../mw_page_objects/common/PersonaGiuridica"
 
 import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -20,6 +20,7 @@ import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
+import StartPage from "../../mw_page_objects/UltraBMP/StartPage"
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
 import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
@@ -45,16 +46,13 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let personaGiuridica = "Sinopoli"
-let personaFisica = PersonaFisica.GalileoGalilei()
+let personaGiuridica = PersonaGiuridica.Sinopoli()
+//let personaFisica = PersonaFisica.GalileoGalilei()
 var frazionamento = "trimestrale"
-var copertura = "extra-professionale"
 var ambiti = [
-  ambitiUltra.ambitiUltraSalute.spese_mediche,
-  ambitiUltra.ambitiUltraSalute.diaria_da_ricovero,
-  ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio
+  ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile,
+  ambitiUltra.ambitiUltraCasaPatrimonio.fabbricatoImpresa,
 ]
-//var frazionamento = "annuale"
 //#endregion variabili iniziali
 
 before(() => {
@@ -92,11 +90,11 @@ after(function () {
 })
 //#endregion Before After
 
-describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
+describe("Polizza Responsabilità Civile Impresa", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
-      cy.get('input[name="main-search-input"]').type(personaGiuridica).type('{enter}')
+      cy.get('input[name="main-search-input"]').type(personaGiuridica.denominazione).type('{enter}')
       cy.get('lib-client-item').first()
         .find('.name').trigger('mouseover').click()
     }).then(($body) => {
@@ -104,74 +102,48 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
       cy.log('permessi: ' + check)
       if (check) {
-        cy.get('input[name="main-search-input"]').type(personaGiuridica).type('{enter}')
+        cy.get('input[name="main-search-input"]').type(personaGiuridica.denominazione).type('{enter}')
         cy.get('lib-client-item').first().next().click()
       }
     })
   })
 
-  it("Emissione Ultra Salute", () => {
-    SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
-    Ultra.selezionaPrimaAgenzia()
-    Dashboard.caricamentoDashboardUltra()
+  it("Emissione Ultra Impresa", () => {
+    SintesiCliente.Emissione(prodotti.RamiVari.UltraImpresa)
+    Common.canaleFromPopup()
+    StartPage.caricamentoUltraImpresa()
   })
 
-  it("Selezione ambiti nella homepage di Ultra Salute", () => {
-    Dashboard.selezionaAmbiti(ambiti)
-    cy.pause()
+  it("Start Page Impresa", () => {
+    StartPage.startAttivitaImpresa(personaGiuridica.attivita)
+    StartPage.startScopriProtezione()
   })
 
-  it("Cambia Soluzioni", () => {
-    for (var i = 0; i < ambiti.length; i++) {
-      Dashboard.modificaSoluzione(ambiti[i], "Essential")
-    }
-  })
-
-  it("Configurazione Invalidità Permanente da infortunio", () => {
-    ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[2])
-    ConfigurazioneAmbito.modificaDatoQuotazione("professione", "assistente presso uno studio medico")
-    ConfigurazioneAmbito.selezionaSoluzione("Premium")
-    ConfigurazioneAmbito.aggiungiGaranzia("Capitale per morte da infortunio")
-    ConfigurazioneAmbito.ClickButton("CONFERMA")
-    //Dashboard.caricamentoDashboardUltra()
+  it("Selezione ambiti nella homepage di Ultra Impresa", () => {
+    Dashboard.selezionaAmbiti(ambiti, "impresa")
     Dashboard.procediHome()
     DatiQuotazione.CaricamentoPagina()
   })
 
-  it("Dati Quotazione - modifica copertura", () => {
-    DatiQuotazione.modificaDatoQuotazione("copertura", "professionale")
-    DatiQuotazione.confermaDatiQuotazione()
-    Riepilogo.caricamentoRiepilogo()
+  it("Conferma dati quotazione", () => {
+    DatiQuotazione.confermaDatiQuotazione(true)
+    //Riepilogo.caricamentoRiepilogo()
   })
 
-  it("Modifica frazionamento ed emissione polizza", () => {
-    Dashboard.selezionaFrazionamento(frazionamento)
+  it("Emissione polizza", () => {
     Riepilogo.EmissionePolizza()
     CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
   })
 
-  it("Aggiungi Cliente Persona Fisica", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica, "Persona")
-    CensimentoAnagrafico.aggiornaParamCliente()
-    //CensimentoAnagrafico.attendiCheckAssicurato()
-    //CensimentoAnagrafico.popupCap()
-  })
-
-  it("Domande integrative Censimento Anagrafico", () => {
-    CensimentoAnagrafico.domandeIntegrative("indennità", "si")
+  it("Censimento anagrafico", () => {
+    CensimentoAnagrafico.censimentoAnagraficoImpresa(personaGiuridica)
     CensimentoAnagrafico.Avanti()
-    Beneficiari.caricamentoBeneficiari()
-  })
-
-  it("Beneficiari", () => {
-    Beneficiari.Avanti()
     DatiIntegrativi.caricamentoPagina()
   })
   
   it("Dati integrativi", () => {
-    DatiIntegrativi.DatiIntegrativi(true, true, true)
+    DatiIntegrativi.selezionaTuttiNo()
     DatiIntegrativi.ClickButtonAvanti()
-    DatiIntegrativi.approfondimentoSituazioneAssicurativa(false)
     DatiIntegrativi.confermaDichiarazioniContraente()
     ConsensiPrivacy.caricamentoPagina()
   })
@@ -181,7 +153,7 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
     ControlliProtocollazione.caricamentoPagina()
   })
 
-  it("salvataggio Contratto", () => {
+  it("Salvataggio contratto", () => {
     ControlliProtocollazione.salvataggioContratto()
   })
 
