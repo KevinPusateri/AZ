@@ -58,24 +58,42 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Profilare la visualizzazione delle colonne tramite tabella di configurazione. Lo stesso per i cluster', function () {
+if (!Cypress.env('isSecondWindow'))
+    describe('Matrix Web : Profilare la visualizzazione delle colonne tramite tabella di configurazione. Lo stesso per i cluster', function () {
 
-    it('Accedere a Sfera 4.0 - Estrai con Corretto Caricamento Dati', options, function () {
-        Sfera.setDateEstrazione()
-        Sfera.estrai()
-    })
+        it('Accedere a Sfera 4.0 - Estrai con Corretto Caricamento Dati', options, function () {
+            Sfera.setDateEstrazione()
+            Sfera.estrai()
+        })
 
-    it('In colonne verificare sia presente la colonna Polizza e la colonna Polizza originale', options, function () {
-        Sfera.checkColonnaPresente('Polizza')
-        Sfera.checkColonnaPresente('Polizza originale')
-    })
+        it('In colonne verificare sia presente la colonna Polizza e la colonna Polizza originale', options, function () {
+            Sfera.checkColonnaPresente('Polizza')
+            Sfera.checkColonnaPresente('Polizza originale')
+        })
 
-    it('Selezionare Viste Suggerite - "Delta premio - riduzione premio a cura dell\'agenzia"', options, function () {
-        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.DELTA_PREMIO)
+        it('Selezionare Viste Suggerite - "Delta premio - riduzione premio a cura dell\'agenzia"', options, function () {
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.DELTA_PREMIO)
+        })
+
+        it('Delta premio - Verificare corretta visualizzazione della vista selezionata con schermata riepilogativa in basso', options, function () {
+            Sfera.selezionaRigaRandom()
+            Sfera.verificaSezioneDeltaPremio()
+        })
     })
-    
-    it('Delta premio - Verificare corretta visualizzazione della vista selezionata con schermata riepilogativa in basso', options, function () {
-        Sfera.selezionaRigaRandom()
-        Sfera.verificaSezioneDeltaPremio()
+else
+    describe('Matrix Web : Sfera 4.0 -> Seconda Finestra', function () {
+        it('AVIVA Delta Premio', function () {
+            //Accedere a Sfera 4.0 - Estrai con Corretto Caricamento Dati
+            Sfera.setDateEstrazione()
+            Sfera.estrai()
+            //In colonne verificare sia presente la colonna Polizza e la colonna Polizza originale
+            Sfera.checkColonnaPresente('Polizza')
+            Sfera.checkColonnaPresente('Polizza originale')
+            //Selezionare Viste Suggerite - "Delta premio - riduzione premio a cura dell\'agenzia"
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.DELTA_PREMIO)
+            //Delta premio - Verificare corretta visualizzazione della vista selezionata con schermata riepilogativa in basso
+            Sfera.selezionaRigaRandom()
+            Sfera.verificaSezioneDeltaPremio()
+
+        })
     })
-})

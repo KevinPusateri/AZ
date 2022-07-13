@@ -35,7 +35,6 @@ class NGRA2013 {
     static verificaAccessoRiepilogo() {
         cy.intercept(riepilogo).as('riepilogo')
         cy.wait('@riepilogo', { timeout: 60000 })
-        this.avanti()
         cy.wait(2000)
         cy.screenshot('Verifica Accesso a Riepilogo NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }

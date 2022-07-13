@@ -66,71 +66,99 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Inserire le impostazioni sui filtri in colonna tra i criteri salvati nel salvataggio vista', function () {
+if (!Cypress.env('isSecondWindow'))
+    describe('Matrix Web : Inserire le impostazioni sui filtri in colonna tra i criteri salvati nel salvataggio vista', function () {
+        context('No Cluster', function () {
+            it('Accedere a Sfera 4.0 - Estrai con Corretto Caricamento Dati', options, function () {
+                Sfera.setDateEstrazione()
+                Sfera.estrai()
+            })
 
-    context('No Cluster', function () {
-        it('Accedere a Sfera 4.0 - Estrai con Corretto Caricamento Dati', options, function () {
-            Sfera.setDateEstrazione()
-            Sfera.estrai()
+            it('Selezionare due colonne ed inserire due diversi filtri', options, function () {
+                Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
+                Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
+                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
+            })
+
+            it('Salva vista', options, function () {
+                Sfera.salvaVistaPersonalizzata('Automatici_EM_31')
+                //? Effettuiamo un RESET della view
+                Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
+                Sfera.espandiPannello()
+                Sfera.estrai()
+            })
+
+            it('Selezoinare vista Automatici_EM_31 e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente', options, function () {
+                Sfera.selezionaVista('Automatici_EM_31')
+                Sfera.espandiPannello()
+                Sfera.estrai()
+                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
+                Sfera.eliminaVista('Automatici_EM_31')
+            })
         })
 
-        it('Selezionare due colonne ed inserire due diversi filtri', options, function () {
+        context('Cluster', function () {
+
+            it('Accedere a Sfera 4.0 :\n- Estrai con Corretto Caricamento Dati', options, function () {
+                Common.visitUrlOnEnv()
+                Sfera.accediSferaDaHomePageMW()
+                Sfera.setDateEstrazione()
+            })
+
+
+            it('- Selezionare due colonne ed inserire due diversi filtri \n- Selezionare un cluster desiderato', options, function () {
+                Sfera.selectRandomCluster()
+                Sfera.estrai()
+
+                Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ALTRE_SCADENZE_IN_QUIETANZAMENTO)
+                Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+
+                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+            })
+
+            it('Salva vista', options, function () {
+                Sfera.salvaVistaPersonalizzata('Automatici_AQ_35_Cluster')
+                //? Effettuiamo un RESET della view
+                Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
+                Sfera.espandiPannello()
+                Sfera.estrai()
+            })
+
+            it('Selezoinare vista Automatici_AQ_35_Cluster e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente', options, function () {
+                Sfera.selezionaVista('Automatici_AQ_35_Cluster')
+                Sfera.espandiPannello()
+                Sfera.estrai()
+                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+                Sfera.eliminaVista('Automatici_AQ_35_Cluster')
+            })
+        })
+    })
+else
+    describe('Matrix Web : Sfera 4.0 -> Seconda Finestra', function () {
+        it('AVIVA Viste', function () {
+            //#region NO Cluster
+            //Accedere a Sfera 4.0 - Estrai con Corretto Caricamento Dati
+            Sfera.setDateEstrazione()
+            Sfera.estrai()
+            //Selezionare due colonne ed inserire due diversi filtri
             Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
             Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
             Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
-        })
-
-        it('Salva vista', options, function () {
+            //Salva vista
             Sfera.salvaVistaPersonalizzata('Automatici_EM_31')
             //? Effettuiamo un RESET della view
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
             Sfera.espandiPannello()
             Sfera.estrai()
-        })
-
-        it('Selezoinare vista Automatici_EM_31 e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente', options, function () {
+            //Selezoinare vista Automatici_EM_31 e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente
             Sfera.selezionaVista('Automatici_EM_31')
             Sfera.espandiPannello()
             Sfera.estrai()
             Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
             Sfera.eliminaVista('Automatici_EM_31')
+            //#endregion
+
+            //#region Cluster
+            //#endregion
         })
     })
-
-    context('Cluster', function () {
-
-        it('Accedere a Sfera 4.0 :\n- Estrai con Corretto Caricamento Dati', options, function () {
-            Common.visitUrlOnEnv()
-            Sfera.accediSferaDaHomePageMW()  
-            Sfera.setDateEstrazione()
-        })
-
-        
-        it('- Selezionare due colonne ed inserire due diversi filtri \n- Selezionare un cluster desiderato', options, function () {
-            Sfera.selectRandomCluster()
-            Sfera.estrai()
-
-            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ALTRE_SCADENZE_IN_QUIETANZAMENTO)
-            Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
-
-            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
-        })
-
-        it('Salva vista', options, function () {
-            Sfera.salvaVistaPersonalizzata('Automatici_AQ_35_Cluster')
-            //? Effettuiamo un RESET della view
-            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
-            Sfera.espandiPannello()
-            Sfera.estrai()
-        })
-
-        it('Selezoinare vista Automatici_AQ_35_Cluster e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente', options, function () {
-            Sfera.selezionaVista('Automatici_AQ_35_Cluster')
-            Sfera.espandiPannello()
-            Sfera.estrai()
-            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
-            Sfera.eliminaVista('Automatici_AQ_35_Cluster')
-        })
-        
-    })
-})
