@@ -109,6 +109,7 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   })
 
   it("prosegui da start page", () => {
+    cy.pause()
     StartPage.startScopriProtezione()
   })
 

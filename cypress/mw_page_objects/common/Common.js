@@ -78,13 +78,8 @@ class Common {
                     else {
                         debugger
                         //Formattiamo la entry
-                        let comp = customImpersonification.agency.substr(0, 2)
-                        if (comp.startsWith('0', 0))
-                            comp = comp.substr(1, 1)
-
-                        let ag = customImpersonification.agency.substr(2)
-                        if (ag.startsWith('0', 0))
-                            ag = ag.substr(1)
+                        let comp = customImpersonification.agency.substr(0, 2).replace(/^0+/,'')
+                        let ag = customImpersonification.agency.substr(2).replace(/^0+/,'')
 
                         cy.get('div[ngclass="agency-row"]').contains(`${comp}-${ag}`).click()
                     }

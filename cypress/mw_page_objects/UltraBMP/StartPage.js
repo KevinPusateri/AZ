@@ -26,12 +26,23 @@ class StartPage {
 
         cy.wait('@pgIniziale', { requestTimeout: 60000 })
     }
+
+    static caricamentoUltraImpresa() {
+        cy.log('***** CARICAMENTO PAGINA INIZIALE ULTRA *****')
+        cy.intercept({
+            method: 'GET',
+            url: '**/otiBusiness'
+        }).as('pgIniziale')
+
+        cy.wait('@pgIniziale', { requestTimeout: 60000 })
+    }
     //#endregion caricamenti
 
     static startScopriProtezione() {
         ultraIFrame().within(() => {
             cy.get('button').contains('SCOPRI LA PROTEZIONE').should('be.visible').click() //click su Scopri la Protezione
-            cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+            //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
+            cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible') //attende il caricamento
         })
     }
 
@@ -69,6 +80,35 @@ class StartPage {
 
             cy.get('span').contains('professione').should('be.visible')
                 .next('a').contains(professione).should('be.visible') //verifica che la professione sia stata modificata nella pagina start
+        })
+    }
+
+    /**
+     * ricerca l'attività svolta dall'impresa e seleziona il primo risultato
+     * @param {string} attivita
+     */
+    static startAttivitaImpresa(attivita) {
+        ultraIFrame().within(() => {
+            cy.get('span').contains('attività svolta').should('be.visible')
+                .next('a').click() //apre il popup per la ricerca professioni
+
+            cy.get('ricerca-attivita-modal').find('input[type="search"]')
+                .should('be.visible').type(attivita) //ricerca attività
+            cy.wait(1000);
+
+            cy.get('#list-one').find('span').first().click() //seleziona il primo risultato
+            cy.wait(500);
+        })
+
+        ultraIFrame().within(() => {
+            cy.get('#list-one').find('span').first().prev('nx-icon[name="check"]')
+                .should('be.visible') //verifica che compaia il segno di spunta
+
+            cy.get('button[aria-disabled="false"]')
+                .children('span').contains('Conferma').click() //conferma il popup
+
+                cy.get('span').contains('attività svolta').should('be.visible')
+                .next('a').contains(attivita).should('be.visible') //verifica che la professione sia stata modificata nella pagina start
         })
     }
 

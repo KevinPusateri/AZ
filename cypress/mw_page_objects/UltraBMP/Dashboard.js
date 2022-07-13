@@ -100,9 +100,11 @@ class Dashboard {
 
     /**
      * Seleziona gli ambiti indicati e verifica che vengano selezionati corretamente.
+     * la variabile 'impresa' riguarda la tipologia di RC per Ultra Impresa (impresa/proprietà)
      * @param {array} ambiti
+     * @param {string} ambiti
      */
-    static selezionaAmbiti(ambiti) {
+    static selezionaAmbiti(ambiti, impresa = null) {
         ultraIFrame().within(() => {
             //scorre l'array degli ambiti da selezionare e clicca sulle icone
             for (var i = 0; i < ambiti.length; i++) {
@@ -112,13 +114,35 @@ class Dashboard {
                 cy.get('#ambitiRischio', { timeout: 5000 }).find('nx-icon[class*="' + ambiti[i] + '"]')
                     .should('be.visible').click()
 
-                //cy.get('[id="ultra-spinner"]').should('not.be.visible') //attende il caricamento
-                cy.wait(500)
+                if (impresa != null) {
+                    if (ambiti[i] == "shield") {
+                        cy.get('scelta-rc-modal').should('be.visible')
+                            .find('ultra-ambito-button[name*="' + impresa + '"]')
+                            .click()
 
-                //verifica che sia selezionato
-                cy.get('#ambitiRischio').find('nx-icon[class*="' + ambiti[i] + '"]')
-                    .next('nx-indicator')
-                    .should('be.visible')
+                        cy.wait(200)
+
+                        cy.get('scelta-rc-modal').find('button').contains('conferma').click()
+                    }
+
+                    cy.get('[class="nx-spinner__spin-block"]')
+                        .should('not.be.visible') //attende il caricamento
+
+                    cy.get('#ambitiRischio').find('nx-icon[class*="' + ambiti[i] + '"]')
+                        .should('have.attr', 'aria-checked', 'true')
+                }
+                else {
+                    cy.get('[class="nx-spinner__spin-block"]')
+                        .should('not.be.visible') //attende il caricamento
+
+                    //verifica che sia selezionato
+                    cy.get('#ambitiRischio').find('nx-icon[class*="' + ambiti[i] + '"]')
+                        .next('nx-indicator')
+                        .should('be.visible')
+                }
+
+
+
             }
         })
     }
@@ -462,7 +486,7 @@ class Dashboard {
     static procediHome() {
         ultraIFrame().within(() => {
             cy.get('[id="dashTable"]').should('be.visible')
-            cy.get('span').contains(' PROCEDI ', { timeout: 30000 })
+            cy.get('span').contains(' PROCEDI ', { matchCase: false })
                 .scrollIntoView().should('be.visible').click().wait(500)
         })
     }
