@@ -159,6 +159,28 @@ else
             //#endregion
 
             //#region Cluster
+            //Accedere a Sfera 4.0 :- Estrai con Corretto Caricamento Dati
+            Common.visitUrlOnEnv()
+            Sfera.accediSferaDaHomePageMW()
+            Sfera.setDateEstrazione()
+            //Selezionare due colonne ed inserire due diversi filtri - Selezionare un cluster desiderato
+            Sfera.selectRandomCluster()
+            Sfera.estrai()
+            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ALTRE_SCADENZE_IN_QUIETANZAMENTO)
+            Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+            //Salva vista
+            Sfera.salvaVistaPersonalizzata('Automatici_AQ_35_Cluster')
+            //? Effettuiamo un RESET della view
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
+            Sfera.espandiPannello()
+            Sfera.estrai()
+            //Selezoinare vista Automatici_AQ_35_Cluster e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente
+            Sfera.selezionaVista('Automatici_AQ_35_Cluster')
+            Sfera.espandiPannello()
+            Sfera.estrai()
+            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+            Sfera.eliminaVista('Automatici_AQ_35_Cluster')
             //#endregion
         })
     })
