@@ -274,7 +274,8 @@ class TenutaTariffa {
                 cy.get('input[aria-label="Targa"]').clear().wait(500).type(currentCase.Targa).wait(500)
             }
 
-            cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
+            //Checkbox informativa
+            cy.get('label[class="nx-checkbox__label has-label"]>span').eq(0).click({ force: true })
 
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '01_Dati_Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
