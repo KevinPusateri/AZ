@@ -32,6 +32,7 @@ before(() => {
         Sfera.setDateEstrazione()
         Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
         Sfera.estrai()
+        Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
     })
 })
 
@@ -175,7 +176,6 @@ if (!Cypress.env('isSecondWindow'))
 else
     describe('Matrix Web : Sfera 4.0 -> Seconda Finestra', function () {
         it('Menu Contestuale', function () {
-            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
 
             //Menu Quietanza
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, false)

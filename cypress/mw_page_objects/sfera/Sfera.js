@@ -1467,30 +1467,41 @@ class Sfera {
             })
 
             Common.canaleFromPopup({}, true)
-
             //Salviamo la polizza sulla quale effettuiamo le operazioni per poterla utilizzare successivamente
             let numPolizza = ''
             //Verifichiamo gli accessi in base al tipo di menu selezionato
             switch (voce) {
                 case VociMenuQuietanza.INCASSO:
-                    IncassoDA.accessoMezziPagam()
-                    cy.wait(2000)
-                    if (Cypress.env('isSecondWindow')) {
-                        getAppJump().within(() => {
-                            IncassoDA.ClickIncassa()
-                        })
-                        getAppJump().within(() => {
-                            IncassoDA.SelezionaIncassa()
-                        })
+                    if (Cypress.env('currentEnv') === 'TEST') {
+                        IncassoDA.accessoMezziPagam()
+                        cy.wait(10000)
+                        if (flussoCompleto) {
+                            getAppJump().within(() => {
+                                IncassoDA.ClickIncassa()
+                            })
+                            getAppJump().within(() => {
+                                IncassoDA.SelezionaIncassa()
+                            })
 
-                        getAppJump().within(() => {
-                            IncassoDA.TerminaIncasso()
-                        })
+                            getAppJump().within(() => {
+                                IncassoDA.TerminaIncasso()
+                            })
+                        }
+                        else
+                            getAppJump().within(() => {
+                                IncassoDA.clickCHIUDI()
+                            })
                     }
                     else {
-                        IncassoDA.ClickIncassa()
-                        IncassoDA.SelezionaIncassa()
-                        IncassoDA.TerminaIncasso()
+                        IncassoDA.accessoMezziPagam()
+                        cy.wait(10000)
+                        if (flussoCompleto) {
+                            IncassoDA.ClickIncassa()
+                            IncassoDA.SelezionaIncassa()
+                            IncassoDA.TerminaIncasso()
+                        }
+                        else
+                            IncassoDA.clickCHIUDI()
                     }
 
                     cy.wait('@estraiQuietanze', { timeout: 120000 })
@@ -1527,8 +1538,8 @@ class Sfera {
                     this.verificaAccessoSfera(false)
                     break;
                 case VociMenuQuietanza.VARIAZIONE_RIDUZIONE_PREMI:
-                    IncassoDA.accessoGestioneFlex()
                     if (Cypress.env('currentEnv') === 'TEST') {
+                        IncassoDA.accessoGestioneFlex()
                         if (flussoCompleto) {
                             //TODO implementare flusso di delta premio
                         }
@@ -1543,6 +1554,7 @@ class Sfera {
                             })
                         }
                     } else {
+                        IncassoDA.accessoGestioneFlex()
                         if (flussoCompleto) {
                             //TODO implementare flusso di delta premio
                         } else {
@@ -1587,6 +1599,7 @@ class Sfera {
                     this.verificaAccessoSfera(false)
                     break;
                 case VociMenuQuietanza.STAMPA_SENZA_INCASSO:
+                    //! DA PROVARE
                     IncassoDA.accessoMezziPagam()
                     cy.wait(200)
                     cy.screenshot('Stampa Senza Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1668,7 +1681,7 @@ class Sfera {
                         else {
                             getAppJump().within(() => { InquiryAgenzia.clickUscita() })
                         }
-                    }else{
+                    } else {
                         if (flussoCompleto) {
                             //TODO implementare flusso completo
                         }
