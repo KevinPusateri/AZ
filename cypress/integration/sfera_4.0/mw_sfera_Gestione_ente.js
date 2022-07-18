@@ -47,18 +47,18 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// afterEach(function () {
-//     if (this.currentTest.state !== 'passed') {
-//         TopBar.logOutMW()
-//         //#region Mysql
-//         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//             let tests = testsInfo
-//             cy.finishMysql(dbConfig, insertedId, tests)
-//         })
-//         //#endregion
-//         Cypress.runner.stop();
-//     }
-// })
+afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+        TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
+})
 
 after(function () {
     TopBar.logOutMW()
@@ -182,6 +182,7 @@ else
             Sfera.checkLob(Sfera.PORTAFOGLI.MOTOR)
             Sfera.checkLob(Sfera.PORTAFOGLI.RAMI_VARI)
             Sfera.checkLob(Sfera.PORTAFOGLI.VITA)
+            let dataInizio = Common.setDate(undefined, 1, false)
             Sfera.checkDateModifiedOneMonthLater(dataInizio)
             Sfera.checkTipoQuietanzeCheckedDefault(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
             Sfera.checkClusterAllUnchecked()
@@ -200,7 +201,7 @@ else
             Sfera.checkTooltipHeadersColonne(Sfera.COLUMNGESTIONEENTE)
             //Verifica filtro calendario t+2 mesi
             Sfera.espandiPannello()
-            let dataInizio = Common.setDate(undefined, 1, false)
+            dataInizio = Common.setDate(undefined, 1, false)
             Sfera.setDateInizio(dataInizio)
             Sfera.checkCalendarNextOnlyTwoMonth(Sfera.COLUMNGESTIONEENTE)
             //Verifica sezioni decadi

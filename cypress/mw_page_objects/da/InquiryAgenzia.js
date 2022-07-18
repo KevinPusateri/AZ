@@ -18,7 +18,6 @@ class InquiryAgenzia {
     static verificaAccessoInquiryAgenzia(){
         cy.intercept(menuInquiryAgenzia).as('menuInquiryAgenzia')
         cy.wait('@menuInquiryAgenzia', {timeout: 60000})
-        this.uscita()
     }
 
     static uscita() {

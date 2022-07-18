@@ -138,7 +138,7 @@ class IncassoDA {
             method: '+(GET|POST)',
             url: '**/Incasso/**'
         }).as('getIncasso');
-        cy.get('#pnlBtnIncasso').should('be.visible').click()
+        cy.get('#pnlBtnIncasso').should('exist').should('be.visible').click()
         cy.wait(3000)
 
         cy.wait('@getIncasso', { timeout: 40000 })

@@ -246,6 +246,7 @@ else
             Sfera.checkVociMenuExist(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI)
 
             // Menu contestuale -> Quietanzmaneto online
+            Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_712000)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.QUIETANZAMENTO_ONLINE, true, null, null, null, true)
             Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
 
