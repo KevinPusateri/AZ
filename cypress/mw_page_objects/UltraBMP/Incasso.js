@@ -70,12 +70,12 @@ class Incasso {
         }).within(() => {
             if (checkFrame0) {
                 ultraIFrame0().within(() => {
-                    cy.get('input[value="> Incassa"]')
+                    cy.get('input[value*="Incassa"]')
                         .should('be.visible').click()
                 })
             }
             else {
-                cy.get('input[value="> Incassa"]')
+                cy.get('input[value*="Incassa"]')
                     .should('be.visible').click()
             }
         })
@@ -187,15 +187,17 @@ class Incasso {
             if (fl_frame0)
                 ultraIFrame0().within(() => {
                     //scorre la lista dei risultati e controlla che abbiano tutti la spunta verde
-                    cy.get('[data-bind="foreach: Result.Steps"]')
+                    //cy.get('[data-bind="foreach: Result.Steps"]')
+                    cy.get('.table-steps')
                         .find('img').each(($img, index, $list) => {
-                            cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green')
+                            cy.wrap($img).should('have.attr', 'src').and('contain', 'Shape')
                         });
                 })
             else {
-                cy.get('[data-bind="foreach: Result.Steps"]')
+                //cy.get('[data-bind="foreach: Result.Steps"]')
+                cy.get('.table-steps')
                     .find('img').each(($img, index, $list) => {
-                        cy.wrap($img).should('have.attr', 'src').and('contain', 'confirm_green')
+                        cy.wrap($img).should('have.attr', 'src').and('contain', 'Shape')
                     });
             }
         })
@@ -208,11 +210,11 @@ class Incasso {
         ultraIFrame().within(() => {
             if (fl_frame0)
                 ultraIFrame0().within(() => {
-                    cy.get('[value="> CHIUDI"]')
+                    cy.get('[value="CHIUDI"]')
                         .should('be.visible').click()
                 })
             else {
-                cy.get('[value="> CHIUDI"]')
+                cy.get('[value="CHIUDI"]')
                     .should('be.visible').click()
             }
         })

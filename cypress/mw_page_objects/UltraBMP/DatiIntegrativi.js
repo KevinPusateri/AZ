@@ -60,6 +60,17 @@ class DatiIntegrativi {
     }
 
     /**
+     * Verifica che la domanda Si/No indicata come parametro sia sabbiata
+     * @param {string} domanda 
+     */
+    static checkDomandaSabbiata(domanda) {
+        ultraIFrame().within(() => {
+            cy.get('.DomandaTesto').contains(domanda).parent()
+                .siblings('div').should('have.class', 'radio-group disabled')
+        })
+    }
+
+    /**
      * Clicca sull'opzione 'Seleziona tutti NO'
      */
     static selezionaTuttiNo() {
@@ -72,13 +83,13 @@ class DatiIntegrativi {
      * Seleziona 'SI' sulla presenza di altre coperture assicurative per l'ambito di rischio
      * @param {string} ambito - ambito a cui ci si vuole riferire  
      */
-     static selezionaSiAmbito(ambito) {
+    static selezionaSiAmbito(ambito) {
         ultraIFrame().within(() => {
             cy.get('div[class="box-border-bottom weight--bold header-ambito"]').should('have.length.gt', 0)
-              .find('label').contains(ambito).should('exist')
-              .parent('div')
-              .parent('div').should('have.length', 1)
-              .find('span').contains('SI').should('have.length', 1).click()
+                .find('label').contains(ambito).should('exist')
+                .parent('div')
+                .parent('div').should('have.length', 1)
+                .find('span').contains('SI').should('have.length', 1).click()
         })
     }
 
@@ -126,7 +137,7 @@ class DatiIntegrativi {
     /**
      * clicca sul pulsante Conferma nel popup "Approfondimento sulla situazione assicurativa"
      */
-     static popupApprofondimentoSituazioneAssicurativa() {
+    static popupApprofondimentoSituazioneAssicurativa() {
         ultraIFrame().within(() => {
             cy.get('div[id="QuestionarioSituazioneAssicurativa"]', { timeout: 5000 })
                 .should('be.visible')
@@ -286,24 +297,24 @@ class DatiIntegrativi {
 
             //Modifica fonte
             cy.get('table[id="fonti-grid"]').should('exist')
-              .find('td').contains(ruolo).first().should('exist')
-              .parent('tr').should('have.length', 1)
-              .find('div').first().click().wait(500)
+                .find('td').contains(ruolo).first().should('exist')
+                .parent('tr').should('have.length', 1)
+                .find('div').first().click().wait(500)
 
             //Salvataggio fonte selezionata
             cy.get('table[id="fonti-grid"]').should('exist')
-              .find('td').contains(ruolo).first().should('exist')
-              .parent('tr').should('have.length', 1)
-              .find('td').should('exist')
-              .eq(1)
-              .invoke('text').then(val => {
-                cy.wrap(val).as('fonteSel')
-                cy.log('Fonte selezionata: ' + val)
-              })
+                .find('td').contains(ruolo).first().should('exist')
+                .parent('tr').should('have.length', 1)
+                .find('td').should('exist')
+                .eq(1)
+                .invoke('text').then(val => {
+                    cy.wrap(val).as('fonteSel')
+                    cy.log('Fonte selezionata: ' + val)
+                })
 
             cy.get('div[id="popup-seleziona-fonte-content"]').should('exist')
-              .find('div[class="btn-container"]').should('exist')
-              .find('button').contains('CONFERMA').should('have.length', 1).click().wait(500)
+                .find('div[class="btn-container"]').should('exist')
+                .find('button').contains('CONFERMA').should('have.length', 1).click().wait(500)
 
             //cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
 
