@@ -86,6 +86,7 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
+            cy.pause()
             cy.get('lib-client-item').first().click()
         }).then(($body) => {
             cy.wait(7000)
