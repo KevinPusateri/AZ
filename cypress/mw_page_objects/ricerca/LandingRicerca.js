@@ -111,31 +111,33 @@ class LandingRicerca {
         if (filtri) {
             //Filtriamo la ricerca in base a tipoCliente
             cy.get('lib-clients-container').find('nx-icon[name="filter"]').click()
+            cy.contains('CLIENTE').click()
             if (tipoCliente === "PF")
-                cy.get('.filter-group').contains('Persona giuridica').click()
+                cy.contains('Persona giuridica').click()
             else
-                cy.get('.filter-group').contains('Persona fisica').click()
+                cy.contains('Persona fisica').click()
 
             //Filtriamo la ricerca in base a statoCliente
+            cy.contains('STATO').click()
             switch (statoCliente) {
                 case "E":
-                    cy.get('.filter-group').contains('Potenziale').click()
-                    cy.get('.filter-group').contains('Cessato').click()
+                    cy.contains('Potenziale').click()
+                    cy.contains('Cessato').click()
                     break
                 case "P":
-                    cy.get('.filter-group').contains('Effettivo').click()
-                    cy.get('.filter-group').contains('Cessato').click()
+                    cy.contains('Effettivo').click()
+                    cy.contains('Cessato').click()
                     break
                 case "C":
-                    cy.get('.filter-group').contains('Potenziale').click()
-                    cy.get('.filter-group').contains('Effettivo').click()
+                    cy.contains('Potenziale').click()
+                    cy.contains('Effettivo').click()
                     break
             }
 
-            cy.get('.footer').find('button').contains('applica').click()
+            cy.contains('APPLICA').click()
             cy.wait('@gqlSearchClient', { requestTimeout: 30000 });
 
-            cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible').wait(5000)
+            // cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible').wait(5000)
             if (screenshot)
                 cy.screenshot('Ricerca effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         }
@@ -268,12 +270,13 @@ class LandingRicerca {
 
         //Filtriamo la ricerca in base a tipoCliente
         cy.get('.icon').find('[name="filter"]').click()
-        cy.get('.filter-group').contains('Persona giuridica').click()
+        cy.contains('CLIENTE').click()
+        cy.contains('Persona giuridica').click()
 
-        cy.get('.footer').find('button').contains('applica').click()
+        cy.contains('APPLICA').click()
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
 
-        cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
+        // cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
 
         cy.get('lib-scrollable-container').contains(cognome.toUpperCase()).then((card) => {
             if (card.length === 1)
@@ -461,36 +464,37 @@ class LandingRicerca {
         });
 
         cy.wait(3000).get('.icon').find('[name="filter"]').click()
+        cy.contains('CLIENTE').click()
 
-        //Verifica Stato
-        cy.get('.filter-group').find('span:contains("Effettivo"):visible')
-        cy.get('.filter-group').find('span:contains("Potenziale"):visible')
-        cy.get('.filter-group').find('span:contains("Cessato"):visible')
+        // //Verifica Stato
+        // cy.get('contains("Effettivo"):visible')
+        // cy.get('.filter-group').find('span:contains("Potenziale"):visible')
+        // cy.get('.filter-group').find('span:contains("Cessato"):visible')
 
-        //Verifica Tipo
-        cy.get('.filter-group').find('span:contains("Persona fisica"):visible')
-        cy.get('.filter-group').find('span:contains("Persona giuridica"):visible')
+        // //Verifica Tipo
+        // cy.get('.filter-group').find('span:contains("Persona fisica"):visible')
+        // cy.get('.filter-group').find('span:contains("Persona giuridica"):visible')
 
         //Effettuaimo il choose in base a statoCliente
         //Filtriamo la ricerca in base a statoCliente
         switch (statoCliente) {
             case "E":
-                cy.get('.filter-group').contains('Potenziale').click()
-                cy.get('.filter-group').contains('Cessato').click()
+                cy.contains('Potenziale').click()
+                cy.contains('Cessato').click()
                 break
             case "P":
-                cy.get('.filter-group').contains('Effettivo').click()
-                cy.get('.filter-group').contains('Cessato').click()
+                cy.contains('Effettivo').click()
+                cy.contains('Cessato').click()
                 break
             case "C":
-                cy.get('.filter-group').contains('Potenziale').click()
-                cy.get('.filter-group').contains('Effettivo').click()
+                cy.contains('Potenziale').click()
+                cy.contains('Effettivo').click()
                 break
         }
 
-        cy.get('.footer').find('button').contains('applica').click()
+        cy.contains('APPLICA').click()
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
-        cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
+        // cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
     }
 
     /**
