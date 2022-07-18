@@ -119,7 +119,7 @@ describe("Polizza Responsabilità Civile Impresa", () => {
     StartPage.startScopriProtezione()
   })
 
-  it("Selezione ambiti nella homepage di Ultra Impresa", () => {
+  it("Dashboard Ultra Impresa", () => {
     Dashboard.selezionaAmbiti(ambiti, "impresa")
     Dashboard.procediHome()
     DatiQuotazione.CaricamentoPagina()
@@ -142,6 +142,7 @@ describe("Polizza Responsabilità Civile Impresa", () => {
   })
   
   it("Dati integrativi", () => {
+    //DatiIntegrativi.checkDomandaSabbiata("Adeguamento automatico annuale")
     DatiIntegrativi.selezionaTuttiNo()
     DatiIntegrativi.ClickButtonAvanti()
     DatiIntegrativi.confermaDichiarazioniContraente()
@@ -168,7 +169,7 @@ describe("Polizza Responsabilità Civile Impresa", () => {
     ControlliProtocollazione.aspettaCaricamentoAdempimenti()
   })
 
-  it("Adempimenti precontrattuali e Perfezionamento", () => {    
+  it("Adempimenti precontrattuali e Perfezionamento", () => {
     ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
     ControlliProtocollazione.Incassa()
     Incasso.caricamentoPagina()
@@ -186,6 +187,7 @@ describe("Polizza Responsabilità Civile Impresa", () => {
   })
 
   it("Esito incasso", () => {
+    cy.pause()
     Incasso.EsitoIncasso()
     Incasso.Chiudi()
   })
