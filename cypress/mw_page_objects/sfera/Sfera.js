@@ -3398,7 +3398,7 @@ class Sfera {
                         expect(contents.text().trim()).to.include(dataInizio)
                         expect(contents.text().trim()).to.include(dataFine)
                         expect(contents.text().trim()).to.include('Motor')
-                        expect(contents.text().trim()).to.include('ATTENZIONE! - Effettuare l\'eventuale quietanzamento on-line in: Viste suggerite > Carico Mancante')
+                        expect(contents.text().trim()).to.include('quietanzamento on-line in: Viste suggerite > Carico Mancante')
 
                     })
                 break;
