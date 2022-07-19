@@ -273,8 +273,8 @@ class TenutaTariffa {
 
             //Targa
             if (currentCase.Targa !== '') {
-                cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
-                cy.get('input[aria-label="Targa"]').clear().wait(500).type(currentCase.Targa).wait(500)
+                cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').should('exist').and('be.visible').click().wait(1000)
+                cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').clear().wait(500).type(currentCase.Targa).wait(1000)
             }
 
             //Checkbox informativa
@@ -950,9 +950,7 @@ class TenutaTariffa {
 
             //Espandiamo pannello RCA
             var rcaLabel
-            if (currentCase.Settore == 3)
-                rcaLabel = "RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA"
-            else if (currentCase.Settore == 6 || currentCase.Settore == 7)
+            if (currentCase.Settore == 6 || currentCase.Settore == 7)
                 rcaLabel = "RCA - PREMIO FISSO UNIFICATA"
             else
                 rcaLabel = "RCA - BONUS MALUS"
