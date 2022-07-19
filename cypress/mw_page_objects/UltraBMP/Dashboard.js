@@ -162,7 +162,7 @@ class Dashboard {
     static selezionaFonteRandom() {
         ultraIFrame().within(() => {
             cy.get('span').contains('Fonte').should('be.visible')
-                .next('nx-icon').dblclick() //click su pulsante Fonte
+                .next('nx-icon').click() //click su pulsante Fonte
             cy.wait(500)
             cy.get('[id="fontePopover"]').should('be.visible') //verifica apertura popup fonte
                 .find('[name="pen"]').click() //click sull'icona della penna

@@ -230,7 +230,7 @@ class CensimentoAnagrafico {
 
             //popup anagrafico
             ultraIFrameAnagrafica().within(() => {
-                cy.get('#AZBuilder1_GroupStdPersonaImpresa__Pop').should('be.visible')
+                cy.get('#divPopUpACAnagrafica').should('be.visible')
                     .find(('input[value="Persona Fisica"]')).should('be.enabled').click()  //seleziona Persona Fisica
                 cy.wait(5000)
             })
