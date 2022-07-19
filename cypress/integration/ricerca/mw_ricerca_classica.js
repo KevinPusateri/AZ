@@ -53,7 +53,7 @@ after(function () {
 describe('Buca di Ricerca', {
     retries: {
         runMode: 1,
-        openMode: 0,
+        openMode: 1,
     }
 }, function () {
     if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
