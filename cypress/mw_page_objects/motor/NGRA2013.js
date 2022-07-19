@@ -50,7 +50,7 @@ class NGRA2013 {
 
     static verificaAccessoPagamento() {
         cy.intercept(getIncassoWAService).as('getIncassoWAService')
-        cy.wait('@getIncassoWAService', { timeout: 60000 })
+        cy.wait('@getIncassoWAService', { timeout: 120000 })
     }
 
     static verificaAccessoDatiAmministrativi() {
@@ -119,7 +119,7 @@ class NGRA2013 {
 
         // incassa
         cy.get('#pnlBtnIncasso').should('be.visible').click()
-        cy.wait('@getIncassoWAService', { timeout: 60000 })
+        cy.wait('@getIncassoWAService', { timeout: 120000 })
         cy.wait(15000)
     }
 
@@ -137,7 +137,7 @@ class NGRA2013 {
                             cy.contains('Procedi').click()
                         }
                     })
-                cy.wait('@getDAS_FE', { timeout: 60000 })
+                cy.wait('@getDAS_FE', { timeout: 120000 })
                 cy.wait(10000)
             })
         }
@@ -153,7 +153,7 @@ class NGRA2013 {
                         cy.contains('Procedi').click()
                     }
                 })
-            cy.wait('@getDAS_FE', { timeout: 60000 })
+            cy.wait('@getDAS_FE', { timeout: 120000 })
             cy.wait(10000)
         }
 

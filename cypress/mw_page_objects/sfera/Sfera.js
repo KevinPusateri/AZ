@@ -2329,7 +2329,7 @@ class Sfera {
 
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
-        this.lobPortafogli().click().wait(500)
+        this.lobPortafogli().click({force:true}).wait(500)
 
         cy.get('div[class="nx-dropdown__panel nx-dropdown__panel--in-outline-field ng-star-inserted"]').within(() => {
             //Selezioniamo
