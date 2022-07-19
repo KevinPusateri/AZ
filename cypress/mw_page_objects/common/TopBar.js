@@ -419,7 +419,7 @@ class TopBar extends HomePage {
      */
     static clickIconSwitchPage(page) {
         cy.get('lib-switch-button').click().wait(500)
-        cy.get('.lib-switch-button-list-column').should('have.length', (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) ? 5 : 4)
+        cy.get('.lib-switch-button-list-column').should('have.length', 5)
         switch (page) {
             case LandingPage.CLIENTS:
                 interceptPageClients()
