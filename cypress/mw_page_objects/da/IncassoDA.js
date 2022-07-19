@@ -162,7 +162,7 @@ class IncassoDA {
         cy.screenshot('Conferma incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.get('#btnTabIncassoConfirm').should('be.visible').click()
 
-        cy.wait('@incassa', { timeout: 40000 })
+        cy.wait('@incassa', { timeout: 120000 })
     }
 
     static TerminaIncasso() {
