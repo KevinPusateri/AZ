@@ -2329,7 +2329,7 @@ class Sfera {
 
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
-        this.lobPortafogli().click().wait(500)
+        this.lobPortafogli().click({force:true}).wait(500)
 
         cy.get('div[class="nx-dropdown__panel nx-dropdown__panel--in-outline-field ng-star-inserted"]').within(() => {
             //Selezioniamo
@@ -3398,7 +3398,7 @@ class Sfera {
                         expect(contents.text().trim()).to.include(dataInizio)
                         expect(contents.text().trim()).to.include(dataFine)
                         expect(contents.text().trim()).to.include('Motor')
-                        expect(contents.text().trim()).to.include('ATTENZIONE! - Effettuare l\'eventuale quietanzamento on-line in: Viste suggerite > Carico Mancante')
+                        expect(contents.text().trim()).to.include('quietanzamento on-line in: Viste suggerite > Carico Mancante')
 
                     })
                 break;

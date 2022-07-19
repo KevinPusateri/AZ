@@ -477,6 +477,7 @@ class LandingRicerca {
 
         //Effettuaimo il choose in base a statoCliente
         //Filtriamo la ricerca in base a statoCliente
+        cy.contains('STATO').click()
         switch (statoCliente) {
             case "E":
                 cy.contains('Potenziale').click()

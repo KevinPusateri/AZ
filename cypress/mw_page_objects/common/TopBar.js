@@ -352,7 +352,8 @@ class TopBar extends HomePage {
             case LinkUtilita.REPORT_ALLIANZ_NOW:
                 break;
             case LinkUtilita.INTERROGAZIONI_CENTRALIZZATE:
-                getIFrame().find('h4').should('be.visible').and('contain.text', 'Interrogazioni centralizzate')
+                getIFrame().find('h4').should('be.visible').and('contain.text', 'INTERROGAZIONI CENTRALIZZATE ')
+                getIFrame().find('table').should('be.visible')
                 cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinkUtilita.BANCHE_DATI_ANIA:
@@ -418,7 +419,7 @@ class TopBar extends HomePage {
      */
     static clickIconSwitchPage(page) {
         cy.get('lib-switch-button').click().wait(500)
-        cy.get('.lib-switch-button-list-column').should('have.length', (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) ? 5 : 4)
+        cy.get('.lib-switch-button-list-column').should('have.length', 5)
         switch (page) {
             case LandingPage.CLIENTS:
                 interceptPageClients()
