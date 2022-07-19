@@ -273,8 +273,8 @@ class TenutaTariffa {
 
             //Targa
             if (currentCase.Targa !== '') {
-                cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
-                cy.get('input[aria-label="Targa"]').clear().wait(500).type(currentCase.Targa).wait(500)
+                cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').should('exist').and('be.visible').click().wait(1000)
+                cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').clear().wait(500).type(currentCase.Targa).wait(1000)
             }
 
             //Checkbox informativa
