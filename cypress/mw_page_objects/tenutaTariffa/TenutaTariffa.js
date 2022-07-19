@@ -399,36 +399,6 @@ class TenutaTariffa {
                 cy.contains('Ho capito').should('exist').and('be.visible').click()
             }
 
-            //Data Immatricolazione
-            //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
-            //Differenziamo se Prima Immatricolazione è calcolata in automatico oppure è in formato data
-            let dataPrimaImmatricolazione
-            let formattedPrimaImmatricolazione
-            if (!currentCase.Prima_Immatricolazione.includes('ann'))
-                formattedPrimaImmatricolazione = currentCase.Prima_Immatricolazione
-            else {
-                if (currentCase.Prima_Immatricolazione.split(' ')[1].includes('ann')) {
-
-                    let dataDecorrenza = calcolaDataDecorrenza(currentCase)
-                    let formattedDataDecorrenza = dataDecorrenza.getFullYear() + '-' +
-                        String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '-' +
-                        String(dataDecorrenza.getDate()).padStart(2, '0')
-
-                    formattedPrimaImmatricolazione = moment(formattedDataDecorrenza, 'YYYY-MM-DD').subtract(currentCase.Prima_Immatricolazione.split(' ')[0], 'years').subtract('10', 'days').format('DD/MM/YYYY')
-
-                }
-            }
-
-            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').clear().wait(500)
-            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').type(formattedPrimaImmatricolazione).type('{enter}').wait(500)
-
-            cy.wait('@getMotor', { timeout: 30000 })
-
-            cy.wait(2000)
-            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').invoke('val').then(currentDataPrimaImmatricolazione => {
-                expect(currentDataPrimaImmatricolazione).to.include(formattedPrimaImmatricolazione)
-            })
-
             //Verifichiamo se Veicolo Storico
             if (currentCase.Descrizione_Settore.includes("STORICO")) {
                 cy.get('nx-checkbox[formcontrolname="veicoloStorico"]').should('exist').and('be.visible').click()
@@ -475,6 +445,36 @@ class TenutaTariffa {
                         expect(isNotEmpty).to.be.true
                     })
                 }
+            })
+
+            //Data Immatricolazione
+            //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
+            //Differenziamo se Prima Immatricolazione è calcolata in automatico oppure è in formato data
+            let dataPrimaImmatricolazione
+            let formattedPrimaImmatricolazione
+            if (!currentCase.Prima_Immatricolazione.includes('ann'))
+                formattedPrimaImmatricolazione = currentCase.Prima_Immatricolazione
+            else {
+                if (currentCase.Prima_Immatricolazione.split(' ')[1].includes('ann')) {
+
+                    let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+                    let formattedDataDecorrenza = dataDecorrenza.getFullYear() + '-' +
+                        String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(dataDecorrenza.getDate()).padStart(2, '0')
+
+                    formattedPrimaImmatricolazione = moment(formattedDataDecorrenza, 'YYYY-MM-DD').subtract(currentCase.Prima_Immatricolazione.split(' ')[0], 'years').subtract('10', 'days').format('DD/MM/YYYY')
+
+                }
+            }
+
+            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').clear().wait(500)
+            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').type(formattedPrimaImmatricolazione).type('{enter}').wait(500)
+
+            cy.wait('@getMotor', { timeout: 30000 })
+
+            cy.wait(2000)
+            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').invoke('val').then(currentDataPrimaImmatricolazione => {
+                expect(currentDataPrimaImmatricolazione).to.include(formattedPrimaImmatricolazione)
             })
 
             //? La differenza tra Allianz e AVIVA è che AVIVA per i veicoli senza catalogo ha la drop down con le marche, mentre Allianz ha solo la textbox.
