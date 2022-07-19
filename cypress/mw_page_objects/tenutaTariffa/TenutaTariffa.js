@@ -122,8 +122,10 @@ class TenutaTariffa {
             //? al momento lavoriamo direttamente con gli Autoveicoli quindi non serve gestire questo dropdown che by default è selezionato auto
 
             //Targa
-            cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
-            cy.get('input[aria-label="Targa"]').clear().wait(500).type(caso.Targa).wait(1000)
+            // cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
+            // cy.get('input[aria-label="Targa"]').clear().wait(500).type(caso.Targa).wait(1000)
+            cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').should('exist').and('be.visible').click().wait(1000)
+            cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').clear().wait(500).type(caso.Targa).wait(1000)
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
@@ -138,7 +140,8 @@ class TenutaTariffa {
             cy.get('nx-spinner').should('not.be.visible')
             cy.wait(1000)
 
-            cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
+            // cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
+            cy.get('label[id="nx-checkbox-0-label"]>span').eq(0).click({ force: true })
 
             cy.screenshot('Dati Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
@@ -194,7 +197,7 @@ class TenutaTariffa {
             //Controlliamo i vari dati in Provenienza
             cy.contains('Provenienza').should('be.visible').click({ force: true }).wait(1000)
             cy.screenshot('Provenienza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-            cy.contains('Modifica').should('be.visible').click().wait(1000)
+            cy.contains('MODIFICA').should('be.visible').click().wait(1000)
             cy.get('nx-spinner').should('not.be.visible')
 
             //Scadenza Precedente Contratto
