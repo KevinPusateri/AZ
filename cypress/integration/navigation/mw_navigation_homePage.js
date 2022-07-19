@@ -27,8 +27,7 @@ let keys = {
     siscoEnabled: true,
     SERVICENOW: true,
     obuEnabled: false,
-    satellitareEnabled: false,
-    newsMieInfo: true
+    satellitareEnabled: false
 }
 
 
@@ -61,15 +60,6 @@ before(() => {
                     keys.obuEnabled = false
                     keys.satellitareEnabled = false
                 })
-                //? Rimosso dalla Release 124, default a false
-
-                cy.filterProfile(profiling, 'PO_LE_MIE_INFO_OM').then(profiled => {
-                    if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
-                        keys.newsMieInfo = false
-                    else
-                        keys.newsMieInfo = profiled
-                })
-
             })
         })
     })
@@ -270,10 +260,6 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
     });
 
     it('Verifica Top Menu News e Info', function () {
-        cy.log(keys.newsMieInfo)
-        if (!keys.newsMieInfo)
-            this.skip()
-        else
             TopBar.clickIconSwitchPage('News e Info')
     });
 
