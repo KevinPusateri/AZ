@@ -1032,7 +1032,7 @@ class Sales {
         })
         cy.get('app-proposals-section').contains('Proposte').click()
         cy.wait('@gqlDamage', { timeout: 50000 });
-        cy.wait('@gqlsalesDamagePremium', { timeout: 50000 });
+        //cy.wait('@gqlsalesDamagePremium', { timeout: 50000 });
         cy.get('app-paginated-cards').find('button:contains("Danni")').click()
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
         cy.get('app-paginated-cards')
