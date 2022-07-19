@@ -950,9 +950,7 @@ class TenutaTariffa {
 
             //Espandiamo pannello RCA
             var rcaLabel
-            if (currentCase.Settore == 3)
-                rcaLabel = "RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA"
-            else if (currentCase.Settore == 6 || currentCase.Settore == 7)
+            if (currentCase.Settore == 6 || currentCase.Settore == 7)
                 rcaLabel = "RCA - PREMIO FISSO UNIFICATA"
             else
                 rcaLabel = "RCA - BONUS MALUS"
