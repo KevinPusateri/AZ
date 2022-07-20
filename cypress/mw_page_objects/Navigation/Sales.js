@@ -868,9 +868,9 @@ class Sales {
             while (check) {
                 if (!$btn.hasClass('disabled')) {
                     cy.wrap($btn).click()
-                    cy.get('.details-container').find('button:contains("Estrai dettaglio")').click()
+                    cy.get('.details-container').find('button:contains("Estrai")').click()
                     cy.wait('@getDacommerciale', { timeout: 50000 });
-                    cy.wait('@getRicercaDatiAnagraficiRipetitore', { timeout: 50000 });
+                    // cy.wait('@getRicercaDatiAnagraficiRipetitore', { timeout: 50000 });
                     getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
                     cy.screenshot('Estrazione Dettaglio', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                     check = false
@@ -1045,12 +1045,6 @@ class Sales {
      * Click sul pannello "Proposte danni" atterraggio su tab Vita
      */
     static clickTabVitaOnProposte() {
-        // cy.intercept('POST', '**/graphql', (req) => {
-        //     if (req.body.operationName.includes('salesContract') &&
-        //         req.body.variables.filter.tabCallType.includes('salesDamagePremium')) {
-        //         req.alias = 'gqlLife'
-        //     }
-        // })
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('salesContract') &&
                 req.body.variables.filter.tabCallType.includes('DAMAGE')) {
@@ -1065,7 +1059,7 @@ class Sales {
         cy.get('app-proposals-section').contains('Proposte').click()
         // cy.wait('@gqlLife', { timeout: 30000 });
         cy.wait('@gqlDamage', { timeout: 50000 });
-        cy.wait('@gqlsalesDamagePremium', { timeout: 50000 });
+        // cy.wait('@gqlsalesDamagePremium', { timeout: 50000 });
         cy.get('app-paginated-cards').find('button:contains("Vita")').click().wait(3000)
         cy.get('app-paginated-cards')
             .screenshot('Verifica Proposte Da Vita', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
