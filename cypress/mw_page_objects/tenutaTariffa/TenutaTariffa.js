@@ -99,17 +99,17 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
 
-            //Andiamo a fare focus su Totale riduzione ARD
-            cy.contains("Riduzione totale sul premio ARD").should('exist').click()
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
             //Per MACROLESIONI, verifico la Riduzione ARD
             if (currentCase.Descrizione_Settore === 'MACROLESIONI') {
-                cy.contains("Totale riduzione ARD").parent().parent().find('div[nxcol="2"]').within(() => {
-                    cy.get('strong').invoke('text').then((riduzioneARD) => {
-                        expect(riduzioneARD).contains(currentCase.Riduzione_ARD)
-                    })
+                cy.get('.riduzione-table-header').last().find('p').last().invoke('text').then((riduzioneARD) => {
+                    expect(riduzioneARD).contains(currentCase.Riduzione_ARD)
+                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 })
+            }
+            else {
+                //Andiamo a fare focus su Totale riduzione ARD
+                cy.contains("Riduzione totale sul premio ARD").should('exist').click()
+                cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             }
         })
     }
@@ -1157,7 +1157,12 @@ class TenutaTariffa {
 
             //! purtroppo il componente non è trovabile agevolmente al momento
             cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > nx-icon').click()
-            cy.get('nx-formfield').first().click().clear().wait(500).type(formattedDataDecorrenza).type('{enter}')
+            cy.get('nx-formfield').first().click().clear()
+            cy.wait(700)
+            cy.get('nx-formfield').first().click().type(formattedDataDecorrenza)
+            cy.wait(700)
+            cy.get('nx-formfield').first().type('{enter}')
+
 
             cy.wait('@getMotor', { timeout: 60000 })
 
@@ -1210,10 +1215,16 @@ class TenutaTariffa {
             //#region Effettuiamo un full deselect di tutte le ARD selezionate di default
             if (!Cypress.env('isAviva')) {
                 //Incendio senza scoperto
-                cy.contains("Incendio senza scoperto").parent('div').parent('div').within(() => {
-                    cy.get('nx-checkbox').click()
+                //? se non recupera il valore a catalogo, viene fuori solo l'etichetta 'Incendio'
+                cy.get('@iframe').then((iframe) => {
+                    if (iframe.find(':contains("Incendio senza scoperto")').length > 0) {
+                        cy.contains("Incendio senza scoperto").parent('div').parent('div').within(() => {
+                            cy.get('nx-checkbox').click()
+                            cy.get('nx-spinner').should('not.be.visible')
+                        })
+                    }
                 })
-                cy.get('nx-spinner').should('not.be.visible')
+
                 //Assistenza Auto
                 cy.wait(5000)
                 cy.contains("Assistenza Auto").parent('div').parent('div').within(() => {
