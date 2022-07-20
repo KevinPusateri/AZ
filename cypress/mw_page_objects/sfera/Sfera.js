@@ -1477,8 +1477,13 @@ class Sfera {
                         cy.wait(10000)
                         if (flussoCompleto) {
                             getAppJump().within(() => {
+
                                 IncassoDA.ClickIncassa()
                             })
+                            getAppJump().within(($iframe) => {
+                                IncassoDA.ClickPopupWarning($iframe)
+                            })
+                            cy.wait('@getIncasso', { timeout: 40000 })
                             getAppJump().within(() => {
                                 IncassoDA.SelezionaIncassa()
                             })
@@ -1497,6 +1502,7 @@ class Sfera {
                         cy.wait(10000)
                         if (flussoCompleto) {
                             IncassoDA.ClickIncassa()
+                            IncassoDA.ClickPopupWarning()
                             IncassoDA.SelezionaIncassa()
                             IncassoDA.TerminaIncasso()
                         }
@@ -2329,7 +2335,7 @@ class Sfera {
 
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
-        this.lobPortafogli().click({force:true}).wait(500)
+        this.lobPortafogli().click({ force: true }).wait(500)
 
         cy.get('div[class="nx-dropdown__panel nx-dropdown__panel--in-outline-field ng-star-inserted"]').within(() => {
             //Selezioniamo
