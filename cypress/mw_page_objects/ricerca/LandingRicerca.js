@@ -119,18 +119,19 @@ class LandingRicerca {
 
             //Filtriamo la ricerca in base a statoCliente
             cy.contains('STATO').click()
+            cy.pause()
+            cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                cy.wrap($checkBox).click()
+            })
             switch (statoCliente) {
                 case "E":
-                    cy.contains('Potenziale').click()
-                    cy.contains('Cessato').click()
+                    cy.contains('Effettivo').click()
                     break
                 case "P":
-                    cy.contains('Effettivo').click()
-                    cy.contains('Cessato').click()
+                    cy.contains('Potenziale').click()
                     break
                 case "C":
-                    cy.contains('Potenziale').click()
-                    cy.contains('Effettivo').click()
+                    cy.contains('Cessato').click()
                     break
             }
 
@@ -478,18 +479,18 @@ class LandingRicerca {
         //Effettuaimo il choose in base a statoCliente
         //Filtriamo la ricerca in base a statoCliente
         cy.contains('STATO').click()
+        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+            cy.wrap($checkBox).click()
+        })
         switch (statoCliente) {
             case "E":
-                cy.contains('Potenziale').click()
-                cy.contains('Cessato').click()
+                cy.contains('Effettivo').click()
                 break
             case "P":
-                cy.contains('Effettivo').click()
-                cy.contains('Cessato').click()
+                cy.contains('Potenziale').click()
                 break
             case "C":
-                cy.contains('Potenziale').click()
-                cy.contains('Effettivo').click()
+                cy.contains('Cessato').click()
                 break
         }
 

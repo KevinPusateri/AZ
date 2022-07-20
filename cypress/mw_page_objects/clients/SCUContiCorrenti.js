@@ -74,7 +74,7 @@ class SCUContiCorrenti {
      * @param {string} contoCorrente - Object contoCorrente
      */
     static checkContoCorrenteIsNotPresent(contoCorrente) {
-        cy.get('app-client-bank-accounts').find('lib-empty-list-icon-with-label').then((list) => {
+        cy.get('app-client-bank-accounts').find('app-client-bank-account-card').then((list) => {
             cy.screenshot('Verifica Conto corrente non presente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             expect(list.text()).to.not.include(contoCorrente.iban)
         })

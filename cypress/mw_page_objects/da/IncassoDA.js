@@ -129,7 +129,7 @@ class IncassoDA {
         })
     }
 
-    static ClickIncassa() {
+    static ClickIncassa($iframe = undefined) {
         cy.screenshot('Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         // Inizio flusso incasso
@@ -140,10 +140,42 @@ class IncassoDA {
         }).as('getIncasso');
         cy.get('#pnlBtnIncasso').should('exist').should('be.visible').click()
         cy.wait(3000)
+    }
 
-        cy.wait('@getIncasso', { timeout: 40000 })
-        // if(cy.get('div[role="dialog"]').is(':visible'))
-        //     cy.get('div[role="dialog"]').find('button:contains("Procedi")').click()
+    static ClickPopupWarning($iframe = undefined) {
+        if ($iframe === undefined) {
+            cy.get('body').then(($body) => {
+                const popupWarning = $body.find('div[role="dialog"]').is(':visible')
+                if (popupWarning)
+                    cy.get('div[role="dialog"]').should('be.visible').within(($dialog) => {
+                        cy.wait(4000)
+                        if ($dialog.text().includes('relativo alla quietanza'))
+                            cy.contains('Procedi').click()
+                        else {
+                            cy.contains('button', 'Contr.Convenzionabile').click().wait(4000)
+                            cy.contains('Procedi').click()
+                        }
+                    })
+                cy.wait('@getIncasso', { timeout: 40000 })
+                cy.wait(10000)
+            })
+        }
+        else {
+            const popupWarning = $iframe.find('div[role="dialog"]').is(':visible')
+            if (popupWarning)
+                cy.get('div[role="dialog"]').should('be.visible').within(($dialog) => {
+                    cy.wait(4000)
+                    if ($dialog.text().includes('relativo alla quietanza'))
+                        cy.contains('Procedi').click()
+                    else {
+                        cy.contains('button', 'Contr.Convenzionabile').click().wait(4000)
+                        cy.contains('Procedi').click()
+                    }
+                })
+            cy.wait('@getIncasso', { timeout: 40000 })
+
+            cy.wait(10000)
+        }
     }
 
     static SelezionaIncassa() {
