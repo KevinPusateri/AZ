@@ -119,7 +119,6 @@ class LandingRicerca {
 
             //Filtriamo la ricerca in base a statoCliente
             cy.contains('STATO').click()
-            cy.pause()
             cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
                 cy.wrap($checkBox).click()
             })
