@@ -902,9 +902,12 @@ class TenutaTariffa {
             let formattedDataDecorrenza = String(dataDecorrenza.getDate()).padStart(2, '0') + '/' +
                 String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
                 dataDecorrenza.getFullYear()
+
             //! purtroppo il componente non è trovabile agevolmente al momento
             cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > nx-icon').click()
-            cy.get('nx-formfield').first().click().clear().wait(500).type(formattedDataDecorrenza).type('{enter}')
+            cy.get('nx-formfield').first().click().clear()
+            cy.wait(700)
+            cy.get('nx-formfield').first().click().type(formattedDataDecorrenza).click()
 
             cy.wait('@getMotor', { timeout: 60000 })
 
@@ -952,6 +955,8 @@ class TenutaTariffa {
             var rcaLabel
             if (currentCase.Settore == 6 || currentCase.Settore == 7)
                 rcaLabel = "RCA - PREMIO FISSO UNIFICATA"
+            else if (currentCase.Settore == 3)
+                rcaLabel = "RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA"
             else
                 rcaLabel = "RCA - BONUS MALUS"
 
