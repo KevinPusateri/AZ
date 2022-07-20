@@ -135,7 +135,7 @@ const LinksOnEmettiPolizza = {
         if (!keys.FlotteConvenzioniEnabled || Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.FLOTTE_E_CONVENZIONI
         if (!keys.PreventivoAnonimoVitaenabled) delete this.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI
         if (!keys.MiniflotteEnabled) delete this.MINIFLOTTE
-        if (!keys.TrattativeAutoCorporateEnabled || Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.TRATTATIVE_AUTO_CORPORATE
+        if (!keys.TrattativeAutoCorporateEnabled) delete this.TRATTATIVE_AUTO_CORPORATE
         if (!keys.SAFE_DRIVE_AUTOVETTURE) delete this.SAFE_DRIVE_AUTOVETTURE
     }
 }
@@ -687,6 +687,7 @@ class Sales {
             })
         } else
             cy.get('div[class^="card-container"').should('be.visible').find('lib-da-link').each(($link, i) => {
+                debugger
                 expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
             })
     }
