@@ -1159,10 +1159,7 @@ class TenutaTariffa {
             cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > nx-icon').click()
             cy.get('nx-formfield').first().click().clear()
             cy.wait(700)
-            cy.get('nx-formfield').first().click().type(formattedDataDecorrenza)
-            cy.wait(700)
-            cy.get('nx-formfield').first().type('{enter}')
-
+            cy.get('nx-formfield').first().click().type(formattedDataDecorrenza).click()
 
             cy.wait('@getMotor', { timeout: 60000 })
 
@@ -1216,14 +1213,18 @@ class TenutaTariffa {
             if (!Cypress.env('isAviva')) {
                 //Incendio senza scoperto
                 //? se non recupera il valore a catalogo, viene fuori solo l'etichetta 'Incendio'
+                let incendioSenzaScoperto = false
                 cy.get('@iframe').then((iframe) => {
                     if (iframe.find(':contains("Incendio senza scoperto")').length > 0) {
                         cy.contains("Incendio senza scoperto").parent('div').parent('div').within(() => {
                             cy.get('nx-checkbox').click()
-                            cy.get('nx-spinner').should('not.be.visible')
+                            incendioSenzaScoperto = true
                         })
                     }
                 })
+
+                if (incendioSenzaScoperto)
+                    cy.get('nx-spinner').should('not.be.visible')
 
                 //Assistenza Auto
                 cy.wait(5000)
