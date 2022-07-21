@@ -106,11 +106,6 @@ class TenutaTariffa {
                     cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 })
             }
-            else {
-                //Andiamo a fare focus su Totale riduzione ARD
-                cy.contains("Riduzione totale sul premio ARD").should('exist').click()
-                cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-            }
         })
     }
 
