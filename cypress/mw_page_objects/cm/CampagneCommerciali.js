@@ -62,6 +62,18 @@ const Filtro = {
     LINEA_BUSINESS: 'Linea di business',
     SORGENTE_DATI: 'Sorgente dati'
 }
+
+/**
+ * Enum Valore Filtri
+ * @readonly
+ * @enum {Object}
+ * @private
+ */
+const ValoreFiltro = {
+    TIPOLOGIA_CAMPAGNA: {
+        ALTRE_INIZIATIVE: 'Altre iniziative'
+    }
+}
 //#endregion
 
 /**
@@ -77,6 +89,14 @@ class CampagneCommerciali {
      */
     static get FILTRO() {
         return Filtro
+    }
+
+    /**
+     * Funzione che ritorna i tipi di filtri
+     * @returns {ValoreFiltro} valore filtro
+     */
+    static get VALORE_FILTRO() {
+        return ValoreFiltro
     }
 
     /**
@@ -132,7 +152,7 @@ class CampagneCommerciali {
             cy.contains("Controlla i risultati delle vendite").should('exist').and('be.visible').click()
 
             waitCheckGQL('gqlCampaignsMonitoringTableData')
-            waitCheckGQL('gqlCampaignsMonitoring')
+            //waitCheckGQL('gqlCampaignsMonitoring')
             waitCheckGQL('gqlCampaignAgent')
 
             cy.contains("Risultati di vendita di campagne attive").should('exist').and('be.visible')
@@ -145,17 +165,20 @@ class CampagneCommerciali {
             cy.contains("Indietro").should('exist').and('be.visible').click()
 
             waitCheckGQL('gqlCampaignList')
-            waitCheckGQL('gqlCampaignsMonitoring')
+            //waitCheckGQL('gqlCampaignsMonitoring')
             waitCheckGQL('gqlCampaignAgent')
         })
     }
 
-    static filtri(filtro) {
+    static filtri(filtro, valoreFiltro = undefined) {
         getIFrame().within(() => {
             cy.contains(filtro).should('exist').parent().parent().find('nx-dropdown').click()
 
-            //clicchiamo sull'ultima voce disponible
-            cy.get('nx-dropdown-item:visible').last().click()
+            if (valoreFiltro === undefined)
+                //clicchiamo sull'ultima voce disponible
+                cy.get('nx-dropdown-item:visible').last().click()
+            else
+                cy.get(`nx-dropdown-item:contains("${valoreFiltro}"):visible`).click()
         })
     }
 
@@ -179,17 +202,17 @@ class CampagneCommerciali {
             cy.contains('Vedi campagna').first().should('exist').click()
 
             waitCheckGQL('gqlCampaign')
-            waitCheckGQL('gqlTaskTable')
-            waitCheckGQL('gqlMassCommunicationOrderDetails')
+            //waitCheckGQL('gqlTaskTable')
+            //waitCheckGQL('gqlMassCommunicationOrderDetails')
             waitCheckGQL('gqlCampaignAgent')
-            waitCheckGQL('gqlCampaignsMonitoring')
+            //waitCheckGQL('gqlCampaignsMonitoring')
 
             cy.screenshot('Vedi Campagna', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             cy.contains("Indietro").should('exist').and('be.visible').click()
 
             waitCheckGQL('gqlCampaignList')
-            waitCheckGQL('gqlCampaignsMonitoring')
+            //waitCheckGQL('gqlCampaignsMonitoring')
             waitCheckGQL('gqlCampaignAgent')
         })
     }
@@ -286,14 +309,14 @@ class CampagneCommerciali {
     static visitCampaignManager() {
 
         gqlCampaing()
-        
+
         cy.visit(Common.getBaseUrl() + 'sales/campaign-manager', { responseTimeout: 31000 })
 
         waitCheckGQL('gqlCampaignUser')
         waitCheckGQL('gqlCampaignList')
         waitCheckGQL('gqlCampaignsMonitoring')
         waitCheckGQL('gqlCampaignAgent')
-        
+
         cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
     }
 }
