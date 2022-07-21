@@ -128,7 +128,7 @@ class TenutaTariffa {
             cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').clear().wait(500).type(caso.Targa).wait(1000)
 
             //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible')
+            cy.get('nx-spinner',{timeout: 120000}).should('not.be.visible')
             cy.wait(2000)
 
             //Data Nascita
@@ -204,11 +204,6 @@ class TenutaTariffa {
             cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').invoke('val').then(dataScadenza => {
                 let myDataScadenza = new Date(caso.Data_scadenza)
                 expect(dataScadenza).to.include(('0' + myDataScadenza.getDate()).slice(-2) + '/' + ('0' + (myDataScadenza.getMonth() + 1)).slice(-2) + '/' + myDataScadenza.getFullYear())
-            })
-
-            //Compagnia di Provenienza
-            cy.contains('COMPAGNIA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').find('span').should('be.visible').invoke('text').then(compProv => {
-                expect(compProv).to.include(caso.Compagnia_provenienza)
             })
         })
     }
