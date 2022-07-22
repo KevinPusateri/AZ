@@ -27,7 +27,6 @@ let insertedId
 //#endregion
 
 let nuovoClientePF
-
 //#region Before After
 before(() => {
   cy.getUserWinLogin().then(data => {
@@ -68,7 +67,7 @@ after(function () {
 
 describe('Matrix Web : Censimento Nuovo Cliente PF', {
   retries: {
-    runMode: 0,
+    runMode: 1,
     openMode: 0,
   }
 }, () => {
