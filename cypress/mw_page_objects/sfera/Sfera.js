@@ -475,6 +475,26 @@ const Filtri = {
         values: {
             VUOTO: "Vuoto",
         }
+    },
+    NUM_GG_PER_MO: {
+        key: "Num. Gg. Per. Mo.",
+        values: {
+            VUOTO: "Vuoto",
+            MORA_1: '1',
+            MORA_2: '2',
+            MORA_3: '3',
+            MORA_4: '4',
+            MORA_5: '5',
+            MORA_6: '6',
+            MORA_7: '7',
+            MORA_8: '8',
+            MORA_9: '9',
+            MORA_10: '10',
+            MORA_11: '11',
+            MORA_12: '12',
+            MORA_13: '13',
+            MORA_14: '14'
+        }
     }
 }
 
@@ -1394,7 +1414,7 @@ class Sfera {
      */
     static estrai(request = true) {
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
-        cy.contains('Estrai').should('exist').click()
+        cy.contains('Estrai').should('exist').and('be.visible').click()
 
         if (request)
             cy.wait('@estraiQuietanze', { timeout: 120000 })
@@ -1539,6 +1559,7 @@ class Sfera {
                             NGRA2013.avanti()
                             cy.wait(2000)
                             cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                            NGRA2013.home(true)
                         }
                     }
                     this.verificaAccessoSfera(false)
@@ -1801,7 +1822,7 @@ class Sfera {
                             // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                             // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                            // this.estrai()
+                            this.estrai()
                             this.verificaAccessoSfera(false)
 
                         }
@@ -1829,7 +1850,7 @@ class Sfera {
                             // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                             // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                            // this.estrai()
+                            this.estrai()
                             this.verificaAccessoSfera(false)
                         }
                     }
@@ -1856,7 +1877,7 @@ class Sfera {
                             // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                             // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                            // this.estrai()
+                            this.estrai()
                             this.verificaAccessoSfera(false)
 
                         }
@@ -2399,7 +2420,7 @@ class Sfera {
                     cy.get('button').contains(nameVista).click({ force: true }).wait(2000)
                 })
         })
-        cy.get('h2[nxheadline="subsection-medium"]').should('include.text', nameVista)
+        cy.get('h2[class="nx-font-weight-semibold"]').should('include.text', nameVista)
 
     }
 
@@ -2421,7 +2442,7 @@ class Sfera {
                     cy.get('button').contains(nameVista).click({ force: true }).wait(2000)
                 })
         })
-        cy.get('h2[nxheadline="subsection-medium"]').should('include.text', nameVista)
+        cy.get('h2[class="nx-font-weight-semibold"]').should('include.text', nameVista)
         cy.screenshot('Verifica Vista ' + nameVista, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     }
@@ -3392,13 +3413,6 @@ class Sfera {
         cy.intercept(estraiTotaleQuietanzeScartate).as('estraiTotaleQuietanzeScartate')
         switch (vista) {
             case VisteSuggerite.QUIETANZE_SCARTATE:
-                cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').should('be.visible').then((title) => {
-                    expect(title.text().trim()).to.include('Elementi')
-                    expect(title.text().trim()).to.include('Selezionati')
-                    expect(title.text().trim()).to.include('Data:')
-                    expect(title.text().trim()).to.include('Cluster:')
-                    expect(title.text().trim()).to.include('Fonti:')
-                })
                 cy.get('div[class="row-total-2 nx-grid__row"]').should('be.visible')
                     .then(contents => {
                         expect(contents.text().trim()).to.include(dataInizio)
@@ -3407,8 +3421,17 @@ class Sfera {
                         expect(contents.text().trim()).to.include('quietanzamento on-line in: Viste suggerite > Carico Mancante')
 
                     })
+                break
+            default:
+                cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').should('be.visible').then((title) => {
+                    expect(title.text().trim()).to.include('Elementi')
+                    expect(title.text().trim()).to.include('Selezionati')
+                    expect(title.text().trim()).to.include('Data:')
+                    expect(title.text().trim()).to.include('Cluster:')
+                    expect(title.text().trim()).to.include('Fonti:')
+                })
                 break;
-            default: throw new Error('Vista non presente')
+            // default: throw new Error('Vista non presente')
         }
     }
 

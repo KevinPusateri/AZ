@@ -43,7 +43,7 @@ export default class ListaAuto {
         WW745FF.marca = "VOLVO"
         WW745FF.modello = "C70 (2005-2013)"
         WW745FF.versione = "C70 2.4 20V 170 CV MOMENTUM (DAL 2005/09)"
-        WW745FF.dataImmatricolazione = "10/06/2022"
+        WW745FF.dataImmatricolazione = "20/07/2022"
         WW745FF.nPosti = "5"
 
         return WW745FF
@@ -56,7 +56,7 @@ export default class ListaAuto {
         ZZ841PP.marca = "AUDI"
         ZZ841PP.modello = "A4 5ª SERIE"
         ZZ841PP.versione = "A4 1.4 TFSI BUSINESS SPORT (DAL 2015/08)"
-        ZZ841PP.dataImmatricolazione = "10/06/2022"
+        ZZ841PP.dataImmatricolazione = "20/07/2022"
         ZZ841PP.nPosti = "5"
 
         return ZZ841PP
@@ -69,7 +69,7 @@ export default class ListaAuto {
         MM25896.marca = "PIAGGIO"
         MM25896.modello = "ZIP 125"
         MM25896.versione = "(VERS. 01-2001)"
-        MM25896.dataImmatricolazione = "10/06/2022"
+        MM25896.dataImmatricolazione = "20/07/2022"
         MM25896.nPosti = "2"
 
         return MM25896
@@ -82,7 +82,7 @@ export default class ListaAuto {
         WW745FF.marca = "VOLKSWAGEN"
         WW745FF.modello = "GOLF 8ª SERIE"
         WW745FF.versione = "GOLF 1.5 ETSI 150 CV EVO ACT DSG LIFE (DAL 2019/12)"
-        WW745FF.dataImmatricolazione = "10/06/2022"
+        WW745FF.dataImmatricolazione = "20/07/2022"
         WW745FF.nPosti = "5"
 
         return WW745FF

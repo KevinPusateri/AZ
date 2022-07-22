@@ -102,10 +102,9 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.STAMPA_QUIETANZE)
             Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
             Sfera.setDateEstrazione()
-            // Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.IN_LAVORAZIONE)
-            // Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.QUIETANZE_STAMPABILI, true)
             Sfera.estrai()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO).then((polizza) => {
+            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, true, null, null, null, true).then((polizza) => {
                 cy.log(`Stampa Senza Incasso effettuata su contratto ${polizza}`)
             })
         })
@@ -135,7 +134,7 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
             Sfera.estrai()
             Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-            Sfera.estrazioneReportExcel()
+            Sfera.estrazioneReportExcel(Sfera.COLUMNSTANDARD)
         })
 
         context('Verifica Rotella Gestione Colonne', () => {
@@ -165,6 +164,7 @@ if (!Cypress.env('isSecondWindow'))
         })
 
         it('Verifica Filtro Fonti e Filtro Agenzie Tutte Selezionate', options, function () {
+            Sfera.espandiPannello()
             Sfera.fontiAllSelezionati()
             Sfera.agenzieAllSelezionati()
         })
@@ -202,13 +202,13 @@ else
         it('Common', function () {
             // Verificare Cluster Motor Delta Premio Positivo e Negativo
             Sfera.setDateEstrazione()
-            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_NEGATIVO, true)
+            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_NEGATIVO, true, null, null, null, true)
             Sfera.espandiPannello()
-            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
+            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true, null, null, null, true)
 
             // Quietanzamento Vista Operativa - Gestisci colora riga : Assegna colore
             Sfera.setDateEstrazione()
-            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
+            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true, null, null, null, true)
             Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
             Sfera.assegnaColoreRandom()
 
@@ -221,12 +221,14 @@ else
             Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
             Sfera.setDateEstrazione()
             Sfera.estrai()
+            Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_710000)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO).then((polizza) => {
                 cy.log(`Stampa Senza Incasso effettuata su contratto ${polizza}`)
             })
 
             // Verifica Estrazione report excel
             Sfera.setDateEstrazione()
+            cy.wait(2000)
             Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
             Sfera.estrai()
             Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
@@ -260,6 +262,7 @@ else
             //? Incasso possibile da agenzia su cui si è entrati in seconda finestra
             Sfera.setDateEstrazione()
             Sfera.estrai()
+            Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_710000)
             Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
             Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
@@ -268,6 +271,7 @@ else
             //? Incasso possibile da agenzia su cui si è entrati in seconda finestra
             Sfera.setDateEstrazione()
             Sfera.estrai()
+            Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_710000)
             Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_32)
             Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
