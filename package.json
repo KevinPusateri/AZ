@@ -63,6 +63,7 @@
     "cypress:run:navigations_dash": "npm-run-all -s -c \"nav_backOffice -- {@}\" \"nav_burgerMenuClients -- {@}\" \"nav_mieInfo -- {@}\" \"nav_news -- {@}\" \"nav_numbers -- {@}\" -- --record --key %npm_package_config_cypressDashKey%",
     "cypress:run:navigations_burger_backoffice_dash": ".\\node_modules\\.bin\\cypress run --spec cypress/integration/navigationBurger/mw_navigation_burgerMenuBackOffice.js --env usingDash=true --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/burgerMenuBackOffice, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web Burger Menu BackOffice'\" --record --key %npm_package_config_cypressDashKey%",
     "cypress:run:ricerca_dash": ".\\node_modules\\.bin\\cypress run --spec cypress/integration/ricerca/*.js --env usingDash=true --record --key %npm_package_config_cypressDashKey%",
+    "cypress:run:contiCorrenti_dash": ".\\node_modules\\.bin\\cypress run --spec cypress/integration/clients/mw_conti_correnti.js --env usingDash=true --record --key %npm_package_config_cypressDashKey%",
     "cypress:run:censimento_dash": ".\\node_modules\\.bin\\cypress run --spec cypress/integration/clients/mw_censimento_pf.js --env usingDash=true --record --key %npm_package_config_cypressDashKey%",
     "cypress:run:censimenti_dash": "npm-run-all -s -c \"censimento_pf -- {@}\" -- --record --key %npm_package_config_cypressDashKey%",
     "cypress:run:prova": "npm-run-all -s -c \"f:nav_backOffice -- {@}\" -- --record --key %npm_package_config_cypressDashKey% --parallel ",

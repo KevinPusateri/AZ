@@ -504,16 +504,6 @@ class LandingRicerca {
         cy.wait(3000).get('.icon').find('[name="filter"]').click()
         cy.contains('CLIENTE').click()
 
-        // //Verifica Stato
-        // cy.get('contains("Effettivo"):visible')
-        // cy.get('.filter-group').find('span:contains("Potenziale"):visible')
-        // cy.get('.filter-group').find('span:contains("Cessato"):visible')
-
-        // //Verifica Tipo
-        // cy.get('.filter-group').find('span:contains("Persona fisica"):visible')
-        // cy.get('.filter-group').find('span:contains("Persona giuridica"):visible')
-
-        //Effettuaimo il choose in base a statoCliente
         //Filtriamo la ricerca in base a statoCliente
         cy.contains('STATO').click()
         cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {

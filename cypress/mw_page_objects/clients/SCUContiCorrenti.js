@@ -74,10 +74,16 @@ class SCUContiCorrenti {
      * @param {string} contoCorrente - Object contoCorrente
      */
     static checkContoCorrenteIsNotPresent(contoCorrente) {
-        cy.get('app-client-bank-accounts').find('app-client-bank-account-card').then((list) => {
-            cy.screenshot('Verifica Conto corrente non presente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-            expect(list.text()).to.not.include(contoCorrente.iban)
+        cy.get('app-client-bank-accounts').then(($list) => {
+            const conto = $list.find(':contains("Non sono presenti conti correnti")').is(':visible')
+            if (!conto)
+                expect($list.text()).to.not.include(contoCorrente.iban)
+            else{
+                assert.isTrue(true,'Iban Eliminato')
+                expect($list.text()).to.not.include(contoCorrente.iban)
+            }
         })
+        cy.screenshot('Verifica Conto corrente non presente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     static checkContoCorrenteModificato(conto) {
@@ -158,7 +164,7 @@ class SCUContiCorrenti {
 
         cy.get('nx-modal-container').within((container) => {
             cy.wrap(container).should('contain.text', 'Elimina conto corrente')
-            cy.contains('Conferma').click()
+            cy.contains('Conferma').click().wait(3000)
         })
     }
     static checkCodiceFISCALE(vat) {
