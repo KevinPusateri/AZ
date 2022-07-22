@@ -289,6 +289,44 @@ class LandingRicerca {
     }
 
     /**
+     * Effettua la ricerca e seleziona un cliente PF attraverso il suo cognome
+     * @param {string} denominazione da ricerca
+     */
+    static searchAndClickClientePG(denominazione) {
+        //Attende il caricamento della scheda cliente
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'client'
+            }
+        });
+
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('searchClient')) {
+                req.alias = 'gqlSearchClient'
+            }
+        });
+
+        //Filtriamo la ricerca in base a tipoCliente
+        cy.get('.icon').find('[name="filter"]').click()
+        cy.contains('CLIENTE').click()
+        cy.contains('Persona fisica').click()
+
+        cy.contains('APPLICA').click()
+        cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
+
+        // cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
+
+        cy.get('lib-scrollable-container').contains(denominazione.toUpperCase()).then((card) => {
+            if (card.length === 1)
+                cy.wrap(card).click()
+        })
+        //Verifica se ci sono problemi nel retrive del cliente per permessi
+        cy.wait('@client', { requestTimeout: 30000 })
+            .its('response.body.data.client')
+            .should('not.be.null')
+    }
+
+    /**
      * Clicca il risultato della ricerca attraverso il suo nome completo Persona Fisica
      * @param {string} fullName 
      */
