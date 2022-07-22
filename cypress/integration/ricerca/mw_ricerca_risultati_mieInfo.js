@@ -62,8 +62,6 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
         } else
             LandingRicerca.checkNotExistMieInfo()
         LandingRicerca.checkSuggestedLinks('incasso')
-
-
     })
 
     it('Verifica Ricerca Fastquote', function () {
