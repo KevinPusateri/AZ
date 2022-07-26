@@ -1,5 +1,5 @@
 {
-    "1" : {
+    "1": {
         "AUTO_APP_P040": {
             "version": 20201016
         },
@@ -28,10 +28,76 @@
             "version": 20220624
         },
         "COD_CONTRATTI_FAMIGLIARI": {
-            "version": 20210520
+            "version": 20220722
         },
         "COD_SUBAGENTE_FONTE": {
             "version": 20210715
+        },
+        "NUM_POL_PREVIDENZIALE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_PREVIDENZIALE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_PROTEZIONE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_PROTEZIONE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_INVESTIMENTO_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_INVESTIMENTO_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_COLLETTIVE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_COLLETTIVE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_FONDI_PENSIONE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_FONDI_PENSIONE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_CONTO_CORRENTE_CONV": {
+            "version": 20220722
+        },
+        "NUM_CONTO_CORRENTE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_DOSSIER_TITOLI_CONV": {
+            "version": 20220722
+        },
+        "NUM_DOSSIER_TITOLI_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_BANCARI_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_BANCARI_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_SICAV_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_SICAV_NON_CONV": {
+            "version": 20220722
+        },
+        "FLG_CLIENTE_BANCA_CONV": {
+            "version": 20220722
+        },
+        "FLG_CLIENTE_BANCA_NON_CONV": {
+            "version": 20220722
+        },
+        "FLG_PROMOT_FIN_CONV": {
+            "version": 20220722
+        },
+        "FLG_PROMOT_FIN_NON_CONV": {
+            "version": 20220722
         }
     },
     "2": {
@@ -54,10 +120,76 @@
             "version": 20220624
         },
         "COD_CONTRATTI_FAMIGLIARI": {
-            "version": 20210520
+            "version": 20220722
         },
         "COD_SUBAGENTE_FONTE": {
             "version": 20210715
+        },
+        "NUM_POL_PREVIDENZIALE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_PREVIDENZIALE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_PROTEZIONE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_PROTEZIONE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_INVESTIMENTO_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_INVESTIMENTO_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_COLLETTIVE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_COLLETTIVE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_FONDI_PENSIONE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_FONDI_PENSIONE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_CONTO_CORRENTE_CONV": {
+            "version": 20220722
+        },
+        "NUM_CONTO_CORRENTE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_DOSSIER_TITOLI_CONV": {
+            "version": 20220722
+        },
+        "NUM_DOSSIER_TITOLI_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_BANCARI_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_BANCARI_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_SICAV_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_SICAV_NON_CONV": {
+            "version": 20220722
+        },
+        "FLG_CLIENTE_BANCA_CONV": {
+            "version": 20220722
+        },
+        "FLG_CLIENTE_BANCA_NON_CONV": {
+            "version": 20220722
+        },
+        "FLG_PROMOT_FIN_CONV": {
+            "version": 20220722
+        },
+        "FLG_PROMOT_FIN_NON_CONV": {
+            "version": 20220722
         }
     },
     "3": {
@@ -77,10 +209,76 @@
             "version": 20220624
         },
         "COD_CONTRATTI_FAMIGLIARI": {
-            "version": 20210520
+            "version": 20220722
         },
         "COD_SUBAGENTE_FONTE": {
             "version": 20210715
+        },
+        "NUM_POL_PREVIDENZIALE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_PREVIDENZIALE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_PROTEZIONE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_PROTEZIONE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_INVESTIMENTO_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_INVESTIMENTO_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_COLLETTIVE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_COLLETTIVE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_FONDI_PENSIONE_CONV": {
+            "version": 20220722
+        },
+        "NUM_POL_FONDI_PENSIONE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_CONTO_CORRENTE_CONV": {
+            "version": 20220722
+        },
+        "NUM_CONTO_CORRENTE_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_DOSSIER_TITOLI_CONV": {
+            "version": 20220722
+        },
+        "NUM_DOSSIER_TITOLI_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_BANCARI_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_BANCARI_NON_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_SICAV_CONV": {
+            "version": 20220722
+        },
+        "NUM_FONDI_SICAV_NON_CONV": {
+            "version": 20220722
+        },
+        "FLG_CLIENTE_BANCA_CONV": {
+            "version": 20220722
+        },
+        "FLG_CLIENTE_BANCA_NON_CONV": {
+            "version": 20220722
+        },
+        "FLG_PROMOT_FIN_CONV": {
+            "version": 20220722
+        },
+        "FLG_PROMOT_FIN_NON_CONV": {
+            "version": 20220722
         }
     }
 }
