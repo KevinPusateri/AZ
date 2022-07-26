@@ -41,6 +41,9 @@ class SCUContatti {
           // Telefono: numero random
           this.addPhone(contatto);
 
+          getSCU().find('h3:contains("Aggiungi Contatto")').click()
+          cy.screenshot('Inserimento Contatto Fisso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
           //click salva
           getSCU().find('#submit:contains("Salva")').click().wait(8000);
           resolve(contatto);

@@ -83,7 +83,6 @@ const LinkUtilita = {
     MONITOR_SCORING_AZ_BONUS_DRIVE: 'Monitor Scoring AZ Bonus Drive',
     GESTIONE_CERTIFICATI: 'Gestione certificati',
     deleteKey: function (keys) {
-        debugger
         if (!keys.interrogazioniCentralizzateEnabled) delete this.INTERROGAZIONI_CENTRALIZZATE
         if (!keys.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS) delete this.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS
         if (!keys.MONITOR_SCORING_AZ_BONUS_DRIVE) delete this.MONITOR_SCORING_AZ_BONUS_DRIVE
