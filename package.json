@@ -36,7 +36,7 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
-    "cypress": "^9.6.0",
+    "cypress": "^10.3.1",
     "cypress-iframe": "^1.0.1",
     "cypress-mochawesome-reporter": "^2.3.0",
     "cypress-plugin-tab": "^1.0.5",
@@ -55,7 +55,7 @@
     "rc_ris_mieInfo": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati_mieInfo.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati_Mie_Info.xml,toConsole=true\"",
     "rc_risultati": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca_risultati.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca_Risultati.xml,toConsole=true\"",
     "ricerca": "./node_modules/.bin/cypress run --quiet --spec cypress/integration/ricerca/mw_ricerca.js --reporter junit --reporter-options \"mochaFile=results/Report_Matrix_Web_Ricerca.xml,toConsole=true\"",
-    "cypress:open": "./node_modules/.bin/cypress open",
+    "cypress:open": "./node_modules/cypress/bin/cypress open",
     "cypress:run:navigations": "npm-run-all -s -c nav_backOffice nav_clients nav_homePage nav_mieInfo nav_news nav_numbers nav_sales",
     "cypress:run:ricerca": "npm-run-all -s -c rc_classica rc_ris_clients rc_ris_mieInfo rc_risultati ricerca",
     "cypress:run:censimenti": "npm-run-all -s -c censimento_pf censimento_pg",
