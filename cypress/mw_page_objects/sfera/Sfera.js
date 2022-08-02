@@ -3716,17 +3716,6 @@ class Sfera {
                     expect(someText).to.include(dataInizio)
                     expect(someText).to.include(type)
                 })
-            cy.get('nx-modal-container').should('be.visible').within(() => {
-                switch (type) {
-                    case TipoAvviso.AVVISI_CARTACEI:
-                        break;
-                    case TipoAvviso.EMAIL:
-                        break;
-                    case TipoAvviso.SMS:
-                        break;
-                    default: throw new Error('Tipo avviso Errato')
-                }
-            })
         }
     }
 }
