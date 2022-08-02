@@ -73,7 +73,7 @@ after(function () {
 
 describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
-    it.only('Verifica i link da Burger Menu', function () {
+    it('Verifica i link da Burger Menu', function () {
         TopBar.clickClients()
         BurgerMenuClients.checkExistLinks(keys)
     });
