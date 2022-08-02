@@ -178,7 +178,7 @@ class IncassoDA {
         }
     }
 
-    static SelezionaIncassa() {
+    static SelezionaIncassa(typeIncasso = 'Assegno') {
         cy.intercept({
             method: 'POST',
             url: /Incassa/
@@ -187,8 +187,10 @@ class IncassoDA {
         cy.wait(5000)
         // Seleziono il metodo di pagamento
         cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').should('be.visible').click().wait(1000)
+        let regexKeyType = new RegExp('\^' + typeIncasso + '\$');
+
         cy.get('#TabIncassoModPagCombo_listbox').should('be.visible')
-            .find('li').contains(/^Assegno$/).click()
+            .find('li').contains(regexKeyType).click()
 
         //Conferma incasso
         cy.screenshot('Conferma incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -197,18 +199,23 @@ class IncassoDA {
         cy.wait('@incassa', { timeout: 120000 })
     }
 
-    static TerminaIncasso() {
+    static TerminaIncasso(TitoloIncassoByAnnullamento = false) {
 
         // Verifica incasso confermato
-        cy.get('h2[class="page-title"]').should('be.visible').then(() => {
+        cy.get('div[class="container"]').should('be.visible').then(() => {
             cy.wait(5000)
             cy.screenshot('Verifica incasso conferrmato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             cy.wait(5000)
         })
+        if (!TitoloIncassoByAnnullamento) {
+            cy.get('img[src="css/ultra/Images/Shape.png"]').should('be.visible')
+            cy.get('input[value="CHIUDI"]').should('be.visible').click()
+        }
+        else {
+            cy.get('img[src="Images/iconImagesBlue/confirm_green.gif"]').should('be.visible')
+            cy.get('input[value="> CHIUDI"]').should('be.visible').click()
+        }
 
-        cy.get('img[src="css/ultra/Images/Shape.png"]').should('be.visible')
-
-        cy.get('input[value="CHIUDI"]').click()
     }
 }
 

@@ -4,6 +4,7 @@ import Common from "../common/Common";
 import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 import LandingRicerca from "../ricerca/LandingRicerca";
 import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
+import IncassoDA from "../da/IncassoDA";
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -392,6 +393,8 @@ class Portafoglio {
             url: '**/Auto/**'
         }).as('postAuto');
 
+        cy.intercept(/cdnjs.cloudflare.com/, 'ignore').as('cdnjs')
+
         Common.canaleFromPopup()
         cy.wait('@postAuto', { timeout: 120000 });
 
@@ -407,12 +410,15 @@ class Portafoglio {
      */
     static checkPolizzaIsNotPresentOnPolizzeAttive(numberPolizza) {
 
-        cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
-
-        cy.get('@polizza').should('be.visible')
-        cy.contains('DETTAGLIO ANAGRAFICA').as('dettaglio')
-        cy.contains('PORTAFOGLIO').as('portafoglio')
-
+        cy.get('app-wallet-active-contracts').should('be.visible').then(($wallet) => {
+            const checkCard = $wallet.find('lib-da-link[calldaname="GENERIC-DETAILS"]').is(':visible')
+            if (checkCard) {
+                cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').as('polizza')
+                cy.get('@polizza').should('be.visible')
+                cy.contains('DETTAGLIO ANAGRAFICA').as('dettaglio')
+                cy.contains('PORTAFOGLIO').as('portafoglio')
+            }
+        })
         var check = true
         const loop = () => {
             var loopCheck = false
@@ -594,14 +600,17 @@ class Portafoglio {
                 if (checkStatus) {
                     startTime()
                     cy.get('@polizza').contains(numberPolizza).first()
-                        .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').should('be.visible').within(() => {
-
-                            cy.get('nx-badge').should('contain.text', 'Non in vigore')
-
-                            cy.get('nx-badge').invoke('attr', 'aria-describedby').then(($described) => {
-                                cy.document().its('body').find('#cdk-describedby-message-container').find('#' + $described)
-                                    .should('include.text', messaggio)
-                            })
+                        .parents('lib-da-link[calldaname="GENERIC-DETAILS"]').should('be.visible').within(($card) => {
+                            const checkBadge = $card.find('nx-badge:contains("TITOLI DA INCASSARE")').is(':visible')
+                            if (checkBadge)
+                                this.Incasso()
+                            else {
+                                cy.get('nx-badge').should('contain.text', 'Non in vigore')
+                                cy.get('nx-badge').invoke('attr', 'aria-describedby').then(($described) => {
+                                    cy.document().its('body').find('#cdk-describedby-message-container').find('#' + $described)
+                                        .should('include.text', messaggio)
+                                })
+                            }
                         })
 
                     loopCheck = false
@@ -648,6 +657,31 @@ class Portafoglio {
         }
     }
 
+    static Incasso() {
+        cy.contains('Incassa').click()
+        IncassoDA.accessoMezziPagam()
+
+        cy.wrap(Cypress.$('html')).within(() => {
+            cy.getIFrame()
+            cy.get('@iframe').should('be.visible').within(() => {
+                IncassoDA.ClickIncassa()
+            })
+        })
+        cy.wait(5000)
+        cy.wrap(Cypress.$('html')).within(() => {
+            cy.getIFrame()
+            cy.get('@iframe').should('be.visible').within(() => {
+                IncassoDA.SelezionaIncassa('Contanti')
+            })
+        })
+        cy.wait(5000)
+        cy.wrap(Cypress.$('html')).within(() => {
+            cy.getIFrame()
+            cy.get('@iframe').should('be.visible').within(() => {
+                IncassoDA.TerminaIncasso(true)
+            })
+        })
+    }
 
     /**
      * Verifica che la poliza sia in stato di "Sospesa"
