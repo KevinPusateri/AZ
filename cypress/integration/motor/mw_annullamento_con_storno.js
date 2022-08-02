@@ -106,7 +106,10 @@ describe('Matrix Web : Annullamento + Storno Annullamento', function () {
     it('Verifica che sulla card di polizza ci sia l’etichetta NON IN VIGORE ' +
         'con il tooltip del motivo di annullamento: “4 Vendita/conto vendita”', function () {
             Portafoglio.clickSubTab('Non in vigore')
-            Portafoglio.checkPolizzaIsPresentOnNonInVigore(numberPolizza)
+            Portafoglio.checkPolizzaIsPresentOnNonInVigore(numberPolizza) 
+            SintesiCliente.visitUrlClient(currentCustomerNumber, false)
+            Portafoglio.clickTabPortafoglio()
+            Portafoglio.clickSubTab('Non in vigore')
         })
 
 

@@ -1229,7 +1229,10 @@ class SintesiCliente {
             method: 'POST',
             url: '**/clients/**'
         }).as('pageClient');
-
+        cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
+        cy.intercept(/launch-*/, 'ignore').as('launchStaging')
+        cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
+        cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
         if (fullUrl)
             cy.visit(param)
         else {
@@ -1342,7 +1345,7 @@ class SintesiCliente {
                     return win.open.wrappedMethod.call(win, url, '_self')
                 }).as('open')
             })
-        cy.contains('Report Profilo Vita').should('exist').and('be.visible').click()
+            cy.contains('Report Profilo Vita').should('exist').and('be.visible').click()
 
 
             //Finestra di disambiguazione
