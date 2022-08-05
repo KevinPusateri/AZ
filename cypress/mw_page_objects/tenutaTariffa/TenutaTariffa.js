@@ -123,7 +123,7 @@ class TenutaTariffa {
             cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').clear().wait(500).type(caso.Targa).wait(1000)
 
             //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner',{timeout: 120000}).should('not.be.visible')
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
             cy.wait(2000)
 
             //Data Nascita
@@ -263,9 +263,9 @@ class TenutaTariffa {
 
             //Targa
             if (currentCase.Targa !== '') {
-                cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').should('exist').and('be.visible').click().wait(2000)
-                cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').clear().wait(2000)
-                cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').type(currentCase.Targa).wait(2000)
+                cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').should('exist').and('be.visible').click().wait(1000)
+                cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').clear().wait(2000)
+                cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').type(currentCase.Targa).wait(2000)
             }
 
             //Checkbox informativa
@@ -888,18 +888,29 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
-            //Data Decorrenza
             let dataDecorrenza = calcolaDataDecorrenza(currentCase)
             let formattedDataDecorrenza = String(dataDecorrenza.getDate()).padStart(2, '0') + '/' +
                 String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
                 dataDecorrenza.getFullYear()
 
-            //! purtroppo il componente non è trovabile agevolmente al momento
-            cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > nx-icon').click()
-            cy.get('nx-formfield').first().click().clear()
-            cy.wait(700)
-            cy.get('nx-formfield').first().click().type(formattedDataDecorrenza).click()
+            cy.get('nx-icon[name="pen"]').first().click().wait(700)
+            cy.get('nx-icon[name="calendar"]').first().click()
+            cy.contains('Scegli mese e anno').should('be.visible').click()
 
+            //Selezioniamo l'anno
+            cy.get('.nx-calendar-table').within(() =>{
+                cy.contains(dataDecorrenza.getFullYear()).click()
+            })
+
+            //Selezioniamo il mese
+            cy.get('.nx-calendar-table').within(() =>{
+                cy.contains(dataDecorrenza.toLocaleString('default',{month: 'short'})).click()
+            })
+
+            //Selezioniamo il giorno
+            cy.get('.nx-calendar-table').within(() =>{
+                cy.contains(String(dataDecorrenza.getDate())).click()
+            })
             cy.wait('@getMotor', { timeout: 60000 })
 
             //Attendiamo che il caricamento non sia più visibile
