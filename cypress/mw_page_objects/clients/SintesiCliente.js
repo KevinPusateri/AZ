@@ -1229,7 +1229,10 @@ class SintesiCliente {
             method: 'POST',
             url: '**/clients/**'
         }).as('pageClient');
-
+        cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
+        cy.intercept(/launch-*/, 'ignore').as('launchStaging')
+        cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
+        cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
         if (fullUrl)
             cy.visit(param)
         else {
@@ -1325,15 +1328,13 @@ class SintesiCliente {
      * @param {string} agenzia in fase di disambiguazione da cliccare
      * @param {boolean} [erroMessage] default false, se a true controlla prezenza errore
      */
-    static emettiReportProfiloVita(agenzia, errorMessage = false) {
+    static emettiReportProfiloVita(agenzia = undefined, errorMessage = false) {
         cy.intercept('POST', '**/graphql', (req) => {
             aliasQuery(req, 'clientReportLifePdf')
         })
 
         debugger
         cy.get('nx-icon[aria-label="Open menu"]').click().wait(1000)
-        cy.contains('Report Profilo Vita').should('exist').and('be.visible').click()
-
         //NON DEVE COMPARIRE L'ERRORE
         if (!errorMessage) {
             cy.window().then(win => {
@@ -1344,9 +1345,12 @@ class SintesiCliente {
                     return win.open.wrappedMethod.call(win, url, '_self')
                 }).as('open')
             })
+            cy.contains('Report Profilo Vita').should('exist').and('be.visible').click()
+
 
             //Finestra di disambiguazione
-            cy.get('nx-modal-container').find('.agency-row').contains(agenzia).first().click().wait(3000)
+            if (agenzia !== undefined)
+                cy.get('nx-modal-container').find('.agency-row').contains(agenzia).first().click().wait(3000)
             //cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
             cy.get('@open')
 

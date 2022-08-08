@@ -99,16 +99,11 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
 
-            //Andiamo a fare focus su Totale riduzione ARD
-            cy.contains("Riduzione totale sul premio ARD").should('exist').click()
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
             //Per MACROLESIONI, verifico la Riduzione ARD
             if (currentCase.Descrizione_Settore === 'MACROLESIONI') {
-                cy.contains("Totale riduzione ARD").parent().parent().find('div[nxcol="2"]').within(() => {
-                    cy.get('strong').invoke('text').then((riduzioneARD) => {
-                        expect(riduzioneARD).contains(currentCase.Riduzione_ARD)
-                    })
+                cy.get('.riduzione-table-header').last().find('p').last().invoke('text').then((riduzioneARD) => {
+                    expect(riduzioneARD).contains(currentCase.Riduzione_ARD)
+                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 })
             }
         })
@@ -122,11 +117,13 @@ class TenutaTariffa {
             //? al momento lavoriamo direttamente con gli Autoveicoli quindi non serve gestire questo dropdown che by default è selezionato auto
 
             //Targa
-            cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
-            cy.get('input[aria-label="Targa"]').clear().wait(500).type(caso.Targa).wait(1000)
+            // cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
+            // cy.get('input[aria-label="Targa"]').clear().wait(500).type(caso.Targa).wait(1000)
+            cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').should('exist').and('be.visible').click().wait(1000)
+            cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').clear().wait(500).type(caso.Targa).wait(1000)
 
             //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible')
+            cy.get('nx-spinner',{timeout: 120000}).should('not.be.visible')
             cy.wait(2000)
 
             //Data Nascita
@@ -138,7 +135,8 @@ class TenutaTariffa {
             cy.get('nx-spinner').should('not.be.visible')
             cy.wait(1000)
 
-            cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
+            // cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
+            cy.get('label[id="nx-checkbox-0-label"]>span').eq(0).click({ force: true })
 
             cy.screenshot('Dati Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
@@ -194,18 +192,13 @@ class TenutaTariffa {
             //Controlliamo i vari dati in Provenienza
             cy.contains('Provenienza').should('be.visible').click({ force: true }).wait(1000)
             cy.screenshot('Provenienza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-            cy.contains('Modifica').should('be.visible').click().wait(1000)
+            cy.contains('MODIFICA').should('be.visible').click().wait(1000)
             cy.get('nx-spinner').should('not.be.visible')
 
             //Scadenza Precedente Contratto
             cy.get('input[nxdisplayformat="DD/MM/YYYY"]').last().should('exist').and('be.visible').invoke('val').then(dataScadenza => {
                 let myDataScadenza = new Date(caso.Data_scadenza)
                 expect(dataScadenza).to.include(('0' + myDataScadenza.getDate()).slice(-2) + '/' + ('0' + (myDataScadenza.getMonth() + 1)).slice(-2) + '/' + myDataScadenza.getFullYear())
-            })
-
-            //Compagnia di Provenienza
-            cy.contains('COMPAGNIA DI PROVENIENZA').parents('div[class="nx-formfield__input"]').find('nx-dropdown').find('span').should('be.visible').invoke('text').then(compProv => {
-                expect(compProv).to.include(caso.Compagnia_provenienza)
             })
         })
     }
@@ -270,8 +263,9 @@ class TenutaTariffa {
 
             //Targa
             if (currentCase.Targa !== '') {
-                cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
-                cy.get('input[aria-label="Targa"]').clear().wait(500).type(currentCase.Targa).wait(500)
+                cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').should('exist').and('be.visible').click().wait(2000)
+                cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').clear().wait(2000)
+                cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').type(currentCase.Targa).wait(2000)
             }
 
             //Checkbox informativa
@@ -399,36 +393,6 @@ class TenutaTariffa {
                 cy.contains('Ho capito').should('exist').and('be.visible').click()
             }
 
-            //Data Immatricolazione
-            //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
-            //Differenziamo se Prima Immatricolazione è calcolata in automatico oppure è in formato data
-            let dataPrimaImmatricolazione
-            let formattedPrimaImmatricolazione
-            if (!currentCase.Prima_Immatricolazione.includes('ann'))
-                formattedPrimaImmatricolazione = currentCase.Prima_Immatricolazione
-            else {
-                if (currentCase.Prima_Immatricolazione.split(' ')[1].includes('ann')) {
-
-                    let dataDecorrenza = calcolaDataDecorrenza(currentCase)
-                    let formattedDataDecorrenza = dataDecorrenza.getFullYear() + '-' +
-                        String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '-' +
-                        String(dataDecorrenza.getDate()).padStart(2, '0')
-
-                    formattedPrimaImmatricolazione = moment(formattedDataDecorrenza, 'YYYY-MM-DD').subtract(currentCase.Prima_Immatricolazione.split(' ')[0], 'years').subtract('10', 'days').format('DD/MM/YYYY')
-
-                }
-            }
-
-            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').clear().wait(500)
-            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').type(formattedPrimaImmatricolazione).type('{enter}').wait(500)
-
-            cy.wait('@getMotor', { timeout: 30000 })
-
-            cy.wait(2000)
-            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').invoke('val').then(currentDataPrimaImmatricolazione => {
-                expect(currentDataPrimaImmatricolazione).to.include(formattedPrimaImmatricolazione)
-            })
-
             //Verifichiamo se Veicolo Storico
             if (currentCase.Descrizione_Settore.includes("STORICO")) {
                 cy.get('nx-checkbox[formcontrolname="veicoloStorico"]').should('exist').and('be.visible').click()
@@ -475,6 +439,36 @@ class TenutaTariffa {
                         expect(isNotEmpty).to.be.true
                     })
                 }
+            })
+
+            //Data Immatricolazione
+            //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
+            //Differenziamo se Prima Immatricolazione è calcolata in automatico oppure è in formato data
+            let dataPrimaImmatricolazione
+            let formattedPrimaImmatricolazione
+            if (!currentCase.Prima_Immatricolazione.includes('ann'))
+                formattedPrimaImmatricolazione = currentCase.Prima_Immatricolazione
+            else {
+                if (currentCase.Prima_Immatricolazione.split(' ')[1].includes('ann')) {
+
+                    let dataDecorrenza = calcolaDataDecorrenza(currentCase)
+                    let formattedDataDecorrenza = dataDecorrenza.getFullYear() + '-' +
+                        String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(dataDecorrenza.getDate()).padStart(2, '0')
+
+                    formattedPrimaImmatricolazione = moment(formattedDataDecorrenza, 'YYYY-MM-DD').subtract(currentCase.Prima_Immatricolazione.split(' ')[0], 'years').subtract('10', 'days').format('DD/MM/YYYY')
+
+                }
+            }
+
+            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').clear().wait(500)
+            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').type(formattedPrimaImmatricolazione).type('{enter}').wait(500)
+
+            cy.wait('@getMotor', { timeout: 30000 })
+
+            cy.wait(2000)
+            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').invoke('val').then(currentDataPrimaImmatricolazione => {
+                expect(currentDataPrimaImmatricolazione).to.include(formattedPrimaImmatricolazione)
             })
 
             //? La differenza tra Allianz e AVIVA è che AVIVA per i veicoli senza catalogo ha la drop down con le marche, mentre Allianz ha solo la textbox.
@@ -899,9 +893,12 @@ class TenutaTariffa {
             let formattedDataDecorrenza = String(dataDecorrenza.getDate()).padStart(2, '0') + '/' +
                 String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
                 dataDecorrenza.getFullYear()
+
             //! purtroppo il componente non è trovabile agevolmente al momento
             cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > nx-icon').click()
-            cy.get('nx-formfield').first().click().clear().wait(500).type(formattedDataDecorrenza).type('{enter}')
+            cy.get('nx-formfield').first().click().clear()
+            cy.wait(700)
+            cy.get('nx-formfield').first().click().type(formattedDataDecorrenza).click()
 
             cy.wait('@getMotor', { timeout: 60000 })
 
@@ -947,10 +944,10 @@ class TenutaTariffa {
 
             //Espandiamo pannello RCA
             var rcaLabel
-            if (currentCase.Settore == 3)
-                rcaLabel = "RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA"
-            else if (currentCase.Settore == 6 || currentCase.Settore == 7)
+            if (currentCase.Settore == 6 || currentCase.Settore == 7)
                 rcaLabel = "RCA - PREMIO FISSO UNIFICATA"
+            else if (currentCase.Settore == 3)
+                rcaLabel = "RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA"
             else
                 rcaLabel = "RCA - BONUS MALUS"
 
@@ -1156,7 +1153,9 @@ class TenutaTariffa {
 
             //! purtroppo il componente non è trovabile agevolmente al momento
             cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > nx-icon').click()
-            cy.get('nx-formfield').first().click().clear().wait(500).type(formattedDataDecorrenza).type('{enter}')
+            cy.get('nx-formfield').first().click().clear()
+            cy.wait(700)
+            cy.get('nx-formfield').first().click().type(formattedDataDecorrenza).click()
 
             cy.wait('@getMotor', { timeout: 60000 })
 
@@ -1209,10 +1208,20 @@ class TenutaTariffa {
             //#region Effettuiamo un full deselect di tutte le ARD selezionate di default
             if (!Cypress.env('isAviva')) {
                 //Incendio senza scoperto
-                cy.contains("Incendio senza scoperto").parent('div').parent('div').within(() => {
-                    cy.get('nx-checkbox').click()
+                //? se non recupera il valore a catalogo, viene fuori solo l'etichetta 'Incendio'
+                let incendioSenzaScoperto = false
+                cy.get('@iframe').then((iframe) => {
+                    if (iframe.find(':contains("Incendio senza scoperto")').length > 0) {
+                        cy.contains("Incendio senza scoperto").parent('div').parent('div').within(() => {
+                            cy.get('nx-checkbox').click()
+                            incendioSenzaScoperto = true
+                        })
+                    }
                 })
-                cy.get('nx-spinner').should('not.be.visible')
+
+                if (incendioSenzaScoperto)
+                    cy.get('nx-spinner').should('not.be.visible')
+
                 //Assistenza Auto
                 cy.wait(5000)
                 cy.contains("Assistenza Auto").parent('div').parent('div').within(() => {

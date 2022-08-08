@@ -132,6 +132,7 @@ describe('Matrix Web : Modifica PG', {
 
     it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
         TopBar.search(currentClientPG.name)
+        LandingRicerca.searchAndClickClientePG(currentClientPG.name)
         LandingRicerca.clickClientePG(currentClientPG.name)
         SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
         DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)

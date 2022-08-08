@@ -103,7 +103,7 @@ describe('Matrix Web : Campagne Commerciali', optionsRetrials, function () {
     })
 
     it('Campagne Nuove', function () {
-        CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.TIPOLOGIA_CAMPAGNA)
+        CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.TIPOLOGIA_CAMPAGNA, CampagneCommerciali.VALORE_FILTRO.TIPOLOGIA_CAMPAGNA.ALTRE_INIZIATIVE)
         CampagneCommerciali.campagneNuove().then(isCampagneNuovePresent => {
             if (!isCampagneNuovePresent)
                 this.skip()

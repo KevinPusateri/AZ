@@ -277,6 +277,5 @@ else
 
             // Menu Contestuale -> Consultazione Documenti di polizza_call back applicativa
             Sfera.apriVoceMenu(Sfera.VOCIMENUCONSULTAZIONE.DOCUMENTI_POLIZZA, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-            Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
         })
     })

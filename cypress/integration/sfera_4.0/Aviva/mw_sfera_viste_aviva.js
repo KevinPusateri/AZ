@@ -75,13 +75,15 @@ if (!Cypress.env('isSecondWindow'))
             })
 
             it('Selezionare due colonne ed inserire due diversi filtri', options, function () {
-                Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
-                Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
-                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
+                Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+                Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
+
+                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+                Sfera.checkValoreInColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
             })
 
             it('Salva vista', options, function () {
-                Sfera.salvaVistaPersonalizzata('Automatici_EM_31')
+                Sfera.salvaVistaPersonalizzata('Automatici_1960_31')
                 //? Effettuiamo un RESET della view
                 Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
                 Sfera.espandiPannello()
@@ -89,11 +91,11 @@ if (!Cypress.env('isSecondWindow'))
             })
 
             it('Selezoinare vista Automatici_EM_31 e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente', options, function () {
-                Sfera.selezionaVista('Automatici_EM_31')
+                Sfera.selezionaVista('Automatici_1960_31')
                 Sfera.espandiPannello()
                 Sfera.estrai()
-                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
-                Sfera.eliminaVista('Automatici_EM_31')
+                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+                Sfera.eliminaVista('AAutomatici_1960_31')
             })
         })
 
@@ -109,11 +111,11 @@ if (!Cypress.env('isSecondWindow'))
             it('- Selezionare due colonne ed inserire due diversi filtri \n- Selezionare un cluster desiderato', options, function () {
                 Sfera.selectRandomCluster()
                 Sfera.estrai()
-
-                Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ALTRE_SCADENZE_IN_QUIETANZAMENTO)
                 Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+                Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
 
                 Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+                Sfera.checkValoreInColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
             })
 
             it('Salva vista', options, function () {
@@ -141,7 +143,7 @@ else
             Sfera.setDateEstrazione()
             Sfera.estrai()
             //Selezionare due colonne ed inserire due diversi filtri
-            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
+            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ALTRE_SCADENZE_IN_QUIETANZAMENTO)
             Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
             Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
             //Salva vista
@@ -166,7 +168,7 @@ else
             //Selezionare due colonne ed inserire due diversi filtri - Selezionare un cluster desiderato
             Sfera.selectRandomCluster()
             Sfera.estrai()
-            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ALTRE_SCADENZE_IN_QUIETANZAMENTO)
+            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
             Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
             Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
             //Salva vista

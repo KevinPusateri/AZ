@@ -50,7 +50,7 @@ after(function () {
 describe('Buca di Ricerca - Risultati Le mie Info', {
     retries: {
         runMode: 1,
-        openMode: 0,
+        openMode: 1,
     }
 }, function () {
 
@@ -62,8 +62,6 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
         } else
             LandingRicerca.checkNotExistMieInfo()
         LandingRicerca.checkSuggestedLinks('incasso')
-
-
     })
 
     it('Verifica Ricerca Fastquote', function () {

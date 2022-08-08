@@ -46,33 +46,35 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+})
 //#endregion Before After
 
-describe('Matrix Web : Sfera 4.0 - Avvisi Scadenze', function () {
-
-    //#239
-
-    //#240
+describe('Matrix Web : Sfera 4.0 - Avvisi Scadenze',options,function () {
 
     it('Verifica invio avviso SMS sfera 4.0', function () {
         Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.AVVISI_SCADENZA)
         Sfera.estrai()
         Sfera.filtraSuColonna(Sfera.FILTRI.ULT_TIPO_INVIO, Sfera.FILTRI.ULT_TIPO_INVIO.values.VUOTO)
-        // Sfera.filtraSuColonna(Sfera.FILTRI.ULT_RICH_AVVISO_CPP, today)
         Sfera.checkAvvisoInviato(Sfera.TIPOAVVISO.SMS)
-        // Sfera.espandiPannello()
-        // Sfera.estrai()
-        // Sfera.selezionaRigaIndex(riga)
-        // Sfera.checkExistUltTipoInvio('@selectRiga')
     })
+
+    it('Verifica invio avviso EMAIL sfera 4.0', function () {
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.AVVISI_SCADENZA)
+        // Sfera.espandiPannello()  
+        Sfera.estrai()
+        Sfera.filtraSuColonna(Sfera.FILTRI.ULT_TIPO_INVIO, Sfera.FILTRI.ULT_TIPO_INVIO.values.VUOTO)
+        Sfera.checkAvvisoInviato(Sfera.TIPOAVVISO.EMAIL)
+        cy.pause()
+    })
+
+    
 
 })

@@ -475,6 +475,33 @@ const Filtri = {
         values: {
             VUOTO: "Vuoto",
         }
+    },
+    NUM_GG_PER_MO: {
+        key: "Num. Gg. Per. Mo.",
+        values: {
+            VUOTO: "Vuoto",
+            MORA_1: '1',
+            MORA_2: '2',
+            MORA_3: '3',
+            MORA_4: '4',
+            MORA_5: '5',
+            MORA_6: '6',
+            MORA_7: '7',
+            MORA_8: '8',
+            MORA_9: '9',
+            MORA_10: '10',
+            MORA_11: '11',
+            MORA_12: '12',
+            MORA_13: '13',
+            MORA_14: '14'
+        }
+    },
+    CONS_EMAIL_POL: {
+        key: "Cons. Email Pol",
+        values: {
+            SI: 'Si',
+            NO: 'No'
+        }
     }
 }
 
@@ -1394,7 +1421,7 @@ class Sfera {
      */
     static estrai(request = true) {
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
-        cy.contains('Estrai').should('exist').click()
+        cy.contains('Estrai').should('exist').and('be.visible').click()
 
         if (request)
             cy.wait('@estraiQuietanze', { timeout: 120000 })
@@ -1477,8 +1504,13 @@ class Sfera {
                         cy.wait(10000)
                         if (flussoCompleto) {
                             getAppJump().within(() => {
+
                                 IncassoDA.ClickIncassa()
                             })
+                            getAppJump().within(($iframe) => {
+                                IncassoDA.ClickPopupWarning($iframe)
+                            })
+                            cy.wait('@getIncasso', { timeout: 40000 })
                             getAppJump().within(() => {
                                 IncassoDA.SelezionaIncassa()
                             })
@@ -1497,6 +1529,7 @@ class Sfera {
                         cy.wait(10000)
                         if (flussoCompleto) {
                             IncassoDA.ClickIncassa()
+                            IncassoDA.ClickPopupWarning()
                             IncassoDA.SelezionaIncassa()
                             IncassoDA.TerminaIncasso()
                         }
@@ -1533,6 +1566,7 @@ class Sfera {
                             NGRA2013.avanti()
                             cy.wait(2000)
                             cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                            NGRA2013.home(true)
                         }
                     }
                     this.verificaAccessoSfera(false)
@@ -1795,7 +1829,7 @@ class Sfera {
                             // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                             // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                            // this.estrai()
+                            this.estrai()
                             this.verificaAccessoSfera(false)
 
                         }
@@ -1823,7 +1857,7 @@ class Sfera {
                             // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                             // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                            // this.estrai()
+                            this.estrai()
                             this.verificaAccessoSfera(false)
                         }
                     }
@@ -1850,7 +1884,7 @@ class Sfera {
                             // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                             // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                             //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                            // this.estrai()
+                            this.estrai()
                             this.verificaAccessoSfera(false)
 
                         }
@@ -2329,7 +2363,7 @@ class Sfera {
 
         //Vediamo se espandere il pannello per le date
         this.espandiPannello()
-        this.lobPortafogli().click({force:true}).wait(500)
+        this.lobPortafogli().click({ force: true }).wait(500)
 
         cy.get('div[class="nx-dropdown__panel nx-dropdown__panel--in-outline-field ng-star-inserted"]').within(() => {
             //Selezioniamo
@@ -2393,7 +2427,7 @@ class Sfera {
                     cy.get('button').contains(nameVista).click({ force: true }).wait(2000)
                 })
         })
-        cy.get('h2[nxheadline="subsection-medium"]').should('include.text', nameVista)
+        cy.get('h2[class="nx-font-weight-semibold"]').should('include.text', nameVista)
 
     }
 
@@ -2406,7 +2440,7 @@ class Sfera {
         cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
         // Click Le mie viste
-        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+        cy.get('div[class="cdk-overlay-pane"]').first().scrollIntoView().should('be.visible').within(() => {
             cy.contains('Viste suggerite').click()
         }).then(() => {
 
@@ -2415,7 +2449,7 @@ class Sfera {
                     cy.get('button').contains(nameVista).click({ force: true }).wait(2000)
                 })
         })
-        cy.get('h2[nxheadline="subsection-medium"]').should('include.text', nameVista)
+        cy.get('h2[class="nx-font-weight-semibold"]').should('include.text', nameVista)
         cy.screenshot('Verifica Vista ' + nameVista, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     }
@@ -3386,13 +3420,6 @@ class Sfera {
         cy.intercept(estraiTotaleQuietanzeScartate).as('estraiTotaleQuietanzeScartate')
         switch (vista) {
             case VisteSuggerite.QUIETANZE_SCARTATE:
-                cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').should('be.visible').then((title) => {
-                    expect(title.text().trim()).to.include('Elementi')
-                    expect(title.text().trim()).to.include('Selezionati')
-                    expect(title.text().trim()).to.include('Data:')
-                    expect(title.text().trim()).to.include('Cluster:')
-                    expect(title.text().trim()).to.include('Fonti:')
-                })
                 cy.get('div[class="row-total-2 nx-grid__row"]').should('be.visible')
                     .then(contents => {
                         expect(contents.text().trim()).to.include(dataInizio)
@@ -3401,8 +3428,17 @@ class Sfera {
                         expect(contents.text().trim()).to.include('quietanzamento on-line in: Viste suggerite > Carico Mancante')
 
                     })
+                break
+            default:
+                cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').should('be.visible').then((title) => {
+                    expect(title.text().trim()).to.include('Elementi')
+                    expect(title.text().trim()).to.include('Selezionati')
+                    expect(title.text().trim()).to.include('Data:')
+                    expect(title.text().trim()).to.include('Cluster:')
+                    expect(title.text().trim()).to.include('Fonti:')
+                })
                 break;
-            default: throw new Error('Vista non presente')
+            // default: throw new Error('Vista non presente')
         }
     }
 
@@ -3604,11 +3640,23 @@ class Sfera {
     static checkAvvisoInviato(tipo) {
         switch (tipo) {
             case Sfera.TIPOAVVISO.SMS:
-                selectRandomClientWithPhone().then(contraente => {
+                selectRandomClientWithPhone().then(polizza => {
                     sendAvviso(Sfera.TIPOAVVISO.SMS)
                     this.espandiPannello()
                     this.estrai()
-                    checkAvviso(Sfera.TIPOAVVISO.SMS, contraente)
+                    checkAvviso(Sfera.TIPOAVVISO.SMS, polizza)
+                })
+                break;
+            case Sfera.TIPOAVVISO.EMAIL:
+                selectRandomClientWithEmail().then(polizza => {
+                    sendAvviso(Sfera.TIPOAVVISO.EMAIL)
+                    cy.wait(60000)
+                    this.espandiPannello()
+                    this.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.AVVISI_SCADENZA)
+                    cy.contains('Avviso da Inviare').click() // Tolgo il cluster
+                    cy.contains('Avviso Inviato').click() // Aggiungo il cluster
+                    this.estrai()
+                    checkAvviso('Email', polizza)
                 })
                 break;
             default:
@@ -3617,7 +3665,7 @@ class Sfera {
 
         /**
          * It selects a random row With Number Phone(+39-) from a table, then clicks on the checkbox in that row.
-         * @returns {Promise<string>} Promise (Contraente)
+         * @returns {Promise<string>} Promise (Polizza)
          */
         function selectRandomClientWithPhone() {
             return new Cypress.Promise(resolve => {
@@ -3631,11 +3679,34 @@ class Sfera {
                     .then(($tr) => {
                         expect(Cypress.dom.isJquery($tr), 'jQuery element').to.be.true
                         cy.log(`you picked "${$tr.text()}"`)
-                        const contraente = $tr.find('a').text().trim()
+                        const polizza = $tr.find('td').eq(2).text().trim()
                         cy.wrap($tr).within(() => {
                             Sfera.checkBoxControl().click({ force: true })
                         })
-                        resolve(contraente)
+                        resolve(polizza)
+                    })
+            })
+        }
+
+        function selectRandomClientWithEmail() {
+            // Filtro su polizze con consenso Email SI
+            Sfera.filtraSuColonna(Sfera.FILTRI.CONS_EMAIL_POL,Sfera.FILTRI.CONS_EMAIL_POL.values.SI)
+            return new Cypress.Promise(resolve => {
+                cy.get('tr[class="nx-table-row ng-star-inserted"]')
+                    .filter(':contains("@")').not('Sms')
+                    .should('be.visible')
+                    .then(($tr) => {
+                        const items = $tr.toArray()
+                        return Cypress._.sample(items)
+                    })
+                    .then(($tr) => {
+                        expect(Cypress.dom.isJquery($tr), 'jQuery element').to.be.true
+                        cy.log(`you picked "${$tr.text()}"`)
+                        const polizza = $tr.find('td').eq(2).text().trim()
+                        cy.wrap($tr).within(() => {
+                            Sfera.checkBoxControl().click({ force: true })
+                        })
+                        resolve(polizza)
                     })
             })
         }
@@ -3666,11 +3737,24 @@ class Sfera {
                 }
                 cy.contains('Procedi').click()
             })
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                switch (type) {
+                    case TipoAvviso.AVVISI_CARTACEI:
+                        cy.contains('Crea PDF selezionati').click()
+                        break;
+                    case TipoAvviso.EMAIL:
+                        cy.contains('Invia email selezionate').click()
+                        cy.get('h3[nxheadline="subsection-small"]').should('include.text', 'Email accodate con successo')
+                        break;
+                    case TipoAvviso.SMS:
+                        cy.contains('Invia sms selezionati').click()
+                        cy.get('h3[nxheadline="subsection-small"]').should('include.text', 'Sms accodati con successo')
+                        break;
+                    default: throw new Error('Tipo avviso Errato')
+                }
 
-            cy.contains('Invia sms selezionati').click()
-
-            cy.get('h3[nxheadline="subsection-small"]').should('include.text', 'Sms accodati con successo')
-            cy.contains('Chiudi').click()
+                cy.contains('Chiudi').click().wait(30000)
+            })
         }
 
         /**
@@ -3678,26 +3762,16 @@ class Sfera {
          * @param type - TipoAvviso.AVVISI_CARTACEI, TipoAvviso.EMAIL, TipoAvviso.SMS
          * @param contraente - the name of the person
          */
-        function checkAvviso(type, contraente) {
+        function checkAvviso(type, polizza) {
+            Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, polizza)
             let dataInizio = Common.setDate()
             cy.get('tr[class="nx-table-row ng-star-inserted"]')
-                .filter(':contains("' + contraente + '")').then(($tr) => {
+                .filter(':contains("' + polizza + '")').then(($tr) => {
                     let someText = $tr.text().trim().replace(/(\r\n|\n|\r)/gm, "");
                     console.log(someText)
                     expect(someText).to.include(dataInizio)
                     expect(someText).to.include(type)
                 })
-            cy.get('nx-modal-container').should('be.visible').within(() => {
-                switch (type) {
-                    case TipoAvviso.AVVISI_CARTACEI:
-                        break;
-                    case TipoAvviso.EMAIL:
-                        break;
-                    case TipoAvviso.SMS:
-                        break;
-                    default: throw new Error('Tipo avviso Errato')
-                }
-            })
         }
     }
 }

@@ -231,7 +231,7 @@ class LibriMatricola {
                     .parents('.subtableBlock').find('input').click()
             })
 
-            cy.wait(1000)
+            cy.wait(3000)
             var popupCheck = false
             matrixFrame().within(() => {
                 //cy.get('#pnlDialog').should('be.visible')

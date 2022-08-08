@@ -83,7 +83,6 @@ const LinkUtilita = {
     MONITOR_SCORING_AZ_BONUS_DRIVE: 'Monitor Scoring AZ Bonus Drive',
     GESTIONE_CERTIFICATI: 'Gestione certificati',
     deleteKey: function (keys) {
-        debugger
         if (!keys.interrogazioniCentralizzateEnabled) delete this.INTERROGAZIONI_CENTRALIZZATE
         if (!keys.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS) delete this.PIATTAFORMA_CONTRATTI_AZ_TELEMATICS
         if (!keys.MONITOR_SCORING_AZ_BONUS_DRIVE) delete this.MONITOR_SCORING_AZ_BONUS_DRIVE
@@ -152,6 +151,7 @@ class TopBar extends HomePage {
 
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').click()
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').type(value).type('{enter}').wait(2000)
+        cy.contains('clients').click()
 
         cy.wait('@gqlSearchClient', { timeout: 30000 });
         cy.screenshot('Ricerca ' + value + ' effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })

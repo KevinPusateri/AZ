@@ -119,18 +119,18 @@ class LandingRicerca {
 
             //Filtriamo la ricerca in base a statoCliente
             cy.contains('STATO').click()
+            cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                cy.wrap($checkBox).click()
+            })
             switch (statoCliente) {
                 case "E":
-                    cy.contains('Potenziale').click()
-                    cy.contains('Cessato').click()
+                    cy.contains('Effettivo').click()
                     break
                 case "P":
-                    cy.contains('Effettivo').click()
-                    cy.contains('Cessato').click()
+                    cy.contains('Potenziale').click()
                     break
                 case "C":
-                    cy.contains('Potenziale').click()
-                    cy.contains('Effettivo').click()
+                    cy.contains('Cessato').click()
                     break
             }
 
@@ -279,6 +279,44 @@ class LandingRicerca {
         // cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
 
         cy.get('lib-scrollable-container').contains(cognome.toUpperCase()).then((card) => {
+            if (card.length === 1)
+                cy.wrap(card).click()
+        })
+        //Verifica se ci sono problemi nel retrive del cliente per permessi
+        cy.wait('@client', { requestTimeout: 30000 })
+            .its('response.body.data.client')
+            .should('not.be.null')
+    }
+
+    /**
+     * Effettua la ricerca e seleziona un cliente PF attraverso il suo cognome
+     * @param {string} denominazione da ricerca
+     */
+    static searchAndClickClientePG(denominazione) {
+        //Attende il caricamento della scheda cliente
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'client'
+            }
+        });
+
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('searchClient')) {
+                req.alias = 'gqlSearchClient'
+            }
+        });
+
+        //Filtriamo la ricerca in base a tipoCliente
+        cy.get('.icon').find('[name="filter"]').click()
+        cy.contains('CLIENTE').click()
+        cy.contains('Persona fisica').click()
+
+        cy.contains('APPLICA').click()
+        cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
+
+        // cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
+
+        cy.get('lib-scrollable-container').contains(denominazione.toUpperCase()).then((card) => {
             if (card.length === 1)
                 cy.wrap(card).click()
         })
@@ -466,30 +504,20 @@ class LandingRicerca {
         cy.wait(3000).get('.icon').find('[name="filter"]').click()
         cy.contains('CLIENTE').click()
 
-        // //Verifica Stato
-        // cy.get('contains("Effettivo"):visible')
-        // cy.get('.filter-group').find('span:contains("Potenziale"):visible')
-        // cy.get('.filter-group').find('span:contains("Cessato"):visible')
-
-        // //Verifica Tipo
-        // cy.get('.filter-group').find('span:contains("Persona fisica"):visible')
-        // cy.get('.filter-group').find('span:contains("Persona giuridica"):visible')
-
-        //Effettuaimo il choose in base a statoCliente
         //Filtriamo la ricerca in base a statoCliente
         cy.contains('STATO').click()
+        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+            cy.wrap($checkBox).click()
+        })
         switch (statoCliente) {
             case "E":
-                cy.contains('Potenziale').click()
-                cy.contains('Cessato').click()
+                cy.contains('Effettivo').click()
                 break
             case "P":
-                cy.contains('Effettivo').click()
-                cy.contains('Cessato').click()
+                cy.contains('Potenziale').click()
                 break
             case "C":
-                cy.contains('Potenziale').click()
-                cy.contains('Effettivo').click()
+                cy.contains('Cessato').click()
                 break
         }
 

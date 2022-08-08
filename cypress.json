@@ -58,6 +58,7 @@
     "hostParsr": "H2017LE00038A",
     "portParsr": "3001",
     "selectedSettori": "",
-    "urlDebugProxyPreprod": "https://portaleagenzie.pp.azi.allianz.it/Auto/NGRA2013/DebugGetProxy.aspx"
+    "urlDebugProxyPreprod": "https://portaleagenzie.pp.azi.allianz.it/Auto/NGRA2013/DebugGetProxy.aspx",
+    "usingDash": false
   }
 }

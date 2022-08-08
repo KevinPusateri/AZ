@@ -178,27 +178,34 @@ else
         it('Menu Contestuale', function () {
 
             //Menu Quietanza
+            Sfera.gestisciColonne(['Num. Gg. Per. Mo.'])
+            Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_710000)
+            Sfera.filtraSuColonna(Sfera.FILTRI.NUM_GG_PER_MO, Sfera.FILTRI.NUM_GG_PER_MO.values.MORA_10)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, false)
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO, false)
+
+            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO, false, null, null, null, true)
             // ? Verificare sempre che ci sia plafond assegnato alla 1-710000 (chiedi simone.sergas@allianz.it)
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.DELTA_PREMIO)
             Sfera.espandiPannello()
             Sfera.estrai()
             Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_710000)
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.VARIAZIONE_RIDUZIONE_PREMI, false)
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, false)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.VARIAZIONE_RIDUZIONE_PREMI, false, null, null, null, true)
 
+            Sfera.gestisciColonne(['Num. Gg. Per. Mo.'])
+            Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_710000)
+            Sfera.filtraSuColonna(Sfera.FILTRI.NUM_GG_PER_MO, Sfera.FILTRI.NUM_GG_PER_MO.values.MORA_10)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, false, null, null, null, true)
+            
             // Menu Polizza
             Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.SOSTITUZIONE_RIATTIVAZIONE_AUTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
-            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_POLIZZA, false)
-            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_DOCUMENTI_POLIZZA, false)
+            Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_710000)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_POLIZZA, false, null, null, null, true)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.CONSULTAZIONE_DOCUMENTI_POLIZZA, false, null, null, null, true)
             Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.MODIFICA_MODALITA_PAGAMENTO, false, null, null, Sfera.TIPOMODALITAPAGAMENTO.CONTANTI)
 
             //Menu Cliente
-            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.SCHEDA_CLIENTE, false)
-            Sfera.estrai()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE, false)
-            Sfera.estrai()
-            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI, false)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.SCHEDA_CLIENTE, false, null, null, null, true)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE, false, null, null, null, true)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI, false, null, null, null, true)
         })
     })

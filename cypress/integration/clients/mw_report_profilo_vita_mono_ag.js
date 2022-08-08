@@ -86,7 +86,7 @@ describe('Matrix Web : Report Profilo Vita', {
     it('Cliccare su "Report Profilo Vita"\n' +
         'Verificare che si apra la maschera di disambiguazione con la scelta dei due accuont, sceglierne uno\n' +
         'Verificare che si apra correttamente il pdf', () => {
-            SintesiCliente.emettiReportProfiloVita('710000')
+            SintesiCliente.emettiReportProfiloVita()
             HomePage.reloadMWHomePage()
         })
 })

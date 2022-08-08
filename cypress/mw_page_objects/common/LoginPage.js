@@ -47,7 +47,7 @@ class LoginPage {
         this.launchMW()
 
         //Skip this two requests that blocks on homepage
-        if (!Cypress.env('isSecondWindow')){
+        if (!Cypress.env('isSecondWindow')) {
             cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
             cy.intercept(/launch-*/, 'ignore').as('launchStaging')
             cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
@@ -129,7 +129,8 @@ class LoginPage {
                             "agency": customImpersonification.agency,
                         }
 
-                    cy.impersonification(user.tutf, currentImpersonificationToPerform.agentId, currentImpersonificationToPerform.agency).then(() => {
+                    //Se siamo in dashboard, skippo l'impersonificazione
+                    if (Cypress.env('usingDash')) {
                         cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                         cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
                         cy.get('input[type="SUBMIT"]').click()
@@ -144,7 +145,24 @@ class LoginPage {
 
                         if (Cypress.env('isSecondWindow'))
                             TopBar.clickSecondWindow(customImpersonification)
-                    })
+                    }
+                    else
+                        cy.impersonification(user.tutf, currentImpersonificationToPerform.agentId, currentImpersonificationToPerform.agency).then(() => {
+                            cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
+                            cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
+                            cy.get('input[type="SUBMIT"]').click()
+
+                            if (!Cypress.env('monoUtenza'))
+                                Common.checkUrlEnv()
+                            if (!mockedNews && (!Cypress.env('isAviva') || !Cypress.env('isAvivaBroker')))
+                                cy.wait('@gqlNews')
+
+                            if (Cypress.env('currentEnv') !== 'TEST')
+                                cy.wait('@gqlUserDetails')
+
+                            if (Cypress.env('isSecondWindow'))
+                                TopBar.clickSecondWindow(customImpersonification)
+                        })
                 })
             })
         })
