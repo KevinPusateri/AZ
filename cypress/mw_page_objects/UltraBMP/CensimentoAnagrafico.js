@@ -139,7 +139,7 @@ class CensimentoAnagrafico {
                     cy.get('[value="Recupera dati esterni"]').click()
 
                     cy.get('#popupDatiCRIF').should('be.visible')
-                    .find('a').contains('AVANTI').click()
+                        .find('a').contains('AVANTI').click()
                 }
                 else {
                     cy.log('Recupero dati esterni non necessario')
@@ -230,21 +230,21 @@ class CensimentoAnagrafico {
 
             //popup anagrafico
             ultraIFrameAnagrafica().within(() => {
-                cy.get('#divPopUpACAnagrafica').should('be.visible')
-                    .find(('input[value="Persona Fisica"]')).should('be.enabled').click()  //seleziona Persona Fisica
-                cy.wait(5000)
+                cy.get('#fisica').should('be.visible').click()  //seleziona Persona Fisica
+                //cy.wait(5000)
             })
 
             ultraIFrameAnagrafica().within(() => {
-                cy.get('#f-cognome').should('be.visible').type(cliente.cognome)
-                cy.get('#f-nome').should('be.visible').type(cliente.nome)
+                cy.get('#f-fiscale').should('be.visible').type(cliente.codiceFiscale)
+                cy.get('#cerca-pers-forinsert-cf').should('be.visible').click()  //avvia ricerca
 
-                cy.get('#cerca-pers-forinsert').should('be.visible').click()  //avvia ricerca
-                cy.wait(5000)
-                cy.get('span').contains(cliente.cognomeNome()).click()
-                cy.wait(500)
+                cy.get('#customerGrid-container').find('[class="loader"]')
+                    .should('not.be.visible')
+                cy.get('#customerGrid-container').find('.customer-name')
+                    .contains(cliente.cognomeNome()).click()
+                cy.wait(2000)
             })
-            //cy.pause()
+            //cy.pause() .loader
 
             /*
             //popup attenzione CAP
