@@ -57,11 +57,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Sfera 4.0 - Avvisi Scadenze', function () {
-
-    //#239
-
-    //#240
+describe('Matrix Web : Sfera 4.0 - Avvisi Scadenze',options,function () {
 
     it('Verifica invio avviso SMS sfera 4.0', function () {
         Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.AVVISI_SCADENZA)
@@ -69,5 +65,16 @@ describe('Matrix Web : Sfera 4.0 - Avvisi Scadenze', function () {
         Sfera.filtraSuColonna(Sfera.FILTRI.ULT_TIPO_INVIO, Sfera.FILTRI.ULT_TIPO_INVIO.values.VUOTO)
         Sfera.checkAvvisoInviato(Sfera.TIPOAVVISO.SMS)
     })
+
+    it('Verifica invio avviso EMAIL sfera 4.0', function () {
+        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.AVVISI_SCADENZA)
+        // Sfera.espandiPannello()  
+        Sfera.estrai()
+        Sfera.filtraSuColonna(Sfera.FILTRI.ULT_TIPO_INVIO, Sfera.FILTRI.ULT_TIPO_INVIO.values.VUOTO)
+        Sfera.checkAvvisoInviato(Sfera.TIPOAVVISO.EMAIL)
+        cy.pause()
+    })
+
+    
 
 })

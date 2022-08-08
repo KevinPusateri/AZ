@@ -495,6 +495,13 @@ const Filtri = {
             MORA_13: '13',
             MORA_14: '14'
         }
+    },
+    CONS_EMAIL_POL: {
+        key: "Cons. Email Pol",
+        values: {
+            SI: 'Si',
+            NO: 'No'
+        }
     }
 }
 
@@ -2433,7 +2440,7 @@ class Sfera {
         cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
         // Click Le mie viste
-        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+        cy.get('div[class="cdk-overlay-pane"]').first().scrollIntoView().should('be.visible').within(() => {
             cy.contains('Viste suggerite').click()
         }).then(() => {
 
@@ -3633,11 +3640,23 @@ class Sfera {
     static checkAvvisoInviato(tipo) {
         switch (tipo) {
             case Sfera.TIPOAVVISO.SMS:
-                selectRandomClientWithPhone().then(contraente => {
+                selectRandomClientWithPhone().then(polizza => {
                     sendAvviso(Sfera.TIPOAVVISO.SMS)
                     this.espandiPannello()
                     this.estrai()
-                    checkAvviso(Sfera.TIPOAVVISO.SMS, contraente)
+                    checkAvviso(Sfera.TIPOAVVISO.SMS, polizza)
+                })
+                break;
+            case Sfera.TIPOAVVISO.EMAIL:
+                selectRandomClientWithEmail().then(polizza => {
+                    sendAvviso(Sfera.TIPOAVVISO.EMAIL)
+                    cy.wait(60000)
+                    this.espandiPannello()
+                    this.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.AVVISI_SCADENZA)
+                    cy.contains('Avviso da Inviare').click() // Tolgo il cluster
+                    cy.contains('Avviso Inviato').click() // Aggiungo il cluster
+                    this.estrai()
+                    checkAvviso('Email', polizza)
                 })
                 break;
             default:
@@ -3646,7 +3665,7 @@ class Sfera {
 
         /**
          * It selects a random row With Number Phone(+39-) from a table, then clicks on the checkbox in that row.
-         * @returns {Promise<string>} Promise (Contraente)
+         * @returns {Promise<string>} Promise (Polizza)
          */
         function selectRandomClientWithPhone() {
             return new Cypress.Promise(resolve => {
@@ -3660,11 +3679,34 @@ class Sfera {
                     .then(($tr) => {
                         expect(Cypress.dom.isJquery($tr), 'jQuery element').to.be.true
                         cy.log(`you picked "${$tr.text()}"`)
-                        const contraente = $tr.find('a').text().trim()
+                        const polizza = $tr.find('td').eq(2).text().trim()
                         cy.wrap($tr).within(() => {
                             Sfera.checkBoxControl().click({ force: true })
                         })
-                        resolve(contraente)
+                        resolve(polizza)
+                    })
+            })
+        }
+
+        function selectRandomClientWithEmail() {
+            // Filtro su polizze con consenso Email SI
+            Sfera.filtraSuColonna(Sfera.FILTRI.CONS_EMAIL_POL,Sfera.FILTRI.CONS_EMAIL_POL.values.SI)
+            return new Cypress.Promise(resolve => {
+                cy.get('tr[class="nx-table-row ng-star-inserted"]')
+                    .filter(':contains("@")').not('Sms')
+                    .should('be.visible')
+                    .then(($tr) => {
+                        const items = $tr.toArray()
+                        return Cypress._.sample(items)
+                    })
+                    .then(($tr) => {
+                        expect(Cypress.dom.isJquery($tr), 'jQuery element').to.be.true
+                        cy.log(`you picked "${$tr.text()}"`)
+                        const polizza = $tr.find('td').eq(2).text().trim()
+                        cy.wrap($tr).within(() => {
+                            Sfera.checkBoxControl().click({ force: true })
+                        })
+                        resolve(polizza)
                     })
             })
         }
@@ -3695,11 +3737,24 @@ class Sfera {
                 }
                 cy.contains('Procedi').click()
             })
+            cy.get('nx-modal-container').should('be.visible').within(() => {
+                switch (type) {
+                    case TipoAvviso.AVVISI_CARTACEI:
+                        cy.contains('Crea PDF selezionati').click()
+                        break;
+                    case TipoAvviso.EMAIL:
+                        cy.contains('Invia email selezionate').click()
+                        cy.get('h3[nxheadline="subsection-small"]').should('include.text', 'Email accodate con successo')
+                        break;
+                    case TipoAvviso.SMS:
+                        cy.contains('Invia sms selezionati').click()
+                        cy.get('h3[nxheadline="subsection-small"]').should('include.text', 'Sms accodati con successo')
+                        break;
+                    default: throw new Error('Tipo avviso Errato')
+                }
 
-            cy.contains('Invia sms selezionati').click()
-
-            cy.get('h3[nxheadline="subsection-small"]').should('include.text', 'Sms accodati con successo')
-            cy.contains('Chiudi').click()
+                cy.contains('Chiudi').click().wait(30000)
+            })
         }
 
         /**
@@ -3707,10 +3762,11 @@ class Sfera {
          * @param type - TipoAvviso.AVVISI_CARTACEI, TipoAvviso.EMAIL, TipoAvviso.SMS
          * @param contraente - the name of the person
          */
-        function checkAvviso(type, contraente) {
+        function checkAvviso(type, polizza) {
+            Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, polizza)
             let dataInizio = Common.setDate()
             cy.get('tr[class="nx-table-row ng-star-inserted"]')
-                .filter(':contains("' + contraente + '")').then(($tr) => {
+                .filter(':contains("' + polizza + '")').then(($tr) => {
                     let someText = $tr.text().trim().replace(/(\r\n|\n|\r)/gm, "");
                     console.log(someText)
                     expect(someText).to.include(dataInizio)
