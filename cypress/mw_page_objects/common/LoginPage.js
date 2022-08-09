@@ -162,6 +162,8 @@ class LoginPage {
 
                             if (Cypress.env('isSecondWindow'))
                                 TopBar.clickSecondWindow(customImpersonification)
+
+                            cy.wait(2000)
                         })
                 })
             })

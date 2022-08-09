@@ -35,7 +35,6 @@ let cliente
 const searchClientWithoutContattiPrincipali = (contactType) => {
     LandingRicerca.searchRandomClient(true, "PF", (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? "E" : "P")
     LandingRicerca.clickRandomResult("PF", (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? "E" : "P")
-
     SintesiCliente.checkContattoPrincipale(contactType).then(contactIsPresent => {
         if (!contactIsPresent)
             return
@@ -114,6 +113,7 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
 
     it('Verifica Numero Principale inserito', () => {
         TopBar.search(cliente.name)
+        LandingRicerca.filtra('PF')
         LandingRicerca.clickClientePF(cliente.name)
         SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
         SintesiCliente.checkContattoPrincipale('numero').then(contactIsPresent => {
@@ -139,6 +139,7 @@ describe('Matrix Web : Clients Numero e Mail Principali', {
 
     it('Verifica Mail Principale inserita', () => {
         TopBar.search(cliente.name)
+        LandingRicerca.filtra('PF')
         LandingRicerca.clickClientePF(cliente.name)
         SintesiCliente.checkAtterraggioSintesiCliente(cliente.name)
         SintesiCliente.checkContattoPrincipale('mail').then(contactIsPresent => {

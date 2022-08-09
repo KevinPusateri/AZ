@@ -651,7 +651,7 @@ class SCUContatti {
   static addPrefInt(contatto) {
     getSCU().find('span[aria-controls="tel-pr-int_listbox"]').click();
     getSCU()
-      .find('#tel-pr-int_listbox > li[data-offset-index="94"]')
+      .find('#tel-pr-int_listbox > li[class="k-item k-state-selected k-state-focused"]')
       .then((list) => {
         contatto.prefissoInt = list.text();
       });

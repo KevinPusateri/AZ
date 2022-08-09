@@ -113,9 +113,9 @@ describe('Matrix Web : Censimento Nuovo Cliente PG', {
   })
 
   it('Ricercare il cliente appena censito nella buca di ricerca', () => {
-
     HomePage.reloadMWHomePage()
     TopBar.search(nuovoClientePG.partitaIva)
+    LandingRicerca.filtra('PG','P')
     LandingRicerca.clickFirstResult()
   })
 

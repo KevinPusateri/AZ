@@ -112,10 +112,13 @@ class LandingRicerca {
             //Filtriamo la ricerca in base a tipoCliente
             cy.get('lib-clients-container').find('nx-icon[name="filter"]').click()
             cy.contains('CLIENTE').click()
+            cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                cy.wrap($checkBox).click()
+            })
             if (tipoCliente === "PF")
-                cy.contains('Persona giuridica').click()
-            else
                 cy.contains('Persona fisica').click()
+            else
+                cy.contains('Persona giuridica').click()
 
             //Filtriamo la ricerca in base a statoCliente
             cy.contains('STATO').click()
@@ -271,7 +274,10 @@ class LandingRicerca {
         //Filtriamo la ricerca in base a tipoCliente
         cy.get('.icon').find('[name="filter"]').click()
         cy.contains('CLIENTE').click()
-        cy.contains('Persona giuridica').click()
+        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+            cy.wrap($checkBox).click()
+        })
+        cy.contains('Persona fisica').click()
 
         cy.contains('APPLICA').click()
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
@@ -309,7 +315,10 @@ class LandingRicerca {
         //Filtriamo la ricerca in base a tipoCliente
         cy.get('.icon').find('[name="filter"]').click()
         cy.contains('CLIENTE').click()
-        cy.contains('Persona fisica').click()
+        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+            cy.wrap($checkBox).click()
+        })
+        cy.contains('Persona giuridica').click()
 
         cy.contains('APPLICA').click()
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
@@ -502,7 +511,6 @@ class LandingRicerca {
         });
 
         cy.wait(3000).get('.icon').find('[name="filter"]').click()
-        cy.contains('CLIENTE').click()
 
         //Filtriamo la ricerca in base a statoCliente
         cy.contains('STATO').click()
@@ -523,7 +531,102 @@ class LandingRicerca {
 
         cy.contains('APPLICA').click()
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
-        // cy.get('lib-applied-filters-item').should('be.visible').find('span').should('be.visible')
+    }
+
+
+    /**
+     * It clicks on a bunch of checkboxes
+     * ALL - Check all CheckBox
+     * @param {String} - [cliente=ALL] - ALL, PF, PG
+     * @param {String} - [stato=ALL] - E, P, C
+     * @param {String} - [agenzia=ALL] - The agency you want to filter.
+     */
+    static filtra(cliente = 'ALL', stato = 'ALL', agenzia = 'ALL') {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('searchClient')) {
+                req.alias = 'gqlSearchClient'
+            }
+        });
+        cy.wait(3000).get('.icon').find('[name="filter"]').click()
+
+        cy.contains('AGENZIE').click()
+        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+            cy.wrap($checkBox).click()
+        })
+        if (agenzia === 'ALL') {
+            cy.get('div[class="filters-content"]').within(() => {
+                cy.get('nx-checkbox').each(($checkBox) => {
+                    cy.wrap($checkBox).click()
+                })
+            })
+        }
+        else
+            cy.contains(agenzia).click()
+
+        cy.contains('CLIENTE').click()
+        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+            cy.wrap($checkBox).click()
+        })
+        switch (cliente) {
+            case "ALL":
+                cy.get('div[class="filters-content"]').within(() => {
+                    cy.get('nx-checkbox').each(($checkBox) => {
+                        cy.wrap($checkBox).click()
+                    })
+                })
+                break
+            case "PF":
+                cy.contains('Persona fisica').click()
+                break
+            case "PG":
+                cy.contains('Persona giuridica').click()
+                break
+            default: throw new Error("Attenzione tipo CLiente Non Esiste (ALL,PF,PG)");
+        }
+
+        cy.contains('STATO').click()
+        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+            cy.wrap($checkBox).click()
+        })
+        switch (stato) {
+            case "ALL":
+                cy.get('div[class="filters-content"]').within(() => {
+                    cy.get('nx-checkbox').each(($checkBox) => {
+                        cy.wrap($checkBox).click()
+                    })
+                })
+                break
+            case "E":
+                cy.contains('Effettivo').click()
+                break
+            case "P":
+                cy.contains('Potenziale').click()
+                break
+            case "C":
+                cy.contains('Cessato').click()
+                break
+            default: throw new Error("Attenzione STATO CLiente Non Esiste (ALL,E,P,C)");
+        }
+
+        cy.contains('APPLICA').click()
+        cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
+    }
+
+    static filtraAgenziaAll() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('searchClient')) {
+                req.alias = 'gqlSearchClient'
+            }
+        });
+        cy.pause()
+        cy.wait(3000).get('.icon').find('[name="filter"]').click()
+        cy.contains('AGENZIE').click()
+
+        cy.contains('Seleziona tutti').click()
+
+
+        cy.contains('APPLICA').click()
+        cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
     }
 
     /**
