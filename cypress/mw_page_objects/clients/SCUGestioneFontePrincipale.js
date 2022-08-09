@@ -1,5 +1,7 @@
 /// <reference types="Cypress" />
 
+import LandingRicerca from "../ricerca/LandingRicerca";
+
 const getIFrame = () => {
   cy.get('iframe[class="iframe-content ng-star-inserted"]')
     .iframe();
@@ -123,12 +125,14 @@ class SCUGestioneFontePrincipale {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
       cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
+      LandingRicerca.filtra('PF')
       cy.get('lib-client-item').first().click()
     }).then(($body) => {
       cy.wait(6000)
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
       if (check) {
         cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
+        LandingRicerca.filtra('PF')
         cy.get('lib-client-item').next().click()
       }
 
@@ -243,12 +247,14 @@ class SCUGestioneFontePrincipale {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
       cy.get('input[name="main-search-input"]').type(clienteIVA).type('{enter}')
+      LandingRicerca.filtra('PG')
       cy.get('lib-client-item').first().click()
     }).then(($body) => {
       cy.wait(6000)
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
       if (check) {
-        cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
+        cy.get('input[name="main-search-input"]').type(clienteIVA).type('{enter}')
+        LandingRicerca.filtra('PG')
         cy.get('lib-client-item').next().click()
       }
       cy.wait('@pageClient', { timeout: 60000 });

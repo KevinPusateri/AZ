@@ -1103,10 +1103,13 @@ class SintesiCliente {
      * Verifica Documenti Anagrafici in Folder
      * @param {Array.String} labels - labels dei documenti da verificare in folder
      */
-    static verificaInFolderDocumentiAnagrafici(labels) {
+    static verificaInFolderDocumentiAnagrafici(labels, agenzia = null) {
         cy.get('nx-icon[aria-label="Open menu"]').click()
         cy.contains('folder').click()
-        Common.canaleFromPopup()
+        if (agenzia !== null || agenzia !== '1-710000')
+            Common.canaleFromPopup({}, false, agenzia)
+        else
+            Common.canaleFromPopup()
         getIFrame().find('span[class="k-icon k-plus"]:visible').click()
         getIFrame().find('span[class="k-icon k-plus"]:first').click()
         cy.wrap(labels).each((label, i, array) => {

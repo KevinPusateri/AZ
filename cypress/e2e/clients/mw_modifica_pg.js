@@ -95,6 +95,7 @@ after(function () {
 })
 //#endregion Before After
 
+let agenziaCanale
 let urlClient
 describe('Matrix Web : Modifica PG', {
     retries: {
@@ -106,6 +107,10 @@ describe('Matrix Web : Modifica PG', {
     it('Ricercare un cliente PG e verificare il caricamento corretto della scheda del cliente', () => {
         LandingRicerca.searchRandomClient(true, "PG", (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'E' : 'P')
         LandingRicerca.clickRandomResult((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'E' : 'P')
+        cy.get('@Agenzia').then((agenzia) => {
+            cy.log(agenzia)
+            agenziaCanale = agenzia
+        })
         SintesiCliente.retriveClientNameAndAddress().then(currentClient => {
             currentClientPG = currentClient
         })
@@ -132,10 +137,10 @@ describe('Matrix Web : Modifica PG', {
 
     it("Verificare che i consensi/contatti si siano aggiornati correttamente e Verificare il folder (unici + documento)", () => {
         TopBar.search(currentClientPG.name)
-        LandingRicerca.searchAndClickClientePG(currentClientPG.name)
+        LandingRicerca.filtra('PG')
         LandingRicerca.clickClientePG(currentClientPG.name)
         SintesiCliente.checkAtterraggioSintesiCliente(currentClientPG.name)
         DettaglioAnagrafica.verificaDatiDettaglioAnagrafica(clientePGNewData)
-        SintesiCliente.verificaInFolderDocumentiAnagrafici([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel])
+        SintesiCliente.verificaInFolderDocumentiAnagrafici([unicoClienteLebel, unicoDirezionaleLabel, visuraCameraleLebel], agenziaCanale)
     })
 })

@@ -231,6 +231,10 @@ class LandingRicerca {
                     cy.get('lib-scrollable-container').should('be.visible').then(($clienti) => {
                         let schedeClienti = $clienti.find('lib-client-item').not(':contains("Agenzie")')
                         let selectedRandomSchedaCliente = schedeClienti[Math.floor(Math.random() * schedeClienti.length)]
+                        cy.wrap($clienti).find(selectedRandomSchedaCliente).find('div[class="lib-agency-container"]').then(($agency) => {
+                            let agenzia = $agency.text().trim().split(' ')[0].split('-')[0] + "-" + $agency.text().trim().split(' ')[0].split('-')[1]
+                            cy.wrap(agenzia).as('Agenzia')
+                        })
                         cy.wrap($clienti).find(selectedRandomSchedaCliente).click()
 
                         cy.wait(5000)
