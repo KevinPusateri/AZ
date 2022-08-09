@@ -68,7 +68,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
     it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
         HomePage.reloadMWHomePage()
         TopBar.search(cliente)
-        LandingRicerca.filtraRicerca('P')
+        LandingRicerca.filtra('PF','P')
         LandingRicerca.checkClienteNotFound(cliente)
     })
 
@@ -85,6 +85,7 @@ describe('Matrix Web - Hamburger Menu: Cancellazione Clienti ', function () {
     it('Ricercare i clienti in buca di ricerca - accedere alla scheda', function () {
         HomePage.reloadMWHomePage()
         TopBar.search(cliente)
+        LandingRicerca.filtra('PG','P')
         LandingRicerca.checkClienteNotFound(cliente)
     })
 })

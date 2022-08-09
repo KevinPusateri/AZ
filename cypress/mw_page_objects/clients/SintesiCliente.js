@@ -1068,7 +1068,7 @@ class SintesiCliente {
 
         if (!Cypress.env('monoUtenza'))
             cy.intercept({
-                method: 'POST',
+                method: '+(GET|POST)',
                 url: '**/dacontabilita/**'
             }).as('dacontabilita');
         else cy.intercept({
@@ -1076,7 +1076,7 @@ class SintesiCliente {
             url: '**/dacontabilita/**'
         }).as('dacontabilita');
 
-        getIFrame().find('#ButtonQuestOk').click().wait(10000)
+        getIFrame().find('#ButtonQuestOk').click().wait(3000)
         cy.wait('@dacontabilita', { timeout: 60000 })
 
         getIFrame().find('#TabVarieInserimentoTipoPagamento').click().wait(1000)
@@ -1109,7 +1109,6 @@ class SintesiCliente {
         Common.canaleFromPopup()
         getIFrame().find('span[class="k-icon k-plus"]:visible').click()
         getIFrame().find('span[class="k-icon k-plus"]:first').click()
-        debugger
         cy.wrap(labels).each((label, i, array) => {
             getIFrame().find('span').contains(label).click()
         })
@@ -1130,7 +1129,6 @@ class SintesiCliente {
             getIFrame().find('span').contains(folders[i]).dblclick()
             cy.wait(2000)
         }
-        debugger
         cy.wrap(labels).each((label, i, array) => {
             getIFrame().find('span').contains(label).click()
             cy.wait(2000)
@@ -1333,7 +1331,6 @@ class SintesiCliente {
             aliasQuery(req, 'clientReportLifePdf')
         })
 
-        debugger
         cy.get('nx-icon[aria-label="Open menu"]').click().wait(1000)
         //NON DEVE COMPARIRE L'ERRORE
         if (!errorMessage) {
@@ -1429,7 +1426,6 @@ class SintesiCliente {
     static checkLinksFromAutoOnProdottiParticolari(keysAuto) {
         cy.get('.cdk-overlay-container').find('button').contains('Prodotti particolari').click()
         cy.get('.cdk-overlay-container').find('[class="cdk-overlay-pane"]').eq(1).should('exist').and('be.visible').within(() => {
-            debugger
             linksEmissioneAuto.PRODOTTI_PARTICOLARI.deleteKey(keysAuto)
             const linksProdottiParticolari = Object.values(linksEmissioneAuto.PRODOTTI_PARTICOLARI)
             cy.get('div[role="menu"]').find('button').each(($buttonLinks, i) => {
