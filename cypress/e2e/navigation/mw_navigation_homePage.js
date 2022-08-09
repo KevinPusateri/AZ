@@ -263,7 +263,7 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
             TopBar.clickIconSwitchPage('News e Info')
     });
 
-    it('Verica buca di ricerca', function () {
+    it('Verifica Buca di Ricerca', function () {
         TopBar.clickBucaRicerca()
     });
 
