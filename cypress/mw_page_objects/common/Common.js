@@ -53,8 +53,18 @@ class Common {
             "agency": "010712000"
         }
      */
-    static canaleFromPopup(customImpersonification = {}, notWindowOpen = false) {
+    static canaleFromPopup(customImpersonification = {}, notWindowOpen = false, agenzia = null) {
         cy.wait(3000)
+
+        if(agenzia !== null){
+            cy.get('body').then($body => {
+                if ($body.find('div[ngclass="agency-row"]').length > 0) {
+                    cy.wait(2000)
+                    cy.get('div[ngclass="agency-row"]').should('be.visible')
+                    cy.get('div[ngclass="agency-row"]').contains(agenzia).click()
+                }
+            })
+        }
 
         if (Cypress.env('monoUtenza')) {
             cy.get('body').then($body => {
@@ -78,8 +88,8 @@ class Common {
                     else {
                         debugger
                         //Formattiamo la entry
-                        let comp = customImpersonification.agency.substr(0, 2).replace(/^0+/,'')
-                        let ag = customImpersonification.agency.substr(2).replace(/^0+/,'')
+                        let comp = customImpersonification.agency.substr(0, 2).replace(/^0+/, '')
+                        let ag = customImpersonification.agency.substr(2).replace(/^0+/, '')
 
                         cy.get('div[ngclass="agency-row"]').contains(`${comp}-${ag}`).click()
                     }

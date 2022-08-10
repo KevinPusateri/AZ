@@ -32,7 +32,7 @@ let documentType = ''
 //#region Support
 const searchClientWithoutDoc = (documentType) => {
     LandingRicerca.searchRandomClient(true, "PF", "P", false)
-    LandingRicerca.clickRandomResult('PF','P',false)
+    LandingRicerca.clickRandomResult('PF', 'P', false)
     DettaglioAnagrafica.sezioneDocumenti()
     DettaglioAnagrafica.checkDocumento(documentType, false).then(documentIsPresent => {
         if (documentIsPresent)
@@ -89,6 +89,7 @@ describe('Matrix Web : Documenti', function () {
 
     it('Verifica Carta D\'Identità inserita', function () {
         TopBar.search(currentClient.name)
+        LandingRicerca.filtra('PF', 'P')
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
@@ -115,6 +116,7 @@ describe('Matrix Web : Documenti', function () {
 
     it('Verifica Patente', function () {
         TopBar.search(currentClient.name)
+        LandingRicerca.filtra('PF', 'P')
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
@@ -141,6 +143,7 @@ describe('Matrix Web : Documenti', function () {
 
     it('Verifica Passaporto', function () {
         TopBar.search(currentClient.name)
+        LandingRicerca.filtra('PF', 'P')
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
@@ -167,6 +170,7 @@ describe('Matrix Web : Documenti', function () {
 
     it('Verifica Porto D\'Armi', function () {
         TopBar.search(currentClient.name)
+        LandingRicerca.filtra('PF', 'P')
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
@@ -193,6 +197,7 @@ describe('Matrix Web : Documenti', function () {
 
     it('Verifica Tessera Postale', function () {
         TopBar.search(currentClient.name)
+        LandingRicerca.filtra('PF', 'P')
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
@@ -219,6 +224,7 @@ describe('Matrix Web : Documenti', function () {
 
     it('Verifica Altro Documento', function () {
         TopBar.search(currentClient.name)
+        LandingRicerca.filtra('PF', 'P')
         LandingRicerca.clickClientePF(currentClient.name)
         DettaglioAnagrafica.sezioneDocumenti()
         DettaglioAnagrafica.checkDocumento(documentType).then(documentIsPresent => {
