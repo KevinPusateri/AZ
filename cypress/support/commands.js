@@ -178,7 +178,7 @@ Cypress.Commands.add('generateVisuraCameraleLabel', () => {
 })
 
 Cypress.Commands.add('preserveCookies', () => {
-  cy.viewport(1920, 1080)
+  cy.viewport(1280, 1080)
   Cypress.Cookies.defaults({
     preserve: (cookie) => {
       return true;

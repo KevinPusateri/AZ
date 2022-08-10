@@ -17,7 +17,7 @@ class LoginPage {
     static launchMW() {
         cy.clearCookies()
         cy.clearLocalStorage()
-        cy.viewport(1920, 1080)
+        cy.viewport(1280, 1080)
 
         cy.visit('/', { responseTimeout: 31000 }, {
             onBeforeLoad: win => {

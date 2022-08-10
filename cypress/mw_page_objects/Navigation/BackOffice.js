@@ -166,8 +166,9 @@ class BackOffice {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.DENUNCIA_BMP:
-                getIFrame().find('h4').should('be.visible').then($title => {
-                    expect(['Dettaglio cliente', 'Customer details']).to.include($title.text().trim())
+                getIFrame().find('#keyword').should('be.visible')
+                getIFrame().find('h2[data-testid="headline"]').should('be.visible').then($title => {
+                    expect(['Dettagli del cliente', 'Customer details']).to.include($title.text().trim())
                 })
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;

@@ -35,7 +35,7 @@ before(() => {
     cy.getUserWinLogin().then(data => {
         cy.clearCookies()
         cy.clearLocalStorage()
-        cy.viewport(1920, 1080)
+        cy.viewport(1280, 1080)
 
         // PP
         cy.visit('https://portaleagenzie.pp.azi.allianz.it/Auto/ConvenzioniAuto/Main.aspx', { headers: { "Accept-Encoding": "gzip, deflate" }, responseTimeout: 31000 }, {
