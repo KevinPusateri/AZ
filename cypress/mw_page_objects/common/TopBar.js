@@ -60,6 +60,14 @@ const interceptPageNumbers = () => {
 
 }
 
+const interceptPageBackOffice = () => {
+    cy.intercept({
+        method: 'POST',
+        url: '**/api/**',
+    }).as('getBackOffice');
+
+}
+
 //#endregion intercept
 
 const LandingPage = {
@@ -194,16 +202,19 @@ class TopBar extends HomePage {
         cy.url().should('eq', Common.getBaseUrl() + 'clients/')
         cy.get('app-donut-chart').should('be.visible')
         cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
-        cy.screenshot('Verifica Atterraggio "Clients"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Verifica Atterraggio "Clients"', { clip: {width: 2560, height: 1440 }, overwrite: true })
     }
 
     /**
      * Verifica Atterraggio "Backoffice"
      */
     static clickBackOffice() {
+        interceptPageBackOffice()
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
+        cy.wait('@getBackOffice', { timeout: 50000 }).wait(1000)
         cy.url().should('eq', Common.getBaseUrl() + 'back-office')
-        cy.screenshot('Verifica Atterraggio "Backoffice"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.get('app-backoffice-card').should('be.visible')
+        cy.screenshot('Verifica Atterraggio "Backoffice"', { capture: 'fullPage', overwrite: true })
     }
 
     /**

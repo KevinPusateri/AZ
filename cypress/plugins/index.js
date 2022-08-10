@@ -418,7 +418,7 @@ module.exports = (on, config) => {
 
     on("task", {
         cleanScreenshotLog(specName) {
-            let folderToDelete = process.cwd() + "\\cypress\\screenshots\\" + specName.replace('/', '\\')
+            let folderToDelete = process.cwd() + "\\cypress\\screenshots\\*"
             rimraf.sync(folderToDelete)
 
             //Also clean downloads folder
