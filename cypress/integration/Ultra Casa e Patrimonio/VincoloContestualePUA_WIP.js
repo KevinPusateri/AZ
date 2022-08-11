@@ -291,6 +291,7 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   })
 
   it("Chiusura e apertura sezione Clients", () => {
+    cy.pause()
     //Ultra.chiudiFinale()
     cy.get('.nx-breadcrumb-item__text').contains('Clients').click()
 
