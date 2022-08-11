@@ -39,7 +39,7 @@ module.exports = defineConfig({
     urlMWPreprod: 'https://portaleagenzie.pp.azi.allianz.it/matrix/',
     baseUrlPreprod: 'https://portaleagenzie.pp.azi.allianz.it/matrix/',
     baseUrlTest: 'https://portaleagenzie.te.azi.allianzit/matrix/',
-    urlMWTest: 'https://matrix.te.azi.allianzit',
+    urlMWTest: 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F',
     urlSecondWindowTest: 'https://portaleagenzie2.te.azi.allianzit/matrix/',
     urlSecondWindowPreprod: 'https://portaleagenzie2.pp.azi.allianz.it/matrix/',
     profilingUrlPreprod: 'https://profilingbe.pp.azi.allianzit',
