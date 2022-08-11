@@ -35,7 +35,7 @@ module.exports = defineConfig({
     enableLogDB: true,
     secretKey:
       '\\u0054\\u0033\\u0073\\u0037\\u0046\\u0034\\u0063\\u0074\\u0030\\u0072\\u0079\\u0032\\u0030\\u0032\\u0031\\u0024',
-    currentEnv: 'PREPROD',
+    currentEnv: 'TEST',
     urlMWPreprod: 'https://portaleagenzie.pp.azi.allianz.it/matrix/',
     baseUrlPreprod: 'https://portaleagenzie.pp.azi.allianz.it/matrix/',
     baseUrlTest: 'https://portaleagenzie.te.azi.allianzit/matrix/',
@@ -72,7 +72,7 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       return require('./cypress/plugins/index.js')(on, config)
     },
-    experimentalSessionAndOrigin: false,
+    experimentalSessionAndOrigin: true,
     baseUrl: 'https://portaleagenzie.pp.azi.allianz.it/matrix/',
     specPattern: 'cypress/e2e/**/*.{js,jsx,ts,tsx}',
   },
