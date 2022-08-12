@@ -347,8 +347,15 @@ class BurgerMenuSales extends Sales {
                     method: 'POST',
                     url: '**/dacommerciale/**'
                 }).as('getDacommerciale');
+
+                cy.intercept({
+                    method: 'POST',
+                    url: /RicercaDatiAnagraficiRipetitore/
+                }).as('ricercaDatiAnagraficiRipetitore');
+
                 Common.canaleFromPopup()
-                cy.wait('@getDacommerciale', { timeout: 50000 });
+                cy.wait('@getDacommerciale', { timeout: 60000 });
+                cy.wait('@ricercaDatiAnagraficiRipetitore', { timeout: 60000 });
                 getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
