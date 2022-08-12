@@ -246,11 +246,11 @@ class LandingClients {
      * Verifica se gli elementi sono visibili e il menu a tendina sia corretta
      */
     static digitalMe() {
-        cy.get('app-digital-me-main-table').find('tr[class="nx-table-row ng-star-inserted"]').should('be.visible')
-        cy.get('app-digital-me-main-table').find('tr[class="nx-table-row ng-star-inserted"]').first()
+        cy.get('app-digital-me-main-table').find('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible')
+        cy.get('app-digital-me-main-table').find('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').first()
             .find('td').eq(2).then(($td) => {
                 const checkAttivita = $td.text()
-                cy.get('tr[class="nx-table-row ng-star-inserted"]').first().find('button[class="row-more-icon-button"]').click()
+                cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').first().find('button[class="row-more-icon-button"]').click()
                 switch (checkAttivita) {
                     case 'Firma Digital Me':
                     case 'Firma e Pagamento DM':

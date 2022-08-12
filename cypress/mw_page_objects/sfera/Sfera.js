@@ -1448,7 +1448,7 @@ class Sfera {
         return new Cypress.Promise(resolve => {
             if (polizza === null)
                 if (random)
-                    cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+                    cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then((rowsTable) => {
                         let selected = Cypress._.random(rowsTable.length - 1);
                         cy.wrap(rowsTable).eq(selected).within(($sa) => {
                             cy.log($sa.text())
@@ -1539,7 +1539,7 @@ class Sfera {
 
                     cy.wait('@estraiQuietanze', { timeout: 120000 })
                     cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
-                    cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then(() => {
+                    cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then(() => {
                         cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     })
 
@@ -1700,7 +1700,7 @@ class Sfera {
                             NGRA2013.home(true)
                     }
                     cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
-                    cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then(() => {
+                    cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then(() => {
                         cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     })
                     break;
@@ -1910,7 +1910,7 @@ class Sfera {
         return new Cypress.Promise(resolve => {
             if (polizza === null)
                 if (random)
-                    cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+                    cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then((rowsTable) => {
                         let selected = Cypress._.random(rowsTable.length - 1);
                         cy.wrap(rowsTable).eq(selected).within(() => {
                             this.threeDotsMenuContestuale().click({ force: true })
@@ -2324,7 +2324,7 @@ class Sfera {
         this.tableEstrazione()
 
         cy.get('@styleColor').then((color) => {
-            cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
         })
         cy.screenshot('Verifica colori', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
@@ -2348,7 +2348,7 @@ class Sfera {
         //Verifichiamo che la tabella d'estrazione sia presente
         this.tableEstrazione()
 
-        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: white;')
+        cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: white;')
 
         cy.screenshot('Verifica Nessun Colore', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
@@ -2764,7 +2764,7 @@ class Sfera {
 
     static selectRandomContraente() {
         interceptContraenteScheda()
-        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+        cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then((rowsTable) => {
             let selected = Cypress._.random(rowsTable.length - 1);
             cy.wrap(rowsTable).eq(selected).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($Contraente) => {
                 cy.wrap($Contraente).click()
@@ -3116,7 +3116,7 @@ class Sfera {
     static checkVociMenuNotExist(voce) {
 
         // Selezioniamo una riga a random
-        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+        cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then((rowsTable) => {
             let selected = Cypress._.random(rowsTable.length - 1);
             cy.wrap(rowsTable).eq(selected).within(() => {
                 this.threeDotsMenuContestuale().click({ force: true })
@@ -3271,7 +3271,7 @@ class Sfera {
      */
     static checkVociMenuExist(voce) {
         // Selezioniamo una riga a random
-        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+        cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then((rowsTable) => {
             let selected = Cypress._.random(rowsTable.length - 1);
             cy.wrap(rowsTable).eq(selected).within(() => {
                 this.threeDotsMenuContestuale().click({ force: true })
@@ -3379,7 +3379,7 @@ class Sfera {
     * 
     */
     static selezionaRigaRandom() {
-        cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+        cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then((rowsTable) => {
             let selected = Cypress._.random(rowsTable.length - 1);
             cy.wrap(rowsTable).eq(selected).as('selectRiga')
             cy.wrap(rowsTable).eq(selected).within(() => {
@@ -3408,7 +3408,7 @@ class Sfera {
      */
     static checkValoreInColonna(colonna, valore) {
         cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
-            cy.get('tr[class="nx-table-row ng-star-inserted"]').each((rowsTable) => {
+            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').each((rowsTable) => {
                 cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
                     expect($textCell.text().trim()).to.contain(valore)
                 })
@@ -3669,7 +3669,7 @@ class Sfera {
          */
         function selectRandomClientWithPhone() {
             return new Cypress.Promise(resolve => {
-                cy.get('tr[class="nx-table-row ng-star-inserted"]')
+                cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]')
                     .filter(':contains("+39-")').not('Sms')
                     .should('be.visible')
                     .then(($tr) => {
@@ -3692,7 +3692,7 @@ class Sfera {
             // Filtro su polizze con consenso Email SI
             Sfera.filtraSuColonna(Sfera.FILTRI.CONS_EMAIL_POL,Sfera.FILTRI.CONS_EMAIL_POL.values.SI)
             return new Cypress.Promise(resolve => {
-                cy.get('tr[class="nx-table-row ng-star-inserted"]')
+                cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]')
                     .filter(':contains("@")').not('Sms')
                     .should('be.visible')
                     .then(($tr) => {
@@ -3765,7 +3765,7 @@ class Sfera {
         function checkAvviso(type, polizza) {
             Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, polizza)
             let dataInizio = Common.setDate()
-            cy.get('tr[class="nx-table-row ng-star-inserted"]')
+            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]')
                 .filter(':contains("' + polizza + '")').then(($tr) => {
                     let someText = $tr.text().trim().replace(/(\r\n|\n|\r)/gm, "");
                     console.log(someText)

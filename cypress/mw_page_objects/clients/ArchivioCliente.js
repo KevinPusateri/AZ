@@ -88,7 +88,7 @@ class ArchivioCliente {
         cy.get('app-client-archive-dm').should('be.visible')
         cy.get('app-client-archive-dm').find('app-dm-requests-card').should('be.visible')
 
-        cy.get('tr[class="nx-table-row ng-star-inserted"]').first().find('button[class="row-more-icon-button"]').click();
+        cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').first().find('button[class="row-more-icon-button"]').click();
         cy.get('app-digital-me-context-menu').find('[class="digital-me-context-menu-button ng-star-inserted"]').each(($checkLink) => {
             expect($checkLink.text()).not.to.be.empty;
         });

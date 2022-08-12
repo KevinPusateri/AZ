@@ -257,6 +257,11 @@ class Sales {
      * @param {string} radioButton - Radio Button dell'azione veloce all'interno del pannello
      */
     static clickAzioniVeloci(pannello = '', radioButton = '') {
+        cy.intercept({
+            method: 'POST',
+            url: /estraiQuietanze/
+        }).as('estraiQuietanze')
+
         cy.contains('Azioni Veloci').click()
         cy.get('app-fast-actions-modal-content').should('be.visible')
 
@@ -293,8 +298,9 @@ class Sales {
             else if (radioButton === azioniVeloci.CREA_INIZIATIVA) {
                 creaIniziativa()
             } else {
+                cy.wait('@estraiQuietanze', { timeout: 120000 })
                 cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
-                cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible')
+                cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible')
                 cy.screenshot('Verifica ' + radioButton, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             }
 
@@ -321,14 +327,13 @@ class Sales {
         }
 
         function checkAssegnaColore() {
-
             cy.get('div[class="card-bar"]').should('be.visible').its('length').then(elementCount => {
                 let selected = Cypress._.random(elementCount - 1);
                 cy.get('div[class="card-bar"]').eq(selected).click().invoke('attr', 'style').as('styleColor');
                 cy.screenshot('Seleziona Colore', { clip: { x: 0, y: 0, width: 1920, height: 800 }, overwrite: true })
                 cy.contains('Procedi').click()
-
             });
+
             cy.get('app-response').should('be.visible').then(() => {
                 cy.get('h1').should('include.text', 'Colore assegnato con successo')
                 cy.screenshot('Colore assegnato', { clip: { x: 0, y: 0, width: 1920, height: 800 }, overwrite: true })
@@ -342,8 +347,9 @@ class Sales {
             cy.wait('@estrai', { timeout: 50000 });
             cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
             cy.get('#main-table-sfera').should('exist').and('be.visible')
+
             cy.get('@styleColor').then((color) => {
-                cy.get('tr[class="nx-table-row ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+                cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
                 cy.screenshot('Verifica Colori della Tabella ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             })
         }
@@ -854,28 +860,23 @@ class Sales {
      */
     static clickEstraiDettaglio() {
         // fino al primo disponibile
-        var nextCheckbox = cy.get('app-expiring-card').next().find('nx-checkbox').first()
+        var nextCheckbox = cy.get('app-expiring-card').next().find('nx-checkbox').find('input').not('[disabled]')
         nextCheckbox.then(($btn) => {
             var check = true;
             cy.intercept({
                 method: 'POST',
-                url: /dacommerciale*/
+                url: /dacommerciale/
             }).as('getDacommerciale');
             cy.intercept({
                 method: 'POST',
                 url: '**/RicercaDatiAnagraficiRipetitore'
             }).as('getRicercaDatiAnagraficiRipetitore');
-            while (check) {
-                if (!$btn.hasClass('disabled')) {
-                    cy.wrap($btn).click()
-                    cy.get('.details-container').find('button:contains("Estrai")').click()
-                    cy.wait('@getDacommerciale', { timeout: 50000 });
-                    // cy.wait('@getRicercaDatiAnagraficiRipetitore', { timeout: 50000 });
-                    getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
-                    cy.screenshot('Estrazione Dettaglio', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
-                    check = false
-                }
-            }
+            cy.wrap($btn).click()
+            cy.get('.details-container').find('button:contains("Estrai")').click()
+            cy.wait('@getDacommerciale', { timeout: 50000 });
+            // cy.wait('@getRicercaDatiAnagraficiRipetitore', { timeout: 50000 });
+            getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
+            cy.screenshot('Estrazione Dettaglio', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
         })
     }
 
