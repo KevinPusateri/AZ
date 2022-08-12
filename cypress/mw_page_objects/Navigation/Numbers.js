@@ -160,7 +160,7 @@ class Numbers {
      */
     static clickAndCheckAtterraggioPrimoIndiceDigitale() {
         interceptGetAgenziePDF()
-        cy.get('app-digital-indexes').find('lib-card').first().click()
+        cy.get('app-digital-indexes').should('exist').and('be.visible').find('lib-card').first().click()
         cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('a:contains("Apri filtri"):visible')
         cy.screenshot('Verifica atterraggio Primo indice digitale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -247,9 +247,18 @@ class Numbers {
      * Filtro Cambiando il periodo
      * @param {string} year - data: anno
      */
-    static filtriPeriodo(year) {
+    static filtri(year) {
         cy.get('nx-icon[name="filter"]').click()
-        cy.get('app-filters').should('be.visible').within(() => {
+        cy.get('app-filters').should('be.visible').within(($filterDialog) => {
+            //Selezioniamo tutte le Agenzie
+            const check = $filterDialog.find('span:contains("Seleziona tutti")').is(':visible')
+            if (check)
+                cy.contains('Seleziona tutti').should('be.visible').click()
+
+            //Selezioniamo tutte le Compagnie
+            cy.contains('COMPAGNIE').click()
+            cy.contains('span','Tutte').should('be.visible').click()
+
             cy.contains(year).click()
             cy.contains('APPLICA').click()
         })

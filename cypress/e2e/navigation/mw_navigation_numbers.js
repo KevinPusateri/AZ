@@ -210,7 +210,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
 
         it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178 DAN"', function () {
             TopBar.clickNumbers()
-            Numbers.filtriPeriodo('2021')
+            Numbers.filtri('2021')
             Numbers.clickTab('INCENTIVI', 'incentives')
             Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178 DAN')
             Numbers.backToNumbers('incentives')
@@ -219,7 +219,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         it('Verifica su Incentivi aggancio Primo indice dal Panel "GRUPPO INCENTIVATO 178"', function () {
             if (!Cypress.env('monoUtenza')) {
                 TopBar.clickNumbers()
-                Numbers.filtriPeriodo('2021')
+                Numbers.filtri('2021')
                 Numbers.clickTab('INCENTIVI', 'incentives')
                 Numbers.checkAtterraggioPrimoIndiceIncentivi('GRUPPO INCENTIVATO 178')
                 Numbers.backToNumbers('incentives')
@@ -229,7 +229,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         if (Cypress.env('monoUtenza')) {
             it('Verifica su Incentivi aggancio Primo indice dal Panel "AGENZIA 7 - 4549 MONZA"', function () {
                 TopBar.clickNumbers()
-                Numbers.filtriPeriodo('2021')
+                Numbers.filtri('2021')
                 Numbers.clickTab('INCENTIVI', 'incentives')
                 Numbers.checkAtterraggioPrimoIndiceIncentivi('AGENZIA 7 - 4549 MONZA')
                 Numbers.backToNumbers('incentives')
@@ -239,7 +239,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         it('Verifica su Indicatori Operativi aggancio Primo indice digitale', function () {
             TopBar.clickNumbers()
             //Indici Presenti nel periodo 2022
-            Numbers.filtriPeriodo('2022')
+            Numbers.filtri('2022')
             Numbers.clickTab('INDICATORI OPERATIVI', 'operational-indicators')
             Numbers.clickAndCheckAtterraggioPrimoIndiceDigitale()
             Numbers.backToNumbers('operational-indicators')
