@@ -124,7 +124,7 @@ class CampagneCommerciali {
             cy.contains("Verifica stato campagne attive").should('exist').and('be.visible').click()
 
             waitCheckGQL('gqlCampaignsMonitoringTableData')
-            waitCheckGQL('gqlMultipleCampaignMassCommunicationKpi')
+            //waitCheckGQL('gqlMultipleCampaignMassCommunicationKpi')
             waitCheckGQL('gqlCampaignAgent')
 
             cy.contains("Campagne attive").should('exist').and('be.visible')
@@ -170,6 +170,30 @@ class CampagneCommerciali {
         })
     }
 
+    static verificaPresenzaFiltri() {
+        let present = false
+        return new Cypress.Promise((resolve) => {
+            getIFrame().within(($body) => {
+                cy.wrap($body).find('div[class="lib-active-campaigns"]').within(($attive) => {
+                    if ($attive.find('div:contains("Al momento non ci sono campagne disponibili")').length > 0)
+                        resolve(false)
+                    else
+                        present = true
+                })
+            }).then(() => {
+                if (present) {
+                    CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.PERIODO)
+                    CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.TIPOLOGIA_CAMPAGNA)
+                    CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.LINEA_BUSINESS)
+                    CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.SORGENTE_DATI)
+
+                    CampagneCommerciali.resetFiltri()
+                    resolve(true)
+                }
+            })
+        })
+    }
+
     static filtri(filtro, valoreFiltro = undefined) {
         getIFrame().within(() => {
             cy.contains(filtro).should('exist').parent().parent().find('nx-dropdown').click()
@@ -194,26 +218,42 @@ class CampagneCommerciali {
         })
     }
 
-    static vediCampagna() {
-        getIFrame().within(() => {
+    static campagneAttive() {
+
+        return new Cypress.Promise((resolve) => {
             gqlCampaing()
 
-            //clicchiamo sulla prima disponibile
-            cy.contains('Vedi campagna').first().should('exist').click()
+            let present = false
+            getIFrame().within(($body) => {
+                cy.wrap($body).find('div[class="lib-active-campaigns"]').within(($attive) => {
+                    if ($attive.find('div:contains("Al momento non ci sono campagne disponibili")').length > 0)
+                        resolve(false)
+                    else
+                        present = true
+                })
+            }).then(() => {
+                if (present)
+                    getIFrame().within(() => {
+                        //clicchiamo sulla prima disponibile
+                        cy.contains('Vedi campagna').first().should('exist').click()
 
-            waitCheckGQL('gqlCampaign')
-            //waitCheckGQL('gqlTaskTable')
-            //waitCheckGQL('gqlMassCommunicationOrderDetails')
-            waitCheckGQL('gqlCampaignAgent')
-            //waitCheckGQL('gqlCampaignsMonitoring')
+                        waitCheckGQL('gqlCampaign')
+                        //waitCheckGQL('gqlTaskTable')
+                        //waitCheckGQL('gqlMassCommunicationOrderDetails')
+                        waitCheckGQL('gqlCampaignAgent')
+                        //waitCheckGQL('gqlCampaignsMonitoring')
 
-            cy.screenshot('Vedi Campagna', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        cy.screenshot('Vedi Campagna', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-            cy.contains("Indietro").should('exist').and('be.visible').click()
+                        cy.contains("Indietro").should('exist').and('be.visible').click()
 
-            waitCheckGQL('gqlCampaignList')
-            //waitCheckGQL('gqlCampaignsMonitoring')
-            waitCheckGQL('gqlCampaignAgent')
+                        waitCheckGQL('gqlCampaignList')
+                        //waitCheckGQL('gqlCampaignsMonitoring')
+                        waitCheckGQL('gqlCampaignAgent')
+
+                        resolve(true)
+                    })
+            })
         })
     }
 
@@ -229,6 +269,8 @@ class CampagneCommerciali {
                         cy.wrap($inArrivo).find('span:contains("Vedi campagna")').first().should('exist').click()
                         waitCheckGQL('gqlCampaign')
                         waitCheckGQL('gqlCampaignAgent')
+
+                        present = true
                     }
                     else
                         resolve(false)
@@ -260,23 +302,23 @@ class CampagneCommerciali {
 
             let present = false
             getIFrame().within(($body) => {
-                cy.wrap($body).find('div[class="lib-campaign-card"]').within(($campagneNuove) => {
-                    if ($campagneNuove.find('span:contains("Vedi campagna")').length > 0) {
-                        cy.wrap($campagneNuove).find('span:contains("Vedi campagna")').first().should('exist').click()
+                cy.wrap($body).find('div[class="lib-active-campaigns"]').within(($attive) => {
+                    if ($attive.find('div:contains("Al momento non ci sono campagne disponibili")').length > 0)
+                        resolve(false)
+                    else
+                        present = true
+                })
+            }).then(() => {
+                if (present) {
+                    CampagneCommerciali.filtri(CampagneCommerciali.FILTRO.TIPOLOGIA_CAMPAGNA, CampagneCommerciali.VALORE_FILTRO.TIPOLOGIA_CAMPAGNA.ALTRE_INIZIATIVE)
+                    //Verifichiamo che il pulsante 'Configura e attiva' sia abilitato
+                    getIFrame().within(() => {
+                        cy.get('span:contains("Vedi campagna")').first().should('exist').click()
 
                         //Verifichiamo che il pulsante 'Configura e attiva' sia disabilitato
                         waitCheckGQL('gqlCampaign')
                         waitCheckGQL('gqlCampaignAgent')
 
-                        present = true
-                    }
-                    else
-                        resolve(false)
-                })
-            }).then(() => {
-                if (present)
-                    //Verifichiamo che il pulsante 'Configura e attiva' sia abilitato
-                    getIFrame().within(() => {
                         cy.get('button:contains("Configura e attiva")').should('exist').and('be.visible').and('not.have.attr', 'disabled')
 
                         cy.screenshot('Campagne Nuove', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -289,6 +331,7 @@ class CampagneCommerciali {
 
                         resolve(true)
                     })
+                }
             })
         })
     }

@@ -86,7 +86,6 @@ class Common {
                     if (Cypress.$.isEmptyObject(customImpersonification))
                         cy.get('div[ngclass="agency-row"]').contains(Cypress.env('multiUtenza')).click()
                     else {
-                        debugger
                         //Formattiamo la entry
                         let comp = customImpersonification.agency.substr(0, 2).replace(/^0+/, '')
                         let ag = customImpersonification.agency.substr(2).replace(/^0+/, '')
@@ -113,7 +112,6 @@ class Common {
                 }
             })
         }
-
     }
 
     /**
