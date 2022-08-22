@@ -109,7 +109,6 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   })
 
   it("prosegui da start page", () => {
-    cy.pause()
     StartPage.startScopriProtezione()
   })
 
@@ -292,6 +291,7 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   })
 
   it("Chiusura e apertura sezione Clients", () => {
+    cy.pause()
     //Ultra.chiudiFinale()
     cy.get('.nx-breadcrumb-item__text').contains('Clients').click()
 

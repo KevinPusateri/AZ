@@ -2440,7 +2440,7 @@ class Sfera {
         cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
         // Click Le mie viste
-        cy.get('div[class="cdk-overlay-pane"]').first().scrollIntoView().should('be.visible').within(() => {
+        cy.get('div[class="cdk-overlay-pane"]').first().scrollIntoView().scrollIntoView().should('be.visible').within(() => {
             cy.contains('Viste suggerite').click()
         }).then(() => {
 

@@ -47,7 +47,6 @@ let keys = {
     SCHEDA_SINISTRI_GESTIONE: true
 }
 
-
 before(() => {
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')

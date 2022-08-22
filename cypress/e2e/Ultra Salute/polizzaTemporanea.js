@@ -7,9 +7,12 @@
 ///<reference types="cypress"/>
 
 //#region imports
+import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
+
 import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
+import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
@@ -100,9 +103,9 @@ describe("POLIZZA TEMPORANEA", () => {
     })
   })
 
-  it("Emissione Ultra Salute", () => {  
-    Ultra.emissioneUltra(ultraRV.SALUTE)
-    Ultra.selezionaPrimaAgenzia()
+  it("Emissione Ultra Salute", () => {
+    SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
+    Common.canaleFromPopup()
   })
 
   it("Impostazione contratto temporaneo e prosegui", () => {
