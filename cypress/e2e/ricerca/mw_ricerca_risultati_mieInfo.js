@@ -100,7 +100,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
         } else
             LandingRicerca.checkNotExistMieInfo()
         cy.filterProfile(currentProfiling, 'COMMON_ULTRA_BMP').then(profiled => {
-            LandingRicerca.checkSuggesftedLinks('ultra', (profiled) ? true : false)
+            LandingRicerca.checkSuggestedLinks('ultra', (profiled) ? true : false)
         })
 
     })
