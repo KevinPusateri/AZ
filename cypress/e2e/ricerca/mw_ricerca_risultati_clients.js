@@ -67,13 +67,16 @@ describe('Buca di Ricerca - Risultati Clients', function () {
             it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function () {
                 if (Cypress.env('isAvivaBroker')) {
                     TopBar.search('CRISTINA PENACCHIONI')
-                    LandingRicerca.filtra('PF','E')
+                    LandingRicerca.filtra('PF', 'E')
                     LandingRicerca.clickClientePF('CRISTINA PENACCHIONI')
                     SintesiCliente.checkAtterraggioSintesiCliente('CRISTINA PENACCHIONI')
                 }
                 else {
                     TopBar.search('MARINA PUGLIESE')
-                    LandingRicerca.filtra('PF','P')
+                    if (Cypress.env('currentEnv') === 'TEST')
+                        LandingRicerca.filtra('PF', 'P')
+                    else
+                        LandingRicerca.filtra('PF', 'E')
                     LandingRicerca.clickClientePF('MARINA PUGLIESE')
                     SintesiCliente.checkAtterraggioSintesiCliente('MARINA PUGLIESE')
                 }
@@ -84,12 +87,12 @@ describe('Buca di Ricerca - Risultati Clients', function () {
 
             if (!Cypress.env('monoUtenza')) {
                 TopBar.search('FRANCESCO PULINI')
-                LandingRicerca.filtra('PF','E')
+                LandingRicerca.filtra('PF', 'E')
                 LandingRicerca.clickClientePF('FRANCESCO PULINI')
                 SintesiCliente.checkAtterraggioSintesiCliente('PULINI')
             } else {
                 TopBar.search('GIUSEPPE NAZZARRO')
-                LandingRicerca.filtra('PF','E')
+                LandingRicerca.filtra('PF', 'E')
                 LandingRicerca.clickClientePF('GIUSEPPE NAZZARRO')
                 SintesiCliente.checkAtterraggioSintesiCliente('GIUSEPPE NAZZARRO')
             }
