@@ -72,10 +72,10 @@ describe('Buca di Ricerca - Risultati Clients', function () {
                     SintesiCliente.checkAtterraggioSintesiCliente('CRISTINA PENACCHIONI')
                 }
                 else {
-                    TopBar.search('TIZIANA DA SACCO')
-                    LandingRicerca.filtra('PF','E')
-                    LandingRicerca.clickClientePF('TIZIANA DA SACCO')
-                    SintesiCliente.checkAtterraggioSintesiCliente('TIZIANA DA SACCO')
+                    TopBar.search('MARINA PUGLIESE')
+                    LandingRicerca.filtra('PF','P')
+                    LandingRicerca.clickClientePF('MARINA PUGLIESE')
+                    SintesiCliente.checkAtterraggioSintesiCliente('MARINA PUGLIESE')
                 }
             })
         })
