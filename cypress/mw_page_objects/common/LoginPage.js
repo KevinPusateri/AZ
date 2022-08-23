@@ -93,9 +93,15 @@ class LoginPage {
         //Recuperiamo l'utenza in base alla macchina che è in run da tutf.json
         cy.task('getWinUserLogged').then((loggedUser) => {
             cy.fixture("tutf").then(data => {
-                const user = data.users.filter(obj => {
+                let user = data.users.filter(obj => {
                     return obj.userName === loggedUser.username.toUpperCase()
-                })[0]
+                })
+
+                //Nel caso sia su TFS, per eventuali run in parallelo, utilizzo la TUTF003 per AVIVA e la TUTF078 per AZ
+                if(user.length > 1)
+                    (Cypress.env('isAviva')) ? user = user.filter(obj => {return obj.agency.startsWith('14')})[0] : user = user.filter(obj => {return !obj.agency.startsWith('14')})[0]
+                else
+                    user = user[0]
 
                 cy.log('Retrived username : ' + loggedUser.username)
                 cy.decryptLoginPsw().then(psw => {

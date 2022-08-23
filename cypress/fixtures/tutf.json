@@ -46,6 +46,12 @@
             "tutf": "TUTF078",
             "agency": "010710000",
             "agentId": "ARFPULINI2"
+        },
+        {
+            "userName": "TFSSETUP",
+            "tutf": "TUTF003",
+            "agency": "140001519",
+            "agentId": "AAMCASALEGNO"
         }
     ],
     "monoUtenza": {
