@@ -234,6 +234,7 @@ class TopBar extends HomePage {
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.wait('@getNumbers', { timeout: 50000 })
         cy.wait('@gqlTotDamages', { timeout: 50000 })
+        cy.get('span:contains("RICAVI DI AGENZIA")').should('be.visible')
         cy.url().should('include', Common.getBaseUrl() + 'numbers')
         cy.screenshot('Verifica atterraggio "Numbers"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
@@ -460,6 +461,7 @@ class TopBar extends HomePage {
                 cy.get('lib-switch-button-list').contains('Numbers').click()
                 cy.wait('@getNumbers', { timeout: 50000 })
                 cy.wait('@gqlTotDamages', { timeout: 50000 })
+                cy.get('span:contains("RICAVI DI AGENZIA")').should('be.visible')
                 cy.url().should('eq', Common.getBaseUrl() + 'numbers/business-lines')
                 break;
             case LandingPage.BACKOFFICE:
