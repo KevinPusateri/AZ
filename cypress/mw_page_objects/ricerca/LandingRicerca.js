@@ -414,6 +414,8 @@ class LandingRicerca {
             //expect($text.text()).not.to.be.empty
         })
 
+        cy.screenshot('Verifica Buca Suggerimenti', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
 
         cy.get('a[href="/matrix/"]').click()
     }
@@ -433,6 +435,9 @@ class LandingRicerca {
         cy.get('nx-modal-container').find('lib-da-link').each(($linkRicerca, i) => {
             expect($linkRicerca.text().trim()).to.include(links[i]);
         })
+
+        cy.screenshot('Ricerca Classica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         cy.get('nx-modal-container').find('button[aria-label="Close dialog"]').click()
     }
 
@@ -441,6 +446,7 @@ class LandingRicerca {
      */
     static checkNotExistRicercaClassica() {
         cy.get('lib-advice-navigation-section').should('not.contain.text', 'Ricerca classica')
+        cy.screenshot('Ricerca Classica non presente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -532,6 +538,8 @@ class LandingRicerca {
                 cy.contains('Cessato').click()
                 break
         }
+
+        cy.screenshot('Filtri Ricerca', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         cy.contains('APPLICA').click()
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
@@ -636,8 +644,9 @@ class LandingRicerca {
     /**
      * Check Link Suggeriti
      * @param {string} value - Keywork da cercare (in base alla keyword vengono dei suggerimenti di default correlati)
+     * @param {Boolean} isUltraBMP - Verifica se è presente UltraBMP tra i suggerimenti di ricerca
      */
-    static checkSuggestedLinks(value) {
+    static checkSuggestedLinks(value, isUltraBMP = true) {
         let suggLinks = []
         let linkLength = 0
         switch (value.toLocaleLowerCase()) {
@@ -669,14 +678,28 @@ class LandingRicerca {
                     ]
                     linkLength = 2
                 } else {
-                    suggLinks = [
-                        'Allianz Ultra Casa e Patrimonio',
-                        'Allianz Ultra Casa e Patrimonio 2022',
-                        'Allianz Ultra Casa e Patrimonio BMP',
-                        'Allianz Ultra Salute',
-                        'Allianz Ultra Impresa'
-                    ]
-                    linkLength = 5
+                    if (isUltraBMP) {
+                        suggLinks = [
+
+                            'Allianz Ultra Casa e Patrimonio',
+                            'Allianz Ultra Casa e Patrimonio 2022',
+                            'Allianz Ultra Casa e Patrimonio BMP',
+                            'Allianz Ultra Salute',
+                            'Allianz Ultra Impresa'
+                        ]
+                        linkLength = 5
+                    }
+                    else {
+                        suggLinks = [
+
+                            'Allianz Ultra Casa e Patrimonio',
+                            'Allianz Ultra Casa e Patrimonio 2022',
+                            'Allianz Ultra Salute',
+                            'Allianz Ultra Impresa'
+                        ]
+                        linkLength = 4
+                    }
+
                 }
                 break
             case 'bmp':

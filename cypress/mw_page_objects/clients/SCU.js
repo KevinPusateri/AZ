@@ -320,14 +320,17 @@ class SCU {
 
     static checkAggancioRicerca() {
         getSCU().find('#cerca-pers-forinsert-cf').should('exist').and('be.visible')
+        cy.screenshot('Aggancio Ricerca', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     static checkAggancioPolizzePropostePreventivi() {
         getSCU().find('#casella-ricerca').should('exist').and('be.visible')
+        cy.screenshot('Aggancio Polizze Proposte Preventivi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     static checkAggancioRubrica() {
         getIFrameElencoTelefonico().find('input[name="btnCerca"]').invoke('attr', 'value').should('equal', ' Cerca ')
+        cy.screenshot('Aggancio Rubrica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
 }

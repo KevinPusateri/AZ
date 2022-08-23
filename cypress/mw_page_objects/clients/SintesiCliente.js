@@ -1173,6 +1173,9 @@ class SintesiCliente {
         cy.get('app-client-profile-tabs').find('a').contains('SINTESI CLIENTE').should('have.class', 'active')
         if (cliente !== undefined)
             cy.get('.client-name').should('contain.text', String(cliente).toUpperCase().replace(",", ""))
+
+        cy.screenshot('Check Atterraggio Sintesi Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
     }
 
     /**

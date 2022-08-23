@@ -99,6 +99,9 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
             LandingRicerca.checkSubTabMieInfo()
         } else
             LandingRicerca.checkNotExistMieInfo()
-        LandingRicerca.checkSuggestedLinks('ultra')
+        cy.filterProfile(currentProfiling, 'COMMON_ULTRA_BMP').then(profiled => {
+            LandingRicerca.checkSuggesftedLinks('ultra', (profiled) ? true : false)
+        })
+
     })
 })

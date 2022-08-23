@@ -60,6 +60,14 @@ const interceptPageNumbers = () => {
 
 }
 
+const interceptNumbersTotDamages = () =>{
+    cy.intercept('POST', '**/graphql', (req) => {
+        if (req.body.operationName.includes('totDamages')) {
+            req.alias = 'gqlTotDamages'
+        }
+    }).as('gqlTotDamages')
+}
+
 const interceptPageBackOffice = () => {
     cy.intercept({
         method: 'POST',
@@ -222,8 +230,10 @@ class TopBar extends HomePage {
      */
     static clickNumbers() {
         interceptPageNumbers()
+        interceptNumbersTotDamages()
         cy.get('app-product-button-list').find('a').contains('Numbers').click()
         cy.wait('@getNumbers', { timeout: 50000 })
+        cy.wait('@gqlTotDamages', { timeout: 50000 })
         cy.url().should('include', Common.getBaseUrl() + 'numbers')
         cy.screenshot('Verifica atterraggio "Numbers"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
@@ -237,7 +247,7 @@ class TopBar extends HomePage {
         // cy.wait('@getSales', { timeout: 50000 })
         cy.wait('@gqlgetExtractedSferaReceipts', { timeout: 60000 })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
-        cy.screenshot('Verifica atterraggio "Sales"', { capture: 'fullPage' }, { overwrite: true })
+        cy.screenshot('Verifica Atterraggio "Sales"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
 
@@ -446,8 +456,10 @@ class TopBar extends HomePage {
                 break;
             case LandingPage.NUMBERS:
                 interceptPageNumbers()
+                interceptNumbersTotDamages()
                 cy.get('lib-switch-button-list').contains('Numbers').click()
                 cy.wait('@getNumbers', { timeout: 50000 })
+                cy.wait('@gqlTotDamages', { timeout: 50000 })
                 cy.url().should('eq', Common.getBaseUrl() + 'numbers/business-lines')
                 break;
             case LandingPage.BACKOFFICE:
