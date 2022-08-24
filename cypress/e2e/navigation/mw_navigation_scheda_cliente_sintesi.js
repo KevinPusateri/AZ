@@ -35,7 +35,7 @@ let keysRamivari = {
 let keysAuto = {
     PREVENTIVO_MOTOR: true,
     FLOTTE_CONVENZIONI: true,
-    SAFE_DRIVE_AUTOVETTURE: true,
+    SAFE_DRIVE_AUTOVETTURE: false,
     ASSUNZIONE_GUIDATA: true,
     VEICOLI_EPOCA: true,
     LIBRI_MATRICOLA: true,
@@ -64,77 +64,78 @@ before(() => {
             LoginPage.logInMWAdvanced()
 
             // CARDS 
-            cy.getProfiling(data.tutf).then((profiling) => {
+            if (!Cypress.env('internetTesting'))
+                cy.getProfiling(data.tutf).then((profiling) => {
 
-                // AUTO
-                // AUTO_PREVENTIVO && AUTO_RISCHIO_NUOVO
-                cy.filterProfile(profiling, 'AUTO_PREVENTIVO').then(profiledCase1 => {
-                    cy.filterProfile(profiling, 'AUTO_RISCHIO_NUOVO').then(profiledCase2 => {
-                        if (profiledCase1 && profiledCase2)
-                            keysCards.AUTO = true
-                        else
-                            keysCards.AUTO = false
+                    // AUTO
+                    // AUTO_PREVENTIVO && AUTO_RISCHIO_NUOVO
+                    cy.filterProfile(profiling, 'AUTO_PREVENTIVO').then(profiledCase1 => {
+                        cy.filterProfile(profiling, 'AUTO_RISCHIO_NUOVO').then(profiledCase2 => {
+                            if (profiledCase1 && profiledCase2)
+                                keysCards.AUTO = true
+                            else
+                                keysCards.AUTO = false
+                        })
                     })
+
+                    // RAMI VARI
+                    // (RV_PREVENTIVO && RV_RISCHIO_NUOVO) || RV_GESTIONE_GRANDINE
+                    cy.filterProfile(profiling, 'RV_PREVENTIVO').then(profiledCase1 => {
+                        cy.filterProfile(profiling, 'RV_RISCHIO_NUOVO').then(profiledCase2 => {
+                            if (profiledCase1 && profiledCase2)
+                                keysCards.RAMIVARI = true
+                            else
+                                cy.filterProfile(profiling, 'RV_GESTIONE_GRANDINE').then(profiled => {
+                                    keysCards.RAMIVARI = profiled
+                                })
+                        })
+
+                    })
+
+                    // VITA
+                    // VITA_ASSUNZIONE && VITA_PREVENTIVAZIONE
+                    cy.filterProfile(profiling, 'VITA_ASSUNZIONE').then(profiledCase1 => {
+                        cy.filterProfile(profiling, 'VITA_PREVENTIVAZIONE').then(profiledCase2 => {
+                            if (profiledCase1 && profiledCase2)
+                                keysCards.VITA = true
+                            else
+                                keysCards.VITA = false
+                        })
+                    })
+
+
+                    // AUTO
+                    if (keysCards.AUTO) {
+                        cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keysAuto.PREVENTIVO_MOTOR = profiled })
+                        cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keysAuto.FLOTTE_CONVENZIONI = profiled })
+                        cy.filterProfile(profiling, 'COMMON_SAFE_DRIVE').then(profiled => { keysAuto.SAFE_DRIVE_AUTOVETTURE = profiled })
+                        cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.PASSIONE_BLU = profiled })
+                        cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.NUOVA_POLIZZA = profiled })
+                        cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => {
+                            if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
+                                keysAuto.NUOVA_POLIZZA_GUIDATA = false
+                            else
+                                keysAuto.NUOVA_POLIZZA_GUIDATA = profiled
+                        })
+                        cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.NUOVA_POLIZZA_COASSICURAZIONE = profiled })
+                    }
+
+                    // RAMI VARI
+                    if (keysCards.RAMIVARI) {
+                        cy.filterProfile(profiling, 'COMMON_ULTRACASA2022').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022 = profiled })
+                        cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO = profiled })
+                        cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP = profiled })
+                        cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keysRamivari.ALLIANZ_ULTRA_IMPRESA = profiled })
+                        cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keysRamivari.ALLIANZ_ULTRA_SALUTE = profiled })
+                        cy.filterProfile(profiling, 'COMMON_ULTRAPMI_OLDPROD').then(profiled => { keysRamivari.ALLIANZ1_BUSINESS = profiled })
+                        cy.filterProfile(profiling, 'COMMON_ULTRAS_OLDPROD').then(profiled => { keysRamivari.FASQUOTE_UNIVERSO_PERSONA = profiled })
+                        cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASTQUOTE_UNIVERSO_SALUTE = profiled })
+                        cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASTQUOTE_INFORTUNI_CIRCOLAZIONE = profiled })
+                        cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASQUOTE_IMPRESA_SICURA = profiled })
+                        cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASQUOTE_ALBERGO = profiled })
+                        cy.filterProfile(profiling, 'RV_GESTIONE_GRANDINE').then(profiled => { keysRamivari.GESTIONE_GRANDINE = profiled })
+                    }
                 })
-
-                // RAMI VARI
-                // (RV_PREVENTIVO && RV_RISCHIO_NUOVO) || RV_GESTIONE_GRANDINE
-                cy.filterProfile(profiling, 'RV_PREVENTIVO').then(profiledCase1 => {
-                    cy.filterProfile(profiling, 'RV_RISCHIO_NUOVO').then(profiledCase2 => {
-                        if (profiledCase1 && profiledCase2)
-                            keysCards.RAMIVARI = true
-                        else
-                            cy.filterProfile(profiling, 'RV_GESTIONE_GRANDINE').then(profiled => {
-                                keysCards.RAMIVARI = profiled
-                            })
-                    })
-
-                })
-
-                // VITA
-                // VITA_ASSUNZIONE && VITA_PREVENTIVAZIONE
-                cy.filterProfile(profiling, 'VITA_ASSUNZIONE').then(profiledCase1 => {
-                    cy.filterProfile(profiling, 'VITA_PREVENTIVAZIONE').then(profiledCase2 => {
-                        if (profiledCase1 && profiledCase2)
-                            keysCards.VITA = true
-                        else
-                            keysCards.VITA = false
-                    })
-                })
-
-
-                // AUTO
-                if (keysCards.AUTO) {
-                    cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keysAuto.PREVENTIVO_MOTOR = profiled })
-                    cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keysAuto.FLOTTE_CONVENZIONI = profiled })
-                    cy.filterProfile(profiling, 'COMMON_SAFE_DRIVE').then(profiled => { keysAuto.SAFE_DRIVE_AUTOVETTURE = profiled })
-                    cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.PASSIONE_BLU = profiled })
-                    cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.NUOVA_POLIZZA = profiled })
-                    cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => {
-                        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
-                            keysAuto.NUOVA_POLIZZA_GUIDATA = false
-                        else
-                            keysAuto.NUOVA_POLIZZA_GUIDATA = profiled
-                    })
-                    cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.NUOVA_POLIZZA_COASSICURAZIONE = profiled })
-                }
-
-                // RAMI VARI
-                if (keysCards.RAMIVARI) {
-                    cy.filterProfile(profiling, 'COMMON_ULTRACASA2022').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022 = profiled })
-                    cy.filterProfile(profiling, 'COMMON_ULTRA').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO = profiled })
-                    cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP = profiled })
-                    cy.filterProfile(profiling, 'COMMON_ULTRAPMI').then(profiled => { keysRamivari.ALLIANZ_ULTRA_IMPRESA = profiled })
-                    cy.filterProfile(profiling, 'COMMON_ULTRAS').then(profiled => { keysRamivari.ALLIANZ_ULTRA_SALUTE = profiled })
-                    cy.filterProfile(profiling, 'COMMON_ULTRAPMI_OLDPROD').then(profiled => { keysRamivari.ALLIANZ1_BUSINESS = profiled })
-                    cy.filterProfile(profiling, 'COMMON_ULTRAS_OLDPROD').then(profiled => { keysRamivari.FASQUOTE_UNIVERSO_PERSONA = profiled })
-                    cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASTQUOTE_UNIVERSO_SALUTE = profiled })
-                    cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASTQUOTE_INFORTUNI_CIRCOLAZIONE = profiled })
-                    cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASQUOTE_IMPRESA_SICURA = profiled })
-                    cy.filterProfile(profiling, 'RV_PREVENTIVO_FAST_QUOTE').then(profiled => { keysRamivari.FASQUOTE_ALBERGO = profiled })
-                    cy.filterProfile(profiling, 'RV_GESTIONE_GRANDINE').then(profiled => { keysRamivari.GESTIONE_GRANDINE = profiled })
-                }
-            })
         })
     })
 })
@@ -146,7 +147,7 @@ beforeEach(() => {
         TopBar.search('Pulini Francesco')
         SintesiCliente.wait()
     } else if (!Cypress.env('isAviva')) {
-        TopBar.search('SLZNLL54A04H431Q') 
+        TopBar.search('SLZNLL54A04H431Q')
         SintesiCliente.wait()
     } else if (!Cypress.env('isAvivaBroker')) { // Entra in Aviva
         TopBar.search('DRLTMS95L21F257R')

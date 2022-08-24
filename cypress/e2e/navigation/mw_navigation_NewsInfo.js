@@ -32,14 +32,16 @@ before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
-        cy.profilingLinksMenu(data.tutf, keysLinksMenu)
-        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuProdotti)
-        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuIniziative)
-        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuSalesAccademy)
-        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuIlMondoAllianz)
-        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuAntiriciclaggio)
-        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuRisorsePerAgenzia)
-        cy.profilingLinksMenu(data.tutf, keysLinksSubMenuRisorsePerAgente)
+        if (!Cypress.env('internetTesting')) {
+            cy.profilingLinksMenu(data.tutf, keysLinksMenu)
+            cy.profilingLinksMenu(data.tutf, keysLinksSubMenuProdotti)
+            cy.profilingLinksMenu(data.tutf, keysLinksSubMenuIniziative)
+            cy.profilingLinksMenu(data.tutf, keysLinksSubMenuSalesAccademy)
+            cy.profilingLinksMenu(data.tutf, keysLinksSubMenuIlMondoAllianz)
+            cy.profilingLinksMenu(data.tutf, keysLinksSubMenuAntiriciclaggio)
+            cy.profilingLinksMenu(data.tutf, keysLinksSubMenuRisorsePerAgenzia)
+            cy.profilingLinksMenu(data.tutf, keysLinksSubMenuRisorsePerAgente)
+        }
     })
 })
 
