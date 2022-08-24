@@ -223,18 +223,19 @@ function resolve_index_or_name_to_index(index_or_name) {
 }
 
 Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
-  cy.request({
-    method: 'POST',
-    log: false,
-    url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('profilingUrlTest') + '/profilingManagement/personation/' + tutf : Cypress.env('profilingUrlPreprod') + '/profilingManagement/personation/' + tutf,
-    form: true,
-    body: { persUser: getPersUser, channel: getChannel }
-  }).then(resp => {
-    if (resp.status !== 200)
-      assert.fail('Impersonificazione non effettuata correttamente!')
-    //else
-    //cy.wait(2000)
-  })
+  if (!Cypress.env('internetTesting'))
+    cy.request({
+      method: 'POST',
+      log: false,
+      url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('profilingUrlTest') + '/profilingManagement/personation/' + tutf : Cypress.env('profilingUrlPreprod') + '/profilingManagement/personation/' + tutf,
+      form: true,
+      body: { persUser: getPersUser, channel: getChannel }
+    }).then(resp => {
+      if (resp.status !== 200)
+        assert.fail('Impersonificazione non effettuata correttamente!')
+      //else
+      //cy.wait(2000)
+    })
 })
 
 //Permettere di ritornare le chiavi di profilazioni in base all'utente passato

@@ -8,6 +8,7 @@ downloads/
 videos/
 results/
 reports/
+browsers/
 parallel-weights*
 !.env
 
