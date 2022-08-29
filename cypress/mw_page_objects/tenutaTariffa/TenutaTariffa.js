@@ -143,7 +143,7 @@ class TenutaTariffa {
             cy.contains('Calcola').should('be.visible').click({ force: true })
 
             //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner',{timeout: 120000}).should('not.be.visible')
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
 
             //Inseriamo la residenza
             //? se il cliente non è registrato in portafoglio, questa parte non compare
@@ -307,7 +307,7 @@ class TenutaTariffa {
                         cy.contains(re).should('exist').and('be.visible').click()
                         cy.get('input[formcontrolname="indirizzo"]').should('exist').and('be.visible').type(currentCase.Indirizzo)
                         cy.get('input[formcontrolname="civico"]').should('exist').and('be.visible').type(currentCase.Numero_Civico)
-                        
+
                         //?29.08.22 Città ora viene fuori il dropdown di selezione, con compilazione autoamtica di provincia e cap
                         cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune).wait(2000)
                         cy.get('nx-autocomplete-option:visible').within(() => {
@@ -782,6 +782,10 @@ class TenutaTariffa {
                     cy.contains('CONTINUA').should('exist').and('be.visible').click()
                     cy.wait('@getMotor', { timeout: 30000 })
                     cy.wait(1000)
+                } else if (iframe.find(':contains("La data di decorrenza non permetterà il salvataggio del preventivo")').length > 0) {
+                    cy.contains('CONTINUA').should('exist').and('be.visible').click()
+                    cy.wait('@getMotor', { timeout: 30000 })
+                    cy.wait(1000)
                 }
             })
 
@@ -904,17 +908,17 @@ class TenutaTariffa {
             cy.contains('Scegli mese e anno').should('be.visible').click()
 
             //Selezioniamo l'anno
-            cy.get('.nx-calendar-table').within(() =>{
+            cy.get('.nx-calendar-table').within(() => {
                 cy.contains(dataDecorrenza.getFullYear()).click()
             })
 
             //Selezioniamo il mese
-            cy.get('.nx-calendar-table').within(() =>{
-                cy.contains(dataDecorrenza.toLocaleString('default',{month: 'short'})).click()
+            cy.get('.nx-calendar-table').within(() => {
+                cy.contains(dataDecorrenza.toLocaleString('default', { month: 'short' })).click()
             })
 
             //Selezioniamo il giorno
-            cy.get('.nx-calendar-table').within(() =>{
+            cy.get('.nx-calendar-table').within(() => {
                 cy.contains(String(dataDecorrenza.getDate())).click()
             })
             cy.wait('@getMotor', { timeout: 60000 })

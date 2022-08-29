@@ -22,7 +22,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../../fixtures//tariffe_RCA/tariffaCases_RCA_20220701.json'
+import { tariffaCases } from '../../../fixtures//tariffe_RCA/tariffaCases_RCA_20221001.json'
 //#endregion
 
 //?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
@@ -67,7 +67,7 @@ after(function () {
     //#endregion
 })
 
-describe('RC AZ Luglio 2022: ', {
+describe('RC AZ Ottobre 2022: ', {
     retries: {
         runMode: 0,
         openMode: 0,
