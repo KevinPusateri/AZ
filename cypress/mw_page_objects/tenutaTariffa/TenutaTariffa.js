@@ -894,7 +894,6 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
-            cy.pause()
             let dataDecorrenza = calcolaDataDecorrenza(currentCase)
             let formattedDataDecorrenza = String(dataDecorrenza.getDate()).padStart(2, '0') + '/' +
                 String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
@@ -932,8 +931,6 @@ class TenutaTariffa {
                 method: 'GET',
                 url: '**/impostazioni-generali'
             }).as('getImpostazioniGenerali')
-
-            cy.pause()
 
             //Frazionamento
             cy.get('#cart-bar > app-motor-cart > div > div > div.clickAble.nx-grid__column-6 > div > div > div > div > div:nth-child(2) > nx-icon').click()
