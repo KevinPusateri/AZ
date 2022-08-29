@@ -45,7 +45,7 @@
     "npm-run-all": "^4.1.5"
   },
   "config": {
-    "firefox" : ".\\browsers\\FirefoxPortable102\\App\\Firefox\\firefox.exe"
+    "firefox": ".\\browsers\\FirefoxPortable102\\App\\Firefox\\firefox.exe"
   },
   "scripts": {
     "burgerBackOffice": ".\\node_modules\\.bin\\cypress run --browser %npm_package_config_firefox% --spec cypress/e2e/navigationBurger/mw_navigation_burgerMenuBackOffice.js --reporter cypress-mochawesome-reporter --reporter-options \"reportDir=cypress/reports/burgerMenuBackOffice, inlineAssets=true, charts=true, embeddedScreenshots=true, reportPageTitle='Matrix Web Burger Menu BackOffice'\"",
