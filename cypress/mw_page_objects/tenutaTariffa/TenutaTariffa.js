@@ -131,7 +131,7 @@ class TenutaTariffa {
             cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click().wait(1000)
             cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(('0' + myBirthDay.getDate()).slice(-2) + '/' + ('0' + (myBirthDay.getMonth() + 1)).slice(-2) + '/' + myBirthDay.getFullYear()).wait(1000)
 
-            //Attendiamo che il caricamento non sia più visibile
+            //Attendiamo che il caricamento non sia più visibile#
             cy.get('nx-spinner').should('not.be.visible')
             cy.wait(1000)
 
@@ -143,7 +143,7 @@ class TenutaTariffa {
             cy.contains('Calcola').should('be.visible').click({ force: true })
 
             //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible')
+            cy.get('nx-spinner',{timeout: 120000}).should('not.be.visible')
 
             //Inseriamo la residenza
             //? se il cliente non è registrato in portafoglio, questa parte non compare
@@ -307,9 +307,15 @@ class TenutaTariffa {
                         cy.contains(re).should('exist').and('be.visible').click()
                         cy.get('input[formcontrolname="indirizzo"]').should('exist').and('be.visible').type(currentCase.Indirizzo)
                         cy.get('input[formcontrolname="civico"]').should('exist').and('be.visible').type(currentCase.Numero_Civico)
-                        cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune)
-                        cy.get('input[formcontrolname="provincia"]').should('exist').and('be.visible').type(currentCase.Provincia)
-                        cy.get('input[formcontrolname="cap"]').should('exist').and('be.visible').type(currentCase.CAP)
+                        
+                        //?29.08.22 Città ora viene fuori il dropdown di selezione, con compilazione autoamtica di provincia e cap
+                        cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune).wait(2000)
+                        cy.get('nx-autocomplete-option:visible').within(() => {
+                            cy.get('.nx-autocomplete-option__label').first().click()
+                        })
+                        // cy.get('input[formcontrolname="provincia"]').should('exist').and('be.visible').type(currentCase.Provincia)
+                        // cy.get('input[formcontrolname="cap"]').should('exist').and('be.visible').type(currentCase.CAP)
+
                         cy.get('nx-dropdown[formcontrolname="professione"]').should('exist').and('be.visible').click()
                         if (currentCase.Professione.includes('('))
                             cy.contains(currentCase.Professione).should('exist').click()
@@ -365,7 +371,7 @@ class TenutaTariffa {
             cy.get('nx-spinner').should('not.be.visible')
 
             //! Riclicchiamo su AVANTI (dopo che i textbox non sono più rossi)
-            cy.get('span[class="page-title"]').invoke('text').then(pageTitle => {
+            cy.get('h3:last').invoke('text').then(pageTitle => {
                 if (!pageTitle.includes('Veicolo')) {
                     cy.contains('AVANTI').should('exist').and('be.visible').click()
                     //Attendiamo che il caricamento non sia più visibile
@@ -888,6 +894,7 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
+            cy.pause()
             let dataDecorrenza = calcolaDataDecorrenza(currentCase)
             let formattedDataDecorrenza = String(dataDecorrenza.getDate()).padStart(2, '0') + '/' +
                 String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
@@ -925,6 +932,8 @@ class TenutaTariffa {
                 method: 'GET',
                 url: '**/impostazioni-generali'
             }).as('getImpostazioniGenerali')
+
+            cy.pause()
 
             //Frazionamento
             cy.get('#cart-bar > app-motor-cart > div > div > div.clickAble.nx-grid__column-6 > div > div > div > div > div:nth-child(2) > nx-icon').click()

@@ -4,6 +4,7 @@ class ArchivioCliente {
 
     static clickTabArchivioCliente() {
         cy.contains('ARCHIVIO CLIENTE').click()
+        cy.contains('div','Not').should('exist').and('be.visible')
     }
 
     static clickSubTab(subTab) {
