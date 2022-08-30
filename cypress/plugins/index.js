@@ -273,9 +273,6 @@ module.exports = (on, config) => {
             // For Firefox 102
             launchOptions.args.push('-safe-mode')
 
-            //For Firefox 102
-            launchOptions.args.push('-safe-mode')
-
             //Necessario per queli applicativi (tipo LM) che utilizzano ancora applet java
             //Vado a prendere Allianz IO Web Ext
             launchOptions.extensions.push(process.cwd() + "\\extensions\\allianziowebext@allianz.it.xpi")
