@@ -365,6 +365,7 @@ const ClusterMotor = {
     IN_MORA: "In mora",
     FUORI_MORA: "Fuori mora",
     SINISTROSE: "Sinistrose",
+    CON_INIZIATIVE_APERTE: "Con iniziative aperte"
 }
 
 /**
@@ -501,6 +502,13 @@ const Filtri = {
         values: {
             SI: 'Si',
             NO: 'No'
+        }
+    },
+    AP_CL:{
+        key: "Ap.",
+        values:{
+            UNA_ATTIVITA: '1',
+            DUE_ATTIVITA: '2'
         }
     }
 }
@@ -982,7 +990,7 @@ class Sfera {
     }
 
     /**
-     * Funzione che ritorna le colonne della vista Quietanze Scartate
+     * Funzione che ritorna le colonne della vista Standard
      * @returns {ColumnStandard} Colonne disponibili
      */
     static get COLUMNSTANDARD() {
@@ -2264,14 +2272,30 @@ class Sfera {
 
         cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).click().type(dataInizio).wait(1000)
 
-        //Impostiamo la data di fine estrazione
-        if (dataFine === undefined) {
+        //Impostiamo la data di fine estrazione (utilizziamo il calendario siccome ogni tanto non setta la data via typing)
+        let dataFineCalendar
+        if (dataFine === undefined)
             //Se non specificata la data, settiamo automaticamente la data odierna
-            let today = new Date()
-            dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
-        }
+            dataFineCalendar = new Date()
+        else
+            dataFineCalendar = new Date(dataFine.split('/')[2], parseInt(dataFine.split('/')[1]), parseInt(dataFine.split('/')[0]))
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(700).type(dataFine).wait(700).type('{esc}').wait(1000)
+        cy.get('nx-icon[name="calendar"]:last').click().wait(500)
+        cy.contains('Scegli il mese e l\'anno').should('be.visible').click()
+        //Selezioniamo l'anno
+        cy.get('.nx-calendar-table').within(() => {
+            cy.contains(dataFineCalendar.getFullYear()).click()
+        })
+
+        //Selezioniamo il mese
+        cy.get('.nx-calendar-table').within(() => {
+            cy.contains(dataFineCalendar.toLocaleString('default', { month: 'short' })).click()
+        })
+
+        //Selezioniamo il giorno
+        cy.get('.nx-calendar-table').within(() => {
+            cy.contains(String(dataFineCalendar.getDate())).click()
+        })
 
         //Clicchiamo su estrai
         if (performEstrai) this.estrai()
@@ -3357,7 +3381,7 @@ class Sfera {
     }
 
     /**
-     * It checks if the tooltip of a column header is correct.
+     * It checks if the tooltip of all columns headers are correct
      * @param {Object} columns - columns of the view 
      */
     static checkTooltipHeadersColonne(columns) {
@@ -3416,6 +3440,18 @@ class Sfera {
         })
     }
 
+    static checkToolTipRigaByColonna(colonna, valore){
+        cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
+            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').each((rowsTable) => {
+                cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
+                    cy.wrap($textCell).scrollIntoView()
+                    cy.wait(2000)
+                    cy.wrap($textCell).rightclick().focused().wait(1500)
+                })
+            })
+        })
+    }
+
     static checkExistRipetitoreDati(vista, dataInizio, dataFine) {
         cy.intercept(estraiTotaleQuietanzeScartate).as('estraiTotaleQuietanzeScartate')
         switch (vista) {
@@ -3426,7 +3462,6 @@ class Sfera {
                         expect(contents.text().trim()).to.include(dataFine)
                         expect(contents.text().trim()).to.include('Motor')
                         expect(contents.text().trim()).to.include('quietanzamento on-line in: Viste suggerite > Carico Mancante')
-
                     })
                 break
             default:
@@ -3690,7 +3725,7 @@ class Sfera {
 
         function selectRandomClientWithEmail() {
             // Filtro su polizze con consenso Email SI
-            Sfera.filtraSuColonna(Sfera.FILTRI.CONS_EMAIL_POL,Sfera.FILTRI.CONS_EMAIL_POL.values.SI)
+            Sfera.filtraSuColonna(Sfera.FILTRI.CONS_EMAIL_POL, Sfera.FILTRI.CONS_EMAIL_POL.values.SI)
             return new Cypress.Promise(resolve => {
                 cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]')
                     .filter(':contains("@")').not('Sms')
