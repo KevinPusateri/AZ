@@ -1053,6 +1053,8 @@ class SintesiCliente {
     static cancellaCliente() {
         cy.get('nx-icon[aria-label="Open menu"]').click();
         cy.contains('Cancellazione cliente').click();
+        cy.screenshot('Cancella Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         cy.contains('Cancella cliente').click();
         cy.contains('Ok').click();
     }
@@ -1076,6 +1078,8 @@ class SintesiCliente {
             url: '**/dacontabilita/**'
         }).as('dacontabilita');
 
+        cy.screenshot('Questionario', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         getIFrame().find('#ButtonQuestOk').click().wait(3000)
         cy.wait('@dacontabilita', { timeout: 60000 })
 
@@ -1090,11 +1094,15 @@ class SintesiCliente {
             url: /QuestionariWeb/
         }).as('questionariWeb');
 
+        cy.screenshot('Cassa', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         getIFrame().find('#TabVarieInserimentoButton').click().wait(8000)
 
         cy.wait('@questionariWeb', { timeout: 60000 })
 
         getIFrame().within(($frame) => {
+        cy.screenshot('Emetti Plein Air', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
             $frame.find('#ButtonQuestOk').click()
         })
     }
@@ -1115,6 +1123,8 @@ class SintesiCliente {
         cy.wrap(labels).each((label, i, array) => {
             getIFrame().find('span').contains(label).click()
         })
+
+        cy.screenshot('Verifica Folder Documenti Anagrafici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -1163,6 +1173,8 @@ class SintesiCliente {
         cy.get('nx-icon[class*=location]').parent().get('div').should('contain.text', cliente.provincia)
         //Verifica email
         cy.get('nx-icon[class*=mail]').parent().get('div').should('contain.text', String(cliente.email).toLowerCase())
+
+        cy.screenshot('Verifica Dati Spalla Sinistra', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**

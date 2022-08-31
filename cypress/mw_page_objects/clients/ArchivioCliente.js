@@ -5,6 +5,7 @@ class ArchivioCliente {
     static clickTabArchivioCliente() {
         cy.contains('ARCHIVIO CLIENTE').click()
         cy.contains('div','Not').should('exist').and('be.visible')
+        cy.screenshot('Archivio Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     static clickSubTab(subTab) {
@@ -117,6 +118,8 @@ class ArchivioCliente {
 
     static verificaCardComunicazioni(etichetta) {
         cy.get('.card-title').should('contain.text', etichetta)
+        cy.screenshot('Comunicazioni', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
     }
 
     static verificaUnico() {

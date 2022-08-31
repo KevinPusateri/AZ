@@ -28,6 +28,8 @@ class DettaglioAnagrafica {
         })
         cy.contains('DETTAGLIO ANAGRAFICA').click()
 
+        cy.screenshot('Dettaglio Anagrafica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         cy.wait('@gqlClient', { requestTimeout: 30000 })
 
         if (cliente.isPEC)
