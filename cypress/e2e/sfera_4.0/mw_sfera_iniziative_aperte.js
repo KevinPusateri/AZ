@@ -80,8 +80,7 @@ afterEach(function () {
 if (!Cypress.env('isSecondWindow'))
     describe('Matrix Web : Sfera 4.0 - Iniziative Aperte', function () {
         it('Accedere a Sfera 4.0 - Estrai con Corretto Caricamento Dati', function () {
-            Sfera.setDateEstrazione()
-            Sfera.estrai()
+            Sfera.setDateEstrazione(true)
         })
 
         it('Verificare la presenza del cluster "Con iniziative aperte", selezionarlo e verificare il corretto funzionamento e valorizzazione', function () {
@@ -89,21 +88,21 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.CON_INIZIATIVE_APERTE, true)
         })
 
-        it('Verificare la presenza della colonna "Iniziative cl" in tabella', function () {
-            Sfera.checkColonnaPresente('Iniziative Cl')
-        })
+        // it('Verificare la presenza della colonna "Iniziative cl" in tabella', function () {
+        //     Sfera.checkColonnaPresente('Iniziative Cl')
+        // })
 
-        it('Verificare che compaia il tooltip corrispondente su Iniziative Cl "Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente"', function () {
-            Sfera.checkTooltipSingleColumn({
-                key: 'Iniziative Cl',
-                tooltip: 'Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente'
-            })
-        })
+        // it('Verificare che compaia il tooltip corrispondente su Iniziative Cl "Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente"', function () {
+        //     Sfera.checkTooltipSingleColumn({
+        //         key: 'Iniziative Cl',
+        //         tooltip: 'Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente'
+        //     })
+        // })
 
-        it('Verificare la presenza della colonna "Ap. Cl" in tabella', function () {
-            //? Siccole Cl è a capo e nell'header hanno inserito un <br>, verifico direttamente Ap.
-            Sfera.checkColonnaPresente('Ap.')
-        })
+        // it('Verificare la presenza della colonna "Ap. Cl" in tabella', function () {
+        //     //? Siccole Cl è a capo e nell'header hanno inserito un <br>, verifico direttamente Ap.
+        //     Sfera.checkColonnaPresente('Ap.')
+        // })
 
         it('Verificare tooltip su ogni riga della colonna Ap.Cl che contenga Iniziativa, Assegnatario, Data Scad. e Tipologia', function () {
             Sfera.checkToolTipRigaByColonna(Sfera.FILTRI.AP_CL)

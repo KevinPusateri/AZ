@@ -504,9 +504,9 @@ const Filtri = {
             NO: 'No'
         }
     },
-    AP_CL:{
+    AP_CL: {
         key: "Ap.",
-        values:{
+        values: {
             UNA_ATTIVITA: '1',
             DUE_ATTIVITA: '2'
         }
@@ -2282,6 +2282,7 @@ class Sfera {
 
         cy.get('nx-icon[name="calendar"]:last').click().wait(500)
         cy.contains('Scegli il mese e l\'anno').should('be.visible').click()
+
         //Selezioniamo l'anno
         cy.get('.nx-calendar-table').within(() => {
             cy.contains(dataFineCalendar.getFullYear()).click()
@@ -2294,7 +2295,9 @@ class Sfera {
 
         //Selezioniamo il giorno
         cy.get('.nx-calendar-table').within(() => {
-            cy.contains(String(dataFineCalendar.getDate())).click()
+            //? mantieni gli spazi nella regexp in quanto sono presenti nel cal
+            let exactDate = new RegExp('\^ ' + dataFineCalendar.getDate() + ' \$');
+            cy.contains(exactDate).click()
         })
 
         //Clicchiamo su estrai
@@ -3440,15 +3443,27 @@ class Sfera {
         })
     }
 
-    static checkToolTipRigaByColonna(colonna, valore){
+    static checkToolTipRigaByColonna(colonna, valore) {
         cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
-            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').each((rowsTable) => {
-                cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
-                    cy.wrap($textCell).scrollIntoView()
-                    cy.wait(2000)
-                    cy.wrap($textCell).rightclick().focused().wait(1500)
-                })
-            })
+            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]:first').find('td').eq(14).scrollIntoView()
+            cy.wait(1000)
+            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]:first').find('td').eq(14).realHover()
+            cy.pause()
+            // cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').then((rowsTable) => {
+            //     for (let index = 0; index < rowsTable.length; index++) {
+            //         cy.wrap(rowsTable[index]).find('td').eq(i - 2).then(($textCell) => {
+            //             cy.wrap($textCell).rightclick()
+            //         })
+            //     }
+            // })
+
+            // cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').each((rowsTable) => {
+            //     //effettuiamo lo scrollIntoView
+            //     //cy.wrap(rowsTable).find('td').eq(i - 2).first().scrollIntoView().wait(500)
+            //     cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
+            //         cy.wrap($textCell).invoke('show').click().
+            //     })
+            // })
         })
     }
 
