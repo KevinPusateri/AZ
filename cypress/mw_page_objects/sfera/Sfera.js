@@ -3444,11 +3444,11 @@ class Sfera {
     }
 
     static checkToolTipRigaByColonna(colonna, valore) {
+        cy.get('tbody > tr[nxtablerow]').first().find('td').eq(12).scrollIntoView()
+        cy.pause()
+        cy.get('tbody > tr[nxtablerow]').first().find('td').eq(14).realHover()
+        cy.pause()
         cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
-            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]:first').find('td').eq(14).scrollIntoView()
-            cy.wait(1000)
-            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]:first').find('td').eq(14).realHover()
-            cy.pause()
             // cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').then((rowsTable) => {
             //     for (let index = 0; index < rowsTable.length; index++) {
             //         cy.wrap(rowsTable[index]).find('td').eq(i - 2).then(($textCell) => {
