@@ -423,6 +423,11 @@ const AzioniVeloci = {
  * @enum {Object}
  */
 const Filtri = {
+    COMMON:{
+        values:{
+            RANDOM: "RANDOM"
+        }
+    },
     INFO: {
         key: "Info",
         values: {
@@ -509,6 +514,12 @@ const Filtri = {
         values: {
             UNA_ATTIVITA: '1',
             DUE_ATTIVITA: '2'
+        }
+    },
+    INIZIATIVE_CL: {
+        key: "Iniziative Cl",
+        values: {
+            VUOTO: "Vuoto"
         }
     }
 }
@@ -1388,35 +1399,51 @@ class Sfera {
     /**
     * It clicks on a column header, then it clicks on a checkbox in a popover.
     * @param {Filtri} filtro da utilizzare
-    * @param {String} valore da ricercare
+    * @param {String} valore da ricercare, se 'RANDOM' sceglie un valore a caso
     */
     static filtraSuColonna(filtro, valore) {
-        cy.get('thead').within(() => {
-            if (filtro === Filtri.INFO)
-                cy.get('th[class~="customBandierinaSticky"]').find('nx-icon:last').click()
-            else
-                cy.get(`div:contains(${filtro.key}):first`).scrollIntoView().parent().find('nx-icon:last').click()
-        })
 
-        if (filtro === Filtri.ULT_RICH_AVVISO_CPP) {
-            cy.pause()
-            cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
-                cy.get('input').type(valore)
-                cy.wait(500)
-                cy.get('span[class="nx-checkbox__control"]:first:visible').click()
+        if(valore === 'RANDOM'){
+            cy.get('thead').within(() => {
+                    cy.get(`div:contains(${filtro.key}):first`).scrollIntoView().parent().find('nx-icon:last').click()
             })
-        } else {
-            if (filtro === Filtri.INFO)
-                cy.get('div[class="filterPopover filterPopoverV2 ng-star-inserted"]').within(() => {
-                    cy.get(`span:contains(${valore})`).click()
+            cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
+                
+                cy.get('nx-checkbox-group').within((checkBoxes)=>{
+                    let randomCheckBox = Cypress._.random(1,checkBoxes.find('nx-checkbox').length - 1);
+                    cy.get('nx-checkbox').eq(randomCheckBox).click()
+                    cy.get('nx-checkbox').eq(randomCheckBox).invoke('text').as('randomValueFiltered')
                 })
-            else
+            })
+        }
+        else
+        {
+            cy.get('thead').within(() => {
+                if (filtro === Filtri.INFO)
+                    cy.get('th[class~="customBandierinaSticky"]').find('nx-icon:last').click()
+                else
+                    cy.get(`div:contains(${filtro.key}):first`).scrollIntoView().parent().find('nx-icon:last').click()
+            })
+    
+            if (filtro === Filtri.ULT_RICH_AVVISO_CPP) {
                 cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
-
-                    cy.get('input:visible').type(valore)
+                    cy.get('input').type(valore)
                     cy.wait(500)
-                    cy.get('span[class="nx-checkbox__control"]:visible').click()
+                    cy.get('span[class="nx-checkbox__control"]:first:visible').click()
                 })
+            } else {
+                if (filtro === Filtri.INFO)
+                    cy.get('div[class="filterPopover filterPopoverV2 ng-star-inserted"]').within(() => {
+                        cy.get(`span:contains(${valore})`).click()
+                    })
+                else
+                    cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
+    
+                        cy.get('input:visible').type(valore)
+                        cy.wait(500)
+                        cy.get('span[class="nx-checkbox__control"]:visible').click()
+                    })
+            }
         }
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
         cy.contains('Applica').should('be.enabled').click().wait(5000)
@@ -3435,35 +3462,37 @@ class Sfera {
      */
     static checkValoreInColonna(colonna, valore) {
         cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
-            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').each((rowsTable) => {
+            cy.get('tbody > tr[nxtablerow]').each((rowsTable) => {
                 cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
-                    expect($textCell.text().trim()).to.contain(valore)
+                    expect($textCell.text().trim()).to.contain(valore.trim())
                 })
             })
         })
     }
 
     static checkToolTipRigaByColonna(colonna, valore) {
-        cy.get('tbody > tr[nxtablerow]').first().find('td').eq(12).scrollIntoView()
-        cy.pause()
-        cy.get('tbody > tr[nxtablerow]').first().find('td').eq(14).realHover()
-        cy.pause()
         cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
-            // cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').then((rowsTable) => {
-            //     for (let index = 0; index < rowsTable.length; index++) {
-            //         cy.wrap(rowsTable[index]).find('td').eq(i - 2).then(($textCell) => {
-            //             cy.wrap($textCell).rightclick()
-            //         })
-            //     }
-            // })
+            cy.get('tbody > tr[nxtablerow]').then((rowsTable) => {
 
-            // cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').each((rowsTable) => {
-            //     //effettuiamo lo scrollIntoView
-            //     //cy.wrap(rowsTable).find('td').eq(i - 2).first().scrollIntoView().wait(500)
-            //     cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
-            //         cy.wrap($textCell).invoke('show').click().
-            //     })
-            // })
+                let myCheckedRow = Cypress._.random(5, rowsTable.length - 1)
+                //Effettuiamo una scrollIntoView su qualche colonna precednete
+                cy.get('tbody > tr[nxtablerow]').eq(myCheckedRow).find('td').eq(i - 5).scrollIntoView()
+                cy.wrap(rowsTable[myCheckedRow]).find('td').eq(i - 2).then(($textCell) => {
+                    cy.wrap($textCell).realHover({ scrollBehavior: 'center' })
+
+                    cy.get('.cdk-overlay-container').within((tooltip) => {
+                        expect(tooltip.text()).not.to.be.empty
+                        expect(tooltip.text()).to.include(valore)
+                    })
+
+                    //Oltre che verificare il valore del tooltip, verifio il numero di righe corrispondenti
+                    if (colonna === Sfera.FILTRI.AP_CL) {
+                        cy.get('.cdk-overlay-container').within(() => {
+                            cy.get('tbody').find('tr').should('have.length',parseInt($textCell.text()))
+                        })
+                    }
+                })
+            })
         })
     }
 

@@ -5,7 +5,6 @@
 /// <reference types="Cypress" />
 
 //#region import
-import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import Sfera from "../../mw_page_objects/sfera/Sfera"
@@ -20,18 +19,6 @@ const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
-
-//#region global variabled
-let dataInizio = Common.setDate(undefined, 1, true)
-
-let options = {
-    retries: {
-        runMode: 0,
-        openMode: 0,
-    }
-}
-//#endregion
-
 
 //#region Before After
 before(() => {
@@ -88,24 +75,31 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.CON_INIZIATIVE_APERTE, true)
         })
 
-        // it('Verificare la presenza della colonna "Iniziative cl" in tabella', function () {
-        //     Sfera.checkColonnaPresente('Iniziative Cl')
-        // })
+        it('Verificare la presenza della colonna "Iniziative Cl" in tabella', function () {
+            Sfera.checkColonnaPresente('Iniziative Cl')
+        })
 
-        // it('Verificare che compaia il tooltip corrispondente su Iniziative Cl "Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente"', function () {
-        //     Sfera.checkTooltipSingleColumn({
-        //         key: 'Iniziative Cl',
-        //         tooltip: 'Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente'
-        //     })
-        // })
+        it('Verificare che compaia il tooltip corrispondente su Iniziative Cl "Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente"', function () {
+            Sfera.checkTooltipSingleColumn({
+                key: 'Iniziative Cl',
+                tooltip: 'Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente'
+            })
+        })
 
-        // it('Verificare la presenza della colonna "Ap. Cl" in tabella', function () {
-        //     //? Siccole Cl è a capo e nell'header hanno inserito un <br>, verifico direttamente Ap.
-        //     Sfera.checkColonnaPresente('Ap.')
-        // })
+        it('Verificare la presenza della colonna "Ap. Cl" in tabella', function () {
+            //? Siccole Cl è a capo e nell'header hanno inserito un <br>, verifico direttamente Ap.
+            Sfera.checkColonnaPresente('Ap.')
+        })
 
-        it('Verificare tooltip su ogni riga della colonna Ap.Cl che contenga Iniziativa, Assegnatario, Data Scad. e Tipologia', function () {
-            Sfera.checkToolTipRigaByColonna(Sfera.FILTRI.AP_CL)
+        it('Verificare tooltip riga della colonna Ap.Cl che contenga Iniziativa, Assegnatario, Data Scad. e Tipologia e il numero di iniziative aperte', function () {
+            Sfera.checkToolTipRigaByColonna(Sfera.FILTRI.AP_CL, 'Iniziativa')
+        })
+
+        it('Verifica visualizzazione filtro excel sulla colonna Iniziative Cl', function () {
+            Sfera.filtraSuColonna(Sfera.FILTRI.INIZIATIVE_CL, Sfera.FILTRI.COMMON.values.RANDOM)
+            cy.get('@randomValueFiltered').then(value => {
+                Sfera.checkValoreInColonna(Sfera.FILTRI.INIZIATIVE_CL, value)
+            })
         })
     })
 else
