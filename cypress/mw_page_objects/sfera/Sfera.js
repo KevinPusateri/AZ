@@ -423,8 +423,8 @@ const AzioniVeloci = {
  * @enum {Object}
  */
 const Filtri = {
-    COMMON:{
-        values:{
+    COMMON: {
+        values: {
             RANDOM: "RANDOM"
         }
     },
@@ -1403,28 +1403,27 @@ class Sfera {
     */
     static filtraSuColonna(filtro, valore) {
 
-        if(valore === 'RANDOM'){
+        if (valore === 'RANDOM') {
             cy.get('thead').within(() => {
-                    cy.get(`div:contains(${filtro.key}):first`).scrollIntoView().parent().find('nx-icon:last').click()
+                cy.get(`div:contains(${filtro.key}):first`).scrollIntoView().parent().find('nx-icon:last').click()
             })
             cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
-                
-                cy.get('nx-checkbox-group').within((checkBoxes)=>{
-                    let randomCheckBox = Cypress._.random(1,checkBoxes.find('nx-checkbox').length - 1);
+
+                cy.get('nx-checkbox-group').within((checkBoxes) => {
+                    let randomCheckBox = Cypress._.random(1, checkBoxes.find('nx-checkbox').length - 1);
                     cy.get('nx-checkbox').eq(randomCheckBox).click()
                     cy.get('nx-checkbox').eq(randomCheckBox).invoke('text').as('randomValueFiltered')
                 })
             })
         }
-        else
-        {
+        else {
             cy.get('thead').within(() => {
                 if (filtro === Filtri.INFO)
                     cy.get('th[class~="customBandierinaSticky"]').find('nx-icon:last').click()
                 else
                     cy.get(`div:contains(${filtro.key}):first`).scrollIntoView().parent().find('nx-icon:last').click()
             })
-    
+
             if (filtro === Filtri.ULT_RICH_AVVISO_CPP) {
                 cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
                     cy.get('input').type(valore)
@@ -1438,7 +1437,7 @@ class Sfera {
                     })
                 else
                     cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
-    
+
                         cy.get('input:visible').type(valore)
                         cy.wait(500)
                         cy.get('span[class="nx-checkbox__control"]:visible').click()
@@ -3478,7 +3477,11 @@ class Sfera {
                 //Effettuiamo una scrollIntoView su qualche colonna precednete
                 cy.get('tbody > tr[nxtablerow]').eq(myCheckedRow).find('td').eq(i - 5).scrollIntoView()
                 cy.wrap(rowsTable[myCheckedRow]).find('td').eq(i - 2).then(($textCell) => {
-                    cy.wrap($textCell).realHover({ scrollBehavior: 'center' })
+                    //? cypress-real-events works with Chrome Dev Tools
+                    if (Cypress.browser.name === 'firefox')
+                        cy.wrap($textCell).rightclick()
+                    else
+                        cy.wrap($textCell).realHover({ scrollBehavior: 'center' })
 
                     cy.get('.cdk-overlay-container').within((tooltip) => {
                         expect(tooltip.text()).not.to.be.empty
@@ -3488,7 +3491,7 @@ class Sfera {
                     //Oltre che verificare il valore del tooltip, verifio il numero di righe corrispondenti
                     if (colonna === Sfera.FILTRI.AP_CL) {
                         cy.get('.cdk-overlay-container').within(() => {
-                            cy.get('tbody').find('tr').should('have.length',parseInt($textCell.text()))
+                            cy.get('tbody').find('tr').should('have.length', parseInt($textCell.text()))
                         })
                     }
                 })

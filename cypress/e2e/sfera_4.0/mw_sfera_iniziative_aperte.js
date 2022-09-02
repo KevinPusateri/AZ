@@ -103,7 +103,23 @@ if (!Cypress.env('isSecondWindow'))
         })
     })
 else
-    describe('', function () {
-        it('', function () {
+    describe('Matrix Web : Sfera 4.0 - Seconda Finestra', function () {
+        it('Iniziative Aperte', function () {
+            Sfera.setDateEstrazione(true)
+            Sfera.espandiPannello()
+            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.CON_INIZIATIVE_APERTE, true)
+            Sfera.checkColonnaPresente('Iniziative Cl')
+            Sfera.checkTooltipSingleColumn({
+                key: 'Iniziative Cl',
+                tooltip: 'Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente'
+
+            })
+            //? Siccole Cl è a capo e nell'header hanno inserito un <br>, verifico direttamente Ap.
+            Sfera.checkColonnaPresente('Ap.')
+            Sfera.checkToolTipRigaByColonna(Sfera.FILTRI.AP_CL, 'Iniziativa')
+            Sfera.filtraSuColonna(Sfera.FILTRI.INIZIATIVE_CL, Sfera.FILTRI.COMMON.values.RANDOM)
+            cy.get('@randomValueFiltered').then(value => {
+                Sfera.checkValoreInColonna(Sfera.FILTRI.INIZIATIVE_CL, value)
+            })
         })
     })
