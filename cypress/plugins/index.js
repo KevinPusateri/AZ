@@ -25,6 +25,7 @@ const path = require('path')
 const rimraf = require('../../node_modules/rimraf')
 const unzipper = require('unzipper')
 const xlsx = require('node-xlsx').default
+var exec = require('child_process').exec;
 
 //#region Support Functions
 const getMostRecentFile = (dir) => {
@@ -65,6 +66,16 @@ const sendEmail = (currentSubject, currentMessage, additionalEmail = null) => {
     })
 }
 //#endregion
+
+function getPWD() {
+    let pwd = exec('echo %cd%',
+        function (error, stdout, stderr) {
+            if (error !== null) {
+                console.log('exec error: ' + error);
+            }
+        });
+
+}
 
 //#region Mysql
 function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
@@ -249,19 +260,24 @@ function generateRandomVatIn() {
 
     return vatIN;
 }
+
 //#endregion
 
 module.exports = (on, config) => {
-
     if (config.env.currentEnv === 'PREPROD')
         config.baseUrl = 'https://portaleagenzie.pp.azi.allianz.it/matrix/';
     else
         config.baseUrl = 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F/';
 
     on('before:browser:launch', (browser = {}, launchOptions) => {
-
+        // let pwd = getPWD()
         if (browser.family === 'firefox') {
-            launchOptions.preferences['browser.download.dir'] = process.cwd() + "\\cypress\\downloads"
+            exec('echo %cd%\\cypress\\downloads',
+                (error, stdout, stderr) => {
+                    // console.log(JSON.stringify(stdout))
+                    launchOptions.preferences['browser.download.dir'] = stdout//.replaceAll('\\','\\\\')
+                    console.log('Launch -> ' + launchOptions.preferences['browser.download.dir'])
+                });
             launchOptions.preferences['browser.download.folderList'] = 2
             launchOptions.preferences['browser.download.panel.shown'] = false
             launchOptions.preferences['browser.download.manager.focusWhenStarting'] = true
@@ -269,7 +285,7 @@ module.exports = (on, config) => {
             launchOptions.preferences['browser.download.manager.useWindow'] = true
             launchOptions.preferences['pdfjs.disabled'] = false
             launchOptions.preferences['devtools.console.stdout.content'] = false
-            
+
             // For Firefox 102
             launchOptions.args.push('-safe-mode')
 
@@ -406,7 +422,7 @@ module.exports = (on, config) => {
         moveToLogFolder({ filePath, currentCase, specName }) {
             const screenshotFolderCurrentCase = process.cwd() + "\\cypress\\screenshots\\" + specName + "\\" + currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore
 
-            if (!fs.existsSync(screenshotFolderCurrentCase)){
+            if (!fs.existsSync(screenshotFolderCurrentCase)) {
                 fs.mkdirSync(screenshotFolderCurrentCase, { recursive: true });
             }
             fs.rename(filePath, screenshotFolderCurrentCase + "\\LogProxy.xml", function (err) {
