@@ -1,5 +1,6 @@
 /// <reference types="Cypress" />
 
+import Sales from "../../mw_page_objects/navigation/Sales"
 import Common from "../../mw_page_objects/common/Common"
 import HomePage from "../../mw_page_objects/common/HomePage"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
@@ -116,6 +117,29 @@ describe('Matrix Web : Navigazioni da Home Page - ', function () {
             HomePage.PREFERITI.BANCHEDATIANIA,
             HomePage.PREFERITI.QUATTRORUOTE)
 
+    })
+
+    it('Sezione Operatività in Buca di Ricerca', function() {
+        TopBar.searchAndClickSuggestedNavigations('Sezione Operatività')
+        Sales.checkAccordionOperativita()
+    })
+
+    it('Aggiungi e Verifica Preferito Sezione Operativita', function () {
+        HomePage.aggiungiPreferito(HomePage.PREFERITI.SEZIONE_OPERATIVITA)
+
+        //Effettuiamo un reload per vedere se si sono mantenute le modifiche
+        Common.visitUrlOnEnv()
+
+        HomePage.checkPreferiti(true, HomePage.PREFERITI.SEZIONE_OPERATIVITA)
+    })
+
+    it('Rimuovi e Verifica Preferito Sezione Operativita', function () {
+        HomePage.rimuoviPreferito(HomePage.PREFERITI.SEZIONE_OPERATIVITA)
+
+        //Effettuiamo un reload per vedere se si sono mantenute le modifiche
+        Common.visitUrlOnEnv()
+
+        HomePage.checkPreferiti(false, HomePage.PREFERITI.SEZIONE_OPERATIVITA)
     })
 
     if (keys.srmOnlineEnabled && keys.siscoEnabled && keys.SERVICENOW)

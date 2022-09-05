@@ -1385,8 +1385,10 @@ class Sales {
                     })
 
             })
+    }
 
-
+    static checkAccordionOperativita(){
+        cy.contains('Operatività').parent().siblings('nx-icon').invoke('attr','style').should('contain','transform: rotate(180deg);');
     }
 }
 export default Sales

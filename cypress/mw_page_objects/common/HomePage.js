@@ -13,7 +13,8 @@ const Preferiti = {
     QUATTRORUOTE: 'Quattroruote',
     ALLIANZGLOBALASSISTANCE: 'Allianz Global Assistance',
     GESTIONEPERIODOCHIUSURASEDI: 'Gestione periodi di chiusura sedi',
-    NUOVOSFERA: 'Nuovo Sfera'
+    NUOVOSFERA: 'Nuovo Sfera',
+    SEZIONE_OPERATIVITA: 'Sezione Operatività'
 }
 
 class HomePage {
