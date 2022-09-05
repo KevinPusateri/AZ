@@ -25,7 +25,10 @@ const path = require('path')
 const rimraf = require('../../node_modules/rimraf')
 const unzipper = require('unzipper')
 const xlsx = require('node-xlsx').default
-var exec = require('child_process').exec;
+const util = require('util')
+const { exec } = require('child_process')
+const execProm = util.promisify(exec)
+let downloadFolder
 
 //#region Support Functions
 const getMostRecentFile = (dir) => {
@@ -65,17 +68,18 @@ const sendEmail = (currentSubject, currentMessage, additionalEmail = null) => {
         resolve(true)
     })
 }
-//#endregion
 
-function getPWD() {
-    let pwd = exec('echo %cd%',
-        function (error, stdout, stderr) {
-            if (error !== null) {
-                console.log('exec error: ' + error);
-            }
-        });
+async function runShellCmd(cmd) {
+    let result
+    try {
+        result = await execProm(cmd)
+    } catch (error) {
+        result = error
+    }
 
+    return result.stdout
 }
+//#endregion
 
 //#region Mysql
 function mysqlStart(dbConfig, testCaseName, currentEnv, currentUser) {
@@ -269,15 +273,14 @@ module.exports = (on, config) => {
     else
         config.baseUrl = 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F/';
 
+    runShellCmd('echo %cd%\\cypress\\downloads').then(retrivedDownloadFolder => {
+        downloadFolder = retrivedDownloadFolder.replaceAll('\\','\\\\')
+    })
+
     on('before:browser:launch', (browser = {}, launchOptions) => {
-        // let pwd = getPWD()
         if (browser.family === 'firefox') {
-            exec('echo %cd%\\cypress\\downloads',
-                (error, stdout, stderr) => {
-                    // console.log(JSON.stringify(stdout))
-                    launchOptions.preferences['browser.download.dir'] = stdout//.replaceAll('\\','\\\\')
-                    console.log('Launch -> ' + launchOptions.preferences['browser.download.dir'])
-                });
+
+            launchOptions.preferences['browser.download.dir'] = downloadFolder
             launchOptions.preferences['browser.download.folderList'] = 2
             launchOptions.preferences['browser.download.panel.shown'] = false
             launchOptions.preferences['browser.download.manager.focusWhenStarting'] = true
