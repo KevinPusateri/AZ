@@ -29,11 +29,11 @@ class SCUGestioneFontePrincipale {
           cy.generateTwoLetters().then(randomChars => {
             getIFrame().find('#f-nome').clear().type(randomChars)
           })
-          getIFrame().find('td > button[class="k-button"]').contains('Cerca').click().wait(2000)
+          getIFrame().find('button[type="submit"]').contains('Cerca').click().wait(2000)
 
           searchClients()
         } else {
-          cy.screenshot('Ricerca clienti', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
+          cy.screenshot('Ricerca clienti PF', { overwrite: true })
           return
         }
       })
@@ -50,7 +50,7 @@ class SCUGestioneFontePrincipale {
 
       // Lista dei clienti trovati
       cy.get('tr').each(($ele, index) => {
-        cy.wrap($ele).find('td').eq(5).invoke('text').then((textState) => {
+        cy.wrap($ele).find('td').eq(5).find('span[data-tooltip]').invoke('text').then((textState) => {
           if (textState.trim() === "P" || textState.trim() === "C" || textState.trim() === "E") {
             listIndex.push(index)
           }
@@ -63,7 +63,7 @@ class SCUGestioneFontePrincipale {
 
         cy.wait(2000)
         cy.wrap($tr).eq(indexCliente).find('td > input[class="assegnafonte"]').click()
-        cy.wrap($tr).eq(indexCliente).find('td').eq(2).invoke('text').then(clientCfText => {
+        cy.wrap($tr).eq(indexCliente).find('td').eq(2).find('span[class="value"]').invoke('text').then(clientCfText => {
           clienteCF = clientCfText;
         })
       })
@@ -71,6 +71,7 @@ class SCUGestioneFontePrincipale {
 
     // Seleziono dalla tabella delle fonti una fonte random
     getIFrame().find('#showFonti').scrollIntoView().click().within(() => {
+      cy.contains('span', 'Nessuna fonte selezionata').click()
       cy.wait(4000)
       cy.get('table[class="k-selectable"] > tbody').then(($table) => {
         cy.wrap($table).find('tr:visible').not('tr:first').not('tr:contains("AUTOVELLETRI SRL")').then(($tr) => {
@@ -95,21 +96,18 @@ class SCUGestioneFontePrincipale {
     })
 
     getIFrame().within(() => {
-      cy.contains('Clienti selezionati').click()
       cy.screenshot('Selezione del Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
     })
 
     // Click Imposta Fonte principale
     cy.get('body').within(() => {
-      getIFrame().find('button[class="k-button assegnafonte"]').scrollIntoView().click().wait(5000)
+      getIFrame().find('button[class^="k-button assegnafonte"]').scrollIntoView().click().wait(5000)
     })
-    getIFrame().within(() => {
-      cy.screenshot('Assegna Fonte', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
-    })
+
 
     cy.get('body').within(() => {
       getIFrame()
-        .find('div[class="message container"]:contains("Fonte principale impostata con successo per 1 cliente")')
+        .find('div[class="modal-body"]:contains("Fonte principale impostata con successo per 1 cliente")')
         .should('be.visible')
 
       getIFrame().find('div:contains("Fonte principale impostata")').parent().find('button:contains("Chiudi")').click()
@@ -158,11 +156,11 @@ class SCUGestioneFontePrincipale {
           cy.generateTwoLetters().then(randomChars => {
             getIFrame().find('#g-denominazione').clear().type(randomChars)
           })
-          getIFrame().find('td > button[class="k-button"]:visible').contains('Cerca').click().wait(2000)
+          getIFrame().find('button[type="submit"]').eq(1).contains('Cerca').click().wait(2000)
 
           searchClients()
         } else {
-          cy.screenshot('Ricerca clienti', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
+          cy.screenshot('Ricerca clienti PG', { overwrite: true })
           return
         }
       })
@@ -177,7 +175,7 @@ class SCUGestioneFontePrincipale {
     // Seleziono un cliente random dalla tabella
     getIFrame().find('[class="k-grid-content k-auto-scrollable"]:visible').first().within(() => {
       cy.get('tr').each(($ele, index) => {
-        cy.wrap($ele).find('td').eq(6).invoke('text').then((textState) => {
+        cy.wrap($ele).find('td').eq(6).find('span[data-tooltip]').invoke('text').then((textState) => {
           if (textState.trim() === "P" || textState.trim() === "C" || textState.trim() === "E") {
             listIndex.push(index)
           }
@@ -189,7 +187,7 @@ class SCUGestioneFontePrincipale {
 
         cy.wait(2000)
         cy.wrap($tr).eq(indexCliente).find('td > input[class="assegnafonte"]').click()
-        cy.wrap($tr).eq(indexCliente).find('td').eq(2).invoke('text').then(clientIVAText => {
+        cy.wrap($tr).eq(indexCliente).find('td').eq(2).find('span[class="value"]').invoke('text').then(clientIVAText => {
           clienteIVA = clientIVAText;
         })
       })
@@ -197,6 +195,7 @@ class SCUGestioneFontePrincipale {
 
     // Seleziono dalla tabella delle fonti una fonte random
     getIFrame().find('#showFonti').scrollIntoView().click().within(() => {
+      cy.contains('span', 'Nessuna fonte selezionata').click()
       cy.wait(4000)
       cy.get('table[class="k-selectable"] > tbody').then(($table) => {
         cy.wrap($table).find('tr:visible').not('tr:first').not('tr:contains("AUTOVELLETRI SRL")').then(($tr) => {
@@ -219,20 +218,16 @@ class SCUGestioneFontePrincipale {
       })
     })
     getIFrame().within(() => {
-      cy.get('h2:contains("Clienti selezionati"):visible').click()
       cy.screenshot('Selezione del Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
     })
     // Click Imposta Fonte principale
     cy.get('body').within(() => {
-      getIFrame().find('button[class="k-button assegnafonte"]').scrollIntoView().click().wait(5000)
-    })
-    getIFrame().within(() => {
-      cy.screenshot('Assegna Fonte', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
+      getIFrame().find('button[class^="k-button assegnafonte"]').scrollIntoView().click().wait(5000)
     })
 
     cy.get('body').within(() => {
       getIFrame()
-        .find('div[class="message container"]:contains("Fonte principale impostata con successo per 1 cliente")')
+        .find('div[class="modal-body"]:contains("Fonte principale impostata con successo per 1 cliente")')
         .should('be.visible')
 
       getIFrame().find('div:contains("Fonte principale impostata")').parent().find('button:contains("Chiudi")').click()
