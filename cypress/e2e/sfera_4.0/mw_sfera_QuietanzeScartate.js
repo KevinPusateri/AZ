@@ -30,6 +30,7 @@ let options = {
 }
 //#endregion
 
+// data inizio 2 mesi precedenti
 let dataInizio = Common.setDate(1, 2, false)
 let dataFine = Common.setDate()
 
@@ -119,6 +120,14 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.estrazioneReportExcel(Sfera.COLUMNQUIETANZESCARTATE)
         })
 
+        it('Verifica Filtro excel', function () {
+            Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, Sfera.FILTRI.COMMON.values.RANDOM)
+            cy.get('@randomValueFiltered').then(value => {
+                Sfera.checkValoreInColonna(Sfera.FILTRI.POLIZZA, value)
+            })
+            Sfera.pulisciFiltroColonna()
+        })
+
         //! DA AGGIUNGERE SU TFS
         it('Verifica Ripetitore dati', function () {
             Sfera.checkExistRipetitoreDati(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE, dataInizio, dataFine)
@@ -149,6 +158,12 @@ else
             Sfera.estrai(false)
             Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
             Sfera.estrazioneReportExcel(Sfera.COLUMNQUIETANZESCARTATE)
+            //Verifica Filtro excel
+            Sfera.filtraSuColonna(Sfera.FILTRI.POLIZZA, Sfera.FILTRI.COMMON.values.RANDOM)
+            cy.get('@randomValueFiltered').then(value => {
+                Sfera.checkValoreInColonna(Sfera.FILTRI.POLIZZA, value)
+            })
+            Sfera.pulisciFiltroColonna()
             //Verifica Ripetitore dati
             Sfera.checkExistRipetitoreDati(Sfera.VISTESUGGERITE.QUIETANZE_SCARTATE, dataInizio, dataFine)
         })

@@ -28,7 +28,7 @@ const xlsx = require('node-xlsx').default
 const util = require('util')
 const { exec } = require('child_process')
 const execProm = util.promisify(exec)
-let downloadFolder
+var downloadFolder
 
 //#region Support Functions
 const getMostRecentFile = (dir) => {
@@ -274,7 +274,7 @@ module.exports = (on, config) => {
         config.baseUrl = 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F/';
 
     runShellCmd('echo %cd%\\cypress\\downloads').then(retrivedDownloadFolder => {
-        downloadFolder = retrivedDownloadFolder.replaceAll('\\','\\\\')
+        downloadFolder = retrivedDownloadFolder.replace(/[\r\n]/g, "").replaceAll('\\', '\\\\')
     })
 
     on('before:browser:launch', (browser = {}, launchOptions) => {
