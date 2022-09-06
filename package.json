@@ -26,7 +26,7 @@
     "node-xlsx": "^0.21.0",
     "nodemailer": "^6.6.3",
     "p-map": "^4.0.0",
-    "pdf2json": "^1.2.5",
+    "pdf2json": "^2.0.1",
     "pdfjs-dist": "^2.9.359",
     "prompt-sync": "^4.1.6",
     "rimraf": "^3.0.2",
@@ -38,7 +38,7 @@
   "devDependencies": {
     "cypress": "^10.4.0",
     "cypress-iframe": "^1.0.1",
-    "cypress-mochawesome-reporter": "^2.3.0",
+    "cypress-mochawesome-reporter": "^3.2.2",
     "cypress-plugin-tab": "^1.0.5",
     "jsdoc-to-markdown": "^7.1.1",
     "mochawesome": "^7.0.1",
