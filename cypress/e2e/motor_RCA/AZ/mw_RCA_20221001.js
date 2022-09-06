@@ -97,24 +97,13 @@ describe('RC AZ Ottobre 2022: ', {
                         TenutaTariffa.compilaVeicolo(currentCase)
                         TenutaTariffa.compilaProvenienza(currentCase)
                         TenutaTariffa.compilaOffertaRCA(currentCase)
+
+                        if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
+                            TenutaTariffa.checkTariffaRCA(currentCase)
                     }
                     else
                         this.skip()
                 }
-                else
-                    this.skip()
-            })
-
-            it("LogTariffa", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
-                    if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
-                        if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
-                            TenutaTariffa.checkTariffaRCA(currentCase)
-                        else
-                            this.skip()
-                    }
-                    else
-                        this.skip()
                 else
                     this.skip()
             })
