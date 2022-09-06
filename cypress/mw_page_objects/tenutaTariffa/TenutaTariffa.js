@@ -392,7 +392,7 @@ class TenutaTariffa {
         cy.getIFrame()
 
         cy.get('@iframe').within(() => {
-            //#region Informazioni Generali
+            //#region Informazioni generali
 
             if (currentCase.Targa === '') {
                 cy.contains('Ricerca senza targa').should('exist').and('be.visible').click()
@@ -512,7 +512,7 @@ class TenutaTariffa {
                 }
             }
 
-            currentCase.Targa !== '' ? cy.contains('Informazioni Generali').click() : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click()
+            currentCase.Targa !== '' ? cy.contains('Informazioni generali').click() : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click()
             //TODO vedi error on size
             //cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             //#endregion

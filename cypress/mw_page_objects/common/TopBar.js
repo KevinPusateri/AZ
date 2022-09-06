@@ -246,7 +246,7 @@ class TopBar extends HomePage {
         interceptPageSales()
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         // cy.wait('@getSales', { timeout: 50000 })
-        cy.wait('@gqlgetExtractedSferaReceipts', { timeout: 60000 })
+        //cy.wait('@gqlgetExtractedSferaReceipts', { timeout: 60000 })
         cy.url().should('eq', Common.getBaseUrl() + 'sales/')
         cy.screenshot('Verifica Atterraggio "Sales"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
