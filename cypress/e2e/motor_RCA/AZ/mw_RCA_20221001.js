@@ -28,7 +28,7 @@ import { tariffaCases } from '../../../fixtures//tariffe_RCA/tariffaCases_RCA_20
 //?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
-let caseToExecute = ['1']
+let caseToExecute = []
 //?Se specificato, esegue i test per i settori indicati (inserirli in formato stringa)
 let settori = Cypress.env('selectedSettori')
 let selectedSettori
