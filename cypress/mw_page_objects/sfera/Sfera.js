@@ -2603,7 +2603,7 @@ class Sfera {
             cy.contains('Chiudi').click()
 
             cy.task('getFolderDownload').then((folderDownload) => {
-                cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
+                cy.parseXlsx(folderDownload + "\\REPORT.xlsx").then(jsonData => {
                     // console.log(Object.values(jsonData[0].data[0]).sort())
                     // console.log(columnView.sort())
                     // Verifica Colonne presenti
@@ -3258,7 +3258,7 @@ class Sfera {
      */
     static checkExcel(dateLength) {
         cy.task('getFolderDownload').then((folderDownload) => {
-            cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
+            cy.parseXlsx(folderDownload + "\\REPORT.xlsx").then(jsonData => {
                 expect((jsonData[0].data.length - 1).toString()).to.eqls(dateLength);
             });
         })
@@ -3467,6 +3467,11 @@ class Sfera {
                 })
             })
         })
+    }
+
+    static pulisciFiltroColonna(){
+        cy.get('nx-icon[name="close-circle-o"]').click()
+        cy.get('tbody > tr[nxtablerow]').should('be.visible')
     }
 
     static checkToolTipRigaByColonna(colonna, valore) {
