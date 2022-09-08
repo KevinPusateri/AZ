@@ -1034,7 +1034,6 @@ class Sales {
         })
         cy.get('app-proposals-section').contains('Proposte').click()
         cy.wait('@gqlDamage', { timeout: 50000 });
-        //cy.wait('@gqlsalesDamagePremium', { timeout: 50000 });
         cy.get('app-paginated-cards').find('button:contains("Danni")').click()
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
         cy.get('app-paginated-cards')
@@ -1058,9 +1057,7 @@ class Sales {
             }
         })
         cy.get('app-proposals-section').contains('Proposte').click()
-        // cy.wait('@gqlLife', { timeout: 30000 });
         cy.wait('@gqlDamage', { timeout: 50000 });
-        // cy.wait('@gqlsalesDamagePremium', { timeout: 50000 });
         cy.get('app-paginated-cards').find('button:contains("Vita")').click().wait(3000)
         cy.get('app-paginated-cards')
             .screenshot('Verifica Proposte Da Vita', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
@@ -1072,7 +1069,7 @@ class Sales {
      */
     static clickPrimaCardDanniOnProposte() {
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
-        cy.get('div[class="damages prop-card ng-star-inserted"]').first().find('lib-da-link').first().click()
+        cy.get('[calldaname="GENERIC-DETAILS"]:visible').first().find('lib-contract-card-basic-label').click()
         getIFrame().within(() => {
             cy.get('#menuContainer').should('be.visible')
             cy.get('#menuContainer').find('a').should('be.visible').and('contain.text', '« Uscita')
@@ -1091,15 +1088,12 @@ class Sales {
         });
         cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
         cy.wait(5000)
-        cy.get('.cards-container').should('be.visible').find('.card').first().as('firstCard')
-        cy.get('@firstCard').trigger('mouseover')
-        cy.get('@firstCard').click({ force: true })
+        cy.get('[calldaname="GENERIC-DETAILS"]:visible').first().find('lib-contract-card-basic-label').click()
         cy.wait('@digitalAgencyLink', { timeout: 30000 });
         cy.wait(20000)
         getIFrame().within(() => {
-            cy.get('td[class="AZBasicButtons"]').should('be.visible').within(() => {
-                cy.get('input[value="  Esci  "]').should('be.visible')
-            })
+            cy.pause()
+            cy.get('input[value="  Esci  "]').should('be.visible')
         })
         cy.screenshot('Verifica Dettaglio Card Vita Proposte', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
 
@@ -1387,8 +1381,8 @@ class Sales {
             })
     }
 
-    static checkAccordionOperativita(){
-        cy.contains('Operatività').parent().siblings('nx-icon').invoke('attr','style').should('contain','transform: rotate(180deg);');
+    static checkAccordionOperativita() {
+        cy.contains('Operatività').parent().siblings('nx-icon').invoke('attr', 'style').should('contain', 'transform: rotate(180deg);');
     }
 }
 export default Sales

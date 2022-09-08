@@ -1101,7 +1101,7 @@ class SintesiCliente {
         cy.wait('@questionariWeb', { timeout: 60000 })
 
         getIFrame().within(($frame) => {
-        cy.screenshot('Emetti Plein Air', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot('Emetti Plein Air', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             $frame.find('#ButtonQuestOk').click()
         })
@@ -1345,6 +1345,8 @@ class SintesiCliente {
      * @param {boolean} [erroMessage] default false, se a true controlla prezenza errore
      */
     static emettiReportProfiloVita(agenzia = undefined, errorMessage = false) {
+        cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
+
         cy.intercept('POST', '**/graphql', (req) => {
             aliasQuery(req, 'clientReportLifePdf')
         })
@@ -1366,6 +1368,9 @@ class SintesiCliente {
             //Finestra di disambiguazione
             if (agenzia !== undefined)
                 cy.get('nx-modal-container').find('.agency-row').contains(agenzia).first().click().wait(3000)
+            else {
+                Common.canaleFromPopup()
+            }
             //cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
             cy.get('@open')
 
