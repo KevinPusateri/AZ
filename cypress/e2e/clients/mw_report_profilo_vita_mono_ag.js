@@ -75,6 +75,7 @@ describe('Matrix Web : Report Profilo Vita', {
             cy.getClientWithPolizze(currentTutf, '86').then(customerFullName => {
                 currentCustomerFullName = customerFullName
                 TopBar.search(currentCustomerFullName)
+                LandingRicerca.filtra()
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 SintesiCliente.retriveUrl().then(currentUrl => {
                     urlClient = currentUrl
