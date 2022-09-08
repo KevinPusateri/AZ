@@ -29,6 +29,7 @@ const util = require('util')
 const { exec } = require('child_process')
 const execProm = util.promisify(exec)
 var downloadFolder
+var extensionsFolder
 
 //#region Support Functions
 const getMostRecentFile = (dir) => {
@@ -277,6 +278,10 @@ module.exports = (on, config) => {
         downloadFolder = retrivedDownloadFolder.replace(/[\r\n]/g, "").replace('/\\/g', '\\\\')
     })
 
+    runShellCmd('echo %cd%\\cypress\\extensions').then(retrivedExtensionsFolder => {
+        extensionsFolder = retrivedExtensionsFolder.replace(/[\r\n]/g, "").replace('/\\/g', '\\\\')
+    })
+
     on('before:browser:launch', (browser = {}, launchOptions) => {
         if (browser.family === 'firefox') {
 
@@ -294,7 +299,7 @@ module.exports = (on, config) => {
 
             //Necessario per queli applicativi (tipo LM) che utilizzano ancora applet java
             //Vado a prendere Allianz IO Web Ext
-            launchOptions.extensions.push(process.cwd() + "\\extensions\\allianziowebext@allianz.it.xpi")
+            launchOptions.extensions.push(extensionsFolder + "\\allianziowebext@allianz.it.xpi")
             return launchOptions
 
         } else if (browser.family === "chromium" && browser.name !== "electron") {
