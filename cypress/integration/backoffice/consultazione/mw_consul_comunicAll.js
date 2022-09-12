@@ -66,8 +66,8 @@ let numsin = '929538074'
 let stato_sin = 'CHIUSO PAGATO'
 let dtAvvenimento 
 let cliente
-var categorieComunicazioni = ['Fiduciari', 'Stato Pratica', ' Info Pagamento', 'Storno Pagamento', 'Richiesta Info Generiche', 'Condizioni Di Polizza', 'Varie']
-
+let categorieComunicazioni = ['Fiduciari', 'Stato Pratica', ' Info Pagamento', 'Storno Pagamento', 'Richiesta Info Generiche', 'Condizioni Di Polizza', 'Varie']
+let spclTxtValue = '\\|!£$%&/()=\'?ì^è+òàù-€éç°§@#-[*].'
 //#endregion
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
@@ -169,18 +169,29 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         let obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]').find('#cmbCategoriaComunicAll', { timeout: 3000 }).should('exist')
         obj.scrollIntoView().select('Stato Pratica');
 
-        ConsultazioneSinistriPage.comunicAllSpecialCharsCheck('#txtComunicAllObject')
+        ConsultazioneSinistriPage.comunicAllSpecialCharsCheck('#txtComunicAllObject', spclTxtValue)
+        cy.screenshot('Pagina comunicAll - Utilizzo caratteri speciali in oggetto pratica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     })
 
     
     it('Controllo utilizzo dei caratteri speciali nell\'area di testo della comunicazione comunicAll,', function () {
-       
-        ConsultazioneSinistriPage.comunicAllSpecialCharsCheck('#txtComunicAllMessage')        
+    
+        ConsultazioneSinistriPage.comunicAllSpecialCharsCheck('#txtComunicAllMessage', spclTxtValue) 
+        cy.screenshot('Pagina comunicAll - Utilizzo caratteri speciali in area di testo pratica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })       
     })
 
-    //TODO : Abilitazione e predisposizione nuovo invio
-    // it('Controllo delle categorie nuova pratica', function () {
+    it('Controllo invio nuova comunicazione ', function () {
+        const cssIdFrameChild ='#cmIFramePdf'
+        const cssBtnInviaComunicazione =  '#btnInviaComunicAll'
+        const cssTxtObjCmncton = "#foldCommDetail0R1C1_CELL_TEXT"
+        const cssTxtMssg = '#foldCommDetail0R2C1_Div'
 
-    //btnInviaComunicAll
-    // })
+        let obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]')
+        obj.find(cssBtnInviaComunicazione, { timeout: 3000 } ).should('exist').and('be.visible').click()
+    
+        Common.isVisibleTextOnIframeChild(cssIdFrameChild, cssTxtObjCmncton, "Inviato da: CONEGLIANO MARCA TREVI")
+        Common.isVisibleTextOnIframeChild(cssIdFrameChild, cssTxtObjCmncton, "Categoria: Stato Pratica")
+        Common.isVisibleTextOnIframeChild(cssIdFrameChild, cssTxtObjCmncton, spclTxtValue)
+        Common.isVisibleTextOnIframeChild(cssIdFrameChild, cssTxtMssg, spclTxtValue)        
+    })
 });
