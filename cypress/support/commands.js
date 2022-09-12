@@ -223,8 +223,11 @@ function resolve_index_or_name_to_index(index_or_name) {
 }
 
 Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
+<<<<<<< HEAD
   //? Se effettuiamo il test via linea internet in PP, non possiamo accedere direttamente ai servizi di BE (assicurarsi di essere prima impersonificati
   //? con la propria utenza tecnica nell'AG corretta)
+=======
+>>>>>>> master
   if (!Cypress.env('internetTesting'))
     cy.request({
       method: 'POST',
@@ -235,6 +238,11 @@ Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
     }).then(resp => {
       if (resp.status !== 200)
         assert.fail('Impersonificazione non effettuata correttamente!')
+<<<<<<< HEAD
+=======
+      //else
+      //cy.wait(2000)
+>>>>>>> master
     })
 })
 

@@ -321,11 +321,11 @@ class ConsultazioneSinistriPage {
     /**
      * Checks if the text object in comunicAll can use special chars
      * @param {string} id : locator attribute  
+     * @param {string} value : text string 
      */
-    static comunicAllSpecialCharsCheck(id) {
+    static comunicAllSpecialCharsCheck(id, value) {
         cy.log(">>> Verifica caratteri speciali nel campo oggetto per la pratica di comunicazione comunicall <<<")
         // Stringa dei caratteri speciali da verificare
-        let value = '\\|!£$%&/()=\'?ì^è+òàù-€éç°§@#-[*].'
         let obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]')
         obj.find(id, { timeout: 3000 } ).should('exist').type(value, { timeout: 3000 }).should('have.value', value)
         cy.log('>> value: [' + value +'] compared')
