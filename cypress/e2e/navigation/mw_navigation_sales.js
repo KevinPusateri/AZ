@@ -64,11 +64,7 @@ before(() => {
         cy.getUserWinLogin().then(data => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
             LoginPage.logInMWAdvanced()
-<<<<<<< HEAD:cypress/e2e/navigation/mw_navigation_sales.js
             if (!Cypress.env('internetTesting')) {
-=======
-            if (!Cypress.env('internetTesting')){
->>>>>>> master:cypress/integration/navigation/mw_navigation_sales.js
                 // Profiling Emetti polizza
                 cy.getProfiling(data.tutf).then(profiling => {
                     cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.BMPenabled = profiled })
@@ -85,11 +81,7 @@ before(() => {
                     cy.filterProfile(profiling, 'COMMON_TOOL_TRATTATIVE').then(profiled => { keys.TrattativeAutoCorporateEnabled = profiled })
                     cy.filterProfile(profiling, 'COMMON_SAFE_DRIVE').then(profiled => { keys.SAFE_DRIVE_AUTOVETTURE = profiled })
                 })
-<<<<<<< HEAD:cypress/e2e/navigation/mw_navigation_sales.js
-
-=======
     
->>>>>>> master:cypress/integration/navigation/mw_navigation_sales.js
                 //Profiling collegamenti rapidi
                 cy.getProfiling(data.tutf).then(profiling => {
                     cy.filterProfile(profiling, 'COMMON_GESTIONE_MONITORAGGIO_PROPOSTE').then(profiled => { keys.MONITORAGGIO_POLIZZE_PROPOSTE = profiled })
@@ -98,11 +90,6 @@ before(() => {
                     cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keys.SFERA = profiled })
                     cy.filterProfile(profiling, 'RUOLO_CAMPAIGN').then(profiled => { keys.CAMPAGNE_COMMERCIALI = profiled })
                     cy.filterProfile(profiling, 'COMMON_GED').then(profiled => { keys.GED_GESTIONE_DOCUMENTALE = profiled })
-<<<<<<< HEAD:cypress/e2e/navigation/mw_navigation_sales.js
-
-=======
-    
->>>>>>> master:cypress/integration/navigation/mw_navigation_sales.js
                 })
             }
         })

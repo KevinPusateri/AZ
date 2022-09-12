@@ -63,17 +63,10 @@ before(() => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
             LoginPage.logInMWAdvanced()
 
-<<<<<<< HEAD:cypress/e2e/navigation/mw_navigation_scheda_cliente_sintesi.js
             // CARDS 
             if (!Cypress.env('internetTesting'))
                 cy.getProfiling(data.tutf).then((profiling) => {
 
-=======
-            // CARDS
-            if (!Cypress.env('internetTesting')){
-                cy.getProfiling(data.tutf).then((profiling) => {
-    
->>>>>>> master:cypress/integration/navigation/mw_navigation_scheda_cliente_sintesi.js
                     // AUTO
                     // AUTO_PREVENTIVO && AUTO_RISCHIO_NUOVO
                     cy.filterProfile(profiling, 'AUTO_PREVENTIVO').then(profiledCase1 => {
@@ -84,11 +77,6 @@ before(() => {
                                 keysCards.AUTO = false
                         })
                     })
-<<<<<<< HEAD:cypress/e2e/navigation/mw_navigation_scheda_cliente_sintesi.js
-
-=======
-    
->>>>>>> master:cypress/integration/navigation/mw_navigation_scheda_cliente_sintesi.js
                     // RAMI VARI
                     // (RV_PREVENTIVO && RV_RISCHIO_NUOVO) || RV_GESTIONE_GRANDINE
                     cy.filterProfile(profiling, 'RV_PREVENTIVO').then(profiledCase1 => {
@@ -100,15 +88,9 @@ before(() => {
                                     keysCards.RAMIVARI = profiled
                                 })
                         })
-<<<<<<< HEAD:cypress/e2e/navigation/mw_navigation_scheda_cliente_sintesi.js
 
                     })
 
-=======
-    
-                    })
-    
->>>>>>> master:cypress/integration/navigation/mw_navigation_scheda_cliente_sintesi.js
                     // VITA
                     // VITA_ASSUNZIONE && VITA_PREVENTIVAZIONE
                     cy.filterProfile(profiling, 'VITA_ASSUNZIONE').then(profiledCase1 => {
@@ -119,13 +101,8 @@ before(() => {
                                 keysCards.VITA = false
                         })
                     })
-<<<<<<< HEAD:cypress/e2e/navigation/mw_navigation_scheda_cliente_sintesi.js
 
 
-=======
-    
-    
->>>>>>> master:cypress/integration/navigation/mw_navigation_scheda_cliente_sintesi.js
                     // AUTO
                     if (keysCards.AUTO) {
                         cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keysAuto.PREVENTIVO_MOTOR = profiled })
@@ -141,11 +118,6 @@ before(() => {
                         })
                         cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.NUOVA_POLIZZA_COASSICURAZIONE = profiled })
                     }
-<<<<<<< HEAD:cypress/e2e/navigation/mw_navigation_scheda_cliente_sintesi.js
-
-=======
-    
->>>>>>> master:cypress/integration/navigation/mw_navigation_scheda_cliente_sintesi.js
                     // RAMI VARI
                     if (keysCards.RAMIVARI) {
                         cy.filterProfile(profiling, 'COMMON_ULTRACASA2022').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022 = profiled })
@@ -162,10 +134,6 @@ before(() => {
                         cy.filterProfile(profiling, 'RV_GESTIONE_GRANDINE').then(profiled => { keysRamivari.GESTIONE_GRANDINE = profiled })
                     }
                 })
-<<<<<<< HEAD:cypress/e2e/navigation/mw_navigation_scheda_cliente_sintesi.js
-=======
-            }
->>>>>>> master:cypress/integration/navigation/mw_navigation_scheda_cliente_sintesi.js
         })
     })
 })

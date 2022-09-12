@@ -48,17 +48,10 @@ let keys = {
 before(() => {
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
-<<<<<<< HEAD:cypress/e2e/navigation/mw_navigation_backOffice.js
-        cy.getUserWinLogin().then(data => {
-            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-            LoginPage.logInMWAdvanced()
-            if (!Cypress.env('internetTesting'))
-=======
         if (!Cypress.env('internetTesting'))
             cy.getUserWinLogin().then(data => {
                 cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
                 LoginPage.logInMWAdvanced()
->>>>>>> master:cypress/integration/navigation/mw_navigation_backOffice.js
                 cy.getProfiling(data.tutf).then(profiling => {
                     cy.filterProfile(profiling, 'SINISTRI_CRUSCOTTO_STD').then(profiled => { keys.MOVIMENTAZIONE_SINISTRI = profiled })
                     cy.filterProfile(profiling, 'SINISTRI_DENUNCIA_STD').then(profiled => { keys.DENUNCIA = profiled })
@@ -89,11 +82,7 @@ before(() => {
                         })
                     })
                 })
-<<<<<<< HEAD:cypress/e2e/navigation/mw_navigation_backOffice.js
-        })
-=======
             })
->>>>>>> master:cypress/integration/navigation/mw_navigation_backOffice.js
     })
 })
 
