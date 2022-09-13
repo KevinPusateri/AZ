@@ -7,19 +7,22 @@ class Sospensione {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
             // Inserimento data odierna
-            cy.get('[class="tableCellGray"]').should('be.visible').and('contain.text', 'Data sospensione')
+            // cy.get('[class="tableCellGray"]').should('be.visible').and('contain.text', 'Data sospensione')
             let options = {
                 day: 'numeric',
             };
             let formattedDate = new Date().toLocaleString('it-IT', options);
             cy.get('#txtDataAnnullamento').clear()
-            cy.get('[class="ui-datepicker-trigger"]').first().click()
+            // cy.get('[class="ui-datepicker-trigger"]').first().click()
+            cy.get('button[class^="ui-datepicker-trigger"]:first').click()
             cy.get('#ui-datepicker-div').should('be.visible')
             cy.get('table[class="ui-datepicker-calendar"]').find('a').contains(formattedDate).click()
             cy.get('#dataAnnullamento').should('be.visible').then(($firma)=>{
                 const isOnlyAutografa = $firma.find('#dropTipoFirma > option')
-                if (isOnlyAutografa.length > 1)
-                    cy.get('#dropTipoFirma').select('Autografa')
+                if (isOnlyAutografa.length > 1){
+                    cy.get('#s2id_dropTipoFirma').click()
+                    cy.get('ul:visible').find('li:visible:contains("Autografa")').click()
+                }
             })
             // Click Calcola
             cy.get('#btnCalcola').click()
