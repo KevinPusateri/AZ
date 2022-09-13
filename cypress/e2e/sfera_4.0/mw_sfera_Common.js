@@ -33,7 +33,7 @@ let today = new Date()
 today.setDate(today.getDate() + 5)
 let dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
 today.setMonth(today.getMonth() + 1)
-let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 2)).slice(-2) + '/' + today.getFullYear()
+let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
 
 //#endregion
 
@@ -129,7 +129,8 @@ if (!Cypress.env('isSecondWindow'))
         // })
 
 
-        it('Verifica Estrazione report excel', function () {
+        it.skip('Verifica Estrazione report excel', function () {
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
             Sfera.setDateEstrazione()
             Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
             Sfera.estrai()
@@ -186,7 +187,7 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
         })
 
-        it('Verifica Azioni Veloci > Esporta Excel', options, function () {
+        it.skip('Verifica Azioni Veloci > Esporta Excel', options, function () {
             HomePage.reloadMWHomePage()
             Sfera.accediSferaDaHomePageMW(true)
             Sfera.setDateEstrazione(false, dataInizio, dataFine)

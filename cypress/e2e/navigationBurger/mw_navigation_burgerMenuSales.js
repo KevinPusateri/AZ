@@ -275,6 +275,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
+    //! SOLO in Firefox Funziona
     it('Verifica aggancio Gestione attività in scadenza', function () {
         if (!keys.GESTIONE_ATTIVITA_IN_SCADENZA)
             this.skip()

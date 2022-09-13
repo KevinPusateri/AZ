@@ -593,6 +593,7 @@ const Pannelli = {
  * @enum {Object}
  */
 const ColumnStandard = {
+    //! VEDI EXCEL TRA TEST E PP -> DIFF INFO NON CORRETTO BUG
     PT: {
         key: 'Pt.',
         tooltip: 'Area Portafoglio (Auto, Rami Vari, Vita, Modulari)'
@@ -1362,9 +1363,11 @@ class Sfera {
 
         cy.get('nx-checkbox[formcontrolname="' + tipoQuietanze + '"]').within(() => {
 
-            cy.get('input').invoke('attr', 'value').then((isChecked) => {
+            cy.get('input').invoke('attr', 'value').then((isCheckedString) => {
+                let isChecked
+                isChecked = String(isCheckedString) == "true" ? true : false
                 if ((isChecked && !bePresent) || (!isChecked && bePresent)) {
-                    cy.get('nx-icon').click()
+                    cy.get('nx-icon[name="check"]').click()
                     cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                 }
             })
@@ -1445,7 +1448,7 @@ class Sfera {
             }
         }
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
-        cy.contains('Applica').should('be.enabled').click().wait(5000)
+        cy.contains('Applica').should('be.enabled').click({ force: true }).wait(5000)
         // cy.wait('@estraiQuietanze', { timeout: 120000 }) //?SERVE?
     }
 
@@ -1533,43 +1536,43 @@ class Sfera {
             //Verifichiamo gli accessi in base al tipo di menu selezionato
             switch (voce) {
                 case VociMenuQuietanza.INCASSO:
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        IncassoDA.accessoMezziPagam()
-                        cy.wait(10000)
-                        if (flussoCompleto) {
-                            getAppJump().within(() => {
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     IncassoDA.accessoMezziPagam()
+                    //     cy.wait(10000)
+                    //     if (flussoCompleto) {
+                    //         getAppJump().within(() => {
 
-                                IncassoDA.ClickIncassa()
-                            })
-                            getAppJump().within(($iframe) => {
-                                IncassoDA.ClickPopupWarning($iframe)
-                            })
-                            cy.wait('@getIncasso', { timeout: 40000 })
-                            getAppJump().within(() => {
-                                IncassoDA.SelezionaIncassa()
-                            })
+                    //             IncassoDA.ClickIncassa()
+                    //         })
+                    //         getAppJump().within(($iframe) => {
+                    //             IncassoDA.ClickPopupWarning($iframe)
+                    //         })
+                    //         cy.wait('@getIncasso', { timeout: 40000 })
+                    //         getAppJump().within(() => {
+                    //             IncassoDA.SelezionaIncassa()
+                    //         })
 
-                            getAppJump().within(() => {
-                                IncassoDA.TerminaIncasso()
-                            })
-                        }
-                        else
-                            getAppJump().within(() => {
-                                IncassoDA.clickCHIUDI()
-                            })
+                    //         getAppJump().within(() => {
+                    //             IncassoDA.TerminaIncasso()
+                    //         })
+                    //     }
+                    //     else
+                    //         getAppJump().within(() => {
+                    //             IncassoDA.clickCHIUDI()
+                    //         })
+                    // }
+                    // else {
+                    IncassoDA.accessoMezziPagam()
+                    cy.wait(10000)
+                    if (flussoCompleto) {
+                        IncassoDA.ClickIncassa()
+                        IncassoDA.ClickPopupWarning()
+                        IncassoDA.SelezionaIncassa()
+                        IncassoDA.TerminaIncasso()
                     }
-                    else {
-                        IncassoDA.accessoMezziPagam()
-                        cy.wait(10000)
-                        if (flussoCompleto) {
-                            IncassoDA.ClickIncassa()
-                            IncassoDA.ClickPopupWarning()
-                            IncassoDA.SelezionaIncassa()
-                            IncassoDA.TerminaIncasso()
-                        }
-                        else
-                            IncassoDA.clickCHIUDI()
-                    }
+                    else
+                        IncassoDA.clickCHIUDI()
+                    // }
 
                     cy.wait('@estraiQuietanze', { timeout: 120000 })
                     cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
@@ -1579,57 +1582,57 @@ class Sfera {
 
                     break;
                 case VociMenuQuietanza.DELTA_PREMIO:
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        if (flussoCompleto) {
-                            //TODO implementare flusso di delta premio
-                        }
-                        else {
-                            NGRA2013.verificaAccessoRiepilogo()
-                            getAppJump().within(() => {
-                                NGRA2013.avanti()
-                                cy.wait(2000)
-                                cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                                NGRA2013.home(true)
-                            })
-                        }
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     if (flussoCompleto) {
+                    //         //TODO implementare flusso di delta premio
+                    //     }
+                    //     else {
+                    //         NGRA2013.verificaAccessoRiepilogo()
+                    //         getAppJump().within(() => {
+                    //             NGRA2013.avanti()
+                    //             cy.wait(2000)
+                    //             cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    //             NGRA2013.home(true)
+                    //         })
+                    //     }
+                    // } else {
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di delta premio
                     } else {
-                        if (flussoCompleto) {
-                            //TODO implementare flusso di delta premio
-                        } else {
-                            NGRA2013.verificaAccessoRiepilogo()
-                            NGRA2013.avanti()
-                            cy.wait(2000)
-                            cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                            NGRA2013.home(true)
-                        }
+                        NGRA2013.verificaAccessoRiepilogo()
+                        NGRA2013.avanti()
+                        cy.wait(2000)
+                        cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        NGRA2013.home(true)
                     }
+                    // }
                     this.verificaAccessoSfera(false)
                     break;
                 case VociMenuQuietanza.VARIAZIONE_RIDUZIONE_PREMI:
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        IncassoDA.accessoGestioneFlex()
-                        if (flussoCompleto) {
-                            //TODO implementare flusso di delta premio
-                        }
-                        else {
-                            getAppJump().within(() => {
-                                IncassoDA.salvaSimulazione()
-                                cy.wait(200)
-                                cy.screenshot('Variazione Riduzione Premi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     IncassoDA.accessoGestioneFlex()
+                    //     if (flussoCompleto) {
+                    //         //TODO implementare flusso di delta premio
+                    //     }
+                    //     else {
+                    //         getAppJump().within(() => {
+                    //             IncassoDA.salvaSimulazione()
+                    //             cy.wait(200)
+                    //             cy.screenshot('Variazione Riduzione Premi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-                                IncassoDA.clickCHIUDI()
-                                //Verifichiamo il rientro in Sfera
-                            })
-                        }
+                    //             IncassoDA.clickCHIUDI()
+                    //             //Verifichiamo il rientro in Sfera
+                    //         })
+                    //     }
+                    // } else {
+                    IncassoDA.accessoGestioneFlex()
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di delta premio
                     } else {
-                        IncassoDA.accessoGestioneFlex()
-                        if (flussoCompleto) {
-                            //TODO implementare flusso di delta premio
-                        } else {
-                            IncassoDA.clickCHIUDI()
-                            //Verifichiamo il rientro in Sfera
-                        }
+                        IncassoDA.clickCHIUDI()
+                        //Verifichiamo il rientro in Sfera
                     }
+                    // }
                     this.verificaAccessoSfera(false)
                     break;
                 case VociMenuQuietanza.RIQUIETANZAMENTO:
@@ -1641,28 +1644,28 @@ class Sfera {
                     this.procedi().click()
                     Common.canaleFromPopup({}, true)
                     NGRA2013.verificaAccessoDatiAmministrativi()
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        if (flussoCompleto) {
-                            getAppJump().within(() => {
-                                NGRA2013.sostituzioneAScadenza()
-                                cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                            })
-                        }
-                        else {
-                            getAppJump().within(() => {
-                                NGRA2013.home(true)
-                            })
-                        }
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     if (flussoCompleto) {
+                    //         getAppJump().within(() => {
+                    //             NGRA2013.sostituzioneAScadenza()
+                    //             cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    //         })
+                    //     }
+                    //     else {
+                    //         getAppJump().within(() => {
+                    //             NGRA2013.home(true)
+                    //         })
+                    //     }
+                    // }
+                    // else {
+                    if (flussoCompleto) {
+                        NGRA2013.verificaAccessoDatiAmministrativi()
+                        cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     }
                     else {
-                        if (flussoCompleto) {
-                            NGRA2013.verificaAccessoDatiAmministrativi()
-                            cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                        }
-                        else {
-                            NGRA2013.home(true)
-                        }
+                        NGRA2013.home(true)
                     }
+                    // }
                     //Verifichiamo il rientro in Sfera
                     this.verificaAccessoSfera(false)
                     break;
@@ -1671,68 +1674,68 @@ class Sfera {
                     IncassoDA.accessoMezziPagam()
                     cy.wait(200)
                     cy.screenshot('Stampa Senza Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        if (flussoCompleto) {
-                            //! DA VERIFICA SE FUNZIONA il FLUSSO
-                            getAppJump().within(() => {
-                                IncassoDA.clickStampa()
-                            })
-                            getAppJump().within(() => {
-                                IncassoDA.getNumeroContratto().then(numContratto => {
-                                    numPolizza = numContratto
-                                    IncassoDA.clickCHIUDI()
-                                })
-                            })
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     if (flussoCompleto) {
+                    //         //! DA VERIFICA SE FUNZIONA il FLUSSO
+                    //         getAppJump().within(() => {
+                    //             IncassoDA.clickStampa()
+                    //         })
+                    //         getAppJump().within(() => {
+                    //             IncassoDA.getNumeroContratto().then(numContratto => {
+                    //                 numPolizza = numContratto
+                    //                 IncassoDA.clickCHIUDI()
+                    //             })
+                    //         })
+                    //         this.verificaAccessoSfera(false)
+                    //         resolve(numPolizza)
+                    //     }
+                    //     else {
+                    //         getAppJump().within(() => {
+                    //             IncassoDA.clickCHIUDI()
+                    //         })
+                    //         this.verificaAccessoSfera(false)
+                    //     }
+                    // } else {
+                    if (flussoCompleto) {
+                        IncassoDA.clickStampa()
+                        IncassoDA.getNumeroContratto().then(numContratto => {
+                            numPolizza = numContratto
+                            IncassoDA.clickCHIUDI()
+                            //Verifichiamo il rientro in Sfera
                             this.verificaAccessoSfera(false)
                             resolve(numPolizza)
-                        }
-                        else {
-                            getAppJump().within(() => {
-                                IncassoDA.clickCHIUDI()
-                            })
-                            this.verificaAccessoSfera(false)
-                        }
-                    } else {
-                        if (flussoCompleto) {
-                            IncassoDA.clickStampa()
-                            IncassoDA.getNumeroContratto().then(numContratto => {
-                                numPolizza = numContratto
-                                IncassoDA.clickCHIUDI()
-                                //Verifichiamo il rientro in Sfera
-                                this.verificaAccessoSfera(false)
-                                resolve(numPolizza)
-                            })
-                        }
-                        else {
-                            IncassoDA.clickCHIUDI()
-                            this.verificaAccessoSfera(false)
-                        }
+                        })
                     }
+                    else {
+                        IncassoDA.clickCHIUDI()
+                        this.verificaAccessoSfera(false)
+                    }
+                    // }
                     break;
                 case VociMenuQuietanza.QUIETANZAMENTO_ONLINE:
                     NGRA2013.verificaAccessoPagamento()
                     cy.wait(15000)
                     cy.screenshot('Verifica Accesso a Pagamenti NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        if (flussoCompleto) {
-                            getAppJump().within(() => { NGRA2013.ClickConfermaPagamento() })
-                            getAppJump().within(() => { NGRA2013.ClickIncassa() })
-                            getAppJump().within(($iframe) => { NGRA2013.ClickPopupWarning($iframe) })
-                            getAppJump().within(() => { IncassoDA.SelezionaIncassa() })
-                            getAppJump().within(() => { NGRA2013.TerminaIncasso() })
-                        } else
-                            getAppJump().within(() => { NGRA2013.home(true) })
-                    } else {
-                        if (flussoCompleto) {
-                            NGRA2013.ClickConfermaPagamento()
-                            NGRA2013.ClickIncassa()
-                            NGRA2013.ClickPopupWarning(undefined)
-                            IncassoDA.SelezionaIncassa()
-                            NGRA2013.TerminaIncasso()
-                        }
-                        else
-                            NGRA2013.home(true)
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     if (flussoCompleto) {
+                    //         getAppJump().within(() => { NGRA2013.ClickConfermaPagamento() })
+                    //         getAppJump().within(() => { NGRA2013.ClickIncassa() })
+                    //         getAppJump().within(($iframe) => { NGRA2013.ClickPopupWarning($iframe) })
+                    //         getAppJump().within(() => { IncassoDA.SelezionaIncassa() })
+                    //         getAppJump().within(() => { NGRA2013.TerminaIncasso() })
+                    //     } else
+                    //         getAppJump().within(() => { NGRA2013.home(true) })
+                    // } else {
+                    if (flussoCompleto) {
+                        NGRA2013.ClickConfermaPagamento()
+                        NGRA2013.ClickIncassa()
+                        NGRA2013.ClickPopupWarning(undefined)
+                        IncassoDA.SelezionaIncassa()
+                        NGRA2013.TerminaIncasso()
                     }
+                    else
+                        NGRA2013.home(true)
+                    // }
                     cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
                     cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then(() => {
                         cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1742,21 +1745,21 @@ class Sfera {
 
                     InquiryAgenzia.verificaAccessoInquiryAgenzia()
                     cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        if (flussoCompleto) {
-                            //TODO implementare flusso completo
-                        }
-                        else {
-                            getAppJump().within(() => { InquiryAgenzia.clickUscita() })
-                        }
-                    } else {
-                        if (flussoCompleto) {
-                            //TODO implementare flusso completo
-                        }
-                        else {
-                            InquiryAgenzia.clickUscita()
-                        }
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     if (flussoCompleto) {
+                    //         //TODO implementare flusso completo
+                    //     }
+                    //     else {
+                    //         getAppJump().within(() => { InquiryAgenzia.clickUscita() })
+                    //     }
+                    // } else {
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
                     }
+                    else {
+                        InquiryAgenzia.clickUscita()
+                    }
+                    // }
                     this.verificaAccessoSfera(false)
                     break;
                 case VociMenuConsultazione.POLIZZA:
@@ -1765,11 +1768,11 @@ class Sfera {
                         //TODO implementare flusso completo
                     }
                     else {
-                        if (Cypress.env('currentEnv') === 'TEST') {
-                            getAppJump().within(() => { InquiryAgenzia.clickUscita() })
-                        } else {
-                            InquiryAgenzia.clickUscita()
-                        }
+                        // if (Cypress.env('currentEnv') === 'TEST') {
+                        //     getAppJump().within(() => { InquiryAgenzia.clickUscita() })
+                        // } else {
+                        InquiryAgenzia.clickUscita()
+                        // }
                         //Verifichiamo il rientro in Sfera
                         this.verificaAccessoSfera(false)
                     }
@@ -2304,7 +2307,7 @@ class Sfera {
             //Se non specificata la data, settiamo automaticamente la data odierna
             dataFineCalendar = new Date()
         else
-            dataFineCalendar = new Date(dataFine.split('/')[2], parseInt(dataFine.split('/')[1]), parseInt(dataFine.split('/')[0]))
+            dataFineCalendar = new Date(dataFine.split('/')[2], parseInt(dataFine.split('/')[1] - 1), parseInt(dataFine.split('/')[0]))
 
         cy.get('nx-icon[name="calendar"]:last').click().wait(500)
         cy.contains('Scegli il mese e l\'anno').should('be.visible').click()
@@ -2316,6 +2319,7 @@ class Sfera {
 
         //Selezioniamo il mese
         cy.get('.nx-calendar-table').within(() => {
+            cy.log(dataFineCalendar.getMonth())
             cy.contains(dataFineCalendar.toLocaleString('default', { month: 'short' })).click()
         })
 
@@ -2340,9 +2344,9 @@ class Sfera {
         cy.get('.nx-checkbox__control:visible').first().should('be.visible').click().wait(500)
         cy.get('div[class^="all-page"]').should('be.visible').within($div => {
             if (righe === SelezionaRighe.PAGINA_CORRENTE)
-                cy.get('nx-checkbox').first().click()
+                cy.get('nx-checkbox').first().click({ force: true })
             else
-                cy.get('nx-checkbox').last().click()
+                cy.get('nx-checkbox').last().click({ force: true })
         })
     }
 
@@ -2467,19 +2471,23 @@ class Sfera {
      * @param {string} nameVista - nome della Vista
      */
     static selezionaVista(nameVista) {
-        // click Seleziona Vista tendina
-        cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+        if (nameVista === 'Vista Standard') {
+            cy.contains(nameVista).click()
+        } else {
+            // click Seleziona Vista tendina
+            cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+            // Click Le mie viste
+            cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+                cy.contains('Le mie viste').click()
+            }).then(() => {
 
-        // Click Le mie viste
-        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
-            cy.contains('Le mie viste').click()
-        }).then(() => {
+                cy.get('div[class="cdk-overlay-pane"]').last()
+                    .should('be.visible').within(() => {
+                        cy.get('button').contains(nameVista).click({ force: true }).wait(2000)
+                    })
+            })
+        }
 
-            cy.get('div[class="cdk-overlay-pane"]').last()
-                .should('be.visible').within(() => {
-                    cy.get('button').contains(nameVista).click({ force: true }).wait(2000)
-                })
-        })
         cy.get('h2[class="nx-font-weight-semibold"]').should('include.text', nameVista)
 
     }
@@ -2489,6 +2497,7 @@ class Sfera {
      * @param {VisteSuggerite} nameVista - nome della Vista
      */
     static selezionaVistaSuggerita(nameVista) {
+
         // click Seleziona Vista tendina
         cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
@@ -2560,7 +2569,7 @@ class Sfera {
                             cy.get('input[type="search"]').clear().type(colonneDaAggiungere[index])
                             cy.get('span')
                                 .contains(colonneDaAggiungere[index])
-                                .parents('div[class="flex-content center-content all-column-element ng-star-inserted"]').find('nx-icon').click()
+                                .parents('div[cdkdragboundary=".row-personal-column"]').find('nx-icon').click()
                         }
                     })
                     cy.contains('Applica vista').click()
@@ -2591,7 +2600,7 @@ class Sfera {
                 columnView.push(value.key)
 
         var rows = []
-        cy.get('tr[class="nx-table-row ng-star-inserted selectedRow"]').each((rowsTable) => {
+        cy.get('tbody > tr[nxtablerow]').each((rowsTable) => {
             cy.wrap(rowsTable).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($textCell) => {
                 rows.push($textCell.text().trim())
             })
@@ -2604,8 +2613,8 @@ class Sfera {
 
             cy.task('getFolderDownload').then((folderDownload) => {
                 cy.parseXlsx(folderDownload + "\\REPORT.xlsx").then(jsonData => {
-                    // console.log(Object.values(jsonData[0].data[0]).sort())
-                    // console.log(columnView.sort())
+                    console.log(Object.values(jsonData[0].data[0]).sort())
+                    console.log(columnView.sort())
                     // Verifica Colonne presenti
                     if (columnView.length > 0)
                         expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(columnView.sort());
@@ -2781,7 +2790,6 @@ class Sfera {
     static fontiAllSelezionati() {
         cy.get('h3').contains('Fonti').click()
         cy.get('nx-modal-container[role="dialog"]').should('be.visible').within(() => {
-            cy.screenshot('Fonti Selezionate', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             cy.get('div[class="container-list ng-star-inserted"]').within(() => {
                 cy.get('div[class="nx-checkbox__label-text"]').its('length').then((numFonti) => {
                     cy.get('nx-icon[class="ndbx-icon nx-icon--check nx-icon--auto ng-star-inserted"]').its('length').then((numCheckAttivi) => {
@@ -2916,7 +2924,7 @@ class Sfera {
             //#endregion
 
             function checkNote() {
-                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                // cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
                 cy.contains('Aggiungi nuova nota').click()
                 cy.get('div[class="new-nota-container"]').should('be.visible').within(() => {
                     cy.get('input[formcontrolname="titolo"]').type('Titolo Automatici')
@@ -2932,7 +2940,7 @@ class Sfera {
 
             function checkPanoramica() {
                 //#region  Verifica Panoramica
-                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                // cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
 
                 const radioButtonPanoramica = [
                     'Cliente',
@@ -2973,7 +2981,7 @@ class Sfera {
             }
 
             function checkDettaglioPremi() {
-                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                // cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
                 cy.get('nx-tab-group').should('be.visible').within(() => {
                     const titleColumn = [
                         'Premio Quietanza anno corrente',
@@ -3006,7 +3014,7 @@ class Sfera {
 
             function checkIniziative() {
                 cy.get('table[class="table-panel ng-star-inserted"]').should('be.visible')
-                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                // cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
             }
         })
     }
@@ -3469,7 +3477,7 @@ class Sfera {
         })
     }
 
-    static pulisciFiltroColonna(){
+    static pulisciFiltroColonna() {
         cy.get('nx-icon[name="close-circle-o"]').click()
         cy.get('tbody > tr[nxtablerow]').should('be.visible')
     }

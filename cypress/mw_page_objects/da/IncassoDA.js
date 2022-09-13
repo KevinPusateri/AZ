@@ -67,7 +67,7 @@ class IncassoDA {
         cy.intercept(getLogonUserName).as('getLogonUserName')
 
         cy.wait('@selectTitolo', { timeout: 60000 })
-        cy.wait('@initMezziPagam', { timeout: 60000 })
+        // cy.wait('@initMezziPagam', { timeout: 60000 })
         cy.wait('@getLogonUserName', { timeout: 60000 })
     }
 
