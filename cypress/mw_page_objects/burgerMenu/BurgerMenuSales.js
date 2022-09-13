@@ -300,7 +300,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/ImagesArch/**'
                 }).as('getImage');
                 Common.canaleFromPopup()
-                cy.wait('@getImage', { timeout: 40000 });
+                cy.wait('@getImage', { timeout: 60000 });
                 // cy.wait(25000)
                 getIFrame().find('input[value="Home"]').invoke('attr', 'value').should('equal', 'Home')
                 getIFrame().find('input[value="Indietro"]').invoke('attr', 'value').should('equal', 'Indietro')
