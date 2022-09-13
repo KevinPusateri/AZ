@@ -369,9 +369,9 @@ class TenutaTariffa {
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
-
+            cy.pause()
             //! Riclicchiamo su AVANTI (dopo che i textbox non sono più rossi)
-            cy.get('h3:last').invoke('text').then(pageTitle => {
+            cy.get('span[class="page-title"]').invoke('text').then(pageTitle => {
                 if (!pageTitle.includes('Veicolo')) {
                     cy.contains('AVANTI').should('exist').and('be.visible').click()
                     //Attendiamo che il caricamento non sia più visibile
@@ -396,7 +396,7 @@ class TenutaTariffa {
 
             if (currentCase.Targa === '') {
                 cy.contains('Ricerca senza targa').should('exist').and('be.visible').click()
-                cy.contains('Ho capito').should('exist').and('be.visible').click()
+                cy.contains('CONTINUA').should('exist').and('be.visible').click()
             }
 
             //Verifichiamo se Veicolo Storico
