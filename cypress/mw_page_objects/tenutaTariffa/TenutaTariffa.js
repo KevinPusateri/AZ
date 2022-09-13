@@ -369,7 +369,6 @@ class TenutaTariffa {
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
-            cy.pause()
             //! Riclicchiamo su AVANTI (dopo che i textbox non sono più rossi)
             cy.get('span[class="page-title"]').invoke('text').then(pageTitle => {
                 if (!pageTitle.includes('Veicolo')) {
