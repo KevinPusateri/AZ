@@ -310,12 +310,24 @@ class TenutaTariffa {
 
                         //?29.08.22 Città ora viene fuori il dropdown di selezione, con compilazione autoamtica di provincia e cap
                         cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune).wait(2000)
-                        cy.get('nx-autocomplete-option:visible').within(() => {
-                            cy.get('.nx-autocomplete-option__label').first().click()
-                        })
 
-                        cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').click()
-                        cy.get(`span:contains(${currentCase.CAP})`).should('exist').click()
+                        if (Cypress.env('currentEnv') === 'TEST') {
+                            cy.get('nx-autocomplete-option:visible').within(() => {
+                                cy.get('.nx-autocomplete-option__label').first().click()
+                            })
+
+                            cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').then(($cap) => {
+                                if ($cap.text().trim() === 'Inserisci') {
+                                    cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').click()
+                                    cy.get(`span:contains(${currentCase.CAP})`).should('exist').click()
+                                }
+                            })
+                        }
+                        else {
+                            //!Fino alla release 126 - da cancellare dopo uscita release 127
+                            cy.get('input[formcontrolname="provincia"]').should('exist').and('be.visible').type(currentCase.Provincia)
+                            cy.get('input[formcontrolname="cap"]').should('exist').and('be.visible').type(currentCase.CAP)
+                        }
 
                         cy.get('nx-dropdown[formcontrolname="professione"]').should('exist').and('be.visible').click()
                         if (currentCase.Professione.includes('('))
@@ -329,7 +341,7 @@ class TenutaTariffa {
                         cy.get('nx-dropdown[formcontrolname="sesso"]').should('exist').and('be.visible').click()
                         cy.contains((currentCase.Sesso === undefined || currentCase.Sesso === "") ? 'Maschio' : currentCase.Sesso).should('exist').and('be.visible').click()
 
-                        // //Generiamo il codice fiscale
+                        //?Generiamo il codice fiscale --> generato automaticamente dall'applicativo ora
                         // let formattedDataNascita = currentDataNascita.getFullYear() + '-' +
                         //     String(currentDataNascita.getMonth() + 1).padStart(2, '0') + '-' +
                         //     String(currentDataNascita.getDate()).padStart(2, '0')
@@ -447,7 +459,7 @@ class TenutaTariffa {
                 }
             })
 
-            //Data Immatricolazione
+           //Data Immatricolazione
             //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
             //Differenziamo se Prima Immatricolazione è calcolata in automatico oppure è in formato data
             let dataPrimaImmatricolazione
@@ -473,6 +485,7 @@ class TenutaTariffa {
             cy.wait('@getMotor', { timeout: 30000 })
 
             cy.wait(2000)
+
             cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').invoke('val').then(currentDataPrimaImmatricolazione => {
                 expect(currentDataPrimaImmatricolazione).to.include(formattedPrimaImmatricolazione)
             })
@@ -512,7 +525,7 @@ class TenutaTariffa {
                 }
             }
 
-            currentCase.Targa !== '' ? cy.contains('Informazioni generali').click() : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click()
+            currentCase.Targa !== '' ? cy.contains('Informazioni').click() : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click()
             //TODO vedi error on size
             //cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             //#endregion
