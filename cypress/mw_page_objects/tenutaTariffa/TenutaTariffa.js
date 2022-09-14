@@ -313,8 +313,9 @@ class TenutaTariffa {
                         cy.get('nx-autocomplete-option:visible').within(() => {
                             cy.get('.nx-autocomplete-option__label').first().click()
                         })
-                        // cy.get('input[formcontrolname="provincia"]').should('exist').and('be.visible').type(currentCase.Provincia)
-                        // cy.get('input[formcontrolname="cap"]').should('exist').and('be.visible').type(currentCase.CAP)
+
+                        cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').click()
+                        cy.get(`span:contains(${currentCase.CAP})`).should('exist').click()
 
                         cy.get('nx-dropdown[formcontrolname="professione"]').should('exist').and('be.visible').click()
                         if (currentCase.Professione.includes('('))
