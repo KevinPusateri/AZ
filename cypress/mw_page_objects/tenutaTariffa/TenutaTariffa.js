@@ -408,7 +408,11 @@ class TenutaTariffa {
 
             if (currentCase.Targa === '') {
                 cy.contains('Ricerca senza targa').should('exist').and('be.visible').click()
-                cy.contains('CONTINUA').should('exist').and('be.visible').click()
+                //!Fino alla release 126 - da cancellare dopo uscita release 127
+                if (Cypress.env('currentEnv') === 'TEST')
+                    cy.contains('CONTINUA').should('exist').and('be.visible').click()
+                else
+                    cy.contains('Ho capito').should('exist').and('be.visible').click()
             }
 
             //Verifichiamo se Veicolo Storico
@@ -459,7 +463,7 @@ class TenutaTariffa {
                 }
             })
 
-           //Data Immatricolazione
+            //Data Immatricolazione
             //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
             //Differenziamo se Prima Immatricolazione è calcolata in automatico oppure è in formato data
             let dataPrimaImmatricolazione
