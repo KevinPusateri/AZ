@@ -530,7 +530,7 @@ class TenutaTariffa {
             }
 
             currentCase.Targa !== '' ? cy.contains('Informazioni').click() : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click()
-            //TODO vedi error on size
+            //TODO vedi error on Size
             //cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             //#endregion
 
