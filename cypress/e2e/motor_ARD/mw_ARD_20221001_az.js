@@ -54,9 +54,9 @@ after(function () {
 //?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
-let caseToExecute = ['3','4','5']
+let caseToExecute = []
 
-describe('ARD Aprile 2022: ', {
+describe('ARD Ottobre 2022: ', {
     retries: {
         runMode: 0,
         openMode: 0,
