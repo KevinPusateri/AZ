@@ -3,7 +3,7 @@
 import Common from "../common/Common"
 
 
-const mainFrame = '#matrixIframe'
+const IFrameParent = '#matrixIframe'
 const subFrame = 'iframe[src="/dasincruscotto/cruscotto/cruscotto.jsp"]'
 const getIframe = () => cy.get('iframe').its('0.contentDocument.body')
 const findIframeChild = (subFrame) => {

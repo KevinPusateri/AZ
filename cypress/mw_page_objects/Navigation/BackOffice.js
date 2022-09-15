@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 import Common from "../common/Common"
 
-const IframeDen = 'iframe[src="cliente.jsp"]'
+const IFrameParent = 'iframe[src="cliente.jsp"]'
 
 const getIFrame = () => {
     cy.get('iframe[class="iframe-content ng-star-inserted"]')
@@ -158,11 +158,11 @@ class BackOffice {
                 break;
             case LinksSinistri.DENUNCIA:
                 cy.wait(10000)
-                findIframeChild(IframeDen).find('[class="pageTitle"]:contains("Ricerca cliente"):visible')
-                findIframeChild(IframeDen).find('h3:contains("Ricerca per polizza"):visible')
-                findIframeChild(IframeDen).find('h3:contains("Ricerca per targa"):visible')
-                findIframeChild(IframeDen).find('h3:contains("Ricerca per dati anagrafici"):visible')
-                findIframeChild(IframeDen).find('a:contains("Esegui Ricerca"):visible')
+                findIframeChild(IFrameParent).find('[class="pageTitle"]:contains("Ricerca cliente"):visible')
+                findIframeChild(IFrameParent).find('h3:contains("Ricerca per polizza"):visible')
+                findIframeChild(IFrameParent).find('h3:contains("Ricerca per targa"):visible')
+                findIframeChild(IFrameParent).find('h3:contains("Ricerca per dati anagrafici"):visible')
+                findIframeChild(IFrameParent).find('a:contains("Esegui Ricerca"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.DENUNCIA_BMP:
