@@ -371,7 +371,7 @@ class SintesiCliente {
      */
     static checkFastQuoteAuto() {
         cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
-
+        // cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').should('be.visible')
         cy.get('lib-container').find('app-client-resume:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Fast Quote")').is(':visible')
             if (check) {
@@ -431,8 +431,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { timeout: 120000 })
 
-        getIFrame().find('span:contains("Cerca"):visible')
-
+        getIFrame().find('nx-link:contains("Nuova ricerca"):visible')
         cy.screenshot('Assuntivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
@@ -450,7 +449,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { timeout: 50000 })
 
-        getIFrame().find('span:contains("Cerca"):visible')
+        getIFrame().find('span:contains("Nuova ricerca"):visible')
         cy.screenshot('Assuntivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 

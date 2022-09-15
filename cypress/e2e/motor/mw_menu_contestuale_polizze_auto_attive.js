@@ -41,7 +41,7 @@ before(() => {
             currentAgency = polizzaClient.agency
 
             TopBar.search(currentCustomerFullName)
-            LandingRicerca.filtraRicerca('E')
+            LandingRicerca.filtra('ALL','E','ALL')
             LandingRicerca.clickClientePF(currentCustomerFullName)
             Portafoglio.clickTabPortafoglio()
             Portafoglio.clickSubTab('Polizze attive')
@@ -61,7 +61,7 @@ afterEach(function () {
     if (this.currentTest.state !== 'passed') {
         TopBar.clickMatrixHome()
         TopBar.search(currentCustomerFullName)
-        LandingRicerca.filtraRicerca('E')
+        LandingRicerca.filtra('ALL','E','ALL')
         LandingRicerca.clickClientePF(currentCustomerFullName)
         Portafoglio.clickTabPortafoglio()
         Portafoglio.clickSubTab('Polizze attive')
