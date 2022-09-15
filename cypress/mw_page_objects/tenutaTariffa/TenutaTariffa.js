@@ -1593,8 +1593,11 @@ class TenutaTariffa {
             url: /CaricaLog/
         }).as('caricaLog')
 
+        if (Cypress.env('currentEnv') === 'TEST')
+            cy.visit(Cypress.env('urlDebugProxyTest'))
+        else
+            cy.visit(Cypress.env('urlDebugProxyPreprod'))
 
-        cy.visit(Cypress.env('urlDebugProxyPreprod'))
 
         cy.getUserWinLogin().then(data => {
             cy.get('#txtCompagnia').should('exist').and('be.visible').type(data.agency.substr(0, 2)).wait(500)
