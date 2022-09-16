@@ -75,15 +75,12 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.CON_INIZIATIVE_APERTE, true)
         })
 
-        it('Verificare la presenza della colonna "Iniziative Cl" in tabella', function () {
-            Sfera.checkColonnaPresente('Iniziative Cl')
+        it('Verificare tooltip riga della colonna Ap.Cl che contenga Iniziativa, Assegnatario, Data Scad. e Tipologia e il numero di iniziative aperte', function () {
+            Sfera.checkToolTipRigaByColonna(Sfera.FILTRI.AP_CL, 'Iniziativa')
         })
 
-        it('Verificare che compaia il tooltip corrispondente su Iniziative Cl "Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente"', function () {
-            Sfera.checkTooltipSingleColumn({
-                key: 'Iniziative Cl',
-                tooltip: 'Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente'
-            })
+        it('Verificare la presenza della colonna "Iniziative Cl" in tabella', function () {
+            Sfera.checkColonnaPresente('Iniziative Cl')
         })
 
         it('Verificare la presenza della colonna "Ap. Cl" in tabella', function () {
@@ -91,8 +88,11 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.checkColonnaPresente('Ap.')
         })
 
-        it('Verificare tooltip riga della colonna Ap.Cl che contenga Iniziativa, Assegnatario, Data Scad. e Tipologia e il numero di iniziative aperte', function () {
-            Sfera.checkToolTipRigaByColonna(Sfera.FILTRI.AP_CL, 'Iniziativa')
+        it('Verificare che compaia il tooltip corrispondente su Iniziative Cl "Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente"', function () {
+            Sfera.checkTooltipSingleColumn({
+                key: 'Iniziative Cl',
+                tooltip: 'Elenco Iniziative, di Agenzia o Direzione, Aperte sul Cliente'
+            })
         })
 
         it('Verifica visualizzazione filtro excel sulla colonna Iniziative Cl', function () {

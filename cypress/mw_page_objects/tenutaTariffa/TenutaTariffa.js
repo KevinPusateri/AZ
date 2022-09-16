@@ -466,7 +466,6 @@ class TenutaTariffa {
             //Data Immatricolazione
             //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
             //Differenziamo se Prima Immatricolazione è calcolata in automatico oppure è in formato data
-            let dataPrimaImmatricolazione
             let formattedPrimaImmatricolazione
             if (!currentCase.Prima_Immatricolazione.includes('ann'))
                 formattedPrimaImmatricolazione = currentCase.Prima_Immatricolazione
@@ -483,12 +482,32 @@ class TenutaTariffa {
                 }
             }
 
-            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').clear().wait(500)
-            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').type(formattedPrimaImmatricolazione).type('{enter}').wait(500)
+            const [day, month, year] = formattedPrimaImmatricolazione.split('/')
+            const date = new Date(+year, month - 1, +day);
 
-            cy.wait('@getMotor', { timeout: 30000 })
+            cy.get('nx-icon[name="calendar"]').first().click()
+            cy.contains('Scegli mese e anno').should('be.visible').click()
 
-            cy.wait(2000)
+            //Selezioniamo l'anno
+            cy.get('.nx-calendar-table').within(() => {
+                cy.contains(date.getFullYear()).click()
+            })
+
+            //Selezioniamo il mese
+            cy.get('.nx-calendar-table').within(() => {
+                cy.contains(date.toLocaleString('default', { month: 'short' })).click()
+            })
+
+            //Selezioniamo il giorno
+            cy.get('.nx-calendar-table').within(() => {
+                cy.get(`div:contains(${String(date.getDate())})`)
+                    .not('[aria-hidden]')
+                    .should('be.visible').click()
+            })
+            cy.wait('@getMotor', { timeout: 60000 })
+
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
 
             cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').invoke('val').then(currentDataPrimaImmatricolazione => {
                 expect(currentDataPrimaImmatricolazione).to.include(formattedPrimaImmatricolazione)
@@ -673,10 +692,32 @@ class TenutaTariffa {
                             String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
                             dataDecorrenza.getFullYear()
 
-                        cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').clear()
-                        cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').type(formattedDataVoltura).type('{enter}')
+                        const [day, month, year] = formattedDataVoltura.split('/')
+                        const date = new Date(+year, month - 1, +day);
 
-                        cy.wait('@getMotor', { timeout: 30000 })
+                        cy.get('nx-icon[name="calendar"]').first().click()
+                        cy.contains('Scegli mese e anno').should('be.visible').click()
+
+                        //Selezioniamo l'anno
+                        cy.get('.nx-calendar-table').within(() => {
+                            cy.contains(date.getFullYear()).click()
+                        })
+
+                        //Selezioniamo il mese
+                        cy.get('.nx-calendar-table').within(() => {
+                            cy.contains(date.toLocaleString('default', { month: 'short' })).click()
+                        })
+
+                        //Selezioniamo il giorno
+                        cy.get('.nx-calendar-table').within(() => {
+                            cy.get(`div:contains(${String(date.getDate())})`)
+                                .not('[aria-hidden]')
+                                .should('be.visible').click()
+                        })
+                        cy.wait('@getMotor', { timeout: 60000 })
+
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible')
                     }
                     else
                         throw new Error('Data Voltura non riconosciuta')
@@ -696,7 +737,7 @@ class TenutaTariffa {
                     break
             }
 
-            //Nessuna attestazione trovata in BDA
+        //Nessuna attestazione trovata in BDA
             if (currentCase.Provenienza !== "Prima immatricolazione" && currentCase.Sotto_Provenienza !== "") {
                 cy.contains('Si').should('exist').and('be.visible').parent().click()
                 cy.contains('CONTINUA').should('exist').and('be.visible').click()
@@ -936,7 +977,9 @@ class TenutaTariffa {
 
             //Selezioniamo il giorno
             cy.get('.nx-calendar-table').within(() => {
-                cy.contains(String(dataDecorrenza.getDate())).click()
+                cy.get(`div:contains(${String(dataDecorrenza.getDate())})`)
+                    .not('[aria-hidden]')
+                    .should('be.visible').click()
             })
             cy.wait('@getMotor', { timeout: 60000 })
 
@@ -1550,8 +1593,11 @@ class TenutaTariffa {
             url: /CaricaLog/
         }).as('caricaLog')
 
+        if (Cypress.env('currentEnv') === 'TEST')
+            cy.visit(Cypress.env('urlDebugProxyTest'))
+        else
+            cy.visit(Cypress.env('urlDebugProxyPreprod'))
 
-        cy.visit(Cypress.env('urlDebugProxyPreprod'))
 
         cy.getUserWinLogin().then(data => {
             cy.get('#txtCompagnia').should('exist').and('be.visible').type(data.agency.substr(0, 2)).wait(500)

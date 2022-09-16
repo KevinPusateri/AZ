@@ -3489,12 +3489,14 @@ class Sfera {
                 let myCheckedRow = Cypress._.random(5, rowsTable.length - 1)
                 //Effettuiamo una scrollIntoView su qualche colonna precednete
                 cy.get('tbody > tr[nxtablerow]').eq(myCheckedRow).find('td').eq(i - 5).scrollIntoView()
+
+                cy.wait(2000)
                 cy.wrap(rowsTable[myCheckedRow]).find('td').eq(i - 2).then(($textCell) => {
                     //? cypress-real-events works with Chrome Dev Tools
                     if (Cypress.browser.name === 'firefox')
                         cy.wrap($textCell).rightclick()
                     else
-                        cy.wrap($textCell).realHover({ scrollBehavior: 'center' })
+                        cy.wrap($textCell).realHover({ scrollBehavior: false })
 
                     cy.get('.cdk-overlay-container').within((tooltip) => {
                         expect(tooltip.text()).not.to.be.empty

@@ -184,7 +184,7 @@ class IncassoDA {
             url: /Incassa/
         }).as('incassa');
 
-        cy.wait(5000)
+        cy.wait(10000)
         // Seleziono il metodo di pagamento
         cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').should('be.visible').click().wait(1000)
         let regexKeyType = new RegExp('\^' + typeIncasso + '\$');
@@ -208,12 +208,12 @@ class IncassoDA {
             cy.wait(5000)
         })
         if (!TitoloIncassoByAnnullamento) {
-            cy.get('img[src="css/ultra/Images/Shape.png"]').should('be.visible')
+            cy.get('img[src="Images/iconImagesBlue/confirm_green.gif"]').should('be.visible')
             cy.get('input[value="CHIUDI"]').should('be.visible').click()
         }
         else {
-            cy.get('img[src="Images/iconImagesBlue/confirm_green.gif"]').should('be.visible')
-            cy.get('input[value="> CHIUDI"]').should('be.visible').click()
+            cy.get('img[src="css/ultra/Images/Shape.png"]').should('be.visible')
+            cy.contains('CHIUDI').click()
         }
 
     }
