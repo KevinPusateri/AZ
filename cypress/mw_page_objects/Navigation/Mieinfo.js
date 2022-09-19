@@ -77,9 +77,8 @@ class Mieinfo {
                     cy.wrap($subMenu).find('[class="menu--link menu_padding-1"]').each(($link, i) => {
                         currentLinks.push($link.text().trim())
                     }).then(() => {
-
+                        cy.wrap(checkLinks.sort()).should('deep.equal', currentLinks.sort())
                         expect(currentLinks.sort()).to.deep.eq(checkLinks.sort());
-
                     })
                 })
                 break;
@@ -164,6 +163,7 @@ class Mieinfo {
             case LinksMenu.PRODOTTI:
                 const linksProdottiIcon = [
                     'Allianz Ultra',
+                    'Allianz Ultra Impresa',
                     'Allianz1 Business',
                     'Auto e Motori',
                     'Casa',
@@ -181,36 +181,36 @@ class Mieinfo {
                     expect($link.text().trim().toLowerCase()).to.include(linksProdottiIcon[i].toLowerCase());
                 })
                 break
-            //TODO: Finire mie info
             case LinksMenu.INIZIATIVE:
-                const linksIniziativeCard = [
+                const linksIniziativeIcon = [
                     'Stop&Drive',
                     // 'Mensilizzazione Rami Vari',
                     'Mensilizzazione Auto',
                     'Clienti Valore Extra',
                     'Winback Motor',
                     // 'Busta Arancione',
-                    'Decommissioning telematici',
-                    'Digitalizzazione del certificato',
+                    // 'Decommissioning telematici',
+                    'Digitalizzazione del certificato assicurativo',
                     // 'Attestato di rischio dinamico',
                     'AllianzPay',
+                    'Adegua TCM',
                     'Proponi LTC',
                     'Proponi TCM',
                 ]
-                getIFrame().find('app-dynamic-list:visible').within(($card) => {
-                    cy.wrap($card).find('h4:visible').each(($link, i) => {
-                        expect($link.text().trim()).to.include(linksIniziativeCard[i]);
-                    })
+                let currentIconsIniziative = []
+                getIFrame().find('.product-icon--name').each(($link, i) => {
+                    currentIconsIniziative.push($link.text().trim())
+                }).then(() => {
+                    expect(currentIconsIniziative.sort()).to.deep.eq(linksIniziativeIcon.sort());
                 })
-
                 break;
             case LinksMenu.SALES_ACADEMY:
                 const linksSalesAcademyIcon = [
                     'Chi siamo',
                     'Allianz Business School',
-                    'Obblighi IVASS',
+                    'Campus e IVASS',
                     'Percorsi di ruolo',
-                    'Formazione Multicanale',
+                    'Formazione multicanale',
                 ]
                 let currentIconsSalesAcademy = []
                 getIFrame().find('.product-icon--name').each(($link, i) => {
@@ -317,7 +317,7 @@ class Mieinfo {
                 break;
             case LinksMenu.TUTTE_LE_NOTIZIE:
                 getIFrame().find('h1:contains("Tutte le notizie")').should('be.visible')
-            break;
+                break;
             case LinksMenu.RACCOLTE:
                 getIFrame().find('h3:contains("Pronti via")').should('be.visible')
                 break;
@@ -331,7 +331,7 @@ class Mieinfo {
                 getIFrame().find('h1:contains("Iniziative")').should('be.visible')
                 break;
             case LinksMenu.EVENTI_E_SPONSORIZZAZIONI:
-                getIFrame().find('h1:contains("Serie Podcast")').should('be.visible')
+                getIFrame().find('h1:contains("Eventi e Sponsorizzazioni")').should('be.visible')
                 break;
             case LinksMenu.SALES_ACADEMY:
                 getIFrame().find('h1:contains("Sales Academy")').should('be.visible')
@@ -340,7 +340,7 @@ class Mieinfo {
                 getIFrame().find('h1:contains("Momento della Verità")').should('be.visible')
                 break;
             case LinksMenu.RILASCI_INFORMATICI:
-                getIFrame().find('h1:contains("Release")').should('be.visible')
+                getIFrame().find('h1:contains("Rilasci informatici")').should('be.visible')
                 break;
             case LinksMenu.MANUALI_INFORMATICI:
                 getIFrame().find('h1:contains("Manuali Informatici")').should('be.visible')
@@ -511,7 +511,7 @@ class Mieinfo {
 
         if (keysLinksSubMenu['prodotti/auto-e-motori']) {
             getIFrame().contains(linksProdotti.AUTO_E_MOTORI).click()
-            getIFrame().find('h1:contains("Auto e Motori")').should('be.visible')
+            getIFrame().find('h1:contains("Auto e motori")').should('be.visible')
         }
 
         if (keysLinksSubMenu['prodotti/casa-condominio-e-petcare']) {
@@ -521,7 +521,7 @@ class Mieinfo {
 
         if (keysLinksSubMenu['prodotti/infortuni-e-salute']) {
             getIFrame().contains(linksProdotti.INFORTUNI_E_SALUTE).click()
-            getIFrame().find('h1:contains("Infortuni e Salute")').should('be.visible')
+            getIFrame().find('h1:contains("Infortuni e salute")').should('be.visible')
         }
 
         if (keysLinksSubMenu['prodotti/impresa-e-rischi-dedicati']) {
@@ -531,7 +531,7 @@ class Mieinfo {
 
         if (keysLinksSubMenu['prodotti/tutela-legale']) {
             getIFrame().find('a[href="/lemieinfo/prodotti/tutela-legale"]').contains(linksProdotti.TUTELA_LEGALE).click()
-            getIFrame().find('h1:contains("Tutela Legale")').should('be.visible')
+            getIFrame().find('h1:contains("Tutela legale")').should('be.visible')
         }
 
         if (keysLinksSubMenu['prodotti/vita']) {
@@ -672,7 +672,7 @@ class Mieinfo {
 
         if (keysLinksSubMenu['sales-academy/canali']) {
             getIFrame().contains(linksSalesAcademy.FORMAZIONE_MULTICANALE).click()
-            getIFrame().find('h1:contains("Formazione Multicanale")').should('be.visible')
+            getIFrame().find('h1:contains("Formazione multicanale")').should('be.visible')
         }
 
         cy.screenshot(`Check Sotto Pagina di Sales Academy`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
