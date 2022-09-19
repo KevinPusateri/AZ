@@ -173,7 +173,7 @@ class BackOffice {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.GESTIONE_CONTATTO_CARD:
-                getIFrame().find('div:contains("Nessun sinistro trovato"):visible')
+                getIFrame().find('#resultsClaimsToComplete').should('exist').and('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.CONSULTAZIONE_SINISTRI:
