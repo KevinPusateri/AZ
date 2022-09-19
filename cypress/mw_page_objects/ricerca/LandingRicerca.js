@@ -739,10 +739,11 @@ class LandingRicerca {
                 break
         }
 
-        cy.get('lib-navigation-item-link').should('be.visible').find('.title').should('have.length', linkLength)
-            .each(($suggerimenti, i) => {
-                expect($suggerimenti.text()).to.include(suggLinks[i]);
-            })
+        if (value.toLocaleLowerCase() !== 'bmp')
+            cy.get('lib-navigation-item-link').should('be.visible').find('.title').should('have.length', linkLength)
+                .each(($suggerimenti, i) => {
+                    expect($suggerimenti.text()).to.include(suggLinks[i]);
+                })
         cy.get('lib-advice-navigation-section').contains('Suggerimenti di navigazione').should('exist').and('be.visible')
     }
 
