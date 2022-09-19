@@ -21,7 +21,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_az.json'
+import { tariffaCases as ardCases } from '../../fixtures/tariffe_ARD/tariffaCases_ARD_20221001_az.json'
 //#endregion
 
 before(() => {
@@ -62,7 +62,7 @@ describe('ARD Ottobre 2022: ', {
         openMode: 0,
     }
 }, function () {
-    tariffaCases.forEach((currentCase, k) => {
+    ardCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
                 if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
@@ -86,14 +86,9 @@ describe('ARD Ottobre 2022: ', {
                     TenutaTariffa.compilaProvenienza(currentCase)
                     TenutaTariffa.compilaOffertaARD(currentCase)
                     TenutaTariffa.areaRiservata(currentCase)
-                }
-                else
-                    this.skip()
-            })
 
-            it("LogTariffa", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) 
-                        TenutaTariffa.checkTariffaARD(currentCase)
+                    TenutaTariffa.checkTariffaARD(currentCase)
+                }
                 else
                     this.skip()
             })
