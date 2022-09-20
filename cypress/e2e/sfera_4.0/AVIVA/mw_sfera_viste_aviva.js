@@ -75,10 +75,10 @@ if (!Cypress.env('isSecondWindow'))
             })
 
             it('Selezionare due colonne ed inserire due diversi filtri', options, function () {
-                Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+                Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
                 Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
 
-                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
                 Sfera.checkValoreInColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
             })
 
@@ -94,8 +94,8 @@ if (!Cypress.env('isSecondWindow'))
                 Sfera.selezionaVista('Automatici_1960_31')
                 Sfera.espandiPannello()
                 Sfera.estrai()
-                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
-                Sfera.eliminaVista('AAutomatici_1960_31')
+                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
+                Sfera.eliminaVista('Automatici_1960_31')
             })
         })
 
@@ -111,10 +111,10 @@ if (!Cypress.env('isSecondWindow'))
             it('- Selezionare due colonne ed inserire due diversi filtri \n- Selezionare un cluster desiderato', options, function () {
                 Sfera.selectRandomCluster()
                 Sfera.estrai()
-                Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+                Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
                 Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
 
-                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
                 Sfera.checkValoreInColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
             })
 
@@ -130,7 +130,7 @@ if (!Cypress.env('isSecondWindow'))
                 Sfera.selezionaVista('Automatici_AQ_35_Cluster')
                 Sfera.espandiPannello()
                 Sfera.estrai()
-                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+                Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
                 Sfera.eliminaVista('Automatici_AQ_35_Cluster')
             })
         })
@@ -169,8 +169,8 @@ else
             Sfera.selectRandomCluster()
             Sfera.estrai()
             Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
-            Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
-            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+            Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
+            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
             //Salva vista
             Sfera.salvaVistaPersonalizzata('Automatici_AQ_35_Cluster')
             //? Effettuiamo un RESET della view
@@ -181,7 +181,7 @@ else
             Sfera.selezionaVista('Automatici_AQ_35_Cluster')
             Sfera.espandiPannello()
             Sfera.estrai()
-            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_35)
+            Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
             Sfera.eliminaVista('Automatici_AQ_35_Cluster')
             //#endregion
         })
