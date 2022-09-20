@@ -98,12 +98,13 @@ class LoginPage {
                 })
 
                 //Nel caso sia su TFS, per eventuali run in parallelo, utilizzo la TUTF003 per AVIVA e la TUTF078 per AZ
-                if(user.length > 1)
-                    (Cypress.env('isAviva')) ? user = user.filter(obj => {return obj.agency.startsWith('14')})[0] : user = user.filter(obj => {return !obj.agency.startsWith('14')})[0]
+                if (user.length > 1)
+                    (Cypress.env('isAviva')) ? user = user.filter(obj => { return obj.agency.startsWith('14') })[0] : user = user.filter(obj => { return !obj.agency.startsWith('14') })[0]
                 else
                     user = user[0]
 
                 cy.log('Retrived username : ' + loggedUser.username)
+
                 cy.decryptLoginPsw().then(psw => {
                     let currentImpersonificationToPerform
                     //Verifichiamo se ho customImpersonification valorizzato
@@ -134,6 +135,7 @@ class LoginPage {
                             "agentId": customImpersonification.agentId,
                             "agency": customImpersonification.agency,
                         }
+                        cy.task('log', JSON.stringify(currentImpersonificationToPerform))
 
                     //Se siamo in dashboard, skippo l'impersonificazione
                     if (Cypress.env('usingDash')) {
