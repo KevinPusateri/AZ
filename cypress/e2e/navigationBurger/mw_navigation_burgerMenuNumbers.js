@@ -72,9 +72,7 @@ after(function () {
 })
 describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
-    it.only('Verifica i link da Burger Menu', function () {
-        cy.task('log', Cypress.env('isAviva'))
-        cy.task('log', keys)
+    it('Verifica i link da Burger Menu', function () {
         TopBar.clickNumbers()
         BurgerMenuNumbers.checkExistLinks(keys)
     })
