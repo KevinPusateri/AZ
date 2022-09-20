@@ -242,29 +242,31 @@ Cypress.Commands.add('impersonification', (tutf, getPersUser, getChannel) => {
 
 //Permettere di ritornare le chiavi di profilazioni in base all'utente passato
 Cypress.Commands.add('getProfiling', (tutf) => {
-  cy.fixture("tutf").then(data => {
-    let user = data.users.filter(obj => {
-      return obj.userName === loggedUser.username.toUpperCase()
-    })
+  cy.task('getWinUserLogged').then((loggedUser) => {
 
-    //Nel caso sia su TFS, per eventuali run in parallelo, utilizzo la TUTF003 per AVIVA e la TUTF078 per AZ
-    if (user.length > 1)
-      (Cypress.env('isAviva')) ? user = user.filter(obj => { return obj.agency.startsWith('14') })[0] : user = user.filter(obj => { return !obj.agency.startsWith('14') })[0]
-    else
-      user = user[0]
+    cy.fixture("tutf").then(data => {
+      let user = data.users.filter(obj => {
+        return obj.userName === loggedUser.username.toUpperCase()
+      })
 
-    cy.request({
-      method: 'GET',
-      log: false,
-      url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('profilingUrlTest') + '/daprofiling/profile/' + user.tutf : Cypress.env('profilingUrlPreprod') + '/daprofiling/profile/' + user.tutf
-    }).then(resp => {
-      if (resp.status !== 200)
-        throw new Error('Recupero Profiling fallito')
+      //Nel caso sia su TFS, per eventuali run in parallelo, utilizzo la TUTF003 per AVIVA e la TUTF078 per AZ
+      if (user.length > 1)
+        (Cypress.env('isAviva')) ? user = user.filter(obj => { return obj.agency.startsWith('14') })[0] : user = user.filter(obj => { return !obj.agency.startsWith('14') })[0]
       else
-        return resp.body
+        user = user[0]
+
+      cy.request({
+        method: 'GET',
+        log: false,
+        url: Cypress.env('currentEnv') === 'TEST' ? Cypress.env('profilingUrlTest') + '/daprofiling/profile/' + user.tutf : Cypress.env('profilingUrlPreprod') + '/daprofiling/profile/' + user.tutf
+      }).then(resp => {
+        if (resp.status !== 200)
+          throw new Error('Recupero Profiling fallito')
+        else
+          return resp.body
+      })
     })
   })
-
 })
 
 Cypress.Commands.add('profilingLinksMenu', (tutf, keysLinks) => {
