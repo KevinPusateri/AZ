@@ -61,12 +61,10 @@ class NGRA2013 {
     /**
      * Interazione con il pulsante Avanti
      * @param {boolean} [performeClick] default false, se true effettua click
-     * @private
      */
     static avanti(performeClick = false) {
         cy.get('[value="› Avanti"]').should('exist').and('be.visible')
         cy.wait(2000)
-        cy.screenshot('Verifica Accesso a Riepilogo NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         if (performeClick)
             cy.get('[value="› Avanti"]').click()
 

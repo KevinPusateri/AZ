@@ -188,9 +188,8 @@ class IncassoDA {
         // Seleziono il metodo di pagamento
         cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').should('be.visible').click().wait(1000)
         let regexKeyType = new RegExp('\^' + typeIncasso + '\$');
-
         cy.get('#TabIncassoModPagCombo_listbox').should('be.visible')
-            .find('li').contains(regexKeyType).click()
+            .find('li:visible').contains(regexKeyType).click()
 
         //Conferma incasso
         cy.screenshot('Conferma incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -199,7 +198,7 @@ class IncassoDA {
         cy.wait('@incassa', { timeout: 120000 })
     }
 
-    static TerminaIncasso(TitoloIncassoByAnnullamento = false) {
+    static TerminaIncasso(TitoloIncassoByAnnullamento = true) {
 
         // Verifica incasso confermato
         cy.get('div[class="container"]').should('be.visible').then(() => {

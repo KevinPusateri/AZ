@@ -1300,10 +1300,10 @@ class Sfera {
 
 
             cy.wait('@infoUtente', { timeout: 60000 })
-            cy.wait('@agenzieFonti', { timeout: 60000 })
-            cy.wait('@caricaVista', { timeout: 60000 })
-            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+            // cy.wait('@agenzieFonti', { timeout: 60000 })
+            // cy.wait('@caricaVista', { timeout: 60000 })
+            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
         }
         //? su reload skippo agenzieFonti e caricaVista
         else {
@@ -1537,41 +1537,41 @@ class Sfera {
             switch (voce) {
                 case VociMenuQuietanza.INCASSO:
                     // if (Cypress.env('currentEnv') === 'TEST') {
-                    //     IncassoDA.accessoMezziPagam()
-                    //     cy.wait(10000)
-                    //     if (flussoCompleto) {
-                    //         getAppJump().within(() => {
-
-                    //             IncassoDA.ClickIncassa()
-                    //         })
-                    //         getAppJump().within(($iframe) => {
-                    //             IncassoDA.ClickPopupWarning($iframe)
-                    //         })
-                    //         cy.wait('@getIncasso', { timeout: 40000 })
-                    //         getAppJump().within(() => {
-                    //             IncassoDA.SelezionaIncassa()
-                    //         })
-
-                    //         getAppJump().within(() => {
-                    //             IncassoDA.TerminaIncasso()
-                    //         })
-                    //     }
-                    //     else
-                    //         getAppJump().within(() => {
-                    //             IncassoDA.clickCHIUDI()
-                    //         })
-                    // }
-                    // else {
                     IncassoDA.accessoMezziPagam()
                     cy.wait(10000)
                     if (flussoCompleto) {
-                        IncassoDA.ClickIncassa()
-                        IncassoDA.ClickPopupWarning()
-                        IncassoDA.SelezionaIncassa()
-                        IncassoDA.TerminaIncasso()
+                        getAppJump().within(() => {
+
+                            IncassoDA.ClickIncassa()
+                        })
+                        getAppJump().within(($iframe) => {
+                            IncassoDA.ClickPopupWarning($iframe)
+                        })
+                        cy.wait('@getIncasso', { timeout: 40000 })
+                        getAppJump().within(() => {
+                            IncassoDA.SelezionaIncassa()
+                        })
+
+                        getAppJump().within(() => {
+                            IncassoDA.TerminaIncasso()
+                        })
                     }
                     else
-                        IncassoDA.clickCHIUDI()
+                        getAppJump().within(() => {
+                            IncassoDA.clickCHIUDI()
+                        })
+                    // }
+                    // else {
+                    // IncassoDA.accessoMezziPagam()
+                    // cy.wait(10000)
+                    // if (flussoCompleto) {
+                    //     IncassoDA.ClickIncassa()
+                    //     IncassoDA.ClickPopupWarning()
+                    //     IncassoDA.SelezionaIncassa()
+                    //     IncassoDA.TerminaIncasso()
+                    // }
+                    // else
+                    //     IncassoDA.clickCHIUDI()
                     // }
 
                     cy.wait('@estraiQuietanze', { timeout: 120000 })
@@ -1583,28 +1583,28 @@ class Sfera {
                     break;
                 case VociMenuQuietanza.DELTA_PREMIO:
                     // if (Cypress.env('currentEnv') === 'TEST') {
-                    //     if (flussoCompleto) {
-                    //         //TODO implementare flusso di delta premio
-                    //     }
-                    //     else {
-                    //         NGRA2013.verificaAccessoRiepilogo()
-                    //         getAppJump().within(() => {
-                    //             NGRA2013.avanti()
-                    //             cy.wait(2000)
-                    //             cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    //             NGRA2013.home(true)
-                    //         })
-                    //     }
-                    // } else {
                     if (flussoCompleto) {
                         //TODO implementare flusso di delta premio
-                    } else {
-                        NGRA2013.verificaAccessoRiepilogo()
-                        NGRA2013.avanti()
-                        cy.wait(2000)
-                        cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                        NGRA2013.home(true)
                     }
+                    else {
+                        NGRA2013.verificaAccessoRiepilogo()
+                        getAppJump().within(() => {
+                            NGRA2013.avanti()
+                            cy.wait(2000)
+                            // cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                            NGRA2013.home(true)
+                        })
+                    }
+                    // } else {
+                    // if (flussoCompleto) {
+                    // TODO implementare flusso di delta premio
+                    // } else {
+                    //     NGRA2013.verificaAccessoRiepilogo()
+                    //     NGRA2013.avanti()
+                    //     cy.wait(2000)
+                    //     cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    //     NGRA2013.home(true)
+                    // }
                     // }
                     this.verificaAccessoSfera(false)
                     break;
@@ -2450,7 +2450,7 @@ class Sfera {
                         cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
-            if (!portafogli.includes(Portafogli.VITA))
+            if (!portafogli.includes(Portafogli.VITA) && !Cypress.env('isAviva'))
                 cy.get(`div:contains(${Portafogli.VITA})`).parents('label').then($chekcBoxChecked => {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
@@ -2460,7 +2460,7 @@ class Sfera {
                 })
         })
 
-        cy.get('body').click()
+        cy.get('body').click({ force: true })
 
         if (performEstrai)
             this.estrai()
@@ -3322,6 +3322,7 @@ class Sfera {
      * @param {String} numberRows - the number of rows you want to display on the page
      */
     static checkRisultatiPaginaRighe(numberRows) {
+        cy.wait(4000)
         cy.contains('Risultati per pagina').parent().find('nx-dropdown').should('contain.text', numberRows)
     }
 
@@ -3440,7 +3441,8 @@ class Sfera {
     * 
     */
     static selezionaRigaRandom() {
-        cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+
+        cy.get('tbody > tr[nxtablerow]').should('be.visible').then((rowsTable) => {
             let selected = Cypress._.random(rowsTable.length - 1);
             cy.wrap(rowsTable).eq(selected).as('selectRiga')
             cy.wrap(rowsTable).eq(selected).within(() => {
@@ -3470,7 +3472,7 @@ class Sfera {
     static checkValoreInColonna(colonna, valore) {
         cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
             cy.get('tbody > tr[nxtablerow]').each((rowsTable) => {
-                cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
+                cy.wrap(rowsTable).find('td').eq(i - 1).then(($textCell) => {
                     expect($textCell.text().trim()).to.contain(valore.trim())
                 })
             })
