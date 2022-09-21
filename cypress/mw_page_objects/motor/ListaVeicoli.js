@@ -36,14 +36,14 @@ export default class ListaAuto {
         this.targa = targa
     }
 
-    static Auto_WW745FF() {
+    static Auto_WW745FF(dataImmatricolazione) {
         let targa = getPlateAuto()
         let WW745FF = new ListaAuto("Auto", targa)
         WW745FF.targa = targa
         WW745FF.marca = "VOLVO"
         WW745FF.modello = "C70 (2005-2013)"
         WW745FF.versione = "C70 2.4 20V 170 CV MOMENTUM (DAL 2005/09)"
-        WW745FF.dataImmatricolazione = "20/07/2022"
+        WW745FF.dataImmatricolazione = dataImmatricolazione
         WW745FF.nPosti = "5"
 
         return WW745FF

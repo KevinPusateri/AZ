@@ -313,7 +313,7 @@ class Mieinfo {
         const LinksMenu = LinkMieInfo.getLinksMenu()
         switch (page) {
             case LinksMenu.PRIMO_PIANO:
-                getIFrame().find('app-main-news').should('be.visible')
+                getIFrame().find('div[class="app--container-contents--wrapper"]').should('be.visible')
                 break;
             case LinksMenu.TUTTE_LE_NOTIZIE:
                 getIFrame().find('h1:contains("Tutte le notizie")').should('be.visible')
