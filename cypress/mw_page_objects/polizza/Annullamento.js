@@ -22,7 +22,6 @@ class Annullamento {
                 if (isOnlyAutografa.length > 1){
                     cy.pause()
                     cy.get('#dropTipoFirma').select('Autografa')
-                    //cy.get('ul:visible').find('li:visible:contains("Autografa")').click()
                 }
             })
 
