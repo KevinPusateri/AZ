@@ -20,7 +20,7 @@ class Annullamento {
             cy.get('#dataAnnullamento').then(($firma) => {
                 const isOnlyAutografa = $firma.find('#dropTipoFirma > option')
                 if (isOnlyAutografa.length > 1){
-                    cy.get('#s2id_dropTipoFirma').click()
+                    cy.get('#dropTipoFirma').click()
                     cy.get('ul:visible').find('li:visible:contains("Autografa")').click()
                 }
             })
