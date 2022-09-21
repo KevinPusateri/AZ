@@ -311,23 +311,16 @@ class TenutaTariffa {
                         //?29.08.22 Città ora viene fuori il dropdown di selezione, con compilazione autoamtica di provincia e cap
                         cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune).wait(2000)
 
-                        if (Cypress.env('currentEnv') === 'TEST') {
-                            cy.get('nx-autocomplete-option:visible').within(() => {
-                                cy.get('.nx-autocomplete-option__label').first().click()
-                            })
+                        cy.get('nx-autocomplete-option:visible').within(() => {
+                            cy.get('.nx-autocomplete-option__label').first().click()
+                        })
 
-                            cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').then(($cap) => {
-                                if ($cap.text().trim() === 'Inserisci') {
-                                    cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').click()
-                                    cy.get(`span:contains(${currentCase.CAP})`).should('exist').click()
-                                }
-                            })
-                        }
-                        else {
-                            //!Fino alla release 126 - da cancellare dopo uscita release 127
-                            cy.get('input[formcontrolname="provincia"]').should('exist').and('be.visible').type(currentCase.Provincia)
-                            cy.get('input[formcontrolname="cap"]').should('exist').and('be.visible').type(currentCase.CAP)
-                        }
+                        cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').then(($cap) => {
+                            if ($cap.text().trim() === 'Inserisci') {
+                                cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').click()
+                                cy.get(`span:contains(${currentCase.CAP})`).should('exist').click()
+                            }
+                        })
 
                         cy.get('nx-dropdown[formcontrolname="professione"]').should('exist').and('be.visible').click()
                         if (currentCase.Professione.includes('('))
@@ -408,11 +401,10 @@ class TenutaTariffa {
 
             if (currentCase.Targa === '') {
                 cy.contains('Ricerca senza targa').should('exist').and('be.visible').click()
-                //!Fino alla release 126 - da cancellare dopo uscita release 127
-                if (Cypress.env('currentEnv') === 'TEST')
-                    cy.contains('CONTINUA').should('exist').and('be.visible').click()
-                else
-                    cy.contains('Ho capito').should('exist').and('be.visible').click()
+
+                cy.contains('CONTINUA').should('exist').and('be.visible').click()
+                //Pre relase 127
+                //cy.contains('Ho capito').should('exist').and('be.visible').click()
             }
 
             //Verifichiamo se Veicolo Storico
@@ -737,7 +729,7 @@ class TenutaTariffa {
                     break
             }
 
-        //Nessuna attestazione trovata in BDA
+            //Nessuna attestazione trovata in BDA
             if (currentCase.Provenienza !== "Prima immatricolazione" && currentCase.Sotto_Provenienza !== "") {
                 cy.contains('Si').should('exist').and('be.visible').parent().click()
                 cy.contains('CONTINUA').should('exist').and('be.visible').click()
