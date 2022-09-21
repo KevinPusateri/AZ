@@ -111,8 +111,8 @@ const LinksRapidi = {
 const LinksOnEmettiPolizza = {
     PREVENTIVO_MOTOR: 'Preventivo Motor',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022: 'Allianz Ultra Casa e Patrimonio 2022',
-    ALLIANZ_ULTRA_SALUTE: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_SALUTE: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute',
     SAFE_DRIVE_AUTOVETTURE: 'Safe Drive Autovetture',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
     ALLIANZ_ULTRA_IMPRESA: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Impresa' : 'Allianz Ultra Impresa',
@@ -1154,7 +1154,7 @@ class Sales {
             cy.get('app-lob-link').should('be.visible').contains(lob).click()
             if (lob !== 'Motor')
                 cy.wait('@gqlSfera')
-            cy.wait(2000)
+            cy.wait(5000)
             let enable
             cy.get('app-receipt-header').find('span').eq(1).invoke('text').then((numPezzi) => {
                 if (numPezzi.substring(0, 1) === "0")

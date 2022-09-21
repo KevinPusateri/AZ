@@ -3281,14 +3281,15 @@ class Sfera {
             const checkCluster = $appCluster.is(':contains("Avviso da Inviare")')
             if (checkCluster)
                 cy.contains('Avviso da Inviare').click()
-            cy.get('nx-badge').not('nx-badge[style*="opacity"]').then(($clusterEnabled) => {
-                let selected = Cypress._.random($clusterEnabled.length - 1);
-                cy.wrap($clusterEnabled).eq(selected).click()
-                cy.wrap($clusterEnabled).eq(selected).invoke('text').then((nameCluster) => {
-                    var number = nameCluster.replace(/\D/g, "");
-                    cy.wrap(number).as('clusterLength')
+            cy.get('nx-badge').not('nx-badge[style*="opacity"]').not(':contains("Delta premio dinamico")')
+                .then(($clusterEnabled) => {
+                    let selected = Cypress._.random($clusterEnabled.length - 1);
+                    cy.wrap($clusterEnabled).eq(selected).click()
+                    cy.wrap($clusterEnabled).eq(selected).invoke('text').then((nameCluster) => {
+                        var number = nameCluster.replace(/\D/g, "");
+                        cy.wrap(number).as('clusterLength')
+                    })
                 })
-            })
         })
     }
 
