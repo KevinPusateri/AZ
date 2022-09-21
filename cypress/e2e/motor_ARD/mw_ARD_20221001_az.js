@@ -26,9 +26,6 @@ import { tariffaCases as ardCases } from '../../fixtures/tariffe_ARD/tariffaCase
 
 before(() => {
     Cypress.env('isAviva', false)
-    //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
-    expect(Cypress.browser.name).to.contain('chrome')
-
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {

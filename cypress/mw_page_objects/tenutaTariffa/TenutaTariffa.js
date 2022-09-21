@@ -309,7 +309,7 @@ class TenutaTariffa {
                         cy.get('input[formcontrolname="civico"]').should('exist').and('be.visible').type(currentCase.Numero_Civico)
 
                         //?29.08.22 Città ora viene fuori il dropdown di selezione, con compilazione autoamtica di provincia e cap
-                        cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune).wait(2000)
+                        cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune).wait(4000)
 
                         cy.get('nx-autocomplete-option:visible').within(() => {
                             cy.get('.nx-autocomplete-option__label').first().click()
