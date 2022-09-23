@@ -360,9 +360,19 @@ class TenutaTariffa {
                         cy.contains(re).should('exist').and('be.visible').click()
                         cy.get('input[formcontrolname="indirizzo"]').should('exist').and('be.visible').type(currentCase.Indirizzo)
                         cy.get('input[formcontrolname="civico"]').should('exist').and('be.visible').type(currentCase.Numero_Civico)
-                        cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune)
-                        cy.get('input[formcontrolname="provincia"]').should('exist').and('be.visible').type(currentCase.Provincia)
-                        cy.get('input[formcontrolname="cap"]').should('exist').and('be.visible').type(currentCase.CAP)
+
+                        //?29.08.22 Città ora viene fuori il dropdown di selezione, con compilazione autoamtica di provincia e cap
+                        cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune).wait(4000)
+
+                        cy.get('nx-autocomplete-option:visible').within(() => {
+                            cy.get('.nx-autocomplete-option__label').first().click()
+                        })
+                        cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').then(($cap) => {
+                            if ($cap.text().trim() === 'Inserisci') {
+                                cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').click()
+                                cy.get(`span:contains(${currentCase.CAP})`).should('exist').click()
+                            }
+                        })
 
                         cy.get('input[formcontrolname="cfIva"]').should('exist').and('be.visible').type(currentPartitaIva)
 
