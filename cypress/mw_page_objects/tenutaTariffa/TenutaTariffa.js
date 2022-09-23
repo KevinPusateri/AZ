@@ -491,10 +491,12 @@ class TenutaTariffa {
             })
 
             //Selezioniamo il giorno
-            cy.get('.nx-calendar-table').within(() => {
-                cy.get(`div:contains(${String(date.getDate())})`)
-                    .not('[aria-hidden]')
+            cy.get('.nx-calendar-table').should('be.visible').within(() => {
+                // let dateRegex = new RegExp("\^" + String(date.getDate()).trim() + "\$")
+                cy.get(`div:contains("${String(date.getDate()).trim()}")`)
+                    .not('[aria-hidden]').first()
                     .should('be.visible').click()
+                // cy.contains(dateRegex)
             })
             cy.wait('@getMotor', { timeout: 60000 })
 
@@ -620,13 +622,19 @@ class TenutaTariffa {
 
             //Valore Veicolo
             if (currentCase.Valore_Veicolo !== "") {
-                cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
-                cy.get('input[motoronlynumbers=""]').clear().wait(500)
-                cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
-                cy.get('input[motoronlynumbers=""]').type(currentCase.Valore_Veicolo).wait(500)
-                cy.get('strong:contains("Valore del veicolo")').click()
+                // cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
+                // cy.get('input[motoronlynumbers=""]').clear().wait(500)
+                // cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
+                // cy.get('input[motoronlynumbers=""]').type(currentCase.Valore_Veicolo).wait(500)
+                cy.get('input[formcontrolname="valoreDelVeicolo"]').should('exist').and('be.visible').click()
+                cy.get('input[formcontrolname="valoreDelVeicolo"]').clear().wait(500)
+                cy.get('input[formcontrolname="valoreDelVeicolo"]').should('exist').and('be.visible').click()
+                cy.get('input[formcontrolname="valoreDelVeicolo"]').type(currentCase.Valore_Veicolo).wait(500)
+                cy.contains('AVANTI').should('exist').and('be.visible').click()
+
+                // cy.get('strong:contains("Valore del veicolo")').click()
                 //Attendiamo che il caricamento non sia più visibile
-                cy.get('nx-spinner').should('not.be.visible')
+                // cy.get('nx-spinner').should('not.be.visible')
             }
 
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
