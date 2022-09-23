@@ -25,8 +25,6 @@ import { tariffaCases } from '../../../fixtures/tariffe_RCA/tariffaCases_RCA_202
 //#endregion
 before(() => {
     Cypress.env('isAviva', true)
-    //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
-    expect(Cypress.browser.name).to.contain('chrome')
 
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
@@ -87,17 +85,7 @@ describe('RCA AVIVA: ', {
                         TenutaTariffa.compilaVeicolo(currentCase)
                         TenutaTariffa.compilaProvenienza(currentCase)
                         TenutaTariffa.compilaOffertaRCA(currentCase)
-                    }
-                    else
-                        this.skip()
-                }
-                else
-                    this.skip()
-            })
 
-            it("LogTariffa", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
-                    if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
                         TenutaTariffa.checkTariffaRCA(currentCase)
                     }
                     else
