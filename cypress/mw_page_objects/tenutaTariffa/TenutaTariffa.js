@@ -158,7 +158,6 @@ class TenutaTariffa {
                         cy.get('nx-spinner').should('not.be.visible')
                     }
 
-                    //TODO finire l'implementazione per cambio path componenti
                     //Indirizzo
                     cy.get('span:contains("Risiede in")').parent().find('input').first().should('exist').and('be.visible').click().wait(1000)
                     cy.get('span:contains("Risiede in")').parent().find('input').first().type(caso.Indirizzo).wait(500)
