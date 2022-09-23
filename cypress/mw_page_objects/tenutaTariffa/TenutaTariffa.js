@@ -1026,15 +1026,7 @@ class TenutaTariffa {
             cy.wait(5000)
 
             //Espandiamo pannello RCA
-            var rcaLabel
-            if (currentCase.Settore == 6 || currentCase.Settore == 7)
-                rcaLabel = "RCA - PREMIO FISSO UNIFICATA"
-            else if (currentCase.Settore == 3)
-                rcaLabel = "RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA"
-            else
-                rcaLabel = "RCA - BONUS MALUS"
-
-            cy.contains(rcaLabel).parents('form').within(() => {
+            cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
                 cy.get('nx-icon[class~="clickAble"]').first().click()
             })
 
