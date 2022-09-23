@@ -429,14 +429,13 @@ class TenutaTariffa {
                         if (currentCase.Tipo_Veicolo_Altro_Dettaglio_4 !== "")
                             fullDetails += ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_4.toUpperCase()
 
-                        cy.get('nx-formfield[nxlabel="Veicolo"]').find('input').should('exist').and('be.visible').type((currentCase.Tipo_Veicolo_Altro_Dettaglio_1 + ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_2).toUpperCase())
+                        cy.get('nx-formfield[nxlabel="Ricerca per parole chiave"]').find('input').should('exist').and('be.visible').type((currentCase.Tipo_Veicolo_Altro_Dettaglio_1 + ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_2).toUpperCase())
 
                         cy.contains(fullDetails).click()
 
-
                         cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Tipo_Veicolo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-                        cy.contains('Conferma').click()
+                        cy.contains('CONFERMA').click()
                     }
                     else {
                         let re = new RegExp("\^ " + currentCase.Tipo_Veicolo + " \$")
@@ -629,7 +628,8 @@ class TenutaTariffa {
                 cy.get('nx-spinner').should('not.be.visible')
             }
 
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            //TODO fix screenshot range
+            //cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             //#endregion
 
             cy.contains('AVANTI').should('exist').and('be.visible').click()
