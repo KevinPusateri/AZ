@@ -117,10 +117,9 @@ class TenutaTariffa {
             //? al momento lavoriamo direttamente con gli Autoveicoli quindi non serve gestire questo dropdown che by default è selezionato auto
 
             //Targa
-            // cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
-            // cy.get('input[aria-label="Targa"]').clear().wait(500).type(caso.Targa).wait(1000)
-            cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').should('exist').and('be.visible').click().wait(1000)
-            cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').clear().wait(500).type(caso.Targa).wait(1000)
+            cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').should('exist').and('be.visible').click().wait(1000)
+            cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').clear().wait(2000)
+            cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').type(caso.Targa).wait(2000)
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
@@ -148,7 +147,7 @@ class TenutaTariffa {
             //Inseriamo la residenza
             //? se il cliente non è registrato in portafoglio, questa parte non compare
             cy.get('@iframe').within(() => { }).then($body => {
-                var checkIndirizzoVisible = $body.find('input[aria-label="Indirizzo"]').is(':visible')
+                var checkIndirizzoVisible = $body.find('span:contains("Risiede in")').is(':visible')
                 if (checkIndirizzoVisible) {
                     //Toponimo
                     if (caso.Toponimo.toUpperCase() !== 'VIA') {
@@ -159,22 +158,23 @@ class TenutaTariffa {
                         cy.get('nx-spinner').should('not.be.visible')
                     }
 
+                    //TODO finire l'implementazione per cambio path componenti
                     //Indirizzo
-                    cy.get('input[aria-label="Indirizzo"]').should('exist').and('be.visible').click().wait(1000)
-                    cy.get('input[aria-label="Indirizzo"]').type(caso.Indirizzo).wait(500)
+                    cy.get('span:contains("Risiede in")').parent().find('input').first().should('exist').and('be.visible').click().wait(1000)
+                    cy.get('span:contains("Risiede in")').parent().find('input').first().type(caso.Indirizzo).wait(500)
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible')
 
                     //Numero Civico
                     //? Metto a 1 by default che lato assuntivo non mi importa
-                    cy.get('input[aria-label="NumeroCivico"]').should('exist').and('be.visible').click().wait(1000)
-                    cy.get('input[aria-label="NumeroCivico"]').type('1').wait(500)
+                    cy.get('span:contains("Risiede in")').parent().find('input').eq(1).should('exist').and('be.visible').click().wait(1000)
+                    cy.get('span:contains("Risiede in")').parent().find('input').eq(1).type('1').wait(500)
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible')
 
                     //Comune
-                    cy.get('input[aria-label="Comune"]').should('exist').and('be.visible').click().wait(1000)
-                    cy.get('input[aria-label="Comune"]').type(caso.Comune_residenza.toUpperCase()).wait(500)
+                    cy.get('span:contains("Risiede in")').parent().find('input').eq(2).should('exist').and('be.visible').click().wait(1000)
+                    cy.get('span:contains("Risiede in")').parent().find('input').eq(2).type(caso.Comune_residenza.toUpperCase()).wait(500)
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible')
 
