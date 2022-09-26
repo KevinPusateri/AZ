@@ -275,16 +275,15 @@ module.exports = (on, config) => {
         config.baseUrl = 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F/';
 
     runShellCmd('echo %cd%\\cypress\\downloads').then(retrivedDownloadFolder => {
-        downloadFolder = retrivedDownloadFolder.replace(/[\r\n]/g, "").replace('/\\/g', '\\\\')
+        downloadFolder = String(JSON.stringify(retrivedDownloadFolder.replace(/[\r\n]/g, "").replace('/\\/g', '\\\\'))).replace(/"/g, '')
     })
 
     runShellCmd('echo %cd%\\cypress\\extensions').then(retrivedExtensionsFolder => {
-        extensionsFolder = retrivedExtensionsFolder.replace(/[\r\n]/g, "").replace('/\\/g', '\\\\')
+        extensionsFolder = String(JSON.stringify(retrivedExtensionsFolder.replace(/[\r\n]/g, "").replace('/\\/g', '\\\\'))).replace(/"/g, '')
     })
 
     on('before:browser:launch', (browser = {}, launchOptions) => {
         if (browser.family === 'firefox') {
-
             launchOptions.preferences['browser.download.dir'] = downloadFolder
             launchOptions.preferences['browser.download.folderList'] = 2
             launchOptions.preferences['browser.download.panel.shown'] = false
@@ -410,10 +409,8 @@ module.exports = (on, config) => {
 
     on("task", {
         getLatestDownloadedFile(broswerType) {
-
-            let downloadUserFolder = (broswerType === 'chrome') ? process.cwd() + "\\cypress\\\downloads" : os.userInfo().homedir.toString() + '\\Downloads\\'
-            let mostRecentFile = getMostRecentFile(downloadUserFolder)
-            return path.join(downloadUserFolder, mostRecentFile.file)
+            let mostRecentFile = getMostRecentFile(downloadFolder)
+            return path.join(downloadFolder, mostRecentFile.file)
         }
     })
 
@@ -453,8 +450,7 @@ module.exports = (on, config) => {
 
     on("task", {
         getFolderDownload() {
-            let folderDownload = process.cwd() + "\\cypress\\downloads"
-            return folderDownload
+            return downloadFolder
         }
     })
 
