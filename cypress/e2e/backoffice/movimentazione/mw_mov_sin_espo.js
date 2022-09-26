@@ -69,7 +69,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
     it('Atterraggio su BackOffice >> Movimentazioni Sinistri', function () {      
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Movimentazione sinistri') 
-        cy.wait(1000) 
+        cy.wait(1000); 
     });
     
 

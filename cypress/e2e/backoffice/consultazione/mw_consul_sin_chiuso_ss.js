@@ -68,7 +68,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('Atterraggio su BackOffice >> Movimentazione sinistri', function () {             
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Movimentazione sinistri') 
-        cy.wait(1000)        
+        cy.wait(1000);        
     });
 
     it('Consultazione Sinistri: Selezionato un sinistro in stato CHIUSO SENZA SEGUITO ' +

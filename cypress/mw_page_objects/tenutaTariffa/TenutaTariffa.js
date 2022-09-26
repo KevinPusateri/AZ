@@ -133,7 +133,7 @@ class TenutaTariffa {
 
             //Attendiamo che il caricamento non sia più visibile#
             cy.get('nx-spinner').should('not.be.visible')
-            cy.wait(1000)
+            cy.wait(1000);
 
             // cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
             cy.get('label[id="nx-checkbox-0-label"]>span').eq(0).click({ force: true })
@@ -839,11 +839,11 @@ class TenutaTariffa {
                     cy.contains('Il proprietario presenta la dichiarazione di non circolazione?').should('exist').and('be.visible').parents('form').find('span:contains("Si")').click()
                     cy.contains('CONTINUA').should('exist').and('be.visible').click()
                     cy.wait('@getMotor', { timeout: 30000 })
-                    cy.wait(1000)
+                    cy.wait(1000);
                 } else if (iframe.find(':contains("La data di decorrenza non permetterà il salvataggio del preventivo")').length > 0) {
                     cy.contains('CONTINUA').should('exist').and('be.visible').click()
                     cy.wait('@getMotor', { timeout: 30000 })
-                    cy.wait(1000)
+                    cy.wait(1000);
                 }
             })
 
@@ -925,7 +925,7 @@ class TenutaTariffa {
                     cy.contains('i due soggetti non siano conviventi').should('exist').and('be.visible').parents('form').find('span:contains("Si")').click()
                     cy.contains('CONTINUA').should('exist').and('be.visible').click()
                     cy.wait('@getMotor', { timeout: 30000 })
-                    cy.wait(1000)
+                    cy.wait(1000);
                 }
             })
 

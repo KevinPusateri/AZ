@@ -223,6 +223,19 @@ class Common {
     }
 
     /**
+     * Click un elemento dentro l'iframe
+     * @param {string} id - tag o attributo del tag
+     * @returns   return getIframe().within(() => {
+            cy.get(id).should('exist').and('be.visible').click()
+        })
+     */
+        static clickByAttrAndLblOnIframe(id, label) {
+            return getIframe().within(() => {
+                cy.get(id).should('exist', { timeout: 5000 }).contains(label).click({force: true})
+            })
+        }
+
+    /**
      * Click un elemento
      * @param {string} id - tag o attributo del tag
      * @returns cy.get(id).should('exist').and('be.visible').click()
@@ -351,7 +364,7 @@ class Common {
      * @example Common.clickFindByIdOnIframe('#eseguiRicerca')
      */
     static clickFindByIdOnIframe(path) {
-        return getIframe().find(path, { timeout: 5000 }).should('exist').scrollIntoView().click()
+        return getIframe().find(path, { timeout: 5000 }).should('exist').click()
     }
 
     /**
@@ -438,7 +451,7 @@ class Common {
         if (check)
             cy.log('>> img with attribute src=' + src + ' is defined and visible ')
 
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Checks if the text associated with an object identified by its locator is displayed
@@ -448,13 +461,14 @@ class Common {
     static isVisibleText(id, text) {
         getIframe().find(id, { timeout: 6000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {
             let txt = $tag.text().trim()
+            debugger
             cy.log('>> the text value is:  ' + txt)
             if (txt.includes(text))
                 cy.log('>> object with text value : "' + text + '" is defined')
             else
                 assert.fail('object with text value: "' + text + '" is not defined')
         });
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Checks if the text associated with an object identified by its locator is displayed
@@ -472,7 +486,7 @@ class Common {
             else
                 assert.fail('object with text value: "' + text + '" is not defined')
         });
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Check if an object identified by tag and its title attribute is displayed

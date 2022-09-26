@@ -76,7 +76,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Consultazione sinistri') 
-        cy.wait(1000)        
+        cy.wait(1000);        
     });
 
     it('Consultazione Sinistri: Selezionare un sinistro in stato PAGATO/CHIUSO ', function () {              
@@ -138,7 +138,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.wait(2000)
         Common.clickFindByIdOnIframeChild('#MAIN_IFRAME', cssNewTrattazione)
         cy.screenshot('Pagina comunicAll - Atterraggio pagina nuova comunicazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000)
+        cy.wait(1000);
     });
 
     it('Controllo formale sulla struttura di pagina per una nuova comunicazione', function () {
@@ -155,7 +155,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.isVisibleTextOnIframeChild(Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]'),  cssBtnAnnulla, "Annulla")
         ConsultazioneSinistriPage.isVisibleTextOnIframeChild(Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]'),  cssBtnInviaPratica, "Invia Pratica")
 
-        cy.wait(1000)
+        cy.wait(1000);
         
         cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per codice fiscale / partita IVA del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });

@@ -274,7 +274,7 @@ class LibriMatricola {
 
             /*------*/
 
-            cy.wait(1000)
+            cy.wait(1000);
             matrixFrame().within(() => {
                 //cy.get('#pnlDialog').should('be.visible')
                 cy.get('#pnlDialog').then(($popup) => {

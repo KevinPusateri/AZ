@@ -104,16 +104,16 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
 
     it('Atterraggio su BackOffice >> Denuncia', function () {             
         TopBar.clickBackOffice()
-        cy.wait(1000)
+        cy.wait(1000);
         BackOffice.clickCardLink('Denuncia') 
-        cy.wait(1000)         
+        cy.wait(1000);         
     });
     
     it('Denuncia --> Ricerca cliente per numero di polizza: ' + cliente_num_pol, function() {               
         // Ricerca cliente per Polizza
         DenunciaSinistriPage.setValue_ById('#CLIENTE_polizza', cliente_num_pol);
         Common.clickFindByIdOnIframeChild(IFrameParent, '#eseguiRicerca');
-        cy.wait(1000)
+        cy.wait(1000);
         cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
@@ -125,20 +125,20 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
                 cy.log('[it]>> [Data avvenimento sinistro]: ' + dtAvvenimento);
                 DenunciaSinistriPage.setValue_ById('#CLIENTE_dataAvvenimentoRisultato', dtAvvenimento)
             });
-            cy.wait(1000)
+            cy.wait(1000);
             DenunciaSinistriPage.getPlusMinusDate(-2).then((dtDen) => {
                 dtDenuncia = dtDen
                 cy.log('[it]>> [Data denuncia sinistro]: '+dtDenuncia);           
                 DenunciaSinistriPage.setValue_ById('#CLIENTE_dataDenuncia', dtDenuncia)   
             }); 
-            cy.wait(1000)
+            cy.wait(1000);
             DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {          
                 cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
                 DenunciaSinistriPage.setValue_ById('#CLIENTE_dataPervenimento', dtPer)   
             }); 
-            cy.wait(1000)
+            cy.wait(1000);
             cy.screenshot('Pagina Dati denuncia - date del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-            cy.wait(1000) 
+            cy.wait(1000); 
     });
 
     it('Dati cliente altri dati di denuncia: ' +
@@ -152,7 +152,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             DenunciaSinistriPage.isNotNullOrEmpty(sin_cap)
         });
         cy.screenshot('Pagina Dati denuncia - Località ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000)          
+        cy.wait(1000);          
         Common.clickFindByIdOnIframeChild(IFrameParent, '#CmdAvanti');
         cy.wait(2000)
     });
@@ -160,7 +160,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
     it('Lista polizze: Selezione della polizza', function () {
         // Selezione della polizza 
         cy.screenshot('Pagina Lista polizze', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000)      
+        cy.wait(1000);      
         Common.clickFindByIdOnIframeChild(IFrameParent, '#avantiListaPolizze'); 
         cy.wait(3000)     
     });
@@ -169,9 +169,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         // Nel caso la polizza sia in periodo di mora si attiva la
          //pagina di dettaglio polizza
         cy.screenshot('Pagina Dettaglio di polizza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000)      
+        cy.wait(1000);      
         DenunciaSinistriPage.clickObj_ByLabel('a','Avanti')  
-        cy.wait(1000)  
+        cy.wait(1000);  
     });
 
     it('Sinistri potenzialmente doppi', function () {
@@ -187,9 +187,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         {           
             let cssrdbtn = "#workarea2 > fieldset:nth-child(4) > table > tbody > tr:nth-child(2) > td > ul > li"
             DenunciaSinistriPage.clickOnRadio_ByIdAndText(cssrdbtn, 'Prosegui denuncia in corso');
-            cy.wait(1000)
+            cy.wait(1000);
             Common.clickFindByIdOnIframeChild(IFrameParent, '#SINISTRI_DOPPI_continua');
-            cy.wait(1000)    
+            cy.wait(1000);    
         }
         cy.log('Pagina Sinistri potenzialmente doppi' +isPresent);          
     });
@@ -212,7 +212,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         });
         cy.wait(2000)
         cy.screenshot('Elenco coperture - Selezione della garanzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000)          
+        cy.wait(1000);          
     });
 
     it('Inserimento dati per il risarcimento diretto con 2 veicoli conivolti e con la ' +
@@ -228,7 +228,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         DenunciaSinistriPage.clickObj_ByIdAndAttr('#GARANZIE_contraente', 'value', 'si');
         cy.wait(3000)
         cy.screenshot('Pagina Dichiarazione di responsabilità', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000) 
+        cy.wait(1000); 
         Common.clickFindByIdOnIframeChild(IFrameParent, '#cmdAvanti');
         cy.wait(2000)        
     });
@@ -236,7 +236,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
     it('Lista veicolo/soggetti coinvolti --> selezionare "veicolo"', function () {        
         // Nuovo soggetto coinvolto
         Common.clickFindByIdOnIframeChild(IFrameParent, '#newSoggettoCoinvolto')
-        cy.wait(1000) 
+        cy.wait(1000); 
         // Selezione soggetto/veicolo coinvolto: veicolo
         Common.getObjByIdAndTextOnIframeChild(IFrameParent, '.k-window-title',  'soggetto/ veicolo coinvolto')       
         DenunciaSinistriPage.clickPopUpObj_ByIdAndAttr('#chkRuolo', 'value', 'veicolo');
@@ -259,16 +259,16 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
             controparte_marca = val
             cy.log('[it]>> marca vettura: ' + controparte_marca)
         })              
-        cy.wait(1000)
+        cy.wait(1000);
         cy.screenshot('Dati del veicolo controparte', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000)
+        cy.wait(1000);
     });
 
     it('Dati del conducente di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
     controparte_conducente_nome + '") ', function () {
 
         Common.clickFindByIdOnIframeChild(IFrameParent, '#VEICOLO_soggettoConducenteControparte')
-        cy.wait(1000)
+        cy.wait(1000);
         DenunciaSinistriPage.setValue_ById('#TxtCognome', controparte_conducente_cognome);
         DenunciaSinistriPage.setValue_ById('#TxtNome', controparte_conducente_nome);
         DenunciaSinistriPage.clickSelect_ById('#SOGGETTO_sesso', controparte_conducente_sesso) 
@@ -280,17 +280,17 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.clickFindByIdOnIframeChild(IFrameParent, '#cercaRuolo')
         cy.wait(4000)
         cy.screenshot('Dati del conducente di controparte', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000)
+        cy.wait(1000);
         //Salva i dati anagrafici del conducente
         Common.clickFindByIdOnIframeChild(IFrameParent, '#CmdSalva');
-        cy.wait(1000)                     
+        cy.wait(1000);                     
     });
 
     it('Dati assicurato di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
     controparte_conducente_nome + '") ', function () {
 
         Common.clickFindByIdOnIframeChild(IFrameParent, '#VEICOLO_soggettoAssicuratoControparte')
-        cy.wait(1000)
+        cy.wait(1000);
         DenunciaSinistriPage.setValue_ById('#TxtCognome', controparte_conducente_cognome);
         DenunciaSinistriPage.setValue_ById('#TxtNome', controparte_conducente_nome);
         DenunciaSinistriPage.clickSelect_ById('#SOGGETTO_sesso', controparte_conducente_sesso) 
@@ -303,9 +303,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         cy.wait(4000)
          //Salva i dati anagrafici del conducente
         Common.clickFindByIdOnIframeChild(IFrameParent, '#CmdSalva');
-        cy.wait(1000)
+        cy.wait(1000);
         cy.screenshot('Dati assicurato di controparte', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000)
+        cy.wait(1000);
         Common.clickFindByIdOnIframeChild(IFrameParent, '#avantiVeicolo');
         cy.wait(2000)    
     });
@@ -322,7 +322,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.getObjByTextOnIframeChild(IFrameParent, cliente_cognome)
         Common.getObjByTextOnIframeChild(IFrameParent, cliente_nome)
         cy.screenshot('Soggetti coinvolti nel sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000)
+        cy.wait(1000);
         Common.clickFindByIdOnIframeChild(IFrameParent, '#avantiListaDanni')    
         cy.wait(2000)             
     });
@@ -332,7 +332,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.clickFindByIdOnIframeChild(IFrameParent, '#CAI_A1');
         Common.clickFindByIdOnIframeChild(IFrameParent, '#CAI_B2');
         cy.screenshot('Pagina Cai', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000) 
+        cy.wait(1000); 
         Common.clickFindByIdOnIframeChild(IFrameParent, '#CmdAvantiCai');
         cy.wait(2000)
     });
@@ -365,9 +365,9 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         Common.clickFindByIdOnIframeChild(IFrameParent, '#CmdSalva');
         cy.wait(3000)  
         DenunciaSinistriPage.clickObjPopUpChiudi_ByLabel('a','Chiudi')
-        cy.wait(1000)
+        cy.wait(1000);
         cy.screenshot('Riepilogo dati di denuncia - Salvataggio e chiusura', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000) 
+        cy.wait(1000); 
     });
 
     it('Riepilogo -Verifica dati di sinistro ', function () {              

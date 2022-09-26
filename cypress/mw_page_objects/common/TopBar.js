@@ -218,6 +218,7 @@ class TopBar extends HomePage {
      */
     static clickBackOffice() {
         interceptPageBackOffice()
+        cy.wait(1000);
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.wait('@getBackOffice', { timeout: 50000 }).wait(1000)
         cy.url().should('eq', Common.getBaseUrl() + 'back-office')

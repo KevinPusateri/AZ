@@ -110,7 +110,7 @@ class DenunciaSinistriPage {
     static clickPopUpBtn_ById(id) {             
         getIFramePopUp(IframePopUp).find(id).should('be.visible').click()
         cy.log('>> object with [id='+id+'] is clicked')        
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Click on object defined by locator id
@@ -194,7 +194,7 @@ class DenunciaSinistriPage {
             )
             */
             
-            cy.wait(1000)               
+            cy.wait(1000);               
         }
      /**
      * Click object identified by its label is displayed on Geo Location window  
@@ -202,7 +202,7 @@ class DenunciaSinistriPage {
      */
     static clickObjGeo_ByLabel(label) {    
         getIFrameGeo().contains(label).should('exist').click().log('>> object with label: "' +label+'" is clicked')
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Click on object identified by locator id, attribute and its value 
@@ -212,7 +212,7 @@ class DenunciaSinistriPage {
      */
     static clickObj_ByIdAndAttr(id, attr, value) {           
         findIframeChild(IFrameParent).find(id, { timeout: 10000 }).should('have.attr', attr, value).click().log('>> object with attr ['+attr+'="'+value+'"] is clicked')       
-        cy.wait(1000)      
+        cy.wait(1000);      
     }
     /**
      * Click on checkbox obj identified by locator id, and text value 
@@ -255,7 +255,7 @@ class DenunciaSinistriPage {
      */
     static clickLnk_ByHref(value) {        
         findIframeChild(IFrameParent).find('a[href*="'+value+'"]', { timeout: 3000 }).should('exist').click({ multiple: true }).log('>> link (a) with href [' +value+ '] is clicked')      
-        cy.wait(1000)        
+        cy.wait(1000);        
     }
     
     /**
@@ -267,9 +267,9 @@ class DenunciaSinistriPage {
         return new Cypress.Promise((resolve) => {
             cy.wait(500)             
             findIframeChild(IFrameParent).find(id).should('exist').clear().log('>> clean object value')
-            cy.wait(1000)
+            cy.wait(1000);
             findIframeChild(IFrameParent).find(id).should('exist').type(value).log('>> value: [' + value +'] entered')
-            cy.wait(1000)
+            cy.wait(1000);
             resolve(true)            
         });
     }
@@ -285,7 +285,7 @@ class DenunciaSinistriPage {
             getIFrameGeo().find(id).should('be.visible').and('exist').clear().log('>> clean object value')
             cy.wait(500)              
             getIFrameGeo().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
-            cy.wait(1000)
+            cy.wait(1000);
             resolve(true)            
         });
     }
@@ -302,7 +302,7 @@ class DenunciaSinistriPage {
             cy.log('>> length :' + listingCount)          
         });
         findIframeChild(IFrameParent).find(id)
-        cy.wait(1000)
+        cy.wait(1000);
     }
     
     /**
@@ -403,7 +403,7 @@ class DenunciaSinistriPage {
                 validation = true;                       
             assert.isTrue(validation,">> the check value '"+value+"' is defined. ")  
         });
-        cy.wait(1000)        
+        cy.wait(1000);        
     }
     /**
      * Puts a @str value and is verified if its a valid IBAN 

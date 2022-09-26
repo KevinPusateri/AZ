@@ -101,7 +101,7 @@ class Numbers {
                 // if (link.includes('Portafoglio'))
                 //     cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
                 cy.get('div[class="cdk-overlay-container"]').then(($popup) => {
-                    cy.wait(1000)
+                    cy.wait(1000);
                     const checkPopup = $popup.find(':contains(OK)').is(':visible')
                     if (checkPopup)
                         cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
@@ -116,7 +116,7 @@ class Numbers {
                 cy.get('app-lob-title').contains(tab).parents('app-border-card')
                     .find('lib-da-link:contains("' + link + '")').click()
                 cy.get('div[class="cdk-overlay-container"]').then(($popup) => {
-                    cy.wait(1000)
+                    cy.wait(1000);
                     const checkPopup = $popup.find(':contains(OK)').is(':visible')
                     if (checkPopup)
                         cy.get('nx-modal-container').should('be.visible').find('button:contains("OK")').click()
