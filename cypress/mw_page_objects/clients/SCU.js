@@ -139,7 +139,8 @@ class SCU {
             url: /NormalizzaUbicazione/
         }).as('normalizzaUbicazione')
 
-        cy.screenshot('Contatti', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        if (Cypress.isBrowser('firefox'))
+            cy.screenshot('Contatti', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         getSCU().find('button:contains("Avanti")').click()
 
@@ -160,8 +161,8 @@ class SCU {
         getSCU().find('#email').clear().type(clientePG.mail)
         getSCU().within(() => {
             cy.get('#collapseContatti').find('h2:contains("Sede Legale")').click()
-            cy.screenshot('Contatti', { overwrite: true })
         })
+        cy.screenshot('Contatti', { overwrite: true })
     }
 
     static nuovoClientePGConsensi() {

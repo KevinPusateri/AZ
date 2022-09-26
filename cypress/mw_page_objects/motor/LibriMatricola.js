@@ -799,7 +799,7 @@ class LibriMatricola {
             //seleziona la versione
             cy.get('#cbVersione').find('input').type(veicolo.versione)
                 .wait(1000).type('{downarrow}{enter}').wait(1000)
-
+            cy.pause()
             //inserisce la data di immatricolazione
             cy.get('input[data-bind*="dpDataImmatricolazioneN"]').first()
                 .type(veicolo.dataImmatricolazione).wait(1000)

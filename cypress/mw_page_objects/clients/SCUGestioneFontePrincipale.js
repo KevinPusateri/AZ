@@ -95,10 +95,6 @@ class SCUGestioneFontePrincipale {
       })
     })
 
-    getIFrame().within(() => {
-      cy.screenshot('Selezione del Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
-    })
-
     // Click Imposta Fonte principale
     cy.get('body').within(() => {
       getIFrame().find('button[class^="k-button assegnafonte"]').scrollIntoView().click().wait(5000)
@@ -216,9 +212,6 @@ class SCUGestioneFontePrincipale {
           }
         })
       })
-    })
-    getIFrame().within(() => {
-      cy.screenshot('Selezione del Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 } })
     })
     // Click Imposta Fonte principale
     cy.get('body').within(() => {

@@ -59,7 +59,7 @@ const RamiVari = {
     GESTIONE_GRANDINE: 'Gestione Grandine',
     EMISSIONE: 'Emissione',
     deleteKey: function (keys) {
-        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
         if (!keys.ALLIANZ_ULTRA_SALUTE) delete this.ALLIANZ_ULTRA_SALUTE

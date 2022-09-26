@@ -4,7 +4,7 @@ class ArchivioCliente {
 
     static clickTabArchivioCliente() {
         cy.contains('ARCHIVIO CLIENTE').click()
-        cy.contains('div','Not').should('exist').and('be.visible')
+        cy.contains('div', 'Not').should('exist').and('be.visible')
         cy.screenshot('Archivio Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
@@ -75,15 +75,23 @@ class ArchivioCliente {
     }
 
     static checkUnico() {
-        cy.get('app-client-archive-unique').find('app-client-archive-unique-change-card')
+
+        cy.get('app-client-archive-unique')
             .should('be.visible')
-        cy.get('app-client-archive-unique').find('app-section-title').should('include.text', 'Aggiornament')
-        cy.get('app-client-archive-unique').find('app-section-title').should('include.text', 'unico')
-        cy.get('app-client-archive-unique').find('div[class="nx-grid__column-2"]').should('contain.text', 'Modifiche')
-        cy.get('app-client-archive-unique').find('div[class="nx-grid__column-3"]').should('contain.text', 'Consensi accettati')
-        cy.get('app-client-archive-unique').find('div[class="nx-grid__column-3"]').should('contain.text', 'Consensi rifiutati')
-        // cy.get('app-client-archive-unique').find('app-client-archive-unique-change-card').first()
-        //     .find('nx-icon[class="nx-icon--s nx-icon--password-show"]').click()
+        cy.wait(4000)
+        cy.get('app-client-archive-unique').then(($container) => {
+            if ($container.find('div[class="lib-empty-list-icon-with-label"]').length > 0)
+                assert.isTrue(true, 'Unico non presenti')
+            else {
+                cy.get('app-client-archive-unique').find('app-section-title').should('include.text', 'Aggiornament')
+                cy.get('app-client-archive-unique').find('app-section-title').should('include.text', 'unico')
+                cy.get('app-client-archive-unique').find('div[class="nx-grid__column-2"]').should('contain.text', 'Modifiche')
+                cy.get('app-client-archive-unique').find('div[class="nx-grid__column-3"]').should('contain.text', 'Consensi accettati')
+                cy.get('app-client-archive-unique').find('div[class="nx-grid__column-3"]').should('contain.text', 'Consensi rifiutati')
+                // cy.get('app-client-archive-unique').find('app-client-archive-unique-change-card').first()
+                //     .find('nx-icon[class="nx-icon--s nx-icon--password-show"]').click()
+            }
+        })
     }
 
     static checkDigitalMe() {

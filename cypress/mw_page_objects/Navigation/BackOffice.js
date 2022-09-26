@@ -43,6 +43,11 @@ const getIFrameDenuncia = () => {
     return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
+const Anagrafe = {
+    method: '+(GET|POST)',
+    url: /Anagrafe/
+}
+
 const LinksSinistri = {
     MOVIMENTAZIONE_SINISTRI: 'Movimentazione sinistri',
     DENUNCIA: 'Denuncia',
@@ -135,6 +140,9 @@ class BackOffice {
      * @param {string} page - Nome della pagina delle cards link 
      */
     static clickCardLink(page) {
+        cy.intercept(Anagrafe).as('Anagrafe')
+
+
         if (page === LinksContabilita.MONITORAGGIO_GUIDA_SMART)
             cy.get('.backoffice-card').find('a').contains(page).invoke('removeAttr', 'target').click()
         else
@@ -173,7 +181,7 @@ class BackOffice {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.GESTIONE_CONTATTO_CARD:
-                getIFrame().find('div:contains("Nessun sinistro trovato"):visible')
+                getIFrame().find('#resultsClaimsToComplete').should('exist').and('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.CONSULTAZIONE_SINISTRI:
@@ -214,7 +222,8 @@ class BackOffice {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.DELEGHE_SDD:
-                cy.wait(10000)
+                cy.wait('@Anagrafe', { timeout: 200000 });
+                cy.wait(5000)
                 getIFrame().find('input[value="Carica"]').should('be.visible').invoke('attr', 'value').should('equal', 'Carica')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;

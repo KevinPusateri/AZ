@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Targhe in Scadenza</name>
+    <name>Full Electric AZ</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
     </parameters>
@@ -547,17 +548,7 @@
   </connection>
   <order>
     <hop>
-      <from>Retrive Targhe AUTOVETTURE from DB2 PROD</from>
-      <to>Table output</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Retrive Targhe MOTORETTE from DB2 PROD 2</from>
-      <to>Table output</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Retrive Targhe AUTOVETTURE OTTOBRE 2022 from DB2 PROD 2</from>
+      <from>Retrive Electric AZ</from>
       <to>Table output</to>
       <enabled>Y</enabled>
     </hop>
@@ -601,7 +592,7 @@
     </GUI>
   </step>
   <step>
-    <name>Retrive Targhe AUTOVETTURE OTTOBRE 2022 from DB2 PROD 2</name>
+    <name>Retrive Electric AZ</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -612,19 +603,35 @@
       <schema_name/>
     </partitioning>
     <connection>DB2 PROD</connection>
-    <sql>SELECT DISTINCT dat_decorrenza, txt_targa_tela, txt_veicolo, '0' AS CASO_ASSUNTIVO
-FROM grad.preventivo_log
+    <sql>SELECT 
+V.TXT_TARGA_TELA 
+FROM 
+GRAD.CONTRATTO C
+,AGORA.INCR_CR U
+,AGORA.VEICOLO V
+,GRAD.CONTRATTO_AMM M
 WHERE 
-cod_comp=73 AND
-num_agenzia=0 AND
-num_step=50 AND
-TXT_CODVEI LIKE 'A%'AND
-date(tms_ins)=CURRENT DATE AND
-cod_utente_canale&lt;&gt;'IVASS' AND
-length(RTRIM(TXT_TARGA_TELA))=7 AND
-DAT_SCADENZA>='2023-10-01' AND DAT_SCADENZA&lt;='2023-10-31'
-ORDER BY DAT_DECORRENZA DESC
-fetch first 10 rows ONLY
+C.COD_COMP = U.COD_COMP 
+AND C.NUM_CONTRATTO = U.NUM_CONTRATTO 
+AND C.PRG_CONTRATTO = U.PRG_CONTRATTO
+AND U.COD_KEY_EA = V.COD_KEY_EA
+AND U.COD_TIPO_PTF  = 1           
+AND U.COD_TIPO_EA   = 7  
+AND U.COD_RUOLO     = 2
+AND C.COD_COMP = M.COD_COMP 
+AND C.NUM_CONTRATTO = M.NUM_CONTRATTO 
+AND C.PRG_CONTRATTO = M.PRG_CONTRATTO 
+AND C.COD_COMP = 1
+AND C.COD_ANNULL_CON NOT IN (16)
+AND C.COD_RAMOPOL IN (13,31)
+AND C.TIP_PORTAF = '1' 
+AND C.TIP_STRUTTURA = 'SI'
+AND M.DAT_FCR > (CURRENT DATE + 16 DAY)
+AND M.DAT_FCR &lt; (CURRENT DATE + 60 DAY)
+AND V.COD_ALIMENTAZIONE = 'E'
+AND length(RTRIM(V.TXT_TARGA_TELA))=7
+AND V.TXT_TARGA_TELA LIKE 'G%'
+FETCH FIRST 50 ROWS ONLY
 WITH UR</sql>
     <limit>0</limit>
     <lookup/>
@@ -634,222 +641,13 @@ WITH UR</sql>
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>
       <value-meta>
-        <type>Date</type>
-        <storagetype>normal</storagetype>
-        <name>DAT_DECORRENZA</name>
-        <length>-1</length>
-        <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE SETTEMBRE 2022 from DB2 PROD 2</origin>
-        <comments>DAT_DECORRENZA</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>it_IT</date_format_locale>
-        <date_format_timezone>Europe/Berlin</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
         <name>TXT_TARGA_TELA</name>
         <length>20</length>
         <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE SETTEMBRE 2022 from DB2 PROD 2</origin>
+        <origin>Retrive Electric AZ</origin>
         <comments>TXT_TARGA_TELA</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>it_IT</date_format_locale>
-        <date_format_timezone>Europe/Berlin</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>TXT_VEICOLO</name>
-        <length>70</length>
-        <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE SETTEMBRE 2022 from DB2 PROD 2</origin>
-        <comments>TXT_VEICOLO</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>it_IT</date_format_locale>
-        <date_format_timezone>Europe/Berlin</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>CASO_ASSUNTIVO</name>
-        <length>1</length>
-        <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE SETTEMBRE 2022 from DB2 PROD 2</origin>
-        <comments>CASO_ASSUNTIVO</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>it_IT</date_format_locale>
-        <date_format_timezone>Europe/Berlin</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-    </row-meta>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>592</xloc>
-      <yloc>400</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Retrive Targhe AUTOVETTURE from DB2 PROD</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>DB2 PROD</connection>
-    <sql>SELECT DISTINCT dat_decorrenza, txt_targa_tela, txt_veicolo, '0' AS CASO_ASSUNTIVO
-FROM grad.preventivo_log
-WHERE 
-cod_comp=73 AND
-num_agenzia=0 AND
-num_step=50 AND
-TXT_CODVEI LIKE 'A%'AND
-date(tms_ins)=current date AND
-cod_utente_canale&lt;&gt;'IVASS' AND
-dat_decorrenza>CURRENT DATE AND
-length(RTRIM(TXT_TARGA_TELA))=7 AND
-TXT_TARGA_TELA LIKE 'G%'
-fetch first 10 rows only
-WITH UR</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cached_row_meta_active>N</cached_row_meta_active>
-    <row-meta>
-      <value-meta>
-        <type>Date</type>
-        <storagetype>normal</storagetype>
-        <name>DAT_DECORRENZA</name>
-        <length>-1</length>
-        <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE from DB2 PROD</origin>
-        <comments>DAT_DECORRENZA</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>it_IT</date_format_locale>
-        <date_format_timezone>Europe/Berlin</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>TXT_TARGA_TELA</name>
-        <length>20</length>
-        <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE from DB2 PROD</origin>
-        <comments>TXT_TARGA_TELA</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>it_IT</date_format_locale>
-        <date_format_timezone>Europe/Berlin</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>TXT_VEICOLO</name>
-        <length>70</length>
-        <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE from DB2 PROD</origin>
-        <comments>TXT_VEICOLO</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>it_IT</date_format_locale>
-        <date_format_timezone>Europe/Berlin</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>CASO_ASSUNTIVO</name>
-        <length>1</length>
-        <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE from DB2 PROD</origin>
-        <comments>CASO_ASSUNTIVO</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol>.</grouping_symbol>
@@ -876,146 +674,7 @@ WITH UR</sql>
     </remotesteps>
     <GUI>
       <xloc>416</xloc>
-      <yloc>128</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Retrive Targhe MOTORETTE from DB2 PROD 2</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>DB2 PROD</connection>
-    <sql>SELECT DISTINCT dat_decorrenza, txt_targa_tela, txt_veicolo, '0' AS CASO_ASSUNTIVO
-FROM grad.preventivo_log
-WHERE 
-cod_comp=73 AND
-num_agenzia=0 AND
-num_step=50 AND
-TXT_CODVEI LIKE 'E%'AND
-date(tms_ins)=CURRENT DATE AND
-cod_utente_canale&lt;&gt;'IVASS' AND
-dat_decorrenza>current date AND
-length(RTRIM(TXT_TARGA_TELA))=7
-fetch first 10 rows only
-WITH UR</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cached_row_meta_active>N</cached_row_meta_active>
-    <row-meta>
-      <value-meta>
-        <type>Date</type>
-        <storagetype>normal</storagetype>
-        <name>DAT_DECORRENZA</name>
-        <length>-1</length>
-        <precision>-1</precision>
-        <origin>Retrive Targhe MOTORETTE from DB2 PROD 2</origin>
-        <comments>DAT_DECORRENZA</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>it_IT</date_format_locale>
-        <date_format_timezone>Europe/Berlin</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>TXT_TARGA_TELA</name>
-        <length>20</length>
-        <precision>-1</precision>
-        <origin>Retrive Targhe MOTORETTE from DB2 PROD 2</origin>
-        <comments>TXT_TARGA_TELA</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>it_IT</date_format_locale>
-        <date_format_timezone>Europe/Berlin</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>TXT_VEICOLO</name>
-        <length>70</length>
-        <precision>-1</precision>
-        <origin>Retrive Targhe MOTORETTE from DB2 PROD 2</origin>
-        <comments>TXT_VEICOLO</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>it_IT</date_format_locale>
-        <date_format_timezone>Europe/Berlin</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>CASO_ASSUNTIVO</name>
-        <length>1</length>
-        <precision>-1</precision>
-        <origin>Retrive Targhe MOTORETTE from DB2 PROD 2</origin>
-        <comments>CASO_ASSUNTIVO</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>it_IT</date_format_locale>
-        <date_format_timezone>Europe/Berlin</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-    </row-meta>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>432</xloc>
-      <yloc>288</yloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

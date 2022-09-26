@@ -33,10 +33,17 @@ import TopBar from "../../mw_page_objects/common/TopBar";
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregions
-
+var dataImmatricolazione
 
 before(() => {
-    expect(Cypress.browser.name).to.contain('firefox')
+    cy.fixture('LibriMatricola/Convenzione.json').then((data) => {
+        let dateSplitted = data.dataConvenzione.split('/')
+        var formatDate = new Date(parseInt(dateSplitted[2]), parseInt(dateSplitted[1]), parseInt(dateSplitted[0]))
+        formatDate.setDate(formatDate.getDate() - 15)
+        //Settiamo la data di immatricolazione dei veicoli 15 giorni prima della convenzione
+        dataImmatricolazione = ('0' + formatDate.getDate()).slice(-2) + '/' + ('0' + (formatDate.getMonth())).slice(-2) + '/' + formatDate.getFullYear()
+    })
+    // expect(Cypress.browser.name).to.contain('firefox')
 
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
@@ -118,7 +125,7 @@ describe("LIBRI MATRICOLA", {
 
     context('APPLICAZIONI', function () {
         //! impostare Come primo parametro : 1 caso di test 
-        PrevApplicazione(1, 'Auto', Veicoli.Auto_WW745FF(), ['Furto'])
+        PrevApplicazione(1, 'Auto', Veicoli.Auto_WW745FF(dataImmatricolazione), ['Furto'])
 
         PrevApplicazione(2, 'Moto', Veicoli.Moto_MM25896(), [])
 
@@ -196,7 +203,7 @@ describe("LIBRI MATRICOLA", {
                 // LibriMatricola.backElencoLibriMatricola()
                 LibriMatricola.accessoIncassoPolizzaMadre(data.numContrattoLibro)
                 LibriMatricola.incasso()
-                
+
             })
         })
 

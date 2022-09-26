@@ -17,11 +17,11 @@ class Sospensione {
             cy.get('button[class^="ui-datepicker-trigger"]:first').click()
             cy.get('#ui-datepicker-div').should('be.visible')
             cy.get('table[class="ui-datepicker-calendar"]').find('a').contains(formattedDate).click()
-            cy.get('#dataAnnullamento').should('be.visible').then(($firma)=>{
+            // Inserimento "Scelta Firma Cliete" Autografa
+            cy.get('#dataAnnullamento').then(($firma) => {
                 const isOnlyAutografa = $firma.find('#dropTipoFirma > option')
-                if (isOnlyAutografa.length > 1){
-                    cy.get('#s2id_dropTipoFirma').click()
-                    cy.get('ul:visible').find('li:visible:contains("Autografa")').click()
+                if (isOnlyAutografa.length > 1) {
+                    cy.get('#dropTipoFirma').select('Autografa')
                 }
             })
             // Click Calcola

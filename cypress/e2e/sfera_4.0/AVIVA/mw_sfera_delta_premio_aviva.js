@@ -76,6 +76,7 @@ if (!Cypress.env('isSecondWindow'))
         })
 
         it('Delta premio - Verificare corretta visualizzazione della vista selezionata con schermata riepilogativa in basso', options, function () {
+            Sfera.estrai()
             Sfera.selezionaRigaRandom()
             Sfera.verificaSezioneDeltaPremio()
         })
