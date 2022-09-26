@@ -31,7 +31,7 @@ class SCUDocumenti {
         getSCU().find('#data-emissione').type('01012021')
         getSCU().find('#data-scadenza').type('01012025')
         getSCU().find('#luogo-emissione').type('TRIESTE')
-        cy.wait(1000)
+        cy.wait(1000);
         getSCU().find('li:contains("TRIESTE")').click()
         getSCU().find('h4:contains("Riepilogo")').click()
         cy.screenshot('Riepilogo Carta Identita', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -87,7 +87,7 @@ class SCUDocumenti {
         getSCU().find('span[aria-owns="descrizione-documento-patente_listbox"]').click()
         getSCU().find('#descrizione-documento-patente_listbox > li:contains("B")').click()
         getSCU().find('#luogo-emissione').type('TRIESTE')
-        cy.wait(1000)
+        cy.wait(1000);
         getSCU().find('li:contains("TRIESTE")').click()
         getSCU().find('h4:contains("Riepilogo")').click()
         cy.screenshot('Riepilogo Patente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -142,7 +142,7 @@ class SCUDocumenti {
         getSCU().find('#data-emissione').type('01012021')
         getSCU().find('#data-scadenza').type('01012025')
         getSCU().find('#luogo-emissione').type('TRIESTE')
-        cy.wait(1000)
+        cy.wait(1000);
         getSCU().find('li:contains("TRIESTE")').click()
         getSCU().find('h4:contains("Riepilogo")').click()
         cy.screenshot('Riepilogo Passaporto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -197,7 +197,7 @@ class SCUDocumenti {
         getSCU().find('#data-emissione').type('01012021')
         getSCU().find('#data-scadenza').type('01012025')
         getSCU().find('#luogo-emissione').type('TRIESTE')
-        cy.wait(1000)
+        cy.wait(1000);
         getSCU().find('li:contains("TRIESTE")').click()
         getSCU().find('h4:contains("Riepilogo")').click()
         cy.screenshot('Riepilogo Porto d\'armi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -252,7 +252,7 @@ class SCUDocumenti {
         getSCU().find('#data-emissione').type('01012021')
         getSCU().find('#data-scadenza').type('01012025')
         getSCU().find('#luogo-emissione').type('TRIESTE')
-        cy.wait(1000)
+        cy.wait(1000);
         getSCU().find('li:contains("TRIESTE")').click()
         getSCU().find('h4:contains("Riepilogo")').click()
         cy.screenshot('Riepilogo Tessera Postale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })

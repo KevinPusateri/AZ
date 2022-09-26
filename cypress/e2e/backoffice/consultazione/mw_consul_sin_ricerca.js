@@ -82,7 +82,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Consultazione sinistri') 
-        cy.wait(1000)        
+        cy.wait(1000);        
     });
 
     it('Consultazione Sinistri: Ricerca per numero sinistro  ', function () {
@@ -159,7 +159,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#cognome','GIRASOLE INDUSTRIE')
         let classvalue = "search_submit anagrafica k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        cy.wait(1000)
+        cy.wait(1000);
         cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per denominazione del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
@@ -170,7 +170,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.setValue_ById('#cf','04922730264')
         let classvalue = "search_submit anagrafica k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        cy.wait(1000)
+        cy.wait(1000);
         cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per codice fiscale / partita IVA del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 

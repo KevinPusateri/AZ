@@ -72,7 +72,7 @@ class MovimentazioneSinistriPage {
     */
     static clickLnk_ByHref(value) {        
         findIframeChild(IframeMovSin).find('a[href*="'+value+'"]').should('be.visible').click({ multiple: true }).log('>> link (a) with href ['+value+ '] is clicked')      
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Click on object defined by locator id
@@ -89,7 +89,7 @@ class MovimentazioneSinistriPage {
     static clickBtn_LinkByText(locator) {                   
         findIframeChild(IframeMovSin).find('a[href="javascript:;"]').contains('Chiudi').should('be.visible').click()
         .log('>> object with label ['+locator+ '] is clicked')
-        cy.wait(1000)        
+        cy.wait(1000);        
     }
     /**
      * Check if an object identified by locator and its label is displayed
@@ -109,7 +109,7 @@ class MovimentazioneSinistriPage {
                     assert.fail(' object with label: "' + label +'" is not defined')
             })
         });
-        cy.wait(1000)            
+        cy.wait(1000);            
     }
     /**
      * Defined on object identified by its @id, the function check all list values
@@ -237,7 +237,7 @@ class MovimentazioneSinistriPage {
             expect(Cypress.dom.isJquery($val), 'jQuery object').to.be.true
             tot = $val.text().trim()                                                                          
         });
-            cy.wait(1000) 
+            cy.wait(1000); 
             findIframeChild(IframeMovSin).find('td[class="numCruscotto"]').then(($els) => {             
             expect(Cypress.dom.isJquery($els), 'jQuery object').to.be.true
             
@@ -249,7 +249,7 @@ class MovimentazioneSinistriPage {
                 sum += parseInt(elements[i].textContent.trim(), 10)
                 cy.log('Somma parziale ['+i+']: ' +sum)  
             } 
-            cy.wait(1000) 
+            cy.wait(1000); 
             cy.log('Totale Somma Movimenti: ' +sum)            
             cy.log('Totale Movimenti Riportati: ' +tot)
             
@@ -316,7 +316,7 @@ class MovimentazioneSinistriPage {
                 validation = true;                       
             assert.isTrue(validation,">> the check value '"+value+"' is defined. ")  
         });
-        cy.wait(1000)        
+        cy.wait(1000);        
     }
     
     static VerifySxPayedFields()

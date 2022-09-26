@@ -89,7 +89,7 @@ class NoteContratto {
         cy.get('@polizza').first().should('exist').then(() => {
 
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
-                cy.wait(1000)
+                cy.wait(1000);
                 if ($note.find("nx-icon").length > 0) {
                     cy.get('lib-contract-notes-badge').should('be.visible')
                     cy.wrap($note).click()
@@ -148,7 +148,7 @@ class NoteContratto {
         cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
-                cy.wait(1000)
+                cy.wait(1000);
                 if ($note.find("nx-icon").length > 0) {
                     cy.get('lib-contract-notes-badge').should('be.visible')
                     cy.wrap($note).click()
@@ -184,7 +184,7 @@ class NoteContratto {
         cy.get('app-contract-card').should('be.visible').as('polizza').as('polizza')
         cy.get('@polizza').first().should('exist').then(() => {
             cy.get('lib-contract-notes-badge').first().should('exist').then(($note) => {
-                cy.wait(1000)
+                cy.wait(1000);
                 if ($note.find("nx-icon").length > 0) {
                     cy.get('lib-contract-notes-badge').should('be.visible')
                     cy.wrap($note).click()
@@ -222,7 +222,7 @@ class NoteContratto {
         cy.get('@polizza').first().should('exist').then(() => {
 
             cy.get('lib-contract-notes-badge').first().should('exist').and('be.visible').then(($note) => {
-                cy.wait(1000)
+                cy.wait(1000);
                 if ($note.find("nx-icon").length > 0) {
                     cy.get('lib-contract-notes-badge').should('be.visible')
                     cy.wrap($note).click()

@@ -95,7 +95,7 @@ class Vincoli {
 
     static RicercaBanca(tipoRicerca, ricerca) {
         ultraIFrame().within(() => {
-            cy.wait(1000)
+            cy.wait(1000);
             IFrameAnagrafe().within(() => {
                 cy.get('table[id$="TipoRicerca"]').should('be.visible')
                     .find('input[value="' + tipoRicerca + '"]').click()
@@ -190,7 +190,7 @@ class Vincoli {
             cy.get('#copieStampaContainer').should('be.visible')
                 .find('select').select(firma)
 
-            cy.wait(1000)
+            cy.wait(1000);
 
             cy.get('#copieStampaPrintBtn')
                 .should('be.visible').click()

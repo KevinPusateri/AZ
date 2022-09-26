@@ -77,7 +77,7 @@ class ControlliProtocollazione {
                             .contains('Intermediario').not('Firma Compagnia')
                             .next('div').click()
 
-                        cy.wait(1000)
+                        cy.wait(1000);
 
                         cy.get('[class="select2-result-label"]')
                             .contains('2060281 BUOSI FRANCESCA').click()
@@ -146,7 +146,7 @@ class ControlliProtocollazione {
                     .each(($button, index, $list) => {
                         cy.log("index" + index)
                         cy.wrap($button).click() //click su Visualizza
-                        cy.wait(1000)
+                        cy.wait(1000);
 
                         //conferma popup
                         cy.get('button').contains('Conferma').should('be.visible').click()

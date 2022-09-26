@@ -158,7 +158,7 @@ class Ultra {
                 .should('be.visible')
                 .click()
 
-            cy.wait(1000)
+            cy.wait(1000);
 
             //verifica che il popup sia visibile e lo inquadra
             cy.get('ultra-contratto-temporaneo-modal').contains('Gestione contratto temporaneo')
@@ -284,7 +284,7 @@ class Ultra {
                 .find('button').contains('Aggiungi').should('be.visible')
                 .click()
 
-            cy.wait(1000)
+            cy.wait(1000);
             //verifica che la garanzia sia stata selezionata
             cy.get('span')
                 .contains('Danni da fenomeno elettrico')
@@ -436,7 +436,7 @@ class Ultra {
             cy.get('div[class*="search-professioni extended"]')
                 .find('span').contains('CONFERMA').click()
 
-            //cy.wait(1000)
+            //cy.wait(1000);
             cy.get('[id="alz-spinner"]').should('not.be.visible') //attende il caricamento
         })
     }
@@ -515,7 +515,7 @@ class Ultra {
                 cy.get('#f-nome').should('be.visible').type(cliente.nome)
 
                 cy.get('#cerca-pers-forinsert').should('be.visible').click() //avvia ricerca
-                cy.wait(1000)
+                cy.wait(1000);
                 cy.get('td').contains(cliente.codiceFiscale).click()
                 cy.wait(2000)
             })
@@ -548,7 +548,7 @@ class Ultra {
 
                 cy.get('textarea[class="has-error"]', { timeout: 5000 }).should('be.visible').type('Lorem ipsum dolor sit amet')
                 cy.get('div[class="domanda"]').contains(/^Spese mediche$/).click()
-                cy.wait(1000)
+                cy.wait(1000);
             }
 
 
@@ -561,7 +561,7 @@ class Ultra {
 
                 cy.get('textarea[class="has-error"]', { timeout: 5000 }).should('be.visible').type('Lorem ipsum dolor sit amet')
                 cy.get('div[class="domanda"]').contains(/^Diaria da ricovero$/).click()
-                cy.wait(1000)
+                cy.wait(1000);
             }
 
             //Invalidità permanente da infortunio si/no
@@ -573,7 +573,7 @@ class Ultra {
 
                 cy.get('textarea[class="has-error"]', { timeout: 5000 }).should('be.visible').type('Lorem ipsum dolor sit amet')
                 cy.get('div[class="domanda"]').contains(/^Invalidità permanente da infortunio$/).click()
-                cy.wait(1000)
+                cy.wait(1000);
             }
 
             cy.get('[id="btnAvanti"]').click() //avanti
@@ -692,7 +692,7 @@ class Ultra {
 
             cy.get('[class="popupSituazioneAssicurativa"]')
                 .find('button').contains('CONFERMA').click() //conferma il popup
-            cy.wait(1000)
+            cy.wait(1000);
         })
     }
 
@@ -722,7 +722,7 @@ class Ultra {
                 .should('be.visible')
                 .children('span').click()
         })
-        //cy.wait(1000)
+        //cy.wait(1000);
     }
 
     static condividiPreventivoConferma() {
@@ -742,7 +742,7 @@ class Ultra {
         }).as('consensiPrivacy')
 
         cy.wait('@consensiPrivacy', { requestTimeout: 100000 })
-        cy.wait(1000)
+        cy.wait(1000);
 
         ultraIFrame().within(() => {
             //Attende il caricamento della pagina            
@@ -835,7 +835,7 @@ class Ultra {
                             .contains('Intermediario').not('Firma Compagnia')
                             .next('div').click()
 
-                        cy.wait(1000)
+                        cy.wait(1000);
 
                         cy.get('[class="select2-result-label"]')
                             .contains('2060281 BUOSI FRANCESCA').click()
@@ -892,7 +892,7 @@ class Ultra {
                     .each(($button, index, $list) => {
                         cy.log("index" + index)
                         cy.wrap($button).click() //click su Visualizza
-                        cy.wait(1000)
+                        cy.wait(1000);
 
                         //conferma popup
                         cy.get('button').contains('Conferma').should('be.visible').click()

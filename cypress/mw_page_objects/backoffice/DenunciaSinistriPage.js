@@ -5,7 +5,7 @@
 import Common from "../common/Common"
 import 'cypress-iframe';
 
-const IframeDen = 'iframe[src="cliente.jsp"]'
+const IFrameParent = 'iframe[src="cliente.jsp"]'
 const IframePopUp = '#popup'
 const getIframe = () => cy.get('iframe').its('0.contentDocument.body')
 //getIframe().find(locator, { timeout: 9000 }).should('be.visible').should('have.attr', 'src').and('contain', src);
@@ -34,30 +34,30 @@ const findIframeChild = (subFrame) => {
 }
 
 const getIFramePopUp = (popUpFrame) => {
-    findIframeChild(IframeDen).find(popUpFrame)
+    findIframeChild(IFrameParent).find(popUpFrame)
         .iframe();
 
-    let iframe = findIframeChild(IframeDen).find(popUpFrame)
+    let iframe = findIframeChild(IFrameParent).find(popUpFrame)
         .its('0.contentDocument').should('exist');
 
     return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const getIFramePopUpChiudi = () => {
-    findIframeChild(IframeDen).find('iframe[src="popUpAvvisoScanner.jsp"]')
+    findIframeChild(IFrameParent).find('iframe[src="popUpAvvisoScanner.jsp"]')
         .iframe();
 
-    let iframe = findIframeChild(IframeDen).find('iframe[src="popUpAvvisoScanner.jsp"]')
+    let iframe = findIframeChild(IFrameParent).find('iframe[src="popUpAvvisoScanner.jsp"]')
         .its('0.contentDocument').should('exist');
 
     return iframe.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
 const getIFrameGeo = () => {
-    findIframeChild(IframeDen).find('#geoFrame')
+    findIframeChild(IFrameParent).find('#geoFrame')
         .iframe();
 
-    let iframe = findIframeChild(IframeDen).find('#geoFrame')
+    let iframe = findIframeChild(IFrameParent).find('#geoFrame')
         .its('0.contentDocument').should('exist');
 
     return iframe.its('body').should('not.be.undefined').then(cy.wrap)
@@ -110,14 +110,14 @@ class DenunciaSinistriPage {
     static clickPopUpBtn_ById(id) {             
         getIFramePopUp(IframePopUp).find(id).should('be.visible').click()
         cy.log('>> object with [id='+id+'] is clicked')        
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Click on object defined by locator id
      * @param {string} id : locator object id
      */
     static clickSelect_ById(id, text) {             
-        findIframeChild(IframeDen).find(id).should('be.visible').then((btn) => {    
+        findIframeChild(IFrameParent).find(id).should('be.visible').then((btn) => {    
             expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
             const $btn = Cypress.$(btn)
             cy.wrap($btn)
@@ -148,7 +148,7 @@ class DenunciaSinistriPage {
      * @param {string} label : text displayed
      */
     static clickObj_ByLabel(tag, label) {
-        findIframeChild(IframeDen).contains(tag, label).should('exist').should('be.visible').click()
+        findIframeChild(IFrameParent).contains(tag, label).should('exist').should('be.visible').click()
         cy.log('>> object ['+tag+'] with label ['+label+ '] is clicked')
         cy.wait(2000)        
     }
@@ -194,7 +194,7 @@ class DenunciaSinistriPage {
             )
             */
             
-            cy.wait(1000)               
+            cy.wait(1000);               
         }
      /**
      * Click object identified by its label is displayed on Geo Location window  
@@ -202,7 +202,7 @@ class DenunciaSinistriPage {
      */
     static clickObjGeo_ByLabel(label) {    
         getIFrameGeo().contains(label).should('exist').click().log('>> object with label: "' +label+'" is clicked')
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Click on object identified by locator id, attribute and its value 
@@ -211,8 +211,8 @@ class DenunciaSinistriPage {
      * @param {string} value : attribute value object 
      */
     static clickObj_ByIdAndAttr(id, attr, value) {           
-        findIframeChild(IframeDen).find(id, { timeout: 10000 }).should('have.attr', attr, value).click().log('>> object with attr ['+attr+'="'+value+'"] is clicked')       
-        cy.wait(1000)      
+        findIframeChild(IFrameParent).find(id, { timeout: 10000 }).should('have.attr', attr, value).click().log('>> object with attr ['+attr+'="'+value+'"] is clicked')       
+        cy.wait(1000);      
     }
     /**
      * Click on checkbox obj identified by locator id, and text value 
@@ -222,7 +222,7 @@ class DenunciaSinistriPage {
     static clickOnRadio_ByIdAndText(id, value) {
         
 
-        findIframeChild(IframeDen).find(id, { timeout: 5000 }).should('be.visible').each(li => {          
+        findIframeChild(IFrameParent).find(id, { timeout: 5000 }).should('be.visible').each(li => {          
             let $txt = li.text().trim()              
             if ($txt.includes(value)) {                
                 cy.wrap(li).children('input').check({force: true}).should('be.checked')
@@ -238,7 +238,7 @@ class DenunciaSinistriPage {
      * @param {string} value : attribute value object 
      */
     static clickOnCheck_ByIdAndAttr(id, attr, value) {           
-        findIframeChild(IframeDen).find(id, { timeout: 10000 }).should('be.visible').each(input => {          
+        findIframeChild(IFrameParent).find(id, { timeout: 10000 }).should('be.visible').each(input => {          
             let $gar = input.attr(attr)
             if ($gar === value) {
                 cy.wrap(input).click()
@@ -254,8 +254,8 @@ class DenunciaSinistriPage {
      * @param {string} value : href attribute value or part of it
      */
     static clickLnk_ByHref(value) {        
-        findIframeChild(IframeDen).find('a[href*="'+value+'"]', { timeout: 3000 }).should('exist').click({ multiple: true }).log('>> link (a) with href [' +value+ '] is clicked')      
-        cy.wait(1000)        
+        findIframeChild(IFrameParent).find('a[href*="'+value+'"]', { timeout: 3000 }).should('exist').click({ multiple: true }).log('>> link (a) with href [' +value+ '] is clicked')      
+        cy.wait(1000);        
     }
     
     /**
@@ -266,10 +266,10 @@ class DenunciaSinistriPage {
     static setValue_ById(id, value) {
         return new Cypress.Promise((resolve) => {
             cy.wait(500)             
-            findIframeChild(IframeDen).find(id).should('exist').clear().log('>> clean object value')
-            cy.wait(1000)
-            findIframeChild(IframeDen).find(id).should('exist').type(value).log('>> value: [' + value +'] entered')
-            cy.wait(1000)
+            findIframeChild(IFrameParent).find(id).should('exist').clear().log('>> clean object value')
+            cy.wait(1000);
+            findIframeChild(IFrameParent).find(id).should('exist').type(value).log('>> value: [' + value +'] entered')
+            cy.wait(1000);
             resolve(true)            
         });
     }
@@ -285,7 +285,7 @@ class DenunciaSinistriPage {
             getIFrameGeo().find(id).should('be.visible').and('exist').clear().log('>> clean object value')
             cy.wait(500)              
             getIFrameGeo().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
-            cy.wait(1000)
+            cy.wait(1000);
             resolve(true)            
         });
     }
@@ -295,14 +295,14 @@ class DenunciaSinistriPage {
      * @param {string} id : locator object id
      */
     static getCountElements(id) {        
-        return findIframeChild(IframeDen).find(id)        
+        return findIframeChild(IFrameParent).find(id)        
         .then(listing => {
             const listingCount = Cypress.$(listing).length;
             expect(listing).to.have.length(listingCount);
             cy.log('>> length :' + listingCount)          
         });
-        findIframeChild(IframeDen).find(id)
-        cy.wait(1000)
+        findIframeChild(IFrameParent).find(id)
+        cy.wait(1000);
     }
     
     /**
@@ -313,7 +313,7 @@ class DenunciaSinistriPage {
      */
     static getIdInListValues_ById(id, value) {
         return new Cypress.Promise((resolve, reject) => {            
-            findIframeChild(IframeDen).find(id).each(($el, index, $list) => {
+            findIframeChild(IFrameParent).find(id).each(($el, index, $list) => {
                 if ($el.text().includes(value)) {                                                              
                     cy.log('>> Element('+(index)+ ') and value: '+value) 
                     cy.wait(2000)
@@ -331,7 +331,7 @@ class DenunciaSinistriPage {
     static getPromiseText_ById(id) {
         cy.log('>> locator value: ' + id)       
         return new Cypress.Promise((resolve, reject) => {
-            findIframeChild(IframeDen)
+            findIframeChild(IFrameParent)
             .find(id)
             .should('be.visible')
             .invoke('text')  // for input or textarea, .invoke('val')
@@ -350,7 +350,7 @@ class DenunciaSinistriPage {
     static getPromiseValue_ByID(locator) {
         cy.log('>> locator value: ' + locator)
         return new Cypress.Promise((resolve) => {            
-            findIframeChild(IframeDen).find(locator).should('be.visible')
+            findIframeChild(IFrameParent).find(locator).should('be.visible')
             .invoke('val')  // for input or textarea, .invoke('val')        
             .then(text => {         
                 cy.log('>> read the value: ' + text)
@@ -364,7 +364,7 @@ class DenunciaSinistriPage {
      */
     static isVisible(id)
     {
-        return findIframeChild(IframeDen).within(() => {           
+        return findIframeChild(IFrameParent).within(() => {           
             cy.find(id, { timeout: 5000 }).should('exist').and('be.visible')
             cy.log('>> Element with [locator="' +id+ '"] exist and is visible!')      
         })
@@ -379,7 +379,7 @@ class DenunciaSinistriPage {
     {
         //return new Promise((resolve) => {
             let check = false
-            findIframeChild(IframeDen).within(($body) => {
+            findIframeChild(IFrameParent).within(($body) => {
                 check = $body.find('span:contains("'+txt+'")').is(':visible')
                 if (check)
                     cy.log('>> Text : [' +txt+ '] is visible! ')
@@ -403,7 +403,7 @@ class DenunciaSinistriPage {
                 validation = true;                       
             assert.isTrue(validation,">> the check value '"+value+"' is defined. ")  
         });
-        cy.wait(1000)        
+        cy.wait(1000);        
     }
     /**
      * Puts a @str value and is verified if its a valid IBAN 

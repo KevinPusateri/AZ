@@ -193,7 +193,7 @@ describe("FABBRICATO E CONTENUTO", () => {
             .iframeCustom().find(iFrameFirma)
             .iframeCustom().find('[class="divAttenderePrego"]').should('be.visible')
 
-        //cy.wait(1000)
+        //cy.wait(1000);
         //cy.pause()
     })
 
@@ -217,7 +217,7 @@ describe("FABBRICATO E CONTENUTO", () => {
         //     .should('be.visible')
         //     .click()
 
-        // cy.wait(1000)
+        // cy.wait(1000);
         // cy.frameLoaded(iFrameUltra)
         //     .iframeCustom().find(iFrameFirma)
         //     .iframeCustom().find('li').contains('SDD')
@@ -231,7 +231,7 @@ describe("FABBRICATO E CONTENUTO", () => {
             .should('be.visible')
             .click()
 
-        cy.wait(1000)
+        cy.wait(1000);
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)
             .iframeCustom().find('#TabIncassoModPagCombo_listbox')
@@ -239,7 +239,7 @@ describe("FABBRICATO E CONTENUTO", () => {
             .should('be.visible')
             .click()
 
-        //cy.wait(1000) tipo di delega
+        //cy.wait(1000); tipo di delega
 
         cy.frameLoaded(iFrameUltra)
             .iframeCustom().find(iFrameFirma)

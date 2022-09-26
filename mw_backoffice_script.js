@@ -167,7 +167,7 @@ async function main() {
 		let specs = fs.readdirSync(integrationDirectory);
 
 		specs.forEach((spec) => {
-			var cmdfiles = walk(integrationDirectory + spec);
+			var cmdfiles = walk(integrationDirectory + spec);\
 			fullTests.push(cmdfiles);
 			console.log(cmdfiles)
 		});

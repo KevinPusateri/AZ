@@ -119,7 +119,7 @@ class CensimentoAnagrafico {
                 cy.get('#f-nome').should('be.visible').type(cliente.nome)
 
                 cy.get('#cerca-pers-forinsert').should('be.visible').click() //avvia ricerca
-                cy.wait(1000)
+                cy.wait(1000);
                 cy.get('td').contains(cliente.codiceFiscale).click()
                 cy.wait(2000)
             })

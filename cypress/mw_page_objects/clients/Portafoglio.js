@@ -360,7 +360,7 @@ class Portafoglio {
             cy.contains(lob).click()
         })
 
-        cy.wait(1000)
+        cy.wait(1000);
 
         cy.get('.footer').find('button').contains('applica').click()
         cy.wait('@gqlcontract', { timeout: 30000 })
@@ -777,7 +777,7 @@ class Portafoglio {
                 } else
                     assert.fail('object with label: "' + label + '" is not defined')
             })
-        cy.wait(1000)
+        cy.wait(1000);
     }
 
 
@@ -869,7 +869,7 @@ class Portafoglio {
             .parents('.top-card-grid').find('app-contract-context-menu')
             .children('nx-icon').click()
 
-        cy.wait(1000)
+        cy.wait(1000);
 
         //Effetuiamo il click nel sotto menu in determinati casi
         if (voce.includes('Sostituzione'))
@@ -1107,10 +1107,10 @@ class Portafoglio {
      */
     static ordinaPolizze(ordinaPer) {
         cy.get('.filter-container').should('be.visible')
-        cy.wait(1000)
+        cy.wait(1000);
         cy.get('.sorting-button').should('be.visible')
             .focus().click() //apre il menù per l'ordine delle polizze
-        cy.wait(1000)
+        cy.wait(1000);
 
         cy.get('.lib-item-filters').contains(ordinaPer).click({ force: true }) //seleziona la voce dal menù
     }
@@ -1150,7 +1150,7 @@ class Portafoglio {
             .parents('[class^="card"]').find('app-module-context-menu')
             .find('nx-icon').click()
 
-        cy.wait(1000)
+        cy.wait(1000);
 
         cy.get('[class*="context-menu"]').should('be.visible')
             .find('button').contains(voce).click({ force: true }) //seleziona la voce dal menù

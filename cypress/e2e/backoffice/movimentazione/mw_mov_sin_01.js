@@ -71,7 +71,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
        
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Movimentazione sinistri') 
-        cy.wait(1000) 
+        cy.wait(1000); 
        
     });
     
@@ -216,7 +216,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             {                
                 cy.get('#CmddettaglioDenunciati').should('not.exist'); 
                 cy.log('[it]>> idx[0] - Mov. sinistri Protocollati: ' + mov + ' movimenti e pulsante \'Dettaglio\' non visualizzato');          
-                cy.wait(1000)               
+                cy.wait(1000);               
             }
         }) 
         cy.get('@x1').then((mov) => {                           
@@ -224,7 +224,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             {               
                 cy.get('#CmddettaglioAperti').should('not.exist'); 
                 cy.log('[it]>> idx[1] - Mov. sinistri Presi in carico da CLD: ' + mov + ' e pulsante \'Dettaglio\' non visualizzato');            
-                cy.wait(1000)               
+                cy.wait(1000);               
             }
         }) 
         cy.get('@x2').then((mov) => {
@@ -232,7 +232,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             {               
                 cy.get('#CmddettaglioTrasferiti').should('not.exist');               
                 cy.log('[it]>> idx[2] - Mov. sinistri Trasferiti: ' + mov + ' e pulsante \'Dettaglio\' non visualizzato'); 
-                cy.wait(1000)               
+                cy.wait(1000);               
             }                           
         })      
         cy.get('@x3').then((mov) => {                     
@@ -240,7 +240,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             {               
                 cy.get('#CmddettaglioChiusiSS').should('not.exist');               
                 cy.log('[it]>> idx[3] - Mov. sinistri Chiusi SS: ' + mov + ' e pulsante \'Dettaglio\' non visualizzato'); 
-                cy.wait(1000)               
+                cy.wait(1000);               
             }           
         }) 
         cy.get('@x4').then((mov) => {                     
@@ -248,7 +248,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             {               
                 cy.get('#CmddettaglioPagati').should('not.exist');               
                 cy.log('[it]>> idx[4] - Mov. sinistri Pagati: ' + mov + ' e pulsante \'Dettaglio\' non visualizzato'); 
-                cy.wait(1000)               
+                cy.wait(1000);               
             }                  
         }) 
         cy.get('@x5').then((mov) => {
@@ -256,7 +256,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
             {               
                 cy.get('#CmddettaglioPeriziati').should('not.exist');
                 cy.log('[it]>> idx[5] - Mov. sinistri Periziati: ' + mov + ' e pulsante \'Dettaglio\' non visualizzato');        
-                cy.wait(1000)               
+                cy.wait(1000);               
             }          
         })
     })
