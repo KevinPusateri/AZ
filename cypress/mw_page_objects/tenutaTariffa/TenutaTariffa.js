@@ -18,7 +18,6 @@ let parsedLogProxy
 
 function findKeyInLog(key, logTariffa = parsedLogTariffa) {
     var result
-
     for (var property in logTariffa) {
         if (logTariffa.hasOwnProperty(property)) {
             if (property === key) {
@@ -417,11 +416,22 @@ class TenutaTariffa {
             }
 
             //Verifichiamo se Veicolo Storico
+            // if (currentCase.Descrizione_Settore.includes("STORICO")) {
+            //     cy.get('nx-checkbox[formcontrolname="veicoloStorico"]').should('exist').and('be.visible').click()
+            //     //Attendiamo che il caricamento non sia più visibile
+            //     cy.get('nx-spinner').should('not.be.visible')
+            // }
+            //Verifichiamo se Veicolo Storico Vers. 24-09-22 Rel 127
             if (currentCase.Descrizione_Settore.includes("STORICO")) {
-                cy.get('nx-checkbox[formcontrolname="veicoloStorico"]').should('exist').and('be.visible').click()
+                cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').click().wait(1000)
+                let re = new RegExp("\^ " + currentCase.Tipo_Veicolo + " \$")
+                cy.contains(re).should('exist').click({ force: true })
+                cy.contains('Veicolo Storico').click()
                 //Attendiamo che il caricamento non sia più visibile
                 cy.get('nx-spinner').should('not.be.visible')
+
             }
+
 
             //Tipo Veicolo
             cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').invoke('text').then(tipVeicolo => {
@@ -447,8 +457,12 @@ class TenutaTariffa {
                         cy.contains('CONFERMA').click()
                     }
                     else {
-                        let re = new RegExp("\^ " + currentCase.Tipo_Veicolo + " \$")
-                        cy.contains(re).should('exist').click({ force: true })
+                        if (currentCase.Descrizione_Settore.includes("STORICO")) {
+                            cy.contains(currentCase.Tipo_Veicolo_Storico).should('exist').click({ force: true })
+                        } else {
+                            let re = new RegExp("\^ " + currentCase.Tipo_Veicolo + " \$")
+                            cy.contains(re).should('exist').click({ force: true })
+                        }
                     }
 
 
@@ -492,6 +506,22 @@ class TenutaTariffa {
             cy.get('.nx-calendar-table').within(() => {
                 cy.contains(date.getFullYear()).click()
             })
+            // cy.get('nx-datepicker-content').should('be.visible').within(($calendar) => {
+            //     //Selezioniamo l'anno
+            //     let checkYearExist = false
+            //     while (!checkYearExist) {
+            //         checkYearExist = $calendar.find('td[aria-label="' + date.getFullYear() + '"]').is(':visible')
+            //         if (checkYearExist) {
+            //             cy.get('.nx-calendar-table').within(() => {
+            //                 cy.contains(date.getFullYear()).click()
+            //             })
+            //         } else {
+            //             cy.get('button[aria-label="Previous 20 years"]:visible').click()
+            //             //TODO: Verifica se va nel 1985
+            //         }
+            //     }
+            // })
+
 
             //Selezioniamo il mese
             cy.get('.nx-calendar-table').within(() => {
@@ -648,7 +678,6 @@ class TenutaTariffa {
             //TODO fix screenshot range
             //cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             //#endregion
-
             cy.contains('AVANTI').should('exist').and('be.visible').click()
             cy.wait('@getMotor', { timeout: 30000 })
             //Attendiamo che il caricamento non sia più visibile
@@ -1505,7 +1534,7 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
-            cy.get('motor-footer').should('exist').find('button').click().wait(8000)
+            cy.get('motor-footer').should('exist').find('button').click().wait(12000)
             cy.getTariffaLog(currentCase).then(logFolder => {
                 //#region LogTariffa
                 cy.readFile(logFolder + "\\logTariffa.xml").then(fileContent => {
@@ -1549,6 +1578,7 @@ class TenutaTariffa {
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA OPERATRICE":
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA AGRICOLA":
                         case "EVENTI NATURALI":
+                            cy.log(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
                             break
                         //AVIVA

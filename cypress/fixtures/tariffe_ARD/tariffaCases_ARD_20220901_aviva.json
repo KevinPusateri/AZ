@@ -35,13 +35,15 @@
       "Alimentazione": "",
       "Antifurto": "",
       "Prima_Immatricolazione": "02/03/2020",
-      "Valore_Veicolo": "",
+      "Valore_Veicolo": "6000",
       "Peso_Marcia": "",
       "Peso_Max_Rimorchiabile": "",
       "Costruttore_Modello_Imbarcazione": "",
       "Lunghezza": "",
       "Stazza_Lorda": "",
-      "Velocita_Nodi": [""],
+      "Velocita_Nodi": [
+        ""
+      ],
       "Bandiera": "",
       "Anno_Costruzione_Natante": "",
       "Materiale_Costruzione": "",
@@ -107,7 +109,7 @@
       "Calcolo_Kasko": "",
       "Versione_Avens": "t14_3120_016000_20220901_000000000000_000001",
       "Calcolo_Avens": "",
-      "Totale_Premio": "277,00",
+      "Totale_Premio": "55,00",
       "Punta_Flex_Ard": "0"
     },
     {
@@ -151,7 +153,9 @@
       "Costruttore_Modello_Imbarcazione": "",
       "Lunghezza": "",
       "Stazza_Lorda": "",
-      "Velocita_Nodi": [""],
+      "Velocita_Nodi": [
+        ""
+      ],
       "Bandiera": "",
       "Anno_Costruzione_Natante": "",
       "Materiale_Costruzione": "",
@@ -261,7 +265,9 @@
       "Costruttore_Modello_Imbarcazione": "",
       "Lunghezza": "",
       "Stazza_Lorda": "",
-      "Velocita_Nodi": [""],
+      "Velocita_Nodi": [
+        ""
+      ],
       "Bandiera": "",
       "Anno_Costruzione_Natante": "",
       "Materiale_Costruzione": "",
@@ -327,7 +333,7 @@
       "Calcolo_Kasko": "",
       "Versione_Avens": "t14_3120_306000_20220901_000000000000_000001",
       "Calcolo_Avens": "",
-      "Totale_Premio": "88,41",
+      "Totale_Premio": "90,19",
       "Punta_Flex_Ard": "0"
     },
     {
@@ -364,14 +370,16 @@
       "Peso_Pieno_Carico": "",
       "Alimentazione": "",
       "Antifurto": "",
-      "Prima_Immatricolazione": "30/09/2016",
-      "Valore_Veicolo": "",
+      "Prima_Immatricolazione": "30/09/2020",
+      "Valore_Veicolo": "6000",
       "Peso_Marcia": "",
       "Peso_Max_Rimorchiabile": "",
       "Costruttore_Modello_Imbarcazione": "",
       "Lunghezza": "",
       "Stazza_Lorda": "",
-      "Velocita_Nodi": [""],
+      "Velocita_Nodi": [
+        ""
+      ],
       "Bandiera": "",
       "Anno_Costruzione_Natante": "",
       "Materiale_Costruzione": "",
@@ -437,7 +445,7 @@
       "Calcolo_Kasko": "",
       "Versione_Avens": "",
       "Calcolo_Avens": "",
-      "Totale_Premio": "1.007,12",
+      "Totale_Premio": "591,05",
       "Punta_Flex_Ard": "0"
     },
     {
@@ -474,14 +482,16 @@
       "Peso_Pieno_Carico": "",
       "Alimentazione": "",
       "Antifurto": "",
-      "Prima_Immatricolazione": "30/09/2016",
-      "Valore_Veicolo": "",
+      "Prima_Immatricolazione": "30/09/2020",
+      "Valore_Veicolo": "6000",
       "Peso_Marcia": "",
       "Peso_Max_Rimorchiabile": "",
       "Costruttore_Modello_Imbarcazione": "",
       "Lunghezza": "",
       "Stazza_Lorda": "",
-      "Velocita_Nodi": [""],
+      "Velocita_Nodi": [
+        ""
+      ],
       "Bandiera": "",
       "Anno_Costruzione_Natante": "",
       "Materiale_Costruzione": "",
@@ -547,7 +557,7 @@
       "Calcolo_Kasko": "",
       "Versione_Avens": "",
       "Calcolo_Avens": "",
-      "Totale_Premio": "377,76",
+      "Totale_Premio": "404,70",
       "Punta_Flex_Ard": "0"
     },
     {
@@ -584,14 +594,16 @@
       "Peso_Pieno_Carico": "",
       "Alimentazione": "",
       "Antifurto": "",
-      "Prima_Immatricolazione": "30/09/2016",
-      "Valore_Veicolo": "",
+      "Prima_Immatricolazione": "30/09/2020",
+      "Valore_Veicolo": "6000",
       "Peso_Marcia": "",
       "Peso_Max_Rimorchiabile": "",
       "Costruttore_Modello_Imbarcazione": "",
       "Lunghezza": "",
       "Stazza_Lorda": "",
-      "Velocita_Nodi": [""],
+      "Velocita_Nodi": [
+        ""
+      ],
       "Bandiera": "",
       "Anno_Costruzione_Natante": "",
       "Materiale_Costruzione": "",
@@ -701,7 +713,9 @@
       "Costruttore_Modello_Imbarcazione": "",
       "Lunghezza": "",
       "Stazza_Lorda": "",
-      "Velocita_Nodi": [""],
+      "Velocita_Nodi": [
+        ""
+      ],
       "Bandiera": "",
       "Anno_Costruzione_Natante": "",
       "Materiale_Costruzione": "",
@@ -811,7 +825,9 @@
       "Costruttore_Modello_Imbarcazione": "",
       "Lunghezza": "",
       "Stazza_Lorda": "",
-      "Velocita_Nodi": [""],
+      "Velocita_Nodi": [
+        ""
+      ],
       "Bandiera": "",
       "Anno_Costruzione_Natante": "",
       "Materiale_Costruzione": "",
@@ -900,7 +916,8 @@
       "Toponimo": "VIA",
       "Indirizzo": "BRAIDA BASSI",
       "Numero_Civico": "1",
-      "Tipo_Veicolo": "Auto Storica",
+      "Tipo_Veicolo": "auto",
+      "Tipo_Veicolo_Storico": "Auto Storica",
       "Tipo_Veicolo_Altro_Dettaglio_1": "",
       "Tipo_Veicolo_Altro_Dettaglio_2": "",
       "Tipo_Veicolo_Altro_Dettaglio_3": "",
@@ -923,7 +940,9 @@
       "Costruttore_Modello_Imbarcazione": "",
       "Lunghezza": "",
       "Stazza_Lorda": "",
-      "Velocita_Nodi": [""],
+      "Velocita_Nodi": [
+        ""
+      ],
       "Bandiera": "",
       "Anno_Costruzione_Natante": "",
       "Materiale_Costruzione": "",

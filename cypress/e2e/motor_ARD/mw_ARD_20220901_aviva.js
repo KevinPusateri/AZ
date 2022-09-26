@@ -27,7 +27,6 @@ import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_20220
 before(() => {
     Cypress.env('isAviva', true)
     //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
-    expect(Cypress.browser.name).to.contain('chrome')
 
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
@@ -68,7 +67,7 @@ after(function () {
 //?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
-let caseToExecute = ['9']
+let caseToExecute = []
 
 describe('AVIVA - ARD 20220901 : ', {
     retries: {
