@@ -26,7 +26,6 @@ import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_20220
 
 before(() => {
     Cypress.env('isAviva', true)
-    //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
 
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
@@ -99,14 +98,9 @@ describe('AVIVA - ARD 20220901 : ', {
                     TenutaTariffa.compilaProvenienza(currentCase)
                     TenutaTariffa.compilaOffertaARD(currentCase)
                     TenutaTariffa.areaRiservata(currentCase)
-                }
-                else
-                    this.skip()
-            })
 
-            it("LogTariffa", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
                     TenutaTariffa.checkTariffaARD(currentCase)
+                }
                 else
                     this.skip()
             })
