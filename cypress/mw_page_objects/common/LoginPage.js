@@ -135,7 +135,7 @@ class LoginPage {
                             "agentId": customImpersonification.agentId,
                             "agency": customImpersonification.agency,
                         }
-                        cy.task('log', JSON.stringify(currentImpersonificationToPerform))
+                        cy.task('log', `Impersonificazione effettuta su ${JSON.stringify(currentImpersonificationToPerform, null, "\t")}`)
 
                     //Se siamo in dashboard, skippo l'impersonificazione
                     if (Cypress.env('usingDash')) {

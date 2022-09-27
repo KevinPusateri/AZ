@@ -16,6 +16,7 @@ const stream = process.argv.slice(2)[0]
 const htmlExportLogMailTo = process.argv.slice(2)[1]
 const currentEnv = process.argv.slice(2)[2]
 const reportLogs = '..//cypress//reports//';
+const xmlLogs = '..//cypress//screenshots//'
 
 const zipDirectory = async (reportFolder, out) => {
 	const archive = archiver('zip', { zlib: { level: 9 } });
@@ -53,9 +54,12 @@ const sendMail = async () => {
 		html: '<b>Report ' + mailSubject + '</b></br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>',
 		attachments: [
 			{
-				filename: 'MW_FE_' + stream.toUpperCase() + `_${currentEnv}.zip`,
-				path: '..//MW_FE_' + stream.toUpperCase() + `_${currentEnv}.zip`
-
+				filename: 'MW_FE_' + stream.toUpperCase() + `_html_${currentEnv}.zip`,
+				path: '..//MW_FE_' + stream.toUpperCase() + `_html_${currentEnv}.zip`
+			},
+			{
+				filename: 'MW_FE_' + stream.toUpperCase() + `_xml_${currentEnv}.zip`,
+				path: '..//MW_FE_' + stream.toUpperCase() + `_xml_${currentEnv}.zip`
 			}
 		]
 	});
@@ -63,7 +67,9 @@ const sendMail = async () => {
 
 async function main() {
 	if (fs.existsSync(reportLogs)) {
-		await zipDirectory(reportLogs, '..//MW_FE_' + stream.toUpperCase() + `_${currentEnv}.zip`);
+		await zipDirectory(reportLogs, '..//MW_FE_' + stream.toUpperCase() + `_html_${currentEnv}.zip`)
+		await zipDirectory(xmlLogs, '..//MW_FE_' + stream.toUpperCase() + `_xml_${currentEnv}.zip`);
+
 		await sendMail();
 	}
 	else

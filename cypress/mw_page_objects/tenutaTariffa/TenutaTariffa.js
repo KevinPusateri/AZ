@@ -58,7 +58,6 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
     let garanziaARD
     if (currentGaranziaARD === null) {
         //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA
-        debugger
         if (descSettore === 'KASKO COMPLETA')
             garanziaARD = findKeyInLog('Garanzia')[2]
         else if (descSettore === 'AVENS')
@@ -93,17 +92,20 @@ class TenutaTariffa {
      */
     static areaRiservata(currentCase) {
         cy.getIFrame()
-        cy.get('@iframe').within(() => {
-            cy.contains('Area riservata').should('exist').click()
-            //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible')
+        cy.get('@iframe').within(($iframe) => {
+            let checkAreaRiservata = $iframe.find(':contains("Area riservata")').is(':visible')
+            if (checkAreaRiservata) {
+                cy.contains('Area riservata').should('exist').click()
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
 
-            //Per MACROLESIONI, verifico la Riduzione ARD
-            if (currentCase.Descrizione_Settore === 'MACROLESIONI') {
-                cy.get('.riduzione-table-header').last().find('p').last().invoke('text').then((riduzioneARD) => {
-                    expect(riduzioneARD).contains(currentCase.Riduzione_ARD)
-                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                })
+                //Per MACROLESIONI, verifico la Riduzione ARD
+                if (currentCase.Descrizione_Settore === 'MACROLESIONI') {
+                    cy.get('.riduzione-table-header').last().find('p').last().invoke('text').then((riduzioneARD) => {
+                        expect(riduzioneARD).contains(currentCase.Riduzione_ARD)
+                        cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    })
+                }
             }
         })
     }
@@ -206,6 +208,12 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
+            //Recuperiamo la versione dell'assuntivo e la stampiamo
+            cy.pause()
+            cy.get('motor-footer').should('exist').find('button').invoke('text').then((versioneAssuntivo)=>{
+                cy.task('log', `Versione Assuntivo --> ${versioneAssuntivo}`)
+            })
+            
             //Tipologia Veicolo
             // * auto è già selezionato di default quindi lo skippo
             if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada' && currentCase.Tipo_Veicolo !== 'taxi' && currentCase.Tipo_Veicolo !== 'Auto Storica') {
@@ -452,7 +460,7 @@ class TenutaTariffa {
 
                         cy.contains(fullDetails).click()
 
-                        cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Tipo_Veicolo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        // cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Tipo_Veicolo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
                         cy.contains('CONFERMA').click()
                     }
@@ -502,26 +510,31 @@ class TenutaTariffa {
             cy.get('nx-icon[name="calendar"]').first().click()
             cy.contains('Scegli mese e anno').should('be.visible').click()
 
-            //Selezioniamo l'anno
-            cy.get('.nx-calendar-table').within(() => {
-                cy.contains(date.getFullYear()).click()
-            })
-            // cy.get('nx-datepicker-content').should('be.visible').within(($calendar) => {
-            //     //Selezioniamo l'anno
-            //     let checkYearExist = false
-            //     while (!checkYearExist) {
-            //         checkYearExist = $calendar.find('td[aria-label="' + date.getFullYear() + '"]').is(':visible')
-            //         if (checkYearExist) {
-            //             cy.get('.nx-calendar-table').within(() => {
-            //                 cy.contains(date.getFullYear()).click()
-            //             })
-            //         } else {
-            //             cy.get('button[aria-label="Previous 20 years"]:visible').click()
-            //             //TODO: Verifica se va nel 1985
-            //         }
-            //     }
+            // cy.get('.nx-calendar-table').within(() => {
+            //     cy.contains(date.getFullYear()).click()
             // })
-
+            //Selezioniamo l'anno
+            cy.get('nx-datepicker-content').should('be.visible').as('datePicker')
+            const loopCalendarYear = () => {
+                cy.get('@datePicker').should('be.visible').within(($calendar) => {
+                    cy.log(date.getFullYear())
+                    //Selezioniamo l'anno
+                    var checkYearExist = false
+                    if (!checkYearExist) {
+                        checkYearExist = $calendar.find('td[aria-label="' + date.getFullYear() + '"]').is(':visible')
+                        cy.log(checkYearExist)
+                        if (checkYearExist) {
+                            cy.get('.nx-calendar-table').within(() => {
+                                cy.contains(date.getFullYear()).click()
+                            })
+                        } else {
+                            cy.get('button[aria-label="Previous 20 years"]').should('be.visible').click()
+                            loopCalendarYear()
+                        }
+                    }
+                })
+            }
+            loopCalendarYear()
 
             //Selezioniamo il mese
             cy.get('.nx-calendar-table').within(() => {
@@ -1228,7 +1241,7 @@ class TenutaTariffa {
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il premio lordo a video
-            cy.contains(rcaLabel).parents('form').within(() => {
+            cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
                 cy.get('p[class~="premio"]').first().invoke('text').then(premioLordo => {
 
                     //expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
@@ -1385,6 +1398,7 @@ class TenutaTariffa {
                 //AVIVA
                 case "KASKO TOTALE":
                 case "KASKO URTO CON ANIMALI":
+                case "KASKO TOTALE VEICOLO STORICO":
                 //AZ e AVIVA
                 case "KASKO COLLISIONE":
                     cy.contains("Kasko").parent('div').parent('div').within(() => {
@@ -1480,8 +1494,23 @@ class TenutaTariffa {
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il totale relativo alla ARD
-            cy.get('h3:contains("Auto Rischi Diversi")').parents('div').find('div:last').find('h3:last').invoke('text').then(value => {
-                expect(value).contains(currentCase.Totale_Premio)
+            cy.get('h3:contains("Auto Rischi Diversi")').parents('div').find('div:last').find('h3:last').invoke('text').then(premio => {
+                premio.replace(/€/g,'').trim()
+                
+                if (parseFloat(premio) < 1) {
+                    assert.fail('Errore Premio non valorizzato')
+                }
+
+                if (!premio.includes(currentCase.Totale_Premio)) {
+                    cy.log('Attenzione : verificare differenza premi')
+                    cy.log(`--> Valore rilevato : ${premio}`)
+                    cy.log(`--> Valore certificato : ${currentCase.Totale_Premio}`)
+                    cy.task('log', 'Attenzione : verificare differenza premi')
+                    cy.task('log', `--> Valore rilevato : ${premio}`)
+                    cy.task('log', `--> Valore certificato : ${currentCase.Totale_Premio}`)
+                }
+                else
+                    cy.task('log', 'Dati Offerta compilati correttamente')
             })
         })
     }
@@ -1515,7 +1544,6 @@ class TenutaTariffa {
                     const options = {
                         ignoreAttributes: false
                     }
-                    debugger
                     const parser = new XMLParser(options)
                     parsedRadarUW = parser.parse(fileContent)
 
@@ -1562,10 +1590,10 @@ class TenutaTariffa {
                         case "KASKO COMPLETA":
                         //AVIVA
                         case "KASKO TOTALE":
+                        case "KASKO TOTALE VEICOLO STORICO":
                         case "KASKO URTO CON ANIMALI":
                         //AZ e AVIVA
                         case "KASKO COLLISIONE":
-                            debugger
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
                             break
                         //AZ
@@ -1578,7 +1606,6 @@ class TenutaTariffa {
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA OPERATRICE":
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA AGRICOLA":
                         case "EVENTI NATURALI":
-                            cy.log(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
                             break
                         //AVIVA
@@ -1689,7 +1716,6 @@ class TenutaTariffa {
                 let fattoriWithOutMotorAI = elencoFattori.filter(obj => { return obj.NomeFattore !== 'MOTOR_AI' })
                 console.log(fattoriWithOutMotorAI)
 
-                debugger
                 //Togliamo i fattori che sono stati volutamente settati a -1 e verifichiamo che gli altri non siano a -1
                 //? Da Maggio 2022, come da comunicazione di Marcialis, è stato chiuso l'accesso alla banca dati card
                 //? Se stai leggendo questa riga sei stato fregato! Scappa!
