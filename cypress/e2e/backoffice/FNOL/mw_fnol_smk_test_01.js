@@ -287,7 +287,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
 
     it('Denuncia BMP --> Dettaglio del danno - Danni alla proprietà del cliente', function () {
         // Scegliere un'opzione
-        let cssSlctPrt ='div[cdkoverlayorigin] > div.nx-dropdown__rendered  > span.ng-star-inserted';
+        let cssSlctPrt = 'div[cdkoverlayorigin] > div.nx-dropdown__rendered  > span.ng-star-inserted';
         Common.clickFindByIdOnIframe(cssSlctPrt);
         //Contenuto nei locali - Arredamento e Vestiario
         Common.clickFindByIdOnIframe(cssCmbFrstElement);
@@ -310,6 +310,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.wait(1000);
         cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
+
     it('Denuncia BMP --> Dettaglio del danno - Altre parti coinvolte ', function () {
         // Altre parti Coinvolte
         cy.wait(1000);
@@ -336,6 +337,19 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
+
     });
-    
+
+    it('Denuncia BMP -->Sommario - Riepilogo sinistro - Note legali - ', function () {
+         //  Il cliente conferma che le informazioni fornite sono corrette
+        let cssChkConferma = 'nx-checkbox[formcontrolname="legalConsent"] > input.nx-checkbox__input';
+        Common.clickFindByIdOnIframe(cssChkConferma);
+        cy.wait(1000);
+
+        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        
+        let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
+        DenunciaBMP.clickBtn_ByClassAndText(cssBtnInviaRichiesta,' Invia Richiesta')
+
+    });
 });
