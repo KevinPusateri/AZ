@@ -242,7 +242,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         DenunciaBMP.setValue_ById(cssDescrClm, sinistro_descrizione_danno);
         cy.wait(1000)
 
-        cy.screenshot('Pagina Dati denuncia - date del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('Pagina Dati denuncia - Sezione \'Informazioni sul sinistro\' [Inserimento dati di sinistro]', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
     });
 
@@ -277,7 +277,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector,  'Trieste');
         cy.wait(1000)
 
-        cy.screenshot('Pagina Dati denuncia - date del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Pagina Dati denuncia -Sezione \'Luogo sinistro\'', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000); 
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
@@ -303,24 +303,24 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         Common.clickFindByIdOnIframe(cssBtnNoLawayer);
         cy.wait(1000);
 
-        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Dettaglio del danno ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
 
         cy.wait(1000);
-        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Dettaglio del danno - Danni alla proprietà del cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Denuncia BMP --> Dettaglio del danno - Altre parti coinvolte ', function () {
         // Altre parti Coinvolte
         cy.wait(1000);
-        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Dettaglio del danno - Altre parti coinvolte -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
 
         //Erano presenti le autorità sul luogo del sinistro?
         cy.wait(1000);
-        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Dettaglio del danno - Altre parti coinvolte - autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
     });
@@ -328,7 +328,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
     it('Denuncia BMP -->Sommario - Riepilogo sinistro  ', function () {
         // Altre parti Coinvolte
         cy.wait(1000);
-        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Sommario - Riepilogo sinistro -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     });
 
@@ -338,12 +338,12 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         Common.clickFindByIdOnIframe(cssChkConferma);
         cy.wait(1000);
 
-        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         
         let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
         Common.clickFindByIdOnIframe(cssBtnInviaRichiesta)
 
-        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
     });
 });
