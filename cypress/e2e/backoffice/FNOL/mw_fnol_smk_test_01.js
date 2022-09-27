@@ -187,7 +187,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.wait(1000);
     });
 
-    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Polizza interessata\'', function () {
+    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Polizza interessata\' --> Selezione della polizza', function () {
         let cssRdnBtn =  '#fnol-affected-policy-list > table > tbody >tr:nth-child(1) > td > nx-radio.nx-radio-button--big-label > input.nx-radio__input';
         Common.clickFindByIdOnIframe(cssRdnBtn);
         cy.wait(500);
@@ -196,7 +196,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.wait(1000);
     });
 
-    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' [Inserimento dati di sinistro]', function () {
+    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' --> [Inserimento dati di sinistro]: ambito/soggetto coinvolto, etc..', function () {
         //Informazioni sul sinistro
         //Selezione di quale ambito è coinvolto? *     
         let cssClssPrd =  'nx-dropdown[formcontrolname="selectedAffectedType"] > div ';
@@ -242,11 +242,11 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         DenunciaBMP.setValue_ById(cssDescrClm, sinistro_descrizione_danno);
         cy.wait(1000)
 
-        cy.screenshot('Pagina Dati denuncia - Sezione \'Informazioni sul sinistro\' [Inserimento dati di sinistro]', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('Pagina Dati denuncia --> Sezione \'Informazioni sul sinistro\' [Inserimento dati di sinistro]', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
     });
 
-    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Luogo sinistro\'', function () {
+    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Luogo del sinistro\'', function () {
 
         //Selezione Tipo do strada *
         let cssStrttTyp = 'nx-dropdown[placeholder="Scegliere il tipo di strada"] > div ';
@@ -285,7 +285,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
     
 
 
-    it('Denuncia BMP --> Dettaglio del danno - Danni alla proprietà del cliente', function () {
+    it('Denuncia BMP --> Dettaglio del danno --> Danni alla proprieta\' del cliente', function () {
         // Scegliere un'opzione
         let cssSlctPrt = 'div[cdkoverlayorigin] > div.nx-dropdown__rendered  > span.ng-star-inserted';
         Common.clickFindByIdOnIframe(cssSlctPrt);
@@ -311,7 +311,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.screenshot('Dettaglio del danno - Danni alla proprietà del cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
-    it('Denuncia BMP --> Dettaglio del danno - Altre parti coinvolte ', function () {
+    it('Denuncia BMP --> Dettaglio del danno --> Altre parti coinvolte ', function () {
         // Altre parti Coinvolte
         cy.wait(1000);
         cy.screenshot('Dettaglio del danno - Altre parti coinvolte -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -325,14 +325,14 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
     });
 
-    it('Denuncia BMP -->Sommario - Riepilogo sinistro  ', function () {
+    it('Denuncia BMP --> Sommario --> Riepilogo sinistro  ', function () {
         // Altre parti Coinvolte
         cy.wait(1000);
         cy.screenshot('Sommario - Riepilogo sinistro -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     });
 
-    it('Denuncia BMP -->Sommario - Riepilogo sinistro - Note legali - ', function () {
+    it('Denuncia BMP --> Sommario --> Riepilogo sinistro - Note legali - ', function () {
          //  Il cliente conferma che le informazioni fornite sono corrette
         let cssChkConferma = 'nx-checkbox[formcontrolname="legalConsent"] > input.nx-checkbox__input';
         Common.clickFindByIdOnIframe(cssChkConferma);
