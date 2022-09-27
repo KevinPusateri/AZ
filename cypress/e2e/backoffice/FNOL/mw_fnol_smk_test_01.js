@@ -330,14 +330,6 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.wait(1000);
         cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
-
-        //Erano presenti le autorità sul luogo del sinistro?
-        cy.wait(1000);
-        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
-        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
-
     });
 
     it('Denuncia BMP -->Sommario - Riepilogo sinistro - Note legali - ', function () {
@@ -349,7 +341,9 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         
         let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
-        DenunciaBMP.clickBtn_ByClassAndText(cssBtnInviaRichiesta,' Invia Richiesta')
+        Common.clickFindByIdOnIframe(cssBtnInviaRichiesta)
 
+        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(3000);
     });
 });
