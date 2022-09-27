@@ -297,11 +297,11 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         DenunciaBMP.setValue_ById('input[formcontrolname="brand"]', 'Ikea - libreria');
         //Anno di acquisto
         DenunciaBMP.setValue_ById('input[ name="yearOfPurchase"]', '2020');
-        
-        // Riparazione della proprietà Si/No
-        //let cssBtnNoLawayer = 'label.nx-circle-toggle__label > nx-icon-toggle-button > div > span > span'
-        //Common.clickFindByIdOnIframe(cssRdnBtnNo1);
-        //cy.wait(1000);
+
+        // Avvocato del cliente (Si/No)
+        let cssBtnNoLawayer = 'nx-circle-toggle-group[data-testid="circleToggleOptions"] > div > div:nth-child(2) > nx-circle-toggle > label.nx-circle-toggle__label > nx-icon-toggle-button';
+        Common.clickFindByIdOnIframe(cssBtnNoLawayer);
+        cy.wait(1000);
 
         cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         
@@ -310,27 +310,32 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.wait(1000);
         cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
-
-    /*
-    it('Denuncia --> Ricerca per codice fiscale cliente: ' + cliente_CF, function () {
-        // Ricerca cliente per Polizza
-        DenunciaBMP.setValue_ById('#keyword', cliente_CF);
-        
-        Common.clickByIdOnIframe("[name='search']")
-        cy.wait(2000)
-
-        let classtxtClnt = '.nx-autocomplete-option__label > span'
-        // Verifica del testo a comparsa nella ricerca del cliente 
-        cy.screenshot('Pagina Ricerca cliente - Testo a comparsa', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        Common.isVisibleText(classtxtClnt, cliente_cognome + " " + cliente_nome)   
-        Common.isVisibleText(classtxtClnt, cliente_dt_nascita)
-
-        let classvalue = "input__icon nx-icon--s ndbx-icon nx-icon--search"
-        let btn_class= "nx-button__content-wrapper"
-        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
-
+    it('Denuncia BMP --> Dettaglio del danno - Altre parti coinvolte ', function () {
+        // Altre parti Coinvolte
         cy.wait(1000);
         cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
+
+        //Erano presenti le autorità sul luogo del sinistro?
+        cy.wait(1000);
+        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
     });
-    */
+
+    it('Denuncia BMP -->Sommario - Riepilogo sinistro  ', function () {
+        // Altre parti Coinvolte
+        cy.wait(1000);
+        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
+
+        //Erano presenti le autorità sul luogo del sinistro?
+        cy.wait(1000);
+        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
+    });
+    
 });
