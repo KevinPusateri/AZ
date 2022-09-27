@@ -220,7 +220,9 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         Common.clickFindByIdOnIframe(cssCmbFrstElement);
         //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, classe_garanzia_prodotto);
         cy.wait(1000)
-
+       
+        cy.screenshot('Pagina Dati denuncia --> Sezione \'Informazioni sul sinistro\' ambito - soggetto / oggetto è coinvolto - classe di prodotto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.wait(1000);
         //Selezione della loss type   
         let cssLssTyp = 'nx-dropdown[formcontrolname="selectedLossType"] > div ';
         Common.clickFindByIdOnIframe(cssLssTyp);
