@@ -246,7 +246,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.wait(1000);
     });
 
-    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Luogo del sinistro\'', function () {
+    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Luogo del sinistro\' - Inserimento dati: '+ sinistro_località +","+sinistro_indirizzo+" ...", function () {
 
         //Selezione Tipo do strada *
         let cssStrttTyp = 'nx-dropdown[placeholder="Scegliere il tipo di strada"] > div ';
@@ -277,7 +277,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector,  'Trieste');
         cy.wait(1000)
 
-        cy.screenshot('Pagina Dati denuncia -Sezione \'Luogo sinistro\'', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Pagina Dati denuncia --> Sezione \'Luogo sinistro\'', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000); 
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
