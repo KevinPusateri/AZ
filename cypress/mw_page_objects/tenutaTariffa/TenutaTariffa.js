@@ -209,11 +209,10 @@ class TenutaTariffa {
         cy.get('@iframe').within(() => {
 
             //Recuperiamo la versione dell'assuntivo e la stampiamo
-            cy.pause()
-            cy.get('motor-footer').should('exist').find('button').invoke('text').then((versioneAssuntivo)=>{
+            cy.get('motor-footer').should('exist').find('button').invoke('text').then((versioneAssuntivo) => {
                 cy.task('log', `Versione Assuntivo --> ${versioneAssuntivo}`)
             })
-            
+
             //Tipologia Veicolo
             // * auto è già selezionato di default quindi lo skippo
             if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada' && currentCase.Tipo_Veicolo !== 'taxi' && currentCase.Tipo_Veicolo !== 'Auto Storica') {
@@ -992,7 +991,9 @@ class TenutaTariffa {
             cy.getIFrame()
             cy.get('@iframe').within(() => {
                 cy.get('motor-footer').should('exist').and('be.visible').find('button').invoke('text').then(logText => {
-                    resolve((logText.substring(logText.indexOf('P: ') + 3)).split(' ')[0])
+                    let numPreventivo = (logText.substring(logText.indexOf('P: ') + 3)).split(' ')[0]
+                    cy.task('log',`Numero preventivo : ${numPreventivo}`)
+                    resolve(numPreventivo)
                 })
             })
         })
@@ -1495,8 +1496,8 @@ class TenutaTariffa {
 
             //Verifichiamo il totale relativo alla ARD
             cy.get('h3:contains("Auto Rischi Diversi")').parents('div').find('div:last').find('h3:last').invoke('text').then(premio => {
-                premio.replace(/€/g,'').trim()
-                
+                premio.replace(/€/g, '').trim()
+
                 if (parseFloat(premio) < 1) {
                     assert.fail('Errore Premio non valorizzato')
                 }
