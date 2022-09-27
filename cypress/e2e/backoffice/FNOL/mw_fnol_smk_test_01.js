@@ -12,7 +12,7 @@ import LoginPage from "../../../mw_page_objects/common/LoginPage"
 import TopBar from "../../../mw_page_objects/common/TopBar"
 import BackOffice from "../../../mw_page_objects/Navigation/BackOffice"
 import DenunciaSinistriPage from "../../../mw_page_objects/backoffice/DenunciaSinistriPage"
-import DenunciaBMP from "../../../mw_page_objects/backoffice/DenunciaBMP"
+import DenunciaBMP from "../../../mw_page_objects/backoffice/DenunciaBMPPage"
 import { isDate } from "lodash"
 
 
@@ -79,9 +79,9 @@ const IFrameParent = '[class="iframe-content ng-star-inserted"]'
 var ramo_pol = '42'
 var cliente_cognome = 'ROBBA'
 var cliente_nome = 'MARIA CONCETTA'
+var cliente_CF = 'RBBMCN51H50F795Q'
 var cliente_dt_nascita = '10/06/1951'
-var cliente_num_pol = '733322477'
-var cliente_targa = 'DS246AT'
+var cliente_num_pol = '733322489'
 var cliente_email ='pippo.pluto@allianz.it'
 
 /* 319000
@@ -94,22 +94,24 @@ var cliente_num_pol = '502257481'
 var cliente_email = 'f.ninno@allianz.it'
 */
 var prodotto = 'ULTRA CASA'
-var classe_copertura = 'Fabbricato - Incendio, Eventi atmosferici, Allagamento'
-var loss_type ='EVENTI ATMOSFERICI'
-var sinistro_veicoli_coinvolti = '1'
-var sinistro_descrizione_danno = 'Danneggiamento da grandine  (Test Automatizzato by michele.delledonne@allianz.it)'
-var sinistro_località = 'GORIZIA'
-var sinistro_indirizzo = 'ROMA'
-var sinistro_civico = '1'
-var sinistro_ZipCode ='34170'
-var classe_rischio = 'Fabbricato - Incendio, Eventi atmosferici, Allagamento'
+var ambito_garanzia_fabbricato = 'Fabbricato'
+var classe_garanzia_prodotto = 'Fabbricato - Incendio, Eventi atmosferici, Allagamento'
+var loss_type = 'EVENTI ATMOSFERICI'
+var loss_cause = 'PIOGGIA'
+var oggetto_fabbricato
+
+var sinistro_descrizione_danno = 'Emissione denuncia BMP polizza Ultra Casa & Patrimonio con Test Automatizzato by michele.delledonne@allianz.it)'
+var sinistro_località = 'TRIESTE'
+var sinistro_indirizzo = 'COPODISTRIA'
+var sinistro_civico = '3'
+var sinistro_ZipCode ='34145'
 
 let dtAvvenimento
 let dtDenuncia
-let controparte_marca
-let idx_cop_gar
+
 
 let cssIdxCmbSelector = 'div.nx-dropdown-results__option-label > span';
+let btn_class= "nx-button__content-wrapper";
 //#endregion
 
 describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in Matrix', () => {
@@ -139,7 +141,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
     });
 
-    it('Denuncia BMP --> Dettaglio Cliente ' + cliente_cognome + " " + cliente_nome, function () {
+    it('Denuncia BMP --> Dettaglio Cliente ' + cliente_cognome + " " + cliente_nome + " e controllo dati anagrafici", function () {
         // Controllo valorizzazione informazioni di dettaglio del cliente
         let csslblName = '#fnol-customer-details-ext > div > div > div > dl > div:nth-child(1) > dd'
         Common.isVisibleText(csslblName, cliente_cognome);
@@ -153,9 +155,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.wait(1000);
         cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
 
-        let classvalue = "input__icon nx-icon--s ndbx-icon nx-icon--search";
-        let btn_class= "nx-button__content-wrapper";
-        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti');
+        DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
 
         cy.screenshot('Denuncia BMP --> Dettaglio Cliente ' + cliente_cognome + " " + cliente_nome, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(3000);
@@ -169,7 +169,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
             DenunciaBMP.setValue_ById('input[name=\"dateOfIncident\"]', dtAvvenimento);
         });           
         
-        cy.wait(1000);
+        cy.wait(5000);
         DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {          
             cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
             DenunciaBMP.setValue_ById('input[name=\"undefined\"]', dtPer);
@@ -186,27 +186,54 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.wait(1000);
     });
 
+    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Polizza interessata\'', function () {
+        let cssRdnBtn =  '#fnol-affected-policy-list > table > tbody >tr:nth-child(1) > td > nx-radio.nx-radio-button--big-label > input.nx-radio__input';
+        Common.clickFindByIdOnIframe(cssRdnBtn);
+        cy.wait(500);
+
+        cy.screenshot('Selezione della \'Polizza interessata\'', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.wait(1000);
+    });
+
     it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' [Inserimento dati di sinistro]', function () {
         //Informazioni sul sinistro
-        //Selezione della classe del prodotto       
-        let cssClssPrd =  'nx-dropdown[formcontrolname="selectedClaimClass"] > div ';
+        //Selezione di quale ambito è coinvolto? *     
+        let cssClssPrd =  'nx-dropdown[formcontrolname="selectedAffectedType"] > div ';
         Common.clickFindByIdOnIframe(cssClssPrd);
-        cy.wait(500);
-        Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, classe_copertura);
+        cy.wait(500); // 
+        Common.clickFindByIdOnIframe('div.nx-dropdown__panel-body[role=\"listbox\"] > nx-dropdown-item:nth-child(1) > div:nth-child(1) > div:nth-child(2) > span:nth-child(1)');
+        //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, ambito_garanzia_fabbricato);
         cy.wait(2000);
+
+        //Selezione di quale soggetto / oggetto è coinvolto?
+        let cssAffctdObj = 'nx-dropdown[formcontrolname="selectedAffectedObject"] > div ';
+        Common.clickFindByIdOnIframe(cssAffctdObj);
+        cy.wait(500) 
+        Common.clickFindByIdOnIframe('div.nx-dropdown__panel-body[role=\"listbox\"] > nx-dropdown-item:nth-child(1) > div:nth-child(1) > div:nth-child(2) > span:nth-child(1)');
+        cy.wait(1000)
+
+        //Selezione della classe di prodotto
+        let cssClsPrd = 'nx-dropdown[formcontrolname="selectedClaimClass"] > div';
+        Common.clickFindByIdOnIframe(cssClsPrd)
+        cy.wait(500);
+        Common.clickFindByIdOnIframe('div.nx-dropdown__panel-body[role=\"listbox\"] > nx-dropdown-item:nth-child(1) > div:nth-child(1) > div:nth-child(2) > span:nth-child(1)');
+        //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, classe_garanzia_prodotto);
+        cy.wait(1000)
 
         //Selezione della loss type   
         let cssLssTyp = 'nx-dropdown[formcontrolname="selectedLossType"] > div ';
         Common.clickFindByIdOnIframe(cssLssTyp);
         cy.wait(500) 
-        Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector,  ' Impact ');
+        Common.clickFindByIdOnIframe('div.nx-dropdown__panel-body[role=\"listbox\"] > nx-dropdown-item:nth-child(1) > div:nth-child(1) > div:nth-child(2) > span:nth-child(1)');
+        //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, loss_type);
         cy.wait(1000)
 
-        //Selezione della loss cause
-        let cssLssCs = 'nx-dropdown[formcontrolname="selectedLossCause"] > div';
-        Common.clickFindByIdOnIframe(cssLssCs)
-        cy.wait(500);
-        Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, ' Falling object ');
+        //Selezione della loss cause   
+        let cssLssCs = 'nx-dropdown[formcontrolname="selectedLossCause"] > div ';
+        Common.clickFindByIdOnIframe(cssLssCs);
+        cy.wait(500) 
+        Common.clickFindByIdOnIframe('div.nx-dropdown__panel-body[role=\"listbox\"] > nx-dropdown-item:nth-child(1) > div:nth-child(1) > div:nth-child(2) > span:nth-child(1)');
+        //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, loss_cause);
         cy.wait(1000)
 
         //Descrizione del sinistro
@@ -246,32 +273,30 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         let cssPvTyp = 'nx-dropdown[placeholder="Scegliere la provincia"] > div ';
         Common.clickFindByIdOnIframe(cssPvTyp);
         cy.wait(500) 
-        Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector,  'Gorizia');
+        Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector,  'Trieste');
         cy.wait(1000)
-
 
         cy.screenshot('Pagina Dati denuncia - date del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000); 
+
+        DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
     });
     
 
 
-/*
-    it('Denuncia --> Ricerca per numero di polizza cliente: ' + cliente_num_pol, function () {
-        // Ricerca cliente per Polizza
-        DenunciaBMP.setValue_ById('#keyword', cliente_num_pol);
+    it('Denuncia BMP --> Dettaglio del danno - Danni alla proprietà del cliente', function () {
+        // Scegliere un'opzione
+        let cssSlctPrt ='nx-dropdown[placeholder=\"Scegliere un\'opzione\"] > div.nx-dropdown__container > div.nx-dropdown__rendered > span.ng-star-inserted';
+        Common.clickFindByIdOnIframe(cssSlctPrt);
      
-        Common.clickByIdOnIframe("[name='search']")
+        Common.clickByAttrAndLblOnIframe("label.nx-checkbox__label has-label > div.nx-checkbox__label-text > div", ' A vista ')
         cy.wait(2000)
       
-        let classtxtClnt = '.nx-autocomplete-option__label > span'
-        // Verifica del testo a comparsa nella ricerca del cliente 
-        cy.screenshot('Pagina Ricerca cliente - Testo a comparsa', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        Common.isVisibleText(classtxtClnt, cliente_cognome + " " + cliente_nome)   
-        Common.isVisibleText(classtxtClnt, cliente_dt_nascita)
-       
-        let classvalue = "input__icon nx-icon--s ndbx-icon nx-icon--search"
-        let btn_class= "nx-button__content-wrapper"
+        // Riparazione della proprietà Si/No
+        let cssRdnBtnNo1 = 'nx-radio-group[formcontrolname="answer"] > div > div.nx-radio-group__controls > div[data-testid="radioListOptions"] > nx-radio:nth-child(2)'
+        Common.clickFindByIdOnIframe(cssRdnBtnNo1);
+        cy.wait(500);
+
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
 
         
@@ -279,6 +304,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
+    /*
     it('Denuncia --> Ricerca per codice fiscale cliente: ' + cliente_CF, function () {
         // Ricerca cliente per Polizza
         DenunciaBMP.setValue_ById('#keyword', cliente_CF);

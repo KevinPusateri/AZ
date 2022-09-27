@@ -220,8 +220,6 @@ class DenunciaSinistriPage {
      * @param {string} value : attribute value object 
      */
     static clickOnRadio_ByIdAndText(id, value) {
-        
-
         findIframeChild(IFrameParent).find(id, { timeout: 5000 }).should('be.visible').each(li => {          
             let $txt = li.text().trim()              
             if ($txt.includes(value)) {                

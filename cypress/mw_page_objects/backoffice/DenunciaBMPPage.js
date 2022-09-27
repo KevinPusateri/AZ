@@ -132,20 +132,36 @@ class DenunciaBMP {
         })       
         cy.wait(2000)
     }
-       /**
-     * Click on object defined by locator id
+
+    /**
+     * Click on checkbox obj identified by locator id, and text value 
      * @param {string} id : locator object id
+     * @param {string} value : attribute value object 
      */
-        static clickSelect_ByIdOnIframeChild(idIframe, id, text) {             
-            findIframeChild(IFrameParent).find(id).should('be.visible').then((btn) => {    
-                expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
-                const $btn = Cypress.$(btn)
-                cy.wrap($btn)
-                .should('exist')            
-                .select(text).log('>> object with [locator="'+id+'"] and text="'+text+'" was selected')
-            })       
-            cy.wait(2000)
-        }
+     static clickOnRadio_ByIdAndText(id, value) {
+        getIframe().find(id, { timeout: 5000 }).should('be.visible').each(li => {          
+            let $txt = li.text().trim()              
+            if ($txt.includes(value)) {                
+                cy.wrap(li).children('input').check({force: true}).should('be.checked')
+                cy.wait(2000).log('>> object with id ['+id+'="'+value+'"] is checked')
+                return;
+            }
+        })            
+    }
+    /**
+ * Click on object defined by locator id
+ * @param {string} id : locator object id
+ */
+    static clickSelect_ByIdOnIframeChild(idIframe, id, text) {             
+        findIframeChild(IFrameParent).find(id).should('be.visible').then((btn) => {    
+            expect(Cypress.dom.isJquery(btn), 'jQuery object').to.be.true          
+            const $btn = Cypress.$(btn)
+            cy.wrap($btn)
+            .should('exist')            
+            .select(text).log('>> object with [locator="'+id+'"] and text="'+text+'" was selected')
+        })       
+        cy.wait(2000)
+    }
 }
 
 
