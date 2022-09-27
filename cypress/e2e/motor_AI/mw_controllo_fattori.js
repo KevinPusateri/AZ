@@ -32,7 +32,7 @@ let caseToExecute = []
 
 before(() => {
     Cypress.env('isAviva', false)
-    
+
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
@@ -88,14 +88,9 @@ describe('Controllo Fattori Motore AI e LogProxy: ', {
                         currentPreventivo = numPreventivo
                         cy.log(`Numero preventivo : ${numPreventivo}`)
                     })
-                }
-                else
-                    this.skip()
-            })
 
-            it("LogProxy", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
                     TenutaTariffa.checkLogProxy(currentCase, currentPreventivo)
+                }
                 else
                     this.skip()
             })
