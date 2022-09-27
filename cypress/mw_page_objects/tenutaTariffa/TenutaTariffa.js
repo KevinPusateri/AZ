@@ -208,6 +208,12 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
+            //Recuperiamo la versione dell'assuntivo e la stampiamo
+            cy.pause()
+            cy.get('motor-footer').should('exist').find('button').invoke('text').then((versioneAssuntivo)=>{
+                cy.task('log', `Versione Assuntivo --> ${versioneAssuntivo}`)
+            })
+            
             //Tipologia Veicolo
             // * auto è già selezionato di default quindi lo skippo
             if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada' && currentCase.Tipo_Veicolo !== 'taxi' && currentCase.Tipo_Veicolo !== 'Auto Storica') {
