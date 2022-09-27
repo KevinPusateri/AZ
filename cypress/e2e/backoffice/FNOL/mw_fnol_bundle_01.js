@@ -248,7 +248,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.wait(1000);
     });
 
-    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Luogo del sinistro\' - Inserimento dati: '+ sinistro_località +","+sinistro_indirizzo+" ...", function () {
+    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Luogo del sinistro\' - Inserimento dati: '+ sinistro_località +", VIA "+sinistro_indirizzo+" "+sinistro_civico+ " ...", function () {
 
         //Selezione Tipo do strada *
         let cssStrttTyp = 'nx-dropdown[placeholder="Scegliere il tipo di strada"] > div ';
