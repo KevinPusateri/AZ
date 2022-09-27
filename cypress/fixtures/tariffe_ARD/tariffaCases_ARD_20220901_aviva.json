@@ -934,7 +934,7 @@
       "Alimentazione": "",
       "Antifurto": "",
       "Prima_Immatricolazione": "01/01/1983",
-      "Valore_Veicolo": "50000",
+      "Valore_Veicolo": "200000",
       "Peso_Marcia": "",
       "Peso_Max_Rimorchiabile": "",
       "Costruttore_Modello_Imbarcazione": "",
@@ -1005,11 +1005,11 @@
       "Calcolo_Garanzie_Aggiuntive": "",
       "Calcolo_Massimale_Rottura_Cristalli": "",
       "Tipo_Kasko": "Kasko Totale",
-      "Versione_Kasko": "t14_3120_013000_20220901_000000000000_000001",
+      "Versione_Kasko": "t14_3120_043000_20220901_000000000000_000001",
       "Calcolo_Kasko": "",
       "Versione_Avens": "",
       "Calcolo_Avens": "",
-      "Totale_Premio": "1.007,12",
+      "Totale_Premio": "7.651,68",
       "Punta_Flex_Ard": "0"
     }
   ]
