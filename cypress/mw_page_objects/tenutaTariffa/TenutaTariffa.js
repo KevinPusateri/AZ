@@ -1228,7 +1228,7 @@ class TenutaTariffa {
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il premio lordo a video
-            cy.contains(rcaLabel).parents('form').within(() => {
+            cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
                 cy.get('p[class~="premio"]').first().invoke('text').then(premioLordo => {
 
                     //expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
