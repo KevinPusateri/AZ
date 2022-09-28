@@ -315,7 +315,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         Common.clickFindByIdOnIframe(cssBtnNoLawayer);
         cy.wait(1000);
 
-        cy.screenshot('13- Dettaglio del danno - Avvocato del cliente (Si/No): No', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('13- Dettaglio del danno - Avvocato del cliente (Si o No): No', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000);
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
 
