@@ -100,13 +100,14 @@ var loss_type = 'EVENTI ATMOSFERICI'
 var loss_cause = 'PIOGGIA'
 var oggetto_fabbricato
 
-var sinistro_descrizione_danno = 'Emissione denuncia BMP polizza Ultra Casa & Patrimonio con Test Automatizzato by michele.delledonne@allianz.it)'
+var sinistro_descrizione_danno = 'Emissione denuncia BMP sulla persona con test automatizzato - polizza Ultra Casa & Patrimonio.'
 var sinistro_località = 'TRIESTE'
 var sinistro_indirizzo = 'COPODISTRIA'
 var sinistro_civico = '3'
 var sinistro_ZipCode ='34145'
 
 let dtAvvenimento
+let dtPervenimento
 let dtDenuncia
 
 
@@ -115,7 +116,7 @@ let cssCmbFrstElement = 'div.nx-dropdown__panel-body[role=\"listbox\"] > nx-drop
 let btn_class= "nx-button__content-wrapper";
 //#endregion
 
-describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in Matrix', () => {
+describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bundle Contract in Matrix', () => {
 
     it('Atterraggio su BackOffice >> Denuncia BMP', function () {
         TopBar.clickBackOffice()
@@ -124,22 +125,22 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.wait(1000);
     });        
 
-    it('Denuncia BMP--> Ricerca Cognome Nome cliente: ' + cliente_cognome + " " + cliente_nome, function () {
+    it('Denuncia BMP --> Ricerca Cognome Nome cliente: ' + cliente_cognome + " " + cliente_nome, function () {
         // Ricerca cliente per Polizza
         DenunciaBMP.setValue_ById('#keyword', cliente_cognome + " " + cliente_nome);
 
         Common.clickByIdOnIframe("[name='search']");
-        cy.wait(2000);
+        cy.wait(3000);
     
         let csstxtClnt = '.nx-autocomplete-option__label > span';
         // Verifica del testo a comparsa nella ricerca del cliente 
-        cy.screenshot('Pagina Ricerca cliente - Testo a comparsa', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('01- Pagina Ricerca cliente - Inserimento cliente e testo a comparsa', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         Common.isVisibleText(csstxtClnt, cliente_cognome + " " + cliente_nome); 
         Common.isVisibleText(csstxtClnt, cliente_dt_nascita);
 
         Common.clickByIdOnIframe(csstxtClnt)
-        cy.wait(1000);
-        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.wait(2000);
+        cy.screenshot('02- Pagina Ricerca cliente -  Esito ricerca cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
     });
 
     it('Denuncia BMP --> Dettaglio Cliente ' + cliente_cognome + " " + cliente_nome + " e controllo dati anagrafici", function () {
@@ -154,12 +155,12 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         let csslblEmail = '#fnol-customer-details-ext > div > div > div > dl > div:nth-child(6) > dd';
         Common.isVisibleText(csslblEmail, cliente_email);
         cy.wait(1000);
-        cy.screenshot('Pagina Ricerca cliente -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+
+        cy.screenshot('03- Controllo anagrafico dati del cliente ' + cliente_cognome + " " + cliente_nome, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.wait(1000);
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
 
-        cy.screenshot('Denuncia BMP --> Dettaglio Cliente ' + cliente_cognome + " " + cliente_nome, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
-        cy.wait(3000);
     });
 
     it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Date correlate\' [Inserimento date di sinistro]', function () {
@@ -168,22 +169,26 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
             dtAvvenimento = dtAvv;
             cy.log('[it]>> [Data avvenimento del sinistro]: ' + dtAvvenimento);
             DenunciaBMP.setValue_ById('input[name=\"dateOfIncident\"]', dtAvvenimento);
-        });           
-        
+        }); 
+        cy.wait(1000);   
+        cy.screenshot('04- Pagina Dati denuncia - inserimento date di avvenimento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(5000);
-        DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {          
+
+        DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {         
+            dtPervenimento = dtPer 
             cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
             DenunciaBMP.setValue_ById('input[name=\"undefined\"]', dtPer);
         });
-
+        cy.screenshot('05- Pagina Dati denuncia - inserimento date di pervenimento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
+
+        
         DenunciaSinistriPage.getPlusMinusDate(-1).then((dtDen) => {
             dtDenuncia = dtDen
             cy.log('[it]>> [Data denuncia sinistro]: '+dtDenuncia);           
             DenunciaBMP.setValue_ById('input[formcontrolname=\"answer\"]', dtDenuncia);
         });
-
-        cy.screenshot('Pagina Dati denuncia - date del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('07- Pagina Dati denuncia - inserimento data di denuncia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
     });
 
@@ -192,7 +197,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         Common.clickFindByIdOnIframe(cssRdnBtn);
         cy.wait(500);
 
-        cy.screenshot('Selezione della \'Polizza interessata\'', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('08- Pagina Dati denuncia - Dettaglio sulla Polizza interessata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
     });
 
@@ -213,6 +218,9 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         Common.clickFindByIdOnIframe(cssCmbFrstElement);
         cy.wait(1000)
 
+        cy.screenshot('09- Pagina Dati denuncia - Polizza selezionata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.wait(1000);
+
         //Selezione della classe di prodotto
         let cssClsPrd = 'nx-dropdown[formcontrolname="selectedClaimClass"] > div';
         Common.clickFindByIdOnIframe(cssClsPrd)
@@ -220,9 +228,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         Common.clickFindByIdOnIframe(cssCmbFrstElement);
         //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, classe_garanzia_prodotto);
         cy.wait(1000)
-       
-        cy.screenshot('Pagina Dati denuncia --> Sezione \'Informazioni sul sinistro\' ambito - soggetto / oggetto è coinvolto - classe di prodotto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
-        cy.wait(1000);
+    
         //Selezione della loss type   
         let cssLssTyp = 'nx-dropdown[formcontrolname="selectedLossType"] > div ';
         Common.clickFindByIdOnIframe(cssLssTyp);
@@ -244,7 +250,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         DenunciaBMP.setValue_ById(cssDescrClm, sinistro_descrizione_danno);
         cy.wait(1000)
 
-        cy.screenshot('Pagina Dati denuncia --> Sezione \'Informazioni sul sinistro\' [Inserimento dati di sinistro]', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('10- Pagina Dati denuncia - Altri dati del sinistro: loss type, loss cause e descrizione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
     });
 
@@ -262,6 +268,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         cy.wait(1000);
         DenunciaBMP.setValue_ById('input[trackid=\"address-details-form-oe.streetNumber\"]', sinistro_civico)  
         cy.wait(1000);
+       
         DenunciaBMP.setValue_ById('input[trackid=\"address-details-form-oe.zipCode\"]', sinistro_ZipCode)  
         cy.wait(1000);
         DenunciaBMP.setValue_ById('input[trackid=\"address-details-form-oe.city\"]', sinistro_località)  
@@ -279,7 +286,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector,  'Trieste');
         cy.wait(1000)
 
-        cy.screenshot('Pagina Dati denuncia --> Sezione \'Luogo sinistro\'', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('11- Pagina Dati denuncia --> Sezione Luogo sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000); 
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
@@ -300,29 +307,30 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         //Anno di acquisto
         DenunciaBMP.setValue_ById('input[ name="yearOfPurchase"]', '2020');
 
+        cy.screenshot('12- Dettaglio del danno ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000);
+
         // Avvocato del cliente (Si/No)
         let cssBtnNoLawayer = 'nx-circle-toggle-group[data-testid="circleToggleOptions"] > div > div:nth-child(2) > nx-circle-toggle > label.nx-circle-toggle__label > nx-icon-toggle-button';
         Common.clickFindByIdOnIframe(cssBtnNoLawayer);
         cy.wait(1000);
 
-        cy.screenshot('Dettaglio del danno ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        
+        cy.screenshot('13- Dettaglio del danno - Avvocato del cliente (Si/No): No', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000);
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
 
         cy.wait(1000);
-        cy.screenshot('Dettaglio del danno - Danni alla proprietà del cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('14- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
-    it('Denuncia BMP --> Dettaglio del danno --> Altre parti coinvolte ', function () {
+    it('Denuncia BMP --> Dettaglio del danno --> Danno per il cliente ', function () {
         // Altre parti Coinvolte
-        cy.wait(1000);
-        cy.screenshot('Dettaglio del danno - Altre parti coinvolte -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
 
         //Erano presenti le autorità sul luogo del sinistro?
         cy.wait(1000);
-        cy.screenshot('Dettaglio del danno - Altre parti coinvolte - autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('15- Dettaglio del danno - Altre parti coinvolte - autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
     });
@@ -330,7 +338,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
     it('Denuncia BMP --> Sommario --> Riepilogo sinistro  ', function () {
         // Altre parti Coinvolte
         cy.wait(1000);
-        cy.screenshot('Sommario - Riepilogo sinistro -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('16- Sommario - Riepilogo sinistro -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     });
 
@@ -340,12 +348,13 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL in
         Common.clickFindByIdOnIframe(cssChkConferma);
         cy.wait(1000);
 
-        cy.screenshot('Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('17- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         
         let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
         Common.clickFindByIdOnIframe(cssBtnInviaRichiesta)
+        cy.wait(2000)
 
-        cy.screenshot('Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('18- Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
     });
 });
