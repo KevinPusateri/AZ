@@ -1276,12 +1276,26 @@ class TenutaTariffa {
                 String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
                 dataDecorrenza.getFullYear()
 
-            //! purtroppo il componente non è trovabile agevolmente al momento
-            cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > nx-icon').click()
-            cy.get('nx-formfield').first().click().clear()
-            cy.wait(700)
-            cy.get('nx-formfield').first().click().type(formattedDataDecorrenza).click()
+            cy.get('nx-icon[name="pen"]').first().click().wait(700)
+            cy.get('nx-icon[name="calendar"]').first().click()
+            cy.contains('Scegli mese e anno').should('be.visible').click()
 
+            //Selezioniamo l'anno
+            cy.get('.nx-calendar-table').within(() => {
+                cy.contains(dataDecorrenza.getFullYear()).click()
+            })
+
+            //Selezioniamo il mese
+            cy.get('.nx-calendar-table').within(() => {
+                cy.contains(dataDecorrenza.toLocaleString('default', { month: 'short' })).click()
+            })
+
+            //Selezioniamo il giorno
+            cy.get('.nx-calendar-table').within(() => {
+                cy.get(`div:contains(${String(dataDecorrenza.getDate())})`)
+                    .not('[aria-hidden]')
+                    .should('be.visible').click()
+            })
             cy.wait('@getMotor', { timeout: 60000 })
 
             //Attendiamo che il caricamento non sia più visibile
