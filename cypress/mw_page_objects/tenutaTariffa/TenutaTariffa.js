@@ -992,7 +992,7 @@ class TenutaTariffa {
             cy.get('@iframe').within(() => {
                 cy.get('motor-footer').should('exist').and('be.visible').find('button').invoke('text').then(logText => {
                     let numPreventivo = (logText.substring(logText.indexOf('P: ') + 3)).split(' ')[0]
-                    cy.task('log',`Numero preventivo : ${numPreventivo}`)
+                    cy.task('log', `Numero preventivo : ${numPreventivo}`)
                     resolve(numPreventivo)
                 })
             })
@@ -1245,7 +1245,13 @@ class TenutaTariffa {
             cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
                 cy.get('p[class~="premio"]').first().invoke('text').then(premioLordo => {
 
-                    //expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
+                    premioLordo.replace(/€/g, '').trim()
+
+                    if (parseFloat(premioLordo) < 1) {
+                        cy.task('log', 'Errore Premio non valorizzato')
+                        assert.fail('Errore Premio non valorizzato')
+                    }
+
                     if (!premioLordo.includes(currentCase.Totale_Premio_Lordo)) {
                         cy.log('Attenzione : verificare differenza premi')
                         cy.log(`--> Valore rilevato : ${premioLordo}`)
@@ -1513,6 +1519,7 @@ class TenutaTariffa {
                 premio.replace(/€/g, '').trim()
 
                 if (parseFloat(premio) < 1) {
+                    cy.task('log', 'Errore Premio non valorizzato')
                     assert.fail('Errore Premio non valorizzato')
                 }
 
