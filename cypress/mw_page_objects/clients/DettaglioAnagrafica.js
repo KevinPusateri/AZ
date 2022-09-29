@@ -161,7 +161,7 @@ class DettaglioAnagrafica {
 
     static checkSubTabDatiAnagrafici() {
         cy.get('app-section-title').find('.title:contains("Dati principali persona fisica"):visible')
-        cy.get('app-physical-client-main-data').find('button:contains("Modifica dati cliente"):visible')
+        cy.get('app-physical-client-main-data').should('be.visible').find('button:contains("Modifica dati cliente"):visible')
         cy.get('app-client-risk-profiles').find('.title:contains("Identificazione e adeguata verifica"):visible')
         cy.get('app-client-consents-accordion').find('.title:contains("Consensi"):visible')
         cy.get('nx-expansion-panel-header').contains('Consensi e adeguatezza').click()
@@ -201,11 +201,11 @@ class DettaglioAnagrafica {
     }
 
     static checkCampiDatiPrincipaliPF() {
-        cy.get('app-physical-client-main-data').find('[class="box-unico"]').then((box) => {
+        cy.get('app-physical-client-main-data').should('be.visible').should('be.visible').find('[class="box-unico"]').then((box) => {
             cy.wrap(box).find('app-section-title').should('contain.text', 'Dati principali persona fisica')
             cy.wrap(box).find('button[ngclass="button-edit-client"]')
                 .should('contain.text', 'Modifica dati cliente')
-            cy.get('app-physical-client-main-data').find('[class^="label"]').should('have.length', 21).then((label) => {
+            cy.get('app-physical-client-main-data').should('be.visible').find('[class^="label"]').should('have.length', 21).then((label) => {
                 expect(label.text().trim()).to.include('Titolo');
                 expect(label.text().trim()).to.include('Cittadinanza');
                 expect(label.text().trim()).to.include('Nome*');

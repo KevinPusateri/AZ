@@ -21,6 +21,7 @@ const LinksMenu = {
     deleteKey: function (keys) {
         if (!keys['primo-piano']) delete this.PRIMO_PIANO
         if (!keys['raccolte']) delete this.RACCOLTE
+        if (!keys['pronti-via']) delete this.PRONTI_VIA
         if (!keys['tutte-le-notizie']) delete this.TUTTE_LE_NOTIZIE
         if (!keys['prodotti']) delete this.PRODOTTI
         if (!keys['iniziative']) delete this.INIZIATIVE
