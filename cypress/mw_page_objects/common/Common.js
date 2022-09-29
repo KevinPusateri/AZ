@@ -364,7 +364,7 @@ class Common {
      * @example Common.clickFindByIdOnIframe('#eseguiRicerca')
      */
     static clickFindByIdOnIframe(path) {
-        return getIframe().find(path, { timeout: 5000 }).should('exist').click()
+        return getIframe().find(path, { timeout: 5000 }).should('exist').click({force: true})
     }
 
     /**

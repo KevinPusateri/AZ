@@ -209,11 +209,10 @@ class TenutaTariffa {
         cy.get('@iframe').within(() => {
 
             //Recuperiamo la versione dell'assuntivo e la stampiamo
-            cy.pause()
-            cy.get('motor-footer').should('exist').find('button').invoke('text').then((versioneAssuntivo)=>{
+            cy.get('motor-footer').should('exist').find('button').invoke('text').then((versioneAssuntivo) => {
                 cy.task('log', `Versione Assuntivo --> ${versioneAssuntivo}`)
             })
-            
+
             //Tipologia Veicolo
             // * auto è già selezionato di default quindi lo skippo
             if (currentCase.Tipo_Veicolo !== 'auto' && currentCase.Tipo_Veicolo !== 'fuoristrada' && currentCase.Tipo_Veicolo !== 'taxi' && currentCase.Tipo_Veicolo !== 'Auto Storica') {
@@ -992,7 +991,9 @@ class TenutaTariffa {
             cy.getIFrame()
             cy.get('@iframe').within(() => {
                 cy.get('motor-footer').should('exist').and('be.visible').find('button').invoke('text').then(logText => {
-                    resolve((logText.substring(logText.indexOf('P: ') + 3)).split(' ')[0])
+                    let numPreventivo = (logText.substring(logText.indexOf('P: ') + 3)).split(' ')[0]
+                    cy.task('log', `Numero preventivo : ${numPreventivo}`)
+                    resolve(numPreventivo)
                 })
             })
         })
@@ -1244,7 +1245,13 @@ class TenutaTariffa {
             cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
                 cy.get('p[class~="premio"]').first().invoke('text').then(premioLordo => {
 
-                    //expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
+                    premioLordo.replace(/€/g, '').trim()
+
+                    if (parseFloat(premioLordo) < 1) {
+                        cy.task('log', 'Errore Premio non valorizzato')
+                        assert.fail('Errore Premio non valorizzato')
+                    }
+
                     if (!premioLordo.includes(currentCase.Totale_Premio_Lordo)) {
                         cy.log('Attenzione : verificare differenza premi')
                         cy.log(`--> Valore rilevato : ${premioLordo}`)
@@ -1275,12 +1282,26 @@ class TenutaTariffa {
                 String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
                 dataDecorrenza.getFullYear()
 
-            //! purtroppo il componente non è trovabile agevolmente al momento
-            cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > nx-icon').click()
-            cy.get('nx-formfield').first().click().clear()
-            cy.wait(700)
-            cy.get('nx-formfield').first().click().type(formattedDataDecorrenza).click()
+            cy.get('nx-icon[name="pen"]').first().click().wait(700)
+            cy.get('nx-icon[name="calendar"]').first().click()
+            cy.contains('Scegli mese e anno').should('be.visible').click()
 
+            //Selezioniamo l'anno
+            cy.get('.nx-calendar-table').within(() => {
+                cy.contains(dataDecorrenza.getFullYear()).click()
+            })
+
+            //Selezioniamo il mese
+            cy.get('.nx-calendar-table').within(() => {
+                cy.contains(dataDecorrenza.toLocaleString('default', { month: 'short' })).click()
+            })
+
+            //Selezioniamo il giorno
+            cy.get('.nx-calendar-table').within(() => {
+                cy.get(`div:contains(${String(dataDecorrenza.getDate())})`)
+                    .not('[aria-hidden]')
+                    .should('be.visible').click()
+            })
             cy.wait('@getMotor', { timeout: 60000 })
 
             //Attendiamo che il caricamento non sia più visibile
@@ -1495,9 +1516,10 @@ class TenutaTariffa {
 
             //Verifichiamo il totale relativo alla ARD
             cy.get('h3:contains("Auto Rischi Diversi")').parents('div').find('div:last').find('h3:last').invoke('text').then(premio => {
-                premio.replace(/€/g,'').trim()
-                
+                premio.replace(/€/g, '').trim()
+
                 if (parseFloat(premio) < 1) {
+                    cy.task('log', 'Errore Premio non valorizzato')
                     assert.fail('Errore Premio non valorizzato')
                 }
 

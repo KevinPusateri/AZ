@@ -55,10 +55,10 @@ const sendMail = async () => {
 		attachments: [
 			{
 				filename: 'MW_FE_' + stream.toUpperCase() + `_html_${currentEnv}.zip`,
-				path: '..//MW_FE_' + stream.toUpperCase() + `_xml_${currentEnv}.zip`
+				path: '..//MW_FE_' + stream.toUpperCase() + `_html_${currentEnv}.zip`
 			},
 			{
-				filename: 'MW_FE_' + stream.toUpperCase() + `_html_${currentEnv}.zip`,
+				filename: 'MW_FE_' + stream.toUpperCase() + `_xml_${currentEnv}.zip`,
 				path: '..//MW_FE_' + stream.toUpperCase() + `_xml_${currentEnv}.zip`
 			}
 		]
