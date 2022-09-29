@@ -21,6 +21,10 @@ const getAppJump = () => {
 }
 
 //#region Intercept
+const defaultTableConfig = {
+    method: 'POST',
+    url: /getDefaultTableConfig/
+}
 const infoUtente = {
     method: 'GET',
     url: /infoUtente/
@@ -522,6 +526,15 @@ const Filtri = {
             VUOTO: "Vuoto"
         }
     }
+}
+
+/**
+ * Enum Data Input Form
+ * @enum {Object}
+ */
+const Operativita = {
+    FRANCHIGIE: "FRANCHIGIE",
+    MONITORAGGIO_ARRETRATI: "MONITORAGGIO ARRETRATI"
 }
 
 /**
@@ -1055,6 +1068,14 @@ class Sfera {
      */
     static get SELEZIONARIGHE() {
         return SelezionaRighe
+    }
+
+    /**
+     * Funzione che ritorna le voci disponibili per la selezione Operatività da Sales
+     * @returns {Operativita} Righe da selezionare
+     */
+    static get OPERATIVITA() {
+        return Operativita
     }
 
     /**
@@ -3874,5 +3895,89 @@ class Sfera {
                 })
         }
     }
+
+    /**
+     * Effettua selezione Vista Operativita
+     * @param {Operativita} vistaOperativita Tipo di vista
+     */
+    static clickVistaOperativita(vistaOperativita) {
+        cy.intercept(defaultTableConfig).as('defaultTableConfig')
+        cy.contains(vistaOperativita).parent().find('nx-radio').click()
+        cy.get('app-operation-section').within(() => {
+            cy.contains('Estrai').should('be.enabled').click()
+        })
+        cy.wait('@defaultTableConfig', { timeout: 15000 })
+
+    }
+
+    /**
+    * Effettua selezione Vista Operativita
+    * @param {Operativita} vistaOperativita Tipo di vista
+    */
+    static checkVistaOperativitaExist(vistaOperativita) {
+        cy.get('app-panel-quietanzamento-franchigie').should('be.visible').within(() => {
+            switch (vistaOperativita) {
+                case Operativita.MONITORAGGIO_ARRETRATI:
+                    cy.get('h2[nxheadline="subsection-medium"]').should('include.text', 'Arretrati')
+                    break;
+                case Operativita.FRANCHIGIE:
+                    cy.get('h2[nxheadline="subsection-medium"]').should('include.text', 'Franchigie')
+                    break
+                default:
+                    throw new Error('Vista Operatività non presente')
+            }
+        })
+    }
+
+    /**
+     * It clicks on a datepicker toggle.
+     */
+    static selezionaDataFine() {
+        cy.get('nx-icon[name="calendar"]').eq(1).click().wait(500)
+
+    }
+
+    /**
+     * Checking if over the next month are disabled
+     * * La data Fine inizia è impostato al mese precedente
+     */
+    static checkDateArretrati() {
+        cy.get('nx-datepicker-content').should('be.visible').within(() => {
+            let today = new Date()
+            cy.get('span[class="nx-calendar-period-label"]').invoke('text').then(month => {
+
+                cy.contains('Scegli il mese e l\'anno').click()
+                // Nel caso fossimo in Dicembre automaticamente passa all'anno successivo
+                if (month.includes('dicembre')) {
+                    //! DA VERIFICARE QUANDO SAREMO A DICEMBRE
+                    today.setFullYear(today.getFullYear() + 1)
+                    cy.contains(today.getFullYear()).click()
+                    cy.get('div[class*="nx-calendar-body-selected nx-calendar-body-today"]')
+                        .parents('tbody')
+                        .find('tr').then((tr) => {
+                            const months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
+                            let index = months.indexOf('gen')
+                            cy.wrap(tr).find('td').eq(index + 1).should('have.attr', 'aria-disabled', 'true')
+                            cy.wrap(tr).find('td').eq(index).should('not.have.attr', 'aria-disabled', 'true').click()
+                        })
+                } else {
+                    // Verifico che SOLO il mese successivo sia accessibile 
+                    cy.contains(today.getFullYear()).click()
+                    cy.get('div[class*="nx-calendar-body-cell-content nx-calendar-body-selected"]')
+                        .parents('tbody')
+                        .find('tr').then((tr) => {
+                            const months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
+                            let index = months.indexOf(month.trim().substring(0, 3))
+                            cy.wrap(tr).find('td').eq(index + 3).should('have.attr', 'aria-disabled', 'true')
+                            cy.wrap(tr).find('td').eq(index + 2).should('not.have.attr', 'aria-disabled', 'true').click()
+                        })
+
+                    // Seleziona l'ultimo giorno
+                    cy.get('td[class="nx-calendar-body-cell ng-star-inserted"]:last').click()
+                }
+            })
+        })
+    }
+
 }
 export default Sfera

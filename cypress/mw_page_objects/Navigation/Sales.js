@@ -917,6 +917,12 @@ class Sales {
             .screenshot('Attività in Scadenza', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
     }
 
+    static clickOperativita() {
+        cy.get('app-operation-section').contains('Operatività').click()
+        cy.get('nx-radio[name="button_operation"]').should('be.visible')
+        cy.screenshot('Operativita', { overwrite: true })
+    }
+
 
     //#region Preventivi e quotazioni
     /**
