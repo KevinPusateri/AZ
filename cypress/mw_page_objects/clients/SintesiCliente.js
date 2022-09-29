@@ -644,8 +644,8 @@ class SintesiCliente {
         cy.wait(15000)
         matrixFrame().within(() => {
             cy.get('#ButtonNuovo').should('be.visible')
-            cy.screenshot('Verifica aggancio Libri matricola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
+        cy.screenshot('Verifica aggancio Libri matricola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**

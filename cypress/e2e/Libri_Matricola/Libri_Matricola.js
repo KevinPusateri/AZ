@@ -6,6 +6,7 @@
  */
 
 ///<reference types="cypress"/>
+var json = require('../../fixtures/LibriMatricola/Convenzione.json'); //(with path)
 
 //#region imports
 import LoginPage from "../../mw_page_objects/common/LoginPage"
@@ -33,18 +34,9 @@ import TopBar from "../../mw_page_objects/common/TopBar";
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregions
-var dataImmatricolazione
 
 before(() => {
-    cy.fixture('LibriMatricola/Convenzione.json').then((data) => {
-        let dateSplitted = data.dataConvenzione.split('/')
-        var formatDate = new Date(parseInt(dateSplitted[2]), parseInt(dateSplitted[1]), parseInt(dateSplitted[0]))
-        formatDate.setDate(formatDate.getDate() - 15)
-        //Settiamo la data di immatricolazione dei veicoli 15 giorni prima della convenzione
-        dataImmatricolazione = ('0' + formatDate.getDate()).slice(-2) + '/' + ('0' + (formatDate.getMonth())).slice(-2) + '/' + formatDate.getFullYear()
-    })
     // expect(Cypress.browser.name).to.contain('firefox')
-
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
@@ -88,36 +80,6 @@ describe("LIBRI MATRICOLA", {
     var nPreventivoMadre
     var nContratto
 
-    // it.only('MW', function () {
-    //     TopBar.logOutMW()
-    // });
-
-    // it.only('VPS', function () {
-    //     // cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
-    //     // cy.origin('https://amlogin-pp.allianz.it/nidp/idff/sso?sid=0&sid=0')
-    //     // cy.get('table').should('be.visible')
-    //     // cy.get('[name="Ecom_User_ID"]').type('euvps02')
-    //     // cy.get('[name="Ecom_Password"]').type('pwdeuvps02')
-    //     // cy.get('[value="Conferma"]').click()
-    //     let email = 'euvps02'
-    //     let psw = 'pwdeuvps02'
-    //     cy.session(([email, psw]), () => {
-
-    //         cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
-    //         cy.get('[name="Ecom_User_ID"]').type('euvps02')
-    //         cy.get('[name="Ecom_Password"]').type('pwdeuvps02')
-    //         cy.get('[value="Conferma"]').click()
-    //         cy.url()
-    //             .should("include", 'sasasa');
-    //         cy.origin('https://amlogin-pp.allianz.it/nidp/idff/',
-    //             { args: [email, psw] },
-    //             ([email, psw]) => {
-    //                 cy.get('[name="Ecom_User_ID"]').type(email)
-    //                 cy.get('[name="Ecom_Password"]').type(psw)
-    //             })
-    //     })
-    // });
-
     context('PREVENTIVO MADRE', function () {
         PreventivoMadre()
 
@@ -125,7 +87,7 @@ describe("LIBRI MATRICOLA", {
 
     context('APPLICAZIONI', function () {
         //! impostare Come primo parametro : 1 caso di test 
-        PrevApplicazione(1, 'Auto', Veicoli.Auto_WW745FF(dataImmatricolazione), ['Furto'])
+        PrevApplicazione(1, 'Auto', Veicoli.Auto_WW745FF(), ['Furto'])
 
         PrevApplicazione(2, 'Moto', Veicoli.Moto_MM25896(), [])
 
@@ -197,6 +159,7 @@ describe("LIBRI MATRICOLA", {
             cy.fixture('LibriMatricola/LibriMatricola.json').then((data) => {
                 LoginPage.logInMWAdvanced()
                 LandingRicerca.search(data.ClientePGIVA)
+                LandingRicerca.filtra()
                 LandingRicerca.clickFirstResult()
                 SintesiCliente.clickAuto()
                 SintesiCliente.clickLibriMatricola()
