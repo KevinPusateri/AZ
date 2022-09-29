@@ -223,7 +223,7 @@
     "Calcolo_Kasko": "",
     "Versione_Avens": "",
     "Calcolo_Avens": "",
-    "Totale_Premio": "50,94",
+    "Totale_Premio": "45,82",
     "Punta_Flex_Ard": "0"
   },
   {
@@ -335,7 +335,7 @@
     "Calcolo_Kasko": "",
     "Versione_Avens": "",
     "Calcolo_Avens": "",
-    "Totale_Premio": "69,25",
+    "Totale_Premio": "65,60",
     "Punta_Flex_Ard": "0"
   },
   {
@@ -373,7 +373,7 @@
     "Alimentazione": "",
     "Antifurto": "",
     "Prima_Immatricolazione": "28/12/2020",
-    "Valore_Veicolo": "",
+    "Valore_Veicolo": "10000",
     "Peso_Marcia": "",
     "Peso_Max_Rimorchiabile": "",
     "Costruttore_Modello_Imbarcazione": "",
@@ -447,7 +447,7 @@
     "Calcolo_Kasko": "",
     "Versione_Avens": "",
     "Calcolo_Avens": "",
-    "Totale_Premio": "32,69",
+    "Totale_Premio": "34,05",
     "Punta_Flex_Ard": "0"
   },
   {
@@ -485,7 +485,7 @@
     "Alimentazione": "",
     "Antifurto": "",
     "Prima_Immatricolazione": "28/12/2020",
-    "Valore_Veicolo": "",
+    "Valore_Veicolo": "10000",
     "Peso_Marcia": "",
     "Peso_Max_Rimorchiabile": "",
     "Costruttore_Modello_Imbarcazione": "",
@@ -559,7 +559,7 @@
     "Calcolo_Kasko": "",
     "Versione_Avens": "",
     "Calcolo_Avens": "",
-    "Totale_Premio": "85,99",
+    "Totale_Premio": "85,96",
     "Punta_Flex_Ard": "0"
   },
   {
@@ -597,7 +597,7 @@
     "Alimentazione": "",
     "Antifurto": "",
     "Prima_Immatricolazione": "30/09/2020",
-    "Valore_Veicolo": "",
+    "Valore_Veicolo": "10000",
     "Peso_Marcia": "",
     "Peso_Max_Rimorchiabile": "",
     "Costruttore_Modello_Imbarcazione": "",
@@ -671,7 +671,7 @@
     "Calcolo_Kasko": "",
     "Versione_Avens": "",
     "Calcolo_Avens": "",
-    "Totale_Premio": "324,81",
+    "Totale_Premio": "301,21",
     "Punta_Flex_Ard": "0"
   },
   {
@@ -709,7 +709,7 @@
     "Alimentazione": "",
     "Antifurto": "",
     "Prima_Immatricolazione": "30/09/2020",
-    "Valore_Veicolo": "",
+    "Valore_Veicolo": "10000",
     "Peso_Marcia": "",
     "Peso_Max_Rimorchiabile": "",
     "Costruttore_Modello_Imbarcazione": "",
@@ -783,7 +783,7 @@
     "Calcolo_Kasko": "",
     "Versione_Avens": "",
     "Calcolo_Avens": "",
-    "Totale_Premio": "365,02",
+    "Totale_Premio": "445,72",
     "Punta_Flex_Ard": "0"
   },
   {
@@ -821,7 +821,7 @@
     "Alimentazione": "",
     "Antifurto": "",
     "Prima_Immatricolazione": "30/09/2020",
-    "Valore_Veicolo": "",
+    "Valore_Veicolo": "10000",
     "Peso_Marcia": "",
     "Peso_Max_Rimorchiabile": "",
     "Costruttore_Modello_Imbarcazione": "",
@@ -891,11 +891,11 @@
     "Calcolo_Garanzie_Aggiuntive": "",
     "Calcolo_Massimale_Rottura_Cristalli": "",
     "Tipo_Kasko": "Kasko Completa Autovetture",
-    "Versione_Kasko": "t_3120_013000_20221001_000000000000_000001",
+    "Versione_Kasko": "t_3120_018000_20221001_000000000000_000001",
     "Calcolo_Kasko": "",
     "Versione_Avens": "",
     "Calcolo_Avens": "",
-    "Totale_Premio": "1.034,14",
+    "Totale_Premio": "1.276,30",
     "Punta_Flex_Ard": "0"
   },
   {
@@ -1005,9 +1005,9 @@
     "Tipo_Kasko": "",
     "Versione_Kasko": "",
     "Calcolo_Kasko": "",
-    "Versione_Avens": "t_3120_016000_20221001_000000000000_000001",
+    "Versione_Avens": "t_3120_018000_20221001_000000000000_000001",
     "Calcolo_Avens": "",
-    "Totale_Premio": "186,96",
+    "Totale_Premio": "188,17",
     "Punta_Flex_Ard": "0"
   }
 ]

@@ -323,7 +323,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         cy.screenshot('14- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
-    it('Denuncia BMP --> Dettaglio del danno --> Danno per il cliente ', function () {
+    it('Denuncia BMP --> Dettaglio del danno -- Danno per il cliente ', function () {
         // Altre parti Coinvolte
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
@@ -335,18 +335,18 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
     });
 
-    it('Denuncia BMP --> Sommario --> Riepilogo sinistro  ', function () {
+    it('Denuncia BMP --> Sommario -- Riepilogo sinistro  ', function () {
         // Altre parti Coinvolte
         cy.wait(1000);
         cy.screenshot('16- Sommario - Riepilogo sinistro -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     });
 
-    it('Denuncia BMP --> Sommario --> Riepilogo sinistro - Note legali - ', function () {
+    it('Denuncia BMP --> Sommario -- Riepilogo sinistro - Note legali - ', function () {
          //  Il cliente conferma che le informazioni fornite sono corrette
         let cssChkConferma = 'nx-checkbox[formcontrolname="legalConsent"] > input.nx-checkbox__input';
         Common.clickFindByIdOnIframe(cssChkConferma);
-        cy.wait(1000);
+        cy.wait(2000);
 
         cy.screenshot('17- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         
@@ -355,6 +355,13 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         cy.wait(2000)
 
         cy.screenshot('18- Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(5000);
+    });
+
+    it('Denuncia BMP --> Protocollazione Sinistro -', function () {
+        let csMmsgerror = '#error-submit-claim > div > div:nth-child(2) > div';
+
+        cy.screenshot('19- Protocollazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
     });
 });
