@@ -3464,7 +3464,7 @@ class Sfera {
     */
     static selezionaRigaRandom() {
 
-        cy.get('tbody > tr[nxtablerow]').should('be.visible').then((rowsTable) => {
+        cy.get('#main-table-sfera > tbody > tr[nxtablerow]').should('be.visible').then((rowsTable) => {
             let selected = Cypress._.random(rowsTable.length - 1);
             cy.wrap(rowsTable).eq(selected).as('selectRiga')
             cy.wrap(rowsTable).eq(selected).within(() => {
@@ -3538,7 +3538,7 @@ class Sfera {
         })
     }
 
-    static checkExistRipetitoreDati(vista, dataInizio, dataFine) {
+    static checkExistRipetitoreDati(vista, dataInizio = undefined, dataFine = undefined) {
         cy.intercept(estraiTotaleQuietanzeScartate).as('estraiTotaleQuietanzeScartate')
         switch (vista) {
             case VisteSuggerite.QUIETANZE_SCARTATE:
@@ -3550,6 +3550,22 @@ class Sfera {
                         expect(contents.text().trim()).to.include('quietanzamento on-line in: Viste suggerite > Carico Mancante')
                     })
                 break
+            case VisteSuggerite.DELTA_PREMIO:
+                cy.get('div[class="row-total-2 nx-grid__row"]').should('be.visible')
+                    .then(contents => {
+                        expect(contents.text().trim()).to.include('Motor')
+                    })
+                cy.get('@selectRiga').then((riga) => {
+                    cy.wrap(riga).find('td').eq(2).then((contraente) => {
+                        cy.get('sfera-deltapremio').should('be.visible').within(() => {
+                            cy.get('p[class*="showContraente"]').scrollIntoView()
+                            cy.get('p[class*="showContraente"]').should('include.text', contraente.text().trim())
+
+                        })
+                        cy.screenshot('Ripetitore Dati' + contraente.text().trim()).wait(8000)
+                    })
+                })
+                break
             default:
                 cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').should('be.visible').then((title) => {
                     expect(title.text().trim()).to.include('Elementi')
@@ -3559,7 +3575,6 @@ class Sfera {
                     expect(title.text().trim()).to.include('Fonti:')
                 })
                 break;
-            // default: throw new Error('Vista non presente')
         }
     }
 
@@ -3979,5 +3994,12 @@ class Sfera {
         })
     }
 
+    static checkRigaEvidenziata(selectedRiga) {
+        cy.wrap(selectedRiga).should('have.class', 'nx-table-row nx-table-row--selectable ng-star-inserted selectedRow')
+        cy.wrap(selectedRiga).should('have.css', 'border-bottom', '1.33333px solid rgb(0, 122, 179)')
+        cy.wrap(selectedRiga).within(() => {
+            this.checkBoxControl().click({ force: true })
+        })
+    }
 }
 export default Sfera
