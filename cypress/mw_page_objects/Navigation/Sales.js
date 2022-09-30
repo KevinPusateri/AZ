@@ -1173,7 +1173,7 @@ class Sales {
                 else {
                     if (button === 'Estrai') {
                         cy.get('app-receipt-manager-footer').find('button:contains("Estrai"):visible').click()
-                        cy.get('app-table-component').should('be.visible')
+                        cy.get('app-table-component', { timeout: 20000 }).should('be.visible')
                         cy.get('nx-header-actions').should('contain.text', 'Espandi Pannello')
                         cy.screenshot('Verifica Estrazione Quietanzamento', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                     }

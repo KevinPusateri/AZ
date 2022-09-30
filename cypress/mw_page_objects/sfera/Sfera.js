@@ -1189,7 +1189,7 @@ class Sfera {
      * @private
      */
     static tableEstrazione() {
-        return cy.get('app-table-component').should('exist').and('be.visible')
+        cy.get('app-table-component', { timeout: 20000 }).should('be.visible')
     }
 
     /**
@@ -3906,7 +3906,7 @@ class Sfera {
         cy.get('app-operation-section').within(() => {
             cy.contains('Estrai').should('be.enabled').click()
         })
-        cy.wait('@defaultTableConfig', { timeout: 15000 })
+        cy.wait('@defaultTableConfig', { timeout: 20000 })
 
     }
 
@@ -3941,7 +3941,7 @@ class Sfera {
      * Checking if over the next month are disabled
      * * La data Fine inizia è impostato al mese precedente
      */
-    static checkDateArretrati() {
+    static checkDateFineMax() {
         cy.get('nx-datepicker-content').should('be.visible').within(() => {
             let today = new Date()
             cy.get('span[class="nx-calendar-period-label"]').invoke('text').then(month => {
