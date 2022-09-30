@@ -5,9 +5,9 @@
 /// <reference types="Cypress" />
 
 //#region import
-import LoginPage from "../../../mw_page_objects/common/LoginPage"
-import TopBar from "../../../mw_page_objects/common/TopBar"
-import Sfera from "../../../mw_page_objects/sfera/Sfera"
+import LoginPage from "../../mw_page_objects/common/LoginPage"
+import TopBar from "../../mw_page_objects/common/TopBar"
+import Sfera from "../../mw_page_objects/sfera/Sfera"
 //#endregion import
 
 //#region Configuration
@@ -24,14 +24,17 @@ var selectedRiga
 
 //#region Before After
 before(() => {
-    Cypress.env('isAviva',true)
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         })
     })
-    LoginPage.logInMWAdvanced()
+    let customImpersonification = {
+        "agentId": "ARALONGO7",
+        "agency": "010375000"
+    }
+    LoginPage.logInMWAdvanced(customImpersonification)
 })
 
 beforeEach(() => {
@@ -62,7 +65,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Sfera 4.0 - AVIVA Checkbox per selezione multipla e selezione singola riga per ripetitore', function () {
+describe('Matrix Web : Sfera 4.0 - Gestione Viste - Revisione gestione denominazione', function () {
 
 
     it('Step 1 - Verifica caricamento Dati', function () {
@@ -73,24 +76,23 @@ describe('Matrix Web : Sfera 4.0 - AVIVA Checkbox per selezione multipla e selez
         Sfera.estrai(true)
     })
 
-    it('Step 3 - Verifica selezione riga su vista standard', function () {
-        Sfera.selezionaRigaRandom()
-        cy.get('@selectRiga').then((riga) => {
-            selectedRiga = riga
-        })
+    it('Step 3 - Verifica creazione vista', function () {
+        Sfera.gestisciColonne(['Cod. AZPay'])
+        Sfera.checkColonnaPresente('Cod. AZPay')
     })
 
-    it('Step 4 - Verifica selezione riga vista standard evidenziata', function () {
-        Sfera.checkRigaEvidenziata(selectedRiga)
+    it('Step 4 - Verifica salvataggio vista', function () {
+        Sfera.salvaVistaPersonalizzata('vista personalizzata')
+        Sfera.selezionaVista('vista personalizzata')
+        Sfera.espandiPannello()
+        Sfera.estrai()
     })
 
-    it('Step 5 - Verifica selezione riga vista delta premio', function () {
-        Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.DELTA_PREMIO)
-        Sfera.estrai(true)
+    it('Step 5 - Verifica vista post salvataggio', function () {
+        Sfera.checkVistaExist('vista personalizzata')
+        Sfera.checkColonnaPresente('Cod. AZPay')
+        Sfera.eliminaVista('vista personalizzata')
+
     })
 
-    it('Step 6 - Verifica selezione riga vista delta premio ripetitore', function () {
-        Sfera.selezionaRigaRandom()
-        Sfera.checkExistRipetitoreDati(Sfera.VISTESUGGERITE.DELTA_PREMIO)
-    })
 })
