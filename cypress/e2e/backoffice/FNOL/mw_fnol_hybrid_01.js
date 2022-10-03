@@ -193,7 +193,11 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
     });
 
     it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Polizza interessata\' --> Selezione della polizza', function () {
-        let cssRdnBtn =  '#fnol-affected-policy-list > table > tbody >tr:nth-child(1) > td > nx-radio.nx-radio-button--big-label > input.nx-radio__input';
+        //Apertura accordion nella sezione Polizza interessata
+        let cssAccrdn = '#fnol-affected-policy-list > nx-expansion-panel > nx-expansion-panel-header > div';
+        Common.clickFindByIdOnIframe(cssAccrdn);
+
+        let cssRdnBtn =  '#nx-radio-0-label > div.nx-radio__circle';
         Common.clickFindByIdOnIframe(cssRdnBtn);
         cy.wait(500);
 
@@ -204,7 +208,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
     it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' --> [Inserimento dati di sinistro]: ambito/soggetto coinvolto, etc..', function () {
         //Informazioni sul sinistro
         //Selezione di quale ambito è coinvolto? *     
-        let cssClssPrd =  'nx-dropdown[formcontrolname="selectedAffectedType"] > div ';
+        let cssClssPrd =  '#fnol-nmt-incident-info > div > form > div:nth-child(1) > div:nth-child(1) > nx-formfield > div > div.nx-formfield__row > div.nx-formfield__flexfield > div > div > nx-dropdown > div > div.nx-dropdown__icon > nx-icon';
         Common.clickFindByIdOnIframe(cssClssPrd);
         cy.wait(500); // 
         Common.clickFindByIdOnIframe(cssCmbFrstElement);
@@ -295,17 +299,17 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
 
 
     it('Denuncia BMP --> Dettaglio del danno --> Danni alla proprieta\' del cliente', function () {
-        // Scegliere un'opzione
-        let cssSlctPrt = 'div[cdkoverlayorigin] > div.nx-dropdown__rendered  > span.ng-star-inserted';
+        // Scegliere un'opzione sull'Oggetto interessato
+        let cssSlctPrt = 'nx-dropdown[placeholder="Seleziona un oggetto"] > div.nx-dropdown__container > div:nth-child(2) > nx-icon';
         Common.clickFindByIdOnIframe(cssSlctPrt);
         //Contenuto nei locali - Arredamento e Vestiario
         Common.clickFindByIdOnIframe(cssCmbFrstElement);
         cy.wait(1000)
 
         // Marca - Modello
-        DenunciaBMP.setValue_ById('input[formcontrolname="brand"]', 'Ikea - libreria');
+        DenunciaBMP.setValue_ById('input[formcontrolname="brand"]', 'Quadro d\'autore');
         //Anno di acquisto
-        DenunciaBMP.setValue_ById('input[ name="yearOfPurchase"]', '2020');
+        DenunciaBMP.setValue_ById('input[ name="yearOfPurchase"]', '1975');
 
         cy.screenshot('12- Dettaglio del danno ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000);
