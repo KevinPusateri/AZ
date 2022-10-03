@@ -21,6 +21,10 @@ const getAppJump = () => {
 }
 
 //#region Intercept
+const defaultTableConfig = {
+    method: 'POST',
+    url: /getDefaultTableConfig/
+}
 const infoUtente = {
     method: 'GET',
     url: /infoUtente/
@@ -522,6 +526,15 @@ const Filtri = {
             VUOTO: "Vuoto"
         }
     }
+}
+
+/**
+ * Enum Data Input Form
+ * @enum {Object}
+ */
+const Operativita = {
+    FRANCHIGIE: "FRANCHIGIE",
+    MONITORAGGIO_ARRETRATI: "MONITORAGGIO ARRETRATI"
 }
 
 /**
@@ -1058,6 +1071,14 @@ class Sfera {
     }
 
     /**
+     * Funzione che ritorna le voci disponibili per la selezione Operatività da Sales
+     * @returns {Operativita} Righe da selezionare
+     */
+    static get OPERATIVITA() {
+        return Operativita
+    }
+
+    /**
      * Funzione che ritorna le voci di menu Quietanza disponibili su Sfera
      * @returns {VociMenuQuietanza} Voci di Menu Quietanza
      */
@@ -1168,7 +1189,7 @@ class Sfera {
      * @private
      */
     static tableEstrazione() {
-        return cy.get('app-table-component').should('exist').and('be.visible')
+        cy.get('app-table-component', { timeout: 20000 }).should('be.visible')
     }
 
     /**
@@ -3443,7 +3464,7 @@ class Sfera {
     */
     static selezionaRigaRandom() {
 
-        cy.get('tbody > tr[nxtablerow]').should('be.visible').then((rowsTable) => {
+        cy.get('#main-table-sfera > tbody > tr[nxtablerow]').should('be.visible').then((rowsTable) => {
             let selected = Cypress._.random(rowsTable.length - 1);
             cy.wrap(rowsTable).eq(selected).as('selectRiga')
             cy.wrap(rowsTable).eq(selected).within(() => {
@@ -3517,7 +3538,7 @@ class Sfera {
         })
     }
 
-    static checkExistRipetitoreDati(vista, dataInizio, dataFine) {
+    static checkExistRipetitoreDati(vista, dataInizio = undefined, dataFine = undefined) {
         cy.intercept(estraiTotaleQuietanzeScartate).as('estraiTotaleQuietanzeScartate')
         switch (vista) {
             case VisteSuggerite.QUIETANZE_SCARTATE:
@@ -3529,6 +3550,22 @@ class Sfera {
                         expect(contents.text().trim()).to.include('quietanzamento on-line in: Viste suggerite > Carico Mancante')
                     })
                 break
+            case VisteSuggerite.DELTA_PREMIO:
+                cy.get('div[class="row-total-2 nx-grid__row"]').should('be.visible')
+                    .then(contents => {
+                        expect(contents.text().trim()).to.include('Motor')
+                    })
+                cy.get('@selectRiga').then((riga) => {
+                    cy.wrap(riga).find('td').eq(2).then((contraente) => {
+                        cy.get('sfera-deltapremio').should('be.visible').within(() => {
+                            cy.get('p[class*="showContraente"]').scrollIntoView()
+                            cy.get('p[class*="showContraente"]').should('include.text', contraente.text().trim())
+
+                        })
+                        cy.screenshot('Ripetitore Dati' + contraente.text().trim()).wait(8000)
+                    })
+                })
+                break
             default:
                 cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').should('be.visible').then((title) => {
                     expect(title.text().trim()).to.include('Elementi')
@@ -3538,7 +3575,6 @@ class Sfera {
                     expect(title.text().trim()).to.include('Fonti:')
                 })
                 break;
-            // default: throw new Error('Vista non presente')
         }
     }
 
@@ -3873,6 +3909,97 @@ class Sfera {
                     expect(someText).to.include(type)
                 })
         }
+    }
+
+    /**
+     * Effettua selezione Vista Operativita
+     * @param {Operativita} vistaOperativita Tipo di vista
+     */
+    static clickVistaOperativita(vistaOperativita) {
+        cy.intercept(defaultTableConfig).as('defaultTableConfig')
+        cy.contains(vistaOperativita).parent().find('nx-radio').click()
+        cy.get('app-operation-section').within(() => {
+            cy.contains('Estrai').should('be.enabled').click()
+        })
+        cy.wait('@defaultTableConfig', { timeout: 20000 })
+
+    }
+
+    /**
+    * Effettua selezione Vista Operativita
+    * @param {Operativita} vistaOperativita Tipo di vista
+    */
+    static checkVistaOperativitaExist(vistaOperativita) {
+        cy.get('app-panel-quietanzamento-franchigie').should('be.visible').within(() => {
+            switch (vistaOperativita) {
+                case Operativita.MONITORAGGIO_ARRETRATI:
+                    cy.get('h2[nxheadline="subsection-medium"]').should('include.text', 'Arretrati')
+                    break;
+                case Operativita.FRANCHIGIE:
+                    cy.get('h2[nxheadline="subsection-medium"]').should('include.text', 'Franchigie')
+                    break
+                default:
+                    throw new Error('Vista Operatività non presente')
+            }
+        })
+    }
+
+    /**
+     * It clicks on a datepicker toggle.
+     */
+    static selezionaDataFine() {
+        cy.get('nx-icon[name="calendar"]').eq(1).click().wait(500)
+
+    }
+
+    /**
+     * Checking if over the next month are disabled
+     * * La data Fine inizia è impostato al mese precedente
+     */
+    static checkDateFineMax() {
+        cy.get('nx-datepicker-content').should('be.visible').within(() => {
+            let today = new Date()
+            cy.get('span[class="nx-calendar-period-label"]').invoke('text').then(month => {
+
+                cy.contains('Scegli il mese e l\'anno').click()
+                // Nel caso fossimo in Dicembre automaticamente passa all'anno successivo
+                if (month.includes('dicembre')) {
+                    //! DA VERIFICARE QUANDO SAREMO A DICEMBRE
+                    today.setFullYear(today.getFullYear() + 1)
+                    cy.contains(today.getFullYear()).click()
+                    cy.get('div[class*="nx-calendar-body-selected nx-calendar-body-today"]')
+                        .parents('tbody')
+                        .find('tr').then((tr) => {
+                            const months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
+                            let index = months.indexOf('gen')
+                            cy.wrap(tr).find('td').eq(index + 1).should('have.attr', 'aria-disabled', 'true')
+                            cy.wrap(tr).find('td').eq(index).should('not.have.attr', 'aria-disabled', 'true').click()
+                        })
+                } else {
+                    // Verifico che SOLO il mese successivo sia accessibile 
+                    cy.contains(today.getFullYear()).click()
+                    cy.get('div[class*="nx-calendar-body-cell-content nx-calendar-body-selected"]')
+                        .parents('tbody')
+                        .find('tr').then((tr) => {
+                            const months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
+                            let index = months.indexOf(month.trim().substring(0, 3))
+                            cy.wrap(tr).find('td').eq(index + 3).should('have.attr', 'aria-disabled', 'true')
+                            cy.wrap(tr).find('td').eq(index + 2).should('not.have.attr', 'aria-disabled', 'true').click()
+                        })
+
+                    // Seleziona l'ultimo giorno
+                    cy.get('td[class="nx-calendar-body-cell ng-star-inserted"]:last').click()
+                }
+            })
+        })
+    }
+
+    static checkRigaEvidenziata(selectedRiga) {
+        cy.wrap(selectedRiga).should('have.class', 'nx-table-row nx-table-row--selectable ng-star-inserted selectedRow')
+        cy.wrap(selectedRiga).should('have.css', 'border-bottom', '1.33333px solid rgb(0, 122, 179)')
+        cy.wrap(selectedRiga).within(() => {
+            this.checkBoxControl().click({ force: true })
+        })
     }
 }
 export default Sfera
