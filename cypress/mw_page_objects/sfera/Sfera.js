@@ -143,6 +143,21 @@ const VisteSuggerite = {
 }
 
 /**
+ * Enum Viste Suggerite
+ * @readonly
+ * @enum {Object}
+ * @private
+ */
+const VisteSuggeriteAviva = {
+    VISTA_STANDARD: 'Vista Standard',
+    DELTA_PREMIO: 'Delta premio – riduzione premio a cura dell’agenzia',
+    AVVISI_SCADENZA: 'Avvisi Scadenza',
+    QUIETANZE_SCARTATE: 'Quietanze Scartate',
+    CARICO_MANCANTE: 'Carico Mancante',
+    MENSILIZZATE: 'Mensilizzate',
+}
+
+/**
  * Enum Tipo avviso
  * @readonly
  * @enum {Object}
@@ -1146,7 +1161,10 @@ class Sfera {
      * @returns {VisteSuggerite} vista suggerita
      */
     static get VISTESUGGERITE() {
-        return VisteSuggerite
+        if (Cypress.env('isAviva'))
+            return VisteSuggeriteAviva
+        else
+            return VisteSuggerite
     }
 
     /**
@@ -1189,7 +1207,7 @@ class Sfera {
      * @private
      */
     static tableEstrazione() {
-        cy.get('app-table-component', { timeout: 20000 }).should('be.visible')
+        cy.get('app-table-component', { timeout: 30000 }).should('be.visible')
     }
 
     /**
@@ -2493,6 +2511,7 @@ class Sfera {
      */
     static selezionaVista(nameVista) {
         if (nameVista === 'Vista Standard') {
+            cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
             cy.contains(nameVista).click()
         } else {
             // click Seleziona Vista tendina
@@ -3994,11 +4013,29 @@ class Sfera {
         })
     }
 
+    /**
+     * It checks if the selected row has the class 'nx-table-row nx-table-row--selectable
+     * ng-star-inserted selectedRow' and if it has the css 'border-bottom', '1.33333px solid rgb(0,
+     * 122, 179)'.
+     * 
+     * If it has both, it clicks on the checkbox control.
+     * @param selectedRiga - the row that is selected
+     */
     static checkRigaEvidenziata(selectedRiga) {
         cy.wrap(selectedRiga).should('have.class', 'nx-table-row nx-table-row--selectable ng-star-inserted selectedRow')
         cy.wrap(selectedRiga).should('have.css', 'border-bottom', '1.33333px solid rgb(0, 122, 179)')
         cy.wrap(selectedRiga).within(() => {
             this.checkBoxControl().click({ force: true })
+        })
+    }
+
+    /**
+     * Check if the tab is not present in the header
+     * @param nameTab - the name of the tab to be checked
+     */
+    static checkAssenzaTab(nameTab) {
+        cy.get('nx-header-navigation').should('be.visible').within(() => {
+            cy.get('nx-header-navigation-item').should('have.length', '2').and('not.contain.text', nameTab)
         })
     }
 }
