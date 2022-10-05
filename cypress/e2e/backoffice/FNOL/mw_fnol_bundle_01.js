@@ -362,7 +362,8 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
     });
 
     it('Denuncia BMP --> Protocollazione Sinistro -', { scrollBehavior: false }, function () {
-
+        
+        cy.wait(1000);
         cy.screenshot('Bndl-18- Protocollazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
     });

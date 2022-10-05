@@ -346,9 +346,9 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         cy.wait(5000);
     });
 
-    it('Denuncia BMP --> Sommario --> La conferma del sinistro  ', function () {
+    it('Denuncia BMP -->  Protocollazione Sinistro --> Conferma del sinistro  ', function () {
         
-
+        cy.wait(1000);
         cy.screenshot('19- Sommario - Riepilogo sinistro - conferma del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
 
