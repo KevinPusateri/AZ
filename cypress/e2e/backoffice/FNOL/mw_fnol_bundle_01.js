@@ -134,13 +134,13 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
     
         let csstxtClnt = '.nx-autocomplete-option__label > span';
         // Verifica del testo a comparsa nella ricerca del cliente 
-        cy.screenshot('01- Pagina Ricerca cliente - Inserimento cliente e testo a comparsa', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('Bndl-01- Pagina Ricerca cliente - Inserimento cliente e testo a comparsa', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         Common.isVisibleText(csstxtClnt, cliente_cognome + " " + cliente_nome); 
         Common.isVisibleText(csstxtClnt, cliente_dt_nascita);
 
         Common.clickByIdOnIframe(csstxtClnt)
         cy.wait(2000);
-        cy.screenshot('02- Pagina Ricerca cliente -  Esito ricerca cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('Bndl-02- Pagina Ricerca cliente -  Esito ricerca cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
     });
 
     it('Denuncia BMP --> Dettaglio Cliente ' + cliente_cognome + " " + cliente_nome + " e controllo dati anagrafici", function () {
@@ -156,7 +156,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         Common.isVisibleText(csslblEmail, cliente_email);
         cy.wait(1000);
 
-        cy.screenshot('03- Controllo anagrafico dati del cliente ' + cliente_cognome + " " + cliente_nome, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('Bndl-03- Controllo anagrafico dati del cliente ' + cliente_cognome + " " + cliente_nome, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
@@ -171,7 +171,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
             DenunciaBMP.setValue_ById('input[name=\"dateOfIncident\"]', dtAvvenimento);
         }); 
         cy.wait(1000);   
-        cy.screenshot('04- Pagina Dati denuncia - inserimento date di avvenimento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('Bndl-04- Pagina Dati denuncia - inserimento date di avvenimento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(5000);
 
         DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {         
@@ -179,7 +179,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
             cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
             DenunciaBMP.setValue_ById('input[name=\"undefined\"]', dtPer);
         });
-        cy.screenshot('05- Pagina Dati denuncia - inserimento date di pervenimento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('Bndl-05- Pagina Dati denuncia - inserimento date di pervenimento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
 
         
@@ -188,7 +188,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
             cy.log('[it]>> [Data denuncia sinistro]: '+dtDenuncia);           
             DenunciaBMP.setValue_ById('input[formcontrolname=\"answer\"]', dtDenuncia);
         });
-        cy.screenshot('07- Pagina Dati denuncia - inserimento data di denuncia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('Bndl-06- Pagina Dati denuncia - inserimento data di denuncia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
     });
 
@@ -197,7 +197,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         Common.clickFindByIdOnIframe(cssRdnBtn);
         cy.wait(500);
 
-        cy.screenshot('08- Pagina Dati denuncia - Dettaglio sulla Polizza interessata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('Bndl-07- Pagina Dati denuncia - Dettaglio sulla Polizza interessata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
     });
 
@@ -218,7 +218,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         Common.clickFindByIdOnIframe(cssCmbFrstElement);
         cy.wait(1000)
 
-        cy.screenshot('09- Pagina Dati denuncia - Polizza selezionata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('Bndl-08- Pagina Dati denuncia - Polizza selezionata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
 
         //Selezione della classe di prodotto
@@ -250,7 +250,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         DenunciaBMP.setValue_ById(cssDescrClm, sinistro_descrizione_danno);
         cy.wait(1000)
 
-        cy.screenshot('10- Pagina Dati denuncia - Altri dati del sinistro: loss type, loss cause e descrizione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('Bndl-09- Pagina Dati denuncia - Altri dati del sinistro: loss type, loss cause e descrizione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
     });
 
@@ -286,7 +286,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector,  'Trieste');
         cy.wait(1000)
 
-        cy.screenshot('11- Pagina Dati denuncia - Sezione Luogo sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Bndl-10- Pagina Dati denuncia - Sezione Luogo sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000); 
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
@@ -307,7 +307,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         //Anno di acquisto
         DenunciaBMP.setValue_ById('input[ name="yearOfPurchase"]', '2020');
 
-        cy.screenshot('12- Dettaglio del danno ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Bndl-11- Dettaglio del danno ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000);
 
         // Avvocato del cliente (Si/No)
@@ -315,12 +315,12 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         Common.clickFindByIdOnIframe(cssBtnNoLawayer);
         cy.wait(1000);
 
-        cy.screenshot('13- Dettaglio del danno - Avvocato del cliente (Si o No): No', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Bndl-12- Dettaglio del danno - Avvocato del cliente (Si o No): No', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000);
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
 
         cy.wait(1000);
-        cy.screenshot('14- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Bndl-13- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Denuncia BMP --> Dettaglio del danno -- Danno per il cliente ' , { scrollBehavior: false }, function () {
@@ -329,7 +329,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
 
         //Erano presenti le autorità sul luogo del sinistro?
         cy.wait(1000);
-        cy.screenshot('15- Dettaglio del danno - Altre parti coinvolte - autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Bndl-14- Dettaglio del danno - Altre parti coinvolte - autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000);
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
     });
@@ -337,7 +337,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
     it('Denuncia BMP --> Sommario -- Riepilogo sinistro  ', function () {
         // Altre parti Coinvolte
         cy.wait(1000);
-        cy.screenshot('16- Sommario - Riepilogo sinistro -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Bndl-15- Sommario - Riepilogo sinistro -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
     });
 
@@ -350,23 +350,21 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         Common.clickFindByIdOnIframe(cssChkAccetta);
         cy.wait(500);
 
-        cy.screenshot('17- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Bndl-16- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     
 
         let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
         Common.clickFindByIdOnIframe(cssBtnInviaRichiesta)
         cy.wait(2000)
 
-        cy.screenshot('18- Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Bndl-17- Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(5000);
     });
 
     it('Denuncia BMP --> Protocollazione Sinistro -', { scrollBehavior: false }, function () {
-        let csMmsgerror = '#error-submit-claim > div > div:nth-child(2) > div';
-        cy.get('body').trigger('keyup', { keyCode: 27});
-        cy.wait(500);
+      
 
-        cy.screenshot('19- Protocollazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Bndl-18- Protocollazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
     });
 });
