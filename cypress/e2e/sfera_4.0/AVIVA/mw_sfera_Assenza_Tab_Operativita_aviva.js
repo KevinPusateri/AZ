@@ -35,7 +35,11 @@ before(() => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         })
     })
-    LoginPage.logInMWAdvanced()
+    let customImpersonification = {
+        "agentId": "AAMCIPRIANO",
+        "agency": "140001960"
+    }
+    LoginPage.logInMWAdvanced(customImpersonification)
 })
 
 beforeEach(() => {

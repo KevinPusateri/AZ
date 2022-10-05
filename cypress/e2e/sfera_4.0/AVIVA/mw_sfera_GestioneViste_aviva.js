@@ -24,14 +24,18 @@ var selectedRiga
 
 //#region Before After
 before(() => {
-    Cypress.env('isAviva',true)
+    Cypress.env('isAviva', true)
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         })
     })
-    LoginPage.logInMWAdvanced()
+    let customImpersonification = {
+        "agentId": "AAMCIPRIANO",
+        "agency": "140001960"
+    }
+    LoginPage.logInMWAdvanced(customImpersonification)
 })
 
 beforeEach(() => {
