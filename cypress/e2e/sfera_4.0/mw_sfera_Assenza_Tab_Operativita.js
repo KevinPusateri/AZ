@@ -5,9 +5,9 @@
 /// <reference types="Cypress" />
 
 //#region import
-import LoginPage from "../../../mw_page_objects/common/LoginPage"
-import TopBar from "../../../mw_page_objects/common/TopBar"
-import Sfera from "../../../mw_page_objects/sfera/Sfera"
+import LoginPage from "../../mw_page_objects/common/LoginPage"
+import TopBar from "../../mw_page_objects/common/TopBar"
+import Sfera from "../../mw_page_objects/sfera/Sfera"
 //#endregion import
 
 //#region Configuration
@@ -19,12 +19,11 @@ const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
+var viste = Object.values(Sfera.VISTESUGGERITE)
 
-var selectedRiga
 
 //#region Before After
 before(() => {
-    Cypress.env('isAviva', true)
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
@@ -32,8 +31,8 @@ before(() => {
         })
     })
     let customImpersonification = {
-        "agentId": "AAMCIPRIANO",
-        "agency": "140001960"
+        "agentId": "ARALONGO7",
+        "agency": "010375000"
     }
     LoginPage.logInMWAdvanced(customImpersonification)
 })
@@ -66,33 +65,36 @@ after(function () {
 })
 //#endregion Before After
 
-describe('Matrix Web : Sfera 4.0 - AVIVA - Gestione Viste - Revisione gestione denominazione', function () {
-
+describe('Matrix Web : Sfera 4.0 - Gestione Viste - Revisione gestione denominazione', function () {
 
     it('Step 1 - Verifica caricamento Dati', function () {
         Sfera.accediSferaDaHomePageMW(true)
     })
 
-    it('Step 2 - Verifica caricamento estrazione', function () {
-        Sfera.estrai(true)
+    it('Step 2 - Verifica assenza tab operatività', function () {
+        Sfera.checkAssenzaTab('Operatività')
     })
 
-    it('Step 3 - Verifica creazione vista', function () {
-        Sfera.gestisciColonne(['Cod. AZPay'])
-        Sfera.checkColonnaPresente('Cod. AZPay')
+    it('Step 3 - Verificare anche su altre viste', function () {
+        for (let index = 0; index < viste.length; index++) {
+            if (viste[index] !== Sfera.VISTESUGGERITE.VISTA_STANDARD) {
+                Sfera.selezionaVistaSuggerita(viste[index])
+                Sfera.checkAssenzaTab('Operatività')
+            }
+        }
+        Sfera.selezionaVista(Sfera.VISTESUGGERITE.VISTA_STANDARD)
     })
 
-    it('Step 4 - Verifica salvataggio vista', function () {
-        Sfera.salvaVistaPersonalizzata('vista personalizzata')
-        Sfera.selezionaVista('vista personalizzata')
-        Sfera.espandiPannello()
-        Sfera.estrai()
+    it('Step 4 - Verifica assenza tab operatività dopo estrazione', function () {
+        for (let index = 0; index < viste.length; index++) {
+            if (viste[index] !== Sfera.VISTESUGGERITE.VISTA_STANDARD) {
+                Sfera.selezionaVistaSuggerita(viste[index])
+                Sfera.estrai(false)
+                Sfera.checkAssenzaTab('Operatività')
+            }
+        }
+        Sfera.selezionaVista(Sfera.VISTESUGGERITE.VISTA_STANDARD)
     })
 
-    it('Step 5 - Verifica vista post salvataggio', function () {
-        Sfera.checkVistaExist('vista personalizzata')
-        Sfera.checkColonnaPresente('Cod. AZPay')
-        Sfera.eliminaVista('vista personalizzata')
-    })
 
 })
