@@ -355,14 +355,13 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
 
         let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
         Common.clickFindByIdOnIframe(cssBtnInviaRichiesta)
-        cy.wait(2000)
+        cy.wait(3000)
 
         cy.screenshot('Bndl-17- Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(5000);
     });
 
     it('Denuncia BMP --> Protocollazione Sinistro -', { scrollBehavior: false }, function () {
-      
 
         cy.screenshot('Bndl-18- Protocollazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);

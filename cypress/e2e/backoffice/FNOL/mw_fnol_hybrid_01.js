@@ -303,7 +303,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         
         Common.getByIdOnIframe('div.action-buttons-div > nx-link > a > nx-icon').type('{pageup}').scrollTo('top', { ensureScrollable: false })
         cy.wait(1000);
-      
+    
         cy.screenshot('14- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
     
@@ -343,7 +343,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         cy.wait(2000)
 
         cy.screenshot('18- Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(3000);
+        cy.wait(5000);
     });
 
     it('Denuncia BMP --> Sommario --> La conferma del sinistro  ', function () {
