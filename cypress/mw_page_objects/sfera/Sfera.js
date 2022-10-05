@@ -2512,7 +2512,9 @@ class Sfera {
     static selezionaVista(nameVista) {
         if (nameVista === 'Vista Standard') {
             cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
-            cy.contains(nameVista).click()
+            cy.get('div[role="menu"]').should('be.visible').within(() => {
+                cy.contains(nameVista).click()
+            })
         } else {
             // click Seleziona Vista tendina
             cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
@@ -2616,6 +2618,12 @@ class Sfera {
                 }
             })
         })
+    }
+
+    static checkAperturaGestioneColonne() {
+        cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+        cy.get('nx-modal-container').should('be.visible')
+            .find('h3').should('include.text', 'Gestisci colonne')
     }
 
     static creaAndInviaCodiceAzPay() {
@@ -2783,6 +2791,10 @@ class Sfera {
         })
     }
 
+    static buttonApplicaSalva() {
+        cy.contains('Applica e salva vista').click().wait(3000)
+    }
+
     static salvaVistaPersonalizzata(nameVista) {
         cy.get('table').should('be.visible').then(() => {
             cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
@@ -2791,6 +2803,13 @@ class Sfera {
             })
         })
 
+        this.nuovaVista(nameVista)
+    }
+
+    /**
+     * Salva Nuova vista
+     */
+    static nuovaVista(nameVista) {
         cy.get('nx-modal-container').should('be.visible').within(() => {
             cy.contains('Nuova vista').click().wait(3000)
             cy.get('input[placeholder="Inserisci il nome della vista"]:visible').type(nameVista)
@@ -4037,6 +4056,73 @@ class Sfera {
         cy.get('nx-header-navigation').should('be.visible').within(() => {
             cy.get('nx-header-navigation-item').should('have.length', '2').and('not.contain.text', nameTab)
         })
+    }
+
+    static applicaSalvaVista(vista) {
+        cy.contains('Applica e salva vista').click()
+        cy.get('nx-modal-container[aria-label="Salva Vista"]').should('be.visible').within(() => {
+            cy.contains('Sostituisci esistente').click()
+            cy.get('nx-dropdown[placeholder="Seleziona una vista"]').click()
+        })
+        cy.get('div[role="listbox"]').should('be.visible').find('nx-dropdown-item:contains("' + vista + '")').click().wait(1500)
+        cy.get('nx-modal-container[aria-label="Salva Vista"]:visible').within(() => {
+            cy.get('button[nxmodalclose="Agree"]').click()
+        })
+        cy.get('div[class="success-container ng-star-inserted"]').should('be.visible')
+
+    }
+
+    /**
+     * It grabs the first draggable element, then drags it up 50 pixels, then grabs the 4th draggable
+     * element and drags it down 50 pixels.
+     */
+    static dragAndDropColonne(element, positionX, positionY) {
+        cy.wait(2000)
+        cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').within(() => {
+            cy.get('div[class="nx-font-weight-regular"]:contains("' + element + '")').parents('div[cdkdrag]').find('nx-icon:first')
+                .then(($element) => {
+                    cy.wrap($element).realMouseDown({ button: 'left', position: 'center' })
+                        .realMouseMove(0, 0, { position: 'center' });
+                })
+            cy.wait(2000)
+            cy.get('nx-icon[class="icon-drag drag-svg nx-icon--auto"]').eq(3).realMouseMove(0, positionY, { position: 'center' }).realMouseUp();
+        })
+    }
+
+    /**
+     * It takes a column name and a position (x,y) and drags the column to the position.
+     * @param column - the name of the column you want to drag and drop
+     * @param position - {x: number}
+     */
+    static dragAndDropADDColonne(column, positionX, positionY) {
+        cy.wait(2000)
+        let regexColumn = new RegExp("\^ " + column + " \$")
+        cy.get('div[class="cdk-drop-list"]').contains(regexColumn).parents('div[cdkdrag]')
+            .then(($element) => {
+                cy.wrap($element).realMouseDown({ button: 'left', position: 'center' })
+                    .realMouseMove(positionX, positionY, { position: 'top' });
+            })
+        cy.wait(3000)
+        cy.get('nx-icon[class="icon-drag drag-svg nx-icon--auto"]').eq(3).realMouseMove(positionX, positionY, { position: 'top' }).wait(2000).realMouseUp();
+
+    }
+
+    static checkColonnaSpostata(position, name = '') {
+        if (name === 'Info')
+            cy.get('thead > tr:first').within(($columns) => {
+                cy.wrap($columns)
+                    .find('th').eq(position).within(($col) => {
+                        cy.wrap($col).find('nx-icon[class="question-svg nx-link__icon nx-icon--auto"]').should('have.length', 1)
+                    })
+            })
+        else {
+            cy.get('thead > tr:first').within(($columns) => {
+                cy.wrap($columns)
+                    .find('th').eq(position).within(($col) => {
+                        cy.wrap($col).find('.table-component-th-name').should('include.text', name)
+                    })
+            })
+        }
     }
 }
 export default Sfera
