@@ -81,10 +81,10 @@ class DenunciaBMP {
     static setValue_ById(id, value) {
         return new Cypress.Promise((resolve) => {
             cy.wait(500)             
-            getIframe().find(id).should('be.visible').and('exist').clear().log('>> clean object value')
+            getIframe().find(id).should('be.visible').and('exist').clear({ timeout: 3000 }).log('>> clean object value')
             cy.wait(500)
             if (value !== '')          
-                getIframe().find(id).should('be.visible').and('exist').type(value).log('>> value: [' + value +'] entered')                   
+                getIframe().find(id).should('be.visible').and('exist').type(value, {force: true}).log('>> value: [' + value +'] entered')                   
             cy.wait(500)
             resolve(true)            
         });
@@ -101,7 +101,7 @@ class DenunciaBMP {
      * @param {string} label : text displayed
      */
      static clickBtn_ByClassAndText(classvalue, label) {             
-        getIframe().find('[class="'+classvalue+'"]').contains(label).should('be.visible').click().log('>> object with label ['+label+ '] is clicked')       
+        getIframe().find('[class="'+classvalue+'"]').contains(label).should('be.visible').click({force: true}).log('>> object with label ['+label+ '] is clicked')       
         cy.wait(2000)        
     }
 
