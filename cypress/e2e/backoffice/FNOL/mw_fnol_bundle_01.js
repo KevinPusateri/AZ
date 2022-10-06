@@ -338,7 +338,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         // Altre parti Coinvolte
         cy.wait(1000);
         cy.screenshot('Bndl-15- Sommario - Riepilogo sinistro -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
+        cy.wait(1000);
     });
 
     it('Denuncia BMP --> Sommario -- Riepilogo sinistro - Note legali - ', { scrollBehavior: false },  function () {
@@ -346,10 +346,11 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         let cssChkConferma = 'nx-checkbox[formcontrolname="legalConsent"] > input.nx-checkbox__input';
         Common.clickFindByIdOnIframe(cssChkConferma);
         cy.wait(500);
+/*
         let cssChkAccetta = 'nx-checkbox[formcontrolname="waiveDocumentationConsent"] > input.nx-checkbox__input';
         Common.clickFindByIdOnIframe(cssChkAccetta);
         cy.wait(500);
-
+*/
         cy.screenshot('Bndl-16- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     
 
