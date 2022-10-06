@@ -2510,6 +2510,7 @@ class Sfera {
      * @param {string} nameVista - nome della Vista
      */
     static selezionaVista(nameVista) {
+
         if (nameVista === 'Vista Standard') {
             cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
             cy.get('div[role="menu"]').should('be.visible').within(() => {
@@ -3446,11 +3447,11 @@ class Sfera {
     static checkVistaSuggeriteExistByMenu(vista) {
         cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
-        // Click Le mie viste
-        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+        // Click Viste suggerite
+        cy.get('div[role="menu"]:visible').within(() => {
             cy.contains('Viste suggerite').click()
         }).then(() => {
-            cy.get('div[class="cdk-overlay-pane"]').last()
+            cy.get('div[role="menu"]').last()
                 .should('be.visible').within(($menuVisteSuggerite) => {
                     expect($menuVisteSuggerite).to.contain(vista)
                 })
@@ -4034,7 +4035,7 @@ class Sfera {
 
     /**
      * It checks if the selected row has the class 'nx-table-row nx-table-row--selectable
-     * ng-star-inserted selectedRow' and if it has the css 'border-bottom', '1.33333px solid rgb(0,
+     * ng-star-inserted selectedRow' and if it has the css 'border-bottom', '1px solid rgb(0,
      * 122, 179)'.
      * 
      * If it has both, it clicks on the checkbox control.
@@ -4042,7 +4043,7 @@ class Sfera {
      */
     static checkRigaEvidenziata(selectedRiga) {
         cy.wrap(selectedRiga).should('have.class', 'nx-table-row nx-table-row--selectable ng-star-inserted selectedRow')
-        cy.wrap(selectedRiga).should('have.css', 'border-bottom', '1.33333px solid rgb(0, 122, 179)')
+        cy.wrap(selectedRiga).should('have.css', 'border-bottom', '1px solid rgb(0, 122, 179)')
         cy.wrap(selectedRiga).within(() => {
             this.checkBoxControl().click({ force: true })
         })

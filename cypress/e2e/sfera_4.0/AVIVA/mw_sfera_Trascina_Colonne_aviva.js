@@ -23,6 +23,8 @@ let insertedId
 
 //#region Before After
 before(() => {
+    //! Il Drag&Drop possibile solo su Chrome
+    expect(Cypress.browser.name).to.contain('chrome')
     Cypress.env('isAviva', true)
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
@@ -40,28 +42,28 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// afterEach(function () {
-//     if (this.currentTest.state !== 'passed') {
-//         TopBar.logOutMW()
-//         //#region Mysql
-//         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//             let tests = testsInfo
-//             cy.finishMysql(dbConfig, insertedId, tests)
-//         })
-//         //#endregion
-//         Cypress.runner.stop();
-//     }
-// })
+afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+        TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
+})
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+})
 //#endregion Before After
 
 describe('Matrix Web : Sfera 4.0 - Gestione Viste - Revisione gestione denominazione', function () {

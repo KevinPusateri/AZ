@@ -83,16 +83,16 @@ describe('Matrix Web : Sfera 4.0 - AVIVA - Gestione Viste - Revisione gestione d
     })
 
     it('Step 4 - Verifica salvataggio vista', function () {
-        Sfera.salvaVistaPersonalizzata('vista personalizzata')
-        Sfera.selezionaVista('vista personalizzata')
+        Sfera.salvaVistaPersonalizzata('personalizzata automatici')
+        Sfera.selezionaVista('personalizzata automatici')
         Sfera.espandiPannello()
         Sfera.estrai()
     })
 
     it('Step 5 - Verifica vista post salvataggio', function () {
-        Sfera.checkVistaExist('vista personalizzata')
+        Sfera.checkVistaExist('personalizzata automatici')
         Sfera.checkColonnaPresente('Cod. AZPay')
-        Sfera.eliminaVista('vista personalizzata')
+        Sfera.eliminaVista('personalizzata automatici')
     })
 
 })
