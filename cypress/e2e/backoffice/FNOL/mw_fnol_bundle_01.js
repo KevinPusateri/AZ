@@ -352,7 +352,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         cy.wait(500);
 */
         cy.screenshot('Bndl-16- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-    
+        cy.wait(1000)
 
         let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
         Common.clickFindByIdOnIframe(cssBtnInviaRichiesta)
