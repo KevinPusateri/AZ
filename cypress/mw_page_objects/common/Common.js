@@ -276,7 +276,7 @@ class Common {
     */
     static getByIdOnIframe(id) {
         return getIframe().within(() => {
-            cy.get(id).should('exist').and('be.visible')
+            cy.get(id).should('exist').scrollIntoView().and('be.visible')
         })
     }
 
@@ -354,7 +354,7 @@ class Common {
      * @example Common.findByIdOnIframe('table[role="grid"]:visible > tbody')
      */
     static findByIdOnIframe(path) {
-        return getIframe().find(path)
+        return getIframe().find(path, { timeout: 5000 }).should('exist').scrollIntoView();
     }
 
     /**
@@ -364,7 +364,7 @@ class Common {
      * @example Common.clickFindByIdOnIframe('#eseguiRicerca')
      */
     static clickFindByIdOnIframe(path) {
-        return getIframe().find(path, { timeout: 5000 }).should('exist').click({force: true})
+        return getIframe().find(path, { timeout: 5000 }).should('exist').scrollIntoView().click({force: true})
     }
 
     /**
@@ -375,7 +375,7 @@ class Common {
      * @example Common.clickFindByIdOnIframeChild('iframe[src="cliente.jsp"]', '#eseguiRicerca')
      */
     static clickFindByIdOnIframeChild(idIframe, path) {
-        return findIframeChild(idIframe).find(path, { timeout: 5000 }).should('exist').scrollIntoView().click()
+        return findIframeChild(idIframe).find(path, { timeout: 5000 }).should('exist').scrollIntoView().click({force: true})
     }
     /**
      * Gets an object in iframe child by iframe parent
@@ -405,7 +405,7 @@ class Common {
      */
     static getObjByTextOnIframe(text) {
         return getIframe().within(() => {
-            cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
+            cy.contains(text, { timeout: 5000 }).scrollIntoView().should('exist').and('be.visible')
             cy.log('>> object with label [' + text + '] is defined')
         })
     }
@@ -420,7 +420,7 @@ class Common {
      */
     static getObjByTextOnIframeChild(idIframe, text) {
         return findIframeChild(idIframe).within(() => {
-            cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
+            cy.contains(text, { timeout: 5000 }).should('exist').scrollIntoView().and('be.visible')
             cy.log('>> object with label [' + text + '] is defined')
         })
     }
@@ -547,7 +547,6 @@ class Common {
         let data = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
         return data
     }
-
 
 
 }
