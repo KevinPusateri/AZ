@@ -1201,8 +1201,19 @@ class Sales {
      */
     static checkRefreshQuietanzamento() {
 
-        this.clickCluster('Modalità pagamento da remoto')
-        this.clickCluster('Monocoperti')
+        cy.get('app-receipt-manager-body').within(()=>{
+            cy.get('div[class="app-receipt-manager-cluster"]:first').find('span[class="cluster-title"]:first').then(($clusterName)=>{
+                this.clickCluster($clusterName.text().trim())
+            })
+        })
+
+        cy.get('app-receipt-manager-body').within(()=>{
+            cy.get('div[class="app-receipt-manager-cluster"]').eq(1).find('span[class="cluster-title"]:first').then(($clusterName)=>{
+                this.clickCluster($clusterName.text().trim())
+            })
+        })
+        // this.clickCluster('Modalità pagamento da remoto')
+        // this.clickCluster('Monocoperti')
         cy.screenshot('Verifica checkBox Selezionati', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
 
         this.refresh()
