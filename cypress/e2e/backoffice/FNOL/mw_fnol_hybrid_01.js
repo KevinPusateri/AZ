@@ -296,7 +296,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         
         cy.screenshot('12- Dettaglio del danno - Opzione del danno ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000);
-    
+
         DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
         cy.wait(1000);
 
@@ -305,22 +305,21 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
     });
 
     it('Denuncia BMP --> Dettaglio del danno --> Danno per il cliente ', function () {
-    
-    // Altre parti Coinvolte
-    Common.getObjByIdOnIframe('div.action-buttons-div > nx-link > a > nx-icon').trigger('keyup', { keyCode: 17 }, {force: true}) 
-    cy.wait(500)
+        // Altre parti Coinvolte
+        Common.getObjByIdOnIframe('div.action-buttons-div > nx-link > a > nx-icon').trigger('keyup', { keyCode: 17 }, {force: true}) 
+        cy.wait(500)
 
-    cy.screenshot('14- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-    cy.wait(3000);
+        cy.screenshot('14- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(3000);
 
-    DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
+        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
 
-    //Erano presenti le autorità sul luogo del sinistro?
-    cy.screenshot('15- Dettaglio del danno - Altre parti coinvolte - Autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-    cy.wait(500)
-    
-    DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
-    cy.wait(1000);        
+        //Erano presenti le autorità sul luogo del sinistro?
+        cy.screenshot('15- Dettaglio del danno - Altre parti coinvolte - Autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(500)
+        
+        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
+        cy.wait(1000);        
     });
 
     it('Denuncia BMP --> Sommario --> Riepilogo sinistro  ', function () {
@@ -331,42 +330,42 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
 
     it('Denuncia BMP --> Sommario --> Riepilogo sinistro - Note legali - ', function () {
        // Verifica funzionalità accordion
-    let cssAccordion_Carica_documentazione = 'bc-summary-panel[title="Carica documentazione aggiuntiva"]> nx-expansion-panel > nx-expansion-panel-header > div';
-    Common.clickFindByIdOnIframe(cssAccordion_Carica_documentazione);
-    cy.wait(500);
-    let cssAccordion_Dettaglio_danno = 'bc-summary-panel[title="Dettaglio del danno"]> nx-expansion-panel > nx-expansion-panel-header > div';
-    Common.clickFindByIdOnIframe(cssAccordion_Dettaglio_danno);
-    cy.wait(500);
+        let cssAccordion_Carica_documentazione = 'bc-summary-panel[title="Carica documentazione aggiuntiva"]> nx-expansion-panel > nx-expansion-panel-header > div';
+        Common.clickFindByIdOnIframe(cssAccordion_Carica_documentazione);
+        cy.wait(500);
+        let cssAccordion_Dettaglio_danno = 'bc-summary-panel[title="Dettaglio del danno"]> nx-expansion-panel > nx-expansion-panel-header > div';
+        Common.clickFindByIdOnIframe(cssAccordion_Dettaglio_danno);
+        cy.wait(500);
 
-    Common.getObjByIdOnIframe(cssAccordion_Carica_documentazione).trigger('keyup', { keyCode: 17 }, {force: true}) 
-    cy.wait(500)
-    /*
-    let cssAccordion_Polizza_interessata  = 'bc-summary-panel[title="Polizza interessata e dettaglio sinistro"]> nx-expansion-panel > nx-expansion-panel-header > div';
-    Common.clickFindByIdOnIframe(cssAccordion_Polizza_interessata);
-    cy.wait(500);
-    let cssAccordion_Dettaglio_cliente = 'bc-summary-panel[title="Dettaglio cliente"]> nx-expansion-panel > nx-expansion-panel-header > div';
-    Common.clickFindByIdOnIframe(cssAccordion_Dettaglio_cliente);
-    cy.wait(500);
-    */
-    //  Il cliente conferma che le informazioni fornite sono corrette
-    let cssChkConferma = 'nx-checkbox[formcontrolname="legalConsent"] > input.nx-checkbox__input';
-    Common.clickFindByIdOnIframe(cssChkConferma);
+        Common.getObjByIdOnIframe(cssAccordion_Carica_documentazione).trigger('keyup', { keyCode: 17 }, {force: true}) 
+        cy.wait(500)
+        /*
+        let cssAccordion_Polizza_interessata  = 'bc-summary-panel[title="Polizza interessata e dettaglio sinistro"]> nx-expansion-panel > nx-expansion-panel-header > div';
+        Common.clickFindByIdOnIframe(cssAccordion_Polizza_interessata);
+        cy.wait(500);
+        let cssAccordion_Dettaglio_cliente = 'bc-summary-panel[title="Dettaglio cliente"]> nx-expansion-panel > nx-expansion-panel-header > div';
+        Common.clickFindByIdOnIframe(cssAccordion_Dettaglio_cliente);
+        cy.wait(500);
+        */
+        //  Il cliente conferma che le informazioni fornite sono corrette
+        let cssChkConferma = 'nx-checkbox[formcontrolname="legalConsent"] > input.nx-checkbox__input';
+        Common.clickFindByIdOnIframe(cssChkConferma);
 
-    /*
-    let cssChkAccetta = 'nx-checkbox[formcontrolname="waiveDocumentationConsent"] > input.nx-checkbox__input';
-    Common.clickFindByIdOnIframe(cssChkAccetta);
-    cy.wait(500);
+        /*
+        let cssChkAccetta = 'nx-checkbox[formcontrolname="waiveDocumentationConsent"] > input.nx-checkbox__input';
+        Common.clickFindByIdOnIframe(cssChkAccetta);
+        cy.wait(500);
 
-    */
-    cy.screenshot('17- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-    cy.wait(1000);
+        */
+        cy.screenshot('17- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000);
 
-    let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
-    Common.clickFindByIdOnIframe(cssBtnInviaRichiesta)
-    cy.wait(1000)
+        let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
+        Common.clickFindByIdOnIframe(cssBtnInviaRichiesta)
+        cy.wait(1000)
 
-    cy.screenshot('18- Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-    cy.wait(5000);
+        cy.screenshot('18- Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(5000);
     });
 
     it('Denuncia BMP -->  Protocollazione Sinistro --> Conferma del sinistro  ', function () {
@@ -375,7 +374,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         cy.wait(1000);
 
         Common.getObjByIdOnIframe(cssTxtWthSccss).trigger('keyup', { keyCode: 17 }, {force: true}) 
-        cy.wait(500)
+        cy.wait(1000);
 
         cy.screenshot('19- Sommario - Riepilogo sinistro - conferma del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
