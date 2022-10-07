@@ -162,6 +162,22 @@ class DenunciaBMP {
         })       
         cy.wait(2000)
     }
+    /**
+     * Gets a text defined on object identified by its @locator
+     * @param {string} locator : id locator object
+     * @returns {Promise<string>} Promise (value)
+     */
+    static getTextById(locator) {
+        cy.log('>> locator value: ' + locator)
+        return new Cypress.Promise((resolve) => {            
+            getIframe().find(locator).scrollIntoView().should('exist')
+            .invoke('val')  // for input or textarea, .invoke('val')        
+            .then(text => {         
+                cy.log('>> read the value: ' + text)
+                resolve((text.toString()))                
+            });
+        });
+    }
 }
 
 
