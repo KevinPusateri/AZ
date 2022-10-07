@@ -116,7 +116,7 @@ let cssCmbFrstElement = 'div.nx-dropdown__panel-body[role=\"listbox\"] > nx-drop
 let btn_class= "nx-button__content-wrapper";
 //#endregion
 
-describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: TTest di verifica denuncia con accesso per numero polizza e ambito \'Fabbricato\'', () => {
+describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica denuncia Hybrid con accesso per numero polizza e ambito \'Fabbricato\'', () => {
 
     it('Atterraggio su BackOffice >> Denuncia BMP', function () {
         TopBar.clickBackOffice()
