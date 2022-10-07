@@ -338,20 +338,23 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         // Altre parti Coinvolte
         cy.wait(1000);
         cy.screenshot('Bndl-15- Sommario - Riepilogo sinistro -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
+        cy.wait(1000);
     });
 
     it('Denuncia BMP --> Sommario -- Riepilogo sinistro - Note legali - ', { scrollBehavior: false },  function () {
          //  Il cliente conferma che le informazioni fornite sono corrette
-        let cssChkConferma = 'nx-checkbox[formcontrolname="legalConsent"] > input.nx-checkbox__input';
+         let cssChkConferma = 'nx-checkbox[formcontrolname="legalConsent"] > input.nx-checkbox__input';
         Common.clickFindByIdOnIframe(cssChkConferma);
         cy.wait(500);
+        Common.getObjByIdOnIframe(cssChkConferma).trigger({ keyCode: 17 }, {pageDown},  {force: true})
+        cy.wait(1000)
+        /*
         let cssChkAccetta = 'nx-checkbox[formcontrolname="waiveDocumentationConsent"] > input.nx-checkbox__input';
         Common.clickFindByIdOnIframe(cssChkAccetta);
         cy.wait(500);
-
+        */
         cy.screenshot('Bndl-16- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-    
+        cy.wait(1000)
 
         let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
         Common.clickFindByIdOnIframe(cssBtnInviaRichiesta)
@@ -362,10 +365,13 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
     });
 
     it('Denuncia BMP --> Protocollazione Sinistro -', { scrollBehavior: false }, function () {
-        let cssTxtWthSccss = '#fnol-expert-claim-confirmation-ext > div:nth-child(1) > ul > li > h2';
+        let cssTxtWthSccss = '#fnol-expert-claim-confirmation-ext > div:nth-child(2) > h3';
         Common.isVisibleText(cssTxtWthSccss, 'La conferma del sinistro è stata inviata.');
         cy.wait(1000);
-        cy.screenshot('Bndl-18- Protocollazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        Common.getObjByIdOnIframe(cssTxtWthSccss).trigger({ keyCode: 17 }, {pageUp},  {force: true})
+        cy.wait(500)
+        
+        cy.screenshot('19- Sommario - Riepilogo sinistro - conferma del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
     });
 });

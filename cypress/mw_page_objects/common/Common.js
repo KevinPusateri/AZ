@@ -396,7 +396,7 @@ class Common {
     }
 
     /**
-     * Gets an object in iframe  by text
+     * Gets an object in iframe by text
      * @param {*} idIframe del  frame
      * @param {string} text - testo
      * @returns findIframeChild(idIframe).within(() => {
@@ -409,7 +409,15 @@ class Common {
             cy.log('>> object with label [' + text + '] is defined')
         })
     }
-
+    /**
+     * Gets an object in iframe By Id
+     * @param {*} Id Object
+     * @returns  getIframe().find(path, { timeout: 5000 }).should('exist')
+        })
+     */
+    static getObjByIdOnIframe(id) {
+            return getIframe().find(id, { timeout: 5000 }).should('exist')
+    }
     /**
      * Gets an object in iframe Child by text
      * @param {*} idIframe del child frame

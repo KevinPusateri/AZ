@@ -301,7 +301,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
     it('Denuncia BMP --> Dettaglio del danno --> Danno per il cliente ', { scrollBehavior: false }, function () {
         // Altre parti Coinvolte
         
-        Common.getByIdOnIframe('div.action-buttons-div > nx-link > a > nx-icon').type('{pageup}').scrollTo('top', { ensureScrollable: false })
+        Common.getObjByIdOnIframe('div.action-buttons-div > nx-link > a > nx-icon').trigger('keyup', {force: true})
         cy.wait(1000);
     
         cy.screenshot('14- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -310,10 +310,10 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
 
         //Erano presenti le autorità sul luogo del sinistro?
-        cy.get('body').type('{pageup}');
-        cy.wait(1000);
-        cy.screenshot('15- Dettaglio del danno - Altre parti coinvolte - autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        
+
+        cy.screenshot('15- Dettaglio del danno - Altre parti coinvolte - Autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(500)
+    
         
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
     });
@@ -321,21 +321,25 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
     it('Denuncia BMP --> Sommario --> Riepilogo sinistro  ', function () {
         // Altre parti Coinvolte
         cy.wait(1000);
+        
         cy.screenshot('16- Sommario - Riepilogo sinistro -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000);
     });
 
     it('Denuncia BMP --> Sommario --> Riepilogo sinistro - Note legali - ', function () {
          //  Il cliente conferma che le informazioni fornite sono corrette
         let cssChkConferma = 'nx-checkbox[formcontrolname="legalConsent"] > input.nx-checkbox__input';
         Common.clickFindByIdOnIframe(cssChkConferma);
-
         cy.wait(500);
+        Common.getObjByIdOnIframe(cssChkConferma).trigger('keydown', {force: true})
+        cy.wait(1000)
+        /*
         let cssChkAccetta = 'nx-checkbox[formcontrolname="waiveDocumentationConsent"] > input.nx-checkbox__input';
         Common.clickFindByIdOnIframe(cssChkAccetta);
         cy.wait(500);
+
+        */
         cy.screenshot('17- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        
-        Common.clickFindByIdOnIframe(cssChkConferma);
         cy.wait(1000);
 
         let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
@@ -347,11 +351,13 @@ describe('Matrix Web - Sinistri>>Denuncia BMP: Test di verifica denuncia FNOL Bu
     });
 
     it('Denuncia BMP -->  Protocollazione Sinistro --> Conferma del sinistro  ', function () {
-        let cssTxtWthSccss = '#fnol-expert-claim-confirmation-ext > div:nth-child(1) > ul > li > h2';
+        let cssTxtWthSccss = '#fnol-expert-claim-confirmation-ext > div:nth-child(2) > h3';
         Common.isVisibleText(cssTxtWthSccss, 'La conferma del sinistro è stata inviata.');
         cy.wait(1000);
+        Common.getObjByIdOnIframe(cssTxtWthSccss).trigger('keyup', {force: true})
+        cy.wait(500)
+        
         cy.screenshot('19- Sommario - Riepilogo sinistro - conferma del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
-
     });
 });
