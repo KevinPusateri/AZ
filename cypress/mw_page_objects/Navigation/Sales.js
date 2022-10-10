@@ -349,7 +349,13 @@ class Sales {
             cy.get('#main-table-sfera').should('exist').and('be.visible')
 
             cy.get('@styleColor').then((color) => {
-                cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+                cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').invoke('attr', 'style')
+                    .then(($style) => {
+                        if (!$style.includes('none repeat'))
+                            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+                        else
+                            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1].replace(';', '') + ' none repeat scroll 0% 0%;')
+                    })
                 cy.screenshot('Verifica Colori della Tabella ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             })
         }
@@ -683,18 +689,26 @@ class Sales {
         cy.contains('Emetti polizza').click({ force: true })
 
         LinksOnEmettiPolizza.deleteKey(keys)
-        const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
+        const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza).sort()
+        // Tolgo il delete function
+        linksEmettiPolizza.pop()
+        const currentLinks = []
 
         if (Cypress.env('monoUtenza')) {
             delete LinksOnEmettiPolizza.GESTIONE_RICHIESTE_PER_PA
-            const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
-            cy.get('.card-container').find('lib-da-link').each(($link, i) => {
-                expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
+            const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza).sort()
+            // Tolgo il delete function
+            linksEmettiPolizza.pop()
+            cy.get('.card-container').find('lib-da-link').each(($link) => {
+                currentLinks.push($link.text().trim())
+            }).then(() => {
+                expect(currentLinks.sort()).to.deep.eq(linksEmettiPolizza.sort());
             })
         } else
-            cy.get('div[class^="card-container"').should('be.visible').find('lib-da-link').each(($link, i) => {
-                debugger
-                expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
+            cy.get('div[class^="card-container"').should('be.visible').find('lib-da-link').each(($link) => {
+                currentLinks.push($link.text().trim())
+            }).then(() => {
+                expect(currentLinks.sort()).to.deep.eq(linksEmettiPolizza.sort());
             })
     }
 
@@ -1075,7 +1089,7 @@ class Sales {
      */
     static clickPrimaCardDanniOnProposte() {
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
-        cy.get('[calldaname="GENERIC-DETAILS"]:visible').first().find('lib-contract-card-basic-label').click()
+        cy.get('[calldaname="GENERIC-DETAILS"]:visible').first().find('lib-contract-card-basic-label:first').click()
         getIFrame().within(() => {
             cy.get('#menuContainer').should('be.visible')
             cy.get('#menuContainer').find('a').should('be.visible').and('contain.text', '« Uscita')
@@ -1087,6 +1101,10 @@ class Sales {
      * Click sulla prima card Vita 
      */
     static clickPrimaCardVitaOnProposte() {
+        cy.intercept({
+            method: '+(GET|POST)',
+            url: '**/Vita/**'
+        }).as('waitCardVita');
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('digitalAgencyLink')) {
                 req.alias = 'digitalAgencyLink'
@@ -1094,11 +1112,12 @@ class Sales {
         });
         cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
         cy.wait(5000)
-        cy.get('[calldaname="GENERIC-DETAILS"]:visible').first().find('lib-contract-card-basic-label').click()
+        cy.get('[calldaname="GENERIC-DETAILS"]:visible').first().find('lib-contract-card-basic-label:first').click()
         cy.wait('@digitalAgencyLink', { timeout: 30000 });
-        cy.wait(20000)
-        getIFrame().within(() => {
-            cy.pause()
+        cy.wait('@waitCardVita', { timeout: 30000 })
+        cy.wait(5000)
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
             cy.get('input[value="  Esci  "]').should('be.visible')
         })
         cy.screenshot('Verifica Dettaglio Card Vita Proposte', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
@@ -1201,14 +1220,14 @@ class Sales {
      */
     static checkRefreshQuietanzamento() {
 
-        cy.get('app-receipt-manager-body').within(()=>{
-            cy.get('div[class="app-receipt-manager-cluster"]:first').find('span[class="cluster-title"]:first').then(($clusterName)=>{
+        cy.get('app-receipt-manager-body').within(() => {
+            cy.get('div[class="app-receipt-manager-cluster"]:first').find('span[class="cluster-title"]:first').then(($clusterName) => {
                 this.clickCluster($clusterName.text().trim())
             })
         })
 
-        cy.get('app-receipt-manager-body').within(()=>{
-            cy.get('div[class="app-receipt-manager-cluster"]').eq(1).find('span[class="cluster-title"]:first').then(($clusterName)=>{
+        cy.get('app-receipt-manager-body').within(() => {
+            cy.get('div[class="app-receipt-manager-cluster"]').eq(1).find('span[class="cluster-title"]:first').then(($clusterName) => {
                 this.clickCluster($clusterName.text().trim())
             })
         })

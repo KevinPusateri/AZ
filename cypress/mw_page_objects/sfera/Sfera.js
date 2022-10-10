@@ -1207,7 +1207,7 @@ class Sfera {
      * @private
      */
     static tableEstrazione() {
-        cy.get('app-table-component', { timeout: 30000 }).should('be.visible')
+        cy.get('app-table-component', { timeout: 45000 }).should('be.visible')
     }
 
     /**
@@ -2514,8 +2514,9 @@ class Sfera {
         if (nameVista === 'Vista Standard') {
             cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
             cy.get('div[role="menu"]').should('be.visible').within(() => {
-                cy.contains(nameVista).click()
+                cy.contains('Viste suggerite').click()
             })
+            cy.contains(nameVista).click()
         } else {
             // click Seleziona Vista tendina
             cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
@@ -2545,7 +2546,7 @@ class Sfera {
         cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
         // Click Le mie viste
-        cy.get('div[class="cdk-overlay-pane"]').first().scrollIntoView().scrollIntoView().should('be.visible').within(() => {
+        cy.get('div[role="menu"]:visible').within(() => {
             cy.contains('Viste suggerite').click()
         }).then(() => {
 
@@ -2580,8 +2581,8 @@ class Sfera {
             cy.get('button[nxmodalclose="Agree"]').click()
 
             //cy.wait('@caricaVista', { timeout: 60000 })
-            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
         })
 
     }
