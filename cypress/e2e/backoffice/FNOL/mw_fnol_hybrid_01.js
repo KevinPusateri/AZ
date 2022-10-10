@@ -156,10 +156,6 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         Common.isVisibleText(csslblEmail, cliente_email);
         cy.wait(1000);
 
-        let csslblPolizza = '#fnol-customer-details-ext > div > div > div > dl > div:nth-child(7) > dd';
-        Common.isVisibleText(csslblPolizza, cliente_num_pol);
-        cy.wait(1000);
-
         cy.screenshot('03- Controllo anagrafico dati del cliente ' + cliente_cognome + " " + cliente_nome, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
 
