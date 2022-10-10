@@ -77,11 +77,11 @@ after(function () {
 const IFrameParent = '[class="iframe-content ng-star-inserted"]'
 // AG 73 742000
 var ramo_pol = '42'
-var cliente_cognome = 'ROBBA'
-var cliente_nome = 'MARIA CONCETTA'
-var cliente_CF = 'RBBMCN51H50F795Q'
-var cliente_dt_nascita = '10/06/1951'
-var cliente_num_pol = '733322489'
+var cliente_cognome = 'RAI'
+var cliente_nome = 'GUIDO'
+var cliente_CF = 'RAIGDU65B09L424C'
+var cliente_dt_nascita = '09/02/1965'
+var cliente_num_pol = '733323007'
 var cliente_email ='pippo.pluto@allianz.it'
 
 /* 319000
@@ -94,17 +94,17 @@ var cliente_num_pol = '502257481'
 var cliente_email = 'f.ninno@allianz.it'
 */
 var prodotto = 'ULTRA CASA'
-var ambito_garanzia_fabbricato = 'Persona'
+var ambito_garanzia_fabbricato = 'Fabbricato'
 var classe_garanzia_prodotto = 'Fabbricato - Incendio, Eventi atmosferici, Allagamento'
 var loss_type = 'EVENTI ATMOSFERICI'
 var loss_cause = 'PIOGGIA'
 var oggetto_fabbricato
 
-var sinistro_descrizione_danno = 'Emissione denuncia BMP con test automatizzato - Polizza Bundle Ultra Casa & Patrimonio.'
+var sinistro_descrizione_danno = 'Emissione denuncia BMP con test automatizzato - Polizza Hybrid Ultra Casa & Patrimonio.'
 var sinistro_località = 'TRIESTE'
-var sinistro_indirizzo = 'COPODISTRIA'
-var sinistro_civico = '3'
-var sinistro_ZipCode ='34145'
+var sinistro_indirizzo = 'LUCREZIO'
+var sinistro_civico = '7'
+var sinistro_ZipCode ='34134'
 
 let dtAvvenimento
 let dtPervenimento
@@ -116,7 +116,7 @@ let cssCmbFrstElement = 'div.nx-dropdown__panel-body[role=\"listbox\"] > nx-drop
 let btn_class= "nx-button__content-wrapper";
 //#endregion
 
-describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica denuncia Bundle Contract con accesso per  cliente ('+cliente_cognome+' ' +cliente_nome+') e ambito. ', () => {
+describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica denuncia Hybrid con accesso per numero polizza ('+cliente_num_pol+') e ambito \'Fabbricato\'', () => {
 
     it('Atterraggio su BackOffice >> Denuncia BMP', function () {
         TopBar.clickBackOffice()
@@ -125,22 +125,22 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         cy.wait(1000);
     });        
 
-    it('Denuncia BMP --> Ricerca Cognome Nome cliente: ' + cliente_cognome + " " + cliente_nome, function () {
+    it('Denuncia BMP --> Ricerca Polizza cliente n°: ' + cliente_num_pol, function () {
         // Ricerca cliente per Polizza
-        DenunciaBMP.setValue_ById('#keyword', cliente_cognome + " " + cliente_nome);
+        DenunciaBMP.setValue_ById('#keyword', cliente_num_pol);
 
         Common.clickByIdOnIframe("[name='search']");
         cy.wait(3000);
     
         let csstxtClnt = '.nx-autocomplete-option__label > span';
         // Verifica del testo a comparsa nella ricerca del cliente 
-        cy.screenshot('Bndl-01- Pagina Ricerca cliente - Inserimento cliente e testo a comparsa', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('01- Pagina Ricerca cliente - Inserimento cliente e testo a comparsa', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         Common.isVisibleText(csstxtClnt, cliente_cognome + " " + cliente_nome); 
         Common.isVisibleText(csstxtClnt, cliente_dt_nascita);
 
         Common.clickByIdOnIframe(csstxtClnt)
         cy.wait(2000);
-        cy.screenshot('Bndl-02- Pagina Ricerca cliente -  Esito ricerca cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('02- Pagina Ricerca cliente -  Esito ricerca cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
     });
 
     it('Denuncia BMP --> Dettaglio Cliente ' + cliente_cognome + " " + cliente_nome + " e controllo dati anagrafici", function () {
@@ -160,7 +160,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         Common.isVisibleText(csslblPolizza, cliente_num_pol);
         cy.wait(1000);
 
-        cy.screenshot('Bndl-03- Controllo anagrafico dati del cliente ' + cliente_cognome + " " + cliente_nome, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('03- Controllo anagrafico dati del cliente ' + cliente_cognome + " " + cliente_nome, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
@@ -175,7 +175,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
             DenunciaBMP.setValue_ById('input[name=\"dateOfIncident\"]', dtAvvenimento);
         }); 
         cy.wait(1000);   
-        cy.screenshot('Bndl-04- Pagina Dati denuncia - inserimento date di avvenimento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('04- Pagina Dati denuncia - inserimento date di avvenimento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(5000);
 
         DenunciaSinistriPage.getPlusMinusDate(-1).then((dtPer) => {         
@@ -183,7 +183,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
             cy.log('[it]>> [Data pervenimento sinistro]: '+dtPer);           
             DenunciaBMP.setValue_ById('input[name=\"undefined\"]', dtPer);
         });
-        cy.screenshot('Bndl-05- Pagina Dati denuncia - inserimento date di pervenimento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('05- Pagina Dati denuncia - inserimento date di pervenimento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
 
         
@@ -192,27 +192,31 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
             cy.log('[it]>> [Data denuncia sinistro]: '+dtDenuncia);           
             DenunciaBMP.setValue_ById('input[formcontrolname=\"answer\"]', dtDenuncia);
         });
-        cy.screenshot('Bndl-06- Pagina Dati denuncia - inserimento data di denuncia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('07- Pagina Dati denuncia - inserimento data di denuncia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
     });
 
     it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Polizza interessata\' --> Selezione della polizza', function () {
-        let cssRdnBtn =  '#fnol-affected-policy-list > table > tbody >tr:nth-child(1) > td > nx-radio.nx-radio-button--big-label > input.nx-radio__input';
+        //Apertura accordion nella sezione Polizza interessata
+        let cssAccrdn = '#fnol-affected-policy-list > nx-expansion-panel > nx-expansion-panel-header > div';
+        Common.clickFindByIdOnIframe(cssAccrdn);
+
+        let cssRdnBtn =  '#nx-radio-0-label > div.nx-radio__circle';
         Common.clickFindByIdOnIframe(cssRdnBtn);
         cy.wait(500);
 
-        cy.screenshot('Bndl-07- Pagina Dati denuncia - Dettaglio sulla Polizza interessata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('08- Pagina Dati denuncia - Dettaglio sulla Polizza interessata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
     });
 
     it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' --> [Inserimento dati di sinistro]: ambito/soggetto coinvolto, etc..', function () {
         //Informazioni sul sinistro
         //Selezione di quale ambito è coinvolto? *     
-        let cssClssPrd =  'nx-dropdown[formcontrolname="selectedAffectedType"] > div ';
+        let cssClssPrd =  '#fnol-nmt-incident-info > div > form > div:nth-child(1) > div:nth-child(1) > nx-formfield > div > div.nx-formfield__row > div.nx-formfield__flexfield > div > div > nx-dropdown > div > div.nx-dropdown__icon > nx-icon';
         Common.clickFindByIdOnIframe(cssClssPrd);
-        cy.wait(500); // 
+        cy.wait(500); 
         Common.clickFindByIdOnIframe(cssCmbFrstElement);
-        //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, ambito_garanzia_fabbricato);
+
         cy.wait(2000);
 
         //Selezione di quale soggetto / oggetto è coinvolto?
@@ -220,17 +224,18 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         Common.clickFindByIdOnIframe(cssAffctdObj);
         cy.wait(500) 
         Common.clickFindByIdOnIframe(cssCmbFrstElement);
+        //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, ambito_garanzia_fabbricato);
         cy.wait(1000)
 
-        cy.screenshot('Bndl-08- Pagina Dati denuncia - Polizza selezionata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('09- Pagina Dati denuncia - Polizza selezionata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
 
         //Selezione della classe di prodotto
         let cssClsPrd = 'nx-dropdown[formcontrolname="selectedClaimClass"] > div';
         Common.clickFindByIdOnIframe(cssClsPrd)
         cy.wait(500);
-        Common.clickFindByIdOnIframe(cssCmbFrstElement);
-        //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, classe_garanzia_prodotto);
+        //Common.clickFindByIdOnIframe(cssCmbFrstElement);
+        Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, classe_garanzia_prodotto);
         cy.wait(1000)
     
         //Selezione della loss type   
@@ -251,124 +256,119 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
 
         //Descrizione del sinistro
         let cssDescrClm = 'textarea[formcontrolname="description"]'
-        DenunciaBMP.setValue_ById(cssDescrClm, sinistro_descrizione_danno);
-        cy.wait(1000)
+        DenunciaBMP.setValue_ById(cssDescrClm, sinistro_descrizione_danno + " - Ambito: "+ambito_garanzia_fabbricato + " - Classe: "+classe_garanzia_prodotto);
+        cy.wait(1000)-
 
-        cy.screenshot('Bndl-09- Pagina Dati denuncia - Altri dati del sinistro: loss type, loss cause e descrizione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
+        cy.screenshot('10- Pagina Dati denuncia - Altri dati del sinistro: loss type, loss cause e descrizione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
-    });
-
-    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Luogo del sinistro\' - Verifica inserimento dati: '+ sinistro_località +", VIA "+sinistro_indirizzo+" "+sinistro_civico+ " ...", function () {
-
-        //Selezione Tipo do strada *
-        let cssStrttTyp = 'nx-dropdown[placeholder="Scegliere il tipo di strada"] > div ';
-        Common.clickFindByIdOnIframe(cssStrttTyp);
-        cy.wait(500) 
-        Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector,  ' VIA ');
-        cy.wait(1000)
-
-        //Luogo sinistro
-        DenunciaBMP.setValue_ById('input[trackid=\"address-details-form-oe.street\"]', sinistro_indirizzo)  
-        cy.wait(1000);
-        DenunciaBMP.setValue_ById('input[trackid=\"address-details-form-oe.streetNumber\"]', sinistro_civico)  
-        cy.wait(1000);
-    
-        DenunciaBMP.setValue_ById('input[trackid=\"address-details-form-oe.zipCode\"]', sinistro_ZipCode)  
-        cy.wait(1000);
-        DenunciaBMP.setValue_ById('input[trackid=\"address-details-form-oe.city\"]', sinistro_località)  
-        cy.wait(1000);
-
-        let cssNtnDscr = 'nx-dropdown[placeholder="Scegliere la nazione"] > div ';
-        Common.clickFindByIdOnIframe(cssNtnDscr);
-        cy.wait(500) 
-        Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector,  ' ITALIA ');
-        cy.wait(1000)
-
-        let cssPvTyp = 'nx-dropdown[placeholder="Scegliere la provincia"] > div ';
-        Common.clickFindByIdOnIframe(cssPvTyp);
-        cy.wait(500) 
-        Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector,  'Trieste');
-        cy.wait(1000)
-
-        cy.screenshot('Bndl-10- Pagina Dati denuncia - Sezione Luogo sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000); 
 
         DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
     });
-    
 
 
-    it('Denuncia BMP --> Dettaglio del danno --> Danni alla proprieta\' del cliente', function () {
-        // Scegliere un'opzione
-        let cssSlctPrt = 'div[cdkoverlayorigin] > div.nx-dropdown__rendered  > span.ng-star-inserted';
-        Common.clickFindByIdOnIframe(cssSlctPrt);
-        //Contenuto nei locali - Arredamento e Vestiario
-        Common.clickFindByIdOnIframe(cssCmbFrstElement);
-        cy.wait(1000)
+    it('Denuncia BMP --> Dettaglio del danno --> Danni alla proprietà del cliente', function () {
+        
+        let cssRdBtn1PrtNo ='#nx-radio-13-label > div:nth-child(1)'
+        Common.clickFindByIdOnIframe(cssRdBtn1PrtNo);
+        cy.wait(500)
+        let cssRdBtn2PrtNo ='#nx-radio-16-label > div'
+        Common.clickFindByIdOnIframe(cssRdBtn2PrtNo);
+        cy.wait(500)
 
-        // Marca - Modello
-        DenunciaBMP.setValue_ById('input[formcontrolname="brand"]', 'Ikea - libreria');
-        //Anno di acquisto
-        DenunciaBMP.setValue_ById('input[ name="yearOfPurchase"]', '2020');
-
-        cy.screenshot('Bndl-11- Dettaglio del danno ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000);
-
+        let cssTxtPrcs ='input[formcontrolname=\"costOfReinstatement\"]'
+        DenunciaBMP.setValue_ById(cssTxtPrcs, '2000');
+        cy.wait(2000)
+        
         // Avvocato del cliente (Si/No)
         let cssBtnNoLawayer = 'nx-circle-toggle-group[data-testid="circleToggleOptions"] > div > div:nth-child(2) > nx-circle-toggle > label.nx-circle-toggle__label > nx-icon-toggle-button';
         Common.clickFindByIdOnIframe(cssBtnNoLawayer);
+        cy.wait(2000);
+
+        cy.screenshot('11- Dettaglio del danno - Avvocato del cliente (Si o No): No', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000);
 
-        cy.screenshot('Bndl-12- Dettaglio del danno - Avvocato del cliente (Si o No): No', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        // Scegliere un'opzione del danno () Parte o parti interessate dell'edificio)
+        let cssSlctPrt = 'nx-dropdown[placeholder="Scegliere un\'opzione"] > div.nx-dropdown__container > div.nx-dropdown__icon > nx-icon';
+        Common.clickFindByIdOnIframe(cssSlctPrt);
+        let cssFrstElem ='#nx-checkbox-0-label > span'
+        Common.clickFindByIdOnIframe(cssFrstElem);
+        cy.wait(2000)
+        
+        cy.screenshot('12- Dettaglio del danno - Opzione del danno ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000);
-        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
+    
+        DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
+        cy.wait(500);
 
-        cy.wait(1000);
-        cy.screenshot('Bndl-13- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('13- Dettaglio del danno - Danni alla proprietà del cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(3000);
     });
 
-    it('Denuncia BMP --> Dettaglio del danno -- Danno per il cliente ' , { scrollBehavior: false }, function () {
+    it('Denuncia BMP --> Dettaglio del danno --> Danno per il cliente ', function () {
         // Altre parti Coinvolte
+        Common.getObjByIdOnIframe('div.action-buttons-div > nx-link > a > nx-icon').trigger('keyup', { keyCode: 17 }, {force: true}) 
+        cy.wait(500)
+    
+        cy.screenshot('14- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(3000);
+    
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
 
         //Erano presenti le autorità sul luogo del sinistro?
-        cy.wait(1000);
-        cy.screenshot('Bndl-14- Dettaglio del danno - Altre parti coinvolte - autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000);
+        cy.screenshot('15- Dettaglio del danno - Altre parti coinvolte - Autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(500)
+        
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
+        cy.wait(1000);        
     });
 
-    it('Denuncia BMP --> Sommario -- Riepilogo sinistro  ', function () {
-        // Altre parti Coinvolte
-        cy.wait(1000);
-        cy.screenshot('Bndl-15- Sommario - Riepilogo sinistro -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+    it('Denuncia BMP --> Sommario --> Riepilogo sinistro  ', function () {
+        // Altre parti Coinvolte       
+        cy.screenshot('16- Sommario - Riepilogo sinistro - Apertura Pagina', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(1000);
     });
 
-    it('Denuncia BMP --> Sommario -- Riepilogo sinistro - Note legali - ',  function () {
-         //  Il cliente conferma che le informazioni fornite sono corrette
+    it('Denuncia BMP --> Sommario --> Riepilogo sinistro - Note legali - ', function () {
+        // Verifica funzionalità accordion
+        let cssAccordion_Carica_documentazione = 'bc-summary-panel[title="Carica documentazione aggiuntiva"]> nx-expansion-panel > nx-expansion-panel-header > div';
+        Common.clickFindByIdOnIframe(cssAccordion_Carica_documentazione);
+        cy.wait(500);
+        let cssAccordion_Dettaglio_danno = 'bc-summary-panel[title="Dettaglio del danno"]> nx-expansion-panel > nx-expansion-panel-header > div';
+        Common.clickFindByIdOnIframe(cssAccordion_Dettaglio_danno);
+        cy.wait(500);
+
+        Common.getObjByIdOnIframe(cssAccordion_Carica_documentazione).trigger('keyup', { keyCode: 17 }, {force: true}) 
+        cy.wait(500)
+        /*
+        let cssAccordion_Polizza_interessata  = 'bc-summary-panel[title="Polizza interessata e dettaglio sinistro"]> nx-expansion-panel > nx-expansion-panel-header > div';
+        Common.clickFindByIdOnIframe(cssAccordion_Polizza_interessata);
+        cy.wait(500);
+        let cssAccordion_Dettaglio_cliente = 'bc-summary-panel[title="Dettaglio cliente"]> nx-expansion-panel > nx-expansion-panel-header > div';
+        Common.clickFindByIdOnIframe(cssAccordion_Dettaglio_cliente);
+        cy.wait(500);
+        */
+        //  Il cliente conferma che le informazioni fornite sono corrette
         let cssChkConferma = 'nx-checkbox[formcontrolname="legalConsent"] > input.nx-checkbox__input';
         Common.clickFindByIdOnIframe(cssChkConferma);
-        cy.wait(500);
-        Common.getObjByIdOnIframe(cssChkConferma).trigger('keydown', { keyCode: 17 }, {force: true}) 
-        cy.wait(1000)
+
         /*
         let cssChkAccetta = 'nx-checkbox[formcontrolname="waiveDocumentationConsent"] > input.nx-checkbox__input';
         Common.clickFindByIdOnIframe(cssChkAccetta);
         cy.wait(500);
+
         */
-        cy.screenshot('Bndl-16- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        cy.wait(1000)
+        cy.screenshot('17- Sommario - Riepilogo sinistro - Note legali -', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000);
 
         let cssBtnInviaRichiesta = '#fnol-submit-claim-ext > div > div.wrap-submit-btn.ng-star-inserted > bc-fnol-submit-claim-button > button > span';
         Common.clickFindByIdOnIframe(cssBtnInviaRichiesta)
-        cy.wait(3000)
+        cy.wait(1000)
 
-        cy.screenshot('Bndl-17- Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('18- Sommario - Riepilogo sinistro - Invia Richiesta', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(5000);
     });
 
-    it('Denuncia BMP --> Protocollazione Sinistro -', function () {
+    it('Denuncia BMP -->  Protocollazione Sinistro --> Conferma del sinistro  ', function () {
         let cssTxtWthSccss = '#fnol-expert-claim-confirmation-ext > div:nth-child(2) > h3';
         Common.isVisibleText(cssTxtWthSccss, 'La conferma del sinistro è stata inviata.');
         cy.wait(1000);
@@ -376,7 +376,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         Common.getObjByIdOnIframe(cssTxtWthSccss).trigger('keyup', { keyCode: 17 }, {force: true}) 
         cy.wait(1000);
 
-        cy.screenshot('18- Sommario - Riepilogo sinistro - conferma del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('19- Sommario - Riepilogo sinistro - conferma del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
     });
 });
