@@ -307,13 +307,14 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
     it('Denuncia BMP --> Dettaglio del danno --> Danno per il cliente ', function () {
         // Altre parti Coinvolte
         Common.getObjByIdOnIframe('div.action-buttons-div > nx-link > a > nx-icon').trigger('keyup', { keyCode: 17 }, {force: true}) 
-        cy.wait(500)
+        cy.wait(1000);
     
         cy.screenshot('13- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
     
         DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
-
+        cy.wait(500)
+        
         //Erano presenti le autorità sul luogo del sinistro?
         cy.screenshot('14- Dettaglio del danno - Altre parti coinvolte - Autorità sul luogo del sinistro?', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(500)
