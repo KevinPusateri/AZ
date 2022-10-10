@@ -126,10 +126,11 @@ describe("LIBRI MATRICOLA", function () {
         afterTwoMonth.toLocaleDateString();
         let formattedDate = String(afterTwoMonth.getDate()).padStart(2, '0') + '/' +
             String(afterTwoMonth.getMonth()).padStart(2, '0') + '/' +
-            afterTwoMonth.getFullYear()
+            String(afterTwoMonth.getFullYear())
         cy.log(formattedDate)
-
+        cy.wait(5000)
         cy.get('#ctl00_ContentPlaceHolder1_dtDecorrenza').should('be.visible').clear().type(formattedDate)
+        
         cy.get('#ctl00_ContentPlaceHolder1_txtDescrizione').should('be.visible').click()
         cy.get('#ctl00_ContentPlaceHolder1_txtDescrizione').clear().type('SALA TEST LM AUTOMATICI')
 
