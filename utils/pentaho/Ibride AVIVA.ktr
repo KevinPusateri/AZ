@@ -604,7 +604,7 @@
     </partitioning>
     <connection>DB2 PROD</connection>
     <sql>SELECT 
-V.TXT_TARGA_TELA 
+V.TXT_TARGA_TELA
 FROM 
 GRAD.CONTRATTO C
 ,AGORA.INCR_CR U
@@ -626,11 +626,12 @@ AND C.COD_ANNULL_CON NOT IN (16)
 AND C.COD_RAMOPOL IN (13,31)
 AND C.TIP_PORTAF = '1' 
 AND C.TIP_STRUTTURA = 'SI'
-AND M.DAT_FCR > (CURRENT DATE + 16 DAY)
-AND M.DAT_FCR &lt; (CURRENT DATE + 60 DAY)
+AND M.DAT_FCR > (CURRENT DATE + 2 DAY)
+AND M.DAT_FCR &lt; (CURRENT DATE + 10 DAY)
 AND V.COD_ALIMENTAZIONE = 'F'
 AND length(RTRIM(V.TXT_TARGA_TELA))=7
 AND V.TXT_TARGA_TELA LIKE 'G%'
+AND V.DAT_IMMATRICOLAZIO > (CURRENT_DATE - 14 MONTH)
 FETCH FIRST 100 ROWS ONLY
 WITH UR</sql>
     <limit>0</limit>
@@ -646,7 +647,7 @@ WITH UR</sql>
         <name>TXT_TARGA_TELA</name>
         <length>20</length>
         <precision>-1</precision>
-        <origin>Retrive Electric COMP 14</origin>
+        <origin>Retrive Ibride Scadenza COMP 14</origin>
         <comments>TXT_TARGA_TELA</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
