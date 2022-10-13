@@ -138,18 +138,18 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
     
-    it('"Pagina di dettaglio" è verificato che in pagina siano riportati numero di sinistro, ' +
+    it('"Pagina di dettaglio" --> controllo che in pagina siano riportate le seguenti informazioni: numero di sinistro, ' +
     ' data di avvenimento e il cliente assicurato', function () {
-            
+
         ConsultazioneSinistriPage.printClaimDetailsValue()
     
        // Seleziona il sinistro
-       const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
-       Common.clickByIdOnIframe(css_ico_arrow_right)
-       cy.wait(2000) 
-        // Verifica (1) : numero di sinistro in alto alla pagina di dettaglio       
-       const clssDtl = "#sx-detail > h2"
-       Common.isVisibleText(clssDtl, numsin)
+        const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
+        Common.clickByIdOnIframe(css_ico_arrow_right)
+        cy.wait(2000) 
+            // Verifica (1) : numero di sinistro in alto alla pagina di dettaglio       
+        const clssDtl = "#sx-detail > h2"
+        Common.isVisibleText(clssDtl, numsin)
 
         // Verifica (2): Valore della data avvenimento           
         const cssDtAvv = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.clock"      
@@ -159,7 +159,6 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         const cssCliente = "#sx-detail > h2 > table > tbody > tr:nth-child(1) > td.people > a"
         Common.isVisibleText(cssCliente, clienteAssicurato);
         cy.screenshot('Pagina Dettaglio sinistro - Atterraggio pagina', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
     });
     
     it('"Pagina di dettaglio" è verificata la sezione INTESTAZIONE con valorizzazione dei campi ' +
@@ -233,7 +232,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Stato]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)                         
         });
-        cy.wait(2000)
+        cy.wait(2000);
+        cy.screenshot('Pagina di dettaglio" - sezione "PERIZIE"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
     });
 
     it('"Pagina di dettaglio" - sezione "PAGAMENTI" '+
@@ -285,7 +286,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Percepiente]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)                          
         });
-
+        cy.wait(2000);
+        cy.screenshot('Pagina di dettaglio" - sezione "PAGAMENTI"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
     });
 
 
@@ -364,7 +367,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Stato Pagamento]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                                                                                
         });
-
+        cy.wait(2000);
+        cy.screenshot('Pagina di dettaglio - POPUP "Dettaglio Pagamento"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
         ConsultazioneSinistriPage.clickBtn_ByClassAndText("k-icon k-i-close", "Close")        
     });
     
@@ -401,7 +406,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Telefono]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                            
         });                                                      
-
+        cy.wait(2000);
+        cy.screenshot('Pagina di dettaglio - POPUP "Dettaglio Incarico Perizia - anagrafica fiduciario"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
     });
 
     it(' Nella sezione "Perizie", - POPUP "Dettaglio Incarico Perizia - Dati incarico" ' +    
@@ -451,6 +458,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')           
         }); 
+        cy.wait(2000);
+        cy.screenshot('Pagina di dettaglio - POPUP "Dettaglio Incarico Perizia - Dati incarico"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
         // TODO: Implementare la chiusura sul secondo close della pop-up
         //const closecss= "body > div:nth-child(5) > div.k-window-titlebar.k-header > div > a > span"
         //csSinObjPage.clickLnk_ByHref("#")        

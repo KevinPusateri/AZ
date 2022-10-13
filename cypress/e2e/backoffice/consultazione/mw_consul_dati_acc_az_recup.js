@@ -81,7 +81,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
     it('Consultazione Sinistri: Selezione di un sinistro in stato PAGATO/CHIUSO ',  function () {
-      
+
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
@@ -96,9 +96,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         dtAvvenimento = ConsultazioneSinistriPage.getPromiseText_ById(cssdtAvv1)        
 
        // Seleziona il sinistro
-       const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
-       Common.clickByIdOnIframe(css_ico_arrow_right)
-
+        const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
+        Common.clickByIdOnIframe(css_ico_arrow_right)
+        cy.wait(2000);
+        cy.screenshot('Pagina Consultazione sinistro - Selezione del sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
     }); 
 
     it('Nella sezione "Azioni di recupero/Dati accessori".' +
@@ -171,16 +173,20 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Importo]: '+dscrpt); 
             Common.isValidCheck(/\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/, dscrpt, ' is valid currency')           
         });
-        
+        cy.wait(2000);
+        cy.screenshot('Pagina Consultazione sinistro - Sezione Azioni di recupero', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
     });
     
 
     it('Dalla sezione "Azioni di recupero" cliccando sul "soggetto debitore" verificare '+
-       'che sia apra la finestra di pop up di dettaglio anagrafico del soggetto', function () {
-        
-        
+        'che sia apra la finestra di pop up di dettaglio anagrafico del soggetto', function () {
+
         let cssLinkSgt = "#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(3) > a"
-        ConsultazioneSinistriPage.clickObj_ByLabel('a', cliente)        
+        ConsultazioneSinistriPage.clickObj_ByLabel('a', cliente)     
+        cy.wait(2000);
+        cy.screenshot('Pagina Consultazione sinistro - Sezione Azioni di recupero: soggetto debitore - pop up di dettaglio anagrafico del soggetto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);   
     });
     
 });

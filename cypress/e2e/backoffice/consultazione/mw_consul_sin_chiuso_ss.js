@@ -135,5 +135,5 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Viene effettutaoto l'upload del file
         AcquizioneDocumentiPage.UploadFile()       
     });
-   
+
 });

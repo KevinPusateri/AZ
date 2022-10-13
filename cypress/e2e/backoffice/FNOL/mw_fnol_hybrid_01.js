@@ -205,7 +205,9 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
     });
 
     it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' --> [Inserimento dati di sinistro]: ambito/soggetto coinvolto, etc..', function () {
-        //Informazioni sul sinistro
+       ///TODO Per il controllo delle voci nei menu a tendina vedere la funzione:  ConsultazioneSinistriPage.comunicAllCategoryCheck(categorieComunicazioni)
+        
+       //Informazioni sul sinistro
         //Selezione di quale ambito è coinvolto? *     
         let cssClssPrd =  '#fnol-nmt-incident-info > div > form > div:nth-child(1) > div:nth-child(1) > nx-formfield > div > div.nx-formfield__row > div.nx-formfield__flexfield > div > div > nx-dropdown > div > div.nx-dropdown__icon > nx-icon';
         Common.clickFindByIdOnIframe(cssClssPrd);
