@@ -174,9 +174,10 @@ class BurgerMenuSales extends Sales {
      * Click sul link richiesto dal BurgerMenu
      * @param {string} page - nome del link 
      */
-    static clickLink(page) {
+    static clickLink(page, clickBurgerMenu = true) {
 
-        // cy.get('lib-burger-icon').click({ force: true })
+        if (clickBurgerMenu)
+            cy.get('lib-burger-icon').click({ force: true })
         if (page === LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE) {
             this.checkPage(page)
         } else {
@@ -199,7 +200,7 @@ class BurgerMenuSales extends Sales {
                 }).as('getMotor');
                 Common.canaleFromPopup()
                 cy.wait('@getMotor', { timeout: 50000 });
-                getIFrame().find('button:contains("Cadlcola"):visible', { timeout: 20000 })
+                getIFrame().find('button:contains("Calcola"):visible', { timeout: 20000 })
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.SAFE_DRIVE_AUTOVETTURE:
