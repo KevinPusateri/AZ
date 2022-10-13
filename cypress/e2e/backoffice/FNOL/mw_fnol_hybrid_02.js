@@ -46,7 +46,7 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
 })
-/*
+
 afterEach(function () {
     if (this.currentTest.state !== 'passed') {
         //TopBar.logOutMW()
@@ -72,7 +72,7 @@ after(function () {
     //#endregion
     Cypress.runner.stop();
 })
-*/
+
 //#region Script Variables
 const IFrameParent = '[class="iframe-content ng-star-inserted"]'
 // AG 73 742000
@@ -381,5 +381,8 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         cy.wait(10000);
     });
 
+    it('Denuncia BMP -->  Closing Test', function () {
+        // TEST LASCIATO INTENZIONALMENTE VUOTO PER LA REPORTISTICA DA TFS
+    });
 
 });

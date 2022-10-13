@@ -78,7 +78,10 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
     it('MW: Movimentazioni Sinistri: Formattazione pagina', function () {         
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.pageTitle','Movimentazione Sinistri')
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#CRUSCOTTO_tipoPortafoglio','Tutto il portafoglio')
-        MovimentazioneSinistriPage.checkListValues_ById('#CRUSCOTTO_tipoPortafoglio')        
+        MovimentazioneSinistriPage.checkListValues_ById('#CRUSCOTTO_tipoPortafoglio')
+        cy.wait(2000); 
+        cy.screenshot('01- Movimentazione - Tipo Portafoglio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(2000);  
        // Verifica data associata all'aggiornamento dati
         const idAggDate = '#CRUSCOTTO_datiAggiornatiAl'
         MovimentazioneSinistriPage.checkObjDisabled(idAggDate)
@@ -105,7 +108,9 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#container > table > tbody > tr', 'Chiusi Senza Seguito');
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#container > table > tbody > tr', 'Pagati');
         MovimentazioneSinistriPage.checkObj_ByLocatorAndText('#container > table > tbody > tr', 'Periziati');
-        cy.wait(2000)        
+        cy.wait(1000); 
+        cy.screenshot('01- Movimentazione - Descrizioni associate alla tipologia di sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(2000); 
     });
     
     it('MW: Movimentazione sinistri - corretta esposizione del numero dei sinistri \'Protocollati\'', function () { 
@@ -117,7 +122,9 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioDenunciati') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
-                cy.wait(2000)                
+                cy.wait(2000); 
+                cy.screenshot('01- Movimentazione - Sinistri Protocollati', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.wait(2000);             
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
@@ -134,7 +141,9 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioAperti') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
-                cy.wait(2000)
+                cy.wait(2000);
+                cy.screenshot('01- Movimentazione - Sinistri Presi in carico da CLD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.wait(2000); 
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
@@ -150,7 +159,9 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioTrasferiti') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
-                cy.wait(2000)
+                cy.wait(2000);
+                cy.screenshot('01- Movimentazione - Sinistri Trasferiti', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.wait(2000); 
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
@@ -166,7 +177,9 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioChiusiSS') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
-                cy.wait(2000)
+                cy.wait(2000);
+                cy.screenshot('01- Movimentazione - Sinistri Chiusi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.wait(2000);
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
@@ -182,7 +195,9 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioPagati') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
-                cy.wait(2000)
+                cy.wait(2000);
+                cy.screenshot('01- Movimentazione - Sinistri Pagati', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.wait(2000);
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
@@ -198,7 +213,9 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmddettaglioPeriziati') 
                 cy.wait(2000)
                 MovimentazioneSinistriPage.checkObj_ByLocatorAndText('.bottonTable', 'Totali: '+mov)
-                cy.wait(2000)
+                cy.wait(2000);
+                cy.screenshot('01- Movimentazione - Sinistri Periziati', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.wait(2000);
                 Common.clickFindByIdOnIframeChild(IframeMovSin, '#CmdEsci') 
                 cy.wait(2000)  
             }
