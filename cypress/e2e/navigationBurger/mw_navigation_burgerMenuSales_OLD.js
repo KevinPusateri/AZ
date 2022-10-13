@@ -71,27 +71,11 @@ before(() => {
         LoginPage.logInMWAdvanced()
         BurgerMenuSales.getProfiling(data.tutf, keys)
     })
-    TopBar.clickSales()
 })
 
 beforeEach(() => {
+    Common.visitUrlOnEnv()
     cy.preserveCookies()
-    cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
-    cy.intercept(/launch-*/, 'ignore').as('launchStaging')
-    cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
-    cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
-    cy.get('lib-burger-icon').click({ force: true })
-})
-
-afterEach(function () {
-    if (this.currentTest.state !== 'passed') {
-        cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
-        cy.intercept(/launch-*/, 'ignore').as('launchStaging')
-        cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
-        cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
-        cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/sales/')
-        cy.wait(5000)
-    }
 })
 
 after(function () {
@@ -107,7 +91,7 @@ after(function () {
 describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     it('Verifica i link da Burger Menu', function () {
-        
+        TopBar.clickSales()
         BurgerMenuSales.checkExistLinks(keys)
     });
 
@@ -116,7 +100,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Preventivo Motor', function () {
         if (!keys.PREVENTIVO_MOTOR)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Preventivo Motor')
         BurgerMenuSales.backToSales()
     })
@@ -124,7 +108,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Safe Drive Autovetture', function () {
         if (!keys.SAFE_DRIVE_AUTOVETTURE)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Safe Drive Autovetture')
         BurgerMenuSales.backToSales()
     });
@@ -132,7 +116,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Flotte e Convenzioni', function () {
         if (!keys.FLOTTE_E_CONVENZIONI || (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')))
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Flotte e Convenzioni')
         BurgerMenuSales.backToSales()
 
@@ -141,7 +125,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio MiniFlotte', function () {
         if (!keys.MINIFLOTTE)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('MiniFlotte')
         BurgerMenuSales.backToSales()
     });
@@ -149,7 +133,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Trattative Auto Corporate', function () {
         if (!keys.TRATTATIVE_AUTO_CORPORATE)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Trattative Auto Corporate')
         BurgerMenuSales.backToSales()
     })
@@ -159,7 +143,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio ' + (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio', function () {
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio')
         BurgerMenuSales.backToSales()
     });
@@ -167,7 +151,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Allianz Ultra Casa e Patrimonio BMP', function () {
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio BMP')
         BurgerMenuSales.backToSales()
     });
@@ -175,7 +159,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Allianz Ultra Casa e Patrimonio 2022', function () {
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz Ultra Casa e Patrimonio 2022')
         BurgerMenuSales.backToSales()
     });
@@ -183,7 +167,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio ' + (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute', function () {
         if (!keys.ALLIANZ_ULTRA_SALUTE)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute')
         BurgerMenuSales.backToSales()
     });
@@ -191,7 +175,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio ' + (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Impresa' : 'Allianz Ultra Impresa', function () {
         if (!keys.ALLIANZ_ULTRA_IMPRESA)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Impresa' : 'Allianz Ultra Impresa')
         BurgerMenuSales.backToSales()
     });
@@ -199,7 +183,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Allianz1 Business', function () {
         if (!keys.ALLIANZ1_BUSINESS)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz1 Business')
         BurgerMenuSales.backToSales()
     })
@@ -207,7 +191,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio FastQuote Infortuni da circolazione', function () {
         if (!keys.FASTQUOTE_INFORTUNI_DA_CIRCOLAZIONE || (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')))
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('FastQuote Infortuni da circolazione')
         BurgerMenuSales.backToSales()
     })
@@ -215,7 +199,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio FastQuote Impresa e Albergo', function () {
         if (!keys.FASTQUOTE_IMPRESA_E_ALBERGO)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('FastQuote Impresa e Albergo')
         BurgerMenuSales.backToSales()
     })
@@ -225,7 +209,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Allianz1 premorienza', function () {
         if (!keys.ALLIANZ1_PREMORIENZA)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz1 premorienza')
         BurgerMenuSales.backToSales()
     })
@@ -233,7 +217,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Preventivo Anonimo Vita Individuali', function () {
         if (!keys.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Preventivo Anonimo Vita Individuali')
         BurgerMenuSales.backToSales()
     })
@@ -243,7 +227,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Gestione richieste per PA', function () {
         if (!keys.GESTIONE_RICHIESTE_PER_PA)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Gestione richieste per PA')
         BurgerMenuSales.backToSales()
     })
@@ -254,7 +238,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Nuovo Sfera', function () {
         if (!keys.NUOVO_SFERA)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Nuovo Sfera')
         BurgerMenuSales.backToSales()
     })
@@ -262,7 +246,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Sfera', function () {
         if (!keys.SFERA || (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')))
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Sfera')
         BurgerMenuSales.backToSales()
     })
@@ -270,7 +254,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Campagne Commerciali', function () {
         if (!keys.CAMPAGNE_COMMERCIALI)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Campagne Commerciali')
         BurgerMenuSales.backToSales()
     })
@@ -278,7 +262,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Recupero preventivi e quotazioni', function () {
         if (!keys.RECUPERO_PREVENTIVI_E_QUOTAZIONI)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Recupero preventivi e quotazioni')
         BurgerMenuSales.backToSales()
     })
@@ -286,7 +270,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Documenti da firmare', function () {
         if (!keys.DOCUMENTI_DA_FIRMARE)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Documenti da firmare')
         BurgerMenuSales.backToSales()
     })
@@ -295,7 +279,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Gestione attività in scadenza', function () {
         if (!keys.GESTIONE_ATTIVITA_IN_SCADENZA)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Gestione attività in scadenza')
         BurgerMenuSales.backToSales()
     })
@@ -303,7 +287,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Manutenzione portafoglio RV Midco', function () {
         if (!keys.MANUTENZIONE_PORTAFOGLIO_RV_MIDCO)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Manutenzione portafoglio RV Midco')
         BurgerMenuSales.backToSales()
     })
@@ -311,7 +295,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Vita Corporate', function () {
         if (!keys.VITA_CORPORATE)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Vita Corporate')
         BurgerMenuSales.backToSales()
     })
@@ -319,7 +303,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Monitoraggio Polizze Proposte', function () {
         if (!keys.MONITORAGGIO_POLIZZE_PROPOSTE)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Monitoraggio Polizze Proposte')
         BurgerMenuSales.backToSales()
     })
@@ -327,7 +311,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Certificazione fiscale', function () {
         if (!keys.CERTIFICAZIONE_FISCALE)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Certificazione fiscale')
         BurgerMenuSales.backToSales()
     })
@@ -335,7 +319,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Manutenzione Portafoglio Auto', function () {
         if (!keys.MANUTENZIONE_PORTAFOGLIO_AUTO)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Manutenzione Portafoglio Auto')
         BurgerMenuSales.backToSales()
     })
@@ -343,7 +327,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Cruscotto certificati applicazioni', function () {
         if (!keys.CRUSCOTTO_CERTIFICATI_APPLICAZIONI)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Cruscotto certificati applicazioni')
         BurgerMenuSales.backToSales()
     })
@@ -351,7 +335,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Cruscotto riepiloghi polizze abb.', function () {
         if (!keys.CRUSCOTTO_RIEPILOGHI_POLIZZE_ABB)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Cruscotto riepiloghi polizze abb.')
         BurgerMenuSales.backToSales()
     })
@@ -359,7 +343,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Report Cliente T4L', function () {
         if (!keys.REPORT_CLIENTE_T4L)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Report Cliente T4L')
         BurgerMenuSales.backToSales()
     })
@@ -367,7 +351,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Documenti annullati', function () {
         if (!keys.DOCUMENTI_ANNULLATI)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Documenti annullati')
         BurgerMenuSales.backToSales()
     })
@@ -387,7 +371,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Documenti da gestire', function () {
         if (!keys.DOCUMENTI_DA_GESTIRE)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Documenti da gestire')
         BurgerMenuSales.backToSales()
     })
@@ -395,7 +379,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Folder', function () {
         if (!keys.FOLDER)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Folder')
         BurgerMenuSales.backToSales()
     })
@@ -406,7 +390,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             if (!currentHostName.includes('SM')) {
-                
+                TopBar.clickSales()
                 BurgerMenuSales.clickLink('Allianz Global Assistance')
             }
         })
@@ -415,14 +399,14 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Allianz Placement Platform', function () {
         if (!keys.ALLIANZ_PLACEMENT_PLATFORM)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Allianz placement platform')
     })
 
     it('Verifica aggancio Qualità portafoglio auto', function () {
         if (!keys.QUALITÀ_PORTAFOGLIO_AUTO)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Qualità portafoglio auto')
         BurgerMenuSales.backToSales()
     })
@@ -430,7 +414,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio Note di contratto', function () {
         if (!keys.NOTE_DI_CONTRATTO)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('Note di contratto')
         BurgerMenuSales.backToSales()
     })
@@ -438,7 +422,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     it('Verifica aggancio ACOM Gestione iniziative', function () {
         if (!keys.ACOM_GESTIONE_INIZIATIVE)
             this.skip()
-        
+        TopBar.clickSales()
         BurgerMenuSales.clickLink('ACOM Gestione iniziative')
     })
     //#endregion
