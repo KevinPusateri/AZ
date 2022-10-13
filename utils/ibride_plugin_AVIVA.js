@@ -105,7 +105,7 @@ const sendEmail = () => {
         const email = {
             from: '"Ibride Aviva Mago" <noreply@allianz.it>',
             to: 'mail_tf@allianz.it',
-            subject: 'Ibride in Scadenza - Compagnia 14',
+            subject: 'Ibride PLUG-IN in Scadenza - Compagnia 14',
             html: generateTable() + '</br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>Thanks also to Angelo Merlo for query support</br></br>',
         };
         transporter.sendMail(email, function (err, info) {
@@ -143,6 +143,29 @@ const generateTable = () => {
 
 const retriveInfo = targa => {
     return new Promise((resolve, reject) => {
+
+        let currentInfos = {
+            'Targa': '',
+            'Alimentazione': '',
+            'Codice_Fiscale': '',
+            'Cognome': '',
+            'Nome': '',
+            'Data_Nascita': '',
+            'Provincia': '',
+            'Comune': '',
+            'Data_Immatricolazione': '',
+            'Data_Fine_Copertura': '',
+            'Descrizione_Veicolo': '',
+            'Toponimo': '',
+            'Indirizzo': '',
+            'Compagnia_Provenienza': '',
+            'Cl_Prov': '',
+            'Cl_Ass': '',
+            'CU_Prov': '',
+            'CU_Ass': ''
+        }
+
+        currentInfos.Targa = targa
         axios({
             url: `http://online.azi.allianzit/WebdaniaFES/services/vehicle/${targa}/sita/`,
             method: 'get',
@@ -155,6 +178,9 @@ const retriveInfo = targa => {
                 if (respSita.status === 200) {
                     //Recuperiamo il codice fiscale del contraente
                     let contractorFiscalCode = respSita.data.itemList[0].contractorFiscalCode
+                    currentInfos.Codice_Fiscale = contractorFiscalCode
+                    currentInfos.Data_Fine_Copertura = respSita.data.itemList[0].coverageEndDate
+                    currentInfos.Compagnia_Provenienza = respSita.data.itemList[0].companyDescr
 
                     axios.post(`http://be2be.pp.azi.allianzit/Anagrafe/AnagrafeWS/AnagrafeSvc.asmx/Normalize`,
                         qs.stringify({
@@ -176,6 +202,7 @@ const retriveInfo = targa => {
 
                                 //Rimuoviamo dalla data di nascita l'orario e convertiamo nel formato yyyy-mm-dd
                                 let dataNascita = JSON.stringify(resultOfNorm.Normalize.Output[0].CPersona[0].DataNascita[0]).replace('"', '').split(' ')[0]
+                                currentInfos.Data_Nascita = dataNascita
 
                                 axios({
                                     url: `http://online.azi.allianzit/WebdaniaFES/services/vehicle/${targa}/sivi/`,
@@ -185,6 +212,10 @@ const retriveInfo = targa => {
                                         'Content-Type': 'application/json',
                                     }
                                 }).then((respSivi) => {
+                                    currentInfos.Provincia = respSivi.data.itemList[0].provRes
+                                    currentInfos.Comune = respSivi.data.itemList[0].municipalName
+                                    currentInfos.Data_Immatricolazione = respSivi.data.itemList[0].registerDate
+                                    currentInfos.Descrizione_Veicolo = respSivi.data.itemList[0].vehicleTypeDescription
 
                                     axios({
                                         url: `http://online.azi.allianzit/WebdaniaFES/services/vehicle/${targa}/atrc/`,
@@ -194,6 +225,13 @@ const retriveInfo = targa => {
                                             'Content-Type': 'application/json',
                                         }
                                     }).then((respAtrc) => {
+
+                                        currentInfos.Cognome = respAtrc.data.itemList[0].socialNameSurname
+                                        currentInfos.Nome = respAtrc.data.itemList[0].contractorName
+                                        currentInfos.Cl_Prov = respAtrc.data.itemList[0].provenanceClass
+                                        currentInfos.Cl_Ass = respAtrc.data.itemList[0].assignmentClass
+                                        currentInfos.CU_Prov = respAtrc.data.itemList[0].provenanceClassCU
+                                        currentInfos.CU_Ass = respAtrc.data.itemList[0].assignmentClassCU
 
                                         axios.post(`http://be2be.pp.azi.allianzit/Anagrafe/AnagrafeWS/Services/EgonServices.asmx/AutocompleteStreet`,
                                             qs.stringify({
@@ -222,6 +260,9 @@ const retriveInfo = targa => {
                                                         let toponimo = randomAddress.substring(0, randomAddress.indexOf(' '))
                                                         let indirizzo = randomAddress.substring(randomAddress.indexOf(' ') + 1)
 
+                                                        currentInfos.Indirizzo = indirizzo
+                                                        currentInfos.Toponimo = toponimo
+
                                                         axios({
                                                             url: `http://online.azi.allianzit/WebdaniaFES/services/vehicle/${targa}/sivi/detail/0`,
                                                             method: 'get',
@@ -230,26 +271,8 @@ const retriveInfo = targa => {
                                                                 'Content-Type': 'application/json',
                                                             }
                                                         }).then(detailedSivi => {
-                                                            let currentInfos = {
-                                                                'Targa': targa,
-                                                                'Alimentazione': detailedSivi.data.fuelTypeDescr,
-                                                                'Codice_Fiscale': contractorFiscalCode,
-                                                                'Cognome': respAtrc.data.itemList[0].socialNameSurname,
-                                                                'Nome': respAtrc.data.itemList[0].contractorName,
-                                                                'Data_Nascita': dataNascita,
-                                                                'Provincia': respSivi.data.itemList[0].provRes,
-                                                                'Comune': respSivi.data.itemList[0].municipalName,
-                                                                'Data_Immatricolazione': respSivi.data.itemList[0].registerDate,
-                                                                'Data_Fine_Copertura': respSita.data.itemList[0].coverageEndDate,
-                                                                'Descrizione_Veicolo': respSivi.data.itemList[0].vehicleTypeDescription,
-                                                                'Toponimo': toponimo,
-                                                                'Indirizzo': indirizzo,
-                                                                'Compagnia_Provenienza': respSita.data.itemList[0].companyDescr,
-                                                                'Cl_Prov': respAtrc.data.itemList[0].provenanceClass,
-                                                                'Cl_Ass': respAtrc.data.itemList[0].assignmentClass,
-                                                                'CU_Prov': respAtrc.data.itemList[0].provenanceClassCU,
-                                                                'CU_Ass': respAtrc.data.itemList[0].assignmentClassCU
-                                                            }
+
+                                                            currentInfos.Alimentazione = detailedSivi.data.fuelTypeDescr
 
                                                             //Aggiungiamo all'array da mandare via mail
                                                             targheToSend.push(currentInfos)
@@ -259,32 +282,53 @@ const retriveInfo = targa => {
                                                         })
 
                                                     } catch (error) {
-                                                        reject(`${targa}`)
+                                                        //Aggiungiamo all'array da mandare via mail
+                                                        targheToSend.push(currentInfos)
+                                                        //Aggiungiamo
+                                                        resolve(currentInfos)
+                                                        //reject(`${targa}`)
                                                     }
                                                 })
                                             })
                                         })
                                     })
                                         .catch(error => {
-                                            reject(`${targa}`)
+                                            //Aggiungiamo all'array da mandare via mail
+                                            targheToSend.push(currentInfos)
+                                            //Aggiungiamo
+                                            resolve(currentInfos)
+                                            //reject(`${targa}`)
                                         })
                                 })
                                     .catch(error => {
-                                        reject(`${targa}`)
+                                        //Aggiungiamo all'array da mandare via mail
+                                        targheToSend.push(currentInfos)
+                                        //Aggiungiamo
+                                        resolve(currentInfos)
+                                        //reject(`${targa}`)
                                     })
                             })
                         })
                     })
                         .catch(error => {
-                            reject(`${targa}`)
+                            //Aggiungiamo all'array da mandare via mail
+                            targheToSend.push(currentInfos)
+                            //Aggiungiamo
+                            resolve(currentInfos)
+                            //reject(`${targa}`)
                         })
                 }
             })
             .catch(error => {
-                reject(`${targa}`)
+                //Aggiungiamo all'array da mandare via mail
+                targheToSend.push(currentInfos)
+                //Aggiungiamo
+                resolve(currentInfos)
+                //reject(`${targa}`)
             })
     })
 }
+
 //#endregion
 
 const main = async () => {
@@ -297,7 +341,7 @@ const main = async () => {
             const currentTargaInfos = await retriveInfo(currentTarga)
             console.log(`--- Info per targa ${currentTarga} ---`)
             console.log(currentTargaInfos)
-            writeData(currentTarga, currentTargaInfos)
+            //writeData(currentTarga, currentTargaInfos)
         } catch (targaToRemove) {
             deleteMissedTarga(targaToRemove)
         }

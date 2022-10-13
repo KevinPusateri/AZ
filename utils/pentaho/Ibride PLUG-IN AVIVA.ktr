@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Ibride Scadenza Comp 14</name>
+    <name>Ibride PLUG-IN Scadenza Comp 14</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -548,7 +548,7 @@
   </connection>
   <order>
     <hop>
-      <from>Retrive Ibride Scadenza COMP 14</from>
+      <from>Retrive Ibride PLUG-IN Scadenza COMP 14</from>
       <to>Table output</to>
       <enabled>Y</enabled>
     </hop>
@@ -592,7 +592,7 @@
     </GUI>
   </step>
   <step>
-    <name>Retrive Ibride Scadenza COMP 14</name>
+    <name>Retrive Ibride PLUG-IN Scadenza COMP 14</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -626,13 +626,13 @@ AND C.COD_ANNULL_CON NOT IN (16)
 AND C.COD_RAMOPOL IN (13,31)
 AND C.TIP_PORTAF = '1' 
 AND C.TIP_STRUTTURA = 'SI'
-AND M.DAT_FCR > (CURRENT DATE + 2 DAY)
-AND M.DAT_FCR &lt; (CURRENT DATE + 10 DAY)
-AND V.COD_ALIMENTAZIONE = 'F'
+AND M.DAT_FCR > (CURRENT DATE + 3 DAY)
+AND M.DAT_FCR &lt; (CURRENT DATE +  120 DAY)
+AND V.TXT_VEICOLO LIKE '%PLUG%'
 AND length(RTRIM(V.TXT_TARGA_TELA))=7
 AND V.TXT_TARGA_TELA LIKE 'G%'
 AND V.DAT_IMMATRICOLAZIO > (CURRENT_DATE - 14 MONTH)
-FETCH FIRST 100 ROWS ONLY
+FETCH FIRST 20 ROWS ONLY
 WITH UR</sql>
     <limit>0</limit>
     <lookup/>
@@ -647,7 +647,7 @@ WITH UR</sql>
         <name>TXT_TARGA_TELA</name>
         <length>20</length>
         <precision>-1</precision>
-        <origin>Retrive Ibride Scadenza COMP 14</origin>
+        <origin>Retrive Ibride PLUG-IN Scadenza COMP 14</origin>
         <comments>TXT_TARGA_TELA</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -674,7 +674,7 @@ WITH UR</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>416</xloc>
+      <xloc>400</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
