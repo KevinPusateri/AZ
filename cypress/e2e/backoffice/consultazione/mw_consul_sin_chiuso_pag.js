@@ -19,6 +19,7 @@ import { isDate } from "lodash"
 const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
+const ibantools = require('ibantools');
 let insertedId
 //#endregion
 
@@ -62,7 +63,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-     Cypress.runner.stop();
+    Cypress.runner.stop();
 })
 
 //#region Script Variables
