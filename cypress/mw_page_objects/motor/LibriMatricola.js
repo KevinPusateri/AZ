@@ -326,7 +326,7 @@ class LibriMatricola {
             url: '**/KoTemplates/**'
         }).as('loadKoTemplates')
 
-        cy.wait('@loadIntegrazione', { requestTimeout: 60000 });
+        // cy.wait('@loadIntegrazione', { requestTimeout: 60000 });
 
         //POST Rel 127
         cy.wait('@loadKoTemplates', { requestTimeout: 60000 });
@@ -809,13 +809,12 @@ class LibriMatricola {
             cy.get('#cbVersione').find('input').type(veicolo.versione)
                 .wait(1000).type('{downarrow}{enter}').wait(1000)
 
-            cy.pause()
             cy.get('input[data-bind*="dpDataImmatricolazioneN"]').first()
                 .type(veicolo.dataImmatricolazione).wait(2000)
 
             //inserisce il numero dei posti
             cy.get('#veicoloDiv').click().wait(1000)
-            cy.get('input[title*="numero di posti"]').should('be.visible').and('be.enabled').type(veicolo.nPosti).wait(1000)
+            cy.get('input[title*="numero di posti"]:first').should('be.visible').and('be.enabled').type(veicolo.nPosti).wait(1000)
         })
     }
 
