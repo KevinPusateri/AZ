@@ -156,7 +156,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
     // #endregion
 
     // #region  Rami Vari
-    it.only((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Verifica aggancio Ultra Casa e Patrimonio' : 'Verifica aggancio Allianz Ultra Casa e Patrimonio', function () {
+    it((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Verifica aggancio Ultra Casa e Patrimonio' : 'Verifica aggancio Allianz Ultra Casa e Patrimonio', function () {
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO)
             this.skip()
 
@@ -180,7 +180,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     });
 
-    it('Verifica aggancio ' + (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute', function () {
+    it((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Verifica aggancio Ultra Salute' : 'Verifica aggancio Allianz Ultra Salute', function () {
         if (!keys.ALLIANZ_ULTRA_SALUTE)
             this.skip()
 
@@ -188,7 +188,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     });
 
-    it('Verifica aggancio ' + (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Impresa' : 'Allianz Ultra Impresa', function () {
+    it((Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Verifica aggancio Ultra Impresa' : ' Verifica aggancio Allianz Ultra Impresa', function () {
         if (!keys.ALLIANZ_ULTRA_IMPRESA)
             this.skip()
 
