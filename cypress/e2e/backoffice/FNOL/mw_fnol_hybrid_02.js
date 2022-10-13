@@ -46,7 +46,7 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
 })
-
+/*
 afterEach(function () {
     if (this.currentTest.state !== 'passed') {
         //TopBar.logOutMW()
@@ -72,7 +72,7 @@ after(function () {
     //#endregion
     Cypress.runner.stop();
 })
-
+*/
 //#region Script Variables
 const IFrameParent = '[class="iframe-content ng-star-inserted"]'
 // AG 73 742000
