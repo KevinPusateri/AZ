@@ -380,4 +380,8 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         cy.screenshot('18- Sommario - Riepilogo sinistro - conferma del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(10000);
     });
+
+    it('Denuncia BMP -->  Closing Test', function () {
+        
+    });
 });
