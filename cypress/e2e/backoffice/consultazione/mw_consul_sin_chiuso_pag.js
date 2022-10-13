@@ -250,7 +250,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             ConsultazioneSinistriPage.isNotNullOrEmpty(dtPagamento)
             Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, dtPagamento, ' contain a valid date') 
         });
-        
+
         // Verifica : la valorizzazione del campo "Data invio banca" in Sezione Pagamenti
         const cssDtInvioBanca = '#soggetti_danneggiati > div > div > div > div:nth-child(2) > div:nth-child(2) > table > tbody > tr.odd > td:nth-child(1)'
         ConsultazioneSinistriPage.getPromiseText_ById(cssDtInvioBanca).then((val) => {
@@ -291,7 +291,6 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.wait(1000);
     });
 
-
     it('Sezione "Pagamenti", - POPUP "Dettaglio Pagamento" ' +
     ' verificare che le informazioni riferite a data pagamento, data invio banca, importo, valuta, causale, modalità di pagamento, Iban, tipo proposta e stato pagamento', function () {
         //const csSinObjPage = Object.create(ConsultazioneSinistriPage)
@@ -305,6 +304,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)            
             Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')           
         });
+
         // Verifica : la valorizzazione del campo "Data invio Banca" nella popup "Dettaglio Pagamento"
         const popUplocator2 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseText_ById(popUplocator2).then((val) => {
@@ -375,10 +375,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     
     it(' Nella sezione "Perizie", - POPUP "Dettaglio Incarico Perizia - anagrafica fiduciario" ' +
     ' verifiche delle seguenti informazioni: Fiduciario, Tipo collaborazione, Indirizzo, Telefono ', function () {
-       
         const xpathDettaglioPerizia = "#soggetti_danneggiati > div > div > div > div:nth-child(1) > div:nth-child(2) > a"
         Common.clickFindByIdOnIframe(xpathDettaglioPerizia)
-      
+
         // Verifica(1) : la valorizzazione del campo "Fiduciario" nella popup "Dettaglio Incarico Perizia"      
         const popUplocator1 = ".k-widget.k-window > .popup.k-window-content.k-content > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseText_ById(popUplocator1).then((val) => {                  
@@ -393,16 +392,16 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                          
         });                                      
 
-       // Verifica(3) : la valorizzazione del campo "Indirizzo" nella popup "Dettaglio Incarico Perizia"
-       const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)"  
-       ConsultazioneSinistriPage.getPromiseText_ById(popUplocator3).then((val) => {          
-            cy.log('[it]>> [Indirizzo]: '+val);
-            ConsultazioneSinistriPage.isNotNullOrEmpty(val)                         
+        // Verifica(3) : la valorizzazione del campo "Indirizzo" nella popup "Dettaglio Incarico Perizia"
+        const popUplocator3 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(4) > td:nth-child(2)"  
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator3).then((val) => {          
+                cy.log('[it]>> [Indirizzo]: '+val);
+                ConsultazioneSinistriPage.isNotNullOrEmpty(val)                         
         });                                    
 
        // Verifica(4) : la valorizzazione del campo "Telefono" nella popup "Dettaglio Incarico Perizia"
-       const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"  
-       ConsultazioneSinistriPage.getPromiseText_ById(popUplocator4).then((val) => {        
+        const popUplocator4 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(5) > td:nth-child(2)"  
+        ConsultazioneSinistriPage.getPromiseText_ById(popUplocator4).then((val) => {        
             cy.log('[it]>> [Telefono]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                            
         });                                                      
@@ -413,7 +412,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
     it(' Nella sezione "Perizie", - POPUP "Dettaglio Incarico Perizia - Dati incarico" ' +    
     ' verifiche delle seguenti informazioni: Data incarico, Data scarico, Tipo incarico, Stato incarico, Esito perizia, Data verifica perizia, Esito verifica perizia', function () {
-    
+
         // Verifica(1) : la valorizzazione del campo "Data incarico" nella popup "Dettaglio Incarico Perizia"
         const popUplocator5 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(8) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseText_ById(popUplocator5).then((val) => {              
@@ -436,7 +435,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Tipo incarico]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                           
         });     
-        
+
         // Verifica(4) : la valorizzazione del campo "Stato incarico" nella popup "Dettaglio Incarico Perizia"
         const popUplocator8 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(11) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseText_ById(popUplocator8).then((val) => {            
@@ -450,14 +449,15 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Perizia]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)                         
         });     
-        
+
         // Verifica(6) : la valorizzazione del campo "Data verifica perizia" nella popup "Dettaglio Incarico Perizia"
         const popUplocator10 = ".popup.k-window-content.k-content > table > tbody > tr:nth-child(13) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseText_ById(popUplocator10).then((val) => {           
             cy.log('[it]>> [Data verifica perizia]: '+val);
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')           
-        }); 
+        });
+
         cy.wait(2000);
         cy.screenshot('Pagina di dettaglio - POPUP "Dettaglio Incarico Perizia - Dati incarico"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
         cy.wait(1000);

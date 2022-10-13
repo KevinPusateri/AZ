@@ -138,10 +138,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         }); 
     });
 
-    
     it('"Pagina di dettaglio" --> controllo che in pagina siano riportate le seguenti informazioni: numero di sinistro,' +
     ' data di avvenimento e il cliente assicurato', function () {
-            
+
         ConsultazioneSinistriPage.printClaimDetailsValue()
     
         // Seleziona il sinistro dalla pagina di ricerca
@@ -157,7 +156,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByIdAndText(cssCliente, clienteAssicurato);
         cy.screenshot('Pagina Dettaglio sinistro - Atterraggio pagina', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
-    
+
     it('"Pagina di dettaglio" --> Controllo della sezione intestazione di pagina, con valorizzazione dei campi ' +
     ' Località e CLD/Danneggiato ', function () {
         

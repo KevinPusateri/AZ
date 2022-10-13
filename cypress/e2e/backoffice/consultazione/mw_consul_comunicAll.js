@@ -147,7 +147,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
     it('Controllo formale sulla struttura di pagina per una nuova comunicazione', function () {
-        
+
         const cssLblCategoria =  '#lblCategoriaComunicAll'
         const cssLblOggetto =  '#lblOggettoComunicAll'
         const cssLblMessaggio =  '#lblMessaggio'
@@ -180,7 +180,6 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.screenshot('Pagina comunicAll - Utilizzo caratteri speciali in oggetto pratica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     })
 
-    
     it('Controllo utilizzo dei caratteri speciali nell\'area di testo della comunicazione comunicAll,', function () {
     
         ConsultazioneSinistriPage.comunicAllSpecialCharsCheck('#txtComunicAllMessage', spclTxtValue) 

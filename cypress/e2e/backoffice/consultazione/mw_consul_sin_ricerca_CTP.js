@@ -64,7 +64,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-     Cypress.runner.stop();
+    Cypress.runner.stop();
 })
 
 
@@ -126,7 +126,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
     
     it('Consultazione Sinistri: Ricerca per codice fiscale del CTP persona fisica ', function () {
-      
+
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici CTP')
         ConsultazioneSinistriPage.setValue_ById('#cognomeCTP','')
         ConsultazioneSinistriPage.setValue_ById('#nomeCTP','')

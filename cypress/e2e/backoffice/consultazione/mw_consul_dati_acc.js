@@ -63,7 +63,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-     Cypress.runner.stop();
+    Cypress.runner.stop();
 })
 
 //#region Script Variables
@@ -97,7 +97,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Cliente]: '+cliente);
             ConsultazioneSinistriPage.isNotNullOrEmpty(cliente)
         }); 
-    
+
         const cssdtAvv1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
         ConsultazioneSinistriPage.getPromiseText_ById(cssdtAvv1).then((val) => {
             dtAvvenimento = val;  
