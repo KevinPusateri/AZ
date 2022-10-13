@@ -72,7 +72,6 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Movimentazione sinistri') 
         cy.wait(1000); 
-       
     });
     
     it('MW: Movimentazioni Sinistri: Formattazione pagina', function () {         
@@ -96,7 +95,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
 
     
     it('MW: Movimentazioni sinistri: controllo che la somma dei singoli movimenti coincida con il totale della movimentazione riportata', function () {      
-       
+    
         MovimentazioneSinistriPage.checkTotAndSumMovimenti();
         cy.wait(2000)        
     });
