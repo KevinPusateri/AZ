@@ -147,6 +147,54 @@ class LandingRicerca {
 
     }
 
+    static checkAggancioRicercaCliente() {
+
+        // Click "Ricerca classica"
+        cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
+        Common.canaleFromPopup()
+        cy.url().should('include', 'legacyda')
+        cy.wait(10000)
+        cy.getIFrame()
+        cy.get('@iframe').should('exist').and('be.visible').within(() => {
+            cy.get('#filtra-fisica').should('exist').and('be.visible')
+
+            const searchClients = () => {
+                cy.get('[class="k-grid-content k-auto-scrollable"]:visible').first().scrollIntoView().then(($table) => {
+                    const isTrovato = $table.find(':contains("Nessun record da visualizzare")').is(':visible')
+                    if (isTrovato) {
+                        cy.generateTwoLetters().then(randomChars => {
+                            cy.get('#f-cognome').clear().type(randomChars)
+                        })
+                        cy.generateTwoLetters().then(randomChars => {
+                            cy.get('#f-nome').clear().type(randomChars)
+                        })
+                        cy.contains('Cerca').click().wait(2000)
+
+                        searchClients()
+                    } else {
+                        cy.screenshot('Ricerca clienti PF', { overwrite: true })
+                        return
+                    }
+                })
+            }
+            // cerchiamo un cliente random
+            searchClients()
+
+            //seleziona primo Cliente
+            cy.get('tbody > tr').first().find('span[class="customer-name"]').then(($name) => {
+                cy.log($name.text().trim())
+                let nameClient = $name.text().trim()
+                cy.pause()
+            })
+
+            cy.get('tbody > tr').first().click()
+            cy.pause()
+            //TODO Verificare cliente selezionato aggancia alla scheda cliente 
+            //! Non rimane nella scheda cliente
+
+        })
+    }
+
     /**
      * Ricerca un valore nella buca di ricerca
      * @param {string} value - Cosa ricercare
