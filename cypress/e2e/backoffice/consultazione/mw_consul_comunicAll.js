@@ -74,7 +74,7 @@ let categorieComunicazioni = ['Fiduciari', 'Stato Pratica', ' Info Pagamento', '
 let spclTxtValue = '\\|!£$%&/()=\'?ì^è+òàù-€éç°§@#-[*].'
 //#endregion
 
-describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
+describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione del comunicAll', () => {
 
     it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
         TopBar.clickBackOffice()

@@ -70,7 +70,7 @@ let dtAvvenimento
 let cliente
 //#endregion
 
-describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
+describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione dati con accesso alle azioni di recupero', () => {
 
     it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
         TopBar.clickBackOffice()

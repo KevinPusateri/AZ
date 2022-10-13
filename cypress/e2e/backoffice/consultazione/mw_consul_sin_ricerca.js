@@ -66,7 +66,7 @@ after(function () {
 })
 
 
-describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistri', () => {
+describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistri tramite ricerca dati per numsin, polizza, targa assicurato e dt avvenimento', () => {
     // DATI DEL TEST (Per la verifica selezionare un sinistro con controparte)
     const numsin = "927646985"
     const numpol = "528771171"
