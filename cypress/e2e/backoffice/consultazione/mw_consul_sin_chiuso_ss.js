@@ -65,7 +65,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-     Cypress.runner.stop();
+    Cypress.runner.stop();
 })
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO SENZA SEGUITO', () => {
@@ -104,7 +104,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
     it('In pagina dettaglio di sinistro in stato CHIUSO SENZA SEGUITO, ' +
     'Aprendo la sezione Perizie si verifica che non ci siano incarichi di perizia e che sia riportata la dicitura : "Non ci sono incarichi di perizia" ' , function () {
-    
+
         const cssDettaglio = "#soggetti_danneggiati > div > div:nth-child(1) > a"
         Common.clickFindByIdOnIframe(cssDettaglio) 
         
@@ -135,5 +135,5 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Viene effettutaoto l'upload del file
         AcquizioneDocumentiPage.UploadFile()       
     });
-   
+
 });

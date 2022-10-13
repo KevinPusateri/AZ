@@ -62,7 +62,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-     Cypress.runner.stop();
+    Cypress.runner.stop();
 })
 
 //#region Script Variables
@@ -81,29 +81,31 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
     it('Consultazione Sinistri: Selezione di un sinistro in stato PAGATO/CHIUSO ',  function () {
-      
+
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
         Common.getObjByTextOnIframe(stato_sin)
         ConsultazioneSinistriPage.printClaimDetailsValue()
         cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-        
+
         const cssCliente1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(2)"
         cliente = ConsultazioneSinistriPage.getPromiseText_ById(cssCliente1)
-    
+
         const cssdtAvv1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
         dtAvvenimento = ConsultazioneSinistriPage.getPromiseText_ById(cssdtAvv1)        
 
        // Seleziona il sinistro
-       const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
-       Common.clickByIdOnIframe(css_ico_arrow_right)
-
+        const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
+        Common.clickByIdOnIframe(css_ico_arrow_right)
+        cy.wait(2000);
+        cy.screenshot('Pagina Consultazione sinistro - Selezione del sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
     }); 
 
     it('Nella sezione "Azioni di recupero/Dati accessori".' +
     ' si verifica che siano valorizzati i seguenti campi: Tipologia, Importo, Soggetto debitore, Data inizio e Stato." ', function () {
-        
+
         // Verifica : numero di sinistro in alto alla pagina di dettaglio
         const clssDtl = "#sx-detail > h2"
         ConsultazioneSinistriPage.isTextIncluded_ByIdAndText(clssDtl, numsin)
@@ -132,7 +134,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Tipologia]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
         });         
-        
+
         // Verifica (4) : la valorizzazione del campo "Data inizio" nella sezione "Azioni di Recupero"
         const cssDtInizio = '#azioni_recupero > div > div > table > tbody > tr:nth-child(2) > td:nth-child(1)'
         ConsultazioneSinistriPage.getPromiseText_ById(cssDtInizio).then(val => {
@@ -140,7 +142,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             ConsultazioneSinistriPage.isNotNullOrEmpty(val)
             Common.isValidCheck(/\d{2}[-.\/]\d{2}(?:[-.\/]\d{2}(\d{2})?)?/, val, ' contain a valid date')            
         });
-        
+
         // Verifica (5): valorizzazione 'Stato' nella sezione 'Azioni di recupero'
         const cssStato = "#azioni_recupero > div > div > table > tbody > tr:nth-child(2) > td:nth-child(2)"  
         ConsultazioneSinistriPage.getPromiseText_ById(cssStato).then((val) => {   
@@ -148,7 +150,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Stato]: '+dscrpt);
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
         });  
-        
+
         // Verifica (6): valorizzazione 'Soggetto debitore' nella sezione 'Azioni di recupero'
         const cssSgtDbt = "#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(3)"  
         ConsultazioneSinistriPage.getPromiseText_ById(cssSgtDbt).then((val) => {   
@@ -165,22 +167,26 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             ConsultazioneSinistriPage.isNotNullOrEmpty(dscrpt)
             Common.isValidCheck(/(?:^\d{1,3}(?:\.?\d{3})*(?:,\d{2})?$)|(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/, dscrpt.trim(), ' is valid currency')
         })
-    
+
         ConsultazioneSinistriPage.getPromiseText_ById(cssImporto).then((val) => {  
             let dscrpt = val.split(':')[1]        
             cy.log('[it]>> [Importo]: '+dscrpt); 
             Common.isValidCheck(/\$?(([1-9]\d{0,2}(.\d{3})*)|0)?\,\d{1,2}$/, dscrpt, ' is valid currency')           
         });
-        
+        cy.wait(2000);
+        cy.screenshot('Pagina Consultazione sinistro - Sezione Azioni di recupero', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
     });
     
 
     it('Dalla sezione "Azioni di recupero" cliccando sul "soggetto debitore" verificare '+
-       'che sia apra la finestra di pop up di dettaglio anagrafico del soggetto', function () {
-        
-        
+        'che sia apra la finestra di pop up di dettaglio anagrafico del soggetto', function () {
+
         let cssLinkSgt = "#azioni_recupero > div > div > table > tbody > tr.odd > td:nth-child(3) > a"
-        ConsultazioneSinistriPage.clickObj_ByLabel('a', cliente)        
+        ConsultazioneSinistriPage.clickObj_ByLabel('a', cliente)     
+        cy.wait(2000);
+        cy.screenshot('Pagina Consultazione sinistro - Sezione Azioni di recupero: soggetto debitore - pop up di dettaglio anagrafico del soggetto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);   
     });
-    
+
 });

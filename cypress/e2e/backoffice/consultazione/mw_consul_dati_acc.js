@@ -63,7 +63,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-     Cypress.runner.stop();
+    Cypress.runner.stop();
 })
 
 //#region Script Variables
@@ -97,7 +97,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
             cy.log('[it]>> [Cliente]: '+cliente);
             ConsultazioneSinistriPage.isNotNullOrEmpty(cliente)
         }); 
-    
+
         const cssdtAvv1 = "#results > div.k-grid-content > table > tbody > tr > td:nth-child(7)"  
         ConsultazioneSinistriPage.getPromiseText_ById(cssdtAvv1).then((val) => {
             dtAvvenimento = val;  
@@ -109,7 +109,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Seleziona il sinistro
         const css_ico_arrow_right ="#results > div.k-grid-content > table > tbody > tr > td:nth-child(9) > a"
         Common.clickByIdOnIframe(css_ico_arrow_right)
-        cy.wait(3000)
+        cy.wait(3000);
+        cy.screenshot('Pagina Consultazione sinistro - Selezione del sinistro', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
     });
 
     it('Selezionando dati accessori per il sinistro in stato chiuso/pagato  ' +
@@ -124,10 +126,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.clickLnk_ByHref("/dasinconfe/DatiAccessoriIngresso")
 
         Common.getObjByTextOnIframe("Nessuna nota presente")  
-        
         Common.getObjByTextOnIframe("Non sono presenti azioni di recupero")
-
         Common.getObjByTextOnIframe("Nessun soggetto presente")
-    });
 
+        cy.wait(2000);
+        cy.screenshot('Dati accessori per sinistro in stato chiuso/pagato --> Presenza delle diciture standard', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
+    });
 });
