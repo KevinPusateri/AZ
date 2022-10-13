@@ -45,6 +45,7 @@ beforeEach(() => {
 })
 
 afterEach(function () {
+    /*
     if (this.currentTest.state !== 'passed') {
         //TopBar.logOutMW()
         //#region Mysql
@@ -55,6 +56,7 @@ afterEach(function () {
         //#endregion
         //Cypress.runner.stop();
     }
+    */
 })
 
 after(function () {
@@ -97,12 +99,16 @@ describe('Matrix Web - Ricerca e verifica sinistro chiuso/pagato, da Cliente-->P
                 cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
                 cy.get('lib-client-item').first().next().click()
             }
-        })      
+        })
+        cy.screenshot('Pagina Consultazione sinistro - Ricerca cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })    
+        cy.wait(1000);
     })
 
     it("Accesso alla sezione Portafoglio-->Sinistri", () => {
         Portafoglio.clickTabPortafoglio()
-        Portafoglio.clickSubTab('Sinistri')             
+        Portafoglio.clickSubTab('Sinistri')      
+        cy.screenshot('Pagina Consultazione sinistro - Sezione PTF-->Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })           
+        cy.wait(1000);
     })
 
     it("Verifica i dati del sinistro", () => {

@@ -42,6 +42,7 @@ beforeEach(() => {
 })
 
 afterEach(function () {
+    /*
     if (this.currentTest.state !== 'passed') {
         //TopBar.logOutMW()
         //#region Mysql
@@ -52,6 +53,7 @@ afterEach(function () {
         //#endregion
         //Cypress.runner.stop();
     }
+    */
 })
 
 after(function () {
