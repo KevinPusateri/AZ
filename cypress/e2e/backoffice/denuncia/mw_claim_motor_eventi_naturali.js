@@ -30,15 +30,20 @@ Cypress.config('defaultCommandTimeout', 60000)
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+        LoginPage.logInMWAdvanced({         
+            "agency": "010375000",
+            "agentId": "ARALONGO7"
+        })    
     })
 })
+
 
 beforeEach(() => {
     cy.preserveCookies()
 })
 
 afterEach(function () {
+    /*
     if (this.currentTest.state !== 'passed') {
         //TopBar.logOutMW()
         //#region Mysql
@@ -49,6 +54,7 @@ afterEach(function () {
         //#endregion
         //Cypress.runner.stop();
     }
+    */
 })
 
 after(function () {
@@ -192,12 +198,12 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             }
         });
          //Evento naturale: Grandine
-         DenunciaSinistriPage.clickSelect_ById('#GARANZIE_flgGrandine', "Si")
-         cy.wait(1000);
-         cy.screenshot('Elenco coperture - Selezione della garanzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-         cy.wait(1000);        
-         DenunciaSinistriPage.clickObj_ByLabel('a','Avanti')   
-         cy.wait(3000);  
+        DenunciaSinistriPage.clickSelect_ById('#GARANZIE_flgGrandine', "Si")
+        cy.wait(1000);
+        cy.screenshot('Elenco coperture - Selezione della garanzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000);        
+        DenunciaSinistriPage.clickObj_ByLabel('a','Avanti')   
+        cy.wait(3000);  
     });
 
     it('Verifica dei dati dei soggetti coinvolti nella lista riproposta in tabella ', function () {        
