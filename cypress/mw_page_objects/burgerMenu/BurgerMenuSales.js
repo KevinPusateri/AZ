@@ -173,10 +173,12 @@ class BurgerMenuSales extends Sales {
     /**
      * Click sul link richiesto dal BurgerMenu
      * @param {string} page - nome del link 
+     * @param {boolean} clickBurgerMenu - default settato a true, altrimenti non clicca l'icona burgerMenu
      */
-    static clickLink(page) {
+    static clickLink(page, clickBurgerMenu = true) {
 
-        cy.get('lib-burger-icon').click({ force: true })
+        if (clickBurgerMenu)
+            cy.get('lib-burger-icon').click({ force: true })
         if (page === LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE) {
             this.checkPage(page)
         } else {
@@ -199,7 +201,7 @@ class BurgerMenuSales extends Sales {
                 }).as('getMotor');
                 Common.canaleFromPopup()
                 cy.wait('@getMotor', { timeout: 50000 });
-                getIFrame().find('button:contains("Calcola"):visible')
+                getIFrame().find('button:contains("Calcola"):visible', { timeout: 20000 })
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.SAFE_DRIVE_AUTOVETTURE:
@@ -291,7 +293,7 @@ class BurgerMenuSales extends Sales {
                 cy.wait('@getSalesPremo', { timeout: 40000 });
                 cy.wait(30000)
                 getIFrame().should('be.visible')
-                getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text', 'Ricerca')
+                getIFrame().find('input[value="Home"]').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:

@@ -41,6 +41,7 @@ beforeEach(() => {
 })
 
 afterEach(function () {
+    /*
     if (this.currentTest.state !== 'passed') {
         //TopBar.logOutMW()
         //#region Mysql
@@ -51,6 +52,7 @@ afterEach(function () {
         //#endregion
         //Cypress.runner.stop();
     }
+    */
 })
 
 after(function () {
@@ -62,7 +64,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-     Cypress.runner.stop();
+    Cypress.runner.stop();
 })
 
 //#region Script Variables
@@ -74,7 +76,7 @@ let categorieComunicazioni = ['Fiduciari', 'Stato Pratica', ' Info Pagamento', '
 let spclTxtValue = '\\|!£$%&/()=\'?ì^è+òàù-€éç°§@#-[*].'
 //#endregion
 
-describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO PAGATO', () => {
+describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione del comunicAll', () => {
 
     it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
         TopBar.clickBackOffice()
@@ -145,7 +147,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
     it('Controllo formale sulla struttura di pagina per una nuova comunicazione', function () {
-        
+
         const cssLblCategoria =  '#lblCategoriaComunicAll'
         const cssLblOggetto =  '#lblOggettoComunicAll'
         const cssLblMessaggio =  '#lblMessaggio'
@@ -159,13 +161,14 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.isVisibleTextOnIframeChild(Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]'),  cssBtnInviaPratica, "Invia Pratica")
 
         cy.wait(1000);
-        
-        cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per codice fiscale / partita IVA del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Nuova Comunicazione --> Controllo formale sulla struttura della pagina', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Controllo delle categorie per nuova pratica di comunicazione comunicAll', function () {
     
         ConsultazioneSinistriPage.comunicAllCategoryCheck(categorieComunicazioni)
+        cy.wait(1000);
+        cy.screenshot('Nuova Comunicazione --> Controllo delle categorie presenti nell\'omonimo menu a tendina', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     })
     
     it('Controllo e utilizzo dei caratteri speciali nel testo dell\'oggetto della comunicazione comunicAll', function () {
@@ -177,7 +180,6 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         cy.screenshot('Pagina comunicAll - Utilizzo caratteri speciali in oggetto pratica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     })
 
-    
     it('Controllo utilizzo dei caratteri speciali nell\'area di testo della comunicazione comunicAll,', function () {
     
         ConsultazioneSinistriPage.comunicAllSpecialCharsCheck('#txtComunicAllMessage', spclTxtValue) 
@@ -196,6 +198,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         Common.isVisibleTextOnIframeChild(cssIdFrameChild, cssTxtObjCmncton, "Inviato da: CONEGLIANO MARCA TREVI")
         Common.isVisibleTextOnIframeChild(cssIdFrameChild, cssTxtObjCmncton, "Categoria: Stato Pratica")
         Common.isVisibleTextOnIframeChild(cssIdFrameChild, cssTxtObjCmncton, spclTxtValue)
-        Common.isVisibleTextOnIframeChild(cssIdFrameChild, cssTxtMssg, spclTxtValue)        
+        Common.isVisibleTextOnIframeChild(cssIdFrameChild, cssTxtMssg, spclTxtValue) 
+
+        cy.screenshot('Pagina comunicAll - Controllo invio nuova comunicazione ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     })
 });
