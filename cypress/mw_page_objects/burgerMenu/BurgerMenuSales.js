@@ -173,6 +173,7 @@ class BurgerMenuSales extends Sales {
     /**
      * Click sul link richiesto dal BurgerMenu
      * @param {string} page - nome del link 
+     * @param {boolean} clickBurgerMenu - default settato a true, altrimenti non clicca l'icona burgerMenu
      */
     static clickLink(page, clickBurgerMenu = true) {
 
