@@ -53,10 +53,10 @@ class Common {
             "agency": "010712000"
         }
      */
-    static canaleFromPopup(customImpersonification = {}, notWindowOpen = false, agenzia = null) {
+    static canaleFromPopup(customImpersonification = {}, notWindowOpen = false, agenzia = null, onlyLogin = false) {
         cy.wait(3000)
 
-        if(agenzia !== null){
+        if (agenzia !== null) {
             cy.get('body').then($body => {
                 if ($body.find('div[ngclass="agency-row"]').length > 0) {
                     cy.wait(2000)
@@ -76,8 +76,16 @@ class Common {
             })
         }
 
-        // Scegli utenza se siamo su finestra principale e procediamo dall'icona sulla seconda finestra
-        if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
+        if (!onlyLogin) {
+            cy.get('body').then($body => {
+                if ($body.find('div[ngclass="agency-row"]').length > 0) {
+                    cy.wait(2000)
+                    cy.get('div[ngclass="agency-row"]').should('be.visible')
+                    cy.get('div[ngclass="agency-row"]').first().click()
+                }
+            })
+        }
+        else if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
             cy.get('body').then($body => {
                 if ($body.find('div[ngclass="agency-row"]').length > 0) {
                     cy.wait(2000)
@@ -95,23 +103,15 @@ class Common {
 
                     if (!notWindowOpen)
                         cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(() => {
-                            cy.origin((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'), () => {
-                                cy.visit((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'));
-                            })
+                            // cy.origin((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'), () => {
+                            cy.visit((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'));
+                            // Cypress.on('uncaught:exception', () => false)
+                            // })
                         })
                 }
             })
         }
 
-        if (!Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
-            cy.get('body').then($body => {
-                if ($body.find('div[ngclass="agency-row"]').length > 0) {
-                    cy.wait(2000)
-                    cy.get('div[ngclass="agency-row"]').should('be.visible')
-                    cy.get('div[ngclass="agency-row"]').first().click()
-                }
-            })
-        }
     }
 
     /**
@@ -193,13 +193,13 @@ class Common {
         }
 
         if (Cypress.env('currentEnv') === 'TEST') {
-            if (!Cypress.env('monoUtenza'))
+            if (!Cypress.env('isSecondWindow'))
                 cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 })
             else
                 cy.visit(Cypress.env('urlSecondWindowTest'), { responseTimeout: 31000 })
         }
         else {
-            if (!Cypress.env('monoUtenza'))
+            if (!Cypress.env('isSecondWindow'))
                 cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
             else
                 cy.visit(Cypress.env('urlSecondWindowPreprod'), { responseTimeout: 31000 })
@@ -229,11 +229,11 @@ class Common {
             cy.get(id).should('exist').and('be.visible').click()
         })
      */
-        static clickByAttrAndLblOnIframe(id, label) {
-            return getIframe().within(() => {
-                cy.get(id).should('exist', { timeout: 5000 }).contains(label).click({force: true})
-            })
-        }
+    static clickByAttrAndLblOnIframe(id, label) {
+        return getIframe().within(() => {
+            cy.get(id).should('exist', { timeout: 5000 }).contains(label).click({ force: true })
+        })
+    }
 
     /**
      * Click un elemento
@@ -364,7 +364,7 @@ class Common {
      * @example Common.clickFindByIdOnIframe('#eseguiRicerca')
      */
     static clickFindByIdOnIframe(path) {
-        return getIframe().find(path, { timeout: 5000 }).should('exist').scrollIntoView().click({force: true})
+        return getIframe().find(path, { timeout: 5000 }).should('exist').scrollIntoView().click({ force: true })
     }
 
     /**
@@ -375,7 +375,7 @@ class Common {
      * @example Common.clickFindByIdOnIframeChild('iframe[src="cliente.jsp"]', '#eseguiRicerca')
      */
     static clickFindByIdOnIframeChild(idIframe, path) {
-        return findIframeChild(idIframe).find(path, { timeout: 5000 }).should('exist').scrollIntoView().click({force: true})
+        return findIframeChild(idIframe).find(path, { timeout: 5000 }).should('exist').scrollIntoView().click({ force: true })
     }
     /**
      * Gets an object in iframe child by iframe parent
@@ -416,7 +416,7 @@ class Common {
         })
      */
     static getObjByIdOnIframe(id) {
-            return getIframe().find(id, { timeout: 5000 }).should('exist')
+        return getIframe().find(id, { timeout: 5000 }).should('exist')
     }
     /**
      * Gets an object in iframe Child by text
@@ -556,6 +556,22 @@ class Common {
         return data
     }
 
+    static getUrlBeforeEach() {
+        let url
+        if (Cypress.env('currentEnv') === 'PREPROD') {
+            if (Cypress.env('isSecondWindow'))
+                url = Cypress.env('urlSecondWindowPreprod')
+            else
+                url = Cypress.env('urlMWPreprod')
+        } else {
+            if (Cypress.env('isSecondWindow'))
+                url = Cypress.env('urlSecondWindowTest')
+            else
+                url = Cypress.env('urlMWTest')
+        }
+
+        return url
+    }
 
 }
 
