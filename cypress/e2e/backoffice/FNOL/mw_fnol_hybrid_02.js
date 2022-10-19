@@ -82,7 +82,7 @@ var cliente_nome = 'GUIDO'
 var cliente_CF = 'RAIGDU65B09L424C'
 var cliente_dt_nascita = '09/02/1965'
 var cliente_num_pol = '733323007'
-var cliente_email ='pippo.pluto@allianz.it'
+var cliente_email ='michele.delledonne@allianz.it'
 
 /* 319000
 var ramo_pol = '42' //601 - BONUS/MALUS

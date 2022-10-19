@@ -30,7 +30,7 @@ before(() => {
         LoginPage.logInMWAdvanced({         
             "agency": "010375000",
             "agentId": "ARALONGO7"
-        })    
+        })
     })
 })
 
