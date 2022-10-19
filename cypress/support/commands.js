@@ -186,6 +186,13 @@ Cypress.Commands.add('preserveCookies', () => {
   })
 })
 
+Cypress.Commands.add('ignoreRequest', () => {
+  cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
+  cy.intercept(/launch-*/, 'ignore').as('launchStaging')
+  cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
+  cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
+})
+
 Cypress.Commands.add('forceVisit', url => {
   cy.window().then(win => {
     return win.open(url, '_self');
