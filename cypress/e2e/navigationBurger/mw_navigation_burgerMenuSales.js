@@ -16,6 +16,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+var url = Common.getUrlBeforeEach() + 'sales/'
 //#endregion
 
 
@@ -73,27 +74,18 @@ before(() => {
     })
     TopBar.clickSales()
 })
-
 beforeEach(() => {
     cy.preserveCookies()
-    cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
-    cy.intercept(/launch-*/, 'ignore').as('launchStaging')
-    cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
-    cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
-    cy.get('lib-burger-icon').click({ force: true })
+    cy.ignoreRequest()
+    BurgerMenuSales.clickBurgerMenu()
 })
-
 afterEach(function () {
     if (this.currentTest.state !== 'passed') {
-        cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
-        cy.intercept(/launch-*/, 'ignore').as('launchStaging')
-        cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
-        cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
-        cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/sales/')
+        cy.ignoreRequest()
+        cy.visit(url)
         cy.wait(5000)
     }
 })
-
 after(function () {
     TopBar.logOutMW()
     //#region Mysql
@@ -107,7 +99,6 @@ after(function () {
 describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
 
     it('Verifica i link da Burger Menu', function () {
-
         BurgerMenuSales.checkExistLinks(keys)
     });
 
@@ -396,7 +387,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         if (!keys.FOLDER)
             this.skip()
 
-        BurgerMenuSales.clickLink('Folder')
+        BurgerMenuSales.clickLink('Folder', false)
         BurgerMenuSales.backToSales()
     })
 
@@ -406,7 +397,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             if (!currentHostName.includes('SM')) {
-
                 BurgerMenuSales.clickLink('Allianz Global Assistance', false)
             }
         })

@@ -155,6 +155,10 @@ class BurgerMenuSales extends Sales {
         })
     }
 
+    static clickBurgerMenu() {
+        cy.get('lib-burger-icon').click({ force: true })
+    }
+
     /**
      * Verifica che i link nel burgerMenu siano presenti
      */
@@ -369,7 +373,7 @@ class BurgerMenuSales extends Sales {
 
                 Common.canaleFromPopup()
                 cy.wait('@Danni', { timeout: 40000 })
-                cy.wait(5000)
+                cy.wait(10000)
                 getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -442,6 +446,7 @@ class BurgerMenuSales extends Sales {
                 if (Cypress.isBrowser('firefox')) {
                     cy.get('lib-side-menu').find('a:contains("Allianz Global Assistance")')
                         .should('have.attr', 'href', 'http://oazis.allianz-assistance.it')
+                    this.clickBurgerMenu()
                 } else {
                     cy.contains('Allianz Global Assistance').invoke('removeAttr', 'target').click()
                     cy.url().should('eq', 'https://oazis.allianz-assistance.it/dynamic/home/index')
