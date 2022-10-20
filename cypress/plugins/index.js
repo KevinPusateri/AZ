@@ -170,14 +170,14 @@ function retriveTarghe(dbConfig) {
 }
 
 //aggiunto da Elio Cossu 17/10/2022
-function mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo) {
+function mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti) {
     const connection = mysql.createConnection(dbConfig)
 
     connection.connect((err) => {
         if (err) throw err;
     })
-    
-    var query = `INSERT INTO polizza (numero, cliente, dataEmissione, dataScadenza, ramo) VALUES('${nPolizza}','${cliente}','${dataEmissione}','${dataScadenza}','${ramo}')`
+
+    var query = `INSERT INTO polizza (numero, cliente, dataEmissione, dataScadenza, ramo, prodotto) VALUES('${nPolizza}','${cliente}','${dataEmissione}','${dataScadenza}','${ramo}','${ambiti}')`
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {

@@ -31,11 +31,17 @@ let insertedId
 //#endregion
 
 //#region Configuration
+const moment = require('moment')
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
+let prodotto = "Ultra Casa e Patrimonio 2022"
+let ramo = "Rami Vari"
+let dataEmissione = moment().format('YYYY-MM-DD HH:mm:ss')
+let dataScadenza = moment().add(1, 'y').format('YYYY-MM-DD HH:mm:ss')
+
 let cliente = PersonaFisica.PieroAngela()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato,
 ambitiUltra.ambitiUltraCasaPatrimonio.contenuto]
@@ -211,7 +217,7 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
     it("Esito incasso", () => {
         Incasso.EsitoIncasso()
         //Database.writeDPolizza(cliente, nContratto, new Date().toISOString().slice(0, 10), null, "RamiVari", ambiti[0] + ", " + ambiti[1])
-        cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, moment().format('YYYY-MM-DD HH:mm:ss'), "NULL","RamiVari")
+        cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, dataEmissione, dataScadenza, ramo, prodotto)
 
         Incasso.Chiudi()
     })
