@@ -15,7 +15,8 @@ import MovimentazioneSinistriPage from "../../../mw_page_objects/backoffice/Movi
 import ConsultazioneSinistriPage from "../../../mw_page_objects/backoffice/ConsultazioneSinistriPage"
 
 //#region Mysql DB Variables
-const testName = Cypress.spec.name.split('/')[2].split('.')[0].toUpperCase()
+//const testName = Cypress.spec.name.split('.')[2].split('.')[0].toUpperCase()
+const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
@@ -38,6 +39,7 @@ beforeEach(() => {
 })
 
 afterEach(function () {
+    /*
     if (this.currentTest.state !== 'passed') {
         //TopBar.logOutMW()
         //#region Mysql
@@ -48,6 +50,7 @@ afterEach(function () {
         //#endregion
         //Cypress.runner.stop();
     }
+    */
 })
 
 after(function () {
@@ -68,7 +71,7 @@ describe('Matrix Web - Sinistri>>Movimentazione: Test di verifica sulla moviment
     it('Atterraggio su BackOffice >> Movimentazioni Sinistri', function () {      
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Movimentazione sinistri') 
-        cy.wait(1000) 
+        cy.wait(1000); 
     });
     
 

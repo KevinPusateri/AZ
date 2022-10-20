@@ -4,6 +4,7 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import HomePage from "../../mw_page_objects/common/HomePage"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('.')[0].toUpperCase()
@@ -77,7 +78,6 @@ before(() => {
                                 keysCards.AUTO = false
                         })
                     })
-
                     // RAMI VARI
                     // (RV_PREVENTIVO && RV_RISCHIO_NUOVO) || RV_GESTIONE_GRANDINE
                     cy.filterProfile(profiling, 'RV_PREVENTIVO').then(profiledCase1 => {
@@ -119,7 +119,6 @@ before(() => {
                         })
                         cy.filterProfile(profiling, 'AU_NAUTICA').then(profiled => { keysAuto.NUOVA_POLIZZA_COASSICURAZIONE = profiled })
                     }
-
                     // RAMI VARI
                     if (keysCards.RAMIVARI) {
                         cy.filterProfile(profiling, 'COMMON_ULTRACASA2022').then(profiled => { keysRamivari.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022 = profiled })
@@ -145,15 +144,19 @@ beforeEach(() => {
     HomePage.reloadMWHomePage()
     if (!Cypress.env('monoUtenza') && !Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         TopBar.search('Pulini Francesco')
+        LandingRicerca.filtra()
         SintesiCliente.wait()
     } else if (!Cypress.env('isAviva')) {
         TopBar.search('SLZNLL54A04H431Q')
+        LandingRicerca.filtra()
         SintesiCliente.wait()
     } else if (!Cypress.env('isAvivaBroker')) { // Entra in Aviva
         TopBar.search('DRLTMS95L21F257R')
+        LandingRicerca.filtra()
         SintesiCliente.wait()
     } else {
         TopBar.search('VLLNLN57T42B872A')// Entra in Aviva Broker
+        LandingRicerca.filtra()
         SintesiCliente.wait()
     }
 })
@@ -381,7 +384,6 @@ describe('MW: Navigazioni Scheda Cliente -> Tab Sintesi Cliente', function () {
         SintesiCliente.clickNuovaPolizzaCoassicurazione()
         SintesiCliente.back()
     })
-
 
     it('Verifica Link da Card Rami vari', function () {
         if (!keysCards.RAMIVARI)

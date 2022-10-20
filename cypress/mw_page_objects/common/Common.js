@@ -53,10 +53,10 @@ class Common {
             "agency": "010712000"
         }
      */
-    static canaleFromPopup(customImpersonification = {}, notWindowOpen = false, agenzia = null) {
+    static canaleFromPopup(customImpersonification = {}, notWindowOpen = false, agenzia = null, onlyLogin = false) {
         cy.wait(3000)
 
-        if(agenzia !== null){
+        if (agenzia !== null) {
             cy.get('body').then($body => {
                 if ($body.find('div[ngclass="agency-row"]').length > 0) {
                     cy.wait(2000)
@@ -76,8 +76,16 @@ class Common {
             })
         }
 
-        // Scegli utenza se siamo su finestra principale e procediamo dall'icona sulla seconda finestra
-        if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
+        if (!onlyLogin) {
+            cy.get('body').then($body => {
+                if ($body.find('div[ngclass="agency-row"]').length > 0) {
+                    cy.wait(2000)
+                    cy.get('div[ngclass="agency-row"]').should('be.visible')
+                    cy.get('div[ngclass="agency-row"]').first().click()
+                }
+            })
+        }
+        else if (Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
             cy.get('body').then($body => {
                 if ($body.find('div[ngclass="agency-row"]').length > 0) {
                     cy.wait(2000)
@@ -95,23 +103,15 @@ class Common {
 
                     if (!notWindowOpen)
                         cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(() => {
-                            cy.origin((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'), () => {
-                                cy.visit((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'));
-                            })
+                            // cy.origin((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'), () => {
+                            cy.visit((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'));
+                            // Cypress.on('uncaught:exception', () => false)
+                            // })
                         })
                 }
             })
         }
 
-        if (!Cypress.env('isSecondWindow') && !Cypress.env('monoUtenza')) {
-            cy.get('body').then($body => {
-                if ($body.find('div[ngclass="agency-row"]').length > 0) {
-                    cy.wait(2000)
-                    cy.get('div[ngclass="agency-row"]').should('be.visible')
-                    cy.get('div[ngclass="agency-row"]').first().click()
-                }
-            })
-        }
     }
 
     /**
@@ -193,13 +193,13 @@ class Common {
         }
 
         if (Cypress.env('currentEnv') === 'TEST') {
-            if (!Cypress.env('monoUtenza'))
+            if (!Cypress.env('isSecondWindow'))
                 cy.visit(Cypress.env('urlMWTest'), { responseTimeout: 31000 })
             else
                 cy.visit(Cypress.env('urlSecondWindowTest'), { responseTimeout: 31000 })
         }
         else {
-            if (!Cypress.env('monoUtenza'))
+            if (!Cypress.env('isSecondWindow'))
                 cy.visit(Cypress.env('urlMWPreprod'), { responseTimeout: 31000 })
             else
                 cy.visit(Cypress.env('urlSecondWindowPreprod'), { responseTimeout: 31000 })
@@ -219,6 +219,19 @@ class Common {
     static clickByIdOnIframe(id) {
         return getIframe().within(() => {
             cy.get(id).should('exist').scrollIntoView().and('be.visible').click()
+        })
+    }
+
+    /**
+     * Click un elemento dentro l'iframe
+     * @param {string} id - tag o attributo del tag
+     * @returns   return getIframe().within(() => {
+            cy.get(id).should('exist').and('be.visible').click()
+        })
+     */
+    static clickByAttrAndLblOnIframe(id, label) {
+        return getIframe().within(() => {
+            cy.get(id).should('exist', { timeout: 5000 }).contains(label).click({ force: true })
         })
     }
 
@@ -263,7 +276,7 @@ class Common {
     */
     static getByIdOnIframe(id) {
         return getIframe().within(() => {
-            cy.get(id).should('exist').and('be.visible')
+            cy.get(id).should('exist').scrollIntoView().and('be.visible')
         })
     }
 
@@ -341,7 +354,7 @@ class Common {
      * @example Common.findByIdOnIframe('table[role="grid"]:visible > tbody')
      */
     static findByIdOnIframe(path) {
-        return getIframe().find(path)
+        return getIframe().find(path, { timeout: 5000 }).should('exist').scrollIntoView();
     }
 
     /**
@@ -351,7 +364,7 @@ class Common {
      * @example Common.clickFindByIdOnIframe('#eseguiRicerca')
      */
     static clickFindByIdOnIframe(path) {
-        return getIframe().find(path, { timeout: 5000 }).should('exist').scrollIntoView().click()
+        return getIframe().find(path, { timeout: 5000 }).should('exist').scrollIntoView().click({ force: true })
     }
 
     /**
@@ -362,7 +375,7 @@ class Common {
      * @example Common.clickFindByIdOnIframeChild('iframe[src="cliente.jsp"]', '#eseguiRicerca')
      */
     static clickFindByIdOnIframeChild(idIframe, path) {
-        return findIframeChild(idIframe).find(path, { timeout: 5000 }).should('exist').scrollIntoView().click()
+        return findIframeChild(idIframe).find(path, { timeout: 5000 }).should('exist').scrollIntoView().click({ force: true })
     }
     /**
      * Gets an object in iframe child by iframe parent
@@ -383,7 +396,7 @@ class Common {
     }
 
     /**
-     * Gets an object in iframe  by text
+     * Gets an object in iframe by text
      * @param {*} idIframe del  frame
      * @param {string} text - testo
      * @returns findIframeChild(idIframe).within(() => {
@@ -392,11 +405,19 @@ class Common {
      */
     static getObjByTextOnIframe(text) {
         return getIframe().within(() => {
-            cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
+            cy.contains(text, { timeout: 5000 }).scrollIntoView().should('exist').and('be.visible')
             cy.log('>> object with label [' + text + '] is defined')
         })
     }
-
+    /**
+     * Gets an object in iframe By Id
+     * @param {*} Id Object
+     * @returns  getIframe().find(path, { timeout: 5000 }).should('exist')
+        })
+     */
+    static getObjByIdOnIframe(id) {
+        return getIframe().find(id, { timeout: 5000 }).should('exist')
+    }
     /**
      * Gets an object in iframe Child by text
      * @param {*} idIframe del child frame
@@ -407,7 +428,7 @@ class Common {
      */
     static getObjByTextOnIframeChild(idIframe, text) {
         return findIframeChild(idIframe).within(() => {
-            cy.contains(text, { timeout: 5000 }).should('exist').and('be.visible')
+            cy.contains(text, { timeout: 5000 }).should('exist').scrollIntoView().and('be.visible')
             cy.log('>> object with label [' + text + '] is defined')
         })
     }
@@ -438,7 +459,7 @@ class Common {
         if (check)
             cy.log('>> img with attribute src=' + src + ' is defined and visible ')
 
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Checks if the text associated with an object identified by its locator is displayed
@@ -448,13 +469,14 @@ class Common {
     static isVisibleText(id, text) {
         getIframe().find(id, { timeout: 6000 }).should('exist').scrollIntoView().and('be.visible').then(($tag) => {
             let txt = $tag.text().trim()
+            debugger
             cy.log('>> the text value is:  ' + txt)
             if (txt.includes(text))
                 cy.log('>> object with text value : "' + text + '" is defined')
             else
                 assert.fail('object with text value: "' + text + '" is not defined')
         });
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Checks if the text associated with an object identified by its locator is displayed
@@ -472,7 +494,7 @@ class Common {
             else
                 assert.fail('object with text value: "' + text + '" is not defined')
         });
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Check if an object identified by tag and its title attribute is displayed
@@ -534,7 +556,22 @@ class Common {
         return data
     }
 
+    static getUrlBeforeEach() {
+        let url
+        if (Cypress.env('currentEnv') === 'PREPROD') {
+            if (Cypress.env('isSecondWindow'))
+                url = Cypress.env('urlSecondWindowPreprod')
+            else
+                url = Cypress.env('urlMWPreprod')
+        } else {
+            if (Cypress.env('isSecondWindow'))
+                url = Cypress.env('urlSecondWindowTest')
+            else
+                url = Cypress.env('urlMWTest')
+        }
 
+        return url
+    }
 
 }
 

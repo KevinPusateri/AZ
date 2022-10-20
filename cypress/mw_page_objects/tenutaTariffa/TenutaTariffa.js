@@ -18,7 +18,6 @@ let parsedLogProxy
 
 function findKeyInLog(key, logTariffa = parsedLogTariffa) {
     var result
-
     for (var property in logTariffa) {
         if (logTariffa.hasOwnProperty(property)) {
             if (property === key) {
@@ -59,7 +58,6 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
     let garanziaARD
     if (currentGaranziaARD === null) {
         //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA
-        debugger
         if (descSettore === 'KASKO COMPLETA')
             garanziaARD = findKeyInLog('Garanzia')[2]
         else if (descSettore === 'AVENS')
@@ -94,17 +92,20 @@ class TenutaTariffa {
      */
     static areaRiservata(currentCase) {
         cy.getIFrame()
-        cy.get('@iframe').within(() => {
-            cy.contains('Area riservata').should('exist').click()
-            //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible')
+        cy.get('@iframe').within(($iframe) => {
+            let checkAreaRiservata = $iframe.find(':contains("Area riservata")').is(':visible')
+            if (checkAreaRiservata) {
+                cy.contains('Area riservata').should('exist').click()
+                //Attendiamo che il caricamento non sia più visibile
+                cy.get('nx-spinner').should('not.be.visible')
 
-            //Per MACROLESIONI, verifico la Riduzione ARD
-            if (currentCase.Descrizione_Settore === 'MACROLESIONI') {
-                cy.get('.riduzione-table-header').last().find('p').last().invoke('text').then((riduzioneARD) => {
-                    expect(riduzioneARD).contains(currentCase.Riduzione_ARD)
-                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                })
+                //Per MACROLESIONI, verifico la Riduzione ARD
+                if (currentCase.Descrizione_Settore === 'MACROLESIONI') {
+                    cy.get('.riduzione-table-header').last().find('p').last().invoke('text').then((riduzioneARD) => {
+                        expect(riduzioneARD).contains(currentCase.Riduzione_ARD)
+                        cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + 'Area_Riservata_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    })
+                }
             }
         })
     }
@@ -117,10 +118,9 @@ class TenutaTariffa {
             //? al momento lavoriamo direttamente con gli Autoveicoli quindi non serve gestire questo dropdown che by default è selezionato auto
 
             //Targa
-            // cy.get('input[aria-label="Targa"]').should('exist').and('be.visible').click().wait(1000)
-            // cy.get('input[aria-label="Targa"]').clear().wait(500).type(caso.Targa).wait(1000)
-            cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').should('exist').and('be.visible').click().wait(1000)
-            cy.get('input[class^="cdk-text-field-autofill-monitored ng-untouched ng-pristine ng-invalid c-input nx-input"]').clear().wait(500).type(caso.Targa).wait(1000)
+            cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').should('exist').and('be.visible').click().wait(1000)
+            cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').clear().wait(2000)
+            cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').type(caso.Targa).wait(2000)
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
@@ -131,9 +131,9 @@ class TenutaTariffa {
             cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').click().wait(1000)
             cy.get('input[nxdisplayformat="DD/MM/YYYY"]').type(('0' + myBirthDay.getDate()).slice(-2) + '/' + ('0' + (myBirthDay.getMonth() + 1)).slice(-2) + '/' + myBirthDay.getFullYear()).wait(1000)
 
-            //Attendiamo che il caricamento non sia più visibile
+            //Attendiamo che il caricamento non sia più visibile#
             cy.get('nx-spinner').should('not.be.visible')
-            cy.wait(1000)
+            cy.wait(1000);
 
             // cy.get('label[id="nx-checkbox-informativa-label"]>span').eq(0).click({ force: true })
             cy.get('label[id="nx-checkbox-0-label"]>span').eq(0).click({ force: true })
@@ -143,12 +143,12 @@ class TenutaTariffa {
             cy.contains('Calcola').should('be.visible').click({ force: true })
 
             //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible')
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
 
             //Inseriamo la residenza
             //? se il cliente non è registrato in portafoglio, questa parte non compare
             cy.get('@iframe').within(() => { }).then($body => {
-                var checkIndirizzoVisible = $body.find('input[aria-label="Indirizzo"]').is(':visible')
+                var checkIndirizzoVisible = $body.find('span:contains("Risiede in")').is(':visible')
                 if (checkIndirizzoVisible) {
                     //Toponimo
                     if (caso.Toponimo.toUpperCase() !== 'VIA') {
@@ -160,21 +160,21 @@ class TenutaTariffa {
                     }
 
                     //Indirizzo
-                    cy.get('input[aria-label="Indirizzo"]').should('exist').and('be.visible').click().wait(1000)
-                    cy.get('input[aria-label="Indirizzo"]').type(caso.Indirizzo).wait(500)
+                    cy.get('span:contains("Risiede in")').parent().find('input').first().should('exist').and('be.visible').click().wait(1000)
+                    cy.get('span:contains("Risiede in")').parent().find('input').first().type(caso.Indirizzo).wait(500)
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible')
 
                     //Numero Civico
                     //? Metto a 1 by default che lato assuntivo non mi importa
-                    cy.get('input[aria-label="NumeroCivico"]').should('exist').and('be.visible').click().wait(1000)
-                    cy.get('input[aria-label="NumeroCivico"]').type('1').wait(500)
+                    cy.get('span:contains("Risiede in")').parent().find('input').eq(1).should('exist').and('be.visible').click().wait(1000)
+                    cy.get('span:contains("Risiede in")').parent().find('input').eq(1).type('1').wait(500)
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible')
 
                     //Comune
-                    cy.get('input[aria-label="Comune"]').should('exist').and('be.visible').click().wait(1000)
-                    cy.get('input[aria-label="Comune"]').type(caso.Comune_residenza.toUpperCase()).wait(500)
+                    cy.get('span:contains("Risiede in")').parent().find('input').eq(2).should('exist').and('be.visible').click().wait(1000)
+                    cy.get('span:contains("Risiede in")').parent().find('input').eq(2).type(caso.Comune_residenza.toUpperCase()).wait(500)
                     //Attendiamo che il caricamento non sia più visibile
                     cy.get('nx-spinner').should('not.be.visible')
 
@@ -207,6 +207,11 @@ class TenutaTariffa {
 
         cy.getIFrame()
         cy.get('@iframe').within(() => {
+
+            //Recuperiamo la versione dell'assuntivo e la stampiamo
+            cy.get('motor-footer').should('exist').find('button').invoke('text').then((versioneAssuntivo) => {
+                cy.task('log', `Versione Assuntivo --> ${versioneAssuntivo}`)
+            })
 
             //Tipologia Veicolo
             // * auto è già selezionato di default quindi lo skippo
@@ -307,9 +312,21 @@ class TenutaTariffa {
                         cy.contains(re).should('exist').and('be.visible').click()
                         cy.get('input[formcontrolname="indirizzo"]').should('exist').and('be.visible').type(currentCase.Indirizzo)
                         cy.get('input[formcontrolname="civico"]').should('exist').and('be.visible').type(currentCase.Numero_Civico)
-                        cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune)
-                        cy.get('input[formcontrolname="provincia"]').should('exist').and('be.visible').type(currentCase.Provincia)
-                        cy.get('input[formcontrolname="cap"]').should('exist').and('be.visible').type(currentCase.CAP)
+
+                        //?29.08.22 Città ora viene fuori il dropdown di selezione, con compilazione autoamtica di provincia e cap
+                        cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune).wait(5000)
+
+                        cy.get('nx-autocomplete-option:visible').within(() => {
+                            cy.get('.nx-autocomplete-option__label').first().click()
+                        })
+
+                        cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').then(($cap) => {
+                            if ($cap.text().trim() === 'Inserisci') {
+                                cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').click()
+                                cy.get(`span:contains(${currentCase.CAP})`).should('exist').click()
+                            }
+                        })
+
                         cy.get('nx-dropdown[formcontrolname="professione"]').should('exist').and('be.visible').click()
                         if (currentCase.Professione.includes('('))
                             cy.contains(currentCase.Professione).should('exist').click()
@@ -322,7 +339,7 @@ class TenutaTariffa {
                         cy.get('nx-dropdown[formcontrolname="sesso"]').should('exist').and('be.visible').click()
                         cy.contains((currentCase.Sesso === undefined || currentCase.Sesso === "") ? 'Maschio' : currentCase.Sesso).should('exist').and('be.visible').click()
 
-                        // //Generiamo il codice fiscale
+                        //?Generiamo il codice fiscale --> generato automaticamente dall'applicativo ora
                         // let formattedDataNascita = currentDataNascita.getFullYear() + '-' +
                         //     String(currentDataNascita.getMonth() + 1).padStart(2, '0') + '-' +
                         //     String(currentDataNascita.getDate()).padStart(2, '0')
@@ -348,9 +365,19 @@ class TenutaTariffa {
                         cy.contains(re).should('exist').and('be.visible').click()
                         cy.get('input[formcontrolname="indirizzo"]').should('exist').and('be.visible').type(currentCase.Indirizzo)
                         cy.get('input[formcontrolname="civico"]').should('exist').and('be.visible').type(currentCase.Numero_Civico)
-                        cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune)
-                        cy.get('input[formcontrolname="provincia"]').should('exist').and('be.visible').type(currentCase.Provincia)
-                        cy.get('input[formcontrolname="cap"]').should('exist').and('be.visible').type(currentCase.CAP)
+
+                        //?29.08.22 Città ora viene fuori il dropdown di selezione, con compilazione autoamtica di provincia e cap
+                        cy.get('input[formcontrolname="citta"]').should('exist').and('be.visible').type(currentCase.Comune).wait(4000)
+
+                        cy.get('nx-autocomplete-option:visible').within(() => {
+                            cy.get('.nx-autocomplete-option__label').first().click()
+                        })
+                        cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').then(($cap) => {
+                            if ($cap.text().trim() === 'Inserisci') {
+                                cy.get('nx-dropdown[formcontrolname="cap"]').should('exist').and('be.visible').click()
+                                cy.get(`span:contains(${currentCase.CAP})`).should('exist').click()
+                            }
+                        })
 
                         cy.get('input[formcontrolname="cfIva"]').should('exist').and('be.visible').type(currentPartitaIva)
 
@@ -363,7 +390,6 @@ class TenutaTariffa {
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
-
             //! Riclicchiamo su AVANTI (dopo che i textbox non sono più rossi)
             cy.get('span[class="page-title"]').invoke('text').then(pageTitle => {
                 if (!pageTitle.includes('Veicolo')) {
@@ -386,19 +412,33 @@ class TenutaTariffa {
         cy.getIFrame()
 
         cy.get('@iframe').within(() => {
-            //#region Informazioni Generali
+            //#region Informazioni generali
 
             if (currentCase.Targa === '') {
                 cy.contains('Ricerca senza targa').should('exist').and('be.visible').click()
-                cy.contains('Ho capito').should('exist').and('be.visible').click()
+
+                cy.contains('CONTINUA').should('exist').and('be.visible').click()
+                //Pre relase 127
+                //cy.contains('Ho capito').should('exist').and('be.visible').click()
             }
 
             //Verifichiamo se Veicolo Storico
+            // if (currentCase.Descrizione_Settore.includes("STORICO")) {
+            //     cy.get('nx-checkbox[formcontrolname="veicoloStorico"]').should('exist').and('be.visible').click()
+            //     //Attendiamo che il caricamento non sia più visibile
+            //     cy.get('nx-spinner').should('not.be.visible')
+            // }
+            //Verifichiamo se Veicolo Storico Vers. 24-09-22 Rel 127
             if (currentCase.Descrizione_Settore.includes("STORICO")) {
-                cy.get('nx-checkbox[formcontrolname="veicoloStorico"]').should('exist').and('be.visible').click()
+                cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').click().wait(1000)
+                let re = new RegExp("\^ " + currentCase.Tipo_Veicolo + " \$")
+                cy.contains(re).should('exist').click({ force: true })
+                cy.contains('Veicolo Storico').click()
                 //Attendiamo che il caricamento non sia più visibile
                 cy.get('nx-spinner').should('not.be.visible')
+
             }
+
 
             //Tipo Veicolo
             cy.get('nx-dropdown[formcontrolname="tipoVeicolo"]').should('exist').and('be.visible').invoke('text').then(tipVeicolo => {
@@ -415,18 +455,21 @@ class TenutaTariffa {
                         if (currentCase.Tipo_Veicolo_Altro_Dettaglio_4 !== "")
                             fullDetails += ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_4.toUpperCase()
 
-                        cy.get('nx-formfield[nxlabel="Veicolo"]').find('input').should('exist').and('be.visible').type((currentCase.Tipo_Veicolo_Altro_Dettaglio_1 + ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_2).toUpperCase())
+                        cy.get('nx-formfield[nxlabel="Ricerca per parole chiave"]').find('input').should('exist').and('be.visible').type((currentCase.Tipo_Veicolo_Altro_Dettaglio_1 + ' - ' + currentCase.Tipo_Veicolo_Altro_Dettaglio_2).toUpperCase())
 
                         cy.contains(fullDetails).click()
 
+                        // cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Tipo_Veicolo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-                        cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Tipo_Veicolo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
-                        cy.contains('Conferma').click()
+                        cy.contains('CONFERMA').click()
                     }
                     else {
-                        let re = new RegExp("\^ " + currentCase.Tipo_Veicolo + " \$")
-                        cy.contains(re).should('exist').click({ force: true })
+                        if (currentCase.Descrizione_Settore.includes("STORICO")) {
+                            cy.contains(currentCase.Tipo_Veicolo_Storico).should('exist').click({ force: true })
+                        } else {
+                            let re = new RegExp("\^ " + currentCase.Tipo_Veicolo + " \$")
+                            cy.contains(re).should('exist').click({ force: true })
+                        }
                     }
 
 
@@ -444,7 +487,6 @@ class TenutaTariffa {
             //Data Immatricolazione
             //Tolgo 10 gg per non incorrere in certe casistiche di 30, 60 gg esatti che in fase di tariffazione creano problemi
             //Differenziamo se Prima Immatricolazione è calcolata in automatico oppure è in formato data
-            let dataPrimaImmatricolazione
             let formattedPrimaImmatricolazione
             if (!currentCase.Prima_Immatricolazione.includes('ann'))
                 formattedPrimaImmatricolazione = currentCase.Prima_Immatricolazione
@@ -461,12 +503,56 @@ class TenutaTariffa {
                 }
             }
 
-            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').clear().wait(500)
-            cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').type(formattedPrimaImmatricolazione).type('{enter}').wait(500)
+            const [day, month, year] = formattedPrimaImmatricolazione.split('/')
+            const date = new Date(+year, month - 1, +day);
 
-            cy.wait('@getMotor', { timeout: 30000 })
+            cy.get('nx-icon[name="calendar"]').first().click()
+            cy.contains('Scegli mese e anno').should('be.visible').click()
 
-            cy.wait(2000)
+            // cy.get('.nx-calendar-table').within(() => {
+            //     cy.contains(date.getFullYear()).click()
+            // })
+            //Selezioniamo l'anno
+            cy.get('nx-datepicker-content').should('be.visible').as('datePicker')
+            const loopCalendarYear = () => {
+                cy.get('@datePicker').should('be.visible').within(($calendar) => {
+                    cy.log(date.getFullYear())
+                    //Selezioniamo l'anno
+                    var checkYearExist = false
+                    if (!checkYearExist) {
+                        checkYearExist = $calendar.find('td[aria-label="' + date.getFullYear() + '"]').is(':visible')
+                        cy.log(checkYearExist)
+                        if (checkYearExist) {
+                            cy.get('.nx-calendar-table').within(() => {
+                                cy.contains(date.getFullYear()).click()
+                            })
+                        } else {
+                            cy.get('button[aria-label="Previous 20 years"]').should('be.visible').click()
+                            loopCalendarYear()
+                        }
+                    }
+                })
+            }
+            loopCalendarYear()
+
+            //Selezioniamo il mese
+            cy.get('.nx-calendar-table').within(() => {
+                cy.contains(date.toLocaleString('default', { month: 'short' })).click()
+            })
+
+            //Selezioniamo il giorno
+            cy.get('.nx-calendar-table').should('be.visible').within(() => {
+                // let dateRegex = new RegExp("\^" + String(date.getDate()).trim() + "\$")
+                cy.get(`div:contains("${String(date.getDate()).trim()}")`)
+                    .not('[aria-hidden]').first()
+                    .should('be.visible').click()
+                // cy.contains(dateRegex)
+            })
+            cy.wait('@getMotor', { timeout: 60000 })
+
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner').should('not.be.visible')
+
             cy.get('input[formcontrolname="dataImmatricolazione"]').should('exist').and('be.visible').invoke('val').then(currentDataPrimaImmatricolazione => {
                 expect(currentDataPrimaImmatricolazione).to.include(formattedPrimaImmatricolazione)
             })
@@ -506,8 +592,8 @@ class TenutaTariffa {
                 }
             }
 
-            currentCase.Targa !== '' ? cy.contains('Informazioni Generali').click() : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click()
-            //TODO vedi error on size
+            currentCase.Targa !== '' ? cy.contains('Informazioni').click() : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click()
+            //TODO vedi error on Size
             //cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             //#endregion
 
@@ -586,18 +672,24 @@ class TenutaTariffa {
 
             //Valore Veicolo
             if (currentCase.Valore_Veicolo !== "") {
-                cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
-                cy.get('input[motoronlynumbers=""]').clear().wait(500)
-                cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
-                cy.get('input[motoronlynumbers=""]').type(currentCase.Valore_Veicolo).wait(500)
-                cy.get('strong:contains("Valore del veicolo")').click()
+                // cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
+                // cy.get('input[motoronlynumbers=""]').clear().wait(500)
+                // cy.get('input[motoronlynumbers=""]').should('exist').and('be.visible').click()
+                // cy.get('input[motoronlynumbers=""]').type(currentCase.Valore_Veicolo).wait(500)
+                cy.get('input[formcontrolname="valoreDelVeicolo"]').should('exist').and('be.visible').click()
+                cy.get('input[formcontrolname="valoreDelVeicolo"]').clear().wait(500)
+                cy.get('input[formcontrolname="valoreDelVeicolo"]').should('exist').and('be.visible').click()
+                cy.get('input[formcontrolname="valoreDelVeicolo"]').type(currentCase.Valore_Veicolo).wait(500)
+                cy.contains('AVANTI').should('exist').and('be.visible').click()
+
+                // cy.get('strong:contains("Valore del veicolo")').click()
                 //Attendiamo che il caricamento non sia più visibile
-                cy.get('nx-spinner').should('not.be.visible')
+                // cy.get('nx-spinner').should('not.be.visible')
             }
 
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            //TODO fix screenshot range
+            //cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             //#endregion
-
             cy.contains('AVANTI').should('exist').and('be.visible').click()
             cy.wait('@getMotor', { timeout: 30000 })
             //Attendiamo che il caricamento non sia più visibile
@@ -650,10 +742,32 @@ class TenutaTariffa {
                             String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
                             dataDecorrenza.getFullYear()
 
-                        cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').clear()
-                        cy.get('input[nxdisplayformat="DD/MM/YYYY"]').should('exist').and('be.visible').type(formattedDataVoltura).type('{enter}')
+                        const [day, month, year] = formattedDataVoltura.split('/')
+                        const date = new Date(+year, month - 1, +day);
 
-                        cy.wait('@getMotor', { timeout: 30000 })
+                        cy.get('nx-icon[name="calendar"]').first().click()
+                        cy.contains('Scegli mese e anno').should('be.visible').click()
+
+                        //Selezioniamo l'anno
+                        cy.get('.nx-calendar-table').within(() => {
+                            cy.contains(date.getFullYear()).click()
+                        })
+
+                        //Selezioniamo il mese
+                        cy.get('.nx-calendar-table').within(() => {
+                            cy.contains(date.toLocaleString('default', { month: 'short' })).click()
+                        })
+
+                        //Selezioniamo il giorno
+                        cy.get('.nx-calendar-table').within(() => {
+                            cy.get(`div:contains(${String(date.getDate())})`)
+                                .not('[aria-hidden]')
+                                .should('be.visible').click()
+                        })
+                        cy.wait('@getMotor', { timeout: 60000 })
+
+                        //Attendiamo che il caricamento non sia più visibile
+                        cy.get('nx-spinner').should('not.be.visible')
                     }
                     else
                         throw new Error('Data Voltura non riconosciuta')
@@ -775,7 +889,11 @@ class TenutaTariffa {
                     cy.contains('Il proprietario presenta la dichiarazione di non circolazione?').should('exist').and('be.visible').parents('form').find('span:contains("Si")').click()
                     cy.contains('CONTINUA').should('exist').and('be.visible').click()
                     cy.wait('@getMotor', { timeout: 30000 })
-                    cy.wait(1000)
+                    cy.wait(1000);
+                } else if (iframe.find(':contains("La data di decorrenza non permetterà il salvataggio del preventivo")').length > 0) {
+                    cy.contains('CONTINUA').should('exist').and('be.visible').click()
+                    cy.wait('@getMotor', { timeout: 30000 })
+                    cy.wait(1000);
                 }
             })
 
@@ -857,7 +975,7 @@ class TenutaTariffa {
                     cy.contains('i due soggetti non siano conviventi').should('exist').and('be.visible').parents('form').find('span:contains("Si")').click()
                     cy.contains('CONTINUA').should('exist').and('be.visible').click()
                     cy.wait('@getMotor', { timeout: 30000 })
-                    cy.wait(1000)
+                    cy.wait(1000);
                 }
             })
 
@@ -873,7 +991,9 @@ class TenutaTariffa {
             cy.getIFrame()
             cy.get('@iframe').within(() => {
                 cy.get('motor-footer').should('exist').and('be.visible').find('button').invoke('text').then(logText => {
-                    resolve((logText.substring(logText.indexOf('P: ') + 3)).split(' ')[0])
+                    let numPreventivo = (logText.substring(logText.indexOf('P: ') + 3)).split(' ')[0]
+                    cy.task('log', `Numero preventivo : ${numPreventivo}`)
+                    resolve(numPreventivo)
                 })
             })
         })
@@ -898,18 +1018,20 @@ class TenutaTariffa {
             cy.contains('Scegli mese e anno').should('be.visible').click()
 
             //Selezioniamo l'anno
-            cy.get('.nx-calendar-table').within(() =>{
+            cy.get('.nx-calendar-table').within(() => {
                 cy.contains(dataDecorrenza.getFullYear()).click()
             })
 
             //Selezioniamo il mese
-            cy.get('.nx-calendar-table').within(() =>{
-                cy.contains(dataDecorrenza.toLocaleString('default',{month: 'short'})).click()
+            cy.get('.nx-calendar-table').within(() => {
+                cy.contains(dataDecorrenza.toLocaleString('default', { month: 'short' })).click()
             })
 
             //Selezioniamo il giorno
-            cy.get('.nx-calendar-table').within(() =>{
-                cy.contains(String(dataDecorrenza.getDate())).click()
+            cy.get('.nx-calendar-table').within(() => {
+                cy.get(`div:contains(${String(dataDecorrenza.getDate())})`)
+                    .not('[aria-hidden]')
+                    .should('be.visible').click()
             })
             cy.wait('@getMotor', { timeout: 60000 })
 
@@ -954,15 +1076,7 @@ class TenutaTariffa {
             cy.wait(5000)
 
             //Espandiamo pannello RCA
-            var rcaLabel
-            if (currentCase.Settore == 6 || currentCase.Settore == 7)
-                rcaLabel = "RCA - PREMIO FISSO UNIFICATA"
-            else if (currentCase.Settore == 3)
-                rcaLabel = "RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA"
-            else
-                rcaLabel = "RCA - BONUS MALUS"
-
-            cy.contains(rcaLabel).parents('form').within(() => {
+            cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
                 cy.get('nx-icon[class~="clickAble"]').first().click()
             })
 
@@ -1128,10 +1242,16 @@ class TenutaTariffa {
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il premio lordo a video
-            cy.contains(rcaLabel).parents('form').within(() => {
+            cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
                 cy.get('p[class~="premio"]').first().invoke('text').then(premioLordo => {
 
-                    //expect(premioLordo).contains(currentCase.Totale_Premio_Lordo)
+                    premioLordo.replace(/€/g, '').trim()
+
+                    if (parseFloat(premioLordo) < 1) {
+                        cy.task('log', 'Errore Premio non valorizzato')
+                        assert.fail('Errore Premio non valorizzato')
+                    }
+
                     if (!premioLordo.includes(currentCase.Totale_Premio_Lordo)) {
                         cy.log('Attenzione : verificare differenza premi')
                         cy.log(`--> Valore rilevato : ${premioLordo}`)
@@ -1162,12 +1282,26 @@ class TenutaTariffa {
                 String(dataDecorrenza.getMonth() + 1).padStart(2, '0') + '/' +
                 dataDecorrenza.getFullYear()
 
-            //! purtroppo il componente non è trovabile agevolmente al momento
-            cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > nx-icon').click()
-            cy.get('nx-formfield').first().click().clear()
-            cy.wait(700)
-            cy.get('nx-formfield').first().click().type(formattedDataDecorrenza).click()
+            cy.get('nx-icon[name="pen"]').first().click().wait(700)
+            cy.get('nx-icon[name="calendar"]').first().click()
+            cy.contains('Scegli mese e anno').should('be.visible').click()
 
+            //Selezioniamo l'anno
+            cy.get('.nx-calendar-table').within(() => {
+                cy.contains(dataDecorrenza.getFullYear()).click()
+            })
+
+            //Selezioniamo il mese
+            cy.get('.nx-calendar-table').within(() => {
+                cy.contains(dataDecorrenza.toLocaleString('default', { month: 'short' })).click()
+            })
+
+            //Selezioniamo il giorno
+            cy.get('.nx-calendar-table').within(() => {
+                cy.get(`div:contains(${String(dataDecorrenza.getDate())})`)
+                    .not('[aria-hidden]')
+                    .should('be.visible').click()
+            })
             cy.wait('@getMotor', { timeout: 60000 })
 
             //Attendiamo che il caricamento non sia più visibile
@@ -1285,6 +1419,7 @@ class TenutaTariffa {
                 //AVIVA
                 case "KASKO TOTALE":
                 case "KASKO URTO CON ANIMALI":
+                case "KASKO TOTALE VEICOLO STORICO":
                 //AZ e AVIVA
                 case "KASKO COLLISIONE":
                     cy.contains("Kasko").parent('div').parent('div').within(() => {
@@ -1380,8 +1515,24 @@ class TenutaTariffa {
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il totale relativo alla ARD
-            cy.get('h3:contains("Auto Rischi Diversi")').parents('div').find('div:last').find('h3:last').invoke('text').then(value => {
-                expect(value).contains(currentCase.Totale_Premio)
+            cy.get('h3:contains("Auto Rischi Diversi")').parents('div').find('div:last').find('h3:last').invoke('text').then(premio => {
+                premio.replace(/€/g, '').trim()
+
+                if (parseFloat(premio) < 1) {
+                    cy.task('log', 'Errore Premio non valorizzato')
+                    assert.fail('Errore Premio non valorizzato')
+                }
+
+                if (!premio.includes(currentCase.Totale_Premio)) {
+                    cy.log('Attenzione : verificare differenza premi')
+                    cy.log(`--> Valore rilevato : ${premio}`)
+                    cy.log(`--> Valore certificato : ${currentCase.Totale_Premio}`)
+                    cy.task('log', 'Attenzione : verificare differenza premi')
+                    cy.task('log', `--> Valore rilevato : ${premio}`)
+                    cy.task('log', `--> Valore certificato : ${currentCase.Totale_Premio}`)
+                }
+                else
+                    cy.task('log', 'Dati Offerta compilati correttamente')
             })
         })
     }
@@ -1415,7 +1566,6 @@ class TenutaTariffa {
                     const options = {
                         ignoreAttributes: false
                     }
-                    debugger
                     const parser = new XMLParser(options)
                     parsedRadarUW = parser.parse(fileContent)
 
@@ -1434,7 +1584,7 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
 
-            cy.get('motor-footer').should('exist').find('button').click().wait(8000)
+            cy.get('motor-footer').should('exist').find('button').click().wait(12000)
             cy.getTariffaLog(currentCase).then(logFolder => {
                 //#region LogTariffa
                 cy.readFile(logFolder + "\\logTariffa.xml").then(fileContent => {
@@ -1462,10 +1612,10 @@ class TenutaTariffa {
                         case "KASKO COMPLETA":
                         //AVIVA
                         case "KASKO TOTALE":
+                        case "KASKO TOTALE VEICOLO STORICO":
                         case "KASKO URTO CON ANIMALI":
                         //AZ e AVIVA
                         case "KASKO COLLISIONE":
-                            debugger
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
                             break
                         //AZ
@@ -1523,8 +1673,11 @@ class TenutaTariffa {
             url: /CaricaLog/
         }).as('caricaLog')
 
+        if (Cypress.env('currentEnv') === 'TEST')
+            cy.visit(Cypress.env('urlDebugProxyTest'))
+        else
+            cy.visit(Cypress.env('urlDebugProxyPreprod'))
 
-        cy.visit(Cypress.env('urlDebugProxyPreprod'))
 
         cy.getUserWinLogin().then(data => {
             cy.get('#txtCompagnia').should('exist').and('be.visible').type(data.agency.substr(0, 2)).wait(500)
@@ -1585,7 +1738,6 @@ class TenutaTariffa {
                 let fattoriWithOutMotorAI = elencoFattori.filter(obj => { return obj.NomeFattore !== 'MOTOR_AI' })
                 console.log(fattoriWithOutMotorAI)
 
-                debugger
                 //Togliamo i fattori che sono stati volutamente settati a -1 e verifichiamo che gli altri non siano a -1
                 //? Da Maggio 2022, come da comunicazione di Marcialis, è stato chiuso l'accesso alla banca dati card
                 //? Se stai leggendo questa riga sei stato fregato! Scappa!

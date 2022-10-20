@@ -210,7 +210,7 @@ class Dashboard {
                 .should('be.visible')
                 .click()
 
-            cy.wait(1000)
+            cy.wait(1000);
 
             //verifica che il popup sia visibile e lo inquadra
             cy.get('ultra-contratto-temporaneo-modal').contains('Gestione contratto temporaneo')
@@ -328,7 +328,7 @@ class Dashboard {
             }
 
             cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-            cy.wait(1000)
+            cy.wait(1000);
         })
     }
 
@@ -376,7 +376,7 @@ class Dashboard {
 
             cy.get('button[class="close-button"]').should('exist').click()
             cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-            cy.wait(1000)
+            cy.wait(1000);
         })
     }
 

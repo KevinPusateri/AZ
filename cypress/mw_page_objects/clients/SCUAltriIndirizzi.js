@@ -148,7 +148,7 @@ class SCUAltriIndirizzi {
 
         cy.get('nx-modal-container').within((container) => {
             cy.wrap(container).should('contain.text', 'Elimina indirizzo')
-            cy.contains('Elimina indirizzo').click()
+            cy.contains('Elimina indirizzo').click().wait(5000)
         })
         
     }

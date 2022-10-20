@@ -6,16 +6,6 @@
 
 ///<reference types="cypress"/>
 
-//#region imports
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import LibriMatricola from "../../mw_page_objects/motor/LibriMatricola"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Veicoli from '../../mw_page_objects/motor/ListaVeicoli'
-//import cypress from "cypress";
-//#endregion
-
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
@@ -23,13 +13,9 @@ const dbConfig = Cypress.env('db')
 let insertedId
 //#endregion
 
-
-
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregions
-
-
 
 before(() => {
     cy.getUserWinLogin().then(data => {
@@ -105,34 +91,10 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// afterEach(function () {
-//     if (this.currentTest.state !== 'passed') {
-//         //TopBar.logOutMW()
-//         //#region Mysql
-//         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//             let tests = testsInfo
-//             cy.finishMysql(dbConfig, insertedId, tests)
-//         })
-//         //#endregion
-//         //Cypress.runner.stop();
-//     }
-// })
-
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
 //#endregion Before After
 
 describe("LIBRI MATRICOLA", function () {
-    // Ultimo Codice LM
-    //! Da modificare dopo il flusso  
-    // let codice = '611982'
+// !  La convenzione appena create si utilizza il giorno dopo su LM
 
     it('Flusso', () => {
         cy.get('#ambienteTargetLabel').should('be.visible').click()
@@ -145,8 +107,7 @@ describe("LIBRI MATRICOLA", function () {
         cy.get('#ctl00_ContentPlaceHolder1_txtSrcDescrizione').should('be.visible').type('SALA TEST LM AUTOMATICI')
         cy.get('#ctl00_ContentPlaceHolder1_ImageButton1').click()
         cy.get('#ctl00_ContentPlaceHolder1_GridView1').within(() => {
-            cy.fixture('LibriMatricolaConvenzione.json').then((data) => {
-                debugger //! da vedere
+            cy.fixture('LibriMatricola/Convenzione.json').then((data) => {
                 cy.contains(data.convenzione).click()
               })
         })
@@ -165,16 +126,15 @@ describe("LIBRI MATRICOLA", function () {
         afterTwoMonth.toLocaleDateString();
         let formattedDate = String(afterTwoMonth.getDate()).padStart(2, '0') + '/' +
             String(afterTwoMonth.getMonth()).padStart(2, '0') + '/' +
-            afterTwoMonth.getFullYear()
+            String(afterTwoMonth.getFullYear())
         cy.log(formattedDate)
-
+        cy.wait(5000)
         cy.get('#ctl00_ContentPlaceHolder1_dtDecorrenza').should('be.visible').clear().type(formattedDate)
-
-        cy.get('#ctl00_ContentPlaceHolder1_txtDescrizione').should('be.visible').type('SALA TEST LM AUTOMATICI')
-        cy.pause()
+        
+        cy.get('#ctl00_ContentPlaceHolder1_txtDescrizione').should('be.visible').click()
+        cy.get('#ctl00_ContentPlaceHolder1_txtDescrizione').clear().type('SALA TEST LM AUTOMATICI')
 
         //CONFERMA
-        //! DA PROVARE
         cy.get('#ctl00_commandBar_btnConferma').click()
         cy.get('#ctl00_contentMenuSx_MainMenu').within(() => {
             cy.contains('Salva').click()
@@ -185,13 +145,14 @@ describe("LIBRI MATRICOLA", function () {
         cy.contains('Operazioni specifiche per l\'ambiente corrente').click()
         cy.get('#tendinaOperazioniAmbienteSviluppo_option_1').should('be.visible').click()
 
-        cy.get('li:contains("Codice Motor:")').parent().find('b:first').then(($codiceConvenzione)=>{
-            debugger //!VERIFICA SE CODICE è stato preso
+        // SALVA il Codice Convenzione e la data
+        cy.get('#D-DatiGenerali').find('b').eq(1).then(($codiceConvenzione)=>{
             cy.writeFile('cypress/fixtures/LibriMatricola/Convenzione.json', {
-                convenzione : $codiceConvenzione.text(),
+                convenzione : $codiceConvenzione.text().trim(),
                 dataConvenzione : formattedDate
             })
         })
+        cy.contains('Esci').click()
     });
 
 

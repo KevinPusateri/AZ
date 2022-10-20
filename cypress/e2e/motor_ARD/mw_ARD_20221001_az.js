@@ -21,33 +21,16 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_aviva.json'
+import { tariffaCases as ardCases } from '../../fixtures/tariffe_ARD/tariffaCases_ARD_20221001_az.json'
 //#endregion
 
 before(() => {
-    Cypress.env('isAviva', true)
-    //! UTILIZZARE CHROME PER IL TIPO DI TEST E PER LA POSSIBILITA' DI ANDARE IN AMBIENTE DI TEST E PREPROD
-    expect(Cypress.browser.name).to.contain('chrome')
-
+    Cypress.env('isAviva', false)
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
-            //List of possible AVIVA
-            //14-1960
-            // {
-            //     "agentId": "AAMCIPRIANO",
-            //     "agency": "140001960"
-            // }
-            //14-1995
-            // {
-            //     "agentId": "AALALICATA",
-            //     "agency": "140001995"
-            // }
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-            LoginPage.logInMWAdvanced({
-                "agentId": "AALALICATA",
-                "agency": "140001995"
-            })
+            LoginPage.logInMWAdvanced()
         })
     })
 })
@@ -70,13 +53,13 @@ let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
 let caseToExecute = []
 
-describe('AVIVA - ARD 20220401 : ', {
+describe('ARD Ottobre 2022: ', {
     retries: {
         runMode: 0,
         openMode: 0,
     }
 }, function () {
-    tariffaCases.forEach((currentCase, k) => {
+    ardCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
                 if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
@@ -100,14 +83,9 @@ describe('AVIVA - ARD 20220401 : ', {
                     TenutaTariffa.compilaProvenienza(currentCase)
                     TenutaTariffa.compilaOffertaARD(currentCase)
                     TenutaTariffa.areaRiservata(currentCase)
-                }
-                else
-                    this.skip()
-            })
 
-            it("LogTariffa", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
                     TenutaTariffa.checkTariffaARD(currentCase)
+                }
                 else
                     this.skip()
             })

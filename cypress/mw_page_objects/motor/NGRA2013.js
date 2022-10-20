@@ -61,12 +61,10 @@ class NGRA2013 {
     /**
      * Interazione con il pulsante Avanti
      * @param {boolean} [performeClick] default false, se true effettua click
-     * @private
      */
     static avanti(performeClick = false) {
         cy.get('[value="› Avanti"]').should('exist').and('be.visible')
         cy.wait(2000)
-        cy.screenshot('Verifica Accesso a Riepilogo NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         if (performeClick)
             cy.get('[value="› Avanti"]').click()
 
@@ -162,7 +160,8 @@ class NGRA2013 {
     static TerminaIncasso() {
         // Verifica Flag Confermati
         cy.get('#content-area-esa').should('be.visible').wait(5000)
-        cy.get('img[src="Images/iconImagesBlue/confirm_green.gif"]').should('be.visible')
+        cy.get('img[src="css/ultra/Images/Shape.png"]').should('be.visible')
+        // cy.get('img[src="Images/iconImagesBlue/confirm_green.gif"]').should('be.visible')
         cy.screenshot('Verifica Flag', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         // Chiudi
         cy.get('#ctl00_pHolderMain1_btnChiudi').click()

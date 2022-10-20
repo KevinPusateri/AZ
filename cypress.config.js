@@ -65,6 +65,8 @@ module.exports = defineConfig({
     selectedSettori: '',
     urlDebugProxyPreprod:
       'https://portaleagenzie.pp.azi.allianz.it/Auto/NGRA2013/DebugGetProxy.aspx',
+    // urlDebugProxyTest: 'https://portaleagenzie.te.azi.allianzit/Auto/NGRA2013/DebugGetProxy.aspx',
+    urlDebugProxyTest:'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=2&option=credential&sid=2&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2FAuto%2FNGRA2013%2FDebugGetProxy.aspx',
     usingDash: false,
   },
   e2e: {

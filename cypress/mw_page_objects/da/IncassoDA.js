@@ -67,7 +67,7 @@ class IncassoDA {
         cy.intercept(getLogonUserName).as('getLogonUserName')
 
         cy.wait('@selectTitolo', { timeout: 60000 })
-        cy.wait('@initMezziPagam', { timeout: 60000 })
+        // cy.wait('@initMezziPagam', { timeout: 60000 })
         cy.wait('@getLogonUserName', { timeout: 60000 })
     }
 
@@ -184,13 +184,12 @@ class IncassoDA {
             url: /Incassa/
         }).as('incassa');
 
-        cy.wait(5000)
+        cy.wait(10000)
         // Seleziono il metodo di pagamento
         cy.get('span[aria-owns="TabIncassoModPagCombo_listbox"]').should('be.visible').click().wait(1000)
         let regexKeyType = new RegExp('\^' + typeIncasso + '\$');
-
         cy.get('#TabIncassoModPagCombo_listbox').should('be.visible')
-            .find('li').contains(regexKeyType).click()
+            .find('li:visible').contains(regexKeyType).click()
 
         //Conferma incasso
         cy.screenshot('Conferma incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -199,7 +198,7 @@ class IncassoDA {
         cy.wait('@incassa', { timeout: 120000 })
     }
 
-    static TerminaIncasso(TitoloIncassoByAnnullamento = false) {
+    static TerminaIncasso(TitoloIncassoByAnnullamento = true) {
 
         // Verifica incasso confermato
         cy.get('div[class="container"]').should('be.visible').then(() => {
@@ -208,12 +207,12 @@ class IncassoDA {
             cy.wait(5000)
         })
         if (!TitoloIncassoByAnnullamento) {
-            cy.get('img[src="css/ultra/Images/Shape.png"]').should('be.visible')
+            cy.get('img[src="Images/iconImagesBlue/confirm_green.gif"]').should('be.visible')
             cy.get('input[value="CHIUDI"]').should('be.visible').click()
         }
         else {
-            cy.get('img[src="Images/iconImagesBlue/confirm_green.gif"]').should('be.visible')
-            cy.get('input[value="> CHIUDI"]').should('be.visible').click()
+            cy.get('img[src="css/ultra/Images/Shape.png"]').should('be.visible')
+            cy.contains('CHIUDI').click()
         }
 
     }

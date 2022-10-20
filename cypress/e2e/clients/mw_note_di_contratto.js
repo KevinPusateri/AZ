@@ -71,6 +71,7 @@ describe('Matrix Web : Note di contratto', function () {
         it('Verifica Aggiungi Nota', function () {
             if (currentCustomerFullName !== "") {
                 TopBar.search(currentCustomerFullName)
+                LandingRicerca.filtra()
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 SintesiCliente.retriveUrl().then(currentUrl => {
                     urlClient = currentUrl
@@ -155,6 +156,7 @@ describe('Matrix Web : Note di contratto', function () {
         it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
             if (currentCustomerFullName !== "") {
                 TopBar.search(currentCustomerFullName)
+                LandingRicerca.filtra()
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')
@@ -183,6 +185,7 @@ describe('Matrix Web : Note di contratto', function () {
 
             it('Verifica Aggiungi Nota', function () {
                 TopBar.search(currentCustomerFullName)
+                LandingRicerca.filtra()
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')
@@ -233,6 +236,7 @@ describe('Matrix Web : Note di contratto', function () {
 
             it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
                 TopBar.search(currentCustomerFullName)
+                LandingRicerca.filtra()
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')
@@ -255,6 +259,7 @@ describe('Matrix Web : Note di contratto', function () {
         it('Verifica Aggiungi Nota', function () {
             if (currentCustomerFullName !== "") {
                 TopBar.search(currentCustomerFullName)
+                LandingRicerca.filtra()
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')
@@ -336,6 +341,7 @@ describe('Matrix Web : Note di contratto', function () {
         it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
             if (currentCustomerFullName !== "") {
                 TopBar.search(currentCustomerFullName)
+                LandingRicerca.filtra()
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')
@@ -360,6 +366,7 @@ describe('Matrix Web : Note di contratto', function () {
                 cy.getClientWithPolizze(currentTutf, '86').then(customerFullName => {
                     currentCustomerFullName = customerFullName
                     TopBar.search(currentCustomerFullName)
+                    LandingRicerca.filtra()
                     LandingRicerca.clickClientePF(currentCustomerFullName)
                     SintesiCliente.retriveUrl().then(currentUrl => {
                         urlClient = currentUrl
@@ -444,6 +451,7 @@ describe('Matrix Web : Note di contratto', function () {
         it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
             if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 TopBar.search(currentCustomerFullName)
+                LandingRicerca.filtra()
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')
@@ -468,6 +476,7 @@ describe('Matrix Web : Note di contratto', function () {
                 cy.getClientWithPolizze(currentTutf, '42', false, true).then(customerFullName => {
                     currentCustomerFullName = customerFullName
                     TopBar.search(currentCustomerFullName)
+                    LandingRicerca.filtra()
                     LandingRicerca.clickClientePF(currentCustomerFullName)
                     Portafoglio.clickTabPortafoglio()
                     Portafoglio.clickSubTab('Polizze attive')
@@ -549,6 +558,7 @@ describe('Matrix Web : Note di contratto', function () {
         it('Verifica che la modifica sia stata effettuata anche su Clients', function () {
             if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
                 TopBar.search(currentCustomerFullName)
+                LandingRicerca.filtra()
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')

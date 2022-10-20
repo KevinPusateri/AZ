@@ -274,7 +274,7 @@ class LibriMatricola {
 
             /*------*/
 
-            cy.wait(1000)
+            cy.wait(1000);
             matrixFrame().within(() => {
                 //cy.get('#pnlDialog').should('be.visible')
                 cy.get('#pnlDialog').then(($popup) => {
@@ -321,7 +321,16 @@ class LibriMatricola {
             url: '**/GetElencoAutorizzazioni'
         }).as('loadIntegrazione')
 
-        cy.wait('@loadIntegrazione', { requestTimeout: 60000 });
+        cy.intercept({
+            method: '+(GET|POST)',
+            url: '**/KoTemplates/**'
+        }).as('loadKoTemplates')
+
+        // cy.wait('@loadIntegrazione', { requestTimeout: 60000 });
+
+        //POST Rel 127
+        cy.wait('@loadKoTemplates', { requestTimeout: 60000 });
+
 
         if (!inviaRichiestaVPS) {
             matrixFrame().within(() => {
@@ -701,10 +710,10 @@ class LibriMatricola {
      * Attende il caricamento della pagina Contraente/Proprietario
      */
     static caricamentoContraenteProprietario() {
-        cy.intercept({
-            method: 'GET',
-            url: '**/ContraeAnag.aspx'
-        }).as('ContraeAnag')
+        // cy.intercept({
+        //     method: 'GET',
+        //     url: '**/ContraeAnag.aspx'
+        // }).as('ContraeAnag')
 
         cy.wait('@ContraeAnag', { requestTimeout: 30000 });
     }
@@ -800,12 +809,12 @@ class LibriMatricola {
             cy.get('#cbVersione').find('input').type(veicolo.versione)
                 .wait(1000).type('{downarrow}{enter}').wait(1000)
 
-            //inserisce la data di immatricolazione
             cy.get('input[data-bind*="dpDataImmatricolazioneN"]').first()
-                .type(veicolo.dataImmatricolazione).wait(1000)
+                .type(veicolo.dataImmatricolazione).wait(2000)
 
             //inserisce il numero dei posti
-            cy.get('input[title*="numero di posti"]').filter(':visible').type(veicolo.nPosti).wait(1000)
+            cy.get('#veicoloDiv').click().wait(1000)
+            cy.get('input[title*="numero di posti"]:first').should('be.visible').and('be.enabled').type(veicolo.nPosti).wait(1000)
         })
     }
 
@@ -1165,7 +1174,7 @@ export function PrevApplicazione(caseTest, nomeApplicazione, veicolo, garanzie, 
         // Viene eseguito solo al primo Preventivo Applicazione
         if (caseTest === 1)
             it("Elenco applicazioni", function () {
-
+                console.log(JSON.stringify(veicolo))
                 LibriMatricola.AperturaTabPreventivi()
                 LibriMatricola.AperturaElencoApplicazioni(nPreventivo)
 
@@ -1183,6 +1192,10 @@ export function PrevApplicazione(caseTest, nomeApplicazione, veicolo, garanzie, 
         })
 
         it("Dati Amministrativi", function () {
+            cy.intercept({
+                method: 'GET',
+                url: '**/ContraeAnag.aspx'
+            }).as('ContraeAnag')
             LibriMatricola.Avanti()
             LibriMatricola.caricamentoContraenteProprietario()
         })
@@ -1357,6 +1370,10 @@ export function InclusioneApplicazione(nomeApplicazione, veicolo, garanzie, cope
             })
         })
         it('Dati Amministrativi', function () {
+            cy.intercept({
+                method: 'GET',
+                url: '**/ContraeAnag.aspx'
+            }).as('ContraeAnag')
             LibriMatricola.Avanti()
             LibriMatricola.caricamentoContraenteProprietario()
         })

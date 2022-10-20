@@ -207,7 +207,7 @@ class ConfigurazioneAmbito {
       .type('{enter}')
 
     cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-    cy.wait(1000)
+    cy.wait(1000);
 
   }
 
@@ -606,10 +606,10 @@ class ConfigurazioneAmbito {
 
         cy.get('div[id="warning-switch-solution"]')
           .find('span').contains('Ok').should('be.visible').click()
-        cy.wait(1000)
+        cy.wait(1000);
 
         cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-        cy.wait(1000)
+        cy.wait(1000);
 
       }
 
@@ -628,10 +628,10 @@ class ConfigurazioneAmbito {
           .type(modificheCasa.Cap).wait(1000)
 
         cy.contains(modificheCasa.Cap).should('have.length', 1).dblclick()
-        cy.wait(1000)
+        cy.wait(1000);
 
         cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-        cy.wait(1000)
+        cy.wait(1000);
       }
 
       // *** RIGA ABITAZIONE ***
@@ -729,10 +729,10 @@ class ConfigurazioneAmbito {
           .type(modificheCasa.CapAss).wait(1000)
 
         cy.contains(modificheCasa.CapAss).should('have.length', 1).dblclick()
-        cy.wait(1000)
+        cy.wait(1000);
 
         cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-        cy.wait(1000)
+        cy.wait(1000);
       }
 
     })
@@ -806,10 +806,10 @@ class ConfigurazioneAmbito {
           .type(modificheAnimale.Cap).wait(1000)
 
         cy.contains(modificheAnimale.Cap).should('have.length', 1).dblclick()
-        cy.wait(1000)
+        cy.wait(1000);
 
         cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-        cy.wait(1000)
+        cy.wait(1000);
 
       }
 
@@ -950,7 +950,7 @@ class ConfigurazioneAmbito {
       }
 
       cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible')
-      cy.wait(1000)
+      cy.wait(1000);
 
     })
 

@@ -3,7 +3,7 @@
 import Common from "../common/Common"
 
 
-const mainFrame = '#matrixIframe'
+const IFrameParent = '#matrixIframe'
 const subFrame = 'iframe[src="/dasincruscotto/cruscotto/cruscotto.jsp"]'
 const getIframe = () => cy.get('iframe').its('0.contentDocument.body')
 const findIframeChild = (subFrame) => {
@@ -59,7 +59,7 @@ class ConsultazioneSinistriPage {
      */
     static clickOnMultiObj_ById(id) {             
         getIframe().find(id).click({ multiple: true });
-        cy.wait(1000)
+        cy.wait(1000);
     }
     /**
      * Click on object defined by html tag and content text displayed as label
@@ -68,7 +68,7 @@ class ConsultazioneSinistriPage {
      */
     static clickObj_ByLabel(tag, label) {             
         getIframe().contains(tag, label).should('exist').should('be.visible').click().log('>> object ['+tag+'] with label ['+label+ '] is clicked')
-        cy.wait(1000)        
+        cy.wait(1000);        
     }
     /**
      * Click on object defined by class attribute and content text displayed as label
@@ -85,7 +85,7 @@ class ConsultazioneSinistriPage {
      */
     static clickLnk_ByHref(value) {        
         getIframe().find('a[href*="'+value+'"]').should('exist').click({ multiple: true }).log('>> link (a) with href ['+value+ '] is clicked')      
-        cy.wait(1000)        
+        cy.wait(1000);        
     }
     /**
      * Check if an object identified by id attribute and its label is displayed
@@ -112,7 +112,7 @@ class ConsultazioneSinistriPage {
                 resolve(label)
             }            
         });
-        cy.wait(1000)                 
+        cy.wait(1000);                 
     }
     /**
      * Check if an object identified by locator and its label is displayed
@@ -132,7 +132,7 @@ class ConsultazioneSinistriPage {
                     assert.fail('object with label: "' + label +'" is not defined')
             })
         });
-        cy.wait(1000)            
+        cy.wait(1000);            
     }
     /**
      * Inserts a string @value into the object identified by its @id
@@ -205,7 +205,7 @@ class ConsultazioneSinistriPage {
                 validation = true;                       
             assert.isTrue(validation,">> the check value '"+value+"' is defined. ")  
         });
-        cy.wait(1000)        
+        cy.wait(1000);        
     }
     
     /**
@@ -290,7 +290,7 @@ class ConsultazioneSinistriPage {
         var elements = new Array(); 
         debugger
         //getIframe().find(".k-dropdown-wrap k-state-default").should('be.visible').click();
-        cy.wait(1000)
+        cy.wait(1000);
        
         getIframe().find(idFnt, { timeout: 5000 }).should('be.visible').each(($tr, index, $lis) => {
             debugger
@@ -311,7 +311,7 @@ class ConsultazioneSinistriPage {
      */
      static comunicAllCategoryCheck(categorie) {
         cy.log(">>> Verifica delle categorie per nuova pratica di comunicazione comunicall <<<")
-        cy.wait(1000)
+        cy.wait(1000);
         
         for (let i = 0; i < categorie.length; i++) {
             Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]').find('#cmbCategoriaComunicAll', { timeout: 3000 }).should('exist')
@@ -321,11 +321,11 @@ class ConsultazioneSinistriPage {
     /**
      * Checks if the text object in comunicAll can use special chars
      * @param {string} id : locator attribute  
+     * @param {string} value : text string 
      */
-    static comunicAllSpecialCharsCheck(id) {
+    static comunicAllSpecialCharsCheck(id, value) {
         cy.log(">>> Verifica caratteri speciali nel campo oggetto per la pratica di comunicazione comunicall <<<")
         // Stringa dei caratteri speciali da verificare
-        let value = '\\|!£$%&/()=\'?ì^è+òàù-€éç°§@#-[*].'
         let obj = Common.getIFrameChildByParent('#MAIN_IFRAME', 'iframe[frameborder="0"]')
         obj.find(id, { timeout: 3000 } ).should('exist').type(value, { timeout: 3000 }).should('have.value', value)
         cy.log('>> value: [' + value +'] compared')
@@ -347,7 +347,7 @@ class ConsultazioneSinistriPage {
             else
                 assert.fail('object with text value: "' + text + '" is not defined')
         });
-        cy.wait(1000)
+        cy.wait(1000);
     }
 }
 

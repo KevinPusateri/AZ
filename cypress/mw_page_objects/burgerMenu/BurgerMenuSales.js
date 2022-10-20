@@ -155,6 +155,10 @@ class BurgerMenuSales extends Sales {
         })
     }
 
+    static clickBurgerMenu() {
+        cy.get('lib-burger-icon').click({ force: true })
+    }
+
     /**
      * Verifica che i link nel burgerMenu siano presenti
      */
@@ -173,10 +177,12 @@ class BurgerMenuSales extends Sales {
     /**
      * Click sul link richiesto dal BurgerMenu
      * @param {string} page - nome del link 
+     * @param {boolean} clickBurgerMenu - default settato a true, altrimenti non clicca l'icona burgerMenu
      */
-    static clickLink(page) {
+    static clickLink(page, clickBurgerMenu = true) {
 
-        cy.get('lib-burger-icon').click({ force: true })
+        if (clickBurgerMenu)
+            cy.get('lib-burger-icon').click({ force: true })
         if (page === LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE) {
             this.checkPage(page)
         } else {
@@ -199,7 +205,7 @@ class BurgerMenuSales extends Sales {
                 }).as('getMotor');
                 Common.canaleFromPopup()
                 cy.wait('@getMotor', { timeout: 50000 });
-                getIFrame().find('button:contains("Calcola"):visible')
+                getIFrame().find('button:contains("Calcola"):visible', { timeout: 20000 })
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.SAFE_DRIVE_AUTOVETTURE:
@@ -291,7 +297,7 @@ class BurgerMenuSales extends Sales {
                 cy.wait('@getSalesPremo', { timeout: 40000 });
                 cy.wait(30000)
                 getIFrame().should('be.visible')
-                getIFrame().find('button[class="btn btn-info btn-block"]').should('be.visible').and('contain.text', 'Ricerca')
+                getIFrame().find('input[value="Home"]').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
@@ -300,7 +306,7 @@ class BurgerMenuSales extends Sales {
                     url: '**/ImagesArch/**'
                 }).as('getImage');
                 Common.canaleFromPopup()
-                cy.wait('@getImage', { timeout: 40000 });
+                cy.wait('@getImage', { timeout: 60000 });
                 // cy.wait(25000)
                 getIFrame().find('input[value="Home"]').invoke('attr', 'value').should('equal', 'Home')
                 getIFrame().find('input[value="Indietro"]').invoke('attr', 'value').should('equal', 'Indietro')
@@ -367,7 +373,7 @@ class BurgerMenuSales extends Sales {
 
                 Common.canaleFromPopup()
                 cy.wait('@Danni', { timeout: 40000 })
-                cy.wait(5000)
+                cy.wait(10000)
                 getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -440,6 +446,7 @@ class BurgerMenuSales extends Sales {
                 if (Cypress.isBrowser('firefox')) {
                     cy.get('lib-side-menu').find('a:contains("Allianz Global Assistance")')
                         .should('have.attr', 'href', 'http://oazis.allianz-assistance.it')
+                    this.clickBurgerMenu()
                 } else {
                     cy.contains('Allianz Global Assistance').invoke('removeAttr', 'target').click()
                     cy.url().should('eq', 'https://oazis.allianz-assistance.it/dynamic/home/index')

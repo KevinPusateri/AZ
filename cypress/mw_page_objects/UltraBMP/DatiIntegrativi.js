@@ -271,7 +271,7 @@ class DatiIntegrativi {
 
             cy.get('[class="popupSituazioneAssicurativa"]')
                 .find('button').contains('CONFERMA').click() //conferma il popup
-            cy.wait(1000)
+            cy.wait(1000);
         })
     }
 

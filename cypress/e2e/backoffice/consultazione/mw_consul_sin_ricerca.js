@@ -14,7 +14,8 @@ import ConsultazioneSinistriPage from "../../../mw_page_objects/backoffice/Consu
 
 
 //#region Mysql DB Variables
-const testName = Cypress.spec.name.split('/')[2].split('.')[0].toUpperCase()
+//const testName = Cypress.spec.name.split('.')[2].split('.')[0].toUpperCase()
+const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
@@ -28,7 +29,10 @@ Cypress.config('defaultCommandTimeout', 60000)
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+        LoginPage.logInMWAdvanced({         
+            "agency": "010375000",
+            "agentId": "ARALONGO7"
+        })
     })
 })
 
@@ -37,6 +41,7 @@ beforeEach(() => {
 })
 
 afterEach(function () {
+    /*
     if (this.currentTest.state !== 'passed') {
         //TopBar.logOutMW()
         //#region Mysql
@@ -47,6 +52,7 @@ afterEach(function () {
         //#endregion
         //Cypress.runner.stop();
     }
+    */
 })
 
 after(function () {
@@ -58,11 +64,11 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-     Cypress.runner.stop();
+    Cypress.runner.stop();
 })
 
 
-describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistri', () => {
+describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistri tramite ricerca dati per numsin, polizza, targa assicurato e dt avvenimento', () => {
     // DATI DEL TEST (Per la verifica selezionare un sinistro con controparte)
     const numsin = "927646985"
     const numpol = "528771171"
@@ -81,11 +87,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Consultazione sinistri') 
-        cy.wait(1000)        
+        cy.wait(1000);        
     });
 
     it('Consultazione Sinistri: Ricerca per numero sinistro  ', function () {
-            
+
         ConsultazioneSinistriPage.setValue_ById('#claim_number', numsin)
         let classvalue = "search_submit claim_number k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue, 'Cerca')
@@ -97,7 +103,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
     it('Consultazione Sinistri: Ricerca per polizza assicurato ', function () {
-                
+
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Polizza');
         ConsultazioneSinistriPage.setValue_ById('#policy_number', numpol)
         let classvalue = "search_submit polizza k-button"
@@ -110,7 +116,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
     it('Consultazione Sinistri: Ricerca per targa assicurato  ', function () {
-        
+
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Targa');
         ConsultazioneSinistriPage.setValue_ById('#plate', targa_assicurato)
         let classvalue = "search_submit targa k-button"
@@ -123,7 +129,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
     it('Consultazione Sinistri: Ricerca per dati anagrafici del cliente persona fisica ', function () {
-       
+
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
         ConsultazioneSinistriPage.setValue_ById('#cognome', cognome_assicurato)
         ConsultazioneSinistriPage.setValue_ById('#nome', nome_assicurato)
@@ -137,7 +143,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
     it('Consultazione Sinistri: Ricerca per codice fiscale del cliente persona fisica ', function () {
-       
+
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
         ConsultazioneSinistriPage.setValue_ById('#cognome','')
         ConsultazioneSinistriPage.setValue_ById('#nome','')
@@ -152,26 +158,24 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     });
 
     it('Consultazione Sinistri: Ricerca per denominazione del cliente come persona giuridica ', function () {
-       
+
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
         ConsultazioneSinistriPage.setValue_ById('#cf','')
         ConsultazioneSinistriPage.setValue_ById('#cognome','GIRASOLE INDUSTRIE')
         let classvalue = "search_submit anagrafica k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        cy.wait(1000)
+        cy.wait(1000);
         cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per denominazione del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
     it('Consultazione Sinistri: Ricerca per codice fiscale / partita IVA del cliente persona giuridica ', function () {
-        
+
         ConsultazioneSinistriPage.clickObj_ByLabel('a','Dati Anagrafici Cliente')
         ConsultazioneSinistriPage.setValue_ById('#cognome','')
         ConsultazioneSinistriPage.setValue_ById('#cf','04922730264')
         let classvalue = "search_submit anagrafica k-button"
         ConsultazioneSinistriPage.clickBtn_ByClassAndText(classvalue,'Cerca')
-        cy.wait(1000)
+        cy.wait(1000);
         cy.screenshot('Pagina Consultazione sinistro - Ricerca del sinistro per codice fiscale / partita IVA del cliente persona giuridica', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
-
-    
 });

@@ -59,7 +59,7 @@ const RamiVari = {
     GESTIONE_GRANDINE: 'Gestione Grandine',
     EMISSIONE: 'Emissione',
     deleteKey: function (keys) {
-        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
+        if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO
         if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP) delete this.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP
         if (!keys.ALLIANZ_ULTRA_SALUTE) delete this.ALLIANZ_ULTRA_SALUTE
@@ -371,7 +371,7 @@ class SintesiCliente {
      */
     static checkFastQuoteAuto() {
         cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
-
+        // cy.get('lib-da-link[calldaname="GENERIC-DETAILS"]').should('be.visible')
         cy.get('lib-container').find('app-client-resume:visible').then(($fastquote) => {
             const check = $fastquote.find(':contains("Fast Quote")').is(':visible')
             if (check) {
@@ -431,8 +431,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { timeout: 120000 })
 
-        getIFrame().find('span:contains("Cerca"):visible')
-
+        getIFrame().find('nx-link:contains("Nuova ricerca"):visible')
         cy.screenshot('Assuntivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
@@ -450,7 +449,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { timeout: 50000 })
 
-        getIFrame().find('span:contains("Cerca"):visible')
+        getIFrame().find('span:contains("Nuova ricerca"):visible')
         cy.screenshot('Assuntivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
@@ -645,8 +644,8 @@ class SintesiCliente {
         cy.wait(15000)
         matrixFrame().within(() => {
             cy.get('#ButtonNuovo').should('be.visible')
-            cy.screenshot('Verifica aggancio Libri matricola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         })
+        cy.screenshot('Verifica aggancio Libri matricola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -1053,6 +1052,8 @@ class SintesiCliente {
     static cancellaCliente() {
         cy.get('nx-icon[aria-label="Open menu"]').click();
         cy.contains('Cancellazione cliente').click();
+        cy.screenshot('Cancella Cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         cy.contains('Cancella cliente').click();
         cy.contains('Ok').click();
     }
@@ -1076,6 +1077,8 @@ class SintesiCliente {
             url: '**/dacontabilita/**'
         }).as('dacontabilita');
 
+        cy.screenshot('Questionario', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         getIFrame().find('#ButtonQuestOk').click().wait(3000)
         cy.wait('@dacontabilita', { timeout: 60000 })
 
@@ -1090,11 +1093,15 @@ class SintesiCliente {
             url: /QuestionariWeb/
         }).as('questionariWeb');
 
+        cy.screenshot('Cassa', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         getIFrame().find('#TabVarieInserimentoButton').click().wait(8000)
 
         cy.wait('@questionariWeb', { timeout: 60000 })
 
         getIFrame().within(($frame) => {
+            cy.screenshot('Emetti Plein Air', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
             $frame.find('#ButtonQuestOk').click()
         })
     }
@@ -1115,6 +1122,8 @@ class SintesiCliente {
         cy.wrap(labels).each((label, i, array) => {
             getIFrame().find('span').contains(label).click()
         })
+
+        cy.screenshot('Verifica Folder Documenti Anagrafici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -1163,6 +1172,8 @@ class SintesiCliente {
         cy.get('nx-icon[class*=location]').parent().get('div').should('contain.text', cliente.provincia)
         //Verifica email
         cy.get('nx-icon[class*=mail]').parent().get('div').should('contain.text', String(cliente.email).toLowerCase())
+
+        cy.screenshot('Verifica Dati Spalla Sinistra', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -1333,6 +1344,8 @@ class SintesiCliente {
      * @param {boolean} [erroMessage] default false, se a true controlla prezenza errore
      */
     static emettiReportProfiloVita(agenzia = undefined, errorMessage = false) {
+        cy.get('app-scope-element', { timeout: 120000 }).should('be.visible')
+
         cy.intercept('POST', '**/graphql', (req) => {
             aliasQuery(req, 'clientReportLifePdf')
         })
@@ -1354,6 +1367,9 @@ class SintesiCliente {
             //Finestra di disambiguazione
             if (agenzia !== undefined)
                 cy.get('nx-modal-container').find('.agency-row').contains(agenzia).first().click().wait(3000)
+            else {
+                Common.canaleFromPopup()
+            }
             //cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
             cy.get('@open')
 

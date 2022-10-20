@@ -70,7 +70,7 @@ class AcquizioneDocumentiPage {
     */
     static clickLnk_ByHref(value) {        
         getIFrameAcqDoc().find('a[href*="'+value+'"]').should('exist').click({ multiple: true }).log('>> link (a) with href ['+value+ '] is clicked')      
-        cy.wait(1000)        
+        cy.wait(1000);        
     }
      /**
      * Click on object defined by locator id
@@ -88,7 +88,7 @@ class AcquizioneDocumentiPage {
     static clickBtn_LinkByText(locator) {                   
         getIFrameAcqDoc().find('a[href="javascript:;"]').contains('Chiudi').should('be.visible').click()
         .log('>> object with label ['+locator+ '] is clicked')
-        cy.wait(1000)        
+        cy.wait(1000);        
     }
  
     static UploadFile()

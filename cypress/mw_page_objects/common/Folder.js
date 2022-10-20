@@ -91,6 +91,7 @@ class Folder {
         cy.wait('@uploadPdfDoc', { requestTimeout: 30000 })
         cy.wait('@preview', { requestTimeout: 30000 })
 
+        cy.screenshot('Importa Documento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getDocumentoPersonale().find('#importMobileDocument').click()
         cy.wait('@uploadMobileDoc', { requestTimeout: 30000 })
         cy.wait(3000)
@@ -120,6 +121,8 @@ class Folder {
 
         getFolder().contains('Upload dei file selezionati').click()
         cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })
+
+        cy.screenshot('Autocertificazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         getIframe().find('button:contains("Conferma")').click()
     }
@@ -170,6 +173,8 @@ class Folder {
                 mimeType: 'application/pdf',
                 encoding: 'base64'
             })
+
+            cy.screenshot('Visura Camerale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             getIframe().contains('Upload dei file selezionati').click()
             cy.wait('@uploadCustomerDoc', { requestTimeout: 30000 })

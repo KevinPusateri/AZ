@@ -15,7 +15,8 @@ import MovimentazioneSinistriPage from "../../../mw_page_objects/backoffice/Movi
 import AcquizioneDocumentiPage from "../../../mw_page_objects/backoffice/AcquizioneDocumentiPage"
 
 //#region Mysql DB Variables
-const testName = Cypress.spec.name.split('/')[2].split('.')[0].toUpperCase()
+//const testName = Cypress.spec.name.split('.')[2].split('.')[0].toUpperCase()
+const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
@@ -29,7 +30,10 @@ Cypress.config('defaultCommandTimeout', 60000)
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+        LoginPage.logInMWAdvanced({         
+            "agency": "010375000",
+            "agentId": "ARALONGO7"
+        })
     })
 })
 
@@ -38,6 +42,7 @@ beforeEach(() => {
 })
 
 afterEach(function () {
+    /*
     if (this.currentTest.state !== 'passed') {
         //TopBar.logOutMW()
         //#region Mysql
@@ -48,6 +53,7 @@ afterEach(function () {
         //#endregion
         //Cypress.runner.stop();
     }
+    */
 })
 
 after(function () {
@@ -59,7 +65,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-     Cypress.runner.stop();
+    Cypress.runner.stop();
 })
 
 describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consultazione sinistro in stato Stato: CHIUSO SENZA SEGUITO', () => {
@@ -67,7 +73,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('Atterraggio su BackOffice >> Movimentazione sinistri', function () {             
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Movimentazione sinistri') 
-        cy.wait(1000)        
+        cy.wait(1000);        
     });
 
     it('Consultazione Sinistri: Selezionato un sinistro in stato CHIUSO SENZA SEGUITO ' +
@@ -98,7 +104,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
 
     it('In pagina dettaglio di sinistro in stato CHIUSO SENZA SEGUITO, ' +
     'Aprendo la sezione Perizie si verifica che non ci siano incarichi di perizia e che sia riportata la dicitura : "Non ci sono incarichi di perizia" ' , function () {
-    
+
         const cssDettaglio = "#soggetti_danneggiati > div > div:nth-child(1) > a"
         Common.clickFindByIdOnIframe(cssDettaglio) 
         
@@ -129,5 +135,5 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         // Viene effettutaoto l'upload del file
         AcquizioneDocumentiPage.UploadFile()       
     });
-   
+
 });

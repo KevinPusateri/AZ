@@ -67,7 +67,7 @@ after(function () {
     //#endregion
 })
 
-describe('RCA Luglio 2022: ', {
+describe('RC AZ Luglio 2022: ', {
     retries: {
         runMode: 0,
         openMode: 0,
@@ -97,17 +97,7 @@ describe('RCA Luglio 2022: ', {
                         TenutaTariffa.compilaVeicolo(currentCase)
                         TenutaTariffa.compilaProvenienza(currentCase)
                         TenutaTariffa.compilaOffertaRCA(currentCase)
-                    }
-                    else
-                        this.skip()
-                }
-                else
-                    this.skip()
-            })
 
-            it("LogTariffa", function () {
-                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso))
-                    if (selectedSettori.length === 0 || selectedSettori.includes(currentCase.Settore)) {
                         if (currentCase.Settore !== '3' && currentCase.Settore !== '6' && currentCase.Settore !== '7')
                             TenutaTariffa.checkTariffaRCA(currentCase)
                         else
@@ -115,6 +105,7 @@ describe('RCA Luglio 2022: ', {
                     }
                     else
                         this.skip()
+                }
                 else
                     this.skip()
             })

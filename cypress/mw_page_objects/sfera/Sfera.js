@@ -21,6 +21,10 @@ const getAppJump = () => {
 }
 
 //#region Intercept
+const defaultTableConfig = {
+    method: 'POST',
+    url: /getDefaultTableConfig/
+}
 const infoUtente = {
     method: 'GET',
     url: /infoUtente/
@@ -136,6 +140,21 @@ const VisteSuggerite = {
     STAMPA_QUIETANZE: 'Stampa Quietanze',
     GESTIONE_ENTE: 'Gestione Ente',
     AVVISI_SCADENZA: 'Avvisi Scadenza'
+}
+
+/**
+ * Enum Viste Suggerite
+ * @readonly
+ * @enum {Object}
+ * @private
+ */
+const VisteSuggeriteAviva = {
+    VISTA_STANDARD: 'Vista Standard',
+    DELTA_PREMIO: 'Delta premio – riduzione premio a cura dell’agenzia',
+    AVVISI_SCADENZA: 'Avvisi Scadenza',
+    QUIETANZE_SCARTATE: 'Quietanze Scartate',
+    CARICO_MANCANTE: 'Carico Mancante',
+    MENSILIZZATE: 'Mensilizzate',
 }
 
 /**
@@ -365,6 +384,7 @@ const ClusterMotor = {
     IN_MORA: "In mora",
     FUORI_MORA: "Fuori mora",
     SINISTROSE: "Sinistrose",
+    CON_INIZIATIVE_APERTE: "Con iniziative aperte"
 }
 
 /**
@@ -422,6 +442,11 @@ const AzioniVeloci = {
  * @enum {Object}
  */
 const Filtri = {
+    COMMON: {
+        values: {
+            RANDOM: "RANDOM"
+        }
+    },
     INFO: {
         key: "Info",
         values: {
@@ -502,7 +527,29 @@ const Filtri = {
             SI: 'Si',
             NO: 'No'
         }
+    },
+    AP_CL: {
+        key: "Ap.",
+        values: {
+            UNA_ATTIVITA: '1',
+            DUE_ATTIVITA: '2'
+        }
+    },
+    INIZIATIVE_CL: {
+        key: "Iniziative Cl",
+        values: {
+            VUOTO: "Vuoto"
+        }
     }
+}
+
+/**
+ * Enum Data Input Form
+ * @enum {Object}
+ */
+const Operativita = {
+    FRANCHIGIE: "FRANCHIGIE",
+    MONITORAGGIO_ARRETRATI: "MONITORAGGIO ARRETRATI"
 }
 
 /**
@@ -574,6 +621,7 @@ const Pannelli = {
  * @enum {Object}
  */
 const ColumnStandard = {
+    //! VEDI EXCEL TRA TEST E PP -> DIFF INFO NON CORRETTO BUG
     PT: {
         key: 'Pt.',
         tooltip: 'Area Portafoglio (Auto, Rami Vari, Vita, Modulari)'
@@ -982,7 +1030,7 @@ class Sfera {
     }
 
     /**
-     * Funzione che ritorna le colonne della vista Quietanze Scartate
+     * Funzione che ritorna le colonne della vista Standard
      * @returns {ColumnStandard} Colonne disponibili
      */
     static get COLUMNSTANDARD() {
@@ -1035,6 +1083,14 @@ class Sfera {
      */
     static get SELEZIONARIGHE() {
         return SelezionaRighe
+    }
+
+    /**
+     * Funzione che ritorna le voci disponibili per la selezione Operatività da Sales
+     * @returns {Operativita} Righe da selezionare
+     */
+    static get OPERATIVITA() {
+        return Operativita
     }
 
     /**
@@ -1105,7 +1161,10 @@ class Sfera {
      * @returns {VisteSuggerite} vista suggerita
      */
     static get VISTESUGGERITE() {
-        return VisteSuggerite
+        if (Cypress.env('isAviva'))
+            return VisteSuggeriteAviva
+        else
+            return VisteSuggerite
     }
 
     /**
@@ -1148,7 +1207,7 @@ class Sfera {
      * @private
      */
     static tableEstrazione() {
-        return cy.get('app-table-component').should('exist').and('be.visible')
+        cy.get('app-table-component', { timeout: 45000 }).should('be.visible')
     }
 
     /**
@@ -1280,10 +1339,10 @@ class Sfera {
 
 
             cy.wait('@infoUtente', { timeout: 60000 })
-            cy.wait('@agenzieFonti', { timeout: 60000 })
-            cy.wait('@caricaVista', { timeout: 60000 })
-            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+            // cy.wait('@agenzieFonti', { timeout: 60000 })
+            // cy.wait('@caricaVista', { timeout: 60000 })
+            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
         }
         //? su reload skippo agenzieFonti e caricaVista
         else {
@@ -1343,9 +1402,11 @@ class Sfera {
 
         cy.get('nx-checkbox[formcontrolname="' + tipoQuietanze + '"]').within(() => {
 
-            cy.get('input').invoke('attr', 'value').then((isChecked) => {
+            cy.get('input').invoke('attr', 'value').then((isCheckedString) => {
+                let isChecked
+                isChecked = String(isCheckedString) == "true" ? true : false
                 if ((isChecked && !bePresent) || (!isChecked && bePresent)) {
-                    cy.get('nx-icon').click()
+                    cy.get('nx-icon[name="check"]').click()
                     cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                 }
             })
@@ -1380,38 +1441,53 @@ class Sfera {
     /**
     * It clicks on a column header, then it clicks on a checkbox in a popover.
     * @param {Filtri} filtro da utilizzare
-    * @param {String} valore da ricercare
+    * @param {String} valore da ricercare, se 'RANDOM' sceglie un valore a caso
     */
     static filtraSuColonna(filtro, valore) {
-        cy.get('thead').within(() => {
-            if (filtro === Filtri.INFO)
-                cy.get('th[class~="customBandierinaSticky"]').find('nx-icon:last').click()
-            else
+
+        if (valore === 'RANDOM') {
+            cy.get('thead').within(() => {
                 cy.get(`div:contains(${filtro.key}):first`).scrollIntoView().parent().find('nx-icon:last').click()
-        })
-
-        if (filtro === Filtri.ULT_RICH_AVVISO_CPP) {
-            cy.pause()
-            cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
-                cy.get('input').type(valore)
-                cy.wait(500)
-                cy.get('span[class="nx-checkbox__control"]:first:visible').click()
             })
-        } else {
-            if (filtro === Filtri.INFO)
-                cy.get('div[class="filterPopover filterPopoverV2 ng-star-inserted"]').within(() => {
-                    cy.get(`span:contains(${valore})`).click()
-                })
-            else
-                cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
+            cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
 
-                    cy.get('input:visible').type(valore)
-                    cy.wait(500)
-                    cy.get('span[class="nx-checkbox__control"]:visible').click()
+                cy.get('nx-checkbox-group').within((checkBoxes) => {
+                    let randomCheckBox = Cypress._.random(1, checkBoxes.find('nx-checkbox').length - 1);
+                    cy.get('nx-checkbox').eq(randomCheckBox).click()
+                    cy.get('nx-checkbox').eq(randomCheckBox).invoke('text').as('randomValueFiltered')
                 })
+            })
+        }
+        else {
+            cy.get('thead').within(() => {
+                if (filtro === Filtri.INFO)
+                    cy.get('th[class~="customBandierinaSticky"]').find('nx-icon:last').click()
+                else
+                    cy.get(`div:contains(${filtro.key}):first`).scrollIntoView().parent().find('nx-icon:last').click()
+            })
+
+            if (filtro === Filtri.ULT_RICH_AVVISO_CPP) {
+                cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
+                    cy.get('input').type(valore)
+                    cy.wait(500)
+                    cy.get('span[class="nx-checkbox__control"]:first:visible').click()
+                })
+            } else {
+                if (filtro === Filtri.INFO)
+                    cy.get('div[class="filterPopover filterPopoverV2 ng-star-inserted"]').within(() => {
+                        cy.get(`span:contains(${valore})`).click()
+                    })
+                else
+                    cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
+
+                        cy.get('input:visible').type(valore)
+                        cy.wait(500)
+                        cy.get('span[class="nx-checkbox__control"]:visible').click()
+                    })
+            }
         }
         cy.intercept(estraiQuietanze).as('estraiQuietanze')
-        cy.contains('Applica').should('be.enabled').click().wait(5000)
+        cy.contains('Applica').should('be.enabled').click({ force: true }).wait(5000)
         // cy.wait('@estraiQuietanze', { timeout: 120000 }) //?SERVE?
     }
 
@@ -1499,43 +1575,43 @@ class Sfera {
             //Verifichiamo gli accessi in base al tipo di menu selezionato
             switch (voce) {
                 case VociMenuQuietanza.INCASSO:
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        IncassoDA.accessoMezziPagam()
-                        cy.wait(10000)
-                        if (flussoCompleto) {
-                            getAppJump().within(() => {
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    IncassoDA.accessoMezziPagam()
+                    cy.wait(10000)
+                    if (flussoCompleto) {
+                        getAppJump().within(() => {
 
-                                IncassoDA.ClickIncassa()
-                            })
-                            getAppJump().within(($iframe) => {
-                                IncassoDA.ClickPopupWarning($iframe)
-                            })
-                            cy.wait('@getIncasso', { timeout: 40000 })
-                            getAppJump().within(() => {
-                                IncassoDA.SelezionaIncassa()
-                            })
-
-                            getAppJump().within(() => {
-                                IncassoDA.TerminaIncasso()
-                            })
-                        }
-                        else
-                            getAppJump().within(() => {
-                                IncassoDA.clickCHIUDI()
-                            })
-                    }
-                    else {
-                        IncassoDA.accessoMezziPagam()
-                        cy.wait(10000)
-                        if (flussoCompleto) {
                             IncassoDA.ClickIncassa()
-                            IncassoDA.ClickPopupWarning()
+                        })
+                        getAppJump().within(($iframe) => {
+                            IncassoDA.ClickPopupWarning($iframe)
+                        })
+                        cy.wait('@getIncasso', { timeout: 40000 })
+                        getAppJump().within(() => {
                             IncassoDA.SelezionaIncassa()
+                        })
+
+                        getAppJump().within(() => {
                             IncassoDA.TerminaIncasso()
-                        }
-                        else
-                            IncassoDA.clickCHIUDI()
+                        })
                     }
+                    else
+                        getAppJump().within(() => {
+                            IncassoDA.clickCHIUDI()
+                        })
+                    // }
+                    // else {
+                    // IncassoDA.accessoMezziPagam()
+                    // cy.wait(10000)
+                    // if (flussoCompleto) {
+                    //     IncassoDA.ClickIncassa()
+                    //     IncassoDA.ClickPopupWarning()
+                    //     IncassoDA.SelezionaIncassa()
+                    //     IncassoDA.TerminaIncasso()
+                    // }
+                    // else
+                    //     IncassoDA.clickCHIUDI()
+                    // }
 
                     cy.wait('@estraiQuietanze', { timeout: 120000 })
                     cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
@@ -1545,57 +1621,57 @@ class Sfera {
 
                     break;
                 case VociMenuQuietanza.DELTA_PREMIO:
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        if (flussoCompleto) {
-                            //TODO implementare flusso di delta premio
-                        }
-                        else {
-                            NGRA2013.verificaAccessoRiepilogo()
-                            getAppJump().within(() => {
-                                NGRA2013.avanti()
-                                cy.wait(2000)
-                                cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                                NGRA2013.home(true)
-                            })
-                        }
-                    } else {
-                        if (flussoCompleto) {
-                            //TODO implementare flusso di delta premio
-                        } else {
-                            NGRA2013.verificaAccessoRiepilogo()
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di delta premio
+                    }
+                    else {
+                        NGRA2013.verificaAccessoRiepilogo()
+                        getAppJump().within(() => {
                             NGRA2013.avanti()
                             cy.wait(2000)
-                            cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                            // cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                             NGRA2013.home(true)
-                        }
+                        })
                     }
+                    // } else {
+                    // if (flussoCompleto) {
+                    // TODO implementare flusso di delta premio
+                    // } else {
+                    //     NGRA2013.verificaAccessoRiepilogo()
+                    //     NGRA2013.avanti()
+                    //     cy.wait(2000)
+                    //     cy.screenshot('Delta Premio', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    //     NGRA2013.home(true)
+                    // }
+                    // }
                     this.verificaAccessoSfera(false)
                     break;
                 case VociMenuQuietanza.VARIAZIONE_RIDUZIONE_PREMI:
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        IncassoDA.accessoGestioneFlex()
-                        if (flussoCompleto) {
-                            //TODO implementare flusso di delta premio
-                        }
-                        else {
-                            getAppJump().within(() => {
-                                IncassoDA.salvaSimulazione()
-                                cy.wait(200)
-                                cy.screenshot('Variazione Riduzione Premi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     IncassoDA.accessoGestioneFlex()
+                    //     if (flussoCompleto) {
+                    //         //TODO implementare flusso di delta premio
+                    //     }
+                    //     else {
+                    //         getAppJump().within(() => {
+                    //             IncassoDA.salvaSimulazione()
+                    //             cy.wait(200)
+                    //             cy.screenshot('Variazione Riduzione Premi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-                                IncassoDA.clickCHIUDI()
-                                //Verifichiamo il rientro in Sfera
-                            })
-                        }
+                    //             IncassoDA.clickCHIUDI()
+                    //             //Verifichiamo il rientro in Sfera
+                    //         })
+                    //     }
+                    // } else {
+                    IncassoDA.accessoGestioneFlex()
+                    if (flussoCompleto) {
+                        //TODO implementare flusso di delta premio
                     } else {
-                        IncassoDA.accessoGestioneFlex()
-                        if (flussoCompleto) {
-                            //TODO implementare flusso di delta premio
-                        } else {
-                            IncassoDA.clickCHIUDI()
-                            //Verifichiamo il rientro in Sfera
-                        }
+                        IncassoDA.clickCHIUDI()
+                        //Verifichiamo il rientro in Sfera
                     }
+                    // }
                     this.verificaAccessoSfera(false)
                     break;
                 case VociMenuQuietanza.RIQUIETANZAMENTO:
@@ -1607,28 +1683,28 @@ class Sfera {
                     this.procedi().click()
                     Common.canaleFromPopup({}, true)
                     NGRA2013.verificaAccessoDatiAmministrativi()
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        if (flussoCompleto) {
-                            getAppJump().within(() => {
-                                NGRA2013.sostituzioneAScadenza()
-                                cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                            })
-                        }
-                        else {
-                            getAppJump().within(() => {
-                                NGRA2013.home(true)
-                            })
-                        }
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     if (flussoCompleto) {
+                    //         getAppJump().within(() => {
+                    //             NGRA2013.sostituzioneAScadenza()
+                    //             cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    //         })
+                    //     }
+                    //     else {
+                    //         getAppJump().within(() => {
+                    //             NGRA2013.home(true)
+                    //         })
+                    //     }
+                    // }
+                    // else {
+                    if (flussoCompleto) {
+                        NGRA2013.verificaAccessoDatiAmministrativi()
+                        cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     }
                     else {
-                        if (flussoCompleto) {
-                            NGRA2013.verificaAccessoDatiAmministrativi()
-                            cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                        }
-                        else {
-                            NGRA2013.home(true)
-                        }
+                        NGRA2013.home(true)
                     }
+                    // }
                     //Verifichiamo il rientro in Sfera
                     this.verificaAccessoSfera(false)
                     break;
@@ -1637,68 +1713,68 @@ class Sfera {
                     IncassoDA.accessoMezziPagam()
                     cy.wait(200)
                     cy.screenshot('Stampa Senza Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        if (flussoCompleto) {
-                            //! DA VERIFICA SE FUNZIONA il FLUSSO
-                            getAppJump().within(() => {
-                                IncassoDA.clickStampa()
-                            })
-                            getAppJump().within(() => {
-                                IncassoDA.getNumeroContratto().then(numContratto => {
-                                    numPolizza = numContratto
-                                    IncassoDA.clickCHIUDI()
-                                })
-                            })
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     if (flussoCompleto) {
+                    //         //! DA VERIFICA SE FUNZIONA il FLUSSO
+                    //         getAppJump().within(() => {
+                    //             IncassoDA.clickStampa()
+                    //         })
+                    //         getAppJump().within(() => {
+                    //             IncassoDA.getNumeroContratto().then(numContratto => {
+                    //                 numPolizza = numContratto
+                    //                 IncassoDA.clickCHIUDI()
+                    //             })
+                    //         })
+                    //         this.verificaAccessoSfera(false)
+                    //         resolve(numPolizza)
+                    //     }
+                    //     else {
+                    //         getAppJump().within(() => {
+                    //             IncassoDA.clickCHIUDI()
+                    //         })
+                    //         this.verificaAccessoSfera(false)
+                    //     }
+                    // } else {
+                    if (flussoCompleto) {
+                        IncassoDA.clickStampa()
+                        IncassoDA.getNumeroContratto().then(numContratto => {
+                            numPolizza = numContratto
+                            IncassoDA.clickCHIUDI()
+                            //Verifichiamo il rientro in Sfera
                             this.verificaAccessoSfera(false)
                             resolve(numPolizza)
-                        }
-                        else {
-                            getAppJump().within(() => {
-                                IncassoDA.clickCHIUDI()
-                            })
-                            this.verificaAccessoSfera(false)
-                        }
-                    } else {
-                        if (flussoCompleto) {
-                            IncassoDA.clickStampa()
-                            IncassoDA.getNumeroContratto().then(numContratto => {
-                                numPolizza = numContratto
-                                IncassoDA.clickCHIUDI()
-                                //Verifichiamo il rientro in Sfera
-                                this.verificaAccessoSfera(false)
-                                resolve(numPolizza)
-                            })
-                        }
-                        else {
-                            IncassoDA.clickCHIUDI()
-                            this.verificaAccessoSfera(false)
-                        }
+                        })
                     }
+                    else {
+                        IncassoDA.clickCHIUDI()
+                        this.verificaAccessoSfera(false)
+                    }
+                    // }
                     break;
                 case VociMenuQuietanza.QUIETANZAMENTO_ONLINE:
                     NGRA2013.verificaAccessoPagamento()
                     cy.wait(15000)
                     cy.screenshot('Verifica Accesso a Pagamenti NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        if (flussoCompleto) {
-                            getAppJump().within(() => { NGRA2013.ClickConfermaPagamento() })
-                            getAppJump().within(() => { NGRA2013.ClickIncassa() })
-                            getAppJump().within(($iframe) => { NGRA2013.ClickPopupWarning($iframe) })
-                            getAppJump().within(() => { IncassoDA.SelezionaIncassa() })
-                            getAppJump().within(() => { NGRA2013.TerminaIncasso() })
-                        } else
-                            getAppJump().within(() => { NGRA2013.home(true) })
-                    } else {
-                        if (flussoCompleto) {
-                            NGRA2013.ClickConfermaPagamento()
-                            NGRA2013.ClickIncassa()
-                            NGRA2013.ClickPopupWarning(undefined)
-                            IncassoDA.SelezionaIncassa()
-                            NGRA2013.TerminaIncasso()
-                        }
-                        else
-                            NGRA2013.home(true)
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     if (flussoCompleto) {
+                    //         getAppJump().within(() => { NGRA2013.ClickConfermaPagamento() })
+                    //         getAppJump().within(() => { NGRA2013.ClickIncassa() })
+                    //         getAppJump().within(($iframe) => { NGRA2013.ClickPopupWarning($iframe) })
+                    //         getAppJump().within(() => { IncassoDA.SelezionaIncassa() })
+                    //         getAppJump().within(() => { NGRA2013.TerminaIncasso() })
+                    //     } else
+                    //         getAppJump().within(() => { NGRA2013.home(true) })
+                    // } else {
+                    if (flussoCompleto) {
+                        NGRA2013.ClickConfermaPagamento()
+                        NGRA2013.ClickIncassa()
+                        NGRA2013.ClickPopupWarning(undefined)
+                        IncassoDA.SelezionaIncassa()
+                        NGRA2013.TerminaIncasso()
                     }
+                    else
+                        NGRA2013.home(true)
+                    // }
                     cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
                     cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then(() => {
                         cy.screenshot('Conferma aggancio ritorno a Sfera', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1708,21 +1784,21 @@ class Sfera {
 
                     InquiryAgenzia.verificaAccessoInquiryAgenzia()
                     cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    if (Cypress.env('currentEnv') === 'TEST') {
-                        if (flussoCompleto) {
-                            //TODO implementare flusso completo
-                        }
-                        else {
-                            getAppJump().within(() => { InquiryAgenzia.clickUscita() })
-                        }
-                    } else {
-                        if (flussoCompleto) {
-                            //TODO implementare flusso completo
-                        }
-                        else {
-                            InquiryAgenzia.clickUscita()
-                        }
+                    // if (Cypress.env('currentEnv') === 'TEST') {
+                    //     if (flussoCompleto) {
+                    //         //TODO implementare flusso completo
+                    //     }
+                    //     else {
+                    //         getAppJump().within(() => { InquiryAgenzia.clickUscita() })
+                    //     }
+                    // } else {
+                    if (flussoCompleto) {
+                        //TODO implementare flusso completo
                     }
+                    else {
+                        InquiryAgenzia.clickUscita()
+                    }
+                    // }
                     this.verificaAccessoSfera(false)
                     break;
                 case VociMenuConsultazione.POLIZZA:
@@ -1731,11 +1807,11 @@ class Sfera {
                         //TODO implementare flusso completo
                     }
                     else {
-                        if (Cypress.env('currentEnv') === 'TEST') {
-                            getAppJump().within(() => { InquiryAgenzia.clickUscita() })
-                        } else {
-                            InquiryAgenzia.clickUscita()
-                        }
+                        // if (Cypress.env('currentEnv') === 'TEST') {
+                        //     getAppJump().within(() => { InquiryAgenzia.clickUscita() })
+                        // } else {
+                        InquiryAgenzia.clickUscita()
+                        // }
                         //Verifichiamo il rientro in Sfera
                         this.verificaAccessoSfera(false)
                     }
@@ -2264,14 +2340,34 @@ class Sfera {
 
         cy.get(`input[formcontrolname="${DateInputForm.DATA_INIZIO_PERIODO}"]`).clear().wait(500).click().type(dataInizio).wait(1000)
 
-        //Impostiamo la data di fine estrazione
-        if (dataFine === undefined) {
+        //Impostiamo la data di fine estrazione (utilizziamo il calendario siccome ogni tanto non setta la data via typing)
+        let dataFineCalendar
+        if (dataFine === undefined)
             //Se non specificata la data, settiamo automaticamente la data odierna
-            let today = new Date()
-            dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
-        }
+            dataFineCalendar = new Date()
+        else
+            dataFineCalendar = new Date(dataFine.split('/')[2], parseInt(dataFine.split('/')[1] - 1), parseInt(dataFine.split('/')[0]))
 
-        cy.get(`input[formcontrolname="${DateInputForm.DATA_FINE_PERIODO}"]`).clear().wait(700).type(dataFine).wait(700).type('{esc}').wait(1000)
+        cy.get('nx-icon[name="calendar"]:last').click().wait(500)
+        cy.contains('Scegli il mese e l\'anno').should('be.visible').click()
+
+        //Selezioniamo l'anno
+        cy.get('.nx-calendar-table').within(() => {
+            cy.contains(dataFineCalendar.getFullYear()).click()
+        })
+
+        //Selezioniamo il mese
+        cy.get('.nx-calendar-table').within(() => {
+            cy.log(dataFineCalendar.getMonth())
+            cy.contains(dataFineCalendar.toLocaleString('default', { month: 'short' })).click()
+        })
+
+        //Selezioniamo il giorno
+        cy.get('.nx-calendar-table').within(() => {
+            //? mantieni gli spazi nella regexp in quanto sono presenti nel cal
+            let exactDate = new RegExp('\^ ' + dataFineCalendar.getDate() + ' \$');
+            cy.contains(exactDate).click()
+        })
 
         //Clicchiamo su estrai
         if (performEstrai) this.estrai()
@@ -2287,9 +2383,9 @@ class Sfera {
         cy.get('.nx-checkbox__control:visible').first().should('be.visible').click().wait(500)
         cy.get('div[class^="all-page"]').should('be.visible').within($div => {
             if (righe === SelezionaRighe.PAGINA_CORRENTE)
-                cy.get('nx-checkbox').first().click()
+                cy.get('nx-checkbox').first().click({ force: true })
             else
-                cy.get('nx-checkbox').last().click()
+                cy.get('nx-checkbox').last().click({ force: true })
         })
     }
 
@@ -2393,7 +2489,7 @@ class Sfera {
                         cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                     }
                 })
-            if (!portafogli.includes(Portafogli.VITA))
+            if (!portafogli.includes(Portafogli.VITA) && !Cypress.env('isAviva'))
                 cy.get(`div:contains(${Portafogli.VITA})`).parents('label').then($chekcBoxChecked => {
 
                     if ($chekcBoxChecked.find('nx-icon').is(':visible')) {
@@ -2403,7 +2499,7 @@ class Sfera {
                 })
         })
 
-        cy.get('body').click()
+        cy.get('body').click({ force: true })
 
         if (performEstrai)
             this.estrai()
@@ -2414,19 +2510,28 @@ class Sfera {
      * @param {string} nameVista - nome della Vista
      */
     static selezionaVista(nameVista) {
-        // click Seleziona Vista tendina
-        cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
-        // Click Le mie viste
-        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
-            cy.contains('Le mie viste').click()
-        }).then(() => {
+        if (nameVista === 'Vista Standard') {
+            cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+            cy.get('div[role="menu"]').should('be.visible').within(() => {
+                cy.contains('Viste suggerite').click()
+            })
+            cy.contains(nameVista).click()
+        } else {
+            // click Seleziona Vista tendina
+            cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+            // Click Le mie viste
+            cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+                cy.contains('Le mie viste').click()
+            }).then(() => {
 
-            cy.get('div[class="cdk-overlay-pane"]').last()
-                .should('be.visible').within(() => {
-                    cy.get('button').contains(nameVista).click({ force: true }).wait(2000)
-                })
-        })
+                cy.get('div[class="cdk-overlay-pane"]').last()
+                    .should('be.visible').within(() => {
+                        cy.get('button').contains(nameVista).click({ force: true }).wait(2000)
+                    })
+            })
+        }
+
         cy.get('h2[class="nx-font-weight-semibold"]').should('include.text', nameVista)
 
     }
@@ -2436,11 +2541,12 @@ class Sfera {
      * @param {VisteSuggerite} nameVista - nome della Vista
      */
     static selezionaVistaSuggerita(nameVista) {
+
         // click Seleziona Vista tendina
         cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
         // Click Le mie viste
-        cy.get('div[class="cdk-overlay-pane"]').first().scrollIntoView().scrollIntoView().should('be.visible').within(() => {
+        cy.get('div[role="menu"]:visible').within(() => {
             cy.contains('Viste suggerite').click()
         }).then(() => {
 
@@ -2475,8 +2581,8 @@ class Sfera {
             cy.get('button[nxmodalclose="Agree"]').click()
 
             //cy.wait('@caricaVista', { timeout: 60000 })
-            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-            cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
+            // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
         })
 
     }
@@ -2507,13 +2613,19 @@ class Sfera {
                             cy.get('input[type="search"]').clear().type(colonneDaAggiungere[index])
                             cy.get('span')
                                 .contains(colonneDaAggiungere[index])
-                                .parents('div[class="flex-content center-content all-column-element ng-star-inserted"]').find('nx-icon').click()
+                                .parents('div[cdkdragboundary=".row-personal-column"]').find('nx-icon').click()
                         }
                     })
                     cy.contains('Applica vista').click()
                 }
             })
         })
+    }
+
+    static checkAperturaGestioneColonne() {
+        cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
+        cy.get('nx-modal-container').should('be.visible')
+            .find('h3').should('include.text', 'Gestisci colonne')
     }
 
     static creaAndInviaCodiceAzPay() {
@@ -2538,7 +2650,7 @@ class Sfera {
                 columnView.push(value.key)
 
         var rows = []
-        cy.get('tr[class="nx-table-row ng-star-inserted selectedRow"]').each((rowsTable) => {
+        cy.get('tbody > tr[nxtablerow]').each((rowsTable) => {
             cy.wrap(rowsTable).find('nx-link[class="nx-link nx-link--small ng-star-inserted"] > a').then(($textCell) => {
                 rows.push($textCell.text().trim())
             })
@@ -2550,9 +2662,9 @@ class Sfera {
             cy.contains('Chiudi').click()
 
             cy.task('getFolderDownload').then((folderDownload) => {
-                cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
-                    // console.log(Object.values(jsonData[0].data[0]).sort())
-                    // console.log(columnView.sort())
+                cy.parseXlsx(folderDownload + "\\REPORT.xlsx").then(jsonData => {
+                    console.log(Object.values(jsonData[0].data[0]).sort())
+                    console.log(columnView.sort())
                     // Verifica Colonne presenti
                     if (columnView.length > 0)
                         expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(columnView.sort());
@@ -2681,6 +2793,10 @@ class Sfera {
         })
     }
 
+    static buttonApplicaSalva() {
+        cy.contains('Applica e salva vista').click().wait(3000)
+    }
+
     static salvaVistaPersonalizzata(nameVista) {
         cy.get('table').should('be.visible').then(() => {
             cy.get('th').find('nx-icon[name="setting-o"]').should('be.visible').click()
@@ -2689,6 +2805,13 @@ class Sfera {
             })
         })
 
+        this.nuovaVista(nameVista)
+    }
+
+    /**
+     * Salva Nuova vista
+     */
+    static nuovaVista(nameVista) {
         cy.get('nx-modal-container').should('be.visible').within(() => {
             cy.contains('Nuova vista').click().wait(3000)
             cy.get('input[placeholder="Inserisci il nome della vista"]:visible').type(nameVista)
@@ -2728,7 +2851,6 @@ class Sfera {
     static fontiAllSelezionati() {
         cy.get('h3').contains('Fonti').click()
         cy.get('nx-modal-container[role="dialog"]').should('be.visible').within(() => {
-            cy.screenshot('Fonti Selezionate', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             cy.get('div[class="container-list ng-star-inserted"]').within(() => {
                 cy.get('div[class="nx-checkbox__label-text"]').its('length').then((numFonti) => {
                     cy.get('nx-icon[class="ndbx-icon nx-icon--check nx-icon--auto ng-star-inserted"]').its('length').then((numCheckAttivi) => {
@@ -2863,7 +2985,7 @@ class Sfera {
             //#endregion
 
             function checkNote() {
-                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                // cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
                 cy.contains('Aggiungi nuova nota').click()
                 cy.get('div[class="new-nota-container"]').should('be.visible').within(() => {
                     cy.get('input[formcontrolname="titolo"]').type('Titolo Automatici')
@@ -2879,7 +3001,7 @@ class Sfera {
 
             function checkPanoramica() {
                 //#region  Verifica Panoramica
-                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                // cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
 
                 const radioButtonPanoramica = [
                     'Cliente',
@@ -2920,7 +3042,7 @@ class Sfera {
             }
 
             function checkDettaglioPremi() {
-                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                // cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
                 cy.get('nx-tab-group').should('be.visible').within(() => {
                     const titleColumn = [
                         'Premio Quietanza anno corrente',
@@ -2953,7 +3075,7 @@ class Sfera {
 
             function checkIniziative() {
                 cy.get('table[class="table-panel ng-star-inserted"]').should('be.visible')
-                cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
+                // cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
             }
         })
     }
@@ -3205,7 +3327,7 @@ class Sfera {
      */
     static checkExcel(dateLength) {
         cy.task('getFolderDownload').then((folderDownload) => {
-            cy.parseXlsx(folderDownload + "/REPORT.xlsx").then(jsonData => {
+            cy.parseXlsx(folderDownload + "\\REPORT.xlsx").then(jsonData => {
                 expect((jsonData[0].data.length - 1).toString()).to.eqls(dateLength);
             });
         })
@@ -3220,14 +3342,15 @@ class Sfera {
             const checkCluster = $appCluster.is(':contains("Avviso da Inviare")')
             if (checkCluster)
                 cy.contains('Avviso da Inviare').click()
-            cy.get('nx-badge').not('nx-badge[style*="opacity"]').then(($clusterEnabled) => {
-                let selected = Cypress._.random($clusterEnabled.length - 1);
-                cy.wrap($clusterEnabled).eq(selected).click()
-                cy.wrap($clusterEnabled).eq(selected).invoke('text').then((nameCluster) => {
-                    var number = nameCluster.replace(/\D/g, "");
-                    cy.wrap(number).as('clusterLength')
+            cy.get('nx-badge').not('nx-badge[style*="opacity"]').not(':contains("Delta premio dinamico")')
+                .then(($clusterEnabled) => {
+                    let selected = Cypress._.random($clusterEnabled.length - 1);
+                    cy.wrap($clusterEnabled).eq(selected).click()
+                    cy.wrap($clusterEnabled).eq(selected).invoke('text').then((nameCluster) => {
+                        var number = nameCluster.replace(/\D/g, "");
+                        cy.wrap(number).as('clusterLength')
+                    })
                 })
-            })
         })
     }
 
@@ -3261,6 +3384,7 @@ class Sfera {
      * @param {String} numberRows - the number of rows you want to display on the page
      */
     static checkRisultatiPaginaRighe(numberRows) {
+        cy.wait(4000)
         cy.contains('Risultati per pagina').parent().find('nx-dropdown').should('contain.text', numberRows)
     }
 
@@ -3324,11 +3448,11 @@ class Sfera {
     static checkVistaSuggeriteExistByMenu(vista) {
         cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
 
-        // Click Le mie viste
-        cy.get('div[class="cdk-overlay-pane"]').first().should('be.visible').within(() => {
+        // Click Viste suggerite
+        cy.get('div[role="menu"]:visible').within(() => {
             cy.contains('Viste suggerite').click()
         }).then(() => {
-            cy.get('div[class="cdk-overlay-pane"]').last()
+            cy.get('div[role="menu"]').last()
                 .should('be.visible').within(($menuVisteSuggerite) => {
                     expect($menuVisteSuggerite).to.contain(vista)
                 })
@@ -3357,7 +3481,7 @@ class Sfera {
     }
 
     /**
-     * It checks if the tooltip of a column header is correct.
+     * It checks if the tooltip of all columns headers are correct
      * @param {Object} columns - columns of the view 
      */
     static checkTooltipHeadersColonne(columns) {
@@ -3379,7 +3503,8 @@ class Sfera {
     * 
     */
     static selezionaRigaRandom() {
-        cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then((rowsTable) => {
+
+        cy.get('#main-table-sfera > tbody > tr[nxtablerow]').should('be.visible').then((rowsTable) => {
             let selected = Cypress._.random(rowsTable.length - 1);
             cy.wrap(rowsTable).eq(selected).as('selectRiga')
             cy.wrap(rowsTable).eq(selected).within(() => {
@@ -3408,15 +3533,52 @@ class Sfera {
      */
     static checkValoreInColonna(colonna, valore) {
         cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
-            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').each((rowsTable) => {
-                cy.wrap(rowsTable).find('td').eq(i - 2).then(($textCell) => {
-                    expect($textCell.text().trim()).to.contain(valore)
+            cy.get('tbody > tr[nxtablerow]').each((rowsTable) => {
+                cy.wrap(rowsTable).find('td').eq(i - 1).then(($textCell) => {
+                    expect($textCell.text().trim()).to.contain(valore.trim())
                 })
             })
         })
     }
 
-    static checkExistRipetitoreDati(vista, dataInizio, dataFine) {
+    static pulisciFiltroColonna() {
+        cy.get('nx-icon[name="close-circle-o"]').click()
+        cy.get('tbody > tr[nxtablerow]').should('be.visible')
+    }
+
+    static checkToolTipRigaByColonna(colonna, valore) {
+        cy.contains('th', `${colonna.key}`).invoke('index').then((i) => {
+            cy.get('tbody > tr[nxtablerow]').then((rowsTable) => {
+
+                let myCheckedRow = Cypress._.random(5, rowsTable.length - 1)
+                //Effettuiamo una scrollIntoView su qualche colonna precednete
+                cy.get('tbody > tr[nxtablerow]').eq(myCheckedRow).find('td').eq(i - 5).scrollIntoView()
+
+                cy.wait(2000)
+                cy.wrap(rowsTable[myCheckedRow]).find('td').eq(i - 2).then(($textCell) => {
+                    //? cypress-real-events works with Chrome Dev Tools
+                    if (Cypress.browser.name === 'firefox')
+                        cy.wrap($textCell).rightclick()
+                    else
+                        cy.wrap($textCell).realHover({ scrollBehavior: false })
+
+                    cy.get('.cdk-overlay-container').within((tooltip) => {
+                        expect(tooltip.text()).not.to.be.empty
+                        expect(tooltip.text()).to.include(valore)
+                    })
+
+                    //Oltre che verificare il valore del tooltip, verifio il numero di righe corrispondenti
+                    if (colonna === Sfera.FILTRI.AP_CL) {
+                        cy.get('.cdk-overlay-container').within(() => {
+                            cy.get('tbody').find('tr').should('have.length', parseInt($textCell.text()))
+                        })
+                    }
+                })
+            })
+        })
+    }
+
+    static checkExistRipetitoreDati(vista, dataInizio = undefined, dataFine = undefined) {
         cy.intercept(estraiTotaleQuietanzeScartate).as('estraiTotaleQuietanzeScartate')
         switch (vista) {
             case VisteSuggerite.QUIETANZE_SCARTATE:
@@ -3426,8 +3588,23 @@ class Sfera {
                         expect(contents.text().trim()).to.include(dataFine)
                         expect(contents.text().trim()).to.include('Motor')
                         expect(contents.text().trim()).to.include('quietanzamento on-line in: Viste suggerite > Carico Mancante')
-
                     })
+                break
+            case VisteSuggerite.DELTA_PREMIO:
+                cy.get('div[class="row-total-2 nx-grid__row"]').should('be.visible')
+                    .then(contents => {
+                        expect(contents.text().trim()).to.include('Motor')
+                    })
+                cy.get('@selectRiga').then((riga) => {
+                    cy.wrap(riga).find('td').eq(2).then((contraente) => {
+                        cy.get('sfera-deltapremio').should('be.visible').within(() => {
+                            cy.get('p[class*="showContraente"]').scrollIntoView()
+                            cy.get('p[class*="showContraente"]').should('include.text', contraente.text().trim())
+
+                        })
+                        cy.screenshot('Ripetitore Dati' + contraente.text().trim()).wait(8000)
+                    })
+                })
                 break
             default:
                 cy.get('p[class="nx-margin-right-xs nx-copy nx-copy--normal"]').should('be.visible').then((title) => {
@@ -3438,7 +3615,6 @@ class Sfera {
                     expect(title.text().trim()).to.include('Fonti:')
                 })
                 break;
-            // default: throw new Error('Vista non presente')
         }
     }
 
@@ -3690,7 +3866,7 @@ class Sfera {
 
         function selectRandomClientWithEmail() {
             // Filtro su polizze con consenso Email SI
-            Sfera.filtraSuColonna(Sfera.FILTRI.CONS_EMAIL_POL,Sfera.FILTRI.CONS_EMAIL_POL.values.SI)
+            Sfera.filtraSuColonna(Sfera.FILTRI.CONS_EMAIL_POL, Sfera.FILTRI.CONS_EMAIL_POL.values.SI)
             return new Cypress.Promise(resolve => {
                 cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]')
                     .filter(':contains("@")').not('Sms')
@@ -3772,6 +3948,182 @@ class Sfera {
                     expect(someText).to.include(dataInizio)
                     expect(someText).to.include(type)
                 })
+        }
+    }
+
+    /**
+     * Effettua selezione Vista Operativita
+     * @param {Operativita} vistaOperativita Tipo di vista
+     */
+    static clickVistaOperativita(vistaOperativita) {
+        cy.intercept(defaultTableConfig).as('defaultTableConfig')
+        cy.contains(vistaOperativita).parent().find('nx-radio').click()
+        cy.get('app-operation-section').within(() => {
+            cy.contains('Estrai').should('be.enabled').click()
+        })
+        cy.wait('@defaultTableConfig', { timeout: 20000 })
+
+    }
+
+    /**
+    * Effettua selezione Vista Operativita
+    * @param {Operativita} vistaOperativita Tipo di vista
+    */
+    static checkVistaOperativitaExist(vistaOperativita) {
+        cy.get('app-panel-quietanzamento-franchigie').should('be.visible').within(() => {
+            switch (vistaOperativita) {
+                case Operativita.MONITORAGGIO_ARRETRATI:
+                    cy.get('h2[nxheadline="subsection-medium"]').should('include.text', 'Arretrati')
+                    break;
+                case Operativita.FRANCHIGIE:
+                    cy.get('h2[nxheadline="subsection-medium"]').should('include.text', 'Franchigie')
+                    break
+                default:
+                    throw new Error('Vista Operatività non presente')
+            }
+        })
+    }
+
+    /**
+     * It clicks on a datepicker toggle.
+     */
+    static selezionaDataFine() {
+        cy.get('nx-icon[name="calendar"]').eq(1).click().wait(500)
+
+    }
+
+    /**
+     * Checking if over the next month are disabled
+     * * La data Fine inizia è impostato al mese precedente
+     */
+    static checkDateFineMax() {
+        cy.get('nx-datepicker-content').should('be.visible').within(() => {
+            let today = new Date()
+            cy.get('span[class="nx-calendar-period-label"]').invoke('text').then(month => {
+
+                cy.contains('Scegli il mese e l\'anno').click()
+                // Nel caso fossimo in Dicembre automaticamente passa all'anno successivo
+                if (month.includes('dicembre')) {
+                    //! DA VERIFICARE QUANDO SAREMO A DICEMBRE
+                    today.setFullYear(today.getFullYear() + 1)
+                    cy.contains(today.getFullYear()).click()
+                    cy.get('div[class*="nx-calendar-body-selected nx-calendar-body-today"]')
+                        .parents('tbody')
+                        .find('tr').then((tr) => {
+                            const months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
+                            let index = months.indexOf('gen')
+                            cy.wrap(tr).find('td').eq(index + 1).should('have.attr', 'aria-disabled', 'true')
+                            cy.wrap(tr).find('td').eq(index).should('not.have.attr', 'aria-disabled', 'true').click()
+                        })
+                } else {
+                    // Verifico che SOLO il mese successivo sia accessibile 
+                    cy.contains(today.getFullYear()).click()
+                    cy.get('div[class*="nx-calendar-body-cell-content nx-calendar-body-selected"]')
+                        .parents('tbody')
+                        .find('tr').then((tr) => {
+                            const months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
+                            let index = months.indexOf(month.trim().substring(0, 3))
+                            cy.wrap(tr).find('td').eq(index + 3).should('have.attr', 'aria-disabled', 'true')
+                            cy.wrap(tr).find('td').eq(index + 2).should('not.have.attr', 'aria-disabled', 'true').click()
+                        })
+
+                    // Seleziona l'ultimo giorno
+                    cy.get('td[class="nx-calendar-body-cell ng-star-inserted"]:last').click()
+                }
+            })
+        })
+    }
+
+    /**
+     * It checks if the selected row has the class 'nx-table-row nx-table-row--selectable
+     * ng-star-inserted selectedRow' and if it has the css 'border-bottom', '1px solid rgb(0,
+     * 122, 179)'.
+     * 
+     * If it has both, it clicks on the checkbox control.
+     * @param selectedRiga - the row that is selected
+     */
+    static checkRigaEvidenziata(selectedRiga) {
+        cy.wrap(selectedRiga).should('have.class', 'nx-table-row nx-table-row--selectable ng-star-inserted selectedRow')
+        cy.wrap(selectedRiga).should('have.css', 'border-bottom', '1px solid rgb(0, 122, 179)')
+        cy.wrap(selectedRiga).within(() => {
+            this.checkBoxControl().click({ force: true })
+        })
+    }
+
+    /**
+     * Check if the tab is not present in the header
+     * @param nameTab - the name of the tab to be checked
+     */
+    static checkAssenzaTab(nameTab) {
+        cy.get('nx-header-navigation').should('be.visible').within(() => {
+            cy.get('nx-header-navigation-item').should('have.length', '2').and('not.contain.text', nameTab)
+        })
+    }
+
+    static applicaSalvaVista(vista) {
+        cy.contains('Applica e salva vista').click()
+        cy.get('nx-modal-container[aria-label="Salva Vista"]').should('be.visible').within(() => {
+            cy.contains('Sostituisci esistente').click()
+            cy.get('nx-dropdown[placeholder="Seleziona una vista"]').click()
+        })
+        cy.get('div[role="listbox"]').should('be.visible').find('nx-dropdown-item:contains("' + vista + '")').click().wait(1500)
+        cy.get('nx-modal-container[aria-label="Salva Vista"]:visible').within(() => {
+            cy.get('button[nxmodalclose="Agree"]').click()
+        })
+        cy.get('div[class="success-container ng-star-inserted"]').should('be.visible')
+
+    }
+
+    /**
+     * It grabs the first draggable element, then drags it up 50 pixels, then grabs the 4th draggable
+     * element and drags it down 50 pixels.
+     */
+    static dragAndDropColonne(element, positionX, positionY) {
+        cy.wait(2000)
+        cy.get('div[class="cdk-drop-list elements ng-star-inserted"]').within(() => {
+            cy.get('div[class="nx-font-weight-regular"]:contains("' + element + '")').parents('div[cdkdrag]').find('nx-icon:first')
+                .then(($element) => {
+                    cy.wrap($element).realMouseDown({ button: 'left', position: 'center' })
+                        .realMouseMove(0, 0, { position: 'center' });
+                })
+            cy.wait(2000)
+            cy.get('nx-icon[class="icon-drag drag-svg nx-icon--auto"]').eq(3).realMouseMove(0, positionY, { position: 'center' }).realMouseUp();
+        })
+    }
+
+    /**
+     * It takes a column name and a position (x,y) and drags the column to the position.
+     * @param column - the name of the column you want to drag and drop
+     * @param position - {x: number}
+     */
+    static dragAndDropADDColonne(column, positionX, positionY) {
+        cy.wait(2000)
+        let regexColumn = new RegExp("\^ " + column + " \$")
+        cy.get('div[class="cdk-drop-list"]').contains(regexColumn).parents('div[cdkdrag]')
+            .then(($element) => {
+                cy.wrap($element).realMouseDown({ button: 'left', position: 'center' })
+                    .realMouseMove(positionX, positionY, { position: 'top' });
+            })
+        cy.wait(3000)
+        cy.get('nx-icon[class="icon-drag drag-svg nx-icon--auto"]').eq(3).realMouseMove(positionX, positionY, { position: 'top' }).wait(2000).realMouseUp();
+
+    }
+
+    static checkColonnaSpostata(position, name = '') {
+        if (name === 'Info')
+            cy.get('thead > tr:first').within(($columns) => {
+                cy.wrap($columns)
+                    .find('th').eq(position).within(($col) => {
+                        cy.wrap($col).find('nx-icon[class="question-svg nx-link__icon nx-icon--auto"]').should('have.length', 1)
+                    })
+            })
+        else {
+            cy.get('thead > tr:first').within(($columns) => {
+                cy.wrap($columns)
+                    .find('th').eq(position).within(($col) => {
+                        cy.wrap($col).find('.table-component-th-name').should('include.text', name)
+                    })
+            })
         }
     }
 }

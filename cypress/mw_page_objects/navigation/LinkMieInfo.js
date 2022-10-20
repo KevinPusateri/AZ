@@ -1,8 +1,9 @@
 const LinksMenu = {
     PRIMO_PIANO: 'Primo piano',
-    RACCOLTE: 'Raccolte',
+    // RACCOLTE: 'Raccolte', //? In test è presente PRONTI VIA Rel 127
     TUTTE_LE_NOTIZIE: 'Tutte le notizie',
     CONTENUTI_SALVATI: 'Contenuti salvati',
+    PRONTI_VIA: 'Pronti Via',
     PRODOTTI: 'Prodotti',
     INIZIATIVE: 'Iniziative',
     MOMENTO_DELLA_VERITA: 'Momento della Verità',
@@ -13,13 +14,14 @@ const LinksMenu = {
     CIRCOLARI: 'Circolari',
     COMPANY_HANDBOOK: 'Company Handbook',
     ANTIRICICLAGGIO: 'Antiriciclaggio',
-    RISORSE_PER_AGENZIA: 'Risorse per l\'Agenzia',
+    RISORSE_PER_AGENZIA: 'Risorse per l\'agenzia',
     OPERATIVITA: 'Operatività',
     RISORSE_PER_AGENTE: 'Risorse per l\'Agente',
     IL_MONDO_ALLIANZ: 'Il mondo Allianz',
     deleteKey: function (keys) {
         if (!keys['primo-piano']) delete this.PRIMO_PIANO
         if (!keys['raccolte']) delete this.RACCOLTE
+        if (!keys['pronti-via']) delete this.PRONTI_VIA
         if (!keys['tutte-le-notizie']) delete this.TUTTE_LE_NOTIZIE
         if (!keys['prodotti']) delete this.PRODOTTI
         if (!keys['iniziative']) delete this.INIZIATIVE
@@ -42,6 +44,7 @@ const LinksMenu = {
 const LinksSubMenu = {
     PRODOTTI: {
         ALLIANZ_ULTRA: 'Allianz Ultra',
+        ALLIANZ_ULTRA_IMPRESA: 'Allianz Ultra Impresa',
         ALLIANZ1_BUSINESS: 'Allianz1 Business',
         AUTO_E_MOTORI: 'Auto e motori',
         CASA_CONDOMINIO_E_PETCARE: 'Casa condominio e petcare',
@@ -56,6 +59,7 @@ const LinksSubMenu = {
         FINANZIAMENTI_COMPASS: 'Finanziamenti Compass',
         deleteKey: function (keys) {
             if (!keys['prodotti/allianz-ultra']) delete this.ALLIANZ_ULTRA
+            if (!keys['prodotti/allianz-ultra-impresa']) delete this.ALLIANZ_ULTRA_IMPRESA
             if (!keys['prodotti/allianz1-business']) delete this.ALLIANZ1_BUSINESS
             if (!keys['prodotti/auto-e-motori']) delete this.AUTO_E_MOTORI
             if (!keys['prodotti/casa-condominio-e-petcare']) delete this.CASA_CONDOMINIO_E_PETCARE
@@ -74,8 +78,10 @@ const LinksSubMenu = {
         STOPDRIVE: 'Stop&Drive',
         PROPONI_LTC: 'Proponi LTC',
         PROPONI_TCM: 'Proponi TCM',
+        ADEGUA_TCM: 'Adegua TCM',
         MENSILIZZAZIONE_RAMI_VARI: 'Mensilizzazione Rami Vari',
         MENSILIZZAZIONE_AUTO: 'Mensilizzazione Auto',
+        MENSILIZZAZIONE_MOTOR: 'Mensilizzazione Motor',
         CLIENTI_VALORE_EXTRA: 'Clienti Valore Extra',
         ALLIANZPAY: 'AllianzPay',
         BUSTA_ARANCIONE: 'Busta arancione',
@@ -90,6 +96,7 @@ const LinksSubMenu = {
             if (!keys['iniziative/proponi-tcm']) delete this.PROPONI_TCM
             if (!keys['iniziative/mensilizzazione-rami-vari']) delete this.MENSILIZZAZIONE_RAMI_VARI
             if (!keys['iniziative/mensilizzazione-auto']) delete this.MENSILIZZAZIONE_AUTO
+            if (!keys['iniziative/mensilizzazione-motor']) delete this.MENSILIZZAZIONE_MOTOR
             if (!keys['iniziative/clienti-valore-extra']) delete this.CLIENTI_VALORE_EXTRA
             if (!keys['iniziative/allianzpay']) delete this.ALLIANZPAY
             if (!keys['iniziative/busta-arancione']) delete this.BUSTA_ARANCIONE
@@ -321,6 +328,7 @@ let keysLinksMenu = {
     'primo-piano': true,
     'raccolte': true,
     'tutte-le-notizie': true,
+    'pronti-via': true,
     'prodotti': true,
     'iniziative': true,
     'sinistri': true,
@@ -339,10 +347,11 @@ let keysLinksMenu = {
 
 let PRODOTTI = {
     'prodotti/allianz-ultra': true,
+    'prodotti/allianz-ultra-impresa': true,
     'prodotti/allianz1-business': true,
     'prodotti/auto-e-motori': true,
     'prodotti/casa-condominio-e-petcare': true,
-    'prodotti/infortuni-e-salute':true,
+    'prodotti/infortuni-e-salute': true,
     'prodotti/impresa-e-rischi-dedicati': true,
     'prodotti/tutela-legale': true,
     'prodotti/vita': true,
@@ -357,8 +366,10 @@ let INIZIATIVE = {
     'iniziative/stop&drive': true,
     'iniziative/proponi-ltc': true,
     'iniziative/proponi-tcm': true,
+    'iniziative/adegua-tcm': true,
     'iniziative/mensilizzazione-rami-vari': true,
     'iniziative/mensilizzazione-auto': true,
+    'iniziative/mensilizzazione-motor': true,
     'iniziative/clienti-valore-extra': true,
     'iniziative/allianzpay': true,
     'iniziative/busta-arancione': true,

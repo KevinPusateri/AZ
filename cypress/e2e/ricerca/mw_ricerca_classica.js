@@ -62,33 +62,41 @@ describe('Buca di Ricerca', {
             LandingRicerca.checkNotExistRicercaClassica()
         })
     else {
+        //#region OLD Version for US AZMAWE-315(pre Rel 127 bis) IN PP funzionannte
+        // it('Verifica Click su Ricerca Classica', function () {
+        //     LandingRicerca.searchRandomClient(false)
+        //     LandingRicerca.checkRicercaClassica()
+        // })
+
+        // it('Verifica Click su Ricerca Cliente', function () {
+        //     LandingRicerca.searchRandomClient(false)
+        //     LandingRicerca.clickRicercaClassicaLabel('Ricerca Cliente')
+        //     SCU.checkAggancioRicerca()
+        // })
+
+        // it('Verifica Click su Ricerca Polizze proposte', function () {
+        //     LandingRicerca.searchRandomClient(false)
+        //     LandingRicerca.clickRicercaClassicaLabel('Ricerca Polizze proposte')
+        //     SCU.checkAggancioPolizzePropostePreventivi()
+        // })
+
+        // it('Verifica Click su Rubrica', function () {
+        //     LandingRicerca.searchRandomClient(false)
+        //     LandingRicerca.clickRicercaClassicaLabel('Rubrica')
+        //     SCU.checkAggancioRubrica()
+        // })
+
+        // it('Verifica Click su Ricerca Preventivi', function () {
+        //     LandingRicerca.searchRandomClient(false)
+        //     LandingRicerca.clickRicercaClassicaLabel('Ricerca Preventivi')
+        //     SCU.checkAggancioPolizzePropostePreventivi()
+        // })
+        //#endregion
+
+        // SOLO in TEST Rel 127 bis
         it('Verifica Click su Ricerca Classica', function () {
             LandingRicerca.searchRandomClient(false)
-            LandingRicerca.checkRicercaClassica()
-        })
-
-        it('Verifica Click su Ricerca Cliente', function () {
-            LandingRicerca.searchRandomClient(false)
-            LandingRicerca.clickRicercaClassicaLabel('Ricerca Cliente')
-            SCU.checkAggancioRicerca()
-        })
-
-        it('Verifica Click su Ricerca Polizze proposte', function () {
-            LandingRicerca.searchRandomClient(false)
-            LandingRicerca.clickRicercaClassicaLabel('Ricerca Polizze proposte')
-            SCU.checkAggancioPolizzePropostePreventivi()
-        })
-
-        it('Verifica Click su Rubrica', function () {
-            LandingRicerca.searchRandomClient(false)
-            LandingRicerca.clickRicercaClassicaLabel('Rubrica')
-            SCU.checkAggancioRubrica()
-        })
-
-        it('Verifica Click su Ricerca Preventivi', function () {
-            LandingRicerca.searchRandomClient(false)
-            LandingRicerca.clickRicercaClassicaLabel('Ricerca Preventivi')
-            SCU.checkAggancioPolizzePropostePreventivi()
+            LandingRicerca.checkAggancioRicercaCliente()
         })
     }
 })

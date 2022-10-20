@@ -14,7 +14,8 @@ import BackOffice from "../../../mw_page_objects/Navigation/BackOffice"
 import ConsultazioneSinistriPage from "../../../mw_page_objects/backoffice/ConsultazioneSinistriPage"
 
 //#region Mysql DB Variables
-const testName = Cypress.spec.name.split('/')[2].split('.')[0].toUpperCase()
+//const testName = Cypress.spec.name.split('.')[2].split('.')[0].toUpperCase()
+const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
@@ -86,7 +87,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
     it('Atterraggio su BackOffice >> Sinistri canalizzati', function () {             
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Sinistri canalizzati') 
-        cy.wait(1000)        
+        cy.wait(1000);        
     });
 
     it('Sinistri canalizzati: verifica strutturale degli elementi dello header di pagina', function () {              

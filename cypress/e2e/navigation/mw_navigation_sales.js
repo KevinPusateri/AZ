@@ -81,7 +81,7 @@ before(() => {
                     cy.filterProfile(profiling, 'COMMON_TOOL_TRATTATIVE').then(profiled => { keys.TrattativeAutoCorporateEnabled = profiled })
                     cy.filterProfile(profiling, 'COMMON_SAFE_DRIVE').then(profiled => { keys.SAFE_DRIVE_AUTOVETTURE = profiled })
                 })
-
+    
                 //Profiling collegamenti rapidi
                 cy.getProfiling(data.tutf).then(profiling => {
                     cy.filterProfile(profiling, 'COMMON_GESTIONE_MONITORAGGIO_PROPOSTE').then(profiled => { keys.MONITORAGGIO_POLIZZE_PROPOSTE = profiled })
@@ -90,7 +90,6 @@ before(() => {
                     cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keys.SFERA = profiled })
                     cy.filterProfile(profiling, 'RUOLO_CAMPAIGN').then(profiled => { keys.CAMPAGNE_COMMERCIALI = profiled })
                     cy.filterProfile(profiling, 'COMMON_GED').then(profiled => { keys.GED_GESTIONE_DOCUMENTALE = profiled })
-
                 })
             }
         })
@@ -255,19 +254,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
     });
 
-    // TODO:
-    // it('Verifica Azioni Veloci: "Crea iniziativa"', function () {
-    //     TopBar.clickSales()
-    //     Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
-    //         if (!checkEnabled)
-    //             this.skip()
-    //         Sales.selectFirstDay('1')
-    //         Sales.selectAltriCluster(cluster.MODALITA_PAGAMENTO_DA_REMOTO)
-    //         Sales.clickAzioniVeloci(cluster.PER_TUTTI_I_CLUSTER_SELEZIONATI, azioniVeloci.CREA_INIZIATIVA)
-    //         Sales.backToSales()
-    //     })
-    // });
-
     it('Verifica Azioni Veloci: "Vai a vista Quietanzamento"', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
@@ -323,15 +309,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         Sales.clickLinkRapido('Campagne Commerciali')
         Sales.backToSales()
     })
-
-    // TOGLERE
-    // it('Verifica ASSENZA Campagne Commerciali', function () {
-    //     if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
-    //         this.skip()
-    //     TopBar.clickSales()
-    //     Sales.checkNotExistLink('a', 'Campagne Commerciali')
-    //     Sales.backToSales()
-    // })
 
     it('Verifica ASSENZA Sfera', function () {
         if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
@@ -574,15 +551,6 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         TopBar.clickSales()
         Sales.clickTabCampagne()
     })
-
-    // DA TOGLIERE
-    // it('Verifica ASSENZA TAB: CAMPAGNE', function () {
-    //     if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
-    //         this.skip()
-    //     TopBar.clickSales()
-    //     Sales.checkNotExistLink('button[role="tab"]', 'CAMPAGNE')
-    //     Sales.backToSales()
-    // })
 
     it('Verifica aggancio Appuntamento', function () {
         TopBar.clickSales()

@@ -6,6 +6,7 @@
  */
 
 ///<reference types="cypress"/>
+var json = require('../../fixtures/LibriMatricola/Convenzione.json'); //(with path)
 
 //#region imports
 import LoginPage from "../../mw_page_objects/common/LoginPage"
@@ -34,10 +35,8 @@ import TopBar from "../../mw_page_objects/common/TopBar";
 Cypress.config('defaultCommandTimeout', 60000)
 //#endregions
 
-
 before(() => {
     expect(Cypress.browser.name).to.contain('firefox')
-
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
@@ -48,28 +47,28 @@ beforeEach(() => {
     cy.preserveCookies()
 })
 
-// afterEach(function () {
-//     if (this.currentTest.state !== 'passed') {
-//         TopBar.logOutMW()
-//         //#region Mysql
-//         cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//             let tests = testsInfo
-//             cy.finishMysql(dbConfig, insertedId, tests)
-//         })
-//         //#endregion
-//         Cypress.runner.stop();
-//     }
-// })
+afterEach(function () {
+    if (this.currentTest.state !== 'passed') {
+        TopBar.logOutMW()
+        //#region Mysql
+        cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+            let tests = testsInfo
+            cy.finishMysql(dbConfig, insertedId, tests)
+        })
+        //#endregion
+        Cypress.runner.stop();
+    }
+})
 
-// after(function () {
-//     TopBar.logOutMW()
-//     //#region Mysql
-//     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
-//         let tests = testsInfo
-//         cy.finishMysql(dbConfig, insertedId, tests)
-//     })
-//     //#endregion
-// })
+after(function () {
+    TopBar.logOutMW()
+    //#region Mysql
+    cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
+        let tests = testsInfo
+        cy.finishMysql(dbConfig, insertedId, tests)
+    })
+    //#endregion
+})
 //#endregion Before After
 
 describe("LIBRI MATRICOLA", {
@@ -80,36 +79,6 @@ describe("LIBRI MATRICOLA", {
 }, () => {
     var nPreventivoMadre
     var nContratto
-
-    // it.only('MW', function () {
-    //     TopBar.logOutMW()
-    // });
-
-    // it.only('VPS', function () {
-    //     // cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
-    //     // cy.origin('https://amlogin-pp.allianz.it/nidp/idff/sso?sid=0&sid=0')
-    //     // cy.get('table').should('be.visible')
-    //     // cy.get('[name="Ecom_User_ID"]').type('euvps02')
-    //     // cy.get('[name="Ecom_Password"]').type('pwdeuvps02')
-    //     // cy.get('[value="Conferma"]').click()
-    //     let email = 'euvps02'
-    //     let psw = 'pwdeuvps02'
-    //     cy.session(([email, psw]), () => {
-
-    //         cy.visit('http://online.pp.azi.allianzit/AutorDanni/VPS/VPS.aspx')
-    //         cy.get('[name="Ecom_User_ID"]').type('euvps02')
-    //         cy.get('[name="Ecom_Password"]').type('pwdeuvps02')
-    //         cy.get('[value="Conferma"]').click()
-    //         cy.url()
-    //             .should("include", 'sasasa');
-    //         cy.origin('https://amlogin-pp.allianz.it/nidp/idff/',
-    //             { args: [email, psw] },
-    //             ([email, psw]) => {
-    //                 cy.get('[name="Ecom_User_ID"]').type(email)
-    //                 cy.get('[name="Ecom_Password"]').type(psw)
-    //             })
-    //     })
-    // });
 
     context('PREVENTIVO MADRE', function () {
         PreventivoMadre()
@@ -190,13 +159,14 @@ describe("LIBRI MATRICOLA", {
             cy.fixture('LibriMatricola/LibriMatricola.json').then((data) => {
                 LoginPage.logInMWAdvanced()
                 LandingRicerca.search(data.ClientePGIVA)
+                LandingRicerca.filtra()
                 LandingRicerca.clickFirstResult()
                 SintesiCliente.clickAuto()
                 SintesiCliente.clickLibriMatricola()
                 // LibriMatricola.backElencoLibriMatricola()
                 LibriMatricola.accessoIncassoPolizzaMadre(data.numContrattoLibro)
                 LibriMatricola.incasso()
-                
+
             })
         })
 

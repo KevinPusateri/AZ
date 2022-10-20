@@ -81,11 +81,12 @@ if (!Cypress.env('isSecondWindow'))
         it('Selezionare una quietanza\n- Menù Contestuale > Quietanza > Delta Premio \n- Verifica che ci siano 50 righe dopo la chiamata e il rientro dalla call applicativa delta premio', options, function () {
             Common.visitUrlOnEnv()
             Sfera.accediSferaDaHomePageMW(true)
+            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO)
             Sfera.setDateEstrazione()
             Sfera.estrai()
             //? Per Trovare delle Quietanze con Delta Premio applicabile filtriamo quelle Entro il periodo di mora
             Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
-            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO, false)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO, false, null, null, null, true)
             Sfera.checkRisultatiPaginaRighe('50')
         })
 

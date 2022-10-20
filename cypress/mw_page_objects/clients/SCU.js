@@ -37,6 +37,7 @@ class SCU {
         getSCU().find('#unita-di-mercato').type('1022')
         getSCU().find('li:contains("1022")').click()
         getSCU().find('#pep-no').click({ force: true })
+        cy.screenshot('Dati Anagrafici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getSCU().find('button:contains("Avanti")').click()
     }
 
@@ -48,6 +49,7 @@ class SCU {
         getSCU().find('#residenza-comune').type('LONIGO')
         getSCU().find('#residenza-comune_listbox').click()
         getSCU().find('span[aria-owns="tipo-tel_listbox"]').click()
+        cy.screenshot('Contatti', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getSCU().find('button:contains("Avanti")').click()
     }
 
@@ -60,6 +62,8 @@ class SCU {
         getSCU().find('label[for="promo-allianz-profilazione-no"]').click()
         getSCU().find('label[for="promo-allianz-indagini-no"]').click()
         getSCU().find('label[for="quest-adeguatezza-vita-no"]').click()
+        cy.screenshot('Consensi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         getSCU().find('button:contains("Avanti")').click()
     }
 
@@ -71,6 +75,7 @@ class SCU {
         getSCU().find('#data-scadenza').type('01012030')
         getSCU().find('#luogo-emissione').type('LONIGO')
         getSCU().find('#luogo-emissione_listbox').click()
+        cy.screenshot('Documento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getSCU().find('button:contains("Avanti")').click()
         getSCU().find('button:contains("Conferma")').click()
     }
@@ -91,6 +96,7 @@ class SCU {
         getSCU().find('#codice-fiscale-impresa').type(nuovoClientePG.partitaIva)
         getSCU().find('#unita-di-mercato').type('1022')
         getSCU().find('li:contains("1022")').click()
+        cy.screenshot('Dati Anagrafici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         getSCU().find('button:contains("Avanti")').click()
     }
 
@@ -133,6 +139,9 @@ class SCU {
             url: /NormalizzaUbicazione/
         }).as('normalizzaUbicazione')
 
+        if (Cypress.isBrowser('firefox'))
+            cy.screenshot('Contatti', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         getSCU().find('button:contains("Avanti")').click()
 
         cy.wait('@normalizzaUbicazione', { requestTimeout: 10000 })
@@ -152,8 +161,8 @@ class SCU {
         getSCU().find('#email').clear().type(clientePG.mail)
         getSCU().within(() => {
             cy.get('#collapseContatti').find('h2:contains("Sede Legale")').click()
-            cy.screenshot('Contatti', { overwrite: true })
         })
+        cy.screenshot('Contatti', { overwrite: true })
     }
 
     static nuovoClientePGConsensi() {
@@ -164,6 +173,9 @@ class SCU {
         getSCU().find('label[for="promo-allianz-profilazione-no"]').click()
         getSCU().find('label[for="promo-allianz-indagini-no"]').click()
         getSCU().find('label[for="quest-adeguatezza-vita-no"]').click()
+
+        cy.screenshot('Consensi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
     }
 
     static modificaClientePGConsensi(clientePG) {
@@ -191,6 +203,8 @@ class SCU {
             method: 'POST',
             url: /Post/
         }).as('post')
+
+        cy.screenshot('Conferma Inserimento', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         getSCU().find('button:contains("Avanti")').click().wait(2000)
 
@@ -304,6 +318,8 @@ class SCU {
             cy.wait('@salvaInContentManager', { requestTimeout: 60000 })
         }
 
+        cy.screenshot('Generazione Stampe', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         //Pulsante per terminare la procedura di censimento/modifica
         getSCU().then($body => {
             if ($body.find('#endWorkflowButton').length > 0)
@@ -315,6 +331,8 @@ class SCU {
     }
 
     static VerificaDocumentiInsufficienti() {
+        cy.screenshot('Documenti Insufficienti', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
         getSCU().find('button:contains("Inserisci il documento")').click()
     }
 

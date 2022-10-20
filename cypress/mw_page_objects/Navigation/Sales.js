@@ -111,8 +111,8 @@ const LinksRapidi = {
 const LinksOnEmettiPolizza = {
     PREVENTIVO_MOTOR: 'Preventivo Motor',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022: 'Allianz Ultra Casa e Patrimonio 2022',
-    ALLIANZ_ULTRA_SALUTE: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Casa e Patrimonio' : 'Allianz Ultra Casa e Patrimonio',
+    ALLIANZ_ULTRA_SALUTE: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Salute' : 'Allianz Ultra Salute',
     SAFE_DRIVE_AUTOVETTURE: 'Safe Drive Autovetture',
     ALLIANZ_ULTRA_CASA_E_PATRIMONIO_BMP: 'Allianz Ultra Casa e Patrimonio BMP',
     ALLIANZ_ULTRA_IMPRESA: (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) ? 'Ultra Impresa' : 'Allianz Ultra Impresa',
@@ -349,7 +349,13 @@ class Sales {
             cy.get('#main-table-sfera').should('exist').and('be.visible')
 
             cy.get('@styleColor').then((color) => {
-                cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+                cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').invoke('attr', 'style')
+                    .then(($style) => {
+                        if (!$style.includes('none repeat'))
+                            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+                        else
+                            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1].replace(';', '') + ' none repeat scroll 0% 0%;')
+                    })
                 cy.screenshot('Verifica Colori della Tabella ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             })
         }
@@ -546,7 +552,7 @@ class Sales {
      */
     static backToSales() {
         cy.get('a').contains('Sales').scrollIntoView().click({ force: true })
-        cy.url().should('eq', Common.getBaseUrl() + 'sales/')
+        cy.url().should('include', 'sales/')
     }
 
     /**
@@ -683,18 +689,26 @@ class Sales {
         cy.contains('Emetti polizza').click({ force: true })
 
         LinksOnEmettiPolizza.deleteKey(keys)
-        const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
+        const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza).sort()
+        // Tolgo il delete function
+        linksEmettiPolizza.pop()
+        const currentLinks = []
 
         if (Cypress.env('monoUtenza')) {
             delete LinksOnEmettiPolizza.GESTIONE_RICHIESTE_PER_PA
-            const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza)
-            cy.get('.card-container').find('lib-da-link').each(($link, i) => {
-                expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
+            const linksEmettiPolizza = Object.values(LinksOnEmettiPolizza).sort()
+            // Tolgo il delete function
+            linksEmettiPolizza.pop()
+            cy.get('.card-container').find('lib-da-link').each(($link) => {
+                currentLinks.push($link.text().trim())
+            }).then(() => {
+                expect(currentLinks.sort()).to.deep.eq(linksEmettiPolizza.sort());
             })
         } else
-            cy.get('div[class^="card-container"').should('be.visible').find('lib-da-link').each(($link, i) => {
-                debugger
-                expect($link.text().trim()).to.include(linksEmettiPolizza[i]);
+            cy.get('div[class^="card-container"').should('be.visible').find('lib-da-link').each(($link) => {
+                currentLinks.push($link.text().trim())
+            }).then(() => {
+                expect(currentLinks.sort()).to.deep.eq(linksEmettiPolizza.sort());
             })
     }
 
@@ -917,6 +931,12 @@ class Sales {
             .screenshot('Attività in Scadenza', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
     }
 
+    static clickOperativita() {
+        cy.get('app-operation-section').contains('Operatività').click()
+        cy.get('nx-radio[name="button_operation"]').should('be.visible')
+        cy.screenshot('Operativita', { overwrite: true })
+    }
+
 
     //#region Preventivi e quotazioni
     /**
@@ -1034,7 +1054,6 @@ class Sales {
         })
         cy.get('app-proposals-section').contains('Proposte').click()
         cy.wait('@gqlDamage', { timeout: 50000 });
-        //cy.wait('@gqlsalesDamagePremium', { timeout: 50000 });
         cy.get('app-paginated-cards').find('button:contains("Danni")').click()
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
         cy.get('app-paginated-cards')
@@ -1058,9 +1077,7 @@ class Sales {
             }
         })
         cy.get('app-proposals-section').contains('Proposte').click()
-        // cy.wait('@gqlLife', { timeout: 30000 });
         cy.wait('@gqlDamage', { timeout: 50000 });
-        // cy.wait('@gqlsalesDamagePremium', { timeout: 50000 });
         cy.get('app-paginated-cards').find('button:contains("Vita")').click().wait(3000)
         cy.get('app-paginated-cards')
             .screenshot('Verifica Proposte Da Vita', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
@@ -1072,7 +1089,7 @@ class Sales {
      */
     static clickPrimaCardDanniOnProposte() {
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
-        cy.get('div[class="damages prop-card ng-star-inserted"]').first().find('lib-da-link').first().click()
+        cy.get('[calldaname="GENERIC-DETAILS"]:visible').first().find('lib-contract-card-basic-label:first').click()
         getIFrame().within(() => {
             cy.get('#menuContainer').should('be.visible')
             cy.get('#menuContainer').find('a').should('be.visible').and('contain.text', '« Uscita')
@@ -1084,6 +1101,10 @@ class Sales {
      * Click sulla prima card Vita 
      */
     static clickPrimaCardVitaOnProposte() {
+        cy.intercept({
+            method: '+(GET|POST)',
+            url: '**/Vita/**'
+        }).as('waitCardVita');
         cy.intercept('POST', '**/graphql', (req) => {
             if (req.body.operationName.includes('digitalAgencyLink')) {
                 req.alias = 'digitalAgencyLink'
@@ -1091,15 +1112,13 @@ class Sales {
         });
         cy.get('div[class="life prop-card ng-star-inserted"]').should('be.visible')
         cy.wait(5000)
-        cy.get('.cards-container').should('be.visible').find('.card').first().as('firstCard')
-        cy.get('@firstCard').trigger('mouseover')
-        cy.get('@firstCard').click({ force: true })
+        cy.get('[calldaname="GENERIC-DETAILS"]:visible').first().find('lib-contract-card-basic-label:first').click()
         cy.wait('@digitalAgencyLink', { timeout: 30000 });
-        cy.wait(20000)
-        getIFrame().within(() => {
-            cy.get('td[class="AZBasicButtons"]').should('be.visible').within(() => {
-                cy.get('input[value="  Esci  "]').should('be.visible')
-            })
+        cy.wait('@waitCardVita', { timeout: 30000 })
+        cy.wait(5000)
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.get('input[value="  Esci  "]').should('be.visible')
         })
         cy.screenshot('Verifica Dettaglio Card Vita Proposte', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
 
@@ -1160,7 +1179,7 @@ class Sales {
             cy.get('app-lob-link').should('be.visible').contains(lob).click()
             if (lob !== 'Motor')
                 cy.wait('@gqlSfera')
-            cy.wait(2000)
+            cy.wait(5000)
             let enable
             cy.get('app-receipt-header').find('span').eq(1).invoke('text').then((numPezzi) => {
                 if (numPezzi.substring(0, 1) === "0")
@@ -1173,7 +1192,7 @@ class Sales {
                 else {
                     if (button === 'Estrai') {
                         cy.get('app-receipt-manager-footer').find('button:contains("Estrai"):visible').click()
-                        cy.get('app-table-component').should('be.visible')
+                        cy.get('app-table-component', { timeout: 20000 }).should('be.visible')
                         cy.get('nx-header-actions').should('contain.text', 'Espandi Pannello')
                         cy.screenshot('Verifica Estrazione Quietanzamento', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
                     }
@@ -1201,8 +1220,19 @@ class Sales {
      */
     static checkRefreshQuietanzamento() {
 
-        this.clickCluster('Modalità pagamento da remoto')
-        this.clickCluster('Monocoperti')
+        cy.get('app-receipt-manager-body').within(() => {
+            cy.get('div[class="app-receipt-manager-cluster"]:first').find('span[class="cluster-title"]:first').then(($clusterName) => {
+                this.clickCluster($clusterName.text().trim())
+            })
+        })
+
+        cy.get('app-receipt-manager-body').within(() => {
+            cy.get('div[class="app-receipt-manager-cluster"]').eq(1).find('span[class="cluster-title"]:first').then(($clusterName) => {
+                this.clickCluster($clusterName.text().trim())
+            })
+        })
+        // this.clickCluster('Modalità pagamento da remoto')
+        // this.clickCluster('Monocoperti')
         cy.screenshot('Verifica checkBox Selezionati', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
 
         this.refresh()
@@ -1385,8 +1415,10 @@ class Sales {
                     })
 
             })
+    }
 
-
+    static checkAccordionOperativita() {
+        cy.contains('Operatività').parent().siblings('nx-icon').invoke('attr', 'style').should('contain', 'transform: rotate(180deg);');
     }
 }
 export default Sales

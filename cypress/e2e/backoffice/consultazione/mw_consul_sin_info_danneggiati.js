@@ -16,7 +16,8 @@ import { isDate } from "lodash"
 
 
 //#region Mysql DB Variables
-const testName = Cypress.spec.name.split('/')[2].split('.')[0].toUpperCase()
+//const testName = Cypress.spec.name.split('.')[2].split('.')[0].toUpperCase()
+const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
 let insertedId
@@ -30,7 +31,10 @@ Cypress.config('defaultCommandTimeout', 60000)
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+        LoginPage.logInMWAdvanced({         
+            "agency": "010375000",
+            "agentId": "ARALONGO7"
+        })
     })
 })
 
@@ -39,6 +43,7 @@ beforeEach(() => {
 })
 
 afterEach(function () {
+    /*
     if (this.currentTest.state !== 'passed') {
         //TopBar.logOutMW()
         //#region Mysql
@@ -49,6 +54,7 @@ afterEach(function () {
         //#endregion
         //Cypress.runner.stop();
     }
+    */
 })
 
 after(function () {
@@ -60,7 +66,7 @@ after(function () {
         cy.finishMysql(dbConfig, insertedId, tests)
     })
     //#endregion
-     Cypress.runner.stop();
+    Cypress.runner.stop();
 })
 
 //#region Script Variables
@@ -85,7 +91,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
     it('Atterraggio su BackOffice >> Consultazione sinistri', function () {             
         TopBar.clickBackOffice()
         BackOffice.clickCardLink('Consultazione sinistri') 
-        cy.wait(1000)        
+        cy.wait(1000);        
     });
 
     it('Selezionato un sinistro con multidanneggiato' +
@@ -132,10 +138,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         }); 
     });
 
-    
-    it('"Pagina di dettaglio" è verificato che in pagina siano riportati numero di sinistro, ' +
+    it('"Pagina di dettaglio" --> controllo che in pagina siano riportate le seguenti informazioni: numero di sinistro,' +
     ' data di avvenimento e il cliente assicurato', function () {
-            
+
         ConsultazioneSinistriPage.printClaimDetailsValue()
     
         // Seleziona il sinistro dalla pagina di ricerca
@@ -151,8 +156,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkObj_ByIdAndText(cssCliente, clienteAssicurato);
         cy.screenshot('Pagina Dettaglio sinistro - Atterraggio pagina', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
-    
-    it('"Pagina di dettaglio" è verificata la sezione INTESTAZIONE con valorizzazione dei campi ' +
+
+    it('"Pagina di dettaglio" --> Controllo della sezione intestazione di pagina, con valorizzazione dei campi ' +
     ' Località e CLD/Danneggiato ', function () {
         
         let cssSezDanneggiato = ".dynamic_content > .block > a "
@@ -165,7 +170,9 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica sulla consulta
         ConsultazioneSinistriPage.checkListValues_ById(cssNomeDanneggiato)
         // Controllo valorizzazione CLD
         let cssCLD = ".dynamic_content > .block > table > tbody > tr:nth-child(1) > td:nth-child(2) > a"
-        ConsultazioneSinistriPage.checkListValues_ById(cssCLD)
+        ConsultazioneSinistriPage.checkListValues_ById(cssCLD);
+
+        cy.screenshot('Pagina Dettaglio sinistro - Controllo intestazione di pagina', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     });
 
 });

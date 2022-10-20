@@ -8,6 +8,7 @@ slice(2)[2] -> scheduled (true or false)
 slice(2)[3] -> currentEnv (PREPROD or TEST)
 slice(2)[4] -> isAviva (true or false)
 slice(2)[5] -> isSecondWindow (true or false)
+
 slice(2)[6] -> monoUtenza (true or false)
 */
 

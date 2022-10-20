@@ -25,6 +25,11 @@ const path = require('path')
 const rimraf = require('../../node_modules/rimraf')
 const unzipper = require('unzipper')
 const xlsx = require('node-xlsx').default
+const util = require('util')
+const { exec } = require('child_process')
+const execProm = util.promisify(exec)
+var downloadFolder
+var extensionsFolder
 
 //#region Support Functions
 const getMostRecentFile = (dir) => {
@@ -63,6 +68,17 @@ const sendEmail = (currentSubject, currentMessage, additionalEmail = null) => {
         });
         resolve(true)
     })
+}
+
+async function runShellCmd(cmd) {
+    let result
+    try {
+        result = await execProm(cmd)
+    } catch (error) {
+        result = error
+    }
+
+    return result.stdout
 }
 //#endregion
 
@@ -276,36 +292,40 @@ function generateRandomVatIn() {
 
     return vatIN;
 }
+
 //#endregion
 
 module.exports = (on, config) => {
-
     if (config.env.currentEnv === 'PREPROD')
         config.baseUrl = 'https://portaleagenzie.pp.azi.allianz.it/matrix/';
     else
         config.baseUrl = 'https://amlogin-dev.servizi.allianzit/nidp/idff/sso?id=datest&sid=1&option=credential&sid=1&target=https%3A%2F%2Fportaleagenzie.te.azi.allianzit%2Fmatrix%2F/';
 
-    on('before:browser:launch', (browser = {}, launchOptions) => {
+    runShellCmd('echo %cd%\\cypress\\downloads').then(retrivedDownloadFolder => {
+        downloadFolder = String(JSON.stringify(retrivedDownloadFolder.replace(/[\r\n]/g, "").replace('/\\/g', '\\\\'))).replace(/"/g, '')
+    })
 
+    runShellCmd('echo %cd%\\extensions').then(retrivedExtensionsFolder => {
+        extensionsFolder = String(JSON.stringify(retrivedExtensionsFolder.replace(/[\r\n]/g, "").replace('/\\/g', '\\\\'))).replace(/"/g, '')
+    })
+
+    on('before:browser:launch', (browser = {}, launchOptions) => {
         if (browser.family === 'firefox') {
-            launchOptions.preferences['browser.download.dir'] = process.cwd() + "\\cypress\\downloads"
+            launchOptions.preferences['browser.download.dir'] = downloadFolder
             launchOptions.preferences['browser.download.folderList'] = 2
             launchOptions.preferences['browser.download.panel.shown'] = false
             launchOptions.preferences['browser.download.manager.focusWhenStarting'] = true
-            launchOptions.preferences['browser.helperApps.neverAsk.saveToDisk'] = 'application/force-download', 'application/pdf', 'application/x-download', 'application/x-pdf', 'pdf/adobe', 'ext/xml', 'text/plain', 'text/html', 'application/octet-stream', 'application/xls', 'text/csv', 'application/X_SI', 'application/xls', 'application/ms-excel', 'application/x-msexcel', 'application/excel', 'application/x-excel', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            launchOptions.preferences['browser.helperApps.neverAsk.saveToDisk'] = 'application/force-download,application/pdf,application/x-download,application/x-pdf,pdf/adobe,ext/xml,text/plain,text/html,application/octet-stream,application/xls,text/csv,application/X_SI,application/xls,application/ms-excel,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             launchOptions.preferences['browser.download.manager.useWindow'] = true
-            launchOptions.preferences['pdfjs.disabled'] = false
+            launchOptions.preferences['pdfjs.disabled'] = true
             launchOptions.preferences['devtools.console.stdout.content'] = false
 
             // For Firefox 102
             launchOptions.args.push('-safe-mode')
 
-            //For Firefox 102
-            launchOptions.args.push('-safe-mode')
-
             //Necessario per queli applicativi (tipo LM) che utilizzano ancora applet java
             //Vado a prendere Allianz IO Web Ext
-            launchOptions.extensions.push(process.cwd() + "\\extensions\\allianziowebext@allianz.it.xpi")
+            launchOptions.extensions.push(extensionsFolder + "\\allianziowebext@allianz.it.xpi")
             return launchOptions
 
         } else if (browser.family === "chromium" && browser.name !== "electron") {
@@ -423,10 +443,8 @@ module.exports = (on, config) => {
 
     on("task", {
         getLatestDownloadedFile(broswerType) {
-
-            let downloadUserFolder = (broswerType === 'chrome') ? process.cwd() + "\\cypress\\\downloads" : os.userInfo().homedir.toString() + '\\Downloads\\'
-            let mostRecentFile = getMostRecentFile(downloadUserFolder)
-            return path.join(downloadUserFolder, mostRecentFile.file)
+            let mostRecentFile = getMostRecentFile(downloadFolder)
+            return path.join(downloadFolder, mostRecentFile.file)
         }
     })
 
@@ -466,8 +484,7 @@ module.exports = (on, config) => {
 
     on("task", {
         getFolderDownload() {
-            let folderDownload = process.cwd() + "\\cypress\\downloads"
-            return folderDownload
+            return downloadFolder
         }
     })
 
