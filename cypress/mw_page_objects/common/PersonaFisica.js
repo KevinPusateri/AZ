@@ -31,7 +31,7 @@ export default class PersonaFisica {
 
     static GalileoGalilei() {
         let GalileoGalilei = new PersonaFisica("GALILEO", "GALILEI")
-        GalileoGalilei.via = "LUNGOARNO GALILEO GALILEI"
+        GalileoGalilei.via = "LUNGARNO GALILEO GALILEI"
         GalileoGalilei.numero = "12"
         GalileoGalilei.cap = "56125"
         GalileoGalilei.citta = "PISA"
@@ -39,6 +39,18 @@ export default class PersonaFisica {
         GalileoGalilei.codiceFiscale = "GLLGLL64B16G702K"
 
         return GalileoGalilei
+    }
+
+    static PieroAngela() {
+        let PieroAngela = new PersonaFisica("PIERO", "ANGELA")
+        PieroAngela.via = "VIA ENRICO FERMI"
+        PieroAngela.numero = "10"
+        PieroAngela.cap = "10148"
+        PieroAngela.citta = "TORINO"
+        PieroAngela.provincia = "TO"
+        PieroAngela.codiceFiscale = "NGLPRI88T22L219R"
+
+        return PieroAngela
     }
 
     static EttoreMajorana() {

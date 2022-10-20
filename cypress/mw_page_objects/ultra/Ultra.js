@@ -426,6 +426,7 @@ class Ultra {
 
             cy.get('div[class*="search-professioni extended"]', { timeout: 10000 }).should('be.visible') //attende il caricamento del popup
             cy.get('#search-input-formfield').find('input').should('be.visible').type(professione) //cerca la professione
+            cy.wait(500)
 
             //seleziona la professione
             cy.get('div[class*="search-professioni extended"]')

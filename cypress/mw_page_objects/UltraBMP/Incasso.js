@@ -93,7 +93,7 @@ class Incasso {
             if (fl_frame0)
                 ultraIFrame0().within(() => {
                     cy.get('[aria-owns="TabIncassoModPagCombo_listbox"]')
-                        .should('be.visible').click()
+                        .should('be.visible').wait(500).click()
 
                     cy.wait(500)
                     cy.get('#TabIncassoModPagCombo_listbox')

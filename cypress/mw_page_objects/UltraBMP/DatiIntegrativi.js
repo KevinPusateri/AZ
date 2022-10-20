@@ -20,7 +20,7 @@ class DatiIntegrativi {
         cy.log('***** CARICAMENTO PAGINA DATI INTEGRATIVI *****')
         cy.intercept({
             method: 'GET',
-            url: '**/datiintegrativi/getDati'
+            url: '**/tmpl_dati_ambito_integr.htm'
         }).as('datiintegrativi')
 
         cy.wait('@datiintegrativi', { requestTimeout: 60000 })

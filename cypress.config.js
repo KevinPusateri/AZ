@@ -6,7 +6,7 @@ module.exports = defineConfig({
   videoCompression: 25,
   trashAssetsBeforeRuns: true,
   projectId: '4ypuc8',
-  numTestsKeptInMemory: 1,
+  numTestsKeptInMemory: 0,
   chromeWebSecurity: false,
   reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {

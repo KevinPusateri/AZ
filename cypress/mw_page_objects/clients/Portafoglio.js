@@ -903,12 +903,15 @@ class Portafoglio {
     }
 
     static checkAmbiti(nContratto, ambiti) {
-        this.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
+        this.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti) //apre popup ambiti del contratto
         cy.get('nx-modal-container').should('be.visible')
             .find('[class="modal-title"]').contains('Ambiti del contratto')
             .parents('app-modular-contract').find('[class="category"]').each(($ambiti, index, $list) => {
                 expect($ambiti).to.contain(ambiti[index])
-            })
+                cy.log("ambito " + ambiti[index] + " presente")
+            }) //verifica che gli ambiti indicati siano presenti
+        cy.get('nx-modal-container').should('be.visible')
+            .find('[aria-label="Close dialog"]').click() //chiude popup
     }
 
     /**

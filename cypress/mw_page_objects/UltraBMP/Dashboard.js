@@ -297,7 +297,7 @@ class Dashboard {
         ultraIFrame().within(() => {
             //apre il menu dot
             cy.get('ultra-dash-ambiti-istanze-table').find('nx-icon[class*="' + ambito + '"]')
-                .parents('tr').find('nx-icon[name="ellipsis-h"]').click()
+                .parents('tr').find('nx-icon[name="ellipsis-h"]').wait(500).click()
 
             //seleziona la voce
             cy.get('ultra-istanza-action-menu').should('be.visible')
@@ -487,7 +487,7 @@ class Dashboard {
         ultraIFrame().within(() => {
             cy.get('[id="dashTable"]').should('be.visible')
             cy.get('span').contains(' PROCEDI ', { matchCase: false })
-                .scrollIntoView().should('be.visible').click().wait(500)
+                .scrollIntoView().should('be.visible').click()
         })
     }
 

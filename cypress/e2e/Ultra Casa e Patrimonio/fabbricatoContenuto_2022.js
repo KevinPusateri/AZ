@@ -5,7 +5,6 @@ import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Ultra from "../../mw_page_objects/ultra/Ultra"
 import Dashboard2022 from "../../mw_page_objects/casaPatrimonio2022/Dashboard2022"
 import ConfigurazioneAmbito2022 from "../../mw_page_objects/casaPatrimonio2022/ConfigurazioneAmbito2022"
 import DatiQuotazione2022 from "../../mw_page_objects/casaPatrimonio2022/DatiQuotazione2022"
@@ -16,6 +15,8 @@ import ConsensiPrivacy2022 from "../../mw_page_objects/casaPatrimonio2022/Consen
 import ControlliProtocollazione2022 from "../../mw_page_objects/casaPatrimonio2022/ControlliProtocollazione2022"
 import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 
+import Database from "../../mw_page_objects/polizza/database"
+
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
@@ -25,6 +26,13 @@ import 'cypress-iframe';
 const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
+const dbPolizze = {
+    "host": "PALZMSQDBPRLV01.srv.allianz",
+    "port": 5551,
+    "user": "MY_taut_VeeC9",
+    "password": "BtG4VXvfuaj5kX3cDONqHBpyt0sLcE",
+    "database": "da"
+}
 let insertedId
 //#endregion
 
@@ -34,13 +42,11 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let cliente = PersonaFisica.GalileoGalilei()
+let cliente = PersonaFisica.PieroAngela()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato,
 ambitiUltra.ambitiUltraCasaPatrimonio.contenuto]
 var frazionamento = "Annuale"
-let nuovoCliente;
-let iFrameUltra = '[class="iframe-content ng-star-inserted"]'
-let iFrameFirma = '[id="iFrameResizer0"]'
+var nContratto = "000"
 //#endregion variabili iniziali
 
 //#region beforeAfter
@@ -84,7 +90,6 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
-            cy.pause()
             cy.get('lib-client-item').first().click()
         }).then(($body) => {
             cy.wait(7000)
@@ -187,6 +192,12 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
     })
 
     it("Adempimenti precontrattuali e Perfezionamento", () => {
+        ControlliProtocollazione2022.salvaNContratto()
+
+        cy.get('@contratto').then(val => {
+            nContratto = val
+        })
+
         ControlliProtocollazione2022.stampaAdempimentiPrecontrattuali()
         ControlliProtocollazione2022.Incassa()
         Incasso.caricamentoPagina()
@@ -205,6 +216,13 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
 
     it("Esito incasso", () => {
         Incasso.EsitoIncasso()
+        //Database.writeDPolizza(cliente, nContratto, new Date().toISOString().slice(0, 10), null, "RamiVari", ambiti[0] + ", " + ambiti[1])
+        cy.SalvaPolizza(cliente, nContratto, new Date().toISOString().slice(0, 10), null, "RamiVari", ambiti[0] + ", " + ambiti[1])
+
         Incasso.Chiudi()
+    })
+
+    it("Fine", () => {
+        cy.pause()
     })
 })

@@ -152,6 +152,33 @@ function retriveTarghe(dbConfig) {
         })
     })
 }
+
+//aggiunto da Elio Cossu 17/10/2022
+function mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti) {
+
+    const connection = mysql.createConnection(dbConfig)
+    connection.connect((err) => {
+        if (err) throw err;
+    })
+
+    var query = "UPDATE polizza SET numero ='" + nPolizza + "'," +
+        "cliente='" + cliente.nomeCognome() + "'," +
+        "dataEmissione='" + dataEmissione + "'," +
+        "dataScadenza='" + dataScadenza + "'," +
+        "ramo='" + ramo + ""
+
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error) {
+                console.error(error)
+                reject(error)
+            } else {
+                connection.end()
+                return resolve(results)
+            }
+        })
+    })
+}
 //#endregion
 
 //Retrive logged win user
@@ -269,7 +296,7 @@ module.exports = (on, config) => {
             launchOptions.preferences['browser.download.manager.useWindow'] = true
             launchOptions.preferences['pdfjs.disabled'] = false
             launchOptions.preferences['devtools.console.stdout.content'] = false
-            
+
             // For Firefox 102
             launchOptions.args.push('-safe-mode')
 
@@ -329,6 +356,13 @@ module.exports = (on, config) => {
     on("task", {
         getTargheInScadenzaAltraCompagnia({ dbConfig }) {
             return retriveTarghe(dbConfig)
+        }
+    });
+
+    //aggiunto da Elio Cossu 17/10/2022
+    on("task", {
+        SalvaPolizza({ dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti }) {
+            return mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti)
         }
     });
 
@@ -409,7 +443,7 @@ module.exports = (on, config) => {
         moveToLogFolder({ filePath, currentCase, specName }) {
             const screenshotFolderCurrentCase = process.cwd() + "\\cypress\\screenshots\\" + specName + "\\" + currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore
 
-            if (!fs.existsSync(screenshotFolderCurrentCase)){
+            if (!fs.existsSync(screenshotFolderCurrentCase)) {
                 fs.mkdirSync(screenshotFolderCurrentCase, { recursive: true });
             }
             fs.rename(filePath, screenshotFolderCurrentCase + "\\LogProxy.xml", function (err) {

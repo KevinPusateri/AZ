@@ -158,9 +158,9 @@ describe("CONVENZIONE STANDARD", () => {
     ControlliProtocollazione.salvataggioContratto()
     ControlliProtocollazione.salvaNContratto()
 
-        cy.get('@contratto').then(val => {
-            nContratto = val
-        })
+    cy.get('@contratto').then(val => {
+      nContratto = val
+    })
   })
 
   it("Controlli e protocollazione - intermediario", () => {
@@ -175,6 +175,12 @@ describe("CONVENZIONE STANDARD", () => {
 
   it("Adempimenti precontrattuali e Perfezionamento", () => {
     ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
+    ControlliProtocollazione.salvaNContratto()
+
+    cy.get('@contratto').then(val => {
+      nContratto = val
+    })
+
     ControlliProtocollazione.Incassa()
     Incasso.caricamentoPagina()
   })
@@ -212,9 +218,9 @@ describe("CONVENZIONE STANDARD", () => {
     Portafoglio.apriPortafoglioLite()
     Portafoglio.ordinaPolizze("Numero contratto")
     cy.pause()
-    //Portafoglio.menuContratto(nContratto, menuPolizzeAttive.modificaPolizza)    
-    //Common.canaleFromPopup()
-    //Dashboard.caricamentoAmbitiAcquistati()
+    Portafoglio.menuContratto(nContratto, menuPolizzeAttive.modificaPolizza)    
+    Common.canaleFromPopup()
+    Dashboard.caricamentoAmbitiAcquistati()
   })
 
   it("configurazione ambito", () => {
@@ -229,8 +235,8 @@ describe("CONVENZIONE STANDARD", () => {
   it("Convenzioni", () => {
     Dashboard.Convenzione('Abbonati Sky', false)
     Dashboard.VerificaAmbientiConvenzione(["Fabbricato", "Contenuto"],
-                                          ["Catastrofi naturali", "Tutela legale"],
-                                          ["Catastrofi naturali", "Tutela legale"])
+      ["Catastrofi naturali", "Tutela legale"],
+      ["Catastrofi naturali", "Tutela legale"])
   })
 
   it("Selezione ambiti", () => {
@@ -270,9 +276,9 @@ describe("CONVENZIONE STANDARD", () => {
     ControlliProtocollazione.salvataggioContratto()
     ControlliProtocollazione.salvaNContratto()
 
-        cy.get('@contratto').then(val => {
-            nContratto = val
-        })
+    cy.get('@contratto').then(val => {
+      nContratto = val
+    })
   })
 
   it("Controlli e protocollazione - intermediario", () => {

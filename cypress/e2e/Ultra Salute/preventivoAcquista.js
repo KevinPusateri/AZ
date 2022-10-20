@@ -14,8 +14,12 @@ import LoginPage from "../../mw_page_objects/common/LoginPage"
 import Ultra from "../../mw_page_objects/ultra/Ultra"
 import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
 import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import CondividiPreventivo from "../../mw_page_objects/UltraBMP/CondividiPreventivo"
 import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+import PersonaGiuridica from "../../mw_page_objects/common/PersonaGiuridica"
+
 import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
 import 'cypress-iframe';
 //#endregion
@@ -48,8 +52,8 @@ const ambitiUltraSalute = {
 //#endregion enum
 
 //#region  variabili iniziali
-let personaGiuridica = "Sinopoli"
-let personaFisica = PersonaFisica.GalileoGalilei()
+let personaGiuridica = PersonaGiuridica.BmwBank()
+let personaFisica = PersonaFisica.PieroAngela()
 var frazionamento = "trimestrale"
 var copertura = "extra-professionale"
 var ambiti = [
@@ -102,14 +106,14 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
-      cy.get('input[name="main-search-input"]').type(personaGiuridica).type('{enter}')
+      cy.get('input[name="main-search-input"]').type(personaGiuridica.denominazione).type('{enter}')
       cy.get('lib-client-item').first().click()
     }).then(($body) => {
       cy.wait(7000)
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
       cy.log('permessi: ' + check)
       if (check) {
-        cy.get('input[name="main-search-input"]').type(personaGiuridica).type('{enter}')
+        cy.get('input[name="main-search-input"]').type(personaGiuridica.denominazione).type('{enter}')
         cy.get('lib-client-item').first().next().click()
       }
     })
@@ -119,6 +123,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     Ultra.emissioneUltra(ultraRV.SALUTE)
     Common.canaleFromPopup()
     //Ultra.selezionaPrimaAgenzia()
+    Dashboard.caricamentoDashboardUltra()
   })
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
@@ -168,13 +173,12 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     Ultra.datiIntegrativiSalute(true, true, true)
     Ultra.approfondimentoSituazioneAssicurativa(false)
     DatiIntegrativi.popupDichiarazioni()
+    CondividiPreventivo.caricamentoPreventivo()
   })
 
   it("Condividi il Preventivo", () => {
-    //Ultra.caricamentoCondividi()
-    //cy.pause()
     Ultra.condividiPreventivoSelTutti()
-    Ultra.condividiPreventivoConferma()
+    CondividiPreventivo.Conferma()
     ConsensiPrivacy.caricamentoPagina()
   })
 

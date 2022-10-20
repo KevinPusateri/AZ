@@ -43,7 +43,7 @@ Cypress.config('defaultCommandTimeout', 60000)
 //#endregion
 
 //#region  variabili iniziali
-let personaFisica = PersonaFisica.GalileoGalilei()
+let personaFisica = PersonaFisica.PieroAngela()
 let assicurato = personaFisica // PersonaFisica.MarcoMarco()
 const personaBeneficiario = PersonaFisica.EttoreMajorana()
 var ambiti = [
@@ -152,6 +152,7 @@ describe("BENEFICIARI REFERENTE", () => {
     Beneficiari.inserisciBeneficiarioNew(personaBeneficiario)
     Beneficiari.tipoBeneficiario('Eredi legittimi')
     Beneficiari.clickInserisci()
+    //cy.wait(2000)
     cy.pause()
     Beneficiari.percentualeCapitale(personaBeneficiario.nomeCognome(), "60")
     Beneficiari.percentualeCapitale("Eredi legittimi", "40")

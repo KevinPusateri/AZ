@@ -38,5 +38,20 @@ export default class PersonaGiuridica {
 
         return Sinopoli
     }
+
+    static BmwBank() {
+        let BmwBank = new PersonaGiuridica("BMW BANK", "G.M.B.H.")
+        BmwBank.via = "VIA RENATO LUNELLI"
+        BmwBank.numero = "27"
+        BmwBank.cap = "38121"
+        BmwBank.citta = "TRENTO"
+        BmwBank.provincia = "TN"
+        BmwBank.partitaIVA = "08172050968"
+        BmwBank.nDipendenti = "4 - 20"
+        BmwBank.unitaMercato = "1029"
+        BmwBank.attivita = "Costruzione, ristrutturazione parziale o totale di edifici"
+
+        return BmwBank
+    }
 }
 
