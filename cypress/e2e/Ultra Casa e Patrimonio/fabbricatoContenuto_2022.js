@@ -15,8 +15,6 @@ import ConsensiPrivacy2022 from "../../mw_page_objects/casaPatrimonio2022/Consen
 import ControlliProtocollazione2022 from "../../mw_page_objects/casaPatrimonio2022/ControlliProtocollazione2022"
 import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 
-import Database from "../../mw_page_objects/polizza/database"
-
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
@@ -41,6 +39,7 @@ let prodotto = "Ultra Casa e Patrimonio 2022"
 let ramo = "Rami Vari"
 let dataEmissione = moment().format('YYYY-MM-DD HH:mm:ss')
 let dataScadenza = moment().add(1, 'y').format('YYYY-MM-DD HH:mm:ss')
+let ambiente = Cypress.env('currentEnv')
 
 let cliente = PersonaFisica.PieroAngela()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato,
@@ -216,8 +215,7 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
 
     it("Esito incasso", () => {
         Incasso.EsitoIncasso()
-        //Database.writeDPolizza(cliente, nContratto, new Date().toISOString().slice(0, 10), null, "RamiVari", ambiti[0] + ", " + ambiti[1])
-        cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, dataEmissione, dataScadenza, ramo, prodotto)
+        cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, dataEmissione, dataScadenza, ramo, prodotto, ambiente)
 
         Incasso.Chiudi()
     })

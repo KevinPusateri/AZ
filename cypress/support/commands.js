@@ -1552,8 +1552,8 @@ Cypress.Commands.add('getProxyLog', (currentCase) => {
   })
 })
 
-Cypress.Commands.add('SalvaPolizza', (dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti) => {  
-    cy.task('SalvaPolizza', { dbConfig: dbConfig, cliente: cliente, nPolizza: nPolizza, dataEmissione: dataEmissione, dataScadenza: dataScadenza, ramo: ramo, ambiti: ambiti })
+Cypress.Commands.add('SalvaPolizza', (dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente) => {  
+    cy.task('SalvaPolizza', { dbConfig: dbConfig, cliente: cliente, nPolizza: nPolizza, dataEmissione: dataEmissione, dataScadenza: dataScadenza, ramo: ramo, ambiti: ambiti, ambiente: ambiente })
       .then((results) => {
         return results.insertId
       })
