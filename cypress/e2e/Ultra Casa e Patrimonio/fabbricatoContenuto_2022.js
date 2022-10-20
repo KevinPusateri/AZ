@@ -26,13 +26,7 @@ import 'cypress-iframe';
 const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
-const dbPolizze = {
-    "host": "PALZMSQDBPRLV01.srv.allianz",
-    "port": 5551,
-    "user": "MY_taut_VeeC9",
-    "password": "BtG4VXvfuaj5kX3cDONqHBpyt0sLcE",
-    "database": "da"
-}
+const dbPolizze = Cypress.env('db_da')
 let insertedId
 //#endregion
 
@@ -217,7 +211,7 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
     it("Esito incasso", () => {
         Incasso.EsitoIncasso()
         //Database.writeDPolizza(cliente, nContratto, new Date().toISOString().slice(0, 10), null, "RamiVari", ambiti[0] + ", " + ambiti[1])
-        cy.SalvaPolizza(cliente, nContratto, new Date().toISOString().slice(0, 10), null, "RamiVari", ambiti[0] + ", " + ambiti[1])
+        cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, moment().format('YYYY-MM-DD HH:mm:ss'), "NULL","RamiVari")
 
         Incasso.Chiudi()
     })

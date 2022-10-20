@@ -1552,6 +1552,13 @@ Cypress.Commands.add('getProxyLog', (currentCase) => {
   })
 })
 
+Cypress.Commands.add('SalvaPolizza', (dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti) => {  
+    cy.task('SalvaPolizza', { dbConfig: dbConfig, cliente: cliente, nPolizza: nPolizza, dataEmissione: dataEmissione, dataScadenza: dataScadenza, ramo: ramo, ambiti: ambiti })
+      .then((results) => {
+        return results.insertId
+      })
+})
+
 
 //#region PDF Parse
 Cypress.Commands.add('parsePdf', () => {
