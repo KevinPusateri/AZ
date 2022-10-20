@@ -347,7 +347,6 @@ class TopBar extends HomePage {
                     return win.open.wrappedMethod.call(win, url, '_self');
                 }).as('Open');
             })
-            cy.pause()
             cy.contains(page).click()
             cy.get('@Open')
         } else {
