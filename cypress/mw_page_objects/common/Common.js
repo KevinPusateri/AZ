@@ -572,7 +572,6 @@ class Common {
 
         return url
     }
-
 }
 
 export default Common
