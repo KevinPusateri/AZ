@@ -170,14 +170,14 @@ function retriveTarghe(dbConfig) {
 }
 
 //aggiunto da Elio Cossu 17/10/2022
-function mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti) {
+function mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente) {
     const connection = mysql.createConnection(dbConfig)
 
     connection.connect((err) => {
         if (err) throw err;
     })
 
-    var query = `INSERT INTO polizza (numero, cliente, dataEmissione, dataScadenza, ramo, prodotto) VALUES('${nPolizza}','${cliente}','${dataEmissione}','${dataScadenza}','${ramo}','${ambiti}')`
+    var query = `INSERT INTO polizza (numero, cliente, dataEmissione, dataScadenza, ramo, prodotto, ambiente) VALUES('${nPolizza}','${cliente}','${dataEmissione}','${dataScadenza}','${ramo}','${ambiti}','${ambiente}')`
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
@@ -377,8 +377,8 @@ module.exports = (on, config) => {
 
     //aggiunto da Elio Cossu 17/10/2022
     on("task", {
-        SalvaPolizza({ dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti }) {
-            return mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti)
+        SalvaPolizza({ dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente }) {
+            return mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente)
         }
     });
 
