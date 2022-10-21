@@ -54,7 +54,10 @@ var lastPolizza = "000"
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+        LoginPage.logInMWAdvanced({
+            "agentId": "ARALONGO7",
+            "agency": "010375000"
+            })
     })
 })
 
