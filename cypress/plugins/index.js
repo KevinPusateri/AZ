@@ -191,6 +191,33 @@ function mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScade
         })
     })
 }
+
+function mysqlFindLastPolizza(dbConfig, prodotto, annullamento = false) {
+    const connection = mysql.createConnection(dbConfig)
+    connection.connect((err) => {
+        if (err) throw err;
+    })
+
+    let strAnnullamento = "0"
+
+    if(annullamento==true) {
+        strAnnullamento = "1"
+    }
+
+    var query = "SELECT numero FROM da.polizza WHERE prodotto='"+ prodotto +"' and annullamento='" + strAnnullamento + "' ORDER BY dataEmissione DESC LIMIT 1"
+
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error) {
+                console.error(error)
+                reject(error)
+            } else {
+                connection.end()
+                return resolve(results)
+            }
+        })
+    })
+}
 //#endregion
 
 //Retrive logged win user
@@ -380,8 +407,15 @@ module.exports = (on, config) => {
         SalvaPolizza({ dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente }) {
             return mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente)
         }
-    });
+    }); 
 
+    //mysqlFindLastPolizza
+    on("task", {
+        findLastPolizza({ dbConfig, prodotto, annullamento }) {
+            return mysqlFindLastPolizza(dbConfig, prodotto, annullamento)
+        }
+    });
+    
     //devono essere valorizzati
     on("task", {
         cliente() {

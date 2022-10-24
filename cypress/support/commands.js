@@ -1559,6 +1559,13 @@ Cypress.Commands.add('SalvaPolizza', (dbConfig, cliente, nPolizza, dataEmissione
       })
 })
 
+Cypress.Commands.add('findLastPolizza', (dbConfig, prodotto, annullamento) => {  
+  cy.task('findLastPolizza', { dbConfig: dbConfig, prodotto: prodotto, annullamento: annullamento})
+    .then((result) => {
+      return result
+    })
+})
+
 
 //#region PDF Parse
 Cypress.Commands.add('parsePdf', () => {
