@@ -21,7 +21,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_20220901_aviva.json'
+import { tariffaCases } from '../../fixtures//tariffe_ARD/tariffaCases_ARD_aviva.json'
 //#endregion
 
 before(() => {
