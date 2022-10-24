@@ -48,10 +48,10 @@ class LoginPage {
 
         //Skip this two requests that blocks on homepage
         // if (!Cypress.env('isSecondWindow') || Cypress.env()) {
-            cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
-            cy.intercept(/launch-*/, 'ignore').as('launchStaging')
-            cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
-            cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
+        cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
+        cy.intercept(/launch-*/, 'ignore').as('launchStaging')
+        cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
+        cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
         // }
 
         if (mockedNotifications) {
@@ -135,7 +135,7 @@ class LoginPage {
                             "agentId": customImpersonification.agentId,
                             "agency": customImpersonification.agency,
                         }
-                        cy.task('log', `Impersonificazione effettuta su ${JSON.stringify(currentImpersonificationToPerform, null, "\t")}`)
+                    cy.task('log', `Impersonificazione effettuta su ${JSON.stringify(currentImpersonificationToPerform, null, "\t")}`)
 
                     //Se siamo in dashboard, skippo l'impersonificazione
                     if (Cypress.env('usingDash')) {
@@ -159,7 +159,7 @@ class LoginPage {
                             cy.get('input[name="Ecom_User_ID"]').type(user.tutf)
                             cy.get('input[name="Ecom_Password"]').type(psw, { log: false })
                             cy.get('input[type="SUBMIT"]').click()
-
+                            
                             if (!Cypress.env('monoUtenza'))
                                 Common.checkUrlEnv()
                             if (!mockedNews && (!Cypress.env('isAviva') || !Cypress.env('isAvivaBroker')))
