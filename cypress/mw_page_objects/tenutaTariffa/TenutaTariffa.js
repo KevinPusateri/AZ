@@ -1597,15 +1597,19 @@ class TenutaTariffa {
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_1":
                         case "GARANZIE_AGGIUNTIVE_PACCHETTO_2":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Garanzie_Aggiuntive)
+                            cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
                             break
                         case "INCENDIO":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Incendio)
+                            cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
                             break
                         //AZ
                         case "FURTO":
                         //AVIVA
                         case "INCENDIO E FURTO":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Furto)
+                            cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
+
                             break
                         //AZ
                         case "KASKO PRIMO RISCHIO ASSOLUTO":
@@ -1617,6 +1621,7 @@ class TenutaTariffa {
                         //AZ e AVIVA
                         case "KASKO COLLISIONE":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
+                            cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
                             break
                         //AZ
                         case "AVENS":
@@ -1629,30 +1634,37 @@ class TenutaTariffa {
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA AGRICOLA":
                         case "EVENTI NATURALI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
+                            cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
                             break
                         //AVIVA
                         case "INFORTUNI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Infortuni)
+                            cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
                             break
                         //AVIVA
                         case "CRISTALLI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Cristalli)
+                            cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
                             break
                         //AVIVA
                         case "IMPREVISTI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Imprevisti)
+                            cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
                             break
                         //AVIVA
                         case "ASSISTENZA":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Assistenza)
+                            cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
                             break
                         //AVIVA
                         case "TUTELA GIUDIZIARIA":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Tutela_Giudiziaria)
+                            cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
                             break
                         //AZ
                         case "MACROLESIONI":
                             expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Macrolesioni)
+                            cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
                             break
                     }
                 })
