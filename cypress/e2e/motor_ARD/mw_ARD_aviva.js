@@ -68,7 +68,7 @@ let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
 let caseToExecute = []
 
-describe('AVIVA - ARD 20220901 : ', {
+describe('AVIVA - ARD : ', {
     retries: {
         runMode: 0,
         openMode: 0,
