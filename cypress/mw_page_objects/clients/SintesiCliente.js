@@ -211,7 +211,7 @@ class SintesiCliente {
             .find('div').contains("Ultra").parent('button[class*="active"]').should('be.visible') */
 
         const regex = new RegExp('\^' + tab + '\$');
-        cy.get('.fast-quote-card').find('app-ultra-parent-tabs')
+        cy.get('.fast-quote-card', { timeout: 100000 }).find('app-ultra-parent-tabs')
             .find('.nx-tab-label__content').contains(regex).click()
     }
 
