@@ -113,8 +113,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', options, function
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
 
-        this.skip() // Altrimenti Settare il proxy
-        // BurgerMenuClients.clickLink('Analisi dei bisogni', false)
+        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
+        BurgerMenuClients.clickLink('Analisi dei bisogni', false)
     });
 
     it('Verifica aggancio Censimento nuovo cliente', function () {
@@ -168,8 +168,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', options, function
         if (!keys.HOSPITAL_SCANNER)
             this.skip()
 
-        this.skip() // Altrimenti Settare il proxy
-        // BurgerMenuClients.clickLink('Hospital scanner', false)
+        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
+        BurgerMenuClients.clickLink('Hospital scanner', false)
     });
 
     it('Verifica aggancio Antiriciclaggio', function () {

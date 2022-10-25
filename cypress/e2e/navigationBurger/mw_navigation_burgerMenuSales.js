@@ -390,7 +390,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', options, function (
         if (Cypress.env('isAviva'))
             this.skip()
 
-        this.skip()
+        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
         BurgerMenuSales.clickLink('GED – Gestione Documentale', false)
     })
 
@@ -410,7 +410,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', options, function (
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Allianz Global Assistance - OAZIS', function () {
+    it('Verifica aggancio Allianz global assistance - OAZIS', function () {
         if (!keys.ALLIANZ_GLOBAL_ASSISTANCE_OAZIS)
             this.skip()
 
@@ -418,18 +418,18 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', options, function (
         BurgerMenuSales.clickLink('Allianz global assistance - OAZIS', false)
     })
 
-    it('Verifica aggancio Allianz Global Assistance - GLOBY', function () {
+    it('Verifica aggancio Allianz global assistance - GLOBY', function () {
         if (!keys.ALLIANZ_GLOBAL_ASSISTANCE_GLOBY)
             this.skip()
 
-        this.skip()
+        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
+        BurgerMenuSales.clickLink('Allianz global assistance - GLOBY', false)
     })
 
     it('Verifica aggancio Allianz Placement Platform', function () {
         if (!keys.ALLIANZ_PLACEMENT_PLATFORM)
             this.skip()
 
-        this.skip()
         BurgerMenuSales.clickLink('Allianz placement platform', false)
     })
 

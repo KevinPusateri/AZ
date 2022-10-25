@@ -127,7 +127,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
         if (!keys.X_ADVISOR)
             this.skip()
 
-        this.skip()
+        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
         BurgerMenuNumbers.clickLink('X - Advisor')
     })
 
