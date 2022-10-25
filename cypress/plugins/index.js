@@ -200,11 +200,11 @@ function mysqlFindLastPolizza(dbConfig, prodotto, annullamento = false) {
 
     let strAnnullamento = "0"
 
-    if(annullamento==true) {
+    if (annullamento == true) {
         strAnnullamento = "1"
     }
 
-    var query = "SELECT numero FROM da.polizza WHERE prodotto='"+ prodotto +"' and annullamento='" + strAnnullamento + "' ORDER BY dataEmissione DESC LIMIT 1"
+    var query = "SELECT numero FROM da.polizza WHERE prodotto='" + prodotto + "' and annullamento='" + strAnnullamento + "' ORDER BY dataEmissione DESC LIMIT 1"
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
@@ -407,7 +407,7 @@ module.exports = (on, config) => {
         SalvaPolizza({ dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente }) {
             return mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente)
         }
-    }); 
+    });
 
     //mysqlFindLastPolizza
     on("task", {
@@ -415,7 +415,7 @@ module.exports = (on, config) => {
             return mysqlFindLastPolizza(dbConfig, prodotto, annullamento)
         }
     });
-    
+
     //devono essere valorizzati
     on("task", {
         cliente() {
@@ -541,6 +541,11 @@ module.exports = (on, config) => {
     on('task', {
         log(message) {
             console.log(`    - ${message}`)
+            return null
+        },
+
+        warn(message) {
+            console.log("\x1b[33m%s\x1b[0m", `   - ${message}`);
             return null
         }
     })

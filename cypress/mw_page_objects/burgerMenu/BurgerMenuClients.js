@@ -159,10 +159,11 @@ class BurgerMenuClients extends Clients {
 
                 Common.canaleFromPopup()
                 cy.get('@Open')
-                cy.wait(15000)
+                cy.wait(10000)
                 cy.get('app-home').should('exist').and('be.visible').and('contain.text', 'CERCA INTERVENTO')
-                cy.go('back')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.wait(10000)
+                cy.go('back')
                 break;
             case LinksBurgerMenu.CONSENSI_EMAIL_SUI_CONTRATTI:
                 Common.canaleFromPopup()

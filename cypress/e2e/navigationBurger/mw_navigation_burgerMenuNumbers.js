@@ -17,7 +17,12 @@ let insertedId
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 var url = Common.getUrlBeforeEach() + 'numbers/business-lines'
-
+let options = {
+    retries: {
+        runMode: 0,
+        openMode: 0,
+    }
+}
 //#endregion
 
 let keys = {
@@ -82,7 +87,7 @@ after(function () {
     //#endregion
 
 })
-describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
+describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function () {
 
     it('Verifica i link da Burger Menu', function () {
         BurgerMenuNumbers.checkExistLinks(keys)
@@ -111,8 +116,13 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             if (!currentHostName.includes('SM')) {
-
-                BurgerMenuNumbers.clickLink('X - Advisor')
+                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
+                cy.task('warn', 'Eseguire questo Test in Locale con Proxy')
+                // BurgerMenuNumbers.clickLink('X - Advisor')
+            } else {
+                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
+                cy.task('warn', 'Eseguire questo Test in Locale con Proxy')
+                this.skip()
             }
         })
     })

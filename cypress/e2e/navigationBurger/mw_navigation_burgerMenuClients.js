@@ -20,6 +20,12 @@ let insertedId
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 var url = Common.getUrlBeforeEach() + 'clients/'
+let options = {
+    retries: {
+        runMode: 0,
+        openMode: 0,
+    }
+}
 //#endregion
 
 let keys = {
@@ -82,24 +88,30 @@ after(function () {
 
 })
 
-describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
+describe('Matrix Web : Navigazioni da Burger Menu in Clients',options, function () {
 
     it('Verifica i link da Burger Menu', function () {
 
         BurgerMenuClients.checkExistLinks(keys)
     });
 
-    it.only('Verifica aggancio Analisi dei bisogni', function () {
+    it('Verifica aggancio Analisi dei bisogni', function () {
         // this.skip()
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-        // cy.task('getHostName').then(hostName => {
-        //     let currentHostName = hostName
-        //     cy.log(currentHostName)
-        //     if (!currentHostName.includes('SM')) {
-        BurgerMenuClients.clickLink('Analisi dei bisogni', false)
-        //     }
-        // })
+        cy.task('getHostName').then(hostName => {
+            let currentHostName = hostName
+            cy.log(currentHostName)
+            if (!currentHostName.includes('SM')) {
+                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
+                cy.task('warn', 'Eseguire questo Test in Locale con Proxy')
+                // BurgerMenuClients.clickLink('Analisi dei bisogni', false)
+            } else {
+                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
+                cy.task('warn', 'Eseguire questo Test in Locale con Proxy')
+                this.skip()
+            }
+        })
     });
 
     it('Verifica aggancio Censimento nuovo cliente', function () {
@@ -149,10 +161,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         BurgerMenuClients.backToClients()
     });
 
-    //! Altro dominio
     it('Verifica aggancio Hospital scanner', function () {
-        this.skip()
-
         if (!keys.HOSPITAL_SCANNER)
             this.skip()
 
