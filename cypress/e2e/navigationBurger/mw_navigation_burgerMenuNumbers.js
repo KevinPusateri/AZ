@@ -117,12 +117,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
             let currentHostName = hostName
             if (!currentHostName.includes('SM')) {
                 //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warn', 'Eseguire questo Test in Locale con Proxy')
+                cy.task('warn', 'WARN --> Eseguire questo Test in Locale con Proxy')
                 // BurgerMenuNumbers.clickLink('X - Advisor')
             } else {
                 //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warn', 'Eseguire questo Test in Locale con Proxy')
-                this.skip()
+                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale con Proxy')
             }
         })
     })

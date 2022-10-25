@@ -104,12 +104,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients',options, function 
             cy.log(currentHostName)
             if (!currentHostName.includes('SM')) {
                 //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warn', 'Eseguire questo Test in Locale con Proxy')
+                cy.task('warn', 'WARN --> Eseguire questo Test in Locale con Proxy')
                 // BurgerMenuClients.clickLink('Analisi dei bisogni', false)
             } else {
                 //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warn', 'Eseguire questo Test in Locale con Proxy')
-                this.skip()
+                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale con Proxy')
             }
         })
     });
