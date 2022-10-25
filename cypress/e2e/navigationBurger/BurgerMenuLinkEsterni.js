@@ -19,6 +19,12 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+let options = {
+    retries: {
+        runMode: 0,
+        openMode: 0,
+    }
+}
 var urlClients = Common.getUrlBeforeEach() + 'clients/'
 var urlSales = Common.getUrlBeforeEach() + 'sales/'
 var urlNumbers = Common.getUrlBeforeEach() + 'numbers/business-lines'
@@ -27,7 +33,8 @@ var urlNumbers = Common.getUrlBeforeEach() + 'numbers/business-lines'
 let keys = {
     ALLIANZ_GLOBAL_ASSISTANCE_OAZIS: true,
     ALLIANZ_GLOBAL_ASSISTANCE_GLOBY: true,
-    X_ADVISOR: true
+    X_ADVISOR: true,
+    HOSPITAL_SCANNER: true
 }
 
 let keyDigitalMe = {
@@ -35,6 +42,7 @@ let keyDigitalMe = {
 }
 before(() => {
 
+    expect(Cypress.browser.name).to.contain('chrome')
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
@@ -42,6 +50,7 @@ before(() => {
             cy.filterProfile(profiling, 'PO_PULSANTE_AGA').then(profiled => { keys.ALLIANZ_GLOBAL_ASSISTANCE_OAZIS = profiled })
             cy.filterProfile(profiling, 'PO_PULSANTE_AGA').then(profiled => { keys.ALLIANZ_GLOBAL_ASSISTANCE_GLOBY = profiled })
             cy.filterProfile(profiling, 'COMMON_CRYSTAL').then(profiled => { keys.X_ADVISOR = profiled })
+            cy.filterProfile(profiling, 'HOSPITAL_SCANNER').then(profiled => { keys.HOSPITAL_SCANNER = profiled })
 
         })
     })
@@ -67,7 +76,7 @@ after(function () {
 //! export HTTP_PROXY=http://it000-surf.zone2.proxy.allianz:8080
 //! export NO_PROXY=ageallianz.it,.servizi.allianzit,.azi.allianzit
 //! npm run cypress:open
-describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
+describe('Matrix Web : Navigazioni da Burger Menu in Clients', options, function () {
 
     it('Analisi dei bisogni', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
@@ -76,6 +85,15 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         cy.visit(urlClients)
         BurgerMenuClients.clickBurgerMenu()
         BurgerMenuClients.clickLink('Analisi dei bisogni', false)
+    });
+
+    it('Hospital scanner', function () {
+        if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
+            this.skip()
+
+        cy.visit(urlClients)
+        BurgerMenuClients.clickBurgerMenu()
+        BurgerMenuClients.clickLink('Hospital scanner', false)
     });
 
     it('Verifica aggancio GED – Gestione Documentale', function () {

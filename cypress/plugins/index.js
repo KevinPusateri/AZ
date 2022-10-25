@@ -545,12 +545,12 @@ module.exports = (on, config) => {
         },
 
         warn(message) {
-            console.log("\x1b[33m%s\x1b[0m", `   - ${message}`);
+            console.log("\x1b[33m%s\x1b[0m", `     - ${message}`);
             return null
         },
 
         warnTFS(message) {
-            console.log(`   - ${message}`);
+            console.log(`      - ${message}`);
             return null
         }
     })

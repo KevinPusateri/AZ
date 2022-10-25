@@ -23,6 +23,7 @@ let options = {
         openMode: 0,
     }
 }
+const linksBurger = BurgerMenuNumbers.getLinks()
 //#endregion
 
 let keys = {
@@ -70,6 +71,18 @@ beforeEach(() => {
 })
 
 afterEach(function () {
+    cy.task('getHostName').then(hostName => {
+        //! Eseguire i test su vedi file BurgerMenuLinkEsterni.js
+        //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
+        if (this.currentTest.title.includes(linksBurger.X_ADVISOR)) {
+            if (!hostName.includes('SM')) {
+                cy.task('warn', 'WARN --> Eseguire questo Test in Locale settando il Proxy')
+            } else {
+                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale settando il Proxy')
+            }
+        }
+    })
+
     if (this.currentTest.state !== 'passed') {
         cy.ignoreRequest()
         cy.visit(url)
@@ -113,17 +126,9 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio X - Advisor', function () {
         if (!keys.X_ADVISOR)
             this.skip()
-        cy.task('getHostName').then(hostName => {
-            let currentHostName = hostName
-            if (!currentHostName.includes('SM')) {
-                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warn', 'WARN --> Eseguire questo Test in Locale con Proxy')
-                // BurgerMenuNumbers.clickLink('X - Advisor')
-            } else {
-                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale con Proxy')
-            }
-        })
+
+        this.skip()
+        BurgerMenuNumbers.clickLink('X - Advisor')
     })
 
     it('Verifica aggancio Incentivazione', function () {

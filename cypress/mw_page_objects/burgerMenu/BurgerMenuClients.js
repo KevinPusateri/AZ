@@ -48,6 +48,9 @@ const LinksBurgerMenu = {
 
 class BurgerMenuClients extends Clients {
 
+    static getLinks(){
+        return LinksBurgerMenu
+    }
     static clickBurgerMenu() {
         cy.get('lib-burger-icon').click({ force: true })
     }

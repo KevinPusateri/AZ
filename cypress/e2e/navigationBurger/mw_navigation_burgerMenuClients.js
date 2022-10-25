@@ -26,6 +26,7 @@ let options = {
         openMode: 0,
     }
 }
+const linksBurger = BurgerMenuClients.getLinks()
 //#endregion
 
 let keys = {
@@ -70,6 +71,19 @@ beforeEach(() => {
 })
 
 afterEach(function () {
+    cy.task('getHostName').then(hostName => {
+        //! Eseguire i test su vedi file BurgerMenuLinkEsterni.js
+        //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
+        if (this.currentTest.title.includes(linksBurger.ANALISI_DEI_BISOGNI) ||
+            this.currentTest.title.includes(linksBurger.HOSPITAL_SCANNER)) {
+            if (!hostName.includes('SM')) {
+                cy.task('warn', 'WARN --> Eseguire questo Test in Locale settando il Proxy')
+            } else {
+                cy.task('warnTFS', 'WARN --> Eseguire questo Test in settando il Proxy')
+            }
+        }
+    })
+
     if (this.currentTest.state !== 'passed') {
         cy.ignoreRequest()
         cy.visit(url)
@@ -88,7 +102,7 @@ after(function () {
 
 })
 
-describe('Matrix Web : Navigazioni da Burger Menu in Clients',options, function () {
+describe('Matrix Web : Navigazioni da Burger Menu in Clients', options, function () {
 
     it('Verifica i link da Burger Menu', function () {
 
@@ -96,21 +110,11 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients',options, function 
     });
 
     it('Verifica aggancio Analisi dei bisogni', function () {
-        // this.skip()
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-        cy.task('getHostName').then(hostName => {
-            let currentHostName = hostName
-            cy.log(currentHostName)
-            if (!currentHostName.includes('SM')) {
-                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warn', 'WARN --> Eseguire questo Test in Locale con Proxy')
-                // BurgerMenuClients.clickLink('Analisi dei bisogni', false)
-            } else {
-                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale con Proxy')
-            }
-        })
+
+        this.skip() // Altrimenti Settare il proxy
+        // BurgerMenuClients.clickLink('Analisi dei bisogni', false)
     });
 
     it('Verifica aggancio Censimento nuovo cliente', function () {
@@ -164,7 +168,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients',options, function 
         if (!keys.HOSPITAL_SCANNER)
             this.skip()
 
-        BurgerMenuClients.clickLink('Hospital scanner', false)
+        this.skip() // Altrimenti Settare il proxy
+        // BurgerMenuClients.clickLink('Hospital scanner', false)
     });
 
     it('Verifica aggancio Antiriciclaggio', function () {
