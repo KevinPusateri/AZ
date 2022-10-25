@@ -383,7 +383,6 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', options, function (
             } else {
                 //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
                 cy.task('warn', 'Eseguire questo Test in Locale con Proxy')
-                this.skip()
             }
         })
     })
