@@ -370,7 +370,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', options, function (
         BurgerMenuSales.backToSales()
     })
 
-    it.only('Verifica aggancio GED – Gestione Documentale', function () {
+    it('Verifica aggancio GED – Gestione Documentale', function () {
         if (Cypress.env('isAviva'))
             this.skip()
 
