@@ -204,7 +204,28 @@ function mysqlFindLastPolizza(dbConfig, prodotto, annullamento = false) {
         strAnnullamento = "1"
     }
 
-    var query = "SELECT numero FROM da.polizza WHERE prodotto='"+ prodotto +"' and annullamento='" + strAnnullamento + "' ORDER BY dataEmissione DESC LIMIT 1"
+    var query = "SELECT * FROM da.polizza WHERE prodotto='"+ prodotto +"' and annullamento='" + strAnnullamento + "' ORDER BY dataEmissione DESC LIMIT 1"
+
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error) {
+                console.error(error)
+                reject(error)
+            } else {
+                connection.end()
+                return resolve(results)
+            }
+        })
+    })
+}
+
+function mysqlRegistraAnnullamento(dbConfig, id, numeroPolizza, prodotto) {
+    const connection = mysql.createConnection(dbConfig)
+    connection.connect((err) => {
+        if (err) throw err;
+    })
+
+    var query = "UPDATE da.polizza SET annullamento='1' WHERE id='"+ id +"' and numero ='"+ numeroPolizza +"' and prodotto='"+ prodotto +"'"
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
@@ -413,6 +434,12 @@ module.exports = (on, config) => {
     on("task", {
         findLastPolizza({ dbConfig, prodotto, annullamento }) {
             return mysqlFindLastPolizza(dbConfig, prodotto, annullamento)
+        }
+    });
+
+    on("task", {
+        registraAnnullamento({ dbConfig, id, numeroPolizza, prodotto }) {
+            return mysqlRegistraAnnullamento(dbConfig, id, numeroPolizza, prodotto)
         }
     });
     

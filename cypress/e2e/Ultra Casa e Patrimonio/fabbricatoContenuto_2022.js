@@ -57,7 +57,8 @@ before(() => {
         LoginPage.logInMWAdvanced({
             "agentId": "ARALONGO7",
             "agency": "010375000"
-            })
+        }
+        )
     })
 })
 
@@ -91,17 +92,6 @@ after(function () {
 
 describe("FABBRICATO E CONTENUTO 2022", () => {
     it("Ricerca cliente", () => {
-        
-        cy.findLastPolizza(dbPolizze, "Ultra Casa e Patrimonio 2022", false).then((result) => {
-            //expect(result[0].rowCount).to.equal(1)
-            lastPolizza = result[0].numero
-            cy.log("lastPolizza 1: " + lastPolizza) //JSON.stringify(result))
-        })
-        cy.log("lastPolizza 2: " + lastPolizza)
-
-        //cy.log("ultimo contratto: " + cy.findLastPolizza(dbPolizze, "Ultra Casa e Patrimonio 2022", false)[0])
-        cy.pause()
-
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
@@ -119,7 +109,6 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
     })
 
     it("Selezione ambiti FastQuote", () => {
-        cy.log("lastPolizza 3: " + lastPolizza)
         SintesiCliente.FQ_tabUltra('Casa e Patrimonio 2022')
 
         for (var i = 0; i < ambiti.length; i++) {
@@ -136,7 +125,6 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
     })
 
     it("Verifica selezione ambiti su home Ultra Casa e Patrimonio", () => {
-        cy.pause()
         Dashboard2022.verificaAmbiti(ambiti)
     })
 
@@ -238,7 +226,7 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
         Incasso.Chiudi()
     })
 
-    it("Fine", () => {
+    /* it("Fine", () => {
         cy.pause()
-    })
+    }) */
 })

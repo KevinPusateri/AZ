@@ -1566,6 +1566,14 @@ Cypress.Commands.add('findLastPolizza', (dbConfig, prodotto, annullamento) => {
     })
 })
 
+//registra l'annullamento nel database
+Cypress.Commands.add('registraAnnullamento', (dbConfig, id, numeroPolizza, prodotto) => {  
+  cy.task('registraAnnullamento', { dbConfig: dbConfig, id: id, numeroPolizza: numeroPolizza, prodotto: prodotto})
+    .then((result) => {
+      return result
+    })
+})
+
 
 //#region PDF Parse
 Cypress.Commands.add('parsePdf', () => {
