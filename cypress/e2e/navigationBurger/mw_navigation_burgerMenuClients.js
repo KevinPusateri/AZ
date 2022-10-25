@@ -20,6 +20,12 @@ let insertedId
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
 var url = Common.getUrlBeforeEach() + 'clients/'
+let options = {
+    retries: {
+        runMode: 0,
+        openMode: 0,
+    }
+}
 //#endregion
 
 let keys = {
@@ -82,7 +88,7 @@ after(function () {
 
 })
 
-describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
+describe('Matrix Web : Navigazioni da Burger Menu in Clients',options, function () {
 
     it('Verifica i link da Burger Menu', function () {
 
@@ -90,14 +96,19 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
     });
 
     it('Verifica aggancio Analisi dei bisogni', function () {
-        this.skip()
+        // this.skip()
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
         cy.task('getHostName').then(hostName => {
             let currentHostName = hostName
             cy.log(currentHostName)
             if (!currentHostName.includes('SM')) {
-                BurgerMenuClients.clickLink('Analisi dei bisogni', false)
+                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
+                cy.task('warn', 'WARN --> Eseguire questo Test in Locale con Proxy')
+                // BurgerMenuClients.clickLink('Analisi dei bisogni', false)
+            } else {
+                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
+                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale con Proxy')
             }
         })
     });
@@ -106,13 +117,13 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         if (!keys.CENSIMENTO_NUOVO_CLIENTE)
             this.skip()
 
-        BurgerMenuClients.clickLink('Censimento nuovo cliente',false)
+        BurgerMenuClients.clickLink('Censimento nuovo cliente', false)
         BurgerMenuClients.backToClients()
     });
 
     it('Verifica aggancio Digital Me', function () {
 
-        BurgerMenuClients.clickLink('Digital Me',false)
+        BurgerMenuClients.clickLink('Digital Me', false)
         Clients.checkDigitalMe(keyDigitalMe)
         BurgerMenuClients.backToClients()
     });
@@ -121,7 +132,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         if (!keys.PANNELLO_ANOMALIE)
             this.skip()
 
-        BurgerMenuClients.clickLink('Pannello anomalie',false)
+        BurgerMenuClients.clickLink('Pannello anomalie', false)
         BurgerMenuClients.backToClients()
     });
 
@@ -129,7 +140,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         if (!keys.CLIENTI_DUPLICATI)
             this.skip()
 
-        BurgerMenuClients.clickLink('Clienti duplicati',false)
+        BurgerMenuClients.clickLink('Clienti duplicati', false)
         BurgerMenuClients.backToClients()
     });
 
@@ -137,7 +148,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         if (!keys.CANCELLAZIONE_CLIENTI)
             this.skip()
 
-        BurgerMenuClients.clickLink('Cancellazione Clienti',false)
+        BurgerMenuClients.clickLink('Cancellazione Clienti', false)
         BurgerMenuClients.backToClients()
     });
 
@@ -145,32 +156,29 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         if (!keys.CANCELLAZIONE_CLIENTI_PER_FONTE)
             this.skip()
 
-        BurgerMenuClients.clickLink('Cancellazione Clienti per fonte',false)
+        BurgerMenuClients.clickLink('Cancellazione Clienti per fonte', false)
         BurgerMenuClients.backToClients()
     });
 
-    //! Altro dominio
     it('Verifica aggancio Hospital scanner', function () {
-        this.skip()
-
         if (!keys.HOSPITAL_SCANNER)
             this.skip()
 
-        BurgerMenuClients.clickLink('Hospital scanner',false)
+        BurgerMenuClients.clickLink('Hospital scanner', false)
     });
 
     it('Verifica aggancio Antiriciclaggio', function () {
         if (!keys.ANTIRICICLAGGIO)
             this.skip()
 
-        BurgerMenuClients.clickLink('Antiriciclaggio',false)
+        BurgerMenuClients.clickLink('Antiriciclaggio', false)
         BurgerMenuClients.backToClients()
     });
     it('Verifica aggancio Gestione fonte principale', function () {
         if (!keys.GESTIONE_FONTE_PRINCIPALE)
             this.skip()
 
-        BurgerMenuClients.clickLink('Gestione fonte principale',false)
+        BurgerMenuClients.clickLink('Gestione fonte principale', false)
         BurgerMenuClients.backToClients()
     });
 
@@ -178,7 +186,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
         if (!keys.CONSENSI_EMAIL_SUI_CONTRATTI)
             this.skip()
 
-        BurgerMenuClients.clickLink('Consensi email sui contratti',false)
+        BurgerMenuClients.clickLink('Consensi email sui contratti', false)
         BurgerMenuClients.backToClients()
     });
 

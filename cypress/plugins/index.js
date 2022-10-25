@@ -200,7 +200,7 @@ function mysqlFindLastPolizza(dbConfig, prodotto, annullamento = false) {
 
     let strAnnullamento = "0"
 
-    if(annullamento==true) {
+    if (annullamento == true) {
         strAnnullamento = "1"
     }
 
@@ -428,7 +428,7 @@ module.exports = (on, config) => {
         SalvaPolizza({ dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente }) {
             return mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente)
         }
-    }); 
+    });
 
     //mysqlFindLastPolizza
     on("task", {
@@ -568,6 +568,16 @@ module.exports = (on, config) => {
     on('task', {
         log(message) {
             console.log(`    - ${message}`)
+            return null
+        },
+
+        warn(message) {
+            console.log("\x1b[33m%s\x1b[0m", `   - ${message}`);
+            return null
+        },
+
+        warnTFS(message) {
+            console.log(`   - ${message}`);
             return null
         }
     })
