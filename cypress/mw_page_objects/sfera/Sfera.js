@@ -4044,7 +4044,7 @@ class Sfera {
      */
     static checkRigaEvidenziata(selectedRiga) {
         cy.wrap(selectedRiga).should('have.class', 'nx-table-row nx-table-row--selectable ng-star-inserted selectedRow')
-        cy.wrap(selectedRiga).should('have.css', 'border-bottom', '1px solid rgb(0, 122, 179)')
+        cy.wrap(selectedRiga).should('have.css', 'border-bottom-color', 'rgb(0, 122, 179)')
         cy.wrap(selectedRiga).within(() => {
             this.checkBoxControl().click({ force: true })
         })
