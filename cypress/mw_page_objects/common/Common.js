@@ -354,7 +354,7 @@ class Common {
      * @example Common.findByIdOnIframe('table[role="grid"]:visible > tbody')
      */
     static findByIdOnIframe(path) {
-        return getIframe().find(path, { timeout: 5000 }).should('exist').scrollIntoView();
+        return getIframe().find(path, { timeout: 5000 }).should('exist')
     }
 
     /**
