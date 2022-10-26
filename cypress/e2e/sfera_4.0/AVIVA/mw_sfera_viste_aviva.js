@@ -76,14 +76,14 @@ if (!Cypress.env('isSecondWindow'))
 
             it('Selezionare due colonne ed inserire due diversi filtri', options, function () {
                 Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
-                Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
+                Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_2349)
 
                 Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
-                Sfera.checkValoreInColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
+                Sfera.checkValoreInColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_2349)
             })
 
             it('Salva vista', options, function () {
-                Sfera.salvaVistaPersonalizzata('Automatici_1960_31')
+                Sfera.salvaVistaPersonalizzata('Automatici_2349_31')
                 //? Effettuiamo un RESET della view
                 Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
                 Sfera.espandiPannello()
@@ -91,11 +91,11 @@ if (!Cypress.env('isSecondWindow'))
             })
 
             it('Selezoinare vista Automatici_EM_31 e verificare che in estrazione vengano applicati e mantenuti i filtri salvati precedentemente', options, function () {
-                Sfera.selezionaVista('Automatici_1960_31')
+                Sfera.selezionaVista('Automatici_2349_31')
                 Sfera.espandiPannello()
                 Sfera.estrai()
                 Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
-                Sfera.eliminaVista('Automatici_1960_31')
+                Sfera.eliminaVista('Automatici_2349_31')
             })
         })
 
@@ -112,10 +112,10 @@ if (!Cypress.env('isSecondWindow'))
                 Sfera.selectRandomCluster()
                 Sfera.estrai()
                 Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
-                Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
+                Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_2349)
 
                 Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
-                Sfera.checkValoreInColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
+                Sfera.checkValoreInColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_2349)
             })
 
             it('Salva vista', options, function () {
