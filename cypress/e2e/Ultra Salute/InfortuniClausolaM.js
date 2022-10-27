@@ -13,6 +13,7 @@ import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
 
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+import PersonaGiuridica from "../../mw_page_objects/common/PersonaGiuridica"
 
 import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -45,8 +46,8 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let personaGiuridica = "Sinopoli"
-let personaFisica = PersonaFisica.GalileoGalilei()
+let personaGiuridica = PersonaGiuridica.BmwBank()
+let personaFisica = PersonaFisica.PieroAngela()
 var frazionamento = "trimestrale"
 var copertura = "extra-professionale"
 var ambiti = [
@@ -96,7 +97,7 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
-      cy.get('input[name="main-search-input"]').type(personaGiuridica).type('{enter}')
+      cy.get('input[name="main-search-input"]').type(personaGiuridica.denominazione).type('{enter}')
       cy.get('lib-client-item').first()
         .find('.name').trigger('mouseover').click()
     }).then(($body) => {
@@ -104,7 +105,7 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
       cy.log('permessi: ' + check)
       if (check) {
-        cy.get('input[name="main-search-input"]').type(personaGiuridica).type('{enter}')
+        cy.get('input[name="main-search-input"]').type(personaGiuridica.denominazione).type('{enter}')
         cy.get('lib-client-item').first().next().click()
       }
     })
@@ -118,7 +119,6 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
     Dashboard.selezionaAmbiti(ambiti)
-    cy.pause()
   })
 
   it("Cambia Soluzioni", () => {

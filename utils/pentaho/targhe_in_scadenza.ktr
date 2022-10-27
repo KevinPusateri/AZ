@@ -6,6 +6,7 @@
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
     </parameters>
@@ -547,7 +548,7 @@
   </connection>
   <order>
     <hop>
-      <from>Retrive Targhe AUTOVETTURE from DB2 PROD</from>
+      <from>Retrive Targhe AUTOVETTURE G% LIKE from DB2 PROD</from>
       <to>Table output</to>
       <enabled>Y</enabled>
     </hop>
@@ -557,7 +558,7 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Retrive Targhe AUTOVETTURE OTTOBRE 2022 from DB2 PROD 2</from>
+      <from>Retrive Targhe AUTOVETTURE NOVEMBRE 2022 from DB2 PROD 2</from>
       <to>Table output</to>
       <enabled>Y</enabled>
     </hop>
@@ -601,7 +602,7 @@
     </GUI>
   </step>
   <step>
-    <name>Retrive Targhe AUTOVETTURE OTTOBRE 2022 from DB2 PROD 2</name>
+    <name>Retrive Targhe AUTOVETTURE NOVEMBRE 2022 from DB2 PROD 2</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -622,7 +623,7 @@ TXT_CODVEI LIKE 'A%'AND
 date(tms_ins)=CURRENT DATE AND
 cod_utente_canale&lt;&gt;'IVASS' AND
 length(RTRIM(TXT_TARGA_TELA))=7 AND
-DAT_SCADENZA>='2023-10-01' AND DAT_SCADENZA&lt;='2023-10-31'
+DAT_SCADENZA>='2023-11-01' AND DAT_SCADENZA&lt;='2023-11-30'
 ORDER BY DAT_DECORRENZA DESC
 fetch first 10 rows ONLY
 WITH UR</sql>
@@ -639,7 +640,7 @@ WITH UR</sql>
         <name>DAT_DECORRENZA</name>
         <length>-1</length>
         <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE SETTEMBRE 2022 from DB2 PROD 2</origin>
+        <origin>Retrive Targhe AUTOVETTURE OTTOBRE 2022 from DB2 PROD 2</origin>
         <comments>DAT_DECORRENZA</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -662,7 +663,7 @@ WITH UR</sql>
         <name>TXT_TARGA_TELA</name>
         <length>20</length>
         <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE SETTEMBRE 2022 from DB2 PROD 2</origin>
+        <origin>Retrive Targhe AUTOVETTURE OTTOBRE 2022 from DB2 PROD 2</origin>
         <comments>TXT_TARGA_TELA</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -685,7 +686,7 @@ WITH UR</sql>
         <name>TXT_VEICOLO</name>
         <length>70</length>
         <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE SETTEMBRE 2022 from DB2 PROD 2</origin>
+        <origin>Retrive Targhe AUTOVETTURE OTTOBRE 2022 from DB2 PROD 2</origin>
         <comments>TXT_VEICOLO</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -708,7 +709,7 @@ WITH UR</sql>
         <name>CASO_ASSUNTIVO</name>
         <length>1</length>
         <precision>-1</precision>
-        <origin>Retrive Targhe AUTOVETTURE SETTEMBRE 2022 from DB2 PROD 2</origin>
+        <origin>Retrive Targhe AUTOVETTURE OTTOBRE 2022 from DB2 PROD 2</origin>
         <comments>CASO_ASSUNTIVO</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -741,7 +742,7 @@ WITH UR</sql>
     </GUI>
   </step>
   <step>
-    <name>Retrive Targhe AUTOVETTURE from DB2 PROD</name>
+    <name>Retrive Targhe AUTOVETTURE G% LIKE from DB2 PROD</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>

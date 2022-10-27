@@ -46,7 +46,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let personaGiuridica = PersonaGiuridica.Sinopoli()
+let personaGiuridica = PersonaGiuridica.BmwBank()
 //let personaFisica = PersonaFisica.GalileoGalilei()
 var frazionamento = "trimestrale"
 var ambiti = [
@@ -187,7 +187,6 @@ describe("Polizza Responsabilità Civile Impresa", () => {
   })
 
   it("Esito incasso", () => {
-    cy.pause()
     Incasso.EsitoIncasso()
     Incasso.Chiudi()
   })

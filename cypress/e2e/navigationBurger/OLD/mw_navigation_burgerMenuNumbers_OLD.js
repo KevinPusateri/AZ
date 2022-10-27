@@ -2,10 +2,10 @@
  * @author Kevin Pusateri <kevin.pusateri@allianz.it>
  */
 
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import BurgerMenuNumbers from "../../mw_page_objects/burgerMenu/BurgerMenuNumbers"
-import Common from "../../mw_page_objects/common/Common"
+import Common from "../../../mw_page_objects/common/Common"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import BurgerMenuNumbers from "../../../mw_page_objects/burgerMenu/BurgerMenuNumbers"
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('.')[0].toUpperCase()
@@ -16,14 +16,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-var url = Common.getUrlBeforeEach() + 'numbers/business-lines'
-let options = {
-    retries: {
-        runMode: 0,
-        openMode: 0,
-    }
-}
-const linksBurger = BurgerMenuNumbers.getLinks()
+
 //#endregion
 
 let keys = {
@@ -59,35 +52,12 @@ before(() => {
         LoginPage.logInMWAdvanced()
         BurgerMenuNumbers.getProfiling(data.tutf, keys)
     })
-
-    TopBar.clickNumbers()
 })
 
 
 beforeEach(() => {
     cy.preserveCookies()
-    cy.ignoreRequest()
-    BurgerMenuNumbers.clickBurgerMenu()
-})
-
-afterEach(function () {
-    cy.task('getHostName').then(hostName => {
-        //! Eseguire i test su vedi file BurgerMenuLinkEsterni.js
-        //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-        if (this.currentTest.title.includes(linksBurger.X_ADVISOR)) {
-            if (!hostName.includes('SM')) {
-                cy.task('warn', 'WARN --> Eseguire questo Test in Locale settando il Proxy')
-            } else {
-                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale settando il Proxy')
-            }
-        }
-    })
-
-    if (this.currentTest.state !== 'passed') {
-        cy.ignoreRequest()
-        cy.visit(url)
-        cy.wait(3000)
-    }
+    Common.visitUrlOnEnv()
 })
 
 after(function () {
@@ -100,16 +70,17 @@ after(function () {
     //#endregion
 
 })
-describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function () {
+describe('Matrix Web : Navigazioni da Burger Menu in Numbers', function () {
 
     it('Verifica i link da Burger Menu', function () {
+        TopBar.clickNumbers()
         BurgerMenuNumbers.checkExistLinks(keys)
     })
 
     it('Verifica aggancio Monitoraggio Carico', function () {
         if (!keys.MONITORAGGIO_CARICO)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Monitoraggio Carico')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -117,7 +88,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Monitoraggio Carico per Fonte', function () {
         if (!keys.MONITORAGGIO_CARICO_FONTE)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Monitoraggio Carico per Fonte')
         BurgerMenuNumbers.backToNumbers()
 
@@ -126,15 +97,19 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio X - Advisor', function () {
         if (!keys.X_ADVISOR)
             this.skip()
-
-        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
-        BurgerMenuNumbers.clickLink('X - Advisor')
+        cy.task('getHostName').then(hostName => {
+            let currentHostName = hostName
+            if (!currentHostName.includes('SM')) {
+                TopBar.clickNumbers()
+                BurgerMenuNumbers.clickLink('X - Advisor')
+            }
+        })
     })
 
     it('Verifica aggancio Incentivazione', function () {
         if (!keys.INCENTIVAZIONE)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Incentivazione')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -142,7 +117,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Incentivazione Recruiting', function () {
         if (!keys.INCENTIVAZIONE_RECRUITING)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Incentivazione Recruiting')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -150,7 +125,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Andamenti Tecnici', function () {
         if (!keys.ANDAMENTI_TECNICI)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Andamenti Tecnici')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -158,7 +133,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Estrazioni Avanzate', function () {
         if (!keys.ESTRAZIONI_AVANZATE)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Estrazioni Avanzate')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -166,7 +141,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Scarico Dati', function () {
         if (!keys.SCARICO_DATI)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Scarico Dati')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -174,7 +149,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Indici Digitali', function () {
         if (!keys.INDICI_DIGITALI)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Indici Digitali')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -182,7 +157,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio New Business Danni', function () {
         if (!keys.NEW_BUSINESS_DANNI)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('New Business Danni')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -190,7 +165,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio New Business Ultra Casa e Patrimonio 2022', function () {
         if (!keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO_2022)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('New Business Ultra Casa e Patrimonio 2022')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -198,7 +173,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio New Business Ultra Casa e Patrimonio', function () {
         if (!keys.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('New Business Ultra Casa e Patrimonio')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -206,7 +181,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio New Business Ultra Salute', function () {
         if (!keys.NEW_BUSINESS_ULTRA_SALUTE)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('New Business Ultra Salute')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -214,7 +189,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio New Business Ultra Impresa', function () {
         if (!keys.NEW_BUSINESS_ULTRA_IMPRESA)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('New Business Ultra Impresa')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -222,7 +197,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio New Business Vita', function () {
         if (!keys.NEW_BUSINESS_VITA)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('New Business Vita')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -230,7 +205,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio New Business Allianz1', function () {
         if (!keys.NEW_BUSINESS_ALLIANZ1)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('New Business Allianz1')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -238,7 +213,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Monitoraggio PTF Danni', function () {
         if (!keys.MONITORAGGIO_PTF_DANNI)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Monitoraggio PTF Danni')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -246,7 +221,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Monitoraggio Riserve Vita', function () {
         if (!keys.MONITORAGGIO_RISERVE_VITA)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Monitoraggio Riserve Vita')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -254,7 +229,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Retention Motor', function () {
         if (!keys.RETENTION_MOTOR)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Retention Motor')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -262,7 +237,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Retention Rami Vari', function () {
         if (!keys.RETENTION_RAMI_VARI)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Retention Rami Vari')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -270,7 +245,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Monitoraggio Andamento Premi', function () {
         if (!keys.MONITORAGGIO_ANDAMENTO_PREMI)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Monitoraggio Andamento Premi')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -278,7 +253,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Monitoraggio Ricavi d\'Agenzia', function () {
         if (!keys.MONITORAGGIO_RICAVI_AGENZIA)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Monitoraggio Ricavi d\'Agenzia')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -286,7 +261,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Capitale Vita Scadenza', function () {
         if (!keys.CAPITALE_VITA_SCADENZA)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Capitale Vita Scadenza')
         BurgerMenuNumbers.backToNumbers()
     })
@@ -294,7 +269,7 @@ describe('Matrix Web : Navigazioni da Burger Menu in Numbers', options, function
     it('Verifica aggancio Monitoraggio Fonti', function () {
         if (!keys.MONITORAGGIO_FONTI)
             this.skip()
-
+        TopBar.clickNumbers()
         BurgerMenuNumbers.clickLink('Monitoraggio Fonti')
         BurgerMenuNumbers.backToNumbers()
     })

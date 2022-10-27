@@ -73,7 +73,7 @@ if (!Cypress.env('isSecondWindow'))
 
         it('Selezionare un cluster e Verifica che ci siano 50 righe post selezione cluster', options, function () {
             Sfera.espandiPannello()
-            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.IN_MORA)
+            Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.FUORI_MORA)
             Sfera.estrai()
             Sfera.checkRisultatiPaginaRighe('50', false)
         })

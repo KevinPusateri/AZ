@@ -168,6 +168,77 @@ function retriveTarghe(dbConfig) {
         })
     })
 }
+
+//aggiunto da Elio Cossu 17/10/2022
+function mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente) {
+    const connection = mysql.createConnection(dbConfig)
+
+    connection.connect((err) => {
+        if (err) throw err;
+    })
+
+    var query = `INSERT INTO polizza (numero, cliente, dataEmissione, dataScadenza, ramo, prodotto, ambiente) VALUES('${nPolizza}','${cliente}','${dataEmissione}','${dataScadenza}','${ramo}','${ambiti}','${ambiente}')`
+
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error) {
+                console.error(error)
+                reject(error)
+            } else {
+                connection.end()
+                return resolve(results)
+            }
+        })
+    })
+}
+
+function mysqlFindLastPolizza(dbConfig, prodotto, annullamento = false) {
+    const connection = mysql.createConnection(dbConfig)
+    connection.connect((err) => {
+        if (err) throw err;
+    })
+
+    let strAnnullamento = "0"
+
+    if (annullamento == true) {
+        strAnnullamento = "1"
+    }
+
+    var query = "SELECT * FROM da.polizza WHERE prodotto='"+ prodotto +"' and annullamento='" + strAnnullamento + "' ORDER BY dataEmissione DESC LIMIT 1"
+
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error) {
+                console.error(error)
+                reject(error)
+            } else {
+                connection.end()
+                return resolve(results)
+            }
+        })
+    })
+}
+
+function mysqlRegistraAnnullamento(dbConfig, id, numeroPolizza, prodotto) {
+    const connection = mysql.createConnection(dbConfig)
+    connection.connect((err) => {
+        if (err) throw err;
+    })
+
+    var query = "UPDATE da.polizza SET annullamento='1' WHERE id='"+ id +"' and numero ='"+ numeroPolizza +"' and prodotto='"+ prodotto +"'"
+
+    return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+            if (error) {
+                console.error(error)
+                reject(error)
+            } else {
+                connection.end()
+                return resolve(results)
+            }
+        })
+    })
+}
 //#endregion
 
 //Retrive logged win user
@@ -352,6 +423,26 @@ module.exports = (on, config) => {
         }
     });
 
+    //aggiunto da Elio Cossu 17/10/2022
+    on("task", {
+        SalvaPolizza({ dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente }) {
+            return mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente)
+        }
+    });
+
+    //mysqlFindLastPolizza
+    on("task", {
+        findLastPolizza({ dbConfig, prodotto, annullamento }) {
+            return mysqlFindLastPolizza(dbConfig, prodotto, annullamento)
+        }
+    });
+
+    on("task", {
+        registraAnnullamento({ dbConfig, id, numeroPolizza, prodotto }) {
+            return mysqlRegistraAnnullamento(dbConfig, id, numeroPolizza, prodotto)
+        }
+    });
+    
     //devono essere valorizzati
     on("task", {
         cliente() {
@@ -477,6 +568,16 @@ module.exports = (on, config) => {
     on('task', {
         log(message) {
             console.log(`    - ${message}`)
+            return null
+        },
+
+        warn(message) {
+            console.log("\x1b[33m%s\x1b[0m", `     - ${message}`);
+            return null
+        },
+
+        warnTFS(message) {
+            console.log(`      - ${message}`);
             return null
         }
     })

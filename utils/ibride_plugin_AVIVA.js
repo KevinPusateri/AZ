@@ -103,7 +103,7 @@ const sendEmail = () => {
         })
 
         const email = {
-            from: '"Ibride Aviva Mago" <noreply@allianz.it>',
+            from: '"Il Mago delle Targhe" <noreply@allianz.it>',
             to: 'mail_tf@allianz.it',
             subject: 'Ibride PLUG-IN in Scadenza - Compagnia 14',
             html: generateTable() + '</br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>Thanks also to Angelo Merlo for query support</br></br>',

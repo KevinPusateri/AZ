@@ -50,7 +50,8 @@ const LinksBurgerMenu = {
     GED_GESTIONE_DOCUMENTALE: 'GED – Gestione Documentale',
     DOCUMENTI_DA_GESTIRE: 'Documenti da gestire',
     FOLDER: 'Folder',
-    ALLIANZ_GLOBAL_ASSISTANCE: 'Allianz Global Assistance',
+    ALLIANZ_GLOBAL_ASSISTANCE_OAZIS: 'Allianz global assistance - OAZIS',
+    ALLIANZ_GLOBAL_ASSISTANCE_GLOBY: 'Allianz global assistance - GLOBY',
     ALLIANZ_PLACEMENT_PLATFORM: 'Allianz placement platform',
     QUALITÀ_PORTAFOGLIO_AUTO: 'Qualità portafoglio auto',
     APP_CUMULO_TERREMOTI: 'App cumulo terremoti',
@@ -94,7 +95,8 @@ const LinksBurgerMenu = {
         if (!keys.GED_GESTIONE_DOCUMENTALE) delete this.GED_GESTIONE_DOCUMENTALE
         if (!keys.DOCUMENTI_DA_GESTIRE) delete this.DOCUMENTI_DA_GESTIRE
         if (!keys.FOLDER) delete this.FOLDER
-        if (!keys.ALLIANZ_GLOBAL_ASSISTANCE) delete this.ALLIANZ_GLOBAL_ASSISTANCE
+        if (!keys.ALLIANZ_GLOBAL_ASSISTANCE_OAZIS) delete this.ALLIANZ_GLOBAL_ASSISTANCE_OAZIS
+        if (!keys.ALLIANZ_GLOBAL_ASSISTANCE_GLOBY) delete this.ALLIANZ_GLOBAL_ASSISTANCE_GLOBY
         if (!keys.ALLIANZ_PLACEMENT_PLATFORM) delete this.ALLIANZ_PLACEMENT_PLATFORM
         if (!keys.QUALITÀ_PORTAFOGLIO_AUTO) delete this.QUALITÀ_PORTAFOGLIO_AUTO
         if (!keys.APP_CUMULO_TERREMOTI) delete this.APP_CUMULO_TERREMOTI
@@ -105,6 +107,10 @@ const LinksBurgerMenu = {
 
 
 class BurgerMenuSales extends Sales {
+
+    static getLinks(){
+        return LinksBurgerMenu
+    }
 
     static getProfiling(tutf, keys) {
         cy.getProfiling(tutf).then(profiling => {
@@ -144,7 +150,8 @@ class BurgerMenuSales extends Sales {
             cy.filterProfile(profiling, 'COMMON_GED').then(profiled => { keys.GED_GESTIONE_DOCUMENTALE = profiled })
             cy.filterProfile(profiling, 'COMMON_GESTIONE_DOCUMENTALE').then(profiled => { keys.DOCUMENTI_DA_GESTIRE = profiled })
             cy.filterProfile(profiling, 'COMMON_SERVIZI_FOLDERDA').then(profiled => { keys.FOLDER = profiled })
-            cy.filterProfile(profiling, 'PO_PULSANTE_AGA').then(profiled => { keys.ALLIANZ_GLOBAL_ASSISTANCE = profiled })
+            cy.filterProfile(profiling, 'PO_PULSANTE_AGA').then(profiled => { keys.ALLIANZ_GLOBAL_ASSISTANCE_OAZIS = profiled })
+            cy.filterProfile(profiling, 'PO_PULSANTE_AGA').then(profiled => { keys.ALLIANZ_GLOBAL_ASSISTANCE_GLOBY = profiled })
             cy.filterProfile(profiling, 'PO_PULSANTE_APP').then(profiled => { keys.ALLIANZ_PLACEMENT_PLATFORM = profiled })
             cy.filterProfile(profiling, 'COMMON_MONITOR_QUALITA_DATI').then(profiled => { keys.QUALITÀ_PORTAFOGLIO_AUTO = profiled })
             // cy.filterProfile(profiling, 'COMMON_GESTIONE_APP_CUMULI_PRODOTTO_TERREMOTO').then(profiled => { keys.APP_CUMULO_TERREMOTI = profiled })
@@ -153,6 +160,10 @@ class BurgerMenuSales extends Sales {
             cy.filterProfile(profiling, 'COMMON_SAFE_DRIVE').then(profiled => { keys.SAFE_DRIVE_AUTOVETTURE = profiled })
 
         })
+    }
+
+    static clickBurgerMenu() {
+        cy.get('lib-burger-icon').click({ force: true })
     }
 
     /**
@@ -179,7 +190,8 @@ class BurgerMenuSales extends Sales {
 
         if (clickBurgerMenu)
             cy.get('lib-burger-icon').click({ force: true })
-        if (page === LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE) {
+        if (page === LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE_GLOBY ||
+            page === LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE_OAZIS) {
             this.checkPage(page)
         } else {
             let pageRegex = new RegExp("\^" + page + "\$")
@@ -292,8 +304,11 @@ class BurgerMenuSales extends Sales {
                 Common.canaleFromPopup()
                 cy.wait('@getSalesPremo', { timeout: 40000 });
                 cy.wait(30000)
-                getIFrame().should('be.visible')
-                getIFrame().find('input[value="Home"]').should('be.visible')
+                cy.getIFrame()
+                cy.get('iframe').should('be.visible').within(() => {
+                    getIFrame().should('be.visible')
+                    getIFrame().find('input[value="Home"]').should('be.visible')
+                })
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
@@ -369,7 +384,7 @@ class BurgerMenuSales extends Sales {
 
                 Common.canaleFromPopup()
                 cy.wait('@Danni', { timeout: 40000 })
-                cy.wait(5000)
+                cy.wait(15000)
                 getIFrame().find('#ctl00_MasterBody_btnApplicaFiltri').should('be.visible').invoke('attr', 'value').should('equal', 'Applica Filtri')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -426,6 +441,17 @@ class BurgerMenuSales extends Sales {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.GED_GESTIONE_DOCUMENTALE:
+                cy.window().then(win => {
+                    cy.stub(win, 'open').callsFake((url) => {
+                        return win.open.wrappedMethod.call(win, url, '_self');
+                    }).as('Open');
+                })
+                Common.canaleFromPopup()
+                cy.get('@Open')
+                cy.wait(5000)
+                cy.contains('button', 'Accedi').should('be.visible')
+                // cy.get('h3').should('be.visible').and('contain.text','Leggi barcode')
+                cy.go('back')
                 break;
             case LinksBurgerMenu.DOCUMENTI_DA_GESTIRE:
                 cy.wait(5000)
@@ -438,18 +464,32 @@ class BurgerMenuSales extends Sales {
                 getIFrame().find('button:contains("Cerca"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
-            case LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE:
-                if (Cypress.isBrowser('firefox')) {
-                    cy.get('lib-side-menu').find('a:contains("Allianz Global Assistance")')
-                        .should('have.attr', 'href', 'http://oazis.allianz-assistance.it')
-                } else {
-                    cy.contains('Allianz Global Assistance').invoke('removeAttr', 'target').click()
+            case LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE_OAZIS:
+                // if (Cypress.isBrowser('firefox')) {
+                //     cy.get('lib-side-menu').find('a:contains("Allianz global assistance - OAZIS")')
+                //         .should('have.attr', 'href', 'http://oazis.allianz-assistance.it')
+                //     this.clickBurgerMenu()
+                // } else {
+                    cy.contains('Allianz global assistance - OAZIS').invoke('removeAttr', 'target').click()
                     cy.url().should('eq', 'https://oazis.allianz-assistance.it/dynamic/home/index')
                     cy.get('#logo-oazis-header').should('be.visible')
-                    cy.go('back')
-                }
-                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                // }
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true }).wait(3000)
+                cy.go('back').wait(3000)
                 break;
+            case LinksBurgerMenu.ALLIANZ_GLOBAL_ASSISTANCE_GLOBY:
+                // if (Cypress.isBrowser('firefox')) {
+                //     cy.get('lib-side-menu').find('a:contains("Allianz global assistance - GLOBY")')
+                //         .should('have.attr', 'href', 'https://allianztravel-globy.it/onePortalUI/#/login')
+                //     this.clickBurgerMenu()
+                // } else {
+                    cy.contains('Allianz global assistance - GLOBY').invoke('removeAttr', 'target').click()
+                    cy.url().should('eq', 'https://allianztravel-globy.it/onePortalUI/#/login')
+                    cy.get('#box-form').should('be.visible')
+                // }
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true }).wait(3000)
+                cy.go('back').wait(3000)
+                break
             case LinksBurgerMenu.ALLIANZ_PLACEMENT_PLATFORM:
                 cy.window().then(win => {
                     cy.stub(win, 'open').callsFake((url) => {

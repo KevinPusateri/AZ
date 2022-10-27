@@ -33,7 +33,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let cliente = PersonaFisica.GalileoGalilei()
+let cliente = PersonaFisica.PieroAngela()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato,
 ambitiUltra.ambitiUltraCasaPatrimonio.contenuto]
 var frazionamento = "annuale"

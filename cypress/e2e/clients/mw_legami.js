@@ -42,6 +42,7 @@ before(() => {
 
 beforeEach(() => {
     cy.preserveCookies()
+    cy.ignoreRequest()
 })
 afterEach(function () {
     if (this.currentTest.state !== 'passed') {

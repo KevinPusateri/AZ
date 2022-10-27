@@ -485,7 +485,8 @@ const Filtri = {
             VUOTO: "Vuoto",
             A_710000: "710000",
             A_1960: "1960",
-            A_712000: "712000"
+            A_712000: "712000",
+            A_2349: "2349"
         }
     },
     ULT_TIPO_INVIO: {
@@ -1207,7 +1208,7 @@ class Sfera {
      * @private
      */
     static tableEstrazione() {
-        cy.get('app-table-component', { timeout: 45000 }).should('be.visible')
+        cy.get('app-table-component', { timeout: 60000 }).should('be.visible')
     }
 
     /**
@@ -4044,7 +4045,7 @@ class Sfera {
      */
     static checkRigaEvidenziata(selectedRiga) {
         cy.wrap(selectedRiga).should('have.class', 'nx-table-row nx-table-row--selectable ng-star-inserted selectedRow')
-        cy.wrap(selectedRiga).should('have.css', 'border-bottom', '1px solid rgb(0, 122, 179)')
+        cy.wrap(selectedRiga).should('have.css', 'border-bottom-color', 'rgb(0, 122, 179)')
         cy.wrap(selectedRiga).within(() => {
             this.checkBoxControl().click({ force: true })
         })

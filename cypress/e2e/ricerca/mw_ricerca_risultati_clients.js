@@ -66,19 +66,19 @@ describe('Buca di Ricerca - Risultati Clients', function () {
 
             it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function () {
                 if (Cypress.env('isAvivaBroker')) {
-                    TopBar.search('CRISTINA PENACCHIONI')
+                    TopBar.search('PENACCHIONI CRISTINA')
                     LandingRicerca.filtra('PF', 'E')
-                    LandingRicerca.clickClientePF('CRISTINA PENACCHIONI')
-                    SintesiCliente.checkAtterraggioSintesiCliente('CRISTINA PENACCHIONI')
+                    LandingRicerca.clickClientePF('PENACCHIONI CRISTINA')
+                    SintesiCliente.checkAtterraggioSintesiCliente('PENACCHIONI CRISTINA')
                 }
                 else {
-                    TopBar.search('MARINA PUGLIESE')
+                    TopBar.search('PUGLIESE MARINA')
                     if (Cypress.env('currentEnv') === 'TEST')
                         LandingRicerca.filtra('PF', 'P')
                     else
                         LandingRicerca.filtra('PF', 'E')
-                    LandingRicerca.clickClientePF('MARINA PUGLIESE')
-                    SintesiCliente.checkAtterraggioSintesiCliente('MARINA PUGLIESE')
+                    LandingRicerca.clickClientePF('PUGLIESE MARINA')
+                    SintesiCliente.checkAtterraggioSintesiCliente('PUGLIESE MARINA')
                 }
             })
         })
@@ -86,15 +86,15 @@ describe('Buca di Ricerca - Risultati Clients', function () {
         it('Verifica Click su Ricerca Cliente e Atterraggio in Sintesi Cliente', function () {
 
             if (!Cypress.env('monoUtenza')) {
-                TopBar.search('FRANCESCO PULINI')
+                TopBar.search('PULINI FRANCESCO')
                 LandingRicerca.filtra('PF', 'E')
-                LandingRicerca.clickClientePF('FRANCESCO PULINI')
+                LandingRicerca.clickClientePF('PULINI FRANCESCO')
                 SintesiCliente.checkAtterraggioSintesiCliente('PULINI')
             } else {
-                TopBar.search('GIUSEPPE NAZZARRO')
+                TopBar.search('NAZZARRO GIUSEPPE')
                 LandingRicerca.filtra('PF', 'E')
-                LandingRicerca.clickClientePF('GIUSEPPE NAZZARRO')
-                SintesiCliente.checkAtterraggioSintesiCliente('GIUSEPPE NAZZARRO')
+                LandingRicerca.clickClientePF('NAZZARRO GIUSEPPE')
+                SintesiCliente.checkAtterraggioSintesiCliente('NAZZARRO GIUSEPPE')
             }
 
 

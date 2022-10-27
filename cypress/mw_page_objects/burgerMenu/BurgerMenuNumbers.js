@@ -94,6 +94,10 @@ const LinksBurgerMenu = {
 
 class BurgerMenuNumbers extends Numbers {
 
+    static getLinks(){
+        return LinksBurgerMenu
+    }
+
     /**
      * Otteniamo i link in base alle chiavi di profilzazioni settate
      * @param {string} tutf - utenza impersonificata 
@@ -132,7 +136,9 @@ class BurgerMenuNumbers extends Numbers {
         })
     }
 
-
+    static clickBurgerMenu(){
+        cy.get('lib-burger-icon').click({ force: true })
+    }
 
     /**
      * Torna indetro su Numbers
@@ -161,7 +167,7 @@ class BurgerMenuNumbers extends Numbers {
      * @param {string} page - nome del link 
      */
     static clickLink(page) {
-        cy.get('lib-burger-icon').click({ force: true })
+        // cy.get('lib-burger-icon').click({ force: true })
         if (page === LinksBurgerMenu.ESTRAZIONI_AVANZATE)
             interceptGetPentahoDA()
         else {
@@ -226,29 +232,33 @@ class BurgerMenuNumbers extends Numbers {
                 break;
             case LinksBurgerMenu.ANDAMENTI_TECNICI:
                 cy.wait('@getDacommerciale', { timeout: 150000 });
-                getIFrame().find('button:contains("Fonti produttive"):visible')
+                getIFrame().find('#button-fonti').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.ESTRAZIONI_AVANZATE:
                 cy.wait('@pentahoDA', { timeout: 40000 });
                 cy.wait('@pentahoDama', { timeout: 40000 });
                 getIFrame().find('a:contains("Nuovo Report"):visible')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.SCARICO_DATI:
                 cy.wait('@getDacommerciale', { timeout: 150000 });
-                cy.wait('@gqlsaveoperation', { timeout: 40000 });
-                getIFrame().find('form:contains("Esporta tracciato")')
+                // cy.wait('@gqlsaveoperation', { timeout: 40000 });
+                cy.wait(5000)
+                getIFrame().find('div[class="EstraiButton"]').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.INDICI_DIGITALI:
                 cy.wait('@getDacommerciale', { timeout: 150000 });
-                cy.wait('@gqlsaveoperation', { timeout: 40000 });
-                getIFrame().find('#toggleFilters:contains("Apri filtri")')
+                // cy.wait('@gqlsaveoperation', { timeout: 40000 });
+                getIFrame().find('#toggleFilters:contains("Apri filtri"):visible')
+                cy.wait(5000)
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_DANNI:
                 cy.wait('@getDacommerciale', { timeout: 150000 });
-                cy.wait('@gqlsaveoperation', { timeout: 40000 });
+                // cy.wait('@gqlsaveoperation', { timeout: 40000 });
+                cy.wait(5000)
                 getIFrame().find('#ricerca_cliente').should('be.visible').and('contain.text', 'Filtra')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -256,13 +266,14 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_CASA_PATRIMONIO_2022:
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_SALUTE:
                 cy.wait('@getDacommerciale', { timeout: 150000 });
-                cy.wait('@gqlsaveoperation', { timeout: 40000 });
-                getIFrame().find('#submit-Mon_PTF').should('be.visible').and('contain.text', 'Filtra')
+                // cy.wait('@gqlsaveoperation', { timeout: 40000 });
+                cy.wait(5000)
+                getIFrame().find('#ricerca_cliente').should('be.visible').and('contain.text', 'Filtra')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.NEW_BUSINESS_VITA:
                 cy.wait('@getDacommerciale', { timeout: 150000 });
-                cy.wait('@gqlsaveoperation', { timeout: 40000 });
+                // cy.wait('@gqlsaveoperation', { timeout: 40000 });
                 cy.wait(15000)
                 getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -278,7 +289,8 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_IMPRESA:
                 cy.wait('@getDacommerciale', { timeout: 150000 });
                 cy.wait('@getDacommerciale', { timeout: 150000 });
-                cy.wait('@gqlsaveoperation', { timeout: 40000 });
+                // cy.wait('@gqlsaveoperation', { timeout: 40000 });
+                cy.wait(8000)
                 getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;

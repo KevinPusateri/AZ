@@ -16,6 +16,14 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+var url = Common.getUrlBeforeEach() + 'sales/'
+let options = {
+    retries: {
+        runMode: 0,
+        openMode: 0,
+    }
+}
+const linksBurger = BurgerMenuSales.getLinks()
 //#endregion
 
 
@@ -56,7 +64,8 @@ let keys = {
     GED_GESTIONE_DOCUMENTALE: true,
     DOCUMENTI_DA_GESTIRE: true,
     FOLDER: true,
-    ALLIANZ_GLOBAL_ASSISTANCE: true,
+    ALLIANZ_GLOBAL_ASSISTANCE_OAZIS: true,
+    ALLIANZ_GLOBAL_ASSISTANCE_GLOBY: true,
     ALLIANZ_PLACEMENT_PLATFORM: true,
     QUALITÀ_PORTAFOGLIO_AUTO: true,
     APP_CUMULO_TERREMOTI: false,
@@ -73,27 +82,33 @@ before(() => {
     })
     TopBar.clickSales()
 })
-
 beforeEach(() => {
     cy.preserveCookies()
-    cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
-    cy.intercept(/launch-*/, 'ignore').as('launchStaging')
-    cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
-    cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
-    cy.get('lib-burger-icon').click({ force: true })
+    cy.ignoreRequest()
+    BurgerMenuSales.clickBurgerMenu()
 })
-
 afterEach(function () {
+    cy.task('getHostName').then(hostName => {
+        //! Eseguire i test su vedi file BurgerMenuLinkEsterni.js
+        //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
+        if (this.currentTest.title.includes(linksBurger.ALLIANZ_GLOBAL_ASSISTANCE_OAZIS) ||
+            this.currentTest.title.includes(linksBurger.ALLIANZ_GLOBAL_ASSISTANCE_GLOBY) ||
+            this.currentTest.title.includes(linksBurger.GED_GESTIONE_DOCUMENTALE)) {
+            if (!hostName.includes('SM')) {
+                cy.task('warn', 'WARN --> Eseguire questo Test in Locale settando il Proxy')
+            } else {
+                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale settando il Proxy')
+            }
+        }
+    })
+
+
     if (this.currentTest.state !== 'passed') {
-        cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
-        cy.intercept(/launch-*/, 'ignore').as('launchStaging')
-        cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
-        cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
-        cy.visit('https://portaleagenzie.pp.azi.allianz.it/matrix/sales/')
+        cy.ignoreRequest()
+        cy.visit(url)
         cy.wait(5000)
     }
 })
-
 after(function () {
     TopBar.logOutMW()
     //#region Mysql
@@ -104,10 +119,9 @@ after(function () {
     //#endregion
 })
 
-describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
+describe('Matrix Web : Navigazioni da Burger Menu in Sales', options, function () {
 
     it('Verifica i link da Burger Menu', function () {
-
         BurgerMenuSales.checkExistLinks(keys)
     });
 
@@ -372,17 +386,13 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         BurgerMenuSales.backToSales()
     })
 
-    // // // Unauthorize! apre nuova pagina ma ha un canale e aggiungere excel TFS
-    // it('Verifica aggancio GED – Gestione Documentale', function () {
-    //     cy.url().should('eq',baseUrl+ 'sales/')
-    //     cy.get('lib-burger-icon').click()
-    //     cy.contains('GED – Gestione Documentale').click()
-    //      canaleFromPopup()
-    //      cy.get('body').then($body => {
-    //         $body.find('h1:contains("Unauthorized!"):visible')
-    //     })
-    //     cy.get('a').contains('Sales').click()
-    // })
+    it('Verifica aggancio GED – Gestione Documentale', function () {
+        if (Cypress.env('isAviva'))
+            this.skip()
+
+        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
+        BurgerMenuSales.clickLink('GED – Gestione Documentale', false)
+    })
 
     it('Verifica aggancio Documenti da gestire', function () {
         if (!keys.DOCUMENTI_DA_GESTIRE)
@@ -396,20 +406,24 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', function () {
         if (!keys.FOLDER)
             this.skip()
 
-        BurgerMenuSales.clickLink('Folder')
+        BurgerMenuSales.clickLink('Folder', false)
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Allianz Global Assistance', function () {
-        if (!keys.ALLIANZ_GLOBAL_ASSISTANCE)
+    it('Verifica aggancio Allianz global assistance - OAZIS', function () {
+        if (!keys.ALLIANZ_GLOBAL_ASSISTANCE_OAZIS)
             this.skip()
-        cy.task('getHostName').then(hostName => {
-            let currentHostName = hostName
-            if (!currentHostName.includes('SM')) {
 
-                BurgerMenuSales.clickLink('Allianz Global Assistance', false)
-            }
-        })
+        this.skip()
+        BurgerMenuSales.clickLink('Allianz global assistance - OAZIS', false)
+    })
+
+    it('Verifica aggancio Allianz global assistance - GLOBY', function () {
+        if (!keys.ALLIANZ_GLOBAL_ASSISTANCE_GLOBY)
+            this.skip()
+
+        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
+        BurgerMenuSales.clickLink('Allianz global assistance - GLOBY', false)
     })
 
     it('Verifica aggancio Allianz Placement Platform', function () {

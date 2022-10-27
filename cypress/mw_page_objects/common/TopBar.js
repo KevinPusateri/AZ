@@ -60,7 +60,7 @@ const interceptPageNumbers = () => {
 
 }
 
-const interceptNumbersTotDamages = () =>{
+const interceptNumbersTotDamages = () => {
     cy.intercept('POST', '**/graphql', (req) => {
         if (req.body.operationName.includes('totDamages')) {
             req.alias = 'gqlTotDamages'
@@ -207,7 +207,7 @@ class TopBar extends HomePage {
         interceptPageClients()
         cy.get('app-product-button-list').find('a').contains('Clients').click()
         cy.wait('@getClients', { timeout: 30000 })
-        cy.url().should('eq', Common.getBaseUrl() + 'clients/')
+        cy.url().should('include', 'clients/')
         cy.get('app-donut-chart').should('be.visible')
         cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
         cy.screenshot('Verifica Atterraggio "Clients"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -221,7 +221,7 @@ class TopBar extends HomePage {
         cy.wait(1000);
         cy.get('app-product-button-list').find('a').contains('Backoffice').click()
         cy.wait('@getBackOffice', { timeout: 50000 }).wait(1000)
-        cy.url().should('eq', Common.getBaseUrl() + 'back-office')
+        cy.url().should('include', 'back-office')
         cy.get('app-backoffice-card').should('be.visible')
         cy.screenshot('Verifica Atterraggio "Backoffice"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
@@ -236,7 +236,7 @@ class TopBar extends HomePage {
         cy.wait('@getNumbers', { timeout: 50000 })
         cy.wait('@gqlTotDamages', { timeout: 50000 })
         cy.get('span:contains("RICAVI DI AGENZIA")').should('be.visible')
-        cy.url().should('include', Common.getBaseUrl() + 'numbers')
+        cy.url().should('include', 'numbers')
         cy.screenshot('Verifica atterraggio "Numbers"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
@@ -248,7 +248,7 @@ class TopBar extends HomePage {
         cy.get('app-product-button-list').find('a').contains('Sales').click()
         // cy.wait('@getSales', { timeout: 50000 })
         cy.wait('@gqlgetExtractedSferaReceipts', { timeout: 60000 })
-        cy.url().should('eq', Common.getBaseUrl() + 'sales/')
+        cy.url().should('include', 'sales/')
         cy.screenshot('Verifica Atterraggio "Sales"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
@@ -260,7 +260,7 @@ class TopBar extends HomePage {
         interceptPageMieInfo()
         cy.get('app-product-button-list').find('a').contains('News e Info').click()
         cy.wait('@getMieInfo', { timeout: 50000 })
-        cy.url().should('eq', Common.getBaseUrl() + 'lemieinfo')
+        cy.url().should('include', 'lemieinfo')
         cy.screenshot('Verifica atterraggio "News e Info"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
@@ -347,7 +347,6 @@ class TopBar extends HomePage {
                     return win.open.wrappedMethod.call(win, url, '_self');
                 }).as('Open');
             })
-            cy.pause()
             cy.contains(page).click()
             cy.get('@Open')
         } else {
@@ -573,10 +572,12 @@ class TopBar extends HomePage {
             cy.get('@windowOpen').should('be.calledWith', Cypress.sinon.match.string).then(() => {
                 cy.origin((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'), () => {
                     cy.visit((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('urlSecondWindowTest') : Cypress.env('urlSecondWindowPreprod'));
+                    Cypress.on('uncaught:exception', () => false)
                 })
             })
         } else
-            Common.canaleFromPopup(customImpersonification)
+            Common.canaleFromPopup(customImpersonification, false, null, true)
+
     }
 }
 

@@ -552,7 +552,7 @@ class Sales {
      */
     static backToSales() {
         cy.get('a').contains('Sales').scrollIntoView().click({ force: true })
-        cy.url().should('eq', Common.getBaseUrl() + 'sales/')
+        cy.url().should('include', 'sales/')
     }
 
     /**

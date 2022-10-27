@@ -3,10 +3,10 @@
  */
 
 /// <reference types="Cypress" />
-import BurgerMenuBackOffice from "../../mw_page_objects/burgerMenu/BurgerMenuBackOffice"
-import Common from "../../mw_page_objects/common/Common"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import TopBar from "../../mw_page_objects/common/TopBar"
+import BurgerMenuBackOffice from "../../../mw_page_objects/burgerMenu/BurgerMenuBackOffice"
+import Common from "../../../mw_page_objects/common/Common"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import TopBar from "../../../mw_page_objects/common/TopBar"
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('.')[0].toUpperCase()
@@ -18,13 +18,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-var url = Common.getUrlBeforeEach() + 'back-office'
-let options = {
-    retries: {
-        runMode: 0,
-        openMode: 0,
-    }
-}
+
 //#endregion
 
 
@@ -93,39 +87,29 @@ before(() => {
             })
         })
     })
-    TopBar.clickBackOffice()
 })
 
 beforeEach(() => {
     cy.preserveCookies()
-    cy.ignoreRequest()
-    BurgerMenuBackOffice.clickBurgerMenu()
-})
-
-afterEach(function () {
-    if (this.currentTest.state !== 'passed') {
-        cy.ignoreRequest()
-        cy.visit(url)
-        cy.wait(3000)
-    }
+    Common.visitUrlOnEnv()
 })
 
 after(function () {
+    //#endregion
     TopBar.logOutMW()
     //#region Mysql
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
         cy.finishMysql(dbConfig, insertedId, tests)
     })
-    //#endregion
 
 })
 
 
-describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, function () {
+describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', function () {
 
     it('Verifica link da Burger Menu', function () {
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.checkExistLinks(keys)
     });
 
@@ -133,7 +117,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Movimentazione sinistri', function () {
         if (!keys.MOVIMENTAZIONE_SINISTRI)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Movimentazione sinistri')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -141,7 +125,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Consultazione sinistri', function () {
         if (!keys.CONSULTAZIONE_SINISTRI)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Consultazione sinistri')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -149,7 +133,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Gestione Contatto Card', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) //! NON si ha ancora la chiave i profilazione
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Gestione Contatto Card')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -157,7 +141,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Denuncia', function () {
         if (!keys.DENUNCIA)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Denuncia')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -165,7 +149,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Denuncia BMP', function () {
         if (!keys.DENUNCIA_BMP)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Denuncia BMP')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -173,7 +157,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Sinistri incompleti', function () {
         if (!keys.SINISTRI_INCOMPLETI)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Sinistri incompleti')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -181,7 +165,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Sinistri canalizzati', function () {
         if (!keys.SINISTRI_CANALIZZATI)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Sinistri canalizzati')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -189,7 +173,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Scheda Sinistri per Gestione', function () {
         if (!keys.SCHEDA_SINISTRI_GESTIONE)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Scheda Sinistri per Gestione')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -200,7 +184,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Sintesi Contabilità', function () {
         if (!keys.SINTESI_CONTABILITÀ)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Sintesi Contabilità')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -208,7 +192,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Giornata contabile', function () {
         if (!keys.GIORNATA_CONTABILE)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Giornata contabile')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -216,7 +200,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Consultazione Movimenti', function () {
         if (!keys.CONSULTAZIONE_MOVIMENTI)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Consultazione Movimenti')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -224,7 +208,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Estrazione Contabilità', function () {
         if (!keys.ESTRAZIONE_CONTABILITÀ)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Estrazione Contabilità')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -232,7 +216,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Deleghe SDD', function () {
         if (!keys.DELEGHE_SDD)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Deleghe SDD')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -240,7 +224,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Quadratura unificata', function () {
         if (!keys.QUADRATURA_UNIFICATA)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Quadratura unificata')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -248,7 +232,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Incasso per conto', function () {
         if (!keys.INCASSO_PER_CONTO)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Incasso per conto')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -256,7 +240,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Incasso massivo', function () {
         if (!keys.INCASSO_MASSIVO)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Incasso massivo')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -264,7 +248,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Sollecito titoli', function () {
         if (!keys.SOLLECITO_TITOLI)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Sollecito titoli')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -272,7 +256,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Convenzioni in trattenuta', function () {
         if (!keys.CONVENZIONI_IN_TRATTENUTA)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Convenzioni in trattenuta')
         BurgerMenuBackOffice.backToBackOffice()
     })
@@ -280,7 +264,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Monitoraggio Guida Smart', function () {
         if (!keys.MONITORAGGIO_GUIDA_SMART)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Monitoraggio Guida Smart')
         BurgerMenuBackOffice.backToBackOffice()
 
@@ -289,7 +273,7 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
     it('Verifica aggancio Impostazione contabilità', function () {
         if (!keys.IMPOSTAZIONE_CONTABILITA)
             this.skip()
-
+        TopBar.clickBackOffice()
         BurgerMenuBackOffice.clickLink('Impostazione contabilità')
         BurgerMenuBackOffice.backToBackOffice()
     })

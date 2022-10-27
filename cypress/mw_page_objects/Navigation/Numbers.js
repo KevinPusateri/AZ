@@ -41,7 +41,7 @@ class Numbers {
      */
     static backToNumbers(checkUrl) {
         cy.get('a').contains('Numbers').click()
-        cy.url().should('eq', Common.getBaseUrl() + 'numbers/' + checkUrl)
+        cy.url().should('include','numbers/' + checkUrl)
     }
 
     /**

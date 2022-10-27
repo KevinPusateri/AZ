@@ -186,6 +186,13 @@ Cypress.Commands.add('preserveCookies', () => {
   })
 })
 
+Cypress.Commands.add('ignoreRequest', () => {
+  cy.intercept(/embed.nocache.js/, 'ignore').as('embededNoCache')
+  cy.intercept(/launch-*/, 'ignore').as('launchStaging')
+  cy.intercept(/cdn.igenius.ai/, 'ignore').as('igenius')
+  cy.intercept(/i.ytimg.com/, 'ignore').as('ytimg')
+})
+
 Cypress.Commands.add('forceVisit', url => {
   cy.window().then(win => {
     return win.open(url, '_self');
@@ -449,7 +456,7 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, i
             })
 
           if (contractsWithBranchId.length > 0) {
-            return currentClient.firstName + ' ' + currentClient.name
+            return currentClient.name + ' ' + currentClient.firstName
           }
           else
             cy.getClientWithPolizze(tutf, branchId, isUltra, isAZ1, clientType, true, clientToAnalyze + 1)
@@ -511,7 +518,7 @@ Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, i
                   })
 
                 if (contractsWithBranchId.length > 0) {
-                  return currentClient.firstName + ' ' + currentClient.name
+                  return currentClient.name + ' ' + currentClient.firstName
                 }
                 else
                   cy.getClientWithPolizze(tutf, branchId, isUltra, isAZ1, clientType)
@@ -825,7 +832,7 @@ Cypress.Commands.add('getClientWithPolizzeAnnullamento', (tutf, branchId, state 
                   if (datePolizzaScadenza.length > 0) {
                     var polizza = {
                       customerNumber: currentClient.customerNumber,
-                      customerName: currentClient.firstName + ' ' + currentClient.name,
+                      customerName: currentClient.name + ' ' + currentClient.firstName,
                       numberPolizza: datePolizzaScadenza[0].bundleNumber
                     }
                     return polizza
@@ -948,7 +955,7 @@ Cypress.Commands.add('getClientWithConsensoOTP', (tutf, state = 'annulla', clien
                     if (datePolizzaScadenza.length > 0) {
                       var polizza = {
                         customerNumber: currentClient.customerNumber,
-                        customerName: currentClient.firstName + ' ' + currentClient.name,
+                        customerName: currentClient.name + ' ' + currentClient.firstName,
                         numberPolizza: datePolizzaScadenza[0].bundleNumber,
                         agentId: currentAgency.agentId,
                         agency: currentAgency.agency
@@ -1545,6 +1552,28 @@ Cypress.Commands.add('getProxyLog', (currentCase) => {
   })
 })
 
+Cypress.Commands.add('SalvaPolizza', (dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente) => {  
+    cy.task('SalvaPolizza', { dbConfig: dbConfig, cliente: cliente, nPolizza: nPolizza, dataEmissione: dataEmissione, dataScadenza: dataScadenza, ramo: ramo, ambiti: ambiti, ambiente: ambiente })
+      .then((results) => {
+        return results.insertId
+      })
+})
+
+Cypress.Commands.add('findLastPolizza', (dbConfig, prodotto, annullamento) => {  
+  cy.task('findLastPolizza', { dbConfig: dbConfig, prodotto: prodotto, annullamento: annullamento})
+    .then((result) => {
+      return result
+    })
+})
+
+//registra l'annullamento nel database
+Cypress.Commands.add('registraAnnullamento', (dbConfig, id, numeroPolizza, prodotto) => {  
+  cy.task('registraAnnullamento', { dbConfig: dbConfig, id: id, numeroPolizza: numeroPolizza, prodotto: prodotto})
+    .then((result) => {
+      return result
+    })
+})
+
 
 //#region PDF Parse
 Cypress.Commands.add('parsePdf', () => {
@@ -1656,7 +1685,7 @@ Cypress.Commands.add('getClientWithPolizzeAttive', (tutf, branchId, clientType =
 
               if (contractsWithBranchId.length > 0) {
                 cy.getUserProfileToken(tutf).then(userProfileToken => {
-                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.firstName + ' ' + currentClient.name).then(isInBuca => {
+                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.name + ' ' + currentClient.firstName).then(isInBuca => {
                     if (isInBuca) {
                       cy.isClientAccessible(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isAccessible => {
                         if (isAccessible)
@@ -1736,7 +1765,7 @@ Cypress.Commands.add('getClientWithProposte', (tutf, branchId, clientType = 'PF'
 
               if (contractsWithBranchId.length > 0) {
                 cy.getUserProfileToken(tutf).then(userProfileToken => {
-                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.firstName + ' ' + currentClient.name).then(isInBuca => {
+                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.name + ' ' + currentClient.firstName).then(isInBuca => {
                     if (isInBuca) {
                       cy.isClientAccessible(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isAccessible => {
                         if (isAccessible)
@@ -1812,7 +1841,7 @@ Cypress.Commands.add('getClientWithPreventivi', (tutf, clientType = 'PF', curren
 
               if (contracts.length > 0) {
                 cy.getUserProfileToken(tutf).then(userProfileToken => {
-                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.firstName + ' ' + currentClient.name).then(isInBuca => {
+                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.name + ' ' + currentClient.firstName).then(isInBuca => {
                     if (isInBuca) {
                       cy.isClientAccessible(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isAccessible => {
                         if (isAccessible)
@@ -1889,7 +1918,7 @@ Cypress.Commands.add('getClientWithNonInVigore', (tutf, clientType = 'PF', curre
 
               if (contracts.length > 0) {
                 cy.getUserProfileToken(tutf).then(userProfileToken => {
-                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.firstName + ' ' + currentClient.name).then(isInBuca => {
+                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.name + ' ' + currentClient.firstName).then(isInBuca => {
                     if (isInBuca) {
                       cy.isClientAccessible(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isAccessible => {
                         if (isAccessible)
@@ -1965,7 +1994,7 @@ Cypress.Commands.add('getClientWithSinistri', (tutf, clientType = 'PF', currentA
 
               if (contracts.length > 0) {
                 cy.getUserProfileToken(tutf).then(userProfileToken => {
-                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.firstName + ' ' + currentClient.name).then(isInBuca => {
+                  cy.isClientInBuca(userProfileToken, currentAgency.agencies, currentClient.name + ' ' + currentClient.firstName).then(isInBuca => {
                     if (isInBuca) {
                       cy.isClientAccessible(userProfileToken, currentAgency.agentId, currentClient.customerNumber).then(isAccessible => {
                         if (isAccessible)

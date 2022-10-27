@@ -174,9 +174,16 @@ class BackOffice {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.DENUNCIA_BMP:
-                getIFrame().find('#keyword').should('be.visible')
-                getIFrame().find('h2[data-testid="headline"]').should('be.visible').then($title => {
-                    expect(['Dettagli del cliente', 'Customer details']).to.include($title.text().trim())
+                cy.wait(5000)
+                cy.getIFrame()
+                cy.get('iframe',{timeout:10000}).should('be.visible').within(() => {
+                    cy.get('#keyword:visible').should('exist').should('be.visible')
+s
+                    cy.get('#keyword').should('exist').should('be.visible')
+                    cy.get('h2[data-testid="headline"]').should('be.visible')
+                        .then($title => {
+                            expect(['Dettagli del cliente', 'Customer details']).to.include($title.text().trim())
+                        })
                 })
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
@@ -222,7 +229,6 @@ class BackOffice {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksContabilita.DELEGHE_SDD:
-                cy.wait('@Anagrafe', { timeout: 200000 });
                 cy.wait(5000)
                 getIFrame().find('input[value="Carica"]').should('be.visible').invoke('attr', 'value').should('equal', 'Carica')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -270,7 +276,7 @@ class BackOffice {
      */
     static backToBackOffice() {
         cy.get('lib-breadcrumbs').contains('Backoffice').click()
-        cy.url().should('eq', Common.getBaseUrl() + 'back-office')
+        cy.url().should('include', 'back-office')
         cy.screenshot('Torna indietro su Backoffice', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 

@@ -2,12 +2,12 @@
  * @author Kevin Pusateri <kevin.pusateri@allianz.it>
  */
 
-import Common from "../../mw_page_objects/common/Common"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import BurgerMenuClients from "../../mw_page_objects/burgerMenu/BurgerMenuClients"
-import Clients from "../../mw_page_objects/clients/LandingClients"
-import HomePage from "../../mw_page_objects/common/HomePage"
+import Common from "../../../mw_page_objects/common/Common"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import BurgerMenuClients from "../../../mw_page_objects/burgerMenu/BurgerMenuClients"
+import Clients from "../../../mw_page_objects/clients/LandingClients"
+import HomePage from "../../../mw_page_objects/common/HomePage"
 
 //#region Mysql DB Variables
 // const testName = Cypress.spec.name.split('.')[0].toUpperCase()
@@ -19,14 +19,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-var url = Common.getUrlBeforeEach() + 'clients/'
-let options = {
-    retries: {
-        runMode: 0,
-        openMode: 0,
-    }
-}
-const linksBurger = BurgerMenuClients.getLinks()
+
 //#endregion
 
 let keys = {
@@ -42,10 +35,9 @@ let keys = {
 }
 
 let keyDigitalMe = {
-    PUBBLICAZIONE_PROPOSTE: true
+    PUBBLICAZIONE_PROPOSTE: true 
 }
 before(() => {
-
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
         LoginPage.logInMWAdvanced()
@@ -61,34 +53,11 @@ before(() => {
             cy.filterProfile(profiling, 'CLIENTE_MODIFICA_ANAGRAFICA').then(profiled => { keys.CONSENSI_EMAIL_SUI_CONTRATTI = profiled })
         })
     })
-    TopBar.clickClients()
 })
 
 beforeEach(() => {
     cy.preserveCookies()
-    cy.ignoreRequest()
-    BurgerMenuClients.clickBurgerMenu()
-})
-
-afterEach(function () {
-    cy.task('getHostName').then(hostName => {
-        //! Eseguire i test su vedi file BurgerMenuLinkEsterni.js
-        //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-        if (this.currentTest.title.includes(linksBurger.ANALISI_DEI_BISOGNI) ||
-            this.currentTest.title.includes(linksBurger.HOSPITAL_SCANNER)) {
-            if (!hostName.includes('SM')) {
-                cy.task('warn', 'WARN --> Eseguire questo Test in Locale settando il Proxy')
-            } else {
-                cy.task('warnTFS', 'WARN --> Eseguire questo Test in settando il Proxy')
-            }
-        }
-    })
-
-    if (this.currentTest.state !== 'passed') {
-        cy.ignoreRequest()
-        cy.visit(url)
-        cy.wait(3000)
-    }
+    Common.visitUrlOnEnv()
 })
 
 after(function () {
@@ -102,32 +71,37 @@ after(function () {
 
 })
 
-describe('Matrix Web : Navigazioni da Burger Menu in Clients', options, function () {
+describe('Matrix Web : Navigazioni da Burger Menu in Clients', function () {
 
     it('Verifica i link da Burger Menu', function () {
-
+        TopBar.clickClients()
         BurgerMenuClients.checkExistLinks(keys)
     });
 
     it('Verifica aggancio Analisi dei bisogni', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
-        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
-        BurgerMenuClients.clickLink('Analisi dei bisogni', false)
+        cy.task('getHostName').then(hostName => {
+            let currentHostName = hostName
+            cy.log(currentHostName)
+            if (!currentHostName.includes('SM')) {
+                TopBar.clickClients()
+                BurgerMenuClients.clickLink('Analisi dei bisogni')
+            }
+        })
     });
 
     it('Verifica aggancio Censimento nuovo cliente', function () {
         if (!keys.CENSIMENTO_NUOVO_CLIENTE)
             this.skip()
-
-        BurgerMenuClients.clickLink('Censimento nuovo cliente', false)
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Censimento nuovo cliente')
         BurgerMenuClients.backToClients()
     });
 
     it('Verifica aggancio Digital Me', function () {
-
-        BurgerMenuClients.clickLink('Digital Me', false)
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Digital Me')
         Clients.checkDigitalMe(keyDigitalMe)
         BurgerMenuClients.backToClients()
     });
@@ -135,63 +109,63 @@ describe('Matrix Web : Navigazioni da Burger Menu in Clients', options, function
     it('Verifica aggancio Pannello anomalie', function () {
         if (!keys.PANNELLO_ANOMALIE)
             this.skip()
-
-        BurgerMenuClients.clickLink('Pannello anomalie', false)
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Pannello anomalie')
         BurgerMenuClients.backToClients()
     });
 
     it('Verifica aggancio Clienti duplicati', function () {
         if (!keys.CLIENTI_DUPLICATI)
             this.skip()
-
-        BurgerMenuClients.clickLink('Clienti duplicati', false)
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Clienti duplicati')
         BurgerMenuClients.backToClients()
     });
 
     it('Verifica aggancio Cancellazione Clienti', function () {
         if (!keys.CANCELLAZIONE_CLIENTI)
             this.skip()
-
-        BurgerMenuClients.clickLink('Cancellazione Clienti', false)
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Cancellazione Clienti')
         BurgerMenuClients.backToClients()
     });
 
     it('Verifica aggancio Cancellazione Clienti per fonte', function () {
         if (!keys.CANCELLAZIONE_CLIENTI_PER_FONTE)
             this.skip()
-
-        BurgerMenuClients.clickLink('Cancellazione Clienti per fonte', false)
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Cancellazione Clienti per fonte')
         BurgerMenuClients.backToClients()
     });
 
     it('Verifica aggancio Hospital scanner', function () {
         if (!keys.HOSPITAL_SCANNER)
             this.skip()
-
-        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
-        BurgerMenuClients.clickLink('Hospital scanner', false)
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Hospital scanner')
+        HomePage.reloadMWHomePage()
     });
 
     it('Verifica aggancio Antiriciclaggio', function () {
         if (!keys.ANTIRICICLAGGIO)
             this.skip()
-
-        BurgerMenuClients.clickLink('Antiriciclaggio', false)
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Antiriciclaggio')
         BurgerMenuClients.backToClients()
     });
     it('Verifica aggancio Gestione fonte principale', function () {
         if (!keys.GESTIONE_FONTE_PRINCIPALE)
             this.skip()
-
-        BurgerMenuClients.clickLink('Gestione fonte principale', false)
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Gestione fonte principale')
         BurgerMenuClients.backToClients()
     });
 
     it('Verifica aggancio Conensi Email sui Contratti', function () {
         if (!keys.CONSENSI_EMAIL_SUI_CONTRATTI)
             this.skip()
-
-        BurgerMenuClients.clickLink('Consensi email sui contratti', false)
+        TopBar.clickClients()
+        BurgerMenuClients.clickLink('Consensi email sui contratti')
         BurgerMenuClients.backToClients()
     });
 

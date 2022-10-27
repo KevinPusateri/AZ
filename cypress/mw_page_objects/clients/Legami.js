@@ -202,7 +202,9 @@ class Legami {
         cy.contains('div[class^="member-name"]', membro)
             .parents('div[class^="member"]').find('nx-icon[class="trash-icon nx-icon--s ndbx-icon nx-icon--trash"]').click()
         cy.get('.cdk-overlay-container').find('span[class="text"]:visible').should('contain.text', 'Rimuovere')
-        cy.contains('Si').click()
+        cy.get('nx-modal-container[id^="nx-modal-"]').within(()=>{
+            cy.contains('Si').click()
+        })
 
         cy.get('.cdk-overlay-container').find('nx-message-toast')
             .should('be.visible').and('contain.text', 'Membro rimosso dal gruppo')

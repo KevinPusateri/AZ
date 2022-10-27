@@ -5,7 +5,6 @@ import Common from "../../mw_page_objects/common/Common"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Ultra from "../../mw_page_objects/ultra/Ultra"
 import Dashboard2022 from "../../mw_page_objects/casaPatrimonio2022/Dashboard2022"
 import ConfigurazioneAmbito2022 from "../../mw_page_objects/casaPatrimonio2022/ConfigurazioneAmbito2022"
 import DatiQuotazione2022 from "../../mw_page_objects/casaPatrimonio2022/DatiQuotazione2022"
@@ -19,35 +18,47 @@ import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
+import common from "mocha/lib/interfaces/common"
 //#endregion
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
+const dbPolizze = Cypress.env('db_da')
 let insertedId
 //#endregion
 
 //#region Configuration
+const moment = require('moment')
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let cliente = PersonaFisica.GalileoGalilei()
+let prodotto = "Ultra Casa e Patrimonio 2022"
+let ramo = "Rami Vari"
+let dataEmissione = moment().format('YYYY-MM-DD HH:mm:ss')
+let dataScadenza = moment().add(1, 'y').format('YYYY-MM-DD HH:mm:ss')
+let ambiente = Cypress.env('currentEnv')
+
+let cliente = PersonaFisica.PieroAngela()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato,
 ambitiUltra.ambitiUltraCasaPatrimonio.contenuto]
 var frazionamento = "Annuale"
-let nuovoCliente;
-let iFrameUltra = '[class="iframe-content ng-star-inserted"]'
-let iFrameFirma = '[id="iFrameResizer0"]'
+var nContratto = "000"
+var lastPolizza = "000"
 //#endregion variabili iniziali
 
 //#region beforeAfter
 before(() => {
     cy.getUserWinLogin().then(data => {
         cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
+        LoginPage.logInMWAdvanced({
+            "agentId": "ARALONGO7",
+            "agency": "010375000"
+        }
+        )
     })
 })
 
@@ -84,7 +95,6 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
         cy.get('body').within(() => {
             cy.get('input[name="main-search-input"]').click()
             cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
-            cy.pause()
             cy.get('lib-client-item').first().click()
         }).then(($body) => {
             cy.wait(7000)
@@ -187,6 +197,12 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
     })
 
     it("Adempimenti precontrattuali e Perfezionamento", () => {
+        ControlliProtocollazione2022.salvaNContratto()
+
+        cy.get('@contratto').then(val => {
+            nContratto = val
+        })
+
         ControlliProtocollazione2022.stampaAdempimentiPrecontrattuali()
         ControlliProtocollazione2022.Incassa()
         Incasso.caricamentoPagina()
@@ -205,6 +221,12 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
 
     it("Esito incasso", () => {
         Incasso.EsitoIncasso()
+        cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, dataEmissione, dataScadenza, ramo, prodotto, ambiente)
+
         Incasso.Chiudi()
     })
+
+    /* it("Fine", () => {
+        cy.pause()
+    }) */
 })

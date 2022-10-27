@@ -48,6 +48,14 @@ const LinksBurgerMenu = {
 
 class BurgerMenuClients extends Clients {
 
+    static getLinks(){
+        return LinksBurgerMenu
+    }
+    static clickBurgerMenu() {
+        cy.get('lib-burger-icon').click({ force: true })
+    }
+
+
     /**
      * Verifica che i link nel burgerMenu siano presenti
      */
@@ -67,10 +75,11 @@ class BurgerMenuClients extends Clients {
      * Apre il burgerMenu e click sul link richiesto dal BurgerMenu
      * @param {string} page - nome del link 
      */
-    static clickLink(page) {
+    static clickLink(page, openBurger = true) {
         interceptloadSCIImpresa()
 
-        cy.get('lib-burger-icon').click({ force: true })
+        if (openBurger)
+            cy.get('lib-burger-icon').click({ force: true })
         if (page === LinksBurgerMenu.ANALISI_DEI_BISOGNI ||
             page === LinksBurgerMenu.HOSPITAL_SCANNER) {
             this.checkPage(page)
@@ -90,26 +99,25 @@ class BurgerMenuClients extends Clients {
             case LinksBurgerMenu.ANALISI_DEI_BISOGNI:
                 Common.canaleFromPopup()
                 if (Cypress.isBrowser('firefox')) {
-
                     cy.get('app-home-right-section').find('app-rapid-link[linkname="Analisi dei bisogni"] > a')
                         .should('have.attr', 'href', 'https://www.ageallianz.it/analisideibisogni/app')
+                    this.clickBurgerMenu()
                 } else {
-                    cy.get('lib-burger-sidebar').find('a[href="https://www.ageallianz.it/analisideibisogni/app"]').invoke('removeAttr', 'target').click()
-                    // cy.wait('@analisiBisogni', { requestTimeout: 80000 });
-                    cy.url().should('eq', 'https://www.ageallianz.it/analisideibisogni/app/login')
-                    cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
-                    cy.go('back')
+                cy.get('lib-burger-sidebar').find('a[href="https://www.ageallianz.it/analisideibisogni/app"]').invoke('removeAttr', 'target').click()
+                cy.wait(3000)
+                cy.url().should('include', '/analisideibisogni/app/login')
+                cy.get('h2:contains("Analisi dei bisogni assicurativi"):visible')
+                cy.go('back')
                 }
-                // cy.url().should('include', Common.getBaseUrl())
                 break;
             case LinksBurgerMenu.CENSIMENTO_NUOVO_CLIENTE:
                 Common.canaleFromPopup()
-                cy.url().should('eq', Common.getBaseUrl() + 'clients/new-client')
+                cy.url().should('include', 'clients/new-client')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.DIGITAL_ME:
                 Common.canaleFromPopup()
-                cy.url().should('eq', Common.getBaseUrl() + 'clients/digital-me')
+                cy.url().should('include', 'clients/digital-me')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.PANNELLO_ANOMALIE:
@@ -154,9 +162,11 @@ class BurgerMenuClients extends Clients {
 
                 Common.canaleFromPopup()
                 cy.get('@Open')
-
+                cy.wait(10000)
                 cy.get('app-home').should('exist').and('be.visible').and('contain.text', 'CERCA INTERVENTO')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                cy.wait(10000)
+                cy.go('back')
                 break;
             case LinksBurgerMenu.CONSENSI_EMAIL_SUI_CONTRATTI:
                 Common.canaleFromPopup()

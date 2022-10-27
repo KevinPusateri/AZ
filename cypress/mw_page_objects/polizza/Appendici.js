@@ -99,7 +99,7 @@ class Appendici {
 
     static StampaDocumento() {
         ultraIFrame().within(() => {
-            cy.get('.documentoSection').should('be.visible')
+            cy.get('#documentoContainer').should('be.visible')
 
             cy.get('input[value="Stampa"]').should('be.visible').click()
         })
@@ -107,7 +107,7 @@ class Appendici {
 
     static InviaMail() {
         ultraIFrame().within(() => {
-            cy.get('.documentoSection').should('be.visible')
+            cy.get('#documentoContainer').should('be.visible')
 
             cy.get('input[value="@"]').should('be.visible').click()
         })

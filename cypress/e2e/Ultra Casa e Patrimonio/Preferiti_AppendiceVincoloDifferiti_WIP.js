@@ -38,7 +38,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let cliente = PersonaFisica.GalileoGalilei()
+let cliente = PersonaFisica.PieroAngela()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato]
 var frazionamento = "semestrale"
 var nContratto = "000"
@@ -224,7 +224,6 @@ describe("PREFERITI, APPENDICE E VINCOLO DIFFERITI", () => {
     it("Portafoglio", () => {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.ordinaPolizze("Numero contratto")
-        cy.pause()
         Portafoglio.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
         Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
         Ultra.selezionaPrimaAgenzia()
@@ -232,7 +231,6 @@ describe("PREFERITI, APPENDICE E VINCOLO DIFFERITI", () => {
     })
 
     it("Appendice - Seleziona", () => {
-        cy.pause()
         Appendici.SelezionaAppendice(appendice)
         Appendici.Avanti()
         Appendici.caricamentoEdit()
@@ -244,7 +242,7 @@ describe("PREFERITI, APPENDICE E VINCOLO DIFFERITI", () => {
         Appendici.caricamentoDocumenti()
     })
 
-    it("Appendice - Documenti", () => {   
+    it("Appendice - Documenti", () => {
         Appendici.StampaDocumento()
         Appendici.InviaMail()
         Appendici.Home()
@@ -270,11 +268,12 @@ describe("PREFERITI, APPENDICE E VINCOLO DIFFERITI", () => {
     })
 
     it("Vincoli - ente vincolatario", () => {
+        //cy.pause()
         Vincoli.SelezionaEnteVincolatario("Banca")
         Vincoli.attesaRicerca()
         Vincoli.RicercaBanca("Banca", "Unicredit")
         //Vincoli.updateAppendice()
-        Vincoli.ChiudiPopupAnagrafico()
+        //Vincoli.ChiudiPopupAnagrafico()
     })
 
     it("Vincoli - Testi direzionali", () => {

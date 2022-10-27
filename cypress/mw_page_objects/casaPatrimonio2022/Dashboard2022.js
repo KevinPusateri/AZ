@@ -157,12 +157,12 @@ class Dashboard {
                 .should('exist').click()
 
             //todo intercept GET *fonte-corrente ?
-            cy.intercept({
-                method: 'GET',
-                url: '**/fonte-corrente'
-            }).as('fonte')
+            // cy.intercept({
+            //     method: 'GET',
+            //     url: '**/fonte-corrente'
+            // }).as('fonte')
     
-            cy.wait('@fonte', { timeout: 120000 });
+            // cy.wait('@fonte', { timeout: 120000 });
         })
     }
 

@@ -49,7 +49,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let cliente = PersonaFisica.GalileoGalilei()
+let cliente = PersonaFisica.PieroAngela()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato]
 var casa = ["Casa 1"]
 var frazionamento = "annuale"
@@ -280,6 +280,7 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   })
 
   it("Incasso - parte 2", () => {
+    //cy.pause()
     Incasso.SelezionaMetodoPagamento('Assegno', false)
     Incasso.ConfermaIncasso(false)
     Incasso.caricamentoEsito()
@@ -291,7 +292,6 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   })
 
   it("Chiusura e apertura sezione Clients", () => {
-    cy.pause()
     //Ultra.chiudiFinale()
     cy.get('.nx-breadcrumb-item__text').contains('Clients').click()
 
@@ -318,7 +318,7 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
 
 
   it("Fine", () => {
-    //todo folder?
     cy.pause()
+    //todo folder?
   })
 })
