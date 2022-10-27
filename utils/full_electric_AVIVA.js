@@ -104,7 +104,7 @@ const sendEmail = () => {
 
         const email = {
             from: '"Full Electric Mago" <noreply@allianz.it>',
-            to: 'mail_tf@allianz.it',
+            to: 'mail_tf@allianz.it,chiara.costa@allianz.it',
             subject: 'Full Electric - Compagnia 14',
             html: generateTable() + '</br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>Thanks also to Angelo Merlo for query support</br></br>',
         };
