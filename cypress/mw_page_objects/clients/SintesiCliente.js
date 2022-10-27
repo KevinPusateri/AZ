@@ -948,6 +948,7 @@ class SintesiCliente {
         }).as('getAuto');
         Common.canaleFromPopup()
         cy.wait('@getAuto', { timeout: 50000 });
+        cy.wait(10000)
         getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
         getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
         cy.screenshot('Verifica aggancio FastQuote Impresa Sicura', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -960,9 +961,8 @@ class SintesiCliente {
         cy.wait(2000)
         cy.get('.cdk-overlay-container').find('button').contains('FastQuote Albergo').click()
         cy.wait(2000)
-        cy.in
         Common.canaleFromPopup()
-        cy.wait(8000)
+        cy.wait(10000)
         getIFrame().find('input[value="Cerca"]').invoke('attr', 'value').should('equal', 'Cerca')
         getIFrame().find('input[value="› Calcola"]').invoke('attr', 'value').should('equal', '› Calcola')
         cy.screenshot('Verifica aggancio FastQuote Albergo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -1081,8 +1081,8 @@ class SintesiCliente {
 
         getIFrame().find('#ButtonQuestOk').click().wait(3000)
         cy.wait('@dacontabilita', { timeout: 60000 })
-
-        getIFrame().find('#TabVarieInserimentoTipoPagamento').click().wait(1000)
+        cy.wait(4000)
+        getIFrame().find('#TabVarieInserimentoTipoPagamento:visible').click().wait(1000)
         getIFrame().find('li:visible').contains("Contanti").click()
         getIFrame().find('#FiltroTabVarieInserimentoDescrizione').type("TEST AUTOMATICO")
         getIFrame().find('#TabVarieInserimentoCassetto').click()
@@ -1098,7 +1098,7 @@ class SintesiCliente {
         getIFrame().find('#TabVarieInserimentoButton').click().wait(8000)
 
         cy.wait('@questionariWeb', { timeout: 60000 })
-
+        cy.wait(10000)
         getIFrame().within(($frame) => {
             cy.screenshot('Emetti Plein Air', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 

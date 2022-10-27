@@ -184,11 +184,9 @@ class LandingRicerca {
             cy.get('tbody > tr').first().find('span[class="customer-name"]').then(($name) => {
                 cy.log($name.text().trim())
                 let nameClient = $name.text().trim()
-                cy.pause()
             })
 
             cy.get('tbody > tr').first().click()
-            cy.pause()
             //TODO Verificare cliente selezionato aggancia alla scheda cliente 
             //! Non rimane nella scheda cliente
 
