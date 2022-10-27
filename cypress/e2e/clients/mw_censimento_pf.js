@@ -96,9 +96,9 @@ describe('Matrix Web : Censimento Nuovo Cliente PF', {
 
   it('Ricercare il cliente appena censito nella buca di ricerca', () => {
     HomePage.reloadMWHomePage()
-    TopBar.search(nuovoClientePF.nome + " " + nuovoClientePF.cognome)
+    TopBar.search(`${nuovoClientePF.cognome} ${nuovoClientePF.nome}`)
     LandingRicerca.filtra('PF','P')
-    LandingRicerca.clickClientePF(nuovoClientePF.nome + " " + nuovoClientePF.cognome)
+    LandingRicerca.clickClientePF(`${nuovoClientePF.cognome} ${nuovoClientePF.nome}`)
   })
 
   it('Cancellare il cliente', () => {
