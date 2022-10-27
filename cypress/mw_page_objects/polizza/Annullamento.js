@@ -74,7 +74,7 @@ class Annullamento {
             cy.get('#ui-datepicker-div').should('be.visible')
             cy.get('#ui-datepicker-div:visible').within(() => {
                 cy.contains('Succ').click()
-                cy.get('tbody').find('td').contains('1').click()
+                cy.get('tbody').find('td').contains('10').click()
             })
             cy.get('[class*="ui-datepicker-trigger"]').eq(1).click()
             cy.get('#ui-datepicker-div').should('be.visible')
