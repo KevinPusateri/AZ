@@ -202,7 +202,7 @@ class Legami {
         cy.contains('div[class^="member-name"]', membro)
             .parents('div[class^="member"]').find('nx-icon[class="trash-icon nx-icon--s ndbx-icon nx-icon--trash"]').click()
         cy.get('.cdk-overlay-container').find('span[class="text"]:visible').should('contain.text', 'Rimuovere')
-        cy.get('#nx-modal-0').within(()=>{
+        cy.get('nx-modal-container[id^="nx-modal-"]').within(()=>{
             cy.contains('Si').click()
         })
 
