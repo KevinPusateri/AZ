@@ -94,7 +94,8 @@ var cliente_email = 'f.ninno@allianz.it'
 */
 var prodotto = 'ULTRA CASA'
 var ambito_garanzia_fabbricato = 'Fabbricato'
-var classe_garanzia_prodotto = 'Fabbricato - Incendio, Eventi atmosferici, Allagamento'
+//var classe_garanzia_prodotto = 'Fabbricato - Incendio, Eventi atmosferici, Allagamento'
+var classe_garanzia_prodotto = 'Incendio ed altri eventi'
 var loss_type = 'EVENTI ATMOSFERICI'
 var loss_cause = 'PIOGGIA'
 var oggetto_fabbricato
@@ -262,7 +263,40 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         DenunciaBMP.clickBtn_ByClassAndText(btn_class, 'Avanti');
     });
 
+    it('Denuncia BMP --> Dettaglio del danno --> Danni alla proprieta\' del cliente', function () {
+        // Scegliere un'opzione x 
+        let cssSlctPrt = 'div[cdkoverlayorigin] > div.nx-dropdown__rendered  > span.ng-star-inserted';
+        Common.clickFindByIdOnIframe(cssSlctPrt);
+        //ComboVBox: 'Oggetto Interessato' --> Contenuto nei locali - Arredamento e Vestiario
+        Common.clickFindByIdOnIframe(cssCmbFrstElement);
+        cy.wait(1000)
 
+        //Textbox:  Marca - Modello
+        DenunciaBMP.setValue_ById('input[formcontrolname="brand"]', 'Ikea - libreria');
+        //Textbox: Anno di acquisto
+        DenunciaBMP.setValue_ById('input[ name="yearOfPurchase"]', '2020');
+
+        cy.screenshot('10- Dettaglio del danno ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000);
+
+        //Textbox: 'Valore stimato del danno'
+        let cssTxtPrcs ='input[formcontrolname=\"costOfReinstatement\"]'
+        DenunciaBMP.setValue_ById(cssTxtPrcs, '2000');
+        cy.wait(2000);
+
+        // Avvocato del cliente (Si/No)
+        let cssBtnNoLawayer = 'nx-circle-toggle-group[data-testid="circleToggleOptions"] > div > div:nth-child(2) > nx-circle-toggle > label.nx-circle-toggle__label > nx-icon-toggle-button';
+        Common.clickFindByIdOnIframe(cssBtnNoLawayer);
+        cy.wait(1000);
+
+        cy.screenshot('11- Dettaglio del danno - Avvocato del cliente (Si o No): No', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000);
+        DenunciaBMP.clickBtn_ByClassAndText(btn_class,'Avanti')
+
+        cy.wait(1000);
+        cy.screenshot('12- Dettaglio del danno - Danni per il cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+    });
+/*
     it('Denuncia BMP --> Dettaglio del danno --> Danni alla proprietà del cliente', function () {
         
         let cssRdBtn1PrtNo ='#nx-radio-13-label > div:nth-child(1)'
@@ -300,6 +334,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         cy.screenshot('12- Dettaglio del danno - Danni alla proprietà del cliente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(3000);
     });
+ */
 
     it('Denuncia BMP --> Dettaglio del danno --> Danno per il cliente ', function () {
         // Altre parti Coinvolte

@@ -200,10 +200,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
         const idxclmn = 2
         ConsultazioneSinistriPage.checkTotalVsSumEachLineItem(cssTtlLctr, cssRwLctr, idxclmn)
     });
-
+/*
     it('Sinistri canalizzati:  ', function () {
         //Identificatore css del valore del campo totale
         const idFnt = "#tableDestraDati > tbody > tr"
         ConsultazioneSinistriPage.checkFonti(idFnt)
     });
+    */
 });
