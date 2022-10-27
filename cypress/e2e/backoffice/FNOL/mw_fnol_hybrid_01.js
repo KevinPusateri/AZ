@@ -100,7 +100,7 @@ var loss_type = 'EVENTI ATMOSFERICI'
 var loss_cause = 'PIOGGIA'
 var oggetto_fabbricato
 
-var sinistro_descrizione_danno = 'Emissione denuncia BMP con test automatizzato - Polizza Hybrid Ultra Casa & Patrimonio.'
+var sinistro_descrizione_danno = 'Automazione denuncia BMP - Polizza Hybrid Ultra Casa & Patrimonio.'
 var sinistro_località = 'TRIESTE'
 var sinistro_indirizzo = 'LUCREZIO'
 var sinistro_civico = '7'
