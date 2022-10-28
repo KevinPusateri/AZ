@@ -51,10 +51,10 @@ before(() => {
 
 beforeEach(() => {
     cy.preserveCookies()
-    if (!performeReload)
-        performeReload = true
-    else
-        cy.reload({ log: false })
+    // if (!performeReload)
+    //     performeReload = true
+    // else
+    //     cy.reload({ log: false })
 })
 
 afterEach(function () {
