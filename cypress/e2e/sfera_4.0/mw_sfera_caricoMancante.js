@@ -34,12 +34,13 @@ let options = {
 const flusso = true
 
 let dataInizio = Common.setDate(1, undefined, false)
+let dataFine = Common.setDate(25, 1, true)
 //#endregion
 
 //#region Before After
 before(() => {
     //! UTILIZZARE CHROME PER LA POSSIBILITA' DI FARE L'EXCEL
-    expect(Cypress.browser.name).to.contain('chrome')
+    // expect(Cypress.browser.name).to.contain('chrome')
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
@@ -55,13 +56,14 @@ before(() => {
     Sfera.espandiPannello()
     if (!flusso) {
         Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-        Sfera.setDateEstrazione(false, dataInizio)
+        Sfera.setDateEstrazione(false, dataInizio, dataFine)
         Sfera.estrai(false)
     }
 })
 
 beforeEach(() => {
     cy.preserveCookies()
+    cy.ignoreRequest()
 })
 
 if (flusso)
@@ -94,7 +96,7 @@ if (!Cypress.env('isSecondWindow'))
     describe('Matrix Web : Sfera 4.0 - Operatività - CARICO MANCANTE', function () {
 
         it('Age 01-712000 aprile maggio - Corretto caricamento dati', function () {
-            Sfera.setDateEstrazione(true, dataInizio)
+            Sfera.setDateEstrazione(true, dataInizio,dataFine)
         })
 
         it('Vista Carico Mancante', function () {
@@ -168,7 +170,7 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.SCHEDA_CLIENTE, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-            Sfera.setDateEstrazione(false, dataInizio)
+            Sfera.setDateEstrazione(false, dataInizio,dataFine)
             Sfera.estrai(false)
         })
 
@@ -176,7 +178,7 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-            Sfera.setDateEstrazione(false, dataInizio)
+            Sfera.setDateEstrazione(false, dataInizio,dataFine)
             Sfera.estrai(false)
         })
 
@@ -184,18 +186,17 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-            Sfera.setDateEstrazione(false, dataInizio)
+            Sfera.setDateEstrazione(false, dataInizio,dataFine)
             Sfera.estrai(false)
         })
 
         it('Menu Contestuale -> Consultazione Documenti di polizza_call back applicativa', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUCONSULTAZIONE.DOCUMENTI_POLIZZA, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+            Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
+            Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
         })
 
-        //? Sfera 4.0 - Operatività - CARICO MANCANTE -
-        //? Carico Mancante  e quietanzamento online_quietanzamento online ok>verificare in vista standard  il quietanzamento 
-        //! Da inizia appena il bug verrà risolto
     })
 else
     describe('Matrix Web : Sfera 4.0 -> Seconda Finestra - CARICO MANCANTE', function () {
@@ -258,21 +259,21 @@ else
             Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.SCHEDA_CLIENTE, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-            Sfera.setDateEstrazione(false, dataInizio)
+            Sfera.setDateEstrazione(false, dataInizio,dataFine)
             Sfera.estrai(false)
 
             // Menu Contestuale -> Cliente -> Lista polizze_call back applicativa
             Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_POLIZZE, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-            Sfera.setDateEstrazione(false, dataInizio)
+            Sfera.setDateEstrazione(false, dataInizio,dataFine)
             Sfera.estrai(false)
 
             // Menu Contestuale -> Cliente -> Lista Sinistri_call back applicativa
             Sfera.apriVoceMenu(Sfera.VOCIMENUCLIENTE.LISTA_SINISTRI, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-            Sfera.setDateEstrazione(false, dataInizio)
+            Sfera.setDateEstrazione(false, dataInizio,dataFine)
             Sfera.estrai(false)
 
             // Menu Contestuale -> Consultazione Documenti di polizza_call back applicativa
