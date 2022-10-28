@@ -104,7 +104,7 @@ const sendEmail = () => {
 
         const email = {
             from: '"Il Mago delle Targhe" <noreply@allianz.it>',
-            to: 'mail_tf@allianz.it',
+            to: 'mail_tf@allianz.it,chiara.costa@allianz.it',
             subject: 'Le Targhe Del Giorno - Autovetture e Motorette',
             html: generateTable() + '</br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>Thanks also to Angelo Merlo for query support</br></br>',
         };
