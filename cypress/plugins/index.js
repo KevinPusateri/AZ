@@ -204,7 +204,7 @@ function mysqlFindLastPolizza(dbConfig, prodotto, annullamento = false) {
         strAnnullamento = "1"
     }
 
-    var query = "SELECT * FROM da.polizza WHERE prodotto='"+ prodotto +"' and annullamento='" + strAnnullamento + "' ORDER BY dataEmissione DESC LIMIT 1"
+    var query = "SELECT * FROM da.polizza WHERE prodotto='"+ prodotto +"' and annullamento='" + strAnnullamento + "' ORDER BY dataEmissione ASC LIMIT 1"
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {

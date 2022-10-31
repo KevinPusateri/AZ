@@ -40,28 +40,29 @@ import 'cypress-iframe';
 const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
+const dbPolizze = Cypress.env('db_da')
 let insertedId
 //#endregion
 
 //#region Configuration
+const moment = require('moment')
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
+let prodotto = "Ultra Casa e Patrimonio"
+let ramo = "Rami Vari"
+let dataEmissione = moment().format('YYYY-MM-DD HH:mm:ss')
+let dataScadenza = moment().add(1, 'M').add(10, 'y').format('YYYY-MM-DD HH:mm:ss')
+let ambiente = Cypress.env('currentEnv')
+
 let cliente = PersonaFisica.PieroAngela()
-var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato]
+var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile]
 var casa = ["Casa 1"]
 var frazionamento = "annuale"
-let oggi = Date.now()
-let dataInizio = new Date(oggi)
-var dataOggi = ('0' + dataInizio.getDate()).slice(-2) + '' +
-  ('0' + (dataInizio.getMonth() + 1)).slice(-2) + '' +
-  dataInizio.getFullYear()
-let dataFine = new Date(oggi); dataFine.setFullYear(dataInizio.getFullYear() + 10)
-var scadenza = ('0' + dataFine.getDate()).slice(-2) + '' +
-  ('0' + (dataFine.getMonth() + 1)).slice(-2) + '' +
-  dataFine.getFullYear()
+var dataOggi = moment().format('DDMMYYYY')
+var scadenza = moment().add(1, 'M').add(10, 'y').format('DDMMYYYY')
 var nContratto = "000"
 //#endregion variabili iniziali
 
@@ -121,16 +122,15 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   })
 
   it("Modifica durata per ambiti", () => {
-    Dashboard.dotMenu(ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, "Modifica la durata")
+    Dashboard.dotMenu(ambiti[0], "Modifica la durata")
     Dashboard.modificaDurata(30)
-    Dashboard.dotMenu(ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile, "Modifica la durata")
+    Dashboard.dotMenu(ambiti[1], "Modifica la durata")
     Dashboard.modificaDurata(30)
   })
 
   it("Procedi", () => {
     Dashboard.procediHome()
     DatiQuotazione.CaricamentoPagina()
-    //Riepilogo.caricamentoRiepilogo()
   })
 
   it("Conferma dati quotazione", () => {
@@ -160,7 +160,6 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   it("Dati integrativi", () => {
     DatiIntegrativi.selezionaTuttiNo()
     DatiIntegrativi.ClickButtonAvanti()
-    // DatiIntegrativi.approfondimentoSituazioneAssicurativa(false)
     DatiIntegrativi.confermaDichiarazioniContraente()
     CondividiPreventivo.caricamentoPreventivo()
   })
@@ -193,7 +192,7 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
     StartPage.menuHeader(menuStart.recupero)
     RecuperoPreventivo.impostaFiltro(filtroRicercaPreventivo.dataDal, dataOggi)
     RecuperoPreventivo.clickFiltraRisultati()
-    //RecuperoPreventivo.ordinaRisultati(ordinePolizze.colonna.numero, ordinePolizze.ordine.ascendente)    
+    //RecuperoPreventivo.ordinaRisultati(ordinePolizze.colonna.numero, ordinePolizze.ordine.ascendente)
     RecuperoPreventivo.gestisci(nContratto)
     Dashboard.caricamentoDashboardUltra()
   })
@@ -220,7 +219,6 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   })
 
   it("Emissione - Privacy", () => {
-    //ConsensiPrivacy.visualizzaDocumento("tutti")
     ConsensiPrivacy.Avanti()
     ControlliProtocollazione.caricamentoPagina()
   })
@@ -254,7 +252,6 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
     }).then(($body) => {
       cy.wait(7000)
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
-      //const check = cy.get('div[class="client-null-message"]').should('be.visible')
       cy.log('permessi: ' + check)
       if (check) {
         cy.get('input[name="main-search-input"]').type(cliente).type('{enter}')
@@ -288,6 +285,7 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
 
   it("Esito incasso", () => {
     Incasso.EsitoIncasso(false)
+    cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, dataEmissione, dataScadenza, ramo, prodotto, ambiente)
     Incasso.Chiudi(false)
   })
 
@@ -312,13 +310,11 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   })
 
   it("Verifica ambiti", () => {
-    //todo chiudere popup?
     Portafoglio.checkAmbiti(nContratto, ["FABBRICATO MUTUO", "RESPONSABILITA' CIVILE ESSENTIAL"])
   })
 
 
   it("Fine", () => {
-    cy.pause()
     //todo folder?
   })
 })

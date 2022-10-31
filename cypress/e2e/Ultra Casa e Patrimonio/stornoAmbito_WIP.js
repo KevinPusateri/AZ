@@ -26,6 +26,7 @@ let insertedId
 //#endregion
 
 //#region Configuration
+let ricercaPolizza = "ricercaDiretta"
 const moment = require('moment')
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
@@ -88,23 +89,57 @@ after(function () {
 
 describe("STORNO AMBITO", () => {
     it("Ricerca polizza", () => {
-        //cerca polizza
-        cy.get('input[name="main-search-input"]').click()
-        cy.get('input[name="main-search-input"]').type(lastPolizza).type('{enter}')
+        switch (ricercaPolizza) {
+            case "schedaCliente":
+                cy.get('body').within(() => {
+                    cy.get('input[name="main-search-input"]').click()
+                    cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
+                    cy.get('lib-client-item').first()
+                        .find('.name').trigger('mouseover').click()
+                }).then(($body) => {
+                    cy.wait(7000)
+                    const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+                    cy.log('permessi: ' + check)
+                    if (check) {
+                        cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
+                        cy.get('lib-client-item').first().next().click()
+                    }
+                })
 
-        //apre card polizza
-        cy.get('lib-contract-card-search').first().should('be.visible')
-            .find("nx-icon").click()
+                Portafoglio.apriPortafoglioLite()
+                //todo ricerca polizza per lista
+                //Portafoglio.ordinaPolizze("Numero contratto")
+                Portafoglio.listaPolizze(true)
+                break;
+
+            case "ricercaDiretta":
+                //cerca polizza
+                cy.get('input[name="main-search-input"]').click()
+                cy.get('input[name="main-search-input"]').type(lastPolizza).type('{enter}')
+
+                //apre card polizza
+                cy.get('lib-contract-card-search').first().should('be.visible')
+                    .find("nx-icon").click()
+                break;
+        }
     })
 
     it("Apertura sezione Annullamenti", () => {
-        cy.get("lib-contract-search-context-menu").should('be.visible')
-            .children("nx-icon").click() //apre menù contestuale
-        cy.get('[role="menu"][class^="nx-context-menu"]').find("button").contains(menuPolizzeAttive.mostraAmbiti).click() //apre 'mostra ambiti' da menù contestuale
-        cy.get('nx-modal-container[aria-label="Show Scopes Modal"]').find('nx-icon[class*="' + ambitoStorno + '"]')
-            .parents('div[class^="card"]').first().find('[name="ellipsis-h"]').click() //apre menù contestuale ambito
-        cy.get("lib-da-link").find("button").contains("Annullamento").click() //seleziona 'annullamento'
+        switch (ricercaPolizza) {
+            case "schedaCliente":
+                Portafoglio.menuContrattoLista(lastPolizza, menuPolizzeAttive.mostraAmbiti)
+                Portafoglio.menuContestualeAmbiti(ambitoStorno, "Annullamento")
+                break;
 
+            case "ricercaDiretta":
+                cy.get("lib-contract-search-context-menu").should('be.visible')
+                    .children("nx-icon").click() //apre menù contestuale
+                cy.get('[role="menu"][class^="nx-context-menu"]').find("button").contains(menuPolizzeAttive.mostraAmbiti).click() //apre 'mostra ambiti' da menù contestuale
+                cy.get('nx-modal-container[aria-label="Show Scopes Modal"]').find('nx-icon[class*="' + ambitoStorno + '"]')
+                    .parents('div[class^="card"]').first().find('[name="ellipsis-h"]').click() //apre menù contestuale ambito
+                cy.get("lib-da-link").find("button").contains("Annullamento").click() //seleziona 'annullamento'
+                break;
+        }        
         Common.canaleFromPopup()
         Annullamenti.caricamentoAnnullamentiRV()
     })
@@ -143,7 +178,7 @@ describe("STORNO AMBITO", () => {
         cy.get('nx-modal-container[aria-label="Show Scopes Modal"]').find('nx-icon[class*="' + ambitoStorno + '"]')
             .parents('div[class^="card"]').first().find("nx-badge").contains("ANNULLATO").should('be.visible') //verifica la presenza del badge 'ANNULLATO'
 
-            cy.pause()
+        cy.pause()
 
         //verifica l'assenza della voce "Annullamento" nel menù contestuale
         cy.get('nx-modal-container[aria-label="Show Scopes Modal"]').find('nx-icon[class*="' + ambitoStorno + '"]')

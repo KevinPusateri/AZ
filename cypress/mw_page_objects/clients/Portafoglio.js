@@ -134,6 +134,36 @@ class Portafoglio {
     }
 
     /**
+     * Apre (true) o chiude (false) la lista delle polizze
+     * @param {bool} apertaChiusa 
+     */
+    static listaPolizze(apertaChiusa) {
+        switch (apertaChiusa) {
+            case true:
+                cy.get(".app-wallet-list-toggle-button").then(($body) => {
+                    if ($body.children('div[class="icon"]').is(':visible')) {
+                        $body.trigger('click')
+                    }
+                    else {
+                        cy.log('Lista già aperta')
+                    }
+                })
+                break;
+            case false:
+                cy.get(".app-wallet-list-toggle-button").then(($body) => {
+                    if ($body.children('div[class="icon open"]').is(':visible')) {
+                        $body.trigger('click')
+                    }
+                    else {
+                        cy.log('Lista già chiusa')
+                    }
+                })
+                break;
+        }
+    }
+
+
+    /**
      * Verifica presenza dei subTabs di Portafoglio
      */
     static checkLinksSubTabs() {
@@ -415,7 +445,7 @@ class Portafoglio {
                 cy.log('Sono presenti')
                 cy.get('lib-da-link[calldaname]').as('polizze')
                 cy.get('@polizze').should('be.visible')
-            }else{
+            } else {
                 cy.wait(3000)
             }
         })
@@ -901,6 +931,27 @@ class Portafoglio {
             this.checkPage(voce)
     }
 
+    /**
+     * Apre il menù contestuale della polizza nella visualizzazione 'Lista' e seleziona la voce indicata
+     * @param {string} nContratto 
+     * @param {fixture} voce 
+     */
+    static menuContrattoLista(nContratto, voce) {
+        //cerca il riquadro del contratto e apre il menù contestuale
+        cy.get('table[class*="contracts-table"]').contains(nContratto)
+            .parents('tr[class^="nx-table-row"]').find('app-contract-context-menu')
+            .children('nx-icon').click()
+
+        //cy.wait(200);
+
+        cy.get('[class*="transformContextMenu"]').should('be.visible')
+            .contains(voce).click({ force: true }) //seleziona la voce dal menù
+        cy.wait(500);
+
+        // .loading-spinner | loading-container nx-image--auto
+        cy.get('[class="loading-spinner"]').should('not.exist').wait(300)
+    }
+
     static checkAmbiti(nContratto, ambiti) {
         this.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti) //apre popup ambiti del contratto
         cy.get('nx-modal-container').should('be.visible')
@@ -1148,8 +1199,9 @@ class Portafoglio {
         cy.get('.modal-title').children().contains('Ambiti del contratto')
 
         //cerca il riquadro dell'ambito indicato e apre il menù contestuale
+        //todo verificare
         cy.get('nx-modal-container').should('be.visible')
-            .find('.category').contains(ambito.toUpperCase())
+            .find('.category').contains(ambito, { matchCase: false })
             .parents('[class^="card"]').find('app-module-context-menu')
             .find('nx-icon').click()
 
