@@ -19,7 +19,8 @@ class LoginPage {
         cy.clearLocalStorage()
         cy.viewport(1280, 1080)
 
-        cy.visit('/', { responseTimeout: 31000 }, {
+        cy.visit(
+            (Cypress.env('currentEnv') === 'PREPROD') ? Cypress.env('loginUrlGraphQLPreprod') : '/', { responseTimeout: 31000 }, {
             // onBeforeLoad: win => {
             //     win.sessionStorage.clear();
             //     Object.defineProperty(win.navigator, 'language', { value: 'it-IT' });

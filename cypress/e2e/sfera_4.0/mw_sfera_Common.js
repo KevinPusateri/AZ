@@ -6,6 +6,7 @@
 /// <reference types="Cypress" />
 
 //#region import
+import Common from "../../mw_page_objects/common/Common"
 import HomePage from "../../mw_page_objects/common/HomePage"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
@@ -29,12 +30,8 @@ let options = {
         openMode: 0,
     }
 }
-let today = new Date()
-today.setDate(today.getDate() + 5)
-let dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
-today.setMonth(today.getMonth() + 1)
-let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear()
-
+let dataInizio = Common.setDate(1, 2, false)
+let dataFine = Common.setDate(25, 1, true)
 //#endregion
 
 //#region Before After
@@ -71,7 +68,7 @@ if (!Cypress.env('isSecondWindow'))
     describe('Matrix Web : Sfera 4.0', function () {
 
         it('Verificare Cluster Motor Delta Premio Positivo e Negativo', function () {
-            Sfera.setDateEstrazione()
+            Sfera.setDateEstrazione(true, dataInizio, dataFine)
             Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_NEGATIVO, true)
             Sfera.espandiPannello()
             Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
@@ -101,7 +98,7 @@ if (!Cypress.env('isSecondWindow'))
         it('Effettua Stampa Senza Incasso per Quietanze Motor Allianz', function () {
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.STAMPA_QUIETANZE)
             Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione()
+            Sfera.setDateEstrazione(false, dataInizio, dataFine)
             Sfera.estrai()
             Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, true, null, null, null, true).then((polizza) => {
@@ -129,7 +126,7 @@ if (!Cypress.env('isSecondWindow'))
         // })
 
 
-        it.skip('Verifica Estrazione report excel', function () {
+        it('Verifica Estrazione report excel', function () {
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
             Sfera.setDateEstrazione()
             Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)

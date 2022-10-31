@@ -74,21 +74,25 @@ class SCUGestioneFontePrincipale {
       cy.contains('span', 'Nessuna fonte selezionata').click()
       cy.wait(4000)
       cy.get('table[class="k-selectable"] > tbody').then(($table) => {
-        cy.wrap($table).find('tr:visible').not('tr:first').not('tr:contains("AUTOVELLETRI SRL")').then(($tr) => {
+        cy.wrap($table).find('tr:visible').not('tr:first')
+        .not('tr:contains("AUTOVELLETRI SRL")')
+        .not('tr:contains("SEDE SECONDARIA")')
+        .not('tr:contains("AGENZIA")')
+        .not('tr:contains("SUBAGENZIA")').then(($tr) => {
           indexFonte = Math.floor(Math.random() * $tr.length)
 
           if ($tr.eq(indexFonte).hasClass('k-treelist-group')) {
-            cy.wrap($tr.eq(indexFonte)).find('span[class="k-icon k-i-expand"]').click().wait(2000)
+            cy.wrap($tr.eq(indexFonte)).find('span[class="k-icon k-i-expand"]').click({ force: true }).wait(2000)
             cy.wrap($tr.eq(indexFonte).next().find('td').eq(0)).invoke('text').then((agente) => {
               nameAgente = agente
             })
 
-            cy.wrap($tr.eq(indexFonte).next()).click()
+            cy.wrap($tr.eq(indexFonte).next()).click({ force: true })
           } else {
             cy.wrap($tr.eq(indexFonte).find('td').eq(0)).invoke('text').then((agente) => {
               nameAgente = agente
             })
-            cy.wrap($tr.eq(indexFonte)).click()
+            cy.wrap($tr.eq(indexFonte)).click({ force: true })
           }
 
         })
@@ -194,23 +198,27 @@ class SCUGestioneFontePrincipale {
       cy.contains('span', 'Nessuna fonte selezionata').click()
       cy.wait(4000)
       cy.get('table[class="k-selectable"] > tbody').then(($table) => {
-        cy.wrap($table).find('tr:visible').not('tr:first').not('tr:contains("AUTOVELLETRI SRL")').then(($tr) => {
-          indexFonte = Math.floor(Math.random() * $tr.length)
+        cy.wrap($table).find('tr:visible').not('tr:first')
+          .not('tr:contains("AUTOVELLETRI SRL")')
+          .not('tr:contains("SEDE SECONDARIA")')
+          .not('tr:contains("AGENZIA")')
+          .not('tr:contains("SUBAGENZIA")').then(($tr) => {
+            indexFonte = Math.floor(Math.random() * $tr.length)
 
-          if ($tr.eq(indexFonte).hasClass('k-treelist-group')) {
-            cy.wrap($tr.eq(indexFonte)).find('span[class="k-icon k-i-expand"]').click().wait(2000)
-            cy.wrap($tr.eq(indexFonte).next().find('td').eq(0)).invoke('text').then((agente) => {
-              nameAgente = agente
-              cy.log(nameAgente)
-            })
-            cy.wrap($tr.eq(indexFonte).next()).click()
-          } else {
-            cy.wrap($tr.eq(indexFonte).find('td').eq(0)).invoke('text').then((agente) => {
-              nameAgente = agente
-            })
-            cy.wrap($tr.eq(indexFonte)).click()
-          }
-        })
+            if ($tr.eq(indexFonte).hasClass('k-treelist-group')) {
+              cy.wrap($tr.eq(indexFonte)).find('span[class="k-icon k-i-expand"]').click({ force: true }).wait(2000)
+              cy.wrap($tr.eq(indexFonte).next().find('td').eq(0)).invoke('text').then((agente) => {
+                nameAgente = agente
+                cy.log(nameAgente)
+              })
+              cy.wrap($tr.eq(indexFonte).next()).click({ force: true })
+            } else {
+              cy.wrap($tr.eq(indexFonte).find('td').eq(0)).invoke('text').then((agente) => {
+                nameAgente = agente
+              })
+              cy.wrap($tr.eq(indexFonte)).click({ force: true })
+            }
+          })
       })
     })
     // Click Imposta Fonte principale

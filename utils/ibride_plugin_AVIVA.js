@@ -94,7 +94,7 @@ const sendEmail = () => {
         const nodemailer = require('nodemailer')
 
         let transporter = nodemailer.createTransport({
-            host: 'techuser.mail.allianz',
+            host: 'techuser.mail.allianz,chiara.costa@allianz.it',
             port: 25,
             secure: false,
             tls: {

@@ -23,6 +23,7 @@ let options = {
         openMode: 0,
     }
 }
+const linksBurger = BurgerMenuSales.getLinks()
 //#endregion
 
 
@@ -87,6 +88,21 @@ beforeEach(() => {
     BurgerMenuSales.clickBurgerMenu()
 })
 afterEach(function () {
+    cy.task('getHostName').then(hostName => {
+        //! Eseguire i test su vedi file BurgerMenuLinkEsterni.js
+        //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
+        if (this.currentTest.title.includes(linksBurger.ALLIANZ_GLOBAL_ASSISTANCE_OAZIS) ||
+            this.currentTest.title.includes(linksBurger.ALLIANZ_GLOBAL_ASSISTANCE_GLOBY) ||
+            this.currentTest.title.includes(linksBurger.GED_GESTIONE_DOCUMENTALE)) {
+            if (!hostName.includes('SM')) {
+                cy.task('warn', 'WARN --> Eseguire questo Test in Locale settando il Proxy')
+            } else {
+                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale settando il Proxy')
+            }
+        }
+    })
+
+
     if (this.currentTest.state !== 'passed') {
         cy.ignoreRequest()
         cy.visit(url)
@@ -374,17 +390,8 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', options, function (
         if (Cypress.env('isAviva'))
             this.skip()
 
-        cy.task('getHostName').then(hostName => {
-            let currentHostName = hostName
-            if (!currentHostName.includes('SM')) {
-                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warn', 'WARN --> Eseguire questo Test in Locale con Proxy')
-                // BurgerMenuSales.clickLink('GED – Gestione Documentale', false)
-            } else {
-                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale con Proxy')
-            }
-        })
+        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
+        BurgerMenuSales.clickLink('GED – Gestione Documentale', false)
     })
 
     it('Verifica aggancio Documenti da gestire', function () {
@@ -403,37 +410,20 @@ describe('Matrix Web : Navigazioni da Burger Menu in Sales', options, function (
         BurgerMenuSales.backToSales()
     })
 
-    it('Verifica aggancio Allianz Global Assistance - OAZIS', function () {
+    it('Verifica aggancio Allianz global assistance - OAZIS', function () {
         if (!keys.ALLIANZ_GLOBAL_ASSISTANCE_OAZIS)
             this.skip()
-        cy.task('getHostName').then(hostName => {
-            let currentHostName = hostName
-            if (!currentHostName.includes('SM')) {
-                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warn', 'WARN --> Eseguire questo Test in Locale con Proxy')
-                // BurgerMenuSales.clickLink('Allianz global assistance - OAZIS', false)
-            } else {
-                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale con Proxy')
-            }
-        })
+
+        this.skip()
+        BurgerMenuSales.clickLink('Allianz global assistance - OAZIS', false)
     })
 
-    it('Verifica aggancio Allianz Global Assistance - GLOBY', function () {
-        // throw new Error('Settare il proxy')
+    it('Verifica aggancio Allianz global assistance - GLOBY', function () {
         if (!keys.ALLIANZ_GLOBAL_ASSISTANCE_GLOBY)
             this.skip()
-        cy.task('getHostName').then(hostName => {
-            let currentHostName = hostName
-            if (!currentHostName.includes('SM')) {
-                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warn', 'WARN --> Eseguire questo Test in Locale con Proxy')
-                // BurgerMenuSales.clickLink('Allianz global assistance - GLOBY', false)
-            } else {
-                //! Settare HTTP_PROXY e NO_PROXY(vedi file BurgerMenuLinkEsterni.js)
-                cy.task('warnTFS', 'WARN --> Eseguire questo Test in Locale con Proxy')
-            }
-        })
+
+        this.skip() //FORZATO testare su BurgerMenuLinkEsterni
+        BurgerMenuSales.clickLink('Allianz global assistance - GLOBY', false)
     })
 
     it('Verifica aggancio Allianz Placement Platform', function () {

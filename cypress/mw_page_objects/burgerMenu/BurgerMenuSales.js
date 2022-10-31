@@ -108,6 +108,10 @@ const LinksBurgerMenu = {
 
 class BurgerMenuSales extends Sales {
 
+    static getLinks(){
+        return LinksBurgerMenu
+    }
+
     static getProfiling(tutf, keys) {
         cy.getProfiling(tutf).then(profiling => {
             cy.filterProfile(profiling, 'COMMON_MATRIX_MOTOR_ASSUNTIVO').then(profiled => { keys.PREVENTIVO_MOTOR = profiled })

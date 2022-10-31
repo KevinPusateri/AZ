@@ -485,7 +485,8 @@ const Filtri = {
             VUOTO: "Vuoto",
             A_710000: "710000",
             A_1960: "1960",
-            A_712000: "712000"
+            A_712000: "712000",
+            A_2349: "2349"
         }
     },
     ULT_TIPO_INVIO: {
@@ -818,7 +819,7 @@ const ColumnQuietanzeScartate = {
         tooltip: 'Data Inizio Copertura'
     },
     CONV_TECN: {
-        key: 'Conv. Tecn.',
+        key: 'Conv.Tecn.',
         tooltip: 'Convenzione Tecnica'
     },
     TARGA: {
@@ -826,7 +827,7 @@ const ColumnQuietanzeScartate = {
         tooltip: 'Numero di Targa'
     },
     ERRORE_QUIET: {
-        key: 'Errore Quiet',
+        key: 'ErroreQuiet',
         tooltip: 'Errore per il mancato Quietanzamento'
     },
     NOTE: {
@@ -834,19 +835,19 @@ const ColumnQuietanzeScartate = {
         tooltip: 'Motivazione per il mancato Quietanzamento'
     },
     SOLUZIONE_PER_AGENZIA: {
-        key: 'Soluzione per Agenzia',
+        key: 'Soluzioneper Agenzia',
         tooltip: 'Soluzione per Agenzia'
     },
     CLA_BM_CIP_PROV: {
-        key: 'Cla. BM CIP Prov.',
+        key: 'Cla. BMCIP Prov.',
         tooltip: 'Classe Bonus CIP di provenienza'
     },
     CLA_BM_RINN: {
-        key: 'Cla. BM Rinn.',
+        key: 'Cla. BMRinn.',
         tooltip: 'Classe Bonus Malus di Rinnovo'
     },
     CLA_BM_CIP: {
-        key: 'Cla. BM CIP',
+        key: 'Cla. BMCIP',
         tooltip: 'Classe Bonus CIP'
     }
 
@@ -1207,7 +1208,7 @@ class Sfera {
      * @private
      */
     static tableEstrazione() {
-        cy.get('app-table-component', { timeout: 45000 }).should('be.visible')
+        cy.get('app-table-component', { timeout: 60000 }).should('be.visible')
     }
 
     /**
@@ -1447,7 +1448,7 @@ class Sfera {
 
         if (valore === 'RANDOM') {
             cy.get('thead').within(() => {
-                cy.get(`div:contains(${filtro.key}):first`).scrollIntoView().parent().find('nx-icon:last').click()
+                cy.get(`div:contains("${filtro.key}"):first`).scrollIntoView().parent().find('nx-icon:last').click()
             })
             cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
 
@@ -1463,7 +1464,7 @@ class Sfera {
                 if (filtro === Filtri.INFO)
                     cy.get('th[class~="customBandierinaSticky"]').find('nx-icon:last').click()
                 else
-                    cy.get(`div:contains(${filtro.key}):first`).scrollIntoView().parent().find('nx-icon:last').click()
+                    cy.get(`div:contains("${filtro.key}"):first`).scrollIntoView().parent().find('nx-icon:last').click()
             })
 
             if (filtro === Filtri.ULT_RICH_AVVISO_CPP) {
@@ -1475,7 +1476,7 @@ class Sfera {
             } else {
                 if (filtro === Filtri.INFO)
                     cy.get('div[class="filterPopover filterPopoverV2 ng-star-inserted"]').within(() => {
-                        cy.get(`span:contains(${valore})`).click()
+                        cy.get(`span:contains("${valore}")`).click()
                     })
                 else
                     cy.get('div[class="filterPopover ng-star-inserted"]').within(() => {
@@ -1756,24 +1757,24 @@ class Sfera {
                     cy.wait(15000)
                     cy.screenshot('Verifica Accesso a Pagamenti NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     // if (Cypress.env('currentEnv') === 'TEST') {
-                    //     if (flussoCompleto) {
-                    //         getAppJump().within(() => { NGRA2013.ClickConfermaPagamento() })
-                    //         getAppJump().within(() => { NGRA2013.ClickIncassa() })
-                    //         getAppJump().within(($iframe) => { NGRA2013.ClickPopupWarning($iframe) })
-                    //         getAppJump().within(() => { IncassoDA.SelezionaIncassa() })
-                    //         getAppJump().within(() => { NGRA2013.TerminaIncasso() })
-                    //     } else
-                    //         getAppJump().within(() => { NGRA2013.home(true) })
+                        if (flussoCompleto) {
+                            getAppJump().within(() => { NGRA2013.ClickConfermaPagamento() })
+                            getAppJump().within(() => { NGRA2013.ClickIncassa() })
+                            getAppJump().within(($iframe) => { NGRA2013.ClickPopupWarning($iframe) })
+                            getAppJump().within(() => { IncassoDA.SelezionaIncassa() })
+                            getAppJump().within(() => { NGRA2013.TerminaIncasso() })
+                        } else
+                            getAppJump().within(() => { NGRA2013.home(true) })
                     // } else {
-                    if (flussoCompleto) {
-                        NGRA2013.ClickConfermaPagamento()
-                        NGRA2013.ClickIncassa()
-                        NGRA2013.ClickPopupWarning(undefined)
-                        IncassoDA.SelezionaIncassa()
-                        NGRA2013.TerminaIncasso()
-                    }
-                    else
-                        NGRA2013.home(true)
+                    // if (flussoCompleto) {
+                    //     NGRA2013.ClickConfermaPagamento()
+                    //     NGRA2013.ClickIncassa()
+                    //     NGRA2013.ClickPopupWarning(undefined)
+                    //     IncassoDA.SelezionaIncassa()
+                    //     NGRA2013.TerminaIncasso()
+                    // }
+                    // else
+                    //     NGRA2013.home(true)
                     // }
                     cy.get('sfera-quietanzamento-page').find('a:contains("Quietanzamento")').should('be.visible')
                     cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').then(() => {
@@ -1808,9 +1809,9 @@ class Sfera {
                     }
                     else {
                         // if (Cypress.env('currentEnv') === 'TEST') {
-                        //     getAppJump().within(() => { InquiryAgenzia.clickUscita() })
+                            getAppJump().within(() => { InquiryAgenzia.clickUscita() })
                         // } else {
-                        InquiryAgenzia.clickUscita()
+                        // InquiryAgenzia.clickUscita()
                         // }
                         //Verifichiamo il rientro in Sfera
                         this.verificaAccessoSfera(false)
@@ -2309,6 +2310,7 @@ class Sfera {
 
         cy.contains(clusterMotor).click({ force: true })
         cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+        cy.wait(4000)
 
         //Verifichiamo che sia valorizzato il numero tra ()
         cy.contains(clusterMotor).invoke('text').then(clusterMotorText => {
@@ -3368,8 +3370,10 @@ class Sfera {
                 checkLinks.push(value.key)
             }
             cy.wrap($table).find('div[class="table-component-th-name"]').each(($link, i) => {
-                currentLinks.push($link.text().trim())
+                currentLinks.push($link.text())
             }).then(() => {
+                console.log(currentLinks)
+                console.log(checkLinks)
                 var difference = checkLinks.filter(x => currentLinks.indexOf(x) === -1);
                 console.log(difference);
 
@@ -4044,7 +4048,7 @@ class Sfera {
      */
     static checkRigaEvidenziata(selectedRiga) {
         cy.wrap(selectedRiga).should('have.class', 'nx-table-row nx-table-row--selectable ng-star-inserted selectedRow')
-        cy.wrap(selectedRiga).should('have.css', 'border-bottom', '1px solid rgb(0, 122, 179)')
+        cy.wrap(selectedRiga).should('have.css', 'border-bottom-color', 'rgb(0, 122, 179)')
         cy.wrap(selectedRiga).within(() => {
             this.checkBoxControl().click({ force: true })
         })

@@ -94,6 +94,10 @@ const LinksBurgerMenu = {
 
 class BurgerMenuNumbers extends Numbers {
 
+    static getLinks(){
+        return LinksBurgerMenu
+    }
+
     /**
      * Otteniamo i link in base alle chiavi di profilzazioni settate
      * @param {string} tutf - utenza impersonificata 

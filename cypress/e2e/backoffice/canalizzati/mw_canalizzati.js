@@ -66,7 +66,7 @@ after(function () {
 let dscr_titlePage = 'Sinistri Canalizzati'
 let dscr_lblCmpgn = 'Compagnia selezionata:' 
 let dscr_Cmpgn = 'Allianz'
-let dscr_lblDtAggrnmnt = 'Dati Aggiornati'
+let dscr_lblDtAggrnmnt = 'Dati Aggiornati al'
 let dscr_lblGlssr = 'Glossario'
 let dscr_lblFnt = 'Seleziona Fonti'
 let dscr_lblPrd = 'Seleziona Periodo'
@@ -92,30 +92,31 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
 
     it('Sinistri canalizzati: verifica strutturale degli elementi dello header di pagina', function () {              
         const clssTtl = ".breadCrumbs_ActPos"
-        // Verifica presenza titolo di pagina
+        // Verifica presenza titolo di pagina "Sinistri Canalizzati"
         Common.isVisibleText(clssTtl, dscr_titlePage)
         //Verifica della label " Compagnia selezionata:"
-        const clssLbl = ".lblTitle4"
+        const clssLbl = "#dataCruscotto > table > tbody > tr:nth-child(3) > td:nth-child(1) > span:nth-child(1)"
         Common.isVisibleText(clssLbl, dscr_lblCmpgn)
         //Verifica presenza della Descrizione della compagnia
-        Common.isVisibleText(clssLbl, dscr_Cmpgn)
-        //Verifica presenza della label di della data di aggiornamento
-        const clssDtAggrnmnt = ".lblTitle4"
-        Common.isVisibleText(clssLbl, dscr_lblDtAggrnmnt)
+        const clssLbl_cmp = "#dataCruscotto > table > tbody > tr:nth-child(3) > td:nth-child(1) > span:nth-child(2) > b > label"
+        Common.isVisibleText(clssLbl_cmp, dscr_Cmpgn)
+        //Verifica presenza della label 'Dati Aggiornati'
+        const clssDtAggrnmnt = "#dataCruscotto > table > tbody > tr:nth-child(3) > td:nth-child(2) > span:nth-child(1)"
+        Common.isVisibleText(clssDtAggrnmnt, dscr_lblDtAggrnmnt)
         //Verifica presenza della label "Seleziona Fonti"
-        const clssSlznFnt = '.tdEtichettaMEFP' 
+        const clssSlznFnt = '#filterContent > table > tbody > tr:nth-child(2) > td:nth-child(1) > table > tbody > tr.trEtichettaMef > td > div' 
         Common.isVisibleText(clssSlznFnt, dscr_lblFnt)
         //Verifica presenza della label "Seleziona Periodo"
-        const clssSlznPrd = '.tdEtichettaMEFD' 
+        const clssSlznPrd = '#periodo > tbody > tr > td > table > tbody > tr.trEtichettaMef > td > div' 
         Common.isVisibleText(clssSlznPrd, dscr_lblPrd)
         //Verifica presenza della label posizionata in alto a destra riportante la descrizione: ' Glossario'
-        const clssGlssr = '.btnDownloadPDF'
+        const clssGlssr = '#linkEsportaGlossarioPDF > u'
         Common.isVisibleText(clssGlssr, dscr_lblGlssr)
         //Verifica della presenza del pulsante 'Filtra' 
-        const clssBtnFltr = '.btnFiltra'
+        const clssBtnFltr = '#submit-Mon_PTF'
         Common.isVisibleText(clssBtnFltr, dscr_btnFltr)
          //Verifica della presenza del pulsante 'Chiudi Filtri' 
-        const clssBtnClsFltr = '.filter-close'
+        const clssBtnClsFltr = '#toggleFilters'
         Common.isVisibleText(clssBtnClsFltr, dscr_btn_ClsFltr)
         //Verifica formale sulla data di aggiornamento
         const cssdtAggrmnt = "#dataRiferimentoInt"  
@@ -130,7 +131,7 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
     it('Sinistri canalizzati: verifica strutturale degli elementi del body di pagina', function () {
 
         // Verifica presenza titolo di pagina
-        const cssLblBody = ".labelSchedaFonteIndicatori"
+        const cssLblBody = "#LabelSinistri > div:nth-child(1)"
         Common.isVisibleText(cssLblBody, dscr_titleBdyPg)
         // Verifica della descrizione del tab Sinistri
         const cssTbSinistri = ".tabSelezionato"        
@@ -142,8 +143,8 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
         const cssImgXls = "#example > div:nth-child(3) > a:nth-child(2) > img"  
         Common.isVisibleImg(cssImgXls, "excel.png")
          //Verifica descrizione sul filtro temporale presente in tabella 
-         const cssFltrTmp = ".tdEtichettaMEFP"
-         Common.isVisibleText(cssFltrTmp, dscr_fltr_tmp)
+        const cssFltrTmp = "#labelDate"
+        Common.isVisibleText(cssFltrTmp, dscr_fltr_tmp)
         //Verifica presenza immagine "Euro"
         const cssImgEuro = "#imgEuro"
         Common.isVisibleImg(cssImgEuro, "Euro.gif")
@@ -200,10 +201,11 @@ describe('Matrix Web - Sinistri>>Consulatazione: Test di verifica dei sinistri c
         const idxclmn = 2
         ConsultazioneSinistriPage.checkTotalVsSumEachLineItem(cssTtlLctr, cssRwLctr, idxclmn)
     });
-
+/*
     it('Sinistri canalizzati:  ', function () {
         //Identificatore css del valore del campo totale
         const idFnt = "#tableDestraDati > tbody > tr"
         ConsultazioneSinistriPage.checkFonti(idFnt)
     });
+    */
 });

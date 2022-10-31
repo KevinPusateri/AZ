@@ -52,6 +52,7 @@ if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è at
     })
     beforeEach(() => {
         cy.preserveCookies()
+        cy.ignoreRequest()
     })
     afterEach(function () {
         if (this.currentTest.state !== 'passed') {
