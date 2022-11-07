@@ -225,6 +225,7 @@ describe("PREFERITI, APPENDICE E VINCOLO DIFFERITI", () => {
         Portafoglio.clickTabPortafoglio()
         Portafoglio.ordinaPolizze("Numero contratto")
         Portafoglio.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
+        cy.pause()
         Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
         Ultra.selezionaPrimaAgenzia()
         Appendici.caricamentoPagina()

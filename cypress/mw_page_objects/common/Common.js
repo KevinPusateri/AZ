@@ -448,6 +448,18 @@ class Common {
             }
         })
     }
+
+    /**
+     * Click on object identified by locator id, attribute and its value 
+     * @param {string} id : locator object id
+     * @param {string} attr : attribute object 
+     * @param {string} value : attribute value object 
+     */
+    static clickObjByIdAndAttrValueOnIframeChild(id, attr, value) {    
+        return  getIframe().find(id, { timeout: 5000 }).should('have.attr', attr, value).click();
+    }
+
+
     /**
     * Check if an img is displayed
     * @param {string} locator : class attribute 
