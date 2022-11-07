@@ -334,6 +334,15 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         cy.wait(2000)           
     });
 
+    it('Gestione Pagina CAI', function () {
+        Common.clickFindByIdOnIframeChild(IFrameParent, '#CAI_A2');
+        Common.clickFindByIdOnIframeChild(IFrameParent, '#CAI_B1');
+        cy.screenshot('Pagina Cai', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1000); 
+        Common.clickFindByIdOnIframeChild(IFrameParent, '#CmdAvantiCai'); 
+        cy.wait(2000)  
+    });
+
     it('Riepilogo denuncia - verifica dati danneggiato ', function () {
         // il danneggiato 
         Common.getObjByTextOnIframeChild(IFrameParent, "Veicolo");
