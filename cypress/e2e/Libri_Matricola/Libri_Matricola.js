@@ -29,6 +29,7 @@ import { InclusioneApplicazione } from '../../mw_page_objects/motor/LibriMatrico
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca";
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente";
 import TopBar from "../../mw_page_objects/common/TopBar";
+import HomePage from "../../mw_page_objects/common/HomePage";
 
 
 //#region Configuration
@@ -148,16 +149,18 @@ describe("LIBRI MATRICOLA", {
                 })
                 LibriMatricola.accessoElencoPrevApplicazioni(nLibroMatricola)
                 LibriMatricola.conversione()
-                TopBar.logOutMW()
+                // TopBar.logOutMW()
             })
 
         })
     })
 
+    //TODO login Errore cy.url should
     context('INCASSO POLIZZA MADRE', function () {
         it('Incasso', function () {
             cy.fixture('LibriMatricola/LibriMatricola.json').then((data) => {
-                LoginPage.logInMWAdvanced()
+                // LoginPage.logInMWAdvanced()
+                HomePage.reloadMWHomePage()
                 LandingRicerca.search(data.ClientePGIVA)
                 LandingRicerca.filtra()
                 LandingRicerca.clickFirstResult()
@@ -173,9 +176,9 @@ describe("LIBRI MATRICOLA", {
     })
 
 
-    context('INCLUSIONE APPLICAZIONI', function () {
-        //! impostare Come primo parametro : 1 caso di test 
-        InclusioneApplicazione('Auto', Veicoli.Auto_Applicazione1(), ['Furto'])
-    })
+    // context('INCLUSIONE APPLICAZIONI', function () {
+    //     //! impostare Come primo parametro : 1 caso di test 
+    //     InclusioneApplicazione('Auto', Veicoli.Auto_Applicazione1(), ['Furto'])
+    // })
 
 })
