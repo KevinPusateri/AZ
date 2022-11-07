@@ -141,8 +141,10 @@ class Portafoglio {
         switch (apertaChiusa) {
             case true:
                 cy.get(".app-wallet-list-toggle-button").then(($body) => {
+                    cy.log('Lista ' + $body.children('div[class="icon"]').is(':visible'))
                     if ($body.children('div[class="icon"]').is(':visible')) {
-                        $body.trigger('click')
+                        cy.log('Lista if ' + $body.children('div[class="icon"]').is(':visible'))
+                        $body.children('div[class="icon"]').trigger('click')
                     }
                     else {
                         cy.log('Lista già aperta')
@@ -1201,7 +1203,7 @@ class Portafoglio {
         //cerca il riquadro dell'ambito indicato e apre il menù contestuale
         //todo verificare
         cy.get('nx-modal-container').should('be.visible')
-            .find('.category').contains(ambito, { matchCase: false })
+            .find('nx-icon[class*="' + ambito + '"]')
             .parents('[class^="card"]').find('app-module-context-menu')
             .find('nx-icon').click()
 
@@ -1299,9 +1301,7 @@ class Portafoglio {
             cy.get('div[id="contenitore-dettagli"]').should('exist')
                 .find('input[value="› Modifica Preventivo"]').should('be.enabled').click()
         })
-
     }
-
 }
 export default Portafoglio
 //<img _ngcontent-yoe-c287="" class="loading-spinner" src="assets/images/spinner.gif" alt="Caricamento...">
