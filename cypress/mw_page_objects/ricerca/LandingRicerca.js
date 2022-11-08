@@ -153,7 +153,7 @@ class LandingRicerca {
         cy.get('lib-advice-navigation-section').find('button').contains('Ricerca classica').should('exist').and('be.visible').click()
         Common.canaleFromPopup()
         cy.url().should('include', 'legacyda')
-        cy.wait(10000)
+        cy.wait(5000)
         cy.getIFrame()
         cy.get('@iframe').should('exist').and('be.visible').within(() => {
             cy.get('#filtra-fisica').should('exist').and('be.visible')
