@@ -65,10 +65,9 @@ class IncassoDA {
         cy.intercept(selectTitolo).as('selectTitolo')
         cy.intercept(initMezziPagam).as('initMezziPagam')
         cy.intercept(getLogonUserName).as('getLogonUserName')
-
-        cy.wait('@selectTitolo', { timeout: 60000 })
+        cy.wait('@selectTitolo', { timeout: 100000 })
         // cy.wait('@initMezziPagam', { timeout: 60000 })
-        cy.wait('@getLogonUserName', { timeout: 60000 })
+        cy.wait('@getLogonUserName', { timeout: 100000 })
     }
 
     /**
@@ -192,7 +191,7 @@ class IncassoDA {
             .find('li:visible').contains(regexKeyType).click()
 
         //Conferma incasso
-        cy.screenshot('Conferma incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        // cy.screenshot('Conferma incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.get('#btnTabIncassoConfirm').should('be.visible').click()
 
         cy.wait('@incassa', { timeout: 120000 })
@@ -203,7 +202,7 @@ class IncassoDA {
         // Verifica incasso confermato
         cy.get('div[class="container"]').should('be.visible').then(() => {
             cy.wait(5000)
-            cy.screenshot('Verifica incasso conferrmato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot('Verifica incasso confermato', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             cy.wait(5000)
         })
         if (!TitoloIncassoByAnnullamento) {
