@@ -222,7 +222,6 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
     it("Esito incasso", () => {
         Incasso.EsitoIncasso()
         cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, dataEmissione, dataScadenza, ramo, prodotto, ambiente)
-
         Incasso.Chiudi()
     })
 
