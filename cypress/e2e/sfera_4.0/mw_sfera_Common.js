@@ -36,7 +36,7 @@ let dataFine = Common.setDate(25, 1, true)
 
 //#region Before After
 before(() => {
-    expect(Cypress.browser.name).to.contain('chrome')
+    // expect(Cypress.browser.name).to.contain('chrome')
 
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
@@ -65,7 +65,7 @@ after(function () {
 
 if (!Cypress.env('isSecondWindow'))
 
-    describe('Matrix Web : Sfera 4.0', function () {
+    describe('Matrix Web : Sfera 4.0',options, function () {
 
         it('Verificare Cluster Motor Delta Premio Positivo e Negativo', function () {
             Sfera.setDateEstrazione(true, dataInizio, dataFine)
@@ -73,15 +73,6 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.espandiPannello()
             Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
         })
-
-        // //! Necessari chiarimenti con Visentin
-        // it('Sostituzione stesso veicolo Titolo 2 e Verifica in Sfera', function () {
-        //     Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-        //     Sfera.estrai()
-        //     Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.VUOTO)
-        //     Sfera.apriVoceMenu(Sfera.VOCIMENU.SOSTITUZIONE_RIATTIVAZIONE_AUTO, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
-        //     cy.pause()
-        // })
 
         it('Quietanzamento Vista Operativa - Gestisci colora riga : Assegna colore', function () {
             Sfera.setDateEstrazione()
@@ -96,35 +87,16 @@ if (!Cypress.env('isSecondWindow'))
         })
 
         it('Effettua Stampa Senza Incasso per Quietanze Motor Allianz', function () {
+            let dataStartSI = Common.setDate(undefined, undefined, false)
+            let dataEndSI = Common.setDate(25, 1, true)
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.STAMPA_QUIETANZE)
             Sfera.selezionaPortafoglio(false, Sfera.PORTAFOGLI.MOTOR)
-            Sfera.setDateEstrazione(false, dataInizio, dataFine)
+            Sfera.setDateEstrazione(false, dataStartSI, dataEndSI)
             Sfera.estrai()
-            Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, true, null, null, null, true).then((polizza) => {
                 cy.log(`Stampa Senza Incasso effettuata su contratto ${polizza}`)
             })
         })
-
-        // TODO: ATTENDERE LA RISPOSTA DI STEFANO
-        // it('Sfera AZpay', () => {
-        //     Sfera.setDateEstrazione()
-        //     Sfera.selezionaVista('codice azpay')
-        //     Sfera.gestisciColonne(['Cons. Email Cl', 'Cod. AZPay'])
-        //     Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-        //     //! Problema -> Trovare il cliente valido per l'invio azpay
-        //     Sfera.creaAndInviaCodiceAzPay()
-        // })
-
-        // TODO: ATTENDERE
-        // it('verificare corretto layout del pannello scontistica su vista delta premio', function () {
-        //     Sfera.setDateEstrazione()
-        //     Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
-        //     Sfera.estrai()
-        //     Sfera.apriVoceMenu(Sfera.VOCIMENU.DELTA_PREMIO)
-        //     Sfera.verificaAccessoSfera()
-        // })
-
 
         it('Verifica Estrazione report excel', function () {
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
@@ -132,18 +104,17 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.filtraTipoQuietanze(Sfera.TIPOQUIETANZE.DA_LAVORARE)
             Sfera.estrai()
             Sfera.selectRighe(Sfera.SELEZIONARIGHE.PAGINA_CORRENTE)
-            Sfera.estrazioneReportExcel(Sfera.COLUMNSTANDARD)
+            Sfera.estrazioneReportExcel()
         })
 
         context('Verifica Rotella Gestione Colonne', () => {
 
-            it('Verifica Aggiungi, Drag & Drop, Elimina e Blocco di una Colonna', function () {
+            it('Verifica Aggiungi, Elimina e Blocco di una Colonna', function () {
                 Sfera.setDateEstrazione()
                 Sfera.estrai()
                 Sfera.gestisciColonne(['Cod. AZPay'])
                 Sfera.checkColonnaPresente('Cod. AZPay')
                 Sfera.bloccaColonna('Cod. AZPay')
-                // Sfera.dragDropColonna('Info') //! Da Implementare in quanto da studiare
                 Sfera.eliminaColonna('Cod. AZPay')
                 Sfera.checkColonnaAssente('Cod. AZPay')
                 Sfera.salvaVistaPersonalizzata('Automatici')
@@ -156,6 +127,7 @@ if (!Cypress.env('isSecondWindow'))
                 Sfera.gestisciColonne(['Cod. AZPay'])
                 Sfera.sostituisciVista('Automatici')
                 Sfera.selezionaVista('Automatici')
+                Sfera.estrai()
                 Sfera.checkColonnaPresente('Cod. AZPay')
                 Sfera.eliminaVista('Automatici')
             })
@@ -169,7 +141,9 @@ if (!Cypress.env('isSecondWindow'))
 
 
         it('Verifica incasso T2 motor Ramo 31', options, function () {
-            Sfera.setDateEstrazione(false, dataInizio, dataFine)
+            let dataStartIncasso = Common.setDate(undefined, undefined, false)
+            let dataEndIncasso = Common.setDate(25, 1, true)
+            Sfera.setDateEstrazione(false, dataStartIncasso, dataEndIncasso)
             Sfera.estrai()
             Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
@@ -178,13 +152,15 @@ if (!Cypress.env('isSecondWindow'))
         it('Verifica incasso T2 motor Ramo 32', options, function () {
             HomePage.reloadMWHomePage()
             Sfera.accediSferaDaHomePageMW(true)
-            Sfera.setDateEstrazione(false, dataInizio, dataFine)
+            let dataStartIncasso = Common.setDate(undefined, undefined, false)
+            let dataEndIncasso = Common.setDate(25, 1, true)
+            Sfera.setDateEstrazione(false, dataStartIncasso, dataEndIncasso)
             Sfera.estrai()
             Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_32)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.INCASSO, true, null, null, null, true)
         })
 
-        it.skip('Verifica Azioni Veloci > Esporta Excel', options, function () {
+        it('Verifica Azioni Veloci > Esporta Excel', options, function () {
             HomePage.reloadMWHomePage()
             Sfera.accediSferaDaHomePageMW(true)
             Sfera.setDateEstrazione(false, dataInizio, dataFine)

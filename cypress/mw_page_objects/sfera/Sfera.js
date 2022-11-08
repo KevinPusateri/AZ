@@ -1400,18 +1400,26 @@ class Sfera {
     static clickTipoQuietanze(tipoQuietanze, bePresent = false) {
 
         cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
+        cy.get('nx-checkbox[formcontrolname="' + tipoQuietanze + '"]')
+            .parents('nx-card-header')
+            .find('h3[nxheadline="subsection-small"]:first').invoke('text').then(($numQuiet) => {
+                let numQuiet = Number.parseInt($numQuiet.trim(), 10)
 
-        cy.get('nx-checkbox[formcontrolname="' + tipoQuietanze + '"]').within(() => {
+                cy.get('nx-checkbox[formcontrolname="' + tipoQuietanze + '"]').within(() => {
 
-            cy.get('input').invoke('attr', 'value').then((isCheckedString) => {
-                let isChecked
-                isChecked = String(isCheckedString) == "true" ? true : false
-                if ((isChecked && !bePresent) || (!isChecked && bePresent)) {
-                    cy.get('nx-icon[name="check"]').click()
-                    cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
-                }
+                    cy.get('input').invoke('attr', 'value').then((isCheckedString) => {
+                        let isChecked
+                        isChecked = String(isCheckedString) == "true" ? true : false
+                        debugger
+                        if (numQuiet > 0)
+                            if ((isChecked && !bePresent) || (!isChecked && bePresent)) {
+                                cy.get('nx-icon[name="check"]').click()
+                                cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+                            }
+                    })
+                })
             })
-        })
+
     }
 
     /**
@@ -1715,41 +1723,41 @@ class Sfera {
                     cy.wait(200)
                     cy.screenshot('Stampa Senza Incasso', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     // if (Cypress.env('currentEnv') === 'TEST') {
-                    //     if (flussoCompleto) {
-                    //         //! DA VERIFICA SE FUNZIONA il FLUSSO
-                    //         getAppJump().within(() => {
-                    //             IncassoDA.clickStampa()
-                    //         })
-                    //         getAppJump().within(() => {
-                    //             IncassoDA.getNumeroContratto().then(numContratto => {
-                    //                 numPolizza = numContratto
-                    //                 IncassoDA.clickCHIUDI()
-                    //             })
-                    //         })
-                    //         this.verificaAccessoSfera(false)
-                    //         resolve(numPolizza)
-                    //     }
-                    //     else {
-                    //         getAppJump().within(() => {
-                    //             IncassoDA.clickCHIUDI()
-                    //         })
-                    //         this.verificaAccessoSfera(false)
-                    //     }
-                    // } else {
                     if (flussoCompleto) {
-                        IncassoDA.clickStampa()
-                        IncassoDA.getNumeroContratto().then(numContratto => {
-                            numPolizza = numContratto
-                            IncassoDA.clickCHIUDI()
-                            //Verifichiamo il rientro in Sfera
-                            this.verificaAccessoSfera(false)
-                            resolve(numPolizza)
+                        //! DA VERIFICA SE FUNZIONA il FLUSSO
+                        getAppJump().within(() => {
+                            IncassoDA.clickStampa()
                         })
+                        getAppJump().within(() => {
+                            IncassoDA.getNumeroContratto().then(numContratto => {
+                                numPolizza = numContratto
+                                IncassoDA.clickCHIUDI()
+                            })
+                        })
+                        this.verificaAccessoSfera(false)
+                        resolve(numPolizza)
                     }
                     else {
-                        IncassoDA.clickCHIUDI()
+                        getAppJump().within(() => {
+                            IncassoDA.clickCHIUDI()
+                        })
                         this.verificaAccessoSfera(false)
                     }
+                    // } else {
+                    // if (flussoCompleto) {
+                    //     IncassoDA.clickStampa()
+                    //     IncassoDA.getNumeroContratto().then(numContratto => {
+                    //         numPolizza = numContratto
+                    //         IncassoDA.clickCHIUDI()
+                    //         //Verifichiamo il rientro in Sfera
+                    //         this.verificaAccessoSfera(false)
+                    //         resolve(numPolizza)
+                    //     })
+                    // }
+                    // else {
+                    //     IncassoDA.clickCHIUDI()
+                    //     this.verificaAccessoSfera(false)
+                    // }
                     // }
                     break;
                 case VociMenuQuietanza.QUIETANZAMENTO_ONLINE:
@@ -1757,14 +1765,14 @@ class Sfera {
                     cy.wait(15000)
                     cy.screenshot('Verifica Accesso a Pagamenti NGRA2013', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                     // if (Cypress.env('currentEnv') === 'TEST') {
-                        if (flussoCompleto) {
-                            getAppJump().within(() => { NGRA2013.ClickConfermaPagamento() })
-                            getAppJump().within(() => { NGRA2013.ClickIncassa() })
-                            getAppJump().within(($iframe) => { NGRA2013.ClickPopupWarning($iframe) })
-                            getAppJump().within(() => { IncassoDA.SelezionaIncassa() })
-                            getAppJump().within(() => { NGRA2013.TerminaIncasso() })
-                        } else
-                            getAppJump().within(() => { NGRA2013.home(true) })
+                    if (flussoCompleto) {
+                        getAppJump().within(() => { NGRA2013.ClickConfermaPagamento() })
+                        getAppJump().within(() => { NGRA2013.ClickIncassa() })
+                        getAppJump().within(($iframe) => { NGRA2013.ClickPopupWarning($iframe) })
+                        getAppJump().within(() => { IncassoDA.SelezionaIncassa() })
+                        getAppJump().within(() => { NGRA2013.TerminaIncasso() })
+                    } else
+                        getAppJump().within(() => { NGRA2013.home(true) })
                     // } else {
                     // if (flussoCompleto) {
                     //     NGRA2013.ClickConfermaPagamento()
@@ -1809,7 +1817,8 @@ class Sfera {
                     }
                     else {
                         // if (Cypress.env('currentEnv') === 'TEST') {
-                            getAppJump().within(() => { InquiryAgenzia.clickUscita() })
+                        cy.wait(5000)
+                        getAppJump().within(() => { InquiryAgenzia.clickUscita() })
                         // } else {
                         // InquiryAgenzia.clickUscita()
                         // }
@@ -2422,7 +2431,7 @@ class Sfera {
         this.tableEstrazione()
 
         cy.get('@styleColor').then((color) => {
-            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: ' + color.split('color: ')[1])
+            cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.css', 'background-color', color.split('color: ')[1].split(';')[0])
         })
         cy.screenshot('Verifica colori', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
@@ -2446,7 +2455,7 @@ class Sfera {
         //Verifichiamo che la tabella d'estrazione sia presente
         this.tableEstrazione()
 
-        cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.attr', 'style', 'background: white;')
+        cy.get('tr[class="nx-table-row nx-table-row--selectable ng-star-inserted"]').should('be.visible').and('have.css', 'background-color', 'rgb(255, 255, 255)')
 
         cy.screenshot('Verifica Nessun Colore', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
@@ -2501,8 +2510,8 @@ class Sfera {
                 })
         })
 
-        cy.get('body').click({ force: true })
-
+        //!Escape
+        cy.get('div[role="listbox"]').should('be.visible').type('{esc}')
         if (performEstrai)
             this.estrai()
     }
@@ -2544,8 +2553,9 @@ class Sfera {
      */
     static selezionaVistaSuggerita(nameVista) {
 
+        cy.wait(2000)
         // click Seleziona Vista tendina
-        cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').click()
+        cy.get('nx-icon[class^="nx-icon--s ndbx-icon nx-icon--chevron-down-small"]').should('be.visible').click()
 
         // Click Le mie viste
         cy.get('div[role="menu"]:visible').within(() => {
@@ -2670,8 +2680,6 @@ class Sfera {
                     // Verifica Colonne presenti
                     if (columnView.length > 0)
                         expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(columnView.sort());
-                    else
-                        expect(Object.values(jsonData[0].data[0]).sort()).to.eqls(currentColumn.sort());
 
                     for (let index = 0; index < rows.length; index++) {
                         // Verifica Clienti presenti
@@ -2843,7 +2851,7 @@ class Sfera {
         cy.get('nx-modal-container[aria-label="Salva Vista"]:visible').within(() => {
             cy.get('button[nxmodalclose="Agree"]').click()
         })
-        cy.get('div[class="success-container ng-star-inserted"]').should('be.visible')
+        // cy.get('div[class="success-container ng-star-inserted"]').should('be.visible')
 
     }
 
@@ -2870,9 +2878,9 @@ class Sfera {
     */
     static agenzieAllSelezionati() {
         cy.get('h3').contains('Agenzie').click()
+        cy.screenshot('Agenzie Selezionate', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
         cy.get('nx-modal-container[role="dialog"]').should('be.visible').within(() => {
-            cy.screenshot('Agenzie Selezionate', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             cy.get('div[class="container-list ng-star-inserted"]').within(() => {
                 cy.get('div[class="nx-checkbox__label-text"]')
                     .its('length').then((numAgenzie) => {
@@ -2917,6 +2925,7 @@ class Sfera {
                             let classDisabled = 'nx-tab-header__item ng-star-inserted nx-tab-header__item--disabled'
                             let tabEnabled = $TabScheda.hasClass(classDisabled)
                             if (tabEnabled) {
+                                cy.wait(2000)
                                 cy.contains('Chiudi').click()
                                 this.selectRandomContraente()
                                 loopCheckTabEnabled(TabScheda.INIZIATIVE)
@@ -2990,9 +2999,9 @@ class Sfera {
                 // cy.get('button[nxmodalclose="Proceed"]').should('be.visible')
                 cy.contains('Aggiungi nuova nota').click()
                 cy.get('div[class="new-nota-container"]').should('be.visible').within(() => {
-                    cy.get('input[formcontrolname="titolo"]').type('Titolo Automatici')
-                    cy.get('textarea[formcontrolname="testo"]').type('Testo Automatici')
-                    cy.contains('Salva nota').click()
+                    cy.get('input[formcontrolname="titolo"]').should('be.enabled').type('Titolo Automatici')
+                    cy.get('textarea[formcontrolname="testo"]').should('be.enabled').type('Testo Automatici')
+                    cy.contains('Salva nota').should('be.enabled').click({ force: true })
                 })
                 cy.wait(3000)
                 cy.get('div[class^="container-nota"]').should('be.visible').and('include.text', 'TITOLO AUTOMATICI')
@@ -3328,12 +3337,13 @@ class Sfera {
      * @param dateLength - The number of rows in the excel file
      */
     static checkExcel(dateLength) {
-        cy.task('getFolderDownload').then((folderDownload) => {
-            cy.parseXlsx(folderDownload + "\\REPORT.xlsx").then(jsonData => {
+        cy.task('getLatestDownloadedFile', Cypress.browser.name).then(latestDownload => {
+            cy.parseXlsx(latestDownload).then(jsonData => {
                 expect((jsonData[0].data.length - 1).toString()).to.eqls(dateLength);
             });
         })
     }
+
 
     /**
      * It selects a random cluster from a list of clusters, and then it gets the number of elements in that
@@ -4003,15 +4013,27 @@ class Sfera {
     static checkDateFineMax() {
         cy.get('nx-datepicker-content').should('be.visible').within(() => {
             let today = new Date()
+            let nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
             cy.get('span[class="nx-calendar-period-label"]').invoke('text').then(month => {
 
                 cy.contains('Scegli il mese e l\'anno').click()
                 // Nel caso fossimo in Dicembre automaticamente passa all'anno successivo
-                if (month.includes('dicembre')) {
+                if (month.includes('ottobre')) {
+                    cy.get(`td[aria-label="${nextYear.getFullYear()}"]`).should('have.attr', 'aria-disabled', 'true')
+                    cy.contains(today.getFullYear()).click()
+                    cy.get('div[class="nx-calendar-body-cell-content nx-calendar-body-selected"]').should('be.visible')
+                        .parents('tbody')
+                        .find('tr').then((tr) => {
+                            const months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
+                            let index = months.indexOf(month.trim().substring(0, 3))
+                            cy.wrap(tr).find('td').eq(index + 1).should('not.have.attr', 'aria-disabled', 'true')
+                            cy.wrap(tr).find('td').eq(index + 2).should('not.have.attr', 'aria-disabled', 'true').click()
+                        })
+                } else if (month.includes('dicembre')) {
                     //! DA VERIFICARE QUANDO SAREMO A DICEMBRE
                     today.setFullYear(today.getFullYear() + 1)
                     cy.contains(today.getFullYear()).click()
-                    cy.get('div[class*="nx-calendar-body-selected nx-calendar-body-today"]')
+                    cy.get('div[class="nx-calendar-body-cell-content nx-calendar-body-selected"]')
                         .parents('tbody')
                         .find('tr').then((tr) => {
                             const months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
@@ -4022,7 +4044,7 @@ class Sfera {
                 } else {
                     // Verifico che SOLO il mese successivo sia accessibile 
                     cy.contains(today.getFullYear()).click()
-                    cy.get('div[class*="nx-calendar-body-cell-content nx-calendar-body-selected"]')
+                    cy.get('div[class="nx-calendar-body-cell-content nx-calendar-body-selected"]')
                         .parents('tbody')
                         .find('tr').then((tr) => {
                             const months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
@@ -4031,9 +4053,10 @@ class Sfera {
                             cy.wrap(tr).find('td').eq(index + 2).should('not.have.attr', 'aria-disabled', 'true').click()
                         })
 
-                    // Seleziona l'ultimo giorno
-                    cy.get('td[class="nx-calendar-body-cell ng-star-inserted"]:last').click()
                 }
+
+                // Seleziona l'ultimo giorno
+                cy.get('td[class="nx-calendar-body-cell ng-star-inserted"]:last').click()
             })
         })
     }
@@ -4074,7 +4097,7 @@ class Sfera {
         cy.get('nx-modal-container[aria-label="Salva Vista"]:visible').within(() => {
             cy.get('button[nxmodalclose="Agree"]').click()
         })
-        cy.get('div[class="success-container ng-star-inserted"]').should('be.visible')
+        // cy.get('div[class="success-container ng-star-inserted"]').should('be.visible')
 
     }
 

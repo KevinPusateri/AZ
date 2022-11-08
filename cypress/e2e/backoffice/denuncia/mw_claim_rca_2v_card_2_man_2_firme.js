@@ -333,7 +333,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         cy.wait(2000)             
     });
 
-    it('Pagina CAI', function () {
+    it('Gestione Pagina CAI', function () {
         
         Common.clickFindByIdOnIframeChild(IFrameParent, '#CAI_A1');
         Common.clickFindByIdOnIframeChild(IFrameParent, '#CAI_B2');

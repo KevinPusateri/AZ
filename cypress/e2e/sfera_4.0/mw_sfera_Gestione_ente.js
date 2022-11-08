@@ -74,18 +74,6 @@ after(function () {
 if (!Cypress.env('isSecondWindow'))
     describe('Matrix Web : Sfera 4.0 - Gestione Ente', function () {
 
-        it('Gestione ente NON presente su age HUB SENZA age CP 73', function () {
-            let customImpersonification = {
-                "agentId": "ARFBOSIO",
-                "agency": "010119000"
-            }
-            LoginPage.logInMWAdvanced(customImpersonification)
-            Sfera.accediSferaDaHomePageMW(true)
-            Sfera.checkVistaSuggeriteNotExistByMenu(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
-            TopBar.logOutMW()
-            cy.wait(5000)
-        })
-
         it('Verifica Gestione ente presente su age HUB CON age CP 73', function () {
             let customImpersonification = {
                 "agentId": "ARFPULINI2",
@@ -159,16 +147,6 @@ if (!Cypress.env('isSecondWindow'))
 else
     describe('Matrix Web : Sfera 4.0 -> Seconda Finestra', function () {
         it('Gestione Ente', function () {
-            //Gestione ente NON presente su age HUB SENZA age CP 73
-            let customImpersonification = {
-                "agentId": "ARFBOSIO",
-                "agency": "010119000"
-            }
-            LoginPage.logInMWAdvanced(customImpersonification)
-            Sfera.accediSferaDaHomePageMW(true)
-            Sfera.checkVistaSuggeriteNotExistByMenu(Sfera.VISTESUGGERITE.GESTIONE_ENTE)
-            TopBar.logOutMW()
-            cy.wait(5000)
             //Verifica Gestione ente presente su age HUB CON age CP 73
             customImpersonification = {
                 "agentId": "ARFPULINI2",
