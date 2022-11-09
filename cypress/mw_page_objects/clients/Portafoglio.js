@@ -154,7 +154,7 @@ class Portafoglio {
             case false:
                 cy.get(".app-wallet-list-toggle-button").then(($body) => {
                     if ($body.children('div[class="icon open"]').is(':visible')) {
-                        $body.trigger('click')
+                        $body.children('div[class="icon open"]').trigger('click')
                     }
                     else {
                         cy.log('Lista già chiusa')

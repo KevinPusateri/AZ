@@ -29,17 +29,26 @@ import 'cypress-iframe';
 const testName = Cypress.spec.name.split('.')[0].toUpperCase()
 const currentEnv = Cypress.env('currentEnv')
 const dbConfig = Cypress.env('db')
+const dbPolizze = Cypress.env('db_da')
 let insertedId
 //#endregion
 
 //#region Configuration
+const moment = require('moment')
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
+let prodotto = "Ultra Casa e Patrimonio"
+let ramo = "Rami Vari"
+let dataEmissione = moment().format('YYYY-MM-DD HH:mm:ss')
+let dataScadenza = moment().add(1, 'y').format('YYYY-MM-DD HH:mm:ss')
+let ambiente = Cypress.env('currentEnv')
+
 let cliente = PersonaFisica.PieroAngela()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato]
+var ambitoApp = [ambitiUltra.ambitiUltraCasaPatrimonio.tutela_legale]
 var frazionamento = "semestrale"
 var nContratto = "000"
 var appendice = "Presenza Altra copertura medesimo rischio - Patrimonio"
@@ -206,6 +215,7 @@ describe("PREFERITI, APPENDICE E VINCOLO DIFFERITI", () => {
 
     it("Esito incasso", () => {
         Incasso.EsitoIncasso()
+        cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, dataEmissione, dataScadenza, ramo, prodotto, ambiente)
         Incasso.Chiudi()
     })
 
@@ -223,10 +233,11 @@ describe("PREFERITI, APPENDICE E VINCOLO DIFFERITI", () => {
 
     it("Portafoglio", () => {
         Portafoglio.clickTabPortafoglio()
+        Portafoglio.listaPolizze(false)
         Portafoglio.ordinaPolizze("Numero contratto")
         Portafoglio.menuContratto(nContratto, menuPolizzeAttive.mostraAmbiti)
-        cy.pause()
-        Portafoglio.menuContestualeAmbiti("tutela legale", "Appendici")
+        
+        Portafoglio.menuContestualeAmbiti(ambitoApp, "Appendici")
         Ultra.selezionaPrimaAgenzia()
         Appendici.caricamentoPagina()
     })
