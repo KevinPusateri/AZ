@@ -1558,6 +1558,126 @@ class TenutaTariffa {
                     //CMC PUNTA FLEX
                     expect(JSON.stringify(findKeyInLog('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
                     cy.task('log', `Versione Radar_Punta_Flex_KeyID rilevata ${JSON.stringify(findKeyInLog('Radar_Punta_Flex_KeyID'))}`)
+
+
+                    //#region Verifica Super Indice
+                    var currentGara
+                    switch (currentCase.Settore) {
+                        case "1":
+                            if (currentCase.Descrizione_Settore.includes("TAXI"))
+                                currentGara = "023010";
+                            else
+                                currentGara = "012010";
+                            break;
+                        case "4":
+                            if (currentCase.Descrizione_Settore.includes("SUP60"))
+                                currentGara = "404010";
+                            else
+                                currentGara = "403010";
+                            break;
+                        case "5":
+                            if (currentCase.Descrizione_Settore.includes("MOTOCICLO"))
+                                currentGara = "503010";
+                            else
+                                //CICLOMOTORE
+                                currentGara = "513010";
+                            break;
+                    }
+                    const optionsAttr = {
+                        ignoreAttributes: false,
+                        // parseAttributeValue: true,
+                        allowBooleanAttributes: true
+                    }
+                    const parserInputRadar = new XMLParser(optionsAttr)
+                    let parsedInputRadar = parserInputRadar.parse(JSON.stringify(findKeyInLog('inputRadar')))
+
+                    // Substring -> togliamo i caratteri superflui
+                    let startIndex = Object.keys(findKeyInLog('p6134', parsedInputRadar))[1].indexOf('@')
+                    let valoreSpazioTecnicoP6134 = Object.keys(findKeyInLog('p6134', parsedInputRadar))[1].substring(startIndex + 4).split('\\"')[0]
+
+                    //Valore spazio tecnico
+                    //Se lo spazio tecnico inizia con 1, il valore è negativo (grazie a Tamara Feresin per l'hint); il valore va diviso per 10.000
+                    var p6134 = -1;
+                    var p6134 = parseFloat(valoreSpazioTecnicoP6134.substring(1));
+                    if (valoreSpazioTecnicoP6134.startsWith("1"))
+                        p6134 = (p6134 / 10000) * -1;
+                    else
+                        p6134 = (p6134 / 10000);
+
+                    //Conversion rate; il valore va diviso per 100
+                    startIndex = Object.keys(findKeyInLog('p8659', parsedInputRadar))[1].indexOf('@')
+                    let valoreConversionRateP8659 = Object.keys(findKeyInLog('p8659', parsedInputRadar))[1].substring(startIndex + 4).split('\\"')[0]
+                    var p8659 = -1;
+                    var p8659 = parseFloat(valoreConversionRateP8659);
+                    p8659 = p8659 / 100;
+
+
+                    //Pilota Conversion Model
+                    var valorePilotaConversionModel = Object.keys(findKeyInLog('PilotaConversionModel', parsedInputRadar))[1].substring(startIndex + 4).split('\\"')[0]
+
+                    //Sconto Price Cap
+                    var valoreP5959 = Object.keys(findKeyInLog('p5959', parsedInputRadar))[1].substring(startIndex + 4).split('\\"')[0]
+                    var p5959 = -1;
+                    var p5959 = parseFloat(valoreP5959);
+                    p5959 = p5959 / 100;
+
+                    cy.task('log', `--- Verifica Super Indice ---`)
+
+                    cy.task('log', `Valore Spazio Tecnico p6134 valorizzato a : ${p6134}`)
+                    cy.task('log', `Valore Conversion Rate p8659 valorizzato a : ${p8659}`)
+                    cy.task('log', `Valore Price Cap p5959 valorizzato a : ${p5959}`)
+
+                    if (!valorePilotaConversionModel.includes('1'))
+                        assert.fail(`Valore Pilota Conversion Model non inizializzato a 1 ma a ${valorePilotaConversionModel}`)
+                    else
+                        cy.task('log', `Valore Pilota Conversion Model valorizzato a : ${valorePilotaConversionModel}`)
+
+                    // p8659 = 23 //! HA senso
+                    // if (p8659 == 23)
+                    //     throw new Error("Conversione Rate a 23 (default value); verificare che il motore AI stia rispondendo correttamente");
+
+                    // if (p6134 == currentCase.Spazio_Tecnico && p8659 == currentCase.Conversion_Rate && p5959 == currentCase.Price_Cap)
+                    //     cy.task('log', `Valori Spazio Tecnico, Conversion Rate e Price Cap in linea con i precedenti rilasci`)
+                    //#endregion
+                    cy.task('log', '------------------------------------------')
+                    //#region Verifica Modulazione Super Indice
+
+                    //Massimo Sconto Applicabile p6412
+                    startIndex = Object.keys(findKeyInLog('p6412', parsedInputRadar))[1].indexOf('@')
+                    let valoreMassimoScontoApplicabile = Object.keys(findKeyInLog('p6412', parsedInputRadar))[1].substring(startIndex + 4).split('\\"')[0]
+                    var p6412 = -1;
+                    var p6412 = parseFloat(valoreMassimoScontoApplicabile);
+                    p6412 = p6412 / 100;
+
+                    //Minimo Sconto Applicabile p6413
+                    startIndex = Object.keys(findKeyInLog('p6413', parsedInputRadar))[1].indexOf('@')
+                    let valoreMinimoScontoApplicabile = Object.keys(findKeyInLog('p6413', parsedInputRadar))[1].substring(startIndex + 4).split('\\"')[0]
+                    var p6413 = -1;
+                    var p6413 = parseFloat(valoreMinimoScontoApplicabile);
+                    p6413 = p6413 / 100;
+                    //#endregion
+
+                    //Sconto Consigliato p6414
+                    startIndex = Object.keys(findKeyInLog('p6414', parsedInputRadar))[1].indexOf('@')
+                    let valoreScontoConsigliato = Object.keys(findKeyInLog('p6414', parsedInputRadar))[1].substring(startIndex + 4).split('\\"')[0]
+                    var p6414 = -1;
+                    var p6414 = parseFloat(valoreScontoConsigliato);
+                    p6414 = p6414 / 100;
+
+                    //Importo Extra-Provvigionale p6415
+                    startIndex = Object.keys(findKeyInLog('p6415', parsedInputRadar))[1].indexOf('@')
+                    let valoreImportoExtraProvvigionale = Object.keys(findKeyInLog('p6415', parsedInputRadar))[1].substring(startIndex + 4).split('\\"')[0]
+                    var p6415 = -1;
+                    var p6415 = parseFloat(valoreImportoExtraProvvigionale);
+                    p6415 = p6415 / 100;
+
+                    cy.task('log', '--- Verifica Modulazione Super Indice ---')
+
+                    cy.task('log', `Massimo Sconto Applicabile p6412 valorizzato a : ${p6412}`)
+                    cy.task('log', `Minimo Sconto Applicabile p6413 valorizzato a : ${p6413}`)
+                    cy.task('log', `Sconto Consigliato p6414 : ${p6414}`)
+                    cy.task('log', `Importo Extra-Provvigionale p6415 : ${p6415}`)
+
                 })
                 //#endregion
 
@@ -1575,6 +1695,7 @@ class TenutaTariffa {
 
                 })
                 //#endregion
+
             })
         })
     }
