@@ -82,7 +82,7 @@ var cliente_nome = 'GUIDO'
 var cliente_CF = 'RAIGDU65B09L424C'
 var cliente_dt_nascita = '09/02/1965'
 var cliente_num_pol = '733323007'
-var cliente_email ='michele.delledonne@allianz.it'
+var cliente_email ='danilo.ponti@allianzdirect.it'
 
 /* 319000
 var ramo_pol = '42' //601 - BONUS/MALUS
@@ -101,7 +101,7 @@ var loss_type = 'EVENTI ATMOSFERICI'
 var loss_cause = 'PIOGGIA'
 var oggetto_fabbricato
 
-var sinistro_descrizione_danno = 'Automazione denuncia BMP - Polizza Hybrid Ultra Casa & Patrimonio.'
+var sinistro_descrizione_danno = 'Automation FNOL BMP - Hybrid Ultra Casa & Patrimonio. Email.: michele.delledonne@allianz.it'
 var sinistro_località = 'TRIESTE'
 var sinistro_indirizzo = 'LUCREZIO'
 var sinistro_civico = '7'
@@ -210,7 +210,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         cy.wait(1000);
     });
 
-    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' --> [Inserimento dati di sinistro]: ambito/soggetto coinvolto, etc..', function () {
+    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' --> ambito: "'+ ambito_garanzia_fabbricato + '" classe: "'+classe_garanzia_prodotto +'" etc..', function () {
         //Informazioni sul sinistro
         //Selezione di quale ambito è coinvolto? *     
         let cssClssPrd =  '#fnol-nmt-incident-info > div > form > div:nth-child(1) > div:nth-child(1) > nx-formfield > div > div.nx-formfield__row > div.nx-formfield__flexfield > div > div > nx-dropdown > div > div.nx-dropdown__icon > nx-icon';
