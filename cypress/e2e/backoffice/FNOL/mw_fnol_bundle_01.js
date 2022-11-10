@@ -100,7 +100,8 @@ var loss_type = 'EVENTI ATMOSFERICI'
 var loss_cause = 'PIOGGIA'
 var oggetto_fabbricato
 
-var sinistro_descrizione_danno = 'Automazione denuncia BMP - Polizza Bundle Ultra Casa & Patrimonio.'
+var sinistro_descrizione_danno = 'Automation FNOL BMP - Bundle Ultra Casa & Patrimonio. Email.: michele.delledonne@allianz.it'
+
 var sinistro_località = 'TRIESTE'
 var sinistro_indirizzo = 'COPODISTRIA'
 var sinistro_civico = '3'
