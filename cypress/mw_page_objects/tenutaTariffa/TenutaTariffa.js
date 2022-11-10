@@ -59,9 +59,9 @@ function findKeyGaranziaARD(descSettore, key, currentGaranziaARD = null) {
     if (currentGaranziaARD === null) {
         //Recuperiamo le Garanzie presenti, la prima corrisponde alla RCA
         if (descSettore === 'KASKO COMPLETA')
-            garanziaARD = findKeyInLog('Garanzia')[2]
+            garanziaARD = findKeyInLog('Garanzia')[1] // 10-11-22 modificato da 2 a 1
         else if (descSettore === 'AVENS')
-            garanziaARD = findKeyInLog('Garanzia')[4]
+            garanziaARD = findKeyInLog('Garanzia')[3] // 10-11-22 modificato da 4 a 3
         else
             garanziaARD = findKeyInLog('Garanzia')[1]
     }
