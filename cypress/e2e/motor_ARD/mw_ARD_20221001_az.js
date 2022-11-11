@@ -61,37 +61,35 @@ describe('ARD Ottobre 2022: ', {
 }, function () {
     ardCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
-            if (currentCase.Descrizione_Settore === 'KASKO COMPLETA'
-            ||currentCase.Descrizione_Settore === 'AVENS')
-                it("Flusso", function () {
-                    if (currentCase)
-                        if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
-                            Common.visitUrlOnEnv()
+            it("Flusso", function () {
+                if (currentCase)
+                    if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
+                        Common.visitUrlOnEnv()
 
-                            if (flowClients) {
-                                TopBar.searchRandom()
-                                LandingRicerca.searchRandomClient(true, (currentCase.Tipologia_Entita === 'Persona' ? 'PF' : 'PG'), 'P')
-                                LandingRicerca.clickRandomResult('PF')
-                                SintesiCliente.clickAuto()
-                                SintesiCliente.clickPreventivoMotor()
-                            }
-                            else {
-                                TopBar.clickSales()
-                                Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
-                            }
-
-                            TenutaTariffa.compilaDatiQuotazione(currentCase, flowClients)
-                            TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
-                            TenutaTariffa.compilaVeicolo(currentCase)
-                            TenutaTariffa.compilaProvenienza(currentCase)
-                            TenutaTariffa.compilaOffertaARD(currentCase)
-                            TenutaTariffa.areaRiservata(currentCase)
-
-                            TenutaTariffa.checkTariffaARD(currentCase)
+                        if (flowClients) {
+                            TopBar.searchRandom()
+                            LandingRicerca.searchRandomClient(true, (currentCase.Tipologia_Entita === 'Persona' ? 'PF' : 'PG'), 'P')
+                            LandingRicerca.clickRandomResult('PF')
+                            SintesiCliente.clickAuto()
+                            SintesiCliente.clickPreventivoMotor()
                         }
-                        else
-                            this.skip()
-                })
+                        else {
+                            TopBar.clickSales()
+                            Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+                        }
+
+                        TenutaTariffa.compilaDatiQuotazione(currentCase, flowClients)
+                        TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
+                        TenutaTariffa.compilaVeicolo(currentCase)
+                        TenutaTariffa.compilaProvenienza(currentCase)
+                        TenutaTariffa.compilaOffertaARD(currentCase)
+                        TenutaTariffa.areaRiservata(currentCase)
+
+                        TenutaTariffa.checkTariffaARD(currentCase)
+                    }
+                    else
+                        this.skip()
+            })
         })
     })
 })
