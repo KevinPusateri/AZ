@@ -28,6 +28,8 @@ class Mieinfo {
         getIFrame().find('[class*="menu_padding-0"]').each(($link, i) => {
             currentLinks.push($link.text().trim())
         }).then(() => {
+            console.log(currentLinks.sort())
+            console.log(linksMenuProfiled.sort())
             expect(currentLinks.sort()).to.deep.eq(linksMenuProfiled.sort());
         })
 
