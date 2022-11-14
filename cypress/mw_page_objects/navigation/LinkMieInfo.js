@@ -1,6 +1,6 @@
 const LinksMenu = {
     PRIMO_PIANO: 'Primo piano',
-    // RACCOLTE: 'Raccolte', //? In test è presente PRONTI VIA Rel 127
+    RACCOLTE: 'Raccolte',
     TUTTE_LE_NOTIZIE: 'Tutte le notizie',
     CONTENUTI_SALVATI: 'Contenuti salvati',
     PRONTI_VIA: 'Pronti Via',
