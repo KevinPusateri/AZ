@@ -3568,11 +3568,11 @@ class Sfera {
                 //Effettuiamo una scrollIntoView su qualche colonna precednete
                 cy.get('tbody > tr[nxtablerow]').eq(myCheckedRow).find('td').eq(i - 5).scrollIntoView()
 
-                cy.wait(2000)
-                cy.wrap(rowsTable[myCheckedRow]).find('td').eq(i - 2).then(($textCell) => {
+                cy.wait(8000)
+                cy.wrap(rowsTable[myCheckedRow]).find('td').eq(i - 1).then(($textCell) => {
                     //? cypress-real-events works with Chrome Dev Tools
                     if (Cypress.browser.name === 'firefox')
-                        cy.wrap($textCell).rightclick()
+                        cy.wrap($textCell).rightclick().wait(3000)
                     else
                         cy.wrap($textCell).realHover({ scrollBehavior: false })
 
@@ -3610,7 +3610,7 @@ class Sfera {
                         expect(contents.text().trim()).to.include('Motor')
                     })
                 cy.get('@selectRiga').then((riga) => {
-                    cy.wrap(riga).find('td').eq(2).then((contraente) => {
+                    cy.wrap(riga).find('td').eq(1).then((contraente) => {
                         cy.get('sfera-deltapremio').should('be.visible').within(() => {
                             cy.get('p[class*="showContraente"]').scrollIntoView()
                             cy.get('p[class*="showContraente"]').should('include.text', contraente.text().trim())

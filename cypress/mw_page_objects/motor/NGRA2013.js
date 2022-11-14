@@ -132,7 +132,7 @@ class NGRA2013 {
                             cy.contains('Procedi').click()
                         else {
                             cy.contains('button', 'Contr.Convenzionabile').click().wait(4000)
-                            cy.contains('Procedi').click()
+                            // cy.contains('Procedi').click()
                         }
                     })
                 cy.wait('@getDAS_FE', { timeout: 120000 })
@@ -148,7 +148,7 @@ class NGRA2013 {
                         cy.contains('Procedi').click()
                     else {
                         cy.contains('button', 'Contr.Convenzionabile').click().wait(4000)
-                        cy.contains('Procedi').click()
+                        // cy.contains('Procedi').click()
                     }
                 })
             cy.wait('@getDAS_FE', { timeout: 120000 })
