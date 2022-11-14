@@ -170,7 +170,7 @@ class TopBar extends HomePage {
         cy.contains('clients').click()
 
         cy.wait('@gqlSearchClient', { timeout: 30000 });
-        cy.screenshot('Ricerca ' + value + ' effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        // cy.screenshot('Ricerca ' + value + ' effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**

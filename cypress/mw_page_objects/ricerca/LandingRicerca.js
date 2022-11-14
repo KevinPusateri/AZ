@@ -668,6 +668,7 @@ class LandingRicerca {
 
         cy.contains('APPLICA').click()
         cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
+        cy.screenshot('Ricerca effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     static filtraAgenziaAll() {
