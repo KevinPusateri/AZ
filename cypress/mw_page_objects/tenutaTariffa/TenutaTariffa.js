@@ -1632,12 +1632,8 @@ class TenutaTariffa {
                     else
                         cy.task('log', `Valore Pilota Conversion Model valorizzato a : ${valorePilotaConversionModel}`)
 
-                    // p8659 = 23 //! HA senso
-                    // if (p8659 == 23)
-                    //     throw new Error("Conversione Rate a 23 (default value); verificare che il motore AI stia rispondendo correttamente");
-
-                    // if (p6134 == currentCase.Spazio_Tecnico && p8659 == currentCase.Conversion_Rate && p5959 == currentCase.Price_Cap)
-                    //     cy.task('log', `Valori Spazio Tecnico, Conversion Rate e Price Cap in linea con i precedenti rilasci`)
+                    if (p8659 === 23)
+                        throw new Error("Conversione Rate a 23 (default value); verificare che il motore AI stia rispondendo correttamente");
                     //#endregion
                     cy.task('log', '------------------------------------------')
                     //#region Verifica Modulazione Super Indice
