@@ -1552,23 +1552,23 @@ Cypress.Commands.add('getProxyLog', (currentCase) => {
   })
 })
 
-Cypress.Commands.add('SalvaPolizza', (dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente) => {  
-    cy.task('SalvaPolizza', { dbConfig: dbConfig, cliente: cliente, nPolizza: nPolizza, dataEmissione: dataEmissione, dataScadenza: dataScadenza, ramo: ramo, ambiti: ambiti, ambiente: ambiente })
-      .then((results) => {
-        return results.insertId
-      })
+Cypress.Commands.add('SalvaPolizza', (dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente) => {
+  cy.task('SalvaPolizza', { dbConfig: dbConfig, cliente: cliente, nPolizza: nPolizza, dataEmissione: dataEmissione, dataScadenza: dataScadenza, ramo: ramo, ambiti: ambiti, ambiente: ambiente })
+    .then((results) => {
+      return results.insertId
+    })
 })
 
-Cypress.Commands.add('findLastPolizza', (dbConfig, prodotto, annullamento) => {  
-  cy.task('findLastPolizza', { dbConfig: dbConfig, prodotto: prodotto, annullamento: annullamento})
+Cypress.Commands.add('findLastPolizza', (dbConfig, prodotto, annullamento) => {
+  cy.task('findLastPolizza', { dbConfig: dbConfig, prodotto: prodotto, annullamento: annullamento })
     .then((result) => {
       return result
     })
 })
 
 //registra l'annullamento nel database
-Cypress.Commands.add('registraAnnullamento', (dbConfig, id, numeroPolizza, prodotto) => {  
-  cy.task('registraAnnullamento', { dbConfig: dbConfig, id: id, numeroPolizza: numeroPolizza, prodotto: prodotto})
+Cypress.Commands.add('registraAnnullamento', (dbConfig, id, numeroPolizza, prodotto) => {
+  cy.task('registraAnnullamento', { dbConfig: dbConfig, id: id, numeroPolizza: numeroPolizza, prodotto: prodotto })
     .then((result) => {
       return result
     })
@@ -1634,6 +1634,62 @@ Cypress.Commands.add('getCurrentDate', (dd = 0) => {
     currentDate.getFullYear()
   return formattedDate
 })
+
+Cypress.Commands.add('getClientWithoutConsentAgreements', (tutf, clientType = 'PF', currentAgency) => {
+  cy.generateTwoLetters().then(nameRandom => {
+    cy.generateTwoLetters().then(firstNameRandom => {
+      cy.request({
+        method: 'GET',
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
+        log: false,
+        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+        headers: {
+          'x-allianz-user': tutf
+        }
+      }).then(response => {
+        if (response.body.length === 0)
+          cy.getClientWithoutConsentAgreements(tutf, clientType, currentAgency)
+        else {
+          let clienti = response.body.filter(el => {
+            return el.socialSecurityNumber !== ''
+          })
+
+          if (clienti.length > 0) {
+            let currentClient = clienti[Math.floor(Math.random() * clienti.length)]
+            cy.request({
+              method: 'GET',
+              retryOnStatusCodeFailure: true,
+              timeout: 60000,
+              log: false,
+              url: be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements',
+              headers: {
+                'x-allianz-user': tutf
+              }
+            }).then(responseAgreements => {
+              let agreementOTP = responseAgreements.body.filter(el => {
+                return el.dataConsent.dataConsentType === 'ConsensoOTP'
+              })
+              let agreementEmail = responseAgreements.body.filter(el => {
+                return el.dataConsent.dataConsentType === 'InvioEmail' &&
+                  el.dataConsent.dataConsentGroup === 'Allianz'
+              })
+              // Verifico se non hanno espresso conensi
+              if (!agreementOTP[0].hasOwnProperty('accepted') &&
+                !agreementEmail[0].hasOwnProperty('accepted'))
+                return currentClient
+              else
+                cy.getClientWithoutConsentAgreements(tutf, clientType, currentAgency)
+            })
+          } else
+            cy.getClientWithoutConsentAgreements(tutf, clientType, currentAgency)
+        }
+      })
+    })
+  })
+})
+
 
 /**
  * Ottieni un Cliente che abbia almeno una polizza Attiva

@@ -89,7 +89,7 @@ if (!Cypress.env('isSecondWindow'))
     })
 else
     describe('Matrix Web : Sfera 4.0 -> Seconda Finestra', function () {
-        it('Gestione Ente', function () {
+        it('Gestione ente NON presente su age HUB SENZA age CP 73', function () {
             //Gestione ente NON presente su age HUB SENZA age CP 73
             let customImpersonification = {
                 "agentId": "ARFBOSIO",

@@ -94,8 +94,9 @@ if (!Cypress.env('isSecondWindow'))
             Sfera.checkClusterAllUnchecked()
         })
 
-        it('Verifica Colonna ente di genarazione avvisi', function () {
+        it('Verifica Colonna ente di generazione avvisi', function () {
             Sfera.estrai()
+            //TODO: col br in mezzo non riconosce
             Sfera.checkColonnaPresente(Sfera.COLUMNGESTIONEENTE.ENTE_GEN_AVV.key)
         })
 
