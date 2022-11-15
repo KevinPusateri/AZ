@@ -81,15 +81,15 @@ before(() => {
                     cy.filterProfile(profiling, 'COMMON_TOOL_TRATTATIVE').then(profiled => { keys.TrattativeAutoCorporateEnabled = profiled })
                     cy.filterProfile(profiling, 'COMMON_SAFE_DRIVE').then(profiled => { keys.SAFE_DRIVE_AUTOVETTURE = profiled })
                 })
-    
+
                 //Profiling collegamenti rapidi
                 cy.getProfiling(data.tutf).then(profiling => {
-                    cy.filterProfile(profiling, 'COMMON_GESTIONE_MONITORAGGIO_PROPOSTE').then(profiled => { keys.MONITORAGGIO_POLIZZE_PROPOSTE = profiled })
-                    cy.filterProfile(profiling, 'COMMON_OFFERTA_PREVENTIVI').then(profiled => { keys.RECUPERO_PREVENTIVI_QUOTAZIONI = profiled })
-                    cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keys.NUOVO_SFERA = profiled })
-                    cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keys.SFERA = profiled })
-                    cy.filterProfile(profiling, 'RUOLO_CAMPAIGN').then(profiled => { keys.CAMPAGNE_COMMERCIALI = profiled })
-                    cy.filterProfile(profiling, 'COMMON_GED').then(profiled => { keys.GED_GESTIONE_DOCUMENTALE = profiled })
+                    cy.filterProfile(profiling, 'COMMON_GESTIONE_MONITORAGGIO_PROPOSTE').then(profiled => { keysRapidi.MONITORAGGIO_POLIZZE_PROPOSTE = profiled })
+                    cy.filterProfile(profiling, 'COMMON_OFFERTA_PREVENTIVI').then(profiled => { keysRapidi.RECUPERO_PREVENTIVI_E_QUOTAZIONI = profiled })
+                    cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keysRapidi.NUOVO_SFERA = profiled })
+                    cy.filterProfile(profiling, 'COMMON_GESTIONE_SCADENZE').then(profiled => { keysRapidi.SFERA = profiled })
+                    cy.filterProfile(profiling, 'RUOLO_CAMPAIGN').then(profiled => { keysRapidi.CAMPAGNE_COMMERCIALI = profiled })
+                    cy.filterProfile(profiling, 'COMMON_GED').then(profiled => { keysRapidi.GED_GESTIONE_DOCUMENTALE = profiled })
                 })
             }
         })
@@ -303,7 +303,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
         })
 
     it('Verifica aggancio Campagne Commerciali', function () {
-        if (!keys.CAMPAGNE_COMMERCIALI)
+        if (!keysRapidi.CAMPAGNE_COMMERCIALI)
             this.skip()
         TopBar.clickSales()
         Sales.clickLinkRapido('Campagne Commerciali')
@@ -546,7 +546,7 @@ describe('Matrix Web : Navigazioni da Sales', function () {
     })
 
     it('Verifica TAB: "Campagne"', function () {
-        if (!keys.CAMPAGNE_COMMERCIALI)
+        if (!keysRapidi.CAMPAGNE_COMMERCIALI)
             this.skip()
         TopBar.clickSales()
         Sales.clickTabCampagne()
