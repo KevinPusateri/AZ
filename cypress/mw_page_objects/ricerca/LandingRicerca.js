@@ -606,86 +606,103 @@ class LandingRicerca {
             }
         });
         cy.wait(3000).get('.icon').find('[name="filter"]').click()
+        cy.contains('AGENZIE').parent().find('p > span').invoke('text').as('agenzie')
+        cy.contains('CLIENTE').parent().find('p > span').invoke('text').as('cliente')
+        cy.contains('STATO').parent().find('p > span').invoke('text').as('stato')
 
-        cy.contains('AGENZIE').click()
-        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
-            cy.wrap($checkBox).click()
+        let totCheckedAgenzie = false
+        let totCheckedCliente = false
+        let totCheckedStato = false
+        cy.get('@agenzie').then((agenzie) => {
+            cy.log(agenzie.split('/')[0])
+            let agenzieChecked = Number(agenzie.split('/')[0])
+            let agenzieTot = Number(agenzie.split('/')[1])
+            if (agenzieChecked === agenzieTot)
+                totCheckedAgenzie = true
         })
-        if (agenzia === 'ALL') {
-            cy.get('div[class="filters-content"]').within(() => {
-                cy.get('nx-checkbox').each(($checkBox) => {
+
+        cy.get('@cliente').then((cliente) => {
+            let clienteChecked = Number(cliente.split('/')[0])
+            let clienteTot = Number(cliente.split('/')[1])
+            if (clienteChecked === clienteTot)
+                totCheckedCliente = true
+        })
+
+        cy.get('@stato').then((stato) => {
+            let statoChecked = Number(stato.split('/')[0])
+            let statoTot = Number(stato.split('/')[1])
+            if (statoChecked === statoTot)
+                totCheckedStato = true
+        })
+
+        cy.get('body').then(() => {
+            if (agenzia === 'ALL' && !totCheckedAgenzie) {
+                cy.contains('AGENZIE').click()
+                cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
                     cy.wrap($checkBox).click()
                 })
-            })
-        }
-        else
-            cy.contains(agenzia).click()
-
-        cy.contains('CLIENTE').click()
-        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
-            cy.wrap($checkBox).click()
-        })
-        switch (cliente) {
-            case "ALL":
                 cy.get('div[class="filters-content"]').within(() => {
                     cy.get('nx-checkbox').each(($checkBox) => {
                         cy.wrap($checkBox).click()
                     })
                 })
-                break
-            case "PF":
-                cy.contains('Persona fisica').click()
-                break
-            case "PG":
-                cy.contains('Persona giuridica').click()
-                break
-            default: throw new Error("Attenzione tipo CLiente Non Esiste (ALL,PF,PG)");
-        }
-
-        cy.contains('STATO').click()
-        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
-            cy.wrap($checkBox).click()
-        })
-        switch (stato) {
-            case "ALL":
-                cy.get('div[class="filters-content"]').within(() => {
-                    cy.get('nx-checkbox').each(($checkBox) => {
-                        cy.wrap($checkBox).click()
-                    })
-                })
-                break
-            case "E":
-                cy.contains('Effettivo').click()
-                break
-            case "P":
-                cy.contains('Potenziale').click()
-                break
-            case "C":
-                cy.contains('Cessato').click()
-                break
-            default: throw new Error("Attenzione STATO CLiente Non Esiste (ALL,E,P,C)");
-        }
-
-        cy.contains('APPLICA').click()
-        cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
-        cy.screenshot('Ricerca effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-    }
-
-    static filtraAgenziaAll() {
-        cy.intercept('POST', '**/graphql', (req) => {
-            if (req.body.operationName.includes('searchClient')) {
-                req.alias = 'gqlSearchClient'
             }
-        });
-        cy.pause()
-        cy.wait(3000).get('.icon').find('[name="filter"]').click()
-        cy.contains('AGENZIE').click()
+            else if (agenzia !== 'ALL')
+                cy.contains(agenzia).click()
 
-        cy.contains('Seleziona tutti').click()
+            if (!totCheckedCliente) {
+                cy.contains('CLIENTE').click()
+                cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                    cy.wrap($checkBox).click()
+                })
+                switch (cliente) {
+                    case "ALL":
+                        cy.get('div[class="filters-content"]').within(() => {
+                            cy.get('nx-checkbox').each(($checkBox) => {
+                                cy.wrap($checkBox).click()
+                            })
+                        })
+                        break
+                    case "PF":
+                        cy.contains('Persona fisica').click()
+                        break
+                    case "PG":
+                        cy.contains('Persona giuridica').click()
+                        break
+                    default: throw new Error("Attenzione tipo CLiente Non Esiste (ALL,PF,PG)");
+                }
+            }
 
+            if (!totCheckedStato) {
+                cy.contains('STATO').click()
+                cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                    cy.wrap($checkBox).click()
+                })
+                switch (stato) {
+                    case "ALL":
+                        cy.get('div[class="filters-content"]').within(() => {
+                            cy.get('nx-checkbox').each(($checkBox) => {
+                                cy.wrap($checkBox).click()
+                            })
+                        })
+                        break
+                    case "E":
+                        cy.contains('Effettivo').click()
+                        break
+                    case "P":
+                        cy.contains('Potenziale').click()
+                        break
+                    case "C":
+                        cy.contains('Cessato').click()
+                        break
+                    default: throw new Error("Attenzione STATO CLiente Non Esiste (ALL,E,P,C)");
+                }
+            }
+            cy.contains('APPLICA').click()
+            cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
+            cy.screenshot('Ricerca effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        })
 
-        cy.contains('APPLICA').click()
-        cy.wait('@gqlSearchClient', { requestTimeout: 30000 })
     }
 
     /**
