@@ -40,7 +40,7 @@ let dataFine = Common.setDate(25, 1, true)
 //#region Before After
 before(() => {
     //! UTILIZZARE CHROME PER LA POSSIBILITA' DI FARE L'EXCEL
-    // expect(Cypress.browser.name).to.contain('chrome')
+    // expect(Cypress.browser.name).to.contain('chrome') //! Rimane in loop su FF da Cypress
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
@@ -156,7 +156,7 @@ if (!Cypress.env('isSecondWindow'))
         })
 
 
-        it('Menu contestuale -> Quietanzmaneto online', function () {
+        it('Menu contestuale -> Quietanzamento online', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.QUIETANZAMENTO_ONLINE, true, null, null, null, true)
             Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
         })
@@ -192,7 +192,6 @@ if (!Cypress.env('isSecondWindow'))
 
         it('Menu Contestuale -> Consultazione Documenti di polizza_call back applicativa', function () {
             Sfera.apriVoceMenu(Sfera.VOCIMENUCONSULTAZIONE.DOCUMENTI_POLIZZA, false, null, null, null, true, Sfera.VISTESUGGERITE.CARICO_MANCANTE)
-            Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
             Sfera.checkVistaExist(Sfera.VISTESUGGERITE.CARICO_MANCANTE)
         })
