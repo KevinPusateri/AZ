@@ -26,14 +26,6 @@ import { tariffaCases as ardCases } from '../../fixtures/tariffe_ARD/tariffaCase
 
 before(() => {
     Cypress.env('isAviva', false)
-    if (cases === '')
-        cy.task('log', `Test su tutti i Casi`)
-    else
-        ardCases.forEach((currentCase, k) => {
-            if (caseToExecute.includes(currentCase.Identificativo_Caso))
-                cy.task('log', 'CASO: ' + currentCase.Descrizione_Settore)
-        })
-
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
@@ -41,6 +33,15 @@ before(() => {
             LoginPage.logInMWAdvanced()
         })
     })
+    if (cases === '')
+        cy.task('info', `Test su tutti i Casi`)
+    else{
+        cy.task('info', `Run su i seguenti test`)
+        ardCases.forEach((currentCase, k) => {
+            if (caseToExecute.includes(currentCase.Identificativo_Caso))
+            cy.task('info', 'CASO ' + currentCase.Identificativo_Caso + ': ' + currentCase.Descrizione_Settore)
+        })
+    }
 })
 
 beforeEach(() => {

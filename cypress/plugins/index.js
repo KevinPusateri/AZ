@@ -204,7 +204,7 @@ function mysqlFindLastPolizza(dbConfig, prodotto, annullamento = false) {
         strAnnullamento = "1"
     }
 
-    var query = "SELECT * FROM da.polizza WHERE prodotto='"+ prodotto +"' and annullamento='" + strAnnullamento + "' ORDER BY dataEmissione ASC LIMIT 1"
+    var query = "SELECT * FROM da.polizza WHERE prodotto='" + prodotto + "' and annullamento='" + strAnnullamento + "' ORDER BY dataEmissione ASC LIMIT 1"
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
@@ -225,7 +225,7 @@ function mysqlRegistraAnnullamento(dbConfig, id, numeroPolizza, prodotto) {
         if (err) throw err;
     })
 
-    var query = "UPDATE da.polizza SET annullamento='1' WHERE id='"+ id +"' and numero ='"+ numeroPolizza +"' and prodotto='"+ prodotto +"'"
+    var query = "UPDATE da.polizza SET annullamento='1' WHERE id='" + id + "' and numero ='" + numeroPolizza + "' and prodotto='" + prodotto + "'"
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
@@ -442,7 +442,7 @@ module.exports = (on, config) => {
             return mysqlRegistraAnnullamento(dbConfig, id, numeroPolizza, prodotto)
         }
     });
-    
+
     //devono essere valorizzati
     on("task", {
         cliente() {
@@ -578,6 +578,11 @@ module.exports = (on, config) => {
 
         warnTFS(message) {
             console.log(`      - ${message}`);
+            return null
+        },
+
+        info(message) {
+            console.log(message);
             return null
         }
     })
