@@ -51,8 +51,17 @@ after(function () {
 //?Se a true, non si passa in emissione motor da Sales ma da un cliente Random di Clients
 let flowClients = false
 //?Se specificato, esegue i test per i casi specificati (inserirli in formato stringa)
-let caseToExecute = []
-
+let cases = Cypress.env('caseToExecute')
+let caseToExecute
+if (cases === '')
+    caseToExecute = []
+else {
+    if (cases.length > 1)
+        caseToExecute = cases.split('-')
+    else {
+        caseToExecute = [`${cases}`]
+    }
+}
 describe('ARD Ottobre 2022: ', {
     retries: {
         runMode: 0,

@@ -63,6 +63,7 @@ module.exports = defineConfig({
     hostParsr: 'H2017LE00038A',
     portParsr: '3001',
     selectedSettori: '',
+    caseToExecute: '',
     urlDebugProxyPreprod:
       'https://portaleagenzie.pp.azi.allianz.it/Auto/NGRA2013/DebugGetProxy.aspx',
     // urlDebugProxyTest: 'https://portaleagenzie.te.azi.allianzit/Auto/NGRA2013/DebugGetProxy.aspx',
