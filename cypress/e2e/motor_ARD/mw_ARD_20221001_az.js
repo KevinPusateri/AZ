@@ -26,6 +26,14 @@ import { tariffaCases as ardCases } from '../../fixtures/tariffe_ARD/tariffaCase
 
 before(() => {
     Cypress.env('isAviva', false)
+    if (cases === '')
+        cy.task('log', `Test su tutti i Casi`)
+    else
+        ardCases.forEach((currentCase, k) => {
+            if (caseToExecute.includes(currentCase.Identificativo_Caso))
+                cy.task('log', 'CASO: ' + currentCase.Descrizione_Settore)
+        })
+
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
         cy.getUserWinLogin().then(data => {
@@ -71,33 +79,32 @@ describe('ARD Ottobre 2022: ', {
     ardCases.forEach((currentCase, k) => {
         describe(`Case ${k + 1} ` + currentCase.Descrizione_Settore, function () {
             it("Flusso", function () {
-                if (currentCase)
-                    if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
-                        Common.visitUrlOnEnv()
+                if ((caseToExecute.length === 0 && currentCase.Identificativo_Caso !== 'SKIP') || caseToExecute.includes(currentCase.Identificativo_Caso)) {
+                    Common.visitUrlOnEnv()
 
-                        if (flowClients) {
-                            TopBar.searchRandom()
-                            LandingRicerca.searchRandomClient(true, (currentCase.Tipologia_Entita === 'Persona' ? 'PF' : 'PG'), 'P')
-                            LandingRicerca.clickRandomResult('PF')
-                            SintesiCliente.clickAuto()
-                            SintesiCliente.clickPreventivoMotor()
-                        }
-                        else {
-                            TopBar.clickSales()
-                            Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
-                        }
-
-                        TenutaTariffa.compilaDatiQuotazione(currentCase, flowClients)
-                        TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
-                        TenutaTariffa.compilaVeicolo(currentCase)
-                        TenutaTariffa.compilaProvenienza(currentCase)
-                        TenutaTariffa.compilaOffertaARD(currentCase)
-                        TenutaTariffa.areaRiservata(currentCase)
-
-                        TenutaTariffa.checkTariffaARD(currentCase)
+                    if (flowClients) {
+                        TopBar.searchRandom()
+                        LandingRicerca.searchRandomClient(true, (currentCase.Tipologia_Entita === 'Persona' ? 'PF' : 'PG'), 'P')
+                        LandingRicerca.clickRandomResult('PF')
+                        SintesiCliente.clickAuto()
+                        SintesiCliente.clickPreventivoMotor()
                     }
-                    else
-                        this.skip()
+                    else {
+                        TopBar.clickSales()
+                        Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
+                    }
+
+                    TenutaTariffa.compilaDatiQuotazione(currentCase, flowClients)
+                    TenutaTariffa.compilaContraenteProprietario(currentCase, flowClients)
+                    TenutaTariffa.compilaVeicolo(currentCase)
+                    TenutaTariffa.compilaProvenienza(currentCase)
+                    TenutaTariffa.compilaOffertaARD(currentCase)
+                    TenutaTariffa.areaRiservata(currentCase)
+
+                    TenutaTariffa.checkTariffaARD(currentCase)
+                }
+                else
+                    this.skip()
             })
         })
     })
