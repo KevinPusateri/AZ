@@ -111,14 +111,12 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.backToNumbers('business-lines')
     })
 
-    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         it('Verifica su Linee di Business - dal Tab MOTOR l\'aggancio a Retention', function () {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('MOTOR', 'Retention')
             Numbers.backToNumbers('business-lines')
         })
-    }
 
     it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a New business', function () {
         TopBar.clickNumbers()
@@ -141,16 +139,13 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         Numbers.backToNumbers('business-lines')
     })
 
-    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         it('Verifica su Linee di Business - dal Tab RAMI VARI RETAIL l\'aggancio a Retention', function () {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
             Numbers.clickAndCheckAtterraggio('RAMI VARI RETAIL', 'Retention')
             Numbers.backToNumbers('business-lines')
         })
-    }
 
-    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         it('Verifica su Linee di Business - dal Tab MIDCO l\'aggancio a New business', function () {
             TopBar.clickNumbers()
             Numbers.clickTab('LINEE DI BUSINESS', 'business-lines')
@@ -171,6 +166,8 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
             Numbers.clickAndCheckAtterraggio('MIDCO', 'Portafoglio')
             Numbers.backToNumbers('business-lines')
         })
+
+    if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
 
         it('Verifica su Linee di Business - dal Tab ALTRO l\'aggancio a New business', function () {
             TopBar.clickNumbers()
