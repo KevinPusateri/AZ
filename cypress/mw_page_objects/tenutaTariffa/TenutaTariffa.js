@@ -1082,7 +1082,7 @@ class TenutaTariffa {
                         cy.get('nx-icon[class~="clickAble"]').first().click()
                     })
                     break;
-                case 'AUTOBUS URBANO PERSONA GIURIDICA':
+                case 'MACCHINA OPERATRICE PERSONA FISICA':
                 case 'MACCHINA AGRICOLA PERSONA FISICA':
                     cy.contains("RCA - PREMIO FISSO UNIFICATA").parents('form').within(() => {
                         cy.get('nx-icon[class~="clickAble"]').first().click()
@@ -1098,6 +1098,7 @@ class TenutaTariffa {
             //Massimale
             cy.contains('Massimale').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
             cy.get('nx-dropdown-item').contains(currentCase.Massimale).click()
+
             cy.wait('@getMotor', { timeout: 30000 })
 
             //Attendiamo che il caricamento non sia più visibile
@@ -1125,6 +1126,7 @@ class TenutaTariffa {
 
                     break
                 case '3':
+                    cy.wait(5000)
                     //Franchigia
                     if (currentCase.Franchigia !== '') {
                         cy.get(':contains("Franchigia"):last').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
@@ -1135,21 +1137,23 @@ class TenutaTariffa {
                     }
 
                     //? Conducente/Tipo Guida è presettato
-
+                    cy.wait(3000)
                     //Danni alle cose dei terzi trasportati
                     if (currentCase.Danni_Terzi_Trasportati !== '') {
                         cy.contains('Danni alle cose dei terzi trasportati').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
                         cy.get('nx-dropdown-item').contains(currentCase.Danni_Terzi_Trasportati).click()
                         //Attendiamo che il caricamento non sia più visibile
-                        cy.get('nx-spinner').should('not.be.visible')
                         cy.wait('@getMotor', { timeout: 30000 })
+                        cy.get('nx-spinner').should('not.be.visible')
                     }
+                    cy.wait(3000)
 
                     //Rinuncia rilvalsa
                     if (currentCase.Rinuncia_Rivalsa !== '') {
                         cy.contains('Rivalsa').parents('motor-form-controllo').should('be.visible').find('nx-dropdown').click()
                         cy.get('nx-dropdown-item').contains(currentCase.Rinuncia_Rivalsa).click()
                         cy.wait('@getMotor', { timeout: 30000 })
+                        cy.get('nx-spinner').should('not.be.visible')
                     }
                     break
                 case '4':
@@ -1241,6 +1245,7 @@ class TenutaTariffa {
                     break
                 case '6':
                 case '7':
+                    cy.wait(5000)
                     //TODO Protezione Rivalsa è già settata come garanzia in automatico; implementa verficia di presenza
                     if (!Cypress.env('isAviva')) {
                         //Estensione Sgombero Neve
@@ -1252,8 +1257,9 @@ class TenutaTariffa {
                     }
                     break
             }
+            cy.get('nx-spinner').should('not.be.visible').wait(1000)
 
-            cy.get('h3:contains("Rc Auto")').click()
+            cy.get('h3:contains("Rc Auto")').should('be.visible').click()
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             // In base al settore il nome del pannello RCA è differente e lo salviamo per verificare il valore del premio
