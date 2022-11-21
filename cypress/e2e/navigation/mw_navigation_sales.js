@@ -43,7 +43,7 @@ let keys = {
     UltraImpresaEnabled: true,
     PreventivoMotorEnabled: true,
     UltraSaluteEnabled: true,
-    UltraCasaPatrimonioEnabled: true,
+    UltraCasaPatrimonioEnabled: true, // SPENTO per age 319000 REL 128 17-11-22
     Allianz1BusinessEnabled: true,
     FasquoteImpresaAlbergoEnabled: true,
     FlotteConvenzioniEnabled: true,

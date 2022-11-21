@@ -33,7 +33,7 @@ let keys = {
     MOVIMENTAZIONE_SINISTRI: true,
     DENUNCIA: true,
     GESTIONE_CONTATTO_CARD: true,
-    DENUNCIA_BMP: true,
+    NUOVA_DENUNCIA: true, // Rel 128 21-11-22 (pre Denuncia BMP)
     CONSULTAZIONE_SINISTRI: true,
     SINISTRI_INCOMPLETI: true,
     SINISTRI_CANALIZZATI: true,
@@ -63,7 +63,7 @@ before(() => {
             cy.getProfiling(data.tutf).then(profiling => {
                 cy.filterProfile(profiling, 'SINISTRI_CRUSCOTTO_STD').then(profiled => { keys.MOVIMENTAZIONE_SINISTRI = profiled })
                 cy.filterProfile(profiling, 'SINISTRI_DENUNCIA_STD').then(profiled => { keys.DENUNCIA = profiled })
-                cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.DENUNCIA_BMP = profiled })
+                cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.NUOVA_DENUNCIA = profiled })
                 cy.filterProfile(profiling, 'SINISTRI_INQUIRY_STD').then(profiled => { keys.CONSULTAZIONE_SINISTRI = profiled })
                 cy.filterProfile(profiling, 'SINISTRI_REMUN_NO_MISA_STD').then(profiled => { keys.SINISTRI_INCOMPLETI = profiled })
                 cy.filterProfile(profiling, 'COMMON_REPORTING_SXCANALIZZATI').then(profiled => { keys.SINISTRI_CANALIZZATI = profiled })
@@ -162,11 +162,11 @@ describe('Matrix Web: Navigazioni da Burger Menu in Backoffice', options, functi
         BurgerMenuBackOffice.backToBackOffice()
     })
 
-    it('Verifica aggancio Denuncia BMP', function () {
-        if (!keys.DENUNCIA_BMP)
+    it('Verifica aggancio Nuova Denuncia', function () {
+        if (!keys.NUOVA_DENUNCIA)
             this.skip()
 
-        BurgerMenuBackOffice.clickLink('Denuncia BMP')
+        BurgerMenuBackOffice.clickLink('Nuova Denuncia')
         BurgerMenuBackOffice.backToBackOffice()
     })
 

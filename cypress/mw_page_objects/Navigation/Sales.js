@@ -979,6 +979,7 @@ class Sales {
     static checkNotExistTabVitaOnPreventiviQuot() {
         cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
         cy.get('app-quotations-section').find('nx-tab-header:visible').should('not.contain.text', 'Vita')
+        cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
     }
     static checkNotExistTabVitaOnProposte() {
         cy.get('app-proposals-section').contains('Proposte').click()
@@ -1054,9 +1055,9 @@ class Sales {
         })
         cy.get('app-proposals-section').contains('Proposte').click()
         cy.wait('@gqlDamage', { timeout: 50000 });
-        cy.get('app-paginated-cards').find('button:contains("Danni")').click()
+        cy.get('app-paginated-cards').find('button:contains("Danni"):visible').click()
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
-        cy.get('app-paginated-cards')
+        cy.get('app-paginated-cards:visible')
             .screenshot('Verifica Proposte Da Vita', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
         cy.wait(10000)
     }

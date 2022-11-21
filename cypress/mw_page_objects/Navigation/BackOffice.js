@@ -52,7 +52,7 @@ const LinksSinistri = {
     MOVIMENTAZIONE_SINISTRI: 'Movimentazione sinistri',
     DENUNCIA: 'Denuncia',
     GESTIONE_CONTATTO_CARD: 'Gestione Contatto Card',
-    DENUNCIA_BMP: 'Denuncia BMP',
+    NUOVA_DENUNCIA: 'Nuova Denuncia',
     CONSULTAZIONE_SINISTRI: 'Consultazione sinistri',
     SINISTRI_INCOMPLETI: 'Sinistri incompleti',
     SINISTRI_CANALIZZATI: 'Sinistri canalizzati',
@@ -61,7 +61,7 @@ const LinksSinistri = {
         if (!keys.MOVIMENTAZIONE_SINISTRI) delete this.MOVIMENTAZIONE_SINISTRI
         if (!keys.DENUNCIA) delete this.DENUNCIA
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) delete this.GESTIONE_CONTATTO_CARD
-        if (!keys.DENUNCIA_BMP) delete this.DENUNCIA_BMP
+        if (!keys.NUOVA_DENUNCIA) delete this.NUOVA_DENUNCIA
         if (!keys.CONSULTAZIONE_SINISTRI) delete this.CONSULTAZIONE_SINISTRI
         if (!keys.SINISTRI_INCOMPLETI) delete this.SINISTRI_INCOMPLETI
         if (!keys.SINISTRI_CANALIZZATI) delete this.SINISTRI_CANALIZZATI
@@ -173,7 +173,7 @@ class BackOffice {
                 findIframeChild(IFrameParentDenuncia).find('a:contains("Esegui Ricerca"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
-            case LinksSinistri.DENUNCIA_BMP:
+            case LinksSinistri.NUOVA_DENUNCIA:
                 cy.wait(5000)
                 getIFrame().within(() => {
                     cy.get('#keyword:visible').should('exist').should('be.visible')
@@ -186,7 +186,7 @@ class BackOffice {
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.GESTIONE_CONTATTO_CARD:
-                getIFrame().find('#resultsClaimsToComplete').should('exist').and('be.visible')
+                getIFrame().find('[class="pageTitle"]:contains("Gestione contatto CARD"):visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksSinistri.CONSULTAZIONE_SINISTRI:

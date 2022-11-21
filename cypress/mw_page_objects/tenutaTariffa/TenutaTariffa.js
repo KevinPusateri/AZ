@@ -301,7 +301,7 @@ class TenutaTariffa {
                         cy.get('input[formcontrolname="nome"]').should('exist').and('be.visible').type((currentCase.Nome === undefined && currentCase.Cognome === undefined) ? currentPersonaFisica.nome.toUpperCase() : currentCase.Nome)
                         cy.get('input[formcontrolname="cognomeRagioneSociale"]').should('exist').and('be.visible').type((currentCase.Nome === undefined && currentCase.Cognome === undefined) ? currentPersonaFisica.cognome.toUpperCase() : currentCase.Cognome)
 
-                        cy.get('input[formcontrolname="luogoNascita"]').should('exist').and('be.visible').type((currentCase.Comune_Nascita === undefined) ? currentCase.Comune : currentCase.Comune_Nascita).wait(2000)
+                        cy.get('input[formcontrolname="luogoNascita"]').should('exist').and('be.visible').type((currentCase.Comune_Nascita === undefined) ? currentCase.Comune : currentCase.Comune_Nascita).wait(3500)
 
                         cy.get('nx-autocomplete-option:visible').within(() => {
                             cy.get('.nx-autocomplete-option__label').first().click()
@@ -1076,9 +1076,24 @@ class TenutaTariffa {
             cy.wait(5000)
 
             //Espandiamo pannello RCA
-            cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
-                cy.get('nx-icon[class~="clickAble"]').first().click()
-            })
+            switch (currentCase.Descrizione_Settore) {
+                case 'AUTOBUS URBANO PERSONA GIURIDICA':
+                    cy.contains("RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA").parents('form').within(() => {
+                        cy.get('nx-icon[class~="clickAble"]').first().click()
+                    })
+                    break;
+                case 'AUTOBUS URBANO PERSONA GIURIDICA':
+                case 'MACCHINA AGRICOLA PERSONA FISICA':
+                    cy.contains("RCA - PREMIO FISSO UNIFICATA").parents('form').within(() => {
+                        cy.get('nx-icon[class~="clickAble"]').first().click()
+                    })
+                    break;
+                default:
+                    cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
+                        cy.get('nx-icon[class~="clickAble"]').first().click()
+                    })
+                    break;
+            }
 
             //Massimale
             cy.contains('Massimale').parents('motor-form-controllo').find('nx-dropdown').should('be.visible').click()
@@ -1241,8 +1256,22 @@ class TenutaTariffa {
             cy.get('h3:contains("Rc Auto")').click()
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
+            // In base al settore il nome del pannello RCA è differente e lo salviamo per verificare il valore del premio
+            switch (currentCase.Descrizione_Settore) {
+                case 'AUTOBUS URBANO PERSONA GIURIDICA':
+                    cy.contains("RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA").as('pannelloRCA')
+                    break;
+                case 'MACCHINA OPERATRICE PERSONA FISICA':
+                case 'MACCHINA AGRICOLA PERSONA FISICA':
+                    cy.contains("RCA - PREMIO FISSO UNIFICATA").as('pannelloRCA')
+                    break;
+                default:
+                    cy.contains("RCA - BONUS MALUS").as('pannelloRCA')
+                    break;
+            }
+
             //Verifichiamo il premio lordo a video
-            cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
+            cy.get('@pannelloRCA').parents('form').within(() => {
                 cy.get('p[class~="premio"]').first().invoke('text').then(premioLordo => {
 
                     premioLordo.replace(/€/g, '').trim()

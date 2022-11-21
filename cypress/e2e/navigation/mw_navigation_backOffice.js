@@ -25,7 +25,7 @@ let keys = {
     MOVIMENTAZIONE_SINISTRI: true,
     DENUNCIA: true,
     GESTIONE_CONTATTO_CARD: true,
-    DENUNCIA_BMP: true,
+    NUOVA_DENUNCIA: true,
     CONSULTAZIONE_SINISTRI: true,
     SINISTRI_INCOMPLETI: true,
     SINISTRI_CANALIZZATI: true,
@@ -51,39 +51,39 @@ before(() => {
         cy.getUserWinLogin().then(data => {
             cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
             LoginPage.logInMWAdvanced()
+            if (!Cypress.env('internetTesting'))
+                cy.getProfiling(data.tutf).then(profiling => {
+                    cy.filterProfile(profiling, 'SINISTRI_CRUSCOTTO_STD').then(profiled => { keys.MOVIMENTAZIONE_SINISTRI = profiled })
+                    cy.filterProfile(profiling, 'SINISTRI_DENUNCIA_STD').then(profiled => { keys.DENUNCIA = profiled })
+                    cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.NUOVA_DENUNCIA = profiled })
+                    cy.filterProfile(profiling, 'SINISTRI_INQUIRY_STD').then(profiled => { keys.CONSULTAZIONE_SINISTRI = profiled })
+                    cy.filterProfile(profiling, 'SINISTRI_REMUN_NO_MISA_STD').then(profiled => { keys.SINISTRI_INCOMPLETI = profiled })
+                    cy.filterProfile(profiling, 'COMMON_REPORTING_SXCANALIZZATI').then(profiled => { keys.SINISTRI_CANALIZZATI = profiled })
+                    cy.filterProfile(profiling, 'COMMON_CONTABILITA_SINTESI_CONTABILITA').then(profiled => { keys.SINTESI_CONTABILITA = profiled })
+                    cy.filterProfile(profiling, 'COMMON_CONTABILITA_GIORNATA_CONTABILE').then(profiled => { keys.GIORNATA_CONTABILE = profiled })
+                    cy.filterProfile(profiling, 'COMMON_CONTABILITA_CONSULTAZIONE_MOVIMENTI').then(profiled => { keys.CONSULTAZIONE_MOVIMENTI = profiled })
+                    cy.filterProfile(profiling, 'COMMON_CONTABILITA_DAS_INQUIRY').then(profiled => { keys.ESTRAZIONE_CONTABILITA = profiled })
+                    cy.filterProfile(profiling, 'COMMON_DELEGHE_RID_EPAY').then(profiled => { keys.DELEGHE_SDD = profiled })
+                    cy.filterProfile(profiling, 'COMMON_QUADRATURA_UNIFICATA_ALLIANZ_DIGITAL').then(profiled => { keys.QUADRATURA_UNIFICATA = profiled })
+                    cy.filterProfile(profiling, 'INCASSO_PER_CONTO').then(profiled => { keys.INCASSO_PER_CONTO = profiled })
+                    cy.filterProfile(profiling, 'COMMON_INCASSO_MASSIVO').then(profiled => { keys.INCASSO_MASSIVO = profiled })
+                    cy.filterProfile(profiling, 'COMMON_CONTABILITA_SOLLECITO_TITOLI').then(profiled => { keys.SOLLECITO_TITOLI = profiled })
+                    cy.filterProfile(profiling, 'MONITORAGGIO_CDF').then(profiled => { keys.MONITORAGGIO_GUIDA_SMART = profiled })
+                    cy.filterProfile(profiling, 'COMMON_CAD_CONVENZIONI_IN_TRATTENUTA').then(profiled => { keys.CONVENZIONI_IN_TRATTENUTA = profiled })
+                    cy.filterProfile(profiling, 'COMMON_CONTABILITA_CONSULTAZIONE_MOVIMENTI').then(profiled => { keys.IMPOSTAZIONE_CONTABILITA = profiled })
 
-        })
-        if (!Cypress.env('internetTesting'))
-            cy.getProfiling(data.tutf).then(profiling => {
-                cy.filterProfile(profiling, 'SINISTRI_CRUSCOTTO_STD').then(profiled => { keys.MOVIMENTAZIONE_SINISTRI = profiled })
-                cy.filterProfile(profiling, 'SINISTRI_DENUNCIA_STD').then(profiled => { keys.DENUNCIA = profiled })
-                cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.DENUNCIA_BMP = profiled })
-                cy.filterProfile(profiling, 'SINISTRI_INQUIRY_STD').then(profiled => { keys.CONSULTAZIONE_SINISTRI = profiled })
-                cy.filterProfile(profiling, 'SINISTRI_REMUN_NO_MISA_STD').then(profiled => { keys.SINISTRI_INCOMPLETI = profiled })
-                cy.filterProfile(profiling, 'COMMON_REPORTING_SXCANALIZZATI').then(profiled => { keys.SINISTRI_CANALIZZATI = profiled })
-                cy.filterProfile(profiling, 'COMMON_CONTABILITA_SINTESI_CONTABILITA').then(profiled => { keys.SINTESI_CONTABILITA = profiled })
-                cy.filterProfile(profiling, 'COMMON_CONTABILITA_GIORNATA_CONTABILE').then(profiled => { keys.GIORNATA_CONTABILE = profiled })
-                cy.filterProfile(profiling, 'COMMON_CONTABILITA_CONSULTAZIONE_MOVIMENTI').then(profiled => { keys.CONSULTAZIONE_MOVIMENTI = profiled })
-                cy.filterProfile(profiling, 'COMMON_CONTABILITA_DAS_INQUIRY').then(profiled => { keys.ESTRAZIONE_CONTABILITA = profiled })
-                cy.filterProfile(profiling, 'COMMON_DELEGHE_RID_EPAY').then(profiled => { keys.DELEGHE_SDD = profiled })
-                cy.filterProfile(profiling, 'COMMON_QUADRATURA_UNIFICATA_ALLIANZ_DIGITAL').then(profiled => { keys.QUADRATURA_UNIFICATA = profiled })
-                cy.filterProfile(profiling, 'INCASSO_PER_CONTO').then(profiled => { keys.INCASSO_PER_CONTO = profiled })
-                cy.filterProfile(profiling, 'COMMON_INCASSO_MASSIVO').then(profiled => { keys.INCASSO_MASSIVO = profiled })
-                cy.filterProfile(profiling, 'COMMON_CONTABILITA_SOLLECITO_TITOLI').then(profiled => { keys.SOLLECITO_TITOLI = profiled })
-                cy.filterProfile(profiling, 'MONITORAGGIO_CDF').then(profiled => { keys.MONITORAGGIO_GUIDA_SMART = profiled })
-                cy.filterProfile(profiling, 'COMMON_CAD_CONVENZIONI_IN_TRATTENUTA').then(profiled => { keys.CONVENZIONI_IN_TRATTENUTA = profiled })
-                cy.filterProfile(profiling, 'COMMON_CONTABILITA_CONSULTAZIONE_MOVIMENTI').then(profiled => { keys.IMPOSTAZIONE_CONTABILITA = profiled })
-
-                //20.06.22 Scheda Sinistri per Gestione
-                cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiledReportingInterrogazioniCentralizzate => {
-                    cy.filterProfile(profiling, 'REPORTING_DATI_SENSIBILI').then(profiledDatiSensibili => {
-                        cy.filterProfile(profiling, 'REPORTING_INCENTIVAZIONI_DI_AGENZIA').then(profiledIncentivazioniAgenzia => {
-                            if (!(profiledReportingInterrogazioniCentralizzate && profiledDatiSensibili && profiledIncentivazioniAgenzia) || Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
-                                keys.SCHEDA_SINISTRI_GESTIONE = false
+                    //20.06.22 Scheda Sinistri per Gestione
+                    cy.filterProfile(profiling, 'COMMON_REPORTING_INTERROGAZIONI_CENTRALIZZATE').then(profiledReportingInterrogazioniCentralizzate => {
+                        cy.filterProfile(profiling, 'REPORTING_DATI_SENSIBILI').then(profiledDatiSensibili => {
+                            cy.filterProfile(profiling, 'REPORTING_INCENTIVAZIONI_DI_AGENZIA').then(profiledIncentivazioniAgenzia => {
+                                if (!(profiledReportingInterrogazioniCentralizzate && profiledDatiSensibili && profiledIncentivazioniAgenzia) || Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
+                                    keys.SCHEDA_SINISTRI_GESTIONE = false
+                            })
                         })
                     })
                 })
-            })
+        })
+
     })
 })
 
@@ -102,7 +102,6 @@ after(function () {
     //#endregion
 
 })
-
 describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     it('Verifica atterraggio su BackOffice', function () {
@@ -140,11 +139,11 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         BackOffice.backToBackOffice()
     })
 
-    it('Verifica apertura disambiguazione: Denuncia BMP', function () {
-        if (!keys.DENUNCIA_BMP)
+    it('Verifica apertura disambiguazione: Nuova Denuncia', function () {
+        if (!keys.NUOVA_DENUNCIA)
             this.skip()
         TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Denuncia BMP')
+        BackOffice.clickCardLink('Nuova Denuncia')
         BackOffice.backToBackOffice()
     })
 
