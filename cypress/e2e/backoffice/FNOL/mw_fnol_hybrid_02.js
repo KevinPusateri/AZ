@@ -1,8 +1,7 @@
 /**
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
  *
- * @description Emissione denuncia di un sinistro motor avente come copertura 
- * di garanzia la "Eventi Naturali - Grandine"
+ * @description Emissione denuncia FNOL BMP Prodotto Hydrid Ultra Casa & Patimonio - Ambito Fabbricato 
  */
 
 
@@ -94,7 +93,7 @@ var cliente_num_pol = '502257481'
 var cliente_email = 'f.ninno@allianz.it'
 */
 var prodotto = 'ULTRA CASA'
-var ambito_garanzia_fabbricato = 'Fabbricato'
+var ambito_garanzia_prodotto = 'Fabbricato'
 //var classe_garanzia_prodotto = 'Fabbricato - Incendio, Eventi atmosferici, Allagamento'
 var classe_garanzia_prodotto =' Danni d\'acqua'
 var loss_type = 'EVENTI ATMOSFERICI'
@@ -122,7 +121,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
     it('Atterraggio su BackOffice >> Denuncia BMP', function () {
         TopBar.clickBackOffice()
         cy.wait(1000);
-        BackOffice.clickCardLink('Denuncia BMP') 
+        BackOffice.clickCardLink('Nuova Denuncia') 
         cy.wait(1000);
     });        
 
@@ -210,7 +209,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         cy.wait(1000);
     });
 
-    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' --> ambito: "'+ ambito_garanzia_fabbricato + '" classe: "'+classe_garanzia_prodotto +'" etc..', function () {
+    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' --> ambito: "'+ ambito_garanzia_prodotto + '" classe: "'+classe_garanzia_prodotto +'" etc..', function () {
         //Informazioni sul sinistro
         //Selezione di quale ambito è coinvolto? *     
         let cssClssPrd =  '#fnol-nmt-incident-info > div > form > div:nth-child(1) > div:nth-child(1) > nx-formfield > div > div.nx-formfield__row > div.nx-formfield__flexfield > div > div > nx-dropdown > div > div.nx-dropdown__icon > nx-icon';
@@ -224,7 +223,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         Common.clickFindByIdOnIframe(cssAffctdObj);
         cy.wait(500) 
         Common.clickFindByIdOnIframe(cssCmbFrstElement);
-        //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, ambito_garanzia_fabbricato);
+        //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, ambito_garanzia_prodotto);
         cy.wait(1000)
 
         cy.screenshot('08 - Pagina Dati denuncia - Polizza selezionata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
@@ -258,7 +257,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
 
         //Descrizione del sinistro
         let cssDescrClm = 'textarea[formcontrolname="description"]'
-        DenunciaBMP.setValue_ById(cssDescrClm, sinistro_descrizione_danno + " - Ambito: "+ambito_garanzia_fabbricato + " - Classe: "+classe_garanzia_prodotto);
+        DenunciaBMP.setValue_ById(cssDescrClm, sinistro_descrizione_danno + " - Ambito: "+ambito_garanzia_prodotto + " - Classe: "+classe_garanzia_prodotto);
         cy.wait(1000)-
 
         cy.screenshot('10 - Pagina Dati denuncia - Altri dati del sinistro: descrizione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
