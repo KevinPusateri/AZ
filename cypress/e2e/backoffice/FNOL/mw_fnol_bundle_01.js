@@ -1,8 +1,7 @@
 /**
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
  *
- * @description Emissione denuncia di un sinistro motor avente come copertura 
- * di garanzia la "Eventi Naturali - Grandine"
+ * @description Emissione denuncia FNOL BMP Prodotto Bundle Ultra Casa & Patimonio - Ambito Fabbricato 
  */
 
 
@@ -94,7 +93,7 @@ var cliente_num_pol = '502257481'
 var cliente_email = 'f.ninno@allianz.it'
 */
 var prodotto = 'ULTRA CASA'
-var ambito_garanzia_fabbricato = 'Persona'
+var ambito_garanzia_prodotto = 'Persona'
 var classe_garanzia_prodotto = 'Fabbricato - Incendio, Eventi atmosferici, Allagamento'
 var loss_type = 'EVENTI ATMOSFERICI'
 var loss_cause = 'PIOGGIA'
@@ -122,7 +121,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
     it('Atterraggio su BackOffice >> Denuncia BMP', function () {
         TopBar.clickBackOffice()
         cy.wait(1000);
-        BackOffice.clickCardLink('Denuncia BMP') 
+        BackOffice.clickCardLink('Nuova Denuncia') 
         cy.wait(1000);
     });        
 
@@ -201,15 +200,15 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
         cy.screenshot('Bndl-07- Pagina Dati denuncia - Dettaglio sulla Polizza interessata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
         cy.wait(1000);
     });
-
-    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' --> [Inserimento dati di sinistro]: ambito/soggetto coinvolto, etc..', function () {
-        //Informazioni sul sinistro
+    it('Denuncia BMP --> Dettaglio del sinistro --> Sezione \'Informazioni sul sinistro\' --> ambito: "'+ ambito_garanzia_prodotto + '" classe: "'+classe_garanzia_prodotto +'" etc..', function () {
+    
+     //Informazioni sul sinistro
         //Selezione di quale ambito è coinvolto? *     
         let cssClssPrd =  'nx-dropdown[formcontrolname="selectedAffectedType"] > div ';
         Common.clickFindByIdOnIframe(cssClssPrd);
         cy.wait(500); // 
         Common.clickFindByIdOnIframe(cssCmbFrstElement);
-        //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, ambito_garanzia_fabbricato);
+        //Common.clickByAttrAndLblOnIframe(cssIdxCmbSelector, ambito_garanzia_prodotto);
         cy.wait(2000);
 
         //Selezione di quale soggetto / oggetto è coinvolto?
@@ -427,5 +426,9 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
 
         cy.screenshot('18- Sommario - Riepilogo sinistro - conferma del sinistro ', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(10000);
+    });
+
+    it('Denuncia BMP -->  Closing Test', function () {
+        // TEST LASCIATO INTENZIONALMENTE VUOTO PER LA REPORTISTICA DA TFS
     });
 });
