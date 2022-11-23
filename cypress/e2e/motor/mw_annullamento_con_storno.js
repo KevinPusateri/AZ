@@ -89,6 +89,7 @@ describe('Matrix Web : Annullamento + Storno Annullamento', function () {
                 numberPolizza = polizzaClient.numberPolizza
                 currentCustomerFullName = polizzaClient.customerName
                 TopBar.search(currentCustomerFullName)
+                LandingRicerca.filtra()
                 LandingRicerca.clickClientePF(currentCustomerFullName)
                 Portafoglio.clickTabPortafoglio()
                 Portafoglio.clickSubTab('Polizze attive')

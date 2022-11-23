@@ -124,8 +124,8 @@ class LibriMatricola {
                         }).as('loadDatiIntegrativi')
 
                         cy.get('button').children('span').contains('Ok')
-                            .should('be.visible').click()
-                        cy.wait('@loadDatiIntegrativi', { requestTimeout: 60000 });
+                            .should('be.visible').click().wait(10000)
+                        // cy.wait('@loadDatiIntegrativi', { requestTimeout: 60000 });
                     }
 
                 })
@@ -402,7 +402,8 @@ class LibriMatricola {
             url: '**/GetElencoAutorizzazioni'
         }).as('loadIntegrazione')
 
-        cy.wait('@loadIntegrazione', { requestTimeout: 60000 });
+        //TODO TOGLIERE eventualmente
+        // cy.wait('@loadIntegrazione', { requestTimeout: 60000 });
 
         cy.intercept({
             method: 'GET',
@@ -623,7 +624,7 @@ class LibriMatricola {
     }
 
     static getPreventivoMadre() {
-        cy.wait(5000)
+        cy.wait(10000)
 
         matrixFrame().within(() => {
             cy.get('#table_preventivi_madre', { timeout: 10000 }).should('be.visible').within(() => {
@@ -1311,8 +1312,14 @@ export function PreventivoMadre() {
         LibriMatricola.nuovoPreventivoMadre(convenzione, dataConvenzione)
     })
 
-    it("Dati integrativi", function () {
-        LibriMatricola.datiIntegrativi(false)
+    it("Dati Amministrativi", function () {
+        // LibriMatricola.datiIntegrativi(false)
+        cy.intercept({
+            method: 'GET',
+            url: '**/ContraeAnag.aspx'
+        }).as('ContraeAnag')
+        LibriMatricola.Avanti()
+        LibriMatricola.caricamentoContraenteProprietario()
     })
 
     it("Contraente", function () {
@@ -1361,6 +1368,7 @@ export function InclusioneApplicazione(nomeApplicazione, veicolo, garanzie, cope
             cy.fixture('LibriMatricola/LibriMatricola.json').then((data) => {
                 LoginPage.logInMWAdvanced()
                 LandingRicerca.search(data.ClientePGIVA)
+                LandingRicerca.filtra()
                 LandingRicerca.clickFirstResult()
                 SintesiCliente.clickAuto()
                 SintesiCliente.clickLibriMatricola()

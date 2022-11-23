@@ -168,7 +168,7 @@ class LandingRicerca {
                         cy.generateTwoLetters().then(randomChars => {
                             cy.get('#f-nome').clear().type(randomChars)
                         })
-                        cy.contains('Cerca').click().wait(2000)
+                        cy.contains('Cerca').should('be.enabled').click().wait(2000)
 
                         searchClients()
                     } else {
@@ -185,8 +185,16 @@ class LandingRicerca {
                 cy.log($name.text().trim())
                 let nameClient = $name.text().trim()
             })
-
+            // cy.window().then((win) => {
+            //     cy.spy(win, 'open').as('windowOpen'); // 'spy' vs 'stub' lets the new tab still open if you are visually watching it
+            // });
+            // https://portaleagenzie.pp.azi.allianz.it/daanagrafe/SCU/api/SCPersona/ClearSearchCache
+            
+            cy.pause()
+            // cy.intercept('https://portaleagenzie.pp.azi.allianz.it/daanagrafe/SCU/api/SCPersona/IsUserAuthorizedToAction', 'ignore').as('auth')
+            cy.intercept('https://portaleagenzie.pp.azi.allianz.it/__/', 'ignore').as('clear')
             cy.get('tbody > tr').first().click()
+
             //TODO Verificare cliente selezionato aggancia alla scheda cliente 
             //! Non rimane nella scheda cliente
 
@@ -768,7 +776,6 @@ class LandingRicerca {
                 break
             case 'bmp':
                 suggLinks = [
-                    'Denuncia BMP',
                     'Allianz Ultra Casa e Patrimonio BMP'
                 ]
                 linkLength = 2
