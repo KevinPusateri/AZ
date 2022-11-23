@@ -1546,7 +1546,7 @@ class TenutaTariffa {
                     break
             }
 
-            cy.get('h3:contains("Auto Rischi Diversi")').click()
+            cy.get('h3:contains("Auto Rischi Diversi")').click({ force: true })
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_ARD', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
             //Verifichiamo il totale relativo alla ARD
