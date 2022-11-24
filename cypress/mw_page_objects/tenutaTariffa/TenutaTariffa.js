@@ -1078,7 +1078,7 @@ class TenutaTariffa {
             //Espandiamo pannello RCA
             switch (currentCase.Descrizione_Settore) {
                 case 'AUTOBUS URBANO PERSONA GIURIDICA':
-                    cy.contains("RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA").parents('form').within(() => {
+                    cy.contains("Rc Auto").parents('form').within(() => {
                         cy.get('nx-icon[class~="clickAble"]').first().click()
                     })
                     break;
