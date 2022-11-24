@@ -1596,7 +1596,7 @@ class TenutaTariffa {
                     expect(JSON.stringify(findKeyInLog('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
                     cy.task('log', `Versione Radar_Punta_Flex_KeyID rilevata ${JSON.stringify(findKeyInLog('Radar_Punta_Flex_KeyID'))}`)
 
-
+                    if(!Cypress.env('isAviva')){
                     //#region Verifica Super Indice
                     var currentGara
                     switch (currentCase.Settore) {
@@ -1710,7 +1710,7 @@ class TenutaTariffa {
                     cy.task('log', `Minimo Sconto Applicabile p6413 valorizzato a : ${p6413}`)
                     cy.task('log', `Sconto Consigliato p6414 : ${p6414}`)
                     cy.task('log', `Importo Extra-Provvigionale p6415 : ${p6415}`)
-
+                    }
                 })
                 //#endregion
 
