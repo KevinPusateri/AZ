@@ -1265,7 +1265,7 @@ class TenutaTariffa {
             // In base al settore il nome del pannello RCA è differente e lo salviamo per verificare il valore del premio
             switch (currentCase.Descrizione_Settore) {
                 case 'AUTOBUS URBANO PERSONA GIURIDICA':
-                    cy.contains("RCA - TARIFFA CON FRANCHIGIA FISSA ED ASSOLUTA UNIFICATA").as('pannelloRCA')
+                    cy.contains("Rc Auto").as('pannelloRCA')
                     break;
                 case 'MACCHINA OPERATRICE PERSONA FISICA':
                 case 'MACCHINA AGRICOLA PERSONA FISICA':
