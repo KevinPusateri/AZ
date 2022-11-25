@@ -94,6 +94,7 @@ describe('Matrix Web : Convenzioni', () => {
                     retrivedClient = currentClient[0]
                     retrivedPartyRelations = currentClient[1]
                     TopBar.search(currentClient[0].name + ' ' + currentClient[0].firstName)
+                    LandingRicerca.filtra('ALL','P')
                     LandingRicerca.clickClientePF(currentClient[0].firstName + ' ' + currentClient[0].name)
                     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                     DettaglioAnagrafica.clickSubTab('Convenzioni')
@@ -134,6 +135,7 @@ describe('Matrix Web : Convenzioni', () => {
         '- la convenzione non sia più presente (anche per il familiare)', options, function () {
             if (!Cypress.env('monoUtenza')) {
                 TopBar.search(retrivedClient.name + ' ' + retrivedClient.firstName)
+                LandingRicerca.filtra('ALL','P')
                 LandingRicerca.clickClientePF(retrivedClient.firstName + ' ' + retrivedClient.name)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')

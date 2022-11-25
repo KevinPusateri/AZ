@@ -52,6 +52,7 @@ before(() => {
 
 })
 beforeEach(() => {
+  cy.ignoreRequest()
   cy.preserveCookies()
 })
 afterEach(function () {

@@ -115,7 +115,6 @@ class SCUContiCorrenti {
                         Common.canaleFromPopup()
                         cy.fixture('iban.json').then((data) => {
                             var indexScelta
-                            debugger
                             do {
                                 indexScelta = Math.floor(Math.random() * data.iban.length);
                             } while (data.iban[indexScelta] === contoCorrente.iban)
