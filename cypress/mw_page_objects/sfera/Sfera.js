@@ -850,7 +850,6 @@ const ColumnQuietanzeScartate = {
         key: 'Cla. BMCIP',
         tooltip: 'Classe Bonus CIP'
     }
-
 }
 
 /**
@@ -2648,9 +2647,23 @@ class Sfera {
      */
     static estrazioneReportExcel(currentColumn = []) {
         let columnView = []
-        if (currentColumn.length !== 0)
+        if (currentColumn.length !== 0) {
             for (const [key, value] of Object.entries(currentColumn))
-                columnView.push(value.key)
+                switch (currentColumn) {
+                    case Sfera.COLUMNQUIETANZESCARTATE:
+                        if (value.key === 'Soluzioneper Agenzia')
+                            value.key = 'Soluzione per Agenzia'
+                        if (value.key === 'Cla. BMCIP Prov.')
+                            value.key = 'Cla. BM CIP Prov.'
+                        if (value.key === 'Cla. BMRinn.')
+                            value.key = 'Cla. BM Rinn.'
+                        if (value.key === 'Cla. BMCIP')
+                            value.key = 'Cla. BM CIP'
+                        break;
+                    default:
+                        columnView.push(value.key)
+                }
+        }
 
         var rows = []
         cy.get('tbody > tr[nxtablerow]').each((rowsTable) => {
@@ -2666,7 +2679,8 @@ class Sfera {
 
             cy.task('getFolderDownload').then((folderDownload) => {
                 cy.parseXlsx(folderDownload + "\\REPORT.xlsx").then(jsonData => {
-                    jsonData[0].data[0].shift()
+                    if (currentColumn !== Sfera.COLUMNQUIETANZESCARTATE)
+                        jsonData[0].data[0].shift()
                     console.log(Object.values(jsonData[0].data[0]).sort())
                     console.log(columnView.sort())
                     // Verifica Colonne presenti
