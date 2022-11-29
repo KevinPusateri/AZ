@@ -421,7 +421,6 @@ class SintesiCliente {
         cy.wait('@gqlCalculateMotorPriceQuotation', { timeout: 120000 })
 
         cy.contains('Inserisci i dati manualmente').should('be.visible').click()
-        cy.screenshot('PopUp Inserisci i dati manualmente', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.wait(4500)
         cy.intercept({
             method: 'GET',
