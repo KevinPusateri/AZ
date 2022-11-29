@@ -2581,7 +2581,7 @@ class Sfera {
             cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
             cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
 
-            cy.get('button[nxmodalclose="Agree"]').click()
+            cy.get('button[nxmodalclose="Agree"]').click().wait(5000)
 
             //cy.wait('@caricaVista', { timeout: 60000 })
             // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
@@ -4144,6 +4144,12 @@ class Sfera {
 
     }
 
+
+    /**
+     * It checks if the column is in the right position and if it has the right name.
+     * @param position - the position of the column in the table
+     * @param name - the name of the column you want to check
+     */
     static checkColonnaSpostata(position, name = '') {
         if (name === 'Info')
             cy.get('thead > tr:first').within(($columns) => {
