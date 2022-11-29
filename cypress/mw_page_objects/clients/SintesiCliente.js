@@ -449,7 +449,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { timeout: 50000 })
 
-        getIFrame().find('span:contains("Nuova ricerca"):visible')
+        getIFrame().find('nx-link:contains("Nuova ricerca"):visible')
         cy.screenshot('Assuntivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
@@ -1064,9 +1064,15 @@ class SintesiCliente {
     static emettiPleinAir() {
         cy.get('nx-icon[aria-label="Open menu"]').click();
         cy.contains('PLEINAIR').click();
-        getIFrame().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
-        getIFrame().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
+        // Cambio grafica a nuovo Rel 128 del 24-11-22
+        // getIFrame().find('#PageContentPlaceHolder_Questionario1_4701-15_0_i').select('NUOVA ISCRIZIONE')
+        // getIFrame().find('#PageContentPlaceHolder_Questionario1_4701-40_0_i').select('FORMULA BASE')
+        getIFrame().find('span[aria-owns="modalita_listbox"]').click()
+        getIFrame().find('#modalita_listbox').contains('NUOVA ISCRIZIONE').click()
 
+        getIFrame().find('span[aria-owns="formula_listbox"]').click()
+        getIFrame().find('#formula_listbox').contains('FORMULA BASE').click()
+        
         if (!Cypress.env('monoUtenza'))
             cy.intercept({
                 method: '+(GET|POST)',
@@ -1079,7 +1085,8 @@ class SintesiCliente {
 
         cy.screenshot('Questionario', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-        getIFrame().find('#ButtonQuestOk').click().wait(3000)
+        // getIFrame().find('#ButtonQuestOk').click().wait(3000)
+        getIFrame().find('#btnPost').click().wait(3000)
         cy.wait('@dacontabilita', { timeout: 60000 })
         cy.wait(4000)
         getIFrame().find('#TabVarieInserimentoTipoPagamento:visible').click().wait(1000)
@@ -1094,16 +1101,21 @@ class SintesiCliente {
         }).as('questionariWeb');
 
         cy.screenshot('Cassa', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.pause()
+        getIFrame().find('button:contains("Inserisci")').click().wait(8000)
 
-        getIFrame().find('#TabVarieInserimentoButton').click().wait(8000)
-
-        cy.wait('@questionariWeb', { timeout: 60000 })
+        // cy.wait('@questionariWeb', { timeout: 60000 })
         cy.wait(10000)
         getIFrame().within(($frame) => {
             cy.screenshot('Emetti Plein Air', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
-            $frame.find('#ButtonQuestOk').click()
+            $frame.find('#printcallback').click()
         })
+        // getIFrame().within(($frame) => {
+        //     cy.screenshot('Emetti Plein Air', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+        //     $frame.find('#ButtonQuestOk').click()
+        // })
     }
 
     /**
