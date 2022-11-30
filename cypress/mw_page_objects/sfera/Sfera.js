@@ -1837,7 +1837,7 @@ class Sfera {
                         // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                         // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                         //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                        // this.estrai()
+                        this.estrai()
                         this.verificaAccessoSfera(false)
                     }
                     break;

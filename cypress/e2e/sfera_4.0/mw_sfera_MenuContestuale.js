@@ -96,6 +96,8 @@ if (!Cypress.env('isSecondWindow'))
         context('Motor > Menu Polizza', function () {
             it('Sostituzione / Riattivazione auto', function () {
                 //! NON VA AVANTI PASSA AL PROSSIMO TESTS
+                Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
+                Sfera.estrai()
                 Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.SOSTITUZIONE_RIATTIVAZIONE_AUTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
             })
 
@@ -156,7 +158,6 @@ if (!Cypress.env('isSecondWindow'))
 
         context('Menu Emissione', function () {
             it('Nuova polizza Auto', function () {
-                cy.pause()
             })
 
             it('Nuova polizza Rami Vari', function () {

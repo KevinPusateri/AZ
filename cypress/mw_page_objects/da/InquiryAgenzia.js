@@ -21,7 +21,9 @@ class InquiryAgenzia {
     }
 
     static uscita() {
-        return cy.get('a:contains("Uscita"):visible').should('exist').and('be.visible')
+        // OLD Version Pre Rel 128
+        // return cy.get('a:contains("Uscita"):visible').should('exist').and('be.visible')
+        return cy.get('button:contains("Uscita"):visible').should('exist').and('be.visible')
     }
 
     /**

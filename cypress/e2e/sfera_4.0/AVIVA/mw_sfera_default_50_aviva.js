@@ -114,7 +114,7 @@ else
             Sfera.filtraSuColonna(Sfera.FILTRI.INFO, Sfera.FILTRI.INFO.values.ENTRO_PERIODO_MORA)
             Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
             cy.wait(2000)
-            Sfera.accessiApplicativi(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO, false)
+            Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO, false)
             Sfera.checkRisultatiPaginaRighe('50')
             //Selezionare una lob (motor) \n- Selezionare un cluster \n- Estrai \n- Verificare che ci siano 50 righe su tabella dopo estrazione
             Sfera.selectRandomCluster()
