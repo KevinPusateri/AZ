@@ -42,7 +42,9 @@ before(() => {
 
 beforeEach(() => {
     cy.preserveCookies()
-    cy.ignoreRequest()
+    // cy.ignoreRequest()
+    // cy.intercept('https://azeu-mid-stage2-res.adobe-campaign.com/res/azeu_mid_stage2/HS_Lithium_email_2.jpg', 'ignore').as('res')
+
 })
 
 after(function () {

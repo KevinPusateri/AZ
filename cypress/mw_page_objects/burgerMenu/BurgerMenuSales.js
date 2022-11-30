@@ -342,6 +342,7 @@ class BurgerMenuSales extends Sales {
             case LinksBurgerMenu.CAMPAGNE_COMMERCIALI:
                 Common.canaleFromPopup()
                 cy.url().should('include', '/campaign-manager')
+                cy.get('lib-campaign-monitoring').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.RECUPERO_PREVENTIVI_E_QUOTAZIONI:

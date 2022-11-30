@@ -104,14 +104,18 @@ class CampagneCommerciali {
      */
     static verificaAccessoCampagneCommerciali() {
 
-        gqlCampaing()
-
-        waitCheckGQL('gqlCampaignUser')
-        waitCheckGQL('gqlCampaignList')
-        waitCheckGQL('gqlCampaignsMonitoring')
-        waitCheckGQL('gqlCampaignAgent')
-
+        // cy.intercept('POST', '**/graphql', (req) => {
+        //     if (req.body.operationName.includes('campaignAgent')) {
+        //         req.alias = 'gqlCampaignAgent'
+        //     }
+        // })
+        // cy.wait('@gqlCampaignAgent', { timeout: 60000 }).then(gqlCampaignAgent => {
+        //     expect(gqlCampaignAgent.response.statusCode).to.be.eq(200);
+        //     assert.isNotNull(gqlCampaignAgent.response.body)
+        // })
+        cy.wait(30000)
         cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
+        cy.get('lib-campaign-monitoring').should('be.visible')
 
         cy.screenshot('Verifica accesso Campagne Commerciali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }

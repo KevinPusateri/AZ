@@ -187,7 +187,7 @@ class TopBar extends HomePage {
             //Clicchiamo sul risultato
             $results.find('div:contains("' + value + '")').trigger('click')
         })
-
+        cy.wait(10000)
         //Vediamo eventuale popup del canale
         Common.canaleFromPopup()
     }
