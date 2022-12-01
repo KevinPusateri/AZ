@@ -441,7 +441,7 @@ class Common {
      * @returns {Object}
      */
     static getObjByIdAndTextOnIframeChild(idIframe, id, text) {
-        return findIframeChild(idIframe).find(id).should('exist').then(($obj) => {
+        return findIframeChild(idIframe).find(id, { timeout: 5000 }).should('exist').then(($obj) => {
             const value = $obj.val().toUpperCase();
             if (value.includes(text.toUpperCase())) {
                 cy.log('>> object with id=' + id + ' and label: "' + text + '" is defined')

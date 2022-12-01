@@ -201,11 +201,6 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
     });
     
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+copertura_danno, function () {        
-        Cypress.on('fail', (err, runnable) => {
-            // returning false here prevents Cypress from
-            // failing the test   
-            throw err
-        })    
         // Selezione della copertura
         DenunciaSinistriPage.clickObj_ByLabel('td', copertura_danno)
 
