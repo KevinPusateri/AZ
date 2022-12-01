@@ -94,7 +94,7 @@ const LinksBurgerMenu = {
 
 class BurgerMenuNumbers extends Numbers {
 
-    static getLinks(){
+    static getLinks() {
         return LinksBurgerMenu
     }
 
@@ -136,7 +136,7 @@ class BurgerMenuNumbers extends Numbers {
         })
     }
 
-    static clickBurgerMenu(){
+    static clickBurgerMenu() {
         cy.get('lib-burger-icon').click({ force: true })
     }
 
@@ -285,12 +285,19 @@ class BurgerMenuNumbers extends Numbers {
             case LinksBurgerMenu.RETENTION_RAMI_VARI:
             case LinksBurgerMenu.MONITORAGGIO_ANDAMENTO_PREMI:
             case LinksBurgerMenu.MONITORAGGIO_RICAVI_AGENZIA:
-            case LinksBurgerMenu.CAPITALE_VITA_SCADENZA:
             case LinksBurgerMenu.NEW_BUSINESS_ULTRA_IMPRESA:
                 cy.wait('@getDacommerciale', { timeout: 150000 });
                 cy.wait('@getDacommerciale', { timeout: 150000 });
                 // cy.wait('@gqlsaveoperation', { timeout: 40000 });
                 cy.wait(8000)
+                getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
+                cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                break;
+            case LinksBurgerMenu.CAPITALE_VITA_SCADENZA:
+                cy.wait('@getDacommerciale', { timeout: 150000 });
+                cy.wait('@getDacommerciale', { timeout: 150000 });
+                // cy.wait('@gqlsaveoperation', { timeout: 40000 });
+                cy.wait(13000)
                 getIFrame().find('[class="page-container"]').should('be.visible').and('contain.text', 'Filtra')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;

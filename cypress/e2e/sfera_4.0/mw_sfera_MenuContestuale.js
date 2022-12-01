@@ -38,6 +38,7 @@ before(() => {
 
 beforeEach(() => {
     cy.preserveCookies()
+    cy.ignoreRequest()
 })
 
 after(function () {
@@ -60,6 +61,8 @@ if (!Cypress.env('isSecondWindow'))
             })
 
             it('Delta premio', function () {
+                Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.DELTA_PREMIO_POSITIVO, true)
+                Sfera.selezionaClusterMotor(Sfera.CLUSTERMOTOR.IN_MORA,true)
                 Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.DELTA_PREMIO, false)
             })
 
@@ -73,6 +76,8 @@ if (!Cypress.env('isSecondWindow'))
             })
 
             it('Stampa senza incasso', function () {
+                Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.STAMPA_QUIETANZE)
+                Sfera.estrai()
                 Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, false)
             })
 
@@ -91,6 +96,8 @@ if (!Cypress.env('isSecondWindow'))
         context('Motor > Menu Polizza', function () {
             it('Sostituzione / Riattivazione auto', function () {
                 //! NON VA AVANTI PASSA AL PROSSIMO TESTS
+                Sfera.selezionaVistaSuggerita(Sfera.VISTESUGGERITE.VISTA_STANDARD)
+                Sfera.estrai()
                 Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.SOSTITUZIONE_RIATTIVAZIONE_AUTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
             })
 
@@ -151,7 +158,6 @@ if (!Cypress.env('isSecondWindow'))
 
         context('Menu Emissione', function () {
             it('Nuova polizza Auto', function () {
-                cy.pause()
             })
 
             it('Nuova polizza Rami Vari', function () {
@@ -195,7 +201,7 @@ else
             Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_710000)
             Sfera.filtraSuColonna(Sfera.FILTRI.NUM_GG_PER_MO, Sfera.FILTRI.NUM_GG_PER_MO.values.MORA_10)
             Sfera.apriVoceMenu(Sfera.VOCIMENUQUIETANZA.STAMPA_SENZA_INCASSO, false, null, null, null, true)
-            
+
             // Menu Polizza
             Sfera.apriVoceMenu(Sfera.VOCIMENUPOLIZZA.SOSTITUZIONE_RIATTIVAZIONE_AUTO, false, null, Sfera.TIPOSOSTITUZIONERIATTIVAZIONE.SOSTITUZIONE_STESSO_VEICOLO)
             Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_710000)

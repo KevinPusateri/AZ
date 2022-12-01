@@ -67,7 +67,7 @@ after(function () {
     //#endregion
 })
 
-describe('RC AZ Ottobre 2022: ', {
+describe('RC AZ Febbraio 2023: ', {
     retries: {
         runMode: 0,
         openMode: 0,

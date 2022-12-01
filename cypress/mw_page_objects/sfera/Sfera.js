@@ -850,7 +850,6 @@ const ColumnQuietanzeScartate = {
         key: 'Cla. BMCIP',
         tooltip: 'Classe Bonus CIP'
     }
-
 }
 
 /**
@@ -1208,7 +1207,7 @@ class Sfera {
      * @private
      */
     static tableEstrazione() {
-        cy.get('app-table-component', { timeout: 60000 }).should('be.visible')
+        cy.get('app-table-component', { timeout: 900000 }).should('be.visible')
     }
 
     /**
@@ -1354,7 +1353,7 @@ class Sfera {
             TopBar.searchAndClickSuggestedNavigations('Nuovo Sfera')
 
             cy.wait('@infoUtente', { timeout: 60000 })
-            cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
+            cy.wait('@aggiornaCaricoTotale', { timeout: 90000 })
             cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
         }
     }
@@ -1657,29 +1656,27 @@ class Sfera {
                     this.verificaAccessoSfera(false)
                     break;
                 case VociMenuQuietanza.VARIAZIONE_RIDUZIONE_PREMI:
-                    // if (Cypress.env('currentEnv') === 'TEST') {
-                    //     IncassoDA.accessoGestioneFlex()
-                    //     if (flussoCompleto) {
-                    //         //TODO implementare flusso di delta premio
-                    //     }
-                    //     else {
-                    //         getAppJump().within(() => {
-                    //             IncassoDA.salvaSimulazione()
-                    //             cy.wait(200)
-                    //             cy.screenshot('Variazione Riduzione Premi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
-                    //             IncassoDA.clickCHIUDI()
-                    //             //Verifichiamo il rientro in Sfera
-                    //         })
-                    //     }
-                    // } else {
                     IncassoDA.accessoGestioneFlex()
                     if (flussoCompleto) {
                         //TODO implementare flusso di delta premio
-                    } else {
-                        IncassoDA.clickCHIUDI()
-                        //Verifichiamo il rientro in Sfera
                     }
+                    else {
+                        getAppJump().within(() => {
+                            IncassoDA.salvaSimulazione()
+                            cy.wait(200)
+                            cy.screenshot('Variazione Riduzione Premi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+
+                            IncassoDA.clickCHIUDI()
+                            //Verifichiamo il rientro in Sfera
+                        })
+                    }
+                    // } else {
+                    // IncassoDA.accessoGestioneFlex()
+                    // if (flussoCompleto) {
+                    //     //TODO implementare flusso di delta premio
+                    // } else {
+                    //     IncassoDA.clickCHIUDI()
+                    //     //Verifichiamo il rientro in Sfera
                     // }
                     this.verificaAccessoSfera(false)
                     break;
@@ -1692,27 +1689,23 @@ class Sfera {
                     this.procedi().click()
                     Common.canaleFromPopup({}, true)
                     NGRA2013.verificaAccessoDatiAmministrativi()
-                    // if (Cypress.env('currentEnv') === 'TEST') {
-                    //     if (flussoCompleto) {
-                    //         getAppJump().within(() => {
-                    //             NGRA2013.sostituzioneAScadenza()
-                    //             cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    //         })
-                    //     }
-                    //     else {
-                    //         getAppJump().within(() => {
-                    //             NGRA2013.home(true)
-                    //         })
-                    //     }
-                    // }
-                    // else {
                     if (flussoCompleto) {
-                        NGRA2013.verificaAccessoDatiAmministrativi()
-                        cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        getAppJump().within(() => {
+                            NGRA2013.sostituzioneAScadenza()
+                            cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        })
                     }
                     else {
-                        NGRA2013.home(true)
+                        getAppJump().within(() => {
+                            NGRA2013.home(true)
+                        })
                     }
+                    // if (flussoCompleto) {
+                    //     NGRA2013.verificaAccessoDatiAmministrativi()
+                    //     cy.screenshot('Sostituzione Riattivazione Auto', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    // }
+                    // else {
+                    //     NGRA2013.home(true)
                     // }
                     //Verifichiamo il rientro in Sfera
                     this.verificaAccessoSfera(false)
@@ -1793,20 +1786,17 @@ class Sfera {
 
                     InquiryAgenzia.verificaAccessoInquiryAgenzia()
                     cy.screenshot('Inquiry Agenzia', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-                    // if (Cypress.env('currentEnv') === 'TEST') {
-                    //     if (flussoCompleto) {
-                    //         //TODO implementare flusso completo
-                    //     }
-                    //     else {
-                    //         getAppJump().within(() => { InquiryAgenzia.clickUscita() })
-                    //     }
-                    // } else {
                     if (flussoCompleto) {
                         //TODO implementare flusso completo
                     }
                     else {
-                        InquiryAgenzia.clickUscita()
+                        getAppJump().within(() => { InquiryAgenzia.clickUscita() })
                     }
+                    // if (flussoCompleto) {
+                    //     //TODO implementare flusso completo
+                    // }
+                    // else {
+                    //     InquiryAgenzia.clickUscita()
                     // }
                     this.verificaAccessoSfera(false)
                     break;
@@ -1847,7 +1837,7 @@ class Sfera {
                         // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
                         // cy.wait('@aggiornaContatoriCluster', { timeout: 60000 })
                         //Essendo wrappato, facendo il back, verfico che ci sia il pulsante di estrazione
-                        // this.estrai()
+                        this.estrai()
                         this.verificaAccessoSfera(false)
                     }
                     break;
@@ -2590,7 +2580,7 @@ class Sfera {
             cy.intercept(aggiornaCaricoTotale).as('aggiornaCaricoTotale')
             cy.intercept(aggiornaContatoriCluster).as('aggiornaContatoriCluster')
 
-            cy.get('button[nxmodalclose="Agree"]').click()
+            cy.get('button[nxmodalclose="Agree"]').click().wait(5000)
 
             //cy.wait('@caricaVista', { timeout: 60000 })
             // cy.wait('@aggiornaCaricoTotale', { timeout: 60000 })
@@ -2657,9 +2647,23 @@ class Sfera {
      */
     static estrazioneReportExcel(currentColumn = []) {
         let columnView = []
-        if (currentColumn.length !== 0)
+        if (currentColumn.length !== 0) {
             for (const [key, value] of Object.entries(currentColumn))
-                columnView.push(value.key)
+                switch (currentColumn) {
+                    case Sfera.COLUMNQUIETANZESCARTATE:
+                        if (value.key === 'Soluzioneper Agenzia')
+                            value.key = 'Soluzione per Agenzia'
+                        if (value.key === 'Cla. BMCIP Prov.')
+                            value.key = 'Cla. BM CIP Prov.'
+                        if (value.key === 'Cla. BMRinn.')
+                            value.key = 'Cla. BM Rinn.'
+                        if (value.key === 'Cla. BMCIP')
+                            value.key = 'Cla. BM CIP'
+                        break;
+                    default:
+                        columnView.push(value.key)
+                }
+        }
 
         var rows = []
         cy.get('tbody > tr[nxtablerow]').each((rowsTable) => {
@@ -2675,6 +2679,8 @@ class Sfera {
 
             cy.task('getFolderDownload').then((folderDownload) => {
                 cy.parseXlsx(folderDownload + "\\REPORT.xlsx").then(jsonData => {
+                    if (currentColumn !== Sfera.COLUMNQUIETANZESCARTATE)
+                        jsonData[0].data[0].shift()
                     console.log(Object.values(jsonData[0].data[0]).sort())
                     console.log(columnView.sort())
                     // Verifica Colonne presenti
@@ -2692,6 +2698,8 @@ class Sfera {
     }
 
     static checkColonnaPresente(colonna) {
+        if (colonna === 'Ente gen Avv')
+            colonna = 'Entegen Avv'
         cy.get('div[class="table-component-th-name"]').should('include.text', colonna)
     }
     static checkColonnaAssente(colonna) {
@@ -3209,8 +3217,9 @@ class Sfera {
      */
     static checkAgenzieSabbiate(agenzia) {
         cy.get('h3').contains('Agenzie').click()
+        cy.get('nx-modal-container[role="dialog"]').should('be.visible')
+        cy.screenshot('Agenzie Sabbiate', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
         cy.get('nx-modal-container[role="dialog"]').should('be.visible').within(() => {
-            cy.screenshot('Agenzie Sabbiate', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             cy.get('div[class="container-list ng-star-inserted"]').within(() => {
                 cy.get('nx-checkbox:contains("' + agenzia + '")').within(() => {
                     cy.get('input[type="checkbox"]').should('have.attr', 'value', 'true').and('not.have.attr', 'disabled')
@@ -3501,8 +3510,20 @@ class Sfera {
     static checkTooltipHeadersColonne(columns) {
         let regexKey
         for (const [key, value] of Object.entries(columns)) {
-            cy.get('table').within(() => {
-
+            cy.get('table > thead').within(() => {
+                // Forzatura il check colonna in quanto è presente il tag <br> tra gli elementi
+                switch (columns) {
+                    case Sfera.COLUMNGESTIONEENTE:
+                        if (value.key === 'Ente gen Avv')
+                            value.key = 'Entegen Avv'
+                        if (value.key === 'St. Tit.')
+                            value.key = 'St.Tit.'
+                        if (value.key === 'Cons. Email Pol')
+                            value.key = 'Cons.Email Pol'
+                        if (value.key === 'Cons. Email Cl')
+                            value.key = 'Cons.Email Cl'
+                        break;
+                }
                 regexKey = new RegExp('\^' + value.key + '\$');
                 cy.contains(regexKey).scrollIntoView().should('exist').rightclick().focused().wait(1500)
             })
@@ -3664,6 +3685,7 @@ class Sfera {
             cy.get('h3[class="big-num nx-font-weight-semibold nx-heading--subsection-small"]').each(($num, i) => {
                 numQuietanze.push(parseInt($num.text().trim()))
             }).then(() => {
+                cy.wait(3000)
                 cy.get('footer').find('button:contains("Estrai") > span').then((numEstrai) => {
                     const sum = numQuietanze.reduce((partialSum, a) => partialSum + a, 0);
                     var number = parseInt(numEstrai.text().trim().replace(/\D/g, ""))
@@ -4136,6 +4158,12 @@ class Sfera {
 
     }
 
+
+    /**
+     * It checks if the column is in the right position and if it has the right name.
+     * @param position - the position of the column in the table
+     * @param name - the name of the column you want to check
+     */
     static checkColonnaSpostata(position, name = '') {
         if (name === 'Info')
             cy.get('thead > tr:first').within(($columns) => {
