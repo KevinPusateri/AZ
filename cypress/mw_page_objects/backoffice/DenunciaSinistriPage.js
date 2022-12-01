@@ -371,28 +371,26 @@ class DenunciaSinistriPage {
     /**
      * Ritorna un Promise true se presente un testo @txt, false se assente
      * @param {string} txt text
-     * @returns {Promise<boolean>} Promise (true) or Promise (false)
+     * @returns {bool} check visible (true) or (false)
      */
     static isVisibleText(txt)
     {
-        //return new Promise((resolve) => {
-            let check = false
-            findIframeChild(IFrameParent).within(($body) => {
-                check = $body.find('span:contains("'+txt+'")').is(':visible')
-                if (check)
-                    cy.log('>> Text : [' +txt+ '] is visible! ')
-                else 
-                    cy.log('>> Text : [' +txt+ '] is Not visible! ')                         
-            })
-            return check           
-        //})
+        let check = false
+        findIframeChild(IFrameParent).within(($body) => {
+            check = $body.find('span:contains("'+txt+'")', { timeout: 5000 }).is(':visible')
+            if (check) {
+                cy.log('>> Text : [' +txt+ '] is visible ! ')
+            }   else 
+                cy.log('>> Text : [' +txt+ '] is not visible !!! ')                                          
+        })
+        return check
     }
- 
+
     /**
      * Check if the value is defined
      * @param {string} value : string value to check
      */
-     static isNotNullOrEmpty(value) {
+    static isNotNullOrEmpty(value) {
         cy.wrap(value).then((validation) => {            
             if ((value === undefined) 
                 || (value === null) || (value === '')) 
