@@ -42,8 +42,10 @@ before(() => {
 
 beforeEach(() => {
     cy.preserveCookies()
-    // cy.ignoreRequest()
-    // cy.intercept('https://azeu-mid-stage2-res.adobe-campaign.com/res/azeu_mid_stage2/HS_Lithium_email_2.jpg', 'ignore').as('res')
+    cy.ignoreRequest()
+    // Campagne Commerciali ignore Request 
+    cy.intercept(/azeu-mid-stage2-res.adobe-campaign.com/, 'ignore').as('stage2')
+    cy.intercept(/res.messaging.allianz.com/, 'ignore').as('stage2')
 
 })
 
