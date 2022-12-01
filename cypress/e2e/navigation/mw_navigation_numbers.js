@@ -16,7 +16,12 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-
+let optionsRetrials = {
+    retries: {
+        runMode: 3,
+        openMode: 3,
+    }
+}
 //#endregion
 
 before(() => {
@@ -191,7 +196,7 @@ describe('Matrix Web : Navigazioni da Numbers - ', function () {
         })
     }
 
-    it('Verifica su Prodotti aggancio Primo indice prodotto', function () {
+    it('Verifica su Prodotti aggancio Primo indice prodotto',optionsRetrials, function () {
         TopBar.clickNumbers()
         Numbers.clickTab('PRODOTTI', 'products')
         Numbers.clickAndCheckAtterraggioPrimoIndiceProdotto()
