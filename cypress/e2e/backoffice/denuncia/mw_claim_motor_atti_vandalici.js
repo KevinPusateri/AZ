@@ -80,11 +80,11 @@ var cliente_num_pol = '79323432'
 var cliente_targa = 'DS246AT'
 */
 var ramo_pol = '31' //601 - BONUS/MALUS
-var cliente_cognome = 'Appolonio'
-var cliente_nome = 'Gianluca'
-var cliente_dt_nascita = '23/02/1979'
-var cliente_num_pol = '530053391'
-var cliente_targa = 'Fj103dt'
+var cliente_cognome = 'Croce'
+var cliente_nome = 'Alessandro'
+var cliente_dt_nascita = '15/06/1975'
+var cliente_num_pol = '531944319'
+var cliente_targa = 'Gz787rt'
 
 var copertura_danno = 'ATTI VANDALICI'
 
@@ -163,7 +163,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         // Selezione della polizza  
         Common.clickFindByIdOnIframe('#avantiListaPolizze');       
     });    
-    */
+   
     it('Dettaglio di polizza: visualizzazione e selezione', function () {     
         // Nel caso la polizza sia in periodo di mora si attiva la
          //pagina di dettaglio polizza
@@ -172,7 +172,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         DenunciaSinistriPage.clickObj_ByLabel('a','Avanti')  
         cy.wait(1000);  
     });
-
+ */
     it('Sinistri potenzialmente doppi', function () {
         const isPresent = DenunciaSinistriPage.isVisibleText('Sinistri potenzialmente doppi')
         cy.wait(2000)
@@ -187,6 +187,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
     });
 
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+copertura_danno, function () {               
+        Common.clickFindByIdOnIframeChild(IFrameParent, '#CmdRicercaLocalita');
         // Selezione della copertura
         DenunciaSinistriPage.clickObj_ByLabel('td', copertura_danno)
 

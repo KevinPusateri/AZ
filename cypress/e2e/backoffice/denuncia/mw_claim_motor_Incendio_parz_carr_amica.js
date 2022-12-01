@@ -177,7 +177,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
         DenunciaSinistriPage.clickObj_ByLabel('a','Avanti')  
         cy.wait(1000);  
     });
-
+*/
     it('Sinistri potenzialmente doppi', function () {
         const isPresent = DenunciaSinistriPage.isVisibleText('Sinistri potenzialmente doppi')
         cy.wait(2000)
@@ -190,7 +190,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             cy.wait(1000);    
         }
     });
- */
+
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+copertura_danno, function () {              
         // Selezione della copertura
         DenunciaSinistriPage.clickObj_ByLabel('td', copertura_danno)

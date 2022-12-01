@@ -311,7 +311,7 @@ class DenunciaSinistriPage {
      */
     static getIdInListValues_ById(id, value) {
         return new Cypress.Promise((resolve, reject) => {            
-            findIframeChild(IFrameParent).find(id).each(($el, index, $list) => {
+            findIframeChild(IFrameParent).find(id, { timeout: 5000 }).each(($el, index, $list) => {
                 if ($el.text().includes(value)) {                                                              
                     cy.log('>> Element('+(index)+ ') and value: '+value) 
                     cy.wait(2000)
