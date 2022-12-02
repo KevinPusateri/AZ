@@ -209,7 +209,6 @@ class TopBar extends HomePage {
         cy.wait('@getClients', { timeout: 30000 })
         cy.url().should('include', 'clients/')
         cy.get('app-donut-chart').should('be.visible')
-        cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
         cy.screenshot('Verifica Atterraggio "Clients"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
