@@ -2,7 +2,7 @@
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
  *
  * @description Emissione denuncia sinistro rca con 2 veicoli 
- * in completezza base e di tipo card 2 mandatario
+ * in completezza base e di tipo card 2 firme mandatario
  */
 
 /// <reference types="Cypress" />
@@ -265,7 +265,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         cy.wait(1000);
     });
 
-    it('Dati del conducente di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
+    it('Dati del conducente di controparte (Cognome: "' +controparte_conducente_cognome + '" - Nome: "' +
     controparte_conducente_nome + '") ', function () {
 
         Common.clickFindByIdOnIframeChild(IFrameParent, '#VEICOLO_soggettoConducenteControparte')
@@ -287,7 +287,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia sinistro rca con 2
         cy.wait(1000);                     
     });
 
-    it('Dati assicurato di controparte (Cognome: "' +controparte_conducente_cognome + '" e nome: "' +
+    it('Dati assicurato di controparte (Cognome: "' +controparte_conducente_cognome + '" - Nome: "' +
     controparte_conducente_nome + '") ', function () {
 
         Common.clickFindByIdOnIframeChild(IFrameParent, '#VEICOLO_soggettoAssicuratoControparte')

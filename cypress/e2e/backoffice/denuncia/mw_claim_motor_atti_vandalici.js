@@ -2,7 +2,7 @@
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
  *
  * @description Emissione denuncia di un sinistro motor avente come copertura 
- * di garanzia la "Eventi Naturali - Grandine"
+ * di garanzia la "Atti Vandalici"
  */
 
 

@@ -2,7 +2,7 @@
  * @author Michele Delle Donne <michele.delledonne@allianz.it>
  *
  * @description Emissione denuncia di un sinistro motor avente come copertura 
- * di garanzia Incendio parziale con gestione della denuncia con selezione della
+ * la garanzia Incendio parziale. La gestione della denuncia è emessa con selezione della
  * carrozzeria amica (selezione senza geolocalizzazione)
  */
 
