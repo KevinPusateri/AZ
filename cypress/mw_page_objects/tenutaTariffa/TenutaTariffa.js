@@ -385,12 +385,13 @@ class TenutaTariffa {
             }
 
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '02_Contraente_Proprietario', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
             cy.contains('AVANTI').should('exist').and('be.visible').and('be.enabled').click()
 
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
             cy.wait(7000)
+            cy.get('nx-spinner').should('not.be.visible')
+            cy.wait(2000)
             //! Riclicchiamo su AVANTI (dopo che i textbox non sono più rossi)
             cy.get('span[class="page-title"]').should('be.visible').invoke('text').then(pageTitle => {
                 if (!pageTitle.includes('Veicolo')) {
