@@ -26,12 +26,17 @@ let insertedId
 
 //#region Before After
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
+
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+        })
     })
 })
 beforeEach(() => {
     cy.preserveCookies()
+    cy.ignoreRequest()
 })
 afterEach(function () {
     if (this.currentTest.state !== 'passed') {
@@ -68,7 +73,7 @@ describe('Matrix Web : Report Profilo Vita', {
         '- scegliendo l\'agenzia dove ha le polizze vita :  verificare che si apra correttamente il pdf\n', () => {
             cy.log('Retriving client PG present in different agencies with polizze vita, please wait...')
             //! Cliente registrato su più agenzie HUB 010375000 con polizza VI solo su una ag -> partita iva 00578020935 
-            cy.getClientInDifferentAgenciesWithPolizze('010375000', 80, false, false, 'PG', ).then(currentClient => {
+            cy.getClientInDifferentAgenciesWithPolizze('010375000', 80, false, false, 'PG',).then(currentClient => {
 
                 debugger
                 let customImpersonification = {

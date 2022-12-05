@@ -1071,7 +1071,6 @@ class SintesiCliente {
 
         getIFrame().find('span[aria-owns="formula_listbox"]').click()
         getIFrame().find('#formula_listbox').contains('FORMULA BASE').click()
-        
         if (!Cypress.env('monoUtenza'))
             cy.intercept({
                 method: '+(GET|POST)',
@@ -1364,14 +1363,6 @@ class SintesiCliente {
         cy.get('nx-icon[aria-label="Open menu"]').click().wait(1000)
         //NON DEVE COMPARIRE L'ERRORE
         if (!errorMessage) {
-            cy.window().then(win => {
-                cy.stub(win, 'open').callsFake((url, target) => {
-                    expect(target).to.be.undefined
-                    // call the original `win.open` method
-                    // but pass the `_self` argument
-                    return win.open.wrappedMethod.call(win, url, '_self')
-                }).as('open')
-            })
             cy.contains('Report Profilo Vita').should('exist').and('be.visible').click()
 
 
@@ -1382,11 +1373,8 @@ class SintesiCliente {
                 Common.canaleFromPopup()
             }
             //cy.get('nx-modal-container').find('.agency-row').first().click().wait(3000)
-            cy.get('@open')
-
-            cy.wait('@gqlclientReportLifePdf')
-                .its('response.body.data')
-                .should('have.property', 'clientReportLifePdf')
+            cy.wait(8000)
+            cy.verifyDownload('.pdf', { contains: true });
         }
         //DEVE COMPARIRE L'ERRORE
         else {

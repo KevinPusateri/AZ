@@ -221,6 +221,8 @@ class TenutaTariffa {
                     cy.contains('altro').should('exist').and('be.visible').click().wait(2000)
                 else
                     cy.contains(currentCase.Tipo_Veicolo).should('exist').and('be.visible').click().wait(2000)
+
+                cy.get('nx-spinner').should('not.be.visible')
             }
 
             //Il proprietario è una
@@ -241,7 +243,11 @@ class TenutaTariffa {
 
                 //Settore di attività
                 cy.contains('Il suo settore di attività è').should('exist').and('be.visible').parents('div[nxrowalignitems="center"]').first().find('nx-dropdown').click()
-                cy.contains(currentCase.Settore_Attivita.toUpperCase()).should('exist').click()
+                cy.contains(currentCase.Settore_Attivita.toUpperCase()).should('exist').click().wait(2000)
+                cy.get('nx-spinner').should('not.be.visible')
+                cy.wait(2000)
+                cy.get('nx-spinner').should('not.be.visible')
+
             }
             else {
                 //Data di Nascita : calcolata in automatico (se Data_Nascita non è popolato) a partire dalla data decorrenza in rapporto all'età del caso
@@ -265,7 +271,10 @@ class TenutaTariffa {
 
                 }
             }
-
+            cy.wait(2000)
+            cy.get('nx-spinner').should('not.be.visible')
+            cy.wait(2000)
+            cy.get('nx-spinner').should('not.be.visible')
             //Targa
             if (currentCase.Targa !== '') {
                 cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').should('exist').and('be.visible').click().wait(1000)
@@ -882,7 +891,6 @@ class TenutaTariffa {
                     //#endregion
                 }
             }
-
             //TODO Attestato conforme all'articolo 134, comma 4 bis, del Codice assicurazioni ?
             cy.contains('AVANTI').should('exist').and('be.visible').click().wait(2000)
 
@@ -1041,6 +1049,21 @@ class TenutaTariffa {
             cy.get('nx-spinner').should('not.be.visible')
             cy.wait(5000)
             cy.get('nx-spinner').should('not.be.visible')
+
+
+            //Popup di dichiarazione di non circolazione a SI
+            cy.get('@iframe').then((iframe) => {
+                if (iframe.find(':contains("La data di decorrenza non permetterà il salvataggio del preventivo")').length > 0) {
+                    cy.contains('CONFERMA').should('exist').and('be.visible').click()
+                    cy.wait('@getMotor', { timeout: 30000 })
+                    cy.wait(1000);
+                }
+            })
+
+            cy.wait('@getMotor', { timeout: 100000 })
+            //Attendiamo che il caricamento non sia più visibile
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
+
             cy.intercept({
                 method: 'GET',
                 url: '**/optional-pacchetti'
@@ -1278,7 +1301,9 @@ class TenutaTariffa {
             }
             cy.get('nx-spinner').should('not.be.visible')
             cy.wait(2500)
-
+            cy.get('nx-spinner').should('not.be.visible')
+            cy.wait(2500)
+            
             cy.get('h3:contains("Rc Auto")').should('be.visible').click()
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 

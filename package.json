@@ -36,6 +36,7 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
+    "cy-verify-downloads": "^0.1.11",
     "cypress": "10.4.0",
     "cypress-if": "^1.9.2",
     "cypress-iframe": "^1.0.1",

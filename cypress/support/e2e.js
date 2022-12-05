@@ -20,7 +20,7 @@
 // require('./commands')
 
 require('cypress-plugin-tab')
-
+require('cy-verify-downloads').addCustomCommand();
 import 'cypress-mochawesome-reporter/register'
 import "cypress-real-events/support"
 
