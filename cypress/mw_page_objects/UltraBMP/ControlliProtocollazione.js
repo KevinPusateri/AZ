@@ -30,7 +30,7 @@ class ControlliProtocollazione {
             url: '**/GetRiepilogoDocumenti'
         }).as('documenti')
 
-        cy.wait('@documenti', { timeout: 100000 })
+        cy.wait('@documenti', { timeout: 120000 })
     }
 
     static aspettaCaricamentoAdempimenti() {

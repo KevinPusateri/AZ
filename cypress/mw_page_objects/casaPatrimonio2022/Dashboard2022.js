@@ -72,7 +72,7 @@ class Dashboard {
                 cy.log("Verifica selezione " + ambiti[i])
 
                 cy.get('ultra-ambiti-disponibili').should('exist')
-                .find('nx-icon[class*="' + ambiti[i] + '"]')
+                    .find('nx-icon[class*="' + ambiti[i] + '"]')
                     .parents('ultra-ambito-button').find('ultra-icon-toggle')
                     .find('nx-indicator').should('contain', "1") //verifica che l'ambito sia stato selezionato
             }
@@ -161,7 +161,7 @@ class Dashboard {
             //     method: 'GET',
             //     url: '**/fonte-corrente'
             // }).as('fonte')
-    
+
             // cy.wait('@fonte', { timeout: 120000 });
         })
     }
@@ -467,6 +467,7 @@ class Dashboard {
             cy.get('[id="dashTable"]').should('be.visible')
             cy.get('span').contains('Procedi', { timeout: 30000 })
                 .scrollIntoView().should('be.visible').click().wait(500)
+            cy.get('[class="nx-spinner__spin-block"]').should('not.be.visible') //attende il caricamento
         })
     }
 

@@ -64,12 +64,14 @@ class Incasso {
     static ClickIncassa() {
         var checkFrame0 = false
 
-        ultraIFrame().then(($body) => {
+        cy.getIFrame()
+        cy.get('@iframe').then(($body) => {
             checkFrame0 = $body.find('#iFrameResizer0').is(':visible') //verifica la presenza dell'iframe0 annidato
             cy.log('checkFrame0: ' + checkFrame0)
         }).within(() => {
             if (checkFrame0) {
-                ultraIFrame0().within(() => {
+                cy.getIFrame()
+                cy.get('@iframe').within(() => {
                     cy.get('input[value*="Incassa"]')
                         .should('be.visible').click()
                 })
@@ -87,11 +89,13 @@ class Incasso {
      * @param {string} metodo 
      */
     static SelezionaMetodoPagamento(metodo, fl_frame0 = true) {
-        ultraIFrame().within(() => {
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
             cy.log('*****   Seleziona Metodo di Pagamento *****')
             cy.log('fl_frame0: ' + fl_frame0)
-            if (fl_frame0)
-                ultraIFrame0().within(() => {
+            if (fl_frame0) {
+                cy.getIFrame()
+                cy.get('@iframe').within(() => {
                     cy.get('[aria-owns="TabIncassoModPagCombo_listbox"]')
                         .should('be.visible').wait(500).click()
 
@@ -100,6 +104,7 @@ class Incasso {
                         .find('li').contains(metodo)
                         .should('be.visible').click()
                 })
+            }
             else {
                 cy.get('[aria-owns="TabIncassoModPagCombo_listbox"]')
                     .should('be.visible').click()

@@ -520,8 +520,10 @@ class SintesiCliente {
         for (var i = 1; i < fixtureEmissione.length; i++) {
             cy.log(fixtureEmissione[i])
 
-            const regex = new RegExp('\^' + fixtureEmissione[1] + '\$');
+            /* const regex = new RegExp('\^' + fixtureEmissione[1] + '\$');
             cy.get('button[role="menuitem"]').contains(regex)
+                .should('be.visible').click() */
+            cy.get('button[role="menuitem"]').contains(fixtureEmissione[i])
                 .should('be.visible').click()
         }
     }

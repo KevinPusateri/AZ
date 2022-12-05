@@ -51,7 +51,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let prodotto = "Ultra Casa e Patrimonio"
+let prodotto = "Ultra Casa e Patrimonio Vincolato"
 let ramo = "Rami Vari"
 let dataEmissione = moment().format('YYYY-MM-DD HH:mm:ss')
 let dataScadenza = moment().add(1, 'M').add(10, 'y').format('YYYY-MM-DD HH:mm:ss')
@@ -61,8 +61,8 @@ let cliente = PersonaFisica.PieroAngela()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile]
 var casa = ["Casa 1"]
 var frazionamento = "annuale"
-var dataOggi = moment().format('DDMMYYYY')
-var scadenza = moment().add(1, 'M').add(10, 'y').format('DDMMYYYY')
+var dataOggi = moment().format('DD/MMYYYY')
+var scadenza = moment().add(1, 'M').add(10, 'y').format('DD/MMYYYY')
 var nContratto = "000"
 //#endregion variabili iniziali
 
@@ -290,7 +290,6 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   })
 
   it("Chiusura e apertura sezione Clients", () => {
-    //Ultra.chiudiFinale()
     cy.get('.nx-breadcrumb-item__text').contains('Clients').click()
 
     cy.intercept({

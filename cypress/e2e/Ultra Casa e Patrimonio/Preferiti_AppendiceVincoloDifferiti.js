@@ -40,7 +40,7 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let prodotto = "Ultra Casa e Patrimonio"
+let prodotto = "Ultra Casa e Patrimonio Vincolato"
 let ramo = "Rami Vari"
 let dataEmissione = moment().format('YYYY-MM-DD HH:mm:ss')
 let dataScadenza = moment().add(1, 'y').format('YYYY-MM-DD HH:mm:ss')
@@ -280,9 +280,9 @@ describe("PREFERITI, APPENDICE E VINCOLO DIFFERITI", () => {
     })
 
     it("Vincoli - ente vincolatario", () => {
-        //cy.pause()
+        cy.pause()
         Vincoli.SelezionaEnteVincolatario("Banca")
-        Vincoli.attesaRicerca()
+        //Vincoli.attesaRicerca()
         Vincoli.RicercaBanca("Banca", "Unicredit")
         //Vincoli.updateAppendice()
         //Vincoli.ChiudiPopupAnagrafico()
@@ -307,5 +307,7 @@ describe("PREFERITI, APPENDICE E VINCOLO DIFFERITI", () => {
 
     it("end", () => {
         Vincoli.ConfermaCreazioneDocumento()
+        cy.pause()
+        cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, dataEmissione, dataScadenza, ramo, prodotto, ambiente)
     })
 })

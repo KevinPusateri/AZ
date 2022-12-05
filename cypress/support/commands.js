@@ -127,6 +127,10 @@ Cypress.Commands.overwrite('clearCookies', () => {
 })
 
 Cypress.Commands.add('getIFrame', () => {
+
+  cy.get('iframe').invoke('attr', 'id')
+  .then(sometext => cy.log(sometext));
+  
   cy.get('iframe').its('0.contentDocument.body').as('iframe')
 })
 
@@ -1552,23 +1556,23 @@ Cypress.Commands.add('getProxyLog', (currentCase) => {
   })
 })
 
-Cypress.Commands.add('SalvaPolizza', (dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente) => {  
-    cy.task('SalvaPolizza', { dbConfig: dbConfig, cliente: cliente, nPolizza: nPolizza, dataEmissione: dataEmissione, dataScadenza: dataScadenza, ramo: ramo, ambiti: ambiti, ambiente: ambiente })
-      .then((results) => {
-        return results.insertId
-      })
+Cypress.Commands.add('SalvaPolizza', (dbConfig, cliente, nPolizza, dataEmissione, dataScadenza, ramo, ambiti, ambiente) => {
+  cy.task('SalvaPolizza', { dbConfig: dbConfig, cliente: cliente, nPolizza: nPolizza, dataEmissione: dataEmissione, dataScadenza: dataScadenza, ramo: ramo, ambiti: ambiti, ambiente: ambiente })
+    .then((results) => {
+      return results.insertId
+    })
 })
 
-Cypress.Commands.add('findLastPolizza', (dbConfig, prodotto, annullamento) => {  
-  cy.task('findLastPolizza', { dbConfig: dbConfig, prodotto: prodotto, annullamento: annullamento})
+Cypress.Commands.add('findLastPolizza', (dbConfig, prodotto, annullamento) => {
+  cy.task('findLastPolizza', { dbConfig: dbConfig, prodotto: prodotto, annullamento: annullamento })
     .then((result) => {
       return result
     })
 })
 
 //registra l'annullamento nel database
-Cypress.Commands.add('registraAnnullamento', (dbConfig, id, numeroPolizza, prodotto) => {  
-  cy.task('registraAnnullamento', { dbConfig: dbConfig, id: id, numeroPolizza: numeroPolizza, prodotto: prodotto})
+Cypress.Commands.add('registraAnnullamento', (dbConfig, id, numeroPolizza, prodotto) => {
+  cy.task('registraAnnullamento', { dbConfig: dbConfig, id: id, numeroPolizza: numeroPolizza, prodotto: prodotto })
     .then((result) => {
       return result
     })

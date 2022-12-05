@@ -147,13 +147,13 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
         //ConfigurazioneAmbito2022.aggiungiGaranzia("Scippo e rapina")
         ConfigurazioneAmbito2022.ClickButton("CONFERMA")
         Dashboard2022.procediHome()
-        DatiQuotazione2022.CaricamentoPagina()
+        //DatiQuotazione2022.CaricamentoPagina()
     })
 
-    it("Conferma dati quotazione", () => {
+    /* it("Conferma dati quotazione", () => {
         DatiQuotazione2022.confermaDatiQuotazione()
         Riepilogo2022.caricamentoRiepilogo()
-    })
+    }) */
 
     it("Riepilogo ed emissione", () => {
         Riepilogo2022.EmissionePolizza()
@@ -221,7 +221,14 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
 
     it("Esito incasso", () => {
         Incasso.EsitoIncasso()
-        cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, dataEmissione, dataScadenza, ramo, prodotto, ambiente)
+        cy.SalvaPolizza(dbPolizze,
+            cliente.nomeCognome(),
+            nContratto,
+            moment().format('YYYY-MM-DD HH:mm:ss'),
+            moment().add(1, 'y').format('YYYY-MM-DD HH:mm:ss'),
+            ramo,
+            prodotto,
+            ambiente)
         Incasso.Chiudi()
     })
 
