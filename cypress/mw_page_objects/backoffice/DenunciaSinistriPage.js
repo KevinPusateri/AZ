@@ -376,13 +376,15 @@ class DenunciaSinistriPage {
     static isVisibleText(txt)
     {
         let check = false;
-        return findIframeChild(IFrameParent).within(($body) => {
+        findIframeChild(IFrameParent).within(($body) => {
             if ($body.find('span:contains("'+txt+'")', { timeout: 8000 }).is(':visible')) {
-                cy.log('>> Text : [' +txt+ '] is visible ! ')             
+                cy.log('>> Text : [' +txt+ '] is visible ! ')  
+                check = true;           
             } else  {
                 cy.log('>> Text : [' +txt+ '] is not visible !!! ')             
             }                           
         })
+        return check;
     }
 
     /**

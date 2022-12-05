@@ -190,7 +190,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             Common.clickFindByIdOnIframeChild(IFrameParent, '#SINISTRI_DOPPI_continua');
             cy.wait(1000);    
         }
-        cy.log('Pagina Sinistri potenzialmente doppi' +isPresent);          
+        cy.log('Pagina Sinistri potenzialmente doppi: ' +isPresent);          
     });
 
     it('Elenco coperture - Prodotto Auto. Selezione della garanzia: '+copertura_danno, function () {               

@@ -84,7 +84,7 @@ var cliente_cognome = 'Croce'
 var cliente_nome = 'Alessandro'
 var cliente_dt_nascita = '15/06/1975'
 var cliente_num_pol = '531944319'
-var cliente_targa = 'c'
+var cliente_targa = 'Gz787rt'
 
 var copertura_danno = 'EVENTI NATURALI'
 
@@ -175,7 +175,7 @@ describe('Matrix Web - Sinistri>>Denuncia: Emissione denuncia di un sinistro mot
             Common.clickFindByIdOnIframeChild(IFrameParent, '#SINISTRI_DOPPI_continua');
             cy.wait(1000);    
         }
-        cy.log('Pagina Sinistri potenzialmente doppi' +isPresent);          
+        cy.log('Pagina Sinistri potenzialmente doppi: ' +isPresent);          
     });
 
 /*
