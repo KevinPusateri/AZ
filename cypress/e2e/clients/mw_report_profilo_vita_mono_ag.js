@@ -28,15 +28,20 @@ let insertedId
 let currentTutf
 //#region Before After
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        currentTutf = data.tutf
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id)=> insertedId = id )
-        LoginPage.logInMWAdvanced()
+
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            currentTutf = data.tutf
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+        })
     })
 })
 
 beforeEach(() => {
     cy.preserveCookies()
+    cy.ignoreRequest()
 })
 afterEach(function () {
     if (this.currentTest.state !== 'passed') {

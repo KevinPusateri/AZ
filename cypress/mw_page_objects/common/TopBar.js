@@ -170,7 +170,7 @@ class TopBar extends HomePage {
         cy.contains('clients').click()
 
         cy.wait('@gqlSearchClient', { timeout: 30000 });
-        cy.screenshot('Ricerca ' + value + ' effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        // cy.screenshot('Ricerca ' + value + ' effettuata', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
     /**
@@ -187,7 +187,7 @@ class TopBar extends HomePage {
             //Clicchiamo sul risultato
             $results.find('div:contains("' + value + '")').trigger('click')
         })
-
+        cy.wait(10000)
         //Vediamo eventuale popup del canale
         Common.canaleFromPopup()
     }
@@ -209,7 +209,6 @@ class TopBar extends HomePage {
         cy.wait('@getClients', { timeout: 30000 })
         cy.url().should('include', 'clients/')
         cy.get('app-donut-chart').should('be.visible')
-        cy.get('app-donut-chart').find('lib-da-link[calldaname="visioneGlobaleClienteDrillDown"]').should('be.visible')
         cy.screenshot('Verifica Atterraggio "Clients"', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 
@@ -219,7 +218,7 @@ class TopBar extends HomePage {
     static clickBackOffice() {
         interceptPageBackOffice()
         cy.wait(1000);
-        cy.get('app-product-button', { timeout: 3000}).find('a').contains('Backoffice').click()
+        cy.get('app-product-button', { timeout: 5000}).find('a').contains('Backoffice').click()
         cy.wait('@getBackOffice', { timeout: 50000 }).wait(1000)
         cy.url().should('include', 'back-office')
         cy.get('app-backoffice-card').should('be.visible')

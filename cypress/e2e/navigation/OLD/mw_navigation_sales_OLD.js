@@ -8,7 +8,6 @@ import Common from "../../mw_page_objects/common/Common"
 import LoginPage from "../../mw_page_objects/common/LoginPage"
 import TopBar from "../../mw_page_objects/common/TopBar"
 import Sales from "../../mw_page_objects/Navigation/Sales"
-import { aliasQuery } from '../../mw_page_objects/common/graphql-test-utils.js'
 
 //#region Mysql DB Variables
 const testName = Cypress.spec.name.split('.')[0].toUpperCase()
@@ -19,14 +18,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-var url = Common.getUrlBeforeEach() + 'sales/'
-let options = {
-    retries: {
-        runMode: 0,
-        openMode: 0,
-    }
-}
-let isFailed = false
+
 //#endregion
 
 let today = new Date()
@@ -43,7 +35,7 @@ let keys = {
     UltraImpresaEnabled: true,
     PreventivoMotorEnabled: true,
     UltraSaluteEnabled: true,
-    UltraCasaPatrimonioEnabled: true, // SPENTO per age 319000 REL 128 17-11-22
+    UltraCasaPatrimonioEnabled: true,
     Allianz1BusinessEnabled: true,
     FasquoteImpresaAlbergoEnabled: true,
     FlotteConvenzioniEnabled: true,
@@ -102,40 +94,13 @@ before(() => {
             }
         })
     })
-    TopBar.clickSales()
-
 })
 
-// beforeEach(() => {
-//     cy.preserveCookies()
-//     Common.visitUrlOnEnv()
-// })
 beforeEach(() => {
     cy.preserveCookies()
-    cy.ignoreRequest()
-    if (isFailed){
-        Sales.selectFirstDay('1')
-        isFailed = false
-    }
-
+    Common.visitUrlOnEnv()
 })
-afterEach(function () {
 
-    if (this.currentTest.state !== 'passed') {
-        cy.ignoreRequest()
-        cy.intercept('POST', '**/graphql', (req) => {
-            aliasQuery(req, 'getExtractedSferaReceipts')
-        })
-        cy.visit(url)
-        cy.wait('@gqlgetExtractedSferaReceipts', { timeout: 60000 })
-        isFailed = true
-        // if (this.currentTest.title.includes('Filtro Quietanzamento') ||
-        //     this.currentTest.title.includes('Verifica Carico Totale') ||
-        //     this.currentTest.title.includes('Azioni Veloci') ||
-        //     this.currentTest.title.includes('Verifica Estrai'))
-        // cy.get('nx-icon[name="calendar"]').first().should('be.visible').click()
-    }
-})
 after(function () {
     TopBar.logOutMW()
     //#region Mysql
@@ -146,15 +111,16 @@ after(function () {
     //#endregion
 })
 
-describe('Matrix Web : Navigazioni da Sales', options, function () {
+describe('Matrix Web : Navigazioni da Sales', function () {
 
     it('Verifica aggancio Sales', function () {
+        TopBar.clickSales()
     })
 
     it('Verifica Refresh Quietanzamento', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.selectFirstDay('1')
         Sales.checkRefreshQuietanzamento()
     })
@@ -162,98 +128,97 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica Filtro Quietanzamento', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
-        // Sales.selectFirstDay('1')
+        TopBar.clickSales()
+        Sales.selectFirstDay('1')
         Sales.checkFiltriQuietanzamento()
     })
 
     it('Verifica Gestisci Preferiti Quietanzamento', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
-        // Sales.selectFirstDay('1')
+        TopBar.clickSales()
+        Sales.selectFirstDay('1')
         Sales.checkGestisciPreferiti()
     })
 
     it('Verifica Carico Totale', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
-        // Sales.selectFirstDay('1')
+        TopBar.clickSales()
+        Sales.selectFirstDay('1')
         Sales.checkCaricoEstratto()
         Sales.checkCaricoTotalePezzi()
         Sales.checkCaricoTotalePremi()
-        Sales.checkCaricoTotalePezzi()
     })
 
     it('Verifica Azioni Veloci Motor', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
-            // Sales.selectFirstDay('1')
+            Sales.selectFirstDay('1')
             Sales.selectAltriCluster()
             Sales.clickAzioniVeloci()
             Sales.checkAzioniVeloci()
-            // Sales.backToSales()
+            Sales.backToSales()
         })
     })
 
     it('Verifica Azioni Veloci Rami Vari', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.lobDiInteresse('Rami vari', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
-            // Sales.selectFirstDay('1')
+            Sales.selectFirstDay('1')
             Sales.selectAltriCluster()
             Sales.clickAzioniVeloci()
             Sales.checkAzioniVeloci()
-            // Sales.backToSales()
+            Sales.backToSales()
         })
     })
 
     it('Verifica Azioni Veloci Vita', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.lobDiInteresse('Vita', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
-            // Sales.selectFirstDay('1')
+            Sales.selectFirstDay('1')
             Sales.selectAltriCluster()
             Sales.clickAzioniVeloci()
             Sales.checkAzioniVeloci()
-            // Sales.backToSales()
+            Sales.backToSales()
         })
     })
 
     it('Verifica Azioni Veloci Tutte', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.lobDiInteresse('Tutte', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
-            // Sales.selectFirstDay('1')
+            Sales.selectFirstDay('1')
             Sales.selectAltriCluster()
             Sales.clickAzioniVeloci()
             Sales.checkAzioniVeloci()
-            // Sales.backToSales()
+            Sales.backToSales()
         })
     })
 
     it('Verifica Azioni Veloci: "Eliminazione Sconto Commerciale"', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
-            // Sales.selectFirstDay('1')
+            Sales.selectFirstDay('1')
             Sales.selectAltriCluster(cluster.USCITE_ANIA)
             Sales.clickAzioniVeloci(cluster.USCITE_ANIA, azioniVeloci.ELIMINAZIONE_SCONTO_COMMERCIALE)
             Sales.backToSales()
@@ -263,11 +228,11 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica Azioni Veloci: "Verifica possibilità di incremento premio"', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
-            // Sales.selectFirstDay('1')
+            Sales.selectFirstDay('1')
             Sales.selectAltriCluster(cluster.DELTA_PREMIO_NEGATIVO)
             Sales.clickAzioniVeloci(cluster.DELTA_PREMIO_NEGATIVO, azioniVeloci.VERIFICA_POSSIBILITA_DI_INCREMENTO_PREMIO)
             Sales.backToSales()
@@ -277,11 +242,11 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica Estrai', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
-            // Sales.selectFirstDay('1')
+            Sales.selectFirstDay('1')
             Sales.selectAltriCluster(cluster.MODALITA_PAGAMENTO_DA_REMOTO)
             Sales.selectAltriCluster(cluster.MONOCOPERTI)
             Sales.checkEstraiModifiche([cluster.MODALITA_PAGAMENTO_DA_REMOTO, cluster.MONOCOPERTI])
@@ -292,11 +257,11 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica Azioni Veloci: "Vai a vista Quietanzamento"', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
-            // Sales.selectFirstDay('1')
+            Sales.selectFirstDay('1')
             Sales.selectAltriCluster(cluster.MODALITA_PAGAMENTO_DA_REMOTO)
             Sales.clickAzioniVeloci(cluster.PER_TUTTI_I_CLUSTER_SELEZIONATI, azioniVeloci.VAI_A_VISTA_QUIETANZAMENTO)
             Sales.backToSales()
@@ -306,11 +271,11 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica Azioni Veloci: "Assegna Colore"', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.lobDiInteresse('Motor', 'Azioni Veloci').then((checkEnabled) => {
             if (!checkEnabled)
                 this.skip()
-            // Sales.selectFirstDay('1')
+            Sales.selectFirstDay('1')
             Sales.selectAltriCluster(cluster.MODALITA_PAGAMENTO_DA_REMOTO)
             Sales.clickAzioniVeloci(cluster.PER_TUTTI_I_CLUSTER_SELEZIONATI, azioniVeloci.ASSEGNA_COLORE)
             Sales.backToSales()
@@ -318,13 +283,13 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     });
 
     it('Verifica presenza dei collegamenti rapidi', function () {
-
+        TopBar.clickSales()
         Sales.checkExistLinksCollegamentiRapidi(keysRapidi)
     })
 
     it('Verifica aggancio Nuovo Sfera', function () {
         if (!Cypress.env('monoUtenza')) {
-
+            TopBar.clickSales()
             Sales.clickLinkRapido('Nuovo Sfera')
             Sales.backToSales()
         } else this.skip()
@@ -332,7 +297,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
 
     if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
         it('Verifica aggancio Sfera', function () {
-
+            TopBar.clickSales()
             Sales.clickLinkRapido('Sfera')
             Sales.backToSales()
         })
@@ -340,7 +305,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica aggancio Campagne Commerciali', function () {
         if (!keysRapidi.CAMPAGNE_COMMERCIALI)
             this.skip()
-
+        TopBar.clickSales()
         Sales.clickLinkRapido('Campagne Commerciali')
         Sales.backToSales()
     })
@@ -348,7 +313,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica ASSENZA Sfera', function () {
         if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.checkNotExistLink('a', /^Sfera$/)
         Sales.backToSales()
     })
@@ -356,33 +321,33 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica ASSENZA GED – Gestione Documentale', function () {
         if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.checkNotExistLink('a', 'GED – Gestione Documentale')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Recupero preventivi e quotazioni', function () {
-
+        TopBar.clickSales()
         Sales.clickLinkRapido('Recupero preventivi e quotazioni')
         Sales.backToSales()
     })
 
     it('Verifica aggancio Monitoraggio Polizze Proposte', function () {
-
+        TopBar.clickSales()
         Sales.clickLinkRapido('Monitoraggio Polizze Proposte')
         Sales.backToSales()
     })
 
 
     it('Verifica la presenza dei link su "Emetti Polizza"', function () {
-
+        TopBar.clickSales()
         Sales.checkLinksOnEmettiPolizza(keys)
     })
 
     it('Verifica aggancio Emetti Polizza - Preventivo Motor', function () {
         if (!keys.PreventivoMotorEnabled)
             this.skip()
-
+        TopBar.clickSales()
         Sales.clickLinkOnEmettiPolizza('Preventivo Motor')
         Sales.backToSales()
     })
@@ -390,7 +355,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica aggancio Emetti Polizza - Safe Drive Autovetture', function () {
         if (!keys.SAFE_DRIVE_AUTOVETTURE)
             this.skip()
-
+        TopBar.clickSales()
         Sales.clickLinkOnEmettiPolizza('Safe Drive Autovetture')
         Sales.backToSales()
     })
@@ -399,7 +364,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - Ultra Salute', function () {
             if (!keys.UltraSaluteEnabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Ultra Salute')
             Sales.backToSales()
         })
@@ -407,7 +372,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - Ultra Casa e Patrimonio', function () {
             if (!keys.UltraCasaPatrimonioEnabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Ultra Casa e Patrimonio')
             Sales.backToSales()
         })
@@ -417,7 +382,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - Allianz Ultra Salute', function () {
             if (!keys.UltraSaluteEnabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz Ultra Salute')
             Sales.backToSales()
         })
@@ -425,7 +390,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio', function () {
             if (!keys.UltraCasaPatrimonioEnabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio')
             Sales.backToSales()
         })
@@ -433,15 +398,16 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio 2022', function () {
             if (!keys.ALLIANZ_ULTRA_CASA_E_PATRIMONIO_2022)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio 2022')
             Sales.backToSales()
         })
 
-        it('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function () {
+        //! Fino a settembre non funzionerà
+        it.skip('Verifica aggancio Emetti Polizza - Allianz Ultra Casa e Patrimonio BMP', function () {
             if (!keys.BMPenabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz Ultra Casa e Patrimonio BMP')
             Sales.backToSales()
         })
@@ -449,7 +415,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - Allianz Ultra Impresa', function () {
             if (!keys.UltraImpresaEnabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz Ultra Impresa')
             Sales.backToSales()
         })
@@ -457,7 +423,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - Allianz1 Business', function () {
             if (!keys.Allianz1BusinessEnabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Allianz1 Business')
             Sales.backToSales()
         })
@@ -465,7 +431,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - FastQuote Impresa e Albergo', function () {
             if (!keys.FasquoteImpresaAlbergoEnabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('FastQuote Impresa e Albergo')
             Sales.backToSales()
         })
@@ -473,7 +439,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - Flotte e Convenzioni', function () {
             if (!keys.FlotteConvenzioniEnabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Flotte e Convenzioni')
             Sales.backToSales()
         })
@@ -481,7 +447,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - Preventivo anonimo Vita Individuali', function () {
             if (!keys.PreventivoAnonimoVitaenabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Preventivo anonimo Vita Individuali')
             Sales.backToSales()
         })
@@ -489,7 +455,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - MiniFlotte', function () {
             if (!keys.MiniflotteEnabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('MiniFlotte')
             Sales.backToSales()
         })
@@ -497,7 +463,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
         it('Verifica aggancio Emetti Polizza - Trattative Auto Corporate', function () {
             if (!keys.TrattativeAutoCorporateEnabled)
                 this.skip()
-
+            TopBar.clickSales()
             Sales.clickLinkOnEmettiPolizza('Trattative Auto Corporate')
             Sales.backToSales()
         })
@@ -507,14 +473,14 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
 
     it('Verifica tab "Pezzi"', function () {
         if (!Cypress.env('monoUtenza')) {
-
+            TopBar.clickSales()
             Sales.checkExistPezzi()
         } else this.skip()
     })
 
     it('Verifica tab "Premi"', function () {
         if (!Cypress.env('monoUtenza')) {
-
+            TopBar.clickSales()
             Sales.checkExistPremi()
         } else this.skip()
     })
@@ -522,7 +488,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica aggancio Attività in scadenza - Estrai dettaglio', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         if (!Cypress.env('monoUtenza')) {
             Sales.clickAttivitaInScadenza()
         }
@@ -533,7 +499,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
 
     it('Verifica "Quietanzamento" - lob di interesse: Motor', function () {
         if (!Cypress.env('monoUtenza')) {
-
+            TopBar.clickSales()
             Sales.setDateEstrazione(dataInizio, dataFine)
             Sales.lobDiInteresse('Motor', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
@@ -545,7 +511,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
 
     it('Verifica "Quietanzamento" - lob di interesse: Rami Vari', function () {
         if (!Cypress.env('monoUtenza')) {
-
+            TopBar.clickSales()
             Sales.setDateEstrazione(dataInizio, dataFine)
             Sales.lobDiInteresse('Rami vari', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
@@ -558,7 +524,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica "Quietanzamento" - lob di interesse: Vita', function () {
         if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker'))
             this.skip()
-
+        TopBar.clickSales()
         Sales.setDateEstrazione(dataInizio, dataFine)
         Sales.lobDiInteresse('Vita', 'Estrai').then((checkEnabled) => {
             if (!checkEnabled)
@@ -569,7 +535,7 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
 
     it('Verifica "Quietanzamento" - lob di interesse: Tutte', function () {
         if (!Cypress.env('monoUtenza')) {
-
+            TopBar.clickSales()
             Sales.setDateEstrazione(dataInizio, dataFine)
             Sales.lobDiInteresse('Tutte', 'Estrai').then((checkEnabled) => {
                 if (!checkEnabled)
@@ -582,25 +548,23 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     it('Verifica TAB: "Campagne"', function () {
         if (!keysRapidi.CAMPAGNE_COMMERCIALI)
             this.skip()
-
+        TopBar.clickSales()
         Sales.clickTabCampagne()
-        Sales.backToSales()
-
     })
 
     it('Verifica aggancio Appuntamento', function () {
-
+        TopBar.clickSales()
         Sales.clickAppuntamento()
     })
     it('Verifica aggancio Preventivi e quotazioni - Card Danni', function () {
-
+        TopBar.clickSales()
         Sales.clickPreventiviQuotazioniOnTabDanni()
         Sales.clickPrimaCardDanniOnPreventivo()
         Sales.backToSales()
     })
 
     it('Verifica aggancio Preventivi e quotazioni Danni - button: Vedi Tutti', function () {
-
+        TopBar.clickSales()
         Sales.clickPreventiviQuotazioniOnTabDanni()
         Sales.clickButtonVediTutti()
         Sales.backToSales()
@@ -609,33 +573,33 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
     if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
 
         it('Verifica aggancio Preventivi e quotazioni - Card Vita', function () {
-
+            TopBar.clickSales()
             Sales.clickPreventiviQuotazioniOnTabVita()
             Sales.clickPrimACardVitaOnPreventivo()
             Sales.backToSales()
         })
         it('Verifica aggancio Preventivi e quotazioni Vita - button: Vedi Tutti', function () {
-
+            TopBar.clickSales()
             Sales.clickPreventiviQuotazioniOnTabVita()
             Sales.clickButtonVediTutti()
             Sales.backToSales()
         })
     } else
         it('Verifica Tab Vita su Preventivi e quotazioni non sia presente', function () {
-
+            TopBar.clickSales()
             Sales.checkNotExistTabVitaOnPreventiviQuot()
         })
 
 
     it('Verifica aggancio Proposte Danni - Card Danni', function () {
-
+        TopBar.clickSales()
         Sales.clickTabDanniOnProposte()
         Sales.clickPrimaCardDanniOnProposte()
         Sales.backToSales()
     })
 
     it('Verifica aggancio Proposte Danni - button: Vedi Tutte', function () {
-
+        TopBar.clickSales()
         Sales.clickTabDanniOnProposte()
         Sales.clickButtonVediTutte()
         Sales.backToSales()
@@ -643,21 +607,21 @@ describe('Matrix Web : Navigazioni da Sales', options, function () {
 
     if (!Cypress.env('isAviva') && !Cypress.env('isAvivaBroker')) {
         it('Verifica aggancio Proposte Vita - Card Vita', function () {
-
+            TopBar.clickSales()
             Sales.clickTabVitaOnProposte()
             Sales.clickPrimaCardVitaOnProposte()
             Sales.backToSales()
         })
 
         it('Verifica aggancio Proposte Vita - button: Vedi Tutte', function () {
-
+            TopBar.clickSales()
             Sales.clickTabVitaOnProposte()
             Sales.clickButtonVediTutte()
             Sales.backToSales()
         })
     } else
         it('Verifica Tab Vita su Proposte non sia presente', function () {
-
+            TopBar.clickSales()
             Sales.checkNotExistTabVitaOnProposte()
         })
 

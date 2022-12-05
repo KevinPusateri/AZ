@@ -1,4 +1,5 @@
 const { defineConfig } = require('cypress')
+const { verifyDownloadTasks } = require('cy-verify-downloads');
 
 module.exports = defineConfig({
   retries: 1,
@@ -63,6 +64,7 @@ module.exports = defineConfig({
     hostParsr: 'H2017LE00038A',
     portParsr: '3001',
     selectedSettori: '',
+    caseToExecute: '',
     urlDebugProxyPreprod:
       'https://portaleagenzie.pp.azi.allianz.it/Auto/NGRA2013/DebugGetProxy.aspx',
     // urlDebugProxyTest: 'https://portaleagenzie.te.azi.allianzit/Auto/NGRA2013/DebugGetProxy.aspx',
@@ -73,7 +75,9 @@ module.exports = defineConfig({
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
     setupNodeEvents(on, config) {
+      on('task', verifyDownloadTasks);
       return require('./cypress/plugins/index.js')(on, config)
+
     },
     experimentalSessionAndOrigin: false,
     baseUrl: 'https://portaleagenzie.pp.azi.allianz.it/matrix/',

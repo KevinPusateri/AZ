@@ -75,27 +75,27 @@ class SCUGestioneFontePrincipale {
       cy.wait(4000)
       cy.get('table[class="k-selectable"] > tbody').then(($table) => {
         cy.wrap($table).find('tr:visible').not('tr:first')
-        .not('tr:contains("AUTOVELLETRI SRL")')
-        .not('tr:contains("SEDE SECONDARIA")')
-        .not('tr:contains("AGENZIA")')
-        .not('tr:contains("SUBAGENZIA")').then(($tr) => {
-          indexFonte = Math.floor(Math.random() * $tr.length)
+          .not('tr:contains("AUTOVELLETRI SRL")')
+          .not('tr:contains("SEDE SECONDARIA")')
+          .not('tr:contains("AGENZIA")')
+          .not('tr:contains("SUBAGENZIA")').then(($tr) => {
+            indexFonte = Math.floor(Math.random() * $tr.length)
 
-          if ($tr.eq(indexFonte).hasClass('k-treelist-group')) {
-            cy.wrap($tr.eq(indexFonte)).find('span[class="k-icon k-i-expand"]').click({ force: true }).wait(2000)
-            cy.wrap($tr.eq(indexFonte).next().find('td').eq(0)).invoke('text').then((agente) => {
-              nameAgente = agente
-            })
+            if ($tr.eq(indexFonte).hasClass('k-treelist-group')) {
+              cy.wrap($tr.eq(indexFonte)).find('span[class="k-icon k-i-expand"]').click({ force: true }).wait(2000)
+              cy.wrap($tr.eq(indexFonte).next().find('td').eq(0)).invoke('text').then((agente) => {
+                nameAgente = agente
+              })
 
-            cy.wrap($tr.eq(indexFonte).next()).click({ force: true })
-          } else {
-            cy.wrap($tr.eq(indexFonte).find('td').eq(0)).invoke('text').then((agente) => {
-              nameAgente = agente
-            })
-            cy.wrap($tr.eq(indexFonte)).click({ force: true })
-          }
+              cy.wrap($tr.eq(indexFonte).next()).click({ force: true })
+            } else {
+              cy.wrap($tr.eq(indexFonte).find('td').eq(0)).invoke('text').then((agente) => {
+                nameAgente = agente
+              })
+              cy.wrap($tr.eq(indexFonte)).click({ force: true })
+            }
 
-        })
+          })
       })
     })
 
@@ -123,15 +123,16 @@ class SCUGestioneFontePrincipale {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
       cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
-      LandingRicerca.filtra('PF')
+      //LandingRicerca.filtra('PF')
       cy.get('lib-client-item').first().click()
     }).then(($body) => {
       cy.wait(6000)
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
       if (check) {
         cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
-        LandingRicerca.filtra('PF')
-        cy.get('lib-client-item').next().click()
+        LandingRicerca.filtra()
+        // cy.get('lib-client-item').next().click()
+        cy.get('lib-client-item').click()
       }
 
 
@@ -243,14 +244,15 @@ class SCUGestioneFontePrincipale {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
       cy.get('input[name="main-search-input"]').type(clienteIVA).type('{enter}')
-      LandingRicerca.filtra('PG')
-      cy.get('lib-client-item').first().click()
+      LandingRicerca.filtra()
+      // cy.get('lib-client-item').next().click()
+      cy.get('lib-client-item').click()
     }).then(($body) => {
       cy.wait(6000)
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
       if (check) {
         cy.get('input[name="main-search-input"]').type(clienteIVA).type('{enter}')
-        LandingRicerca.filtra('PG')
+        //LandingRicerca.filtra('PG')
         cy.get('lib-client-item').next().click()
       }
       cy.wait('@pageClient', { timeout: 60000 });

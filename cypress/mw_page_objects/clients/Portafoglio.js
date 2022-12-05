@@ -223,6 +223,11 @@ class Portafoglio {
      */
     static checkPreventivi() {
         cy.screenshot('Verifica Preventivi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.get('app-client-wallet').should('be.visible').within(($filtri) => {
+            const checkFiltroActive = $filtri.find(':contains("Azzera")').is(':visible')
+            if (checkFiltroActive)
+                cy.contains('span', 'Azzera').click().wait(1000)
+        })
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Preventivi")').is(':visible')
             if (container)
@@ -320,8 +325,13 @@ class Portafoglio {
                 cy.wait(5000)
                 cy.get('app-contract-card').should('be.visible').first().click()
                 Common.canaleFromPopup()
-                cy.wait(10000)
-                getIFrame().find('#navigation-area').should('be.visible').and('contain.text', '« Uscita')
+                cy.wait(15000)
+                cy.getIFrame()
+                cy.get('@iframe').within(() => {
+                    cy.get('button:contains("Uscita")').should('exist').and('be.visible')
+                })
+
+                // getIFrame().find('#navigation-area').should('be.visible').and('contain.text', '« Uscita')
                 cy.screenshot('Verifica Scheda Non in Vigore', { capture: 'fullPage' }, { overwrite: true })
                 this.back()
             }
@@ -481,7 +491,7 @@ class Portafoglio {
                         }
                     })
 
-                    cy.get('body').then(() => {
+                    cy.then(() => {
                         if (loopCheck) {
 
                             cy.contains('DETTAGLIO ANAGRAFICA').click()
@@ -521,9 +531,17 @@ class Portafoglio {
      * @param {string} numberPolizza : numero della polizza 
      */
     static checkPolizzaIsPresentOnPolizzeAttive(numberPolizza) {
-        cy.get('lib-da-link[calldaname]').as('polizza')
-
-        cy.get('@polizza').should('be.visible')
+        cy.wait(4000)
+        cy.get('app-wallet-active-contracts').should('be.visible').then(($wallet) => {
+            const checkCard = $wallet.find('lib-da-link[calldaname]').is(':visible')
+            if (checkCard) {
+                cy.log('Sono presenti')
+                cy.get('lib-da-link[calldaname]').as('polizze')
+                cy.get('@polizze').should('be.visible')
+            } else {
+                cy.wait(3000)
+            }
+        })
 
         var check = true
         const loop = () => {
@@ -535,7 +553,7 @@ class Portafoglio {
                     loopCheck = false
                     assert.isTrue(true, 'Cliente non possiede Polizze')
                 } else {
-                    cy.get('@polizza').should('be.visible').then(($card) => {
+                    cy.get('lib-da-link[calldaname]').should('be.visible').then(($card) => {
 
                         var checkStatus = $card.find(':contains("' + numberPolizza + '")').is(':visible')
 
@@ -553,7 +571,7 @@ class Portafoglio {
                         }
                     })
 
-                    cy.get('body').then(() => {
+                    cy.then(() => {
                         if (loopCheck) {
                             cy.contains('DETTAGLIO ANAGRAFICA').click()
                             cy.contains('PORTAFOGLIO').click()
@@ -654,7 +672,7 @@ class Portafoglio {
             })
 
 
-            cy.get('body').then(() => {
+            cy.then(() => {
                 if (loopCheck) {
 
                     cy.get('@dettaglio').click()
@@ -689,6 +707,9 @@ class Portafoglio {
 
     static Incasso() {
         cy.contains('Incassa').click()
+        cy.wrap(Cypress.$('html')).within(() => {
+            Common.canaleFromPopup()
+        })
         IncassoDA.accessoMezziPagam()
 
         cy.wrap(Cypress.$('html')).within(() => {
@@ -720,7 +741,7 @@ class Portafoglio {
      * @param {string} numberPolizza : numero della polizza
      */
     static checkPolizzaIsSospesa(numberPolizza) {
-
+        cy.wait(4000)
         cy.get('lib-da-link[calldaname]').contains(numberPolizza).first().as('polizza')
 
         cy.get('@polizza').should('be.visible')
@@ -761,7 +782,7 @@ class Portafoglio {
                     })
                 })
 
-            cy.get('body').then(() => {
+            cy.then(() => {
                 if (loopCheck) {
 
                     cy.get('@dettaglio').click()

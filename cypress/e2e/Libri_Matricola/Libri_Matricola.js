@@ -30,6 +30,7 @@ import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca";
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente";
 import TopBar from "../../mw_page_objects/common/TopBar";
 import HomePage from "../../mw_page_objects/common/HomePage";
+import IncassoDA from "../../mw_page_objects/da/IncassoDA";
 
 
 //#region Configuration
@@ -168,6 +169,8 @@ describe("LIBRI MATRICOLA", {
                 SintesiCliente.clickLibriMatricola()
                 // LibriMatricola.backElencoLibriMatricola()
                 LibriMatricola.accessoIncassoPolizzaMadre(data.numContrattoLibro)
+                IncassoDA.accessoMezziPagam()
+
                 LibriMatricola.incasso()
 
             })

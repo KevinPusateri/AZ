@@ -311,7 +311,7 @@ class DenunciaSinistriPage {
      */
     static getIdInListValues_ById(id, value) {
         return new Cypress.Promise((resolve, reject) => {            
-            findIframeChild(IFrameParent).find(id).each(($el, index, $list) => {
+            findIframeChild(IFrameParent).find(id, { timeout: 5000 }).each(($el, index, $list) => {
                 if ($el.text().includes(value)) {                                                              
                     cy.log('>> Element('+(index)+ ') and value: '+value) 
                     cy.wait(2000)
@@ -371,28 +371,27 @@ class DenunciaSinistriPage {
     /**
      * Ritorna un Promise true se presente un testo @txt, false se assente
      * @param {string} txt text
-     * @returns {Promise<boolean>} Promise (true) or Promise (false)
+     * @returns {bool} check visible (true) or (false)
      */
     static isVisibleText(txt)
     {
-        //return new Promise((resolve) => {
-            let check = false
-            findIframeChild(IFrameParent).within(($body) => {
-                check = $body.find('span:contains("'+txt+'")').is(':visible')
-                if (check)
-                    cy.log('>> Text : [' +txt+ '] is visible! ')
-                else 
-                    cy.log('>> Text : [' +txt+ '] is Not visible! ')                         
-            })
-            return check           
-        //})
+        let check = false;
+        findIframeChild(IFrameParent).within(($body) => {
+            if ($body.find('span:contains("'+txt+'")', { timeout: 8000 }).is(':visible')) {
+                cy.log('>> Text : [' +txt+ '] is visible ! ')  
+                check = true;           
+            } else  {
+                cy.log('>> Text : [' +txt+ '] is not visible !!! ')             
+            }                           
+        })
+        return check;
     }
- 
+
     /**
      * Check if the value is defined
      * @param {string} value : string value to check
      */
-     static isNotNullOrEmpty(value) {
+    static isNotNullOrEmpty(value) {
         cy.wrap(value).then((validation) => {            
             if ((value === undefined) 
                 || (value === null) || (value === '')) 

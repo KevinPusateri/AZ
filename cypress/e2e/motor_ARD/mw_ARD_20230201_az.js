@@ -21,7 +21,7 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-import { tariffaCases as ardCases } from '../../fixtures/tariffe_ARD/tariffaCases_ARD_20221001_az.json'
+import { tariffaCases as ardCases } from '../../fixtures/tariffe_ARD/tariffaCases_ARD_20230201_az.json'
 //#endregion
 
 before(() => {
@@ -71,7 +71,7 @@ else {
         caseToExecute = [`${cases}`]
     }
 }
-describe('ARD Ottobre 2022: ', {
+describe('ARD Febbraio 2023: ', {
     retries: {
         runMode: 0,
         openMode: 0,
@@ -102,6 +102,7 @@ describe('ARD Ottobre 2022: ', {
                     TenutaTariffa.compilaOffertaARD(currentCase)
                     TenutaTariffa.areaRiservata(currentCase)
 
+                    cy.pause()
                     TenutaTariffa.checkTariffaARD(currentCase)
                 }
                 else

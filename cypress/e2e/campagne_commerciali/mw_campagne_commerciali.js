@@ -43,6 +43,10 @@ before(() => {
 beforeEach(() => {
     cy.preserveCookies()
     cy.ignoreRequest()
+    // Campagne Commerciali ignore Request 
+    cy.intercept(/azeu-mid-stage2-res.adobe-campaign.com/, 'ignore').as('stage2')
+    cy.intercept(/res.messaging.allianz.com/, 'ignore').as('stage2')
+
 })
 
 after(function () {

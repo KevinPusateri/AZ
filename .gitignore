@@ -11,6 +11,8 @@ reports/
 browsers/
 parallel-weights*
 !.env
+allure-report/
+allure-results/
 
 # Logs
 logs

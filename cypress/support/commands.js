@@ -1051,6 +1051,7 @@ Cypress.Commands.add('getUserProfileToken', (tutf) => {
         cy.request({
           method: 'POST',
           log: false,
+          retryOnStatusCodeFailure: true, // mettendo a false puo capitare errore 405
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
           },
@@ -1060,9 +1061,8 @@ Cypress.Commands.add('getUserProfileToken', (tutf) => {
           },
           url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('hostAMTest') : Cypress.env('hostAMPreprod')) + '/nidp/idff/sso?sid=0&sid=0'
         }).then(() => {
-
-          //Get the userProfileToken
-          const userDetailsQuery = `query userDetails($filter: UserDetailsRequestInput!) {
+            //Get the userProfileToken
+            const userDetailsQuery = `query userDetails($filter: UserDetailsRequestInput!) {
             userDetails(filter: $filter) { 
             userProfileToken
             }
@@ -1639,6 +1639,62 @@ Cypress.Commands.add('getCurrentDate', (dd = 0) => {
   return formattedDate
 })
 
+Cypress.Commands.add('getClientWithoutConsentAgreements', (tutf, clientType = 'PF', currentAgency) => {
+  cy.generateTwoLetters().then(nameRandom => {
+    cy.generateTwoLetters().then(firstNameRandom => {
+      cy.request({
+        method: 'GET',
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
+        log: false,
+        url: (clientType === 'PF') ? be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Person'
+          : be2beHost + '/daanagrafe/CISLCore/parties?name=' + nameRandom + '&firstName=' + firstNameRandom + '&partySign=Company',
+        headers: {
+          'x-allianz-user': tutf
+        }
+      }).then(response => {
+        if (response.body.length === 0)
+          cy.getClientWithoutConsentAgreements(tutf, clientType, currentAgency)
+        else {
+          let clienti = response.body.filter(el => {
+            return el.socialSecurityNumber !== ''
+          })
+
+          if (clienti.length > 0) {
+            let currentClient = clienti[Math.floor(Math.random() * clienti.length)]
+            cy.request({
+              method: 'GET',
+              retryOnStatusCodeFailure: true,
+              timeout: 60000,
+              log: false,
+              url: be2beHost + '/daanagrafe/CISLCore/parties/' + currentClient.customerNumber + '/dataconsentagreements',
+              headers: {
+                'x-allianz-user': tutf
+              }
+            }).then(responseAgreements => {
+              let agreementOTP = responseAgreements.body.filter(el => {
+                return el.dataConsent.dataConsentType === 'ConsensoOTP'
+              })
+              let agreementEmail = responseAgreements.body.filter(el => {
+                return el.dataConsent.dataConsentType === 'InvioEmail' &&
+                  el.dataConsent.dataConsentGroup === 'Allianz'
+              })
+              // Verifico se non hanno espresso conensi
+              if (!agreementOTP[0].hasOwnProperty('accepted') &&
+                !agreementEmail[0].hasOwnProperty('accepted'))
+                return currentClient
+              else
+                cy.getClientWithoutConsentAgreements(tutf, clientType, currentAgency)
+            })
+          } else
+            cy.getClientWithoutConsentAgreements(tutf, clientType, currentAgency)
+        }
+      })
+    })
+  })
+})
+
+
 /**
  * Ottieni un Cliente che abbia almeno una polizza Attiva
  */
@@ -1894,7 +1950,7 @@ Cypress.Commands.add('getClientWithNonInVigore', (tutf, clientType = 'PF', curre
         }
       }).then(response => {
         if (response.body.length === 0)
-          cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+          cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
         else {
           //Verifichiamo solo clienti in stato EFFETTIVO
           let clientiEffettivi = response.body.filter(el => {
@@ -1915,7 +1971,7 @@ Cypress.Commands.add('getClientWithNonInVigore', (tutf, clientType = 'PF', curre
               }
             }).then(responseContracts => {
               if (responseContracts.status !== 200)
-                cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
 
               let contracts
               contracts = responseContracts.body
@@ -1930,22 +1986,22 @@ Cypress.Commands.add('getClientWithNonInVigore', (tutf, clientType = 'PF', curre
                             if (isEffettivo)
                               return currentClient
                             else
-                              cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                              cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
                           })
                         else
-                          cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                          cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
                       })
                     }
                     else
-                      cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                      cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
                   })
                 })
               } else
-                cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
 
             })
           } else
-            cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+            cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
         }
       })
     })

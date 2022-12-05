@@ -94,7 +94,7 @@ beforeEach(() => {
 //#endregion Before After
 
 describe("LIBRI MATRICOLA", function () {
-// !  La convenzione appena create si utilizza il giorno dopo su LM
+    // !  La convenzione appena create si utilizza il giorno dopo su LM
 
     it('Flusso', () => {
         cy.get('#ambienteTargetLabel').should('be.visible').click()
@@ -109,28 +109,25 @@ describe("LIBRI MATRICOLA", function () {
         cy.get('#ctl00_ContentPlaceHolder1_GridView1').within(() => {
             cy.fixture('LibriMatricola/Convenzione.json').then((data) => {
                 cy.contains(data.convenzione).click()
-              })
+            })
         })
 
 
         // Accordo Dati Generali 
         cy.get('#contentDiv').should('be.visible')
         cy.contains('Duplica').click()
-
         // Dati Convenzione
         // un giorno dopo alla data corrente
         var afterTwoMonth = new Date();
-        afterTwoMonth.setMonth(afterTwoMonth.getMonth() + 2);
         afterTwoMonth.setDate(1)
+        afterTwoMonth.setMonth(afterTwoMonth.getMonth() + 1);
 
-        afterTwoMonth.toLocaleDateString();
         let formattedDate = String(afterTwoMonth.getDate()).padStart(2, '0') + '/' +
-            String(afterTwoMonth.getMonth()).padStart(2, '0') + '/' +
+            String(afterTwoMonth.getMonth() + 1).padStart(2, '0') + '/' +
             String(afterTwoMonth.getFullYear())
-        cy.log(formattedDate)
         cy.wait(5000)
         cy.get('#ctl00_ContentPlaceHolder1_dtDecorrenza').should('be.visible').clear().type(formattedDate)
-        
+
         cy.get('#ctl00_ContentPlaceHolder1_txtDescrizione').should('be.visible').click()
         cy.get('#ctl00_ContentPlaceHolder1_txtDescrizione').clear().type('SALA TEST LM AUTOMATICI')
 
@@ -146,10 +143,10 @@ describe("LIBRI MATRICOLA", function () {
         cy.get('#tendinaOperazioniAmbienteSviluppo_option_1').should('be.visible').click()
 
         // SALVA il Codice Convenzione e la data
-        cy.get('#D-DatiGenerali').find('b').eq(1).then(($codiceConvenzione)=>{
+        cy.get('#D-DatiGenerali').find('b').eq(1).then(($codiceConvenzione) => {
             cy.writeFile('cypress/fixtures/LibriMatricola/Convenzione.json', {
-                convenzione : $codiceConvenzione.text().trim(),
-                dataConvenzione : formattedDate
+                convenzione: $codiceConvenzione.text().trim(),
+                dataConvenzione: formattedDate
             })
         })
         cy.contains('Esci').click()

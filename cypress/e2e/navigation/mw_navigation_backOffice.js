@@ -25,7 +25,7 @@ let keys = {
     MOVIMENTAZIONE_SINISTRI: true,
     DENUNCIA: true,
     GESTIONE_CONTATTO_CARD: true,
-    DENUNCIA_BMP: true,
+    NUOVA_DENUNCIA: true,
     CONSULTAZIONE_SINISTRI: true,
     SINISTRI_INCOMPLETI: true,
     SINISTRI_CANALIZZATI: true,
@@ -48,14 +48,14 @@ let keys = {
 before(() => {
     cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
         cy.log(folderToDelete + ' rimossa!')
-        if (!Cypress.env('internetTesting'))
-            cy.getUserWinLogin().then(data => {
-                cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-                LoginPage.logInMWAdvanced()
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+            if (!Cypress.env('internetTesting'))
                 cy.getProfiling(data.tutf).then(profiling => {
                     cy.filterProfile(profiling, 'SINISTRI_CRUSCOTTO_STD').then(profiled => { keys.MOVIMENTAZIONE_SINISTRI = profiled })
                     cy.filterProfile(profiling, 'SINISTRI_DENUNCIA_STD').then(profiled => { keys.DENUNCIA = profiled })
-                    cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.DENUNCIA_BMP = profiled })
+                    cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.NUOVA_DENUNCIA = profiled })
                     cy.filterProfile(profiling, 'SINISTRI_INQUIRY_STD').then(profiled => { keys.CONSULTAZIONE_SINISTRI = profiled })
                     cy.filterProfile(profiling, 'SINISTRI_REMUN_NO_MISA_STD').then(profiled => { keys.SINISTRI_INCOMPLETI = profiled })
                     cy.filterProfile(profiling, 'COMMON_REPORTING_SXCANALIZZATI').then(profiled => { keys.SINISTRI_CANALIZZATI = profiled })
@@ -82,7 +82,8 @@ before(() => {
                         })
                     })
                 })
-            })
+        })
+
     })
 })
 
@@ -101,7 +102,6 @@ after(function () {
     //#endregion
 
 })
-
 describe('Matrix Web : Navigazioni da BackOffice', function () {
 
     it('Verifica atterraggio su BackOffice', function () {
@@ -139,11 +139,11 @@ describe('Matrix Web : Navigazioni da BackOffice', function () {
         BackOffice.backToBackOffice()
     })
 
-    it('Verifica apertura disambiguazione: Denuncia BMP', function () {
-        if (!keys.DENUNCIA_BMP)
+    it('Verifica apertura disambiguazione: Nuova Denuncia', function () {
+        if (!keys.NUOVA_DENUNCIA)
             this.skip()
         TopBar.clickBackOffice()
-        BackOffice.clickCardLink('Denuncia BMP')
+        BackOffice.clickCardLink('Nuova Denuncia')
         BackOffice.backToBackOffice()
     })
 

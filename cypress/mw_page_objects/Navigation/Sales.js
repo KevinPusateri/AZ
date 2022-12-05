@@ -382,7 +382,6 @@ class Sales {
             .parents('app-extracted-value')
             .find('span[class="value ng-star-inserted"]:first')
             .then(($caricoDaEstrarre) => {
-
                 var countTotaleCarico = (+($caricoDaEstrarre.text().split('pz')[0].trim().replace(/\./g, '')))
 
                 cy.contains('Seleziona altri cluster').click().wait(3000)
@@ -435,7 +434,8 @@ class Sales {
      */
     static clickCluster(cluster, onModal = false, selected = false) {
         cy.contains(cluster).parents('app-receipt-manager-cluster').within(() => {
-            cy.get('nx-checkbox').click()
+            cy.get('div[class^="app-receipt-manager-cluster"]', { timeout: 5000 }).should('not.have.class', 'app-receipt-manager-cluster disabled onModal')
+            cy.get('nx-checkbox').click({ timeout: 5000 })
         })
 
         if (!selected) {
@@ -710,6 +710,8 @@ class Sales {
             }).then(() => {
                 expect(currentLinks.sort()).to.deep.eq(linksEmettiPolizza.sort());
             })
+
+        cy.contains('Emetti polizza').type('{esc}')
     }
 
     /**
@@ -874,9 +876,7 @@ class Sales {
      */
     static clickEstraiDettaglio() {
         // fino al primo disponibile
-        var nextCheckbox = cy.get('app-expiring-card').next().find('nx-checkbox').find('input').not('[disabled]')
-        nextCheckbox.then(($btn) => {
-            var check = true;
+        cy.get('app-expiring-card').find('nx-checkbox').find('input').not('[disabled]').then(($btn) => {
             cy.intercept({
                 method: 'POST',
                 url: /dacommerciale/
@@ -885,8 +885,8 @@ class Sales {
                 method: 'POST',
                 url: '**/RicercaDatiAnagraficiRipetitore'
             }).as('getRicercaDatiAnagraficiRipetitore');
-            cy.wrap($btn).click()
-            cy.get('.details-container').find('button:contains("Estrai")').click()
+            cy.wrap($btn).first().click()
+            cy.get('app-expiring-activities').find('button:contains("Estrai")').click()
             cy.wait('@getDacommerciale', { timeout: 50000 });
             // cy.wait('@getRicercaDatiAnagraficiRipetitore', { timeout: 50000 });
             getIFrame().find('#contentPane button:contains("Estrai Dettaglio"):visible')
@@ -979,6 +979,7 @@ class Sales {
     static checkNotExistTabVitaOnPreventiviQuot() {
         cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
         cy.get('app-quotations-section').find('nx-tab-header:visible').should('not.contain.text', 'Vita')
+        cy.get('app-quotations-section').contains('Preventivi e quotazioni').click()
     }
     static checkNotExistTabVitaOnProposte() {
         cy.get('app-proposals-section').contains('Proposte').click()
@@ -1054,9 +1055,9 @@ class Sales {
         })
         cy.get('app-proposals-section').contains('Proposte').click()
         cy.wait('@gqlDamage', { timeout: 50000 });
-        cy.get('app-paginated-cards').find('button:contains("Danni")').click()
+        cy.get('app-paginated-cards').find('button:contains("Danni"):visible').click()
         cy.get('div[class="damages prop-card ng-star-inserted"]').should('be.visible')
-        cy.get('app-paginated-cards')
+        cy.get('app-paginated-cards:visible')
             .screenshot('Verifica Proposte Da Vita', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
         cy.wait(10000)
     }
@@ -1159,7 +1160,11 @@ class Sales {
         Common.canaleFromPopup()
         cy.wait('@gqlCampaignAgent', { timeout: 60000 });
         cy.url().should('eq', Common.getBaseUrl() + 'sales/campaign-manager')
-        getIFrame().find('button:contains("Verifica stato campagne attive"):visible')
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.contains('button', 'Verifica stato campagne attive').should('be.visible')
+        })
+
         cy.screenshot('Verifica Campagne', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
 
     }
@@ -1254,7 +1259,6 @@ class Sales {
      * Verifica il corretto funzionamento del Filtro 
      */
     static checkFiltriQuietanzamento() {
-
         // Mi salvo Il numero di Agenzie pre-Filtro
         cy.get('div[class="single-info"]').first().should('be.visible').within(() => {
             cy.get('span[class="value"]').invoke('text').as('numAgenzieTot')
@@ -1349,6 +1353,7 @@ class Sales {
      * Verifica che il carico Totale Pezzi corrisponde
      */
     static checkCaricoTotalePezzi() {
+        cy.get('app-receipt-header').find('span:contains("Pezzi")').click()
 
         cy.get('app-sfera').should('be.visible').within(() => {
             var countTotaleCarico = 0.00

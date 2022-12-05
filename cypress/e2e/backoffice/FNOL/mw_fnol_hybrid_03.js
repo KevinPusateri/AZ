@@ -63,8 +63,10 @@ after(function () {
     TopBar.logOutMW()
 
     //#region Mysql
+    debugger
     cy.getTestsInfos(this.test.parent.suites[0].tests).then(testsInfo => {
         let tests = testsInfo
+        debugger
         cy.finishMysql(dbConfig, insertedId, tests)
 
     })
@@ -76,12 +78,12 @@ after(function () {
 const IFrameParent = '[class="iframe-content ng-star-inserted"]'
 // AG 73 742000
 var ramo_pol = '42'
-var cliente_cognome = 'RAI'
-var cliente_nome = 'GUIDO'
-var cliente_CF = 'RAIGDU65B09L424C'
-var cliente_dt_nascita = '09/02/1965'
-var cliente_num_pol = '733323007'
-var cliente_email ='danilo.ponti@allianzdirect.it'
+var cliente_cognome = 'GUCCIONE'
+var cliente_nome = 'MASSIMO'
+var cliente_CF = 'GCCMSM67D10E125E'
+var cliente_dt_nascita = '10/04/1967'
+var cliente_num_pol = '755064480'
+var cliente_email ='covieva@yahoo.it'
 
 /* 319000
 var ramo_pol = '42' //601 - BONUS/MALUS
@@ -93,12 +95,12 @@ var cliente_num_pol = '502257481'
 var cliente_email = 'f.ninno@allianz.it'
 */
 var prodotto = 'ULTRA CASA'
-var ambito_garanzia_prodotto = 'Fabbricato'
-//var classe_garanzia_prodotto = 'Fabbricato - Incendio, Eventi atmosferici, Allagamento'
-var classe_garanzia_prodotto =' Danni d\'acqua'
-var loss_type = 'EVENTI ATMOSFERICI'
-var loss_cause = 'PIOGGIA'
-var oggetto_fabbricato
+var ambito_garanzia_prodotto = 'Contenuto'
+var classe_garanzia_prodotto = 'Contenuto - Incendio, Eventi atmosferici, Allagamento'
+//var classe_garanzia_prodotto = 'Danni d\'acqua'
+var loss_type = 'BAGNATURA'
+var loss_cause = 'Fuoriuscita di Acqua'
+
 
 var sinistro_descrizione_danno = 'Automation FNOL BMP - Hybrid Ultra Casa & Patrimonio. Email.: michele.delledonne@allianz.it'
 var sinistro_località = 'TRIESTE'
@@ -116,7 +118,7 @@ let cssCmbFrstElement = 'div.nx-dropdown__panel-body[role=\"listbox\"] > nx-drop
 let btn_class= "nx-button__content-wrapper";
 //#endregion
 
-describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica denuncia Hybrid con accesso per numero polizza ('+cliente_num_pol+') e ambito \'Fabbricato\'', () => {
+describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica denuncia Hybrid con accesso per numero polizza ('+cliente_num_pol+') e ambito \'Contenuto\'', () => {
 
     it('Atterraggio su BackOffice >> Denuncia BMP', function () {
         TopBar.clickBackOffice()
@@ -257,7 +259,7 @@ describe('Matrix Web - Sinistri>>Denuncia BMP in Matrix Web: Test di verifica de
 
         //Descrizione del sinistro
         let cssDescrClm = 'textarea[formcontrolname="description"]'
-        DenunciaBMP.setValue_ById(cssDescrClm, sinistro_descrizione_danno + " - Ambito: "+ambito_garanzia_prodotto + " - Classe: "+classe_garanzia_prodotto);
+        DenunciaBMP.setValue_ById(cssDescrClm, sinistro_descrizione_danno + " - Ambito: "+ambito_garanzia_fabbricato + " - Classe: "+classe_garanzia_prodotto);
         cy.wait(1000)-
 
         cy.screenshot('10 - Pagina Dati denuncia - Altri dati del sinistro: descrizione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true });
