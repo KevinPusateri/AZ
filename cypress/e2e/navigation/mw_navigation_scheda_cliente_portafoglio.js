@@ -5,6 +5,7 @@ import TopBar from "../../mw_page_objects/common/TopBar"
 import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
 import HomePage from "../../mw_page_objects/common/HomePage"
+import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
 
 
 //#region Mysql DB Variables
@@ -56,6 +57,7 @@ beforeEach(() => {
                         cy.getClientWithPolizzeAttive(data.tutf, '31', 'PF', currentAgency).then((client) => {
                             currentClient = client
                             TopBar.search(currentClient.socialSecurityNumber)
+                            LandingRicerca.filtra()
                             SintesiCliente.wait()
                         })
                         break
@@ -63,6 +65,7 @@ beforeEach(() => {
                         cy.getClientWithProposte(data.tutf, '31', 'PF', currentAgency).then((client) => {
                             currentClient = client
                             TopBar.search(currentClient.socialSecurityNumber)
+                            LandingRicerca.filtra()
                             SintesiCliente.wait()
                         })
                         break
@@ -70,6 +73,7 @@ beforeEach(() => {
                         cy.getClientWithPreventivi(data.tutf, 'PF', currentAgency).then((client) => {
                             currentClient = client
                             TopBar.search(currentClient.socialSecurityNumber)
+                            LandingRicerca.filtra()
                             SintesiCliente.wait()
                         })
                         break
@@ -77,6 +81,7 @@ beforeEach(() => {
                         cy.getClientWithNonInVigore(data.tutf, 'PF', currentAgency).then((client) => {
                             currentClient = client
                             TopBar.search(currentClient.socialSecurityNumber)
+                            LandingRicerca.filtra()
                             SintesiCliente.wait()
                         })
                         break
@@ -84,6 +89,7 @@ beforeEach(() => {
                         cy.getClientWithSinistri(data.tutf, 'PF', currentAgency).then((client) => {
                             currentClient = client
                             TopBar.search(currentClient.socialSecurityNumber)
+                            LandingRicerca.filtra()
                             SintesiCliente.wait()
                         })
                         break

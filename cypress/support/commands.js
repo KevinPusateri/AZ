@@ -1047,6 +1047,7 @@ Cypress.Commands.add('getUserProfileToken', (tutf) => {
         cy.request({
           method: 'POST',
           log: false,
+          retryOnStatusCodeFailure: true, // mettendo a false puo capitare errore 405
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
           },
@@ -1056,9 +1057,8 @@ Cypress.Commands.add('getUserProfileToken', (tutf) => {
           },
           url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('hostAMTest') : Cypress.env('hostAMPreprod')) + '/nidp/idff/sso?sid=0&sid=0'
         }).then(() => {
-
-          //Get the userProfileToken
-          const userDetailsQuery = `query userDetails($filter: UserDetailsRequestInput!) {
+            //Get the userProfileToken
+            const userDetailsQuery = `query userDetails($filter: UserDetailsRequestInput!) {
             userDetails(filter: $filter) { 
             userProfileToken
             }
@@ -1946,7 +1946,7 @@ Cypress.Commands.add('getClientWithNonInVigore', (tutf, clientType = 'PF', curre
         }
       }).then(response => {
         if (response.body.length === 0)
-          cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+          cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
         else {
           //Verifichiamo solo clienti in stato EFFETTIVO
           let clientiEffettivi = response.body.filter(el => {
@@ -1967,7 +1967,7 @@ Cypress.Commands.add('getClientWithNonInVigore', (tutf, clientType = 'PF', curre
               }
             }).then(responseContracts => {
               if (responseContracts.status !== 200)
-                cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
 
               let contracts
               contracts = responseContracts.body
@@ -1982,22 +1982,22 @@ Cypress.Commands.add('getClientWithNonInVigore', (tutf, clientType = 'PF', curre
                             if (isEffettivo)
                               return currentClient
                             else
-                              cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                              cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
                           })
                         else
-                          cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                          cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
                       })
                     }
                     else
-                      cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                      cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
                   })
                 })
               } else
-                cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+                cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
 
             })
           } else
-            cy.getClientWithPreventivi(tutf, clientType, currentAgency)
+            cy.getClientWithNonInVigore(tutf, clientType, currentAgency)
         }
       })
     })

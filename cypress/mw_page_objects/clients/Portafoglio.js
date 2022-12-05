@@ -223,6 +223,11 @@ class Portafoglio {
      */
     static checkPreventivi() {
         cy.screenshot('Verifica Preventivi', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.get('app-client-wallet').should('be.visible').within(($filtri) => {
+            const checkFiltroActive = $filtri.find(':contains("Azzera")').is(':visible')
+            if (checkFiltroActive)
+                cy.contains('span', 'Azzera').click().wait(1000)
+        })
         cy.get('[class="cards-container"]').should('be.visible').then(($container) => {
             const container = $container.find(':contains("Il cliente non possiede Preventivi")').is(':visible')
             if (container)
@@ -320,8 +325,13 @@ class Portafoglio {
                 cy.wait(5000)
                 cy.get('app-contract-card').should('be.visible').first().click()
                 Common.canaleFromPopup()
-                cy.wait(10000)
-                getIFrame().find('#navigation-area').should('be.visible').and('contain.text', '« Uscita')
+                cy.wait(15000)
+                cy.getIFrame()
+                cy.get('@iframe').within(() => {
+                    cy.get('button:contains("Uscita")').should('exist').and('be.visible')
+                })
+
+                // getIFrame().find('#navigation-area').should('be.visible').and('contain.text', '« Uscita')
                 cy.screenshot('Verifica Scheda Non in Vigore', { capture: 'fullPage' }, { overwrite: true })
                 this.back()
             }
