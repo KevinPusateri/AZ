@@ -189,7 +189,7 @@ class LandingRicerca {
             //     cy.spy(win, 'open').as('windowOpen'); // 'spy' vs 'stub' lets the new tab still open if you are visually watching it
             // });
             // https://portaleagenzie.pp.azi.allianz.it/daanagrafe/SCU/api/SCPersona/ClearSearchCache
-            
+
             cy.pause()
             // cy.intercept('https://portaleagenzie.pp.azi.allianz.it/daanagrafe/SCU/api/SCPersona/IsUserAuthorizedToAction', 'ignore').as('auth')
             cy.intercept('https://portaleagenzie.pp.azi.allianz.it/__/', 'ignore').as('clear')
@@ -644,6 +644,7 @@ class LandingRicerca {
         })
 
         cy.get('body').then(() => {
+            // TAB AGENZIE
             if (agenzia === 'ALL' && !totCheckedAgenzie) {
                 cy.contains('AGENZIE').click()
                 cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
@@ -658,13 +659,15 @@ class LandingRicerca {
             else if (agenzia !== 'ALL')
                 cy.contains(agenzia).click()
 
-            if (!totCheckedCliente) {
+            // TAB CLIENTE
+            if (!(totCheckedCliente && cliente === 'ALL')) {
                 cy.contains('CLIENTE').click()
-                cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
-                    cy.wrap($checkBox).click()
-                })
+                // Uncheck tutto
                 switch (cliente) {
                     case "ALL":
+                        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                            cy.wrap($checkBox).click()
+                        })
                         cy.get('div[class="filters-content"]').within(() => {
                             cy.get('nx-checkbox').each(($checkBox) => {
                                 cy.wrap($checkBox).click()
@@ -672,22 +675,29 @@ class LandingRicerca {
                         })
                         break
                     case "PF":
+                        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                            cy.wrap($checkBox).click()
+                        })
                         cy.contains('Persona fisica').click()
                         break
                     case "PG":
+                        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                            cy.wrap($checkBox).click()
+                        })
                         cy.contains('Persona giuridica').click()
                         break
                     default: throw new Error("Attenzione tipo CLiente Non Esiste (ALL,PF,PG)");
                 }
             }
 
-            if (!totCheckedStato) {
+            // TAB STATO
+            if (!(totCheckedStato && stato === 'ALL')) {
                 cy.contains('STATO').click()
-                cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
-                    cy.wrap($checkBox).click()
-                })
                 switch (stato) {
                     case "ALL":
+                        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                            cy.wrap($checkBox).click()
+                        })
                         cy.get('div[class="filters-content"]').within(() => {
                             cy.get('nx-checkbox').each(($checkBox) => {
                                 cy.wrap($checkBox).click()
@@ -695,12 +705,21 @@ class LandingRicerca {
                         })
                         break
                     case "E":
+                        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                            cy.wrap($checkBox).click()
+                        })
                         cy.contains('Effettivo').click()
                         break
                     case "P":
+                        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                            cy.wrap($checkBox).click()
+                        })
                         cy.contains('Potenziale').click()
                         break
                     case "C":
+                        cy.get('nx-checkbox').find('nx-icon[aria-hidden="true"]').each(($checkBox) => {
+                            cy.wrap($checkBox).click()
+                        })
                         cy.contains('Cessato').click()
                         break
                     default: throw new Error("Attenzione STATO CLiente Non Esiste (ALL,E,P,C)");
@@ -1033,12 +1052,12 @@ class LandingRicerca {
                 });
 
                 cy.get('@body').find('lib-client-item', { requestTimeouttimeout: 10000 }).first().click()
-
+                cy.wait(5000)
                 cy.wait('@client', { requestTimeout: 30000 });
                 cy.get('@body').then($body => {
-                    cy.wrap($body).should('contain.text', 'Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari', { requestTimeout: 10000 })
-                    const check = $body.find('lib-page-layout:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
-                    if (check) {
+                    const checkNotTrovato = $body.find('lib-page-layout:contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
+                    const checkNonPermesso = $body.find('lib-page-layout:contains("L\'utente non dispone dei permessi necessari alla visualizzazione del cliente. Verifica con il tuo agente.")').is(':visible')
+                    if (check || checkNonPermesso) {
                         assert.isTrue(true, 'Cliente eliminato');
                     } else {
                         assert.fail('Cliente non è stato eliminato -> ' + cliente);
