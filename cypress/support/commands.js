@@ -127,6 +127,10 @@ Cypress.Commands.overwrite('clearCookies', () => {
 })
 
 Cypress.Commands.add('getIFrame', () => {
+
+  cy.get('iframe').invoke('attr', 'id')
+  .then(sometext => cy.log(sometext));
+  
   cy.get('iframe').its('0.contentDocument.body').as('iframe')
 })
 

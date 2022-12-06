@@ -203,6 +203,7 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
   })
 
   it("Incasso - parte 1", () => {
+    cy.pause()
     Incasso.ClickIncassa()
     Incasso.caricamentoModPagamento()
   })

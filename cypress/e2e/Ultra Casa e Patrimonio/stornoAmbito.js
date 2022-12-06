@@ -26,7 +26,7 @@ let insertedId
 //#endregion
 
 //#region Configuration
-let ricercaPolizza = "schedaCliente"
+let ricercaPolizza = "ricercaDiretta"
 const moment = require('moment')
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
@@ -92,8 +92,11 @@ describe("STORNO AMBITO", () => {
         switch (ricercaPolizza) {
             case "schedaCliente":
                 cy.get('body').within(() => {
-                    cy.get('input[name="main-search-input"]').click()
-                    cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
+                    cy.get('input[name="main-search-input"]').click().clear()
+                    cy.get('input[name="main-search-input"]')
+                        .clear()
+                        .type(cliente.codiceFiscale).type('{enter}')
+
                     cy.get('lib-client-item').first()
                         .find('.name').trigger('mouseover').click()
                 }).then(($body) => {
@@ -168,7 +171,7 @@ describe("STORNO AMBITO", () => {
         switch (ricercaPolizza) {
             case "schedaCliente":
                 cy.get('body').within(() => {
-                    cy.get('input[name="main-search-input"]').click()
+                    cy.get('input[name="main-search-input"]').click().clear()
                     cy.get('input[name="main-search-input"]').type(cliente.codiceFiscale).type('{enter}')
                     cy.get('lib-client-item').first()
                         .find('.name').trigger('mouseover').click()
@@ -191,7 +194,9 @@ describe("STORNO AMBITO", () => {
             case "ricercaDiretta":
                 //cerca polizza
                 cy.get('input[name="main-search-input"]').click()
-                cy.get('input[name="main-search-input"]').type(lastPolizza).type('{enter}')
+                cy.get('input[name="main-search-input"]')
+                    .clear()
+                    .type(lastPolizza).type('{enter}')
 
                 //apre card polizza
                 cy.get('lib-contract-card-search').first().should('be.visible')

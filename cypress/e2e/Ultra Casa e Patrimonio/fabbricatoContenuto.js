@@ -135,13 +135,13 @@ describe("FABBRICATO E CONTENUTO ", () => {
         //ConfigurazioneAmbito.aggiungiGaranzia("Scippo e rapina")
         ConfigurazioneAmbito.ClickButton("CONFERMA")
         Dashboard.procediHome()
-        DatiQuotazione.CaricamentoPagina()
+        //DatiQuotazione.CaricamentoPagina()
     })
 
-    it("Conferma dati quotazione", () => {
+    /* it("Conferma dati quotazione", () => {
         DatiQuotazione.confermaDatiQuotazione()
         Riepilogo.caricamentoRiepilogo()
-    })
+    }) */
 
     it("Riepilogo ed emissione", () => {
         Riepilogo.EmissionePolizza()
@@ -162,7 +162,6 @@ describe("FABBRICATO E CONTENUTO ", () => {
     })
 
     it("Consensi e privacy", () => {
-        cy.pause()
         ConsensiPrivacy.Avanti()
         ControlliProtocollazione.caricamentoPagina()
     })
