@@ -415,20 +415,20 @@ class DettaglioAnagrafica {
                 //Agenzia
                 cy.get('nx-dropdown[formcontrolname="ambiente"]').should('be.visible').click().wait(2000)
                 cy.get('nx-dropdown-item').should('be.visible').within(() => {
-                    cy.contains(agenzia).should('be.visible').click()
+                    cy.contains(agenzia).should('be.visible').click().wait(1000)
                 })
                 cy.get('nx-dropdown[formcontrolname="convenzione"]').should('be.visible').click().wait(2000)
                 //Convenzione
                 // cy.get('#nx-dropdown-rendered-5').click()
                 cy.get('nx-dropdown-item').should('be.visible').within(() => {
-                    cy.contains(convenzione).should('be.visible').click()
+                    cy.contains(convenzione).should('be.visible').click().wait(1000)
                 })
                 // cy.contains(convenzione).should('be.visible').click()
                 //Matricola
                 if (convenzioneInserita.matricola !== '')
-                    cy.get('input[formcontrolname="matricola"]').should('be.visible').type(convenzioneInserita.matricola)
+                    cy.get('input[formcontrolname="matricola"]').should('be.visible').type(convenzioneInserita.matricola).wait(1000)
                 //Ruolo
-                cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click()
+                cy.get('nx-dropdown[formcontrolname="ruolo"]').should('be.visible').click().wait(1000)
 
                 cy.get('.cdk-overlay-container').should('be.visible').within(($element) => {
                     console.log($element)
@@ -446,15 +446,15 @@ class DettaglioAnagrafica {
                                 break;
                         }
                     })
-
                     //Aderenti Convenzione che si apre in automatico se selezionato 'Famigliare del Convenzionato'
                     if (aderente !== undefined) {
                         cy.wait(2000)
-                        cy.get('nx-dropdown[formcontrolname="aderente"]').should('be.visible').click()
-                        cy.get('nx-dropdown-item[class^="nx-dropdown-item"]').should('exist').and('be.visible')
-                        cy.contains(aderente.toUpperCase()).should('be.visible').click()
+                        cy.get('nx-dropdown[formcontrolname="aderente"]').should('be.visible').click().wait(1000)
+                        cy.get('nx-dropdown-item').should('exist').and('be.visible').within(()=>{
+                            cy.contains(aderente.toUpperCase()).should('be.visible').click().wait(1000)
+                        })
                     }
-                    cy.screenshot('Aggiungi Convenzione con Ruolo ' + ruolo, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    cy.screenshot('Aggiungi Convenzione con Ruolo ' + ruolo, { overwrite: true })
 
                     cy.contains('Aggiungi').click()
                 })
@@ -568,21 +568,21 @@ class DettaglioAnagrafica {
         cy.wait(5000)
         const loopRemove = () => {
 
-        cy.get('app-client-other-contacts').should('be.visible').then(($bodyContatti) => {
-            if ($bodyContatti.find('app-client-contact-table-row').length > 0) {
-                cy.get('app-client-contact-table-row').first().find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
-                    .click()
-                    .wait(3000);
-                cy.get("button").contains("Elimina contatto").should('be.visible').click();
-                cy.get('nx-modal-container').should('be.visible')
-                cy.get('nx-modal-container').find('span:contains("Conferma"):visible').click()
-                cy.wait(5000)
-                loopRemove()
-            }
-        })
-    }
+            cy.get('app-client-other-contacts').should('be.visible').then(($bodyContatti) => {
+                if ($bodyContatti.find('app-client-contact-table-row').length > 0) {
+                    cy.get('app-client-contact-table-row').first().find('nx-icon[class="nx-icon--s ndbx-icon nx-icon--ellipsis-h icon"]')
+                        .click()
+                        .wait(3000);
+                    cy.get("button").contains("Elimina contatto").should('be.visible').click();
+                    cy.get('nx-modal-container').should('be.visible')
+                    cy.get('nx-modal-container').find('span:contains("Conferma"):visible').click()
+                    cy.wait(5000)
+                    loopRemove()
+                }
+            })
+        }
 
-    loopRemove()
-}
+        loopRemove()
+    }
 }
 export default DettaglioAnagrafica

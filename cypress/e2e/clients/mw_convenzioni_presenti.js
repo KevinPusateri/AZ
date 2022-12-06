@@ -12,10 +12,12 @@ import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
 import DettaglioAnagrafica from "../../mw_page_objects/clients/DettaglioAnagrafica"
 import Legami from "../../mw_page_objects/clients/Legami"
 import LandingRicerca from "../../mw_page_objects/ricerca/LandingRicerca"
+import Common from "../../mw_page_objects/common/Common"
 //#endregion import
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
+var url = Common.getUrlBeforeEach() + 'clients/client/'
 //#endregion
 
 //#region Mysql DB Variables
@@ -80,6 +82,7 @@ if (!Cypress.env('monoUtenza')) { //! Skippiamo tutti i test se monoUtenza è at
 
 let retrivedClient
 let retrivedPartyRelations
+let parsedClientKeyEa
 describe('Matrix Web : Convenzioni', () => {
     it('Come delegato accedere all\'agenzia 01-745000 e cercare un cliente PF che abbia un legame familiare\n' +
         'Inserire una Convezione a piacere tra quelli presenti, inserire Matricola e Ruolo "Convenzionato\n' +
@@ -93,9 +96,11 @@ describe('Matrix Web : Convenzioni', () => {
                     cy.log('Retrived party relation : ' + currentClient[1].name + ' ' + currentClient[1].firstName)
                     retrivedClient = currentClient[0]
                     retrivedPartyRelations = currentClient[1]
-                    TopBar.search(currentClient[0].name + ' ' + currentClient[0].firstName)
-                    LandingRicerca.filtra('ALL','P')
-                    LandingRicerca.clickClientePF(currentClient[0].firstName + ' ' + currentClient[0].name)
+                    parsedClientKeyEa = currentClient[2]
+                    cy.visit(url + parsedClientKeyEa + '/client-resume')
+                    // TopBar.search(currentClient[0].name + ' ' + currentClient[0].firstName)
+                    // LandingRicerca.filtra('ALL','P')
+                    // LandingRicerca.clickClientePF(currentClient[0].firstName + ' ' + currentClient[0].name)
                     DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                     DettaglioAnagrafica.clickSubTab('Convenzioni')
                     DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
@@ -115,14 +120,14 @@ describe('Matrix Web : Convenzioni', () => {
         '- sia presente la convenzione\n', options, function () {
             if (!Cypress.env('monoUtenza')) {
                 DettaglioAnagrafica.clickSubTab('Legami')
-                Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
-                SintesiCliente.checkAtterraggioSintesiCliente(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
+                Legami.clickFirstLinkMembro()
+                // SintesiCliente.checkAtterraggioSintesiCliente(retrivedPartyRelations.name)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
                 DettaglioAnagrafica.checkConvenzioniPresenti(false, true)
                 //? Se non facevo il wrap, andava in esecuzione come prima istruzione dell'it il checkConvenzioneInserito
                 cy.wrap(null).then(() => {
-                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'FINSEDA', 'Familiare del Convenzionato', retrivedClient.name + ' ' + retrivedClient.firstName).then((retrivedRelatedConvenzione) => {
+                    DettaglioAnagrafica.clickAggiungiConvenzione(true, '1-745000', 'FINSEDA', 'Familiare del Convenzionato', retrivedPartyRelations.name).then((retrivedRelatedConvenzione) => {
                         DettaglioAnagrafica.checkConvenzioneInserito(retrivedRelatedConvenzione)
                     })
                 })
@@ -134,17 +139,19 @@ describe('Matrix Web : Convenzioni', () => {
         '- l\'operazione vada a buon fine' +
         '- la convenzione non sia più presente (anche per il familiare)', options, function () {
             if (!Cypress.env('monoUtenza')) {
-                TopBar.search(retrivedClient.name + ' ' + retrivedClient.firstName)
-                LandingRicerca.filtra('ALL','P')
-                LandingRicerca.clickClientePF(retrivedClient.firstName + ' ' + retrivedClient.name)
+                // TopBar.search(retrivedClient.name + ' ' + retrivedClient.firstName)
+                // LandingRicerca.filtra('ALL', 'P')
+                // LandingRicerca.clickClientePF(retrivedClient.firstName + ' ' + retrivedClient.name)
+                cy.visit(url + parsedClientKeyEa + '/client-resume')
+               
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
                 DettaglioAnagrafica.checkConvenzioniPresenti(true, true)
 
                 DettaglioAnagrafica.clickSubTab('Legami')
                 cy.wait(5000)
-                Legami.clickLinkMembro(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name, false)
-                SintesiCliente.checkAtterraggioSintesiCliente(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
+                Legami.clickFirstLinkMembro()
+                // SintesiCliente.checkAtterraggioSintesiCliente(retrivedPartyRelations.firstName + ' ' + retrivedPartyRelations.name)
                 DettaglioAnagrafica.clickTabDettaglioAnagrafica()
                 DettaglioAnagrafica.clickSubTab('Convenzioni')
                 DettaglioAnagrafica.checkConvenzioniPresenti(false)
