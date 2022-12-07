@@ -300,15 +300,15 @@ class BurgerMenuSales extends Sales {
                     method: 'POST',
                     url: '**/sales/**'
                 }).as('getSalesPremo');
-                // cy.wait(5000)
+                cy.intercept({
+                    method: 'GET',
+                    url: '**/Vita/AZ1PL/**'
+                }).as('getAZ1Prem');
                 Common.canaleFromPopup()
                 cy.wait('@getSalesPremo', { timeout: 40000 });
-                cy.wait(30000)
-                cy.getIFrame()
-                cy.get('iframe').should('be.visible').within(() => {
-                    getIFrame().should('be.visible')
-                    getIFrame().find('input[value="Home"]').should('be.visible')
-                })
+                cy.wait('@getAZ1Prem', { timeout: 40000 });
+                cy.wait(10000)
+                getIFrame().find('input[value="Home"]').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
