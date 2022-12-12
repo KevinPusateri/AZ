@@ -892,7 +892,7 @@ class TenutaTariffa {
                 }
             }
             //TODO Attestato conforme all'articolo 134, comma 4 bis, del Codice assicurazioni ?
-            cy.contains('AVANTI').should('exist').and('be.visible').click().wait(2000)
+            cy.contains('AVANTI').should('exist').and('be.visible').click().wait(5000)
 
             //Popup di dichiarazione di non circolazione a SI
             cy.get('@iframe').then((iframe) => {
