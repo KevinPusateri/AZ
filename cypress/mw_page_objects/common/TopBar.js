@@ -166,7 +166,7 @@ class TopBar extends HomePage {
         });
 
         cy.get('input[name="main-search-input"]').should('exist').and('be.visible').click()
-        cy.get('input[name="main-search-input"]').should('exist').and('be.visible').type(value).type('{enter}').wait(2000)
+        cy.get('input[name="main-search-input"]').should('exist').and('be.visible').clear().type(value).type('{enter}').wait(2000)
         cy.contains('clients').click()
 
         cy.wait('@gqlSearchClient', { timeout: 30000 });

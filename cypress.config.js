@@ -13,7 +13,7 @@ module.exports = defineConfig({
   reporterOptions: {
     reportDir: 'cypress/reports/mocha',
     charts: true,
-    reportPageTitle: 'Matrix Web',
+    reportTitle: 'Matrix Web',
     embeddedScreenshots: true,
     inlineAssets: true,
   },

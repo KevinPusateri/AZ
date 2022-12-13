@@ -426,8 +426,7 @@ class TenutaTariffa {
             //#region Informazioni generali
 
             if (currentCase.Targa === '') {
-                cy.contains('Ricerca senza targa').should('exist').and('be.visible').click()
-
+                cy.contains('Ricerca senza targa').should('exist').and('be.visible').click().wait(500)
                 cy.contains('CONTINUA').should('exist').and('be.visible').click()
                 //Pre relase 127
                 //cy.contains('Ho capito').should('exist').and('be.visible').click()
@@ -1048,7 +1047,7 @@ class TenutaTariffa {
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
             cy.wait(5000)
-            cy.get('nx-spinner').should('not.be.visible')
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
 
 
             //Popup di dichiarazione di non circolazione a SI
@@ -1303,7 +1302,7 @@ class TenutaTariffa {
             cy.wait(2500)
             cy.get('nx-spinner').should('not.be.visible')
             cy.wait(2500)
-            
+
             cy.get('h3:contains("Rc Auto")').should('be.visible').click()
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '10_Offerta_RC', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
 
