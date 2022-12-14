@@ -1563,8 +1563,9 @@ Cypress.Commands.add('SalvaPolizza', (dbConfig, cliente, nPolizza, dataEmissione
     })
 })
 
-Cypress.Commands.add('findLastPolizza', (dbConfig, prodotto, annullamento) => {
-  cy.task('findLastPolizza', { dbConfig: dbConfig, prodotto: prodotto, annullamento: annullamento })
+Cypress.Commands.add('findLastPolizza', (dbConfig, prodotto, annullamento, ambiente, data) => {
+  cy.log("Ambiente ricerca: " + ambiente)
+  cy.task('findLastPolizza', { dbConfig: dbConfig, prodotto: prodotto, annullamento: annullamento, ambiente: ambiente, data: data })
     .then((result) => {
       return result
     })

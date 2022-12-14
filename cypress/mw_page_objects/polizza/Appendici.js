@@ -97,6 +97,42 @@ class Appendici {
         })
     }
 
+    /**
+     * Seleziona il veicolo assicurato
+     * @param {string} veicolo 
+     */
+    static VeicoloAssicurato(veicolo) {
+        ultraIFrame().within(() => {
+            cy.get('#sostituzioneVeicoloContainer').contains("Veicolo Assicurato:")
+                .parents('.editRow').first()
+                .find('select').select(veicolo)
+        })
+    }
+
+    /**
+     * ricerca il veicolo nuovo
+     * @param {string} veicolo 
+     */
+    static VeicoloSostitutivo(veicolo) {
+        ultraIFrame().within(() => {
+            cy.get('input[data-bind="value: ricercaTarga"]').should('be.visible')
+                .clear().type(veicolo)
+
+            cy.get('#sostituzioneVeicoloContainer').contains("Veicolo Nuovo:")
+                .parents('.editRow').first()
+                .find('input[value="Ricerca"]').should('be.visible')
+                .click()
+
+            cy.get('#risultatiRicercaVeicolo').should('be.visible')
+                .find('span[data-bind="text: targaField"]').should('be.visible')
+                .click()
+
+            cy.get('#risultatiRicercaVeicolo').should('be.visible')
+                .find('span[data-bind="text: targaField"]')
+                .parents('tr').first().should('have.class', 'highlight')
+        })
+    }
+
     static StampaDocumento() {
         ultraIFrame().within(() => {
             cy.get('#documentoContainer').should('be.visible')

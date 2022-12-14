@@ -192,7 +192,7 @@ function mysqlSalvaPolizza(dbConfig, cliente, nPolizza, dataEmissione, dataScade
     })
 }
 
-function mysqlFindLastPolizza(dbConfig, prodotto, annullamento = false) {
+function mysqlFindLastPolizza(dbConfig, prodotto, annullamento = false, ambiente = "PREPROD", dataEmissione = "2022") {
     const connection = mysql.createConnection(dbConfig)
     connection.connect((err) => {
         if (err) throw err;
@@ -204,7 +204,11 @@ function mysqlFindLastPolizza(dbConfig, prodotto, annullamento = false) {
         strAnnullamento = "1"
     }
 
-    var query = "SELECT * FROM da.polizza WHERE prodotto='" + prodotto + "' and annullamento='" + strAnnullamento + "' ORDER BY dataEmissione ASC LIMIT 1"
+    var query = "SELECT * FROM da.polizza WHERE prodotto='" + prodotto
+        + "' and annullamento='" + strAnnullamento
+        + "' and ambiente='" + ambiente
+        + "' and dataEmissione >='" + dataEmissione
+        + "' ORDER BY dataEmissione ASC LIMIT 1"
 
     return new Promise((resolve, reject) => {
         connection.query(query, (error, results) => {
@@ -432,8 +436,8 @@ module.exports = (on, config) => {
 
     //mysqlFindLastPolizza
     on("task", {
-        findLastPolizza({ dbConfig, prodotto, annullamento }) {
-            return mysqlFindLastPolizza(dbConfig, prodotto, annullamento)
+        findLastPolizza({ dbConfig, prodotto, annullamento, ambiente, dataEmissione }) {
+            return mysqlFindLastPolizza(dbConfig, prodotto, annullamento, ambiente, dataEmissione)
         }
     });
 

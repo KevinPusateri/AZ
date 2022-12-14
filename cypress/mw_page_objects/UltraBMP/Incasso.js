@@ -193,7 +193,7 @@ class Incasso {
                 ultraIFrame0().within(() => {
                     //scorre la lista dei risultati e controlla che abbiano tutti la spunta verde
                     //cy.get('[data-bind="foreach: Result.Steps"]')
-                    cy.get('.table-steps')
+                    cy.get('.table-steps').wait(500)
                         .find('img').each(($img, index, $list) => {
                             cy.wrap($img).should('have.attr', 'src').and('contain', 'Shape')
                         });

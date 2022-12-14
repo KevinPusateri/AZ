@@ -128,10 +128,11 @@ describe("POLIZZA TEMPORANEA", () => {
     Ultra.procediHome()
   })
 
-  it("Modifica professione in Conferma Dati Quotazione", () => {
+/*   it("Modifica professione in Conferma Dati Quotazione", () => {
+    cy.pause()
     Ultra.ProfessionePrincipaleDatiQuotazione('barista')
     Ultra.confermaDatiQuotazione()
-  })
+  }) */
 
   it("Riepilogo ed emissione", () => {
     Ultra.riepilogoEmissione()

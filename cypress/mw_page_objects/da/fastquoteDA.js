@@ -43,6 +43,18 @@ class FastquoteDA {
   }
 
   /**
+   * Modifica il tipo di copertura per la polizza (conducente o veicolo)
+   * @param {string} copertura 
+   */
+  static tipoCopertura(copertura) {
+    cy.getIFrame()
+    cy.get('@iframe').within(() => {
+      cy.get('.pnlRischioRiep').find('input').first().click()
+      cy.get('a').contains(copertura).click() //seleziona tipo di copertura
+    })
+  }
+
+  /**
    * Clicca sul pulsante 'Avanti'
    */
   static avanti() {
@@ -127,6 +139,44 @@ class FastquoteDA {
             .siblings('.parametroGaranzia').find('input').clear().type(parametri[i] + "{enter}")
         }
       }
+    })
+  }
+
+  /**
+   * riceca targa nella sezione Integrazione
+   * @param {string} targa 
+   */
+  static ricercaTarga(targa) {
+    cy.getIFrame()
+    cy.get('@iframe').within(() => {
+      cy.get('#txtCognome').should('be.visible')
+        .clear().type(targa) //click sul pulsante
+      cy.get('#btnRicerca').should('be.visible').click() //ricerca
+
+      cy.get('#tblPersone').should('be.visible')
+        .find('td').contains(targa).click() //aspetta il completamento della ricerca e clicca sulla targa trovata
+    })
+  }
+
+  static nuovoVeicolo(targa) {
+    cy.getIFrame()
+    cy.get('@iframe').within(() => {
+      cy.get('input[value="Nuovo veicolo"]').should('be.visible').click() //click sul pulsante Nuovo Veicolo
+
+      cy.get('#divInserimentoVeicolo').should('be.visible')
+        .find('label').contains("Tipo veicolo:")
+        .parents('tr').first()
+        .find('select').select("autovettura ad uso privato")
+
+      cy.get('#divInserimentoVeicolo').should('be.visible')
+        .find('label').contains("Targa:")
+        .parents('tr').first()
+        .find('input').type(targa)
+
+      cy.get('div[aria-labelledby$="InserimentoVeicolo"]').should('be.visible')
+        .find('button').contains("Conferma").click()
+
+      
     })
   }
 
@@ -230,7 +280,7 @@ class FastquoteDA {
     matrixFrame().within(() => {
       cy.getIFrame()
       cy.get('@iframe').within(() => {
-        cy.get('button[title="STAMPA"]').not('[disabled]').click()
+        cy.get('button[title="STAMPA"]').should('be.visible').not('[disabled]').click()
       })
     })
   }
