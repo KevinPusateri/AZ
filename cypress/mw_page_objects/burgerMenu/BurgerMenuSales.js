@@ -108,7 +108,7 @@ const LinksBurgerMenu = {
 
 class BurgerMenuSales extends Sales {
 
-    static getLinks(){
+    static getLinks() {
         return LinksBurgerMenu
     }
 
@@ -300,15 +300,15 @@ class BurgerMenuSales extends Sales {
                     method: 'POST',
                     url: '**/sales/**'
                 }).as('getSalesPremo');
-                // cy.wait(5000)
+                cy.intercept({
+                    method: 'GET',
+                    url: '**/Vita/AZ1PL/**'
+                }).as('getAZ1Prem');
                 Common.canaleFromPopup()
                 cy.wait('@getSalesPremo', { timeout: 40000 });
-                cy.wait(30000)
-                cy.getIFrame()
-                cy.get('iframe').should('be.visible').within(() => {
-                    getIFrame().should('be.visible')
-                    getIFrame().find('input[value="Home"]').should('be.visible')
-                })
+                cy.wait('@getAZ1Prem', { timeout: 40000 });
+                cy.wait(10000)
+                getIFrame().find('input[value="Home"]').should('be.visible')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.PREVENTIVO_ANONIMO_VITA_INDIVIDUALI:
@@ -342,7 +342,10 @@ class BurgerMenuSales extends Sales {
             case LinksBurgerMenu.CAMPAGNE_COMMERCIALI:
                 Common.canaleFromPopup()
                 cy.url().should('include', '/campaign-manager')
-                cy.get('lib-campaign-monitoring').should('be.visible')
+                cy.getIFrame()
+                cy.get('@iframe').within(() => {
+                    cy.contains("Campagne attive").should('exist').and('be.visible')
+                })
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinksBurgerMenu.RECUPERO_PREVENTIVI_E_QUOTAZIONI:
@@ -471,9 +474,9 @@ class BurgerMenuSales extends Sales {
                 //         .should('have.attr', 'href', 'http://oazis.allianz-assistance.it')
                 //     this.clickBurgerMenu()
                 // } else {
-                    cy.contains('Allianz global assistance - OAZIS').invoke('removeAttr', 'target').click()
-                    cy.url().should('eq', 'https://oazis.allianz-assistance.it/dynamic/home/index')
-                    cy.get('#logo-oazis-header').should('be.visible')
+                cy.contains('Allianz global assistance - OAZIS').invoke('removeAttr', 'target').click()
+                cy.url().should('eq', 'https://oazis.allianz-assistance.it/dynamic/home/index')
+                cy.get('#logo-oazis-header').should('be.visible')
                 // }
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true }).wait(3000)
                 cy.go('back').wait(3000)
@@ -484,9 +487,9 @@ class BurgerMenuSales extends Sales {
                 //         .should('have.attr', 'href', 'https://allianztravel-globy.it/onePortalUI/#/login')
                 //     this.clickBurgerMenu()
                 // } else {
-                    cy.contains('Allianz global assistance - GLOBY').invoke('removeAttr', 'target').click()
-                    cy.url().should('eq', 'https://allianztravel-globy.it/onePortalUI/#/login')
-                    cy.get('#box-form').should('be.visible')
+                cy.contains('Allianz global assistance - GLOBY').invoke('removeAttr', 'target').click()
+                cy.url().should('eq', 'https://allianztravel-globy.it/onePortalUI/#/login')
+                cy.get('#box-form').should('be.visible')
                 // }
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true }).wait(3000)
                 cy.go('back').wait(3000)

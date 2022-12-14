@@ -74,11 +74,12 @@ class SCUGestioneFontePrincipale {
       cy.contains('span', 'Nessuna fonte selezionata').click()
       cy.wait(4000)
       cy.get('table[class="k-selectable"] > tbody').then(($table) => {
-        cy.wrap($table).find('tr:visible').not('tr:first')
+        cy.wrap($table).find('tr').not('tr:first')
           .not('tr:contains("AUTOVELLETRI SRL")')
           .not('tr:contains("SEDE SECONDARIA")')
-          .not('tr:contains("AGENZIA")')
-          .not('tr:contains("SUBAGENZIA")').then(($tr) => {
+          // .not('tr:contains("AGENZIA")')
+          .not('tr:contains("SUBAGENZIA")')
+          .then(($tr) => {
             indexFonte = Math.floor(Math.random() * $tr.length)
 
             if ($tr.eq(indexFonte).hasClass('k-treelist-group')) {
@@ -98,7 +99,6 @@ class SCUGestioneFontePrincipale {
           })
       })
     })
-
     // Click Imposta Fonte principale
     cy.get('body').within(() => {
       getIFrame().find('button[class^="k-button assegnafonte"]').scrollIntoView().click().wait(5000)
@@ -120,19 +120,19 @@ class SCUGestioneFontePrincipale {
 
 
     // Verifico dalla scheda cliente che la fonte impostata si trovi nei referenti
-    cy.get('body').within(() => {
-      cy.get('input[name="main-search-input"]').click()
-      cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
-      //LandingRicerca.filtra('PF')
+    cy.get('body').then(() => {
+      cy.get('input[name="main-search-input"]').should('be.visible').click()
+      cy.get('input[name="main-search-input"]').should('be.visible').type(clienteCF).type('{enter}')
+      LandingRicerca.filtra()
       cy.get('lib-client-item').first().click()
     }).then(($body) => {
       cy.wait(6000)
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
       if (check) {
-        cy.get('input[name="main-search-input"]').type(clienteCF).type('{enter}')
+        cy.get('input[name="main-search-input"]').should('be.visible').type(clienteCF).type('{enter}')
         LandingRicerca.filtra()
-        // cy.get('lib-client-item').next().click()
-        cy.get('lib-client-item').click()
+        cy.get('lib-client-item').next().click()
+        // cy.get('lib-client-item').first().click()
       }
 
 
@@ -241,17 +241,17 @@ class SCUGestioneFontePrincipale {
     }).as('pageClient');
 
     // Verifico dalla scheda cliente che la fonte impostata si trovi nei referenti
-    cy.get('body').within(() => {
-      cy.get('input[name="main-search-input"]').click()
-      cy.get('input[name="main-search-input"]').type(clienteIVA).type('{enter}')
+    cy.get('body').then(() => {
+      cy.get('input[name="main-search-input"]').should('be.visible').click()
+      cy.get('input[name="main-search-input"]').should('be.visible').type(clienteIVA).type('{enter}')
       LandingRicerca.filtra()
       // cy.get('lib-client-item').next().click()
-      cy.get('lib-client-item').click()
+      cy.get('lib-client-item').first().click()
     }).then(($body) => {
       cy.wait(6000)
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
       if (check) {
-        cy.get('input[name="main-search-input"]').type(clienteIVA).type('{enter}')
+        cy.get('input[name="main-search-input"]').should('be.visible').type(clienteIVA).type('{enter}')
         //LandingRicerca.filtra('PG')
         cy.get('lib-client-item').next().click()
       }

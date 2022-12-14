@@ -55,7 +55,13 @@ before(() => {
                 cy.getProfiling(data.tutf).then(profiling => {
                     cy.filterProfile(profiling, 'SINISTRI_CRUSCOTTO_STD').then(profiled => { keys.MOVIMENTAZIONE_SINISTRI = profiled })
                     cy.filterProfile(profiling, 'SINISTRI_DENUNCIA_STD').then(profiled => { keys.DENUNCIA = profiled })
-                    cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.NUOVA_DENUNCIA = profiled })
+                    // cy.filterProfile(profiling, 'COMMON_ULTRA_BMP').then(profiled => { keys.NUOVA_DENUNCIA = profiled })
+                    cy.filterProfile(profiling, 'SINISTRI_DENUNCIA_STD ').then(profiledSTD => {
+                        cy.filterProfile(profiling, 'DENUNCIA_BMP_NM ').then(profiledBMP => {
+                            if (!(profiledSTD && profiledBMP))
+                                keys.NUOVA_DENUNCIA = false
+                        })
+                    })
                     cy.filterProfile(profiling, 'SINISTRI_INQUIRY_STD').then(profiled => { keys.CONSULTAZIONE_SINISTRI = profiled })
                     cy.filterProfile(profiling, 'SINISTRI_REMUN_NO_MISA_STD').then(profiled => { keys.SINISTRI_INCOMPLETI = profiled })
                     cy.filterProfile(profiling, 'COMMON_REPORTING_SXCANALIZZATI').then(profiled => { keys.SINISTRI_CANALIZZATI = profiled })

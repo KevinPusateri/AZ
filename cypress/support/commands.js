@@ -129,8 +129,8 @@ Cypress.Commands.overwrite('clearCookies', () => {
 Cypress.Commands.add('getIFrame', () => {
 
   cy.get('iframe').invoke('attr', 'id')
-  .then(sometext => cy.log(sometext));
-  
+    .then(sometext => cy.log(sometext));
+
   cy.get('iframe').its('0.contentDocument.body').as('iframe')
 })
 
@@ -384,7 +384,7 @@ Cypress.Commands.add('getPartyRelations', () => {
                         'x-allianz-user': data.tutf
                       }
                     }).then(currentRelatedParty => {
-                      return [currentClient, currentRelatedParty.body]
+                      return [currentClient, currentRelatedParty.body, currentRelatedParty.body.self.split('/')[2]]
                     })
                   }
                 }
@@ -1061,8 +1061,8 @@ Cypress.Commands.add('getUserProfileToken', (tutf) => {
           },
           url: ((Cypress.env('currentEnv') === 'TEST') ? Cypress.env('hostAMTest') : Cypress.env('hostAMPreprod')) + '/nidp/idff/sso?sid=0&sid=0'
         }).then(() => {
-            //Get the userProfileToken
-            const userDetailsQuery = `query userDetails($filter: UserDetailsRequestInput!) {
+          //Get the userProfileToken
+          const userDetailsQuery = `query userDetails($filter: UserDetailsRequestInput!) {
             userDetails(filter: $filter) { 
             userProfileToken
             }

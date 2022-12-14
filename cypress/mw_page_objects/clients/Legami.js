@@ -166,6 +166,19 @@ class Legami {
         cy.wait('@client', { requestTimeout: 30000 });
     }
 
+    static clickFirstLinkMembro() {
+        cy.intercept('POST', '**/graphql', (req) => {
+            if (req.body.operationName.includes('client')) {
+                req.alias = 'client'
+            }
+        });
+
+        cy.wait(10000)
+        cy.get('ac-anagrafe-panel').should('be.visible').find('a[class="data"]:first:visible').click()
+
+        cy.wait('@client', { requestTimeout: 30000 });
+    }
+
     /**
      * Verifica membro gia presente in un altro Gruppo aziendale
      * @param {string} membro 

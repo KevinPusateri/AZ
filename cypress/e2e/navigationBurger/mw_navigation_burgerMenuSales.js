@@ -75,16 +75,22 @@ let keys = {
 }
 
 before(() => {
-    cy.getUserWinLogin().then(data => {
-        cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
-        LoginPage.logInMWAdvanced()
-        BurgerMenuSales.getProfiling(data.tutf, keys)
+    cy.task("cleanScreenshotLog", Cypress.spec.name).then((folderToDelete) => {
+        cy.log(folderToDelete + ' rimossa!')
+        cy.getUserWinLogin().then(data => {
+            cy.startMysql(dbConfig, testName, currentEnv, data).then((id) => insertedId = id)
+            LoginPage.logInMWAdvanced()
+            BurgerMenuSales.getProfiling(data.tutf, keys)
+        })
+        TopBar.clickSales()
     })
-    TopBar.clickSales()
 })
 beforeEach(() => {
     cy.preserveCookies()
     cy.ignoreRequest()
+    // Campagne Commerciali ignore Request 
+    cy.intercept(/azeu-mid-stage2-res.adobe-campaign.com/, 'ignore').as('stage2')
+    cy.intercept(/res.messaging.allianz.com/, 'ignore').as('stage2')
     BurgerMenuSales.clickBurgerMenu()
 })
 afterEach(function () {
@@ -105,6 +111,9 @@ afterEach(function () {
 
     if (this.currentTest.state !== 'passed') {
         cy.ignoreRequest()
+        // Campagne Commerciali ignore Request 
+        cy.intercept(/azeu-mid-stage2-res.adobe-campaign.com/, 'ignore').as('stage2')
+        cy.intercept(/res.messaging.allianz.com/, 'ignore').as('stage2')
         cy.visit(url)
         cy.wait(5000)
     }
