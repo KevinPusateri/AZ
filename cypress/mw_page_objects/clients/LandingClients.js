@@ -160,13 +160,22 @@ class LandingClients {
      * Click button "Vai a visione globale"
      */
     static clickVisioneGlobale() {
+        //! AL MOMENTO SOLO IN TEST NUOVA GRAFICA
+        // cy.intercept({
+        //     method: 'POST',
+        //     url: '**/dacommerciale/**',
+        // }).as('getDaCommerciale');
         cy.intercept({
             method: 'POST',
-            url: '**/dacommerciale/**',
-        }).as('getDaCommerciale');
+            url: '**/globalVision',
+        }).as('getGlobalVision');
         cy.get('.actions-box').contains('Vai a visione globale').click()
-        cy.wait('@getDaCommerciale', { requestTimeout: 50000 })
-        getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
+        cy.wait('@getGlobalVision', { requestTimeout: 50000 })
+        // cy.wait('@getDaCommerciale', { requestTimeout: 50000 })
+        // getIFrame().find('#main-contenitore-table').should('exist').and('be.visible')
+        // cy.getIframe
+        // cy.get('nx-spinner').should('not.be.visible')
+        cy.get('div[class^="chart-container"]').should('exist').and('be.visible')
         cy.screenshot('Verifica Visione Globale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 

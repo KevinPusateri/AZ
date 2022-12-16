@@ -277,16 +277,16 @@ class TenutaTariffa {
             cy.get('nx-spinner').should('not.be.visible')
             //Targa
             if (currentCase.Targa !== '') {
-                cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').should('exist').and('be.visible').click().wait(1000)
-                cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').clear().wait(2000)
-                cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').type(currentCase.Targa).wait(2000)
+                cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').should('exist').and('be.visible').click().wait(2000)
+                cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').should('exist').and('be.visible').clear().wait(2000)
+                cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').should('exist').and('be.visible').type(currentCase.Targa).wait(2000)
             }
 
             //Checkbox informativa
             cy.get('label[class="nx-checkbox__label has-label"]>span').eq(0).click({ force: true })
 
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '01_Dati_Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
+            // cy.pause()
             if (currentCase.Targa !== '')
                 cy.contains('Calcola').should('be.visible').click({ force: true })
             else
@@ -392,6 +392,7 @@ class TenutaTariffa {
 
                     })
             }
+            // cy.pause()
 
             cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '02_Contraente_Proprietario', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             cy.contains('AVANTI').should('exist').and('be.visible').and('be.enabled').click()
@@ -690,12 +691,16 @@ class TenutaTariffa {
                 cy.get('input[formcontrolname="valoreDelVeicolo"]').clear().wait(500)
                 cy.get('input[formcontrolname="valoreDelVeicolo"]').should('exist').and('be.visible').click()
                 cy.get('input[formcontrolname="valoreDelVeicolo"]').type(currentCase.Valore_Veicolo).wait(500)
-                cy.contains('AVANTI').should('exist').and('be.visible').click()
+                // cy.pause()
+
+                cy.contains('AVANTI').should('exist').and('be.visible').click().wait(3000)
+                cy.get('nx-spinner').should('not.be.visible')
 
                 // cy.get('strong:contains("Valore del veicolo")').click()
                 //Attendiamo che il caricamento non sia più visibile
                 // cy.get('nx-spinner').should('not.be.visible')
             }
+            // cy.pause()
 
             //TODO fix screenshot range
             //cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -890,8 +895,10 @@ class TenutaTariffa {
                     //#endregion
                 }
             }
+            // cy.pause()
+            cy.wait(2500)
             //TODO Attestato conforme all'articolo 134, comma 4 bis, del Codice assicurazioni ?
-            cy.contains('AVANTI').should('exist').and('be.visible').click().wait(5000)
+            cy.contains('AVANTI').should('exist').and('be.visible').click().wait(3000)
 
             //Popup di dichiarazione di non circolazione a SI
             cy.get('@iframe').then((iframe) => {
@@ -1109,9 +1116,15 @@ class TenutaTariffa {
                     break;
                 case 'MACCHINA OPERATRICE PERSONA FISICA':
                 case 'MACCHINA AGRICOLA PERSONA FISICA':
-                    cy.contains("RCA - PREMIO FISSO UNIFICATA").parents('form').within(() => {
-                        cy.get('nx-icon[class~="clickAble"]').first().click()
-                    })
+                    // AVIVA il pannello PREMIO FISSO UNIFICATA non è presente
+                    if (!Cypress.env('isAviva'))
+                        cy.contains("RCA - PREMIO FISSO UNIFICATA").parents('form').within(() => {
+                            cy.get('nx-icon[class~="clickAble"]').first().click()
+                        })
+                    else
+                        cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
+                            cy.get('nx-icon[class~="clickAble"]').first().click()
+                        })
                     break;
                 default:
                     cy.contains("RCA - BONUS MALUS").parents('form').within(() => {
@@ -1313,7 +1326,10 @@ class TenutaTariffa {
                     break;
                 case 'MACCHINA OPERATRICE PERSONA FISICA':
                 case 'MACCHINA AGRICOLA PERSONA FISICA':
-                    cy.contains("RCA - PREMIO FISSO UNIFICATA").as('pannelloRCA')
+                    if (!Cypress.env('isAviva'))
+                        cy.contains("RCA - PREMIO FISSO UNIFICATA").as('pannelloRCA')
+                    else
+                        cy.contains("RCA - BONUS MALUS").as('pannelloRCA')
                     break;
                 default:
                     cy.contains("RCA - BONUS MALUS").as('pannelloRCA')

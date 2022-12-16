@@ -1207,7 +1207,7 @@ class Sfera {
      * @private
      */
     static tableEstrazione() {
-        cy.get('app-table-component', { timeout: 900000 }).should('be.visible')
+        cy.get('app-table-component', { timeout: 90000 }).should('be.visible')
     }
 
     /**
@@ -2679,7 +2679,8 @@ class Sfera {
 
             cy.task('getFolderDownload').then((folderDownload) => {
                 cy.parseXlsx(folderDownload + "\\REPORT.xlsx").then(jsonData => {
-                    if (currentColumn !== Sfera.COLUMNQUIETANZESCARTATE)
+                    if (currentColumn !== Sfera.COLUMNQUIETANZESCARTATE &&
+                        currentColumn !== Sfera.COLUMNCARICOMANCANTE)
                         jsonData[0].data[0].shift()
                     console.log(Object.values(jsonData[0].data[0]).sort())
                     console.log(columnView.sort())
@@ -4051,18 +4052,31 @@ class Sfera {
                             cy.wrap(tr).find('td').eq(index + 1).should('not.have.attr', 'aria-disabled', 'true')
                             cy.wrap(tr).find('td').eq(index + 2).should('not.have.attr', 'aria-disabled', 'true').click()
                         })
-                } else if (month.includes('dicembre')) {
+                } else if (month.includes('novembre')) {
                     //! DA VERIFICARE QUANDO SAREMO A DICEMBRE
                     today.setFullYear(today.getFullYear() + 1)
                     cy.contains(today.getFullYear()).click()
-                    cy.get('div[class="nx-calendar-body-cell-content nx-calendar-body-selected"]')
-                        .parents('tbody')
-                        .find('tr').then((tr) => {
+                    cy.get('nx-calendar').should('be.visible')
+                        .find('tbody:visible')
+                        .find('tr:visible').then((tr) => {
                             const months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
                             let index = months.indexOf('gen')
                             cy.wrap(tr).find('td').eq(index + 1).should('have.attr', 'aria-disabled', 'true')
+                            cy.wrap(tr).find('td').eq(index + 2).should('have.attr', 'aria-disabled', 'true')
                             cy.wrap(tr).find('td').eq(index).should('not.have.attr', 'aria-disabled', 'true').click()
                         })
+                // } else if (month.includes('dicembre')) {
+                //     //! DA VERIFICARE QUANDO SAREMO A DICEMBRE
+                //     today.setFullYear(today.getFullYear() + 1)
+                //     cy.contains(today.getFullYear()).click()
+                //     cy.get('div[class="nx-calendar-body-cell-content nx-calendar-body-selected"]')
+                //         .parents('tbody')
+                //         .find('tr').then((tr) => {
+                //             const months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
+                //             let index = months.indexOf('gen')
+                //             cy.wrap(tr).find('td').eq(index + 1).should('have.attr', 'aria-disabled', 'true')
+                //             cy.wrap(tr).find('td').eq(index).should('not.have.attr', 'aria-disabled', 'true').click()
+                //         })
                 } else {
                     // Verifico che SOLO il mese successivo sia accessibile 
                     cy.contains(today.getFullYear()).click()

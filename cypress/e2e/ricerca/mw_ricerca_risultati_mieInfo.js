@@ -60,7 +60,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
             LandingRicerca.clickTabMieInfo()
             LandingRicerca.checkSubTabMieInfo()
         } else
-            LandingRicerca.checkNotExistMieInfo()
+            LandingRicerca.checkExistMieInfo()
         LandingRicerca.checkSuggestedLinks('incasso')
     })
 
@@ -71,7 +71,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
             LandingRicerca.checkSubTabMieInfo()
             LandingRicerca.checkSuggestedLinks('fastquote')
         } else {
-            LandingRicerca.checkNotExistMieInfo()
+            LandingRicerca.checkExistMieInfo()
             LandingRicerca.checkNotExistSuggestLinks('fastquote')
         }
     })
@@ -84,7 +84,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
                     LandingRicerca.clickTabMieInfo()
                     LandingRicerca.checkSubTabMieInfo()
                 } else
-                    LandingRicerca.checkNotExistMieInfo()
+                    LandingRicerca.checkExistMieInfo()
                 LandingRicerca.checkSuggestedLinks('bmp')
             }
             else
@@ -98,7 +98,7 @@ describe('Buca di Ricerca - Risultati Le mie Info', {
             LandingRicerca.clickTabMieInfo()
             LandingRicerca.checkSubTabMieInfo()
         } else
-            LandingRicerca.checkNotExistMieInfo()
+            LandingRicerca.checkExistMieInfo()
         cy.filterProfile(currentProfiling, 'COMMON_ULTRA_BMP').then(profiled => {
             LandingRicerca.checkSuggestedLinks('ultra', (profiled) ? true : false)
         })

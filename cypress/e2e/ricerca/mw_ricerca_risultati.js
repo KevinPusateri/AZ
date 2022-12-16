@@ -47,7 +47,7 @@ if (Cypress.env('isAviva') || Cypress.env('isAvivaBroker')) {
 
         it('Verifica Atterraggio nella Pagina', function() {
             LandingRicerca.search('RO')
-            LandingRicerca.checkNotExistMieInfo()
+            LandingRicerca.checkExistMieInfo()
             LandingRicerca.checkSuggestedLinks('RO')
             LandingRicerca.checkNotExistRicercaClassica()
         })

@@ -48,10 +48,10 @@ before(() => {
         })
     })
     let customImpersonification = {
-        "agentId": "ARFPULINI2",
-        "agency": "010710000"
-        // "agentId": "ARDEMILI1",
-        // "agency": "010712000"
+        // "agentId": "ARFPULINI2",
+        // "agency": "010710000"
+        "agentId": "ARDEMILI1",
+        "agency": "010712000"
     }
     LoginPage.logInMWAdvanced(customImpersonification)
     Sfera.accediSferaDaHomePageMW(true)

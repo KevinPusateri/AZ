@@ -409,9 +409,15 @@ Cypress.Commands.add('getPartyRelations', () => {
  */
 Cypress.Commands.add('getClientWithPolizze', (tutf, branchId, isUltra = false, isAZ1 = false, clientType = 'PF', isFixedSearch = false, clientToAnalyze = 0) => {
 
+  let nameRandom = ''
+  let firstNameRandom = ''
   if (isFixedSearch) {
-    let nameRandom = 'RO'
-    let firstNameRandom = 'MA'
+    nameRandom = 'RO'
+    firstNameRandom = 'MA'
+    if (Cypress.env('isAviva')) {
+      nameRandom = 'TRE RE'
+      firstNameRandom = 'CRISTIANA'
+    }
 
     cy.request({
       method: 'GET',
