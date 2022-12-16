@@ -61,8 +61,8 @@ let cliente = PersonaFisica.PieroAngela()
 var ambiti = [ambitiUltra.ambitiUltraCasaPatrimonio.fabbricato, ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile]
 var casa = ["Casa 1"]
 var frazionamento = "annuale"
-var dataOggi = moment().format('DD/MMYYYY')
-var scadenza = moment().add(1, 'M').add(10, 'y').format('DD/MMYYYY')
+var dataOggi = moment().format('DDMMYYYY')
+var scadenza = moment().add(1, 'M').add(10, 'y').format('DDMMYYYY')
 var nContratto = "000"
 //#endregion variabili iniziali
 

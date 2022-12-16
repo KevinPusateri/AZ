@@ -27,12 +27,13 @@ Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
 //#endregion
 
-//#region  variabili iniziali
+//#region  variabili iniziali DA431AB / bg523fc
 let prodotto = prodotti.RamiVari.FQ_InfortuniCircolazione
 let ramo = "Rami Vari"
 let ambiente = Cypress.env('currentEnv')
 
 let cliente = PersonaFisica.PieroAngela()
+let targa = "WD888WD"
 var nContratto = "000"
 //#endregion variabili iniziali
 
@@ -99,14 +100,17 @@ describe("INVALIDITA' PERMANENTE DA INFORTUNIO ", () => {
 
     it("Personalizzazione", () => {
         FastquoteDA.verificaAtterraggio(prodotto[prodotto.length - 1])
+        FastquoteDA.tipoCopertura("VEICOLO")
         FastquoteDA.avanti()
         FastquoteDA.confermaDati()
         FastquoteDA.caricamentoIntegrazione()
     })
 
     it("Integrazione - Dati Integrativi", () => {
-        FastquoteDA.datiIntegrativiSiNo(true, false, false)
-        FastquoteDA.datiIntegrativiParametro("100")
+        //FastquoteDA.ricercaTarga("DA431AB")
+        FastquoteDA.nuovoVeicolo(targa)
+        //FastquoteDA.datiIntegrativiSiNo(true, false, false)
+        //FastquoteDA.datiIntegrativiParametro("100")
         FastquoteDA.avanti()
         //cy.pause()
         FastquoteDA.situazioneAssicurativa(false)

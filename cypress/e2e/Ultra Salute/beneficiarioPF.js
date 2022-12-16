@@ -141,7 +141,7 @@ describe("BENEFICIARI REFERENTE", () => {
   })
 
   it("Aggiungi Cliente Persona Fisica", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(assicurato, "Persona 1")
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(assicurato, "Persona")
     CensimentoAnagrafico.attendiCheckAssicurato()
     CensimentoAnagrafico.Avanti()
     Beneficiari.caricamentoBeneficiari()
