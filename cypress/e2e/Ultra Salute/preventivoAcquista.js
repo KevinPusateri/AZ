@@ -188,6 +188,7 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Verifica invio mail", () => {
+    cy.pause()
     Ultra.verificaInvioMail()
   })
 })

@@ -162,6 +162,7 @@ describe("FABBRICATO E CONTENUTO ", () => {
     })
 
     it("Consensi e privacy", () => {
+        cy.pause()
         ConsensiPrivacy.Avanti()
         ControlliProtocollazione.caricamentoPagina()
     })

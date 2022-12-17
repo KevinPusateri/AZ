@@ -22,7 +22,7 @@ class Appendici {
             url: '**/GetNuoveAppendiciContratto'
         }).as('appendici')
 
-        cy.wait('@appendici', { requestTimeout: 60000 })
+        cy.wait('@appendici', { requestTimeout: 180000 })
     }
 
     static caricamentoEdit() {

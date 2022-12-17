@@ -95,7 +95,7 @@ after(function () {
 }) */
 //#endregion beforeAfter 502404460  lib-contracts-container tab-content-container
 
-describe("STORNO AMBITO", () => {
+describe("APPENDICE SOSTITUZIONE VEICOLO", () => {
     it("Ricerca polizza", () => {
         switch (ricercaPolizza) {
             case "schedaCliente":
@@ -114,8 +114,7 @@ describe("STORNO AMBITO", () => {
                 })
 
                 Portafoglio.apriPortafoglioLite()
-                //todo ricerca polizza per lista
-                //Portafoglio.ordinaPolizze("Numero contratto")
+                cy.pause()
                 Portafoglio.listaPolizze(true)
                 break;
 

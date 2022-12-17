@@ -177,6 +177,7 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
 
   it("Verifica invio mail e ritorno alla homepage", () => {
     ControlliProtocollazione.verificaInvioMail()
+    cy.pause()
     ControlliProtocollazione.salvaNPreventivo()
 
     cy.get('@preventivo').then(val => {
@@ -286,6 +287,7 @@ describe("VINCOLO CONTESTUALE PUA ", () => {
   it("Esito incasso", () => {
     Incasso.EsitoIncasso(false)
     cy.SalvaPolizza(dbPolizze, cliente.nomeCognome(), nContratto, dataEmissione, dataScadenza, ramo, prodotto, ambiente)
+    cy.pause()
     Incasso.Chiudi(false)
   })
 
