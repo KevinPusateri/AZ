@@ -428,9 +428,9 @@ class SCUContatti {
             cy.get('nx-modal-container').should('be.visible')
             cy.get('nx-modal-container').find('span:contains("Conferma"):visible').click()
             cy.wait(5000)
+            cy.get('nx-modal-container').should('not.be.visible')
             cy.get('body').should('be.visible').then(() => {
 
-              debugger
               if (!row.is(':visible'))
                 assert.isTrue(true, 'contatto eliminato')
               else

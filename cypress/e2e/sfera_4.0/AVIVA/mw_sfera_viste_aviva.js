@@ -112,10 +112,10 @@ if (!Cypress.env('isSecondWindow'))
                 Sfera.selectRandomCluster()
                 Sfera.estrai()
                 Sfera.filtraSuColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
-                Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_2349)
+                Sfera.filtraSuColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
 
                 Sfera.checkValoreInColonna(Sfera.FILTRI.RAMO, Sfera.FILTRI.RAMO.values.RAMO_31)
-                Sfera.checkValoreInColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_2349)
+                Sfera.checkValoreInColonna(Sfera.FILTRI.AGENZIA, Sfera.FILTRI.AGENZIA.values.A_1960)
             })
 
             it('Salva vista', options, function () {

@@ -63,8 +63,8 @@ class LandingRicerca {
     /**
      * Verifica che non sia presente Il tab "Le mie info"
      */
-    static checkNotExistMieInfo() {
-        cy.get('a[href="/matrix/search/infos"]').should('not.exist')
+    static checkExistMieInfo() {
+        cy.get('a[href="/matrix/search/infos"]').should('exist')
     }
 
     /**

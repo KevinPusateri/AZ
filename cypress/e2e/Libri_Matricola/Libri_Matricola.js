@@ -111,6 +111,15 @@ describe("LIBRI MATRICOLA", {
         });
 
         it("Riepilogo", function () {
+            cy.intercept({
+                method: 'POST',
+                url: '**/GetElencoAutorizzazioni'
+            }).as('loadIntegrazione')
+
+            cy.intercept({
+                method: '+(GET|POST)',
+                url: '**/KoTemplates/**'
+            }).as('loadKoTemplates')
             LibriMatricola.Avanti()
         })
 

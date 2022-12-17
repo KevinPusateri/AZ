@@ -86,20 +86,20 @@ describe('Matrix Web : Sfera 4.0 - Gestione Viste - Revisione gestione denominaz
     })
 
     it('Step 5 -  verifica trascinamento in orizzontale colonne', function () {
-        Sfera.dragAndDropADDColonne('Cod. AZPay', 150, 100)
+        Sfera.dragAndDropADDColonne('Firma Grafo', 150, 100)
         Sfera.buttonApplicaSalva()
     })
 
     it('Step 6 - verifica salvataggio vista', function () {
         Sfera.nuovaVista('AutomaticiDrop')
         Sfera.checkColonnaSpostata(4, 'Info')
-        Sfera.checkColonnaSpostata(5, 'Cod. AZPay')
+        Sfera.checkColonnaSpostata(5, 'FirmaGrafo')
         Sfera.selezionaVista(Sfera.VISTESUGGERITE.VISTA_STANDARD)
         Sfera.estrai(false)
         Sfera.checkAperturaGestioneColonne()
         Sfera.applicaSalvaVista('AutomaticiDrop')
         Sfera.checkColonnaSpostata(1, 'Info')
-        Sfera.checkColonnaAssente('Cod. AZPay')
+        Sfera.checkColonnaAssente('FirmaGrafo')
         Sfera.eliminaVista('AutomaticiDrop')
     })
 

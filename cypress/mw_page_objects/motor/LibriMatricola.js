@@ -36,6 +36,7 @@ class LibriMatricola {
      */
     static Avanti() {
         //attende caricamento Contraente
+        cy.wait(5000)
         matrixFrame().within(() => {
             clickAvanti()
         })
@@ -116,7 +117,7 @@ class LibriMatricola {
                         reloadTable(count)
                     }
                     else {
-                        cy.wrap($table).find('td[aria-describedby="tblConvenzioni_txtCodice"]:visible').wait(1000)
+                        cy.wrap($table).find('td[aria-describedby="tblConvenzioni_txtCodice"]:visible').wait(1500)
                         cy.get('#tblConvenzioni').contains(convenzione).should('be.visible').click()
                         cy.intercept({
                             method: 'POST',
@@ -124,7 +125,7 @@ class LibriMatricola {
                         }).as('loadDatiIntegrativi')
 
                         cy.get('button').children('span').contains('Ok')
-                            .should('be.visible').click().wait(10000)
+                            .should('be.visible').click().wait(15000)
                         // cy.wait('@loadDatiIntegrativi', { requestTimeout: 60000 });
                     }
 
@@ -213,6 +214,16 @@ class LibriMatricola {
             cy.get('input[name="adegAltreCopRB"][value="' + copertureValue + '"]')
                 .should('be.visible').click()
 
+            cy.intercept({
+                method: 'POST',
+                url: '**/GetElencoAutorizzazioni'
+            }).as('loadIntegrazione')
+
+            cy.intercept({
+                method: '+(GET|POST)',
+                url: '**/KoTemplates/**'
+            }).as('loadKoTemplates')
+
             //click su avanti
             cy.get('[value="› Avanti"]')
                 .should('be.visible').click()
@@ -274,7 +285,7 @@ class LibriMatricola {
 
             /*------*/
 
-            cy.wait(1000);
+            cy.wait(1500);
             matrixFrame().within(() => {
                 //cy.get('#pnlDialog').should('be.visible')
                 cy.get('#pnlDialog').then(($popup) => {
@@ -290,6 +301,7 @@ class LibriMatricola {
                     cy.log("inside if")
 
                     for (var y = 0; y < nPopup; y++) {
+                        cy.wait(3000)
                         matrixFrame().within(() => {
                             cy.get('div[id="pnlDialog"]').next('div')
                                 .find('span').contains('OK').click() //click su OK
@@ -404,7 +416,7 @@ class LibriMatricola {
 
         //TODO TOGLIERE eventualmente
         // cy.wait('@loadIntegrazione', { requestTimeout: 60000 });
-
+        cy.wait(8000)
         cy.intercept({
             method: 'GET',
             url: '**/Completamento/**'
@@ -465,7 +477,7 @@ class LibriMatricola {
                 cy.log("return " + '@contratto')
             })
         })
-        cy.wait(10000)
+        cy.wait(15000)
 
         // Adempimenti precontrattuali
         matrixFrame().within(() => {
@@ -506,7 +518,7 @@ class LibriMatricola {
     }
 
     static VerificaPresenzaContrattoLibroMatricola(nContratto) {
-        cy.wait(10000)
+        cy.wait(15000)
         cy.getIFrame()
         cy.get('@iframe').should('be.visible').within(() => {
             cy.get('#table_polizze_madri').should('be.visible').within(() => {
@@ -563,7 +575,7 @@ class LibriMatricola {
     }
 
     static AperturaTabLibriMatricola() {
-        cy.wait(5000)
+        cy.wait(10000)
         matrixFrame().within(() => {
 
             cy.get('#tab_polizze_madri').should('be.visible').click()
@@ -582,7 +594,7 @@ class LibriMatricola {
 
         //ricarica l'iframe e verifica la presenza del preventivo
         matrixFrame().within(() => {
-            cy.get('#table_preventivi_madre', { timeout: 10000 }).find('#' + nPreventivo)
+            cy.get('#table_preventivi_madre', { timeout: 15000 }).find('#' + nPreventivo)
                 .should('be.visible')
         })
     }
@@ -595,10 +607,10 @@ class LibriMatricola {
 
             // table diventa preventivi figlie table_preventivi_figlie
             cy.wait(2000)
-            cy.get('#table_preventivi_madre', { timeout: 10000 }).within(() => {
+            cy.get('#table_preventivi_madre', { timeout: 15000 }).within(() => {
 
                 if (nPreventivo == null) {
-                    cy.get('[class*="ui-row-ltr"]', { timeout: 10000 }).should('be.visible')
+                    cy.get('[class*="ui-row-ltr"]', { timeout: 15000 }).should('be.visible')
                         .then(($rows) => {
                             const items = $rows.toArray()
                             return Cypress._.sample(items)
@@ -624,12 +636,12 @@ class LibriMatricola {
     }
 
     static getPreventivoMadre() {
-        cy.wait(10000)
+        cy.wait(15000)
 
         matrixFrame().within(() => {
-            cy.get('#table_preventivi_madre', { timeout: 10000 }).should('be.visible').within(() => {
+            cy.get('#table_preventivi_madre', { timeout: 15000 }).should('be.visible').within(() => {
 
-                cy.get('[class*="ui-row-ltr"]', { timeout: 10000 }).should('be.visible')
+                cy.get('[class*="ui-row-ltr"]', { timeout: 15000 }).should('be.visible')
                     .then(($rows) => {
                         const items = $rows.toArray()
                         return Cypress._.sample(items)
@@ -647,9 +659,9 @@ class LibriMatricola {
         cy.wait(5000)
 
         matrixFrame().within(() => {
-            cy.get('#table_polizze_madri', { timeout: 10000 }).should('be.visible').within(() => {
+            cy.get('#table_polizze_madri', { timeout: 15000 }).should('be.visible').within(() => {
 
-                cy.get('[class*="ui-row-ltr"]', { timeout: 10000 }).should('be.visible')
+                cy.get('[class*="ui-row-ltr"]', { timeout: 15000 }).should('be.visible')
                     .then(($rows) => {
                         const items = $rows.toArray()
                         return Cypress._.sample(items)
@@ -678,7 +690,7 @@ class LibriMatricola {
     static VerificaPresenzaPrevApp(nPreventivo) {
         //verifica la presenza del preventivo
         matrixFrame().within(() => {
-            cy.get('#table_preventivi_figlie', { timeout: 10000 })
+            cy.get('#table_preventivi_figlie', { timeout: 15000 })
                 .find('[title="' + nPreventivo + '"]').contains(nPreventivo)
                 .should('be.visible')
         })
@@ -749,7 +761,7 @@ class LibriMatricola {
 
     static RicercaVeicolo(targa) {
         matrixFrame().within(() => {
-            cy.get('[data-bind*="targaRicercaArchivio"]', { timeout: 10000 }).should('be.visible')
+            cy.get('[data-bind*="targaRicercaArchivio"]', { timeout: 15000 }).should('be.visible')
                 .type(targa)
             cy.get('[data-bind*="RicercaTargaArchivio"]').should('be.visible').click()
         })
@@ -765,6 +777,10 @@ class LibriMatricola {
      * @param {ListaAuto} veicolo 
      */
     static NuovoVeicolo(veicolo) {
+        cy.intercept({
+            method: 'POST',
+            url: '**/GetAllMarche'
+        }).as('Marche')
         matrixFrame().within(() => {
             //apre la sezione 'inserimento nuovo veicolo' 
             cy.get('#selezioneRicerca').find('[name="veicoloNuovoEsist"][value="true"]')
@@ -772,22 +788,18 @@ class LibriMatricola {
         })
 
         //attende che venga caricata la sezione 'inserimento nuovo veicolo'
-        cy.intercept({
-            method: 'POST',
-            url: '**/GetAllMarche'
-        }).as('Marche')
         cy.wait('@Marche', { requestTimeout: 60000 });
 
         matrixFrame().within(() => {
             //se il tipo di veicolo è diverso da Auto, apre la sezione relativa
             if (veicolo.tipo != "Auto") {
-                cy.get('[for="radio' + veicolo.tipo + '"]').click() //click su tab tipo di veicolo
-
-                //attende il caricamento della lista veicoli
                 cy.intercept({
                     method: 'POST',
                     url: '**/GetAllMarche'
                 }).as('Marche')
+                cy.get('[for="radio' + veicolo.tipo + '"]').click() //click su tab tipo di veicolo
+
+                //attende il caricamento della lista veicoli
                 cy.wait('@Marche', { requestTimeout: 60000 });
             }
         })
@@ -795,27 +807,27 @@ class LibriMatricola {
         matrixFrame().within(() => {
             //inserisce la targa
             cy.get('input[data-bind*="targaRicercaANIANumero"]').first()
-                .should('be.visible').type(veicolo.targa).wait(1000)
+                .should('be.visible').type(veicolo.targa).wait(1500)
 
             //seleziona la marca
             cy.get('div[title="Seleziona la marca del veicolo"]').first()
                 .find('input:first').type(veicolo.marca)
-                .wait(1000).type('{downarrow}{enter}').wait(1000)
+                .wait(1500).type('{downarrow}{enter}').wait(1500)
 
             //seleziona il modello
             cy.get('#cbModello').find('input').type(veicolo.modello)
-                .wait(1000).type('{downarrow}{enter}').wait(1000)
+                .wait(1500).type('{downarrow}{enter}').wait(1500)
 
             //seleziona la versione
             cy.get('#cbVersione').find('input').type(veicolo.versione)
-                .wait(1000).type('{downarrow}{enter}').wait(1000)
+                .wait(1500).type('{downarrow}{enter}').wait(1500)
 
             cy.get('input[data-bind*="dpDataImmatricolazioneN"]').first()
                 .type(veicolo.dataImmatricolazione).wait(2000)
 
             //inserisce il numero dei posti
-            cy.get('#veicoloDiv').click().wait(1000)
-            cy.get('input[title*="numero di posti"]:first').should('be.visible').and('be.enabled').type(veicolo.nPosti).wait(1000)
+            cy.get('#veicoloDiv').click().wait(1500)
+            cy.get('input[title*="numero di posti"]:first').should('be.visible').and('be.enabled').type(veicolo.nPosti).wait(1500)
         })
     }
 
@@ -891,7 +903,7 @@ class LibriMatricola {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
             cy.wait(2000)
-            cy.get('#table_preventivi_madre', { timeout: 10000 }).should('be.visible').within(() => {
+            cy.get('#table_preventivi_madre', { timeout: 15000 }).should('be.visible').within(() => {
 
                 cy.get('#' + nPreventivo).should('be.visible').rightclick()
             })
@@ -985,7 +997,7 @@ class LibriMatricola {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
             cy.wait(2000)
-            cy.get('#table_polizze_madri', { timeout: 10000 }).should('be.visible').within(() => {
+            cy.get('#table_polizze_madri', { timeout: 15000 }).should('be.visible').within(() => {
 
                 cy.get('#' + nPreventivo).should('be.visible').rightclick()
             })
@@ -1011,7 +1023,7 @@ class LibriMatricola {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
             cy.wait(2000)
-            cy.get('#table_polizze_madri', { timeout: 10000 }).should('be.visible').within(() => {
+            cy.get('#table_polizze_madri', { timeout: 15000 }).should('be.visible').within(() => {
 
                 cy.get('#' + nPreventivo).should('be.visible').rightclick()
             })
@@ -1028,14 +1040,14 @@ class LibriMatricola {
     }
 
     static consensi() {
-        cy.wait(10000)
+        cy.wait(15000)
         cy.getIFrame()
         //Visualizza PDF e conferma
         cy.get('@iframe').should('be.visible').within(() => {
 
             //? CAPITA che non sia settato di default capire in base all'agenzia
             cy.get('#pnlIntermediari').should('be.visible').within(() => {
-                cy.get('button[title="Show All Items"]').first().click().wait(1000)
+                cy.get('button[title="Show All Items"]').first().click().wait(1500)
             })
             cy.get('#ulintermediario').should('exist').and('be.visible').find('li').contains('PULINI FRANCESCO').click()
 
@@ -1093,7 +1105,7 @@ class LibriMatricola {
         cy.wait(15000)
         cy.getIFrame()
         cy.get('@iframe').should('be.visible').within(() => {
-            cy.get('#table_polizze_madri', { timeout: 10000 }).should('be.visible').within(() => {
+            cy.get('#table_polizze_madri', { timeout: 15000 }).should('be.visible').within(() => {
 
                 cy.get('#' + nPreventivo).should('be.visible').rightclick()
             })
@@ -1127,7 +1139,7 @@ class LibriMatricola {
         })
 
         //Digital Accounting System (DAS) - sezione incassi
-        cy.wait(10000)
+        cy.wait(15000)
         cy.get('@iframe').should('be.visible').within(() => {
 
             // Modalita di Pagamento
@@ -1139,7 +1151,7 @@ class LibriMatricola {
             cy.get('#btnTabIncassoConfirm').should('be.visible').click()
         })
 
-        cy.wait(10000)
+        cy.wait(15000)
         cy.get('@iframe').should('be.visible').within(() => {
             // Incasso Completato Chiudi Pagina
             cy.get('#ctl00_pHolderMain1_btnChiudi').should('be.visible').click().wait(8000)
@@ -1151,7 +1163,7 @@ class LibriMatricola {
      * inizio Inclusione Nuova Applicazione
      */
     static inclusioneNuovaApplicazione() {
-        cy.wait(10000)
+        cy.wait(15000)
         matrixFrame().within(() => {
             cy.get('input[value="Inclusione Nuova Applicazione"]').click()
         })
@@ -1223,6 +1235,15 @@ export function PrevApplicazione(caseTest, nomeApplicazione, veicolo, garanzie, 
 
         it("Riepilogo", function () {
             LibriMatricola.RiepilogoGaranzie2(garanzie, nPopupRiepilogo)
+            cy.intercept({
+                method: 'POST',
+                url: '**/GetElencoAutorizzazioni'
+            }).as('loadIntegrazione')
+
+            cy.intercept({
+                method: '+(GET|POST)',
+                url: '**/KoTemplates/**'
+            }).as('loadKoTemplates')
             LibriMatricola.Avanti()
         })
 
@@ -1333,6 +1354,10 @@ export function PreventivoMadre() {
 
     it("Integrazione", function () {
         LibriMatricola.Integrazione()
+        cy.intercept({
+            method: 'POST',
+            url: '**/GeneraPDF'
+        }).as('salvataggioContratto')
     })
 
     it("Finale", function () {

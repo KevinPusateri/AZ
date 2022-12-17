@@ -56,36 +56,36 @@ after(function () {
 })
 
 describe('Clients - Nuovo FastQuote Auto', function () {
-        it('Check Nuovo FastQuote Auto', function () {
-            SintesiCliente.checkFastQuoteAuto()
-        })
+    it('Check Nuovo FastQuote Auto', function () {
+        SintesiCliente.checkFastQuoteAuto()
+    })
 
-        it('Calcola Moto', function () {
-            SintesiCliente.calcolaDaFastQuoteAuto('Moto', 'ER67005')
-            SintesiCliente.back()
-        })
+    it('Calcola Moto', function () {
+        SintesiCliente.calcolaDaFastQuoteAuto('Moto', 'ER67005')
+        SintesiCliente.back()
+    })
 
-        it('Calcola Auto', function () {
-            SintesiCliente.checkFastQuoteAuto()
-            SintesiCliente.calcolaDaFastQuoteAuto('Auto', 'FD687CR')
-            SintesiCliente.back()
-        })
+    it('Calcola Auto', function () {
+        SintesiCliente.checkFastQuoteAuto()
+        SintesiCliente.calcolaDaFastQuoteAuto('Auto', 'FD687CR')
+        SintesiCliente.back()
+    })
 
-        it('Calcola Autocarro', function () {
-            SintesiCliente.checkFastQuoteAuto()
-            SintesiCliente.calcolaDaFastQuoteAuto('Autocarro', 'EZ479GA')
-            SintesiCliente.back()
-        })
+    it('Calcola Autocarro', function () {
+        SintesiCliente.checkFastQuoteAuto()
+        SintesiCliente.calcolaDaFastQuoteAuto('Autocarro', 'EZ479GA')
+        SintesiCliente.back()
+    })
 
-        it('Calcola Altro Veicolo', function () {
-            SintesiCliente.checkFastQuoteAuto()
-            SintesiCliente.calcolaDaFastQuoteAuto('Altro veicolo', 'AKS612')
-            SintesiCliente.back()
-        })
+    it('Calcola Altro Veicolo', function () {
+        SintesiCliente.checkFastQuoteAuto()
+        SintesiCliente.calcolaDaFastQuoteAuto('Altro veicolo', 'AKS612')
+        SintesiCliente.back()
+    })
 
-        it('Verifica link - Procedi con l\'inserimento manuale', function(){
-            SintesiCliente.checkFastQuoteAuto()
-            SintesiCliente.clickProcediInserimentoManualeFastQuoteAuto()
-            SintesiCliente.back()
-        })
+    it('Verifica link - Procedi con l\'inserimento manuale', function () {
+        SintesiCliente.checkFastQuoteAuto()
+        SintesiCliente.clickProcediInserimentoManualeFastQuoteAuto()
+        SintesiCliente.back()
+    })
 })

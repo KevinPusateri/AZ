@@ -1093,7 +1093,7 @@ class Sales {
         cy.get('[calldaname="GENERIC-DETAILS"]:visible').first().find('lib-contract-card-basic-label:first').click()
         getIFrame().within(() => {
             cy.get('#menuContainer').should('be.visible')
-            cy.get('#menuContainer').find('a').should('be.visible').and('contain.text', '« Uscita')
+            cy.get('#menuContainer').find('button').should('be.visible').and('contain.text', 'Uscita')
         })
         cy.screenshot('Verifica Dettaglio Card Danni Proposte', { clip: { x: 0, y: 0, width: 1920, height: 1200 } }, { overwrite: true })
     }
