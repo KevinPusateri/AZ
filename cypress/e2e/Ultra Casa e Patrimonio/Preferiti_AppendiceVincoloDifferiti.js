@@ -109,8 +109,9 @@ describe("PREFERITI, APPENDICE E VINCOLO DIFFERITI", () => {
 
     it("Vai a preferiti", () => {
         SintesiCliente.FQ_tabUltra('Casa e Patrimonio')
+        cy.pause()
         SintesiCliente.VaiPreferiti()
-        SintesiCliente.selezionaPrimaAgenzia()
+        Common.canaleFromPopup()
         Preferiti.caricamentoPreferitiUltra()
     })
 

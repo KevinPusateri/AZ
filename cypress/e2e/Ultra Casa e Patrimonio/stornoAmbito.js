@@ -26,7 +26,7 @@ let insertedId
 //#endregion
 
 //#region Configuration
-let ricercaPolizza = "schedaCliente"
+let ricercaPolizza = "ricercaDiretta"
 const moment = require('moment')
 Cypress.config('defaultCommandTimeout', 60000)
 const delayBetweenTests = 2000
