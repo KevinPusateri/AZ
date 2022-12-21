@@ -1,22 +1,22 @@
 ///<reference types="cypress"/>
 
 //#region imports
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Dashboard2022 from "../../mw_page_objects/casaPatrimonio2022/Dashboard2022"
-import ConfigurazioneAmbito2022 from "../../mw_page_objects/casaPatrimonio2022/ConfigurazioneAmbito2022"
-import DatiQuotazione2022 from "../../mw_page_objects/casaPatrimonio2022/DatiQuotazione2022"
-import Riepilogo2022 from "../../mw_page_objects/casaPatrimonio2022/Riepilogo2022"
-import CensimentoAnagrafico2022 from "../../mw_page_objects/casaPatrimonio2022/CensimentoAnagrafico2022"
-import DatiIntegrativi2022 from "../../mw_page_objects/casaPatrimonio2022/DatiIntegrativi2022"
-import ConsensiPrivacy2022 from "../../mw_page_objects/casaPatrimonio2022/ConsensiPrivacy2022"
-import ControlliProtocollazione2022 from "../../mw_page_objects/casaPatrimonio2022/ControlliProtocollazione2022"
-import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
+import Common from "../../../mw_page_objects/common/Common"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import Dashboard2022 from "../../../mw_page_objects/casaPatrimonio2022/Dashboard2022"
+import ConfigurazioneAmbito2022 from "../../../mw_page_objects/casaPatrimonio2022/ConfigurazioneAmbito2022"
+import DatiQuotazione2022 from "../../../mw_page_objects/casaPatrimonio2022/DatiQuotazione2022"
+import Riepilogo2022 from "../../../mw_page_objects/casaPatrimonio2022/Riepilogo2022"
+import CensimentoAnagrafico2022 from "../../../mw_page_objects/casaPatrimonio2022/CensimentoAnagrafico2022"
+import DatiIntegrativi2022 from "../../../mw_page_objects/casaPatrimonio2022/DatiIntegrativi2022"
+import ConsensiPrivacy2022 from "../../../mw_page_objects/casaPatrimonio2022/ConsensiPrivacy2022"
+import ControlliProtocollazione2022 from "../../../mw_page_objects/casaPatrimonio2022/ControlliProtocollazione2022"
+import Incasso from "../../../mw_page_objects/UltraBMP/Incasso"
 
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 import common from "mocha/lib/interfaces/common"
 //#endregion
@@ -207,32 +207,4 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
         ControlliProtocollazione2022.Incassa()
         Incasso.caricamentoPagina()
     })
-
-    it("Incasso - parte 1", () => {
-        Incasso.ClickIncassa()
-        Incasso.caricamentoModPagamento()
-    })
-
-    it("Incasso - parte 2", () => {
-        Incasso.SelezionaMetodoPagamento('Assegno')
-        Incasso.ConfermaIncasso()
-        Incasso.caricamentoEsito()
-    })
-
-    it("Esito incasso", () => {
-        Incasso.EsitoIncasso()
-        cy.SalvaPolizza(dbPolizze,
-            cliente.nomeCognome(),
-            nContratto,
-            moment().format('YYYY-MM-DD HH:mm:ss'),
-            moment().add(1, 'y').format('YYYY-MM-DD HH:mm:ss'),
-            ramo,
-            prodotto,
-            ambiente)
-        Incasso.Chiudi()
-    })
-
-    /* it("Fine", () => {
-        cy.pause()
-    }) */
 })

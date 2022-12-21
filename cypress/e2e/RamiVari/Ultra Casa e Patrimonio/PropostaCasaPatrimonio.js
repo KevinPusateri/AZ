@@ -1,22 +1,22 @@
 ///<reference types="cypress"/>
 
 //#region imports
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
-import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
-import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
-import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
-import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
-import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
-import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
-import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
-import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
+import Common from "../../../mw_page_objects/common/Common"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import Dashboard from "../../../mw_page_objects/UltraBMP/Dashboard"
+import ConfigurazioneAmbito from "../../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
+import DatiQuotazione from "../../../mw_page_objects/UltraBMP/DatiQuotazione"
+import Riepilogo from "../../../mw_page_objects/UltraBMP/Riepilogo"
+import CensimentoAnagrafico from "../../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
+import DatiIntegrativi from "../../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import ConsensiPrivacy from "../../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+import ControlliProtocollazione from "../../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import Incasso from "../../../mw_page_objects/UltraBMP/Incasso"
 
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 //#endregion
 
@@ -162,7 +162,6 @@ describe("FABBRICATO E CONTENUTO ", () => {
     })
 
     it("Consensi e privacy", () => {
-        cy.pause()
         ConsensiPrivacy.Avanti()
         ControlliProtocollazione.caricamentoPagina()
     })
@@ -188,19 +187,4 @@ describe("FABBRICATO E CONTENUTO ", () => {
         Incasso.caricamentoPagina()
     })
 
-    it("Incasso - parte 1", () => {
-        Incasso.ClickIncassa()
-        Incasso.caricamentoModPagamento()
-    })
-
-    it("Incasso - parte 2", () => {
-        Incasso.SelezionaMetodoPagamento('Assegno')
-        Incasso.ConfermaIncasso()
-        Incasso.caricamentoEsito()
-    })
-
-    it("Esito incasso", () => {
-        Incasso.EsitoIncasso()
-        Incasso.Chiudi()
-    })
 })

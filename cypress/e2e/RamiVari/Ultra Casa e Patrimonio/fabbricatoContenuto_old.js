@@ -1,13 +1,13 @@
 ///<reference types="cypress"/>
 
 //#region imports
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Ultra from "../../mw_page_objects/ultra/Ultra"
-import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+import Common from "../../../mw_page_objects/common/Common"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import Ultra from "../../../mw_page_objects/ultra/Ultra"
+import DatiIntegrativi from "../../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 //#endregion
 

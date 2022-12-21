@@ -156,5 +156,17 @@ export default class PersonaFisica {
 
         return MarcoMarco
     }
+
+    static ValeriaGiordani() {
+        let ValeriaGiordani = new PersonaFisica("VALERIA", "GIORDANI")
+        ValeriaGiordani.via = "VIA IPPOLITO NIEVO"
+        ValeriaGiordani.numero = "23"
+        ValeriaGiordani.cap = "33074"
+        ValeriaGiordani.citta = "FONTANAFREDDA"
+        ValeriaGiordani.provincia = "PN"
+        ValeriaGiordani.codiceFiscale = "GRDVLR67H48G888N"
+
+        return ValeriaGiordani
+    }
 }
 

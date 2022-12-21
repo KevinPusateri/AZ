@@ -13,25 +13,25 @@ import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
 import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
 
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
 
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import Ultra from "../../mw_page_objects/ultra/Ultra"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
-import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
-import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
-import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
-import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
-import Beneficiari from "../../mw_page_objects/UltraBMP/Beneficiari"
-import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
-import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
-import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
-import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
-import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
+import Common from "../../../mw_page_objects/common/Common"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import BurgerMenuSales from "../../../mw_page_objects/burgerMenu/BurgerMenuSales"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import Ultra from "../../../mw_page_objects/ultra/Ultra"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import Dashboard from "../../../mw_page_objects/UltraBMP/Dashboard"
+import ConfigurazioneAmbito from "../../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
+import DatiQuotazione from "../../../mw_page_objects/UltraBMP/DatiQuotazione"
+import Riepilogo from "../../../mw_page_objects/UltraBMP/Riepilogo"
+import CensimentoAnagrafico from "../../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
+import Beneficiari from "../../../mw_page_objects/UltraBMP/Beneficiari"
+import DatiIntegrativi from "../../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import ConsensiPrivacy from "../../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+import ControlliProtocollazione from "../../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import Incasso from "../../../mw_page_objects/UltraBMP/Incasso"
+import Portafoglio from "../../../mw_page_objects/clients/Portafoglio"
 //#endregion imports
 
 //#region Mysql DB Variables

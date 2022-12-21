@@ -8,28 +8,27 @@
 
 //#region imports
 import 'cypress-iframe';
+//import common from 'mocha/lib/interfaces/common';
+import Common from "../../../mw_page_objects/common/Common"
+import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json';
+import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json';
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente";
+import LoginPage from "../../../mw_page_objects/common/LoginPage";
+import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica";
+import TopBar from "../../../mw_page_objects/common/TopBar";
+import Beneficiari from "../../../mw_page_objects/UltraBMP/Beneficiari";
+import CensimentoAnagrafico from "../../../mw_page_objects/UltraBMP/CensimentoAnagrafico";
+import ConfigurazioneAmbito from "../../../mw_page_objects/UltraBMP/ConfigurazioneAmbito";
+import ConsensiPrivacy from "../../../mw_page_objects/UltraBMP/ConsensiPrivacy";
+import ControlliProtocollazione from "../../../mw_page_objects/UltraBMP/ControlliProtocollazione";
+import Dashboard from "../../../mw_page_objects/UltraBMP/Dashboard";
+import DatiIntegrativi from "../../../mw_page_objects/UltraBMP/DatiIntegrativi";
+import DatiQuotazione from "../../../mw_page_objects/UltraBMP/DatiQuotazione";
+import Incasso from "../../../mw_page_objects/UltraBMP/Incasso";
+import Riepilogo from "../../../mw_page_objects/UltraBMP/Riepilogo";
 
-import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
-import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
 
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
 
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import Ultra from "../../mw_page_objects/ultra/Ultra"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
-import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
-import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
-import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
-import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
-import Beneficiari from "../../mw_page_objects/UltraBMP/Beneficiari"
-import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
-import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
-import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
-import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
 //#endregion imports
 
 //#region Mysql DB Variables
@@ -41,16 +40,12 @@ let insertedId
 
 //#region Configuration
 Cypress.config('defaultCommandTimeout', 60000)
-const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let personaGiuridica = "Sinopoli"
-//let personaFisica = PersonaFisica.CarloRossini()
-let personaFisica = PersonaFisica.GalileoGalilei()
-let secondoAssicurato = PersonaFisica.EttoreMajorana()
-var frazionamento = "trimestrale"
-var copertura = "extra-professionale"
+let personaFisica = PersonaFisica.PieroAngela()
+let assicurato = personaFisica // PersonaFisica.MarcoMarco()
+const personaBeneficiario = PersonaFisica.EttoreMajorana()
 var ambiti = [
   ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio
 ]
@@ -93,7 +88,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
+describe("BENEFICIARI REFERENTE", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
@@ -114,13 +109,13 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
 
   it("Emissione Ultra Salute", () => {
     SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
-    Ultra.selezionaPrimaAgenzia()
+    // in caso di agenzia HUB
+    Common.canaleFromPopup()
     Dashboard.caricamentoDashboardUltra()
   })
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
     Dashboard.selezionaAmbiti(ambiti)
-    Dashboard.aggiungiAmbito(ambiti)
   })
 
 
@@ -141,38 +136,33 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   })
 
   it("Modifica frazionamento ed emissione polizza", () => {
-    Dashboard.selezionaFrazionamento(frazionamento)
     Riepilogo.EmissionePolizza()
     CensimentoAnagrafico.caricamentoCensimentoAnagrafico()
   })
 
   it("Aggiungi Cliente Persona Fisica", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica, "Persona 1")
-    CensimentoAnagrafico.attendiCheckAssicurato()
-  })
-
-  it("Aggiungi secondo assicurato", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(secondoAssicurato, "Persona 2")
-    CensimentoAnagrafico.aggiornaParamCliente()
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(assicurato, "Persona")
     CensimentoAnagrafico.attendiCheckAssicurato()
     CensimentoAnagrafico.Avanti()
     Beneficiari.caricamentoBeneficiari()
   })
 
   it("Beneficiari", () => {
-    cy.pause()
     Beneficiari.tipoBeneficiario('Persona fisica')
-    Beneficiari.inserisciBeneficiario()
+    Beneficiari.inserisciBeneficiarioNew(personaBeneficiario)
+    Beneficiari.tipoBeneficiario('Eredi legittimi')
+    Beneficiari.clickInserisci()
+    //cy.wait(2000)
     cy.pause()
+    Beneficiari.percentualeCapitale(personaBeneficiario.nomeCognome(), "60")
+    Beneficiari.percentualeCapitale("Eredi legittimi", "40")
+    // cy.get('#nx-input-5').should('be.visible').clear().type('100');
     Beneficiari.Avanti()
     DatiIntegrativi.caricamentoPagina()
   })
-  
   it("Dati integrativi", () => {
-    cy.pause()
-    DatiIntegrativi.DatiIntegrativi(true, true, true)
+    DatiIntegrativi.selezionaTuttiNo()
     DatiIntegrativi.ClickButtonAvanti()
-    DatiIntegrativi.approfondimentoSituazioneAssicurativa(false)
     DatiIntegrativi.confermaDichiarazioniContraente()
     ConsensiPrivacy.caricamentoPagina()
   })
@@ -195,27 +185,5 @@ describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
     ControlliProtocollazione.riepilogoDocumenti()
     ControlliProtocollazione.Avanti()
     ControlliProtocollazione.aspettaCaricamentoAdempimenti()
-  })
-
-  it("Adempimenti precontrattuali e Perfezionamento", () => {
-    ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
-    ControlliProtocollazione.Incassa()
-    Incasso.caricamentoPagina()
-  })
-
-  it("Incasso - parte 1", () => {
-    Incasso.ClickIncassa()
-    Incasso.caricamentoModPagamento()
-  })
-
-  it("Incasso - parte 2", () => {
-    Incasso.SelezionaMetodoPagamento('Assegno')
-    Incasso.ConfermaIncasso()
-    Incasso.caricamentoEsito()
-  })
-
-  it("Esito incasso", () => {
-    Incasso.EsitoIncasso()
-    Incasso.Chiudi()
   })
 })

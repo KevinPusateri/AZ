@@ -1,5 +1,5 @@
 /**
- * @author Elio Cossu <elio.cossu@allianz.it>
+ * @author Chiara Costa <chiara.costa@allianz.it>
  *
  * @description 
  */
@@ -12,25 +12,24 @@ import 'cypress-iframe';
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
 
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
-import PersonaGiuridica from "../../mw_page_objects/common/PersonaGiuridica"
+import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
 
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import Ultra from "../../mw_page_objects/ultra/Ultra"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
-import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
-import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
-import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
-import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
-import Beneficiari from "../../mw_page_objects/UltraBMP/Beneficiari"
-import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
-import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
-import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
-import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
+import Common from "../../../mw_page_objects/common/Common"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import BurgerMenuSales from "../../../mw_page_objects/burgerMenu/BurgerMenuSales"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import Ultra from "../../../mw_page_objects/ultra/Ultra"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import Dashboard from "../../../mw_page_objects/UltraBMP/Dashboard"
+import ConfigurazioneAmbito from "../../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
+import DatiQuotazione from "../../../mw_page_objects/UltraBMP/DatiQuotazione"
+import Riepilogo from "../../../mw_page_objects/UltraBMP/Riepilogo"
+import CensimentoAnagrafico from "../../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
+import Beneficiari from "../../../mw_page_objects/UltraBMP/Beneficiari"
+import DatiIntegrativi from "../../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import ConsensiPrivacy from "../../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+import ControlliProtocollazione from "../../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import Incasso from "../../../mw_page_objects/UltraBMP/Incasso"
 //#endregion imports
 
 //#region Mysql DB Variables
@@ -46,13 +45,13 @@ const delayBetweenTests = 2000
 //#endregion
 
 //#region  variabili iniziali
-let personaGiuridica = PersonaGiuridica.BmwBank()
-let personaFisica = PersonaFisica.PieroAngela()
+let personaGiuridica = "Sinopoli"
+//let personaFisica = PersonaFisica.CarloRossini()
+let personaFisica = PersonaFisica.GalileoGalilei()
+let secondoAssicurato = PersonaFisica.EttoreMajorana()
 var frazionamento = "trimestrale"
 var copertura = "extra-professionale"
 var ambiti = [
-  ambitiUltra.ambitiUltraSalute.spese_mediche,
-  ambitiUltra.ambitiUltraSalute.diaria_da_ricovero,
   ambitiUltra.ambitiUltraSalute.invalidita_permanente_infortunio
 ]
 //var frazionamento = "annuale"
@@ -90,14 +89,16 @@ after(function () {
     cy.finishMysql(dbConfig, insertedId, tests)
   })
   //#endregion
+
 })
 //#endregion Before After
 
-describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
+describe("PREVENTIVO E ACQUISTO POLIZZA", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()
-      cy.get('input[name="main-search-input"]').type(personaGiuridica.denominazione).type('{enter}')
+
+      cy.get('input[name="main-search-input"]').type(personaFisica.codiceFiscale).type('{enter}')
       cy.get('lib-client-item').first()
         .find('.name').trigger('mouseover').click()
     }).then(($body) => {
@@ -105,14 +106,13 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
       const check = $body.find(':contains("Cliente non trovato o l\'utenza utilizzata non dispone dei permessi necessari")').is(':visible')
       cy.log('permessi: ' + check)
       if (check) {
-        cy.get('input[name="main-search-input"]').type(personaGiuridica.denominazione).type('{enter}')
+        cy.get('input[name="main-search-input"]').type(personaFisica.nomeCognome()).type('{enter}')
         cy.get('lib-client-item').first().next().click()
       }
     })
   })
 
   it("Emissione Ultra Salute", () => {
-    cy.pause()
     SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
     Ultra.selezionaPrimaAgenzia()
     Dashboard.caricamentoDashboardUltra()
@@ -120,21 +120,16 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
 
   it("Selezione ambiti nella homepage di Ultra Salute", () => {
     Dashboard.selezionaAmbiti(ambiti)
+    Dashboard.aggiungiAmbito(ambiti)
   })
 
-  it("Cambia Soluzioni", () => {
-    for (var i = 0; i < ambiti.length; i++) {
-      Dashboard.modificaSoluzione(ambiti[i], "Essential")
-    }
-  })
 
   it("Configurazione Invalidità Permanente da infortunio", () => {
-    ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[2])
+    ConfigurazioneAmbito.apriConfigurazioneAmbito(ambiti[0])
     ConfigurazioneAmbito.modificaDatoQuotazione("professione", "assistente presso uno studio medico")
-    ConfigurazioneAmbito.selezionaSoluzione("Premium")
+    ConfigurazioneAmbito.selezionaSoluzione("Top")
     ConfigurazioneAmbito.aggiungiGaranzia("Capitale per morte da infortunio")
     ConfigurazioneAmbito.ClickButton("CONFERMA")
-    //Dashboard.caricamentoDashboardUltra()
     Dashboard.procediHome()
     DatiQuotazione.CaricamentoPagina()
   })
@@ -152,24 +147,29 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
   })
 
   it("Aggiungi Cliente Persona Fisica", () => {
-    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica, "Persona")
-    CensimentoAnagrafico.aggiornaParamCliente()
-    //CensimentoAnagrafico.attendiCheckAssicurato()
-    //CensimentoAnagrafico.popupCap()
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(personaFisica, "Persona 1")
+    CensimentoAnagrafico.attendiCheckAssicurato()
   })
 
-  it("Domande integrative Censimento Anagrafico", () => {
-    CensimentoAnagrafico.domandeIntegrative("indennità", "si")
+  it("Aggiungi secondo assicurato", () => {
+    CensimentoAnagrafico.aggiungiClienteCensimentoAnagrafico(secondoAssicurato, "Persona 2")
+    CensimentoAnagrafico.aggiornaParamCliente()
+    CensimentoAnagrafico.attendiCheckAssicurato()
     CensimentoAnagrafico.Avanti()
     Beneficiari.caricamentoBeneficiari()
   })
 
   it("Beneficiari", () => {
+    cy.pause()
+    Beneficiari.tipoBeneficiario('Persona fisica')
+    Beneficiari.inserisciBeneficiario()
+    cy.pause()
     Beneficiari.Avanti()
     DatiIntegrativi.caricamentoPagina()
   })
   
   it("Dati integrativi", () => {
+    cy.pause()
     DatiIntegrativi.DatiIntegrativi(true, true, true)
     DatiIntegrativi.ClickButtonAvanti()
     DatiIntegrativi.approfondimentoSituazioneAssicurativa(false)
@@ -197,7 +197,7 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
     ControlliProtocollazione.aspettaCaricamentoAdempimenti()
   })
 
-  it("Adempimenti precontrattuali e Perfezionamento", () => {    
+  it("Adempimenti precontrattuali e Perfezionamento", () => {
     ControlliProtocollazione.stampaAdempimentiPrecontrattuali()
     ControlliProtocollazione.Incassa()
     Incasso.caricamentoPagina()

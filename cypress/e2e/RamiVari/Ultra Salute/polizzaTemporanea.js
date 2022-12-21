@@ -9,12 +9,12 @@
 //#region imports
 import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
 
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import Ultra from "../../mw_page_objects/ultra/Ultra"
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+import Common from "../../../mw_page_objects/common/Common"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import Ultra from "../../../mw_page_objects/ultra/Ultra"
+import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 //#endregion
 

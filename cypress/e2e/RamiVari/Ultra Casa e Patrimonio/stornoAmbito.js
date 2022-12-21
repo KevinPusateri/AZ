@@ -6,13 +6,13 @@ import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
 
 //pages
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
-import Annullamenti from '../../mw_page_objects/polizza/Annullamento'
+import Common from "../../../mw_page_objects/common/Common"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import Portafoglio from "../../../mw_page_objects/clients/Portafoglio"
+import Annullamenti from '../../../mw_page_objects/polizza/Annullamento'
 
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
+import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
 
 import 'cypress-iframe';
 //#endregion

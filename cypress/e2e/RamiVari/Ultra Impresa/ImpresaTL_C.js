@@ -1,5 +1,5 @@
 /**
- * @author Elio Cossu <elio.cossu@allianz.it>
+ * @author Chiara Costa <chiara.costa@allianz.it>
  *
  * @description 
  */
@@ -12,25 +12,25 @@ import 'cypress-iframe';
 import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
 import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
 
-import PersonaGiuridica from "../../mw_page_objects/common/PersonaGiuridica"
+import PersonaGiuridica from "../../../mw_page_objects/common/PersonaGiuridica"
 
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import Ultra from "../../mw_page_objects/ultra/Ultra"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import StartPage from "../../mw_page_objects/UltraBMP/StartPage"
-import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
-import ConfigurazioneAmbito from "../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
-import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
-import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
-import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
-import Beneficiari from "../../mw_page_objects/UltraBMP/Beneficiari"
-import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
-import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
-import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
-import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
+import Common from "../../../mw_page_objects/common/Common"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import BurgerMenuSales from "../../../mw_page_objects/burgerMenu/BurgerMenuSales"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import Ultra from "../../../mw_page_objects/ultra/Ultra"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import StartPage from "../../../mw_page_objects/UltraBMP/StartPage"
+import Dashboard from "../../../mw_page_objects/UltraBMP/Dashboard"
+import ConfigurazioneAmbito from "../../../mw_page_objects/UltraBMP/ConfigurazioneAmbito"
+import DatiQuotazione from "../../../mw_page_objects/UltraBMP/DatiQuotazione"
+import Riepilogo from "../../../mw_page_objects/UltraBMP/Riepilogo"
+import CensimentoAnagrafico from "../../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
+import Beneficiari from "../../../mw_page_objects/UltraBMP/Beneficiari"
+import DatiIntegrativi from "../../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import ConsensiPrivacy from "../../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+import ControlliProtocollazione from "../../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import Incasso from "../../../mw_page_objects/UltraBMP/Incasso"
 //#endregion imports
 
 //#region Mysql DB Variables
@@ -50,8 +50,8 @@ let personaGiuridica = PersonaGiuridica.BmwBank()
 //let personaFisica = PersonaFisica.GalileoGalilei()
 var frazionamento = "trimestrale"
 var ambiti = [
-  ambitiUltra.ambitiUltraCasaPatrimonio.responsabilita_civile,
-  ambitiUltra.ambitiUltraCasaPatrimonio.fabbricatoImpresa,
+  ambitiUltra.ambitiUltraCasaPatrimonio.tutela_legale,
+  ambitiUltra.ambitiUltraCasaPatrimonio.contenuto,
 ]
 //#endregion variabili iniziali
 
@@ -90,7 +90,7 @@ after(function () {
 })
 //#endregion Before After
 
-describe("Polizza Responsabilità Civile Impresa", () => {
+describe("Polizza Tutela legale e contenuto", () => {
   it("Ricerca cliente", () => {
     cy.get('body').within(() => {
       cy.get('input[name="main-search-input"]').click()

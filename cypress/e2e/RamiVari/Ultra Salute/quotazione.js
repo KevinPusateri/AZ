@@ -7,11 +7,11 @@
 ///<reference types="cypress"/>
 
 //#region imports
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import Ultra from "../../mw_page_objects/ultra/Ultra"
+import Common from "../../../mw_page_objects/common/Common"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import BurgerMenuSales from "../../../mw_page_objects/burgerMenu/BurgerMenuSales"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import Ultra from "../../../mw_page_objects/ultra/Ultra"
 import 'cypress-iframe';
 //#endregion
 

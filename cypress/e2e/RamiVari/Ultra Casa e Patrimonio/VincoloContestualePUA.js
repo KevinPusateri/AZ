@@ -7,32 +7,32 @@
 ///<reference types="cypress"/>
 
 //#region imports
-import Common from "../../mw_page_objects/common/Common"
-import TopBar from "../../mw_page_objects/common/TopBar"
-import LoginPage from "../../mw_page_objects/common/LoginPage"
-import BurgerMenuSales from "../../mw_page_objects/burgerMenu/BurgerMenuSales"
-import Ultra from "../../mw_page_objects/ultra/Ultra"
-import SintesiCliente from "../../mw_page_objects/clients/SintesiCliente"
-import StartPage from "../../mw_page_objects/UltraBMP/StartPage"
-import Dashboard from "../../mw_page_objects/UltraBMP/Dashboard"
-import DatiQuotazione from "../../mw_page_objects/UltraBMP/DatiQuotazione"
-import Riepilogo from "../../mw_page_objects/UltraBMP/Riepilogo"
-import CensimentoAnagrafico from "../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
-import Vincoli from "../../mw_page_objects/polizza/Vincoli"
-import DatiIntegrativi from "../../mw_page_objects/UltraBMP/DatiIntegrativi"
-import CondividiPreventivo from "../../mw_page_objects/UltraBMP/CondividiPreventivo"
-import ConsensiPrivacy from "../../mw_page_objects/UltraBMP/ConsensiPrivacy"
-import ControlliProtocollazione from "../../mw_page_objects/UltraBMP/ControlliProtocollazione"
-import RecuperoPreventivo from "../../mw_page_objects/UltraBMP/RecuperoPreventivo"
-import Incasso from "../../mw_page_objects/UltraBMP/Incasso"
-import PersonaFisica from "../../mw_page_objects/common/PersonaFisica"
-import Portafoglio from "../../mw_page_objects/clients/Portafoglio"
+import Common from "../../../mw_page_objects/common/Common"
+import TopBar from "../../../mw_page_objects/common/TopBar"
+import LoginPage from "../../../mw_page_objects/common/LoginPage"
+import BurgerMenuSales from "../../../mw_page_objects/burgerMenu/BurgerMenuSales"
+import Ultra from "../../../mw_page_objects/ultra/Ultra"
+import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
+import StartPage from "../../../mw_page_objects/UltraBMP/StartPage"
+import Dashboard from "../../../mw_page_objects/UltraBMP/Dashboard"
+import DatiQuotazione from "../../../mw_page_objects/UltraBMP/DatiQuotazione"
+import Riepilogo from "../../../mw_page_objects/UltraBMP/Riepilogo"
+import CensimentoAnagrafico from "../../../mw_page_objects/UltraBMP/CensimentoAnagrafico"
+import Vincoli from "../../../mw_page_objects/polizza/Vincoli"
+import DatiIntegrativi from "../../../mw_page_objects/UltraBMP/DatiIntegrativi"
+import CondividiPreventivo from "../../../mw_page_objects/UltraBMP/CondividiPreventivo"
+import ConsensiPrivacy from "../../../mw_page_objects/UltraBMP/ConsensiPrivacy"
+import ControlliProtocollazione from "../../../mw_page_objects/UltraBMP/ControlliProtocollazione"
+import RecuperoPreventivo from "../../../mw_page_objects/UltraBMP/RecuperoPreventivo"
+import Incasso from "../../../mw_page_objects/UltraBMP/Incasso"
+import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
+import Portafoglio from "../../../mw_page_objects/clients/Portafoglio"
 
-import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
-import menuStart from '../../fixtures/Ultra/menuHeaderStart.json'
-import filtroRicercaPreventivo from '../../fixtures/Ultra/filtroRicercaPreventivo.json'
-import ordinePolizze from '../../fixtures/Ultra/ordinePolizze.json'
-import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
+import ambitiUltra from '../../../fixtures/Ultra/ambitiUltra.json'
+import menuStart from '../../../fixtures/Ultra/menuHeaderStart.json'
+import filtroRicercaPreventivo from '../../../fixtures/Ultra/filtroRicercaPreventivo.json'
+import ordinePolizze from '../../../fixtures/Ultra/ordinePolizze.json'
+import menuPolizzeAttive from '../../../fixtures/SchedaCliente/menuPolizzeAttive.json'
 import 'cypress-iframe';
 //#endregion
 

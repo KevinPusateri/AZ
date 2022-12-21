@@ -1,0 +1,37 @@
+{
+  "Salute": {
+    "Infortuni": {
+      "Completa": [
+        " SALUTE",
+        " INFORTUNI",
+        " INFORTUNI COMPLETA"
+      ],
+      "DaCircolazione": [
+        " SALUTE",
+        " INFORTUNI",
+        " INFORTUNI DA CIRCOLAZIONE"
+      ]
+    },
+    "Malattia": {
+      "PRotezioneOncologica": [
+        " SALUTE",
+        " MALATTIA",
+        " PROTEZIONE ONCOLOGICA"
+      ]
+    }
+  },
+  "Patrimonio": {
+    "CasaFabbricati": {
+      "Salvacasa": [
+        "PATRIMONIO",
+        "PRODOTTI CASA E FABBRICATI",
+        "SALVACASA"
+      ],
+      "FabbricatoProtetto": [
+        "PATRIMONIO",
+        "PRODOTTI CASA E FABBRICATI",
+        "FABBRICATO PROTETTO"
+      ]
+    }
+  }
+}
