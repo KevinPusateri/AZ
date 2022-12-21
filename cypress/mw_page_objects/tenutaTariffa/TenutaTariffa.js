@@ -1060,7 +1060,9 @@ class TenutaTariffa {
             //Popup di dichiarazione di non circolazione a SI
             cy.get('@iframe').then((iframe) => {
                 if (iframe.find(':contains("La data di decorrenza non permetterà il salvataggio del preventivo")').length > 0) {
-                    cy.contains('CONFERMA').should('exist').and('be.visible').click()
+                    cy.get('nx-modal-container').should('be.visible').within(()=>{
+                        cy.contains('CONFERMA').click()
+                    })
                     cy.wait('@getMotor', { timeout: 30000 })
                     cy.wait(1000);
                 }
