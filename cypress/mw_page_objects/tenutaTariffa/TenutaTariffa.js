@@ -592,6 +592,7 @@ class TenutaTariffa {
             }
             else {
                 //Marca
+                cy.get('nx-spinner').should('not.be.visible')
                 cy.get('nx-dropdown[formcontrolname="marca"]').should('exist').and('be.visible').click()
                 cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Marca)
                 let re = new RegExp("\^ " + currentCase.Marca + " \$")
@@ -938,12 +939,12 @@ class TenutaTariffa {
                 url: '**/uwcase/api/provenienza/avanti'
             }).as('getAvanti');
             cy.contains('AVANTI').should('exist').and('be.visible').click().wait(3000)
-            cy.get('nx-spinner').should('not.be.visible')
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
             cy.wait('@getAvanti', { timeout: 120000 })
                 .then((response) => {
                     if (response.statusCode === 500)
                         cy.contains('AVANTI').should('exist').and('be.visible').click().wait(3000)
-                    cy.get('nx-spinner').should('not.be.visible')
+                    cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
                 })//.its('response.statusCode').should('eq', 200)
 
             //Popup di dichiarazione di non circolazione a SI
@@ -978,7 +979,7 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
             //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible')
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
 
             //Andiamo a settare la Voltura
             cy.get('nx-dropdown[aria-haspopup="listbox"]').first().should('be.visible').click()
