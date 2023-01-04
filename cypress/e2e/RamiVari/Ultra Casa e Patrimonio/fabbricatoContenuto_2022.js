@@ -203,6 +203,7 @@ describe("FABBRICATO E CONTENUTO 2022", () => {
             nContratto = val
         })
 
+        cy.pause()
         ControlliProtocollazione2022.stampaAdempimentiPrecontrattuali()
         ControlliProtocollazione2022.Incassa()
         Incasso.caricamentoPagina()

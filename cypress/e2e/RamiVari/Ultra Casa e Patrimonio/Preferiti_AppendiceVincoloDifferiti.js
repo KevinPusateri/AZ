@@ -19,9 +19,10 @@ import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
 import Portafoglio from "../../../mw_page_objects/clients/Portafoglio"
 import Appendici from "../../../mw_page_objects/polizza/Appendici"
 import Vincoli from "../../../mw_page_objects/polizza/Vincoli"
-import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
-import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
-import datiVincoli from '../../fixtures/Ultra/datiVincolo.json'
+
+import ambitiUltra from '../../../fixtures/Ultra/ambitiUltra.json'
+import menuPolizzeAttive from '../../../fixtures/SchedaCliente/menuPolizzeAttive.json'
+import datiVincoli from '../../../fixtures/Ultra/datiVincolo.json'
 import 'cypress-iframe';
 //#endregion
 

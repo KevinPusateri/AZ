@@ -47,7 +47,6 @@ class Garanzie {
           .wait(1000) //conferma
       })
     })
-cy.pause()
     cy.getIFrame()
     cy.get('@iframe').within(() => {
       cy.get('#ctl00_cont_TabGrupAssic_PanelAss').find('.PxGDesc').contains(indirizzo).should('be.visible') //verifica che il fabbricato sia stato inserito
@@ -74,32 +73,76 @@ cy.pause()
 
     cy.wait('@popup', { requestTimeout: 60000 });
 
-    cy.pause()
+    for (let i = 0; i < risposte.length; i++) {
+      switch (risposte[i]) {
+        case true:
+          cy.getIFrame()
+          cy.get('@iframe').within(() => {
+            cy.get('.QuestionarioTable').find('.DomandaTesto').eq(i)
+              .next().find('input').check("1").wait(500)
+          })
+
+          break;
+        case false:
+          cy.getIFrame()
+          cy.get('@iframe').within(() => {
+            cy.get('.QuestionarioTable').find('.DomandaTesto').eq(i)
+              .next().find('input').check("2").wait(500)
+          })
+
+          break;
+        default:
+          cy.get('@iframe').within(() => {
+            cy.get('.QuestionarioTable').find('.DomandaTesto').eq(i).then($el => {
+              cy.log("if... visible? " + $el.next('[class$="DomandaDropDown"]').is(':visible'))
+              if ($el.next('[class$="DomandaDropDown"]').is(':visible')) {
+                cy.wrap($el.next().find('select')).select(risposte[i]).wait(1000)
+              }
+              else {
+                cy.wrap($el.next().find('input'))
+                  .type("{rightArrow}").type(risposte[i]).type("{enter}").wait(500)
+              }
+            })
+          })
+      }
+    }
+
     cy.get('@iframe').within(() => {
-      cy.get('.QuestionarioTable').should('be.visible') //verifica l'apertura del popup
-
-      cy.get('.QuestionarioTable').find('.DomandaTesto').each(($el, index, $list) => {
-
-        switch (risposte[index]) {
-          case true:
-            cy.wrap($el.next().find('input')).check("1")
-            break;
-          case false:
-            cy.wrap($el.next().find('input')).check("2")
-            break;
-          default:
-            if ($el.next('[class$="DomandaDropDown"]').is(':visible')) {
-              cy.wrap($el.next().find('select')).select(risposte[index])
-            }
-            else {
-              cy.wrap($el.next().find('select')).clear().type(risposte[index])
-            }
-        }
-      })
-
       cy.get('.QuestionarioTable').parents('[role="dialog"]').first()
-      .find('input[value="Ok"]').click()
+        .find('input[value="Ok"]').click()
     })
+  }
+
+  /**
+   * 
+   * @param {string} garanzia 
+   * @param {array^2} valori 
+   */
+  static aggiungiGaranzia(garanzia, valori) {
+    var domanda
+    var risposta
+    cy.getIFrame()
+
+    cy.get('@iframe').within(() => {
+      cy.get('.ListaSezioniDescrizione').contains(garanzia).click().wait(1000)
+    })
+
+
+    for (var i = 0; i < valori.length; i++) {
+      domanda = valori[i][0]
+      risposta = valori[i][1]
+      cy.get('@iframe').within(() => {
+        cy.get('.QuestionarioDiv').find('.DomandaTesto').contains(domanda).then($el => {
+          if ($el.next('[class$="DomandaDropDown"]').is(':visible')) {
+            cy.wrap($el.parents('tr[class^="DomandaRow"]').first().find('select')).select(risposta).wait(500)
+          }
+          else {
+            cy.wrap($el.parents('tr[class^="DomandaRow"]').first().find('input'))
+              .type("{rightArrow}").type(risposta).type("{enter}").wait(500)
+          }
+        })
+      })
+    }
   }
 }
 

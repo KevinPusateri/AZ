@@ -10,8 +10,8 @@
 import 'cypress-iframe';
 //import common from 'mocha/lib/interfaces/common';
 import Common from "../../../mw_page_objects/common/Common"
-import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json';
-import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json';
+import prodotti from '../../../fixtures/SchedaCliente/menuEmissione.json';
+import ambitiUltra from '../../../fixtures/Ultra/ambitiUltra.json';
 import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente";
 import LoginPage from "../../../mw_page_objects/common/LoginPage";
 import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica";

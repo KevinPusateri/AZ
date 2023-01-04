@@ -41,6 +41,13 @@ let indirizzoCliente = cliente.via + " "
     + cliente.cap + " "
     + cliente.citta + " (" + cliente.provincia + ")"
 let fonte = "CASERZA LAURA"
+
+let locali = [
+    ["Somma assicurata", "250,000"],
+    ["Tipo di assicurazione", "Valore Intero"],
+    ["Franchigia", "150,00"]
+]
+
 var nContratto = "000"
 //#endregion variabili iniziali
 
@@ -126,7 +133,7 @@ describe("SALVACASA - INVIO PREVENTIVO IN VPS", () => {
         SceltaProdotto.caricamentoPagina()
     })
 
-    it("Garanzie", () => {
+    it("Garanzie - parte 1", () => {
         let dettagliEdificio = [
             "Proprietario",
             false,
@@ -141,6 +148,10 @@ describe("SALVACASA - INVIO PREVENTIVO IN VPS", () => {
 
         Garanzie.popupAnagFabbricato(indirizzoCliente)
         Garanzie.datiInformativiFabbricato(dettagliEdificio)
+    })
+
+    it("Garanzie - parte 2", () => {        
+        Garanzie.aggiungiGaranzia("DANNI AI LOCALI", locali)
     })
 
     it("Fine", () => {

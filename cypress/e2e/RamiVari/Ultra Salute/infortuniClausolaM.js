@@ -9,8 +9,8 @@
 //#region imports
 import 'cypress-iframe';
 
-import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
-import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
+import ambitiUltra from '../../../fixtures/Ultra/ambitiUltra.json'
+import prodotti from '../../../fixtures/SchedaCliente/menuEmissione.json'
 
 import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
 import PersonaGiuridica from "../../../mw_page_objects/common/PersonaGiuridica"
@@ -112,7 +112,6 @@ describe("POLIZZA INFORTUNI CLAUSOLA M", () => {
   })
 
   it("Emissione Ultra Salute", () => {
-    cy.pause()
     SintesiCliente.Emissione(prodotti.RamiVari.UltraSalute)
     Ultra.selezionaPrimaAgenzia()
     Dashboard.caricamentoDashboardUltra()

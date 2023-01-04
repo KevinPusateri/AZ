@@ -2,8 +2,8 @@
 
 //#region imports
 //fixtures
-import ambitiUltra from '../../fixtures/Ultra/ambitiUltra.json'
-import menuPolizzeAttive from '../../fixtures/SchedaCliente/menuPolizzeAttive.json'
+import ambitiUltra from '../../../fixtures/Ultra/ambitiUltra.json'
+import menuPolizzeAttive from '../../../fixtures/SchedaCliente/menuPolizzeAttive.json'
 
 //pages
 import Common from "../../../mw_page_objects/common/Common"

@@ -7,7 +7,7 @@
 ///<reference types="cypress"/>
 
 //#region imports
-import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
+import prodotti from '../../../fixtures/SchedaCliente/menuEmissione.json'
 
 import Common from "../../../mw_page_objects/common/Common"
 import TopBar from "../../../mw_page_objects/common/TopBar"

@@ -8,7 +8,7 @@ import SintesiCliente from "../../../mw_page_objects/clients/SintesiCliente"
 import FastquoteDA from "../../../mw_page_objects/da/fastquoteDA"
 import Incasso from "../../../mw_page_objects/UltraBMP/Incasso"
 
-import prodotti from '../../fixtures/SchedaCliente/menuEmissione.json'
+import prodotti from '../../../fixtures/SchedaCliente/menuEmissione.json'
 import PersonaFisica from "../../../mw_page_objects/common/PersonaFisica"
 import 'cypress-iframe';
 //#endregion
