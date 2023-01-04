@@ -181,8 +181,8 @@ Cypress.Commands.add('generateVisuraCameraleLabel', () => {
   return "Visura Camerale (Rami Vari) " + currentDateTime
 })
 
-Cypress.Commands.add('preserveCookies', () => {
-  cy.viewport(1280, 1080)
+Cypress.Commands.add('preserveCookies', (width = 1280, height = 1080) => {
+  cy.viewport(width, height)
   Cypress.Cookies.defaults({
     preserve: (cookie) => {
       return true;

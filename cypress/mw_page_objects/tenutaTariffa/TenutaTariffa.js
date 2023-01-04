@@ -278,14 +278,25 @@ class TenutaTariffa {
             //Targa
             if (currentCase.Targa !== '') {
                 cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').should('exist').and('be.visible').click().wait(2000)
+                cy.get('nx-spinner').should('not.be.visible')
                 cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').should('exist').and('be.visible').clear().wait(2000)
+                cy.get('nx-spinner').should('not.be.visible')
                 cy.contains('Il numero della targa').parent().find('nx-word').eq(1).find('input').should('exist').and('be.visible').type(currentCase.Targa).wait(2000)
             }
 
             //Checkbox informativa
             cy.get('label[class="nx-checkbox__label has-label"]>span').eq(0).click({ force: true })
-
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '01_Dati_Quotazione', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '01_Dati_Quotazione',
+                {
+                    clip: {
+                        x: 0,
+                        y: 0,
+                        width: 1280,
+                        height: 500
+                    },
+                    overwrite: true
+                }
+            )
             // cy.pause()
             if (currentCase.Targa !== '')
                 cy.contains('Calcola').should('be.visible').click({ force: true })
@@ -393,8 +404,15 @@ class TenutaTariffa {
                     })
             }
             // cy.pause()
+            cy.get('nx-spinner').should('not.be.visible')
+            cy.contains('Informazioni principali').click()
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '02_Contraente_Proprietario',
+                {
+                    capture: 'fullPage',
+                    overwrite: true
+                }
+            )
 
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '02_Contraente_Proprietario', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
             cy.contains('AVANTI').should('exist').and('be.visible').and('be.enabled').click()
 
             //Attendiamo che il caricamento non sia più visibile
@@ -470,7 +488,7 @@ class TenutaTariffa {
 
                         cy.contains(fullDetails).click()
 
-                        // cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Tipo_Veicolo', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                        // cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Tipo_Veicolo', { clip: { x: 0, y: 0, width: 1280, height: 720 }, overwrite: true })
 
                         cy.contains('CONFERMA').click()
                     }
@@ -574,6 +592,7 @@ class TenutaTariffa {
             }
             else {
                 //Marca
+                cy.get('nx-spinner').should('not.be.visible')
                 cy.get('nx-dropdown[formcontrolname="marca"]').should('exist').and('be.visible').click()
                 cy.get('.nx-dropdown__filter-input').should('exist').and('be.visible').type(currentCase.Marca)
                 let re = new RegExp("\^ " + currentCase.Marca + " \$")
@@ -602,10 +621,11 @@ class TenutaTariffa {
                     cy.wait('@getMotor', { timeout: 30000 })
                 }
             }
+            cy.get('nx-spinner').should('not.be.visible')
 
             currentCase.Targa !== '' ? cy.contains('Informazioni').click() : cy.contains('Ricerca in banche dati il veicolo tramite il numero di targa o il modello prima di procedere all’inserimento.').click()
             //TODO vedi error on Size
-            //cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '03_Dati_Veicolo_Informazioni_Generali', { clip: { x: 0, y: 0, width: 1280, height: 600 }, overwrite: true })
             //#endregion
 
             //#region Dati Veicolo Tecnici
@@ -695,17 +715,23 @@ class TenutaTariffa {
 
                 cy.contains('AVANTI').should('exist').and('be.visible').click().wait(3000)
                 cy.get('nx-spinner').should('not.be.visible')
-
+                cy.wait(2000)
+                cy.get('nx-spinner').should('not.be.visible')
+                cy.wait(1000)
                 // cy.get('strong:contains("Valore del veicolo")').click()
                 //Attendiamo che il caricamento non sia più visibile
                 // cy.get('nx-spinner').should('not.be.visible')
             }
-            // cy.pause()
-
+            cy.get('nx-spinner').should('not.be.visible')
             //TODO fix screenshot range
-            //cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.contains('p', 'Dati tecnici').click()
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '04_Dati_Veicolo_Tecnici', { clip: { x: 0, y: 0, width: 1280, height: 600 }, overwrite: true })
             //#endregion
             cy.contains('AVANTI').should('exist').and('be.visible').click()
+            cy.get('nx-spinner').should('not.be.visible')
+            cy.wait(2000)
+            cy.get('nx-spinner').should('not.be.visible')
+            cy.wait(1000)
             cy.wait('@getMotor', { timeout: 30000 })
             //Attendiamo che il caricamento non sia più visibile
             cy.get('nx-spinner').should('not.be.visible')
@@ -812,7 +838,7 @@ class TenutaTariffa {
                 cy.get('nx-spinner').should('not.be.visible')
             }
 
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '05_Provenienza', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '05_Provenienza', { clip: { x: 0, y: 0, width: 1280, height: 600 }, overwrite: true })
             //#endregion
 
             //#region Dettagli
@@ -851,7 +877,7 @@ class TenutaTariffa {
                     cy.wait('@getMotor', { timeout: 30000 })
 
                     cy.get('h3:contains("Dettagli")').first().click()
-                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '06_Dettagli', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true, disableTimersAndAnimations: false })
+                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '06_Dettagli', { clip: { x: 0, y: 0, width: 1280, height: 600 }, overwrite: true, disableTimersAndAnimations: false })
                     //#endregion
 
                     //Verifichiamo che la data non sia resettata
@@ -870,8 +896,17 @@ class TenutaTariffa {
 
 
                     //#region Sinistri
+                    cy.viewport(1280, 1080)
                     cy.contains('Sinistri').click()
-                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '07_Sinistri', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '07_Sinistri', {
+                        clip: {
+                            x: 0,
+                            y: 0,
+                            width: 1280,
+                            height: 700
+                        }, overwrite: true
+                    })
+                    cy.viewport(1280, 720)
                     //#endregion
 
                     //#region CL
@@ -891,14 +926,26 @@ class TenutaTariffa {
                     cy.get('nx-spinner').should('not.be.visible')
 
 
-                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '08_CL', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+                    cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '08_CL', { clip: { x: 0, y: 0, width: 1280, height: 600 }, overwrite: true })
                     //#endregion
                 }
             }
             // cy.pause()
-            cy.wait(2500)
+            cy.wait(3500)
+            cy.get('nx-spinner').should('not.be.visible')
             //TODO Attestato conforme all'articolo 134, comma 4 bis, del Codice assicurazioni ?
+            cy.intercept({
+                method: 'PUT',
+                url: '**/uwcase/api/provenienza/avanti'
+            }).as('getAvanti');
             cy.contains('AVANTI').should('exist').and('be.visible').click().wait(3000)
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
+            cy.wait('@getAvanti', { timeout: 120000 })
+                .then((response) => {
+                    if (response.statusCode === 500)
+                        cy.contains('AVANTI').should('exist').and('be.visible').click().wait(3000)
+                    cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
+                })//.its('response.statusCode').should('eq', 200)
 
             //Popup di dichiarazione di non circolazione a SI
             cy.get('@iframe').then((iframe) => {
@@ -932,7 +979,7 @@ class TenutaTariffa {
         cy.getIFrame()
         cy.get('@iframe').within(() => {
             //Attendiamo che il caricamento non sia più visibile
-            cy.get('nx-spinner').should('not.be.visible')
+            cy.get('nx-spinner', { timeout: 120000 }).should('not.be.visible')
 
             //Andiamo a settare la Voltura
             cy.get('nx-dropdown[aria-haspopup="listbox"]').first().should('be.visible').click()
@@ -1060,7 +1107,7 @@ class TenutaTariffa {
             //Popup di dichiarazione di non circolazione a SI
             cy.get('@iframe').then((iframe) => {
                 if (iframe.find(':contains("La data di decorrenza non permetterà il salvataggio del preventivo")').length > 0) {
-                    cy.get('nx-modal-container').should('be.visible').within(()=>{
+                    cy.get('nx-modal-container').should('be.visible').within(() => {
                         cy.contains('CONFERMA').click()
                     })
                     cy.wait('@getMotor', { timeout: 30000 })
@@ -1100,8 +1147,10 @@ class TenutaTariffa {
                 //Attendiamo che il caricamento non sia più visibile
                 cy.get('nx-spinner').should('not.be.visible')
             }
-
-            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '09_Offerta_Recap_Top', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+            // ?cy.pause() da PROVARE 
+            cy.viewport(1280, 1080)
+            cy.screenshot(currentCase.Identificativo_Caso.padStart(2, '0') + '_' + currentCase.Descrizione_Settore + '/' + '09_Offerta_Recap_Top', { capture: 'fullPage', overwrite: true })
+            cy.viewport(1280, 720)
 
             //Verifichiamo che sia stata settata correttamente la data
             cy.get('#sintesi-offerta-bar > div > form > div > div:nth-child(5) > div > div:nth-child(2) > div > p').should('exist').and('be.visible').invoke('text').then(currentDataDecorrenza => {
@@ -1357,8 +1406,13 @@ class TenutaTariffa {
                         cy.task('log', `--> Valore rilevato : ${premioLordo}`)
                         cy.task('log', `--> Valore certificato : ${currentCase.Totale_Premio_Lordo}`)
                     }
-                    else
+                    else {
+                        cy.log(`Totale Premio Lordo rilevato: ${premioLordo}`)
+                        cy.log(`Premio Lordo corretto con il valore certificato.`)
+                        cy.task('log', `Totale Premio Lordo rilevato: ${premioLordo}`)
+                        cy.task('log', `Premio Lordo corretto con il valore certificato.`)
                         cy.task('log', 'Dati Offerta compilati correttamente')
+                    }
                 })
             })
         })
@@ -1661,11 +1715,11 @@ class TenutaTariffa {
                     parsedLogTariffa = parser.parse(fileContent)
 
                     //Radar_KeyID
-                    expect(JSON.stringify(findKeyInLog('Radar_KeyID'))).to.contain(currentCase.Versione_Tariffa_Radar)
                     cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyInLog('Radar_KeyID'))}`)
+                    expect(JSON.stringify(findKeyInLog('Radar_KeyID'))).to.contain(currentCase.Versione_Tariffa_Radar)
                     //CMC PUNTA FLEX
-                    expect(JSON.stringify(findKeyInLog('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
                     cy.task('log', `Versione Radar_Punta_Flex_KeyID rilevata ${JSON.stringify(findKeyInLog('Radar_Punta_Flex_KeyID'))}`)
+                    expect(JSON.stringify(findKeyInLog('Radar_Punta_Flex_KeyID'))).to.contain(currentCase.Versione_Punta_Flex)
 
                     if (!Cypress.env('isAviva')) {
                         //#region Verifica Super Indice
@@ -1794,8 +1848,8 @@ class TenutaTariffa {
                     parsedRadarUW = parser.parse(fileContent)
 
                     //Radar_KeyID
-                    expect(JSON.stringify(findKeyRadarUW('Versione_Radar'))).to.contain(currentCase.Versione_Radar_UW)
                     cy.task('log', `Versione Radar UW rilevata ${JSON.stringify(findKeyRadarUW('Versione_Radar'))}`)
+                    expect(JSON.stringify(findKeyRadarUW('Versione_Radar'))).to.contain(currentCase.Versione_Radar_UW)
 
                 })
                 //#endregion
@@ -1832,8 +1886,8 @@ class TenutaTariffa {
                         case "FURTO":
                         //AVIVA
                         case "INCENDIO E FURTO":
-                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Furto)
                             cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Furto)
 
                             break
                         //AZ
@@ -1845,8 +1899,8 @@ class TenutaTariffa {
                         case "KASKO URTO CON ANIMALI":
                         //AZ e AVIVA
                         case "KASKO COLLISIONE":
-                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
                             cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Kasko)
                             break
                         //AZ
                         case "AVENS":
@@ -1858,38 +1912,38 @@ class TenutaTariffa {
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA OPERATRICE":
                         case "ATTI VANDALICI ED EVENTI SOCIOPOLITICI MACCHINA AGRICOLA":
                         case "EVENTI NATURALI":
-                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
                             cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Avens)
                             break
                         //AVIVA
                         case "INFORTUNI":
-                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Infortuni)
                             cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Infortuni)
                             break
                         //AVIVA
                         case "CRISTALLI":
-                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Cristalli)
                             cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Cristalli)
                             break
                         //AVIVA
                         case "IMPREVISTI":
-                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Imprevisti)
                             cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Imprevisti)
                             break
                         //AVIVA
                         case "ASSISTENZA":
-                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Assistenza)
                             cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Assistenza)
                             break
                         //AVIVA
                         case "TUTELA GIUDIZIARIA":
-                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Tutela_Giudiziaria)
                             cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Tutela_Giudiziaria)
                             break
                         //AZ
                         case "MACROLESIONI":
-                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Macrolesioni)
                             cy.task('log', `Versione Radar_KeyID rilevata ${JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))}`)
+                            expect(JSON.stringify(findKeyGaranziaARD(currentCase.Descrizione_Settore, 'Radar_KeyID'))).to.contain(currentCase.Versione_Macrolesioni)
                             break
                     }
                 })

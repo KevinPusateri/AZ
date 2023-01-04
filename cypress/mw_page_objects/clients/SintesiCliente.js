@@ -565,7 +565,7 @@ class SintesiCliente {
         Common.canaleFromPopup()
         cy.wait('@getMotor', { timeout: 50000 });
         getIFrame().find('button:contains("Calcola"):visible')
-        cy.screenshot('Verifica aggancio Prventivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.screenshot('Verifica aggancio Prventivo Motor', { overwrite: true })
     }
     /**
      * Emissione Safe Drive Autovetture

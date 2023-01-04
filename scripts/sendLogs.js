@@ -51,7 +51,7 @@ const sendMail = async () => {
 		to: htmlExportLogMailTo,
 		subject: mailSubject,
 		text: mailSubject,
-		html: '<b>Report ' + mailSubject + '</b></br></br>For additional info, write to andrea.oboe@allianz.it or kevin.pusateri@allianz.it</br></br>',
+		html: '<b>Report ' + mailSubject + '</b></br></br>For additional info, write to kevin.pusateri@allianz.it</br></br>',
 		attachments: [
 			{
 				filename: 'MW_FE_' + stream.toUpperCase() + `_html_${currentEnv}.zip`,
