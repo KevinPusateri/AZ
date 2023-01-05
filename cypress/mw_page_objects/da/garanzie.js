@@ -128,21 +128,38 @@ class Garanzie {
     })
 
 
-    for (var i = 0; i < valori.length; i++) {
-      domanda = valori[i][0]
-      risposta = valori[i][1]
+    /* for (var i = 0; i < valori.length; i++) {
+      cy.log("array ia = " + i)
       cy.get('@iframe').within(() => {
-        cy.get('.QuestionarioDiv').find('.DomandaTesto').contains(domanda).then($el => {
+        cy.log("array ib = " + i)
+        //cy.log("array 0 = " + valori[i][0])
+        cy.get('.QuestionarioDiv').find('.DomandaTesto').contains("valori[i][0]").then($el => {
           if ($el.next('[class$="DomandaDropDown"]').is(':visible')) {
-            cy.wrap($el.parents('tr[class^="DomandaRow"]').first().find('select')).select(risposta).wait(500)
+            cy.wrap($el.parents('tr[class^="DomandaRow"]').first().find('select')).select("valori[i][1]").wait(500)
           }
           else {
             cy.wrap($el.parents('tr[class^="DomandaRow"]').first().find('input'))
-              .type("{rightArrow}").type(risposta).type("{enter}").wait(500)
+              .type("{rightArrow}").type("valori[i][1]").type("{enter}").wait(500)
           }
         })
       })
-    }
+    } */
+
+    cy.get('@iframe').within(() => {
+      cy.get('.QuestionarioDiv').find('.DomandaTesto').as('domandaTesto')
+    })
+
+    cy.get('@domandaTesto').each(($el, index, $list) => {
+      cy.wrap($el).contains(valori[index][0]).then($el2 => {
+        if ($el2.next('[class$="DomandaDropDown"]').is(':visible')) {
+          cy.wrap($el.parents('tr[class^="DomandaRow"]').first().find('select')).select(valori[index][1]).wait(500)
+        }
+        else {
+          cy.wrap($el2.parents('tr[class^="DomandaRow"]').first().find('input'))
+            .type("{rightArrow}").type(valori[index][1]).type("{enter}").wait(500)
+        }
+      })      
+    })
   }
 }
 
