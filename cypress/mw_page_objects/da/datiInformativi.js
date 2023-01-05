@@ -37,25 +37,33 @@ class DatiInformativi {
     cy.get('@iframe').within(() => {
       cy.get('span[class="DomandaLabel"]').contains(voce)
         .parents('tr[class="DomandaRow"]').find('td[class$="DomandaCheckBox"]').children('input')
-        .check()
+        .check().wait(500)
     })
 
-    //se è presente un menù dropdown seleziona l'opzione indicata
+    //se è presente un menù dropdown seleziona l'opzione indicata 
     //e verifica che non sia più segnata come 'domanda error'
     if (opzione != "none") {
       cy.get('@iframe').within(() => {
         cy.get('span[class="DomandaLabel"]').contains(voce)
           .parents('tr[class="DomandaRow"]').next()
           .find('td[class$="DomandaDropDown"]').children('select').select(opzione)
-      })
-
-      cy.wait(500)
-
+      })      
       /* cy.get('@iframe').within(() => {
         cy.get('span[class="DomandaLabel"]').contains(voce)
             .parents('tr[class="DomandaRow"]').next().should('have.attr', 'class').and('not.contain', 'DomandaError')
       }) */
     }
+
+    cy.wait(500)
+  }
+
+  static completaDatiTxT(voce, testo) {
+    cy.getIFrame()
+    cy.get('@iframe').within(() => {
+      cy.get('span[class="DomandaLabel"]').contains(voce)
+        .parents('tr[class^="DomandaRow"]').first().find('input')
+        .type(testo).type("{enter}").wait(500)
+    })
   }
 
   /**
