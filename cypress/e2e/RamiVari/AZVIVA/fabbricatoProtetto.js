@@ -120,7 +120,10 @@ describe("FABBRICATO PROTETTO", () => {
     it("Dati Informativi", () => {
         DatiInformativi.completaDati("INCENDIO")
         DatiInformativi.completaDati("CATASTROFI NATURALI")
-        DatiInformativi.completaDati("CATASTROFI NATURALI","Copertura TERREMOTO - Copertura ALLUVIONE - Fabbricato ad uso abitativo - Percentuale di fabbricato ad uso abitativo")       
+        DatiInformativi.completaDati("Copertura TERREMOTO")
+        DatiInformativi.completaDati("Copertura ALLUVIONE")
+        DatiInformativi.completaDati("Fabbricato ad uso abitativo")
+        //TODO seleziona text Percentuale di fabbricato ad uso abitativo")       
         DatiInformativi.completaDati("CIVILE")
         DatiInformativi.completaDati("INFORTUNI")
         DatiInformativi.completaDati("TUTELA LEGALE")
