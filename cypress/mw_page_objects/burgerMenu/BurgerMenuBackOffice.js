@@ -49,6 +49,11 @@ const LinksBurgerMenu = {
     }
 }
 
+const anagrafeWA40 = {
+    method: 'POST',
+    url: '**/AnagrafeWA40/**'
+}
+
 class BurgerMenuBackOffice extends BackOffice {
 
     static clickBurgerMenu() {
@@ -77,6 +82,8 @@ class BurgerMenuBackOffice extends BackOffice {
      */
     static clickLink(page) {
         // cy.get('lib-burger-icon').click({force:true})
+        cy.intercept(anagrafeWA40).as('anagrafeWA40')
+
         cy.contains(page, { timeout: 5000 }).click()
 
         Common.canaleFromPopup()

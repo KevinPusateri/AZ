@@ -43,9 +43,9 @@ const getIFrameDenuncia = () => {
     return iframeFolder.its('body').should('not.be.undefined').then(cy.wrap)
 }
 
-const Anagrafe = {
-    method: '+(GET|POST)',
-    url: /Anagrafe/
+const anagrafeWA40 = {
+    method: 'POST',
+    url: '**/AnagrafeWA40/**'
 }
 
 const LinksSinistri = {
@@ -140,7 +140,7 @@ class BackOffice {
      * @param {string} page - Nome della pagina delle cards link 
      */
     static clickCardLink(page) {
-        cy.intercept(Anagrafe).as('Anagrafe')
+        cy.intercept(anagrafeWA40).as('anagrafeWA40')
 
 
         if (page === LinksContabilita.MONITORAGGIO_GUIDA_SMART)
@@ -228,6 +228,7 @@ class BackOffice {
                 break;
             case LinksContabilita.DELEGHE_SDD:
                 cy.wait(5000)
+                cy.wait('@anagrafeWA40', { timeout: 60000 })
                 getIFrame().find('input[value="Carica"]').should('be.visible').invoke('attr', 'value').should('equal', 'Carica')
                 cy.screenshot('Verifica aggancio ' + page, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
