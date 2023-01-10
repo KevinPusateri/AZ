@@ -1234,13 +1234,13 @@ class Sales {
      */
     static checkRefreshQuietanzamento() {
 
-        cy.get('app-receipt-manager-body').within(() => {
+        cy.get('app-receipt-manager-body').should('be.visible').within(() => {
             cy.get('div[class="app-receipt-manager-cluster"]:first').find('span[class="cluster-title"]:first').then(($clusterName) => {
                 this.clickCluster($clusterName.text().trim())
             })
         })
 
-        cy.get('app-receipt-manager-body').within(() => {
+        cy.get('app-receipt-manager-body').should('be.visible').within(() => {
             cy.get('div[class="app-receipt-manager-cluster"]').eq(1).find('span[class="cluster-title"]:first').then(($clusterName) => {
                 this.clickCluster($clusterName.text().trim())
             })
@@ -1334,7 +1334,7 @@ class Sales {
      * @param {string} day - giorno 
      */
     static selectFirstDay(day) {
-        cy.get('nx-icon[name="calendar"]').first().should('be.visible').click()
+        cy.get('nx-icon[name="calendar"]').should('be.visible').first().should('be.visible').click()
         cy.get('nx-calendar').should('be.visible').within(() => {
             cy.get('button[aria-label="Previous month"]').should('be.visible').click()
             cy.get('td').contains(day).click()

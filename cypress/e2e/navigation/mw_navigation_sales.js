@@ -29,13 +29,14 @@ let options = {
 let isFailed = false
 //#endregion
 
-let today = new Date()
-today.setDate(1)
-today.setMonth(new Date().getMonth() - 1)
-let dataInizio = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
-today.setMonth(new Date().getMonth())
-today.setDate(25)
-let dataFine = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth())).slice(-2) + '/' + today.getFullYear()
+let todayInizio = new Date()
+todayInizio.setDate(1)
+todayInizio.setMonth(new Date().getMonth() - 1)
+let dataInizio = ('0' + todayInizio.getDate()).slice(-2) + '/' + ('0' + (todayInizio.getMonth())).slice(-2) + '/' + todayInizio.getFullYear()
+let todayFine = new Date()
+todayFine.setDate(25)
+todayFine.setMonth(new Date().getMonth() + 1)
+let dataFine = ('0' + todayFine.getDate()).slice(-2) + '/' + ('0' + (todayFine.getMonth())).slice(-2) + '/' + todayFine.getFullYear()
 //#endregion
 
 let keys = {
@@ -106,14 +107,10 @@ before(() => {
 
 })
 
-// beforeEach(() => {
-//     cy.preserveCookies()
-//     Common.visitUrlOnEnv()
-// })
 beforeEach(() => {
     cy.preserveCookies()
     cy.ignoreRequest()
-    if (isFailed){
+    if (isFailed) {
         Sales.selectFirstDay('1')
         isFailed = false
     }
