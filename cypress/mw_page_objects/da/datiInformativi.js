@@ -29,8 +29,24 @@ class DatiInformativi {
     })
   }
 
+  static aggiungiFabbricato()
+  {
+    cy.getIFrame()
+    cy.get('@iframe').within(() => {
+      cy.get('input[value="Aggiungi"]').should('be.visible').click() //click sul pulsante aggiungi
+    })
+
+    cy.wait(1000)
+  
+    cy.get('@iframe').within(() => {
+      cy.get('input[value="Conferma"]').should('be.visible').click() //click sul pulsante aggiungi
+    })
+    cy.wait(1000)
+
+  }
 
   static completaDati(voce, opzione = "none") {
+    cy.wait(500)
     cy.getIFrame()
 
     //seleziona il checkbox
@@ -58,6 +74,7 @@ class DatiInformativi {
   }
 
   static completaDatiTxT(voce, testo) {
+    
     cy.getIFrame()
     cy.get('@iframe').within(() => {
       cy.get('span[class="DomandaLabel"]').contains(voce)
