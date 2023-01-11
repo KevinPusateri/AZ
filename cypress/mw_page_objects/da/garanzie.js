@@ -51,8 +51,8 @@ class Garanzie {
     cy.intercept({
       method: 'POST',
       url: '**/GRV_AD/**'
-    }).as('popup')
-    cy.wait('@popup', { requestTimeout: 60000 });
+    }).as('chiusura')
+    cy.wait('@chiusura', { requestTimeout: 60000 });
 
     cy.getIFrame()
     cy.get('@iframe').within(() => {
