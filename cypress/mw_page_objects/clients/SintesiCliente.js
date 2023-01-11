@@ -415,11 +415,11 @@ class SintesiCliente {
             }
         })
 
-        cy.screenshot('Click Calcola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
-
-        cy.get('app-new-auto-fast-quote').contains('Calcola').should('be.visible').click()
+        // cy.screenshot('Click Calcola', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
+        cy.wait(1500)
+        cy.get('app-new-auto-fast-quote').should('be.visible').contains('Calcola').should('be.visible').click().wait(2000)
         cy.wait('@gqlCalculateMotorPriceQuotation', { timeout: 120000 })
-
+        // cy.contains('Calcola', { timeout: 120000 }).should('be.visible')
         cy.contains('Inserisci i dati manualmente').should('be.visible').click()
         cy.wait(4500)
         cy.intercept({
@@ -429,8 +429,11 @@ class SintesiCliente {
 
         Common.canaleFromPopup()
         cy.wait('@getMotor', { timeout: 120000 })
-
-        getIFrame().find('nx-link:contains("Nuova ricerca"):visible')
+        cy.wait(2000)
+        cy.getIFrame()
+        cy.get('@iframe').within(() => {
+            cy.get('nx-link:contains("Nuova ricerca"):visible')
+        })
         cy.screenshot('Assuntivo Motor', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
     }
 

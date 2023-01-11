@@ -381,9 +381,9 @@ class TopBar extends HomePage {
                 cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 break;
             case LinkUtilita.BANCHE_DATI_ANIA:
-                //cy.url().should('include', 'Auto/InquiryAnia/Ricerca.aspx')
-                cy.get('form').should('be.visible').within(() => {
-                    cy.get('input[value="Cerca"]').should('be.visible')
+                cy.url().should('include', '/motor/inquiry/ania')
+                cy.get('app-ricerca-form').should('be.visible').within(() => {
+                    cy.contains('span','Cerca')
                 })
                 cy.screenshot(`Verifica link Utilità ${page}`, { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
                 cy.go('back')
