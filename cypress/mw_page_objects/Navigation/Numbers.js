@@ -41,7 +41,7 @@ class Numbers {
      */
     static backToNumbers(checkUrl) {
         cy.get('a').contains('Numbers').click()
-        cy.url().should('include','numbers/' + checkUrl)
+        cy.url().should('include', 'numbers/' + checkUrl)
     }
 
     /**
@@ -156,11 +156,31 @@ class Numbers {
     }
 
     /**
+     * It waits for 4 seconds, then checks if the element with the text "Questi KPI non sono
+     * compatibili con i filtri selezionati" is visible". If it is, it resolves the promise with true.
+     * @returns A promise that resolves to true if the element is visible.
+     */
+    static checkKPI() {
+        return new Cypress.Promise((resolve) => {
+            cy.wait(4000)
+            cy.get('app-digital-indexes').should('exist').and('be.visible').then(($indiciDigitali) => {
+                if ($indiciDigitali.find(':contains("Questi KPI non sono compatibili con i filtri selezionati")').is(':visible'))
+                    resolve(true)
+                else 
+                    resolve(false)
+            })
+        });
+    }
+
+    /**
      * Verifica Atterraggio Primo indice digitale
      */
     static clickAndCheckAtterraggioPrimoIndiceDigitale() {
+        cy.wait(5000)
         interceptGetAgenziePDF()
-        cy.get('app-digital-indexes').should('exist').and('be.visible').find('lib-card').first().click()
+        cy.get('app-digital-indexes').should('exist').and('be.visible').within(($indici) => {
+                cy.wrap($indici).find('lib-card').first().click()
+        })
         cy.wait('@getDacommerciale', { requestTimeout: 60000 });
         getIFrame().find('a:contains("Apri filtri"):visible')
         cy.screenshot('Verifica atterraggio Primo indice digitale', { clip: { x: 0, y: 0, width: 1920, height: 900 }, overwrite: true })
@@ -257,7 +277,7 @@ class Numbers {
 
             //Selezioniamo tutte le Compagnie
             cy.contains('COMPAGNIE').click()
-            cy.contains('span','Tutte').should('be.visible').click()
+            cy.contains('span', 'Tutte').should('be.visible').click()
 
             cy.contains(year).click()
             cy.contains('APPLICA').click()

@@ -172,16 +172,27 @@ class LandingRicerca {
 
                         searchClients()
                     } else {
-                        cy.screenshot('Ricerca clienti PF', { overwrite: true })
                         return
                     }
                 })
             }
             // cerchiamo un cliente random
             searchClients()
-
+            cy.wait(3000)
+            // POPUP: In caso l'elenco dei clienti siano più di 20 conferma Popup
+            cy.wrap(Cypress.$('html')).within(() => {
+                cy.get('@iframe').should('be.visible').within(($modal) => {
+                    var modal = $modal.find('div[class="modal-dialog"]:contains("La ricerca ritorna più di 20 clienti.")')
+                    if (modal.is(':visible')){
+                        cy.contains('No. Solo i primi 20').click()
+                        cy.get('div[class="modal-dialog"]').should('not.exist')
+                    }
+                })
+            })
+            cy.screenshot('Ricerca clienti PF', { overwrite: true })
+            cy.pause()
             //seleziona primo Cliente
-            cy.get('tbody > tr').first().find('span[class="customer-name"]').then(($name) => {
+            cy.get('tbody > tr:visible').first().find('span[class="customer-name"]').then(($name) => {
                 cy.log($name.text().trim())
                 let nameClient = $name.text().trim()
             })
@@ -191,10 +202,11 @@ class LandingRicerca {
             // https://portaleagenzie.pp.azi.allianz.it/daanagrafe/SCU/api/SCPersona/ClearSearchCache
 
             cy.pause()
-            // cy.intercept('https://portaleagenzie.pp.azi.allianz.it/daanagrafe/SCU/api/SCPersona/IsUserAuthorizedToAction', 'ignore').as('auth')
-            cy.intercept('https://portaleagenzie.pp.azi.allianz.it/__/', 'ignore').as('clear')
+            // cy.intercept('**/Person/Sintesi/**', 'ignore').as('auth')
+            cy.intercept('**/SCPersona/ClearSearchCache', 'ignore').as('auth')
+            // cy.intercept('https://portaleagenzie.pp.azi.allianz.it/__/', 'ignore').as('clear')
             cy.get('tbody > tr').first().click()
-
+            
             //TODO Verificare cliente selezionato aggancia alla scheda cliente 
             //! Non rimane nella scheda cliente
 

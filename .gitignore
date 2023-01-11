@@ -13,6 +13,7 @@ parallel-weights*
 !.env
 allure-report/
 allure-results/
+data/
 
 # Logs
 logs
@@ -122,3 +123,4 @@ dist
 .tern-port
 cypress/fixtures/LibriMatricola/LibriMatricola.json
 cypress/fixtures/Sfera/DatiComplementariContratti.json
+docker-compose.minio.yml
