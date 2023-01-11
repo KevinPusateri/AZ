@@ -122,16 +122,18 @@ describe("FABBRICATO PROTETTO", () => {
         DatiInformativi.completaDati("CATASTROFI NATURALI")
         DatiInformativi.completaDati("Copertura TERREMOTO")
         DatiInformativi.completaDati("Copertura ALLUVIONE")
-        //DatiInformativi.completaDati("Fabbricato ad uso abitativo", "100")
         DatiInformativi.completaDatiTxT("Percentuale di fabbricato ad uso abitativo", 100)
-        //TODO seleziona text Percentuale di fabbricato ad uso abitativo")       
         DatiInformativi.completaDati("CIVILE")
         DatiInformativi.completaDati("INFORTUNI")
         DatiInformativi.completaDati("TUTELA LEGALE")
         
         DatiInformativi.dichiarazioniContraente(false, false, false)
-        SceltaProdotto.avanti()
-        SceltaProdotto.caricamentoPagina()
+
+        Garanzie.popupAnagFabbricato(indirizzoCliente)
+
+ 
+       
+      
     })
 
     it("Garanzie", () => {
