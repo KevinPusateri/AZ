@@ -47,6 +47,13 @@ class Garanzie {
           .wait(1000) //conferma
       })
     })
+    
+    cy.intercept({
+      method: 'POST',
+      url: '**/GRV_AD/**'
+    }).as('popup')
+    cy.wait('@popup', { requestTimeout: 60000 });
+
     cy.getIFrame()
     cy.get('@iframe').within(() => {
       cy.get('#ctl00_cont_TabGrupAssic_PanelAss').find('.PxGDesc').contains(indirizzo).should('be.visible') //verifica che il fabbricato sia stato inserito
